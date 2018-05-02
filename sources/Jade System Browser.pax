@@ -77,7 +77,6 @@ package methodNames
 	add: #JadeServer -> #sbMethodClass:;
 	add: #JadeServer -> #sbMigrateAll:;
 	add: #JadeServer -> #sbNextParagraph;
-	add: #JadeServer -> #sbPostSaveClass:;
 	add: #JadeServer -> #sbReadMethodFilter;
 	add: #JadeServer -> #sbRecompileSubclassesOf:andCopyMethods:;
 	add: #JadeServer -> #sbRemoveDictionaries:;
@@ -942,21 +941,6 @@ sbNextParagraph
 	^stream contents.
 !
 
-sbPostSaveClass: anOrderedCollection
-
-	| newClass copyMethods recompileSubclasses migrateInstances removeFromClassHistory |
-	newClass := (self sbClassFrom: anOrderedCollection) thisClass.
-	copyMethods := anOrderedCollection removeFirst = 'true'.
-	recompileSubclasses := anOrderedCollection removeFirst = 'true'.
-	migrateInstances := anOrderedCollection removeFirst = 'true'.
-	removeFromClassHistory := anOrderedCollection removeFirst = 'true'.
-	copyMethods ifTrue: [self sbCopyMethodsFor: newClass].
-	recompileSubclasses ifTrue: [self sbRecompileSubclassesOf: newClass andCopyMethods: copyMethods].
-	migrateInstances ifTrue: [self sbMigrateAll: newClass].
-	removeFromClassHistory ifTrue: [self sbRemoveHistory: newClass].
-	self systemBrowserUpdate.
-!
-
 sbReadMethodFilter
 
 	| pieces |
@@ -1731,7 +1715,6 @@ writeList: aList
 !JadeServer categoriesFor: #sbMethodClass:!public!System Browser! !
 !JadeServer categoriesFor: #sbMigrateAll:!public!System Browser! !
 !JadeServer categoriesFor: #sbNextParagraph!public!System Browser! !
-!JadeServer categoriesFor: #sbPostSaveClass:!public!System Browser! !
 !JadeServer categoriesFor: #sbReadMethodFilter!public!System Browser! !
 !JadeServer categoriesFor: #sbRecompileSubclassesOf:andCopyMethods:!public!System Browser! !
 !JadeServer categoriesFor: #sbRemoveDictionaries:!public!System Browser! !
