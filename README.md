@@ -13,10 +13,10 @@ The runtime directory contains the jadeite.exe, README.md, and /bin and /icons d
 On Windows, create a directory for Jadeite, and copy the contents of the runtime directory to this directory. You can now execute jadeite.exe.  No updates to the OS path or %GEMSTONE% environment variable are required. 
 
 Jadeite can only log into a GemStone/S 64 Bit GemStone repository that has Rowan installed. The GemStone server is not supported on Windows;  server platforms other than Linux have not been tested.
-For GemStone installation, see [GemStone 3.2.x Installation instructions] (https://downloads.gemtalksystems.com/docs/GemStone64/3.2.x/GS64-InstallGuide-Linux-3.2.6/GS64-InstallGuide-Linux-3.2.6.htm). 
+For GemStone installation, see [GemStone 3.2.x Installation instructions](https://downloads.gemtalksystems.com/docs/GemStone64/3.2.x/GS64-InstallGuide-Linux-3.2.6/GS64-InstallGuide-Linux-3.2.6.htm). 
 
 Once you have installed base GemStone and started a NetLDI, you must install Rowan.
-Rowan is provided [here] (https://github.com/GemTalk/Rowan/releases).
+Rowan is provided [here](https://github.com/GemTalk/Rowan/releases).
 
 
 
