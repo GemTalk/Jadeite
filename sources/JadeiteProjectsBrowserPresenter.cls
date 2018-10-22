@@ -395,14 +395,15 @@ editSaveClass
 	classListPresenter clear.
 	[self issueCommand: (Array with: packageService)] on: Error
 		do: 
-			[:ex | 
+			[:ex |
 			classListPresenter list: visibleClasses.
-			(ex isKindOf: GsCompileError) ifTrue:[
-				self handleClassCompileError: ex]
-			ifFalse:[
-				self statusBarText: 'ERROR: ', ex messageText ]].
+			(ex isKindOf: GsCompileError)
+				ifTrue: [self handleClassCompileError: ex]
+				ifFalse: [self statusBarText: 'ERROR: ' , ex messageText]].
 	classDefinitionPresenter view isModified: false.
-	self refreshFromServer. !
+	packageListPresenter selection selectedClass
+		ifNotNil: [:classService | self selectClass: classService].
+	self refreshFromServer!
 
 editSaveClassComment
 	| classService |

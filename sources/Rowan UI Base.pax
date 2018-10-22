@@ -477,7 +477,7 @@ RowanService subclass: #RowanMethodService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanPackageService
-	instanceVariableNames: 'classes defaultTemplate projectName classCompilationFailures testClasses hierarchyServices'
+	instanceVariableNames: 'classes defaultTemplate projectName classCompilationFailures testClasses hierarchyServices selectedClass'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
