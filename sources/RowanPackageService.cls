@@ -11,8 +11,7 @@ RowanPackageService comment: ''!
 !RowanPackageService methodsFor!
 
 = packageService
-
-	^name = packageService name!
+	^packageService isPackageService ifTrue: [name = packageService name] ifFalse: [^false]!
 
 addHierarchyService: service to: treeModel withParent: parentService
 	treeModel getNodeFor: service ifAbsent: [treeModel add: service asChildOf: parentService].

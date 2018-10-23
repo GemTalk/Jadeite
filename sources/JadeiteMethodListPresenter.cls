@@ -42,7 +42,10 @@ methodListSelection
 	^methodListPresenter selectionOrNil!
 
 methods: services selecting: string
-	services isEmpty ifTrue: [^self].
+	"services can legitimately be nil if call was blocked because it
+	was already inUpdate"
+
+	(services isNil or: [services isEmpty]) ifTrue: [^self].
 	methodListPresenter
 		list: services;
 		selectFirstMethod.

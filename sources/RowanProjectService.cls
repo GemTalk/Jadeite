@@ -11,8 +11,7 @@ RowanProjectService comment: ''!
 !RowanProjectService methodsFor!
 
 = projectService
-
-	^name = projectService name!
+	^projectService isProjectService ifTrue: [name = projectService name] ifFalse: [^false]!
 
 addPackageNamed: newPackageName using: presenter
 	self
