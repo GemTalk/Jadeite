@@ -194,6 +194,27 @@ test_autoDirtyDisplayRemoveMethod
 	self assert: self packageListPresenter selection name = 'RowanSample1-Core'.
 	self assert: self packageListPresenter selection isDirty!
 
+test_categoryTextDisplay
+	self testsIssue: #issue232 withTitle: 'cannot tell which `category` a method is in (Oscar-3.0.41)'.
+	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
+	self selectServicesNamed: (Array with: 'RowanClassService') in: self classListPresenter.
+	self assert: self projectsPresenter methodCategoryText value equals: String new.
+	self selectCategoryNamed: 'commands'.
+	self assert: self projectsPresenter methodCategoryText value equals: String new.
+	self selectMethodNamed: #removeMethods.
+	self assert: self projectsPresenter methodCategoryText value equals: 'Category: commands'.
+	self selectMethodsNamed: (Array
+				with: #removeMethods
+				with: #renameCategoryFrom:to:
+				with: #addCategory:).
+	self assert: self projectsPresenter methodCategoryText value equals: 'Category: commands'.	"category is shown if all selected methods are in same category"
+	self selectServicesNamed: (Array with: 'RowanService') in: self classListPresenter.
+	self assert: self projectsPresenter methodListPresenter list notEmpty.
+	self assert: self projectsPresenter methodCategoryText value equals: String new.
+	self selectMethodsNamed: (Array with: #browserTool with: #initialize).
+	self assert: self projectsPresenter methodCategoryText value equals: 'Categories: (Multiple)'!
+
 test_classListNotBlank
 	| rowanClass |
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
@@ -846,6 +867,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveHierarchyCategory!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classSideSelection!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package! !
