@@ -26,6 +26,10 @@ basicPrepareForReplication
 	"don't iterate over sub colletions"
 	classes := nil!
 
+classes
+
+	^classes!
+
 classes: anArray
 	classes := anArray!
 
@@ -156,6 +160,7 @@ testClasses: presenter
 !RowanPackageService categoriesFor: #=!comparing!public! !
 !RowanPackageService categoriesFor: #addHierarchyService:to:withParent:!private!updating! !
 !RowanPackageService categoriesFor: #basicPrepareForReplication!public!replication! !
+!RowanPackageService categoriesFor: #classes!accessing!public! !
 !RowanPackageService categoriesFor: #classes:!public!updating! !
 !RowanPackageService categoriesFor: #classesUpdate:browser:!public!updating! !
 !RowanPackageService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !

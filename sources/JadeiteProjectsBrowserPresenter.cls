@@ -1167,12 +1167,22 @@ refreshClassListOrHierarchy
 		ifFalse: [self updateHierarchy]!
 
 refreshFromServer
-	| services |
+	| services packageSelections classSelection methodSelections categorySelections |
 	services := OrderedCollection with: RowanBrowserService new.
-	projectListPresenter selections isEmpty ifFalse: [services addAll: projectListPresenter selections].
-	packageListPresenter selections isEmpty ifFalse: [services addAll: packageListPresenter selections].
-	classListPresenter selectionOrNil ifNotNil: [:classService | services add: classService].
+	packageSelections := packageListPresenter selections.
+	classSelection := classListPresenter selectionOrNil.
+	methodSelections := methodListPresenter selections.
+	categorySelections := categoryListPresenter selections. 
+	services addAll: projectListPresenter selections.
+	services addAll: packageSelections.
+	packageListPresenter list: ListModel new.
+	classListPresenter list: ListModel new.
+	methodListPresenter list: ListModel new.
 	self updateServices: services.
+	self updatePresenter: packageListPresenter selections: packageSelections.
+	self updatePresenter: classListPresenter selections: (Array with: classSelection).
+	categoryListPresenter selections: categorySelections ifAbsent:[].
+	self updatePresenter: methodListPresenter selections: methodSelections.
 	self redrawAllViews!
 
 refreshMethodsOn: presenter
@@ -1649,6 +1659,15 @@ updatePackages
 	self updateServices: selections.
 	self sundryCleanup!
 
+updatePresenter: presenter selections: selections
+	| newSelections |
+	newSelections := OrderedCollection new.
+	selections do: 
+			[:selection |
+			(presenter list detect: [:service | service name = selection name] ifNone: [])
+				ifNotNil: [:newSelection | newSelections add: newSelection]].
+	presenter selections: newSelections!
+
 updateProject
 	self updatePackages.
 	self updateProjectInfo.
@@ -1891,6 +1910,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #updatePackage!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updatePackageInfo!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updatePackages!event handlers!public!updating! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #updatePresenter:selections:!event handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProject!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProjectInfo!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProjects!event handlers!menu handlers!public! !
