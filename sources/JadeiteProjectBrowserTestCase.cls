@@ -69,6 +69,7 @@ saveSampleMethod
 
 	| source |
 	source := 'sampleMethod  
+		| aaa | 
 		aaa := 123. 
 		^aaa'. 
 	self methodSourcePresenter value: source. 
@@ -743,11 +744,7 @@ test_saveMethodHierarchy
 	self selectRowanSample1Class.
 	self selectHierarchyTab.
 	self selectCategoriesNamed: #('accessing').
-	source := 'sampleMethod  
-		aaa := 123. 
-		^aaa'.
-	self methodSourcePresenter value: source.
-	self projectsPresenter editSaveMethod: self projectsPresenter classHierarchyPresenter selection.
+	self saveSampleMethod.
 	self selectServicesNamed: (Array with: 'sampleMethod') in: self methodListPresenter.
 	self assert: self methodListPresenter selection selector = #sampleMethod.
 	self assert: (session executeString: 'RowanSample1 new sampleMethod') = 123!
