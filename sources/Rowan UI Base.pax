@@ -3144,8 +3144,8 @@ browseClass
 selectedMethodsAreTestCases
 	| classServices |
 	classServices := methodListPresenter selections
-				collect: [:methodService | methodService classService].
-	BrowserUpdate current updateServices: classServices session: self gciSession.
+				collect: [:methodService | methodService classService command: #setIsTestCaseCommand].
+	self issueCommand: classServices. 
 	^classServices allSatisfy: [:classService | classService isTestCase]! !
 !MethodListPresenter categoriesFor: #browseClass!public! !
 !MethodListPresenter categoriesFor: #selectedMethodsAreTestCases!public!testing! !
