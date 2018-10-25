@@ -19,6 +19,7 @@ package classNames
 	yourself.
 
 package methodNames
+	add: #JadeiteProjectsBrowserPresenter -> #classDefinitionPresenter;
 	add: #JadeSUnitAbstractPresenter -> #methodListPresenter;
 	add: #JadeSUnitAbstractPresenter -> #methodListPresenter:;
 	add: #JadeSUnitPresenter -> #classListPresenter;
@@ -112,6 +113,13 @@ TestResource subclass: #JadeiteTestResource
 
 
 "Loose Methods"!
+
+!JadeiteProjectsBrowserPresenter methodsFor!
+
+classDefinitionPresenter
+
+	^classDefinitionPresenter! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #classDefinitionPresenter!accessing!public! !
 
 !JadeSUnitAbstractPresenter methodsFor!
 

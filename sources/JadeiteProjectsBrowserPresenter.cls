@@ -415,8 +415,7 @@ editSaveClass
 				ifFalse: [self statusBarText: 'ERROR: ' , ex messageText]].
 	classDefinitionPresenter view isModified: false.
 	packageListPresenter selection selectedClass
-		ifNotNil: [:classService | self selectClass: classService].
-	self refreshFromServer!
+		ifNotNil: [:classService | self selectClass: classService].!
 
 editSaveClassComment
 	| classService |

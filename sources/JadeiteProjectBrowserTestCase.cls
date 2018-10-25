@@ -77,6 +77,17 @@ saveSampleMethod
 
 	!
 
+saveTestClass
+	self projectsPresenter classDefinitionPresenter
+		value: 'Object rwSubclass: ''TestClass''
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''Rowan-Services-Tests''
+	options: #()'.
+	self projectsPresenter editSaveClass.!
+
 selectClassInHierarchNamed: className
 	self selectTreeServicesNamed: (Array with: className) in: self classHierarchyPresenter!
 
@@ -123,6 +134,18 @@ tearDown
 	methodListBrowser ifNotNil: [methodListBrowser destroy].
 	transcriptWritesWereEnabled ifTrue: [transcript flipTranscript].
 !
+
+test_abortWithAbortedClassSelected
+	"make sure we can safely remove an aborted class during post-abort refresh"
+
+	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
+	self selectServicesNamed: (Array with: 'RowanServicesTest') in: self classListPresenter.
+	self saveTestClass.
+	self assert: self projectsPresenter selectedClass name = 'TestClass'.
+	self projectsPresenter topShell abortTransaction.
+	self
+		assertIsNil: (self classListPresenter list detect: [:service | service name = 'TestClass'] ifNone: [])!
 
 test_addPackageReloadProject
 	self testsIssue: #issue183
@@ -850,6 +873,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #saveHooMethod!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUniqueString!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveSampleMethod!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #saveTestClass!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectClassInHierarchNamed:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectClassListTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectClassTab!private!selection! !
@@ -859,6 +883,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #selectTreeServicesNamed:in:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteProjectBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_abortWithAbortedClassSelected!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addPackageReloadProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveHierarchyCategory!public!test! !
