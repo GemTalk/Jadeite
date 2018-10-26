@@ -680,6 +680,28 @@ test_projectRemoved
 	sampleProject := self projectNamed: 'RowanSample1'.
 	self assertIsNil: sampleProject!
 
+test_refreshFromServer
+	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
+	self selectServicesNamed: (Array with: 'RowanPackageService') in: self classListPresenter.
+	self selectCategoryNamed: 'commands'.
+	self selectServiceNamed: 'classHierarchy' in: self methodListPresenter.
+	self projectsPresenter refreshFromServer.
+	self assert: self projectsPresenter selectedMethodName equals: #classHierarchy.
+	self assert: self projectsPresenter categoryListPresenter selection equals: 'commands'.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanPackageService'.
+	self assert: self projectsPresenter packageListPresenter selection name equals: 'Rowan-Services-Core'.
+	self assert: self projectsPresenter projectListPresenter selection name equals: 'Rowan'.
+	"hierarchy tab" 
+	self selectHierarchyTab. "selections remain" 
+	self projectsPresenter refreshFromServer.
+	self assert: self projectsPresenter selectedMethodName equals: #classHierarchy.
+	self assert: self projectsPresenter categoryListPresenter selection equals: 'commands'.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanPackageService'.
+	self assert: self projectsPresenter packageListPresenter selection name equals: 'Rowan-Services-Core'.
+	self assert: self projectsPresenter projectListPresenter selection name equals: 'Rowan'
+	!
+
 test_removeProject
 	| targetProject |
 	self testsIssue: #issue129 withTitle: 'Expose unload project.'.
@@ -943,6 +965,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_packagesShownInMultipleProjects!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectDisplaysSync!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectRemoved!public!test projects! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_refreshFromServer!public! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_rowanTestsHierarchy!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethod!public!test! !
