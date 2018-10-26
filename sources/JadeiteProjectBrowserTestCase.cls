@@ -484,6 +484,16 @@ test_implementorsSendersCaption
 	[self assert: ('Senders of ''branch'' for *' match: methodListBrowser caption)]
 		ensure: [methodListBrowser destroy]!
 
+test_literalReferences
+	| methodListPresenter |
+	self testsIssue: #issue256
+		withTitle: 'Find string literals in addition to ''methods containing string'' would be useful'.
+	methodListBrowser := JadePresenter browseLiteralReferences: 'SymbolUser' session: session.
+	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
+	self assert: methodListPresenter list notEmpty.
+	methodListPresenter list
+		do: [:methodService | self assert: ('*#SymbolUser*' match: methodService source)]!
+
 test_makeDefault
 	| nonDefaultService |
 	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
@@ -974,6 +984,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedPackage!public!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySelectTwoBrowsers!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_implementorsSendersCaption!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_literalReferences!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_makeDefault!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuAddPackageOnProjectMenu!public!test!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuEnablementDoesNotBreak!public!test! !
