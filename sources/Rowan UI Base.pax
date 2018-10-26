@@ -1404,7 +1404,7 @@ promptForMatchingSymbolsIn: session actionBlock: aBlock promptCaption: caption
 	selector := selector copyWithout: Character space.
 	(selector includes: $*) ifFalse: [^aBlock value: selector].
 	list := (selector subStrings: $*) asOrderedCollection.
-	list size - 1 to: 1 do: [:i | list add: $* afterIndex: i].
+	list size - 1 to: 1 by: -1 do: [:i | list add: $* afterIndex: i].
 	selector last = $* ifTrue: [list addLast: $*].
 	service := RowanAnsweringService new
 				command: #selectorsMatchingPattern:;
