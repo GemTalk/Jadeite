@@ -1169,7 +1169,7 @@ refreshFromServer
 	| services packageSelections classSelection methodSelections categorySelections |
 	services := OrderedCollection with: RowanBrowserService new.
 	packageSelections := packageListPresenter selections.
-	classSelection := classListPresenter selectionOrNil.
+	classSelection := self selectedClass.
 	methodSelections := methodListPresenter selections.
 	categorySelections := categoryListPresenter selections. 
 	services addAll: projectListPresenter selections.
@@ -1179,7 +1179,7 @@ refreshFromServer
 	methodListPresenter list: ListModel new.
 	self updateServices: services.
 	self updatePresenter: packageListPresenter selections: packageSelections.
-	self updatePresenter: classListPresenter selections: (Array with: classSelection).
+	self selectClassNamed: classSelection name. 
 	categoryListPresenter selections: categorySelections ifAbsent:[].
 	self updatePresenter: methodListPresenter selections: methodSelections.
 	self redrawAllViews!
