@@ -293,6 +293,7 @@ package methodNames
 	add: 'JadePresenter class' -> #browseMethodsContaining:session:;
 	add: 'JadePresenter class' -> #browseSendersIn:;
 	add: 'JadePresenter class' -> #browseSendersOf:session:;
+	add: 'JadePresenter class' -> #convertToPattern:;
 	add: 'JadePresenter class' -> #issueCommand:session:;
 	add: 'JadePresenter class' -> #openDictionaryBrowserOn:session:;
 	add: 'JadePresenter class' -> #openMethodListOn:selecting:session:;
@@ -300,6 +301,7 @@ package methodNames
 	add: 'JadePresenter class' -> #promptForMatchingSymbolsIn:actionBlock:promptCaption:;
 	add: 'JadePresenter class' -> #promptForSelectorWithCaption:;
 	add: 'JadePresenter class' -> #runMethodTests:in:;
+	add: 'JadePresenter class' -> #symbolsFrom:session:;
 	add: 'JadeServer class' -> #gsString;
 	add: 'JadeServer64bit32 class' -> #gsClassDefinitionStringFor:;
 	add: 'JadeSessionManager class' -> #getUrl;
@@ -1376,6 +1378,15 @@ browseSendersOf: string session: session
 	shell updateCaptionFromSearchString: 'Senders of ' , string asString printString.
 	^shell!
 
+convertToPattern: wildcardString
+	| list |
+	list := (wildcardString subStrings: $*) asOrderedCollection.
+	list size - 1 to: 1
+		by: -1
+		do: [:i | list add: $* afterIndex: i].
+	wildcardString last = $* ifTrue: [list addLast: $*].
+	^list asArray!
+
 issueCommand: services session: session
 	^BrowserUpdate current issueCommand: services session: session!
 
@@ -1399,17 +1410,11 @@ openMethodListOn: service selectingAnyMatch: string session: session
 		session: session!
 
 promptForMatchingSymbolsIn: session actionBlock: aBlock promptCaption: caption
-	| selector list service symbols |
+	| selector symbols |
 	(selector := self promptForSelectorWithCaption: caption) isNil ifTrue: [^self].
 	selector := selector copyWithout: Character space.
 	(selector includes: $*) ifFalse: [^aBlock value: selector].
-	list := (selector subStrings: $*) asOrderedCollection.
-	list size - 1 to: 1 by: -1 do: [:i | list add: $* afterIndex: i].
-	selector last = $* ifTrue: [list addLast: $*].
-	service := RowanAnsweringService new
-				command: #selectorsMatchingPattern:;
-				commandArgs: (Array with: list asArray).
-	symbols := (self issueCommand: (Array with: service) session: session) first answer.
+	symbols := self symbolsFrom: selector session: session.
 	(selector := ChoicePrompter choices: symbols) isNil ifTrue: [^self].
 	^aBlock value: selector!
 
@@ -1433,7 +1438,15 @@ runMethodTests: methodServices in: session
 		command: #runMethodTests:;
 		commandArgs: (Array with: methodServices).
 	answeringService := (self issueCommand: (Array with: answeringService) session: session) first.
-	^answeringService answer! !
+	^answeringService answer!
+
+symbolsFrom: selector session: session
+	| service list |
+	list := self convertToPattern: selector.
+	service := RowanAnsweringService new
+				command: #selectorsMatchingPattern:;
+				commandArgs: (Array with: list asArray).
+	^(self issueCommand: (Array with: service) session: session) first answer! !
 !JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
 !JadePresenter class categoriesFor: #browseClassIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseImplementorsIn:!browsing!public! !
@@ -1441,6 +1454,7 @@ runMethodTests: methodServices in: session
 !JadePresenter class categoriesFor: #browseMethodsContaining:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSendersIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSendersOf:session:!browsing!public! !
+!JadePresenter class categoriesFor: #convertToPattern:!browsing support!private! !
 !JadePresenter class categoriesFor: #issueCommand:session:!public! !
 !JadePresenter class categoriesFor: #openDictionaryBrowserOn:session:!browsing support!public! !
 !JadePresenter class categoriesFor: #openMethodListOn:selecting:session:!public! !
@@ -1448,6 +1462,7 @@ runMethodTests: methodServices in: session
 !JadePresenter class categoriesFor: #promptForMatchingSymbolsIn:actionBlock:promptCaption:!browsing support!private! !
 !JadePresenter class categoriesFor: #promptForSelectorWithCaption:!browsing support!private! !
 !JadePresenter class categoriesFor: #runMethodTests:in:!public! !
+!JadePresenter class categoriesFor: #symbolsFrom:session:!browsing support!private! !
 
 !JadePresenterA methodsFor!
 

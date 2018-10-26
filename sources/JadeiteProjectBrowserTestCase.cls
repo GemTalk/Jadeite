@@ -54,6 +54,16 @@ saveHooMethod
 
 	!
 
+saveMethodWithUnimplementedSelector
+
+	| source |
+	source := 'theTestMethod
+		^self fnoodley1'.
+	self methodSourcePresenter value: source. 
+	self projectsPresenter editSaveMethod: self classListPresenter selection. 
+
+	!
+
 saveMethodWithUniqueString
 
 	| source |
@@ -857,6 +867,16 @@ test_SUnitTabHandlesShortSelector
 	self selectClassInHierarchNamed: 'TestCase'.	"<<< bug occurred here"
 	self assert: self projectsPresenter selectedClass name = 'TestCase'!
 
+test_symbolsWithoutImplementorsFound
+	| symbols |
+	self testsIssue: #issue258
+		withTitle: 'wildcard senders and implentors don''t return proper selection list'.
+	self selectRowanSample1Class.
+	self saveMethodWithUnimplementedSelector.
+	symbols := JadePresenter symbolsFrom: 'fnoodley1' session: session.
+	self assert: symbols size equals: 1.
+	self assert: symbols first = #fnoodley1!
+
 test_tabNames
 	| textTabs |
 	self testsIssue: #issue186 withTitle: 'icon in console menu'.
@@ -920,6 +940,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #projectNamed:!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #rowanProjectNames!constants!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveHooMethod!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUnimplementedSelector!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUniqueString!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveSampleMethod!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveTestClass!private! !
@@ -977,6 +998,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_setAndClearBreakpoint!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_simpleHierarchyTest!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_SUnitTabHandlesShortSelector!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsWithoutImplementorsFound!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!test! !
