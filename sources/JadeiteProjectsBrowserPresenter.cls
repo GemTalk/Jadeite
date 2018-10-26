@@ -406,7 +406,7 @@ editSaveClass
 		commandArgs: (Array with: classDefinitionPresenter value).
 	visibleClasses := classListPresenter list.
 	classListPresenter clear.
-	[self issueCommand: (Array with: packageService)] on: Error
+	[self issueCommand: (Array with: packageService).] on: Error
 		do: 
 			[:ex |
 			classListPresenter list: visibleClasses.
@@ -1718,19 +1718,7 @@ updateSingleMethodSource
 	self displayNoMods: methodSourcePresenter. !
 
 updateTabLabel
-	| cardNumber newLabel |
-	cardNumber := self parentPresenter view cards indexOf: self view.
-	(newLabel := self selectedClassNameWithoutVersion) notEmpty
-		ifTrue: 
-			[instanceClassTabs currentCard name = 'classTab' ifTrue: [newLabel := newLabel , ' class'].
-			0 < environment ifTrue: [newLabel := newLabel , ' [' , environment printString , ']']]
-		ifFalse: 
-			[|  selections |
-			newLabel := 'Projects'.
-			selections := projectListPresenter selections.
-			selections size = 1 ifTrue: [newLabel := selections first name]].
-	self view arrangement: cardNumber printString , ' ' , newLabel.
-	self parentPresenter view updateTabs!
+	self updateProjectTab!
 
 writeProject
 	| projectServices ws |

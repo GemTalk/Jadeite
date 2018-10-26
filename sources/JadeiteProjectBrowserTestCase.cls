@@ -862,6 +862,33 @@ test_tabNames_projectsBrowser
 	self assert: (textTabs at: 5) text equals: 'SUnit'.
 	self assert: (textTabs at: 6)  equals: 'Comparison' "for some as yet unknown reason, this is created differently"!
 
+test_tabNames_projectsBrowserNotLost
+	"why we have to put the text in the arrangement field is beyond me"
+
+	| projectTabs index |
+	self testsIssue: #issue229
+		withTitle: 'project browser tabs appear to randomly display just `Rowan` or package name'.
+	projectTabs := self projectsPresenter parentPresenter view cards.
+	self projectsPresenter projectListPresenter resetSelection.
+	index := 1.
+	self assert: (projectTabs at: index) arrangement equals: index printString , ' Projects'.
+	self selectRowanSample1Class.
+	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1-Core'.
+	self selectCategoryNamed: 'accessing'.
+	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1-Core'.	"no change. this was a bug"
+	self projectsPresenter topShell addSystemBrowser.
+	projectTabs := self projectsPresenter parentPresenter view cards.
+	index := 2.
+	self assert: (projectTabs at: index) arrangement equals: index printString , ' Projects'.
+	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
+	self selectServicesNamed: (Array with: 'RowanAnsweringService') in: self classListPresenter.
+	self assert: (projectTabs at: index) arrangement equals: index printString , ' Rowan-Services-Core'.
+	self selectCategoryNamed: 'commands'.
+	self assert: (projectTabs at: index) arrangement equals: index printString , ' Rowan-Services-Core'.	"no change. this was a bug"
+	index := 1.
+	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1-Core'	"not affected by other tab"!
+
 waitForPresenter: presenter
 	[presenter list isEmpty] whileTrue: [(Delay forMilliseconds: 50) wait]! !
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
@@ -929,6 +956,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_SUnitTabHandlesShortSelector!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #waitForPresenter:!private!selection! !
 
 !JadeiteProjectBrowserTestCase class methodsFor!
