@@ -118,9 +118,11 @@ package methodNames
 	add: #JadeNavigationInspector -> #setNewInspectedObject;
 	add: #JadePresenter -> #issueCommand:;
 	add: #JadePresenter -> #update:afterStonReplication:;
+	add: #JadePresenterA -> #basicBrowseLiteralReferences:;
 	add: #JadePresenterA -> #basicBrowseMethodsContaining:;
 	add: #JadePresenterA -> #basicCloneProject:root:;
 	add: #JadePresenterA -> #browseImplementorsOf:;
+	add: #JadePresenterA -> #browseLiteralReferences;
 	add: #JadePresenterA -> #browseMethodsContaining;
 	add: #JadePresenterA -> #browseSendersOf:;
 	add: #JadePresenterA -> #clearBreakPointAt:in:;
@@ -290,6 +292,7 @@ package methodNames
 	add: 'JadePresenter class' -> #browseClassIn:;
 	add: 'JadePresenter class' -> #browseImplementorsIn:;
 	add: 'JadePresenter class' -> #browseImplementorsOf:session:;
+	add: 'JadePresenter class' -> #browseLiteralReferences:session:;
 	add: 'JadePresenter class' -> #browseMethodsContaining:session:;
 	add: 'JadePresenter class' -> #browseSendersIn:;
 	add: 'JadePresenter class' -> #browseSendersOf:session:;
@@ -1350,6 +1353,17 @@ browseImplementorsOf: string session: session
 	shell updateCaptionFromSearchString: 'Implementors of ' , string asString printString.
 	^shell!
 
+browseLiteralReferences: string session: session
+	| service shell |
+	service := RowanQueryService command: #literalReferences: withArgs: (Array with: string asSymbol).
+	self issueCommand: (Array with: service) session: session.
+	shell := self
+				openMethodListOn: service
+				selectingAnyMatch: string
+				session: session.
+	shell updateCaptionFromSearchString: 'Literal References To ' , string asString printString.
+	^shell!
+
 browseMethodsContaining: string session: session
 	| service shell |
 	service := RowanQueryService command: #methodsContaining: withArgs: (Array with: string).
@@ -1451,6 +1465,7 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #browseClassIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseImplementorsIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseImplementorsOf:session:!browsing!public! !
+!JadePresenter class categoriesFor: #browseLiteralReferences:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseMethodsContaining:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSendersIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSendersOf:session:!browsing!public! !
@@ -1465,6 +1480,9 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #symbolsFrom:session:!browsing support!private! !
 
 !JadePresenterA methodsFor!
+
+basicBrowseLiteralReferences: string
+	^self class browseLiteralReferences: string session: self gciSession!
 
 basicBrowseMethodsContaining: string
 	^self class browseMethodsContaining: string session: self gciSession!
@@ -1483,9 +1501,15 @@ basicCloneProject: path root: root
 browseImplementorsOf: string
 	^self class browseImplementorsOf: string session: self gciSession!
 
+browseLiteralReferences
+	| string |
+	(string := Prompter prompt: 'Enter string:' caption: 'Browse Methods With Literal ...') isNil
+		ifTrue: [^self].
+	^self basicBrowseLiteralReferences: string!
+
 browseMethodsContaining
 	| string |
-	(string := Prompter prompt: 'Enter string:' caption: 'Browse Methods Containin ...') isNil
+	(string := Prompter prompt: 'Enter string:' caption: 'Browse Methods Containing ...') isNil
 		ifTrue: [^self].
 	^self basicBrowseMethodsContaining: string!
 
@@ -1699,9 +1723,11 @@ updateMethodReferences: services
 	services do: [:service | service command: #allReferences].
 	self issueCommand: services.
 	^services! !
+!JadePresenterA categoriesFor: #basicBrowseLiteralReferences:!private! !
 !JadePresenterA categoriesFor: #basicBrowseMethodsContaining:!private! !
 !JadePresenterA categoriesFor: #basicCloneProject:root:!Jadeite!private! !
 !JadePresenterA categoriesFor: #browseImplementorsOf:!public!queries! !
+!JadePresenterA categoriesFor: #browseLiteralReferences!public! !
 !JadePresenterA categoriesFor: #browseMethodsContaining!public! !
 !JadePresenterA categoriesFor: #browseSendersOf:!menu handlers!public! !
 !JadePresenterA categoriesFor: #clearBreakPointAt:in:!Jadeite!public! !
