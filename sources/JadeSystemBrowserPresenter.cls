@@ -50,6 +50,8 @@ addClassHierarchyInfoTo: aStream
 addMethodCategory
 	| string |
 	(string := Prompter prompt: 'New method category?') isNil ifTrue: [^self].
+	(self verifyValidCategory: string)
+		ifFalse: [^MessageBox notify: 'Loaded package named: ' , string , ' not found'].
 	self basicAddMethodCategory: string!
 
 addMethodInfoTo: aStream

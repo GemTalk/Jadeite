@@ -201,6 +201,7 @@ package methodNames
 	add: #JadeSystemBrowserPresenter -> #updateClassList;
 	add: #JadeSystemBrowserPresenter -> #updateMethod;
 	add: #JadeSystemBrowserPresenter -> #updateSelector;
+	add: #JadeSystemBrowserPresenter -> #verifyValidCategory:;
 	add: #JadeTextDocument -> #aboutJadeite;
 	add: #JadeTextDocument -> #issueCommand:;
 	add: #JadeTextDocument -> #onPromptToSaveChanges:;
@@ -2911,7 +2912,17 @@ updateSelector
 				ifFalse: [listModel add: originalSourceLabel before: methodSourceLabel].
 			originalSourcePresenter value: x].
 	(warnings := gsMethod warnings) notEmpty
-		ifTrue: [MessageBox warning: warnings caption: 'Jade Compile Warning']! !
+		ifTrue: [MessageBox warning: warnings caption: 'Jade Compile Warning']!
+
+verifyValidCategory: category
+	| service packageName |
+	category first = $* ifFalse: [^true].
+	packageName := category copyWithout: $*.
+	service := RowanAnsweringService new
+				command: #loadedPackageExists:;
+				commandArgs: (Array with: packageName).
+	self issueCommand: (Array with: service).
+	^service answer! !
 !JadeSystemBrowserPresenter categoriesFor: #basicAddMethodCategory:!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #basicRemoveMethods!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #browseClassReferences!menu handlers!public! !
@@ -2940,6 +2951,7 @@ updateSelector
 !JadeSystemBrowserPresenter categoriesFor: #updateClassList!public!updating! !
 !JadeSystemBrowserPresenter categoriesFor: #updateMethod!public!updating! !
 !JadeSystemBrowserPresenter categoriesFor: #updateSelector!public!updating! !
+!JadeSystemBrowserPresenter categoriesFor: #verifyValidCategory:!menu handlers support!private! !
 
 !JadeTextDocument methodsFor!
 

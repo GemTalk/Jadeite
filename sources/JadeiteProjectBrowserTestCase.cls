@@ -941,6 +941,14 @@ test_tabNames_projectsBrowserNotLost
 	index := 1.
 	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1-Core'	"not affected by other tab"!
 
+test_verifyValidCategory
+	self testsIssue: #issue205 withTitle: 'misspelled extension category name causes trouble'.
+	self assert: (self projectsPresenter verifyValidCategory: '*Rowan-Kernel') .
+	self assert: (self projectsPresenter verifyValidCategory: '*rowan-kernel') .
+	self assert: (self projectsPresenter verifyValidCategory: 'aaa') .
+	self deny: (self projectsPresenter verifyValidCategory: '*rowankernel') .
+	self deny: (self projectsPresenter verifyValidCategory: '*rowankernelx') .!
+
 waitForPresenter: presenter
 	[presenter list isEmpty] whileTrue: [(Delay forMilliseconds: 50) wait]! !
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
@@ -1013,6 +1021,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_verifyValidCategory!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #waitForPresenter:!private!selection! !
 
 !JadeiteProjectBrowserTestCase class methodsFor!
