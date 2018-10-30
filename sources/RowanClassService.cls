@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanClassService
-	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase'
+	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -141,6 +141,12 @@ excludedInstVars
 
 	^#( 'hierarchyServices' )
 !
+
+expand
+	^expand!
+
+expand: anObject
+	expand := anObject!
 
 filters
 	^filters!
@@ -334,6 +340,8 @@ variables
 !RowanClassService categoriesFor: #displayString!displaying!public! !
 !RowanClassService categoriesFor: #displayStringFor:!displaying!public! !
 !RowanClassService categoriesFor: #excludedInstVars!public!ston! !
+!RowanClassService categoriesFor: #expand!accessing!private! !
+!RowanClassService categoriesFor: #expand:!accessing!private! !
 !RowanClassService categoriesFor: #filters!accessing!public! !
 !RowanClassService categoriesFor: #filters:!accessing!public! !
 !RowanClassService categoriesFor: #filterType!accessing!private! !

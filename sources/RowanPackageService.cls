@@ -50,13 +50,13 @@ classesUpdate: presenter browser: browser
 classHierarchyUpdate: presenter browser: browser
 	| treeModel subclasses parent |
 	hierarchyServices ifNil: [^self].
-	hierarchyServices isEmpty ifTrue:[^self].
+	hierarchyServices isEmpty ifTrue: [^self].
 	browser isClassListTabSelected ifTrue: [^self].
 	presenter selections notEmpty ifTrue: [(presenter selections includes: self) ifFalse: [^self]].
 	treeModel := TreeModel new
 				searchPolicy: SearchPolicy equality;
 				reset.
-	parent := nil.	
+	parent := nil.
 	subclasses := hierarchyServices at: #nil ifAbsent: [].
 	subclasses
 		ifNil: 
@@ -81,10 +81,11 @@ classHierarchyUpdate: presenter browser: browser
 				addHierarchyService: classService
 				to: treeModel
 				withParent: parent].
-	treeModel asBag
-		do: [:classService | classService selectedPackageServices: browser packageListPresenter selections].
-	presenter model: treeModel.
-	presenter view expandAll!
+	presenter model: treeModel. 
+	treeModel preOrderDo:  
+			[:classService |
+			classService selectedPackageServices: browser packageListPresenter selections.
+			classService expand == true ifTrue: [	presenter view expand: classService]].!
 
 condenseExtensions: presenter
 	| defined newList |
