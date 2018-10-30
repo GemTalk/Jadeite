@@ -406,7 +406,7 @@ editSaveClass
 		commandArgs: (Array with: classDefinitionPresenter value).
 	visibleClasses := classListPresenter list.
 	classListPresenter clear.
-	[self issueCommand: (Array with: packageService).] on: Error
+	[self issueCommand: (Array with: packageService)] on: Error
 		do: 
 			[:ex |
 			classListPresenter list: visibleClasses.
@@ -415,7 +415,7 @@ editSaveClass
 				ifFalse: [self statusBarText: 'ERROR: ' , ex messageText]].
 	classDefinitionPresenter view isModified: false.
 	packageListPresenter selection selectedClass
-		ifNotNil: [:classService | self selectClass: classService].!
+		ifNotNil: [:classService | self selectClass: classService]!
 
 editSaveClassComment
 	| classService |
