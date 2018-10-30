@@ -12,7 +12,7 @@ JadeiteProjectsSystemBrowser comment: ''!
 
 abortTransaction
 	super abortTransaction.
-	self currentCard refreshFromServer!
+	self currentCard refreshFromServerAfterAbort!
 
 addSystemBrowser
 	self addSystemBrowserWithLayoutInfo: nil!

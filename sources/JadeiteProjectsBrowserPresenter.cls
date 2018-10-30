@@ -1167,6 +1167,15 @@ refreshClassListOrHierarchy
 		ifFalse: [self updateHierarchy]!
 
 refreshFromServer
+	| services |
+	services := OrderedCollection with: RowanBrowserService new.
+	projectListPresenter selections isEmpty ifFalse: [services addAll: projectListPresenter selections].
+	packageListPresenter selections isEmpty ifFalse: [services addAll: packageListPresenter selections].
+	classListPresenter selectionOrNil ifNotNil: [:classService | services add: classService].
+	self updateServices: services.
+	self redrawAllViews!
+
+refreshFromServerAfterAbort
 	| services packageSelections classSelection methodSelections categorySelections |
 	services := OrderedCollection with: RowanBrowserService new.
 	packageSelections := packageListPresenter selections.
@@ -1842,6 +1851,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshClass!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshClassListOrHierarchy!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshFromServer!event handlers!menu handlers!public!updating! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #refreshFromServerAfterAbort!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshMethodsOn:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #registerClassData!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #registerPresentersForUpdates!event handlers!initialize/release!public!register presenters! !
