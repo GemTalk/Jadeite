@@ -258,6 +258,11 @@ statusBarServerRequestText: aString
 	self statusBarText: 'Server request #' , roundTripCount printString , '; ' , aString.
 !
 
+statusBarText
+	"for tests"
+
+	^(self view viewNamed: 'statusBarField') model value!
+
 statusBarText: aString
 
 	(self view viewNamed: 'statusBarField') model: (ValueHolder with: aString).
@@ -300,6 +305,7 @@ update
 !JadeSystemBrowser categoriesFor: #selectClass:selector:!public! !
 !JadeSystemBrowser categoriesFor: #shellName!overrides!private! !
 !JadeSystemBrowser categoriesFor: #statusBarServerRequestText:!public! !
+!JadeSystemBrowser categoriesFor: #statusBarText!public! !
 !JadeSystemBrowser categoriesFor: #statusBarText:!public! !
 !JadeSystemBrowser categoriesFor: #systemBrowserPresenter!public! !
 !JadeSystemBrowser categoriesFor: #update!public! !

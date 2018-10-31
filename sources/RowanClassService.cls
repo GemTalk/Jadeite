@@ -307,6 +307,12 @@ updateCategories: presenter
 	availableSelections := categories select: [:filter | selections includes: filter].
 	presenter selections: availableSelections!
 
+updatedClass: presenter
+	| update |
+	update := presenter model asBag detect:[:classService | classService name = name] ifNone:[^self ].
+	update replicateFrom: self.
+	presenter view invalidate. !
+
 updateListIn: presenter from: visibleMethods
 	| newSelections |
 	newSelections := visibleMethods
@@ -379,6 +385,7 @@ variables
 !RowanClassService categoriesFor: #template:!accessing!private! !
 !RowanClassService categoriesFor: #toolTip!public! !
 !RowanClassService categoriesFor: #updateCategories:!private!updating! !
+!RowanClassService categoriesFor: #updatedClass:!public!updating! !
 !RowanClassService categoriesFor: #updateListIn:from:!private!updating! !
 !RowanClassService categoriesFor: #updateVariables:!private!updating! !
 !RowanClassService categoriesFor: #variables!accessing!private! !

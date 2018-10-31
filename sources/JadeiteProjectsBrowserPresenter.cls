@@ -399,24 +399,24 @@ displayMultipleCategories
 		ifFalse: [methodCategoryText value: 'Categories: (Multiple)']!
 
 editSaveClass
-	| packageService visibleClasses |
+	| packageService |
 	packageService := packageListPresenter selection.
 	packageService
 		command: #compileClass:;
 		commandArgs: (Array with: classDefinitionPresenter value).
-	visibleClasses := classListPresenter list.
-	classListPresenter clear.
-	
 	[self issueCommand: (Array with: packageService)] on: Error
 		do: 
-			[:ex | 
-			classListPresenter list: visibleClasses.
+			[:ex |
 			(ex isKindOf: GsCompileError)
 				ifTrue: [self handleClassCompileError: ex]
-				ifFalse: [self statusBarText: 'ERROR: ' , ex messageText]].
-	classDefinitionPresenter view isModified: false.
+				ifFalse: [self statusBarText: 'ERROR: ' , ex messageText].
+			^self].
+	classDefinitionPresenter view
+		isModified: false;
+		backcolor: Color white.
 	packageListPresenter selection selectedClass
-		ifNotNil: [:classService | self selectClass: classService]!
+		ifNotNil: [:classService | self selectClass: classService].
+	self isHierarchyTabSelected ifTrue: [self updateHierarchy].!
 
 editSaveClassComment
 	| classService |
@@ -657,6 +657,9 @@ isDictionariesTabSelected
 
 	^projectDictionaryTabs currentCard name = 'dictionaryList'.
 !
+
+isHierarchyTabSelected
+	^classHierarchyTabs currentCard name = 'classHierarchy'!
 
 isOkayToChange
 	
@@ -1225,9 +1228,11 @@ registerPresentersForUpdates
 	BrowserUpdate current register: projectListPresenter 		selector: #removedProject:.
 	BrowserUpdate current register: classListPresenter 		selector: #classesUpdate:browser: browser: self.
 	BrowserUpdate current register: classListPresenter 		selector: #removedClass:.
+	BrowserUpdate current register: classListPresenter 		selector: #updatedClass:.
 	BrowserUpdate current register: packageListPresenter 	selector: #projectPackagesUpdate:browser: browser: self.
 	BrowserUpdate current register: categoryListPresenter 	selector: #filterUpdate:browser: browser: self.
 	BrowserUpdate current register: classHierarchyPresenter 	selector: #classHierarchyUpdate:browser: browser: self.
+	BrowserUpdate current register: classHierarchyPresenter 	selector: #updatedClass:.
 	BrowserUpdate current register: variableListPresenter 	selector: #filterUpdate:browser: browser: self.
 	BrowserUpdate current register: methodListPresenter 	selector: #classMethodsUpdate:browser: browser: self.
 	BrowserUpdate current register: methodListPresenter 	selector: #methodsRemoved:.
@@ -1817,6 +1822,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #initialize!initialize/release!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #isClassSelected!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #isDictionariesTabSelected!public!testing! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #isHierarchyTabSelected!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #isOkayToChange!event handlers!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #loadProjects!project menu handlers!public! !

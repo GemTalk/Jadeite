@@ -210,6 +210,8 @@ updateClassHierarchySelectionFor: presenter!
 
 updateClassSelectionFor: presenter!
 
+updatedClass: aPresenter!
+
 updateDictionarySelectionsFor: presenter
 	!
 
@@ -303,6 +305,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #updateClassCategorySelectionsFor:!public!updating! !
 !RowanService categoriesFor: #updateClassHierarchySelectionFor:!public!updating! !
 !RowanService categoriesFor: #updateClassSelectionFor:!public!updating! !
+!RowanService categoriesFor: #updatedClass:!public!updating! !
 !RowanService categoriesFor: #updateDictionarySelectionsFor:!public!updating! !
 !RowanService categoriesFor: #updateList:whilePreservingSelections:!private! !
 !RowanService categoriesFor: #updateMethodFilterSelectionFor:!public!updating! !

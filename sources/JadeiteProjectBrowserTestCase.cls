@@ -43,6 +43,21 @@ rowanProjectNames
 
 	^#('Cypress' 'Rowan' 'STON' 'Tonel')!
 
+saveClass: className superclass: superName instVars: instVars package: aString
+	self projectsPresenter classDefinitionPresenter
+		value: superName, ' rwSubclass: ', className printString, '
+	instVarNames: ' , instVars printString
+				, '
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ', aString printString, '
+	options: #()'.
+	self projectsPresenter editSaveClass!
+
+saveClass: className withInstVars: instVars package: aString
+	self saveClass: className superclass: 'Object' instVars: instVars package: aString!
+
 saveHooMethod
 
 	| source |
@@ -88,17 +103,15 @@ saveSampleMethod
 	!
 
 saveTestClass
-	self projectsPresenter classDefinitionPresenter
-		value: 'Object rwSubclass: ''TestClass''
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	category: ''Rowan-Services-Tests''
-	options: #()'.
-	self projectsPresenter editSaveClass.!
+	self saveTestClassWithInstVars: Array new package: 'Rowan-Services-Tests'!
 
-selectClassInHierarchNamed: className
+saveTestClassWithInstVars: instVars package: aString
+	self
+		saveClass: 'TestClass'
+		withInstVars: instVars
+		package: aString!
+
+selectClassInHierarchyNamed: className
 	self selectTreeServicesNamed: (Array with: className) in: self classHierarchyPresenter!
 
 selectClassListTab
@@ -185,7 +198,7 @@ test_addRemoveHierarchyCategory
 	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
 	self selectServicesNamed: #('RowanSample1-Core') in: self packageListPresenter.
 	self selectHierarchyTab.
-	self selectClassInHierarchNamed: self sampleClass. 
+	self selectClassInHierarchyNamed: self sampleClass.
 	self deny: (self categoryListPresenter list includes: 'jadeite test').
 	self projectsPresenter basicAddMethodCategory: 'jadeite test'.
 	self assert: (self categoryListPresenter list includes: 'jadeite test').
@@ -299,6 +312,49 @@ test_classSideSelection
 				detect: [:methodService | methodService selector = #stonStringFor:]
 				ifNone: [])!
 
+test_classVersionIncrementedInClassList
+	self testsIssue: #issue228
+		withTitle: 'lose selected class in project browser when new version created'.
+	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
+	self selectServicesNamed: #('RowanSample1-Tests') in: self packageListPresenter.
+	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
+	self selectServiceNamed: 'TestClass' in: self classListPresenter.
+	self assert: self classListPresenter selection displayString equals: 'TestClass'.
+	self saveTestClassWithInstVars: (Array with: 'a') package: 'RowanSample1-Tests'.
+	self assert: self classListPresenter selection displayString equals: 'TestClass (2/2)'.
+	self saveTestClassWithInstVars: (Array with: 'a' with: 'b') package: 'RowanSample1-Tests'.
+	self assert: self classListPresenter selection displayString equals: 'TestClass (3/3)'.
+	self saveTestClassWithInstVars: (Array
+				with: 'a'
+				with: 'b'
+				with: 'c')
+		package: 'RowanSample1-Tests'.
+	self assert: self classListPresenter selection displayString equals: 'TestClass (4/4)'.
+	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
+	self assert: self classListPresenter selection displayString equals: 'TestClass (5/5)'!
+
+test_classVersionIncrementedInHierarchy
+	self testsIssue: #issue228
+		withTitle: 'lose selected class in project browser when new version created'.
+	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
+	self selectServicesNamed: #('RowanSample1-Tests') in: self packageListPresenter.
+	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
+	self selectServiceNamed: 'TestClass' in: self classListPresenter.
+	self assert: self classListPresenter selection displayString equals: 'TestClass'.
+	self selectHierarchyTab.
+	self saveTestClassWithInstVars: (Array with: 'a') package: 'RowanSample1-Tests'.
+	self assert: self classListPresenter selection displayString equals: 'TestClass (2/2)'.
+	self saveTestClassWithInstVars: (Array with: 'a' with: 'b') package: 'RowanSample1-Tests'.
+	self assert: self classListPresenter selection displayString equals: 'TestClass (3/3)'.
+	self saveTestClassWithInstVars: (Array
+				with: 'a'
+				with: 'b'
+				with: 'c')
+		package: 'RowanSample1-Tests'.
+	self assert: self classListPresenter selection displayString equals: 'TestClass (4/4)'.
+	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
+	self assert: self classListPresenter selection displayString equals: 'TestClass (5/5)'!
+
 test_definedClassMenuItem
 	| classMenuItem menuLabel |
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
@@ -317,6 +373,45 @@ test_definedClassMenuItem
 	self assert: self projectsPresenter definedClassMenuItemLabel equals: menuLabel.
 	self projectsPresenter updateClassMenu: self classListPresenter view contextMenu.	"triggered just before pop-up menu opens"
 	self assert: classMenuItem description equals: menuLabel!
+
+test_duplicateInstVars
+	self testsIssue: #issue228
+		withTitle: 'lose selected class in project browser when new version created'.
+	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
+	self selectServicesNamed: #('RowanSample1-Tests') in: self packageListPresenter.
+	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
+	self selectServiceNamed: 'TestClass' in: self classListPresenter.
+	self
+		saveClass: 'SubClass'
+		superclass: 'TestClass'
+		instVars: #('aa')
+		package: 'RowanSample1-Tests'.
+	self selectServiceNamed: 'SubClass' in: self classListPresenter.
+	self
+		saveClass: 'TestClass'
+		withInstVars: #('aa')
+		package: 'RowanSample1-Tests'.
+	self assert: ('ERROR: *' match: self projectsPresenter topShell statusBarText)!
+
+test_duplicateInstVarsHierarchy
+	self testsIssue: #issue228
+		withTitle: 'lose selected class in project browser when new version created'.
+	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
+	self selectServicesNamed: #('RowanSample1-Tests') in: self packageListPresenter.
+	self selectHierarchyTab.
+	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
+	self selectClassInHierarchyNamed: 'TestClass'.
+	self
+		saveClass: 'SubClass'
+		superclass: 'TestClass'
+		instVars: #('aa')
+		package: 'RowanSample1-Tests'.
+	self
+		saveClass: 'TestClass'
+		withInstVars: #('aa')
+		package: 'RowanSample1-Tests'.
+	[self assert: ('ERROR: *' match: self projectsPresenter topShell statusBarText)]
+		ensure: [self projectsPresenter classDefinitionPresenter view isModified: false]!
 
 test_expansion
 	"When no classes are selected and the hierarchy tab is chosen, we should
@@ -352,7 +447,7 @@ test_extensionColoringInHierarchy
 	self
 		assert: self projectsPresenter classHierarchyPresenter selection name = 'RwPlatformSpecification'.
 	self deny: self projectsPresenter classHierarchyPresenter selection shouldColorAsExtension.
-	self selectClassInHierarchNamed: 'RwGemStoneSpecification'.
+	self selectClassInHierarchyNamed: 'RwGemStoneSpecification'.
 	self assert: self projectsPresenter classHierarchyPresenter selection shouldColorAsExtension!
 
 test_findClass
@@ -387,7 +482,7 @@ test_goToDefinedClassFromHierarchy
 	self assertIsNil: gotoClass.	"Our guy is an extension"
 	self selectHierarchyTab.
 	self deny: self projectsPresenter isClassListTabSelected.
-	self selectClassInHierarchNamed: 'RwGemStoneSpecification'.
+	self selectClassInHierarchyNamed: 'RwGemStoneSpecification'.
 	self projectsPresenter gotoClassDefinedPackage.
 	self assert: self packageListPresenter selection name = 'Rowan-GemStone-Specifications'!
 
@@ -895,7 +990,7 @@ test_SUnitTabHandlesShortSelector
 	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
 	self selectServiceNamed: 'RwRowanProjectIssuesTest' in: self classListPresenter.
 	self selectHierarchyTab.
-	self selectClassInHierarchNamed: 'TestCase'.	"<<< bug occurred here"
+	self selectClassInHierarchyNamed: 'TestCase'.	"<<< bug occurred here"
 	self assert: self projectsPresenter selectedClass name = 'TestCase'!
 
 test_symbolsWithoutImplementorsFound
@@ -978,12 +1073,15 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #projectList!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectNamed:!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #rowanProjectNames!constants!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #saveClass:superclass:instVars:package:!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #saveClass:withInstVars:package:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveHooMethod!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUnimplementedSelector!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUniqueString!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveSampleMethod!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveTestClass!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #selectClassInHierarchNamed:!private!selection! !
+!JadeiteProjectBrowserTestCase categoriesFor: #saveTestClassWithInstVars:package:!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #selectClassInHierarchyNamed:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectClassListTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectClassTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectClassTabIn:!private!selection! !
@@ -1001,7 +1099,11 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classSideSelection!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInClassList!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInHierarchy!public!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVars!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsHierarchy!public!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_expansion!public!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_extensionColoringInHierarchy!public!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findClass!public!test! !
