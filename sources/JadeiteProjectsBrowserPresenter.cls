@@ -406,9 +406,10 @@ editSaveClass
 		commandArgs: (Array with: classDefinitionPresenter value).
 	visibleClasses := classListPresenter list.
 	classListPresenter clear.
+	
 	[self issueCommand: (Array with: packageService)] on: Error
 		do: 
-			[:ex |
+			[:ex | 
 			classListPresenter list: visibleClasses.
 			(ex isKindOf: GsCompileError)
 				ifTrue: [self handleClassCompileError: ex]

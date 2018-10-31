@@ -13,6 +13,11 @@ JadeiteAbstractTestCase comment: ''!
 abortTransaction
 	transcript abortTransaction!
 
+anotherNumberMethodSource
+	^'anotherNumber
+
+		^3'!
+
 categoryListPresenter
 	^self projectsPresenter categoryListPresenter!
 
@@ -131,10 +136,20 @@ sampleProjectName
 
 saveInterestingLoopMethod
 	| source |
+	source := self testMethodSource.
+	self selectCategoriesNamed: (Array with: 'accessing').
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+
+	source := self anotherNumberMethodSource.
+	self selectCategoriesNamed: (Array with: 'accessing').
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+
 	source := self interestingLoopMethodSource.
 	self selectCategoriesNamed: (Array with: 'accessing').
 	self methodSourcePresenter value: source.
-	self projectsPresenter editSaveMethod: self classListPresenter selection!
+	self projectsPresenter editSaveMethod: self classListPresenter selection.!
 
 saveIssue169Method
 	| source |
@@ -226,6 +241,10 @@ setUp
 	transcript := JadeiteTestResource current transcript.
 !
 
+testMethodSource
+	^'test
+		^3'!
+
 testsIssue: aSymbol withTitle: anObject
 	"send this to help identify which tests test which issues"
 
@@ -253,6 +272,7 @@ unloadSampleProject
 		ifTrue: [self projectsPresenter basicUnloadProjects: (Array with: self sampleProjectName)].
 ! !
 !JadeiteAbstractTestCase categoriesFor: #abortTransaction!private!setup teardown! !
+!JadeiteAbstractTestCase categoriesFor: #anotherNumberMethodSource!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #categoryListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #classHierarchyPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #classListPresenter!private!project browser support! !
@@ -288,6 +308,7 @@ unloadSampleProject
 !JadeiteAbstractTestCase categoriesFor: #selectServicesNamed:in:!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #serviceNamed:in:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
+!JadeiteAbstractTestCase categoriesFor: #testMethodSource!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #testsIssue:withTitle:!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #transcript!public!transcript support! !
 !JadeiteAbstractTestCase categoriesFor: #transcriptProjectList!public!transcript support! !
