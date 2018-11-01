@@ -601,14 +601,27 @@ test_implementorsSendersCaption
 		ensure: [methodListBrowser destroy]!
 
 test_literalReferences
-	| methodListPresenter |
+	| methodListPresenter source |
 	self testsIssue: #issue256
 		withTitle: 'Find string literals in addition to ''methods containing string'' would be useful'.
-	methodListBrowser := JadePresenter browseLiteralReferences: 'SymbolUser' session: session.
+	self selectRowanSample1Class.
+	source := 'theAString ^''apple'''.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	source := 'invokeA ^self apple'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	source := 'theASymbol ^#apple'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self selectMethodNamed: #theAString. 
+	self selectMethodNamed: #invokeA. 
+	methodListBrowser := JadePresenter browseLiteralReferences: 'apple' session: session.
 	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
-	self assert: methodListPresenter list notEmpty.
+	self assert: methodListPresenter list size equals: 1.
+	self assert: methodListPresenter selection selector equals: #theAString. 
 	methodListPresenter list
-		do: [:methodService | self assert: ('*#SymbolUser*' match: methodService source)]!
+		do: [:methodService | self assert: ('*''apple''*' match: methodService source)]!
 
 test_makeDefault
 	| nonDefaultService |
