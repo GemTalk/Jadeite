@@ -1357,7 +1357,7 @@ browseImplementorsOf: string session: session
 
 browseLiteralReferences: string session: session
 	| service shell |
-	service := RowanQueryService command: #literalReferences: withArgs: (Array with: string asSymbol).
+	service := RowanQueryService command: #literalReferences: withArgs: (Array with: string).
 	self issueCommand: (Array with: service) session: session.
 	shell := self
 				openMethodListOn: service
