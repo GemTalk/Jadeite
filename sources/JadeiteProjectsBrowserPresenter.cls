@@ -55,6 +55,16 @@ basicAddMethodCategory: string
 	self issueCommand: (Array with: service).
 	self selectCategoriesNamed: (Array with: string)!
 
+basicProjectTabLabel
+	| label |
+	projectListPresenter selections isEmpty ifTrue: [^'Projects'].
+	label := projectListPresenter selections size > 1
+				ifTrue: ['Projects']
+				ifFalse: [projectListPresenter selection name].
+	packageListPresenter selections isEmpty ifTrue: [^label].
+	packageListPresenter selections size > 1 ifTrue: [^label].
+	^packageListPresenter selection name!
+
 basicRemoveMethodCategories
 	| service |
 	service := self selectedClass
@@ -904,13 +914,7 @@ projectTabLabel
 	have a unique label. Rather silly, but we'll give the tab a unique number"
 
 	| cardNumber label |
-	label := (projectListPresenter selectionIfNone: [])
-				ifNil: ['Projects']
-				ifNotNil: 
-					[:projectService |
-					packageListPresenter selectionOrNil
-						ifNil: [projectService name]
-						ifNotNil: [:packageService | packageService name]].
+	label := self basicProjectTabLabel.
 	cardNumber := self parentPresenter view cards indexOf: self view.
 	^cardNumber printString , ' ' , label!
 
@@ -1657,8 +1661,8 @@ updatePackage
 
 updatePackageInfo
 	| service |
-	service := packageListPresenter selectionIfNone: [^self].
 	self updateProjectTab.
+	service := packageListPresenter selectionIfNone: [^self].
 	classDefinitionPresenter value: service defaultTemplate.
 	classDefinitionPresenter view
 		backcolor: Color white;
@@ -1757,6 +1761,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #addSubclass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #allClasses!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicAddMethodCategory:!menu handlers support!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #basicProjectTabLabel!displaying!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethodCategories!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethods!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicUnloadProjects:!menu handlers support!private! !

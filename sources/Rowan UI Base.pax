@@ -911,13 +911,14 @@ oop
 !JadeAutoSystemBrowserPresenter methodsFor!
 
 methodMenuBreak: aMenu
-	| selection service |
+	| selection service selectedClass |
 	methodSourcePresenter view isModified ifTrue: [^self].
 	selection := methodListPresenter selectionOrNil.
+	selectedClass := classListPresenter selectionOrNil ifNil: [classHierarchyPresenter selectionOrNil last].
 	selection ifNil: [^self].
 	service := RowanMethodService new
 				selector: selection first asSymbol;
-				className: classListPresenter selection asSymbol;
+				className: selectedClass asSymbol;
 				meta: self isClassSideSelected.
 	self issueCommand: (Array with: service). 
 	service appendToSourceMenu: aMenu presenter: methodSourcePresenter! !
