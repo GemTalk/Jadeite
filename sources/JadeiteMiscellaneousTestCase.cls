@@ -24,6 +24,19 @@ test_convertToPattern
 	self assert: pattern equals: #('symboldict' $*).
 	!
 
+test_dolphinStackDumpBanners
+	| timestampString stream |
+	self testsIssue: #issue237 withTitle: 'time stamp at end of Dolphin stack dump would be useful'.
+	timestampString := JadeSessionManager stackDumpTimeStampString.
+	stream := WriteStream on: String new.
+	JadeSessionManager prependStackStartMessage: timestampString on: stream.
+	self assert: ('*' , timestampString , '*' match: stream contents).
+	self assert: ('*Starting Dolphin stack dump at*' match: stream contents).
+	stream := WriteStream on: String new.
+	JadeSessionManager appendStackEndMessage: timestampString on: stream.
+	self assert: ('*' , timestampString , '*' match: stream contents).
+	self assert: ('*Ending Dolphin stack dump started at*' match: stream contents).!
+
 test_symbolsFromSelector
 	| symbols wildAtFrontSymbols |
 	self testsIssue: #issue258
@@ -44,5 +57,6 @@ test_symbolsFromSelector
 	self assert: symbols notEmpty.
 	symbols do: [:symbol | self assert: ('*SymbolDict*:' match: symbol ignoreCase: true)]! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_convertToPattern!public!test! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_symbolsFromSelector!public!test! !
 

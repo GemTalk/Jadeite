@@ -17,22 +17,12 @@ defaultResLibPath
 
 logError: exception
 	| fileStream timestampString |
-	timestampString := Time now printString , ' ' , Date today shortString.	"print the same string at the beginning and end for easier searching"
+	timestampString := self class stackDumpTimeStampString.	"print the same string at the beginning and end for easier searching"
 	fileStream := FileStream write: self errorLogName mode: #append.
-	fileStream
-		nextPutAll: '***** Starting Dolphin stack dump at ';
-		nextPutAll: timestampString;
-		nextPutAll: ' *****';
-		cr;
-		close.
+	[self class prependStackStartMessage: timestampString on: fileStream] ensure: [fileStream close].
 	super logError: exception.
 	fileStream := FileStream write: self errorLogName mode: #append.
-	fileStream
-		nextPutAll: '***** Ending Dolphin stack dump started at ';
-		nextPutAll: timestampString;
-		nextPutAll: ' *****';
-		cr;
-		close!
+	[self class appendStackEndMessage: timestampString on: fileStream] ensure: [fileStream close]!
 
 main
 "
@@ -62,12 +52,26 @@ version
 
 !JadeSessionManager class methodsFor!
 
+appendStackEndMessage: timeStampString on: fileStream
+	fileStream
+		nextPutAll: '***** Ending Dolphin stack dump started at ';
+		nextPutAll: timeStampString;
+		nextPutAll: ' *****';
+		cr!
+
 getVersion
 
 	| string |
 	string := [SessionManager current class git: 'describe'] on: ExternalProcessExecuteError do: [:ex | ^'???'].
 	^(ReadStream on: string) nextLine
 !
+
+prependStackStartMessage: timeStampString on: fileStream
+	fileStream
+		nextPutAll: '***** Starting Dolphin stack dump at ';
+		nextPutAll: timeStampString;
+		nextPutAll: ' *****';
+		cr!
 
 sessionStarted
 
@@ -77,14 +81,20 @@ sessionStarted
 shortVersion
 	^(ReadStream on: self version) upTo: $-!
 
+stackDumpTimeStampString
+	^Time now printString , ' ' , Date today shortString!
+
 version
 
 	^Version notNil 
 		ifTrue: [Version]
 		ifFalse: ['(Development)'].
 ! !
+!JadeSessionManager class categoriesFor: #appendStackEndMessage:on:!public!stack dumping support! !
 !JadeSessionManager class categoriesFor: #getVersion!public! !
+!JadeSessionManager class categoriesFor: #prependStackStartMessage:on:!public!stack dumping support! !
 !JadeSessionManager class categoriesFor: #sessionStarted!public! !
 !JadeSessionManager class categoriesFor: #shortVersion!public! !
+!JadeSessionManager class categoriesFor: #stackDumpTimeStampString!public!stack dumping support! !
 !JadeSessionManager class categoriesFor: #version!public! !
 
