@@ -15,6 +15,25 @@ defaultResLibPath
 
 	^'bin\Jade'!
 
+logError: exception
+	| fileStream timestampString |
+	timestampString := Time now printString , ' ' , Date today shortString.	"print the same string at the beginning and end for easier searching"
+	fileStream := FileStream write: self errorLogName mode: #append.
+	fileStream
+		nextPutAll: '***** Starting Dolphin stack dump at ';
+		nextPutAll: timestampString;
+		nextPutAll: ' *****';
+		cr;
+		close.
+	super logError: exception.
+	fileStream := FileStream write: self errorLogName mode: #append.
+	fileStream
+		nextPutAll: '***** Ending Dolphin stack dump started at ';
+		nextPutAll: timestampString;
+		nextPutAll: ' *****';
+		cr;
+		close!
+
 main
 "
 	JadeSessionManager basicNew main.
@@ -36,6 +55,7 @@ version
 		ifFalse: ['(Development)'].
 ! !
 !JadeSessionManager categoriesFor: #defaultResLibPath!public! !
+!JadeSessionManager categoriesFor: #logError:!public! !
 !JadeSessionManager categoriesFor: #main!public! !
 !JadeSessionManager categoriesFor: #pause!public! !
 !JadeSessionManager categoriesFor: #version!public! !
