@@ -605,6 +605,9 @@ gitCommit
 	MessageBox notify: 'Project ' , projectName , ' committed to local repository!!'.
 	self refreshFromServer. !
 
+gotoClass
+	JadePresenter browseClassIn: self gciSession!
+
 gotoClassDefinedPackage
 	" find will go to the class in it's defined package project"
 
@@ -690,18 +693,19 @@ isOkayToChange
 jadeMenuStrings
 
 	false ifTrue: [
-		self abortTransaction; commitTransaction; newWorkspace; openSystemBrowser; findClass; refreshFromServer; exit.
+		self abortTransaction; commitTransaction; newWorkspace; openSystemBrowser; findClass; gotoClass; refreshFromServer; exit.
 	]. 
 	^#(
 		'&Jadeite'
 		'&Abort Transaction//abortTransaction'
 		'&Commit Transaction//commitTransaction'
 		'-'
-		'&New Workspace/Ctrl+N/addWorkspace'
-		'&Open System Browser/Ctrl+B/addSystemBrowser'
+		'&New Projects Browser/Ctrl+N/newBrowser'
+		'&New Projects Tab/Ctrl+T/addSystemBrowser'
 		'&Maximize Code/Ctrl+M/maximizeCode'
 		'-'
 		'&Find Class.../Ctrl+Shift+F/findClass' 
+		'&Go To Class In New Browser.../Ctrl+Shift+G/gotoClass' 
 		'&Refresh/Ctrl+R/refreshFromServer'
 		'-'
 		'E&xit/Shift+F4/exit'
@@ -772,6 +776,9 @@ moveMethods: methodServices toCategory: targetCategory
 		commandArgs: (Array with: methodServices with: targetCategory).
 	self issueCommand: (Array with: classService).
 	self selectMethodsFrom: classService!
+
+newBrowser
+	^JadeiteProjectsSystemBrowser showOnSession: gciSession!
 
 onDragMethod: aSession 
 
@@ -1817,6 +1824,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #findMethod:!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #getViews!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gitCommit!project menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #gotoClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoClassDefinedPackage!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoMethodDefinedPackage!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoPackageNamed:!menu handlers!public! !
@@ -1838,6 +1846,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodMenuBreak:!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodsMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #moveMethods:toCategory:!drag & drop!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #newBrowser!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDragMethod:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropOnClassList:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropOnMethodCategory:!drag & drop!public! !

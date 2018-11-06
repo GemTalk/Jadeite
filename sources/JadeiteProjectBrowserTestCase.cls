@@ -767,6 +767,31 @@ test_noSelectionHierarchy
 
 !
 
+test_openNewProjectBrowser
+	"make sure that we can open a new project browser from an existing browser"
+
+	| newBrowser menu item |
+	self testsIssue: #issue243
+		withTitle: '`browse class` menu in method view of project browser leaves method and goes to class'.
+	menu := Menu fromStrings: self projectsPresenter jadeMenuStrings.
+	self
+		denyIsNil: (item := menu items detect: [:menuItem | menuItem command == #newBrowser] ifNone: []).
+	newBrowser := item commandDescription performAgainst: self projectsPresenter.
+	[self assert: newBrowser isKindOf: JadeiteProjectsSystemBrowser] ensure: [newBrowser exit]!
+
+test_openNewProjectTab
+	| newBrowser menu item firstCard |
+	self testsIssue: #issue243
+		withTitle: '`browse class` menu in method view of project browser leaves method and goes to class'.
+	self assert: self projectsPresenter parentPresenter view cards size equals: 1. 
+	menu := Menu fromStrings: self projectsPresenter jadeMenuStrings.
+	self
+		denyIsNil: (item := menu items detect: [:menuItem | menuItem command == #addSystemBrowser] ifNone: []).
+	firstCard := projectsBrowser currentCard.
+	item commandDescription performAgainst: projectsBrowser.
+	self assert:self projectsPresenter parentPresenter view cards size equals: 2. 
+	self deny: projectsBrowser currentCard == firstCard!
+
 test_openProjectsBrowser
 	"project browser opened in setup"
 
@@ -1138,6 +1163,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_methodsContainingCaption!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noSelectionHierarchy!public!test hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectBrowser!public!test projects! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectTab!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openProjectsBrowser!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_packagesShownInMultipleProjects!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectDisplaysSync!public!test projects! !
