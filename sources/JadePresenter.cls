@@ -30,6 +30,9 @@ gciSession: aGciSession
 	gciSession := aGciSession.
 !
 
+refreshFromServer
+	parentPresenter refreshFromServer!
+
 resetCursor
 
 	(Delay forMilliseconds: 20) wait.
@@ -88,6 +91,7 @@ updateMenuBar: aMenuBar withName: aString itemsFrom: aPresenter
 !JadePresenter categoriesFor: #browseSendersOf!public! !
 !JadePresenter categoriesFor: #gciSession!public! !
 !JadePresenter categoriesFor: #gciSession:!public! !
+!JadePresenter categoriesFor: #refreshFromServer!public! !
 !JadePresenter categoriesFor: #resetCursor!public! !
 !JadePresenter categoriesFor: #subMenuName!menus!public! !
 !JadePresenter categoriesFor: #subMenuPresenter!menus!public! !

@@ -1189,6 +1189,7 @@ refreshFromServer
 	packageListPresenter selections isEmpty ifFalse: [services addAll: packageListPresenter selections].
 	classListPresenter selectionOrNil ifNotNil: [:classService | services add: classService].
 	self updateServices: services.
+	self updateSUnitTab.
 	self redrawAllViews!
 
 refreshFromServerAfterAbort
@@ -1755,7 +1756,9 @@ updateSingleMethodSource
 	self displayNoMods: methodSourcePresenter. !
 
 updateSUnitTab
-	self selectedClass ifNotNil: [:service | self setTestClass: service]!
+	self selectedClass
+		ifNil: [sunitPresenter testClassService: nil]
+		ifNotNil: [:service | self setTestClass: service]!
 
 updateTabLabel
 	self updateProjectTab!

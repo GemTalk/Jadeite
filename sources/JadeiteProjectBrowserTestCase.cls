@@ -1040,7 +1040,7 @@ test_simpleHierarchyTest
 	self selectClassListTab.
 	self assert: self projectsPresenter classListPresenter selection name = 'RowanProjectService'!
 
-test_SUnitTabHandlesShortSelector
+test_sUnitTabHandlesShortSelector
 	self testsIssue: #issue173 withTitle: 'new SUnit browser code walksback on short selector'.
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
@@ -1048,6 +1048,19 @@ test_SUnitTabHandlesShortSelector
 	self selectHierarchyTab.
 	self selectClassInHierarchyNamed: 'TestCase'.	"<<< bug occurred here"
 	self assert: self projectsPresenter selectedClass name = 'TestCase'!
+
+test_sUnitTabRefresh
+	| jadeiteMenu refreshItem |
+	self testsIssue: #issue263 withTitle: 'With class selected, but not method selected, in SUnit tab, project refresh gets error'.
+	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
+	self selectServiceNamed: 'RowanServicesTest' in: self classListPresenter.
+	self projectsPresenter selectSUnitTab.
+	jadeiteMenu := self itemNamed: 'Jadeite' in: projectsBrowser view menuBar. 
+	refreshItem := self itemNamed: 'Refresh' in: jadeiteMenu.
+	refreshItem commandDescription performAgainst: self projectsPresenter. "<<< walkback occurred here"
+	self assert: self projectsPresenter selectedClass name equals: 'RowanServicesTest'.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list isEmpty "no tests in the abstract class" !
 
 test_symbolsWithoutImplementorsFound
 	| symbols |
@@ -1154,7 +1167,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_classSideSelection!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classSideSelection!public!test!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInClassList!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInHierarchy!public!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package! !
@@ -1164,10 +1177,10 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_extensionColoringInHierarchy!public!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findClass!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromHierarchy!public!test defined package! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromHierarchy!public!test defined package!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromClassList!public!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromClassListClassSide!public!test defined package! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromHierarchy!public!test defined package! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromHierarchy!public!test defined package!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedMethodNotSameAsClass!public!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedPackage!public!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySelectTwoBrowsers!public!test hierarchy! !
@@ -1181,13 +1194,13 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_methodsContainingCaption!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noSelectionHierarchy!public!test hierarchy! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectBrowser!public!test projects! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectTab!public!test projects! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectBrowser!public!test menus!test projects! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectTab!public!test menus!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openProjectsBrowser!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_packagesShownInMultipleProjects!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectDisplaysSync!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectRemoved!public!test projects! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_refreshFromServer!public! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_refreshFromServer!public!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_rowanTestsHierarchy!public!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethod!public!test! !
@@ -1198,8 +1211,9 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultiplePackages!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultipleProjects!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_setAndClearBreakpoint!public!test! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_simpleHierarchyTest!public!test! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_SUnitTabHandlesShortSelector!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_simpleHierarchyTest!public!test!test hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabHandlesShortSelector!public!test!test hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabRefresh!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsWithoutImplementorsFound!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!test! !

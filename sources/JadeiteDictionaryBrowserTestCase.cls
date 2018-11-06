@@ -93,7 +93,7 @@ test_selectTestClass
 !JadeiteDictionaryBrowserTestCase categoriesFor: #setUp!public!setup teardown! !
 !JadeiteDictionaryBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteDictionaryBrowserTestCase categoriesFor: #test_browseReferencesInDictionaryBrowser!public!test! !
-!JadeiteDictionaryBrowserTestCase categoriesFor: #test_menusDontAddBreaks!public!test! !
+!JadeiteDictionaryBrowserTestCase categoriesFor: #test_menusDontAddBreaks!public!test!test menus! !
 !JadeiteDictionaryBrowserTestCase categoriesFor: #test_selectTestClass!public!test! !
 
 !JadeiteDictionaryBrowserTestCase class methodsFor!

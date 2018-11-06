@@ -71,5 +71,5 @@ test_workspaceBrowseProjects
 !JadeiteMiscellaneousTestCase categoriesFor: #test_convertToPattern!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_symbolsFromSelector!public!test! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus! !
 
