@@ -751,7 +751,7 @@ test_noSelectionHierarchy
 	self assert: (childrensNames includes: 'RowanService').
 	self deny: (childrensNames includes: 'RowanClassService').
 	grandchildren := self classHierarchyPresenter model getChildrenOf: (children detect: [:classService | classService name = 'RowanService']).
-	self assert: grandchildren size = 11. "this will probably change but it's a nice test to ensure all the expected services are present"
+	self assert: grandchildren size = 12. "this will probably change but it's a nice test to ensure all the expected services are present"
 	grandchildrensNames := grandchildren collect: [:classService | classService name].
 	self assert: (grandchildrensNames at: 1) equals: 'RowanAnsweringService'.
 	self assert: (grandchildrensNames at: 2) equals: 'RowanBrowserService'.
@@ -763,7 +763,8 @@ test_noSelectionHierarchy
 	self assert: (grandchildrensNames at: 8) equals: 'RowanProcessService'.
 	self assert: (grandchildrensNames at: 9) equals: 'RowanProjectService'.
 	self assert: (grandchildrensNames at: 10) equals: 'RowanQueryService'.
-	self assert: (grandchildrensNames at: 11) equals: 'RowanVariableService'.
+	self assert: (grandchildrensNames at: 11) equals: 'RowanTestService'.
+	self assert: (grandchildrensNames at: 12) equals: 'RowanVariableService'.
 
 !
 
@@ -815,7 +816,7 @@ test_projectDisplaysSync
 	"project removal in projects browser"
 
 	self denyIsNil: (self projectNamed: 'RowanSample1').
-	self assert: self transcriptTab isKindOf: RowanProjectListPresenter.
+	self assert: self transcriptTab isKindOf: JadeiteProjectListPresenter.
 	self denyIsNil: (self transcriptProjectNamed: 'RowanSample1').
 	self unloadSampleProject.
 	self assertIsNil: (self projectNamed: 'RowanSample1').

@@ -11,7 +11,6 @@ JadeTextDocument comment: 'This class probably should not have any subclasses ex
 !JadeTextDocument methodsFor!
 
 abortTransaction
-
 	gciSession abort.
 	Sound informationBeep.
 !

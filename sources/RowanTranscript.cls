@@ -10,6 +10,10 @@ RowanTranscript comment: ''!
 !RowanTranscript categoriesForClass!Unclassified! !
 !RowanTranscript methodsFor!
 
+abortTransaction
+	super abortTransaction.
+	projectListPresenter refresh!
+
 browseClass
 	^JadePresenter browseClassIn: self gciSession!
 
@@ -21,7 +25,7 @@ browseSendersOf
 
 createComponents
 	super createComponents.
-	projectListPresenter := self add: RowanProjectListPresenter new name: 'Projects'!
+	projectListPresenter := self add: JadeiteProjectListPresenter new name: 'Projects'!
 
 flipDebugger
 	RowanDebugger debuggerClass == RowanDebugger
@@ -46,7 +50,7 @@ onViewOpened
 	super onViewOpened.
 	projectListPresenter
 		gciSession: gciSession;
-		browseProjects.
+		refreshProjects.
 	JadeTextStyles default resetColors.	"reset colors on login"
 	answeringService := RowanAnsweringService new.
 	installed := answeringService isTranscriptInstalledIn: self gciSession.
@@ -73,6 +77,7 @@ queryCommand: query
 		ifTrue: 
 			[query isChecked: RowanDebugger debuggerClass = RowanDebugger.
 			^true]! !
+!RowanTranscript categoriesFor: #abortTransaction!menu handlers!public! !
 !RowanTranscript categoriesFor: #browseClass!menu handlers!public! !
 !RowanTranscript categoriesFor: #browseImplementorsOf!menu handlers!public! !
 !RowanTranscript categoriesFor: #browseSendersOf!menu handlers!public! !

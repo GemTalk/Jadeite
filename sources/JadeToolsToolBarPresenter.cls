@@ -11,10 +11,10 @@ JadeToolsToolBarPresenter comment: ''!
 !JadeToolsToolBarPresenter methodsFor!
 
 abort
-
+	(parentPresenter class canUnderstand: #abortTransaction)
+		ifTrue: [^parentPresenter abortTransaction	"include tool post-abort behavior"].
 	gciSession abort.
-	Sound informationBeep.
-!
+	Sound informationBeep!
 
 commit
 

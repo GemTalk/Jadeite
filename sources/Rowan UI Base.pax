@@ -17,6 +17,8 @@ package classNames
 	add: #JadeitePreferences;
 	add: #JadeitePreferencesPresenter;
 	add: #JadeitePreferencesShell;
+	add: #JadeiteProjectListBrowser;
+	add: #JadeiteProjectListPresenter;
 	add: #JadeiteProjectsBrowserPresenter;
 	add: #JadeiteProjectsSystemBrowser;
 	add: #PackageMethodListPresenter;
@@ -50,8 +52,6 @@ package classNames
 	add: #RowanPatchBrowser;
 	add: #RowanPresenter;
 	add: #RowanProcessService;
-	add: #RowanProjectListPresenter;
-	add: #RowanProjectListShell;
 	add: #RowanProjectService;
 	add: #RowanProjectsUpdate;
 	add: #RowanQueryService;
@@ -558,6 +558,11 @@ PackageMethodListPresenter subclass: #JadeiteBasicMethodListPresenter
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+RowanPresenter subclass: #JadeiteProjectListPresenter
+	instanceVariableNames: 'projectListPresenter'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 RowanPresenter subclass: #RowanMethodSelectionPresenter
 	instanceVariableNames: 'methodListPresenter methodSourcePresenter'
 	classVariableNames: ''
@@ -565,11 +570,6 @@ RowanPresenter subclass: #RowanMethodSelectionPresenter
 	classInstanceVariableNames: ''!
 RowanPresenter subclass: #RowanPackagePresenter
 	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanPresenter subclass: #RowanProjectListPresenter
-	instanceVariableNames: 'projectListPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -638,12 +638,12 @@ MCPatchBrowser subclass: #RowanPatchBrowser
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-RowanShell subclass: #RowanPackageShell
+RowanShell subclass: #JadeiteProjectListBrowser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-RowanShell subclass: #RowanProjectListShell
+RowanShell subclass: #RowanPackageShell
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -3032,8 +3032,8 @@ methodsChangedDays
 !
 
 openRowanProjectList
-	^(RowanProjectListShell showOnSession: self gciSession) primaryPresenter
-		browseProjects;
+	^(JadeiteProjectListBrowser showOnSession: self gciSession) primaryPresenter
+		refreshProjects;
 		yourself!
 
 updateCaption

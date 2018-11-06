@@ -15,6 +15,7 @@ package classNames
 	add: #JadeiteSUnitSupportTestCase;
 	add: #JadeiteTestResource;
 	add: #JadeiteTranscriptTestCase;
+	add: #RowanTestService;
 	add: #TestMessageBox;
 	add: #TestPrompter;
 	yourself.
@@ -58,6 +59,11 @@ package!
 MessageBox subclass: #TestMessageBox
 	instanceVariableNames: ''
 	classVariableNames: 'PlannedResult'
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanTestService
+	instanceVariableNames: ''
+	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Prompter subclass: #TestPrompter

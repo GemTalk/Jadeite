@@ -30,6 +30,12 @@ classListPresenter
 commitTransaction
 	transcript commitTransaction!
 
+createNewTestProjectNamed: projectName
+	| testService |
+	testService := RowanTestService command: #createNewTestProjectNamed:
+				withArgs: (Array with: projectName).
+	self issueCommand: testService!
+
 ensureRowanSample1Attached
 	| sample1Path root |
 	sample1Path := self rowanSample1Path.
@@ -72,6 +78,14 @@ isSampleProjectLoaded
 	^(self projectsPresenter projectListPresenter list
 		detect: [:projectService | projectService name = self sampleProjectName]
 		ifNone: []) notNil!
+
+issueCommand: service
+
+	^self issueCommands: (Array with: service)!
+
+issueCommands: services
+
+	^JadePresenter issueCommand: services session: session!
 
 loadRowanSample1InProjectList
 	| sample1Path root selections |
@@ -277,11 +291,14 @@ unloadSampleProject
 !JadeiteAbstractTestCase categoriesFor: #classHierarchyPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #classListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #commitTransaction!private!setup teardown! !
+!JadeiteAbstractTestCase categoriesFor: #createNewTestProjectNamed:!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Attached!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Available!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Loaded!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #interestingLoopMethodSource!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #isSampleProjectLoaded!private!private testing!project support! !
+!JadeiteAbstractTestCase categoriesFor: #issueCommand:!issue test support!public!support! !
+!JadeiteAbstractTestCase categoriesFor: #issueCommands:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #loadRowanSample1InProjectList!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #menuNamed:in:!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #methodListPresenter!private!project browser support! !
@@ -309,7 +326,7 @@ unloadSampleProject
 !JadeiteAbstractTestCase categoriesFor: #serviceNamed:in:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #testMethodSource!constants!private! !
-!JadeiteAbstractTestCase categoriesFor: #testsIssue:withTitle:!public!support! !
+!JadeiteAbstractTestCase categoriesFor: #testsIssue:withTitle:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #transcript!public!transcript support! !
 !JadeiteAbstractTestCase categoriesFor: #transcriptProjectList!public!transcript support! !
 !JadeiteAbstractTestCase categoriesFor: #transcriptProjectNamed:!public!transcript support! !
