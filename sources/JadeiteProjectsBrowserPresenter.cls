@@ -443,6 +443,7 @@ editSaveMethod
 	selection := self selectedClass.
 	selection meta: self isClassSideSelected.
 	self editSaveMethod: selection.
+	self updateSUnitTab.
 	self redrawAllViews!
 
 editSaveMethod: classService
@@ -1424,6 +1425,14 @@ selectPackage: newPackageSelection
 	classSelection ifNotNil: [self selectClass: classSelection].
 	methodSelection ifNotNil: [self selectionMethod: methodSelection]!
 
+selectSourceTabNamed: tabName
+	| tab |
+	tab := self view viewNamed: tabName.
+	tab ensureVisible!
+
+selectSUnitTab
+	self selectSourceTabNamed: 'sunit'!
+
 setDefaultProjectTablLabel
 	projectLabel ifNil: [projectLabel := self textTabs detect: [:each | each text = 'Project']]!
 
@@ -1532,7 +1541,7 @@ updateClasses
 
 updateClassInfo
 	| service |
-	self resetCategoryText. 
+	self resetCategoryText.
 	service := self selectedClass
 				ifNil: 
 					[self resetDefinedClassPackage.
@@ -1551,7 +1560,8 @@ updateClassInfo
 	classDefinitionPresenter ensureVisible.
 	self sundryCleanup.
 	definedClassPackageText value: 'Defined Package: ' , self selectedClass definedPackageName.
-	self updateClassMenu: nil!
+	self updateClassMenu: nil.
+	self updateSUnitTab!
 
 updateClassMenu: menu
 	| item |
@@ -1744,6 +1754,9 @@ updateSingleMethodSource
 	methodSourcePresenter ensureVisible. 
 	self displayNoMods: methodSourcePresenter. !
 
+updateSUnitTab
+	self selectedClass ifNotNil: [:service | self setTestClass: service]!
+
 updateTabLabel
 	self updateProjectTab!
 
@@ -1901,6 +1914,8 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectMethodsFrom:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectMethodSourceTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectPackage:!private!selection! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #selectSourceTabNamed:!private!selection! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #selectSUnitTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setDefaultProjectTablLabel!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setDefaultProjectTablLabel:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setFilterType:!event handlers support!private!services! !
@@ -1936,6 +1951,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProjectTab!event handlers support!private!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSelectionsForUpdate:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSingleMethodSource!event handlers support!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #updateSUnitTab!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateTabLabel!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #writeProject!project menu handlers!public! !
 

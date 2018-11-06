@@ -2228,6 +2228,11 @@ stuffToKeepFromPath: pathString andAddTo: newSource
 
 !
 
+sunitPresenter
+	"Private - for testing"
+
+	^sunitPresenter!
+
 textTabChanged
 
 	methodSourcePresenter view cancelCallTip.
@@ -2914,6 +2919,7 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #statusBarText:!public!updating! !
 !JadeSystemBrowserPresenter categoriesFor: #stepPointAt:!event handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #stuffToKeepFromPath:andAddTo:!public! !
+!JadeSystemBrowserPresenter categoriesFor: #sunitPresenter!overrides!private! !
 !JadeSystemBrowserPresenter categoriesFor: #textTabChanged!event handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #updateAfterFindClass:isMeta:selector:!public!updating! !
 !JadeSystemBrowserPresenter categoriesFor: #updateAndSelect:!public!updating! !

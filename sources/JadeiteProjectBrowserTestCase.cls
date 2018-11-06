@@ -959,6 +959,22 @@ test_saveMethod
 	self selectServicesNamed: (Array with: 'sampleMethod') in: self methodListPresenter.
 	self assert: (session executeString: 'RowanSample1 new sampleMethod') = 123!
 
+test_saveMethodAndUpdateSUnitTab
+	| source methodService |
+	self selectServicesNamed: #('Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
+	self selectServicesNamed: #('RowanServicesTest') in: self classListPresenter.
+	(self categoryListPresenter list includes: 'test_saveMethod')
+		ifFalse: [self projectsPresenter basicAddMethodCategory: 'test_saveMethod'].
+	source := 'test_testMethod  
+		self assert: true'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod.
+	self projectsPresenter selectSUnitTab. 	
+	methodService := self projectsPresenter sunitPresenter methodListPresenter list detect:[:service | service selector = #test_testMethod] ifNone:[]. 
+	self assert: methodService selector equals: #test_testMethod
+!
+
 test_saveMethodHierarchy
 	| source |
 	self testsIssue: #issue121 withTitle: 'Package Browser (3.0.20): hierarchy class view and classes defined in different pacakge oddity'.
@@ -1177,6 +1193,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethod!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethodHierarchy!public!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethod!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodAndUpdateSUnitTab!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodHierarchy!public!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultiplePackages!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultipleProjects!public!test projects! !

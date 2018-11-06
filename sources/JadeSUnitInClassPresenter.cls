@@ -46,7 +46,6 @@ runSelected
 
 testClassService: classService
 	| testMethodServices |
-	classService = testClassService ifTrue: [^self].
 	testClassService := classService.
 	self reset.
 	testClassService isNil
