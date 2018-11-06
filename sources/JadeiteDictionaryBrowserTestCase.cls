@@ -70,11 +70,11 @@ test_menusDontAddBreaks
 	| menuBar jadeMenu methodsMenu |
 	self testsIssue: #issue162 withTitle: 'In method list browser, get new breakpoint menu items'.
 	menuBar := dictionaryBrowser view menuBar.
-	jadeMenu := self menuNamed: 'Jade' in: menuBar.
-	methodsMenu := self menuNamed: 'Methods' in: menuBar.
+	jadeMenu := self itemNamed: 'Jade' in: menuBar.
+	methodsMenu := self itemNamed: 'Methods' in: menuBar.
 	self noBreakIn: jadeMenu.
 	self noBreakIn: methodsMenu.
-	self selectWellKnownMethod. "the method we're testing requires a selection"
+	self selectWellKnownMethod.	"the method we're testing requires a selection"
 	self primaryPresenter methodMenuBreak: jadeMenu.
 	self primaryPresenter methodMenuBreak: methodsMenu.
 	self noBreakIn: jadeMenu.

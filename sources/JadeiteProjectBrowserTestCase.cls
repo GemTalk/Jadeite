@@ -667,11 +667,12 @@ test_menuEnablementDoesNotBreak
 test_menusDontAddBreaks
 	"incomplete test - make sure we don't add a breakpoint menu item in 
 	the menu bar"
+
 	| menuBar jadeiteMenu methodsMenu |
 	self testsIssue: #issue162 withTitle: 'In method list browser, get new breakpoint menu items'.
 	menuBar := projectsBrowser view menuBar.
-	jadeiteMenu := self menuNamed: 'Jadeite' in: menuBar.
-	methodsMenu := self menuNamed: 'Methods' in: menuBar.
+	jadeiteMenu := self itemNamed: 'Jadeite' in: menuBar.
+	methodsMenu := self itemNamed: 'Methods' in: menuBar.
 	self noBreakIn: jadeiteMenu.
 	self noBreakIn: methodsMenu.
 	self selectRowanSample1Class.

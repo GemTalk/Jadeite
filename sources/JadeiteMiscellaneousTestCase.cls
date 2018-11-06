@@ -55,8 +55,21 @@ test_symbolsFromSelector
 	symbols := JadePresenter symbolsFrom: '*SymbolDict*:' session: session.
 	self assert: symbols size < wildAtFrontSymbols size. "should be a subset without the front asterix"
 	self assert: symbols notEmpty.
-	symbols do: [:symbol | self assert: ('*SymbolDict*:' match: symbol ignoreCase: true)]! !
+	symbols do: [:symbol | self assert: ('*SymbolDict*:' match: symbol ignoreCase: true)]!
+
+test_workspaceBrowseProjects
+	| workspace jadeiteMenu browseProjectsItem |
+	self testsIssue: #issue265 withTitle: 'workspace could use a `browse projects` menu item ... '.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[jadeiteMenu := self itemNamed: 'Jadeite' in: workspace view menuBar.
+	browseProjectsItem := self itemNamed: 'Browse Projects' in: jadeiteMenu.
+	projectsBrowser := browseProjectsItem commandDescription performAgainst: workspace]
+			ensure: 
+				[workspace view close.
+				projectsBrowser view close]! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_convertToPattern!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_symbolsFromSelector!public!test! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test! !
 

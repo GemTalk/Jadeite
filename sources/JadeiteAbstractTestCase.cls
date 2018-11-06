@@ -87,6 +87,9 @@ issueCommands: services
 
 	^JadePresenter issueCommand: services session: session!
 
+itemNamed: menuName in: menuBar
+	^menuBar items detect: [:item | '*' , menuName , '*' match: item text]!
+
 loadRowanSample1InProjectList
 	| sample1Path root selections |
 	sample1Path := self rowanSample1Path.
@@ -99,11 +102,12 @@ loadRowanSample1InProjectList
 	RowanBrowserService new reloadProjects: selections presenter: self transcriptTab.
 	self transcriptTab refresh!
 
-menuNamed: menuName in: menuBar
-	^menuBar items detect: [:menu | '*' , menuName , '*' match: menu text]!
-
 methodListPresenter
 	^self projectsPresenter methodListPresenter!
+
+methodSourceForTest
+	^'test
+		^3'!
 
 methodSourcePresenter
 	^self projectsPresenter methodSourcePresenter!
@@ -150,20 +154,18 @@ sampleProjectName
 
 saveInterestingLoopMethod
 	| source |
-	source := self testMethodSource.
+	source := self methodSourceForTest.
 	self selectCategoriesNamed: (Array with: 'accessing').
 	self methodSourcePresenter value: source.
 	self projectsPresenter editSaveMethod: self classListPresenter selection.
-
 	source := self anotherNumberMethodSource.
 	self selectCategoriesNamed: (Array with: 'accessing').
 	self methodSourcePresenter value: source.
 	self projectsPresenter editSaveMethod: self classListPresenter selection.
-
 	source := self interestingLoopMethodSource.
 	self selectCategoriesNamed: (Array with: 'accessing').
 	self methodSourcePresenter value: source.
-	self projectsPresenter editSaveMethod: self classListPresenter selection.!
+	self projectsPresenter editSaveMethod: self classListPresenter selection!
 
 saveIssue169Method
 	| source |
@@ -255,10 +257,6 @@ setUp
 	transcript := JadeiteTestResource current transcript.
 !
 
-testMethodSource
-	^'test
-		^3'!
-
 testsIssue: aSymbol withTitle: anObject
 	"send this to help identify which tests test which issues"
 
@@ -299,9 +297,10 @@ unloadSampleProject
 !JadeiteAbstractTestCase categoriesFor: #isSampleProjectLoaded!private!private testing!project support! !
 !JadeiteAbstractTestCase categoriesFor: #issueCommand:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #issueCommands:!issue test support!public!support! !
+!JadeiteAbstractTestCase categoriesFor: #itemNamed:in:!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #loadRowanSample1InProjectList!private!project support! !
-!JadeiteAbstractTestCase categoriesFor: #menuNamed:in:!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #methodListPresenter!private!project browser support! !
+!JadeiteAbstractTestCase categoriesFor: #methodSourceForTest!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #methodSourcePresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #noBreakIn:!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #openProjectsBrowser!private!project browser support! !
@@ -325,7 +324,6 @@ unloadSampleProject
 !JadeiteAbstractTestCase categoriesFor: #selectServicesNamed:in:!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #serviceNamed:in:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
-!JadeiteAbstractTestCase categoriesFor: #testMethodSource!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #testsIssue:withTitle:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #transcript!public!transcript support! !
 !JadeiteAbstractTestCase categoriesFor: #transcriptProjectList!public!transcript support! !

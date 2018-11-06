@@ -206,6 +206,7 @@ package methodNames
 	add: #JadeTextDocument -> #issueCommand:;
 	add: #JadeTextDocument -> #onPromptToSaveChanges:;
 	add: #JadeTextDocument -> #openDictionaryBrowser;
+	add: #JadeTextDocument -> #openProjectsBrowser;
 	add: #JadeTextDocument -> #update:afterStonReplication:;
 	add: #JadeTextDocument -> #updateServices:;
 	add: #JadeToolsToolBarPresenter -> #browseClasses;
@@ -2973,6 +2974,9 @@ onPromptToSaveChanges: aBooleanValue
 openDictionaryBrowser
 	gciSession hasServer ifTrue: [^RowanSystemBrowser showOnSession: gciSession]!
 
+openProjectsBrowser
+	^JadeiteProjectsSystemBrowser showOnSession: gciSession!
+
 update: services afterStonReplication: stonResults
 	BrowserUpdate current update: services afterStonReplication: stonResults!
 
@@ -2982,6 +2986,7 @@ updateServices: services
 !JadeTextDocument categoriesFor: #issueCommand:!public!services! !
 !JadeTextDocument categoriesFor: #onPromptToSaveChanges:!private! !
 !JadeTextDocument categoriesFor: #openDictionaryBrowser!Jade!private! !
+!JadeTextDocument categoriesFor: #openProjectsBrowser!Jade!private! !
 !JadeTextDocument categoriesFor: #update:afterStonReplication:!public!services! !
 !JadeTextDocument categoriesFor: #updateServices:!public!services! !
 
