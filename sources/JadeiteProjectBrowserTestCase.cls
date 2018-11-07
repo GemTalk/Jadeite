@@ -711,7 +711,7 @@ test_methodsContaining
 		withTitle: 'Verify using Jadeite method list browser for senders of "methods containing"'.
 	self selectRowanSample1Class.
 	self saveMethodWithUniqueString.
-	methodListBrowser := self projectsPresenter basicBrowseMethodsContaining: 'I be unique'.
+	methodListBrowser := JadePresenter browseMethodsContaining: 'I be unique' session: session. 
 	"the method list browser contains the BasicMethodListPresenter which is of questionable value now. 
 	That's why there are two methodListPresenter message sends"
 	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
@@ -721,7 +721,7 @@ test_methodsContaining
 
 test_methodsContainingCaption
 	self testsIssue: #issue209 withTitle: 'MethodListBrowser needs the token in the title bar'.
-	methodListBrowser := self projectsPresenter basicBrowseMethodsContaining: 'updateFromSton:'.
+	methodListBrowser := JadePresenter browseMethodsContaining: 'updateFromSton:' session: session.
 	[self assert: ('Methods containing ''updateFromSton:'' for *' match: methodListBrowser caption)]
 		ensure: [methodListBrowser destroy]!
 

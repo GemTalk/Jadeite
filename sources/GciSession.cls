@@ -55,7 +55,6 @@ _server
 !
 
 abort
-
 	self serverPerform: #'abort'.
 !
 

@@ -11,15 +11,25 @@ JadeiteTranscriptTestCase comment: ''!
 !JadeiteTranscriptTestCase methodsFor!
 
 test_browseClassMenuItem
-	| jadeiteMenu browseClassItem |
+	| browseMenu browseClassItem |
 	self testsIssue: #issue235 withTitle: 'Need Find Class/Method from console'.
-	jadeiteMenu := transcript view menuBar items detect: [:menu | '*Jadeite*' match: menu text]
-				ifNone: [].
-	self denyIsNil: jadeiteMenu.
-	browseClassItem := jadeiteMenu items detect: [:command | '*Browse*Class*' match: command text]
+	browseMenu := transcript view menuBar items detect: [:menu | '*Browse*' match: menu text] ifNone: [].
+	self denyIsNil: browseMenu.
+	browseClassItem := browseMenu items detect: [:command | '*Find*Class*' match: command text]
 				ifNone: [].
 	self denyIsNil: browseClassItem.
 	self assert: browseClassItem command equals: #browseClass.
+	self assert: (transcript class canUnderstand: #browseClass)!
+
+test_browseFindClassMenuItem
+	| browseMenu findClassMenuItem |
+	self testsIssue: #issue235 withTitle: 'Need Find Class/Method from console'.
+	browseMenu := transcript view menuBar items detect: [:menu | '*Browse*' match: menu text] ifNone: [].
+	self denyIsNil: browseMenu.
+	findClassMenuItem := browseMenu items detect: [:command | '*Find*Class*' match: command text]
+				ifNone: [].
+	self denyIsNil: findClassMenuItem.
+	self assert: findClassMenuItem command equals: #browseClass.
 	self assert: (transcript class canUnderstand: #browseClass)!
 
 test_browseImplementors
@@ -28,7 +38,7 @@ test_browseImplementors
 	TestMessageBox enableJadeiteTestMessageBox.
 	
 	[TestPrompter plannedResult: 'size'.
-	methodListBrowser := transcript browseImplementors.
+	methodListBrowser := transcript browseImplementorsOf.
 	methodList := methodListBrowser primaryPresenter methodListPresenter methodListPresenter list.
 	self assert: methodList notEmpty.
 	self assert: ('Implementors of ''size'' for*' match: methodListBrowser caption).]
@@ -37,17 +47,52 @@ test_browseImplementors
 				methodListBrowser destroy]!
 
 test_browseImplementorsMenuItem
-	| jadeiteMenu browseImplementorsItem |
-	self testsIssue: #issue235 withTitle: 'Need Find Class/Method from console'.
-	jadeiteMenu := transcript view menuBar items detect: [:menu | '*Jadeite*' match: menu text]
-				ifNone: [].
-	self denyIsNil: jadeiteMenu.
-	browseImplementorsItem := jadeiteMenu items
+	| browseMenu browseImplementorsItem |
+	self testsIssue: #issue251 withTitle: '`Browse Methods Containing` available from Console menu'.
+	browseMenu := transcript view menuBar items detect: [:menu | '*Browse*' match: menu text] ifNone: [].
+	self denyIsNil: browseMenu.
+	browseImplementorsItem := browseMenu items
 				detect: [:command | '*Browse*Implementors*' match: command text]
 				ifNone: [].
 	self denyIsNil: browseImplementorsItem.
-	self assert: browseImplementorsItem command equals: #browseImplementors.
-	self assert: (transcript class canUnderstand: #browseImplementors)!
+	self assert: browseImplementorsItem command equals: #browseImplementorsOf.
+	self assert: (transcript class canUnderstand: #browseMethodsContaining)!
+
+test_browseLiteralsReferencesMenuItem
+	| browseMenu browseLiteralReferencesItem |
+	self testsIssue: #issue251 withTitle: '`Browse Methods Containing` available from Console menu'.
+	browseMenu := transcript view menuBar items detect: [:menu | '*Browse*' match: menu text] ifNone: [].
+	self denyIsNil: browseMenu.
+	browseLiteralReferencesItem := browseMenu items
+				detect: [:command | '*Browse*Literal*References*' match: command text]
+				ifNone: [].
+	self denyIsNil: browseLiteralReferencesItem.
+	self assert: browseLiteralReferencesItem command equals: #browseLiteralReferences.
+	self assert: (transcript class canUnderstand: #browseLiteralReferences)!
+
+test_browseMethodsContainingMenuItem
+	| browseMenu browseMethodsContainingItem |
+	self testsIssue: #issue251 withTitle: '`Browse Methods Containing` available from Console menu'.
+	browseMenu := transcript view menuBar items detect: [:menu | '*Browse*' match: menu text] ifNone: [].
+	self denyIsNil: browseMenu.
+	browseMethodsContainingItem := browseMenu items
+				detect: [:command | '*Browse*Methods*Containing*' match: command text]
+				ifNone: [].
+	self denyIsNil: browseMethodsContainingItem.
+	self assert: browseMethodsContainingItem command equals: #browseMethodsContaining.
+	self assert: (transcript class canUnderstand: #browseMethodsContaining)!
+
+test_browseProjectsMenuItem
+	| browseMenu browseProjectsMenuItem |
+	self testsIssue: #issue235 withTitle: 'Need Find Class/Method from console'.
+	browseMenu := transcript view menuBar items detect: [:menu | '*Browse*' match: menu text] ifNone: [].
+	self denyIsNil: browseMenu.
+	browseProjectsMenuItem := browseMenu items
+				detect: [:command | '*Browse*Projects*' match: command text]
+				ifNone: [].
+	self denyIsNil: browseProjectsMenuItem.
+	self assert: browseProjectsMenuItem command equals: #openJadeiteProjectsBrowser.
+	self assert: (transcript class canUnderstand: #openJadeiteProjectsBrowser)!
 
 test_browseSenders
 	| methodListBrowser methodList |
@@ -55,7 +100,7 @@ test_browseSenders
 	TestMessageBox enableJadeiteTestMessageBox.
 	
 	[TestPrompter plannedResult: 'abort'.
-	methodListBrowser := transcript browseSenders.
+	methodListBrowser := transcript browseSendersOf.
 	methodList := methodListBrowser primaryPresenter methodListPresenter methodListPresenter list.
 	self assert: methodList notEmpty.
 	self assert: ('Senders of ''abort'' for*' match: methodListBrowser caption).]
@@ -64,17 +109,15 @@ test_browseSenders
 				methodListBrowser destroy]!
 
 test_browseSendersMenuItem
-	| jadeiteMenu browseSendersItem |
+	| browseMenu browseSendersItem |
 	self testsIssue: #issue235 withTitle: 'Need Find Class/Method from console'.
-	jadeiteMenu := transcript view menuBar items detect: [:menu | '*Jadeite*' match: menu text]
-				ifNone: [].
-	self denyIsNil: jadeiteMenu.
-	browseSendersItem := jadeiteMenu items
-				detect: [:command | '*Browse*Senders*' match: command text]
+	browseMenu := transcript view menuBar items detect: [:menu | '*Browse*' match: menu text] ifNone: [].
+	self denyIsNil: browseMenu.
+	browseSendersItem := browseMenu items detect: [:command | '*Browse*Senders*' match: command text]
 				ifNone: [].
 	self denyIsNil: browseSendersItem.
-	self assert: browseSendersItem command equals: #browseSenders.
-	self assert: (transcript class canUnderstand: #browseSenders)!
+	self assert: browseSendersItem command equals: #browseSendersOf.
+	self assert: (transcript class canUnderstand: #browseSendersOf)!
 
 test_multiSelectProject
 	| projectServices projectCount |
@@ -89,10 +132,14 @@ test_transcriptNamedConsole
 	self testsIssue: #issue161 withTitle: 'Rename transcrip to console'.
 	self assert: ('Console*' match: transcript view caption)! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseClassMenuItem!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_browseFindClassMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseImplementors!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_browseImplementorsMenuItem!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_browseImplementorsMenuItem!public!test menus! !
+!JadeiteTranscriptTestCase categoriesFor: #test_browseLiteralsReferencesMenuItem!public!test menus! !
+!JadeiteTranscriptTestCase categoriesFor: #test_browseMethodsContainingMenuItem!public!test menus! !
+!JadeiteTranscriptTestCase categoriesFor: #test_browseProjectsMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseSenders!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_browseSendersMenuItem!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_browseSendersMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_multiSelectProject!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_transcriptNamedConsole!public!tests! !
 

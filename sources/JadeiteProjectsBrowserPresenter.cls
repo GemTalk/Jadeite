@@ -757,7 +757,6 @@ methodsMenuStrings
 				browseHierarchySenders;
 				browseMethodsContaining;
 				browseLiteralReferences;
-				browseMethodPragmas;
 				removeMethods;
 				runMethodTests;
 				setEnvironment0;
@@ -766,7 +765,7 @@ methodsMenuStrings
 				fileOutMethods;
 				runMethodTests;
 				gotoMethodDefinedPackage].
-	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse &History//browseMethodHistory' 'BrowseMethod &Pragmas ...//browseMethodPragmas' '&File out methods ...//fileOutMethods' '-' '&Remove Method(s) ...//removeMethods' #('&Method Environment' '&0//setEnvironment0' '&1//setEnvironment1' '&2//setEnvironment2') 'Run &Tests//runMethodTests' 'Go To Defining Package//gotoMethodDefinedPackage')!
+	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' '&File out methods ...//fileOutMethods' '-' '&Remove Method(s) ...//removeMethods' #('&Method Environment' '&0//setEnvironment0' '&1//setEnvironment1' '&2//setEnvironment2') 'Run &Tests//runMethodTests' 'Go To Defining Package//gotoMethodDefinedPackage')!
 
 moveMethods: methodServices toCategory: targetCategory
 	| classService |

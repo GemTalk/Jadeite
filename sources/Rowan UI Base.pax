@@ -116,15 +116,13 @@ package methodNames
 	add: #JadeLoginShell -> #aboutJadeite;
 	add: #JadeMethodListPresenter -> #searchForAnyTextMatching:;
 	add: #JadeNavigationInspector -> #setNewInspectedObject;
+	add: #JadePresenter -> #browseImplementorsOf:;
+	add: #JadePresenter -> #browseLiteralReferences;
+	add: #JadePresenter -> #browseMethodsContaining;
+	add: #JadePresenter -> #browseSendersOf:;
 	add: #JadePresenter -> #issueCommand:;
 	add: #JadePresenter -> #update:afterStonReplication:;
-	add: #JadePresenterA -> #basicBrowseLiteralReferences:;
-	add: #JadePresenterA -> #basicBrowseMethodsContaining:;
 	add: #JadePresenterA -> #basicCloneProject:root:;
-	add: #JadePresenterA -> #browseImplementorsOf:;
-	add: #JadePresenterA -> #browseLiteralReferences;
-	add: #JadePresenterA -> #browseMethodsContaining;
-	add: #JadePresenterA -> #browseSendersOf:;
 	add: #JadePresenterA -> #clearBreakPointAt:in:;
 	add: #JadePresenterA -> #cloneProject;
 	add: #JadePresenterA -> #compilationWarningFrom:;
@@ -295,7 +293,9 @@ package methodNames
 	add: 'JadePresenter class' -> #browseClassIn:;
 	add: 'JadePresenter class' -> #browseImplementorsIn:;
 	add: 'JadePresenter class' -> #browseImplementorsOf:session:;
+	add: 'JadePresenter class' -> #browseLiteralReferences:;
 	add: 'JadePresenter class' -> #browseLiteralReferences:session:;
+	add: 'JadePresenter class' -> #browseMethodsContaining:;
 	add: 'JadePresenter class' -> #browseMethodsContaining:session:;
 	add: 'JadePresenter class' -> #browseSendersIn:;
 	add: 'JadePresenter class' -> #browseSendersOf:session:;
@@ -1313,11 +1313,27 @@ resource_Default_view
 
 !JadePresenter methodsFor!
 
+browseImplementorsOf: string
+	^self class browseImplementorsOf: string session: self gciSession!
+
+browseLiteralReferences
+	^self class browseLiteralReferences: self gciSession!
+
+browseMethodsContaining
+	^self class browseMethodsContaining: self gciSession!
+
+browseSendersOf: string
+	^self class browseSendersOf: string session: self gciSession!
+
 issueCommand: services
 	^self class issueCommand: services session: self gciSession!
 
 update: services afterStonReplication: stonResults
 	^BrowserUpdate current update: services afterStonReplication: stonResults! !
+!JadePresenter categoriesFor: #browseImplementorsOf:!public!queries! !
+!JadePresenter categoriesFor: #browseLiteralReferences!public! !
+!JadePresenter categoriesFor: #browseMethodsContaining!public! !
+!JadePresenter categoriesFor: #browseSendersOf:!menu handlers!public! !
 !JadePresenter categoriesFor: #issueCommand:!Jadeite!public! !
 !JadePresenter categoriesFor: #update:afterStonReplication:!Jadeite!public! !
 
@@ -1343,7 +1359,7 @@ browseClassIn: session
 browseImplementorsIn: session
 	^self
 		promptForMatchingSymbolsIn: session
-		actionBlock: [:selector | self browseImplementorsOf: selector session: session]
+		actionBlock: [:selector | Cursor wait showWhile: [self browseImplementorsOf: selector session: session]]
 		promptCaption: 'Browse Implementors Of ...'!
 
 browseImplementorsOf: string session: session
@@ -1357,6 +1373,12 @@ browseImplementorsOf: string session: session
 	shell updateCaptionFromSearchString: 'Implementors of ' , string asString printString.
 	^shell!
 
+browseLiteralReferences: session
+	| string |
+	(string := Prompter prompt: 'Enter string:' caption: 'Browse Methods With Literal ...') isNil
+		ifTrue: [^self].
+	^Cursor wait showWhile: [self browseLiteralReferences: string session: session]!
+
 browseLiteralReferences: string session: session
 	| service shell |
 	service := RowanQueryService command: #literalReferences: withArgs: (Array with: string).
@@ -1367,6 +1389,12 @@ browseLiteralReferences: string session: session
 				session: session.
 	shell updateCaptionFromSearchString: 'Literal References To ' , string asString printString.
 	^shell!
+
+browseMethodsContaining: session
+	| string |
+	(string := Prompter prompt: 'Enter string:' caption: 'Browse Methods Containing ...') isNil
+		ifTrue: [^self].
+	^Cursor wait showWhile: [self browseMethodsContaining: string session: session]!
 
 browseMethodsContaining: string session: session
 	| service shell |
@@ -1382,7 +1410,7 @@ browseMethodsContaining: string session: session
 browseSendersIn: session
 	^self
 		promptForMatchingSymbolsIn: session
-		actionBlock: [:selector | self browseSendersOf: selector session: session]
+		actionBlock: [:selector | Cursor wait showWhile: [self browseSendersOf: selector session: session]]
 		promptCaption: 'Browse Senders Of ...'!
 
 browseSendersOf: string session: session
@@ -1469,7 +1497,9 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #browseClassIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseImplementorsIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseImplementorsOf:session:!browsing!public! !
+!JadePresenter class categoriesFor: #browseLiteralReferences:!browsing!public! !
 !JadePresenter class categoriesFor: #browseLiteralReferences:session:!browsing!public! !
+!JadePresenter class categoriesFor: #browseMethodsContaining:!browsing!public! !
 !JadePresenter class categoriesFor: #browseMethodsContaining:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSendersIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSendersOf:session:!browsing!public! !
@@ -1485,12 +1515,6 @@ symbolsFrom: selector session: session
 
 !JadePresenterA methodsFor!
 
-basicBrowseLiteralReferences: string
-	^self class browseLiteralReferences: string session: self gciSession!
-
-basicBrowseMethodsContaining: string
-	^self class browseMethodsContaining: string session: self gciSession!
-
 basicCloneProject: path root: root
 	| service |
 	service := RowanProjectService new.
@@ -1501,24 +1525,6 @@ basicCloneProject: path root: root
 					with: root
 					with: true).
 	self issueCommand: (Array with: service)!
-
-browseImplementorsOf: string
-	^self class browseImplementorsOf: string session: self gciSession!
-
-browseLiteralReferences
-	| string |
-	(string := Prompter prompt: 'Enter string:' caption: 'Browse Methods With Literal ...') isNil
-		ifTrue: [^self].
-	^self basicBrowseLiteralReferences: string!
-
-browseMethodsContaining
-	| string |
-	(string := Prompter prompt: 'Enter string:' caption: 'Browse Methods Containing ...') isNil
-		ifTrue: [^self].
-	^self basicBrowseMethodsContaining: string!
-
-browseSendersOf: string
-	^self class browseSendersOf: string session: self gciSession!
 
 clearBreakPointAt: stepPoint in: browser
 	| selection |
@@ -1727,13 +1733,7 @@ updateMethodReferences: services
 	services do: [:service | service command: #allReferences].
 	self issueCommand: services.
 	^services! !
-!JadePresenterA categoriesFor: #basicBrowseLiteralReferences:!private! !
-!JadePresenterA categoriesFor: #basicBrowseMethodsContaining:!private! !
 !JadePresenterA categoriesFor: #basicCloneProject:root:!Jadeite!private! !
-!JadePresenterA categoriesFor: #browseImplementorsOf:!public!queries! !
-!JadePresenterA categoriesFor: #browseLiteralReferences!public! !
-!JadePresenterA categoriesFor: #browseMethodsContaining!public! !
-!JadePresenterA categoriesFor: #browseSendersOf:!menu handlers!public! !
 !JadePresenterA categoriesFor: #clearBreakPointAt:in:!Jadeite!public! !
 !JadePresenterA categoriesFor: #cloneProject!Jadeite!public! !
 !JadePresenterA categoriesFor: #compilationWarningFrom:!Jadeite!public! !
