@@ -116,6 +116,7 @@ package methodNames
 	add: #JadeiteSUnitPresenter -> #browseClass;
 	add: #JadeiteSUnitPresenter -> #browseMethods;
 	add: #JadeiteSUnitPresenter -> #onViewOpened;
+	add: #JadeiteSUnitPresenter -> #queryCommand:;
 	add: #JadeiteSUnitPresenter -> #registerPresentersForUpdates;
 	add: #JadeiteSUnitPresenter -> #updateClasses;
 	add: #JadeiteSUnitPresenter -> #updateMethods;
@@ -1266,15 +1267,19 @@ resource_Special_view
 
 browseClass
 	| shell selection |
-	selection := classListPresenter selections isEmpty ifFalse: [classListPresenter selections first].
+	selection := classListPresenter selections isEmpty
+				ifTrue: [^MessageBox notify: 'No class selected']
+				ifFalse: [classListPresenter selections first].
 	shell := JadeiteProjectsSystemBrowser showOnSession: gciSession.
 	shell currentCard updateAfterFindClass: selection.
 	^shell!
 
 browseMethods
-	^(JadeiteMethodListBrowser showOnSession: gciSession) primaryPresenter
+	| browser |
+	(browser := JadeiteMethodListBrowser showOnSession: gciSession) primaryPresenter
 		methods: methodListPresenter selections
-		selecting: nil!
+		selecting: nil.
+	^browser!
 
 onViewOpened
 	testCounter := Array with: 0 with: OrderedCollection new.
@@ -1286,6 +1291,18 @@ onViewOpened
 	(self view viewNamed: 'statusTestCases') model: status.
 	(self view viewNamed: 'statusTestCounter') model: status.
 	self updatePackages. !
+
+queryCommand: commandQuery
+	commandQuery isEnabled: true.
+	(#(#browseMethods #debug #runSelected) includes: commandQuery command)
+		ifTrue: 
+			[methodListPresenter selections isEmpty ifTrue: [commandQuery isEnabled: false].
+			^true].
+	(#(#browseClass) includes: commandQuery command)
+		ifTrue: 
+			[classListPresenter selections isEmpty ifTrue: [commandQuery isEnabled: false].
+			^true].
+	^true!
 
 registerPresentersForUpdates
 	BrowserUpdate current register: packageListPresenter selector: #testPackages:.
@@ -1321,6 +1338,7 @@ updateServices: services
 !JadeiteSUnitPresenter categoriesFor: #browseClass!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #browseMethods!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #onViewOpened!event handlers!public! !
+!JadeiteSUnitPresenter categoriesFor: #queryCommand:!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteSUnitPresenter categoriesFor: #updateClasses!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #updateMethods!event handlers!public! !

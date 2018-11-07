@@ -10,6 +10,10 @@ JadeiteSUnitSupportTestCase comment: ''!
 !JadeiteSUnitSupportTestCase categoriesForClass!Unclassified! !
 !JadeiteSUnitSupportTestCase methodsFor!
 
+methodListPresenter
+
+	^self sunitPresenter methodListPresenter!
+
 setUp
 	super setUp. 
 	sunitBrowser := self openWindow: [transcript jadeBrowseTests]!
@@ -20,6 +24,23 @@ sunitPresenter
 tearDown
 	sunitBrowser destroy!
 
+test_browseMethods
+	| browseMethodMenuItem browser selectors |
+	self testsIssue: #issue207 withTitle: 'should be able to browe source for test from SUit browser'.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'JadeServerTest' in: self sunitPresenter classListPresenter.
+	selectors := self sunitPresenter methodListPresenter list collect: [:service | service selector].
+	self selectMethodsNamed: selectors.
+	browseMethodMenuItem := self sunitPresenter methodListPresenter view contextMenu items
+				detect: [:item | item isDivider not and: ['*Browse*Methods*' match: item description]]
+				ifNone: [].
+	browser := browseMethodMenuItem commandDescription performAgainst: self sunitPresenter.
+	
+	[self assert: (browser isKindOf: JadeiteMethodListBrowser).
+	self assert: browser primaryPresenter methodListPresenter methodListPresenter list size
+		equals: selectors size]
+			ensure: [browser view close]!
+
 test_browseSunitClass
 	| browseClassMenuItem browser |
 	self testsIssue: #issue207 withTitle: 'should be able to browe source for test from SUit browser'.
@@ -29,7 +50,10 @@ test_browseSunitClass
 				detect: [:item | '*Browse*Class*' match: item description]
 				ifNone: [].
 	browser := browseClassMenuItem commandDescription performAgainst: self sunitPresenter.
-	[self assert: (browser isKindOf: JadeiteProjectsSystemBrowser)] ensure: [browser view close]!
+	
+	[self assert: (browser isKindOf: JadeiteProjectsSystemBrowser).
+	self assert: browser currentCard classListPresenter selection name = 'JadeServerTest']
+			ensure: [browser view close]!
 
 test_multiSelectClasses
 	| jadeServerTestCount  rowanClassServiceTestCount|
@@ -71,9 +95,11 @@ test_sunitBrowserHasRowanTestMethods
 	self assert: self sunitPresenter methodListPresenter list size = 0.
 	self selectServiceNamed: 'RwMoveTest' in: self sunitPresenter classListPresenter.
 	self assert: self sunitPresenter methodListPresenter list size > 0.! !
+!JadeiteSUnitSupportTestCase categoriesFor: #methodListPresenter!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #setUp!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #sunitPresenter!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #tearDown!public!support! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_browseMethods!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseSunitClass!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_openSunitBrowser!public!tests! !
