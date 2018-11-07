@@ -22,11 +22,11 @@ package classNames
 
 package methodNames
 	add: #JadeiteProjectsBrowserPresenter -> #classDefinitionPresenter;
-	add: #JadeSUnitAbstractPresenter -> #methodListPresenter;
-	add: #JadeSUnitAbstractPresenter -> #methodListPresenter:;
-	add: #JadeSUnitPresenter -> #classListPresenter;
-	add: #JadeSUnitPresenter -> #methodListPresenter;
-	add: #JadeSUnitPresenter -> #packageListPresenter;
+	add: #JadeiteSUnitAbstractPresenter -> #methodListPresenter;
+	add: #JadeiteSUnitAbstractPresenter -> #methodListPresenter:;
+	add: #JadeiteSUnitPresenter -> #classListPresenter;
+	add: #JadeiteSUnitPresenter -> #methodListPresenter;
+	add: #JadeiteSUnitPresenter -> #packageListPresenter;
 	add: #SUnitBrowserModel -> #debugIndividualTestsWithResources:;
 	add: 'MessageBox class' -> #new;
 	add: 'Prompter class' -> #createOn:;
@@ -136,17 +136,17 @@ classDefinitionPresenter
 	^classDefinitionPresenter! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #classDefinitionPresenter!accessing!public! !
 
-!JadeSUnitAbstractPresenter methodsFor!
+!JadeiteSUnitAbstractPresenter methodsFor!
 
 methodListPresenter
 	^methodListPresenter!
 
 methodListPresenter: anObject
 	methodListPresenter := anObject! !
-!JadeSUnitAbstractPresenter categoriesFor: #methodListPresenter!accessing!private! !
-!JadeSUnitAbstractPresenter categoriesFor: #methodListPresenter:!accessing!private! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #methodListPresenter!accessing!private! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #methodListPresenter:!accessing!private! !
 
-!JadeSUnitPresenter methodsFor!
+!JadeiteSUnitPresenter methodsFor!
 
 classListPresenter
 	^classListPresenter!
@@ -156,9 +156,9 @@ methodListPresenter
 
 packageListPresenter
 	^packageListPresenter! !
-!JadeSUnitPresenter categoriesFor: #classListPresenter!accessing!private! !
-!JadeSUnitPresenter categoriesFor: #methodListPresenter!accessing!private! !
-!JadeSUnitPresenter categoriesFor: #packageListPresenter!accessing!private! !
+!JadeiteSUnitPresenter categoriesFor: #classListPresenter!accessing!private! !
+!JadeiteSUnitPresenter categoriesFor: #methodListPresenter!accessing!private! !
+!JadeiteSUnitPresenter categoriesFor: #packageListPresenter!accessing!private! !
 
 !MessageBox class methodsFor!
 

@@ -20,13 +20,40 @@ sunitPresenter
 tearDown
 	sunitBrowser destroy!
 
+test_browseSunitClass
+	| browseClassMenuItem browser |
+	self testsIssue: #issue207 withTitle: 'should be able to browe source for test from SUit browser'.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'JadeServerTest' in: self sunitPresenter classListPresenter.
+	browseClassMenuItem := self sunitPresenter classListPresenter view contextMenu items
+				detect: [:item | '*Browse*Class*' match: item description]
+				ifNone: [].
+	browser := browseClassMenuItem commandDescription performAgainst: self sunitPresenter.
+	[self assert: (browser isKindOf: JadeiteProjectsSystemBrowser)] ensure: [browser view close]!
+
+test_multiSelectClasses
+	| jadeServerTestCount  rowanClassServiceTestCount|
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'JadeServerTest' in: self sunitPresenter classListPresenter.
+	self assert: self sunitPresenter classListPresenter selections size equals: 1.
+	jadeServerTestCount := self sunitPresenter methodListPresenter list size. 
+		self selectServiceNamed: 'RowanClassServiceTest' in: self sunitPresenter classListPresenter.
+	self assert: self sunitPresenter classListPresenter selections size equals: 1.
+	rowanClassServiceTestCount := self sunitPresenter methodListPresenter list size. 
+	self selectServicesNamed: #('JadeServerTest' 'RowanClassServiceTest')
+		in: self sunitPresenter classListPresenter.
+	self assert: self sunitPresenter classListPresenter selections size equals: 2. 
+	self assert: self sunitPresenter methodListPresenter list size equals: jadeServerTestCount + rowanClassServiceTestCount
+	
+!
+
 test_openSunitBrowser
 	"browser opened in setup"
 
-	self assert: (sunitBrowser isKindOf: JadeSUnitBrowser)!
+	self assert: (sunitBrowser isKindOf: JadeiteSUnitBrowser)!
 
 test_sunitBrowserHasRowanPackages
-	self assert: (self sunitPresenter isKindOf: JadeSUnitPresenter).	"a different presenter is used in the projects browser"
+	self assert: (self sunitPresenter isKindOf: JadeiteSUnitPresenter).	"a different presenter is used in the projects browser"
 	self assert: self sunitPresenter packageListPresenter list size > 0.
 	self denyIsNil: (self serviceNamed: 'Rowan-Tests' in: self sunitPresenter packageListPresenter).
 	self
@@ -47,6 +74,8 @@ test_sunitBrowserHasRowanTestMethods
 !JadeiteSUnitSupportTestCase categoriesFor: #setUp!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #sunitPresenter!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #tearDown!public!support! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_browseSunitClass!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_openSunitBrowser!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanPackages!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestClasses!public!tests! !

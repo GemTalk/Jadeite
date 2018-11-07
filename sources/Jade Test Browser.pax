@@ -8,10 +8,10 @@ package basicPackageVersion: '0.022'.
 
 package classNames
 	add: #GsTestMethod;
-	add: #JadeSUnitAbstractPresenter;
-	add: #JadeSUnitBrowser;
-	add: #JadeSUnitInClassPresenter;
-	add: #JadeSUnitPresenter;
+	add: #JadeiteSUnitAbstractPresenter;
+	add: #JadeiteSUnitBrowser;
+	add: #JadeiteSUnitInClassPresenter;
+	add: #JadeiteSUnitPresenter;
 	add: #JadeTestResult;
 	yourself.
 
@@ -54,22 +54,22 @@ Object subclass: #JadeTestResult
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadePresenter subclass: #JadeSUnitAbstractPresenter
+JadePresenter subclass: #JadeiteSUnitAbstractPresenter
 	instanceVariableNames: 'methodListPresenter textResultPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeSUnitAbstractPresenter subclass: #JadeSUnitInClassPresenter
+JadeiteSUnitAbstractPresenter subclass: #JadeiteSUnitInClassPresenter
 	instanceVariableNames: 'testClassService'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeSUnitAbstractPresenter subclass: #JadeSUnitPresenter
+JadeiteSUnitAbstractPresenter subclass: #JadeiteSUnitPresenter
 	instanceVariableNames: 'packageListPresenter classListPresenter status testCounter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeShell subclass: #JadeSUnitBrowser
+JadeShell subclass: #JadeiteSUnitBrowser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -83,14 +83,13 @@ JadeShell subclass: #JadeSUnitBrowser
 !JadeTextDocument methodsFor!
 
 jadeBrowseTests
-	^JadeSUnitBrowser showOnSession: gciSession.
-! !
+	^JadeiteSUnitBrowser showOnSession: gciSession! !
 !JadeTextDocument categoriesFor: #jadeBrowseTests!Jade!public! !
 
 !JadeToolsToolBarPresenter methodsFor!
 
 browseTests
-	JadeSUnitBrowser showOnSession: gciSession.! !
+	JadeiteSUnitBrowser showOnSession: gciSession! !
 !JadeToolsToolBarPresenter categoriesFor: #browseTests!public! !
 
 "End of package definition"!

@@ -116,9 +116,7 @@ isOkayToChange
 !
 
 jadeBrowseTests
-
-	JadeSUnitBrowser showOnSession: gciSession.
-!
+	JadeiteSUnitBrowser showOnSession: gciSession!
 
 layoutFilePath
 
