@@ -117,12 +117,6 @@ selectClassInHierarchyNamed: className
 selectClassListTab
 	^self projectsPresenter classHierarchyTabs firstCard!
 
-selectClassTab
-	self selectClassTabIn: self projectsPresenter!
-
-selectClassTabIn: presenter
-	presenter instanceClassTabs lastCard!
-
 selectHierarchyTab
 	self selectHierarchyTabIn: self projectsPresenter!
 
@@ -143,17 +137,20 @@ selectTreeServicesNamed: anArray in: presenter
 setUp
 	super setUp.
 	self disableTranscriptWrites.	"turn off gemstone transcript writes for performance"
-	self openProjectsBrowser.
+	"self openProjectsBrowser."
 	self abortTransaction.	"ensure we don't have unsaved changes in the images"
 	self ensureRowanSample1Available. "load sample project after abort  - especially until https://github.com/GemTalk/Rowan/issues/349 is fixed."
-	self commitTransaction. "take this out after #349 is fixed"!
+	self commitTransaction. "take this out after #349 is fixed"
+	self selectClassListTab.
+	self selectInstanceTab. 
+	!
 
 tearDown
 	super tearDown.
 	self abortTransaction. 
 	self unloadSampleProject.
 	self commitTransaction. "can remove this when #349 is fixed. See setUp" 
-	projectsBrowser ifNotNil: [projectsBrowser destroy].
+	"projectsBrowser ifNotNil: [projectsBrowser destroy]."
 	methodListBrowser ifNotNil: [methodListBrowser destroy].
 	transcriptWritesWereEnabled ifTrue: [transcript flipTranscript].
 !
@@ -380,6 +377,7 @@ test_duplicateInstVars
 	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
 	self selectServicesNamed: #('RowanSample1-Tests') in: self packageListPresenter.
 	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
+	self selectClassTab.
 	self selectServiceNamed: 'TestClass' in: self classListPresenter.
 	self
 		saveClass: 'SubClass'
@@ -391,7 +389,8 @@ test_duplicateInstVars
 		saveClass: 'TestClass'
 		withInstVars: #('aa')
 		package: 'RowanSample1-Tests'.
-	self assert: ('ERROR: *' match: self projectsPresenter topShell statusBarText)!
+	self assert: ('ERROR: *' match: self projectsPresenter topShell statusBarText).
+	self projectsPresenter classDefinitionPresenter view isModified: false!
 
 test_duplicateInstVarsHierarchy
 	self testsIssue: #issue228
@@ -412,6 +411,27 @@ test_duplicateInstVarsHierarchy
 		package: 'RowanSample1-Tests'.
 	[self assert: ('ERROR: *' match: self projectsPresenter topShell statusBarText)]
 		ensure: [self projectsPresenter classDefinitionPresenter view isModified: false]!
+
+test_duplicateInstVarsInHierarchy
+	self testsIssue: #issue228
+		withTitle: 'lose selected class in project browser when new version created'.
+	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
+	self selectServicesNamed: #('RowanSample1-Tests') in: self packageListPresenter.
+	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
+	self selectHierarchyTab. 
+	self selectServiceNamed: 'TestClass' in: self classListPresenter.
+	self
+		saveClass: 'SubClass'
+		superclass: 'TestClass'
+		instVars: #('aa')
+		package: 'RowanSample1-Tests'.
+	self selectServiceNamed: 'SubClass' in: self classListPresenter.
+	self
+		saveClass: 'TestClass'
+		withInstVars: #('aa')
+		package: 'RowanSample1-Tests'.
+	self assert: ('ERROR: *' match: self projectsPresenter topShell statusBarText).
+	self projectsPresenter classDefinitionPresenter view isModified: false. !
 
 test_expansion
 	"When no classes are selected and the hierarchy tab is chosen, we should
@@ -1152,8 +1172,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #saveTestClassWithInstVars:package:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectClassInHierarchyNamed:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectClassListTab!private!selection! !
-!JadeiteProjectBrowserTestCase categoriesFor: #selectClassTab!private!selection! !
-!JadeiteProjectBrowserTestCase categoriesFor: #selectClassTabIn:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectHierarchyTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectHierarchyTabIn:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectTreeServicesNamed:in:!private!selection! !
@@ -1173,6 +1191,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVars!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsHierarchy!public!test hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsInHierarchy!public!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_expansion!public!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_extensionColoringInHierarchy!public!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findClass!public!test! !

@@ -90,7 +90,7 @@ basicUnloadProjects: projectNames
 	self issueCommand: (Array with: browserService).
 	packageListPresenter model: ListModel new.
 	classListPresenter model: ListModel new.
-	categoryListPresenter model: ListModel new.
+	categoryListPresenter model: (ListModel new searchPolicy: SearchPolicy equality).
 	methodListPresenter model: ListModel new!
 
 behaviorIdentifier
@@ -186,7 +186,7 @@ cleanupComparisonBrowser
 		compare: String new with: String new!
 
 clearFilterLists
-	categoryListPresenter list: ListModel new.
+	categoryListPresenter list: (ListModel new searchPolicy: SearchPolicy equality).
 	variableListPresenter list: ListModel new!
 
 cloneProject

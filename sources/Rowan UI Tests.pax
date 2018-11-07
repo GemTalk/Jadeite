@@ -27,6 +27,7 @@ package methodNames
 	add: #JadeSUnitPresenter -> #classListPresenter;
 	add: #JadeSUnitPresenter -> #methodListPresenter;
 	add: #JadeSUnitPresenter -> #packageListPresenter;
+	add: #SUnitBrowserModel -> #debugIndividualTestsWithResources:;
 	add: 'MessageBox class' -> #new;
 	add: 'Prompter class' -> #createOn:;
 	add: 'TestResource class' -> #signalInitializationError;
@@ -50,6 +51,7 @@ package setPrerequisites: (IdentitySet new
 	add: 'Jade UI Base';
 	add: 'Rowan UI Base';
 	add: '..\Core\Contributions\Camp Smalltalk\SUnit\SUnit';
+	add: '..\Core\Contributions\Odellsoft\SUnitBrowser\SUnitBrowserModelApp';
 	yourself).
 
 package!
@@ -117,7 +119,7 @@ JadeiteAbstractTestCase subclass: #JadeiteTranscriptTestCase
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 TestResource subclass: #JadeiteTestResource
-	instanceVariableNames: 'session transcript'
+	instanceVariableNames: 'session transcript projectsBrowser'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -180,6 +182,19 @@ createOn: aValueModel
 		ifFalse: 
 			[super createOn: aValueModel]! !
 !Prompter class categoriesFor: #createOn:!instance creation!public! !
+
+!SUnitBrowserModel methodsFor!
+
+debugIndividualTestsWithResources: tests
+	| resources |
+	#GemTalkAdded.	"forgotten by oa"
+	resources := self resourcesFor: tests.
+	
+	[self
+		startResources: resources;
+		debugIndividualTests: tests]
+			ensure: [self stopResources: resources]! !
+!SUnitBrowserModel categoriesFor: #debugIndividualTestsWithResources:!actions!private! !
 
 !TestResource class methodsFor!
 

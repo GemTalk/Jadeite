@@ -209,6 +209,18 @@ selectCategoriesNamed: categories
 selectCategoryNamed: category
 	self selectCategoriesNamed: (Array with: category)!
 
+selectClassTab
+	self selectClassTabIn: self projectsPresenter!
+
+selectClassTabIn: presenter
+	presenter instanceClassTabs lastCard!
+
+selectInstanceTab
+	self selectInstanceTabIn: self projectsPresenter!
+
+selectInstanceTabIn: presenter
+	presenter instanceClassTabs firstCard!
+
 selectMethodNamed: selector
 	self selectMethodsNamed: (Array with: selector)!
 
@@ -255,7 +267,7 @@ setUp
 	super setUp.
 	session := JadeiteTestResource current session.
 	transcript := JadeiteTestResource current transcript.
-!
+	projectsBrowser := JadeiteTestResource current projectsBrowser.!
 
 testsIssue: aSymbol withTitle: anObject
 	"send this to help identify which tests test which issues"
@@ -317,6 +329,10 @@ unloadSampleProject
 !JadeiteAbstractTestCase categoriesFor: #saveIssue216Method!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #selectCategoriesNamed:!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectCategoryNamed:!private!project browser support!selection! !
+!JadeiteAbstractTestCase categoriesFor: #selectClassTab!private!selection! !
+!JadeiteAbstractTestCase categoriesFor: #selectClassTabIn:!private!selection! !
+!JadeiteAbstractTestCase categoriesFor: #selectInstanceTab!private!selection! !
+!JadeiteAbstractTestCase categoriesFor: #selectInstanceTabIn:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectMethodNamed:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectMethodsNamed:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectRowanSample1Class!private!project browser support!selection! !

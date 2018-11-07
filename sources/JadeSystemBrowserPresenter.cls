@@ -377,6 +377,7 @@ createComponents
 
 	ancestorListPresenter 	:= self add: ListPresenter		new 		name: 'ancestorList'.
 	categoryListPresenter	:= self add: ListPresenter		new 		name: 'categoryList'.
+	categoryListPresenter model searchPolicy: SearchPolicy equality. 
 	classCategoryPresenter	:= self add: TreePresenter		new 		name: 'classCategoryList'.
 	classCommentPresenter 	:= self add: TextPresenter 	new 		name: 'classDocumentation'.
 	classDefinitionPresenter	:= self add: JadeTextPresenter 	new 		name: 'classDefinition'.
