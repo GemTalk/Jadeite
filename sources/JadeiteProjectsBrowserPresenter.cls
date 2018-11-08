@@ -100,30 +100,12 @@ browseClassReferences
 	self browseClassReferences: self selectedClass name!
 
 browseHierarchyImplementors
-
-	self browseHierarchyImplementorsOf: self selectedMethodName.
-!
-
-browseHierarchyImplementorsOf: string
-	| service className |
-	className := (classListPresenter selectionIfNone: [^self]) name.
-	service := RowanQueryService command: #hierarchyImplementorsOf:inClass:
-				withArgs: (Array with: string asSymbol with: className).
-	self issueCommand: (Array with: service).
-	self openMethodListOn: service selecting: string!
+	^self browseHierarchyImplementorsOf: self selectedMethodName
+		className: methodListPresenter selection className!
 
 browseHierarchySenders
-
-	self browseHierarchySendersOf: self selectedMethodName.
-!
-
-browseHierarchySendersOf: string
-	| service className |
-	className := (classListPresenter selectionIfNone: [^self]) name.
-	service := RowanQueryService command: #hierarchySendersOf:inClass:
-				withArgs: (Array with: string asSymbol with: className).
-	self issueCommand: (Array with: service).
-	self openMethodListOn: service selecting: string!
+	^self browseHierarchySendersOf: self selectedMethodName
+		className: methodListPresenter selection className!
 
 browseMethodHistory
 
@@ -1798,9 +1780,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #behaviorIdentifier!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseClassReferences!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseHierarchyImplementors!menu handlers!public!queries! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #browseHierarchyImplementorsOf:!public!queries! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseHierarchySenders!public!queries! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #browseHierarchySendersOf:!public!queries! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseMethodHistory!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseSelectedClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !

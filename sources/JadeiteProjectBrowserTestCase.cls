@@ -619,6 +619,40 @@ test_gotoDefinedPackage
 	self assert: dictionaryPresenter classListPresenter selection = 'ByteArray']
 			ensure: [dictionaryPresenter topShell destroy]!
 
+test_hierarchyImplementors
+	"a little risky testing base code that might change but it is convenient"
+
+	| methodListPresenter hierarchyListSize |
+	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Core') in: self packageListPresenter.
+	self selectServicesNamed: (Array with: 'RwModification') in: self classListPresenter.
+	self selectMethodNamed: #isEmpty.
+	methodListBrowser := self projectsPresenter browseHierarchyImplementors.
+	
+	[self assert: ('Hierarchy Implementors of ''isEmpty'' for *' match: methodListBrowser caption).
+	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
+	hierarchyListSize := methodListPresenter list size]
+			ensure: [methodListBrowser destroy].
+	methodListBrowser := self projectsPresenter browseImplementors.
+	
+	[self assert: ('Implementors of ''isEmpty'' for *' match: methodListBrowser caption).
+	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
+	self assert: methodListPresenter list size > hierarchyListSize	"always a superset"]
+			ensure: [methodListBrowser destroy]!
+
+test_hierarchyImplementorsSendersCaption
+	self testsIssue: #issue209 withTitle: 'MethodListBrowser needs the token in the title bar'.
+	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
+	self selectServicesNamed: (Array with: 'RowanProjectService') in: self classListPresenter.
+	self selectMethodNamed: #branch.
+	methodListBrowser := self projectsPresenter browseHierarchyImplementors.
+	[self assert: ('Hierarchy Implementors of ''branch'' for *' match: methodListBrowser caption)]
+		ensure: [methodListBrowser destroy].
+	methodListBrowser := self projectsPresenter browseHierarchySenders.
+	[self assert: ('Hierarchy Senders of ''branch'' for *' match: methodListBrowser caption)]
+		ensure: [methodListBrowser destroy]!
+
 test_hierarchySelectTwoBrowsers
 	| secondBrowser firstBrowser |
 	self testsIssue: #issue122 withTitle: 'Hierarchy tab selection updates incorrectly.'.
@@ -639,6 +673,27 @@ test_hierarchySelectTwoBrowsers
 	self assert: secondBrowser currentCard classHierarchyPresenter selection name = 'RowanSample1Test'.
 	self assert: (secondBrowser currentCard classHierarchyPresenter isKindOf: TreePresenter)]
 			ensure: [secondBrowser destroy]!
+
+test_hierarchySenders
+	"a little risky testing base code that might change but it is convenient"
+
+	| methodListPresenter hierarchyListSize |
+	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Core') in: self packageListPresenter.
+	self selectServicesNamed: (Array with: 'RwModification') in: self classListPresenter.
+	self selectMethodNamed: #isEmpty.
+	methodListBrowser := self projectsPresenter browseHierarchySenders.
+	
+	[self assert: ('Hierarchy Senders of ''isEmpty'' for *' match: methodListBrowser caption).
+	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
+	hierarchyListSize := methodListPresenter list size]
+			ensure: [methodListBrowser destroy].
+	methodListBrowser := self projectsPresenter browseSenders.
+	
+	[self assert: ('Senders of ''isEmpty'' for *' match: methodListBrowser caption).
+	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
+	self assert: methodListPresenter list size >= hierarchyListSize	"always a superset"]
+			ensure: [methodListBrowser destroy]!
 
 test_implementorsSendersCaption
 	self testsIssue: #issue209 withTitle: 'MethodListBrowser needs the token in the title bar'.
@@ -1237,7 +1292,10 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromHierarchy!public!test defined package!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedMethodNotSameAsClass!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedPackage!public!test defined package!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementors!public!test!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementorsSendersCaption!public!test!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySelectTwoBrowsers!public!test hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySenders!public!test!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_implementorsSendersCaption!public!test!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_literalReferences!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_makeDefault!public!test! !

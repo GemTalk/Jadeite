@@ -125,9 +125,13 @@ package methodNames
 	add: #JadeLoginShell -> #aboutJadeite;
 	add: #JadeMethodListPresenter -> #searchForAnyTextMatching:;
 	add: #JadeNavigationInspector -> #setNewInspectedObject;
+	add: #JadePresenter -> #browseHierarchyImplementorsOf:className:;
+	add: #JadePresenter -> #browseHierarchySendersOf:className:;
+	add: #JadePresenter -> #browseImplementorsOf;
 	add: #JadePresenter -> #browseImplementorsOf:;
 	add: #JadePresenter -> #browseLiteralReferences;
 	add: #JadePresenter -> #browseMethodsContaining;
+	add: #JadePresenter -> #browseSendersOf;
 	add: #JadePresenter -> #browseSendersOf:;
 	add: #JadePresenter -> #issueCommand:;
 	add: #JadePresenter -> #update:afterStonReplication:;
@@ -294,6 +298,8 @@ package methodNames
 	add: 'JadeNavigationInspector class' -> #resource_Default_view;
 	add: 'JadePresenter class' -> #allClassesIn:;
 	add: 'JadePresenter class' -> #browseClassIn:;
+	add: 'JadePresenter class' -> #browseHierarchyImplementorsOf:className:session:;
+	add: 'JadePresenter class' -> #browseHierarchySendersOf:className:session:;
 	add: 'JadePresenter class' -> #browseImplementorsIn:;
 	add: 'JadePresenter class' -> #browseImplementorsOf:session:;
 	add: 'JadePresenter class' -> #browseLiteralReferences:;
@@ -1398,6 +1404,23 @@ resource_Default_view
 
 !JadePresenter methodsFor!
 
+browseHierarchyImplementorsOf: string className: className
+	^self class
+		browseHierarchyImplementorsOf: string
+		className: className
+		session: self gciSession!
+
+browseHierarchySendersOf: string className: className
+	^self class 
+		browseHierarchySendersOf: string
+		className: className
+		session: self gciSession!
+
+browseImplementorsOf
+	
+	^JadePresenter browseImplementorsIn: self gciSession
+!
+
 browseImplementorsOf: string
 	^self class browseImplementorsOf: string session: self gciSession!
 
@@ -1407,6 +1430,11 @@ browseLiteralReferences
 browseMethodsContaining
 	^self class browseMethodsContaining: self gciSession!
 
+browseSendersOf
+	
+	^JadePresenter browseSendersIn: self gciSession
+!
+
 browseSendersOf: string
 	^self class browseSendersOf: string session: self gciSession!
 
@@ -1415,12 +1443,16 @@ issueCommand: services
 
 update: services afterStonReplication: stonResults
 	^BrowserUpdate current update: services afterStonReplication: stonResults! !
-!JadePresenter categoriesFor: #browseImplementorsOf:!public!queries! !
-!JadePresenter categoriesFor: #browseLiteralReferences!public! !
-!JadePresenter categoriesFor: #browseMethodsContaining!public! !
-!JadePresenter categoriesFor: #browseSendersOf:!menu handlers!public! !
-!JadePresenter categoriesFor: #issueCommand:!Jadeite!public! !
-!JadePresenter categoriesFor: #update:afterStonReplication:!Jadeite!public! !
+!JadePresenter categoriesFor: #browseHierarchyImplementorsOf:className:!browsing!public! !
+!JadePresenter categoriesFor: #browseHierarchySendersOf:className:!browsing!public! !
+!JadePresenter categoriesFor: #browseImplementorsOf!browsing!public! !
+!JadePresenter categoriesFor: #browseImplementorsOf:!browsing!public! !
+!JadePresenter categoriesFor: #browseLiteralReferences!browsing!public! !
+!JadePresenter categoriesFor: #browseMethodsContaining!browsing!public! !
+!JadePresenter categoriesFor: #browseSendersOf!browsing!public! !
+!JadePresenter categoriesFor: #browseSendersOf:!browsing!menu handlers!public! !
+!JadePresenter categoriesFor: #issueCommand:!browsing support!public! !
+!JadePresenter categoriesFor: #update:afterStonReplication:!browsing support!public! !
 
 !JadePresenter class methodsFor!
 
@@ -1440,6 +1472,30 @@ browseClassIn: session
 				ifTrue: [^self openDictionaryBrowserOn: classService session: session].
 			browser := JadeiteProjectsSystemBrowser showOnSession: session.
 			browser currentCard updateAfterFindClass: classService]!
+
+browseHierarchyImplementorsOf: string className: className session: session
+	| service shell |
+	service := RowanQueryService command: #hierarchyImplementorsOf:inClass:
+				withArgs: (Array with: string asSymbol with: className).
+	self issueCommand: (Array with: service) session: session.
+	shell := self
+				openMethodListOn: service
+				selecting: string
+				session: session.
+	shell updateCaptionFromSearchString: 'Hierarchy Implementors of ' , string asString printString.
+	^shell!
+
+browseHierarchySendersOf: string className: className session: session
+	| service shell |
+	service := RowanQueryService command: #hierarchySendersOf:inClass:
+				withArgs: (Array with: string asSymbol with: className).
+	self issueCommand: (Array with: service) session: session.
+	shell := self
+				openMethodListOn: service
+				selecting: string
+				session: session.
+	shell updateCaptionFromSearchString: 'Hierarchy Senders of ' , string asString printString.
+	^shell!
 
 browseImplementorsIn: session
 	^self
@@ -1580,6 +1636,8 @@ symbolsFrom: selector session: session
 	^(self issueCommand: (Array with: service) session: session) first answer! !
 !JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
 !JadePresenter class categoriesFor: #browseClassIn:!browsing!public! !
+!JadePresenter class categoriesFor: #browseHierarchyImplementorsOf:className:session:!browsing!public! !
+!JadePresenter class categoriesFor: #browseHierarchySendersOf:className:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseImplementorsIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseImplementorsOf:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseLiteralReferences:!browsing!public! !
