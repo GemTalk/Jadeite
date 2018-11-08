@@ -1686,21 +1686,22 @@ displayNoMods: sourcePresenter
 		isReadOnly: false.!
 
 editSaveMethod: classService in: methodSourcePresenter category: category
-	| caretPosition firstVisibleLine methodSource |
+	| methodSource1 firstVisibleLine caretPosition |
 	caretPosition := methodSourcePresenter view caretPosition.
 	firstVisibleLine := methodSourcePresenter view lineScroll.
-	methodSource := self currentMethodSourceFrom: methodSourcePresenter value.
+	methodSource1 := self currentMethodSourceFrom: methodSourcePresenter value.
 	classService
 		command: #saveMethodSource:category:;
-		commandArgs: (Array with: methodSource with: category).
+		commandArgs: (Array with: methodSource1 with: category).
 	[self issueCommand: (Array with: classService)] on: GsCompileError
 		do: [:ex | ^self reportCompileError: ex list in: methodSourcePresenter].
 	methodSourcePresenter view firstVisibleLine: firstVisibleLine.
 	methodSourcePresenter view goto: caretPosition.
-	methodSourcePresenter value: methodSource.
+	methodSourcePresenter value: methodSource1.
 	self displayNoMods: methodSourcePresenter.
 	(self compilationWarningFrom: classService selectedMethods)
-		ifNotNil: [:warning | self statusBarText: warning]!
+		ifNotNil: [:warning | self statusBarText: warning].
+	^self!
 
 isOkayToChangeSource: methodSourcePresenter
 	methodSourcePresenter ensureVisible.

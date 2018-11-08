@@ -795,11 +795,19 @@ onDragMethod: aSession
 		yourself.
 !
 
+onDropMethodsOnClassHierarchy: aSession
+	^self onDropOnClassList: aSession!
+
 onDropOnClassList: aSession
 	| classService |
 	classService := aSession suggestedTarget.
+	methodSourcePresenter value: aSession suggestedSource source.	"method may not be selected"
 	self editSaveMethod: classService.
-	self selectedClass == classService ifFalse: [self selectClass: classService].
+	self selectedClass == classService
+		ifFalse: 
+			[self isHierarchyTabSelected
+				ifTrue: [self selectClassInClassHierarchyNamed: classService name]
+				ifFalse: [self selectClass: classService]].
 	self selectMethodsFrom: classService!
 
 onDropOnMethodCategory: aSession
@@ -1863,6 +1871,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #moveMethods:toCategory:!drag & drop!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #newBrowser!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDragMethod:!drag & drop!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #onDropMethodsOnClassHierarchy:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropOnClassList:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropOnMethodCategory:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onSetFocus:stack:!event handlers!public! !

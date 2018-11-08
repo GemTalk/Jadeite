@@ -146,7 +146,7 @@ rowanProjectsHome
 rowanSample1Path
 	^'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1.ston'!
 
-sampleClass
+sampleClassName
 	^'RowanSample1'!
 
 sampleProjectName
@@ -241,7 +241,7 @@ selectRowanSample1Class
 
 	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
 	self selectServicesNamed: #('RowanSample1-Core') in: self packageListPresenter.
-	self selectServicesNamed: (Array with: self sampleClass) in: self classListPresenter!
+	self selectServicesNamed: (Array with: self sampleClassName) in: self classListPresenter!
 
 selectServiceNamed: aString in: presenter
 	self selectServicesNamed: (Array with: aString) in: presenter!
@@ -322,7 +322,7 @@ unloadSampleProject
 !JadeiteAbstractTestCase categoriesFor: #projectsPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #rowanProjectsHome!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #rowanSample1Path!constants!private! !
-!JadeiteAbstractTestCase categoriesFor: #sampleClass!private!project browser support! !
+!JadeiteAbstractTestCase categoriesFor: #sampleClassName!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #sampleProjectName!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveInterestingLoopMethod!browser support!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveIssue169Method!issue test support!private! !
