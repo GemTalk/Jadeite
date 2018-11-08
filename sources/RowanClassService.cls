@@ -176,6 +176,21 @@ filterUpdate: presenter browser: browser
 hash
 	^self name hash!
 
+hierarchyClassServiceNames
+	^self hierarchyClassServices collect: [:service | service name]!
+
+hierarchyClassServices
+	"flatten the unique format that hierarchyServices is returned
+	into a collection of classes found in the service"
+
+	| classes |
+	classes := Set new.
+	hierarchyServices keysAndValuesDo: 
+			[:anchor :chain |
+			classes add: anchor.
+			chain do: [:service | classes add: service]].
+	^classes reject:[:service | service == #nil]. !
+
 initialize
 	
 	super initialize. 
@@ -354,6 +369,8 @@ variables
 !RowanClassService categoriesFor: #filterType:!accessing!private! !
 !RowanClassService categoriesFor: #filterUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #hash!comparing!public! !
+!RowanClassService categoriesFor: #hierarchyClassServiceNames!public! !
+!RowanClassService categoriesFor: #hierarchyClassServices!public! !
 !RowanClassService categoriesFor: #initialize!Init / Release!public! !
 !RowanClassService categoriesFor: #isClassService!public!testing! !
 !RowanClassService categoriesFor: #isDefined!public!testing! !

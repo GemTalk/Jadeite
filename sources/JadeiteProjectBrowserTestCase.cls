@@ -640,6 +640,24 @@ test_hierarchyImplementors
 	self assert: methodListPresenter list size > hierarchyListSize	"always a superset"]
 			ensure: [methodListBrowser destroy]!
 
+test_hierarchyImplementorsFromMethodList
+	"a little risky testing base code that might change but it is convenient"
+
+	| methodListPresenter hierarchyMethodListPresenter |
+	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Core') in: self packageListPresenter.
+	self selectServicesNamed: (Array with: 'RwModification') in: self classListPresenter.
+	self selectMethodNamed: #isEmpty.
+	methodListBrowser := self projectsPresenter browseImplementors.
+	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter.
+	hierarchyMethodListPresenter := methodListPresenter browseHierarchyImplementors.	"first element should be selected"
+	
+	[self assert: methodListPresenter methodListPresenter list size
+				> hierarchyMethodListPresenter primaryPresenter methodListPresenter methodListPresenter list size	"always a superset"]
+			ensure: 
+				[methodListBrowser destroy.
+				hierarchyMethodListPresenter destroy]!
+
 test_hierarchyImplementorsSendersCaption
 	self testsIssue: #issue209 withTitle: 'MethodListBrowser needs the token in the title bar'.
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
@@ -694,6 +712,30 @@ test_hierarchySenders
 	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
 	self assert: methodListPresenter list size >= hierarchyListSize	"always a superset"]
 			ensure: [methodListBrowser destroy]!
+
+test_hierarchySendersFromMethodList
+	"a little risky testing base code that might change but it is convenient"
+
+	| methodListPresenter hierarchyMethodListBrowser methodList classService hierarchyClassNames |
+	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Core') in: self packageListPresenter.
+	self selectServicesNamed: (Array with: 'RwModification') in: self classListPresenter.
+	self selectMethodNamed: #isEmpty.
+	methodListBrowser := self projectsPresenter browseHierarchyImplementors.
+	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter.
+	hierarchyMethodListBrowser := methodListPresenter browseHierarchySenders.	"first element should be selected"
+	
+	[classService := RowanClassService named: 'RwModification'.
+	classService command: #classHierarchy.
+	self issueCommand: classService.
+	methodList := hierarchyMethodListBrowser primaryPresenter methodListPresenter methodListPresenter
+				list.
+	hierarchyClassNames := classService hierarchyClassServiceNames.
+	methodList
+		do: [:methodService | self assert: (hierarchyClassNames includes: methodService className asString)]]
+			ensure: 
+				[methodListBrowser destroy.
+				hierarchyMethodListBrowser destroy]!
 
 test_implementorsSendersCaption
 	self testsIssue: #issue209 withTitle: 'MethodListBrowser needs the token in the title bar'.
@@ -1293,9 +1335,11 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedMethodNotSameAsClass!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedPackage!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementors!public!test!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementorsFromMethodList!public!test!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementorsSendersCaption!public!test!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySelectTwoBrowsers!public!test hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySenders!public!test!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySendersFromMethodList!public!test!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_implementorsSendersCaption!public!test!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_literalReferences!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_makeDefault!public!test! !
