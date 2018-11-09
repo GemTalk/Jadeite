@@ -951,6 +951,20 @@ test_openProjectsBrowser
 	self
 		denyIsNil: (self projectList detect: [:projectService | projectService name = 'Rowan'] ifNone: [])!
 
+test_openProjectsBrowserFromMethodList
+	| secondProjectsBrowser |
+	self testsIssue: #issue192
+		withTitle: 'Oscar-3.0.40: `browse object class` menu item in inspector (debugger) opens dictionary browser...'.
+	self selectRowanSample1Class.
+	self selectMethodNamed: #foo.
+	methodListBrowser := self projectsPresenter browseImplementors.
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter selection
+				selector
+		equals: #foo.
+	secondProjectsBrowser := methodListBrowser primaryPresenter methodListPresenter browseClass.
+	[self assert: (secondProjectsBrowser isKindOf: JadeiteProjectsSystemBrowser)]
+		ensure: [secondProjectsBrowser destroy]!
+
 test_packagesShownInMultipleProjects
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
 	self assertIsNil: (self serviceNamed: 'RowanService' in: self classListPresenter).
@@ -1255,6 +1269,9 @@ test_tabNames_projectsBrowserNotLost
 	| projectTabs index |
 	self testsIssue: #issue229
 		withTitle: 'project browser tabs appear to randomly display just `Rowan` or package name'.
+	[self projectsPresenter parentPresenter view cards size = 1] whileFalse: 
+			[self projectsPresenter parentPresenter view
+				removeSubView: self projectsPresenter parentPresenter view lastCard].
 	projectTabs := self projectsPresenter parentPresenter view cards.
 	self projectsPresenter projectListPresenter resetSelection.
 	index := 1.
@@ -1310,37 +1327,37 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abortWithAbortedClassSelected!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addPackageReloadProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!test! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveHierarchyCategory!public!test hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveHierarchyCategory!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test!test class list! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_classSideSelection!public!test!test class list!test hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classSideSelection!public!test!test class hierarchy!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInClassList!public!test!test class list! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInHierarchy!public!test hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassHierarchy!public!test hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassList!public!test!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVars!public!test! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsHierarchy!public!test hierarchy! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsInHierarchy!public!test hierarchy! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_expansion!public!test hierarchy! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_extensionColoringInHierarchy!public!test hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsHierarchy!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsInHierarchy!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_expansion!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_extensionColoringInHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findClass!public!test!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromHierarchy!public!test defined package!test hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromHierarchy!public!test class hierarchy!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromClassList!public!test class list!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromClassListClassSide!public!test defined package! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromHierarchy!public!test defined package!test hierarchy! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedMethodNotSameAsClass!public!test defined package!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedPackage!public!test defined package!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementors!public!test!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementorsFromMethodList!public!test!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementorsSendersCaption!public!test!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySelectTwoBrowsers!public!test hierarchy! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySenders!public!test!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySendersFromMethodList!public!test!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_implementorsSendersCaption!public!test!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromHierarchy!public!test class hierarchy!test defined package! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedMethodNotSameAsClass!public!test!test defined package! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedPackage!public!test!test defined package! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementors!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementorsFromMethodList!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementorsSendersCaption!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySelectTwoBrowsers!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySenders!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySendersFromMethodList!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_implementorsSendersCaption!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_literalReferences!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_makeDefault!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuAddPackageOnProjectMenu!public!test!test projects! !
@@ -1348,32 +1365,33 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menusDontAddBreaks!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_methodsContaining!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_methodsContainingCaption!public!test! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!test!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_noSelectionHierarchy!public!test hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_noSelectionHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectBrowser!public!test menus!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectTab!public!test menus!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openProjectsBrowser!public!test projects! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_packagesShownInMultipleProjects!public!test!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_openProjectsBrowserFromMethodList!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_packagesShownInMultipleProjects!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectDisplaysSync!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectRemoved!public!test projects! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_refreshFromServer!public!test hierarchy!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_refreshFromServer!public!test!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_rowanTestsHierarchy!public!test hierarchy! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethod!public!test!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethodHierarchy!public!test hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_rowanTestsHierarchy!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethod!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethodHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethod!public!test! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodAndUpdateSUnitTab!public!test!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodHierarchy!public!test hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodAndUpdateSUnitTab!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultiplePackages!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultipleProjects!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_setAndClearBreakpoint!public!test! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_simpleHierarchyTest!public!test!test hierarchy! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabHandlesShortSelector!public!test!test hierarchy!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabRefresh!public!test menus!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_simpleHierarchyTest!public!test!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabHandlesShortSelector!public!test!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabRefresh!public!test!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsWithoutImplementorsFound!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!test! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!test!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_verifyValidCategory!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #waitForPresenter:!private!selection! !
 

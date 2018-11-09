@@ -42,24 +42,12 @@ runAndMeasureTime
 	MessageBox notify: timeMessage contents!
 
 runSelected
-	self runTests: methodListPresenter selection in: testClassService name!
-
-testClassService: classService
-	| testMethodServices |
-	testClassService := classService.
-	self reset.
-	testClassService isNil
-		ifTrue: 
-			[methodListPresenter model: (ListModel on: ListModel new).
-			^self].
-	testMethodServices := classService methods select: [:methodService | methodService isTestMethod].
-	methodListPresenter model: (ListModel on: testMethodServices)! !
+	self runTests: methodListPresenter selection in: testClassService name! !
 !JadeiteSUnitInClassPresenter categoriesFor: #debug!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #queryCommand:!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #runAll!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #runAndMeasureTime!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #runSelected!public! !
-!JadeiteSUnitInClassPresenter categoriesFor: #testClassService:!accessing!public! !
 
 !JadeiteSUnitInClassPresenter class methodsFor!
 

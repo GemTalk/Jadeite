@@ -17,13 +17,14 @@ basicRemoveMethods
 	self removeMethods: (Array with: services)!
 
 browseClass
-
-	| selection browserClass |
-	selection := methodListPresenter selection.
-	browserClass := Smalltalk at: #RowanSystemBrowser.		"Avoid circular dependencies on load order"
-	(browserClass showOnSession: self gciSession)
-		selectClass: selection className asString
-		selector: selection selector.!
+	| classService selector |
+	classService := RowanClassService new name: methodListPresenter selection className.
+	BrowserUpdate current updateService: classService session: gciSession.
+	selector := methodListPresenter selection selector.
+	^Cursor wait showWhile: 
+			[classService projectName = RowanService notRowanizedPackageName
+				ifTrue: [self openDictionaryBrowserOn: classService selector: selector]
+				ifFalse: [self openProjectBrowserOn: classService selector: selector]]!
 
 browseHierarchyImplementors
 	^self browseHierarchyImplementorsOf: methodListPresenter selection selector className: methodListPresenter selection className!
