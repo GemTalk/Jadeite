@@ -91,6 +91,10 @@ queryCommand: query
 		ifTrue: 
 			[query isEnabled: objectIndex < oopsCollection size.
 			^true].
+	query command == #browseClass
+		ifTrue: 
+			[query isEnabled: true.
+			^true].
 	^false!
 
 removeObject

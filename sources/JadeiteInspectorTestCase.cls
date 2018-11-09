@@ -109,7 +109,27 @@ test_inspectString
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	self assert: (inspector isKindOf: JadeInspector).
-	self assert: inspector model = 'abc' ! !
+	self assert: inspector model = 'abc' !
+
+test_openDictionaryBrowser
+	| remoteObject shell |
+	remoteObject := session
+				executeString: 'OrderedCollection with: 1 with: ''abc'' with: $3'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	shell := inspector browseClass.
+	[self assert: (shell isKindOf: RowanSystemBrowser)] ensure: [shell destroy]!
+
+test_openProjectsBrowser
+	| remoteObject shell |
+	remoteObject := session
+				executeString: 'RowanClassService new'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	shell := inspector browseClass.
+	[self assert: (shell isKindOf: JadeiteProjectsSystemBrowser)] ensure: [shell destroy]! !
 !JadeiteInspectorTestCase categoriesFor: #commandQueryOn:!private! !
 !JadeiteInspectorTestCase categoriesFor: #enableForward:andBack:!private! !
 !JadeiteInspectorTestCase categoriesFor: #inspectInstVarAt:!private! !
@@ -118,4 +138,6 @@ test_inspectString
 !JadeiteInspectorTestCase categoriesFor: #test_captionChange!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectString!public!test! !
+!JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowser!public!test! !
+!JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowser!public!test! !
 
