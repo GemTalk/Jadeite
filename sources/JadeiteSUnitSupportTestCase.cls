@@ -107,9 +107,3 @@ test_sunitBrowserHasRowanTestMethods
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestMethods!public!tests! !
 
-!JadeiteSUnitSupportTestCase class methodsFor!
-
-resources
-	^IdentitySet with: JadeiteTestResource! !
-!JadeiteSUnitSupportTestCase class categoriesFor: #resources!public! !
-

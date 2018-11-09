@@ -10,6 +10,12 @@ JadeiteTestResource comment: ''!
 !JadeiteTestResource categoriesForClass!Unclassified! !
 !JadeiteTestResource methodsFor!
 
+cloneRowanSample1
+	| sample1Path root |
+	sample1Path := self rowanSample1Path.
+	root := self rowanProjectsHome.
+	projectsBrowser currentCard basicCloneProject: sample1Path root: root!
+
 isAvailable
 	^session notNil and: [transcript notNil]!
 
@@ -33,6 +39,15 @@ projectsBrowser
 resourceHasValidSession
 	^(GciSession allInstances includes: session) and: [session isValidSession]!
 
+rowanProjectsHome
+	^'$ROWAN_PROJECTS_HOME'!
+
+rowanSample1Path
+	^'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1.ston'!
+
+sampleProjectName
+	^'RowanSample1'!
+
 session
 
 	^session!
@@ -41,19 +56,27 @@ setUp
 	super setUp. 
 	session := GciSession allInstances detect: [:each | each isValidSession] ifNone: [].
 	transcript := RowanTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: [].
-	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].  !
+	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].  
+	self cloneRowanSample1. !
 
 tearDown
 	super tearDown.
-	projectsBrowser ifNotNil: [projectsBrowser destroy]!
+	projectsBrowser
+		ifNotNil: 
+			[projectsBrowser currentCard basicUnloadProjects: (Array with: self sampleProjectName).
+			projectsBrowser destroy]!
 
 transcript
 
 	^transcript! !
+!JadeiteTestResource categoriesFor: #cloneRowanSample1!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #isAvailable!public!testing! !
 !JadeiteTestResource categoriesFor: #openWindow:!private! !
 !JadeiteTestResource categoriesFor: #projectsBrowser!accessing!public! !
 !JadeiteTestResource categoriesFor: #resourceHasValidSession!public!testing! !
+!JadeiteTestResource categoriesFor: #rowanProjectsHome!private!setup teardown! !
+!JadeiteTestResource categoriesFor: #rowanSample1Path!private!setup teardown! !
+!JadeiteTestResource categoriesFor: #sampleProjectName!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #session!accessing!public! !
 !JadeiteTestResource categoriesFor: #setUp!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #tearDown!private!setup teardown! !

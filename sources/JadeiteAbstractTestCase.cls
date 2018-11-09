@@ -36,25 +36,11 @@ createNewTestProjectNamed: projectName
 				withArgs: (Array with: projectName).
 	self issueCommand: testService!
 
-ensureRowanSample1Attached
-	| sample1Path root |
-	sample1Path := self rowanSample1Path.
-	root := self rowanProjectsHome.
-	self projectsPresenter basicCloneProject: sample1Path root: root.
-	self projectsPresenter refreshFromServer.!
-
-ensureRowanSample1Available
-
-	self ensureRowanSample1Attached.
-	self ensureRowanSample1Loaded. 
-	!
-
 ensureRowanSample1Loaded
-	| selections |
-	self selectServicesNamed: (Array with: self sampleProjectName)
-		in: self projectsPresenter projectListPresenter.
-	selections := self projectsPresenter projectListPresenter selections.
-	RowanBrowserService new reloadProjects: selections presenter: self projectsPresenter.
+	| projectService |
+	projectService := RowanProjectService new name: self sampleProjectName.
+	RowanBrowserService new reloadProjects: (Array with: projectService)
+		presenter: self projectsPresenter.
 	self projectsPresenter refreshFromServer!
 
 interestingLoopMethodSource
@@ -114,9 +100,6 @@ methodSourcePresenter
 
 noBreakIn: aMenu
 	self assertIsNil: (aMenu items detect: [:command | '*Break*' match: command text] ifNone: [])!
-
-openProjectsBrowser
-	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]!
 
 openWindow: aBlock
 	"evaluate a block which is expected to return an object that responds to #view.
@@ -267,7 +250,12 @@ setUp
 	super setUp.
 	session := JadeiteTestResource current session.
 	transcript := JadeiteTestResource current transcript.
-	projectsBrowser := JadeiteTestResource current projectsBrowser.!
+	projectsBrowser := JadeiteTestResource current projectsBrowser.
+	self ensureRowanSample1Loaded. !
+
+tearDown
+	super tearDown. 
+!
 
 testsIssue: aSymbol withTitle: anObject
 	"send this to help identify which tests test which issues"
@@ -302,8 +290,6 @@ unloadSampleProject
 !JadeiteAbstractTestCase categoriesFor: #classListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #commitTransaction!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #createNewTestProjectNamed:!public!support! !
-!JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Attached!private!project support! !
-!JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Available!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Loaded!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #interestingLoopMethodSource!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #isSampleProjectLoaded!private!private testing!project support! !
@@ -315,7 +301,6 @@ unloadSampleProject
 !JadeiteAbstractTestCase categoriesFor: #methodSourceForTest!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #methodSourcePresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #noBreakIn:!issue test support!private! !
-!JadeiteAbstractTestCase categoriesFor: #openProjectsBrowser!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #openWindow:!browser test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #packageListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #projectListPresenter!private!project browser support! !
@@ -340,6 +325,7 @@ unloadSampleProject
 !JadeiteAbstractTestCase categoriesFor: #selectServicesNamed:in:!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #serviceNamed:in:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
+!JadeiteAbstractTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #testsIssue:withTitle:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #transcript!public!transcript support! !
 !JadeiteAbstractTestCase categoriesFor: #transcriptProjectList!public!transcript support! !
@@ -350,6 +336,10 @@ unloadSampleProject
 !JadeiteAbstractTestCase class methodsFor!
 
 isAbstract
-	^self == JadeiteAbstractTestCase! !
+	^self == JadeiteAbstractTestCase!
+
+resources
+	^IdentitySet with: JadeiteTestResource! !
 !JadeiteAbstractTestCase class categoriesFor: #isAbstract!public! !
+!JadeiteAbstractTestCase class categoriesFor: #resources!public! !
 

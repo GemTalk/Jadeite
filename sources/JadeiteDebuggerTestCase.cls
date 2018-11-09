@@ -138,9 +138,7 @@ tearDown
 		yourself.
 	RowanDebugger debuggerClass: nil.
 	RowanDebugger semaphore: nil.
-	super tearDown.
-	(Delay forMilliseconds: 50) wait.
-	projectsBrowser ifNotNil: [projectsBrowser destroy]!
+	super tearDown.!
 
 terminateGsProcess
 
@@ -161,10 +159,7 @@ Processor allProcesses includes: gsProcess'.
 test_browseClass
 	| browser |
 	self testsIssue: #issue169 withTitle: 'Debugger menu option Browse Class broken'.
-	self openProjectsBrowser.
-	self ensureRowanSample1Available.
-	
-	[self selectRowanSample1Class.
+	self selectRowanSample1Class.
 	self saveIssue169Method.
 	self openDebuggerOn: 'RowanSample1 new issue169'.
 	debugger documentPresenter view selectionRange: (81 to: 85).	"Select Rowan"
@@ -178,16 +173,12 @@ test_browseClass
 	
 	[self assert: (browser isKindOf: RowanSystemBrowser).
 	self assert: ('*String*' match: browser currentCard selectedClasses first)]
-			ensure: [self assert: browser topShell view close]]
-			ensure: [self unloadSampleProject]!
+			ensure: [self assert: browser topShell view close]!
 
 test_implementersFromDebugger
 	| browser |
 	self testsIssue: #issue216 withTitle: 'method list in method browser reorders on accept'.
-	self openProjectsBrowser.
-	self ensureRowanSample1Available.
-	
-	[self selectRowanSample1Class.
+	self selectRowanSample1Class.
 	self saveIssue216Method.
 	self openDebuggerOn: 'RowanSample1 new issue216'.
 	debugger documentPresenter view selectionRange: (77 to: 89).	"Select classFromName"
@@ -195,8 +186,7 @@ test_implementersFromDebugger
 	
 	[self assert: (browser isKindOf: JadeiteMethodListBrowser).
 	self assert: ('*Implementors of ''classFromName''*' match: browser topShell caption)]
-			ensure: [self assert: browser topShell view close]]
-			ensure: [self unloadSampleProject]!
+			ensure: [self assert: browser topShell view close]!
 
 test_implementorsSendersCaption
 	| methodListBrowser |
@@ -217,8 +207,6 @@ test_restartInBlock
 	| restartProcess |
 	self testsIssue: #issue126
 		withTitle: 'Debugger opens second debugger, loses stack in original debugger'.
-	self openProjectsBrowser.
-	self ensureRowanSample1Available.
 	self selectRowanSample1Class.
 	self saveInterestingLoopMethod.
 	self methodListPresenter selection setBreakAtStepPoint: 8 session: session.	"inside the block"
@@ -233,14 +221,11 @@ test_restartInBlock
 	self deny: debugger frameListPresenter list size = secondDebugger frameListPresenter list size]
 			ensure: [restartProcess terminate]]
 			ensure: 
-				[self methodListPresenter selection clearBreakAtStepPoint: 8 session: session.
-				self unloadSampleProject]!
+				[self methodListPresenter selection clearBreakAtStepPoint: 8 session: session]!
 
 test_selectAfterDiveNoStepPoint
 	self testsIssue: #issue166
 		withTitle: 'Debugger step with unsaved edits results in empty source pane'.
-	self openProjectsBrowser.
-	self ensureRowanSample1Available.
 	self selectRowanSample1Class.
 	self saveInterestingLoopMethod.
 	self methodListPresenter selection setBreakAtStepPoint: 8 session: session.	"inside the block"
@@ -255,16 +240,12 @@ test_selectAfterDiveNoStepPoint
 	self assert: debugger documentPresenter value replaceLfWithCrLf
 		equals: self interestingLoopMethodSource]
 			ensure: 
-				[self methodListPresenter selection clearBreakAtStepPoint: 8 session: session.
-				self unloadSampleProject]!
+				[self methodListPresenter selection clearBreakAtStepPoint: 8 session: session]!
 
 test_sendersFromDebugger
 	| browser |
 	self testsIssue: #issue216 withTitle: 'method list in method browser reorders on accept'.
-	self openProjectsBrowser.
-	self ensureRowanSample1Available.
-	
-	[self selectRowanSample1Class.
+	self selectRowanSample1Class.
 	self saveIssue216Method.
 	self openDebuggerOn: 'RowanSample1 new issue216'.
 	debugger documentPresenter view selectionRange: (77 to: 89).	"Select classFromName"
@@ -272,8 +253,7 @@ test_sendersFromDebugger
 	
 	[self assert: (browser isKindOf: JadeiteMethodListBrowser).
 	self assert: ('*Senders of ''classFromName''*' match: browser topShell caption)]
-			ensure: [self assert: browser topShell view close]]
-			ensure: [self unloadSampleProject]!
+			ensure: [self assert: browser topShell view close]!
 
 test_terminateDoesNotWalkback
 	"Terminate a process other than the primary one"
@@ -646,7 +626,7 @@ testSaveMethod
 		assert: (view selection) equals: 'testMethod';
 		debuggerDo: [debugger resumeProcess];
 		assert: (session executeString: 'RowanFrameService new testMethod') equals: number;
-		yourself.!
+		abortTransaction.!
 
 testStackMenuEnablement
 	| frameContextMenu |

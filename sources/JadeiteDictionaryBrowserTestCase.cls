@@ -96,9 +96,3 @@ test_selectTestClass
 !JadeiteDictionaryBrowserTestCase categoriesFor: #test_menusDontAddBreaks!public!test!test menus! !
 !JadeiteDictionaryBrowserTestCase categoriesFor: #test_selectTestClass!public!test! !
 
-!JadeiteDictionaryBrowserTestCase class methodsFor!
-
-resources
-	^IdentitySet with: JadeiteTestResource! !
-!JadeiteDictionaryBrowserTestCase class categoriesFor: #resources!public! !
-

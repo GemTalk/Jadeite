@@ -137,10 +137,6 @@ selectTreeServicesNamed: anArray in: presenter
 setUp
 	super setUp.
 	self disableTranscriptWrites.	"turn off gemstone transcript writes for performance"
-	"self openProjectsBrowser."
-	self abortTransaction.	"ensure we don't have unsaved changes in the images"
-	self ensureRowanSample1Available. "load sample project after abort  - especially until https://github.com/GemTalk/Rowan/issues/349 is fixed."
-	self commitTransaction. "take this out after #349 is fixed"
 	self selectClassListTab.
 	self selectInstanceTab. 
 	!
@@ -987,7 +983,6 @@ test_projectDisplaysSync
 	self assertIsNil: (self projectNamed: 'RowanSample1').
 	self assertIsNil: (self transcriptProjectNamed: 'RowanSample1').
 	"project addition in projects browser"
-	self ensureRowanSample1Available.
 	
 	[self denyIsNil: (self transcriptProjectNamed: 'RowanSample1').
 	self denyIsNil: (self projectNamed: 'RowanSample1')]
@@ -1394,10 +1389,4 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_verifyValidCategory!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #waitForPresenter:!private!selection! !
-
-!JadeiteProjectBrowserTestCase class methodsFor!
-
-resources
-	^IdentitySet with: JadeiteTestResource! !
-!JadeiteProjectBrowserTestCase class categoriesFor: #resources!public! !
 

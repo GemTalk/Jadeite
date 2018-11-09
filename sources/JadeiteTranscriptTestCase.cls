@@ -143,9 +143,3 @@ test_transcriptNamedConsole
 !JadeiteTranscriptTestCase categoriesFor: #test_multiSelectProject!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_transcriptNamedConsole!public!tests! !
 
-!JadeiteTranscriptTestCase class methodsFor!
-
-resources
-	^IdentitySet with: JadeiteTestResource! !
-!JadeiteTranscriptTestCase class categoriesFor: #resources!public! !
-
