@@ -390,6 +390,12 @@ displayMultipleCategories
 		ifTrue: [methodCategoryText value: 'Category: ' , categories anyOne]
 		ifFalse: [methodCategoryText value: 'Categories: (Multiple)']!
 
+editFind
+	| tab |
+	tab := textAreaTabs currentCard.
+	tab setFocus.
+	(tab class canUnderstand: #editFind) ifTrue: [tab editFind]!
+
 editSaveClass
 	| packageService |
 	packageService := packageListPresenter selection.
@@ -1811,6 +1817,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #definedClassMenuItemLabel!menus!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #definedMethodMenuItemLabel!menus!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #displayMultipleCategories!displaying!private!updating! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #editFind!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editSaveClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editSaveClassComment!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editSaveMethod!menu handlers!public! !
