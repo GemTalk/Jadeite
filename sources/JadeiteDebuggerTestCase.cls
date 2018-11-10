@@ -175,6 +175,44 @@ test_browseClass
 	self assert: ('*String*' match: browser currentCard selectedClasses first)]
 			ensure: [self assert: browser topShell view close]!
 
+test_debuggerCopyToClipboard
+	"Make sure to turn off test message box if you need to
+	debug this test. "
+
+	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[self openDebuggerOn: 'nil halt'.
+	self assert: debugger frameListPresenter list first equals: 'Executed Code  @2 line 1'.
+	'notCopiedYet' copyToClipboard.
+	self assert: self getClipboardContents equals: 'notCopiedYet'.
+	debugger methodSourcePresenter documentPresenter value: 'new text'.
+	debugger methodSourcePresenter documentPresenter view isModified: true.
+	TestMessageBox plannedResult: #yes.	"confirm we want to copy to clipboard"
+	[self selectFrameAt: 2] fork.	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
+	(Delay forMilliseconds: 100) wait.
+	self assert: self getClipboardContents equals: 'new text']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
+test_debuggerDoNotCopyToClipboard
+	"Make sure to turn off test message box if you need to
+	debug this test. "
+
+	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[self openDebuggerOn: 'nil halt'.
+	self assert: debugger frameListPresenter list first equals: 'Executed Code  @2 line 1'.
+	'notCopiedYet' copyToClipboard.
+	self assert: self getClipboardContents equals: 'notCopiedYet'.
+	debugger methodSourcePresenter documentPresenter value: 'new text'.
+	debugger methodSourcePresenter documentPresenter view isModified: true.
+	TestMessageBox plannedResult: #no.	"reject offer to copy to clip board"
+	[self selectFrameAt: 2] fork.	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
+	(Delay forMilliseconds: 100) wait.
+	self assert: self getClipboardContents equals: 'notCopiedYet']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_implementersFromDebugger
 	| browser |
 	self testsIssue: #issue216 withTitle: 'method list in method browser reorders on accept'.
@@ -241,6 +279,16 @@ test_selectAfterDiveNoStepPoint
 		equals: self interestingLoopMethodSource]
 			ensure: 
 				[self methodListPresenter selection clearBreakAtStepPoint: 8 session: session]!
+
+test_selectBlockContext
+	self testsIssue: #issue166
+		withTitle: 'Debugger step within block and then select block context has bad behavior'.
+	self selectRowanSample1Class.
+	self saveIssue166Method.
+	self openDebuggerOn: 'RowanSample1 new issue166'.
+	self debuggerDo: [debugger stepInto].
+	self selectFrameAt: 2.	"<<< bug occurred here"
+	self assert: ('issue166*' match: debugger documentPresenter value)!
 
 test_sendersFromDebugger
 	| browser |
@@ -557,44 +605,6 @@ testContextMenu - counter = ' , counter printString]
 		debuggerDo: [debugger resumeProcess];
 		yourself!
 
-testDebuggerCopyToClipboard
-	"Make sure to turn off test message box if you need to
-	debug this test. "
-
-	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
-	TestMessageBox enableJadeiteTestMessageBox.
-	
-	[self openDebuggerOn: 'nil halt'.
-	self assert: debugger frameListPresenter list first equals: 'Executed Code  @2 line 1'.
-	'notCopiedYet' copyToClipboard.
-	self assert: self getClipboardContents equals: 'notCopiedYet'.
-	debugger methodSourcePresenter documentPresenter value: 'new text'.
-	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #yes.	"confirm we want to copy to clipboard"
-	[self selectFrameAt: 2] fork.	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
-	(Delay forMilliseconds: 100) wait.
-	self assert: self getClipboardContents equals: 'new text']
-			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
-
-testDebuggerDoNotCopyToClipboard
-	"Make sure to turn off test message box if you need to
-	debug this test. "
-
-	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
-	TestMessageBox enableJadeiteTestMessageBox.
-	
-	[self openDebuggerOn: 'nil halt'.
-	self assert: debugger frameListPresenter list first equals: 'Executed Code  @2 line 1'.
-	'notCopiedYet' copyToClipboard.
-	self assert: self getClipboardContents equals: 'notCopiedYet'.
-	debugger methodSourcePresenter documentPresenter value: 'new text'.
-	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #no.	"reject offer to copy to clip board"
-	[self selectFrameAt: 2] fork. "Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
-	(Delay forMilliseconds: 100) wait. 
-	self assert: self getClipboardContents equals: 'notCopiedYet']
-			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
-
 testErrorInPrintString
 	"https://github.com/ericwinger/Jade/issues/49"
 
@@ -625,8 +635,7 @@ testSaveMethod
 		assert: debugger saveMethod notNil;
 		assert: (view selection) equals: 'testMethod';
 		debuggerDo: [debugger resumeProcess];
-		assert: (session executeString: 'RowanFrameService new testMethod') equals: number;
-		abortTransaction.!
+		assert: (session executeString: 'RowanFrameService new testMethod') equals: number.!
 
 testStackMenuEnablement
 	| frameContextMenu |
@@ -719,10 +728,13 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #tearDown!private!running! !
 !JadeiteDebuggerTestCase categoriesFor: #terminateGsProcess!private!running! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_debuggerCopyToClipboard!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_debuggerDoNotCopyToClipboard!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_implementersFromDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_restartInBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_selectAfterDiveNoStepPoint!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_selectBlockContext!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_sendersFromDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_terminateDoesNotWalkback!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test1!public!tests! !
@@ -736,8 +748,6 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #testBug74!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testBug77!public! !
 !JadeiteDebuggerTestCase categoriesFor: #testContextMenu!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #testDebuggerCopyToClipboard!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #testDebuggerDoNotCopyToClipboard!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testErrorInPrintString!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testSaveMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testStackMenuEnablement!public!tests! !

@@ -381,6 +381,7 @@ package setPrerequisites: (IdentitySet new
 	add: '..\Core\Object Arts\Dolphin\System\Compiler\Smalltalk Parser';
 	add: '..\Core\Contributions\ITC Gorisek\Source Tracking System';
 	add: '..\Core\Contributions\Solutions Software\SSW EditableListView';
+	add: '..\Core\Contributions\Camp Smalltalk\SUnit\SUnit';
 	yourself).
 
 package!
@@ -980,7 +981,7 @@ onViewClosed
 
 selectedFrameWithErrorHandling
 	[self selectedFrame] on: RowanDebuggerStepPointError
-		do: [:ex | ex isNested ifTrue: [ex pass] ifFalse: [ex resume]]!
+		do: [:ex | ex isNested ifTrue: [ex pass] ifFalse:[ex resume]]!
 
 updateCaption
 	self caption: (gciSession

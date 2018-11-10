@@ -11,14 +11,22 @@ RowanDebuggerStepPointError comment: ''!
 !RowanDebuggerStepPointError methodsFor!
 
 isNested
-	"Override the super class implementation to recognize that
-	this error will always have an outer handler that should 
-	be ignored (GsError). But we should not ignore other errors"
+	"Answer whether the current exception currently being handled is within the scope of another
+	handler for the same exception (i.e. if passed will be caught)."
 
 	| env |
 	env := Processor activeProcess exceptionEnvironment.
 	[env isNil] whileFalse: 
-			[(env actionFor: self) ifNotNil: [:action | action method methodClass = GsError ifFalse: [^true]].
+			[(env actionFor: self)
+				ifNotNil: 
+					[:action |
+					"This is a hacky bit of tomfoolery. Try to work around server step point bugs and still 
+						allow tests to run
+						not pass the error up to the error reporting entry point
+						pass errors up to intended handlers. 
+
+					Yuck"
+					(action method methodClass ~= GsError and: [action method methodClass ~= TestResult]) ifTrue: [^true]].
 			env := env outer].
 	^false!
 

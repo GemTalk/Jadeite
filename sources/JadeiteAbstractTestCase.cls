@@ -150,6 +150,18 @@ saveInterestingLoopMethod
 	self methodSourcePresenter value: source.
 	self projectsPresenter editSaveMethod: self classListPresenter selection!
 
+saveIssue166Method
+	| source |
+	source := 'issue166
+
+	"RowanSample1 new issue166"
+
+	[RowanSample1 new halt; foo] value.
+	^self'.
+	self selectCategoriesNamed: (Array with: 'accessing'). 
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection!
+
 saveIssue169Method
 	| source |
 	source := 'issue169
@@ -310,6 +322,7 @@ unloadSampleProject
 !JadeiteAbstractTestCase categoriesFor: #sampleClassName!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #sampleProjectName!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveInterestingLoopMethod!browser support!private! !
+!JadeiteAbstractTestCase categoriesFor: #saveIssue166Method!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveIssue169Method!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveIssue216Method!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #selectCategoriesNamed:!private!project browser support!selection! !

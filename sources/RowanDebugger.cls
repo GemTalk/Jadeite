@@ -304,15 +304,10 @@ selectedFrame
 	(self view viewNamed: 'toolbar') update!
 
 stepInto
-	self handleSourceChanges. 
-	gciSession
-		stepInto: (GsProcess session: gciSession oopType: gsProcess oopType)
+	self handleSourceChanges.
+	gciSession stepInto: (GsProcess session: gciSession oopType: gsProcess oopType)
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
-	[
-		self getProcessList.
-	] on: RowanDebuggerStepPointError do: [:ex | 
-		self stepInto.
-	].!
+	[self getProcessList] on: RowanDebuggerStepPointError do: [:ex | self stepInto]!
 
 stepOut
 	self handleSourceChanges.
