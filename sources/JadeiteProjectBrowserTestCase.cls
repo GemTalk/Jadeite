@@ -143,12 +143,7 @@ setUp
 
 tearDown
 	super tearDown.
-	session isValidSession
-		ifTrue: 
-			[self abortTransaction.
-			self unloadSampleProject.
-			transcriptWritesWereEnabled ifTrue: [transcript flipTranscript]].
-	projectsBrowser ifNotNil: [projectsBrowser destroy].
+	session isValidSession ifTrue: [transcriptWritesWereEnabled ifTrue: [transcript flipTranscript]].
 	methodListBrowser
 		ifNotNil: 
 			[methodListBrowser destroy.
@@ -643,6 +638,29 @@ test_gotoDefinedPackage
 	self assert: dictionaryPresenter classListPresenter selection = 'ByteArray']
 			ensure: [dictionaryPresenter topShell destroy]!
 
+test_hierarchyFindsAllSubclassImplementors
+	| listPresenter | 
+	self testsIssue: #issue242 withTitle: '`implementors in hierarchy` doesn''t include method in the currently selected class?'.
+
+	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Core') in: self packageListPresenter.
+	self selectServicesNamed: (Array with: 'RwLoadedThing') in: self classListPresenter.
+	self selectMethodNamed: #initialize.
+	methodListBrowser := self projectsPresenter browseHierarchyImplementors.
+	
+	self assert: ('Hierarchy Implementors of ''initialize'' for *' match: methodListBrowser caption).
+	listPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter. 
+	self assert: listPresenter list size equals: 6.	
+	listPresenter list do:[:methodService | self assert: methodService selector equals: #initialize]. 
+	listPresenter list do:[:methodService |
+		| classService | 
+		classService := RowanClassService named: methodService className.
+		classService command: #classHierarchy. 
+		self issueCommand: classService. 
+		self assert: (classService hierarchyClassServiceNames includes: 'RwLoadedThing')
+		]. 
+!
+
 test_hierarchyImplementors
 	"a little risky testing base code that might change but it is convenient"
 
@@ -677,7 +695,7 @@ test_hierarchyImplementorsFromMethodList
 	hierarchyMethodListPresenter := methodListPresenter browseHierarchyImplementors.	"first element should be selected"
 	
 	[self assert: methodListPresenter methodListPresenter list size
-				> hierarchyMethodListPresenter primaryPresenter methodListPresenter methodListPresenter list size	"always a superset"]
+				>= hierarchyMethodListPresenter primaryPresenter methodListPresenter methodListPresenter list size	"always a superset"]
 			ensure: 
 				[methodListBrowser destroy.
 				hierarchyMethodListPresenter destroy]!
@@ -1375,6 +1393,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromHierarchy!public!test class hierarchy!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedMethodNotSameAsClass!public!test!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedPackage!public!test!test defined package! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyFindsAllSubclassImplementors!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementors!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementorsFromMethodList!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementorsSendersCaption!public!test! !
