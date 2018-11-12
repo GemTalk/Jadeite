@@ -94,19 +94,21 @@ inspectOop
 !
 
 onCloseRequested: boolValueHolder
- 
 	| answer |
 	super onCloseRequested: boolValueHolder.
 	boolValueHolder value ifFalse: [^self].
 	gciSession isNil ifTrue: [^self].
-	gciSession isValidSession ifFalse: [^self].
-	gciSession logoutRequested ifFalse: [
-		boolValueHolder value: false.
-		^self.
-	].
+	gciSession isValidSession
+		ifFalse: 
+			[gciSession trigger: #forceJadeiteWindowClose.
+			^self].
+	gciSession logoutRequested
+		ifFalse: 
+			[boolValueHolder value: false.
+			^self].
 	answer := MessageBox new
-		caption: 'Close Requested';
-		confirmOrCancel: 'Commit current transaction?'.
+				caption: 'Close Requested';
+				confirmOrCancel: 'Commit current transaction?'.
 	boolValueHolder value: (#(#yes #no) includes: answer).
 	answer = #yes ifTrue: [gciSession commit].
 	boolValueHolder value ifFalse: [^self].
@@ -114,13 +116,12 @@ onCloseRequested: boolValueHolder
 	"We are going to close, so do some things first..."
 	"self view hide."
 	allSessionsPresenter aboutToClose.
-	gciSession notNil ifTrue: [
-		| temp |
-		temp := gciSession.		"A logout will trigger closing all open windows, including this one."
-		gciSession := nil.
-		temp forceLogout.
-	].
-!
+	gciSession notNil
+		ifTrue: 
+			[| temp |
+			temp := gciSession.	"A logout will trigger closing all open windows, including this one."
+			gciSession := nil.
+			temp forceLogout]!
 
 onIdleEntered
 

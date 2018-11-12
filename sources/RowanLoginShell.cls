@@ -26,10 +26,10 @@ loginFailureCaption
 
 postLogin: aGciSession
 	| result |
-	aGciSession verifyRowanLoaded ifFalse:[^aGciSession logout]. "Already notified the user"
+	aGciSession verifyRowanLoaded ifFalse: [^aGciSession logout].	"Already notified the user"
 	result := super postLogin: aGciSession.
-	RowanTranscript showOnSession: aGciSession.
-	^result !
+	JadeiteTranscript showOnSession: aGciSession.
+	^result!
 
 updateCaption
 	^'Jadeite Login'! !

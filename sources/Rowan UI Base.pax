@@ -21,6 +21,7 @@ package classNames
 	add: #JadeiteProjectListPresenter;
 	add: #JadeiteProjectsBrowserPresenter;
 	add: #JadeiteProjectsSystemBrowser;
+	add: #JadeiteTranscript;
 	add: #PackageMethodListPresenter;
 	add: #Rowan;
 	add: #RowanAnsweringService;
@@ -61,7 +62,6 @@ package classNames
 	add: #RowanSuperclassUpdate;
 	add: #RowanSystemBrowser;
 	add: #RowanSystemBrowserPresenter;
-	add: #RowanTranscript;
 	add: #RowanVariableService;
 	yourself.
 
@@ -613,7 +613,7 @@ JadeDebugger subclass: #RowanDebugger
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggerClass semaphore'!
-JadeTranscript subclass: #RowanTranscript
+JadeTranscript subclass: #JadeiteTranscript
 	instanceVariableNames: 'projectListPresenter isTranscriptInstalled'
 	classVariableNames: ''
 	poolDictionaries: ''

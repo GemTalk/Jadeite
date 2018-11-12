@@ -385,16 +385,12 @@ loadLibrary: aClass debugPath: debugPath
 	].!
 
 logout
-
 	self stopHeartbeat.
-	self trigger: #'logoutPending'.
-	library ifNotNil: [
-		library logoutSession: gciSessionId.
-	].
-	self trigger: #'logout'.
+	self trigger: #logoutPending.
+	library ifNotNil: [library logoutSession: gciSessionId].
+	self trigger: #logout.
 	gciSessionId := nil.
-	library := nil.
-!
+	library := nil!
 
 logoutRequested
 
@@ -961,6 +957,7 @@ publishedEventsOfInstances
     	by instances of the receiver."
     
     	^super publishedEventsOfInstances
+			add: #forceJadeiteWindowClose;
 			add: #'logoutPending';
 			add: #'logoutRequested:';
     		add: #'logout';

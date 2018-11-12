@@ -53,11 +53,11 @@ session
 	^session!
 
 setUp
-	super setUp. 
+	super setUp.
 	session := GciSession allInstances detect: [:each | each isValidSession] ifNone: [].
-	transcript := RowanTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: [].
-	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].  
-	self cloneRowanSample1. !
+	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: [].
+	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self cloneRowanSample1!
 
 tearDown
 	super tearDown.
