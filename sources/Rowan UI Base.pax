@@ -11,6 +11,7 @@ package classNames
 	add: #BrowserUpdate;
 	add: #JadeiteBasicMethodListPresenter;
 	add: #JadeiteFindClassDialog;
+	add: #JadeiteLoginShell;
 	add: #JadeiteMethodListBrowser;
 	add: #JadeiteMethodListPresenter;
 	add: #JadeiteMethodSourcePresenter;
@@ -38,7 +39,6 @@ package classNames
 	add: #RowanFrameService;
 	add: #RowanGlobalsUpdate;
 	add: #RowanKeyValuePrompter;
-	add: #RowanLoginShell;
 	add: #RowanMethodListBrowser;
 	add: #RowanMethodListPresenter;
 	add: #RowanMethodSelectionPresenter;
@@ -603,7 +603,7 @@ JadeFindClassDialog subclass: #JadeiteFindClassDialog
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeLoginShell subclass: #RowanLoginShell
+JadeLoginShell subclass: #JadeiteLoginShell
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -842,7 +842,7 @@ preferencesFile
 	^'Jadeite.prefs'!
 
 terminate: anOopType
-	[self serverPerform: #terminate: with: anOopType] on: GsError
+	[self serverPerform: #terminate: with: anOopType] on: Error
 		do: 
 			[:ex |
 			"ignore termination errors"
@@ -1062,11 +1062,8 @@ initializeAvailable
 !JadeImageStripper methodsFor!
 
 closeLoginShells
-
 	JadeLoginShell allInstances do: [:each | each view close].
-	RowanLoginShell allInstances do: [:each | each view close].
-
-!
+	JadeiteLoginShell allInstances do: [:each | each view close]!
 
 createVersionResource
 "
@@ -2528,9 +2525,7 @@ getUrl
 	^(ReadStream on: string) nextLine!
 
 mainShellClass
-
-	^RowanLoginShell.
-!
+	^JadeiteLoginShell!
 
 setVersion
 

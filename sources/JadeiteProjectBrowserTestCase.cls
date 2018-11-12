@@ -143,13 +143,16 @@ setUp
 
 tearDown
 	super tearDown.
-	self abortTransaction. 
-	self unloadSampleProject.
-	self commitTransaction. "can remove this when #349 is fixed. See setUp" 
-	"projectsBrowser ifNotNil: [projectsBrowser destroy]."
-	methodListBrowser ifNotNil: [methodListBrowser destroy].
-	transcriptWritesWereEnabled ifTrue: [transcript flipTranscript].
-!
+	session isValidSession
+		ifTrue: 
+			[self abortTransaction.
+			self unloadSampleProject.
+			transcriptWritesWereEnabled ifTrue: [transcript flipTranscript]].
+	projectsBrowser ifNotNil: [projectsBrowser destroy].
+	methodListBrowser
+		ifNotNil: 
+			[methodListBrowser destroy.
+			methodListBrowser := nil]!
 
 test_abortWithAbortedClassSelected
 	"make sure we can safely remove an aborted class during post-abort refresh"
@@ -347,6 +350,31 @@ test_classVersionIncrementedInHierarchy
 	self assert: self classListPresenter selection displayString equals: 'TestClass (4/4)'.
 	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
 	self assert: self classListPresenter selection displayString equals: 'TestClass (5/5)'!
+
+test_closeWindowsInvalidSession
+	| sunitPresenter workspace |
+	"poison session and exit Jadeite. Make sure all Jadeite windows close"
+	self testsIssue: #issue267 withTitle: 'logout closes project browsers but not method list browsers'.
+	self selectRowanSample1Class.
+	self selectMethodNamed: #foo.
+	methodListBrowser := self projectsPresenter browseHierarchyImplementors.
+	sunitPresenter := transcript jadeBrowseTests.
+	workspace := projectsBrowser addWorkspace.
+	self assert: sunitPresenter isOpen.
+	self assert: projectsBrowser isOpen.
+	self assert: methodListBrowser isOpen.
+	self assert: workspace isOpen.
+	session gciSessionId: nil. "roughly simulates a session that was declared invalid"
+	
+	[transcript exit.
+	self deny: sunitPresenter isOpen.
+	self deny: projectsBrowser isOpen.
+	self deny: methodListBrowser isOpen.
+	self deny: workspace isOpen]
+			ensure: 
+				[projectsBrowser := nil.
+				JadeiteLoginShell allInstances first login.
+				self resources do: [:resource | resource current setUp]]!
 
 test_definedClassMenuItem
 	| classMenuItem menuLabel |
@@ -1326,13 +1354,14 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test!test class list! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classSideSelection!public!test!test class hierarchy!test class list! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInClassList!public!test!test class list! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInClassList!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInHierarchy!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_closeWindowsInvalidSession!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassHierarchy!public!test class hierarchy! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassList!public!test!test class list! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassList!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVars!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsInHierarchy!public!test class hierarchy! !
