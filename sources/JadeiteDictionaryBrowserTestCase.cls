@@ -50,7 +50,6 @@ setUp
 
 tearDown
 	super tearDown.
-	self abortTransaction.
 	dictionaryBrowser ifNotNil: [dictionaryBrowser destroy]!
 
 test_browseReferencesInDictionaryBrowser

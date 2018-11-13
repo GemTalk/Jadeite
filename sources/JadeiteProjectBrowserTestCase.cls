@@ -10,6 +10,13 @@ JadeiteProjectBrowserTestCase comment: 'General Jadeite tests. Assumes a logged 
 !JadeiteProjectBrowserTestCase categoriesForClass!Unclassified! !
 !JadeiteProjectBrowserTestCase methodsFor!
 
+cloneRowanSample1
+	| sample1Path root |
+	sample1Path := self rowanSample1Path.
+	root := self rowanProjectsHome.
+	projectsBrowser currentCard basicCloneProject: sample1Path root: root.
+	self projectsPresenter refreshFromServer.!
+
 disableTranscriptWrites
 	(transcriptWritesWereEnabled := transcript isTranscriptInstalled)
 		ifTrue: [transcript flipTranscript]	"turn off gemstone transcript writes for performance"!
@@ -159,7 +166,9 @@ test_abortWithAbortedClassSelected
 	self assert: self projectsPresenter selectedClass name = 'TestClass'.
 	self projectsPresenter topShell abortTransaction.
 	self
-		assertIsNil: (self classListPresenter list detect: [:service | service name = 'TestClass'] ifNone: [])!
+		assertIsNil: (self classListPresenter list detect: [:service | service name = 'TestClass'] ifNone: []).
+	self cloneRowanSample1. 
+	self ensureRowanSample1Loaded. !
 
 test_addPackageReloadProject
 	self testsIssue: #issue183
@@ -1021,7 +1030,6 @@ test_projectDisplaysSync
 	stay sync'ed automaticall"
 
 	"project removal in projects browser"
-
 	self denyIsNil: (self projectNamed: 'RowanSample1').
 	self assert: self transcriptTab isKindOf: JadeiteProjectListPresenter.
 	self denyIsNil: (self transcriptProjectNamed: 'RowanSample1').
@@ -1029,7 +1037,8 @@ test_projectDisplaysSync
 	self assertIsNil: (self projectNamed: 'RowanSample1').
 	self assertIsNil: (self transcriptProjectNamed: 'RowanSample1').
 	"project addition in projects browser"
-	
+	self cloneRowanSample1. 
+	self ensureRowanSample1Loaded. 
 	[self denyIsNil: (self transcriptProjectNamed: 'RowanSample1').
 	self denyIsNil: (self projectNamed: 'RowanSample1')]
 			ensure: [self unloadSampleProject].
@@ -1044,8 +1053,10 @@ test_projectDisplaysSync
 		detect: [:projectService | projectService name = self sampleProjectName]
 		ifNone: []) notNil
 		ifTrue: [self transcriptTab basicUnloadProjects: (Array with: self sampleProjectName)].
-	self assertIsNil: (self projectNamed: 'RowanSample1').
-	self assertIsNil: (self transcriptProjectNamed: 'RowanSample1')!
+	
+	[self assertIsNil: (self projectNamed: 'RowanSample1').
+	self assertIsNil: (self transcriptProjectNamed: 'RowanSample1')]
+			ensure: [self loadRowanSample1InProjectList]!
 
 test_projectRemoved
 	"Gracefully remove a project from the project list if it was 
@@ -1057,9 +1068,13 @@ test_projectRemoved
 	self denyIsNil: sampleProject.
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
 	session executeString: 'Rowan projectTools delete deleteProjectNamed: ''RowanSample1'''.	"delete project behind tool's back"
-	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.	"expect project to disappear but not walkback"
+	
+	[self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.	"expect project to disappear but not walkback"
 	sampleProject := self projectNamed: 'RowanSample1'.
-	self assertIsNil: sampleProject!
+	self assertIsNil: sampleProject]
+			ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
 
 test_refreshFromServer
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
@@ -1102,11 +1117,15 @@ test_removeProject
 				ifNone: [].
 	self assertIsNil: targetProject.
 	"make sure browser cleans itself up"
-	self assert: self projectListPresenter selections isEmpty.
+	
+	[self assert: self projectListPresenter selections isEmpty.
 	self assert: self packageListPresenter list isEmpty.
 	self assert: self classListPresenter list isEmpty.
 	self assert: self categoryListPresenter list isEmpty.
-	self assert: self methodListPresenter list isEmpty!
+	self assert: self methodListPresenter list isEmpty]
+			ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
 
 test_rowanTestsHierarchy
 	
@@ -1344,6 +1363,7 @@ test_verifyValidCategory
 
 waitForPresenter: presenter
 	[presenter list isEmpty] whileTrue: [(Delay forMilliseconds: 50) wait]! !
+!JadeiteProjectBrowserTestCase categoriesFor: #cloneRowanSample1!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #packageNamed:!private!project support! !

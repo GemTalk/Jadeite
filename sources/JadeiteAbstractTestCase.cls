@@ -40,8 +40,7 @@ ensureRowanSample1Loaded
 	| projectService |
 	projectService := RowanProjectService new name: self sampleProjectName.
 	RowanBrowserService new reloadProjects: (Array with: projectService)
-		presenter: self projectsPresenter.
-	self projectsPresenter refreshFromServer!
+		presenter: self projectsPresenter.!
 
 interestingLoopMethodSource
 	^'interestingLoop
@@ -263,11 +262,8 @@ setUp
 	session := JadeiteTestResource current session.
 	transcript := JadeiteTestResource current transcript.
 	projectsBrowser := JadeiteTestResource current projectsBrowser.
+	self projectsPresenter refreshFromServer.
 	self ensureRowanSample1Loaded. !
-
-tearDown
-	super tearDown. 
-!
 
 testsIssue: aSymbol withTitle: anObject
 	"send this to help identify which tests test which issues"
@@ -338,7 +334,6 @@ unloadSampleProject
 !JadeiteAbstractTestCase categoriesFor: #selectServicesNamed:in:!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #serviceNamed:in:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
-!JadeiteAbstractTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #testsIssue:withTitle:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #transcript!public!transcript support! !
 !JadeiteAbstractTestCase categoriesFor: #transcriptProjectList!public!transcript support! !
