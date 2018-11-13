@@ -835,7 +835,8 @@ postLoginAs: aString useSocket: aBoolean
 	self postLoadClientPreferences.
 	self postLoadServerPreferences.
 	aBoolean ifTrue: [self attemptSocket].
-	self setInitials: aString	"This gets back the session and serial number"!
+	self setInitials: aString.	"This gets back the session and serial number"
+	GciSession current: self. !
 
 preferencesFile
 

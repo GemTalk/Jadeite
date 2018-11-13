@@ -110,6 +110,19 @@ errorMessagePresenter
 frameListPresenter
 	^frameListPresenter!
 
+gciSession: aGciSession
+	"don't do the force logout. If we close the debugger, the thread
+	doing the termination will be terminated and other windows won't
+	close."
+	gciSession := aGciSession.
+	gciSession
+		when: #'logoutRequested:'			send: #'logoutRequested:'	to: self;
+		when: #'logoutPending'			send: #'exit'			to: self;
+		yourself.
+
+
+!
+
 getProcessList
 	"#getProcessList copied from RowanProjectsBrowserPresenter>>updatePresenters"
 
@@ -349,6 +362,7 @@ variableListPresenter
 !RowanDebugger categoriesFor: #documentPresenter!Accessing!public! !
 !RowanDebugger categoriesFor: #errorMessagePresenter!Accessing!public! !
 !RowanDebugger categoriesFor: #frameListPresenter!Accessing!frames!public! !
+!RowanDebugger categoriesFor: #gciSession:!public! !
 !RowanDebugger categoriesFor: #getProcessList!public! !
 !RowanDebugger categoriesFor: #handleSourceChanges!frames!private! !
 !RowanDebugger categoriesFor: #methodListSelection!Accessing!public! !

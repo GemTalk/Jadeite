@@ -44,12 +44,56 @@ flipTranscript
 	answeringService flipTranscriptIn: self gciSession.
 	isTranscriptInstalled := isTranscriptInstalled value: isTranscriptInstalled value not!
 
+gciSession: aGciSession
+	"don't do the force logout. We'll close us ourselves"
+	gciSession := aGciSession.
+	gciSession
+		when: #'logoutRequested:'			send: #'logoutRequested:'	to: self;
+		when: #'logoutPending'			send: #'exit'			to: self;
+		yourself.
+	mySessionPresenter	gciSession: aGciSession.
+	allSessionsPresenter	gciSession: aGciSession.
+	stoneInfoPresenter	gciSession: aGciSession.
+	toolbarPresenter	gciSession: aGciSession.
+	transcriptPresenter	gciSession: aGciSession.
+
+!
+
 initialize
 	super initialize. 
 	isTranscriptInstalled := ValueHolder with: true!
 
 isTranscriptInstalled
 	^isTranscriptInstalled value!
+
+onCloseRequested: boolValueHolder
+	| answer |
+	super onCloseRequested: boolValueHolder.
+	boolValueHolder value ifFalse: [^self].
+	gciSession isNil ifTrue: [^self].
+	gciSession isValidSession
+		ifFalse: 
+			[gciSession trigger: #forceJadeiteWindowClose.
+			^self].
+	gciSession logoutRequested
+		ifFalse: 
+			[boolValueHolder value: false.
+			^self].
+	answer := MessageBox new
+				caption: 'Close Requested';
+				confirmOrCancel: 'Commit current transaction?'.
+	boolValueHolder value: (#(#yes #no) includes: answer).
+	answer = #yes ifTrue: [gciSession commit].
+	boolValueHolder value ifFalse: [^self].
+	allSessionsPresenter aboutToClose.
+	gciSession notNil
+		ifTrue: 
+			[| temp | 
+			gciSession trigger: #forceJadeiteWindowClose.  "close all windows except me and debugger"
+			temp := gciSession.  "I'm getting closed so make sure session gets logged out"
+			gciSession := nil. 
+			temp forceLogout.
+]!
 
 onViewOpened
 	| answeringService installed |
@@ -92,8 +136,10 @@ queryCommand: query
 !JadeiteTranscript categoriesFor: #createComponents!public! !
 !JadeiteTranscript categoriesFor: #flipDebugger!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #flipTranscript!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #gciSession:!public! !
 !JadeiteTranscript categoriesFor: #initialize!initialization!public! !
 !JadeiteTranscript categoriesFor: #isTranscriptInstalled!public! !
+!JadeiteTranscript categoriesFor: #onCloseRequested:!event handling!public! !
 !JadeiteTranscript categoriesFor: #onViewOpened!public!updating! !
 !JadeiteTranscript categoriesFor: #openDictionaryBrowser!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #openJadeiteProjectsBrowser!menu handlers!public! !

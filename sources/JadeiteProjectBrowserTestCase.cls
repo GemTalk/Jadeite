@@ -356,29 +356,53 @@ test_classVersionIncrementedInHierarchy
 	self assert: self classListPresenter selection displayString equals: 'TestClass (5/5)'!
 
 test_closeWindowsInvalidSession
-	| sunitPresenter workspace |
+	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector |
 	"poison session and exit Jadeite. Make sure all Jadeite windows close"
 	self testsIssue: #issue267 withTitle: 'logout closes project browsers but not method list browsers'.
 	self selectRowanSample1Class.
 	self selectMethodNamed: #foo.
-	methodListBrowser := self projectsPresenter browseHierarchyImplementors.
+	methodListBrowser := self projectsPresenter browseImplementors.
+	hierarchyListBrowser := self projectsPresenter browseHierarchyImplementors.
 	sunitPresenter := transcript jadeBrowseTests.
 	workspace := projectsBrowser addWorkspace.
+	dictionaryBrowser := transcript openDictionaryBrowser.
+	simpleInspector := JadeInspector showOn: (session
+						executeString: '123'
+						fromContext: nil
+						environment: 0)
+				session: session.
+	complexInspector := JadeInspector showOn: (session
+						executeString: 'Array new'
+						fromContext: nil
+						environment: 0)
+				session: session.
 	self assert: sunitPresenter isOpen.
 	self assert: projectsBrowser isOpen.
 	self assert: methodListBrowser isOpen.
-	self assert: workspace isOpen.
-	session gciSessionId: nil. "roughly simulates a session that was declared invalid"
+	self assert: hierarchyListBrowser isOpen.
+	self assert: dictionaryBrowser isOpen.
+	self assert: simpleInspector isOpen.
+	self assert: complexInspector isOpen.
+	session beInvalidSession.
 	
 	[transcript exit.
 	self deny: sunitPresenter isOpen.
 	self deny: projectsBrowser isOpen.
 	self deny: methodListBrowser isOpen.
-	self deny: workspace isOpen]
+	self deny: hierarchyListBrowser isOpen.
+	self deny: workspace isOpen.
+	self deny: dictionaryBrowser isOpen.
+	self deny: simpleInspector isOpen.
+	self deny: complexInspector isOpen]
 			ensure: 
 				[projectsBrowser := nil.
+				GciSession current: nil.  
 				JadeiteLoginShell allInstances first login.
-				self resources do: [:resource | resource current setUp]]!
+				self resources do: 
+						[:resource |
+						resource current
+							tearDown;
+							setUp]]!
 
 test_definedClassMenuItem
 	| classMenuItem menuLabel |
