@@ -1218,10 +1218,13 @@ test_saveMethodAndUpdateSUnitTab
 		self assert: true'.
 	self methodSourcePresenter value: source.
 	self projectsPresenter editSaveMethod.
-	self projectsPresenter selectSUnitTab. 	
-	methodService := self projectsPresenter sunitPresenter methodListPresenter list detect:[:service | service selector = #test_testMethod] ifNone:[]. 
-	self assert: methodService selector equals: #test_testMethod
-!
+	
+	[self projectsPresenter selectSUnitTab.
+	methodService := self projectsPresenter sunitPresenter methodListPresenter list
+				detect: [:service | service selector = #test_testMethod]
+				ifNone: [].
+	self assert: methodService selector equals: #test_testMethod]
+			ensure: [self projectsPresenter basicRemoveMethods]!
 
 test_saveMethodHierarchy
 	| source |
