@@ -71,7 +71,7 @@ compilationWarningFrom: methodServices
 
 createSchematicWiring
 	super createSchematicWiring.
-	frameListPresenter when: #actionPerformed 	send: #browseClass 			to: self.
+	frameListPresenter when: #actionPerformed 	send: #browseFrameMethod	to: self.
 	documentPresenter when: #textChanged 		send: #methodValueChanged 	to: self!
 
 currentMethodSourceFrom: sourceString
