@@ -2,7 +2,7 @@
 
 Object subclass: #GciSession
 	instanceVariableNames: 'briefDescription clientForwarders eventCount gciSessionId gemHost gemNRS heartbeatProcess isHandlingClientForwarderSend isPackagePolicyEnabled library netPort netTask server stoneHost stoneName stoneNRS stoneSerial stoneSessionID userID'
-	classVariableNames: 'GemCursor'
+	classVariableNames: 'Current GemCursor'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 GciSession guid: (GUID fromString: '{c52a3e3c-b7f3-4c3c-ab3d-a925ecb8b114}')!
@@ -390,7 +390,8 @@ logout
 	library ifNotNil: [library logoutSession: gciSessionId].
 	self trigger: #logout.
 	gciSessionId := nil.
-	library := nil!
+	library := nil.
+	GciSession current: nil. !
 
 logoutRequested
 
@@ -922,6 +923,14 @@ withExplanation: aString doA: aBlock
 
 !GciSession class methodsFor!
 
+current 
+
+	^Current!
+
+current: aGciSession
+
+	Current := aGciSession!
+
 libraryClass: libraryClass 
 stoneNRS: stoneNRS 
 gemNRS: gemNRS 
@@ -964,6 +973,8 @@ publishedEventsOfInstances
     		yourself.
     
 ! !
+!GciSession class categoriesFor: #current!accessing!public! !
+!GciSession class categoriesFor: #current:!accessing!public! !
 !GciSession class categoriesFor: #libraryClass:stoneNRS:gemNRS:userID:password:hostUserID:password:initials:useSocket:debugPath:!public! !
 !GciSession class categoriesFor: #new!public! !
 !GciSession class categoriesFor: #publishedEventsOfInstances!public! !
