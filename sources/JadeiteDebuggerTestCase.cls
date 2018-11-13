@@ -213,6 +213,21 @@ test_debuggerDoNotCopyToClipboard
 	self assert: self getClipboardContents equals: 'notCopiedYet']
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+test_frameDoubleClick
+	| projectPresenter |
+	self testsIssue: #issue238
+		withTitle: '"RowanDebugger does not understand #browseClass" from double click on frame selection (3.0.41)'.
+	self openDebuggerOn: 'RowanClassService new halt; classHierarchy'.
+	self
+		debuggerDo: [debugger stepOver];
+		debuggerDo: [debugger stepInto].
+	self assert: ('*classHierarchy*' match: debugger frameListPresenter selection).
+	projectPresenter := debugger frameListPresenter trigger: #actionPerformed.
+	
+	[self assert: projectPresenter classListPresenter selection name equals: 'RowanClassService'.
+	self assert: projectPresenter methodListPresenter selection selector equals: #classHierarchy]
+			ensure: [self assert: projectPresenter topShell view close]!
+
 test_implementersFromDebugger
 	| browser |
 	self testsIssue: #issue216 withTitle: 'method list in method browser reorders on accept'.
@@ -730,6 +745,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerCopyToClipboard!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerDoNotCopyToClipboard!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_frameDoubleClick!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_implementersFromDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_restartInBlock!public!tests! !
