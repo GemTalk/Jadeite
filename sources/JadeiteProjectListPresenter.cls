@@ -116,7 +116,8 @@ primaryPresenter
 	^projectListPresenter!
 
 projectChanges
-	projectListPresenter selection changesUsing: self!
+	projectListPresenter selections isEmpty ifTrue: [^MessageBox notify: 'No project selected'].
+	projectListPresenter selections first changesUsing: self!
 
 projectListPresenter
 	^projectListPresenter!
