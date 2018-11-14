@@ -222,7 +222,7 @@ test_frameDoubleClick
 		debuggerDo: [debugger stepOver];
 		debuggerDo: [debugger stepInto].
 	self assert: ('*classHierarchy*' match: debugger frameListPresenter selection).
-	projectPresenter := debugger frameListPresenter trigger: #actionPerformed.
+	projectPresenter := debugger frameListPresenter trigger: #actionPerformed. "simulates double click"
 	
 	[self assert: projectPresenter classListPresenter selection name equals: 'RowanClassService'.
 	self assert: projectPresenter methodListPresenter selection selector equals: #classHierarchy]

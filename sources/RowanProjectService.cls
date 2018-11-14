@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanProjectService
-	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk'
+	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded'
 	classVariableNames: 'DefaultProjectName'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

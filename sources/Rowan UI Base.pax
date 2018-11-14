@@ -509,7 +509,7 @@ RowanService subclass: #RowanProcessService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanProjectService
-	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk'
+	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded'
 	classVariableNames: 'DefaultProjectName'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

@@ -32,6 +32,17 @@ issue170methodCreation
 	self methodSourcePresenter value: (source := 'try  ^5').
 	self projectsPresenter editSaveMethod: self classListPresenter selection!
 
+issue261createTestProject
+	"Private - support method for issue 261"
+
+	self testsIssue: #issue261 withTitle: 'Project tab should display reason for project font styling'.
+	session
+		executeString: '| proj pkg cls meth |
+proj := RwProjectDefinition newForGitBasedProjectNamed: ''Izmir''.
+proj repositoryRootPath: ''$ROWAN_PROJECTS_HOME/Izmir''.
+Rowan projectTools create createProjectFor: proj.'.
+	self projectsPresenter refreshFromServer!
+
 packageNamed: aString
 	^self packageListPresenter list
 		detect: [:projectService | projectService name = aString]
@@ -825,6 +836,19 @@ test_implementorsSendersCaption
 	[self assert: ('Senders of ''branch'' for *' match: methodListBrowser caption)]
 		ensure: [methodListBrowser destroy]!
 
+test_issue261
+	"create a loaded project and test the info display"
+	| view |
+	self testsIssue: #issue261 withTitle: 'Project tab should display reason for project font styling'.
+	self issue261createTestProject.
+	
+	[self selectServiceNamed: 'Izmir' in: self projectListPresenter.
+	view := self projectsPresenter projectInfoTab view.
+	self assert: (view columns first contentFromRow: (view list at: 1)) equals: 'Izmir'.
+	self assert: (view columns first contentFromRow: (view list at: 5)).	"isDirty"
+	self assert: (view columns first contentFromRow: (view list at: 6))	"isLoaded"]
+			ensure: [self projectsPresenter basicUnloadProjects: #('Izmir')]!
+
 test_literalReferences
 	| methodListPresenter source |
 	self testsIssue: #issue256
@@ -1007,7 +1031,7 @@ test_openNewProjectBrowser
 	[self assert: newBrowser isKindOf: JadeiteProjectsSystemBrowser] ensure: [newBrowser exit]!
 
 test_openNewProjectTab
-	| newBrowser menu item firstCard |
+	| menu item firstCard |
 	self testsIssue: #issue243
 		withTitle: '`browse class` menu in method view of project browser leaves method and goes to class'.
 	self assert: self projectsPresenter parentPresenter view cards size equals: 1. 
@@ -1081,6 +1105,19 @@ test_projectDisplaysSync
 	[self assertIsNil: (self projectNamed: 'RowanSample1').
 	self assertIsNil: (self transcriptProjectNamed: 'RowanSample1')]
 			ensure: [self loadRowanSample1InProjectList]!
+
+test_projectInfoTab
+	| view |
+	self testsIssue: #issue261 withTitle: 'Project tab should display reason for project font styling'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self assert: (self projectsPresenter projectInfoTab view getItemText: 1) equals: 'name'.
+	self assert: (self projectsPresenter projectInfoTab view getItemText: 2) equals: 'sha'.
+	self assert: (self projectsPresenter projectInfoTab view getItemText: 3) equals: 'branch'.
+	self assert: (self projectsPresenter projectInfoTab view getItemText: 4) equals: 'isSkew'.
+	self assert: (self projectsPresenter projectInfoTab view getItemText: 5) equals: 'isDirty'.
+	self assert: (self projectsPresenter projectInfoTab view getItemText: 6) equals: 'isLoaded'.
+	view := self projectsPresenter projectInfoTab view.
+	self assert: (view columns first contentFromRow: (view list at: 1)) equals: 'Rowan'. "don't know the state of the rowan project so just test the name"!
 
 test_projectRemoved
 	"Gracefully remove a project from the project list if it was 
@@ -1393,6 +1430,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #cloneRowanSample1!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #issue261createTestProject!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #packageNamed:!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectList!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectNamed:!private!project support! !
@@ -1448,6 +1486,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySenders!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySendersFromMethodList!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_implementorsSendersCaption!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_issue261!public!test menus!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_literalReferences!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_makeDefault!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuAddPackageOnProjectMenu!public!test!test projects! !
@@ -1463,6 +1502,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openProjectsBrowserFromMethodList!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_packagesShownInMultipleProjects!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectDisplaysSync!public!test projects! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_projectInfoTab!public!test menus!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectRemoved!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshFromServer!public!test!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects! !
