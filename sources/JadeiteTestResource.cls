@@ -11,13 +11,25 @@ JadeiteTestResource comment: ''!
 !JadeiteTestResource methodsFor!
 
 cloneRowanSample1
-	| sample1Path root |
+	| sample1Path root service |
 	sample1Path := self rowanSample1Path.
 	root := self rowanProjectsHome.
-	projectsBrowser currentCard basicCloneProject: sample1Path root: root!
+	service := RowanProjectService new.
+	service
+		command: #newGitProject:root:useSsh:;
+		commandArgs: (Array
+					with: sample1Path
+					with: root
+					with: true).
+	JadePresenter issueCommand: (Array with: service) session: session!
 
 isAvailable
 	^session notNil and: [transcript notNil]!
+
+openProjectsBrowser
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	^projectsBrowser!
 
 openWindow: aBlock
 	"evaluate a block which is expected to return an object that responds to #view.
@@ -31,10 +43,6 @@ openWindow: aBlock
 			count := count + 1.
 			count > 10 ifTrue: [^presenter]].
 	^presenter!
-
-projectsBrowser
-
-	^projectsBrowser!
 
 resourceHasValidSession
 	^(GciSession allInstances includes: session) and: [session isValidSession]!
@@ -54,29 +62,29 @@ session
 
 setUp
 	super setUp.
-	session := GciSession current. 
+	session := GciSession current.
 	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: [].
-	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
-	self cloneRowanSample1!
+	self cloneRowanSample1.!
 
 tearDown
 	super tearDown.
 	projectsBrowser
 		ifNotNil: 
 			[projectsBrowser currentCard basicUnloadProjects: (Array with: self sampleProjectName).
-			projectsBrowser destroy]!
+			projectsBrowser destroy.
+			projectsBrowser := nil]!
 
 transcript
 
 	^transcript! !
 !JadeiteTestResource categoriesFor: #cloneRowanSample1!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #isAvailable!public!testing! !
+!JadeiteTestResource categoriesFor: #openProjectsBrowser!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #openWindow:!private! !
-!JadeiteTestResource categoriesFor: #projectsBrowser!accessing!public! !
 !JadeiteTestResource categoriesFor: #resourceHasValidSession!public!testing! !
-!JadeiteTestResource categoriesFor: #rowanProjectsHome!private!setup teardown! !
-!JadeiteTestResource categoriesFor: #rowanSample1Path!private!setup teardown! !
-!JadeiteTestResource categoriesFor: #sampleProjectName!private!setup teardown! !
+!JadeiteTestResource categoriesFor: #rowanProjectsHome!constants!private! !
+!JadeiteTestResource categoriesFor: #rowanSample1Path!constants!private! !
+!JadeiteTestResource categoriesFor: #sampleProjectName!constants!private! !
 !JadeiteTestResource categoriesFor: #session!accessing!public! !
 !JadeiteTestResource categoriesFor: #setUp!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #tearDown!private!setup teardown! !

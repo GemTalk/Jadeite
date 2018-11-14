@@ -155,9 +155,9 @@ selectTreeServicesNamed: anArray in: presenter
 setUp
 	super setUp.
 	self disableTranscriptWrites.	"turn off gemstone transcript writes for performance"
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
 	self selectClassListTab.
-	self selectInstanceTab. 
-	!
+	self selectInstanceTab!
 
 tearDown
 	super tearDown.

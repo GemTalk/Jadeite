@@ -60,6 +60,8 @@ test_symbolsFromSelector
 test_workspaceBrowseProjects
 	| workspace jadeiteMenu browseProjectsItem |
 	self testsIssue: #issue265 withTitle: 'workspace could use a `browse projects` menu item ... '.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	workspace := JadeWorkspace showOnSession: session.
 	
 	[jadeiteMenu := self itemNamed: 'Jadeite' in: workspace view menuBar.
@@ -67,7 +69,7 @@ test_workspaceBrowseProjects
 	projectsBrowser := browseProjectsItem commandDescription performAgainst: workspace]
 			ensure: 
 				[workspace view close.
-				projectsBrowser view close]! !
+				projectsBrowser destroy]! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_convertToPattern!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_symbolsFromSelector!public!test! !

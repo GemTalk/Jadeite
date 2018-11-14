@@ -39,8 +39,10 @@ createNewTestProjectNamed: projectName
 ensureRowanSample1Loaded
 	| projectService |
 	projectService := RowanProjectService new name: self sampleProjectName.
-	RowanBrowserService new reloadProjects: (Array with: projectService)
-		presenter: self projectsPresenter.!
+	projectService
+		command: #reloadProject;
+		commandArgs: nil. 
+	JadePresenter issueCommand: (Array with: projectService) session: session!
 
 interestingLoopMethodSource
 	^'interestingLoop
@@ -261,8 +263,6 @@ setUp
 	super setUp.
 	session := JadeiteTestResource current session.
 	transcript := JadeiteTestResource current transcript.
-	projectsBrowser := JadeiteTestResource current projectsBrowser.
-	self projectsPresenter refreshFromServer.
 	self ensureRowanSample1Loaded. !
 
 testsIssue: aSymbol withTitle: anObject

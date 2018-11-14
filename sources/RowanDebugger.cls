@@ -52,13 +52,18 @@ browseImplementors
 	^JadePresenter browseImplementorsOf: frame gsMethod selector session: self gciSession!
 
 browseObjectClass
-
-	| variable |
-	variable := variableListPresenter selection.
-	(RowanSystemBrowser showOnSession: self gciSession)
-		selectClass: variable className asString
-		selector: ''.
-!
+	| shell classService |
+	classService := RowanClassService new
+				name: variableListPresenter selection className asString subStrings first.	"strip off 'class' if meta"
+	BrowserUpdate current updateService: classService session: gciSession.
+	classService projectName = RowanService notRowanizedPackageName
+		ifTrue: 
+			[shell := RowanSystemBrowser showOnSession: gciSession.
+			shell selectClass: classService name asString selector: String new]
+		ifFalse: 
+			[shell := JadeiteProjectsSystemBrowser showOnSession: gciSession.
+			shell currentCard updateAfterFindClass: classService].
+	^shell!
 
 browseSenders
 	^JadePresenter browseSendersOf: frame gsMethod selector session: self gciSession!

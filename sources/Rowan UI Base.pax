@@ -1402,7 +1402,7 @@ searchForAnyTextMatching: aString
 
 browseClass
 	| shell classService |
-	classService := RowanClassService new name: className.
+	classService := RowanClassService new name: className subStrings first. "strip off 'class' if meta"
 	BrowserUpdate current updateService: classService session: gciSession.
 	classService projectName = RowanService notRowanizedPackageName
 		ifTrue: 

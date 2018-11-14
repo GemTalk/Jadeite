@@ -159,6 +159,8 @@ Processor allProcesses includes: gsProcess'.
 test_browseClass
 	| browser |
 	self testsIssue: #issue169 withTitle: 'Debugger menu option Browse Class broken'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	self selectRowanSample1Class.
 	self saveIssue169Method.
 	self openDebuggerOn: 'RowanSample1 new issue169'.
@@ -173,7 +175,9 @@ test_browseClass
 	
 	[self assert: (browser isKindOf: RowanSystemBrowser).
 	self assert: ('*String*' match: browser currentCard selectedClasses first)]
-			ensure: [self assert: browser topShell view close]!
+			ensure: 
+				[self assert: browser topShell view close.
+				projectsBrowser destroy]!
 
 test_debuggerCopyToClipboard
 	"Make sure to turn off test message box if you need to
@@ -231,6 +235,8 @@ test_frameDoubleClick
 test_implementersFromDebugger
 	| browser |
 	self testsIssue: #issue216 withTitle: 'method list in method browser reorders on accept'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	self selectRowanSample1Class.
 	self saveIssue216Method.
 	self openDebuggerOn: 'RowanSample1 new issue216'.
@@ -239,7 +245,9 @@ test_implementersFromDebugger
 	
 	[self assert: (browser isKindOf: JadeiteMethodListBrowser).
 	self assert: ('*Implementors of ''classFromName''*' match: browser topShell caption)]
-			ensure: [self assert: browser topShell view close]!
+			ensure: 
+				[self assert: browser topShell view close.
+				projectsBrowser destroy]!
 
 test_implementorsSendersCaption
 	| methodListBrowser |
@@ -260,6 +268,8 @@ test_restartInBlock
 	| restartProcess |
 	self testsIssue: #issue126
 		withTitle: 'Debugger opens second debugger, loses stack in original debugger'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	self selectRowanSample1Class.
 	self saveInterestingLoopMethod.
 	self methodListPresenter selection setBreakAtStepPoint: 8 session: session.	"inside the block"
@@ -274,11 +284,14 @@ test_restartInBlock
 	self deny: debugger frameListPresenter list size = secondDebugger frameListPresenter list size]
 			ensure: [restartProcess terminate]]
 			ensure: 
-				[self methodListPresenter selection clearBreakAtStepPoint: 8 session: session]!
+				[self methodListPresenter selection clearBreakAtStepPoint: 8 session: session.
+				projectsBrowser destroy]!
 
 test_selectAfterDiveNoStepPoint
 	self testsIssue: #issue166
 		withTitle: 'Debugger step with unsaved edits results in empty source pane'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	self selectRowanSample1Class.
 	self saveInterestingLoopMethod.
 	self methodListPresenter selection setBreakAtStepPoint: 8 session: session.	"inside the block"
@@ -288,26 +301,33 @@ test_selectAfterDiveNoStepPoint
 	self assert: debugger frameListPresenter list first equals: 'RowanSample1 >> test @1 line 1'.
 	self assert: (debugger frameListPresenter list at: 2)
 		equals: '[] in  ExecBlock1 (RowanSample1) >> interestingLoop @2 line 8'.
-	[self selectFrameAt: 2] fork. "<<< Walkback occurred here"  "Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
-	(Delay forMilliseconds: 100) wait. 
+	[self selectFrameAt: 2] fork.	"<<< Walkback occurred here"	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
+	(Delay forMilliseconds: 100) wait.
 	self assert: debugger documentPresenter value replaceLfWithCrLf
 		equals: self interestingLoopMethodSource]
 			ensure: 
-				[self methodListPresenter selection clearBreakAtStepPoint: 8 session: session]!
+				[self methodListPresenter selection clearBreakAtStepPoint: 8 session: session.
+				projectsBrowser destroy]!
 
 test_selectBlockContext
 	self testsIssue: #issue166
 		withTitle: 'Debugger step within block and then select block context has bad behavior'.
-	self selectRowanSample1Class.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectRowanSample1Class.
 	self saveIssue166Method.
 	self openDebuggerOn: 'RowanSample1 new issue166'.
 	self debuggerDo: [debugger stepInto].
 	self selectFrameAt: 2.	"<<< bug occurred here"
-	self assert: ('issue166*' match: debugger documentPresenter value)!
+	self assert: ('issue166*' match: debugger documentPresenter value)]
+			ensure: [projectsBrowser destroy]!
 
 test_sendersFromDebugger
 	| browser |
 	self testsIssue: #issue216 withTitle: 'method list in method browser reorders on accept'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	self selectRowanSample1Class.
 	self saveIssue216Method.
 	self openDebuggerOn: 'RowanSample1 new issue216'.
@@ -316,7 +336,9 @@ test_sendersFromDebugger
 	
 	[self assert: (browser isKindOf: JadeiteMethodListBrowser).
 	self assert: ('*Senders of ''classFromName''*' match: browser topShell caption)]
-			ensure: [self assert: browser topShell view close]!
+			ensure: 
+				[self assert: browser topShell view close.
+				projectsBrowser destroy]!
 
 test_terminateDoesNotWalkback
 	"Terminate a process other than the primary one"
@@ -738,9 +760,9 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #methodListBrowser!private! !
 !JadeiteDebuggerTestCase categoriesFor: #openDebuggerOn:!private! !
 !JadeiteDebuggerTestCase categoriesFor: #selectFrameAt:!private!support! !
-!JadeiteDebuggerTestCase categoriesFor: #setUp!private!running! !
+!JadeiteDebuggerTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteDebuggerTestCase categoriesFor: #systemBrowser!private! !
-!JadeiteDebuggerTestCase categoriesFor: #tearDown!private!running! !
+!JadeiteDebuggerTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteDebuggerTestCase categoriesFor: #terminateGsProcess!private!running! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerCopyToClipboard!public!tests! !
