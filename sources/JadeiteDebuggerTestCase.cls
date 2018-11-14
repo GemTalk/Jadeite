@@ -179,6 +179,30 @@ test_browseClass
 				[self assert: browser topShell view close.
 				projectsBrowser destroy]!
 
+test_browseClassVariablePane
+	| dictionaryBrowser dictionaryPresenter |
+	self testsIssue: #issue192
+		withTitle: 'Oscar-3.0.40: `browse object class` menu item in inspector (debugger) opens dictionary browser...'.
+	self openDebuggerOn: 'nil halt. Array with: RowanClassService new'.
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].	"on with:"
+	self debuggerDo: [debugger stepInto].
+	debugger variableListPresenter selectionByIndex: 1.
+	self assert: debugger variableDataPresenter value equals: 'Array'.
+	dictionaryBrowser := debugger browseObjectClass.
+	
+	[self assert: (dictionaryBrowser isKindOf: RowanSystemBrowser).
+	dictionaryPresenter := dictionaryBrowser currentCard.
+	self assert: dictionaryPresenter classListPresenter selection equals: 'Array'	"receiver is Array class"]
+			ensure: [dictionaryBrowser destroy].
+	debugger variableListPresenter selectionByIndex: 2.
+	self assert: debugger variableDataPresenter value equals: 'aRowanClassService:nil'.
+	projectsBrowser := debugger browseObjectClass.
+	
+	[self assert: (projectsBrowser isKindOf: JadeiteProjectsSystemBrowser).
+	self assert: projectsBrowser currentCard classListPresenter selection name equals: 'RowanClassService'	"receiver is Array class"]
+			ensure: [projectsBrowser destroy]!
+
 test_debuggerCopyToClipboard
 	"Make sure to turn off test message box if you need to
 	debug this test. "
@@ -765,6 +789,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteDebuggerTestCase categoriesFor: #terminateGsProcess!private!running! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerCopyToClipboard!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerDoNotCopyToClipboard!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_frameDoubleClick!public!tests! !
