@@ -256,6 +256,16 @@ test_frameDoubleClick
 	self assert: projectPresenter methodListPresenter selection selector equals: #classHierarchy]
 			ensure: [self assert: projectPresenter topShell view close]!
 
+test_frameDoubleClickNoActionInBlockContext
+	| projectPresenter |
+	self testsIssue: #issue238
+		withTitle: '"RowanDebugger does not understand #browseClass" from double click on frame selection (3.0.41)'.
+	self openDebuggerOn: '[RowanClassService new halt; classHierarchy] value'.
+	self assert: debugger frameListPresenter selectionByIndex equals: 1.
+	self assert: (debugger frameListPresenter selection copyFrom: 1 to: 2) equals: '[]'.
+	projectPresenter := debugger frameListPresenter trigger: #actionPerformed.	"simulates double click on the block context"
+	self assert: projectPresenter equals: debugger	"no browser opened and no walkback"!
+
 test_implementersFromDebugger
 	| browser |
 	self testsIssue: #issue216 withTitle: 'method list in method browser reorders on accept'.
@@ -793,6 +803,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerCopyToClipboard!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerDoNotCopyToClipboard!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_frameDoubleClick!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_frameDoubleClickNoActionInBlockContext!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_implementersFromDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_restartInBlock!public!tests! !

@@ -36,6 +36,7 @@ basicSelectedFrame
 
 browseFrameMethod
 	| classService shell |
+	frame gsMethod selector ifNil:[^self "block context"]. 
 	classService := RowanClassService new name: frame gsMethod className.
 	BrowserUpdate current updateService: classService session: gciSession.
 	^classService projectName = RowanService notRowanizedPackageName
