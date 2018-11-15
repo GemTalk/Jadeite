@@ -397,8 +397,7 @@ editFind
 	(tab class canUnderstand: #editFind) ifTrue: [tab editFind]!
 
 editReplace
-	self isSourceTabSelected ifFalse: [^self].
-	View focus findReplace!
+	View focus == methodSourcePresenter view ifTrue: [View focus findReplace]!
 
 editSaveClass
 	| packageService |
@@ -689,14 +688,20 @@ isSourceTabSelected
 !
 
 jadeDebug
-	self isSourceTabSelected ifFalse: [^self].
-	
-	[gciSession
-		debugString: self currentSelectionOrLine
-		fromContext: nil
-		environment: environment]
-			on: GsCompileError
-			do: [:ex | self jadeExecute]!
+	View focus == methodSourcePresenter view ifFalse: [^self].
+	^super jadeDebug!
+
+jadeDisplay
+	View focus == methodSourcePresenter view ifFalse: [^self].
+	^super jadeDisplay!
+
+jadeExecute
+	View focus == methodSourcePresenter view ifFalse: [^self].
+	^super jadeExecute!
+
+jadeInspect
+	View focus == methodSourcePresenter view ifFalse: [^self].
+	^super jadeInspect!
 
 jadeMenuStrings
 
@@ -1871,6 +1876,9 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #isOkayToChange!event handlers!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #isSourceTabSelected!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeDebug!menu handlers!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #jadeDisplay!menu handlers!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #jadeExecute!menu handlers!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #jadeInspect!menu handlers!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #loadProjects!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #makeDefault!project menu handlers!public! !
