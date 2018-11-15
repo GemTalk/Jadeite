@@ -24,7 +24,8 @@ addHierarchyService: service to: treeModel withParent: parentService
 
 basicPrepareForReplication
 	"don't iterate over sub colletions"
-	classes := nil!
+	classes := nil.
+	testClasses := nil. !
 
 classes
 
