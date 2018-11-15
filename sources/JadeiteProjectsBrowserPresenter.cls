@@ -396,6 +396,10 @@ editFind
 	tab setFocus.
 	(tab class canUnderstand: #editFind) ifTrue: [tab editFind]!
 
+editReplace
+	self isSourceTabSelected ifFalse: [^self].
+	View focus findReplace!
+
 editSaveClass
 	| packageService |
 	packageService := packageListPresenter selection.
@@ -1835,6 +1839,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #definedMethodMenuItemLabel!menus!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #displayMultipleCategories!displaying!private!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editFind!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #editReplace!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editSaveClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editSaveClassComment!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editSaveMethod!menu handlers!public! !
