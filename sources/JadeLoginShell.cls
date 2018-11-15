@@ -432,10 +432,7 @@ aboutJadeite
 	"See also JadeTextDocument>>#'aboutJade'"
 
 	| version |
-	version := 
-			[SessionManager current isRuntime ifTrue: [SessionManager current version] ifFalse: ['<Development>']]
-					on: Error
-					do: [:ex | ex return: ex description printString].
+	version := [self jadeiteVersionString] on: Error do: [:ex | ex return: ex description printString].
 	MessageBox
 		notify: 'Jadeite is an open-source Smalltalk GUI IDE for use with
 Rowan-enabled GemStone, developed by GemTalk Systems LLC
@@ -464,6 +461,11 @@ icon
 
 	^Icon fromFile: 'icons\GS32.ico'.
 !
+
+jadeiteVersionString
+	^SessionManager current isRuntime
+		ifTrue: [SessionManager current version]
+		ifFalse: ['<Development>']!
 
 resource_Compact_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.
@@ -494,6 +496,7 @@ showOnSample
 !JadeLoginShell class categoriesFor: #defaultModel!public! !
 !JadeLoginShell class categoriesFor: #fileTypes!constants!public! !
 !JadeLoginShell class categoriesFor: #icon!constants!public! !
+!JadeLoginShell class categoriesFor: #jadeiteVersionString!private! !
 !JadeLoginShell class categoriesFor: #resource_Compact_view!public!resources-views! !
 !JadeLoginShell class categoriesFor: #resource_Default_view!public!resources-views! !
 !JadeLoginShell class categoriesFor: #showOnSample!public! !

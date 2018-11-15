@@ -11,9 +11,7 @@ JadeiteLoginShell comment: ''!
 !JadeiteLoginShell methodsFor!
 
 basicCaption
-
-	^'Jadeite Login'.
-!
+	^'Jadeite Login Version: ' , self class jadeiteVersionString!
 
 fillVersionList
 	| list |
@@ -32,7 +30,7 @@ postLogin: aGciSession
 	^result!
 
 updateCaption
-	^'Jadeite Login'! !
+	self caption: 'Jadeite Version: ', self class jadeiteVersionString! !
 !JadeiteLoginShell categoriesFor: #basicCaption!accessing!public! !
 !JadeiteLoginShell categoriesFor: #fillVersionList!public! !
 !JadeiteLoginShell categoriesFor: #loginFailureCaption!private! !
