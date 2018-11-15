@@ -706,7 +706,7 @@ jadeInspect
 jadeMenuStrings
 
 	false ifTrue: [
-		self abortTransaction; commitTransaction; newWorkspace; openSystemBrowser; findClass; gotoClass; refreshFromServer; exit.
+		self abortTransaction; commitTransaction; newBrowser; addSystemBrowser; maximizeCode; findClass; gotoClass; refreshFromServer; exit.
 	]. 
 	^#(
 		'&Jadeite'
