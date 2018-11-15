@@ -111,6 +111,32 @@ test_inspectString
 	self assert: (inspector isKindOf: JadeInspector).
 	self assert: inspector model = 'abc' !
 
+test_menuBarItemNames
+	| remoteObject |
+	self testsIssue: #issue194 withTitle: 'Oscar-3.0.40: Wodkspace window still uses `Jade` labels'.
+	remoteObject := session
+				executeString: '123'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	
+	[self assert: (inspector view menuBar items at: 1) text equals: '&File'.
+	(inspector view menuBar items at: 1) items last text equals: 'E&xit Jadeite	Alt+F4'.
+	self assert: (inspector view menuBar items at: 2) text equals: '&Edit'.
+	self assert: (inspector view menuBar items at: 3) text equals: '&Jadeite'.
+	self assert: (inspector view menuBar items at: 4) text equals: '&Help']
+			ensure: [inspector view close].
+	remoteObject := session
+				executeString: 'Array new'
+				fromContext: nil
+				environment: 0.	"navigation inspector"
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: (inspector view menuBar items at: 1) text equals: '&File'.
+	(inspector view menuBar items at: 1) items last text equals: 'E&xit Jadeite	Alt+F4'.
+	self assert: (inspector view menuBar items at: 2) text equals: '&Edit'.
+	self assert: (inspector view menuBar items at: 3) text equals: '&Jadeite'.
+	self assert: (inspector view menuBar items at: 4) text equals: '&Help'!
+
 test_openDictionaryBrowser
 	| remoteObject shell |
 	remoteObject := session
@@ -158,6 +184,7 @@ test_openProjectsBrowserOnClass
 !JadeiteInspectorTestCase categoriesFor: #test_captionChange!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectString!public!test! !
+!JadeiteInspectorTestCase categoriesFor: #test_menuBarItemNames!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowser!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowserOnClass!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowser!public!test! !
