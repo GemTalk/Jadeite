@@ -366,7 +366,7 @@ test_classVersionIncrementedInHierarchy
 	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
 	self assert: self classListPresenter selection displayString equals: 'TestClass (5/5)'!
 
-test_closeWindowsInvalidSession
+test_closeConsoleInvalidSession
 	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector |
 	"poison session and exit Jadeite. Make sure all Jadeite windows close"
 	self testsIssue: #issue267 withTitle: 'logout closes project browsers but not method list browsers'.
@@ -396,7 +396,7 @@ test_closeWindowsInvalidSession
 	self assert: complexInspector isOpen.
 	session beInvalidSession.
 	
-	[transcript exit.
+	[transcript onCloseRequested.
 	self deny: sunitPresenter isOpen.
 	self deny: projectsBrowser isOpen.
 	self deny: methodListBrowser isOpen.
@@ -407,7 +407,57 @@ test_closeWindowsInvalidSession
 	self deny: complexInspector isOpen]
 			ensure: 
 				[projectsBrowser := nil.
-				GciSession current: nil.  
+				GciSession current: nil.
+				JadeiteLoginShell allInstances first login.
+				self resources do: 
+						[:resource |
+						resource current
+							tearDown;
+							setUp]]!
+
+test_closeConsoleValidSession
+	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector |
+	"poison session and exit Jadeite. Make sure all Jadeite windows close"
+	self testsIssue: #issue267 withTitle: 'logout closes project browsers but not method list browsers'.
+	self selectRowanSample1Class.
+	self selectMethodNamed: #foo.
+	methodListBrowser := self projectsPresenter browseImplementors.
+	hierarchyListBrowser := self projectsPresenter browseHierarchyImplementors.
+	sunitPresenter := transcript jadeBrowseTests.
+	workspace := projectsBrowser addWorkspace.
+	dictionaryBrowser := transcript openDictionaryBrowser.
+	simpleInspector := JadeInspector showOn: (session
+						executeString: '123'
+						fromContext: nil
+						environment: 0)
+				session: session.
+	complexInspector := JadeInspector showOn: (session
+						executeString: 'Array new'
+						fromContext: nil
+						environment: 0)
+				session: session.
+	self assert: sunitPresenter isOpen.
+	self assert: projectsBrowser isOpen.
+	self assert: methodListBrowser isOpen.
+	self assert: hierarchyListBrowser isOpen.
+	self assert: dictionaryBrowser isOpen.
+	self assert: simpleInspector isOpen.
+	self assert: complexInspector isOpen.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #yes.
+	
+	[[transcript onCloseRequested] ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self deny: sunitPresenter isOpen.
+	self deny: projectsBrowser isOpen.
+	self deny: methodListBrowser isOpen.
+	self deny: hierarchyListBrowser isOpen.
+	self deny: workspace isOpen.
+	self deny: dictionaryBrowser isOpen.
+	self deny: simpleInspector isOpen.
+	self deny: complexInspector isOpen]
+			ensure: 
+				[projectsBrowser := nil.
+				GciSession current: nil.
 				JadeiteLoginShell allInstances first login.
 				self resources do: 
 						[:resource |
@@ -528,6 +578,105 @@ test_duplicateInstVarsInHierarchy
 		package: 'RowanSample1-Tests'.
 	self assert: ('ERROR: *' match: self projectsPresenter topShell statusBarText).
 	self projectsPresenter classDefinitionPresenter view isModified: false. !
+
+test_exitJadeiteInvalidSession
+	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector |
+	"poison session and exit Jadeite. Make sure all Jadeite windows close"
+	self testsIssue: #issue267 withTitle: 'logout closes project browsers but not method list browsers'.
+	self selectRowanSample1Class.
+	self selectMethodNamed: #foo.
+	methodListBrowser := self projectsPresenter browseImplementors.
+	hierarchyListBrowser := self projectsPresenter browseHierarchyImplementors.
+	sunitPresenter := transcript jadeBrowseTests.
+	workspace := projectsBrowser addWorkspace.
+	dictionaryBrowser := transcript openDictionaryBrowser.
+	simpleInspector := JadeInspector showOn: (session
+						executeString: '123'
+						fromContext: nil
+						environment: 0)
+				session: session.
+	complexInspector := JadeInspector showOn: (session
+						executeString: 'Array new'
+						fromContext: nil
+						environment: 0)
+				session: session.
+	self assert: sunitPresenter isOpen.
+	self assert: projectsBrowser isOpen.
+	self assert: methodListBrowser isOpen.
+	self assert: hierarchyListBrowser isOpen.
+	self assert: dictionaryBrowser isOpen.
+	self assert: simpleInspector isOpen.
+	self assert: complexInspector isOpen.
+	session beInvalidSession.
+	
+	[transcript exit.
+	self deny: sunitPresenter isOpen.
+	self deny: projectsBrowser isOpen.
+	self deny: methodListBrowser isOpen.
+	self deny: hierarchyListBrowser isOpen.
+	self deny: workspace isOpen.
+	self deny: dictionaryBrowser isOpen.
+	self deny: simpleInspector isOpen.
+	self deny: complexInspector isOpen]
+			ensure: 
+				[projectsBrowser := nil.
+				GciSession current: nil.
+				JadeiteLoginShell allInstances first login.
+				self resources do: 
+						[:resource |
+						resource current
+							tearDown;
+							setUp]]!
+
+test_exitJadeiteValidSession
+	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector |
+	"poison session and exit Jadeite. Make sure all Jadeite windows close"
+	self testsIssue: #issue267 withTitle: 'logout closes project browsers but not method list browsers'.
+	self selectRowanSample1Class.
+	self selectMethodNamed: #foo.
+	methodListBrowser := self projectsPresenter browseImplementors.
+	hierarchyListBrowser := self projectsPresenter browseHierarchyImplementors.
+	sunitPresenter := transcript jadeBrowseTests.
+	workspace := projectsBrowser addWorkspace.
+	dictionaryBrowser := transcript openDictionaryBrowser.
+	simpleInspector := JadeInspector showOn: (session
+						executeString: '123'
+						fromContext: nil
+						environment: 0)
+				session: session.
+	complexInspector := JadeInspector showOn: (session
+						executeString: 'Array new'
+						fromContext: nil
+						environment: 0)
+				session: session.
+	self assert: sunitPresenter isOpen.
+	self assert: projectsBrowser isOpen.
+	self assert: methodListBrowser isOpen.
+	self assert: hierarchyListBrowser isOpen.
+	self assert: dictionaryBrowser isOpen.
+	self assert: simpleInspector isOpen.
+	self assert: complexInspector isOpen.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #yes.
+	
+	[[transcript onCloseRequested] ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self deny: sunitPresenter isOpen.
+	self deny: projectsBrowser isOpen.
+	self deny: methodListBrowser isOpen.
+	self deny: hierarchyListBrowser isOpen.
+	self deny: workspace isOpen.
+	self deny: dictionaryBrowser isOpen.
+	self deny: simpleInspector isOpen.
+	self deny: complexInspector isOpen]
+			ensure: 
+				[projectsBrowser := nil.
+				GciSession current: nil.
+				JadeiteLoginShell allInstances first login.
+				self resources do: 
+						[:resource |
+						resource current
+							tearDown;
+							setUp]]!
 
 test_expansion
 	"When no classes are selected and the hierarchy tab is chosen, we should
@@ -1461,13 +1610,16 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classSideSelection!public!test!test class hierarchy!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInClassList!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInHierarchy!public!test class hierarchy! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_closeWindowsInvalidSession!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleInvalidSession!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleValidSession!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassList!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVars!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsInHierarchy!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_exitJadeiteInvalidSession!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_exitJadeiteValidSession!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_expansion!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_extensionColoringInHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findClass!public!test!test class list! !

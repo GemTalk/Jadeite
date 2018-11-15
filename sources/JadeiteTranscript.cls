@@ -68,7 +68,7 @@ isTranscriptInstalled
 
 onCloseRequested: boolValueHolder
 	| answer |
-	super onCloseRequested: boolValueHolder.
+	self onPromptToSaveChanges: boolValueHolder.
 	boolValueHolder value ifFalse: [^self].
 	gciSession isNil ifTrue: [^self].
 	gciSession isValidSession
