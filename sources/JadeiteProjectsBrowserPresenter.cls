@@ -1493,6 +1493,11 @@ sundryCleanup
 	self statusBarText: String new.
 	self cleanupComparisonBrowser!
 
+sunitPresenter
+	"for testing"
+
+	^sunitPresenter!
+
 targetCategory
 	self isVariablesTabSelected ifTrue: [^self selectedMethodCategory].
 	categoryListPresenter hasSelection ifFalse: [^self selectedMethodCategory].
@@ -1953,6 +1958,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #setTestClass:!event handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #showSuperClassComparison!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #sundryCleanup!initialize/release!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #sunitPresenter!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #targetCategory!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #textTabChanged!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #textTabs!private!text tabs! !

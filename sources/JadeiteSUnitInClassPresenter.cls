@@ -10,6 +10,9 @@ JadeiteSUnitInClassPresenter comment: ''!
 !JadeiteSUnitInClassPresenter categoriesForClass!Unclassified! !
 !JadeiteSUnitInClassPresenter methodsFor!
 
+browseIt
+	^self debug!
+
 debug
 	testClassService ifNil: [^self].
 	methodListPresenter selection size = 1
@@ -19,6 +22,10 @@ debug
 		with: methodListPresenter selection last methodName
 		with: testClassService name!
 
+jadeDebug
+	"hot key hook" 
+	^self debug.!
+
 queryCommand: aCommandQuery
 	aCommandQuery isEnabled: true. 
 	^false!
@@ -26,7 +33,7 @@ queryCommand: aCommandQuery
 runAll
 	self runTests: methodListPresenter model in: testClassService name!
 
-runAndMeasureTime
+runAndMesureTime
 	| millisecondsToRun timeMessage time |
 	"(testCasesPresenter selection size = 1) ifFalse: [^MessageBox notify: 'Select only one Test' ]."
 	timeMessage := WriteStream on: String new.
@@ -43,10 +50,12 @@ runAndMeasureTime
 
 runSelected
 	self runTests: methodListPresenter selection in: testClassService name! !
+!JadeiteSUnitInClassPresenter categoriesFor: #browseIt!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #debug!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #jadeDebug!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #queryCommand:!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #runAll!public! !
-!JadeiteSUnitInClassPresenter categoriesFor: #runAndMeasureTime!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #runAndMesureTime!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #runSelected!public! !
 
 !JadeiteSUnitInClassPresenter class methodsFor!

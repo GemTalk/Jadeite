@@ -1477,6 +1477,18 @@ test_simpleHierarchyTest
 	self selectClassListTab.
 	self assert: self projectsPresenter classListPresenter selection name = 'RowanProjectService'!
 
+test_sunitCtrlB
+	| testResult printString |
+	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter.
+	self projectsPresenter sunitPresenter ensureVisible.
+	self projectsPresenter sunitPresenter methodListPresenter selectionByIndex: #(1).	"test1"
+	testResult := self projectsPresenter sunitPresenter jadeDebug.	"What is sent when Ctrl-B is pressed."
+	printString := session send: #printString to: testResult.
+	self assert: printString equals: 'RowanSample1Test>>#test1'	"test ran without error"!
+
 test_sUnitTabHandlesShortSelector
 	self testsIssue: #issue173 withTitle: 'new SUnit browser code walksback on short selector'.
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
@@ -1668,6 +1680,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultipleProjects!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_setAndClearBreakpoint!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_simpleHierarchyTest!public!test!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitCtrlB!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabHandlesShortSelector!public!test!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabRefresh!public!test!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsWithoutImplementorsFound!public!test! !
