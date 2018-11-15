@@ -679,6 +679,21 @@ isOkayToChange
 	^true.
 !
 
+isSourceTabSelected
+
+	^textAreaTabs currentCard name = 'methodSource'.
+!
+
+jadeDebug
+	self isSourceTabSelected ifFalse: [^self].
+	
+	[gciSession
+		debugString: self currentSelectionOrLine
+		fromContext: nil
+		environment: environment]
+			on: GsCompileError
+			do: [:ex | self jadeExecute]!
+
 jadeMenuStrings
 
 	false ifTrue: [
@@ -1849,6 +1864,8 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #isDictionariesTabSelected!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #isHierarchyTabSelected!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #isOkayToChange!event handlers!public!testing! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #isSourceTabSelected!public!testing! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #jadeDebug!menu handlers!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #loadProjects!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #makeDefault!project menu handlers!public! !
