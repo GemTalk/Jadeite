@@ -27,6 +27,7 @@ package methodNames
 	add: #JadeiteSUnitPresenter -> #classListPresenter;
 	add: #JadeiteSUnitPresenter -> #methodListPresenter;
 	add: #JadeiteSUnitPresenter -> #packageListPresenter;
+	add: #JadeiteSUnitPresenter -> #refresh;
 	add: #SUnitBrowserModel -> #debugIndividualTestsWithResources:;
 	add: 'MessageBox class' -> #new;
 	add: 'Prompter class' -> #createOn:;
@@ -155,10 +156,26 @@ methodListPresenter
 	^methodListPresenter!
 
 packageListPresenter
-	^packageListPresenter! !
+	^packageListPresenter!
+
+refresh
+	| classSelectionNames methodSelectionNames |
+	classListPresenter selections isEmpty ifTrue: [^super reset].
+	classSelectionNames := classListPresenter selections collect: [:classService | classService name].
+	methodSelectionNames := methodListPresenter selections
+				collect: [:methodService | methodService selector].
+	BrowserUpdate current updateServices: classListPresenter selections session: self gciSession.
+	self updateClasses.
+	self updateMethods.
+	classListPresenter selections: (classListPresenter list
+				select: [:classService | classSelectionNames includes: classService name]).
+	methodListPresenter selections: (methodListPresenter list
+				select: [:methodService | methodSelectionNames includes: methodService selector]).
+	self reset! !
 !JadeiteSUnitPresenter categoriesFor: #classListPresenter!accessing!private! !
 !JadeiteSUnitPresenter categoriesFor: #methodListPresenter!accessing!private! !
 !JadeiteSUnitPresenter categoriesFor: #packageListPresenter!accessing!private! !
+!JadeiteSUnitPresenter categoriesFor: #refresh!event handlers!public! !
 
 !MessageBox class methodsFor!
 

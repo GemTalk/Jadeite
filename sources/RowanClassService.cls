@@ -47,6 +47,14 @@ behaviorIdentifier
 categories
 	^categories!
 
+classesMethodsUpdate: presenter browser: browser
+	| classNames | 
+	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
+	classNames := browser classListPresenter selections collect:[:classService | classService name]. 
+	(classNames includes: name) ifFalse: [^self].
+	filters isEmpty ifTrue:[filterType := nil].
+	self displayMethodsOn: presenter!
+
 classHierarchyUpdate: presenter browser: browser
 	| treeModel subclasses parent |
 	hierarchyServices ifNil: [^self].
@@ -334,7 +342,8 @@ updateListIn: presenter from: visibleMethods
 				select: [:methodService | presenter selections includes: methodService].
 	presenter list: visibleMethods.
 	presenter selections: newSelections.
-	presenter parentPresenter updateSUnitTab.!
+	(presenter parentPresenter class canUnderstand: #updateSUnitTab)
+		ifTrue: [presenter parentPresenter updateSUnitTab]!
 
 updateVariables: presenter
 	| selections availableSelections |
@@ -350,6 +359,7 @@ variables
 !RowanClassService categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanClassService categoriesFor: #behaviorIdentifier!accessing!public! !
 !RowanClassService categoriesFor: #categories!accessing!private! !
+!RowanClassService categoriesFor: #classesMethodsUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #classMethodsUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #classOrHierarchyPresenter:!private!updating! !

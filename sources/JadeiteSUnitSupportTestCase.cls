@@ -76,6 +76,33 @@ test_openSunitBrowser
 
 	self assert: (sunitBrowser isKindOf: JadeiteSUnitBrowser)!
 
+test_refresh
+	| source newMethod |
+	self testsIssue: #issue279 withTitle: 'Sunit browser refresh, auto or manual'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
+	self assert: self sunitPresenter methodListPresenter list size equals: 4.
+	newMethod := self sunitPresenter methodListPresenter list
+				detect: [:methodService | methodService selector == #testMethod]
+				ifNone: [].
+	self assertIsNil: newMethod.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter.
+	source := 'testMethod  
+		self assert: true'.
+	self projectsPresenter methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self projectsPresenter classListPresenter selection.
+	newMethod := self sunitPresenter methodListPresenter list
+				detect: [:methodService | methodService selector == #testMethod]
+				ifNone: [].
+	self denyIsNil: newMethod.
+	self assert: self sunitPresenter methodListPresenter list size equals: 5]
+			ensure: [projectsBrowser destroy]!
+
 test_sunitBrowserHasRowanPackages
 	self assert: (self sunitPresenter isKindOf: JadeiteSUnitPresenter).	"a different presenter is used in the projects browser"
 	self assert: self sunitPresenter packageListPresenter list size > 0.
@@ -103,6 +130,7 @@ test_sunitBrowserHasRowanTestMethods
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseSunitClass!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_openSunitBrowser!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_refresh!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanPackages!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestMethods!public!tests! !

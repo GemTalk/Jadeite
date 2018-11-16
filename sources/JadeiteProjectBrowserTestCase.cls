@@ -1493,7 +1493,6 @@ test_sunitCtrlB
 	self assert: printString equals: 'RowanSample1Test>>#test1'	"test ran without error"!
 
 test_sunitTabCanRefresh
-	| item |
 	self testsIssue: #issue279 withTitle: 'Sunit browser refresh, auto or manual'.
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.

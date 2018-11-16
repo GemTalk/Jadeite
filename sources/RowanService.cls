@@ -26,6 +26,8 @@ classDefinitionUpdate: presenter
 classesHierarchyUpdate: presenter
 !
 
+classesMethodsUpdate: presenter browser: browser!
+
 classesUpdate: presenter browser: anObject
 	!
 
@@ -248,6 +250,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #classCommentUpdate:!public!updating! !
 !RowanService categoriesFor: #classDefinitionUpdate:!public!updating! !
 !RowanService categoriesFor: #classesHierarchyUpdate:!public!updating! !
+!RowanService categoriesFor: #classesMethodsUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #classesUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #classHierarchyUpdate:!public!updating! !
 !RowanService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
