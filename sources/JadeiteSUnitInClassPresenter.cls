@@ -22,9 +22,29 @@ debug
 		with: methodListPresenter selection last methodName
 		with: testClassService name!
 
+editFind
+
+	"do nothing"!
+
+editReplace
+
+	"do nothing"!
+
 jadeDebug
 	"hot key hook" 
 	^self debug.!
+
+jadeDisplay
+
+	"do nothing"!
+
+jadeExecute
+
+	"do nothing"!
+
+jadeInspect
+
+	"do nothing"!
 
 newBrowser
 
@@ -62,7 +82,12 @@ runSelected
 	self runTests: methodListPresenter selection in: testClassService name! !
 !JadeiteSUnitInClassPresenter categoriesFor: #browseIt!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #debug!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #editFind!menu handlers support!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #editReplace!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #jadeDebug!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #jadeDisplay!menu handlers support!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #jadeExecute!menu handlers support!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #jadeInspect!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #newBrowser!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #queryCommand:!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #refresh!public! !
