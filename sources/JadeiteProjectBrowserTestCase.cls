@@ -1106,6 +1106,34 @@ test_methodsContainingCaption
 	[self assert: ('Methods containing ''updateFromSton:'' for *' match: methodListBrowser caption)]
 		ensure: [methodListBrowser destroy]!
 
+test_methodTabSelected
+	"when a method is changed the method source tab should be selected"
+
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter.
+	self assert: self projectsPresenter textAreaTabs currentCard name = 'classDefinition'.
+	self selectMethodNamed: #test1.
+	self assert: self projectsPresenter textAreaTabs currentCard name = 'methodSource'.
+	self selectHierarchyTab.
+	self assert: self projectsPresenter textAreaTabs currentCard name = 'classDefinition'. "presume user is thinking classes so show class def"
+	self selectMethodNamed: #test2.
+	self assert: self projectsPresenter textAreaTabs currentCard name = 'methodSource'.
+	self selectSUnitTab. 
+	self assert: self projectsPresenter textAreaTabs currentCard name = 'sunit'.
+	self selectMethodNamed: #test1.
+	self assert: self projectsPresenter textAreaTabs currentCard name = 'methodSource'.
+	self selectClassTab. "effectively deselect method go back to class def" 
+	self assert: self projectsPresenter textAreaTabs currentCard name = 'classDefinition'. 
+	self selectInstanceTab. 
+	self assert: self projectsPresenter textAreaTabs currentCard name = 'classDefinition'.
+	self selectMethodNamed: #test1.
+	self assert: self projectsPresenter textAreaTabs currentCard name = 'methodSource'.
+
+
+	
+	!
+
 test_multipleCompileMethod
 	self testsIssue: #issue170
 		withTitle: 'Editing methods to create new method and updating created method gets errors'.
@@ -1712,6 +1740,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menusDontAddBreaks!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_methodsContaining!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_methodsContainingCaption!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_methodTabSelected!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noSelectionHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectBrowser!public!test menus!test projects! !

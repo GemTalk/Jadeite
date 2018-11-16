@@ -306,7 +306,7 @@ createSchematicWiringForMethodList
 		when: #aboutToDisplayMenu: 	send: #updateMethodMenu:		to: self;
 		when: #selectionChanging:		send: #aboutToChange:			to: self; 
 		when: #keyTyped: 			send: #selectServiceStartingWith: 	to: methodListPresenter; 
-		when: #selectionChanged 		send: #updateMethodSource 		to: self!
+		when: #selectionChanged 		send: #methodSelectionChanged 	to: self!
 
 createSchematicWiringForPackageDictionaryTabs
 
@@ -755,6 +755,10 @@ methodMenuBreak: aMenu
 	selection := methodListPresenter selectionOrNil.
 	selection ifNil: [^self].
 	selection appendToSourceMenu: aMenu presenter: methodSourcePresenter!
+
+methodSelectionChanged
+	self updateMethodSource.
+	methodSourcePresenter ensureVisible!
 
 methodsMenuStrings
 	false
@@ -1895,6 +1899,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodListPresenter!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodListSelection!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodMenuBreak:!menus!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #methodSelectionChanged!event handlers!public!text tabs!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodsMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #moveMethods:toCategory:!drag & drop!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #newBrowser!menu handlers!public! !
