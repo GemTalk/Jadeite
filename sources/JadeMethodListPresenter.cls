@@ -145,15 +145,16 @@ getSelectedMethodName
 
 jadeMenuStrings
 
+	false ifTrue: [
+		self abortTransaction; commitTransaction; newWorkspace; newProjectsBrowser; exit
+	]. 
 	^#(
 		'&Jadeite'
 		'&Abort Transaction//abortTransaction'
 		'&CommitTransaction//commitTransaction'
 		'-'
 		'&New Worspace/Ctrl+N/newWorkspace'
-		'&Open System Browser/Ctrl+B/openSystemBrowser'
-		'-'
-		'Save/Ctrl+S/fileSave'
+		'&Open Projects Browser/Ctrl+P/newProjectsBrowser'
 		'E&xit/Shift+F4/exit'
 	).
 !
