@@ -113,11 +113,17 @@ package methodNames
 	add: #JadeInspector -> #shellName;
 	add: #JadeInspector -> #shellNameExtraInfo;
 	add: #JadeInspector -> #updateCaption;
+	add: #JadeiteSUnitAbstractPresenter -> #methodListPresenter;
+	add: #JadeiteSUnitAbstractPresenter -> #methodListPresenter:;
 	add: #JadeiteSUnitInClassPresenter -> #testClassService:;
 	add: #JadeiteSUnitPresenter -> #browseClass;
 	add: #JadeiteSUnitPresenter -> #browseMethods;
+	add: #JadeiteSUnitPresenter -> #classListPresenter;
+	add: #JadeiteSUnitPresenter -> #methodListPresenter;
 	add: #JadeiteSUnitPresenter -> #onViewOpened;
+	add: #JadeiteSUnitPresenter -> #packageListPresenter;
 	add: #JadeiteSUnitPresenter -> #queryCommand:;
+	add: #JadeiteSUnitPresenter -> #refresh;
 	add: #JadeiteSUnitPresenter -> #registerPresentersForUpdates;
 	add: #JadeiteSUnitPresenter -> #updateClasses;
 	add: #JadeiteSUnitPresenter -> #updateMethods;
@@ -1276,6 +1282,16 @@ resource_Special_view
 !JadeInspector class categoriesFor: #resource_Default_view!public!resources-views! !
 !JadeInspector class categoriesFor: #resource_Special_view!public!resources-views! !
 
+!JadeiteSUnitAbstractPresenter methodsFor!
+
+methodListPresenter
+	^methodListPresenter!
+
+methodListPresenter: anObject
+	methodListPresenter := anObject! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #methodListPresenter!accessing!private! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #methodListPresenter:!accessing!private! !
+
 !JadeiteSUnitInClassPresenter methodsFor!
 
 testClassService: classService
@@ -1309,6 +1325,12 @@ browseMethods
 		selecting: nil.
 	^browser!
 
+classListPresenter
+	^classListPresenter!
+
+methodListPresenter
+	^methodListPresenter!
+
 onViewOpened
 	testCounter := Array with: 0 with: OrderedCollection new.
 	super onViewOpened.
@@ -1319,6 +1341,9 @@ onViewOpened
 	(self view viewNamed: 'statusTestCases') model: status.
 	(self view viewNamed: 'statusTestCounter') model: status.
 	self updatePackages. !
+
+packageListPresenter
+	^packageListPresenter!
 
 queryCommand: commandQuery
 	commandQuery isEnabled: true.
@@ -1331,6 +1356,21 @@ queryCommand: commandQuery
 			[classListPresenter selections isEmpty ifTrue: [commandQuery isEnabled: false].
 			^true].
 	^true!
+
+refresh
+	| classSelectionNames methodSelectionNames |
+	classListPresenter selections isEmpty ifTrue: [^super reset].
+	classSelectionNames := classListPresenter selections collect: [:classService | classService name].
+	methodSelectionNames := methodListPresenter selections
+				collect: [:methodService | methodService selector].
+	BrowserUpdate current updateServices: classListPresenter selections session: self gciSession.
+	self updateClasses.
+	self updateMethods.
+	classListPresenter selections: (classListPresenter list
+				select: [:classService | classSelectionNames includes: classService name]).
+	methodListPresenter selections: (methodListPresenter list
+				select: [:methodService | methodSelectionNames includes: methodService selector]).
+	self reset!
 
 registerPresentersForUpdates
 	BrowserUpdate current register: packageListPresenter 	selector: #testPackages:.
@@ -1366,8 +1406,12 @@ updateServices: services
 	BrowserUpdate current updateServices: services session: gciSession! !
 !JadeiteSUnitPresenter categoriesFor: #browseClass!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #browseMethods!event handlers!public! !
+!JadeiteSUnitPresenter categoriesFor: #classListPresenter!accessing!private! !
+!JadeiteSUnitPresenter categoriesFor: #methodListPresenter!accessing!private! !
 !JadeiteSUnitPresenter categoriesFor: #onViewOpened!event handlers!public! !
+!JadeiteSUnitPresenter categoriesFor: #packageListPresenter!accessing!private! !
 !JadeiteSUnitPresenter categoriesFor: #queryCommand:!event handlers!public! !
+!JadeiteSUnitPresenter categoriesFor: #refresh!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteSUnitPresenter categoriesFor: #updateClasses!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #updateMethods!event handlers!public! !

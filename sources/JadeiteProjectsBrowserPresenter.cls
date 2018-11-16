@@ -141,6 +141,10 @@ checkout
 	projectListPresenter selection checkoutUsing: self.
 	self refreshFromServer!
 
+classDefinitionPresenter
+
+	^classDefinitionPresenter!
+
 classesMenuStrings
 	| definedLabel menuStrings |
 	false
@@ -1831,6 +1835,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #categoryListPresenter!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #checkout!project menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #classDefinitionPresenter!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #classesMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #classHierarchyTabs!accessing!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #cleanupComparisonBrowser!initialize/release!private! !
