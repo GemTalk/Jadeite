@@ -46,7 +46,8 @@ editMenuStrings
 		'Display/Ctrl+D/jadeDisplay'
 		'Execute/Ctrl+E/jadeExecute'
 		'Inspect/Ctrl+Q/jadeInspect'
-		'Browse Class/Ctrl+B/browseSelectedClass'
+		'Debug/Ctrl+B/jadeDebug'
+		'Browse Class/Ctrl+P/browseSelectedClass'
 	).
 !
 

@@ -53,7 +53,8 @@ classesMethodsUpdate: presenter browser: browser
 	classNames := browser classListPresenter selections collect:[:classService | classService name]. 
 	(classNames includes: name) ifFalse: [^self].
 	filters isEmpty ifTrue:[filterType := nil].
-	self displayMethodsOn: presenter!
+	methods ifNotNil:[
+	self displayMethodsOn: presenter]!
 
 classHierarchyUpdate: presenter browser: browser
 	| treeModel subclasses parent |
