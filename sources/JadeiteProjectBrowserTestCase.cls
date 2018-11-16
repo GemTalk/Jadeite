@@ -141,6 +141,9 @@ selectHierarchyTab
 selectHierarchyTabIn: presenter
 	presenter classHierarchyTabs lastCard!
 
+selectSUnitTab
+	self projectsPresenter sunitPresenter ensureVisible!
+
 selectTreeServicesNamed: anArray in: presenter
 	presenter resetSelection.
 	anArray do: 
@@ -1483,11 +1486,23 @@ test_sunitCtrlB
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter.
-	self projectsPresenter sunitPresenter ensureVisible.
+	self selectSUnitTab.
 	self projectsPresenter sunitPresenter methodListPresenter selectionByIndex: #(1).	"test1"
 	testResult := self projectsPresenter sunitPresenter jadeDebug.	"What is sent when Ctrl-B is pressed."
 	printString := session send: #printString to: testResult.
 	self assert: printString equals: 'RowanSample1Test>>#test1'	"test ran without error"!
+
+test_sunitTabCanRefresh
+	| item |
+	self testsIssue: #issue279 withTitle: 'Sunit browser refresh, auto or manual'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter.
+	self selectSUnitTab.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list size equals: 4. 
+	self projectsPresenter sunitPresenter refresh. "sent by context menu"
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list size equals: 4.  "just make sure we have a refresh available that doesn't blow up"
+!
 
 test_sUnitTabHandlesShortSelector
 	self testsIssue: #issue173 withTitle: 'new SUnit browser code walksback on short selector'.
@@ -1510,6 +1525,45 @@ test_sUnitTabRefresh
 	refreshItem commandDescription performAgainst: self projectsPresenter. "<<< walkback occurred here"
 	self assert: self projectsPresenter selectedClass name equals: 'RowanServicesTest'.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list isEmpty "no tests in the abstract class" !
+
+test_sunitUpdatesProperly
+	| secondBrowser source newMethodService |
+	self testsIssue: #issue279 withTitle: 'Sunit browser refresh, auto or manual'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter.
+	self selectSUnitTab.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list size equals: 4.	"should be four after project load"
+	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	
+	[self selectServiceNamed: 'RowanSample1' in: secondBrowser currentCard projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: secondBrowser currentCard packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: secondBrowser currentCard classListPresenter.
+	secondBrowser currentCard selectCategoryNamed: 'tests'.
+	source := 'testMethod  
+		self assert: true'.
+	secondBrowser currentCard methodSourcePresenter value: source.
+	secondBrowser currentCard editSaveMethod: secondBrowser currentCard classListPresenter selection.
+	self assert: self projectsPresenter textAreaTabs currentCard name = 'sunit'.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list size equals: 5.
+	newMethodService := self projectsPresenter sunitPresenter methodListPresenter list
+				detect: [:methodService | methodService selector == #testMethod]
+				ifNone: [].
+	self denyIsNil: newMethodService.
+	"select a method in first browser and add another method"
+	self selectMethodNamed: #test1.
+	secondBrowser currentCard selectCategoryNamed: 'tests'.
+	source := 'testMethod2
+		self assert: true'.
+	secondBrowser currentCard methodSourcePresenter value: source.
+	secondBrowser currentCard editSaveMethod: secondBrowser currentCard classListPresenter selection.
+	self assert: self projectsPresenter textAreaTabs currentCard name = 'sunit'.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list size equals: 6.
+	newMethodService := self projectsPresenter sunitPresenter methodListPresenter list
+				detect: [:methodService | methodService selector == #testMethod2]
+				ifNone: [].
+	self denyIsNil: newMethodService]
+			ensure: [secondBrowser destroy]!
 
 test_symbolsWithoutImplementorsFound
 	| symbols |
@@ -1608,6 +1662,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #selectClassListTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectHierarchyTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectHierarchyTabIn:!private!selection! !
+!JadeiteProjectBrowserTestCase categoriesFor: #selectSUnitTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectTreeServicesNamed:in:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteProjectBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
@@ -1680,9 +1735,11 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultipleProjects!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_setAndClearBreakpoint!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_simpleHierarchyTest!public!test!test class hierarchy! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitCtrlB!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitCtrlB!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitTabCanRefresh!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabHandlesShortSelector!public!test!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabRefresh!public!test!test menus! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitUpdatesProperly!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsWithoutImplementorsFound!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!test! !

@@ -333,7 +333,8 @@ updateListIn: presenter from: visibleMethods
 	newSelections := visibleMethods
 				select: [:methodService | presenter selections includes: methodService].
 	presenter list: visibleMethods.
-	presenter selections: newSelections!
+	presenter selections: newSelections.
+	presenter parentPresenter updateSUnitTab.!
 
 updateVariables: presenter
 	| selections availableSelections |

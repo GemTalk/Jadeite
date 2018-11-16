@@ -1361,6 +1361,9 @@ selectCategoryFrom: methodService
 	^categoryListPresenter selectionOrNil = methodService category
 		ifFalse: [categoryListPresenter selection: methodService category]!
 
+selectCategoryNamed: category
+	^self selectCategoriesNamed: (Array with: category)!
+
 selectClass: classSelection
 	| selection |
 	selection := classListPresenter list detect: [:svc | svc name = classSelection name] ifNone: [].
@@ -1503,6 +1506,10 @@ targetCategory
 	categoryListPresenter hasSelection ifFalse: [^self selectedMethodCategory].
 	categoryListPresenter selections size > 1 ifTrue: [^self selectedMethodCategory].
 	^categoryListPresenter selection trimBlanks!
+
+textAreaTabs
+	"for testing"
+	^textAreaTabs!
 
 textTabChanged
 	methodSourcePresenter view cancelCallTip.
@@ -1685,7 +1692,8 @@ updateMethodSource
 			[self showSuperClassComparison.
 			self updateSingleMethodSource.
 			definedMethodPackageText value: 'Defined Package: ' , methodListPresenter selection definedPackage.
-			methodCategoryText value: 'Category: ' , methodListPresenter selection category]!
+			methodCategoryText value: 'Category: ' , methodListPresenter selection category].
+	self updateSUnitTab.!
 
 updateMultiMethodComparison
 	comparisonPresenter
@@ -1778,7 +1786,6 @@ updateSelectionsForUpdate: update
 updateSingleMethodSource
 	methodSourcePresenter value: methodListPresenter selection source.
 	self refreshBreakPointsIn: methodSourcePresenter.
-	methodSourcePresenter ensureVisible. 
 	self displayNoMods: methodSourcePresenter. !
 
 updateSUnitTab
@@ -1936,6 +1943,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #savePackage!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoriesNamed:!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoryFrom:!public!selection! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoryNamed:!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClass:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassInClassHierarchyNamed:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassInClassListNamed:!private!selection! !
@@ -1960,6 +1968,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #sundryCleanup!initialize/release!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #sunitPresenter!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #targetCategory!menu handlers support!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #textAreaTabs!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #textTabChanged!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #textTabs!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #unloadPackage!menu handlers!public! !
