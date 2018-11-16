@@ -30,7 +30,7 @@ postLogin: aGciSession
 	^result!
 
 updateCaption
-	self caption: 'Jadeite Version: ', self class jadeiteVersionString! !
+	self caption: 'Jadeite Login Version: ', self class jadeiteVersionString! !
 !JadeiteLoginShell categoriesFor: #basicCaption!accessing!public! !
 !JadeiteLoginShell categoriesFor: #fillVersionList!public! !
 !JadeiteLoginShell categoriesFor: #loginFailureCaption!private! !
