@@ -151,7 +151,7 @@ jadeMenuStrings
 	^#(
 		'&Jadeite'
 		'&Abort Transaction//abortTransaction'
-		'&CommitTransaction//commitTransaction'
+		'&Commit Transaction//commitTransaction'
 		'-'
 		'&New Worspace/Ctrl+N/newWorkspace'
 		'&Open Projects Browser/Ctrl+P/newProjectsBrowser'
