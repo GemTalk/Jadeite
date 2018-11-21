@@ -1217,23 +1217,7 @@ refreshFromServer
 	self redrawAllViews!
 
 refreshFromServerAfterAbort
-	| services packageSelections classSelection methodSelections categorySelections |
-	services := OrderedCollection with: RowanBrowserService new.
-	packageSelections := packageListPresenter selections.
-	classSelection := self selectedClass.
-	methodSelections := methodListPresenter selections.
-	categorySelections := categoryListPresenter selections. 
-	services addAll: projectListPresenter selections.
-	services addAll: packageSelections.
-	packageListPresenter list: ListModel new.
-	classListPresenter list: ListModel new.
-	methodListPresenter list: ListModel new.
-	self updateServices: services.
-	self updatePresenter: packageListPresenter selections: packageSelections.
-	self selectClassNamed: classSelection name. 
-	categoryListPresenter selections: categorySelections ifAbsent:[].
-	self updatePresenter: methodListPresenter selections: methodSelections.
-	self redrawAllViews!
+	self refreshGlobalSelections!
 
 refreshMethodsOn: presenter
 	| classService classPresenter |

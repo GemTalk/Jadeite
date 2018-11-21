@@ -20,7 +20,9 @@ session
 	^session!
 
 setUp
-	super setUp.
+	"Test Resource browser wouldn't open because of errors here.
+	Can restore "
+	"super setUp.
 	library := self libraryClass default.
 	session ifNil: [
 		session := library 
@@ -28,7 +30,7 @@ setUp
 			password: 'swordfish'
 			gemNRS: '!!@portugal#netldi:ldijfoster1#task!!gemnetobject'
 			stoneNRS: 'jfoster1'.
-	]!
+	]"!
 
 tearDown
 

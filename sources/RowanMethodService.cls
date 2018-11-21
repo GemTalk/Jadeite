@@ -225,6 +225,14 @@ methodSourceUpdate: presenter browser: browser
 					[presenter value: source.
 					browser displayNoMods: presenter]]!
 
+methodsRemoved: presenter
+	| service selections |
+	updateType == #methodsRemoved: ifFalse:[^self "must have been discovered by the server"].
+	service := presenter list detect: [:methodService | methodService = self] ifNone: [^self].
+	selections := presenter selections copyWithout: service. 
+	presenter list: (presenter list copyWithout: service). 
+	presenter selections: selections. !
+
 methodUpdate: presenter
 	presenter list
 		do: [:methodService | methodService = self ifTrue: [methodService replicateFrom: self]]!
@@ -468,6 +476,7 @@ user: anObject
 !RowanMethodService categoriesFor: #methodDefinitions:!accessing!private! !
 !RowanMethodService categoriesFor: #methodName!accessing!private! !
 !RowanMethodService categoriesFor: #methodSourceUpdate:browser:!public!updating! !
+!RowanMethodService categoriesFor: #methodsRemoved:!public!updating! !
 !RowanMethodService categoriesFor: #methodUpdate:!public!updating! !
 !RowanMethodService categoriesFor: #name!accessing!public! !
 !RowanMethodService categoriesFor: #oop!public! !

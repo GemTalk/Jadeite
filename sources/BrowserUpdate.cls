@@ -89,6 +89,23 @@ register: presenter selector: selector browser: browser
 				with: selector
 				with: browser)!
 
+registeredPresenters
+	| presenters |
+	presenters := Set new.
+	(self getEvents at: #updateReady) messagesDo: [:message | presenters add: message receiver].
+	^presenters!
+
+selectedServices
+	| services potentialSelections |
+	services := OrderedCollection new.
+	self registeredPresenters do: 
+			[:presenter |
+			(presenter class canUnderstand: #selections)
+				ifTrue: 
+					[potentialSelections := presenter selections.
+					services addAll: (potentialSelections select: [:selection | selection isRowanService])]].
+	^services!
+
 update: services afterStonReplication: stonResults
 	"assume we get back the 'same' services as we sent"
 
@@ -156,6 +173,8 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #performUpdate:with:!private!updating! !
 !BrowserUpdate categoriesFor: #register:selector:!public!registeringPresenters! !
 !BrowserUpdate categoriesFor: #register:selector:browser:!public!registeringPresenters! !
+!BrowserUpdate categoriesFor: #registeredPresenters!public!registeringPresenters! !
+!BrowserUpdate categoriesFor: #selectedServices!public!registeringPresenters! !
 !BrowserUpdate categoriesFor: #update:afterStonReplication:!public!updating! !
 !BrowserUpdate categoriesFor: #updateReady!public!updating! !
 !BrowserUpdate categoriesFor: #updates!accessing!public! !

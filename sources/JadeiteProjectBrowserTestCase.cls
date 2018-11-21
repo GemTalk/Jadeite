@@ -43,6 +43,10 @@ proj repositoryRootPath: ''$ROWAN_PROJECTS_HOME/Izmir''.
 Rowan projectTools create createProjectFor: proj.'.
 	self projectsPresenter refreshFromServer!
 
+issue284methodCreation
+	self methodSourcePresenter value: 'addedMethod  ^5'.
+	self projectsPresenter editSaveMethod: self classListPresenter selection!
+
 packageNamed: aString
 	^self packageListPresenter list
 		detect: [:projectService | projectService name = aString]
@@ -164,7 +168,7 @@ setUp
 
 tearDown
 	super tearDown.
-	session isValidSession ifTrue: [transcriptWritesWereEnabled ifTrue: [transcript flipTranscript]].
+	session isValidSession ifTrue: [transcriptWritesWereEnabled == true ifTrue: [transcript flipTranscript]].
 	methodListBrowser
 		ifNotNil: 
 			[methodListBrowser destroy.
@@ -179,10 +183,21 @@ test_abortWithAbortedClassSelected
 	self saveTestClass.
 	self assert: self projectsPresenter selectedClass name = 'TestClass'.
 	self projectsPresenter topShell abortTransaction.
-	self
-		assertIsNil: (self classListPresenter list detect: [:service | service name = 'TestClass'] ifNone: []).
-	self cloneRowanSample1. 
-	self ensureRowanSample1Loaded. !
+	
+	[self
+		assertIsNil: (self classListPresenter list detect: [:service | service name = 'TestClass'] ifNone: [])]
+			ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded].
+	self saveTestClass.
+	self assert: self projectsPresenter selectedClass name = 'TestClass'. "abort from a different browser"
+	transcript projectListPresenter abortTransaction.
+	
+	[self
+		assertIsNil: (self classListPresenter list detect: [:service | service name = 'TestClass'] ifNone: [])]
+			ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
 
 test_addPackageReloadProject
 	self testsIssue: #issue183
@@ -1317,6 +1332,40 @@ test_projectRemoved
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_refreshAfterReloadWithAddedMethod
+	"add a method in a project, then refresh from the project list.
+	Expect the browsers to remove the method on update"
+
+	| projectListPresenter sampleProjectInList refreshItem |
+	self testsIssue: #issue284
+		withTitle: '(3.0.49 and 3.0.50) project browser not updated properly on reload of project.'.
+	self selectRowanSample1Class.
+	self issue284methodCreation.
+	self selectMethodNamed: #addedMethod.
+	methodListBrowser := self projectsPresenter browseImplementors.
+	self denyIsNil: (methodListBrowser primaryPresenter methodListPresenter methodListPresenter list
+				detect: [:methodService | methodService selector = #addedMethod]
+				ifNone: []).
+	projectListPresenter := transcript projectListPresenter projectListPresenter.
+	sampleProjectInList := projectListPresenter list
+				detect: [:projectService | projectService name = 'RowanSample1']
+				ifNone: [].
+	self denyIsNil: sampleProjectInList.
+	projectListPresenter selection: sampleProjectInList.
+	refreshItem := projectListPresenter view queryContextMenu items
+				detect: [:menuItem | menuItem command == #loadProjects].
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #yes.	"confirm we want to load project"
+	
+	[refreshItem commandDescription performAgainst: transcript projectListPresenter.
+	self assertIsNil: (self methodListPresenter list
+				detect: [:methodService | methodService selector == #addedMethod]
+				ifNone: []).
+	self assertIsNil: (methodListBrowser primaryPresenter methodListPresenter methodListPresenter list
+				detect: [:methodService | methodService selector = #addedMethod]
+				ifNone: [])]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_refreshFromServer
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
@@ -1673,6 +1722,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue261createTestProject!issue test support!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #issue284methodCreation!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #packageNamed:!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectList!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectNamed:!private!project support! !
@@ -1751,6 +1801,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectDisplaysSync!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectInfoTab!public!test menus!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectRemoved!public!test projects! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterReloadWithAddedMethod!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshFromServer!public!test!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_rowanTestsHierarchy!public!test class hierarchy! !

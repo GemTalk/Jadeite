@@ -11,8 +11,9 @@ JadeiteProjectListPresenter comment: ''!
 !JadeiteProjectListPresenter methodsFor!
 
 abortTransaction
-	parentPresenter abortTransaction. 
-	self refresh. !
+	parentPresenter abortTransaction.
+	self refreshProjects.
+	self refreshGlobalSelections!
 
 basicUnloadProjects: projectNames
 	| browserService |
@@ -215,27 +216,27 @@ writeProject
 	self issueCommand: projectServices.
 	MessageBox notify: 'Projects ' ,  ws contents  , ' written to disk'! !
 !JadeiteProjectListPresenter categoriesFor: #abortTransaction!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #basicUnloadProjects:!private!project menu handlers! !
-!JadeiteProjectListPresenter categoriesFor: #browseProject!project menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #checkout!project menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #cloneProject!project menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #commit!project menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #basicUnloadProjects:!menu handlers!private! !
+!JadeiteProjectListPresenter categoriesFor: #browseProject!menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #checkout!menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #cloneProject!menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #commit!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #createComponents!public! !
 !JadeiteProjectListPresenter categoriesFor: #list:!public! !
-!JadeiteProjectListPresenter categoriesFor: #loadProjects!project menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #makeDefault!project menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #loadProjects!menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #makeDefault!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #onViewOpened!event handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #openChangesShell:!private!project menu handlers! !
+!JadeiteProjectListPresenter categoriesFor: #openChangesShell:!menu handlers!private! !
 !JadeiteProjectListPresenter categoriesFor: #primaryPresenter!public! !
-!JadeiteProjectListPresenter categoriesFor: #projectChanges!project menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #projectChanges!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #projectListPresenter!public! !
-!JadeiteProjectListPresenter categoriesFor: #projectLog!project menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #pullFromGit!project menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #pushToGit!project menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #projectLog!menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #pullFromGit!menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #pushToGit!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #queryCommand:!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #refresh!project menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #refresh!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #refreshProjects!public! !
 !JadeiteProjectListPresenter categoriesFor: #registerPresentersForUpdates!event handlers!private! !
-!JadeiteProjectListPresenter categoriesFor: #unloadProjects!project menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #writeProject!project menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #unloadProjects!menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #writeProject!menu handlers!public! !
 

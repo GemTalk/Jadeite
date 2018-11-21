@@ -71,8 +71,8 @@ releaseReferencedServices
 
 reloadProjects: selections presenter: presenter
 	self
-		command: #reloadProjects:;
-		commandArgs: (Array with: selections).
+		command: #reloadProjects:andUpdateServices:;
+		commandArgs: (Array with: selections with: BrowserUpdate current selectedServices).
 	presenter issueCommand: (Array with: self)!
 
 removedMethods

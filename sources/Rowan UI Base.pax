@@ -148,6 +148,7 @@ package methodNames
 	add: #JadePresenter -> #issueCommand:;
 	add: #JadePresenter -> #openDictionaryBrowserOn:selector:;
 	add: #JadePresenter -> #openProjectBrowserOn:selector:;
+	add: #JadePresenter -> #refreshGlobalSelections;
 	add: #JadePresenter -> #update:afterStonReplication:;
 	add: #JadePresenterA -> #basicCloneProject:root:;
 	add: #JadePresenterA -> #clearBreakPointAt:in:;
@@ -255,6 +256,7 @@ package methodNames
 	add: #Object -> #isMethodService;
 	add: #Object -> #isPackageService;
 	add: #Object -> #isProjectService;
+	add: #Object -> #isRowanService;
 	add: #Object -> #prepareForReplication;
 	add: #Object -> #rowanFixMe;
 	add: #ObjectLogBrowser -> #debug:;
@@ -1555,6 +1557,12 @@ openProjectBrowserOn: classService selector: selector
 	shell currentCard findMethod: selector.
 	^shell!
 
+refreshGlobalSelections
+	"refresh selections in all browsers"
+
+	BrowserUpdate current updateServices: BrowserUpdate current selectedServices
+		session: self gciSession!
+
 update: services afterStonReplication: stonResults
 	^BrowserUpdate current update: services afterStonReplication: stonResults! !
 !JadePresenter categoriesFor: #browseHierarchyImplementorsOf:className:!browsing!public! !
@@ -1568,6 +1576,7 @@ update: services afterStonReplication: stonResults
 !JadePresenter categoriesFor: #issueCommand:!browsing support!public! !
 !JadePresenter categoriesFor: #openDictionaryBrowserOn:selector:!browsing!public! !
 !JadePresenter categoriesFor: #openProjectBrowserOn:selector:!browsing!public! !
+!JadePresenter categoriesFor: #refreshGlobalSelections!menu handlers!public! !
 !JadePresenter categoriesFor: #update:afterStonReplication:!browsing support!public! !
 
 !JadePresenter class methodsFor!
@@ -3576,6 +3585,10 @@ isProjectService
 
 	^false!
 
+isRowanService
+
+	^false!
+
 prepareForReplication
 
 	!
@@ -3589,6 +3602,7 @@ rowanFixMe
 !Object categoriesFor: #isMethodService!public!testing! !
 !Object categoriesFor: #isPackageService!public!testing! !
 !Object categoriesFor: #isProjectService!public!testing! !
+!Object categoriesFor: #isRowanService!public!testing! !
 !Object categoriesFor: #prepareForReplication!Jadeite!public! !
 !Object categoriesFor: #rowanFixMe!public!testing! !
 

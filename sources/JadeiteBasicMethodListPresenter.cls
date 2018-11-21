@@ -56,7 +56,7 @@ removeMethods
 	self basicRemoveMethods!
 
 removeMethods: services
-	| browserService remainingServices |
+	| browserService |
 	browserService := RowanBrowserService new.
 	browserService
 		command: #removeMethods:;

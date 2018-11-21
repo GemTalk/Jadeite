@@ -41,11 +41,12 @@ classesUpdate: presenter browser: browser
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	browser packageListPresenter selections detect: [:packageService | packageService name = name]
 		ifNone: [^self].
+	self removeDeletedClassesIn: presenter.
 	condensedList := self condenseExtensions: presenter.
 	self updateList: presenter whilePreservingSelections: condensedList.
 	presenter list
 		do: [:classService | classService selectedPackageServices: browser packageListPresenter selections].
-	presenter view invalidate. 
+	presenter view invalidate.
 	browser isClassSelected ifFalse: [self emptyFilterListsIn: browser]!
 
 classHierarchyUpdate: presenter browser: browser
@@ -144,6 +145,17 @@ releaseReferencedServices
 remoteServiceName
 	^'Rowan packageServiceClass'!
 
+removeDeletedClassesIn: presenter
+	| updatedClasses removedClasses selections |
+	updatedClasses := classes select: [:classService | classService packageName = name]
+				thenCollect: [:classService | classService name].
+	removedClasses := presenter list
+				reject: [:classService | (updatedClasses includes: classService name) and: [classService packageName = name]].
+	removedClasses isEmpty ifTrue:[^self]. 
+	selections := presenter selections. 
+	presenter list: (presenter list asArray copyWithoutAll: removedClasses).
+	presenter selections: (selections copyWithoutAll: removedClasses).!
+
 replicateFrom: newService
 	^(self isPackageService and: [newService isPackageService])
 		ifTrue: [super replicateFrom: newService]!
@@ -178,6 +190,7 @@ testClasses: presenter
 !RowanPackageService categoriesFor: #projectName:!accessing!private! !
 !RowanPackageService categoriesFor: #releaseReferencedServices!Init / Release!public! !
 !RowanPackageService categoriesFor: #remoteServiceName!must not strip!public! !
+!RowanPackageService categoriesFor: #removeDeletedClassesIn:!private!updating! !
 !RowanPackageService categoriesFor: #replicateFrom:!public!updating! !
 !RowanPackageService categoriesFor: #selectedClass!accessing!public! !
 !RowanPackageService categoriesFor: #selectedClass:!accessing!public! !

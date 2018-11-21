@@ -104,10 +104,6 @@ isSkew
 isSkew: anObject
 	isSkew := anObject!
 
-loadProjectFrom: presenter
-	self command: #reloadProject.
-	presenter issueCommand: (Array with: self).!
-
 newTextView
 	| edit |
 	Shell create view
@@ -197,7 +193,6 @@ sha: anObject
 !RowanProjectService categoriesFor: #isProjectService!public!testing! !
 !RowanProjectService categoriesFor: #isSkew!accessing!private! !
 !RowanProjectService categoriesFor: #isSkew:!accessing!private! !
-!RowanProjectService categoriesFor: #loadProjectFrom:!presenter support!public! !
 !RowanProjectService categoriesFor: #newTextView!displaying!private! !
 !RowanProjectService categoriesFor: #projectLogUsing:!presenter support!public! !
 !RowanProjectService categoriesFor: #projectPackagesUpdate:browser:!public!updating! !
