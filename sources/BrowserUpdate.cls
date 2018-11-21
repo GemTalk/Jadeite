@@ -59,6 +59,17 @@ issueCommand: services session: session
 	[[^self basicIssueCommand: services session: session] ensure: [inUpdate := false]]
 		ifCurtailed: [inUpdate := false]!
 
+methodListServices
+	| services potentialSelections |
+	services := OrderedCollection new.
+	self registeredPresenters do: 
+			[:presenter |
+			(presenter class canUnderstand: #list )
+				ifTrue: 
+					[potentialSelections := presenter list.
+					services addAll: (potentialSelections select: [:selection | selection isMethodService])]].
+	^services!
+
 performUpdate: updateBlock with: selector
 	updates do: 
 			[:update |
@@ -170,11 +181,12 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #inUpdate!accessing!public! !
 !BrowserUpdate categoriesFor: #inUpdate:!accessing!private! !
 !BrowserUpdate categoriesFor: #issueCommand:session:!commands!public! !
+!BrowserUpdate categoriesFor: #methodListServices!accessing!public! !
 !BrowserUpdate categoriesFor: #performUpdate:with:!private!updating! !
 !BrowserUpdate categoriesFor: #register:selector:!public!registeringPresenters! !
 !BrowserUpdate categoriesFor: #register:selector:browser:!public!registeringPresenters! !
 !BrowserUpdate categoriesFor: #registeredPresenters!public!registeringPresenters! !
-!BrowserUpdate categoriesFor: #selectedServices!public!registeringPresenters! !
+!BrowserUpdate categoriesFor: #selectedServices!accessing!public! !
 !BrowserUpdate categoriesFor: #update:afterStonReplication:!public!updating! !
 !BrowserUpdate categoriesFor: #updateReady!public!updating! !
 !BrowserUpdate categoriesFor: #updates!accessing!public! !

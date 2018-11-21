@@ -1560,6 +1560,11 @@ openProjectBrowserOn: classService selector: selector
 refreshGlobalSelections
 	"refresh selections in all browsers"
 
+	| browserService |
+	browserService := RowanBrowserService new
+				command: #findRemovedMethods:;
+				commandArgs: (Array with: BrowserUpdate current methodListServices asArray).
+	BrowserUpdate current issueCommand: (Array with: browserService) session: self gciSession.
 	BrowserUpdate current updateServices: BrowserUpdate current selectedServices
 		session: self gciSession!
 

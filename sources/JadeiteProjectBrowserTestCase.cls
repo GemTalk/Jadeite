@@ -1332,6 +1332,75 @@ test_projectRemoved
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_refreshAfterAbortMethodList
+	"method lists should remove deleted methods after an abort."
+
+	| projectListPresenter abortItem |
+	self testsIssue: #issue284
+		withTitle: '(3.0.49 and 3.0.50) project browser not updated properly on reload of project.'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanBrowserService' in: self classListPresenter.
+	self methodSourcePresenter value: 'five  ^5'.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self selectServiceNamed: 'RowanAnsweringService' in: self classListPresenter.
+	self methodSourcePresenter value: 'five  ^''five'''.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self selectMethodNamed: #five.
+	methodListBrowser := self projectsPresenter browseImplementors.
+	self denyIsNil: (methodListBrowser primaryPresenter methodListPresenter methodListPresenter list
+				detect: [:methodService | methodService selector = #five]
+				ifNone: []).
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list size
+		equals: 2.
+	projectListPresenter := transcript projectListPresenter projectListPresenter.
+	abortItem := transcript view menuBar items third items
+				detect: [:menuItem | menuItem command == #abortTransaction]. "jadeite menu" 
+	abortItem commandDescription performAgainst: transcript projectListPresenter.
+	[self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list isEmpty]
+		ensure: 
+			[self cloneRowanSample1.
+			self ensureRowanSample1Loaded]!
+
+test_refreshAfterAbortMethodListLeaveCommitted
+	"method lists should remove deleted methods after an abort
+	but committed objects should stay."
+
+	| abortItem beforeSize afterSize list |
+	self testsIssue: #issue284
+		withTitle: '(3.0.49 and 3.0.50) project browser not updated properly on reload of project.'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanMethodService' in: self classListPresenter.
+	self selectMethodNamed: #update.
+	methodListBrowser := self projectsPresenter browseImplementors.
+	
+	[list := methodListBrowser primaryPresenter methodListPresenter methodListPresenter list.
+	beforeSize := list size.
+	self assert: beforeSize > 1.	"lots of #update methods in base"
+	self
+		assertIsNil: (list detect: [:methodService | methodService className = #RowanService] ifNone: [])]
+			ensure: [methodListBrowser destroy].
+	self selectServiceNamed: 'RowanService' in: self classListPresenter.
+	self methodSourcePresenter value: 'update  "do nothing"'.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self selectMethodNamed: #update.
+	methodListBrowser := self projectsPresenter browseImplementors.
+	list := methodListBrowser primaryPresenter methodListPresenter methodListPresenter list.
+	afterSize := list size.
+	self assert: afterSize equals: beforeSize + 1.
+	self
+		denyIsNil: (list detect: [:methodService | methodService className = #RowanService] ifNone: []).
+	abortItem := transcript view menuBar items third items
+				detect: [:menuItem | menuItem command == #abortTransaction].	"jadeite menu"
+	abortItem commandDescription performAgainst: transcript projectListPresenter.
+	
+	[self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list size
+		equals: beforeSize]
+			ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
+
 test_refreshAfterReloadWithAddedMethod
 	"add a method in a project, then refresh from the project list.
 	Expect the browsers to remove the method on update"
@@ -1801,6 +1870,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectDisplaysSync!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectInfoTab!public!test menus!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectRemoved!public!test projects! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodList!public!test projects! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodListLeaveCommitted!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterReloadWithAddedMethod!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshFromServer!public!test!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects! !

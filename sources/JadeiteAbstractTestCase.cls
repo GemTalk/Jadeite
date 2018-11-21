@@ -235,9 +235,9 @@ selectMethodsNamed: selectors
 selectRowanSample1Class
 	"big assumption - RowanSample1 class will allways be in RowanSample1 project"
 
-	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
-	self selectServicesNamed: #('RowanSample1-Core') in: self packageListPresenter.
-	self selectServicesNamed: (Array with: self sampleClassName) in: self classListPresenter!
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
+	self selectServiceNamed: self sampleClassName in: self classListPresenter!
 
 selectServiceNamed: aString in: presenter
 	self selectServicesNamed: (Array with: aString) in: presenter!
