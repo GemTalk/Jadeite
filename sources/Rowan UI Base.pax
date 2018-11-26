@@ -3434,7 +3434,6 @@ selectedMethodsAreTestCases
 !MethodSourcePresenter methodsFor!
 
 editMenuStrings
-
 	false ifTrue: [
 		self editSaveMethod; undo; redo; cutSelection; copySelection; pasteClipboard; clearSelection; selectAll; editFind; editFindNext; editReplace; 
 			jadeDisplay; jadeExecute; jadeInspect; browseSelectedClass.

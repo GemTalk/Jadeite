@@ -91,7 +91,8 @@ basicUnloadProjects: projectNames
 	packageListPresenter model: ListModel new.
 	classListPresenter model: ListModel new.
 	categoryListPresenter model: (ListModel new searchPolicy: SearchPolicy equality).
-	methodListPresenter model: ListModel new!
+	methodListPresenter model: ListModel new. 
+	self refreshGlobalSelections!
 
 behaviorIdentifier
 	^self selectedClass behaviorIdentifier!

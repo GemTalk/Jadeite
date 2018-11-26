@@ -21,7 +21,8 @@ basicUnloadProjects: projectNames
 	browserService
 		command: #unloadProjectsNamed:;
 		commandArgs: (Array with: projectNames).
-	self issueCommand: (Array with: browserService).!
+	self issueCommand: (Array with: browserService).
+	self refreshGlobalSelections!
 
 browseProject
 	| shell presenter service| 
