@@ -692,6 +692,9 @@ isSourceTabSelected
 	^textAreaTabs currentCard name = 'methodSource'.
 !
 
+isSunitTabSelected
+	^self textAreaTabs currentCard name = 'sunit'!
+
 jadeDebug
 	View focus name = 'methodSource' ifFalse: [^self runMethodTests].
 	^super jadeDebug!
@@ -1529,8 +1532,8 @@ unloadProjects
 
 update: services afterStonReplication: stonResults
 	| result |
-	result := super update: services afterStonReplication: stonResults. 
-	self redrawAllViews. 
+	result := super update: services afterStonReplication: stonResults.
+	self redrawAllViews.
 	^result!
 
 updateAfterFindClass: classService
@@ -1878,6 +1881,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #isHierarchyTabSelected!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #isOkayToChange!event handlers!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #isSourceTabSelected!public!testing! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #isSunitTabSelected!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeDebug!menu handlers!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeDisplay!menu handlers!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeExecute!menu handlers!private! !

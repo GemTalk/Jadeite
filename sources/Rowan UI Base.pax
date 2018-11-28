@@ -491,7 +491,7 @@ RowanService subclass: #RowanBrowserService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanClassService
-	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand'
+	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1297,16 +1297,13 @@ methodListPresenter: anObject
 !JadeiteSUnitInClassPresenter methodsFor!
 
 testClassService: classService
-	| testMethodServices |
+	| listModel |
 	testClassService := classService.
 	self reset.
-	testClassService isNil
-		ifTrue: 
-			[methodListPresenter model: (ListModel on: ListModel new).
-			^self].
-	classService methods ifNil:[^self].
-	testMethodServices := classService methods select: [:methodService | methodService isTestMethod].
-	methodListPresenter model: (ListModel on: testMethodServices)! !
+	listModel := testClassService isNil
+				ifTrue: [ListModel new]
+				ifFalse: [ListModel withAll: classService visibleTests].
+	methodListPresenter model: listModel! !
 !JadeiteSUnitInClassPresenter categoriesFor: #testClassService:!accessing!public! !
 
 !JadeiteSUnitPresenter methodsFor!
@@ -1387,15 +1384,12 @@ updateClasses
 	self issueCommand: packageServices!
 
 updateMethods
-	| classServices testMethods |
+	| classServices |
 	classServices := classListPresenter selections.
+	self updateServices: classServices. 
 	classServices isEmpty ifTrue: [^methodListPresenter list: ListModel new].
-	self updateServices: classServices.
-	methodListPresenter list: (SortedCollection sortBlock: [:x :y | x selector < y selector]).
-	classServices do: 
-			[:classService |
-			testMethods := classService methods select: [:methodService | methodService isTestMethod].
-			methodListPresenter model addAll: testMethods]!
+	methodListPresenter model: ListModel new. 
+	classServices do: [:classService | methodListPresenter model addAll: classService visibleTests]!
 
 updatePackages
 	| browserService |
@@ -1542,7 +1536,8 @@ browseSendersOf: string
 	^self class browseSendersOf: string session: self gciSession!
 
 issueCommand: services
-	^self class issueCommand: services session: self gciSession!
+	^self class issueCommand: services session: self gciSession.
+	!
 
 openDictionaryBrowserOn: classService selector: selector
 	| shell |

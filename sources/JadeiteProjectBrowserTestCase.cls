@@ -1633,10 +1633,26 @@ test_sunitCtrlB
 	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter.
 	self selectSUnitTab.
-	self projectsPresenter sunitPresenter methodListPresenter selectionByIndex: #(1).	"test1"
+	self projectsPresenter sunitPresenter methodListPresenter selectionByIndex: #(1).	"test1 - select by index implicitly tests sorted order"
 	testResult := self projectsPresenter sunitPresenter jadeDebug.	"What is sent when Ctrl-B is pressed."
 	printString := session send: #printString to: testResult.
 	self assert: printString equals: 'RowanSample1Test>>#test1'	"test ran without error"!
+
+test_sunitInheritedTests
+	| classTestSelectors testClassTestSelectors |
+	self testsIssue: #issue211
+		withTitle: 'SUnit browser and SUnit tab in Project browser missing inherited test cases'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanClassServiceTest' in: self classListPresenter.
+	self selectSUnitTab.
+	classTestSelectors := self projectsPresenter sunitPresenter methodListPresenter list
+				collect: [:service | service selector].
+	self selectServiceNamed: 'RowanTestClassServiceTest' in: self classListPresenter.
+	testClassTestSelectors := self projectsPresenter sunitPresenter methodListPresenter list
+				collect: [:service | service selector].
+	self assert: testClassTestSelectors size > classTestSelectors size.	"the subclass inherits the super class's tests"
+	classTestSelectors do: [:selector | self assert: (testClassTestSelectors includes: selector)]!
 
 test_sunitTabCanRefresh
 	self testsIssue: #issue279 withTitle: 'Sunit browser refresh, auto or manual'.
@@ -1702,7 +1718,7 @@ test_sunitUpdatesProperly
 		self assert: true'.
 	secondBrowser currentCard methodSourcePresenter value: source.
 	secondBrowser currentCard editSaveMethod: secondBrowser currentCard classListPresenter selection.
-	self assert: self projectsPresenter textAreaTabs currentCard name = 'sunit'.
+	"self assert: self projectsPresenter textAreaTabs currentCard name = 'sunit'."
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list size equals: 6.
 	newMethodService := self projectsPresenter sunitPresenter methodListPresenter list
 				detect: [:methodService | methodService selector == #testMethod2]
@@ -1885,11 +1901,12 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultipleProjects!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_setAndClearBreakpoint!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_simpleHierarchyTest!public!test!test class hierarchy! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitCtrlB!public!test! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitTabCanRefresh!public!test menus! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabHandlesShortSelector!public!test!test class hierarchy! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabRefresh!public!test!test menus! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitUpdatesProperly!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitCtrlB!public!test sunit tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitInheritedTests!public!test sunit tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitTabCanRefresh!public!test menus!test sunit tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabHandlesShortSelector!public!test class hierarchy!test sunit tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabRefresh!public!test menus!test sunit tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitUpdatesProperly!public!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsWithoutImplementorsFound!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!test! !

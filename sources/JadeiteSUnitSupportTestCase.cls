@@ -55,6 +55,19 @@ test_browseSunitClass
 	self assert: browser currentCard classListPresenter selection name = 'JadeServerTest']
 			ensure: [browser view close]!
 
+test_inheritedTests
+	| classTestSelectors testClassTestSelectors |
+	self testsIssue: #issue211 withTitle: 'SUnit browser and SUnit tab in Project browser missing inherited test cases'.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanClassServiceTest' in: self sunitPresenter classListPresenter.
+	classTestSelectors := self sunitPresenter methodListPresenter list collect: [:service | service selector].
+	self selectServiceNamed: 'RowanTestClassServiceTest' in: self sunitPresenter classListPresenter.
+	testClassTestSelectors := self sunitPresenter methodListPresenter list collect: [:service | service selector].
+	self assert: testClassTestSelectors size > classTestSelectors size.  "the subclass inherits the super class's tests"
+	classTestSelectors do:[:selector |
+		self assert: (testClassTestSelectors includes: selector)].
+	!
+
 test_multiSelectClasses
 	| jadeServerTestCount  rowanClassServiceTestCount|
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
@@ -128,6 +141,7 @@ test_sunitBrowserHasRowanTestMethods
 !JadeiteSUnitSupportTestCase categoriesFor: #tearDown!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseMethods!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseSunitClass!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_inheritedTests!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_openSunitBrowser!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_refresh!public!tests! !
