@@ -137,6 +137,33 @@ test_menuBarItemNames
 	self assert: (inspector view menuBar items at: 3) text equals: '&Jadeite'.
 	self assert: (inspector view menuBar items at: 4) text equals: '&Help'!
 
+test_menuItemsEnabled
+	| remoteObject |
+	self testsIssue: #issue212 withTitle: '`Copy` menu item grayed out in inspector when text selected'.
+	remoteObject := session
+				executeString: 'Array new'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector documentPresenter view contextMenu itemsDo: 
+			[:item |
+			| query |
+			query := CommandQuery commandDescription: item source: inspector view.
+			self deny: query isEnabled].
+	inspector documentPresenter setFocus.
+	inspector documentPresenter view contextMenu itemsDo: 
+			[:item |
+			| query |
+			query := CommandQuery commandDescription: item commandDescription
+						source: inspector documentPresenter view.
+			query commandSymbol
+				ifNotNil: 
+					[inspector queryCommand: query.
+					(#(#undo #redo #browseImplementors #browseSenders) includes: query commandSymbol)
+						ifFalse: 
+							["*do doesn't require a selection for enablement"
+							self assert: query isEnabled]]]!
+
 test_openDictionaryBrowser
 	| remoteObject shell |
 	remoteObject := session
@@ -185,6 +212,7 @@ test_openProjectsBrowserOnClass
 !JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectString!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_menuBarItemNames!public!test! !
+!JadeiteInspectorTestCase categoriesFor: #test_menuItemsEnabled!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowser!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowserOnClass!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowser!public!test! !

@@ -49,10 +49,12 @@ allClasses
 
 basicAddMethodCategory: string
 	| service |
-	service := self selectedClass
-				command: #addCategory:;
-				commandArgs: (Array with: string).
-	self issueCommand: (Array with: service).
+	(self categoryListPresenter list includes: string)
+		ifFalse: 
+			[service := self selectedClass
+						command: #addCategory:;
+						commandArgs: (Array with: string).
+			self issueCommand: (Array with: service)].
 	self selectCategoriesNamed: (Array with: string)!
 
 basicProjectTabLabel

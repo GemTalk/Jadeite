@@ -242,18 +242,18 @@ test_autoDirtyDisplayMoveMethodsToCategory
 	self deny: self projectListPresenter selection isDirty.
 	self deny: self packageListPresenter selection isDirty.
 	self selectRowanSample1Class.
-	self projectsPresenter basicAddMethodCategory: 'newCategory'. 
+	self projectsPresenter basicAddMethodCategory: 'newCategory'.
 	self selectCategoriesNamed: #('accessing').
 	self selectMethodsNamed: #(#foo).
-	self projectsPresenter moveMethods: self methodListPresenter selections toCategory: 'newCategory'. 
+	self projectsPresenter moveMethods: self methodListPresenter selections toCategory: 'newCategory'.
 	self assert: self projectListPresenter selection name = 'RowanSample1'.
 	self assert: self projectListPresenter selection isDirty.
 	self assert: self packageListPresenter selection name = 'RowanSample1-Core'.
 	self assert: self packageListPresenter selection isDirty.
-	"verify method moved" 
-	self selectCategoriesNamed: #('newCategory'). 
-	self selectMethodsNamed: #(#foo). 
-	self assert: self methodListPresenter selection selector = #foo. !
+	"verify method moved"
+	self selectCategoriesNamed: #('newCategory').
+	self selectMethodsNamed: #(#foo).
+	self assert: self methodListPresenter selection selector = #foo!
 
 test_autoDirtyDisplayRemoveMethod
 	self testsIssue: #issue16 withTitle: 'Review/revisit semantics of font color/italic/bold etc.'.
@@ -1520,9 +1520,10 @@ test_saveClassMethod
 
 test_saveClassMethodHierarchy
 	| source |
-	self testsIssue: #issue121 withTitle: 'Package Browser (3.0.20): hierarchy class view and classes defined in different pacakge oddity'.
+	self testsIssue: #issue121
+		withTitle: 'Package Browser (3.0.20): hierarchy class view and classes defined in different pacakge oddity'.
 	self selectRowanSample1Class.
-	self assert: self classListPresenter selection name = 'RowanSample1'. 
+	self assert: self classListPresenter selection name = 'RowanSample1'.
 	self selectHierarchyTab.
 	self selectClassTab.
 	self projectsPresenter basicAddMethodCategory: 'class side category'.
@@ -1536,8 +1537,7 @@ test_saveClassMethodHierarchy
 
 test_saveMethod
 	self selectRowanSample1Class.
-	(self categoryListPresenter list includes: 'test_saveMethod')
-		ifFalse: [self projectsPresenter basicAddMethodCategory: 'test_saveMethod'].
+	self projectsPresenter basicAddMethodCategory: 'test_saveMethod'.
 	self saveSampleMethod.
 	self selectServicesNamed: (Array with: 'sampleMethod') in: self methodListPresenter.
 	self assert: (session executeString: 'RowanSample1 new sampleMethod') = 123!
@@ -1547,8 +1547,7 @@ test_saveMethodAndUpdateSUnitTab
 	self selectServicesNamed: #('Rowan') in: self projectListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
 	self selectServicesNamed: #('RowanServicesTest') in: self classListPresenter.
-	(self categoryListPresenter list includes: 'test_saveMethod')
-		ifFalse: [self projectsPresenter basicAddMethodCategory: 'test_saveMethod'].
+	self projectsPresenter basicAddMethodCategory: 'test_saveMethod'.
 	source := 'test_testMethod  
 		self assert: true'.
 	self methodSourcePresenter value: source.

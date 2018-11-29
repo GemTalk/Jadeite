@@ -83,6 +83,7 @@ openNormalInspector
 !
 
 queryCommand: query
+	(super queryCommand: query) ifTrue:[^true].
 	query command == #getPreviousObject
 		ifTrue: 
 			[query isEnabled: objectIndex ~= 1.

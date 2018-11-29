@@ -21,6 +21,7 @@ package classNames
 	yourself.
 
 package methodNames
+	add: #JadeInspector -> #documentPresenter;
 	add: #SUnitBrowserModel -> #debugIndividualTestsWithResources:;
 	add: 'MessageBox class' -> #new;
 	add: 'Prompter class' -> #createOn:;
@@ -122,6 +123,15 @@ TestResource subclass: #JadeiteTestResource
 
 
 "Loose Methods"!
+
+!JadeInspector methodsFor!
+
+documentPresenter
+
+	"for testing"
+
+	^documentPresenter! !
+!JadeInspector categoriesFor: #documentPresenter!public! !
 
 !MessageBox class methodsFor!
 

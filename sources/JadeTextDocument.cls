@@ -326,7 +326,7 @@ queryCommand: query
 	| textEdit |
 	textEdit := self activeTextEdit.
 	(#(#addQuotesToSelection #removeQuotesFromSelection #editCut #editCopy #editDelete #editReplace #editFind #editFindNext #editSelectAll #fileIn #jadeDebug #jadeDisplay #jadeExecute #jadeInspect) includes: query commandSymbol) ifTrue: [
-		query isEnabled: (textEdit notNil and: [(textEdit isKindOf: TextEdit) and: [textEdit hasSelection]]).
+		query isEnabled: (textEdit notNil and: [(textEdit isKindOf: TextEdit) ]).
 		^true.
 	].
 	(query commandSymbol = #editPaste) ifTrue: [
@@ -410,6 +410,9 @@ showText: aString
 	self isModified: false.
 !
 
+undo
+	documentPresenter undo!
+
 updateCodeFont
 
 	codePane updateCodeFont.
@@ -481,6 +484,7 @@ validateUserInterface
 !JadeTextDocument categoriesFor: #showError:on:!private! !
 !JadeTextDocument categoriesFor: #showSelection!menu handlers!private! !
 !JadeTextDocument categoriesFor: #showText:!private! !
+!JadeTextDocument categoriesFor: #undo!public! !
 !JadeTextDocument categoriesFor: #updateCodeFont!private! !
 !JadeTextDocument categoriesFor: #updateStatusBar!private! !
 !JadeTextDocument categoriesFor: #updateStatusBarItem:with:!private! !
