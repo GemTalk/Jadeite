@@ -1182,7 +1182,7 @@ refreshClass
 	presenter := self isClassListTabSelected
 				ifTrue: [classListPresenter]
 				ifFalse: [classHierarchyPresenter].
-	self setMethodFilter.
+	self setMethodFilterFor: presenter.
 	selection := presenter selectionIfNone: 
 					[self resetDefinedClassPackage.
 					categoryListPresenter clear.
@@ -1462,12 +1462,12 @@ setFilterType: selection
 		ifTrue: [selection filterType: 'categories']
 		ifFalse: [selection filterType: 'variables']!
 
-setMethodFilter
+setMethodFilterFor: presenter
 	| filters |
 	self isCategoriesTabSelected
 		ifTrue: [filters := categoryListPresenter selections]
 		ifFalse: [filters := variableListPresenter selections].
-	classListPresenter list do: [:service | service filters: filters]!
+	presenter model do: [:service | service filters: filters]!
 
 setTestClass: service
 	sunitPresenter testClassService: (service isTestCase ifTrue: [service] ifFalse: [nil])!
@@ -1960,7 +1960,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #setDefaultProjectTablLabel!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setDefaultProjectTablLabel:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setFilterType:!event handlers support!private!services! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #setMethodFilter!event handlers support!private!services!updating! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #setMethodFilterFor:!event handlers support!private!services!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setTestClass:!event handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #showSuperClassComparison!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #sundryCleanup!initialize/release!private! !

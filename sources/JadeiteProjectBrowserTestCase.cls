@@ -145,6 +145,11 @@ selectHierarchyTab
 selectHierarchyTabIn: presenter
 	presenter classHierarchyTabs lastCard!
 
+selectRowanSample1Test
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter!
+
 selectSUnitTab
 	self projectsPresenter sunitPresenter ensureVisible!
 
@@ -923,6 +928,43 @@ test_hierarchyImplementorsSendersCaption
 	methodListBrowser := self projectsPresenter browseHierarchySenders.
 	[self assert: ('Hierarchy Senders of ''branch'' for *' match: methodListBrowser caption)]
 		ensure: [methodListBrowser destroy]!
+
+test_hierarchyMethodsNotDisplayed
+	| className source |
+	self testsIssue: #issue290
+		withTitle: '(3.0.50) wrong methods displayed when switching from a superclass to subclass'.
+	self selectRowanSample1Test.
+	self selectHierarchyTab.
+	className := 'TestTestClass'.
+	self
+		saveClass: className
+		superclass: 'RowanSample1Test'
+		instVars: Array new
+		package: 'RowanSample1-Tests'.
+	self selectClassInHierarchyNamed: className.
+	self projectsPresenter basicAddMethodCategory: 'tests'.
+	source := 'subclassMethod1  ^#aaa'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self projectsPresenter classHierarchyPresenter selection.
+	self assert: self methodListPresenter selection selector equals: #subclassMethod1.
+	self projectsPresenter basicAddMethodCategory: 'zzz'.
+	source := 'subclassMethod2  ^#foo'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self projectsPresenter classHierarchyPresenter selection.
+	self assert: self methodListPresenter list size equals: 1.
+	self assert: self methodListPresenter list first selector equals: #subclassMethod2.
+	self selectClassInHierarchyNamed: 'RowanSample1Test'.
+	self assertIsNil: self categoryListPresenter selectionOrNil.	"no zzz category in super"
+	self assert: self methodListPresenter list size equals: 4.
+	self assert: (self methodListPresenter list at: 1) selector equals: #test1.
+	self assert: (self methodListPresenter list at: 2) selector equals: #test2.
+	self assert: (self methodListPresenter list at: 3) selector equals: #testError.
+	self assert: (self methodListPresenter list at: 4) selector equals: #testFailure.
+	self selectClassInHierarchyNamed: className.
+	self assertIsNil: self categoryListPresenter selectionOrNil.	"no category was previously selected"
+	self assert: self methodListPresenter list size equals: 2.
+	self assert: self methodListPresenter list first selector equals: #subclassMethod1.
+	self assert: self methodListPresenter list last selector equals: #subclassMethod2!
 
 test_hierarchySelectTwoBrowsers
 	| secondBrowser firstBrowser |
@@ -1823,6 +1865,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #selectClassListTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectHierarchyTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectHierarchyTabIn:!private!selection! !
+!JadeiteProjectBrowserTestCase categoriesFor: #selectRowanSample1Test!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectSUnitTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectTreeServicesNamed:in:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
@@ -1862,6 +1905,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementors!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementorsFromMethodList!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementorsSendersCaption!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyMethodsNotDisplayed!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySelectTwoBrowsers!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySenders!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySendersFromMethodList!public!test! !
