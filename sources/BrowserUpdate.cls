@@ -40,8 +40,8 @@ debug: aBoolean
 
 initialize
 	self initializeUpdates.
-	debug := false. 
-	inUpdate := false. !
+	debug := false.
+	inUpdate := false!
 
 initializeUpdates
 	updates := OrderedCollection new.

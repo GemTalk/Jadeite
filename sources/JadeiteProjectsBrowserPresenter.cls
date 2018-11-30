@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
-	instanceVariableNames: 'projectListPresenter stonCritical projectInfoTab projectLabel projectDictionaryTabs comparisonPresenter comparisonTab definedClassPackageText definedMethodPackageText methodCategoryText'
+	instanceVariableNames: 'projectListPresenter stonCritical projectInfoTab projectLabel projectDictionaryTabs comparisonPresenter comparisonTab definedClassPackageText definedMethodPackageText methodCategoryText refreshedClassEarly'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -224,15 +224,36 @@ createSchematicWiring
 
 createSchematicWiringForClassHierarchy
 	classHierarchyPresenter
-		when: #'drag:'				send: #'onDragClassHierarchy:'		to: self;
-		when: #'dragCut:'			send: #'onDragCutClassHierarchy:'	to: self;
-		when: #'dragOver:'			send: #'onDragOverClassHierarchy:'	to: self;
-		when: #'drop:'				send: #'onDropOnClassHierarchy:'	to: self;
-		when: #aboutToDisplayMenu: send: #updateClassMenu:			to: self;
-		when: #selectionChanging:		send: #aboutToChange:			to: self;
-		when: #'selectionChanging:'	send: #'releasedReferencedServices:'	to: self;
-		when: #selectionChanged		send: #refreshClass				to: self;
-		when: #actionPerformed		send: #hierarchyClassDoubleClicked	to: self!
+		when: #drag:
+			send: #onDragClassHierarchy:
+			to: self;
+		when: #dragCut:
+			send: #onDragCutClassHierarchy:
+			to: self;
+		when: #dragOver:
+			send: #onDragOverClassHierarchy:
+			to: self;
+		when: #drop:
+			send: #onDropOnClassHierarchy:
+			to: self;
+		when: #aboutToDisplayMenu:
+			send: #updateClassMenu:
+			to: self;
+		when: #selectionChanging:
+			send: #aboutToChange:
+			to: self;
+		when: #selectionChanging:
+			send: #releasedReferencedServices:
+			to: self;
+		when: #selectionChanging:
+			send: #refreshClassEarly:
+			to: self;
+		when: #selectionChanged
+			send: #refreshClass
+			to: self;
+		when: #actionPerformed
+			send: #hierarchyClassDoubleClicked
+			to: self!
 
 createSchematicWiringForClassHierarchyTabs
 	classHierarchyTabs
@@ -244,22 +265,60 @@ createSchematicWiringForClassHierarchyTabs
 			to: self!
 
 createSchematicWiringForClassList
+	"dolphin does not consistently send #selectionChanging: events after
+	the class list has been updated. It always sends #selectionChanged. 
+	However, in order to avoid conflicting updates and commands to the server
+	we sometimes need to update the selection on the #selectionChanging. 
+	Hence, two very similar methods. See issue #334. 
+	"
+
 	classListPresenter
-		when: #drag: 			send: #onDragClassList: 			to: self;
-		when: #dragCut: 		send: #onDragCutClassList: 		to: self;
-		when: #dragOver: 		send: #onDragOverClassList: 		to: self;
-		when: #drop: 			send: #onDropOnClassList: 		to: self;
-		when: #keyTyped: 		send: #delayUpdate 				to: self;
-		when: #aboutToDisplayMenu: send: #updateClassMenu:		to: self;
-		when: #selectionChanging: send: #aboutToChange: 			to: self;
-		when: #selectionChanging: send: #releasedReferencedServices: 	to: self;
-		when: #selectionChanged 	send: #selectedClassChanged: 		to: self with: true;
-		when: #selectionChanged 	send: #refreshClass 				to: self;
-		when: #labelOf:changedTo: send: #labelOfClass:changedTo: 	to: self;
-		when: #aboutToEditLabel:accept: send: #aboutToEditClassLabel:accept: 	to: self;
-		when: #labelOf:editedTo:accept: send: #labelOfClass:editedTo:accept: 	to: self;
-		when: #keyTyped: 		send: #selectServiceStartingWith: 			to: classListPresenter
-		!
+		when: #drag:
+			send: #onDragClassList:
+			to: self;
+		when: #dragCut:
+			send: #onDragCutClassList:
+			to: self;
+		when: #dragOver:
+			send: #onDragOverClassList:
+			to: self;
+		when: #drop:
+			send: #onDropOnClassList:
+			to: self;
+		when: #keyTyped:
+			send: #delayUpdate
+			to: self;
+		when: #aboutToDisplayMenu:
+			send: #updateClassMenu:
+			to: self;
+		when: #selectionChanging:
+			send: #aboutToChange:
+			to: self;
+		when: #selectionChanging:
+			send: #releasedReferencedServices:
+			to: self;
+		when: #selectionChanged:
+			send: #selectedClassChanged:
+			to: self
+			with: true;
+		when: #selectionChanging:
+			send: #refreshClassEarly:
+			to: self;
+		when: #selectionChanged
+			send: #refreshClass
+			to: self;
+		when: #labelOf:changedTo:
+			send: #labelOfClass:changedTo:
+			to: self;
+		when: #aboutToEditLabel:accept:
+			send: #aboutToEditClassLabel:accept:
+			to: self;
+		when: #labelOf:editedTo:accept:
+			send: #labelOfClass:editedTo:accept:
+			to: self;
+		when: #keyTyped:
+			send: #selectServiceStartingWith:
+			to: classListPresenter!
 
 createSchematicWiringForInstanceClassTabs
 	instanceClassTabs
@@ -656,9 +715,9 @@ hierarchyClassDoubleClicked
 	self expandHierarchyAt: classHierarchyPresenter selection!
 
 initialize
-
 	super initialize.
-	stonCritical := Semaphore forMutualExclusion.!
+	stonCritical := Semaphore forMutualExclusion.
+	refreshedClassEarly := false!
 
 isClassSelected
 
@@ -1179,6 +1238,10 @@ redrawAllViews
 
 refreshClass
 	| selection presenter |
+	refreshedClassEarly
+		ifTrue: 
+			[refreshedClassEarly := false.
+			^self]. 
 	presenter := self isClassListTabSelected
 				ifTrue: [classListPresenter]
 				ifFalse: [classHierarchyPresenter].
@@ -1192,6 +1255,27 @@ refreshClass
 	self setFilterType: selection.
 	self updateServices: (Array with: selection).
 	self updateClassInfo!
+
+refreshClassEarly: selectionChangingEvent
+	| selection presenter |
+	[selectionChangingEvent newSelections isEmpty
+		ifTrue: 
+			[self resetDefinedClassPackage.
+			categoryListPresenter clear.
+			^methodListPresenter clear].
+	presenter := self isClassListTabSelected
+				ifTrue: [classListPresenter]
+				ifFalse: [classHierarchyPresenter].
+	self setMethodFilterFor: presenter.
+	selection := selectionChangingEvent newSelections isEmpty
+				ifTrue: [nil]
+				ifFalse: [selectionChangingEvent newSelection].
+	selection meta: self isClassSideSelected.
+	selection selectedPackageServices: packageListPresenter selections.
+	self setFilterType: selection.
+	self updateServices: (Array with: selection).
+	self updateClassInfo: selection]
+			ensure: [refreshedClassEarly := true]!
 
 refreshClassListOrHierarchy
 	| newSelection listSelection hierarchySelection |
@@ -1591,6 +1675,29 @@ updateClassInfo
 	self updateClassMenu: nil.
 	self updateSUnitTab!
 
+updateClassInfo: service
+	self resetCategoryText.
+	service
+		ifNil: 
+			[self resetDefinedClassPackage.
+			^self].
+	classCommentPresenter value: service comment.
+	classDefinitionPresenter view isModified
+		ifTrue: 
+			[service template = classDefinition ifTrue: [^self].
+			(MessageBox confirm: 'Copy changes to clipboard?' caption: 'Class has unsaved changes!!')
+				ifTrue: [classDefinitionPresenter value copyToClipboard]].
+	classDefinitionPresenter value: service template.
+	classDefinitionPresenter view
+		backcolor: Color white;
+		isModified: false.
+	self setTestClass: service.
+	classDefinitionPresenter ensureVisible.
+	self sundryCleanup.
+	definedClassPackageText value: 'Defined Package: ' , service definedPackageName.
+	self updateClassMenu: nil.
+	self updateSUnitTab: service!
+
 updateClassMenu: menu
 	| item |
 	(menu class canUnderstand: #items) ifFalse: [^self].
@@ -1789,6 +1896,9 @@ updateSUnitTab
 		ifNil: [sunitPresenter testClassService: nil]
 		ifNotNil: [:service | self setTestClass: service]!
 
+updateSUnitTab: service
+	service ifNil: [sunitPresenter testClassService: nil] ifNotNil: [self setTestClass: service]!
+
 updateTabLabel
 	self updateProjectTab!
 
@@ -1924,6 +2034,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #redrawAllViews!displaying!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshClass!event handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #refreshClassEarly:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshClassListOrHierarchy!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshFromServer!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshFromServerAfterAbort!event handlers!menu handlers!public!updating! !
@@ -1977,6 +2088,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateAndSelectA:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClasses!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClassInfo!event handlers!public!updating! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #updateClassInfo:!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClassMenu:!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateCommand:onSuccessDo:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateHierarchy!event handlers!public!updating! !
@@ -1996,6 +2108,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSelectionsForUpdate:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSingleMethodSource!event handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSUnitTab!event handlers!public!updating! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #updateSUnitTab:!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateTabLabel!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #writeProject!project menu handlers!public! !
 

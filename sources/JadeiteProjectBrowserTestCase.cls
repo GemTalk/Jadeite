@@ -6,7 +6,9 @@ JadeiteAbstractTestCase subclass: #JadeiteProjectBrowserTestCase
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteProjectBrowserTestCase guid: (GUID fromString: '{1d6db475-c257-442b-9f91-d1574b03aee2}')!
-JadeiteProjectBrowserTestCase comment: 'General Jadeite tests. Assumes a logged in session and transcript present. '!
+JadeiteProjectBrowserTestCase comment: 'General Jadeite tests. Assumes a logged in session and transcript present. 
+
+When running tests from SUnit Browser Tool, make sure to turn on Auto Initialize Resources.'!
 !JadeiteProjectBrowserTestCase categoriesForClass!Unclassified! !
 !JadeiteProjectBrowserTestCase methodsFor!
 
