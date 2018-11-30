@@ -854,6 +854,18 @@ test_gotoDefinedPackage
 	self assert: dictionaryPresenter classListPresenter selection = 'ByteArray']
 			ensure: [dictionaryPresenter topShell destroy]!
 
+test_hierarchyCleanedUpAfterUnload
+	"hierarchy classes were being left in the display
+	after project was unloaded"
+
+	self selectRowanSample1Test.
+	self selectHierarchyTab.
+	self deny: self classHierarchyPresenter model isEmpty.
+	self projectsPresenter basicUnloadProjects: (self projectsPresenter projectListPresenter selections
+				collect: [:service | service name]).
+	[self assert: self classHierarchyPresenter model isEmpty]
+		ensure: [self cloneRowanSample1	"rest of tests expect project to be available"]!
+
 test_hierarchyFindsAllSubclassImplementors
 	| listPresenter | 
 	self testsIssue: #issue242 withTitle: '`implementors in hierarchy` doesn''t include method in the currently selected class?'.
@@ -1901,6 +1913,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromHierarchy!public!test class hierarchy!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedMethodNotSameAsClass!public!test!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedPackage!public!test!test defined package! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyCleanedUpAfterUnload!public!test class hierarchy!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyFindsAllSubclassImplementors!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementors!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementorsFromMethodList!public!test! !

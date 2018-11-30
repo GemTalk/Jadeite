@@ -1218,6 +1218,7 @@ refreshFromServer
 	projectListPresenter selections isEmpty ifFalse: [services addAll: projectListPresenter selections].
 	packageListPresenter selections isEmpty ifFalse: [services addAll: packageListPresenter selections].
 	classListPresenter selectionOrNil ifNotNil: [:classService | services add: classService].
+	classHierarchyPresenter selectionOrNil ifNotNil: [:classService | services add: classService].
 	self updateServices: services.
 	self updateSUnitTab.
 	self redrawAllViews!

@@ -70,7 +70,10 @@ tearDown
 	super tearDown.
 	projectsBrowser
 		ifNotNil: 
-			[projectsBrowser currentCard basicUnloadProjects: (Array with: self sampleProjectName).
+			[(projectsBrowser currentCard projectListPresenter list
+				detect: [:service | service name = self sampleProjectName]
+				ifNone: [])
+					ifNotNil: [projectsBrowser currentCard basicUnloadProjects: (Array with: self sampleProjectName)].
 			projectsBrowser destroy.
 			projectsBrowser := nil]!
 
