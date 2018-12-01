@@ -96,7 +96,6 @@ classHierarchyUpdate: presenter browser: browser
 
 classMethodsUpdate: presenter browser: browser
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
-	browser selectedClass name = name ifFalse: [^self].
 	filters isEmpty ifTrue:[filterType := nil].
 	self displayMethodsOn: presenter!
 
@@ -170,10 +169,7 @@ filterType: anObject
 	filterType := anObject!
 
 filterUpdate: presenter browser: browser
-	| classPresenter |
 	presenter list isEmpty ifTrue: [presenter list: SortedCollection new].
-	classPresenter := self classOrHierarchyPresenter: browser.
-	classPresenter selections detect: [:classService | classService name = name] ifNone: [^self].
 	browser isCategoriesTabSelected
 		ifTrue: 
 			[presenter list = categories ifTrue: [^self].
