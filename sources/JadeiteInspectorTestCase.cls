@@ -120,22 +120,22 @@ test_menuBarItemNames
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	
-	[self assert: (inspector view menuBar items at: 1) text equals: '&File'.
+	[self assert: inspector view menuBar items size equals: 3.
+	self assert: (inspector view menuBar items at: 1) text equals: '&File'.
 	(inspector view menuBar items at: 1) items last text equals: 'E&xit Jadeite	Alt+F4'.
 	self assert: (inspector view menuBar items at: 2) text equals: '&Edit'.
-	self assert: (inspector view menuBar items at: 3) text equals: '&Jadeite'.
-	self assert: (inspector view menuBar items at: 4) text equals: '&Help']
+	self assert: (inspector view menuBar items at: 3) text equals: '&Jadeite']
 			ensure: [inspector view close].
 	remoteObject := session
 				executeString: 'Array new'
 				fromContext: nil
 				environment: 0.	"navigation inspector"
 	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: inspector view menuBar items size equals: 3.
 	self assert: (inspector view menuBar items at: 1) text equals: '&File'.
 	(inspector view menuBar items at: 1) items last text equals: 'E&xit Jadeite	Alt+F4'.
 	self assert: (inspector view menuBar items at: 2) text equals: '&Edit'.
-	self assert: (inspector view menuBar items at: 3) text equals: '&Jadeite'.
-	self assert: (inspector view menuBar items at: 4) text equals: '&Help'!
+	self assert: (inspector view menuBar items at: 3) text equals: '&Jadeite'!
 
 test_menuItemsEnabled
 	| remoteObject |
