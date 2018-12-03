@@ -796,8 +796,7 @@ jadeMenuStrings
 
 loadProjects
 	self loadProjectsFrom: self. 
-	packageListPresenter list: ListModel new. 
-	self refreshFromServer!
+	self refreshGlobalSelections!
 
 makeDefault
 	"the server is the gold copy"
