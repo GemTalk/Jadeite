@@ -61,6 +61,8 @@ JadeiteLoginShell show
 	yourself.
 JadeLoginShell removeFromDevelopmentTools.
 JadeiteLoginShell addToDevelopmentTools.
+"to prevent right-mouse drag errors #nmBeginRDrag:"
+ListView initializeNotificationMap. 
 Cursor wait showWhile: [
 	SourceManager default compressSources.
 	(Delay forMilliseconds: 200) wait.
