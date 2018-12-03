@@ -134,7 +134,36 @@ test_sunitBrowserHasRowanTestMethods
 	self selectServiceNamed: 'Rowan-Tests' in: self sunitPresenter packageListPresenter.
 	self assert: self sunitPresenter methodListPresenter list size = 0.
 	self selectServiceNamed: 'RwMoveTest' in: self sunitPresenter classListPresenter.
-	self assert: self sunitPresenter methodListPresenter list size > 0.! !
+	self assert: self sunitPresenter methodListPresenter list size > 0.!
+
+test_sunitBrowserPassingDebugTestShowsResult
+	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
+	self selectServiceNamed: 'test1' in: self sunitPresenter methodListPresenter.
+	self assert: self sunitPresenter methodListPresenter selections size equals: 1.
+	self assert: self sunitPresenter methodListPresenter selection first selector equals: #test1.
+	self assertIsNil: self sunitPresenter methodListPresenter selections first testResult.
+	self sunitPresenter debug.
+	self assert: self sunitPresenter methodListPresenter selection first selector equals: #test1.
+	self assert: self sunitPresenter methodListPresenter selections size equals: 1.
+	self assert: self sunitPresenter methodListPresenter selections first testResult equals: 'passed'!
+
+test_sunitTabPassingDebugTestShowsResult
+	| methodService |
+	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter.
+	self projectsPresenter selectSUnitTab.
+	methodService := self projectsPresenter sunitPresenter methodListPresenter list first.
+	self projectsPresenter sunitPresenter methodListPresenter selection: (Array with: methodService).
+	self projectsPresenter sunitPresenter debug.
+	self assert: methodService testResult equals: 'passed']
+			ensure: [projectsBrowser destroy]! !
 !JadeiteSUnitSupportTestCase categoriesFor: #methodListPresenter!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #setUp!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #sunitPresenter!public!support! !
@@ -148,4 +177,6 @@ test_sunitBrowserHasRowanTestMethods
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanPackages!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestMethods!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserPassingDebugTestShowsResult!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitTabPassingDebugTestShowsResult!public!tests! !
 

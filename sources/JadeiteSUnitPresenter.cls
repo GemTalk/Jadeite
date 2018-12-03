@@ -27,12 +27,19 @@ createSchematicWiring
 		to: self!
 
 debug
+	"in order to provide some visual feedback when a debugged
+	test passes, we assume that if the test wasn't curtailed that
+	it passed."
+
 	methodListPresenter selections do: 
-			[:service |
-			gciSession
+			[:methodService |
+			
+			[gciSession
 				serverPerform: #debugTestNamed:of:
-				with: service selector
-				with: service className]!
+				with: methodService selector
+				with: methodService className]
+					ifCurtailed: [^self].
+			self updateResult: (JadeTestResult new addPassed: methodService selector)]!
 
 getTestCounter
 
