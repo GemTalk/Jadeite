@@ -49,8 +49,9 @@ categories
 
 classesMethodsUpdate: presenter browser: browser
 	| classNames |
-	browser classListPresenter selections isEmpty ifTrue:[^self].
-	browser classListPresenter selection name asString = name asString ifFalse: [^self].
+	browser classListPresenter selections isEmpty ifTrue: [^self].
+	browser classListPresenter selections size > 1  "sunit browser"
+		ifFalse: [browser classListPresenter selection name asString = name asString ifFalse: [^self]].
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	classNames := browser classListPresenter selections collect: [:classService | classService name].
 	(classNames includes: name) ifFalse: [^self].

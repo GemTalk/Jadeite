@@ -1847,6 +1847,36 @@ test_tabNames_projectsBrowserNotLost
 	index := 1.
 	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1-Core'	"not affected by other tab"!
 
+test_variablesTab
+	| selectedMethod methodListSize dictionaryBrowser variableSize |
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
+	self projectsPresenter selectVariablesTab.
+	self projectsPresenter variableListPresenter selection: 'variables'.
+	methodListSize := self methodListPresenter list size.
+	self denyIsNil: (selectedMethod := self methodListPresenter list
+						detect: [:service | service selector = #initializeVariablesFor:]
+						ifNone: []).
+	self methodListPresenter selection: selectedMethod.
+	methodListBrowser := JadePresenter browseImplementorsOf: 'allInstVarNames' session: session.	"selected method sends this"
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter selection
+				selector
+		equals: #allInstVarNames.
+	dictionaryBrowser := methodListBrowser primaryPresenter methodListPresenter browseClass.
+	[self assert: self methodListPresenter list size equals: methodListSize] ensure: 
+			[dictionaryBrowser destroy.
+			methodListBrowser destroy].
+	variableSize := self projectsPresenter variableListPresenter list size.
+	self selectHierarchyTab.
+	self assert: self projectsPresenter variableListPresenter list size equals: variableSize.
+	self assert: self projectsPresenter variableListPresenter selection equals: 'variables'.
+	self assert: self methodListPresenter selection equals: selectedMethod.	"assert selections & lists stay the same switching to hierarchy view ..."
+	self selectClassListTab.
+	self assert: self projectsPresenter variableListPresenter list size equals: variableSize.
+	self assert: self projectsPresenter variableListPresenter selection equals: 'variables'.
+	self assert: self methodListPresenter selection equals: selectedMethod	"... and back"!
+
 test_verifyValidCategory
 	self testsIssue: #issue205 withTitle: 'misspelled extension category name causes trouble'.
 	self assert: (self projectsPresenter verifyValidCategory: '*Rowan-Kernel') .
@@ -1968,6 +1998,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_variablesTab!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_verifyValidCategory!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #waitForPresenter:!private!selection! !
 

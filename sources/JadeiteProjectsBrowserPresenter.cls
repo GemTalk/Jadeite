@@ -1506,6 +1506,9 @@ selectSourceTabNamed: tabName
 selectSUnitTab
 	self selectSourceTabNamed: 'sunit'!
 
+selectVariablesTab
+	(self view viewNamed: 'variableList') ensureVisible!
+
 setDefaultProjectTablLabel
 	projectLabel ifNil: [projectLabel := self textTabs detect: [:each | each text = 'Project']]!
 
@@ -2038,6 +2041,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectPackage:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectSourceTabNamed:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectSUnitTab!public!selection! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #selectVariablesTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setDefaultProjectTablLabel!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setDefaultProjectTablLabel:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setFilterType:!event handlers support!private!services! !
