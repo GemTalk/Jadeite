@@ -176,7 +176,7 @@ filterUpdate: presenter browser: browser
 	browser selectedClass isNil ifTrue: [^self].
 	browser selectedClass name asString = name asString ifFalse: [^self].
 	presenter model isEmpty ifTrue: [presenter list: SortedCollection new].
-	browser isCategoriesTabSelected
+	browser isCategoryTabSelected
 		ifTrue: 
 			[presenter list = categories ifTrue: [^self].
 			self updateCategories: presenter]
@@ -208,6 +208,9 @@ initialize
 	filters := Array new. 
 	selectedPackageServices := Array new. "method list browser will not have packages to select"
 	isTestCase := false. !
+
+instVarNames
+	^instVarNames!
 
 isClassService
 
@@ -390,6 +393,7 @@ visibleTests
 !RowanClassService categoriesFor: #hierarchyClassServiceNames!public! !
 !RowanClassService categoriesFor: #hierarchyClassServices!public! !
 !RowanClassService categoriesFor: #initialize!Init / Release!public! !
+!RowanClassService categoriesFor: #instVarNames!accessing!public! !
 !RowanClassService categoriesFor: #isClassService!public!testing! !
 !RowanClassService categoriesFor: #isDefined!public!testing! !
 !RowanClassService categoriesFor: #isExtension!public!testing! !

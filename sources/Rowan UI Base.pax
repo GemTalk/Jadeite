@@ -3062,7 +3062,7 @@ updateMethod
 					backcolor: nil;
 					isReadOnly: true;
 					yourself].
-	((methodCategory := gsMethod category) notEmpty and: [self isCategoriesTabSelected])
+	((methodCategory := gsMethod category) notEmpty and: [self isCategoryTabSelected])
 		ifTrue: 
 			[| fullList selections index newName |
 			fullList := categoryListPresenter list.
@@ -3118,7 +3118,7 @@ updateSelector
 					backcolor: nil;
 					isReadOnly: true;
 					yourself].
-	((methodCategory := gsMethod category) notEmpty and: [self isCategoriesTabSelected])
+	((methodCategory := gsMethod category) notEmpty and: [self isCategoryTabSelected])
 		ifTrue: 
 			[| fullList selections index newName |
 			fullList := categoryListPresenter list.

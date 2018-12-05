@@ -606,7 +606,7 @@ filterTabChanged
 			[self clearFilterLists.
 			^self].
 	self populateFilterList.
-	self isCategoriesTabSelected
+	self isCategoryTabSelected
 		ifTrue: 
 			[^methodListPresenter selectionOrNil
 				ifNil: [self selectMethodSourceTab]
@@ -713,9 +713,7 @@ initialize
 	stonCritical := Semaphore forMutualExclusion.!
 
 isClassSelected
-
-	^classListPresenter selectionOrNil isNil not
-!
+	^self selectedClass notNil!
 
 isDictionariesTabSelected
 
@@ -917,9 +915,9 @@ pkgsMenuStrings
 	'&Unload Package...//unloadPackage')!
 
 populateFilterList
-	self isCategoriesTabSelected
-		ifTrue: [categoryListPresenter list: self selectedClass categories]
-		ifFalse: [variableListPresenter list: self selectedClass variables]!
+	self isCategoryTabSelected
+		ifTrue: [categoryListPresenter list: (ListModel withAll: self selectedClass categories)]
+		ifFalse: [variableListPresenter list: (ListModel withAll: self selectedClass variables)]!
 
 postOkToChangeEvent
 	| service |
@@ -1283,13 +1281,13 @@ refreshMethodsOn: presenter
 				ifTrue: [classListPresenter]
 				ifFalse: [classHierarchyPresenter].
 	classService := classPresenter selectionOrNil ifNil: [^self].
-	self isCategoriesTabSelected
+	self isCategoryTabSelected
 		ifTrue: [classService filters: categoryListPresenter selections]
 		ifFalse: [classService filters: variableListPresenter selections].
 	classService filters isEmpty
 		ifTrue: [classService filterType: nil]
 		ifFalse: 
-			[self isCategoriesTabSelected
+			[self isCategoryTabSelected
 				ifTrue: [classService filterType: 'categories']
 				ifFalse: [classService filterType: 'variables']].
 	classService methods isNil
@@ -1414,6 +1412,9 @@ selectCategoryFrom: methodService
 selectCategoryNamed: category
 	^self selectCategoriesNamed: (Array with: category)!
 
+selectCategoryTab
+	(self view viewNamed: 'categoryList') ensureVisible!
+
 selectClass: classSelection
 	| selection |
 	selection := classListPresenter list detect: [:svc | svc name = classSelection name] ifNone: [].
@@ -1482,7 +1483,7 @@ selectMethodSourceTab
 	| methodSourceTab selection |
 	methodSourceTab := self view viewNamed: 'methodSource'.
 	methodListPresenter selectionOrNil ifNotNil: [^methodSourceTab ensureVisible].
-	selection := self isCategoriesTabSelected
+	selection := self isCategoryTabSelected
 				ifTrue: [categoryListPresenter selectionOrNil]
 				ifFalse: [variableListPresenter selectionOrNil].
 	selection
@@ -1506,7 +1507,7 @@ selectSourceTabNamed: tabName
 selectSUnitTab
 	self selectSourceTabNamed: 'sunit'!
 
-selectVariablesTab
+selectVariableTab
 	(self view viewNamed: 'variableList') ensureVisible!
 
 setDefaultProjectTablLabel
@@ -1516,13 +1517,13 @@ setDefaultProjectTablLabel: listModel
 	projectLabel ifNil: [projectLabel := listModel detect: [:each | each text = 'Project']]!
 
 setFilterType: selection
-	self isCategoriesTabSelected
+	self isCategoryTabSelected
 		ifTrue: [selection filterType: 'categories']
 		ifFalse: [selection filterType: 'variables']!
 
 setMethodFilterFor: presenter
 	| filters |
-	self isCategoriesTabSelected
+	self isCategoryTabSelected
 		ifTrue: [filters := categoryListPresenter selections]
 		ifFalse: [filters := variableListPresenter selections].
 	presenter model do: [:service | service filters: filters]!
@@ -1715,25 +1716,27 @@ updateHierarchy
 							classHierarchyPresenter selection: selection]]]!
 
 updateMenuBar
-
 	| shellView menuBar methodFilterMenu textAreaMenu methodMenu |
-	methodFilterMenu := Menu fromStrings: (self isCategoriesTabSelected ifTrue: [self categoriesMenuStrings] ifFalse: [self variablesMenuStrings]).
-	textAreaMenu := Menu fromStrings: (self isGlobalsTabSelected ifTrue: [self globalsMenuStrings] ifFalse: [self editMenuStrings]).
+	methodFilterMenu := Menu fromStrings: (self isCategoryTabSelected
+						ifTrue: [self categoriesMenuStrings]
+						ifFalse: [self variablesMenuStrings]).
+	textAreaMenu := Menu fromStrings: (self isGlobalsTabSelected
+						ifTrue: [self globalsMenuStrings]
+						ifFalse: [self editMenuStrings]).
 	shellView := self parentPresenter parentPresenter view.
 	menuBar := shellView menuBar
-		clear;
-		addItem: (Menu fromStrings: self jadeMenuStrings);
-		addItem: self projectMenu;
-		addItem: (Menu fromStrings: self pkgsMenuStrings);
-		addItem: (Menu fromStrings: self classesMenuStrings);
-		addItem: methodFilterMenu; 
-		addItem: (methodMenu := Menu fromStrings: self methodsMenuStrings);
-		addItem: textAreaMenu;
-		addItem: (Menu fromStrings: self preferencesMenuStrings);
-		yourself.
+				clear;
+				addItem: (Menu fromStrings: self jadeMenuStrings);
+				addItem: self projectMenu;
+				addItem: (Menu fromStrings: self pkgsMenuStrings);
+				addItem: (Menu fromStrings: self classesMenuStrings);
+				addItem: methodFilterMenu;
+				addItem: (methodMenu := Menu fromStrings: self methodsMenuStrings);
+				addItem: textAreaMenu;
+				addItem: (Menu fromStrings: self preferencesMenuStrings);
+				yourself.
 	shellView menuBar: menuBar.
-	self updateMethodMenu: methodMenu
-!
+	self updateMethodMenu: methodMenu!
 
 updateMethodMenu: menu
 	| item |
@@ -2026,6 +2029,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoriesNamed:!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoryFrom:!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoryNamed:!public!selection! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoryTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClass:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassInClassHierarchyNamed:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassInClassListNamed:!private!selection! !
@@ -2041,7 +2045,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectPackage:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectSourceTabNamed:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectSUnitTab!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectVariablesTab!public!selection! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #selectVariableTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setDefaultProjectTablLabel!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setDefaultProjectTablLabel:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setFilterType:!event handlers support!private!services! !

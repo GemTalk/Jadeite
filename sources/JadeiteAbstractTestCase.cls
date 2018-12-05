@@ -290,7 +290,10 @@ transcriptTab
 unloadSampleProject
 	self isSampleProjectLoaded
 		ifTrue: [self projectsPresenter basicUnloadProjects: (Array with: self sampleProjectName)].
-! !
+!
+
+variableListPresenter
+	^self projectsPresenter variableListPresenter.! !
 !JadeiteAbstractTestCase categoriesFor: #abortTransaction!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #anotherNumberMethodSource!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #categoryListPresenter!private!project browser support! !
@@ -340,6 +343,7 @@ unloadSampleProject
 !JadeiteAbstractTestCase categoriesFor: #transcriptProjectNamed:!public!transcript support! !
 !JadeiteAbstractTestCase categoriesFor: #transcriptTab!public!transcript support! !
 !JadeiteAbstractTestCase categoriesFor: #unloadSampleProject!private!project support! !
+!JadeiteAbstractTestCase categoriesFor: #variableListPresenter!private!project browser support! !
 
 !JadeiteAbstractTestCase class methodsFor!
 

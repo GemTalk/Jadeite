@@ -740,6 +740,31 @@ test_extensionColoringInHierarchy
 	self selectClassInHierarchyNamed: 'RwGemStoneSpecification'.
 	self assert: self projectsPresenter classHierarchyPresenter selection shouldColorAsExtension!
 
+test_filtersUpdatedInHierarchyView
+	| selectedClass browserServiceCategories |
+	self testsIssue: #issue343 withTitle: 'Category/Variables tab not updating correctly'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanBrowserService' in: self classListPresenter.
+	self selectHierarchyTab.
+	self assert: self projectsPresenter isCategoryTabSelected.
+	self assert: self categoryListPresenter list notEmpty.
+	browserServiceCategories := self categoryListPresenter list.
+	self projectsPresenter selectVariableTab.
+	self assert: self variableListPresenter list notEmpty.
+	selectedClass := self projectsPresenter selectedClass.
+	self assert: selectedClass name equals: 'RowanBrowserService'.
+	selectedClass instVarNames
+		do: [:instVar | self assert: (self variableListPresenter list includes: instVar asString)].
+	self selectClassInHierarchyNamed: 'RowanService'.
+	self assert: self variableListPresenter list notEmpty.
+	selectedClass := self projectsPresenter selectedClass.
+	self assert: selectedClass name equals: 'RowanService'.
+	selectedClass instVarNames
+		do: [:instVar | self assert: (self variableListPresenter list includes: instVar asString)].
+	self projectsPresenter selectCategoryTab. 
+	self deny: browserServiceCategories size equals: self categoryListPresenter list size. "At least test that something changed since the categories will change" !
+
 test_findClass
 	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'RwGsPlatform').
 	self assert: self classListPresenter selection name equals: 'RwGsPlatform'.
@@ -1879,7 +1904,7 @@ test_variablesTab
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
 	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
-	self projectsPresenter selectVariablesTab.
+	self projectsPresenter selectVariableTab.
 	self projectsPresenter variableListPresenter selection: 'variables'.
 	methodListSize := self methodListPresenter list size.
 	self denyIsNil: (selectedMethod := self methodListPresenter list
@@ -1963,6 +1988,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_exitJadeiteValidSession!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_expansion!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_extensionColoringInHierarchy!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_filtersUpdatedInHierarchyView!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findClass!public!test!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromHierarchy!public!test class hierarchy!test defined package! !

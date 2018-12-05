@@ -168,31 +168,30 @@ removeClass
 	list do: [:each | self registry unregister: each]!
 
 restoreFrom: aJadeHistoryEntry
-
-	aJadeHistoryEntry isPackageSelected 
-	ifTrue: [self isPackageListTabSelected ifFalse: [packageDictionaryTabs previousCard].
-			packageListPresenter selections: aJadeHistoryEntry packageOrDictionary ifAbsent: []] 
-	ifFalse: [self isPackageListTabSelected ifTrue: [packageDictionaryTabs nextCard].
+	aJadeHistoryEntry isPackageSelected
+		ifTrue: 
+			[self isPackageListTabSelected ifFalse: [packageDictionaryTabs previousCard].
+			packageListPresenter selections: aJadeHistoryEntry packageOrDictionary ifAbsent: []]
+		ifFalse: 
+			[self isPackageListTabSelected ifTrue: [packageDictionaryTabs nextCard].
 			dictionaryListPresenter selections: aJadeHistoryEntry packageOrDictionary ifAbsent: []].
-
 	classCategoryPresenter selection: aJadeHistoryEntry classCategory ifAbsent: [].
-
-	aJadeHistoryEntry isHierarchySelected 
-	ifTrue: [self isClassListTabSelected ifTrue: [classHierarchyTabs nextCard].
-			classHierarchyPresenter selection: aJadeHistoryEntry className ifAbsent: []] 
-	ifFalse: [self isClassListTabSelected ifFalse: [classHierarchyTabs previousCard].
+	aJadeHistoryEntry isHierarchySelected
+		ifTrue: 
+			[self isClassListTabSelected ifTrue: [classHierarchyTabs nextCard].
+			classHierarchyPresenter selection: aJadeHistoryEntry className ifAbsent: []]
+		ifFalse: 
+			[self isClassListTabSelected ifFalse: [classHierarchyTabs previousCard].
 			classListPresenter selection: aJadeHistoryEntry className ifAbsent: []].
-
-	aJadeHistoryEntry isCategoriesSelected 
-	ifTrue: [self isCategoriesTabSelected ifFalse: [methodFilterTabs previousCard].
-			categoryListPresenter selection: aJadeHistoryEntry categoriesOrVariables ifAbsent: [].] 
-	ifFalse: [self isCategoriesTabSelected ifTrue: [methodFilterTabs nextCard].
-			variableListPresenter selection: aJadeHistoryEntry categoriesOrVariables ifAbsent: [].].
-
+	aJadeHistoryEntry isCategoriesSelected
+		ifTrue: 
+			[self isCategoryTabSelected ifFalse: [methodFilterTabs previousCard].
+			categoryListPresenter selection: aJadeHistoryEntry categoriesOrVariables ifAbsent: []]
+		ifFalse: 
+			[self isCategoryTabSelected ifTrue: [methodFilterTabs nextCard].
+			variableListPresenter selection: aJadeHistoryEntry categoriesOrVariables ifAbsent: []].
 	methodListPresenter selection: aJadeHistoryEntry methodName ifAbsent: [].
-
-	self resetCursor.
-!
+	self resetCursor!
 
 updateAndSelect: aView
 

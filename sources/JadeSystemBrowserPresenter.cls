@@ -743,33 +743,37 @@ editSaveClassComment
 
 editSaveMethod
 	| stream caretPosition firstVisibleLine |
-
 	caretPosition := methodSourcePresenter view caretPosition.
 	firstVisibleLine := methodSourcePresenter view lineScroll.
-	(self isCategoriesTabSelected and: [categoryListPresenter hasSelection]) ifTrue: [
-		methodCategory := categoryListPresenter selection trimBlanks.
-	].
-
+	(self isCategoryTabSelected and: [categoryListPresenter hasSelection])
+		ifTrue: [methodCategory := categoryListPresenter selection trimBlanks].
 	stream := (WriteStream on: String new)
-		nextPutAll: 'method'; tab;
-		nextPutAll: self selectedClassNameWithoutVersion; tab;
-		nextPutAll: selectedClassOop printString; tab;
-		nextPutAll: instanceClassTabs currentCard name; tab;
-		nextPutAll: methodCategory; tab; 
-		lf;
-		nextPutAll: self currentMethodSource; lf;
-		nextPut: $%; lf;
-		yourself.
-	[
-		self 
-			updateCommand: stream contents , self requestString
-			onSuccessDo: [methodSourcePresenter view isModified: false; ensureVisible].
-	] on: GsCompileError do: [:ex | 
-		self reportCompileError: ex list.
-	].
+				nextPutAll: 'method';
+				tab;
+				nextPutAll: self selectedClassNameWithoutVersion;
+				tab;
+				nextPutAll: selectedClassOop printString;
+				tab;
+				nextPutAll: instanceClassTabs currentCard name;
+				tab;
+				nextPutAll: methodCategory;
+				tab;
+				lf;
+				nextPutAll: self currentMethodSource;
+				lf;
+				nextPut: $%;
+				lf;
+				yourself.
+	
+	[self updateCommand: stream contents , self requestString
+		onSuccessDo: 
+			[methodSourcePresenter view
+				isModified: false;
+				ensureVisible]]
+			on: GsCompileError
+			do: [:ex | self reportCompileError: ex list].
 	methodSourcePresenter view firstVisibleLine: firstVisibleLine.
-	methodSourcePresenter view goto: caretPosition.
-!
+	methodSourcePresenter view goto: caretPosition!
 
 editSelectAll
 
@@ -1108,10 +1112,8 @@ inspectGlobal
 	(Smalltalk at: #'JadeInspector' ifAbsent: [^self]) showOn: oopType session: self gciSession.
 !
 
-isCategoriesTabSelected
-
-	^methodFilterTabs currentCard name = 'categoryList'.
-!
+isCategoryTabSelected
+	^methodFilterTabs currentCard name = 'categoryList'!
 
 isClassListTabSelected
 
@@ -2463,7 +2465,7 @@ updateDictionaryList
 updateMenuBar
 	| shellView menuBar dictionaryMenu methodFilterMenu textAreaMenu |
 	dictionaryMenu := Menu fromStrings: self dictsMenuStrings.
-	methodFilterMenu := Menu fromStrings: (self isCategoriesTabSelected
+	methodFilterMenu := Menu fromStrings: (self isCategoryTabSelected
 						ifTrue: [self categoriesMenuStrings]
 						ifFalse: [self variablesMenuStrings]).
 	textAreaMenu := Menu fromStrings: (self isGlobalsTabSelected
@@ -2815,7 +2817,7 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #initialize!history!public! !
 !JadeSystemBrowserPresenter categoriesFor: #insertDictionary!public! !
 !JadeSystemBrowserPresenter categoriesFor: #inspectGlobal!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #isCategoriesTabSelected!public!testing! !
+!JadeSystemBrowserPresenter categoriesFor: #isCategoryTabSelected!public!testing! !
 !JadeSystemBrowserPresenter categoriesFor: #isClassListTabSelected!public!request string! !
 !JadeSystemBrowserPresenter categoriesFor: #isClassSelectedInEditor!public! !
 !JadeSystemBrowserPresenter categoriesFor: #isClassSideSelected!accessing!public!request string! !
