@@ -23,18 +23,10 @@ loginFailureCaption
 	^'Jadeite Login Error'!
 
 openGitHubJadeiteProject
-
-	ShellLibrary default 
-		shellOpen: 'https://github.com/GemTalk/Jadeite' 
-		directory: ''.
-!
+	^JadePresenter openGitHubJadeiteProject!
 
 openGitHubRowanProject
-
-	ShellLibrary default 
-		shellOpen: 'https://github.com/GemTalk/Rowan' 
-		directory: ''.
-!
+	^JadePresenter openGitHubRowanProject!
 
 postLogin: aGciSession
 	| result |

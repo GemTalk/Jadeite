@@ -327,6 +327,8 @@ package methodNames
 	add: 'JadePresenter class' -> #convertToPattern:;
 	add: 'JadePresenter class' -> #issueCommand:session:;
 	add: 'JadePresenter class' -> #openDictionaryBrowserOn:session:;
+	add: 'JadePresenter class' -> #openGitHubJadeiteProject;
+	add: 'JadePresenter class' -> #openGitHubRowanProject;
 	add: 'JadePresenter class' -> #openMethodListOn:selecting:session:;
 	add: 'JadePresenter class' -> #openMethodListOn:selectingAnyMatch:session:;
 	add: 'JadePresenter class' -> #promptForMatchingSymbolsIn:actionBlock:promptCaption:;
@@ -1711,6 +1713,12 @@ openDictionaryBrowserOn: classService session: session
 			shell selectClass: classService name asString selector: String new.
 			^shell currentCard]!
 
+openGitHubJadeiteProject
+	ShellLibrary default shellOpen: 'https://github.com/GemTalk/Jadeite' directory: ''!
+
+openGitHubRowanProject
+	ShellLibrary default shellOpen: 'https://github.com/GemTalk/Rowan' directory: ''!
+
 openMethodListOn: service selecting: string session: session
 	^JadeiteMethodListBrowser
 		openOn: service
@@ -1776,6 +1784,8 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #convertToPattern:!browsing support!private! !
 !JadePresenter class categoriesFor: #issueCommand:session:!public! !
 !JadePresenter class categoriesFor: #openDictionaryBrowserOn:session:!browsing support!public! !
+!JadePresenter class categoriesFor: #openGitHubJadeiteProject!browsing!public! !
+!JadePresenter class categoriesFor: #openGitHubRowanProject!browsing!public! !
 !JadePresenter class categoriesFor: #openMethodListOn:selecting:session:!public! !
 !JadePresenter class categoriesFor: #openMethodListOn:selectingAnyMatch:session:!public! !
 !JadePresenter class categoriesFor: #promptForMatchingSymbolsIn:actionBlock:promptCaption:!browsing support!private! !
