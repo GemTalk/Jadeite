@@ -181,31 +181,6 @@ tearDown
 			[methodListBrowser destroy.
 			methodListBrowser := nil]!
 
-test_abortWithAbortedClassSelected
-	"make sure we can safely remove an aborted class during post-abort refresh"
-
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
-	self selectServicesNamed: (Array with: 'RowanServicesTest') in: self classListPresenter.
-	self saveTestClass.
-	self assert: self projectsPresenter selectedClass name = 'TestClass'.
-	self projectsPresenter topShell abortTransaction.
-	
-	[self
-		assertIsNil: (self classListPresenter list detect: [:service | service name = 'TestClass'] ifNone: [])]
-			ensure: 
-				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded].
-	self saveTestClass.
-	self assert: self projectsPresenter selectedClass name = 'TestClass'. "abort from a different browser"
-	transcript projectListPresenter abortTransaction.
-	
-	[self
-		assertIsNil: (self classListPresenter list detect: [:service | service name = 'TestClass'] ifNone: [])]
-			ensure: 
-				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
-
 test_addPackageReloadProject
 	self testsIssue: #issue183
 		withTitle: 'Add package but don''t write it to disk then reload - walkback'.
@@ -1563,6 +1538,31 @@ test_refreshFromServer
 	self assert: self projectsPresenter projectListPresenter selection name equals: 'Rowan'
 	!
 
+test_removeAbortedClass
+	"make sure we can safely remove an aborted class during post-abort refresh"
+
+	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
+	self selectServicesNamed: (Array with: 'RowanServicesTest') in: self classListPresenter.
+	self saveTestClass.
+	self assert: self projectsPresenter selectedClass name = 'TestClass'.
+	self projectsPresenter topShell abortTransaction.
+	
+	[self
+		assertIsNil: (self classListPresenter list detect: [:service | service name = 'TestClass'] ifNone: [])]
+			ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded].
+	self saveTestClass.
+	self assert: self projectsPresenter selectedClass name = 'TestClass'. "abort from a different browser"
+	transcript projectListPresenter abortTransaction.
+	
+	[self
+		assertIsNil: (self classListPresenter list detect: [:service | service name = 'TestClass'] ifNone: [])]
+			ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
+
 test_removeProject
 	| targetProject |
 	self testsIssue: #issue129 withTitle: 'Expose unload project.'.
@@ -1965,7 +1965,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #selectTreeServicesNamed:in:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteProjectBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_abortWithAbortedClassSelected!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addPackageReloadProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveHierarchyCategory!public!test class hierarchy! !
@@ -2031,6 +2030,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterReloadInProjectsBrowserWithAddedMethod!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterReloadWithAddedMethod!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshFromServer!public!test!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_removeAbortedClass!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_rowanTestsHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethod!public!test! !
