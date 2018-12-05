@@ -1457,6 +1457,31 @@ test_refreshAfterAbortMethodListLeaveCommitted
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_refreshAfterReloadInProjectsBrowserWithAddedMethod
+	"add a method in a project, then reload from the project browser.
+	Expect the browsers to remove the method on update but keep
+	the class and package selections. "
+
+	| loadProjectsMenuItem |
+	self testsIssue: #issue284
+		withTitle: '(3.0.49 and 3.0.50) project browser not updated properly on reload of project.'.
+	self selectRowanSample1Class.
+	self issue284methodCreation.
+	self selectMethodNamed: #addedMethod.
+	loadProjectsMenuItem := self projectListPresenter view queryContextMenu items
+				detect: [:menuItem | menuItem command == #loadProjects].
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #yes.	"confirm we want to load project"
+	
+	[loadProjectsMenuItem commandDescription performAgainst: self projectsPresenter.
+	self assertIsNil: (self methodListPresenter list
+				detect: [:methodService | methodService selector == #addedMethod]
+				ifNone: []).
+	self assert: self classListPresenter selection name equals: 'RowanSample1'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
+	self assert: self projectListPresenter selection name equals: 'RowanSample1']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_refreshAfterReloadWithAddedMethod
 	"add a method in a project, then refresh from the project list.
 	Expect the browsers to remove the method on update"
@@ -1848,6 +1873,8 @@ test_tabNames_projectsBrowserNotLost
 	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1-Core'	"not affected by other tab"!
 
 test_variablesTab
+	"at least do something with the variables tab"
+
 	| selectedMethod methodListSize dictionaryBrowser variableSize |
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
@@ -1975,6 +2002,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectRemoved!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodList!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodListLeaveCommitted!public!test projects! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterReloadInProjectsBrowserWithAddedMethod!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterReloadWithAddedMethod!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshFromServer!public!test!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects! !
