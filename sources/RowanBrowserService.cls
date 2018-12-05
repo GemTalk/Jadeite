@@ -35,13 +35,6 @@ isBrowserService
 
 	^true!
 
-methodsRemoved: presenter
-	| remainingServices |
-	remainingServices := OrderedCollection new.
-	presenter list
-		do: [:methodService | (removedMethods includes: methodService) ifFalse: [remainingServices add: methodService]].
-	presenter list: remainingServices!
-
 name
 	"browser services aren't named, but (for convenience) can respond"
 
@@ -113,7 +106,6 @@ testPackages: presenter
 !RowanBrowserService categoriesFor: #excludedInstVars!public!ston! !
 !RowanBrowserService categoriesFor: #hash!comparing!public! !
 !RowanBrowserService categoriesFor: #isBrowserService!public!testing! !
-!RowanBrowserService categoriesFor: #methodsRemoved:!public!updating! !
 !RowanBrowserService categoriesFor: #name!accessing!public! !
 !RowanBrowserService categoriesFor: #prepareForReplication!public!replication! !
 !RowanBrowserService categoriesFor: #projects!accessing!public! !

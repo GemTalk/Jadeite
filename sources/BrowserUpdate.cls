@@ -10,6 +10,25 @@ BrowserUpdate comment: 'Coordinate client presenters with updates from the serve
 !BrowserUpdate categoriesForClass!MVP-Models! !
 !BrowserUpdate methodsFor!
 
+activeClassServices
+	^self registeredListServices select: [:service | service isClassService]!
+
+activeMethodServices
+	^self registeredListServices select: [:service | service isMethodService]!
+
+activePackageServices
+	^self registeredListServices select: [:service | service isPackageService]!
+
+activeServices
+	"services which are open in windows in list browsers"
+
+	| services |
+	services := OrderedCollection new.
+	services addAll: self activeMethodServices.
+	services addAll: self activeClassServices.
+	services addAll: self activePackageServices.
+	^services!
+
 basicIssueCommand: services session: session
 	| stonString stonResultString |
 	services do:[:service | service prepareForReplication].
@@ -59,17 +78,6 @@ issueCommand: services session: session
 	[[^self basicIssueCommand: services session: session] ensure: [inUpdate := false]]
 		ifCurtailed: [inUpdate := false]!
 
-methodListServices
-	| services potentialSelections |
-	services := OrderedCollection new.
-	self registeredPresenters do: 
-			[:presenter |
-			(presenter class canUnderstand: #list )
-				ifTrue: 
-					[potentialSelections := presenter list.
-					services addAll: (potentialSelections select: [:selection | selection isMethodService])]].
-	^services!
-
 performUpdate: updateBlock with: selector
 	updates do: 
 			[:update |
@@ -100,11 +108,24 @@ register: presenter selector: selector browser: browser
 				with: selector
 				with: browser)!
 
+registeredListPresenters
+	^self registeredPresenters select: [:presenter | presenter class canUnderstand: #list]!
+
+registeredListServices
+	| listServices |
+	listServices := OrderedCollection new.
+	self registeredListPresenters do: [:listPresenter | listServices addAll: listPresenter list].
+	self registeredTreePresenters do:[:treePresenter | listServices addAll: treePresenter model]. 
+	^listServices!
+
 registeredPresenters
 	| presenters |
 	presenters := Set new.
 	(self getEvents at: #updateReady) messagesDo: [:message | presenters add: message receiver].
 	^presenters!
+
+registeredTreePresenters
+	^self registeredPresenters select: [:presenter | presenter isKindOf: TreePresenter]!
 
 selectedServices
 	| services potentialSelections |
@@ -172,6 +193,10 @@ updatesPerform: selector presenter: presenter browser: browser
 						perform: selector
 						with: presenter
 						with: browser]]! !
+!BrowserUpdate categoriesFor: #activeClassServices!accessing!public! !
+!BrowserUpdate categoriesFor: #activeMethodServices!accessing!public! !
+!BrowserUpdate categoriesFor: #activePackageServices!accessing!public! !
+!BrowserUpdate categoriesFor: #activeServices!accessing!public! !
 !BrowserUpdate categoriesFor: #basicIssueCommand:session:!commands!private! !
 !BrowserUpdate categoriesFor: #basicUpdateServices:session:!private!updating! !
 !BrowserUpdate categoriesFor: #debug!accessing!private! !
@@ -181,11 +206,13 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #inUpdate!accessing!public! !
 !BrowserUpdate categoriesFor: #inUpdate:!accessing!private! !
 !BrowserUpdate categoriesFor: #issueCommand:session:!commands!public! !
-!BrowserUpdate categoriesFor: #methodListServices!accessing!public! !
 !BrowserUpdate categoriesFor: #performUpdate:with:!private!updating! !
 !BrowserUpdate categoriesFor: #register:selector:!public!registeringPresenters! !
 !BrowserUpdate categoriesFor: #register:selector:browser:!public!registeringPresenters! !
+!BrowserUpdate categoriesFor: #registeredListPresenters!private!registeringPresenters! !
+!BrowserUpdate categoriesFor: #registeredListServices!private!registeringPresenters! !
 !BrowserUpdate categoriesFor: #registeredPresenters!public!registeringPresenters! !
+!BrowserUpdate categoriesFor: #registeredTreePresenters!private!registeringPresenters! !
 !BrowserUpdate categoriesFor: #selectedServices!accessing!public! !
 !BrowserUpdate categoriesFor: #update:afterStonReplication:!public!updating! !
 !BrowserUpdate categoriesFor: #updateReady!public!updating! !

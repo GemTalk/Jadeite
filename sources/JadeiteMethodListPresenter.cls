@@ -47,14 +47,14 @@ methods: services selecting: string
 
 	(services isNil or: [services isEmpty]) ifTrue: [^self].
 	methodListPresenter
-		list: services;
+		list: (ListModel withAll: services);
 		selectFirstMethod.
 	self selecting: string!
 
 methods: services selectingAnyMatch: string
 	services isEmpty ifTrue: [^self].
 	methodListPresenter
-		list: services;
+		list: (ListModel withAll: services);
 		selectFirstMethod.
 	self selectingAnyMatch: string!
 

@@ -69,7 +69,7 @@ list: list
 
 loadProjects
 	self loadProjectsFrom: self.
-	self refresh!
+	self refreshGlobalSelections.!
 
 makeDefault
 	"the server is the gold copy"

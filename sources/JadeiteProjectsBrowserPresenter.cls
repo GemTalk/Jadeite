@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
-	instanceVariableNames: 'projectListPresenter stonCritical projectInfoTab projectLabel projectDictionaryTabs comparisonPresenter comparisonTab definedClassPackageText definedMethodPackageText methodCategoryText refreshedClassEarly'
+	instanceVariableNames: 'projectListPresenter stonCritical projectInfoTab projectLabel projectDictionaryTabs comparisonPresenter comparisonTab definedClassPackageText definedMethodPackageText methodCategoryText'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -245,9 +245,6 @@ createSchematicWiringForClassHierarchy
 		when: #selectionChanging:
 			send: #releasedReferencedServices:
 			to: self;
-		when: #selectionChanging:
-			send: #refreshClassEarly:
-			to: self;
 		when: #selectionChanged
 			send: #refreshClass
 			to: self;
@@ -301,9 +298,6 @@ createSchematicWiringForClassList
 			send: #selectedClassChanged:
 			to: self
 			with: true;
-		when: #selectionChanging:
-			send: #refreshClassEarly:
-			to: self;
 		when: #selectionChanged
 			send: #refreshClass
 			to: self;
@@ -716,8 +710,7 @@ hierarchyClassDoubleClicked
 
 initialize
 	super initialize.
-	stonCritical := Semaphore forMutualExclusion.
-	refreshedClassEarly := false!
+	stonCritical := Semaphore forMutualExclusion.!
 
 isClassSelected
 
@@ -1237,10 +1230,6 @@ redrawAllViews
 
 refreshClass
 	| selection presenter |
-	refreshedClassEarly
-		ifTrue: 
-			[refreshedClassEarly := false.
-			^self]. 
 	presenter := self isClassListTabSelected
 				ifTrue: [classListPresenter]
 				ifFalse: [classHierarchyPresenter].
@@ -1254,27 +1243,6 @@ refreshClass
 	self setFilterType: selection.
 	self updateServices: (Array with: selection).
 	self updateClassInfo!
-
-refreshClassEarly: selectionChangingEvent
-	| selection presenter |
-	[selectionChangingEvent newSelections isEmpty
-		ifTrue: 
-			[self resetDefinedClassPackage.
-			categoryListPresenter clear.
-			^methodListPresenter clear].
-	presenter := self isClassListTabSelected
-				ifTrue: [classListPresenter]
-				ifFalse: [classHierarchyPresenter].
-	self setMethodFilterFor: presenter.
-	selection := selectionChangingEvent newSelections isEmpty
-				ifTrue: [nil]
-				ifFalse: [selectionChangingEvent newSelection].
-	selection meta: self isClassSideSelected.
-	selection selectedPackageServices: packageListPresenter selections.
-	self setFilterType: selection.
-	self updateServices: (Array with: selection).
-	self updateClassInfo: selection]
-			ensure: [refreshedClassEarly := true]!
 
 refreshClassListOrHierarchy
 	| newSelection listSelection hierarchySelection |
@@ -1340,13 +1308,16 @@ registerPresentersForUpdates
 	BrowserUpdate current register: classListPresenter 		selector: #classesUpdate:browser: browser: self.
 	BrowserUpdate current register: classListPresenter 		selector: #removedClass:.
 	BrowserUpdate current register: classListPresenter 		selector: #updatedClass:.
+	BrowserUpdate current register: classListPresenter 		selector: #removed:.
 	BrowserUpdate current register: packageListPresenter 	selector: #projectPackagesUpdate:browser: browser: self.
+	BrowserUpdate current register: packageListPresenter 	selector: #removed:.
 	BrowserUpdate current register: categoryListPresenter 	selector: #filterUpdate:browser: browser: self.
 	BrowserUpdate current register: classHierarchyPresenter 	selector: #classHierarchyUpdate:browser: browser: self.
 	BrowserUpdate current register: classHierarchyPresenter 	selector: #updatedClass:.
+	BrowserUpdate current register: classHierarchyPresenter 	selector: #removed:.
 	BrowserUpdate current register: variableListPresenter 	selector: #filterUpdate:browser: browser: self.
 	BrowserUpdate current register: methodListPresenter 	selector: #classMethodsUpdate:browser: browser: self.
-	BrowserUpdate current register: methodListPresenter 	selector: #methodsRemoved:.
+	BrowserUpdate current register: methodListPresenter 	selector: #removed:.
 	BrowserUpdate current register: methodSourcePresenter 	selector: #methodSourceUpdate:browser: browser: self. !
 
 releasedReferencedServices: selectionChangingEvent
@@ -1848,7 +1819,7 @@ updateProjectInfo
 	| services array |
 	services := projectListPresenter selections.
 	self updateProjectTab.
-	services isEmpty ifTrue: [^projectInfoTab list: OrderedCollection new].
+	services isEmpty ifTrue: [^projectInfoTab list: ListModel new].
 	array := Array writeStream: 4.
 	services do: 
 			[:service |
@@ -2033,7 +2004,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #redrawAllViews!displaying!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshClass!event handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #refreshClassEarly:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshClassListOrHierarchy!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshFromServer!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshFromServerAfterAbort!event handlers!menu handlers!public!updating! !

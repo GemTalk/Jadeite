@@ -72,8 +72,8 @@ displayString
 	^self name!
 
 emptyFilterListsIn: browser
-	self initializePresenterList: browser categoryListPresenter.
-	self initializePresenterList: browser variableListPresenter!
+	browser categoryListPresenter sortBlock: [:x :y | x < y].
+	browser variableListPresenter sortBlock: [:x :y | x < y].!
 
 filterUpdate: presenter browser: anObject
 	!
@@ -87,7 +87,8 @@ initialize
 	commandArgs := Array new. !
 
 initializePresenterList: presenter
-	presenter list: (SortedCollection sortBlock: [:x :y | x sortAspect < y sortAspect])!
+	presenter sortBlock: [:x :y | x sortAspect < y sortAspect].
+	presenter list: ListModel new!
 
 isBrowserService
 
@@ -127,9 +128,6 @@ methodFilterUpdate: presenter
 	!
 
 methodSourceUpdate: presenter browser: anObject
-	!
-
-methodsRemoved: presenter
 	!
 
 methodsUpdate: presenter
@@ -181,6 +179,12 @@ remoteService
 
 remoteServiceName
 	self subclassResponsibility!
+
+removed: presenter
+	| service |
+	updateType == #removed: ifFalse: [^self	"server must tell us to remove service"].
+	service := presenter model asBag detect: [:svc | svc = self] ifNone: [^self].
+	presenter model remove: service!
 
 removedClass: aPresenter!
 
@@ -285,7 +289,6 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #isTestCase!public!testing! !
 !RowanService categoriesFor: #methodFilterUpdate:!public!updating! !
 !RowanService categoriesFor: #methodSourceUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #methodsRemoved:!public!updating! !
 !RowanService categoriesFor: #methodsUpdate:!public!updating! !
 !RowanService categoriesFor: #methodUpdate:!public!updating! !
 !RowanService categoriesFor: #name!accessing!public! !
@@ -301,6 +304,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #releaseReferencedServices!Init / Release!public! !
 !RowanService categoriesFor: #remoteService!public! !
 !RowanService categoriesFor: #remoteServiceName!must not strip!public! !
+!RowanService categoriesFor: #removed:!public!updating! !
 !RowanService categoriesFor: #removedClass:!public!updating! !
 !RowanService categoriesFor: #removedProject:!public!updating! !
 !RowanService categoriesFor: #replicateFrom:!public!replication!updating! !

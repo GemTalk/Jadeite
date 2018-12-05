@@ -153,7 +153,7 @@ removeDeletedClassesIn: presenter
 				reject: [:classService | (updatedClasses includes: classService name) and: [classService packageName = name]].
 	removedClasses isEmpty ifTrue:[^self]. 
 	selections := presenter selections. 
-	presenter list: (presenter list asArray copyWithoutAll: removedClasses).
+	presenter list: (ListModel withAll: (presenter list asArray copyWithoutAll: removedClasses)).
 	presenter selections: (selections copyWithoutAll: removedClasses).!
 
 replicateFrom: newService

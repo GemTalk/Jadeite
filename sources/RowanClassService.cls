@@ -48,13 +48,14 @@ categories
 	^categories!
 
 classesMethodsUpdate: presenter browser: browser
-	| classNames | 
+	| classNames |
+	browser classListPresenter selections isEmpty ifTrue:[^self].
+	browser classListPresenter selection name asString = name asString ifFalse: [^self].
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
-	classNames := browser classListPresenter selections collect:[:classService | classService name]. 
+	classNames := browser classListPresenter selections collect: [:classService | classService name].
 	(classNames includes: name) ifFalse: [^self].
-	filters isEmpty ifTrue:[filterType := nil].
-	methods ifNotNil:[
-	self displayMethodsOn: presenter]!
+	filters isEmpty ifTrue: [filterType := nil].
+	methods ifNotNil: [self displayMethodsOn: presenter]!
 
 classHierarchyUpdate: presenter browser: browser
 	| treeModel subclasses parent |
@@ -95,6 +96,7 @@ classHierarchyUpdate: presenter browser: browser
 	presenter view expandAll!
 
 classMethodsUpdate: presenter browser: browser
+	browser selectedClass name asString = name asString ifFalse:[^self].
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	filters isEmpty ifTrue:[filterType := nil].
 	self displayMethodsOn: presenter!
@@ -119,6 +121,7 @@ computeVisibleMethods
 						select: [:methodService | (filters intersection: methodService accessedInstVars) notEmpty]].
 	filterType = 'categories'
 		ifTrue: [visibleMethods := methods select: [:methodService | filters includes: methodService category]].
+	visibleMethods ifNil: [^visibleMethods].
 	visibleMethods
 		do: [:svc | svc inSelectedPackage: (self selectedPackageServiceNames includes: svc packageName)].
 	^visibleMethods!
@@ -169,7 +172,9 @@ filterType: anObject
 	filterType := anObject!
 
 filterUpdate: presenter browser: browser
-	presenter list isEmpty ifTrue: [presenter list: SortedCollection new].
+	browser selectedClass isNil ifTrue: [^self].
+	browser selectedClass name asString = name asString ifFalse: [^self].
+	presenter model isEmpty ifTrue: [presenter list: SortedCollection new].
 	browser isCategoriesTabSelected
 		ifTrue: 
 			[presenter list = categories ifTrue: [^self].
@@ -323,7 +328,7 @@ toolTip
 updateCategories: presenter
 	| selections availableSelections |
 	selections := presenter selections.
-	presenter list: categories.
+	presenter list: (ListModel withAll: categories).
 	availableSelections := categories select: [:filter | selections includes: filter].
 	presenter selections: availableSelections!
 
@@ -337,13 +342,14 @@ updateListIn: presenter from: visibleMethods
 	| newSelections |
 	newSelections := visibleMethods
 				select: [:methodService | presenter selections includes: methodService].
-	presenter list: visibleMethods.
+	presenter list: (ListModel withAll: visibleMethods).
 	presenter selections: newSelections.
 	(presenter parentPresenter class canUnderstand: #updateSUnitTab)
 		ifTrue: [presenter parentPresenter updateSUnitTab]!
 
 updateVariables: presenter
 	| selections availableSelections |
+	variables ifNil:[^self].
 	selections := presenter selections.
 	presenter list: variables.
 	availableSelections := variables select: [:filter | selections includes: filter].
@@ -353,8 +359,7 @@ variables
 	^variables!
 
 visibleTests
-
-	^visibleTests! !
+	^visibleTests ifNil: [Array new]! !
 !RowanClassService categoriesFor: #=!comparing!public! !
 !RowanClassService categoriesFor: #addHierarchyService:to:withParent:!private!updating! !
 !RowanClassService categoriesFor: #basicPrepareForReplication!public!replication! !

@@ -1682,16 +1682,15 @@ test_simpleHierarchyTest
 	self assert: self projectsPresenter classListPresenter selection name = 'RowanProjectService'!
 
 test_sunitCtrlB
-	| testResult printString |
 	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter.
 	self selectSUnitTab.
 	self projectsPresenter sunitPresenter methodListPresenter selectionByIndex: #(1).	"test1 - select by index implicitly tests sorted order"
-	testResult := self projectsPresenter sunitPresenter jadeDebug.	"What is sent when Ctrl-B is pressed."
-	printString := session send: #printString to: testResult.
-	self assert: printString equals: 'RowanSample1Test>>#test1'	"test ran without error"!
+	self projectsPresenter sunitPresenter jadeDebug.	"What is sent when Ctrl-B is pressed."
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selection first testResult
+		equals: 'passed'!
 
 test_sunitInheritedTests
 	| classTestSelectors testClassTestSelectors |

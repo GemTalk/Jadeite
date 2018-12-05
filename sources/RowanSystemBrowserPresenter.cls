@@ -297,7 +297,7 @@ updateMethodFilter
 	tab ensureVisible.
 	filters := readStream nextLineAsList reverse.
 	filters = listPresenter list ifFalse: [
-		listPresenter list: filters.
+		listPresenter list: (ListModel withAll: filters).
 	].
 	selections := readStream nextLineAsList.
 	selections := listPresenter list select: [:each | selections includes: each].

@@ -48,7 +48,7 @@ methodsUpdate: presenter
 	| methodList selectedMethodUpdates |
 	selectedMethodUpdates := methods select: [:method | selectedSelectors includes: method selector].
 	selectedMethodUpdates do: [:update | update selected: true].
-	methodList := OrderedCollection new.
+	methodList := ListModel new.
 	methods do: 
 			[:update |
 			| displayArray |

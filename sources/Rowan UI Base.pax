@@ -281,13 +281,13 @@ package methodNames
 	add: #RowanCommandResult -> #globalsUpdate:;
 	add: #RowanCommandResult -> #methodFilterUpdate:;
 	add: #RowanCommandResult -> #methodSourceUpdate:browser:;
-	add: #RowanCommandResult -> #methodsRemoved:;
 	add: #RowanCommandResult -> #methodsUpdate:;
 	add: #RowanCommandResult -> #methodUpdate:;
 	add: #RowanCommandResult -> #packagesUpdate:;
 	add: #RowanCommandResult -> #projectPackagesUpdate:browser:;
 	add: #RowanCommandResult -> #projectSelectionUpdate:;
 	add: #RowanCommandResult -> #projectsUpdate:;
+	add: #RowanCommandResult -> #removed:;
 	add: #RowanCommandResult -> #removedClass:;
 	add: #RowanCommandResult -> #removedProject:;
 	add: #RowanCommandResult -> #superclassListUpdate:;
@@ -369,6 +369,7 @@ package setPrerequisites: (IdentitySet new
 	add: '..\Core\Object Arts\Dolphin\MVP\Views\Sliding Tray\Dolphin Slidey-Inney-Outey Thing';
 	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Text\Dolphin Text Presenter';
 	add: '..\Core\Object Arts\Dolphin\MVP\Models\Tree\Dolphin Tree Models';
+	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Tree\Dolphin Tree Presenter';
 	add: '..\Core\Object Arts\Dolphin\MVP\Type Converters\Dolphin Type Converters';
 	add: '..\Core\Object Arts\Dolphin\MVP\Models\Value\Dolphin Value Models';
 	add: '..\Core\Contributions\Burning River\ExternalProcess\ExternalProcess';
@@ -566,7 +567,7 @@ JadeAutoSystemBrowserPresenter subclass: #RowanSystemBrowserPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
-	instanceVariableNames: 'projectListPresenter stonCritical projectInfoTab projectLabel projectDictionaryTabs comparisonPresenter comparisonTab definedClassPackageText definedMethodPackageText methodCategoryText refreshedClassEarly'
+	instanceVariableNames: 'projectListPresenter stonCritical projectInfoTab projectLabel projectDictionaryTabs comparisonPresenter comparisonTab definedClassPackageText definedMethodPackageText methodCategoryText'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1553,12 +1554,12 @@ openProjectBrowserOn: classService selector: selector
 	^shell!
 
 refreshGlobalSelections
-	"refresh selections in all browsers"
+	"refresh selections in all browsers."
 
 	| browserService |
 	browserService := RowanBrowserService new
-				command: #findRemovedMethods:;
-				commandArgs: (Array with: BrowserUpdate current methodListServices asArray).
+				command: #findRemovedServices:;
+				commandArgs: (Array with: BrowserUpdate current activeServices asArray).
 	BrowserUpdate current issueCommand: (Array with: browserService) session: self gciSession.
 	BrowserUpdate current updateServices: BrowserUpdate current selectedServices
 		session: self gciSession!
@@ -3001,7 +3002,7 @@ updateClassList
 	fullList := readStream nextLineAsList.
 	newSelections := readStream nextLineAsList.
 	flags := readStream nextLineAsList.
-	fullList = classListPresenter list ifFalse: [classListPresenter list: fullList].
+	fullList = classListPresenter list ifFalse: [classListPresenter list: (ListModel withAll: fullList)].
 	newSelections := classListPresenter list select: [:each | newSelections includes: each].
 	newSelections = classListPresenter selections
 		ifFalse: [classListPresenter selections: newSelections].
@@ -3702,9 +3703,6 @@ methodFilterUpdate: presenter
 methodSourceUpdate: presenter browser: anObject
 	!
 
-methodsRemoved: presenter
-!
-
 methodsUpdate: presenter
 	!
 
@@ -3720,6 +3718,9 @@ projectSelectionUpdate: aPresenter
 !
 
 projectsUpdate: aPresenter
+!
+
+removed: presenter
 !
 
 removedClass: aPresenter
@@ -3777,13 +3778,13 @@ updateType
 !RowanCommandResult categoriesFor: #globalsUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #methodFilterUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #methodSourceUpdate:browser:!public!updating! !
-!RowanCommandResult categoriesFor: #methodsRemoved:!public!updating! !
 !RowanCommandResult categoriesFor: #methodsUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #methodUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #packagesUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #projectPackagesUpdate:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #projectSelectionUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #projectsUpdate:!public!updating! !
+!RowanCommandResult categoriesFor: #removed:!public!updating! !
 !RowanCommandResult categoriesFor: #removedClass:!public!updating! !
 !RowanCommandResult categoriesFor: #removedProject:!public!updating! !
 !RowanCommandResult categoriesFor: #superclassListUpdate:!public!updating! !

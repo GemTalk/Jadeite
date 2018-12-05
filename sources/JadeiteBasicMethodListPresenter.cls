@@ -42,7 +42,7 @@ onViewOpened
 	self registerPresentersForUpdates!
 
 registerPresentersForUpdates
-	BrowserUpdate current register: methodListPresenter selector: #methodsRemoved:.
+	BrowserUpdate current register: methodListPresenter selector: #removed:.
 	BrowserUpdate current register: methodListPresenter selector: #methodUpdate:!
 
 removeFromList

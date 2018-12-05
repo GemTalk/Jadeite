@@ -2449,7 +2449,7 @@ updateDictionaryList
 	dictionaryListPresenter ensureVisible.
 	fullList := readStream nextLineAsList collect: [:each | (each copyFrom: 2 to: each size) -> (each first = $H)].
 	dictionaryListPresenter list = fullList ifFalse: [
-		dictionaryListPresenter list: fullList.
+		dictionaryListPresenter list: (ListModel withAll: fullList).
 	].
 	selections := readStream nextLineAsList collect: [:x | dictionaryListPresenter list detect: [:y | x = y key]].
 	dictionaryListPresenter selections = selections ifFalse: [
@@ -2457,7 +2457,7 @@ updateDictionaryList
 	].
 	dictionaryListPresenter view ensureSelectionVisible.
 	lines := readStream nextList.
-	globalsPresenter list: lines.
+	globalsPresenter list: (ListModel withAll: lines).
 !
 
 updateMenuBar
@@ -2522,7 +2522,7 @@ updateMethodList
 			yourself.
 	].
 	fullList = methodListPresenter list ifFalse: [
-		methodListPresenter list: fullList.
+		methodListPresenter list: (ListModel withAll: fullList).
 	].
 	selections := readStream nextLineAsList.	"JadeServer>>#'sbUpdateMethodSelectionsIn:' "
 	selections := methodListPresenter list select: [:eachArray | selections includes: eachArray first].
@@ -2663,7 +2663,7 @@ updateSuperclassList
 	tab ensureVisible.
 	list := readStream nextLineAsList reverse.
 	list = superclassListPresenter list ifFalse: [
-		superclassListPresenter list: list.
+		superclassListPresenter list: (ListModel withAll: list).
 	].
 	(selected := readStream nextLine) notEmpty ifTrue: [
 		selected := (selected subStrings: Character tab) first.
