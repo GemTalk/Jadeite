@@ -68,7 +68,7 @@ displayName
 
 	| displayName |
 	displayName := name.
-	existsOnDisk ifFalse:[displayName := '(', displayName, ')']. 
+	existsOnDisk == false ifTrue:[displayName := '(', displayName, ')']. 
 	name = self class defaultProjectName ifTrue: [displayName := displayName , '*'].
 	^displayName!
 

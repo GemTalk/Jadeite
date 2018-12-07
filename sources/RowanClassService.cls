@@ -50,13 +50,12 @@ categories
 classesMethodsUpdate: presenter browser: browser
 	| classNames |
 	browser classListPresenter selections isEmpty ifTrue: [^self].
-	browser classListPresenter selections size > 1  "sunit browser"
-		ifFalse: [browser classListPresenter selection name asString = name asString ifFalse: [^self]].
+	browser classListPresenter selections size > 1
+		ifFalse: [browser classListPresenter selection name asString = name asString ifFalse: [^self]].	"sunit browser"
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	classNames := browser classListPresenter selections collect: [:classService | classService name].
 	(classNames includes: name) ifFalse: [^self].
-	filters isEmpty ifTrue: [filterType := nil].
-	methods ifNotNil: [self displayMethodsOn: presenter]!
+	methods ifNotNil: [self displayMethodsOn: presenter browser: browser]!
 
 classHierarchyUpdate: presenter browser: browser
 	| treeModel subclasses parent |
@@ -97,10 +96,9 @@ classHierarchyUpdate: presenter browser: browser
 	presenter view expandAll!
 
 classMethodsUpdate: presenter browser: browser
-	browser selectedClass name asString = name asString ifFalse:[^self].
+	browser selectedClass name asString = name asString ifFalse: [^self].
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
-	filters isEmpty ifTrue:[filterType := nil].
-	self displayMethodsOn: presenter!
+	self displayMethodsOn: presenter browser: browser!
 
 classOrHierarchyPresenter: browser
 	^browser isClassListTabSelected
@@ -113,16 +111,10 @@ comment
 comment: anObject
 	comment := anObject!
 
-computeVisibleMethods
+computeVisibleMethods: presenter browser: browser
 	| visibleMethods |
-	filterType isNil ifTrue: [visibleMethods := methods].
-	filterType = 'variables'
-		ifTrue: 
-			[visibleMethods := methods
-						select: [:methodService | (filters intersection: methodService accessedInstVars) notEmpty]].
-	filterType = 'categories'
-		ifTrue: [visibleMethods := methods select: [:methodService | filters includes: methodService category]].
-	visibleMethods ifNil: [^visibleMethods].
+	filters := browser selectedFilters.
+	visibleMethods := filters isEmpty ifTrue: [methods] ifFalse: [self filterMethods: browser].
 	visibleMethods
 		do: [:svc | svc inSelectedPackage: (self selectedPackageServiceNames includes: svc packageName)].
 	^visibleMethods!
@@ -133,9 +125,9 @@ definedPackageName
 definedPackageName: anObject
 	definedPackageName := anObject!
 
-displayMethodsOn: presenter
+displayMethodsOn: presenter browser: browser
 	| visibleMethods |
-	visibleMethods := self computeVisibleMethods.
+	visibleMethods := self computeVisibleMethods: presenter browser: browser.
 	self updateListIn: presenter from: visibleMethods!
 
 displayString
@@ -160,20 +152,23 @@ expand
 expand: anObject
 	expand := anObject!
 
+filterMethods: browser
+	| visibleMethods |
+	browser isCategoryTabSelected
+		ifTrue: [visibleMethods := methods select: [:methodService | filters includes: methodService category]]
+		ifFalse: 
+			[visibleMethods := methods
+						select: [:methodService | (filters intersection: methodService accessedInstVars) notEmpty]].
+	^visibleMethods!
+
 filters
 	^filters!
 
 filters: anObject
 	filters := anObject!
 
-filterType
-	^filterType!
-
-filterType: anObject
-	filterType := anObject!
-
 filterUpdate: presenter browser: browser
-	browser selectedClass isNil ifTrue: [^self].
+	browser selectedClass ifNil: [^self].
 	browser selectedClass name asString = name asString ifFalse: [^self].
 	presenter model isEmpty ifTrue: [presenter list: SortedCollection new].
 	browser isCategoryTabSelected
@@ -330,11 +325,11 @@ toolTip
 	^'Defined package: ' , self definedPackageName!
 
 updateCategories: presenter
-	| selections availableSelections |
-	selections := presenter selections.
-	presenter list: (ListModel withAll: categories).
-	availableSelections := categories select: [:filter | selections includes: filter].
-	presenter selections: availableSelections!
+	"update without losing selections if appropriate"
+	presenter list copy do:[:category |
+		(categories includes: category) ifFalse:[presenter model remove: category]].
+	categories do:[:category |
+		(presenter list includes: category) ifFalse:[presenter model add: category]]. !
 
 updatedClass: presenter
 	| update |
@@ -375,19 +370,18 @@ visibleTests
 !RowanClassService categoriesFor: #classOrHierarchyPresenter:!private!updating! !
 !RowanClassService categoriesFor: #comment!accessing!public! !
 !RowanClassService categoriesFor: #comment:!accessing!public! !
-!RowanClassService categoriesFor: #computeVisibleMethods!private!updating! !
+!RowanClassService categoriesFor: #computeVisibleMethods:browser:!private!updating! !
 !RowanClassService categoriesFor: #definedPackageName!accessing!private! !
 !RowanClassService categoriesFor: #definedPackageName:!accessing!private! !
-!RowanClassService categoriesFor: #displayMethodsOn:!public!updating! !
+!RowanClassService categoriesFor: #displayMethodsOn:browser:!public!updating! !
 !RowanClassService categoriesFor: #displayString!displaying!public! !
 !RowanClassService categoriesFor: #displayStringFor:!displaying!public! !
 !RowanClassService categoriesFor: #excludedInstVars!public!ston! !
 !RowanClassService categoriesFor: #expand!accessing!private! !
 !RowanClassService categoriesFor: #expand:!accessing!private! !
+!RowanClassService categoriesFor: #filterMethods:!private!updating! !
 !RowanClassService categoriesFor: #filters!accessing!public! !
 !RowanClassService categoriesFor: #filters:!accessing!public! !
-!RowanClassService categoriesFor: #filterType!accessing!private! !
-!RowanClassService categoriesFor: #filterType:!accessing!private! !
 !RowanClassService categoriesFor: #filterUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #hash!comparing!public! !
 !RowanClassService categoriesFor: #hierarchyClassServiceNames!public! !

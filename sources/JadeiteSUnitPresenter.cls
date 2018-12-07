@@ -66,6 +66,10 @@ runAll
 runSelected
 	self runTests: methodListPresenter selections!
 
+selectedFilters
+	"no categories in sunit browser"
+	^Array new !
+
 status
 	^status!
 
@@ -86,6 +90,7 @@ testClassesSize
 !JadeiteSUnitPresenter categoriesFor: #packagesSize!public! !
 !JadeiteSUnitPresenter categoriesFor: #runAll!public! !
 !JadeiteSUnitPresenter categoriesFor: #runSelected!public! !
+!JadeiteSUnitPresenter categoriesFor: #selectedFilters!accessing!public! !
 !JadeiteSUnitPresenter categoriesFor: #status!accessing!private! !
 !JadeiteSUnitPresenter categoriesFor: #status:!accessing!private! !
 !JadeiteSUnitPresenter categoriesFor: #testCasesSize!public! !

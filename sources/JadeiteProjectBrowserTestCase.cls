@@ -252,21 +252,49 @@ test_autoDirtyDisplayRemoveMethod
 	self assert: self packageListPresenter selection name = 'RowanSample1-Core'.
 	self assert: self packageListPresenter selection isDirty!
 
+test_browseSameClassCategoriesCorrect
+	"related bug found while fixing issue #344"
+
+	| methodInSameClass newBrowser |
+	self testsIssue: #issue344
+		withTitle: 'Can''t use method menu in method list browser method list pane'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Definitions' in: self packageListPresenter.
+	self selectServiceNamed: 'RwClassExtensionDefinition' in: self classListPresenter.
+	self selectCategoryNamed: 'comparing'.
+	self assert: self methodListPresenter list size equals: 1.
+	self selectMethodNamed: #compareDictionary:againstBaseDictionary:into:elementClass:isMeta:.
+	methodListBrowser := self projectsPresenter browseImplementors.
+	self assert: self methodListPresenter list size equals: 1.	"original browser method list doesn't change"
+	methodInSameClass := methodListBrowser primaryPresenter methodListPresenter methodListPresenter
+				list detect: [:methodService | methodService className == #RwClassExtensionDefinition] ifNone: [].
+	self denyIsNil: methodInSameClass.
+	methodListBrowser primaryPresenter methodListPresenter methodListPresenter
+		selection: methodInSameClass.
+	newBrowser := methodListBrowser primaryPresenter methodListPresenter browseClass.
+	
+	[self assert: self methodListPresenter list size equals: 1.	"original browser method list doesn't change"
+	self assert: newBrowser currentCard categoryListPresenter list notEmpty.
+	self assert: self projectsPresenter categoryListPresenter list notEmpty.
+	self assert: newBrowser currentCard categoryListPresenter list
+		equals: self projectsPresenter categoryListPresenter list]
+			ensure: [newBrowser destroy]!
+
 test_categoryTextDisplay
 	self testsIssue: #issue232 withTitle: 'cannot tell which `category` a method is in (Oscar-3.0.41)'.
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
 	self selectServicesNamed: (Array with: 'RowanClassService') in: self classListPresenter.
 	self assert: self projectsPresenter methodCategoryText value equals: String new.
-	self selectCategoryNamed: 'commands'.
+	self selectCategoryNamed: 'client commands'.
 	self assert: self projectsPresenter methodCategoryText value equals: String new.
 	self selectMethodNamed: #removeMethods.
-	self assert: self projectsPresenter methodCategoryText value equals: 'Category: commands'.
+	self assert: self projectsPresenter methodCategoryText value equals: 'Category: client commands'.
 	self selectMethodsNamed: (Array
 				with: #removeMethods
 				with: #renameCategoryFrom:to:
 				with: #addCategory:).
-	self assert: self projectsPresenter methodCategoryText value equals: 'Category: commands'.	"category is shown if all selected methods are in same category"
+	self assert: self projectsPresenter methodCategoryText value equals: 'Category: client commands'.	"category is shown if all selected methods are in same category"
 	self selectServicesNamed: (Array with: 'RowanService') in: self classListPresenter.
 	self assert: self projectsPresenter methodListPresenter list notEmpty.
 	self assert: self projectsPresenter methodCategoryText value equals: String new.
@@ -1428,19 +1456,19 @@ test_refreshAfterAbortMethodListLeaveCommitted
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
 	self selectServiceNamed: 'RowanMethodService' in: self classListPresenter.
-	self selectMethodNamed: #update.
+	self selectMethodNamed: #classFromName.
 	methodListBrowser := self projectsPresenter browseImplementors.
 	
 	[list := methodListBrowser primaryPresenter methodListPresenter methodListPresenter list.
 	beforeSize := list size.
-	self assert: beforeSize > 1.	"lots of #update methods in base"
+	self assert: beforeSize > 1.
 	self
 		assertIsNil: (list detect: [:methodService | methodService className = #RowanService] ifNone: [])]
 			ensure: [methodListBrowser destroy].
 	self selectServiceNamed: 'RowanService' in: self classListPresenter.
-	self methodSourcePresenter value: 'update  "do nothing"'.
+	self methodSourcePresenter value: 'classFromName  "do nothing"'.
 	self projectsPresenter editSaveMethod: self classListPresenter selection.
-	self selectMethodNamed: #update.
+	self selectMethodNamed: #classFromName.
 	methodListBrowser := self projectsPresenter browseImplementors.
 	list := methodListBrowser primaryPresenter methodListPresenter methodListPresenter list.
 	afterSize := list size.
@@ -1520,11 +1548,11 @@ test_refreshFromServer
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
 	self selectServicesNamed: (Array with: 'RowanPackageService') in: self classListPresenter.
-	self selectCategoryNamed: 'commands'.
+	self selectCategoryNamed: 'client commands'.
 	self selectServiceNamed: 'classHierarchy' in: self methodListPresenter.
 	self projectsPresenter refreshFromServer.
 	self assert: self projectsPresenter selectedMethodName equals: #classHierarchy.
-	self assert: self projectsPresenter categoryListPresenter selection equals: 'commands'.
+	self assert: self projectsPresenter categoryListPresenter selection equals: 'client commands'.
 	self assert: self projectsPresenter selectedClass name equals: 'RowanPackageService'.
 	self assert: self projectsPresenter packageListPresenter selection name equals: 'Rowan-Services-Core'.
 	self assert: self projectsPresenter projectListPresenter selection name equals: 'Rowan'.
@@ -1532,7 +1560,7 @@ test_refreshFromServer
 	self selectHierarchyTab. "selections remain" 
 	self projectsPresenter refreshFromServer.
 	self assert: self projectsPresenter selectedMethodName equals: #classHierarchy.
-	self assert: self projectsPresenter categoryListPresenter selection equals: 'commands'.
+	self assert: self projectsPresenter categoryListPresenter selection equals: 'client commands'.
 	self assert: self projectsPresenter selectedClass name equals: 'RowanPackageService'.
 	self assert: self projectsPresenter packageListPresenter selection name equals: 'Rowan-Services-Core'.
 	self assert: self projectsPresenter projectListPresenter selection name equals: 'Rowan'
@@ -1545,8 +1573,8 @@ test_removeAbortedClass
 	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
 	self selectServicesNamed: (Array with: 'RowanServicesTest') in: self classListPresenter.
 	self saveTestClass.
-	self assert: self projectsPresenter selectedClass name = 'TestClass'.
-	self projectsPresenter topShell abortTransaction.
+	[self assert: self projectsPresenter selectedClass name = 'TestClass']
+		ensure: [self projectsPresenter topShell abortTransaction].
 	
 	[self
 		assertIsNil: (self classListPresenter list detect: [:service | service name = 'TestClass'] ifNone: [])]
@@ -1554,7 +1582,7 @@ test_removeAbortedClass
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded].
 	self saveTestClass.
-	self assert: self projectsPresenter selectedClass name = 'TestClass'. "abort from a different browser"
+	self assert: self projectsPresenter selectedClass name = 'TestClass'.	"abort from a different browser"
 	transcript projectListPresenter abortTransaction.
 	
 	[self
@@ -1970,6 +1998,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveHierarchyCategory!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!test! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_browseSameClassCategoriesCorrect!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classSideSelection!public!test!test class hierarchy!test class list! !

@@ -477,7 +477,7 @@ editSaveClass
 		backcolor: Color white.
 	packageListPresenter selection selectedClass
 		ifNotNil: [:classService | self selectClass: classService].
-	self isHierarchyTabSelected ifTrue: [self updateHierarchy].!
+	self isHierarchyTabSelected ifTrue: [self updateHierarchy]!
 
 editSaveClassComment
 	| classService |
@@ -627,6 +627,8 @@ findMethod: selector
 	| methodService |
 	methodService := methodListPresenter list detect: [:service | service selector = selector]
 				ifNone: [^self].
+	self isCategoryTabSelected ifTrue:[
+		categoryListPresenter selection: methodService category]. 
 	methodListPresenter selections: (Array with: methodService)!
 
 getViews
@@ -1238,7 +1240,6 @@ refreshClass
 					^methodListPresenter clear].
 	selection meta: self isClassSideSelected.
 	selection selectedPackageServices: packageListPresenter selections.
-	self setFilterType: selection.
 	self updateServices: (Array with: selection).
 	self updateClassInfo!
 
@@ -1284,17 +1285,11 @@ refreshMethodsOn: presenter
 	self isCategoryTabSelected
 		ifTrue: [classService filters: categoryListPresenter selections]
 		ifFalse: [classService filters: variableListPresenter selections].
-	classService filters isEmpty
-		ifTrue: [classService filterType: nil]
-		ifFalse: 
-			[self isCategoryTabSelected
-				ifTrue: [classService filterType: 'categories']
-				ifFalse: [classService filterType: 'variables']].
 	classService methods isNil
 		ifTrue: 
 			["if we got an error recently, could be nil"
 			self updateServices: (Array with: classService)].
-	classService displayMethodsOn: presenter!
+	classService displayMethodsOn: presenter browser: self!
 
 registerClassData
 	"temporarily disabled"!
@@ -1453,6 +1448,11 @@ selectedClasses
 		ifTrue: [classListPresenter selections]
 		ifFalse: [classHierarchyPresenter selections]!
 
+selectedFilters
+	^self isCategoryTabSelected
+		ifTrue: [categoryListPresenter selections]
+		ifFalse: [variableListPresenter selections]!
+
 selectedMethodCategory
 	^methodListPresenter selectionOrNil ifNotNil: [:methodService | methodService category]!
 
@@ -1515,11 +1515,6 @@ setDefaultProjectTablLabel
 
 setDefaultProjectTablLabel: listModel
 	projectLabel ifNil: [projectLabel := listModel detect: [:each | each text = 'Project']]!
-
-setFilterType: selection
-	self isCategoryTabSelected
-		ifTrue: [selection filterType: 'categories']
-		ifFalse: [selection filterType: 'variables']!
 
 setMethodFilterFor: presenter
 	| filters |
@@ -2037,6 +2032,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassNamed:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedClass!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedClasses!private!selection! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #selectedFilters!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedMethodCategory!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedMethodName!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectionMethod:!private!selection! !
@@ -2048,7 +2044,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectVariableTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setDefaultProjectTablLabel!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setDefaultProjectTablLabel:!event handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #setFilterType:!event handlers support!private!services! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setMethodFilterFor:!event handlers support!private!services!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setTestClass:!event handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #showSuperClassComparison!private!text tabs! !
@@ -2061,7 +2056,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #unloadPackage!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #unloadProjects!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #update:afterStonReplication:!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateAfterFindClass:!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #updateAfterFindClass:!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateAndSelectA:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClasses!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClassInfo!event handlers!public!updating! !
@@ -2069,7 +2064,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClassMenu:!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateCommand:onSuccessDo:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateHierarchy!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateMenuBar!menus!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #updateMenuBar!menus!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateMethodMenu:!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateMethodReferences:!private!services! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateMethodSource!event handlers!public!text tabs!updating! !

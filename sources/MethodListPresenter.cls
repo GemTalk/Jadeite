@@ -76,14 +76,14 @@ primaryPresenter
 !
 
 queryCommand: aCommandQuery
-
-	(#(#browseClass #browseImplementors #browseSenders) includes: aCommandQuery commandSymbol)
-		ifTrue: 
-			[aCommandQuery
-				isEnabled: methodListPresenter selections size = 1;
-				receiver: self;
-				yourself.
-			^true].
+	(#(#browseClass #browseImplementors #browseSenders #browseHierarchyImplementors #browseHierarchySenders)
+		includes: aCommandQuery commandSymbol)
+			ifTrue: 
+				[aCommandQuery
+					isEnabled: methodListPresenter selections size = 1;
+					receiver: self;
+					yourself.
+				^true].
 	(#(#runTests) includes: aCommandQuery commandSymbol)
 		ifTrue: 
 			[aCommandQuery

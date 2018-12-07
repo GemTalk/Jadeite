@@ -1335,6 +1335,7 @@ methodListPresenter
 	^methodListPresenter!
 
 onViewOpened
+	
 	testCounter := Array with: 0 with: OrderedCollection new.
 	super onViewOpened.
 	self registerPresentersForUpdates.

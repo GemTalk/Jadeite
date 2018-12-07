@@ -119,6 +119,20 @@ test_browseSendersMenuItem
 	self assert: browseSendersItem command equals: #browseSendersOf.
 	self assert: (transcript class canUnderstand: #browseSendersOf)!
 
+test_menuNames
+	| commitMenuItem checkoutMenuItem contextMenu |
+	self testsIssue: #issue342 withTitle: 'Console menu items not matching projects browser'.
+	contextMenu := transcript projectListPresenter projectListPresenter view queryContextMenu.
+	commitMenuItem := contextMenu items detect: [:menu | 'Commit to Git ...' = menu text] ifNone: [].
+	self denyIsNil: commitMenuItem.
+	self assert: commitMenuItem command equals: #commit.
+	self assert: (transcript projectListPresenter class canUnderstand: #commit).
+	checkoutMenuItem := contextMenu items detect: [:menu | 'Checkout Git Branch ...' = menu text]
+				ifNone: [].
+	self denyIsNil: checkoutMenuItem.
+	self assert: checkoutMenuItem command equals: #checkout.
+	self assert: (transcript projectListPresenter class canUnderstand: #checkout)!
+
 test_multiSelectProject
 	| projectServices projectCount |
 	self testsIssue: #issue163
@@ -140,6 +154,7 @@ test_transcriptNamedConsole
 !JadeiteTranscriptTestCase categoriesFor: #test_browseProjectsMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseSenders!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseSendersMenuItem!public!test menus! !
+!JadeiteTranscriptTestCase categoriesFor: #test_menuNames!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_multiSelectProject!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_transcriptNamedConsole!public!tests! !
 
