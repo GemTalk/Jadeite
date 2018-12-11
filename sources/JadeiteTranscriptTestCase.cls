@@ -143,8 +143,20 @@ test_multiSelectProject
 	self assert: transcript projectListPresenter projectListPresenter selections size equals: projectCount!
 
 test_transcriptNamedConsole
-	self testsIssue: #issue161 withTitle: 'Rename transcrip to console'.
-	self assert: ('Console*' match: transcript view caption)! !
+	| clearTranscriptMenuItem wasInstalled |
+	(wasInstalled := transcript isTranscriptInstalled) ifFalse: [transcript flipTranscript].
+	
+	[clearTranscriptMenuItem := transcript transcriptPresenter documentPresenter view queryContextMenu
+				items detect: [:menuItem | menuItem command == #clearTranscript].
+	clearTranscriptMenuItem commandDescription performAgainst: transcript transcriptPresenter.
+	self assert: transcript transcriptPresenter documentPresenter value isEmpty.
+	self assert: transcript transcriptPresenter documentPresenter view displayValue isEmpty.
+	session executeString: 'Transcript show: ''wroteOnTranscript'''.
+	self assert: transcript transcriptPresenter documentPresenter value equals: '''wroteOnTranscript'''.
+	clearTranscriptMenuItem commandDescription performAgainst: transcript transcriptPresenter.
+	self assert: transcript transcriptPresenter documentPresenter value isEmpty.
+	self assert: transcript transcriptPresenter documentPresenter view displayValue isEmpty]
+			ensure: [wasInstalled ifFalse: [transcript flipTranscript	"turn back off"]]! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseClassMenuItem!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseFindClassMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseImplementors!public!tests! !

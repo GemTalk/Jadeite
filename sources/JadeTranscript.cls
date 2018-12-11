@@ -162,6 +162,10 @@ sleepAndCommit
 	].
 !
 
+transcriptPresenter
+	"Private - for tests" 
+	^transcriptPresenter!
+
 turnAutoMigrateOff
 
 	gciSession executeString: 'MCPlatformSupport autoMigrate: false'.
@@ -187,6 +191,7 @@ turnAutoMigrateOn
 !JadeTranscript categoriesFor: #queryCommand:!public!updating! !
 !JadeTranscript categoriesFor: #resetCursor!event handling!public! !
 !JadeTranscript categoriesFor: #sleepAndCommit!event handling!public! !
+!JadeTranscript categoriesFor: #transcriptPresenter!private! !
 !JadeTranscript categoriesFor: #turnAutoMigrateOff!event handling!public! !
 !JadeTranscript categoriesFor: #turnAutoMigrateOn!event handling!public! !
 
