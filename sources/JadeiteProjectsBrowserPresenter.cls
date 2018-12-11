@@ -1369,14 +1369,18 @@ runClassTests
 	classService
 		command: #runClassTests:;
 		commandArgs: (Array with: self selectedClass).
-	answeringService := (self issueCommand: (Array with: classService)) first.
-	answeringService answer
+	answeringService := [self issueCommand: (Array with: classService)] on: Error
+				do: 
+					[:ex |
+					ex pass. 
+					^self].
+	answeringService first answer
 		ifTrue: 
 			[| testResult |
 			sunitPresenter reset.
 			testResult := JadeTestResult new.
-			testResult
-				passed: (methodListPresenter list select: [:methodService | 'test*' match: methodService selector asString]
+			testResult passed: (methodListPresenter list
+						select: [:methodService | 'test*' match: methodService selector asString]
 						thenCollect: [:methodService | methodService selector]).
 			sunitPresenter updateResult: testResult.
 			sunitPresenter ensureVisible]!

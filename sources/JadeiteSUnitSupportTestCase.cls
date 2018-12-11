@@ -116,6 +116,28 @@ test_refresh
 	self assert: self sunitPresenter methodListPresenter list size equals: 5]
 			ensure: [projectsBrowser destroy]!
 
+test_runClassTests
+	self testsIssue: #issue341 withTitle: 'Run sunit tests from class pass when they should not'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter.
+	self projectsPresenter selectSUnitTab.
+	[self projectsPresenter runClassTests] on: Error
+		do: 
+			[:ex |
+			self assert: ex messageText
+				equals: 'a MessageNotUnderstood occurred (error 2010), a RowanSample1 does not understand  #''bar'''].
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanAnsweringServiceTest' in: self classListPresenter.
+	self projectsPresenter selectSUnitTab.
+	self projectsPresenter runClassTests.
+	self methodListPresenter list do: [:methodService | self assert: methodService passed]]
+			ensure: [projectsBrowser destroy]!
+
 test_sunitBrowserHasRowanPackages
 	self assert: (self sunitPresenter isKindOf: JadeiteSUnitPresenter).	"a different presenter is used in the projects browser"
 	self assert: self sunitPresenter packageListPresenter list size > 0.
@@ -174,6 +196,7 @@ test_sunitTabPassingDebugTestShowsResult
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_openSunitBrowser!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_refresh!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_runClassTests!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanPackages!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestMethods!public!tests! !
