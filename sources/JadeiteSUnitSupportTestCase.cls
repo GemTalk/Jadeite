@@ -62,6 +62,7 @@ test_inheritedTests
 	self selectServiceNamed: 'RowanClassServiceTest' in: self sunitPresenter classListPresenter.
 	classTestSelectors := self sunitPresenter methodListPresenter list collect: [:service | service selector].
 	self selectServiceNamed: 'RowanTestClassServiceTest' in: self sunitPresenter classListPresenter.
+	self assert: (session executeString: 'RowanTestClassServiceTest shouldInheritSelectors').  "required to see the superclass non-abstract methods" 
 	testClassTestSelectors := self sunitPresenter methodListPresenter list collect: [:service | service selector].
 	self assert: testClassTestSelectors size > classTestSelectors size.  "the subclass inherits the super class's tests"
 	classTestSelectors do:[:selector |

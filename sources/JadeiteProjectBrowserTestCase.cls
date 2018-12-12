@@ -19,6 +19,9 @@ cloneRowanSample1
 	projectsBrowser currentCard basicCloneProject: sample1Path root: root.
 	self projectsPresenter refreshFromServer.!
 
+commandQueryOn: commandSymbol view: view
+	^CommandQuery new commandDescription: (CommandDescription new command: commandSymbol) source: view!
+
 disableTranscriptWrites
 	(transcriptWritesWereEnabled := transcript isTranscriptInstalled)
 		ifTrue: [transcript flipTranscript]	"turn off gemstone transcript writes for performance"!
@@ -180,6 +183,26 @@ tearDown
 		ifNotNil: 
 			[methodListBrowser destroy.
 			methodListBrowser := nil]!
+
+test_abstractTestsShown
+	| commandQuery methodService |
+	self testsIssue: #issue336
+		withTitle: 'S-Unit Tests In an abstract class and its subclasses are not managed properly'.
+
+	self loadProjectNamed: 'Tonel'.   "ensure tests are present" 
+	self selectServiceNamed: 'Tonel' in: self projectListPresenter.
+	self selectServiceNamed: 'Tonel-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'TonelAbstractWriterTest' in: self classListPresenter.
+	self assert: (session executeString: 'TonelAbstractWriterTest isAbstract').
+	self selectCategoryNamed: 'tests'.
+	methodService := self methodListPresenter list
+				detect: [:method | method selector == #testWriteSnapshot]
+				ifNone: [].
+	self denyIsNil: methodService.
+	self methodListPresenter selection: methodService.
+	commandQuery := self commandQueryOn: #runMethodTests view: self methodListPresenter view.
+	self projectsPresenter queryCommand: commandQuery.
+	self deny: commandQuery isEnabled	"run test menu item disabled in the abstract class"!
 
 test_addPackageReloadProject
 	self testsIssue: #issue183
@@ -1968,6 +1991,7 @@ test_verifyValidCategory
 waitForPresenter: presenter
 	[presenter list isEmpty] whileTrue: [(Delay forMilliseconds: 50) wait]! !
 !JadeiteProjectBrowserTestCase categoriesFor: #cloneRowanSample1!private!project support! !
+!JadeiteProjectBrowserTestCase categoriesFor: #commandQueryOn:view:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue261createTestProject!issue test support!private! !
@@ -1993,6 +2017,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #selectTreeServicesNamed:in:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteProjectBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_abstractTestsShown!public!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addPackageReloadProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveHierarchyCategory!public!test class hierarchy! !

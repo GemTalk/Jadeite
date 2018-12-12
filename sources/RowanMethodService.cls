@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superSource superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage'
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superSource superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -194,7 +194,7 @@ isReadOnly
 	^false!
 
 isTestMethod
-	^selector size >= 4 and: [(selector first: 4) = 'test']!
+	^isTestMethod!
 
 meta
 	^meta!

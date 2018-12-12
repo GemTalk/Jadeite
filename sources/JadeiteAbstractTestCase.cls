@@ -37,12 +37,7 @@ createNewTestProjectNamed: projectName
 	self issueCommand: testService!
 
 ensureRowanSample1Loaded
-	| projectService |
-	projectService := RowanProjectService new name: self sampleProjectName.
-	projectService
-		command: #reloadProject;
-		commandArgs: nil. 
-	JadePresenter issueCommand: (Array with: projectService) session: session!
+	self loadProjectNamed: self sampleProjectName.!
 
 interestingLoopMethodSource
 	^'interestingLoop
@@ -76,6 +71,14 @@ issueCommands: services
 
 itemNamed: menuName in: menuBar
 	^menuBar items detect: [:item | '*' , menuName , '*' match: item text]!
+
+loadProjectNamed: projectName
+	| projectService |
+	projectService := RowanProjectService new name: projectName.
+	projectService
+		command: #reloadProject;
+		commandArgs: nil.
+	JadePresenter issueCommand: (Array with: projectService) session: session!
 
 loadRowanSample1InProjectList
 	| sample1Path root selections |
@@ -307,6 +310,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #issueCommand:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #issueCommands:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #itemNamed:in:!issue test support!private! !
+!JadeiteAbstractTestCase categoriesFor: #loadProjectNamed:!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #loadRowanSample1InProjectList!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #methodListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #methodSourceForTest!constants!private! !
