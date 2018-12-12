@@ -1389,12 +1389,14 @@ updateClasses
 	self issueCommand: packageServices!
 
 updateMethods
-	| classServices |
+	| classServices methodServices |
 	classServices := classListPresenter selections.
-	self updateServices: classServices. 
+	self updateServices: classServices.
 	classServices isEmpty ifTrue: [^methodListPresenter list: ListModel new].
-	methodListPresenter model: ListModel new. 
-	classServices do: [:classService | methodListPresenter model addAll: classService visibleTests]!
+	methodServices := Set new.
+	classServices do: [:classService | methodServices addAll: classService visibleTests].
+	methodListPresenter
+		model: (ListModel withAll: (methodServices asSortedCollection: [:x :y | x selector < y selector]))!
 
 updatePackages
 	| browserService |

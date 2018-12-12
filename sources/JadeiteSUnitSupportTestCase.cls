@@ -85,6 +85,14 @@ test_multiSelectClasses
 	
 !
 
+test_multiSelectNoDuplicates
+	
+	self testsIssue: #issue336 withTitle: 'S-Unit Tests In an abstract class and its subclasses are not managed properly'.
+	self selectServiceNamed: 'Rowan-Services-Tests' in:  self sunitPresenter packageListPresenter.
+	self selectServicesNamed: #('RowanClassServiceTest' 'RowanTestClassServiceTest') in: self sunitPresenter classListPresenter.
+	self assert: self sunitPresenter methodListPresenter list size =  self sunitPresenter methodListPresenter list asSet size
+	!
+
 test_openSunitBrowser
 	"browser opened in setup"
 
@@ -195,6 +203,7 @@ test_sunitTabPassingDebugTestShowsResult
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseSunitClass!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_inheritedTests!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectClasses!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectNoDuplicates!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_openSunitBrowser!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_refresh!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_runClassTests!public!tests! !
