@@ -1458,20 +1458,10 @@ onDragClassesOverPackageList: aSession
 		yourself.
 !
 
-onDragClassHierarchy: aSession 
-
-	| class list |
-	class := classHierarchyPresenter selection last.
-	list := Array with: (
-		(aSession newDragObject: class)
-			format: #class data: class;
-			yourself).
-	aSession 
-		dragObjects: list;
-		supportedOperations: #(#move #copy);
-		defaultOperation: #move;
-		yourself.
-!
+onDragClassHierarchy: aSession
+	| className |
+	className := classHierarchyPresenter selection last.
+	^super onDragClass: aSession className: className!
 
 onDragClassList: aSession 
 

@@ -225,7 +225,7 @@ createSchematicWiring
 createSchematicWiringForClassHierarchy
 	classHierarchyPresenter
 		when: #drag:
-			send: #onDragClassHierarchy:
+			send: #onDragClass:
 			to: self;
 		when: #dragCut:
 			send: #onDragCutClassHierarchy:
@@ -271,7 +271,7 @@ createSchematicWiringForClassList
 
 	classListPresenter
 		when: #drag:
-			send: #onDragClassList:
+			send: #onDragClass:
 			to: self;
 		when: #dragCut:
 			send: #onDragCutClassList:
@@ -853,6 +853,17 @@ moveMethods: methodServices toCategory: targetCategory
 
 newBrowser
 	^JadeiteProjectsSystemBrowser showOnSession: gciSession!
+
+onDragClass: aSession
+	| className |
+	className := self selectedClass name.
+	^super onDragClass: aSession className: className
+!
+
+onDragClassHierarchy: aSession
+	| className |
+	className := classHierarchyPresenter selection name.
+	^super onDragClass: aSession className: className!
 
 onDragMethod: aSession 
 
@@ -1985,6 +1996,8 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodsMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #moveMethods:toCategory:!drag & drop!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #newBrowser!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #onDragClass:!drag & drop!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #onDragClassHierarchy:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDragMethod:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropMethodsOnClassHierarchy:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropOnClassList:!drag & drop!public! !

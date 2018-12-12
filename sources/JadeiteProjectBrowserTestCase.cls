@@ -535,6 +535,48 @@ test_definedClassMenuItem
 	self projectsPresenter updateClassMenu: self classListPresenter view contextMenu.	"triggered just before pop-up menu opens"
 	self assert: classMenuItem description equals: menuLabel!
 
+test_dragClassDoesNotWalkback
+	"Not really a drag drop but make sure that 
+		class list is hooked up to the drag method we expect
+		and we do not get an error in the expected drag method"
+
+	| dragDropSession |
+	self testsIssue: #issue334
+		withTitle: 'Error on add subclass if that class is not not explicitly selected'.
+	self selectRowanSample1Class.
+	(self classListPresenter getEvents at: #drag:)
+		messagesDo: [:message | self assert: message asSymbol equals: #onDragClass:].
+	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
+	dragDropSession := self classListPresenter view dragDropSessionClass new.
+	self projectsPresenter onDragClass: dragDropSession.	"walkback occurred here"
+	dragDropSession suggestedTarget: (self serviceNamed: 'TestClass' in: self classListPresenter).
+	dragDropSession suggestedSource: (self serviceNamed: 'RowanSample1' in: self classListPresenter).
+	"right now, this is testing the early-out condition. Just make sure it doesn't walkback."
+	self assert: (self projectsPresenter onDragOverClassList: dragDropSession)
+		equals: self projectsPresenter!
+
+test_dragClassInHierarchyDoesNotWalkback
+	"Not really a drag drop but make sure that 
+		class list is hooked up to the drag method we expect
+		and we do not get an error in the expected drag method"
+
+	| dragDropSession |
+	self testsIssue: #issue334
+		withTitle: 'Error on add subclass if that class is not not explicitly selected'.
+	self selectRowanSample1Class.
+	(self classHierarchyPresenter getEvents at: #drag:)
+		messagesDo: [:message | self assert: message asSymbol equals: #onDragClass:].
+	self selectHierarchyTab.
+	self assert: self classHierarchyPresenter selection name equals: 'RowanSample1'.
+	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
+	dragDropSession := self classHierarchyPresenter view dragDropSessionClass new.
+	self projectsPresenter onDragClass: dragDropSession.	"walkback occurred here"
+	dragDropSession suggestedTarget: (self serviceNamed: 'TestClass' in: self classListPresenter).
+	dragDropSession suggestedSource: (self serviceNamed: 'RowanSample1' in: self classListPresenter).
+	"right now, this is testing the early-out condition. Just make sure it doesn't walkback."
+	self assert: (self projectsPresenter onDragClassHierarchy: dragDropSession)
+		equals: self projectsPresenter!
+
 test_dropMethodOnClassHierarchy
 	"don't really drop but we can simulate it and exercise the methods involved"
 
@@ -545,7 +587,7 @@ test_dropMethodOnClassHierarchy
 	self selectHierarchyTab.
 	self projectsPresenter selectClassNamed: self sampleClassName.
 	self selectMethodNamed: #foo.
-	dragDropSession := InternalDragDropSession new.
+	dragDropSession := self classHierarchyPresenter view dragDropSessionClass new.
 	self projectsPresenter onDragMethod: dragDropSession.
 	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSubClass' in: self classListPresenter).
 	dragDropSession suggestedSource: (self serviceNamed: 'foo' in: self methodListPresenter).
@@ -561,7 +603,7 @@ test_dropMethodOnClassList
 	self selectServicesNamed: #('RowanSample1-Core') in: self packageListPresenter.
 	self projectsPresenter selectClassNamed: self sampleClassName.
 	self selectMethodNamed: #foo.
-	dragDropSession := InternalDragDropSession new.
+	dragDropSession := self classHierarchyPresenter view dragDropSessionClass new.
 	self projectsPresenter onDragMethod: dragDropSession.
 	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSubClass' in: self classListPresenter).
 	dragDropSession suggestedSource: (self serviceNamed: 'foo' in: self methodListPresenter).
@@ -2032,8 +2074,10 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleInvalidSession!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleValidSession!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassHierarchy!public!test class hierarchy! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassList!public!test class list! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dragClassDoesNotWalkback!public!test drag drop! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dragClassInHierarchyDoesNotWalkback!public!test class hierarchy!test drag drop! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassHierarchy!public!test class hierarchy!test drag drop! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassList!public!test class list!test drag drop! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVars!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsInHierarchy!public!test class hierarchy! !
