@@ -713,7 +713,6 @@ executeSelectionOrLine
 
 jadeInspect
 	| result |
-	
 	result := self jadeExecuteAndDisplay: false.
 	result == self ifTrue: [^self].
 	JadeInspector showOn: result session: gciSession! !

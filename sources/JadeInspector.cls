@@ -46,6 +46,9 @@ isModified
 	^false.
 !
 
+maxPrintStringSize
+	^100000!
+
 model: anObject
 	"often a GsObject, but could be an Integer, String, etc."
 
@@ -54,30 +57,30 @@ model: anObject
 !
 
 selectedInstVar
-
 	| string |
-	instVarListPresenter selection key = 'self' ifTrue: [
-		string := instVarListPresenter selection value.
-		documentPresenter value: string.
-		^self.
-	].
-	instVarListPresenter selection key = '-.asOop' ifTrue: [
-		documentPresenter value: instVarListPresenter selection value.
-		^self.
-	].
-	string := [
-		gciSession
-			serverPerform: #'printStringOf:to:' 
-			with: instVarListPresenter selection value
-			with: 500.
-	] on: GsRuntimeError do: [:ex | 
-		ex errorReport number == 2106	ifTrue: [	"Forward reference error"
-			ex return: 'an invalid or hidden object (perhaps a LargeObjectNode)'.
-		].
-		ex pass.
-	].
-	documentPresenter value: string.
-! !
+	instVarListPresenter selection key = 'self'
+		ifTrue: 
+			[string := instVarListPresenter selection value.
+			documentPresenter value: string.
+			^self].
+	instVarListPresenter selection key = '-.asOop'
+		ifTrue: 
+			[documentPresenter value: instVarListPresenter selection value.
+			^self].
+	string := 
+			[gciSession
+				serverPerform: #printStringOf:to:
+				with: instVarListPresenter selection value
+				with: self maxPrintStringSize]
+					on: GsRuntimeError
+					do: 
+						[:ex |
+						ex errorReport number == 2106
+							ifTrue: 
+								["Forward reference error"
+								ex return: 'an invalid or hidden object (perhaps a LargeObjectNode)'].
+						ex pass].
+	documentPresenter value: string! !
 !JadeInspector categoriesFor: #contextObject!private! !
 !JadeInspector categoriesFor: #createComponents!accessing!private! !
 !JadeInspector categoriesFor: #createSchematicWiring!accessing!private! !
@@ -85,6 +88,7 @@ selectedInstVar
 !JadeInspector categoriesFor: #instVarListPresenter!accessing!private! !
 !JadeInspector categoriesFor: #instVarListPresenter:!accessing!private! !
 !JadeInspector categoriesFor: #isModified!private! !
+!JadeInspector categoriesFor: #maxPrintStringSize!private! !
 !JadeInspector categoriesFor: #model:!private! !
 !JadeInspector categoriesFor: #selectedInstVar!accessing!private! !
 

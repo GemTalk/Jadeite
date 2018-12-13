@@ -31,6 +31,24 @@ inspectInstVarAt: index
 tearDown
 	inspector ifNotNil: [inspector destroy]!
 
+test_basicInspectorDisplayedSizeLimit
+	| remoteObject |
+	self testsIssue: #issue361 withTitle: 'Inspectors should hold more than 5000 characters'.
+	remoteObject := session
+				executeString: '
+		| string |
+		string := String new. 
+		99999 timesRepeat:[
+			string := string, ''a''. 
+		].
+		^string, ''X'''
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: inspector model last = $X.
+	self assert: inspector model size = 100000
+!
+
 test_caption
 	| remoteObject |
 	remoteObject := session
@@ -164,6 +182,28 @@ test_menuItemsEnabled
 							["*do doesn't require a selection for enablement"
 							self assert: query isEnabled]]]!
 
+test_navigationInspectorDisplayedSizeLimit
+	"CharacterCollection>>printStringWithMaxSize: truncates at 100,000 characters
+	including quotes. Hence, we allow for that in the building of the string. "
+
+	| remoteObject instVarPresenter |
+	self testsIssue: #issue361 withTitle: 'Inspectors should hold more than 5000 characters'.
+	remoteObject := session
+				executeString: '
+		| string |
+		string := String new. 
+		99997 timesRepeat:[
+			string := string, ''a''. 
+		].
+		^Array with: string, ''X'''
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	instVarPresenter := inspector instVarListPresenter.
+	instVarPresenter selection: (instVarPresenter list at: 3).
+	self assert: (inspector documentPresenter value last: 2) equals: 'X'''.
+	self assert: inspector documentPresenter value size = 100000!
+
 test_openDictionaryBrowser
 	| remoteObject shell |
 	remoteObject := session
@@ -207,12 +247,14 @@ test_openProjectsBrowserOnClass
 !JadeiteInspectorTestCase categoriesFor: #enableForward:andBack:!private! !
 !JadeiteInspectorTestCase categoriesFor: #inspectInstVarAt:!private! !
 !JadeiteInspectorTestCase categoriesFor: #tearDown!private! !
+!JadeiteInspectorTestCase categoriesFor: #test_basicInspectorDisplayedSizeLimit!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_caption!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_captionChange!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectString!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_menuBarItemNames!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_menuItemsEnabled!public!test! !
+!JadeiteInspectorTestCase categoriesFor: #test_navigationInspectorDisplayedSizeLimit!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowser!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowserOnClass!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowser!public!test! !
