@@ -580,8 +580,9 @@ test_dragClassInHierarchyDoesNotWalkback
 test_dropMethodOnClassHierarchy
 	"don't really drop but we can simulate it and exercise the methods involved"
 
-	| dragDropSession |
+	| dragDropSession  newMethodService |
 	self testsIssue: #issue213 withTitle: 'Cannot drag methods to class when using hierarchy view?'.
+	self testsIssue: #issue354 withTitle: '(3.0.52) drag/drop of instance method ends up on class side'. 
 	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
 	self selectServicesNamed: #('RowanSample1-Core') in: self packageListPresenter.
 	self selectHierarchyTab.
@@ -592,13 +593,17 @@ test_dropMethodOnClassHierarchy
 	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSubClass' in: self classListPresenter).
 	dragDropSession suggestedSource: (self serviceNamed: 'foo' in: self methodListPresenter).
 	self projectsPresenter onDropMethodsOnClassHierarchy: dragDropSession.
-	self assert: self projectsPresenter selectedClass name equals: 'RowanSubClass'!
+	self assert: self projectsPresenter selectedClass name equals: 'RowanSubClass'.
+	newMethodService :=  self methodListPresenter selections first.
+	self assert: newMethodService selector equals: #foo.
+	self deny: newMethodService meta. !
 
 test_dropMethodOnClassList
 	"don't really drop but we can simulate it and exercise the methods involved"
 
-	| dragDropSession |
+	| dragDropSession newMethodService |
 	self testsIssue: #issue213 withTitle: 'Cannot drag methods to class when using hierarchy view?'.
+	self testsIssue: #issue354 withTitle: '(3.0.52) drag/drop of instance method ends up on class side'. 
 	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
 	self selectServicesNamed: #('RowanSample1-Core') in: self packageListPresenter.
 	self projectsPresenter selectClassNamed: self sampleClassName.
@@ -608,7 +613,10 @@ test_dropMethodOnClassList
 	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSubClass' in: self classListPresenter).
 	dragDropSession suggestedSource: (self serviceNamed: 'foo' in: self methodListPresenter).
 	self projectsPresenter onDropMethodsOnClassHierarchy: dragDropSession.
-	self assert: self projectsPresenter selectedClass name equals: 'RowanSubClass'!
+	self assert: self projectsPresenter selectedClass name equals: 'RowanSubClass'.
+	newMethodService :=  self methodListPresenter selections first.
+	self assert: newMethodService selector equals: #foo.
+	self deny: newMethodService meta. !
 
 test_duplicateInstVars
 	self testsIssue: #issue228

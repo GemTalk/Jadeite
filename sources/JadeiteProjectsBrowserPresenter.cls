@@ -884,8 +884,10 @@ onDropMethodsOnClassHierarchy: aSession
 	^self onDropOnClassList: aSession!
 
 onDropOnClassList: aSession
-	| classService |
+	| classService selector newSelection |
 	classService := aSession suggestedTarget.
+	classService meta: self isClassSideSelected.
+	selector := aSession suggestedSource selector.
 	methodSourcePresenter value: aSession suggestedSource source.	"method may not be selected"
 	self editSaveMethod: classService.
 	self selectedClass == classService
@@ -893,7 +895,9 @@ onDropOnClassList: aSession
 			[self isHierarchyTabSelected
 				ifTrue: [self selectClassInClassHierarchyNamed: classService name]
 				ifFalse: [self selectClass: classService]].
-	self selectMethodsFrom: classService!
+	newSelection := methodListPresenter list detect: [:methodService | methodService selector == selector]
+				ifNone: [^self].
+	methodListPresenter selection: newSelection!
 
 onDropOnMethodCategory: aSession
 	| methodServices targetCategory |
