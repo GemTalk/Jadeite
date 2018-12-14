@@ -25,11 +25,13 @@ basicUnloadProjects: projectNames
 	self refreshGlobalSelections!
 
 browseProject
-	| shell presenter service| 
-	shell := (JadeiteProjectsSystemBrowser showOnSession: gciSession) .
+	| shell presenter service serviceNames |
+	shell := JadeiteProjectsSystemBrowser showOnSession: gciSession.
 	presenter := shell currentCard projectListPresenter.
-	service := presenter list detect:[:projectService | projectService name = (projectListPresenter selection name)] ifNone:[^self]. 
-	presenter selection: service. !
+	serviceNames := projectListPresenter selections collect: [:service | service name].
+	service := presenter list detect: [:projectService | serviceNames includes: projectService name]
+				ifNone: [^self].
+	presenter selection: service!
 
 checkout
 	projectListPresenter selection checkoutUsing: self.!

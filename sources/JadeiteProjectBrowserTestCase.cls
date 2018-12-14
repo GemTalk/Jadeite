@@ -1953,11 +1953,14 @@ test_sunitUpdatesProperly
 			ensure: [secondBrowser destroy]!
 
 test_symbolsWithoutImplementorsFound
+	"I think the only way for a symbol to get added to AllSymbols is to commit it"
+
 	| symbols |
 	self testsIssue: #issue258
 		withTitle: 'wildcard senders and implentors don''t return proper selection list'.
 	self selectRowanSample1Class.
 	self saveMethodWithUnimplementedSelector.
+	self commitTransaction.
 	symbols := JadePresenter symbolsFrom: 'fnoodley1' session: session.
 	self assert: symbols size equals: 1.
 	self assert: symbols first = #fnoodley1!
