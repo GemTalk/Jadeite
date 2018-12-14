@@ -144,6 +144,10 @@ checkout
 	projectListPresenter selection checkoutUsing: self.
 	self refreshFromServer!
 
+classCommentPresenter
+	"for test access" 
+	^classCommentPresenter!
+
 classDefinitionPresenter
 
 	^classDefinitionPresenter!
@@ -481,7 +485,7 @@ editSaveClass
 
 editSaveClassComment
 	| classService |
-	classService := classListPresenter selectionIfNone: [MessageBox notify: 'No class selected'. ^self]. 
+	classService := self selectedClass ifNil:[^self].
 	classService
 		command: #classComment:;
 		commandArgs: (Array with: classCommentPresenter value trimBlanks).
@@ -1457,6 +1461,9 @@ selectClassNamed: className
 		ifTrue: [self selectClassInClassListNamed: className]
 		ifFalse: [self selectClassInClassHierarchyNamed: className]!
 
+selectCommentTab
+	self selectSourceTabNamed: 'classDocumentation'!
+
 selectedClass
 	^self isClassListTabSelected
 		ifTrue: [classListPresenter selectionIfNone: []]
@@ -1926,6 +1933,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #categoryListPresenter!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #checkout!project menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #classCommentPresenter!accessing!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #classDefinitionPresenter!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #classesMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #classHierarchyTabs!accessing!private! !
@@ -2051,6 +2059,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassInClassListNamed:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassListTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassNamed:!private!selection! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #selectCommentTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedClass!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedClasses!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedFilters!accessing!public! !

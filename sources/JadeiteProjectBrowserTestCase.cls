@@ -1712,6 +1712,27 @@ test_rowanTestsHierarchy
 	self selectServicesNamed: (Array with: 'RwEditToolTest') in: self classListPresenter.
 !
 
+test_saveClassCommentInClassList
+	self selectRowanSample1Class.
+	self projectsPresenter selectCommentTab.
+	self projectsPresenter classCommentPresenter value equals: String new.
+	self projectsPresenter classCommentPresenter value: 'testing'.
+	self projectsPresenter editSaveClassComment.
+	self selectHierarchyTab.
+	self projectsPresenter selectCommentTab.
+	self projectsPresenter classCommentPresenter value equals: 'testing'!
+
+test_saveClassCommentInHierarchy
+	self selectRowanSample1Class.
+	self selectHierarchyTab.
+	self projectsPresenter selectCommentTab.
+	self projectsPresenter classCommentPresenter value equals: String new.
+	self projectsPresenter classCommentPresenter value: 'this is a test'.
+	self projectsPresenter editSaveClassComment.
+	self selectClassTab.
+	self projectsPresenter selectCommentTab.
+	self projectsPresenter classCommentPresenter value equals: 'this is a test'!
+
 test_saveClassMethod
 	| source |
 	self selectRowanSample1Class.
@@ -2139,6 +2160,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeAbortedClass!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_rowanTestsHierarchy!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassCommentInClassList!public!test!test class list! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassCommentInHierarchy!public!test!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethod!public!test! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethodHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethod!public!test! !
