@@ -33,6 +33,11 @@ createComponents
 	super createComponents.
 	projectListPresenter := self add: JadeiteProjectListPresenter new name: 'Projects'!
 
+documentPresenter 
+	"for testing" 
+
+	^documentPresenter!
+
 flipDebugger
 	RowanDebugger debuggerClass == RowanDebugger
 		ifTrue: [RowanDebugger debuggerClass: JadeDebugger]
@@ -140,6 +145,7 @@ queryCommand: query
 !JadeiteTranscript categoriesFor: #browseMethodsContaining!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #browseSendersOf!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #createComponents!public! !
+!JadeiteTranscript categoriesFor: #documentPresenter!private! !
 !JadeiteTranscript categoriesFor: #flipDebugger!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #flipTranscript!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #gciSession:!public! !

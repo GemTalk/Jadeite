@@ -427,6 +427,7 @@ test_closeConsoleInvalidSession
 	hierarchyListBrowser := self projectsPresenter browseHierarchyImplementors.
 	sunitPresenter := transcript jadeBrowseTests.
 	workspace := projectsBrowser addWorkspace.
+	transcript documentPresenter isModified: false. "prevent confirmation dialog from opening when windows are closed" 
 	dictionaryBrowser := transcript openDictionaryBrowser.
 	simpleInspector := JadeInspector showOn: (session
 						executeString: '123'
