@@ -14,18 +14,10 @@ RowanProjectService comment: ''!
 	^projectService isProjectService ifTrue: [name = projectService name] ifFalse: [^false]!
 
 addPackageNamed: newPackageName using: presenter
-	| packageService answeringService services |
 	self
 		command: #addPackageNamed:;
 		commandArgs: (Array with: newPackageName).
-	services := presenter issueCommand: (Array with: self).
-	answeringService := services detect: [:service | service isAnsweringService].
-	answeringService answer = #duplicatePackage
-		ifTrue: [^MessageBox notify: 'Duplicate Package. Package named ' , newPackageName , ' not added'].
-	packageService := presenter packageListPresenter list
-				detect: [:service | service name = newPackageName]
-				ifNone: [^MessageBox notify: 'Package named ' , newPackageName , ' not found'].
-	presenter packageListPresenter selection: packageService.
+	presenter issueCommand: (Array with: self).
 	presenter refreshFromServer!
 
 basicName: aString

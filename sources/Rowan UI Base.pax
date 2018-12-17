@@ -340,7 +340,6 @@ package methodNames
 	add: 'JadeSessionManager class' -> #getUrl;
 	add: 'JadeSessionManager class' -> #mainShellClass;
 	add: 'JadeSessionManager class' -> #setVersion;
-	add: 'MessageBoxAbstract class' -> #notify:;
 	add: 'TranscriptPresenter class' -> #resource_Default_view;
 	yourself.
 
@@ -3419,17 +3418,6 @@ operationSelected
 ! !
 !MCPatchBrowser categoriesFor: #browseChangedThing!public! !
 !MCPatchBrowser categoriesFor: #operationSelected!public! !
-
-!MessageBoxAbstract class methodsFor!
-
-notify: aString 
-	"Display a message with the default information caption, standard information icon,  the
-	specified <readableString> message, and an OK button."
-
-	"Changed for Jadeite. Return the result for testing" 
-
-	^self notify: aString caption: nil! !
-!MessageBoxAbstract class categoriesFor: #notify:!instance creation!public! !
 
 !MethodListPresenter methodsFor!
 

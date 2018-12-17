@@ -21,10 +21,6 @@ flipTranscriptIn: session
 	command := #flipTranscript.
 	BrowserUpdate current issueCommand: (Array with: self) session: session!
 
-isAnsweringService
-
-	^true!
-
 isTranscriptInstalledIn: session
 	command := #transcriptInstalled.
 	BrowserUpdate current issueCommand: (Array with: self) session: session.
@@ -32,6 +28,5 @@ isTranscriptInstalledIn: session
 !RowanAnsweringService categoriesFor: #answer!accessing!private! !
 !RowanAnsweringService categoriesFor: #answer:!accessing!private! !
 !RowanAnsweringService categoriesFor: #flipTranscriptIn:!commands!public! !
-!RowanAnsweringService categoriesFor: #isAnsweringService!public!testing! !
 !RowanAnsweringService categoriesFor: #isTranscriptInstalledIn:!commands!public! !
 

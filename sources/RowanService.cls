@@ -90,10 +90,6 @@ initializePresenterList: presenter
 	presenter sortBlock: [:x :y | x sortAspect < y sortAspect].
 	presenter list: ListModel new!
 
-isAnsweringService
-
-	^false!
-
 isBrowserService
 
 	^false!
@@ -282,7 +278,6 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #globalsUpdate:!public!updating! !
 !RowanService categoriesFor: #initialize!Init / Release!public! !
 !RowanService categoriesFor: #initializePresenterList:!Init / Release!private! !
-!RowanService categoriesFor: #isAnsweringService!public!testing! !
 !RowanService categoriesFor: #isBrowserService!public!testing! !
 !RowanService categoriesFor: #isClassService!public!testing! !
 !RowanService categoriesFor: #isDirty!accessing!public! !
