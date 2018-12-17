@@ -46,12 +46,12 @@ testMessageBox
 	boolean := TestMessageBox plannedResult: #no.
 	boolean := MessageBox confirm: 'Did you shave the yak today?'.
 	self deny: boolean.
-	TestMessageBox plannedResult: #noAnswer.
-	answer := MessageBox notify: 'There will be no answer'.
-	self assert: answer == MessageBox.
-	TestMessageBox plannedResult: #noAnswer.
-	answer := MessageBox notify: 'Warnings do not return answer'.
-	self assert: answer == MessageBox!
+	TestMessageBox plannedResult: #answer.
+	answer := MessageBox notify: 'There will now be an answer'.
+	self assert: answer == #answer.
+	TestMessageBox plannedResult: #answer.
+	answer := MessageBox notify: 'There will now be an answer'.
+	self assert: answer == #answer!
 
 testRemoveGlobalHook
 	TestMessageBox disableJadeiteTestMessageBox.

@@ -692,21 +692,27 @@ testErrorInPrintString
 !
 
 testSaveMethod
-	"https://github.com/ericwinger/Jade/issues/62"
+	"https://github.com/GemTalk/Jadeite/issues/62"
 
 	| number view |
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectRowanSample1Class.
+	self createDebuggerTestMethod.
 	number := Time millisecondClockValue.
-	session executeString: '(RowanFrameService compiledMethodAt: #testMethod) setBreakAtStepPoint: 1'.
-	self 
-		openDebuggerOn: 'RowanFrameService new testMethod';
+	session executeString: '(RowanSample1 compiledMethodAt: #testMethod) setBreakAtStepPoint: 1'.
+	self
+		openDebuggerOn: 'RowanSample1 new testMethod';
 		assert: (view := debugger documentPresenter view) notNil;
-		assert: (view selection) equals: 'testMethod';
+		assert: view selection equals: 'testMethod';
 		assert: (view selectionRange: (14 to: 99)) selection first equals: $^;
 		assert: (view replaceSelection: '^' , number printString) notNil;
 		assert: debugger saveMethod notNil;
-		assert: (view selection) equals: 'testMethod';
+		assert: view selection equals: 'testMethod';
 		debuggerDo: [debugger resumeProcess];
-		assert: (session executeString: 'RowanFrameService new testMethod') equals: number.!
+		assert: (session executeString: 'RowanSample1 new testMethod') equals: number]
+			ensure: [projectsBrowser destroy]!
 
 testStackMenuEnablement
 	| frameContextMenu |

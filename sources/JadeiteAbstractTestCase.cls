@@ -30,6 +30,15 @@ classListPresenter
 commitTransaction
 	transcript commitTransaction!
 
+createDebuggerTestMethod
+	| source |
+	source := 'testMethod
+
+	^10023614059'.
+	self selectCategoriesNamed: (Array with: 'accessing'). 
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection!
+
 createNewTestProjectNamed: projectName
 	| testService |
 	testService := RowanTestService command: #createNewTestProjectNamed:
@@ -303,6 +312,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #classHierarchyPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #classListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #commitTransaction!private!setup teardown! !
+!JadeiteAbstractTestCase categoriesFor: #createDebuggerTestMethod!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #createNewTestProjectNamed:!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Loaded!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #interestingLoopMethodSource!constants!private! !
