@@ -18,7 +18,6 @@ addPackageNamed: newPackageName using: presenter
 	self
 		command: #addPackageNamed:;
 		commandArgs: (Array with: newPackageName).
-	presenter issueCommand: (Array with: self).
 	services := presenter issueCommand: (Array with: self).
 	answeringService := services detect: [:service | service isAnsweringService].
 	answeringService answer = #duplicatePackage

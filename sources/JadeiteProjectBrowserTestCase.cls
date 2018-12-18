@@ -208,7 +208,8 @@ test_addDuplicatePackage
 	| projectService addPackageResult packageName |
 	self testsIssue: #issue266
 		withTitle: 'Add package with existing name results in package in two projects'.
-	packageName := 'NewPackage'.
+	
+	[packageName := 'NewPackage'.
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	projectService := self projectListPresenter selection.
 	projectService addPackageNamed: packageName using: self projectsPresenter.
@@ -219,10 +220,14 @@ test_addDuplicatePackage
 	
 	[TestMessageBox plannedResult: #failed.
 	addPackageResult := projectService addPackageNamed: packageName using: self projectsPresenter.
-	self assert: addPackageResult equals: #failed.
+	self assert: addPackageResult equals: MessageBox. "notify: does not return the result, sadly" 
 	self assert: (self packageListPresenter list select: [:service | service name = packageName]) size
 		equals: 1]
-			ensure: [TestMessageBox disableJadeiteTestMessage]!
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]]
+			ensure: 
+				[self unloadSampleProject.	"we can't yet unload packages so unload the project and reload"
+				self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
 
 test_addPackageReloadProject
 	self testsIssue: #issue183
