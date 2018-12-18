@@ -25,7 +25,7 @@ closeDebuggers
 				each become: Object new.
 				semaphore signal.
 				SessionManager inputState prod.
-			] on: ProcessTermination do: [:ex | 	"A debugger wants to terminate the current process!!"
+			] on: ProcessTermination do: [:ex | 	"A debugger wants to terminate the current process!!!!"
 				[
 					each become: Object new.
 					semaphore signal.
@@ -38,8 +38,7 @@ closeDebuggers
 		debugger == each ifTrue: [debugger := nil].
 	].
 	list := JadeiteMethodListBrowser allInstances , RowanSystemBrowser allInstances , RowanDebugger allInstances.
-	self assert: list isEmpty.
-!
+	self assert: list isEmpty.!
 
 debuggerDo: aBlock
 
@@ -211,14 +210,16 @@ test_debuggerCopyToClipboard
 	TestMessageBox enableJadeiteTestMessageBox.
 	
 	[self openDebuggerOn: 'nil halt'.
+	[debugger frameListPresenter list size <= 0] whileTrue: [(Delay forMilliseconds: 100) wait].
 	self assert: debugger frameListPresenter list first equals: 'Executed Code  @2 line 1'.
 	'notCopiedYet' copyToClipboard.
 	self assert: self getClipboardContents equals: 'notCopiedYet'.
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
 	TestMessageBox plannedResult: #yes.	"confirm we want to copy to clipboard"
-	[self selectFrameAt: 2] fork.	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
-	(Delay forMilliseconds: 100) wait.
+	[self selectFrameAt: 2] forkAt: Processor activePriority + 1.	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
+	[debugger frameListPresenter selectionByIndex = 2] whileFalse:[(Delay forMilliseconds: 100) wait.].
+	self assert: debugger frameListPresenter selectionByIndex equals: 2.
 	self assert: self getClipboardContents equals: 'new text']
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
@@ -740,7 +741,7 @@ testUnsavedChangesActionChangeFrame
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
 	TestMessageBox plannedResult: #yes.	"confirm we want to copy to clipboard"
-	self debuggerDo: [[debugger stepOver] fork].
+	self debuggerDo: [[debugger stepOver] forkAt: Processor activePriority + 1].
 	self assert: self getClipboardContents equals:  'new text']
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
