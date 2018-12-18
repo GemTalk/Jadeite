@@ -1194,8 +1194,7 @@ test_issue261
 	[self selectServiceNamed: 'Izmir' in: self projectListPresenter.
 	view := self projectsPresenter projectInfoTab view.
 	self assert: (view columns first contentFromRow: (view list at: 1)) equals: 'Izmir'.
-	self assert: (view columns first contentFromRow: (view list at: 5)).	"isDirty"
-	self assert: (view columns first contentFromRow: (view list at: 6))	"isLoaded"]
+	self assert: (view columns first contentFromRow: (view list at: 5)).	"isDirty"]
 			ensure: [self projectsPresenter basicUnloadProjects: #('Izmir')]!
 
 test_literalReferences

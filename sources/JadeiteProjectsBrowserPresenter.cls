@@ -1854,8 +1854,7 @@ updateProjectInfo
 			array nextPut: (Array with: service with: 'sha').
 			array nextPut: (Array with: service with: 'branch').
 			array nextPut: (Array with: service with: 'isSkew').
-			array nextPut: (Array with: service with: 'isDirty'). 
-			array nextPut: (Array with: service with: 'isLoaded'). 
+			array nextPut: (Array with: service with: 'isDirty').  
 			service == services last ifFalse: [array nextPut: (Array with: RowanProjectService new with: nil)]].
 	projectInfoTab list: array contents.
 	projectInfoTab ensureVisible.!
