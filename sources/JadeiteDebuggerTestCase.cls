@@ -127,6 +127,8 @@ systemBrowser
 !
 
 tearDown
+	debugger ifNotNil: [debugger documentPresenter view isModified: false].
+	secondDebugger ifNotNil: [secondDebugger documentPresenter view isModified: false].
 	process
 		ifNotNil: 
 			[process terminate.
@@ -137,7 +139,7 @@ tearDown
 		yourself.
 	RowanDebugger debuggerClass: nil.
 	RowanDebugger semaphore: nil.
-	super tearDown.!
+	super tearDown!
 
 terminateGsProcess
 
