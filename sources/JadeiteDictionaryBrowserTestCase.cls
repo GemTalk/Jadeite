@@ -52,6 +52,24 @@ tearDown
 	super tearDown.
 	dictionaryBrowser ifNotNil: [dictionaryBrowser destroy]!
 
+test_browseReferences
+	| methodBrowser |
+	self testsIssue: #issue350
+		withTitle: 'Browse references from dictionary browser doesn''t show anything'.
+	self selectDictionary: 'Globals'.
+	self selectClass: 'SessionTemps'.
+	methodBrowser := dictionaryBrowser currentCard browseClassReferences.
+	
+	[self assert: (methodBrowser isKindOf: JadeiteMethodListBrowser).	"<<< bug was that no action was taken. Should get a browser back"
+	self assert: ('Jadeite Method List Browser*' match: methodBrowser caption)]
+			ensure: [methodBrowser destroy].
+	dictionaryBrowser currentCard classHierarchyTabs lastCard.
+	methodBrowser := dictionaryBrowser currentCard browseClassReferences.
+	
+	[self assert: (methodBrowser isKindOf: JadeiteMethodListBrowser).
+	self assert: ('Jadeite Method List Browser*' match: methodBrowser caption)	"<<< bug was that no action was taken. Should get a browser back"]
+			ensure: [methodBrowser destroy]!
+
 test_browseReferencesInDictionaryBrowser
 	| methodListBrowser source |
 	self selectDictionary: 'Globals'.
@@ -91,6 +109,7 @@ test_selectTestClass
 !JadeiteDictionaryBrowserTestCase categoriesFor: #selectWellKnownMethod!private!selection! !
 !JadeiteDictionaryBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteDictionaryBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
+!JadeiteDictionaryBrowserTestCase categoriesFor: #test_browseReferences!public!test! !
 !JadeiteDictionaryBrowserTestCase categoriesFor: #test_browseReferencesInDictionaryBrowser!public!test! !
 !JadeiteDictionaryBrowserTestCase categoriesFor: #test_menusDontAddBreaks!public!test!test menus! !
 !JadeiteDictionaryBrowserTestCase categoriesFor: #test_selectTestClass!public!test! !

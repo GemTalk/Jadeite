@@ -192,6 +192,9 @@ breakAt: anInteger operation: aString
 	self updateCommand: stream contents , self requestString.
 !
 
+browseClassReferences
+	^self browseClassReferences: self selectedClassName!
+
 browseGlobalReferences
 
 	| string |
@@ -325,6 +328,10 @@ classesMenuStrings
 classHierarchyPresenter
 
 	^classHierarchyPresenter!
+
+classHierarchyTabs
+	"for tests" 
+	^classHierarchyTabs!
 
 classListPresenter
 
@@ -2037,6 +2044,9 @@ selectedClasses
 	^list.
 !
 
+selectedClassName
+	^self selectedClasses isEmpty ifTrue: [nil] ifFalse: [self selectedClasses first]!
+
 selectedClassName: aString
 
 	selectedClassName := aString.
@@ -2727,6 +2737,7 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #addSubclass!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #behaviorIdentifier!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #breakAt:operation:!event handlers!menu handlers!public! !
+!JadeSystemBrowserPresenter categoriesFor: #browseClassReferences!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #browseGlobalReferences!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #browseImplementors!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #browseMethodHistory!menu handlers!public! !
@@ -2740,6 +2751,7 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #classDefChanged!event handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #classesMenuStrings!menus!public! !
 !JadeSystemBrowserPresenter categoriesFor: #classHierarchyPresenter!accessing!public! !
+!JadeSystemBrowserPresenter categoriesFor: #classHierarchyTabs!public! !
 !JadeSystemBrowserPresenter categoriesFor: #classListPresenter!accessing!public! !
 !JadeSystemBrowserPresenter categoriesFor: #clearPackageInfo!public! !
 !JadeSystemBrowserPresenter categoriesFor: #closeRequested:!event handlers!public! !
@@ -2891,6 +2903,7 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #selectClass:selector:!public! !
 !JadeSystemBrowserPresenter categoriesFor: #selectedClassChanged:!public! !
 !JadeSystemBrowserPresenter categoriesFor: #selectedClasses!public! !
+!JadeSystemBrowserPresenter categoriesFor: #selectedClassName!private! !
 !JadeSystemBrowserPresenter categoriesFor: #selectedClassName:!public!updating! !
 !JadeSystemBrowserPresenter categoriesFor: #selectedClassNameWithoutVersion!public! !
 !JadeSystemBrowserPresenter categoriesFor: #selectedMethodChanged!event handlers!history!public! !

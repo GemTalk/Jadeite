@@ -99,9 +99,6 @@ basicUnloadProjects: projectNames
 behaviorIdentifier
 	^self selectedClass behaviorIdentifier!
 
-browseClassReferences
-	self browseClassReferences: self selectedClass name!
-
 browseHierarchyImplementors
 	^self browseHierarchyImplementorsOf: self selectedMethodName
 		className: methodListPresenter selection className!
@@ -1474,6 +1471,9 @@ selectedClasses
 		ifTrue: [classListPresenter selections]
 		ifFalse: [classHierarchyPresenter selections]!
 
+selectedClassName
+	^self selectedClass name!
+
 selectedFilters
 	^self isCategoryTabSelected
 		ifTrue: [categoryListPresenter selections]
@@ -1925,7 +1925,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethods!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicUnloadProjects:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #behaviorIdentifier!private!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #browseClassReferences!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseHierarchyImplementors!menu handlers!public!queries! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseHierarchySenders!public!queries! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseMethodHistory!menu handlers!public! !
@@ -2062,6 +2061,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectCommentTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedClass!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedClasses!private!selection! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #selectedClassName!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedFilters!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedMethodCategory!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedMethodName!menu handlers!public! !

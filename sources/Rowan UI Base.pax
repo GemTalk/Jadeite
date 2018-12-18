@@ -195,7 +195,6 @@ package methodNames
 	add: #JadeShell -> #updateCaptionFromSearchString:;
 	add: #JadeSystemBrowserPresenter -> #basicAddMethodCategory:;
 	add: #JadeSystemBrowserPresenter -> #basicRemoveMethods;
-	add: #JadeSystemBrowserPresenter -> #browseClassReferences;
 	add: #JadeSystemBrowserPresenter -> #browseClassReferences:;
 	add: #JadeSystemBrowserPresenter -> #browseMethodsAndSelect:;
 	add: #JadeSystemBrowserPresenter -> #browseMethodsAndSelect:type:;
@@ -2661,9 +2660,6 @@ basicRemoveMethods
 				, self requestString.
 	self updateCommand: string!
 
-browseClassReferences
-	^self browseClassReferences: (classListPresenter selectionIfNone: [^self])!
-
 browseClassReferences: className
 	| service |
 	service := RowanQueryService command: #browseClassReferences: withArgs: (Array with: className).
@@ -3158,7 +3154,6 @@ verifyValidCategory: category
 	^service answer! !
 !JadeSystemBrowserPresenter categoriesFor: #basicAddMethodCategory:!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #basicRemoveMethods!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #browseClassReferences!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #browseClassReferences:!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #browseMethodsAndSelect:!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #browseMethodsAndSelect:type:!menu handlers!public! !
