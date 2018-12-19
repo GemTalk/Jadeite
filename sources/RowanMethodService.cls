@@ -46,13 +46,13 @@ appendToSourceMenu: aMenu presenter: methodSourcePresenter
 	('*Methods*' match: aMenu text) ifTrue: [^self].	"Don't add breakpoints to the Methods menu. Let's keep it in the context menu for consistency."
 	('*Debug*' match: aMenu text) ifTrue: [^self].	"Don't add breakpoints to the Debug menu. Let's keep it in the context menu for consistency."
 	('*Jade*' match: aMenu text) ifTrue: [^self].	"Don't add breakpoints to the Jadeite menu. Let's keep it in the context menu for consistency."
+
+	messageSelector := (stepPoints at: stepPoint) value.
 	aMenu addSeparator.
 	menuCommand := self
 				addBreakPointMenuAt: stepPoint
 				to: aMenu
 				presenter: methodSourcePresenter.
-	messageSelector := (stepPoints at: stepPoint) value.
-	messageSelector isEmpty ifTrue: [^self].
 	menuCommand := MessageSend
 				receiver: methodSourcePresenter parentPresenter
 				selector: #browseImplementorsOf:

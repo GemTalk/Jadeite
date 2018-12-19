@@ -235,16 +235,11 @@ showNextStatement
 !
 
 stack: aList
-
 	| index |
-
 	index := self stackInitialSelection.
-	frameListOffset := index - 1.
-	frameListPresenter list: (aList copyFrom: index to: aList size).
-	aList notEmpty ifTrue: [
-		frameListPresenter selectionByIndex: 1.
-	].
-!
+	frameListOffset := 0.
+	frameListPresenter list: aList.
+	aList notEmpty ifTrue: [frameListPresenter selectionByIndex: index]!
 
 stackInitialSelection
 
@@ -288,8 +283,6 @@ stackInitialSelectionData
 		'Object >> _doesNotUnderstand:args:envId:reason: @8 line 13'
 		'Object >> error: @6 line 7'
 		'Object >> error: (envId 0) @6 line 7'
-		'Object >> halt @2 line 5'
-		'Object >> halt (envId 0) @2 line 5'
 		'(TestAsserter) >> assert: @5 line 4'
 		'TestAsserter >> assert: (envId 0) @5 line 4'
 	)!

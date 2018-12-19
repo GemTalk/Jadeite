@@ -841,6 +841,37 @@ test_extensionColoringInHierarchy
 	self selectClassInHierarchyNamed: 'RwGemStoneSpecification'.
 	self assert: self projectsPresenter classHierarchyPresenter selection shouldColorAsExtension!
 
+test_extensionMethodSelection
+	| source |
+	self testsIssue: #issue352
+		withTitle: 'Create method on class not in selected package, method disappears'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-GemStone-Loader-Extensions' in: self packageListPresenter.
+	self selectServiceNamed: 'RwClassMove' in: self classListPresenter.
+	self selectMethodNamed: #addMovedClassToPatchSet:.
+	self assert: self classListPresenter selection name equals: 'RwClassMove'.
+	self assert: self methodListPresenter selection selector equals: #addMovedClassToPatchSet:.
+	self assert: ('addMovedClassToPatchSet:*' match: self methodSourcePresenter model value).
+	self assert: self methodListPresenter selection category first equals: $*.	"extension method category"
+	source := 'addMovedClassToPatchSet2 
+		^#thisIsATestMethod'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self denyIsNil: (self methodListPresenter list
+				detect: [:methodService | methodService selector = #addMovedClassToPatchSet:]
+				ifNone: []).
+	self assert: self methodListPresenter selection selector equals: #addMovedClassToPatchSet2.
+	self assert: self categoryListPresenter selection equals: '*rowan-gemstone-loader-extensions'.
+	self assert: self classListPresenter selection name equals: 'RwClassMove'.
+	self assert: self projectsPresenter definedMethodPackageText value
+		equals: 'Defined Package: Rowan-GemStone-Loader-Extensions'.
+	self assert: self projectsPresenter methodCategoryText value
+		equals: 'Category: *rowan-gemstone-loader-extensions'.
+	transcript projectListPresenter abortTransaction.	"clean up Rowan project"
+	[] ensure: 
+			[self cloneRowanSample1.
+			self ensureRowanSample1Loaded]!
+
 test_filtersUpdatedInHierarchyView
 	| selectedClass browserServiceCategories |
 	self testsIssue: #issue343 withTitle: 'Category/Variables tab not updating correctly'.
@@ -2141,6 +2172,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_exitJadeiteValidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_expansion!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_extensionColoringInHierarchy!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_extensionMethodSelection!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_filtersUpdatedInHierarchyView!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findClass!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package! !
