@@ -1491,7 +1491,6 @@ test_projectInfoTab
 	self assert: (self projectsPresenter projectInfoTab view getItemText: 3) equals: 'branch'.
 	self assert: (self projectsPresenter projectInfoTab view getItemText: 4) equals: 'isSkew'.
 	self assert: (self projectsPresenter projectInfoTab view getItemText: 5) equals: 'isDirty'.
-	self assert: (self projectsPresenter projectInfoTab view getItemText: 6) equals: 'isLoaded'.
 	view := self projectsPresenter projectInfoTab view.
 	self assert: (view columns first contentFromRow: (view list at: 1)) equals: 'Rowan'. "don't know the state of the rowan project so just test the name"!
 
