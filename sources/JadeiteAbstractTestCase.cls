@@ -230,9 +230,11 @@ selectInstanceTabIn: presenter
 	presenter instanceClassTabs firstCard!
 
 selectMethodNamed: selector
-	self selectMethodsNamed: (Array with: selector)!
+	^self selectMethodsNamed: (Array with: selector)!
 
 selectMethodsNamed: selectors
+	| selections | 
+	selections := OrderedCollection new. 
 	self methodListPresenter resetSelection. 
 	selectors do: 
 			[:selector |
@@ -242,7 +244,9 @@ selectMethodsNamed: selectors
 						ifNone: [self error: 'Selector ''' , selector , ''' not found'].
 			self methodListPresenter selections: (self methodListPresenter selections asOrderedCollection
 						add: service;
-						yourself)]!
+						yourself).
+			selections add: service. ].
+	^selections!
 
 selectRowanSample1Class
 	"big assumption - RowanSample1 class will allways be in RowanSample1 project"

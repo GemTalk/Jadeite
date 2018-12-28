@@ -1,6 +1,6 @@
 "Filed out from Dolphin Smalltalk 7"!
 
-TestCase subclass: #JadeLoginTest
+TestCase2 subclass: #JadeLoginTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
