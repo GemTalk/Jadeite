@@ -1,6 +1,6 @@
 "Filed out from Dolphin Smalltalk 7"!
 
-TestCase subclass: #MCModificationTestCase
+TestCase2 subclass: #MCModificationTestCase
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

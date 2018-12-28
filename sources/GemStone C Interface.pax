@@ -81,6 +81,7 @@ package classNames
 	add: #OopType64Array;
 	add: #OopType64Field;
 	add: #QuadByteString;
+	add: #TestCase2;
 	add: #Unicode16;
 	add: #Unicode32;
 	add: #Unicode7;
@@ -101,6 +102,11 @@ package!
 
 "Class Definitions"!
 
+Object subclass: #TestCase2
+	instanceVariableNames: 'testSelector'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 DWORDField subclass: #OopType32Field
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -451,7 +457,7 @@ GciErrSType subclass: #GciErrSType64_31
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-TestCase subclass: #GciLibraryTestCase
+TestCase2 subclass: #GciLibraryTestCase
 	instanceVariableNames: 'library session'
 	classVariableNames: ''
 	poolDictionaries: ''

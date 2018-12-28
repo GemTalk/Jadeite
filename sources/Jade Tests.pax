@@ -16,16 +16,16 @@ package globalAliases: (Set new
 
 package setPrerequisites: (IdentitySet new
 	add: '..\Core\Object Arts\Dolphin\Base\Dolphin';
+	add: 'GemStone C Interface';
 	add: 'Jade Login';
 	add: 'Jade Transcript';
-	add: '..\Core\Contributions\Camp Smalltalk\SUnit\SUnit';
 	yourself).
 
 package!
 
 "Class Definitions"!
 
-TestCase subclass: #JadeLoginTest
+TestCase2 subclass: #JadeLoginTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

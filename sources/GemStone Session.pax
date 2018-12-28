@@ -101,7 +101,6 @@ package setPrerequisites: (IdentitySet new
 	add: 'GemStone Services';
 	add: 'JGF Fading Dialog';
 	add: '..\Core\Object Arts\Dolphin\Sockets\Sockets Connection';
-	add: '..\Core\Contributions\Camp Smalltalk\SUnit\SUnit';
 	add: '..\Core\Object Arts\Dolphin\ActiveX\Components\XML DOM\XML DOM';
 	yourself).
 
@@ -399,7 +398,7 @@ FadingDialog subclass: #WaitOnGemStoneDialog
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-TestCase subclass: #JadeServerTestCase
+TestCase2 subclass: #JadeServerTestCase
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

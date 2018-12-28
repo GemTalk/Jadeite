@@ -1,6 +1,6 @@
 "Filed out from Dolphin Smalltalk 7"!
 
-TestCase subclass: #GciLibraryTestCase
+TestCase2 subclass: #GciLibraryTestCase
 	instanceVariableNames: 'library session'
 	classVariableNames: ''
 	poolDictionaries: ''

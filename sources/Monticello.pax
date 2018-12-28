@@ -56,9 +56,9 @@ package setPrerequisites: (IdentitySet new
 	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Text\Dolphin Text Presenter';
 	add: '..\Core\Object Arts\Dolphin\MVP\Type Converters\Dolphin Type Converters';
 	add: '..\Core\Object Arts\Dolphin\MVP\Models\Value\Dolphin Value Models';
+	add: 'GemStone C Interface';
 	add: 'GemStone Session';
 	add: 'Jade UI Base';
-	add: '..\Core\Contributions\Camp Smalltalk\SUnit\SUnit';
 	add: '..\Core\Object Arts\Dolphin\ActiveX\Shell\Windows Shell';
 	yourself).
 
@@ -116,7 +116,7 @@ JadeShell subclass: #MCRepositoryBrowser
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-TestCase subclass: #MCModificationTestCase
+TestCase2 subclass: #MCModificationTestCase
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

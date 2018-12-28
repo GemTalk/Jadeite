@@ -1,7 +1,7 @@
 | package |
 package := Package name: 'Rowan UI Base'.
 package paxVersion: 1;
-	basicComment: 'Rowan GUI tools built on Jade Smalltalk for Dolphin. '.
+	basicComment: 'Jadeite GUI tools built on Jade Smalltalk for Dolphin. '.
 
 package imageStripperBytes: (ByteArray fromBase64String: 'IVNUQiA0IEYPEQAEAAAASmFkZUltYWdlU3RyaXBwZXIAAAAAAAAAAFIAAAAAAAAAmgAAAFIAAAAQ
 AAAARG9scGhpbiBNVlAgQmFzZVIAAAAVAAAAUnVudGltZVNlc3Npb25NYW5hZ2Vy778lAAAAAAAA
