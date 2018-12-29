@@ -1497,6 +1497,9 @@ selectionMethod: methodSelection
 selectMethodsFrom: classService
 	| selections |
 	selections := OrderedCollection new.
+	self selectClassNamed: classService selectedMethods first className asString.
+	(classService selectedMethods size = 1 and: [self isCategoryTabSelected])
+		ifTrue: [categoryListPresenter selection: classService selectedMethods first category].
 	classService selectedMethods do: 
 			[:methodService |
 			| selection |

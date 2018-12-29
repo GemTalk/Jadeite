@@ -22,6 +22,8 @@ package classNames
 
 package methodNames
 	add: #JadeInspector -> #documentPresenter;
+	add: #JadeiteProjectsBrowserPresenter -> #definedClassPackageText;
+	add: #JadeiteProjectsBrowserPresenter -> #definedMethodPackageText;
 	add: #SUnitBrowserModel -> #debugIndividualTestsWithResources:;
 	add: 'MessageBox class' -> #new;
 	add: 'Prompter class' -> #createOn:;
@@ -132,6 +134,17 @@ documentPresenter
 
 	^documentPresenter! !
 !JadeInspector categoriesFor: #documentPresenter!public! !
+
+!JadeiteProjectsBrowserPresenter methodsFor!
+
+definedClassPackageText
+	"for tests" 
+	^definedClassPackageText!
+
+definedMethodPackageText
+	^definedMethodPackageText! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #definedClassPackageText!initialize/release!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #definedMethodPackageText!initialize/release!public! !
 
 !MessageBox class methodsFor!
 
