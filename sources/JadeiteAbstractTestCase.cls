@@ -48,6 +48,11 @@ createNewTestProjectNamed: projectName
 ensureRowanSample1Loaded
 	self loadProjectNamed: self sampleProjectName.!
 
+fail: aString
+	TestMessageBox disableJadeiteTestMessageBox.
+	^super fail: aString
+	!
+
 interestingLoopMethodSource
 	^'interestingLoop
 
@@ -319,6 +324,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #createDebuggerTestMethod!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #createNewTestProjectNamed:!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Loaded!private!project support! !
+!JadeiteAbstractTestCase categoriesFor: #fail:!asserting!public! !
 !JadeiteAbstractTestCase categoriesFor: #interestingLoopMethodSource!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #isSampleProjectLoaded!private!private testing!project support! !
 !JadeiteAbstractTestCase categoriesFor: #issueCommand:!issue test support!public!support! !

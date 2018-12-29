@@ -49,11 +49,6 @@ debuggerDo: aBlock
 	RowanDebugger semaphore: nil.
 !
 
-fail: aString
-	TestMessageBox disableJadeiteTestMessageBox.
-	^super fail: aString
-	!
-
 getClipboardContents
 	"Private - `Clipboard current getText` occasionally gets an `Access is denied` error.
 	Retry several times, pausing in between each attempt, until the clipboard is retrieved."
@@ -210,8 +205,6 @@ test_browseClassVariablePane
 			ensure: [projectsBrowser destroy]!
 
 test_debuggerCopyToClipboard
-	"Make sure to turn off test message box if you need to
-	debug this test. "
 
 	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
 	TestMessageBox enableJadeiteTestMessageBox.
@@ -238,7 +231,7 @@ test_debuggerDoNotCopyToClipboard
 	TestMessageBox enableJadeiteTestMessageBox.
 	
 	[self openDebuggerOn: 'nil halt'.
-	self assert: debugger frameListPresenter list first equals: 'Executed Code  @2 line 1'.
+	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
 	'notCopiedYet' copyToClipboard.
 	self assert: self getClipboardContents equals: 'notCopiedYet'.
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
@@ -269,7 +262,7 @@ test_frameDoubleClickNoActionInBlockContext
 	self testsIssue: #issue238
 		withTitle: '"RowanDebugger does not understand #browseClass" from double click on frame selection (3.0.41)'.
 	self openDebuggerOn: '[RowanClassService new halt; classHierarchy] value'.
-	self assert: debugger frameListPresenter selectionByIndex equals: 1.
+	self assert: debugger frameListPresenter selectionByIndex equals: 4.
 	self assert: (debugger frameListPresenter selection copyFrom: 1 to: 2) equals: '[]'.
 	projectPresenter := debugger frameListPresenter trigger: #actionPerformed.	"simulates double click on the block context"
 	self assert: projectPresenter equals: debugger	"no browser opened and no walkback"!
@@ -416,8 +409,8 @@ test1
 		openDebuggerOn: 'nil halt';
 		assert: (x := debugger errorMessagePresenter value) = 'a Halt occurred (error 2709)';
 		assert: (x := debugger processListPresenter list size) == 1;
-		assert: (x := debugger frameListPresenter list size) == 2;
-		assert: (x := debugger frameListPresenter list first) = 'Executed Code  @2 line 1';
+		assert: (x := debugger frameListPresenter list size) == 5;
+		assert: (x := debugger frameListPresenter selection) = 'Executed Code  @2 line 1';
 		assert: (x := debugger variableListPresenter list size) == 1;
 		assert: (x := debugger variableListPresenter list first) class == RowanVariableService;		assert: x oop == 20;
 		assert: x _key == #'receiver';
@@ -439,7 +432,7 @@ x := 1 + 2 * 3.
 [x := 2] value.
 x yourself';
 		assert: (debugger errorMessagePresenter value) equals: 'a Halt occurred (error 2709)';
-		assert: (debugger frameListPresenter list first) equals: 'Executed Code  @2 line 2';
+		assert: (debugger frameListPresenter selection) equals: 'Executed Code  @2 line 2';
 		assert: (debugger documentPresenter view selection) equals: 'halt';
 		debuggerDo: [debugger stepOver];
 		assert: (debugger documentPresenter view selection) equals: '+ ';
@@ -690,8 +683,9 @@ testErrorInPrintString
 	self 
 		openDebuggerOn: '(ScaledDecimal _basicNew instVarAt: 1 put: 1; instVarAt: 2 put: nil; printString)';
 		assert: debugger errorMessagePresenter value equals: 'a MessageNotUnderstood occurred (error 2010), a UndefinedObject does not understand  #''_generality''';
-		assert: (debugger frameListPresenter list at: 3) equals: 'ScaledDecimal >> asString @22 line 15';
-		assert: (debugger frameListPresenter selectionByIndex: 3) notNil;
+		assert: (debugger frameListPresenter selection) equals: 'SmallInteger (Number) >> _retry:coercing: @4 line 15';
+		assert: (debugger frameListPresenter selectionByIndex: 6) notNil.	debugger frameListPresenter selectionByIndex: 8. "select ScaledDecimal frame"
+	self
 		assert: debugger variableListPresenter list first value equals: '(ScaledDecimal printString error: a MessageNotUnderstood occurred (error 2010), a UndefinedObject does not understand  #''_generality'')';
 		debuggerDo: [[debugger _terminateProcess] fork];
 		assert: (Delay forMilliseconds: 50) wait notNil;
@@ -727,7 +721,7 @@ testStackMenuEnablement
 	self testsIssue: #issue103 withTitle: 'debugger, ''Executed Code'' stack frame, pop up menu items'.
 	self openDebuggerOn: 'nil halt'.
 	self assert: debugger _processList size equals: 1.
-	self assert: debugger frameListPresenter list first equals: 'Executed Code  @2 line 1'.
+	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
 	frameContextMenu := debugger frameListPresenter view contextMenu.
 	frameContextMenu itemsDo: [:item | self deny: (self menuItemIsEnabled: item)].
 	debugger frameListPresenter selection: (debugger frameListPresenter list at: 2).
@@ -735,14 +729,12 @@ testStackMenuEnablement
 !
 
 testUnsavedChangesActionChangeFrame
-	"Make sure to turn off test message box if you need to
-	debug this test. "
 
 	self testsIssue: #issue176 withTitle: 'unsaved debugger frame method not handled well'.
 	TestMessageBox enableJadeiteTestMessageBox.
 	
 	[self openDebuggerOn: 'nil halt'.
-	self assert: debugger frameListPresenter list first equals: 'Executed Code  @2 line 1'.
+	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
 	'notCopiedYet' copyToClipboard.
 	self assert: self getClipboardContents equals:  'notCopiedYet'.
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
@@ -753,8 +745,6 @@ testUnsavedChangesActionChangeFrame
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 testUnsavedChangesActionChangeToHomeFrame
-	"Make sure to turn off test message box if you need to
-	debug this test. "
 
 	self testsIssue: #issue176 withTitle: 'unsaved debugger frame method not handled well'.
 	TestMessageBox enableJadeiteTestMessageBox.
@@ -762,20 +752,18 @@ testUnsavedChangesActionChangeToHomeFrame
 	[| originalSource |
 	originalSource := '(Array with: 1) do:[:obj | self halt. obj size]'.
 	self openDebuggerOn: originalSource.
-	self assert: debugger frameListPresenter list first equals: '[] in  Executed Code  @2 line 1'.
+	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @2 line 1'.
 	'notCopiedYet' copyToClipboard.
 	self assert: self getClipboardContents equals:  'notCopiedYet'.
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
 	TestMessageBox plannedResult: #yes.	"confirm we want to copy to clipboard"
-	debugger frameListPresenter selection: (debugger frameListPresenter list at: 3).
+	debugger frameListPresenter selectionByIndex: 6. "Executed Code home frame"
 	self assert: self getClipboardContents equals: 'new text'.
 	self assert: debugger methodSourcePresenter documentPresenter value equals: originalSource]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 testUnsavedChangesActionStepping
-	"Make sure to turn off test message box if you need to
-	debug this test. "
 
 	| originalSource |
 	self testsIssue: #issue176 withTitle: 'unsaved debugger frame method not handled well'.
@@ -783,7 +771,7 @@ testUnsavedChangesActionStepping
 	originalSource := 'nil halt. Array new. Array new. Array new.'.
 	
 	[self openDebuggerOn: originalSource.
-	self assert: debugger frameListPresenter list first equals: 'Executed Code  @2 line 1'.
+	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
 	'notCopiedYet' copyToClipboard.
 	self assert: self getClipboardContents equals:  'notCopiedYet'.
 	debugger methodSourcePresenter documentPresenter value: 'step over'.
@@ -801,7 +789,6 @@ testUnsavedChangesActionStepping
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]! !
 !JadeiteDebuggerTestCase categoriesFor: #closeDebuggers!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #debuggerDo:!private!support! !
-!JadeiteDebuggerTestCase categoriesFor: #fail:!asserting!public! !
 !JadeiteDebuggerTestCase categoriesFor: #getClipboardContents!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #getDebugger!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #getSecondDebugger!private!support! !
