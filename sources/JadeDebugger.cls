@@ -235,16 +235,11 @@ showNextStatement
 !
 
 stack: aList
-
 	| index |
-
 	index := self stackInitialSelection.
-	frameListOffset := index - 1.
-	frameListPresenter list: (aList copyFrom: index to: aList size).
-	aList notEmpty ifTrue: [
-		frameListPresenter selectionByIndex: 1.
-	].
-!
+	frameListOffset := 0.
+	frameListPresenter list: aList.
+	aList notEmpty ifTrue: [frameListPresenter selectionByIndex: index]!
 
 stackInitialSelection
 

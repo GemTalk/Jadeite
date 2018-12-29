@@ -49,6 +49,11 @@ debuggerDo: aBlock
 	RowanDebugger semaphore: nil.
 !
 
+fail: aString
+	TestMessageBox disableJadeiteTestMessageBox.
+	^super fail: aString
+	!
+
 getClipboardContents
 	"Private - `Clipboard current getText` occasionally gets an `Access is denied` error.
 	Retry several times, pausing in between each attempt, until the clipboard is retrieved."
@@ -213,7 +218,7 @@ test_debuggerCopyToClipboard
 	
 	[self openDebuggerOn: 'nil halt'.
 	[debugger frameListPresenter list size <= 0] whileTrue: [(Delay forMilliseconds: 100) wait].
-	self assert: debugger frameListPresenter list first equals: 'Executed Code  @2 line 1'.
+	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
 	'notCopiedYet' copyToClipboard.
 	self assert: self getClipboardContents equals: 'notCopiedYet'.
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
@@ -796,6 +801,7 @@ testUnsavedChangesActionStepping
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]! !
 !JadeiteDebuggerTestCase categoriesFor: #closeDebuggers!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #debuggerDo:!private!support! !
+!JadeiteDebuggerTestCase categoriesFor: #fail:!asserting!public! !
 !JadeiteDebuggerTestCase categoriesFor: #getClipboardContents!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #getDebugger!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #getSecondDebugger!private!support! !
