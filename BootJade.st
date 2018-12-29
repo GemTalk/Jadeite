@@ -62,6 +62,7 @@ JadeiteLoginShell show
 JadeLoginShell removeFromDevelopmentTools.
 JadeiteLoginShell addToDevelopmentTools.
 JadeiteDevelopmentSUnitBrowser addToDevelopmentTools.
+JadeiteDevelopmentSUnitBrowser initialize."to open in ideaspace"
 "to prevent right-mouse drag errors #nmBeginRDrag:"
 ListView initializeNotificationMap. 
 Cursor wait showWhile: [
