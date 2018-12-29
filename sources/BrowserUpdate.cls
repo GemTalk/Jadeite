@@ -75,8 +75,10 @@ inUpdate: anObject
 issueCommand: services session: session
 	inUpdate ifTrue: [^self].
 	inUpdate := true.
-	[[^self basicIssueCommand: services session: session] ensure: [inUpdate := false]]
-		ifCurtailed: [inUpdate := false]!
+	
+	[[Cursor wait showWhile: [^self basicIssueCommand: services session: session]]
+		ensure: [inUpdate := false]]
+			ifCurtailed: [inUpdate := false]!
 
 performUpdate: updateBlock with: selector
 	updates do: 
@@ -168,8 +170,10 @@ updateService: service session: session
 updateServices: services session: session
 	inUpdate ifTrue: [^self].
 	inUpdate := true.
-	[[^self basicUpdateServices: services session: session] ensure: [inUpdate := false]]
-		ifCurtailed: [inUpdate := false]!
+	
+	[[Cursor wait showWhile: [^self basicUpdateServices: services session: session]]
+		ensure: [inUpdate := false]]
+			ifCurtailed: [inUpdate := false]!
 
 updatesPerform: selector presenter: presenter
 	"the update may know which client updates 

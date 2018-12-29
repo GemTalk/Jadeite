@@ -19,9 +19,6 @@ cloneRowanSample1
 	projectsBrowser currentCard basicCloneProject: sample1Path root: root.
 	self projectsPresenter refreshFromServer.!
 
-commandQueryOn: commandSymbol view: view
-	^CommandQuery new commandDescription: (CommandDescription new command: commandSymbol) source: view!
-
 disableTranscriptWrites
 	(transcriptWritesWereEnabled := transcript isTranscriptInstalled)
 		ifTrue: [transcript flipTranscript]	"turn off gemstone transcript writes for performance"!
@@ -64,6 +61,13 @@ projectNamed: aString
 	^self projectsPresenter projectListPresenter list
 		detect: [:projectService | projectService name = aString]
 		ifNone: []!
+
+queryCommand: commandSymbol inPresenter: presenter view: view
+	| commandQuery |
+	commandQuery := CommandQuery new commandDescription: (CommandDescription new command: commandSymbol)
+				source: view.
+	presenter queryCommand: commandQuery.
+	^commandQuery!
 
 rowanProjectNames
 	"this may change"
@@ -188,8 +192,7 @@ test_abstractTestsShown
 	| commandQuery methodService |
 	self testsIssue: #issue336
 		withTitle: 'S-Unit Tests In an abstract class and its subclasses are not managed properly'.
-
-	self loadProjectNamed: 'Tonel'.   "ensure tests are present" 
+	self loadProjectNamed: 'Tonel'.	"ensure tests are present"
 	self selectServiceNamed: 'Tonel' in: self projectListPresenter.
 	self selectServiceNamed: 'Tonel-Tests' in: self packageListPresenter.
 	self selectServiceNamed: 'TonelAbstractWriterTest' in: self classListPresenter.
@@ -200,8 +203,10 @@ test_abstractTestsShown
 				ifNone: [].
 	self denyIsNil: methodService.
 	self methodListPresenter selection: methodService.
-	commandQuery := self commandQueryOn: #runMethodTests view: self methodListPresenter view.
-	self projectsPresenter queryCommand: commandQuery.
+	commandQuery := self
+				queryCommand: #runMethodTests
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
 	self deny: commandQuery isEnabled	"run test menu item disabled in the abstract class"!
 
 test_addDuplicatePackage
@@ -2023,6 +2028,53 @@ test_stepPoint3
 	self assert: (methodService stepPoints at: 9) value equals: #asOop.
 	self assert: (methodService stepPoints at: 9) key equals: (392 to: 396)!
 
+test_sunitBrowserForTestClass
+	| sunitItem sunitBrowser |
+	self testsIssue: #issue336
+		withTitle: 'S-Unit Tests In an abstract class and its subclasses are not managed properly'.
+	self selectRowanSample1Test.
+	sunitItem := self classListPresenter view queryContextMenu items
+				detect: [:menuItem | menuItem command == #showSUnitBrowserOnClass].
+	sunitBrowser := sunitItem commandDescription performAgainst: self projectsPresenter.
+	
+	[self assert: (sunitBrowser isKindOf: JadeiteSUnitBrowser).
+	self assert: sunitBrowser primaryPresenter classListPresenter selection name
+		equals: 'RowanSample1Test'.
+	self assert: sunitBrowser primaryPresenter packageListPresenter selection name
+		equals: 'RowanSample1-Tests']
+			ensure: [sunitBrowser destroy]!
+
+test_sunitBrowserIsEnabledForTestClass
+	| commandQuery |
+	self testsIssue: #issue336
+		withTitle: 'S-Unit Tests In an abstract class and its subclasses are not managed properly'.
+	self selectRowanSample1Test.
+	commandQuery := self
+				queryCommand: #showSUnitBrowserOnClass
+				inPresenter: self projectsPresenter
+				view: self classListPresenter view.
+	self assert: commandQuery isEnabled.
+	self selectRowanSample1Class.
+	commandQuery := self
+				queryCommand: #showSUnitBrowserOnClass
+				inPresenter: self projectsPresenter
+				view: self classListPresenter view.
+	self deny: commandQuery isEnabled!
+
+test_sunitBrowserNoSelectedTest
+	"If there is no selected class, the menu item should not be enabled"
+
+	| commandQuery |
+	self testsIssue: #issue336
+		withTitle: 'S-Unit Tests In an abstract class and its subclasses are not managed properly'.
+	self deselectProjects.
+	self assertIsNil: self projectsPresenter selectedClass.
+	commandQuery := self
+				queryCommand: #showSUnitBrowserOnClass
+				inPresenter: self projectsPresenter
+				view: self classListPresenter view.
+	self deny: commandQuery isEnabled!
+
 test_sunitCtrlB
 	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
@@ -2235,7 +2287,6 @@ test_verifyValidCategory
 waitForPresenter: presenter
 	[presenter list isEmpty] whileTrue: [(Delay forMilliseconds: 50) wait]! !
 !JadeiteProjectBrowserTestCase categoriesFor: #cloneRowanSample1!private!project support! !
-!JadeiteProjectBrowserTestCase categoriesFor: #commandQueryOn:view:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue261createTestProject!issue test support!private! !
@@ -2243,6 +2294,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #packageNamed:!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectList!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectNamed:!private!project support! !
+!JadeiteProjectBrowserTestCase categoriesFor: #queryCommand:inPresenter:view:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #rowanProjectNames!constants!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveClass:superclass:instVars:package:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveClass:withInstVars:package:!private! !
@@ -2350,6 +2402,9 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_stepPoint1!public!test step points! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_stepPoint2!public!test step points! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_stepPoint3!public!test step points! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitBrowserForTestClass!public!test menus!test sunit tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitBrowserIsEnabledForTestClass!public!test menus!test sunit tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitBrowserNoSelectedTest!public!test menus!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitCtrlB!public!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitInheritedTests!public!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitTabCanRefresh!public!test menus!test sunit tab! !

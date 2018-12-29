@@ -45,6 +45,10 @@ createNewTestProjectNamed: projectName
 				withArgs: (Array with: projectName).
 	self issueCommand: testService!
 
+deselectProjects
+
+	self projectListPresenter selectionByIndex: 0.!
+
 ensureRowanSample1Loaded
 	self loadProjectNamed: self sampleProjectName.!
 
@@ -323,6 +327,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #commitTransaction!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #createDebuggerTestMethod!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #createNewTestProjectNamed:!public!support! !
+!JadeiteAbstractTestCase categoriesFor: #deselectProjects!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Loaded!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #fail:!asserting!public! !
 !JadeiteAbstractTestCase categoriesFor: #interestingLoopMethodSource!constants!private! !

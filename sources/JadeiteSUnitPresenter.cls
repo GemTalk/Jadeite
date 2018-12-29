@@ -70,6 +70,15 @@ selectedFilters
 	"no categories in sunit browser"
 	^Array new !
 
+selectPackageNamed: packageName classNamed: className
+	| packageService classService |
+	packageService := packageListPresenter list detect: [:service | service name = packageName]
+				ifNone: [^self].
+	packageListPresenter selection: packageService.
+	classService := classListPresenter list detect: [:service | service name asString = className]
+				ifNone: [^self].
+	classListPresenter selection: classService!
+
 status
 	^status!
 
@@ -91,6 +100,7 @@ testClassesSize
 !JadeiteSUnitPresenter categoriesFor: #runAll!public! !
 !JadeiteSUnitPresenter categoriesFor: #runSelected!public! !
 !JadeiteSUnitPresenter categoriesFor: #selectedFilters!accessing!public! !
+!JadeiteSUnitPresenter categoriesFor: #selectPackageNamed:classNamed:!public! !
 !JadeiteSUnitPresenter categoriesFor: #status!accessing!private! !
 !JadeiteSUnitPresenter categoriesFor: #status:!accessing!private! !
 !JadeiteSUnitPresenter categoriesFor: #testCasesSize!public! !

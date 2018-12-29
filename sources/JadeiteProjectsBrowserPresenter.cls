@@ -159,9 +159,9 @@ classesMenuStrings
 				addSubclass;
 				removeClass;
 				removePriorVersions;
-				runClassTests].
+				showSUnitBrowserOnClass].
 	definedLabel := self definedClassMenuItemLabel.
-	menuStrings := #('&Classes' '&Browse References//browseClassReferences' '&File Out Class//fileOutClass' 'Add &Subclass//addSubclass' '&Remove//removeClass' '-' 'Set Compiler &Environment ...//setEnvironment' 'Run &Tests//runClassTests' '-')
+	menuStrings := #('&Classes' '&Browse References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' '&File Out Class//fileOutClass' 'Add &Subclass//addSubclass' '&Remove//removeClass' '-' 'Set Compiler &Environment ...//setEnvironment'  '-')
 				asOrderedCollection.
 	menuStrings addLast: definedLabel , '//gotoClassDefinedPackage'.
 	^menuStrings!
@@ -1105,11 +1105,10 @@ queryCommand: aCommandQuery
 			[aCommandQuery
 				isEnabled: (packageListPresenter selections size = 1 and: [ancestorListPresenter hasSelection]).
 			^true].
-	(#(#browseMethodHistory #browseImplementors #browseSenders)
-		includes: command)
-			ifTrue: 
-				[aCommandQuery isEnabled: methodListPresenter selections size = 1.
-				^true].
+	(#(#browseMethodHistory #browseImplementors #browseSenders) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: methodListPresenter selections size = 1.
+			^true].
 	(#(#inspectGlobal #browseGlobalReferences) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: globalsPresenter selections size = 1.
@@ -1148,12 +1147,13 @@ queryCommand: aCommandQuery
 					^true]].
 	#gotoMethodDefinedPackage = command
 		ifTrue: 
-			[
-			methodListPresenter selectionIfNone: 
+			[methodListPresenter selectionIfNone: 
 					[aCommandQuery isEnabled: false.
 					^true].
-			methodListPresenter selections size = 1 ifFalse:[aCommandQuery isEnabled: false.
-					^true]. 
+			methodListPresenter selections size = 1
+				ifFalse: 
+					[aCommandQuery isEnabled: false.
+					^true].
 			(self selectedClass selectedPackageNames includes: methodListPresenter selection definedPackage)
 				ifTrue: 
 					[aCommandQuery isEnabled: false.
@@ -1232,6 +1232,10 @@ queryCommand: aCommandQuery
 	(#(#browseHierarchyImplementors #browseHierarchySenders) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: methodListPresenter selections notEmpty.
+			^true].
+	(#(#showSUnitBrowserOnClass) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: (self selectedClass notNil and: [self selectedClass isTestCase]).
 			^true].
 	(self queryCommandHandlers: aCommandQuery) ifTrue: [^true].
 	(aCommandQuery canPerformAgainst: self) ifTrue: [aCommandQuery beEnabled].
@@ -1554,6 +1558,13 @@ setMethodFilterFor: presenter
 
 setTestClass: service
 	sunitPresenter testClassService: (service isTestCase ifTrue: [service] ifFalse: [nil])!
+
+showSUnitBrowserOnClass
+	| sunitBrowser |
+	sunitBrowser := JadeiteSUnitBrowser showOnSession: gciSession.
+	sunitBrowser primaryPresenter selectPackageNamed: self selectedClass definedPackageName
+		classNamed: self selectedClass name.
+	^sunitBrowser!
 
 showSuperClassComparison
 	| methodService |
@@ -2078,6 +2089,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #setDefaultProjectTablLabel:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setMethodFilterFor:!event handlers support!private!services!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setTestClass:!event handlers support!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #showSUnitBrowserOnClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #showSuperClassComparison!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #sundryCleanup!initialize/release!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #sunitPresenter!menu handlers!public! !
