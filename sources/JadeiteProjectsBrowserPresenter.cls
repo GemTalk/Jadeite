@@ -949,7 +949,8 @@ postOkToChangeEvent
 	self sundryCleanup!
 
 projectChanges
-	projectListPresenter selection changesUsing: self!
+	projectListPresenter selections isEmpty ifTrue: [^MessageBox notify: 'No project selected'].
+	^projectListPresenter selection changesUsing: self gciSession!
 
 projectDictionaryChanged
 	| listModel |

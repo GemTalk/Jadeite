@@ -121,7 +121,7 @@ primaryPresenter
 
 projectChanges
 	projectListPresenter selections isEmpty ifTrue: [^MessageBox notify: 'No project selected'].
-	projectListPresenter selections first changesUsing: self!
+	^projectListPresenter selections first changesUsing: self gciSession!
 
 projectListPresenter
 	^projectListPresenter!

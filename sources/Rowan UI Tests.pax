@@ -26,6 +26,7 @@ package methodNames
 	add: #JadeInspector -> #documentPresenter;
 	add: #JadeiteProjectsBrowserPresenter -> #definedClassPackageText;
 	add: #JadeiteProjectsBrowserPresenter -> #definedMethodPackageText;
+	add: #RowanPatchBrowser -> #operationListPresenter;
 	add: #SUnitBrowserModel -> #debugIndividualTestsWithResources:;
 	add: 'MessageBox class' -> #new;
 	add: 'Prompter class' -> #createOn:;
@@ -188,6 +189,14 @@ createOn: aValueModel
 		ifFalse: 
 			[super createOn: aValueModel]! !
 !Prompter class categoriesFor: #createOn:!instance creation!public! !
+
+!RowanPatchBrowser methodsFor!
+
+operationListPresenter
+	"for tests"
+
+	^operationListPresenter! !
+!RowanPatchBrowser categoriesFor: #operationListPresenter!public! !
 
 !SUnitBrowserModel methodsFor!
 

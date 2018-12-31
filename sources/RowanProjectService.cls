@@ -38,16 +38,15 @@ branch
 branch: anObject
 	branch := anObject!
 
-changesUsing: presenter
-	| operations session |
+changesUsing: session
+	| operations  |
 	command := #changes.
-	presenter issueCommand: (Array with: self).
+	BrowserUpdate current issueCommand: (Array with: self) session: session.
 	changes isEmpty ifTrue: [^MessageBox notify: 'No changes!!'].
-	session := presenter gciSession.
 	operations := OrderedCollection new.
 	changes
 		do: [:changeString | operations addAll: (RowanPatch fromString: changeString session: session) operations].
-	RowanPatchBrowser showOn: (RowanPatch new operations: operations; session: session) name: name!
+	^RowanPatchBrowser showOn: (RowanPatch new operations: operations; session: session) name: name!
 
 checkoutUsing: presenter
 	| branchString query branchName |

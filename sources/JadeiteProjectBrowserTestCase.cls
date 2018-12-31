@@ -12,12 +12,50 @@ When running tests from SUnit Browser Tool, make sure to turn on Auto Initialize
 !JadeiteProjectBrowserTestCase categoriesForClass!Unclassified! !
 !JadeiteProjectBrowserTestCase methodsFor!
 
+addSampleMethodGoo
+
+	| source |
+	source := 'goo
+	"RowanSample1 new goo"
+	^Array with: #goo'. 
+	self methodSourcePresenter value: source. 
+	self projectsPresenter editSaveMethod: self classListPresenter selection. 
+
+	!
+
+addSampleMethodHoo
+
+	| source |
+	source := 'hoo
+	^Bag with: ''hoo'''. 
+	self methodSourcePresenter value: source. 
+	self projectsPresenter editSaveMethod: self classListPresenter selection. 
+
+	!
+
 cloneRowanSample1
 	| sample1Path root |
 	sample1Path := self rowanSample1Path.
 	root := self rowanProjectsHome.
 	projectsBrowser currentCard basicCloneProject: sample1Path root: root.
 	self projectsPresenter refreshFromServer.!
+
+dirtyProjectForChangeBrowser
+	self selectRowanSample1Class.
+	self modifySampleMethodFoo.
+	self addSampleMethodGoo.
+	self addSampleMethodHoo.
+	self
+		saveClass: 'DirtyProject1'
+		withInstVars: Array new
+		package: 'RowanSample1-Tests'.
+	self
+		saveClass: 'DirtyProject2'
+		withInstVars: Array new
+		package: 'RowanSample1-Tests'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self projectsPresenter basicRemoveMethods!
 
 disableTranscriptWrites
 	(transcriptWritesWereEnabled := transcript isTranscriptInstalled)
@@ -48,6 +86,17 @@ Rowan projectTools create createProjectFor: proj.'.
 issue284methodCreation
 	self methodSourcePresenter value: 'addedMethod  ^5'.
 	self projectsPresenter editSaveMethod: self classListPresenter selection!
+
+modifySampleMethodFoo
+
+	| source |
+	source := 'foo
+	"RowanSample1 new foo"
+	^1 + 2 + 3'. 
+	self methodSourcePresenter value: source. 
+	self projectsPresenter editSaveMethod: self classListPresenter selection. 
+
+	!
 
 packageNamed: aString
 	^self packageListPresenter list
@@ -353,6 +402,41 @@ test_categoryTextDisplay
 	self assert: self projectsPresenter methodCategoryText value equals: String new.
 	self selectMethodsNamed: (Array with: #browserTool with: #initialize).
 	self assert: self projectsPresenter methodCategoryText value equals: 'Categories: (Multiple)'!
+
+test_changeListSortOrder
+	| changesBrowser |
+	self testsIssue: #issue384
+		withTitle: '(3.0.53) sort by `type` in changes view does not do complete job'.
+	self dirtyProjectForChangeBrowser.
+	changesBrowser := (RowanProjectService new name: 'RowanSample1') changesUsing: session.
+	
+	[changesBrowser operationListPresenter view columnClicked: 1.	"ascending Type"
+	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch typeString])
+		equals: #('Addition' 'Addition' 'Addition' 'Addition' 'Modification' 'Removal') asOrderedCollection.
+	changesBrowser operationListPresenter view columnClicked: 1.	"descending Type"
+	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch typeString])
+		equals: #('Removal' 'Modification' 'Addition' 'Addition' 'Addition' 'Addition') asOrderedCollection.
+	changesBrowser operationListPresenter view columnClicked: 2.	"ascending class name"
+	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch className])
+		equals: #('RowanSample1' 'RowanSample1' 'RowanSample1' 'RowanSample1Test' 'rwSubclass:' 'rwSubclass:')
+				asOrderedCollection.
+	changesBrowser operationListPresenter view columnClicked: 2.	"descending class name"
+	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch className])
+		equals: #('rwSubclass:' 'rwSubclass:' 'RowanSample1Test' 'RowanSample1' 'RowanSample1' 'RowanSample1')
+				asOrderedCollection.
+	changesBrowser operationListPresenter view columnClicked: 3.	"ascending selector"
+	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch selector])
+		equals: #('' '' 'foo' 'goo' 'hoo' 'test1') asOrderedCollection.
+	changesBrowser operationListPresenter view columnClicked: 3.	"descending selector"
+	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch selector])
+		equals: #('test1' 'hoo' 'goo' 'foo' '' '') asOrderedCollection.
+	changesBrowser operationListPresenter view columnClicked: 4.	"ascending details"
+	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch detailsString])
+		equals: #('Class Definition' 'Class Definition' 'other' 'other' 'other' 'tests') asOrderedCollection.
+	changesBrowser operationListPresenter view columnClicked: 4.	"descending details"
+	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch detailsString])
+		equals: #('tests' 'other' 'other' 'other' 'Class Definition' 'Class Definition') asOrderedCollection]
+			ensure: [changesBrowser destroy]!
 
 test_classListNotBlank
 	| rowanClass |
@@ -1444,6 +1528,16 @@ test_noStepPoints
 	self assert: methodService stepPoints size equals: 0. 
 	!
 
+test_openChangesBrowser
+	| changesBrowser changesItem |
+	self testsIssue: #issue384
+		withTitle: '(3.0.53) sort by `type` in changes view does not do complete job'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	changesItem := self projectListPresenter view queryContextMenu items
+				detect: [:menuItem | menuItem command == #projectChanges].
+	changesBrowser := changesItem commandDescription performAgainst: self projectsPresenter.
+	[self assert: (changesBrowser isKindOf: RowanPatchBrowser)] ensure: [changesBrowser destroy]!
+
 test_openNewProjectBrowser
 	"make sure that we can open a new project browser from an existing browser"
 
@@ -2286,11 +2380,15 @@ test_verifyValidCategory
 
 waitForPresenter: presenter
 	[presenter list isEmpty] whileTrue: [(Delay forMilliseconds: 50) wait]! !
+!JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodGoo!dirty project!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodHoo!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #cloneRowanSample1!private!project support! !
+!JadeiteProjectBrowserTestCase categoriesFor: #dirtyProjectForChangeBrowser!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue261createTestProject!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue284methodCreation!issue test support!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #modifySampleMethodFoo!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #packageNamed:!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectList!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectNamed:!private!project support! !
@@ -2322,6 +2420,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSameClassCategoriesCorrect!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_changeListSortOrder!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classSideSelection!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInClassList!public!test class list! !
@@ -2372,6 +2471,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noSelectionHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noStepPoints!public!test step points! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_openChangesBrowser!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectBrowser!public!test menus!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectTab!public!test menus!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openProjectsBrowser!public!test projects! !

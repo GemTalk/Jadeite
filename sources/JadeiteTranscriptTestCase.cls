@@ -142,6 +142,17 @@ test_multiSelectProject
 	transcript projectListPresenter projectListPresenter selections: projectServices.
 	self assert: transcript projectListPresenter projectListPresenter selections size equals: projectCount!
 
+test_openChangesBrowser
+	| changesBrowser changesItem  projectService |
+	self testsIssue: #issue384
+		withTitle: '(3.0.53) sort by `type` in changes view does not do complete job'.
+	projectService := transcript projectListPresenter projectListPresenter list first.
+	transcript projectListPresenter projectListPresenter selection: projectService.
+	changesItem := transcript projectListPresenter projectListPresenter view queryContextMenu items
+				detect: [:menuItem | menuItem command == #projectChanges]. 
+	changesBrowser := changesItem commandDescription performAgainst:  transcript projectListPresenter.
+	[self assert: (changesBrowser isKindOf: RowanPatchBrowser)] ensure: [changesBrowser destroy]!
+
 test_transcriptNamedConsole
 	| clearTranscriptMenuItem wasInstalled |
 	(wasInstalled := transcript isTranscriptInstalled) ifFalse: [transcript flipTranscript].
@@ -168,5 +179,6 @@ test_transcriptNamedConsole
 !JadeiteTranscriptTestCase categoriesFor: #test_browseSendersMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_menuNames!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_multiSelectProject!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_openChangesBrowser!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_transcriptNamedConsole!public!tests! !
 
