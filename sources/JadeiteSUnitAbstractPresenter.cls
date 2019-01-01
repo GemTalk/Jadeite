@@ -10,14 +10,6 @@ JadeiteSUnitAbstractPresenter comment: ''!
 !JadeiteSUnitAbstractPresenter categoriesForClass!Unclassified! !
 !JadeiteSUnitAbstractPresenter methodsFor!
 
-abortTransaction
-
-	gciSession abort!
-
-commitTransaction
-
-	gciSession commit!
-
 createComponents
 	super createComponents.
 	methodListPresenter := self add: ListPresenter new name: 'testCases'.
@@ -109,8 +101,6 @@ textResultPresenter: anObject
 updateResult: jadeResult
 	jadeResult setSummary.
 	self setColorFor: jadeResult! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #abortTransaction!public! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #commitTransaction!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #createComponents!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #reset!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #runTests:!public! !

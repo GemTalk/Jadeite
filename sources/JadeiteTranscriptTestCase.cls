@@ -10,6 +10,31 @@ JadeiteTranscriptTestCase comment: ''!
 !JadeiteTranscriptTestCase categoriesForClass!Unclassified! !
 !JadeiteTranscriptTestCase methodsFor!
 
+assertProjectInList: name
+	self denyIsNil: (transcript projectListPresenter projectListPresenter list
+				detect: [:projectService | projectService name = name]
+				ifNone: [])!
+
+cloneRowanSample1
+	| sample1Path root |
+	sample1Path := self rowanSample1Path.
+	root := self rowanProjectsHome.
+	transcript projectListPresenter basicCloneProject: sample1Path root: root!
+
+denyProjectInList: name
+	self assertIsNil: (transcript projectListPresenter projectListPresenter list
+				detect: [:projectService | projectService name = name]
+				ifNone: [])!
+
+test_abortTransaction
+	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
+	transcript projectListPresenter refresh.
+	self assertProjectInList: 'RowanSample1'.
+	transcript toolbarPresenter abort.
+	self denyProjectInList: 'RowanSample1'.
+	self cloneRowanSample1.
+	self ensureRowanSample1Loaded!
+
 test_browseClassMenuItem
 	| browseMenu browseClassItem |
 	self testsIssue: #issue235 withTitle: 'Need Find Class/Method from console'.
@@ -119,6 +144,22 @@ test_browseSendersMenuItem
 	self assert: browseSendersItem command equals: #browseSendersOf.
 	self assert: (transcript class canUnderstand: #browseSendersOf)!
 
+test_commitTransaction
+	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
+	self cloneRowanSample1.
+	self ensureRowanSample1Loaded.
+	transcript projectListPresenter refresh.
+	self assertProjectInList: 'RowanSample1'.
+	transcript toolbarPresenter commit.
+	self assertProjectInList: 'RowanSample1'.
+	transcript toolbarPresenter abort.
+	self assertProjectInList: 'RowanSample1'.
+	self unloadSampleProject.
+	transcript toolbarPresenter commit. 
+	self denyProjectInList: 'RowanSample1'.
+	self cloneRowanSample1.
+	self ensureRowanSample1Loaded.!
+
 test_menuNames
 	| commitMenuItem checkoutMenuItem contextMenu |
 	self testsIssue: #issue342 withTitle: 'Console menu items not matching projects browser'.
@@ -167,7 +208,14 @@ test_transcriptNamedConsole
 	clearTranscriptMenuItem commandDescription performAgainst: transcript transcriptPresenter.
 	self assert: transcript transcriptPresenter documentPresenter value isEmpty.
 	self assert: transcript transcriptPresenter documentPresenter view displayValue isEmpty]
-			ensure: [wasInstalled ifFalse: [transcript flipTranscript	"turn back off"]]! !
+			ensure: [wasInstalled ifFalse: [transcript flipTranscript	"turn back off"]]!
+
+unloadSampleProject
+	transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName)! !
+!JadeiteTranscriptTestCase categoriesFor: #assertProjectInList:!private!support! !
+!JadeiteTranscriptTestCase categoriesFor: #cloneRowanSample1!private!support! !
+!JadeiteTranscriptTestCase categoriesFor: #denyProjectInList:!private!support! !
+!JadeiteTranscriptTestCase categoriesFor: #test_abortTransaction!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseClassMenuItem!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseFindClassMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseImplementors!public!tests! !
@@ -177,8 +225,10 @@ test_transcriptNamedConsole
 !JadeiteTranscriptTestCase categoriesFor: #test_browseProjectsMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseSenders!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseSendersMenuItem!public!test menus! !
+!JadeiteTranscriptTestCase categoriesFor: #test_commitTransaction!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_menuNames!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_multiSelectProject!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_openChangesBrowser!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_transcriptNamedConsole!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #unloadSampleProject!private!support! !
 

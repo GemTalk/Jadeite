@@ -11,9 +11,7 @@ JadeTextDocument comment: 'This class probably should not have any subclasses ex
 !JadeTextDocument methodsFor!
 
 abortTransaction
-	gciSession abort.
-	Sound informationBeep.
-!
+	codePane abortTransaction!
 
 activeTextEdit 
 
@@ -32,15 +30,6 @@ codePresenterIsMethod
 codeSourcePresenterClass
 
 	^CodeSourcePresenter
-!
-
-commitTransaction
-
-	gciSession commit ifTrue: [
-		Sound informationBeep.
-	] ifFalse: [
-		MessageBox warning: 'Commit failed!!'.
-	].
 !
 
 contextObject
@@ -443,7 +432,6 @@ validateUserInterface
 !JadeTextDocument categoriesFor: #addQuotesToSelection!menu handlers!private! !
 !JadeTextDocument categoriesFor: #codePresenterIsMethod!private! !
 !JadeTextDocument categoriesFor: #codeSourcePresenterClass!private! !
-!JadeTextDocument categoriesFor: #commitTransaction!Jade!private! !
 !JadeTextDocument categoriesFor: #contextObject!Jade!private! !
 !JadeTextDocument categoriesFor: #continueTransaction!Jade!private! !
 !JadeTextDocument categoriesFor: #createComponents!private! !

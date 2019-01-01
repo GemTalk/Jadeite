@@ -11,11 +11,7 @@ JadeSystemBrowser comment: ''!
 !JadeSystemBrowser methodsFor!
 
 abortTransaction
-	self isOkayToChange ifTrue: [
-		gciSession abort.
-		self update.
-	].
-!
+	self isOkayToChange ifTrue: [parentPresenter abortTransaction]!
 
 addSystemBrowser
 
@@ -56,13 +52,10 @@ closeRequested: anAssociation
 !
 
 commitTransaction
-	gciSession commit ifTrue: [
-		Sound informationBeep.
-		self update.
-	] ifFalse: [
-		MessageBox warning: 'Commit failed!!'.
-	].
-!
+	| commitResult |
+	commitResult := self currentCard commitTransaction.
+	commitResult ifTrue: [self update].
+	^commitResult!
 
 createComponents
 

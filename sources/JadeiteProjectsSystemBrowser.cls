@@ -10,10 +10,6 @@ JadeiteProjectsSystemBrowser comment: ''!
 !JadeiteProjectsSystemBrowser categoriesForClass!Unclassified! !
 !JadeiteProjectsSystemBrowser methodsFor!
 
-abortTransaction
-	super abortTransaction.
-	self currentCard refreshFromServerAfterAbort!
-
 addSystemBrowser
 	self addSystemBrowserWithLayoutInfo: nil!
 
@@ -27,8 +23,10 @@ addSystemBrowserWithLayoutInfo: each
 !
 
 commitTransaction
-	super commitTransaction.
-	self currentCard refreshFromServer!
+	| commitResult |
+	commitResult := super commitTransaction.
+	commitResult ifTrue: [self currentCard refreshFromServer].
+	^commitResult!
 
 layoutFilePath
 
@@ -41,7 +39,6 @@ shellName
 
 systemBrowserPresenter
 	^JadeiteProjectsBrowserPresenter! !
-!JadeiteProjectsSystemBrowser categoriesFor: #abortTransaction!public! !
 !JadeiteProjectsSystemBrowser categoriesFor: #addSystemBrowser!layout!public! !
 !JadeiteProjectsSystemBrowser categoriesFor: #addSystemBrowserWithLayoutInfo:!layout!public! !
 !JadeiteProjectsSystemBrowser categoriesFor: #commitTransaction!public! !

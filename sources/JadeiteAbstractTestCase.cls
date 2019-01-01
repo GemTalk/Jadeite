@@ -27,8 +27,15 @@ classHierarchyPresenter
 classListPresenter
 	^self projectsPresenter classListPresenter!
 
+cloneRowanSample1
+	| sample1Path root |
+	sample1Path := self rowanSample1Path.
+	root := self rowanProjectsHome.
+	projectsBrowser currentCard basicCloneProject: sample1Path root: root.
+	self projectsPresenter refreshFromServer.!
+
 commitTransaction
-	transcript commitTransaction!
+	^transcript commitTransaction!
 
 createDebuggerTestMethod
 	| source |
@@ -324,6 +331,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #categoryListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #classHierarchyPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #classListPresenter!private!project browser support! !
+!JadeiteAbstractTestCase categoriesFor: #cloneRowanSample1!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #commitTransaction!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #createDebuggerTestMethod!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #createNewTestProjectNamed:!public!support! !

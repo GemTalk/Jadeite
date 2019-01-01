@@ -10,19 +10,71 @@ JadeiteSUnitSupportTestCase comment: ''!
 !JadeiteSUnitSupportTestCase categoriesForClass!Unclassified! !
 !JadeiteSUnitSupportTestCase methodsFor!
 
+assertPackageInList: name
+	self denyIsNil: (sunitBrowser primaryPresenter packageListPresenter list
+				detect: [:packageService | packageService name = name]
+				ifNone: [])!
+
+cloneRowanSample1
+	| root sample1Path |
+	sample1Path := self rowanSample1Path.
+	root := self rowanProjectsHome.
+	sunitBrowser primaryPresenter basicCloneProject: sample1Path root: root!
+
+denyPackageInList: name
+	self assertIsNil: (sunitBrowser primaryPresenter packageListPresenter list
+				detect: [:packageService | packageService name = name]
+				ifNone: [])!
+
+isSampleProjectLoaded
+	^(transcript projectListPresenter projectListPresenter list
+		detect: [:projectService | projectService name = self sampleProjectName]
+		ifNone: []) notNil!
+
 methodListPresenter
 
 	^self sunitPresenter methodListPresenter!
 
 setUp
 	super setUp. 
-	sunitBrowser := self openWindow: [transcript jadeBrowseTests]!
+	sunitBrowser := self openWindow: [transcript jadeBrowseTests].
+	transcript projectListPresenter refresh!
 
 sunitPresenter
 	^sunitBrowser primaryPresenter!
 
 tearDown
-	sunitBrowser destroy!
+	sunitBrowser destroy.!
+
+test_abortNoSelections
+	| abortCommand |
+	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
+	self assertPackageInList: 'RowanSample1-Tests'.
+	abortCommand := ((sunitBrowser view viewNamed: 'toolbar') itemAtIndex: 1) command.
+	sunitBrowser primaryPresenter perform: abortCommand.
+	[self denyPackageInList: 'RowanSample1-Tests'] ensure: 
+			[self cloneRowanSample1.
+			self ensureRowanSample1Loaded]!
+
+test_abortWithSelections
+	| abortCommand |
+	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
+	sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'.
+	sunitBrowser primaryPresenter selectClassNamed: 'RowanClassServiceTest'.
+	sunitBrowser primaryPresenter selectMethodNamed: #testAddCategory.
+	abortCommand := ((sunitBrowser view viewNamed: 'toolbar') itemAtIndex: 1) command.
+	sunitBrowser primaryPresenter perform: abortCommand.
+	
+	[self assert: sunitBrowser primaryPresenter packageListPresenter selection name
+		equals: 'Rowan-Services-Tests'.
+	self assert: sunitBrowser primaryPresenter classListPresenter selection name
+		equals: 'RowanClassServiceTest'.
+	self assert: sunitBrowser primaryPresenter methodListPresenter selections size equals: 1.
+	self assert: sunitBrowser primaryPresenter methodListPresenter selections first selector
+		equals: #testAddCategory]
+			ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
 
 test_browseMethods
 	| browseMethodMenuItem browser selectors |
@@ -54,6 +106,49 @@ test_browseSunitClass
 	[self assert: (browser isKindOf: JadeiteProjectsSystemBrowser).
 	self assert: browser currentCard classListPresenter selection name = 'JadeServerTest']
 			ensure: [browser view close]!
+
+test_commitNoSelections
+	| commitCommand abortCommand |
+	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
+	transcript projectListPresenter refreshProjects.
+	self assertPackageInList: 'RowanSample1-Tests'.
+	commitCommand := ((sunitBrowser view viewNamed: 'toolbar') itemAtIndex: 2) command.
+	sunitBrowser primaryPresenter perform: commitCommand.
+	
+	[self assertPackageInList: 'RowanSample1-Tests'.
+	abortCommand := ((sunitBrowser view viewNamed: 'toolbar') itemAtIndex: 1) command.
+	sunitBrowser primaryPresenter perform: abortCommand.
+	self assertPackageInList: 'RowanSample1-Tests']
+			ensure: 
+				["don't want committed sample project in tests"
+				self unloadSampleProject.
+				sunitBrowser primaryPresenter perform: commitCommand.
+				self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
+
+test_commitWithSelections
+	| commitCommand |
+	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
+	transcript projectListPresenter refreshProjects.
+	sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'.
+	sunitBrowser primaryPresenter selectClassNamed: 'RowanClassServiceTest'.
+	sunitBrowser primaryPresenter selectMethodNamed: #testAddCategory.
+	commitCommand := ((sunitBrowser view viewNamed: 'toolbar') itemAtIndex: 2) command.
+	sunitBrowser primaryPresenter perform: commitCommand.
+	
+	[self assert: sunitBrowser primaryPresenter packageListPresenter selection name
+		equals: 'Rowan-Services-Tests'.
+	self assert: sunitBrowser primaryPresenter classListPresenter selection name
+		equals: 'RowanClassServiceTest'.
+	self assert: sunitBrowser primaryPresenter methodListPresenter selections size equals: 1.
+	self assert: sunitBrowser primaryPresenter methodListPresenter selections first selector
+		equals: #testAddCategory]
+			ensure: 
+				["don't want committed sample project in tests"
+				self unloadSampleProject.
+				sunitBrowser primaryPresenter perform: commitCommand.
+				self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
 
 test_inheritedTests
 	| classTestSelectors testClassTestSelectors |
@@ -194,13 +289,30 @@ test_sunitTabPassingDebugTestShowsResult
 	self projectsPresenter sunitPresenter methodListPresenter selection: (Array with: methodService).
 	self projectsPresenter sunitPresenter debug.
 	self assert: methodService testResult equals: 'passed']
-			ensure: [projectsBrowser destroy]! !
+			ensure: [projectsBrowser destroy]!
+
+unloadSampleProject
+	| projectService |
+	self isSampleProjectLoaded
+		ifTrue: 
+			[projectService := transcript projectListPresenter projectListPresenter list
+						detect: [:service | service name = 'RowanSample1'].
+			transcript projectListPresenter projectListPresenter selection: projectService.
+			transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName)]! !
+!JadeiteSUnitSupportTestCase categoriesFor: #assertPackageInList:!private!support! !
+!JadeiteSUnitSupportTestCase categoriesFor: #cloneRowanSample1!public!support! !
+!JadeiteSUnitSupportTestCase categoriesFor: #denyPackageInList:!private!support! !
+!JadeiteSUnitSupportTestCase categoriesFor: #isSampleProjectLoaded!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #methodListPresenter!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #setUp!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #sunitPresenter!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #tearDown!public!support! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_abortNoSelections!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_abortWithSelections!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseMethods!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseSunitClass!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_commitNoSelections!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_commitWithSelections!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_inheritedTests!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectNoDuplicates!public!tests! !
@@ -212,4 +324,5 @@ test_sunitTabPassingDebugTestShowsResult
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestMethods!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserPassingDebugTestShowsResult!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitTabPassingDebugTestShowsResult!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #unloadSampleProject!private!support! !
 

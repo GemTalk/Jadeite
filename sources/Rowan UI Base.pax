@@ -130,13 +130,12 @@ package methodNames
 	add: #JadeiteSUnitPresenter -> #updatePackages;
 	add: #JadeiteSUnitPresenter -> #updateServices:;
 	add: #JadeLoginShell -> #aboutJadeite;
-	add: #JadeMethodListPresenter -> #abortTransaction;
-	add: #JadeMethodListPresenter -> #commitTransaction;
 	add: #JadeMethodListPresenter -> #newProjectsBrowser;
 	add: #JadeMethodListPresenter -> #newWorkspace;
 	add: #JadeMethodListPresenter -> #searchForAnyTextMatching:;
 	add: #JadeNavigationInspector -> #browseClass;
 	add: #JadeNavigationInspector -> #setNewInspectedObject;
+	add: #JadePresenter -> #basicCloneProject:root:;
 	add: #JadePresenter -> #browseHierarchyImplementorsOf:className:;
 	add: #JadePresenter -> #browseHierarchySendersOf:className:;
 	add: #JadePresenter -> #browseImplementorsOf;
@@ -150,7 +149,6 @@ package methodNames
 	add: #JadePresenter -> #openProjectBrowserOn:selector:;
 	add: #JadePresenter -> #refreshGlobalSelections;
 	add: #JadePresenter -> #update:afterStonReplication:;
-	add: #JadePresenterA -> #basicCloneProject:root:;
 	add: #JadePresenterA -> #clearBreakPointAt:in:;
 	add: #JadePresenterA -> #cloneProject;
 	add: #JadePresenterA -> #compilationWarningFrom:;
@@ -1360,18 +1358,17 @@ queryCommand: commandQuery
 	^true!
 
 refresh
-	| classSelectionNames methodSelectionNames |
-	classListPresenter selections isEmpty ifTrue: [^super reset].
-	classSelectionNames := classListPresenter selections collect: [:classService | classService name].
-	methodSelectionNames := methodListPresenter selections
-				collect: [:methodService | methodService selector].
-	BrowserUpdate current updateServices: classListPresenter selections session: self gciSession.
-	self updateClasses.
-	self updateMethods.
+	| packageSelections classSelections methodSelections |
+	packageSelections := packageListPresenter selections.
+	classSelections := classListPresenter selections.
+	methodSelections := methodListPresenter selections.
+	self updatePackages.
+	packageListPresenter selections: (packageListPresenter list
+				select: [:packageService | packageSelections includes: packageService]).
 	classListPresenter selections: (classListPresenter list
-				select: [:classService | classSelectionNames includes: classService name]).
+				select: [:packageService | classSelections includes: packageService]).
 	methodListPresenter selections: (methodListPresenter list
-				select: [:methodService | methodSelectionNames includes: methodService selector]).
+				select: [:packageService | methodSelections includes: packageService]).
 	self reset!
 
 registerPresentersForUpdates
@@ -1429,14 +1426,6 @@ aboutJadeite
 
 !JadeMethodListPresenter methodsFor!
 
-abortTransaction
-
-	gciSession abort.!
-
-commitTransaction
-
-	gciSession commit.!
-
 newProjectsBrowser
 
 	^JadeiteProjectsSystemBrowser showOnSession: gciSession!
@@ -1462,8 +1451,6 @@ searchForAnyTextMatching: aString
 		sourceView ensureVisible: found stop.
 	].
 ! !
-!JadeMethodListPresenter categoriesFor: #abortTransaction!menu handlers!public! !
-!JadeMethodListPresenter categoriesFor: #commitTransaction!menu handlers!public! !
 !JadeMethodListPresenter categoriesFor: #newProjectsBrowser!menu handlers!public! !
 !JadeMethodListPresenter categoriesFor: #newWorkspace!menu handlers!public! !
 !JadeMethodListPresenter categoriesFor: #searchForAnyTextMatching:!public! !
@@ -1505,6 +1492,17 @@ resource_Default_view
 !JadeNavigationInspector class categoriesFor: #resource_Default_view!public!resources-views! !
 
 !JadePresenter methodsFor!
+
+basicCloneProject: path root: root
+	| service |
+	service := RowanProjectService new.
+	service
+		command: #newGitProject:root:useSsh:;
+		commandArgs: (Array
+					with: path
+					with: root
+					with: true).
+	self issueCommand: (Array with: service)!
 
 browseHierarchyImplementorsOf: string className: className
 	^self class
@@ -1570,6 +1568,7 @@ refreshGlobalSelections
 
 update: services afterStonReplication: stonResults
 	^BrowserUpdate current update: services afterStonReplication: stonResults! !
+!JadePresenter categoriesFor: #basicCloneProject:root:!Jadeite!private! !
 !JadePresenter categoriesFor: #browseHierarchyImplementorsOf:className:!browsing!public! !
 !JadePresenter categoriesFor: #browseHierarchySendersOf:className:!browsing!public! !
 !JadePresenter categoriesFor: #browseImplementorsOf!browsing!public! !
@@ -1796,17 +1795,6 @@ symbolsFrom: selector session: session
 
 !JadePresenterA methodsFor!
 
-basicCloneProject: path root: root
-	| service |
-	service := RowanProjectService new.
-	service
-		command: #newGitProject:root:useSsh:;
-		commandArgs: (Array
-					with: path
-					with: root
-					with: true).
-	self issueCommand: (Array with: service)!
-
 clearBreakPointAt: stepPoint in: browser
 	| selection |
 	selection := self methodListSelection.
@@ -2015,7 +2003,6 @@ updateMethodReferences: services
 	services do: [:service | service command: #allReferences].
 	self issueCommand: services.
 	^services! !
-!JadePresenterA categoriesFor: #basicCloneProject:root:!Jadeite!private! !
 !JadePresenterA categoriesFor: #clearBreakPointAt:in:!Jadeite!public! !
 !JadePresenterA categoriesFor: #cloneProject!Jadeite!public! !
 !JadePresenterA categoriesFor: #compilationWarningFrom:!Jadeite!public! !

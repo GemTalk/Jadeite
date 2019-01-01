@@ -10,6 +10,21 @@ JadePresenter comment: ''!
 !JadePresenter categoriesForClass!MVP-Presenters! !
 !JadePresenter methodsFor!
 
+abortTransaction
+	"Even if it takes a windy path, try to make sure
+	all aborts in Jadeite pass through here"
+	gciSession abort.
+	Sound informationBeep!
+
+commitTransaction
+	"Even if it takes a windy path, try to make sure
+	all commits in Jadeite pass through here"
+
+	| commitResult |
+	commitResult := gciSession commit.
+	commitResult ifTrue: [Sound informationBeep] ifFalse: [MessageBox warning: 'Commit failed!!'].
+	^commitResult!
+
 gciSession
 
 	^gciSession
@@ -77,6 +92,8 @@ updateMenuBar: aMenuBar withName: aString itemsFrom: aPresenter
 			at: i.
 	].
 ! !
+!JadePresenter categoriesFor: #abortTransaction!public!transaction management! !
+!JadePresenter categoriesFor: #commitTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #gciSession!public! !
 !JadePresenter categoriesFor: #gciSession:!public! !
 !JadePresenter categoriesFor: #refreshFromServer!public! !

@@ -13,17 +13,10 @@ JadeToolsToolBarPresenter comment: ''!
 abort
 	(parentPresenter class canUnderstand: #abortTransaction)
 		ifTrue: [^parentPresenter abortTransaction	"include tool post-abort behavior"].
-	gciSession abort.
-	Sound informationBeep!
+	super abortTransaction!
 
 commit
-
-	gciSession commit ifTrue: [
-		Sound informationBeep.
-	] ifFalse: [
-		MessageBox warning: 'Commit failed!!'.
-	].
-!
+	^super commitTransaction!
 
 fileNew
 

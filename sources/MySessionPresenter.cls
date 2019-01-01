@@ -16,9 +16,7 @@ abortTransaction
 !
 
 commitTransaction
-
-	parentPresenter commitTransaction.
-!
+	^parentPresenter commitTransaction!
 
 configDetailsFor: aPresenter
 

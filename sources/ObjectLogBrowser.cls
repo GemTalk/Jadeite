@@ -20,13 +20,7 @@ commit
 
 commitTransaction
 
-	gciSession commit ifTrue: [
-		Sound informationBeep.
-		self update.
-	] ifFalse: [
-		MessageBox warning: 'Commit failed!!'.
-	].	self update.
-!
+	^parentPresenter commitTransaction!
 
 createComponents
 

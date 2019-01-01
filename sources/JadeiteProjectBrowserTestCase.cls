@@ -33,13 +33,6 @@ addSampleMethodHoo
 
 	!
 
-cloneRowanSample1
-	| sample1Path root |
-	sample1Path := self rowanSample1Path.
-	root := self rowanProjectsHome.
-	projectsBrowser currentCard basicCloneProject: sample1Path root: root.
-	self projectsPresenter refreshFromServer.!
-
 dirtyProjectForChangeBrowser
 	self selectRowanSample1Class.
 	self modifySampleMethodFoo.
@@ -2382,7 +2375,6 @@ waitForPresenter: presenter
 	[presenter list isEmpty] whileTrue: [(Delay forMilliseconds: 50) wait]! !
 !JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodGoo!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodHoo!dirty project!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #cloneRowanSample1!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #dirtyProjectForChangeBrowser!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue170methodCreation!issue test support!private! !

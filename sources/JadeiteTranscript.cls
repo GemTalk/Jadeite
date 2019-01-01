@@ -29,6 +29,9 @@ browseMethodsContaining
 browseSendersOf
 	^JadePresenter browseSendersIn: self gciSession!
 
+commitTransaction
+	^codePane commitTransaction.!
+
 createComponents
 	super createComponents.
 	projectListPresenter := self add: JadeiteProjectListPresenter new name: 'Projects'!
@@ -132,13 +135,17 @@ queryCommand: query
 	query commandSymbol = #flipDebugger
 		ifTrue: 
 			[query isChecked: RowanDebugger debuggerClass = RowanDebugger.
-			^true]! !
+			^true]!
+
+toolbarPresenter
+	^toolbarPresenter! !
 !JadeiteTranscript categoriesFor: #abortTransaction!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #browseClass!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #browseImplementorsOf!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #browseLiteralReferences!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #browseMethodsContaining!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #browseSendersOf!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #commitTransaction!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #createComponents!public! !
 !JadeiteTranscript categoriesFor: #flipDebugger!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #flipTranscript!menu handlers!public! !
@@ -153,6 +160,7 @@ queryCommand: query
 !JadeiteTranscript categoriesFor: #openJadeiteProjectsBrowser!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #projectListPresenter!accessing!public! !
 !JadeiteTranscript categoriesFor: #queryCommand:!private! !
+!JadeiteTranscript categoriesFor: #toolbarPresenter!accessing!public! !
 
 !JadeiteTranscript class methodsFor!
 
