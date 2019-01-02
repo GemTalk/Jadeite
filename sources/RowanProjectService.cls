@@ -178,7 +178,7 @@ removedProject: presenter
 	removedProject ifNotNil: [presenter model remove: removedProject]!
 
 replicateFrom: newService
-	^self isProjectService ifTrue: [super replicateFrom: newService]!
+	^self isProjectService ifTrue: [name isNil ifFalse: [super replicateFrom: newService]]!
 
 sha
 	^sha!

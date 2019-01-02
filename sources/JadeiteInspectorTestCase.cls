@@ -143,7 +143,6 @@ test_commitTransactionInBasicInspector
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded.
-	transcript projectListPresenter refresh.
 	self assertProjectInList: 'RowanSample1'.
 	remoteObject := session
 				executeString: '123'
@@ -153,16 +152,12 @@ test_commitTransactionInBasicInspector
 	jadeiteMenu := self itemNamed: 'Jadeite' in: inspector view menuBar.
 	commitItem := self itemNamed: 'Commit Transaction' in: jadeiteMenu.
 	commitItem commandDescription performAgainst: inspector.
-	transcript projectListPresenter refresh.
 	self assertProjectInList: 'RowanSample1'.
 	abortItem := self itemNamed: 'Abort Transaction' in: jadeiteMenu.
 	abortItem commandDescription performAgainst: inspector.
-	transcript projectListPresenter refresh.
 	self assertProjectInList: 'RowanSample1'.
-	self halt. 
 	self unloadSampleProject.
 	commitItem commandDescription performAgainst: inspector.
-	transcript projectListPresenter refresh.
 	self denyProjectInList: 'RowanSample1'.
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded!
@@ -172,26 +167,22 @@ test_commitTransactionInNavigationInspectorFocusCodePane
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded.
-	transcript projectListPresenter refresh.
 	self assertProjectInList: 'RowanSample1'.
 	remoteObject := session
 				executeString: 'Array new'
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	inspector documentPresenter setFocus. 
+	inspector documentPresenter setFocus.
 	jadeiteMenu := self itemNamed: 'Jadeite' in: inspector view menuBar.
 	commitItem := self itemNamed: 'Commit Transaction' in: jadeiteMenu.
 	commitItem commandDescription performAgainst: inspector.
-	transcript projectListPresenter refresh.
 	self assertProjectInList: 'RowanSample1'.
 	abortItem := self itemNamed: 'Abort Transaction' in: jadeiteMenu.
 	abortItem commandDescription performAgainst: inspector.
-	transcript projectListPresenter refresh.
 	self assertProjectInList: 'RowanSample1'.
 	self unloadSampleProject.
 	commitItem commandDescription performAgainst: inspector.
-	transcript projectListPresenter refresh.
 	self denyProjectInList: 'RowanSample1'.
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded!
@@ -201,26 +192,22 @@ test_commitTransactionInNavigationInspectorFocusInstVars
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded.
-	transcript projectListPresenter refresh.
 	self assertProjectInList: 'RowanSample1'.
 	remoteObject := session
 				executeString: 'Array new'
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	inspector instVarListPresenter setFocus. 
+	inspector instVarListPresenter setFocus.
 	jadeiteMenu := self itemNamed: 'Jadeite' in: inspector view menuBar.
 	commitItem := self itemNamed: 'Commit Transaction' in: jadeiteMenu.
 	commitItem commandDescription performAgainst: inspector.
-	transcript projectListPresenter refresh.
 	self assertProjectInList: 'RowanSample1'.
 	abortItem := self itemNamed: 'Abort Transaction' in: jadeiteMenu.
 	abortItem commandDescription performAgainst: inspector.
-	transcript projectListPresenter refresh.
 	self assertProjectInList: 'RowanSample1'.
 	self unloadSampleProject.
 	commitItem commandDescription performAgainst: inspector.
-	transcript projectListPresenter refresh.
 	self denyProjectInList: 'RowanSample1'.
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded!
@@ -403,10 +390,7 @@ test_registeredPresentersInInspectorCleanedUp
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters.
 	inspector destroy.
 	inspector := nil.
-	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
-
-unloadSampleProject
-	transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName)! !
+	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters! !
 !JadeiteInspectorTestCase categoriesFor: #commandQueryOn:!private! !
 !JadeiteInspectorTestCase categoriesFor: #enableForward:andBack:!private! !
 !JadeiteInspectorTestCase categoriesFor: #inspectInstVarAt:!private! !
@@ -429,5 +413,4 @@ unloadSampleProject
 !JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowser!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowserOnClass!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_registeredPresentersInInspectorCleanedUp!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #unloadSampleProject!private!support! !
 

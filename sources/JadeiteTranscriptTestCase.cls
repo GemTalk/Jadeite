@@ -192,10 +192,7 @@ test_transcriptNamedConsole
 	clearTranscriptMenuItem commandDescription performAgainst: transcript transcriptPresenter.
 	self assert: transcript transcriptPresenter documentPresenter value isEmpty.
 	self assert: transcript transcriptPresenter documentPresenter view displayValue isEmpty]
-			ensure: [wasInstalled ifFalse: [transcript flipTranscript	"turn back off"]]!
-
-unloadSampleProject
-	transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName)! !
+			ensure: [wasInstalled ifFalse: [transcript flipTranscript	"turn back off"]]! !
 !JadeiteTranscriptTestCase categoriesFor: #test_abortTransaction!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseClassMenuItem!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseFindClassMenuItem!public!test menus! !
@@ -211,5 +208,4 @@ unloadSampleProject
 !JadeiteTranscriptTestCase categoriesFor: #test_multiSelectProject!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_openChangesBrowser!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_transcriptNamedConsole!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #unloadSampleProject!private!support! !
 

@@ -11,7 +11,7 @@ JadeSystemBrowser comment: ''!
 !JadeSystemBrowser methodsFor!
 
 abortTransaction
-	self isOkayToChange ifTrue: [parentPresenter abortTransaction]!
+	self isOkayToChange ifTrue: [self currentCard abortTransaction]!
 
 addSystemBrowser
 

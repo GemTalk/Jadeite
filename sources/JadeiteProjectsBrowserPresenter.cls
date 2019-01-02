@@ -183,10 +183,6 @@ clearFilterLists
 	categoryListPresenter list: (ListModel new searchPolicy: SearchPolicy equality).
 	variableListPresenter list: ListModel new!
 
-cloneProject
-	super cloneProject.
-	self refreshFromServer!
-
 comparisonTab
 	^comparisonTab
 		ifNil: 
@@ -1957,7 +1953,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #classHierarchyTabs!accessing!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #cleanupComparisonBrowser!initialize/release!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #clearFilterLists!event handlers support!private!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #cloneProject!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #comparisonTab!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #confirmCategoryRemoval:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !

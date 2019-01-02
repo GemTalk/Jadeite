@@ -29,6 +29,9 @@ methodListPresenter
 
 	^self sunitPresenter methodListPresenter!
 
+projectsPresenter
+	^projectsBrowser currentCard!
+
 setUp
 	super setUp. 
 	sunitBrowser := self openWindow: [transcript jadeBrowseTests].
@@ -104,7 +107,6 @@ test_browseSunitClass
 test_commitNoSelections
 	| commitCommand abortCommand |
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
-	transcript projectListPresenter refreshProjects.
 	self assertPackageInList: 'RowanSample1-Tests'.
 	commitCommand := ((sunitBrowser view viewNamed: 'toolbar') itemAtIndex: 2) command.
 	sunitBrowser primaryPresenter perform: commitCommand.
@@ -123,7 +125,6 @@ test_commitNoSelections
 test_commitWithSelections
 	| commitCommand |
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
-	transcript projectListPresenter refreshProjects.
 	sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'.
 	sunitBrowser primaryPresenter selectClassNamed: 'RowanClassServiceTest'.
 	sunitBrowser primaryPresenter selectMethodNamed: #testAddCategory.
@@ -292,20 +293,12 @@ test_sunitTabPassingDebugTestShowsResult
 	self projectsPresenter sunitPresenter methodListPresenter selection: (Array with: methodService).
 	self projectsPresenter sunitPresenter debug.
 	self assert: methodService testResult equals: 'passed']
-			ensure: [projectsBrowser destroy]!
-
-unloadSampleProject
-	| projectService |
-	self isSampleProjectLoaded
-		ifTrue: 
-			[projectService := transcript projectListPresenter projectListPresenter list
-						detect: [:service | service name = 'RowanSample1'].
-			transcript projectListPresenter projectListPresenter selection: projectService.
-			transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName)]! !
+			ensure: [projectsBrowser destroy]! !
 !JadeiteSUnitSupportTestCase categoriesFor: #assertPackageInList:!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #denyPackageInList:!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #isSampleProjectLoaded!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #methodListPresenter!public!support! !
+!JadeiteSUnitSupportTestCase categoriesFor: #projectsPresenter!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #setUp!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #sunitPresenter!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #tearDown!public!support! !
@@ -327,5 +320,4 @@ unloadSampleProject
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestMethods!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserPassingDebugTestShowsResult!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitTabPassingDebugTestShowsResult!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #unloadSampleProject!private!support! !
 

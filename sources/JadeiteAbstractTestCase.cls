@@ -88,7 +88,7 @@ interestingLoopMethodSource
 	^result'!
 
 isSampleProjectLoaded
-	^(self projectsPresenter projectListPresenter list
+	^(transcript projectListPresenter projectListPresenter list
 		detect: [:projectService | projectService name = self sampleProjectName]
 		ifNone: []) notNil!
 
@@ -326,9 +326,14 @@ transcriptTab
 	^transcript projectListPresenter !
 
 unloadSampleProject
+	| browserService |
 	self isSampleProjectLoaded
-		ifTrue: [self projectsPresenter basicUnloadProjects: (Array with: self sampleProjectName)].
-!
+		ifTrue: 
+			[browserService := RowanBrowserService new.
+			browserService
+				command: #unloadProjectsNamed:;
+				commandArgs: (Array with: (Array with: self sampleProjectName)).
+			self issueCommand: browserService]!
 
 variableListPresenter
 	^self projectsPresenter variableListPresenter.! !

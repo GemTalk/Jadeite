@@ -36,10 +36,6 @@ browseProject
 checkout
 	projectListPresenter selection checkoutUsing: self.!
 
-cloneProject
-	super cloneProject.
-	self refresh!
-
 commit
 	| projectName message service promptResult |
 	projectListPresenter hasSelection ifFalse: [MessageBox notify: 'No project selected'].
@@ -184,9 +180,7 @@ refreshProjects
 	| browserService |
 	browserService := RowanBrowserService new.
 	browserService command: #updateProjects.
-	self issueCommand: (Array with: browserService).
-	self list: browserService projects.
-	self view invalidate!
+	self issueCommand: (Array with: browserService).!
 
 registerPresentersForUpdates
 	BrowserUpdate current register: projectListPresenter selector: #projectsUpdate:.
@@ -226,7 +220,6 @@ writeProject
 !JadeiteProjectListPresenter categoriesFor: #basicUnloadProjects:!menu handlers!private! !
 !JadeiteProjectListPresenter categoriesFor: #browseProject!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #checkout!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #cloneProject!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #commit!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #createComponents!public! !
 !JadeiteProjectListPresenter categoriesFor: #list:!public! !
