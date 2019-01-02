@@ -214,6 +214,15 @@ test_refresh
 	self assert: self sunitPresenter methodListPresenter list size equals: 5]
 			ensure: [projectsBrowser destroy]!
 
+test_registeredPresentersInSUnitBrowserCleanedUp
+	| registeredPresenters secondBrowser |
+	registeredPresenters := BrowserUpdate current registeredPresenters size.
+	secondBrowser := self openWindow: [transcript jadeBrowseTests].
+	self assert: BrowserUpdate current registeredPresenters size > registeredPresenters.
+	secondBrowser destroy.
+	secondBrowser := nil.
+	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
+
 test_runClassTests
 	self testsIssue: #issue341 withTitle: 'Run sunit tests from class pass when they should not'.
 	projectsBrowser
@@ -311,6 +320,7 @@ unloadSampleProject
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectNoDuplicates!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_openSunitBrowser!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_refresh!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_registeredPresentersInSUnitBrowserCleanedUp!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_runClassTests!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanPackages!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestClasses!public!tests! !

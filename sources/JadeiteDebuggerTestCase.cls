@@ -299,6 +299,14 @@ test_implementorsSendersCaption
 	[self assert: ('Senders of ''branch'' for *' match: methodListBrowser caption)]
 		ensure: [self assert: methodListBrowser view close]!
 
+test_registeredPresentersInProjectBrowserCleanedUp
+	| registeredPresenters  |
+	registeredPresenters := BrowserUpdate current registeredPresenters size.
+	self openDebuggerOn: 'nil halt'.
+	self assert: BrowserUpdate current registeredPresenters size > registeredPresenters.
+	self tearDown.  "this will close the debugger and do proper cleanup" 
+	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
+
 test_restartInBlock
 	| restartProcess |
 	self testsIssue: #issue126
@@ -808,6 +816,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_frameDoubleClickNoActionInBlockContext!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_implementersFromDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_restartInBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_selectAfterDiveNoStepPoint!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_selectBlockContext!public!tests! !

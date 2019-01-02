@@ -224,11 +224,12 @@ setUp
 
 tearDown
 	super tearDown.
-	session isValidSession ifTrue: [transcriptWritesWereEnabled == true ifTrue: [transcript flipTranscript]].
+	session isValidSession
+		ifTrue: [transcriptWritesWereEnabled == true ifTrue: [transcript flipTranscript]].
 	methodListBrowser
 		ifNotNil: 
 			[methodListBrowser destroy.
-			methodListBrowser := nil]!
+			methodListBrowser := nil].!
 
 test_abstractTestsShown
 	| commandQuery methodService |
@@ -1799,6 +1800,24 @@ test_refreshFromServer
 	self assert: self projectsPresenter projectListPresenter selection name equals: 'Rowan'
 	!
 
+test_registeredPresentersInMethodBrowserCleanedUp
+	| registeredPresenters |
+	registeredPresenters := BrowserUpdate current registeredPresenters size.
+	methodListBrowser := self projectsPresenter browseImplementorsOf: #size.
+	self assert: BrowserUpdate current registeredPresenters size > registeredPresenters.
+	methodListBrowser destroy.
+	methodListBrowser := nil.
+	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
+
+test_registeredPresentersInProjectBrowserCleanedUp
+	| registeredPresenters secondBrowser |
+	registeredPresenters := BrowserUpdate current registeredPresenters size.
+	secondBrowser := JadeiteProjectsSystemBrowser showOnSession: session.
+	self assert: BrowserUpdate current registeredPresenters size > registeredPresenters.
+	secondBrowser destroy.
+	secondBrowser := nil.
+	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
+
 test_removeAbortedClass
 	"make sure we can safely remove an aborted class during post-abort refresh"
 
@@ -2477,6 +2496,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterReloadInProjectsBrowserWithAddedMethod!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterReloadWithAddedMethod!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshFromServer!public!test class hierarchy!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_registeredPresentersInMethodBrowserCleanedUp!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeAbortedClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_rowanTestsHierarchy!public!test class hierarchy! !

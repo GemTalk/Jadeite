@@ -389,6 +389,22 @@ test_openProjectsBrowserOnClass
 	shell := inspector browseClass.
 	[self assert: (shell isKindOf: JadeiteProjectsSystemBrowser)] ensure: [shell destroy]!
 
+test_registeredPresentersInInspectorCleanedUp
+	"we don't register any yet, but this test will fail if we add any. 
+	That will remind us to make sure they're cleaned up"
+
+	| registeredPresenters remoteObject |
+	registeredPresenters := BrowserUpdate current registeredPresenters size.
+	remoteObject := session
+				executeString: 'Array new'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters.
+	inspector destroy.
+	inspector := nil.
+	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
+
 unloadSampleProject
 	transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName)! !
 !JadeiteInspectorTestCase categoriesFor: #commandQueryOn:!private! !
@@ -412,5 +428,6 @@ unloadSampleProject
 !JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowserOnClass!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowser!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowserOnClass!public!test! !
+!JadeiteInspectorTestCase categoriesFor: #test_registeredPresentersInInspectorCleanedUp!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #unloadSampleProject!private!support! !
 
