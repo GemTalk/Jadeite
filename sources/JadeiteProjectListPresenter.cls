@@ -81,6 +81,10 @@ makeDefault
 	self issueCommand: (Array with: projectService).
 	RowanProjectService defaultProjectName: projectService name!
 
+onViewClosed
+	super onViewClosed.
+	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter]!
+
 onViewOpened
 
 	super onViewOpened.
@@ -228,6 +232,7 @@ writeProject
 !JadeiteProjectListPresenter categoriesFor: #list:!public! !
 !JadeiteProjectListPresenter categoriesFor: #loadProjects!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #makeDefault!menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #openChangesShell:!menu handlers!private! !
 !JadeiteProjectListPresenter categoriesFor: #primaryPresenter!public! !

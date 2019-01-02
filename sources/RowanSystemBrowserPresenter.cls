@@ -123,11 +123,8 @@ methodListSelection
 	!
 
 onViewClosed
-	"copied to RowanDebugger"
-
 	super onViewClosed.
-	subPresenters do:[:presenter |
-		BrowserUpdate current removeEventsTriggeredFor: presenter]!
+	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter]!
 
 projectDictionaryChanged
 !

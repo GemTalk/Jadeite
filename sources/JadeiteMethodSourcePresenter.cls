@@ -89,6 +89,10 @@ methodValueChanged
 				backcolor: JadeTextStyles default colorForUnsavedEdits;
 				clearContainerIndicators]!
 
+onViewClosed
+	super onViewClosed.
+	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter]!
+
 onViewOpened
 	super onViewOpened.
 	self registerPresentersForUpdates. !
@@ -125,6 +129,7 @@ value: string
 !JadeiteMethodSourcePresenter categoriesFor: #methodService:!accessing!private! !
 !JadeiteMethodSourcePresenter categoriesFor: #methodSourceEqual!public!testing! !
 !JadeiteMethodSourcePresenter categoriesFor: #methodValueChanged!event handlers!public! !
+!JadeiteMethodSourcePresenter categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteMethodSourcePresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteMethodSourcePresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteMethodSourcePresenter categoriesFor: #update!public!updating! !

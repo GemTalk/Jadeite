@@ -37,6 +37,10 @@ methodListPresenter
 
 	^methodListPresenter!
 
+onViewClosed
+	super onViewClosed.
+	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter]!
+
 onViewOpened
 	super onViewOpened.
 	self registerPresentersForUpdates!
@@ -82,6 +86,7 @@ selections
 !JadeiteBasicMethodListPresenter categoriesFor: #browseHierarchyImplementors!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #browseHierarchySenders!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #methodListPresenter!accessing!public! !
+!JadeiteBasicMethodListPresenter categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteBasicMethodListPresenter categoriesFor: #removeFromList!menu handlers!public! !

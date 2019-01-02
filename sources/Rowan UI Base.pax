@@ -120,6 +120,7 @@ package methodNames
 	add: #JadeiteSUnitPresenter -> #browseMethods;
 	add: #JadeiteSUnitPresenter -> #classListPresenter;
 	add: #JadeiteSUnitPresenter -> #methodListPresenter;
+	add: #JadeiteSUnitPresenter -> #onViewClosed;
 	add: #JadeiteSUnitPresenter -> #onViewOpened;
 	add: #JadeiteSUnitPresenter -> #packageListPresenter;
 	add: #JadeiteSUnitPresenter -> #queryCommand:;
@@ -1330,6 +1331,10 @@ classListPresenter
 methodListPresenter
 	^methodListPresenter!
 
+onViewClosed
+	super onViewClosed.
+	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter]!
+
 onViewOpened
 	
 	testCounter := Array with: 0 with: OrderedCollection new.
@@ -1406,6 +1411,7 @@ updateServices: services
 !JadeiteSUnitPresenter categoriesFor: #browseMethods!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #classListPresenter!accessing!private! !
 !JadeiteSUnitPresenter categoriesFor: #methodListPresenter!accessing!private! !
+!JadeiteSUnitPresenter categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #packageListPresenter!accessing!private! !
 !JadeiteSUnitPresenter categoriesFor: #queryCommand:!event handlers!public! !

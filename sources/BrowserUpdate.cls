@@ -123,7 +123,8 @@ registeredListServices
 registeredPresenters
 	| presenters |
 	presenters := Set new.
-	(self getEvents at: #updateReady) messagesDo: [:message | presenters add: message receiver].
+	(self getEvents ifNil: [^Array new] ifNotNil: [:eventCollection | eventCollection at: #updateReady])
+		messagesDo: [:message | presenters add: message receiver].
 	^presenters!
 
 registeredTreePresenters
