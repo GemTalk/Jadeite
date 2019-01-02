@@ -13,6 +13,7 @@ JadePresenter comment: ''!
 abortTransaction
 	"Even if it takes a windy path, try to make sure
 	all aborts in Jadeite pass through here"
+
 	gciSession abort.
 	Sound informationBeep!
 

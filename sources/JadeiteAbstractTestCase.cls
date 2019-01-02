@@ -18,6 +18,11 @@ anotherNumberMethodSource
 
 		^3'!
 
+assertProjectInList: name
+	self denyIsNil: (transcript projectListPresenter projectListPresenter list
+				detect: [:projectService | projectService name = name]
+				ifNone: [])!
+
 categoryListPresenter
 	^self projectsPresenter categoryListPresenter!
 
@@ -28,11 +33,7 @@ classListPresenter
 	^self projectsPresenter classListPresenter!
 
 cloneRowanSample1
-	| sample1Path root |
-	sample1Path := self rowanSample1Path.
-	root := self rowanProjectsHome.
-	projectsBrowser currentCard basicCloneProject: sample1Path root: root.
-	self projectsPresenter refreshFromServer.!
+	JadeiteTestResource current cloneRowanSample1!
 
 commitTransaction
 	^transcript commitTransaction!
@@ -51,6 +52,11 @@ createNewTestProjectNamed: projectName
 	testService := RowanTestService command: #createNewTestProjectNamed:
 				withArgs: (Array with: projectName).
 	self issueCommand: testService!
+
+denyProjectInList: name
+	self assertIsNil: (transcript projectListPresenter projectListPresenter list
+				detect: [:projectService | projectService name = name]
+				ifNone: [])!
 
 deselectProjects
 
@@ -328,6 +334,7 @@ variableListPresenter
 	^self projectsPresenter variableListPresenter.! !
 !JadeiteAbstractTestCase categoriesFor: #abortTransaction!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #anotherNumberMethodSource!constants!private! !
+!JadeiteAbstractTestCase categoriesFor: #assertProjectInList:!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #categoryListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #classHierarchyPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #classListPresenter!private!project browser support! !
@@ -335,6 +342,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #commitTransaction!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #createDebuggerTestMethod!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #createNewTestProjectNamed:!public!support! !
+!JadeiteAbstractTestCase categoriesFor: #denyProjectInList:!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #deselectProjects!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Loaded!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #fail:!asserting!public! !

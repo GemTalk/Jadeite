@@ -1475,7 +1475,7 @@ setNewInspectedObject
 	self displayObject.
 	self updateCaption. 
 ! !
-!JadeNavigationInspector categoriesFor: #browseClass!Jade!private! !
+!JadeNavigationInspector categoriesFor: #browseClass!menu handlers support!private! !
 !JadeNavigationInspector categoriesFor: #setNewInspectedObject!public! !
 
 !JadeNavigationInspector class methodsFor!

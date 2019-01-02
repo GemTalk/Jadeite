@@ -15,12 +15,6 @@ assertPackageInList: name
 				detect: [:packageService | packageService name = name]
 				ifNone: [])!
 
-cloneRowanSample1
-	| root sample1Path |
-	sample1Path := self rowanSample1Path.
-	root := self rowanProjectsHome.
-	sunitBrowser primaryPresenter basicCloneProject: sample1Path root: root!
-
 denyPackageInList: name
 	self assertIsNil: (sunitBrowser primaryPresenter packageListPresenter list
 				detect: [:packageService | packageService name = name]
@@ -300,7 +294,6 @@ unloadSampleProject
 			transcript projectListPresenter projectListPresenter selection: projectService.
 			transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName)]! !
 !JadeiteSUnitSupportTestCase categoriesFor: #assertPackageInList:!private!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #cloneRowanSample1!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #denyPackageInList:!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #isSampleProjectLoaded!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #methodListPresenter!public!support! !

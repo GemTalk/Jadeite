@@ -11,7 +11,7 @@ JadeTextDocument comment: 'This class probably should not have any subclasses ex
 !JadeTextDocument methodsFor!
 
 abortTransaction
-	codePane abortTransaction!
+	self parentPresenter abortTransaction!
 
 activeTextEdit 
 
@@ -31,6 +31,9 @@ codeSourcePresenterClass
 
 	^CodeSourcePresenter
 !
+
+commitTransaction
+	self parentPresenter commitTransaction!
 
 contextObject
 
@@ -308,6 +311,16 @@ onViewOpened
 	self updateCodeFont.
 !
 
+parentPresenter
+	"workspaces, debuggers, and inspectors do not yet have 
+	a parent presenter. However, sometimes it's useful to 
+	be able to send a message to the high level presenter so 
+	common behavior can be kept in a single place.
+
+	Mock up a parent presenter for those occasions"
+
+	^JadePresenter new gciSession: gciSession!
+
 print!
 
 queryCommand: query
@@ -432,6 +445,7 @@ validateUserInterface
 !JadeTextDocument categoriesFor: #addQuotesToSelection!menu handlers!private! !
 !JadeTextDocument categoriesFor: #codePresenterIsMethod!private! !
 !JadeTextDocument categoriesFor: #codeSourcePresenterClass!private! !
+!JadeTextDocument categoriesFor: #commitTransaction!Jade!private! !
 !JadeTextDocument categoriesFor: #contextObject!Jade!private! !
 !JadeTextDocument categoriesFor: #continueTransaction!Jade!private! !
 !JadeTextDocument categoriesFor: #createComponents!private! !
@@ -463,6 +477,7 @@ validateUserInterface
 !JadeTextDocument categoriesFor: #onCloseRequested:!private! !
 !JadeTextDocument categoriesFor: #onViewClosed!private! !
 !JadeTextDocument categoriesFor: #onViewOpened!private! !
+!JadeTextDocument categoriesFor: #parentPresenter!public! !
 !JadeTextDocument categoriesFor: #print!private! !
 !JadeTextDocument categoriesFor: #queryCommand:!menu handlers!private! !
 !JadeTextDocument categoriesFor: #removeQuotesFromSelection!menu handlers!private! !

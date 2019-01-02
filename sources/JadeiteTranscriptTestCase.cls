@@ -10,22 +10,6 @@ JadeiteTranscriptTestCase comment: ''!
 !JadeiteTranscriptTestCase categoriesForClass!Unclassified! !
 !JadeiteTranscriptTestCase methodsFor!
 
-assertProjectInList: name
-	self denyIsNil: (transcript projectListPresenter projectListPresenter list
-				detect: [:projectService | projectService name = name]
-				ifNone: [])!
-
-cloneRowanSample1
-	| sample1Path root |
-	sample1Path := self rowanSample1Path.
-	root := self rowanProjectsHome.
-	transcript projectListPresenter basicCloneProject: sample1Path root: root!
-
-denyProjectInList: name
-	self assertIsNil: (transcript projectListPresenter projectListPresenter list
-				detect: [:projectService | projectService name = name]
-				ifNone: [])!
-
 test_abortTransaction
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
 	transcript projectListPresenter refresh.
@@ -212,9 +196,6 @@ test_transcriptNamedConsole
 
 unloadSampleProject
 	transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName)! !
-!JadeiteTranscriptTestCase categoriesFor: #assertProjectInList:!private!support! !
-!JadeiteTranscriptTestCase categoriesFor: #cloneRowanSample1!private!support! !
-!JadeiteTranscriptTestCase categoriesFor: #denyProjectInList:!private!support! !
 !JadeiteTranscriptTestCase categoriesFor: #test_abortTransaction!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseClassMenuItem!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseFindClassMenuItem!public!test menus! !

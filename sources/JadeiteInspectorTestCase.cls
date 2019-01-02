@@ -31,6 +31,64 @@ inspectInstVarAt: index
 tearDown
 	inspector ifNotNil: [inspector destroy]!
 
+test_abortTransactionInBasicInspector
+	"foolishly or wisely, Dolphin runs different code paths
+	depending on which view has focus. Test each"
+
+	| remoteObject jadeiteMenu abortItem |
+	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
+	remoteObject := session
+				executeString: '123'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	transcript projectListPresenter refresh.
+	self assertProjectInList: 'RowanSample1'.
+	jadeiteMenu := self itemNamed: 'Jadeite' in: inspector view menuBar.
+	abortItem := self itemNamed: 'Abort Transaction' in: jadeiteMenu.
+	abortItem commandDescription performAgainst: inspector.
+	
+	[transcript projectListPresenter refresh.
+	self denyProjectInList: 'RowanSample1'] ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded].
+!
+
+test_abortTransactionInNavigationInspector
+	| remoteObject jadeiteMenu abortItem |
+	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
+	remoteObject := session
+				executeString: 'Array new'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	transcript projectListPresenter refresh.
+	self assertProjectInList: 'RowanSample1'.
+	jadeiteMenu := self itemNamed: 'Jadeite' in: inspector view menuBar.
+	abortItem := self itemNamed: 'Abort Transaction' in: jadeiteMenu.
+	abortItem commandDescription performAgainst: inspector.
+	
+	[transcript projectListPresenter refresh.
+	self denyProjectInList: 'RowanSample1'] ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded].
+	"focus in code pane"
+	inspector documentPresenter setFocus.
+	abortItem commandDescription performAgainst: inspector.
+	
+	[transcript projectListPresenter refresh.
+	self denyProjectInList: 'RowanSample1'] ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded].
+	"focus in list pane"
+	inspector instVarListPresenter setFocus.
+	abortItem commandDescription performAgainst: inspector.
+	
+	[transcript projectListPresenter refresh.
+	self denyProjectInList: 'RowanSample1'] ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
+
 test_basicInspectorDisplayedSizeLimit
 	| remoteObject |
 	self testsIssue: #issue361 withTitle: 'Inspectors should hold more than 5000 characters'.
@@ -79,6 +137,93 @@ test_captionChange
 	self assert: ('Inspector on Dictionary for*' match: inspector caption).
 	inspector getPreviousObject.
 	self assert: ('Inspector on Array for*' match: inspector caption)!
+
+test_commitTransactionInBasicInspector
+	| remoteObject jadeiteMenu commitItem abortItem |
+	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
+	self cloneRowanSample1.
+	self ensureRowanSample1Loaded.
+	transcript projectListPresenter refresh.
+	self assertProjectInList: 'RowanSample1'.
+	remoteObject := session
+				executeString: '123'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	jadeiteMenu := self itemNamed: 'Jadeite' in: inspector view menuBar.
+	commitItem := self itemNamed: 'Commit Transaction' in: jadeiteMenu.
+	commitItem commandDescription performAgainst: inspector.
+	transcript projectListPresenter refresh.
+	self assertProjectInList: 'RowanSample1'.
+	abortItem := self itemNamed: 'Abort Transaction' in: jadeiteMenu.
+	abortItem commandDescription performAgainst: inspector.
+	transcript projectListPresenter refresh.
+	self assertProjectInList: 'RowanSample1'.
+	self halt. 
+	self unloadSampleProject.
+	commitItem commandDescription performAgainst: inspector.
+	transcript projectListPresenter refresh.
+	self denyProjectInList: 'RowanSample1'.
+	self cloneRowanSample1.
+	self ensureRowanSample1Loaded!
+
+test_commitTransactionInNavigationInspectorFocusCodePane
+	| remoteObject jadeiteMenu commitItem abortItem |
+	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
+	self cloneRowanSample1.
+	self ensureRowanSample1Loaded.
+	transcript projectListPresenter refresh.
+	self assertProjectInList: 'RowanSample1'.
+	remoteObject := session
+				executeString: 'Array new'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector documentPresenter setFocus. 
+	jadeiteMenu := self itemNamed: 'Jadeite' in: inspector view menuBar.
+	commitItem := self itemNamed: 'Commit Transaction' in: jadeiteMenu.
+	commitItem commandDescription performAgainst: inspector.
+	transcript projectListPresenter refresh.
+	self assertProjectInList: 'RowanSample1'.
+	abortItem := self itemNamed: 'Abort Transaction' in: jadeiteMenu.
+	abortItem commandDescription performAgainst: inspector.
+	transcript projectListPresenter refresh.
+	self assertProjectInList: 'RowanSample1'.
+	self unloadSampleProject.
+	commitItem commandDescription performAgainst: inspector.
+	transcript projectListPresenter refresh.
+	self denyProjectInList: 'RowanSample1'.
+	self cloneRowanSample1.
+	self ensureRowanSample1Loaded!
+
+test_commitTransactionInNavigationInspectorFocusInstVars
+	| remoteObject jadeiteMenu commitItem abortItem |
+	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
+	self cloneRowanSample1.
+	self ensureRowanSample1Loaded.
+	transcript projectListPresenter refresh.
+	self assertProjectInList: 'RowanSample1'.
+	remoteObject := session
+				executeString: 'Array new'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter setFocus. 
+	jadeiteMenu := self itemNamed: 'Jadeite' in: inspector view menuBar.
+	commitItem := self itemNamed: 'Commit Transaction' in: jadeiteMenu.
+	commitItem commandDescription performAgainst: inspector.
+	transcript projectListPresenter refresh.
+	self assertProjectInList: 'RowanSample1'.
+	abortItem := self itemNamed: 'Abort Transaction' in: jadeiteMenu.
+	abortItem commandDescription performAgainst: inspector.
+	transcript projectListPresenter refresh.
+	self assertProjectInList: 'RowanSample1'.
+	self unloadSampleProject.
+	commitItem commandDescription performAgainst: inspector.
+	transcript projectListPresenter refresh.
+	self denyProjectInList: 'RowanSample1'.
+	self cloneRowanSample1.
+	self ensureRowanSample1Loaded!
 
 test_forwardBack
 	| remoteObject backQuery forwardQuery |
@@ -242,14 +387,22 @@ test_openProjectsBrowserOnClass
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	shell := inspector browseClass.
-	[self assert: (shell isKindOf: JadeiteProjectsSystemBrowser)] ensure: [shell destroy]! !
+	[self assert: (shell isKindOf: JadeiteProjectsSystemBrowser)] ensure: [shell destroy]!
+
+unloadSampleProject
+	transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName)! !
 !JadeiteInspectorTestCase categoriesFor: #commandQueryOn:!private! !
 !JadeiteInspectorTestCase categoriesFor: #enableForward:andBack:!private! !
 !JadeiteInspectorTestCase categoriesFor: #inspectInstVarAt:!private! !
 !JadeiteInspectorTestCase categoriesFor: #tearDown!private! !
+!JadeiteInspectorTestCase categoriesFor: #test_abortTransactionInBasicInspector!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_abortTransactionInNavigationInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_basicInspectorDisplayedSizeLimit!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_caption!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_captionChange!public!test! !
+!JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInBasicInspector!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusCodePane!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusInstVars!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectString!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_menuBarItemNames!public!test! !
@@ -259,4 +412,5 @@ test_openProjectsBrowserOnClass
 !JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowserOnClass!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowser!public!test! !
 !JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowserOnClass!public!test! !
+!JadeiteInspectorTestCase categoriesFor: #unloadSampleProject!private!support! !
 
