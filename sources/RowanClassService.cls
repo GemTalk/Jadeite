@@ -234,6 +234,15 @@ methods
 methods: anObject
 	methods := anObject!
 
+moveNodeToBeChildOf: superclassService in: classHierarchyPresenter
+	| superclassNode myNode |
+	superclassNode := classHierarchyPresenter model getNodeFor: superclassService.
+	myNode := classHierarchyPresenter model getNodeFor: self.
+	((classHierarchyPresenter model childrenOfNode: superclassNode) includes: myNode)
+		ifFalse: 
+			[classHierarchyPresenter model move: self asChildOf: superclassService].
+	classHierarchyPresenter view expand: myNode!
+
 oop
 	^oop!
 
@@ -338,19 +347,19 @@ updatedClass: presenter
 	presenter view invalidate. !
 
 updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
-	| classNode superclassNode selections selectedPackageNames |
+	| classNode superclassService selections selectedPackageNames |
 	classNode := classHierarchyPresenter model getNodeFor: self ifAbsent: [].
-	classNode ifNotNil: [^self].
-	superclassNode := classHierarchyPresenter model asBag
+	superclassService := classHierarchyPresenter model asBag
 				detect: [:classService | classService name = superclassName]
 				ifNone: [^self].
+	classNode ifNotNil: [^self moveNodeToBeChildOf: superclassService in: classHierarchyPresenter].
 	projectBrowser packageListPresenter selections isEmpty ifTrue: [^self].
 	selectedPackageNames := projectBrowser packageListPresenter selections
-		collect: [:packageService | packageService name].
+				collect: [:packageService | packageService name].
 	(selectedPackageNames includes: packageName) ifFalse: [^self].
 	selections := classHierarchyPresenter selections.
 	classHierarchyPresenter model remove: self ifAbsent: [].
-	classHierarchyPresenter model add: self asChildOf: superclassNode.
+	classHierarchyPresenter model add: self asChildOf: superclassService.
 	selections isEmpty ifTrue: [^self].
 	classHierarchyPresenter selection: selections first ifAbsent: [^self].
 	classHierarchyPresenter view expand: selections first!
@@ -414,6 +423,7 @@ visibleTests
 !RowanClassService categoriesFor: #meta:!accessing!private! !
 !RowanClassService categoriesFor: #methods!accessing!private! !
 !RowanClassService categoriesFor: #methods:!accessing!private! !
+!RowanClassService categoriesFor: #moveNodeToBeChildOf:in:!private!updating! !
 !RowanClassService categoriesFor: #oop!accessing!private! !
 !RowanClassService categoriesFor: #oop:!accessing!private! !
 !RowanClassService categoriesFor: #packageName!accessing!private! !
