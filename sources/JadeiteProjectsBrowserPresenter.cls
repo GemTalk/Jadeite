@@ -1328,6 +1328,7 @@ registerPresentersForUpdates
 	BrowserUpdate current register: categoryListPresenter 	selector: #filterUpdate:browser: browser: self.
 	BrowserUpdate current register: classHierarchyPresenter 	selector: #classHierarchyUpdate:browser: browser: self.
 	BrowserUpdate current register: classHierarchyPresenter 	selector: #updatedClass:.
+	BrowserUpdate current register: classHierarchyPresenter 	selector: #updatedClassInHierarchy:browser: browser: self.
 	BrowserUpdate current register: classHierarchyPresenter 	selector: #removed:.
 	BrowserUpdate current register: variableListPresenter 	selector: #filterUpdate:browser: browser: self.
 	BrowserUpdate current register: methodListPresenter 	selector: #classMethodsUpdate:browser: browser: self.

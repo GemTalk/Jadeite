@@ -337,6 +337,24 @@ updatedClass: presenter
 	update replicateFrom: self.
 	presenter view invalidate. !
 
+updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
+	| classNode superclassNode selections selectedPackageNames |
+	classNode := classHierarchyPresenter model getNodeFor: self ifAbsent: [].
+	classNode ifNotNil: [^self].
+	superclassNode := classHierarchyPresenter model asBag
+				detect: [:classService | classService name = superclassName]
+				ifNone: [^self].
+	projectBrowser packageListPresenter selections isEmpty ifTrue: [^self].
+	selectedPackageNames := projectBrowser packageListPresenter selections
+		collect: [:packageService | packageService name].
+	(selectedPackageNames includes: packageName) ifFalse: [^self].
+	selections := classHierarchyPresenter selections.
+	classHierarchyPresenter model remove: self ifAbsent: [].
+	classHierarchyPresenter model add: self asChildOf: superclassNode.
+	selections isEmpty ifTrue: [^self].
+	classHierarchyPresenter selection: selections first ifAbsent: [^self].
+	classHierarchyPresenter view expand: selections first!
+
 updateListIn: presenter from: visibleMethods
 	| newSelections |
 	newSelections := visibleMethods
@@ -419,6 +437,7 @@ visibleTests
 !RowanClassService categoriesFor: #toolTip!public! !
 !RowanClassService categoriesFor: #updateCategories:!private!updating! !
 !RowanClassService categoriesFor: #updatedClass:!public!updating! !
+!RowanClassService categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !
 !RowanClassService categoriesFor: #updateListIn:from:!private!updating! !
 !RowanClassService categoriesFor: #updateVariables:!private!updating! !
 !RowanClassService categoriesFor: #variables!accessing!private! !

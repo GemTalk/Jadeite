@@ -295,6 +295,7 @@ package methodNames
 	add: #RowanCommandResult -> #updateClassHierarchySelectionFor:;
 	add: #RowanCommandResult -> #updateClassSelectionFor:;
 	add: #RowanCommandResult -> #updatedClass:;
+	add: #RowanCommandResult -> #updatedClassInHierarchy:browser:;
 	add: #RowanCommandResult -> #updateDictionarySelectionsFor:;
 	add: #RowanCommandResult -> #updateMethodFilterSelectionFor:;
 	add: #RowanCommandResult -> #updateMethodSelectionFor:;
@@ -3746,6 +3747,9 @@ updateClassSelectionFor: presenter!
 updatedClass: aPresenter
 !
 
+updatedClassInHierarchy: aPresenter browser: projectBrowser
+!
+
 updateDictionarySelectionsFor: presenter
 	!
 
@@ -3795,6 +3799,7 @@ updateType
 !RowanCommandResult categoriesFor: #updateClassHierarchySelectionFor:!public!updating! !
 !RowanCommandResult categoriesFor: #updateClassSelectionFor:!public!updating! !
 !RowanCommandResult categoriesFor: #updatedClass:!public!updating! !
+!RowanCommandResult categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #updateDictionarySelectionsFor:!public!updating! !
 !RowanCommandResult categoriesFor: #updateMethodFilterSelectionFor:!public!updating! !
 !RowanCommandResult categoriesFor: #updateMethodSelectionFor:!public!updating! !

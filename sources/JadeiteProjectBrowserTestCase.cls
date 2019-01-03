@@ -2414,9 +2414,39 @@ test_twoPackageBrowsersAddedClassAppears
 			ensure: [secondBrowser destroy]!
 
 test_twoPackageBrowsersAddedClassAppearsInHierarchy
-	"if the same package is selected, a new class appears but the existing
-	class selection doesn't change"
+	| secondBrowser secondPresenter |
+	self testsIssue: #issue374
+		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
+	self selectRowanSample1Class.
+	self selectHierarchyTab.
+	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	
+	[secondPresenter := secondBrowser currentCard.
+	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
+	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
+	self selectHierarchyTabIn: secondPresenter.
+	self assert: secondPresenter classHierarchyPresenter model size equals: 3.
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
+		in: secondPresenter classHierarchyPresenter.
+	self assertIsNil: (secondPresenter classHierarchyPresenter model asBag
+				detect: [:classService | classService name = 'TestClass']
+				ifNone: []).
+	self
+		saveClass: 'TestClass'
+		superclass: 'RowanSample1'
+		instVars: Array new
+		package: 'RowanSample1-Core'.
+	self assert: self classHierarchyPresenter selection name = 'TestClass'.
+	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'.
+	self assert: secondPresenter classHierarchyPresenter model size equals: 4.
+	self
+		denyIsNil: (secondPresenter classHierarchyPresenter model asBag
+		detect: [:classService | classService name = 'TestClass']
+		ifNone: [])]
+			ensure: [secondBrowser destroy]!
 
+test_twoPackageBrowsersAddedClassDoesNotAppearInDifferentHierarchy
 	| secondBrowser secondPresenter |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
@@ -2689,6 +2719,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoPackageBrowsersAddedClassAppears!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoPackageBrowsersAddedClassAppearsInHierarchy!public!test two browsers! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_twoPackageBrowsersAddedClassDoesNotAppearInDifferentHierarchy!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoPackageListsIndependent!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoPackageListsIndependentHierarchy!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_variablesTab!public!test class list! !
