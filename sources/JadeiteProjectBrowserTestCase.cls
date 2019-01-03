@@ -252,6 +252,24 @@ test_abstractTestsShown
 				view: self methodListPresenter view.
 	self deny: commandQuery isEnabled	"run test menu item disabled in the abstract class"!
 
+test_acceptDefinedMethodInExtensionClass
+	self testsIssue: #issue375
+		withTitle: '(3.0.53) accept non-extension method in an extension package .... lose selected class'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Extensions' in: self packageListPresenter.
+	self selectServiceNamed: self sampleClassName in: self classListPresenter.
+	self selectMethodNamed: #foo.	"select a method defined in it's class package while the extension class is selected"
+	self methodSourcePresenter value: 'foo   ^foot'.
+	self assert: self methodSourcePresenter value equals: 'foo   ^foot'.
+	self assert: self methodListPresenter selection selector equals: #foo.
+	self assert: self classListPresenter selection name equals: 'RowanSample1'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Extensions'.
+	self methodSourcePresenter value: 'foo   ^footy'.
+	self assert: self methodSourcePresenter value equals: 'foo   ^footy'.
+	self assert: self methodListPresenter selection selector equals: #foo.
+	self assert: self classListPresenter selection name equals: 'RowanSample1'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Extensions'!
+
 test_addDuplicatePackage
 	| projectService addPackageResult packageName |
 	self testsIssue: #issue266
@@ -2423,6 +2441,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteProjectBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abstractTestsShown!public!test sunit tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_acceptDefinedMethodInExtensionClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addDuplicatePackage!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addPackageReloadProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!tests! !
