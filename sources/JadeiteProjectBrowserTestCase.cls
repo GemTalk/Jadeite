@@ -33,6 +33,23 @@ addSampleMethodHoo
 
 	!
 
+assertLinearAncestry: family in: presenter
+	"given a collection of class names in order from root to leaf,
+	test that each subsequent element of the collection is a child
+	of the previous element"
+
+	self assert: presenter model size equals: family size.
+	1 to: family size - 1
+		do: 
+			[:index |
+			| parentNode childNode parentName childName |
+			parentName := family at: index.
+			childName := family at: index + 1.
+			parentNode := presenter model asBag detect: [:classService | classService name = parentName] ifNone: [].
+			childNode := presenter model asBag detect: [:classService | classService name = childName] ifNone: [].
+			self assert: (presenter model childrenOf: parentNode) size equals: 1. 
+			self assert: (presenter model childrenOf: parentNode) first equals: childNode]!
+
 dirtyProjectForChangeBrowser
 	self selectRowanSample1Class.
 	self modifySampleMethodFoo.
@@ -199,7 +216,10 @@ selectHierarchyTabIn: presenter
 selectRowanSample1Test
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
-	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter!
+	self projectsPresenter isHierarchyTabSelected
+		ifTrue: 
+			[self selectTreeServicesNamed: (Array with: 'RowanSample1Test') in: self classHierarchyPresenter]
+		ifFalse: [self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter]!
 
 selectSUnitTab
 	self projectsPresenter sunitPresenter ensureVisible!
@@ -2368,6 +2388,125 @@ test_tabNames_projectsBrowserNotLost
 	index := 1.
 	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1-Core'	"not affected by other tab"!
 
+test_twoPackageBrowsersAddedClassAppears
+	"if the same package is selected, a new class appears but the existing
+	class selection doesn't change"
+
+	| secondBrowser secondPresenter |
+	self testsIssue: #issue374
+		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
+	self selectRowanSample1Class.
+	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	
+	[secondPresenter := secondBrowser currentCard.
+	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
+	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
+	self assert: secondPresenter classListPresenter list size equals: 2.
+	self assertIsNil: (secondPresenter classListPresenter list
+				detect: [:classService | classService name = 'TestClass']
+				ifNone: []).
+	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Core'.	"add new class in first browser"
+	self assert: self classListPresenter selection name = 'TestClass'.
+	self assert: secondPresenter classListPresenter selection name equals: 'RowanSample1'.	"no selection change in second browser ..."
+	self assert: secondPresenter classListPresenter list size equals: 3.	"... but new class shows up"
+	self assert: secondPresenter classListPresenter list last name equals: 'TestClass']
+			ensure: [secondBrowser destroy]!
+
+test_twoPackageBrowsersAddedClassAppearsInHierarchy
+	"if the same package is selected, a new class appears but the existing
+	class selection doesn't change"
+
+	| secondBrowser secondPresenter |
+	self testsIssue: #issue374
+		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
+	self selectRowanSample1Class.
+	self selectHierarchyTab.
+	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	
+	[secondPresenter := secondBrowser currentCard.
+	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
+	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
+	self selectHierarchyTabIn: secondPresenter.
+	self assert: secondPresenter classHierarchyPresenter model size equals: 3.
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
+		in: secondPresenter classHierarchyPresenter.
+	self assertIsNil: (secondPresenter classHierarchyPresenter model asBag
+				detect: [:classService | classService name = 'TestClass']
+				ifNone: []).
+	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Core'.	"add new class in first browser"
+	self assert: self classHierarchyPresenter selection name = 'TestClass'.
+	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'	"no change in second browser because new class not in hierarchy"]
+			ensure: [secondBrowser destroy]!
+
+test_twoPackageListsIndependent
+	| secondBrowser secondPresenter |
+	self testsIssue: #issue374
+		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
+	self selectRowanSample1Class.
+	self assert: self classListPresenter selection name equals: 'RowanSample1'.
+	self assert: self classListPresenter list size equals: 2.
+	self assert: self classListPresenter list first name equals: 'RowanSample1'.
+	self assert: self classListPresenter list last name equals: 'RowanSubClass'.
+	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	
+	[secondPresenter := secondBrowser currentCard.
+	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
+	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
+	self assert: self classListPresenter selection name equals: 'RowanSample1'.
+	self assert: self classListPresenter list size equals: 2.
+	self assert: self classListPresenter list first name equals: 'RowanSample1'.
+	self assert: self classListPresenter list last name equals: 'RowanSubClass'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
+	self assert: secondPresenter classListPresenter selection name equals: 'RowanSample1'.
+	self assert: secondPresenter classListPresenter list size equals: 2.
+	self assert: secondPresenter classListPresenter list first name equals: 'RowanSample1'.
+	self assert: secondPresenter classListPresenter list last name equals: 'RowanSubClass'.
+	self assert: secondPresenter packageListPresenter selection name equals: 'RowanSample1-Core'.
+	self selectRowanSample1Test.
+	self assert: self classListPresenter selection name equals: 'RowanSample1Test'.
+	self assert: self classListPresenter list size equals: 1.
+	self assert: self classListPresenter list first name equals: 'RowanSample1Test'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Tests'.
+	self assert: secondPresenter classListPresenter selection name equals: 'RowanSample1'.
+	self assert: secondPresenter classListPresenter list size equals: 2.
+	self assert: secondPresenter classListPresenter list first name equals: 'RowanSample1'.
+	self assert: secondPresenter classListPresenter list last name equals: 'RowanSubClass'.
+	self assert: secondPresenter packageListPresenter selection name equals: 'RowanSample1-Core']
+			ensure: [secondBrowser destroy]!
+
+test_twoPackageListsIndependentHierarchy
+	| secondBrowser secondPresenter |
+	self testsIssue: #issue374
+		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
+	self selectRowanSample1Class.
+	self selectHierarchyTab.
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
+		in: self classHierarchyPresenter.
+	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	
+	[secondPresenter := secondBrowser currentCard.
+	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
+	self selectHierarchyTabIn: secondPresenter.
+	self selectTreeServicesNamed: (Array with: self sampleClassName)
+		in: secondPresenter classHierarchyPresenter.
+	self assert: self classHierarchyPresenter selection name equals: 'RowanSample1'.
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
+		in: self classHierarchyPresenter.
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
+		in: secondPresenter classHierarchyPresenter.
+	self selectRowanSample1Test.
+	self assertLinearAncestry: #('Object' 'TestAsserter' 'TestCase' 'RowanSample1Test')
+		in: self classHierarchyPresenter.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Tests'.
+	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'.
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
+		in: secondPresenter classHierarchyPresenter]
+			ensure: [secondBrowser destroy]!
+
 test_variablesTab
 	"at least do something with the variables tab"
 
@@ -2412,6 +2551,7 @@ waitForPresenter: presenter
 	[presenter list isEmpty] whileTrue: [(Delay forMilliseconds: 50) wait]! !
 !JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodGoo!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodHoo!dirty project!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #assertLinearAncestry:in:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #dirtyProjectForChangeBrowser!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
@@ -2547,6 +2687,10 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_twoPackageBrowsersAddedClassAppears!public!test two browsers! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_twoPackageBrowsersAddedClassAppearsInHierarchy!public!test two browsers! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_twoPackageListsIndependent!public!test two browsers! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_twoPackageListsIndependentHierarchy!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_variablesTab!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_verifyValidCategory!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #waitForPresenter:!private!selection! !
