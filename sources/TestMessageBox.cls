@@ -33,7 +33,6 @@ plannedResult
 	"test needs to setup expected result each time.
 	This helps ensure we don't leave a result hanging around
 	causing unknown chaos."
-
 	[^PlannedResult] ensure: [self plannedResult: nil]!
 
 plannedResult: answer

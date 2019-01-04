@@ -3547,7 +3547,9 @@ fileSave
 !
 
 isOkayToChange
-	^self isOkayToChangeSource: documentPresenter!
+	^documentPresenter view isModified
+		ifTrue: [self isOkayToChangeSource: documentPresenter]
+		ifFalse: [true]!
 
 methodMenuBreak: aMenu
 	| selection |
@@ -3561,7 +3563,7 @@ updateMethodSource
 !MethodSourcePresenter categoriesFor: #editMenuStrings!Jade!private! !
 !MethodSourcePresenter categoriesFor: #editSaveMethod!menu handlers!public! !
 !MethodSourcePresenter categoriesFor: #fileSave!public! !
-!MethodSourcePresenter categoriesFor: #isOkayToChange!Jade!private! !
+!MethodSourcePresenter categoriesFor: #isOkayToChange!Jade!public!testing! !
 !MethodSourcePresenter categoriesFor: #methodMenuBreak:!Jade!public! !
 !MethodSourcePresenter categoriesFor: #updateMethodSource!public! !
 

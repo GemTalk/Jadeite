@@ -84,10 +84,11 @@ createComponents
 createSchematicWiring
 
 	super createSchematicWiring.
-	frameListPresenter 		when: #selectionChanged 	send: #selectedFrameWithErrorHandling 	to: self.
-	processListPresenter 	when: #selectionChanged 	send: #selectedProcess 	to: self.
-	variableListPresenter		when: #selectionChanged	send: #selectedVariable	to: self.
-	variableListPresenter		when: #actionPerformed	send: #inspectVariable	to: self.
+	frameListPresenter 		when: #selectionChanged 		send: #selectedFrameWithErrorHandling 	to: self.
+	frameListPresenter 		when: #'selectionChanging:'	send: #'aboutToChangeFrame:'			to: self.
+	processListPresenter 	when: #selectionChanged 		send: #selectedProcess 				to: self.
+	variableListPresenter		when: #selectionChanged		send: #selectedVariable				to: self.
+	variableListPresenter		when: #actionPerformed		send: #inspectVariable				to: self.
 !
 
 getProcessList
@@ -155,7 +156,6 @@ queryCommand: query
 !
 
 resumeProcess
-
 	answer := #'resume'.
 	self view close.
 !

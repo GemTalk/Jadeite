@@ -63,13 +63,16 @@ getClipboardContents
 	^clipboardContents!
 
 getDebugger
+	"need a more definitive test to know when debugger is fully built"
 
-	100 timesRepeat: [
-		debugger := RowanDebugger allInstances detect: [:each | true] ifNone: [nil].
-		(debugger notNil and: [debugger documentPresenter view selection notEmpty]) ifTrue: [^self].
-		(Delay forMilliseconds: 10) wait.
-	].
-!
+	100 timesRepeat: 
+			[debugger := RowanDebugger allInstances detect: [:each | true] ifNone: [nil].
+			(debugger notNil and: 
+					[debugger documentPresenter view selection notEmpty and: 
+							[debugger gciSession notNil
+								and: [debugger methodSourcePresenter gciSession notNil and: [debugger basicSelectedFrame notNil]]]])
+				ifTrue: [^self].
+			(Delay forMilliseconds: 10) wait]!
 
 getSecondDebugger
 	"Private - we opened up one debugger in the test, then another. find the second"
@@ -103,6 +106,22 @@ openDebuggerOn: aString
 !
 
 selectFrameAt: integer
+	"foolishly, the selection changing event which needs testing
+	is only sent through a button click in Dolphin. We need to 
+	fake it out for the test. frustrating.
+
+	Note - even though we are faking up the event, the event itself
+	should get modified based on the debugger's state which is a
+	valid test."
+
+	| event |
+	event := (SelectionChangingEvent forSource: self)
+				oldSelections: debugger frameListPresenter selections;
+				newSelections: (Array with: (debugger frameListPresenter list at: integer));
+				cause: #test;
+				yourself.
+	debugger frameListPresenter onSelectionChanging: event.
+	event value ifFalse:[^self]. 
 	debugger frameListPresenter selection: (debugger frameListPresenter list at: integer)!
 
 setUp
@@ -204,25 +223,6 @@ test_browseClassVariablePane
 	self assert: projectsBrowser currentCard classListPresenter selection name equals: 'RowanClassService'	"receiver is Array class"]
 			ensure: [projectsBrowser destroy]!
 
-test_debuggerCopyToClipboard
-
-	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
-	TestMessageBox enableJadeiteTestMessageBox.
-	
-	[self openDebuggerOn: 'nil halt'.
-	[debugger frameListPresenter list size <= 0] whileTrue: [(Delay forMilliseconds: 100) wait].
-	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
-	'notCopiedYet' copyToClipboard.
-	self assert: self getClipboardContents equals: 'notCopiedYet'.
-	debugger methodSourcePresenter documentPresenter value: 'new text'.
-	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #yes.	"confirm we want to copy to clipboard"
-	[self selectFrameAt: 2] forkAt: Processor activePriority + 1.	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
-	[debugger frameListPresenter selectionByIndex = 2] whileFalse:[(Delay forMilliseconds: 100) wait.].
-	self assert: debugger frameListPresenter selectionByIndex equals: 2.
-	self assert: self getClipboardContents equals: 'new text']
-			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
-
 test_debuggerDoNotCopyToClipboard
 	"Make sure to turn off test message box if you need to
 	debug this test. "
@@ -240,6 +240,34 @@ test_debuggerDoNotCopyToClipboard
 	[self selectFrameAt: 2] fork.	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
 	(Delay forMilliseconds: 100) wait.
 	self assert: self getClipboardContents equals: 'notCopiedYet']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
+test_debuggerModifiedSourcePaneChangeFrame
+	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[self openDebuggerOn: 'nil halt'.
+	[debugger frameListPresenter list size <= 0] whileTrue: [(Delay forMilliseconds: 100) wait].
+	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
+	debugger methodSourcePresenter documentPresenter value: 'new text'.
+	debugger methodSourcePresenter documentPresenter view isModified: true.
+	TestMessageBox plannedResult: #no.	"answer that we want to stay on frame"
+	[self selectFrameAt: 2] forkAt: Processor activePriority + 1.	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
+	self assert: debugger frameListPresenter selectionByIndex equals: 2]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
+test_debuggerModifiedSourcePaneStayOnFrame
+	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[self openDebuggerOn: 'nil halt'.
+	[debugger frameListPresenter list size <= 0] whileTrue: [(Delay forMilliseconds: 100) wait].
+	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
+	debugger methodSourcePresenter documentPresenter value: 'new text'.
+	debugger methodSourcePresenter documentPresenter view isModified: true.
+	TestMessageBox plannedResult: #yes.	"answer that we want to stay on frame"
+	[self selectFrameAt: 2] forkAt: Processor activePriority + 1.	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
+	self assert: debugger frameListPresenter selectionByIndex equals: 4. "did not change frames"]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_frameDoubleClick
@@ -315,7 +343,7 @@ test_restartInBlock
 		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	self selectRowanSample1Class.
 	self saveInterestingLoopMethod.
-	self methodListPresenter selection setBreakAtStepPoint: 8 session: session.	"inside the block"
+	self projectsPresenter setBreakPointAt: 8 in: self projectsPresenter.	"inside the block"
 	
 	[self openDebuggerOn: 'RowanSample1 new interestingLoop'.
 	restartProcess := [self debuggerDo: [debugger restart]] fork.	"can't restart inside block. expect notifier"
@@ -327,7 +355,7 @@ test_restartInBlock
 	self deny: debugger frameListPresenter list size = secondDebugger frameListPresenter list size]
 			ensure: [restartProcess terminate]]
 			ensure: 
-				[self methodListPresenter selection clearBreakAtStepPoint: 8 session: session.
+				[self projectsPresenter clearBreakPointAt: 8 in: self projectsPresenter.	"inside the block"
 				projectsBrowser destroy]!
 
 test_selectAfterDiveNoStepPoint
@@ -337,7 +365,7 @@ test_selectAfterDiveNoStepPoint
 		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	self selectRowanSample1Class.
 	self saveInterestingLoopMethod.
-	self methodListPresenter selection setBreakAtStepPoint: 8 session: session.	"inside the block"
+	self projectsPresenter setBreakPointAt: 8 in: self projectsPresenter.	"inside the block"
 	
 	[self openDebuggerOn: 'RowanSample1 new interestingLoop'.
 	self debuggerDo: [debugger stepInto].
@@ -349,7 +377,7 @@ test_selectAfterDiveNoStepPoint
 	self assert: debugger documentPresenter value replaceLfWithCrLf
 		equals: self interestingLoopMethodSource]
 			ensure: 
-				[self methodListPresenter selection clearBreakAtStepPoint: 8 session: session.
+				[self projectsPresenter clearBreakPointAt: 8 in: self projectsPresenter.	
 				projectsBrowser destroy]!
 
 test_selectBlockContext
@@ -577,13 +605,13 @@ x yourself';
 		assert: indicator styleName = 8;
 		assert: indicator tag = 'step point #2';
 
-		debuggerDo: [debugger methodSourcePresenter setBreakAtStepPoint: 2];
+		debuggerDo: [debugger methodSourcePresenter setBreakPointAt: 2 in: debugger];
 		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
 		assert: indicator range = (12 to: 15);
 		assert: indicator styleName = 9;
 		assert: indicator tag = 'Break at step point #2';
 
-		debuggerDo: [debugger methodSourcePresenter clearBreakAtStepPoint: 2];
+		debuggerDo: [debugger methodSourcePresenter clearBreakPointAt: 2 in: debugger];
 		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
 		assert: indicator range = (12 to: 15);
 		assert: indicator styleName = 8;
@@ -743,13 +771,12 @@ testUnsavedChangesActionChangeFrame
 	
 	[self openDebuggerOn: 'nil halt'.
 	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
-	'notCopiedYet' copyToClipboard.
-	self assert: self getClipboardContents equals:  'notCopiedYet'.
+	self assert: debugger frameListPresenter selectionByIndex equals: 4. 
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #yes.	"confirm we want to copy to clipboard"
+	TestMessageBox plannedResult: #no.	"answer that we want to stay on frame"
 	self debuggerDo: [[debugger stepOver] forkAt: Processor activePriority + 1].
-	self assert: self getClipboardContents equals:  'new text']
+	self assert: debugger frameListPresenter selectionByIndex equals: 4. ]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 testUnsavedChangesActionChangeToHomeFrame
@@ -761,13 +788,10 @@ testUnsavedChangesActionChangeToHomeFrame
 	originalSource := '(Array with: 1) do:[:obj | self halt. obj size]'.
 	self openDebuggerOn: originalSource.
 	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @2 line 1'.
-	'notCopiedYet' copyToClipboard.
-	self assert: self getClipboardContents equals:  'notCopiedYet'.
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #yes.	"confirm we want to copy to clipboard"
+	TestMessageBox plannedResult: #no.	
 	debugger frameListPresenter selectionByIndex: 6. "Executed Code home frame"
-	self assert: self getClipboardContents equals: 'new text'.
 	self assert: debugger methodSourcePresenter documentPresenter value equals: originalSource]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
@@ -780,20 +804,16 @@ testUnsavedChangesActionStepping
 	
 	[self openDebuggerOn: originalSource.
 	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
-	'notCopiedYet' copyToClipboard.
-	self assert: self getClipboardContents equals:  'notCopiedYet'.
 	debugger methodSourcePresenter documentPresenter value: 'step over'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #yes.	"confirm we want to copy to clipboard"
+	TestMessageBox plannedResult: #no.	"don't save changes"
 	self debuggerDo: [[debugger stepOver] fork].
-	self assert: self getClipboardContents equals:  'step over'.
 	self assert: debugger methodSourcePresenter documentPresenter value equals: originalSource.
 	debugger methodSourcePresenter documentPresenter value: 'step into'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #yes.	"confirm we want to copy to clipboard"
+	TestMessageBox plannedResult: #yes.	"keep changes" 
 	self debuggerDo: [[debugger stepInto] fork].
-	self assert: self getClipboardContents equals:  'step into'.
-	self assert: debugger methodSourcePresenter documentPresenter value equals: originalSource]
+	self assert: debugger methodSourcePresenter documentPresenter value equals:  'step into']
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]! !
 !JadeiteDebuggerTestCase categoriesFor: #closeDebuggers!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #debuggerDo:!private!support! !
@@ -810,8 +830,9 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #terminateGsProcess!private!running! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_debuggerCopyToClipboard!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerDoNotCopyToClipboard!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneChangeFrame!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneStayOnFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_frameDoubleClick!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_frameDoubleClickNoActionInBlockContext!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_implementersFromDebugger!public!tests! !

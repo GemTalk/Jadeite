@@ -28,6 +28,10 @@ Processor allProcesses includes: gsProcess'.
 	self error: 'terminate process failed'.
 !
 
+aboutToChangeFrame: aSelectionChangingEvent
+	aSelectionChangingEvent
+		value: (codePane documentPresenter view isModified ifTrue: [self isOkayToChangeFrame] ifFalse: [true])!
+
 basicSelectedFrame
 	| index |
 	(index := frameListPresenter selectionByIndex) = 0 ifTrue: [^nil].
@@ -139,13 +143,8 @@ getProcessList
 	debuggerService processes notEmpty ifTrue:[
 		processListPresenter selection: debuggerService processes first]!
 
-handleSourceChanges
-	documentPresenter view isModified
-		ifTrue: 
-			[(MessageBox confirm: 'Copy changes to clipboard?' caption: 'Method has unsaved changes!!')
-				ifTrue: [documentPresenter value copyToClipboard].
-			documentPresenter value: frame gsMethod source.
-			documentPresenter view isModified: false]!
+isOkayToChangeFrame
+	^codePane isOkayToChange!
 
 methodListSelection
 	"really a selection from the frame list"
@@ -167,8 +166,7 @@ methodValueChanged
 		clearContainerIndicators!
 
 onCloseRequested: boolValueHolder
-
-	self handleSourceChanges. 
+	self isOkayToChangeFrame ifFalse: [^self].
 	super onCloseRequested: boolValueHolder!
 
 onIdleEntered
@@ -272,10 +270,15 @@ reportCompileError: anArrayOfArray in: methodSourcePresenter
 	self statusBarText: (string copyFrom: 1 to: string size - 2).!
 
 restart
-	self handleSourceChanges.
+	self isOkayToChangeFrame ifFalse: [^self].
 	(gsProcess gsProcessForSession: gciSession)
 		trimStackToLevel: frameListPresenter selectionByIndex + frameListOffset.
 	self getProcessList!
+
+resumeProcess
+	self isOkayToChangeFrame ifFalse: [^self].
+	^super resumeProcess
+!
 
 saveMethod
 	| classService string |
@@ -309,33 +312,33 @@ selectedFrame
 	(index := frameListPresenter selectionByIndex) = 0 ifTrue: [^self].
 	index := index + frameListOffset.
 	(frame := gsProcess frameForLevel: index) isNil ifTrue: [^self].
-	frame stepPoint ifNil: [RowanDebuggerStepPointError signal].		"see comment in  RowanFrameService>>initializeProcess:level:organizer:"
+	frame stepPoint ifNil: [RowanDebuggerStepPointError signal].	"see comment in  RowanFrameService>>initializeProcess:level:organizer:"
 	source := frame source.
 	breaks := frame breaks collect: [:each | frame offsets at: each].
 	breaks := breaks
 				collect: [:each | ((source copyFrom: 1 to: each) select: [:char | char = Character lf]) size + 1].
 	breaks := breaks asSet asSortedCollection asArray.
 	variableListPresenter list: frame vars.
-	self handleSourceChanges.
-	codePane
-		gsMethod: frame gsMethod.
-	frame stepPoint ifNotNil: [codePane showStepPoint: frame stepPoint]. 
+	documentPresenter value: frame gsMethod source.
+	documentPresenter view isModified: false.
+	codePane gsMethod: frame gsMethod.
+	frame stepPoint ifNotNil: [codePane showStepPoint: frame stepPoint].
 	(self view viewNamed: 'toolbar') update!
 
 stepInto
-	self handleSourceChanges.
+	self isOkayToChangeFrame ifFalse:[^self].
 	gciSession stepInto: (GsProcess session: gciSession oopType: gsProcess oopType)
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
 	[self getProcessList] on: RowanDebuggerStepPointError do: [:ex | self stepInto]!
 
 stepOut
-	self handleSourceChanges.
+	self isOkayToChangeFrame ifFalse: [^self].
 	gciSession stepOut: (GsProcess session: gciSession oopType: gsProcess oopType)
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
 	[self getProcessList] on: RowanDebuggerStepPointError do: [:ex | self stepInto]!
 
 stepOver
-	self handleSourceChanges.
+	self isOkayToChangeFrame ifFalse: [^self].
 	gciSession stepOver: (GsProcess session: gciSession oopType: gsProcess oopType)
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
 	[self getProcessList] on: RowanDebuggerStepPointError do: [:ex | self stepInto]!
@@ -343,7 +346,7 @@ stepOver
 terminateProcess
 	(MessageBox confirm: 'Terminate process?' caption: 'GemStone/S Process Termination')
 		ifFalse: [^self].
-	self handleSourceChanges.
+	self isOkayToChangeFrame ifFalse: [^self].
 	self _terminateProcess!
 
 updateMethodSource
@@ -357,6 +360,7 @@ variableListPresenter
 	^variableListPresenter! !
 !RowanDebugger categoriesFor: #_processList!public! !
 !RowanDebugger categoriesFor: #_terminateProcess:!public! !
+!RowanDebugger categoriesFor: #aboutToChangeFrame:!event handlers!public! !
 !RowanDebugger categoriesFor: #basicSelectedFrame!public! !
 !RowanDebugger categoriesFor: #browseFrameMethod!menu handlers!private! !
 !RowanDebugger categoriesFor: #browseImplementors!menu handlers!private! !
@@ -370,7 +374,7 @@ variableListPresenter
 !RowanDebugger categoriesFor: #frameListPresenter!Accessing!frames!public! !
 !RowanDebugger categoriesFor: #gciSession:!public! !
 !RowanDebugger categoriesFor: #getProcessList!public! !
-!RowanDebugger categoriesFor: #handleSourceChanges!frames!private! !
+!RowanDebugger categoriesFor: #isOkayToChangeFrame!public!testing! !
 !RowanDebugger categoriesFor: #methodListSelection!Accessing!public! !
 !RowanDebugger categoriesFor: #methodSourcePresenter!public! !
 !RowanDebugger categoriesFor: #methodValueChanged!event handlers!public! !
@@ -383,6 +387,7 @@ variableListPresenter
 !RowanDebugger categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !RowanDebugger categoriesFor: #reportCompileError:in:!compiling!public! !
 !RowanDebugger categoriesFor: #restart!menu handlers!private! !
+!RowanDebugger categoriesFor: #resumeProcess!menu handlers!private! !
 !RowanDebugger categoriesFor: #saveMethod!compiling!menu handlers!private! !
 !RowanDebugger categoriesFor: #selectedFrame!frames!public! !
 !RowanDebugger categoriesFor: #stepInto!menu handlers!private! !

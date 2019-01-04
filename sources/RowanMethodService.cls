@@ -100,19 +100,6 @@ classService
 
 	^RowanClassService named: className!
 
-clearBreakAtStepPoint: anInteger session: aGciSession 
-
-	| service stonString stonResults |
-	aGciSession
-		serverPerform: #'clearBreakAtStepPoint:inMethod:'
-		with: anInteger
-		with: self oopType.
-	service := self class new copyBasicsFrom: self; yourself.		"No need to send everything to the server (in fact, it results in an error!!)"
-	stonString := STON toString: (Array with: service).
-	stonResults := aGciSession serverPerform: #updateFromSton: with: stonString.
-	BrowserUpdate current update: (Array with: self) afterStonReplication: stonResults.
-!
-
 compilationWarnings
 	^compilationWarnings!
 
@@ -306,19 +293,6 @@ selectorsDisplayString
 
 	^className, '>>', selector!
 
-setBreakAtStepPoint: anInteger session: aGciSession
-
-	| service stonString stonResults |
-	aGciSession
-		serverPerform: #'setBreakAtStepPoint:inMethod:'
-		with: anInteger
-		with: self oopType.
-	service := self class new copyBasicsFrom: self; yourself.		"No need to send everything to the server (in fact, it results in an error!!)"
-	stonString := STON toString: (Array with: service).
-	stonResults := aGciSession serverPerform: #updateFromSton: with: stonString.
-	BrowserUpdate current update: (Array with: self) afterStonReplication: stonResults.
-!
-
 setError
 	testResult := 'error'!
 
@@ -440,7 +414,6 @@ user: anObject
 !RowanMethodService categoriesFor: #className!accessing!private! !
 !RowanMethodService categoriesFor: #className:!accessing!private! !
 !RowanMethodService categoriesFor: #classService!public! !
-!RowanMethodService categoriesFor: #clearBreakAtStepPoint:session:!public! !
 !RowanMethodService categoriesFor: #compilationWarnings!accessing!private! !
 !RowanMethodService categoriesFor: #copyBasicsFrom:!public!updating! !
 !RowanMethodService categoriesFor: #definedPackage!accessing!private! !
@@ -487,7 +460,6 @@ user: anObject
 !RowanMethodService categoriesFor: #selector!accessing!private! !
 !RowanMethodService categoriesFor: #selector:!accessing!private! !
 !RowanMethodService categoriesFor: #selectorsDisplayString!displaying!public! !
-!RowanMethodService categoriesFor: #setBreakAtStepPoint:session:!public! !
 !RowanMethodService categoriesFor: #setError!public!sunit! !
 !RowanMethodService categoriesFor: #setFailure!public!sunit! !
 !RowanMethodService categoriesFor: #setPassed!public!sunit! !
