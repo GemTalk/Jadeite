@@ -40,11 +40,15 @@ debug
 
 	methodListPresenter selections do: 
 			[:methodService |
+			| testClassName |
+			testClassName := classListPresenter selections size > 1
+						ifTrue: [methodService className]
+						ifFalse: [classListPresenter selections first name].
 			
 			[gciSession
 				serverPerform: #debugTestNamed:of:
 				with: methodService selector
-				with: methodService className]
+				with: testClassName]
 					ifCurtailed: [^self].
 			self updateResult: (JadeTestResult new addPassed: methodService selector)]!
 
@@ -68,10 +72,17 @@ packagesSize
 	^'Packages: ' , packageListPresenter model size printString!
 
 runAll
-	self runTests: methodListPresenter model!
+	^classListPresenter selections size > 1
+		ifTrue: [self runTests: methodListPresenter model]
+		ifFalse: [self runTests: methodListPresenter model in: classListPresenter selections first name]!
 
 runSelected
-	self runTests: methodListPresenter selections!
+	"if multiple classes are selected, we really don't know which test class
+	the user intended for the test to be run so pick the class the test is defined in"
+
+	^classListPresenter selections size > 1
+		ifTrue: [self runTests: methodListPresenter selections]
+		ifFalse: [self runTests: methodListPresenter selections in: classListPresenter selections first name]!
 
 selectClassNamed: name
 	"for testing at the moment"

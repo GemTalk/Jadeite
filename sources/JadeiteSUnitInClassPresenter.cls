@@ -21,7 +21,7 @@ debug
 			[gciSession
 				serverPerform: #debugTestNamed:of:
 				with: methodService selector
-				with: methodService className]
+				with: testClassService name]
 					ifCurtailed: [^self].
 			methodService setPassed]!
 
@@ -40,6 +40,14 @@ editSave
 editSelectAll
 
 	methodListPresenter selections: methodListPresenter list. !
+
+findClass
+
+	^parentPresenter findClass!
+
+jadeBrowseTests
+
+	^parentPresenter topShell jadeBrowseTests!
 
 jadeDebug
 	"hot key hook" 
@@ -97,6 +105,8 @@ runSelected
 !JadeiteSUnitInClassPresenter categoriesFor: #editReplace!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #editSave!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #editSelectAll!menu handlers support!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #findClass!menu handlers support!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #jadeBrowseTests!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #jadeDebug!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #jadeDisplay!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #jadeExecute!menu handlers support!public! !

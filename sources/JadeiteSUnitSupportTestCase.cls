@@ -32,10 +32,80 @@ methodListPresenter
 projectsPresenter
 	^projectsBrowser currentCard!
 
+selectSUnitBrowserMethodsNamed: selectors
+	| selections methodListPresenter |
+	selections := OrderedCollection new.
+	methodListPresenter := sunitBrowser primaryPresenter methodListPresenter.
+	methodListPresenter resetSelection.
+	selectors do: 
+			[:selector |
+			| service |
+			service := methodListPresenter list detect: [:methodService | methodService selector = selector]
+						ifNone: [self error: 'Selector ''' , selector , ''' not found'].
+			methodListPresenter selections: (methodListPresenter selections asOrderedCollection
+						add: service;
+						yourself).
+			selections add: service].
+	^selections!
+
 setUp
 	super setUp. 
 	sunitBrowser := self openWindow: [transcript jadeBrowseTests].
 	transcript projectListPresenter refresh!
+
+setupRunInSelectedTestClassTest
+	"setup a test in the superclass that calls a method
+	defined in both the super and subclass"
+
+	self setupTestSuperclass.
+	self
+		saveClass: 'RowanSample1SubClassTest'
+		superclass: 'RowanSample1Test'
+		instVars: Array new
+		package: 'RowanSample1-Tests'.
+	self methodSourcePresenter value: 'myClassName
+				^#RowanSample1SubClassTest'.
+	self projectsPresenter editSaveMethod: self classListPresenter selection!
+
+setupTestSuperclass
+	"setup a subclass of TestCase with a class var that can 
+	record what class was actually run" 
+	self selectServiceNamed: 'RowanSample1' in: self projectsPresenter projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self projectsPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self projectsPresenter classListPresenter.
+	self projectsPresenter classDefinitionPresenter
+		value: 'TestCase' , ' rwSubclass: ' , 'RowanSample1Test' printString
+				, '
+	instVarNames: ' , Array new printString
+				, '
+	classVars: #(TestClassVar)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: '
+					, 'RowanSample1-Tests' printString , '
+	options: #()'.
+	self projectsPresenter editSaveClass.
+	self methodSourcePresenter
+		value: 'test_method
+				self class setMyClassName: self class name. 
+				^self assert: self class name equals: self myClassName'.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self methodSourcePresenter value: 'myClassName
+				^#RowanSample1Test'.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self selectClassTab.
+	self methodSourcePresenter value: 'setMyClassName: aSymbol 
+				TestClassVar := aSymbol'.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self methodSourcePresenter value: 'testClassVar
+				^TestClassVar'.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self selectInstanceTab.
+	self methodSourcePresenter
+		value: 'test_method
+				self class setMyClassName: self class name. 
+				^self assert: self class name equals: self myClassName'.
+	self projectsPresenter editSaveMethod: self classListPresenter selection!
 
 sunitPresenter
 	^sunitBrowser primaryPresenter!
@@ -293,13 +363,55 @@ test_sunitTabPassingDebugTestShowsResult
 	self projectsPresenter sunitPresenter methodListPresenter selection: (Array with: methodService).
 	self projectsPresenter sunitPresenter debug.
 	self assert: methodService testResult equals: 'passed']
+			ensure: [projectsBrowser destroy]!
+
+test_testsRunInSelectedTestClass
+	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
+	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	
+	[self setupRunInSelectedTestClassTest.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
+	self selectSUnitBrowserMethodsNamed: (Array with: #test_method).
+	self assert: self sunitPresenter debug isKindOf: JadeiteSUnitPresenter.
+	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color darkGreen.
+	self assert: self sunitPresenter textResultPresenter value
+		equals: '1 run, 1 passed, 0 failures, 0 errors'.
+	self assert: (session executeString: 'RowanSample1Test testClassVar') equals: #RowanSample1Test.
+	self assert: self sunitPresenter runSelected isKindOf: JadeTestResult. "runSelected sends back the result of the last test" 
+	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color darkGreen.
+	self assert: self sunitPresenter textResultPresenter value
+		equals: '1 run, 1 passed, 0 failures, 0 errors'.
+	self assert: (session executeString: 'RowanSample1Test testClassVar') equals: #RowanSample1Test.
+	self assert: self sunitPresenter runAll isKindOf: JadeTestResult. "runSelected sends back the result of the last test" 
+	self assert: (session executeString: 'RowanSample1Test testClassVar') equals: #RowanSample1Test.
+	"set the selected class to the subclass, but the test will be run in the super.
+	Ensure the test was run in the subclass" 
+	self selectServiceNamed: 'RowanSample1SubClassTest' in: self sunitPresenter classListPresenter.
+	self selectSUnitBrowserMethodsNamed: (Array with: #test_method).
+	self assert: self sunitPresenter debug isKindOf: JadeiteSUnitPresenter.
+	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color darkGreen.
+	self assert: self sunitPresenter textResultPresenter value
+		equals: '1 run, 1 passed, 0 failures, 0 errors'.
+	self assert: (session executeString: 'RowanSample1Test testClassVar') equals: #RowanSample1SubClassTest.
+	self assert: self sunitPresenter runSelected isKindOf: JadeTestResult. "runSelected sends back the result of the last test" 
+	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color darkGreen.
+	self assert: self sunitPresenter textResultPresenter value
+		equals: '1 run, 1 passed, 0 failures, 0 errors'.
+	self assert: (session executeString: 'RowanSample1Test testClassVar') equals: #RowanSample1SubClassTest.
+	self assert: self sunitPresenter runAll isKindOf: JadeTestResult. "runSelected sends back the result of the last test" 
+	self assert: (session executeString: 'RowanSample1Test testClassVar') equals: #RowanSample1SubClassTest.
+	]
 			ensure: [projectsBrowser destroy]! !
 !JadeiteSUnitSupportTestCase categoriesFor: #assertPackageInList:!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #denyPackageInList:!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #isSampleProjectLoaded!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #methodListPresenter!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #projectsPresenter!private!support! !
+!JadeiteSUnitSupportTestCase categoriesFor: #selectSUnitBrowserMethodsNamed:!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #setUp!public!support! !
+!JadeiteSUnitSupportTestCase categoriesFor: #setupRunInSelectedTestClassTest!private!support! !
+!JadeiteSUnitSupportTestCase categoriesFor: #setupTestSuperclass!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #sunitPresenter!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #tearDown!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_abortNoSelections!public!tests! !
@@ -320,4 +432,5 @@ test_sunitTabPassingDebugTestShowsResult
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestMethods!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserPassingDebugTestShowsResult!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitTabPassingDebugTestShowsResult!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_testsRunInSelectedTestClass!public!tests! !
 

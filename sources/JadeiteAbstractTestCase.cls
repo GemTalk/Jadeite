@@ -170,6 +170,18 @@ sampleClassName
 sampleProjectName
 	^'RowanSample1'!
 
+saveClass: className superclass: superName instVars: instVars package: aString
+	self projectsPresenter classDefinitionPresenter
+		value: superName, ' rwSubclass: ', className printString, '
+	instVarNames: ' , instVars printString
+				, '
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ', aString printString, '
+	options: #()'.
+	self projectsPresenter editSaveClass!
+
 saveInterestingLoopMethod
 	| source |
 	source := self methodSourceForTest.
@@ -370,6 +382,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #rowanSample1Path!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #sampleClassName!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #sampleProjectName!constants!private! !
+!JadeiteAbstractTestCase categoriesFor: #saveClass:superclass:instVars:package:!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveInterestingLoopMethod!browser support!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveIssue166Method!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveIssue169Method!issue test support!private! !
