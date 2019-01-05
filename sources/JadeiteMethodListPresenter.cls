@@ -28,8 +28,7 @@ createComponents
 createSchematicWiring
 	super createSchematicWiring.
 	self getViews.
-	methodListPresenter
-		when: #methodSelectionChanged	send: #updateMethodSource 	to: self!
+	methodListPresenter when: #methodSelectionChanged	send: #updateMethodSource 	to: self!
 
 fileSave
 
@@ -58,8 +57,18 @@ methods: services selectingAnyMatch: string
 		selectFirstMethod.
 	self selectingAnyMatch: string!
 
+onCloseRequested: aCloseEvent
+	aCloseEvent value: (methodSourcePresenter documentPresenter view isModified
+				ifTrue: [methodSourcePresenter isOkayToChange]
+				ifFalse: [true])!
+
 removeComparisonTab
 	self textTabs remove: self comparisonTab ifAbsent: []!
+
+selectionChanging: aSelectionChangingEvent
+	aSelectionChangingEvent value: (methodSourcePresenter documentPresenter view isModified
+				ifTrue: [methodSourcePresenter isOkayToChange]
+				ifFalse: [true])!
 
 showComparisonTab
 	self textTabs add: self comparisonTab.
@@ -100,7 +109,9 @@ updateSource
 !JadeiteMethodListPresenter categoriesFor: #methodListSelection!public! !
 !JadeiteMethodListPresenter categoriesFor: #methods:selecting:!public! !
 !JadeiteMethodListPresenter categoriesFor: #methods:selectingAnyMatch:!public! !
+!JadeiteMethodListPresenter categoriesFor: #onCloseRequested:!event handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #removeComparisonTab!private!selection!text tabs! !
+!JadeiteMethodListPresenter categoriesFor: #selectionChanging:!event handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #showComparisonTab!private!selection!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #textTabs!private!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #updateMethodSource!public!updating! !

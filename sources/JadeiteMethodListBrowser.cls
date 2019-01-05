@@ -13,19 +13,7 @@ JadeiteMethodListBrowser comment: ''!
 createSchematicWiring
 
 	super createSchematicWiring. 
-	self  	 when: #'closeRequested:'		send: #'onCloseRequested:'	to: self.!
-
-handleSourceChanges
-	| sourcePresenter |
-	sourcePresenter := myPresenter methodSourcePresenter documentPresenter.
-	sourcePresenter view isModified
-		ifTrue: 
-			[(MessageBox confirm: 'Copy changes to clipboard?' caption: 'Method has unsaved changes!!')
-				ifTrue: [sourcePresenter value copyToClipboard].
-			sourcePresenter view isModified: false]!
-
-onCloseRequested: boolValueHolder
-	self handleSourceChanges!
+	self  	 when: #'closeRequested:'		send: #'onCloseRequested:'	to: self primaryPresenter.!
 
 presenterClass
 
@@ -36,8 +24,6 @@ shellName
 	^'Jadeite Method List Browser'.
 ! !
 !JadeiteMethodListBrowser categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
-!JadeiteMethodListBrowser categoriesFor: #handleSourceChanges!create schemantic wiring!public! !
-!JadeiteMethodListBrowser categoriesFor: #onCloseRequested:!event handlers!public! !
 !JadeiteMethodListBrowser categoriesFor: #presenterClass!private! !
 !JadeiteMethodListBrowser categoriesFor: #shellName!private! !
 

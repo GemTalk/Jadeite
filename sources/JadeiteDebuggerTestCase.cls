@@ -223,25 +223,6 @@ test_browseClassVariablePane
 	self assert: projectsBrowser currentCard classListPresenter selection name equals: 'RowanClassService'	"receiver is Array class"]
 			ensure: [projectsBrowser destroy]!
 
-test_debuggerDoNotCopyToClipboard
-	"Make sure to turn off test message box if you need to
-	debug this test. "
-
-	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
-	TestMessageBox enableJadeiteTestMessageBox.
-	
-	[self openDebuggerOn: 'nil halt'.
-	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
-	'notCopiedYet' copyToClipboard.
-	self assert: self getClipboardContents equals: 'notCopiedYet'.
-	debugger methodSourcePresenter documentPresenter value: 'new text'.
-	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #no.	"reject offer to copy to clip board"
-	[self selectFrameAt: 2] fork.	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
-	(Delay forMilliseconds: 100) wait.
-	self assert: self getClipboardContents equals: 'notCopiedYet']
-			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
-
 test_debuggerModifiedSourcePaneChangeFrame
 	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
 	TestMessageBox enableJadeiteTestMessageBox.
@@ -830,7 +811,6 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #terminateGsProcess!private!running! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_debuggerDoNotCopyToClipboard!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneChangeFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneStayOnFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_frameDoubleClick!public!tests! !
