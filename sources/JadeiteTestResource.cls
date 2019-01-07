@@ -44,6 +44,9 @@ openWindow: aBlock
 			count > 10 ifTrue: [^presenter]].
 	^presenter!
 
+projectsBrowser: anObject
+	projectsBrowser := anObject!
+
 resourceHasValidSession
 	^(GciSession allInstances includes: session) and: [session isValidSession]!
 
@@ -84,6 +87,7 @@ transcript
 !JadeiteTestResource categoriesFor: #isAvailable!public!testing! !
 !JadeiteTestResource categoriesFor: #openProjectsBrowser!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #openWindow:!private! !
+!JadeiteTestResource categoriesFor: #projectsBrowser:!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #resourceHasValidSession!public!testing! !
 !JadeiteTestResource categoriesFor: #rowanProjectsHome!constants!private! !
 !JadeiteTestResource categoriesFor: #rowanSample1Path!constants!private! !

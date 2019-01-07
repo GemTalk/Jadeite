@@ -190,18 +190,6 @@ saveMethodWithUniqueString
 
 	!
 
-saveSampleMethod
-
-	| source |
-	source := 'sampleMethod  
-		| aaa | 
-		aaa := 123. 
-		^aaa'. 
-	self methodSourcePresenter value: source. 
-	self projectsPresenter editSaveMethod: self classListPresenter selection. 
-
-	!
-
 saveTestClass
 	self saveTestClassWithInstVars: Array new package: 'Rowan-Services-Tests'!
 
@@ -222,14 +210,6 @@ selectHierarchyTab
 
 selectHierarchyTabIn: presenter
 	presenter classHierarchyTabs lastCard!
-
-selectRowanSample1Test
-	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
-	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
-	self projectsPresenter isHierarchyTabSelected
-		ifTrue: 
-			[self selectTreeServicesNamed: (Array with: 'RowanSample1Test') in: self classHierarchyPresenter]
-		ifFalse: [self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter]!
 
 selectSUnitTab
 	self projectsPresenter sunitPresenter ensureVisible!
@@ -2711,6 +2691,104 @@ test_verifyValidCategory
 	self deny: (self projectsPresenter verifyValidCategory: '*rowankernel') .
 	self deny: (self projectsPresenter verifyValidCategory: '*rowankernelx') .!
 
+testUnsavedChangesActionChangeSelectionIgnoreChanges
+	self testsIssue: #issue386
+		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[| source |
+	self selectRowanSample1Class.
+	self selectCategoryNamed: 'accessing'.
+	source := 'sampleMethod  
+		| aaa | 
+		aaa := 123. 
+		^aaa'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self assert: self methodListPresenter selection selector equals: #sampleMethod.
+	self methodSourcePresenter value: 'new text'.
+	self methodSourcePresenter view isModified: true.
+	TestMessageBox plannedResult: #no.	"answer that we want to ignore changes"
+	self selectWithChangeEventMethodNamed: #foo.
+	self assert: self methodListPresenter selection selector equals: #foo]
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				self projectsPresenter basicRemoveMethods	"for next test"]!
+
+testUnsavedChangesActionChangeSelectionStayOnMethod
+	self testsIssue: #issue386
+		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[| source |
+	self selectRowanSample1Class.
+	self selectCategoryNamed: 'accessing'.
+	source := 'sampleMethod  
+		| aaa | 
+		aaa := 123. 
+		^aaa'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self assert: self methodListPresenter selection selector equals: #sampleMethod.
+	self methodSourcePresenter value: 'new text'.
+	self methodSourcePresenter view isModified: true. 
+	TestMessageBox plannedResult: #yes.	"answer that we want to stay on method"
+	self selectWithChangeEventMethodNamed: #foo.
+	self assert: self methodListPresenter selection selector equals: #sampleMethod]
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				self projectsPresenter basicRemoveMethods]!
+
+testUnsavedChangesActionCloseWindow
+	self testsIssue: #issue386
+		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[| source |
+	self selectRowanSample1Class.
+	self selectCategoryNamed: 'accessing'.
+	source := 'sampleMethod  
+		| aaa | 
+		aaa := 123. 
+		^aaa'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self assert: self methodListPresenter selection selector equals: #sampleMethod.
+	self methodSourcePresenter value: 'new text'.
+	self methodSourcePresenter view isModified: true.
+	TestMessageBox plannedResult: #no.	"answer that we want to ignore changes"
+	projectsBrowser view close.
+	self deny: projectsBrowser isOpen]
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				JadeiteTestResource current projectsBrowser: nil.
+				projectsBrowser := JadeiteTestResource current openProjectsBrowser	"for next test"]!
+
+testUnsavedChangesActionCloseWindowStayOnMethod
+	self testsIssue: #issue386
+		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[| source |
+	self selectRowanSample1Class.
+	self selectCategoryNamed: 'accessing'.
+	source := 'sampleMethod  
+		| aaa | 
+		aaa := 123. 
+		^aaa'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self assert: self methodListPresenter selection selector equals: #sampleMethod.
+	self methodSourcePresenter value: 'new text'.
+	self methodSourcePresenter view isModified: true.
+	TestMessageBox plannedResult: #yes.	"answer that we want to stay on selection"
+	projectsBrowser view close.
+	self assert: projectsBrowser isOpen.
+	self assert: self methodListPresenter selection selector equals: #sampleMethod]
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				self projectsPresenter basicRemoveMethods]!
+
 waitForPresenter: presenter
 	[presenter list isEmpty] whileTrue: [(Delay forMilliseconds: 50) wait]! !
 !JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodGoo!dirty project!private! !
@@ -2733,14 +2811,12 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #saveHooMethod!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUnimplementedSelector!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUniqueString!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #saveSampleMethod!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveTestClass!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveTestClassWithInstVars:package:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectClassInHierarchyNamed:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectClassListTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectHierarchyTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectHierarchyTabIn:!private!selection! !
-!JadeiteProjectBrowserTestCase categoriesFor: #selectRowanSample1Test!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectSUnitTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectTreeServicesNamed:in:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
@@ -2862,5 +2938,9 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateHierarchy!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_variablesTab!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_verifyValidCategory!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #testUnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #testUnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #testUnsavedChangesActionCloseWindow!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #testUnsavedChangesActionCloseWindowStayOnMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #waitForPresenter:!private!selection! !
 

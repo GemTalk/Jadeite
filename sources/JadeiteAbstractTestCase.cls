@@ -237,6 +237,18 @@ saveIssue216Method
 	self methodSourcePresenter value: source.
 	self projectsPresenter editSaveMethod: self classListPresenter selection!
 
+saveSampleMethod
+
+	| source |
+	source := 'sampleMethod  
+		| aaa | 
+		aaa := 123. 
+		^aaa'. 
+	self methodSourcePresenter value: source. 
+	self projectsPresenter editSaveMethod: self classListPresenter selection. 
+
+	!
+
 selectCategoriesNamed: categories
 	categories do: 
 			[:category |
@@ -289,6 +301,14 @@ selectRowanSample1Class
 	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: self classListPresenter!
 
+selectRowanSample1Test
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
+	self projectsPresenter isHierarchyTabSelected
+		ifTrue: 
+			[self selectTreeServicesNamed: (Array with: 'RowanSample1Test') in: self classHierarchyPresenter]
+		ifFalse: [self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter]!
+
 selectServiceNamed: aString in: presenter
 	self selectServicesNamed: (Array with: aString) in: presenter!
 
@@ -303,6 +323,27 @@ selectServicesNamed: anArray in: presenter
 			presenter selections: (presenter selections asOrderedCollection
 						add: service;
 						yourself)]!
+
+selectWithChangeEventMethodNamed: selector
+	"foolishly, the selection changing event which needs testing
+	is only sent through a button click in Dolphin. We need to 
+	fake it out for the test. frustrating.
+
+	Note - even though we are faking up the event, the event itself
+	should get modified based on the debugger's state which is a
+	valid test."
+
+	| event index methodService |
+	methodService := self methodListPresenter list detect: [:service | service selector = selector].
+	index := self methodListPresenter list indexOf: methodService.
+	event := (SelectionChangingEvent forSource: self)
+				oldSelections: self methodListPresenter selections;
+				newSelections: (Array with: (self methodListPresenter list at: index));
+				cause: #test;
+				yourself.
+	self methodListPresenter onSelectionChanging: event.
+	event value ifFalse: [^self].
+	self methodListPresenter selection: (self methodListPresenter list at: index)!
 
 serviceNamed: name in: presenter
 	| service |
@@ -387,6 +428,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #saveIssue166Method!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveIssue169Method!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveIssue216Method!issue test support!private! !
+!JadeiteAbstractTestCase categoriesFor: #saveSampleMethod!private! !
 !JadeiteAbstractTestCase categoriesFor: #selectCategoriesNamed:!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectCategoryNamed:!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectClassTab!private!selection! !
@@ -396,8 +438,10 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #selectMethodNamed:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectMethodsNamed:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectRowanSample1Class!private!project browser support!selection! !
+!JadeiteAbstractTestCase categoriesFor: #selectRowanSample1Test!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectServiceNamed:in:!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectServicesNamed:in:!private!project browser support!selection! !
+!JadeiteAbstractTestCase categoriesFor: #selectWithChangeEventMethodNamed:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #serviceNamed:in:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #testsIssue:withTitle:!issue test support!public!support! !
