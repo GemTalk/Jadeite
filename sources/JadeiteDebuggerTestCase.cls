@@ -798,9 +798,10 @@ testUnsavedChangesActionChangeFrame
 	self assert: debugger frameListPresenter selectionByIndex equals: 4. 
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #no.	"answer that we want to stay on frame"
+	TestMessageBox plannedResult: #no. "ignore changes"
 	self debuggerDo: [[debugger stepOver] forkAt: Processor activePriority + 1].
-	self assert: debugger frameListPresenter selectionByIndex equals: 4. ]
+	(Delay forMilliseconds: 50) wait. 
+	self assert: debugger frameListPresenter selectionByIndex equals: 1. ]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 testUnsavedChangesActionChangeToHomeFrame

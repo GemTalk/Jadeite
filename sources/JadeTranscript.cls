@@ -124,12 +124,14 @@ onCloseRequested: boolValueHolder
 			temp forceLogout]!
 
 onIdleEntered
+	"gciSession might be nil on a fast moving test"
 
-	gciSession isCallInProgress ifFalse: [
-		Cursor current ifNotNil: [
-			[Cursor current ifNotNil: [Cursor current: nil]] forkAt: Processor userBackgroundPriority.
-		].
-	].
+	| shouldUpdateCursor |
+	shouldUpdateCursor := gciSession ifNil: [true] ifNotNil: [gciSession isCallInProgress not].
+	shouldUpdateCursor
+		ifTrue: 
+			[Cursor current
+				ifNotNil: [[Cursor current ifNotNil: [Cursor current: nil]] forkAt: Processor userBackgroundPriority]].
 	^super onIdleEntered!
 
 onViewOpened

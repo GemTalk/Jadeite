@@ -955,11 +955,11 @@ pkgsMenuStrings
 populateFilterList
 	self isCategoryTabSelected
 		ifTrue: 
-			[categoryListPresenter list: (ListModel new searchPolicy: SearchPolicy equality).
-			categoryListPresenter list addAll: self selectedClass categories]
+			[categoryListPresenter model: (ListModel new searchPolicy: SearchPolicy equality).
+			categoryListPresenter model addAll: self selectedClass categories]
 		ifFalse: 
-			[variableListPresenter list: (ListModel new searchPolicy: SearchPolicy equality).
-			variableListPresenter list addAll: self selectedClass categories]!
+			[variableListPresenter model: (ListModel new searchPolicy: SearchPolicy equality).
+			variableListPresenter model addAll: self selectedClass variables]!
 
 postOkToChangeEvent
 	| service |

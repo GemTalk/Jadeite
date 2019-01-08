@@ -384,7 +384,6 @@ test_blankCategoryRenameInvalid
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #ok. 
 	[self projectsPresenter basicRenameCategoryFrom: 'accessing' to: String new.
-	self assert: self categoryListPresenter list size equals: 1.
 	self assert: self categoryListPresenter selection equals: 'accessing']
 		ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
@@ -2729,7 +2728,7 @@ test_twoBrowsersUpdateHierarchy
 test_UnsavedChangesActionChangeSelectionIgnoreChanges
 	self testsIssue: #issue388
 		withTitle: '(3.0.53) useful to be able to open method browser on selected methods in project browser'.
-	
+	TestMessageBox enableJadeiteTestMessageBox.
 	[| source |
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
