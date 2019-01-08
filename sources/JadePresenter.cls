@@ -45,6 +45,11 @@ resetCursor
 	[Cursor current: nil] forkAt: Processor userBackgroundPriority.
 !
 
+statusBarText: aString
+
+	self topShell statusBarText: aString.
+!
+
 subMenuName
 
 	^nil.
@@ -99,6 +104,7 @@ updateMenuBar: aMenuBar withName: aString itemsFrom: aPresenter
 !JadePresenter categoriesFor: #gciSession:!public! !
 !JadePresenter categoriesFor: #refreshFromServer!public! !
 !JadePresenter categoriesFor: #resetCursor!public! !
+!JadePresenter categoriesFor: #statusBarText:!public! !
 !JadePresenter categoriesFor: #subMenuName!menus!public! !
 !JadePresenter categoriesFor: #subMenuPresenter!menus!public! !
 !JadePresenter categoriesFor: #updateMenuBar:!menus!public! !

@@ -105,6 +105,22 @@ openDebuggerOn: aString
 		yourself.
 !
 
+saveMethod: source in: className category: category
+	| classService |
+	classService := RowanClassService named: className.
+	classService
+		command: #saveMethodSource:category:;
+		commandArgs: (Array with: source with: 'other').
+	self issueCommand: classService!
+
+saveMethodWithHalt
+	| source |
+	source := 'sampleMethodWithHalt
+		| array  | 
+		array := Array new halt. 
+		^array'.
+	self saveMethod: source in: 'RowanSample1' category: 'other'!
+
 selectFrameAt: integer
 	"foolishly, the selection changing event which needs testing
 	is only sent through a button click in Dolphin. We need to 
@@ -175,6 +191,33 @@ Processor allProcesses includes: gsProcess'.
 	].
 	self assert: false.
 !
+
+test_badCompileInDebugger
+	| source |
+	self testsIssue: #issue219 withTitle: 'error when saving source with compile error in debugger'.
+	self saveMethodWithHalt.
+	self openDebuggerOn: 'RowanSample1 new sampleMethodWithHalt'.
+	[debugger frameListPresenter list size <= 0] whileTrue: [(Delay forMilliseconds: 100) wait].
+	self assert: debugger frameListPresenter selection
+		equals: 'RowanSample1 >> sampleMethodWithHalt @3 line 3'.
+	source := 'sampleMethodWithHalt
+		"this code will fail compile"
+		| array  | 
+		array := Array with: .
+		^array'.
+	debugger methodSourcePresenter documentPresenter value: source.
+	debugger saveMethod. 
+	self assert: (debugger view viewNamed: 'statusBarText') value equals: 'expected a primary expression'.
+	self assert: debugger methodSourcePresenter documentPresenter view backcolor
+		equals: JadeTextStyles default colorForCompileError.
+	source := 'sampleMethodWithHalt
+		"this code will fail compile"
+		array := Array with: 1.'.
+	debugger methodSourcePresenter documentPresenter value: source.
+	debugger saveMethod. 
+	self assert: (debugger view viewNamed: 'statusBarText') value  equals: 'undefined symbol'.
+	self assert: debugger methodSourcePresenter documentPresenter view backcolor
+		equals: JadeTextStyles default colorForCompileError.!
 
 test_browseClass
 	| browser |
@@ -804,11 +847,14 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #menuItemIsEnabled:!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #methodListBrowser!private! !
 !JadeiteDebuggerTestCase categoriesFor: #openDebuggerOn:!private! !
+!JadeiteDebuggerTestCase categoriesFor: #saveMethod:in:category:!public!support! !
+!JadeiteDebuggerTestCase categoriesFor: #saveMethodWithHalt!private! !
 !JadeiteDebuggerTestCase categoriesFor: #selectFrameAt:!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteDebuggerTestCase categoriesFor: #systemBrowser!private! !
 !JadeiteDebuggerTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteDebuggerTestCase categoriesFor: #terminateGsProcess!private!running! !
+!JadeiteDebuggerTestCase categoriesFor: #test_badCompileInDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneChangeFrame!public!tests! !

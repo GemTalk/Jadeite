@@ -281,11 +281,6 @@ selectionChanging: aSelectionChangingEvent
 		with: aSelectionChangingEvent.
 !
 
-statusBarText: aString
-
-	self topShell statusBarText: aString.
-!
-
 supportedClassCategoryDropOperations
 
 	^#().
@@ -351,7 +346,6 @@ userSelection
 !JadePresenterA categoriesFor: #onDragSymbolDictionariesOver:!drag & drop!public! !
 !JadePresenterA categoriesFor: #primaryPresenter!drag & drop!label edit!public! !
 !JadePresenterA categoriesFor: #selectionChanging:!public! !
-!JadePresenterA categoriesFor: #statusBarText:!public! !
 !JadePresenterA categoriesFor: #supportedClassCategoryDropOperations!drag & drop!public! !
 !JadePresenterA categoriesFor: #supportedClassDropOperations!drag & drop!public! !
 !JadePresenterA categoriesFor: #supportedMethodCategoryDropOperations!drag & drop!public! !
