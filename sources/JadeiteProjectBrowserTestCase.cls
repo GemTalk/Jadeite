@@ -404,6 +404,37 @@ test_browseSameClassCategoriesCorrect
 		equals: self projectsPresenter categoryListPresenter list]
 			ensure: [newBrowser destroy]!
 
+test_browseSelectedMethods
+	| methodListPresenter  commandQuery |
+	self testsIssue: #issue388
+		withTitle: '(3.0.53) useful to be able to open method browser on selected methods in project browser'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
+	self selectCategoryNamed: 'client commands'.
+	commandQuery := self
+				queryCommand: #browseSelectedMethods
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled.
+	self selectMethodsNamed: (Array
+				with: #fileoutClass
+				with: #removeMethods
+				with: #addCategory:).
+	methodListBrowser := self projectsPresenter browseSelectedMethods.
+	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
+	self assert: methodListPresenter list size equals: 3.
+	self assert: methodListPresenter list first selector equals: #addCategory:.
+	self assert: methodListPresenter list second selector equals: #fileoutClass.
+	self assert: methodListPresenter list third selector equals: #removeMethods.
+	self assert: ('Selected Methods*' match: methodListBrowser caption).
+	commandQuery := self
+				queryCommand: #browseSelectedMethods
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled.
+!
+
 test_categoryTextDisplay
 	self testsIssue: #issue232 withTitle: 'cannot tell which `category` a method is in (Oscar-3.0.41)'.
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
@@ -2692,12 +2723,13 @@ test_verifyValidCategory
 	self deny: (self projectsPresenter verifyValidCategory: '*rowankernelx') .!
 
 testUnsavedChangesActionChangeSelectionIgnoreChanges
-	self testsIssue: #issue386
-		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
-	TestMessageBox enableJadeiteTestMessageBox.
+	self testsIssue: #issue388
+		withTitle: '(3.0.53) useful to be able to open method browser on selected methods in project browser'.
 	
 	[| source |
-	self selectRowanSample1Class.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
+	self selectServiceNamed: self sampleClassName in: self classListPresenter.
 	self selectCategoryNamed: 'accessing'.
 	source := 'sampleMethod  
 		| aaa | 
@@ -2830,6 +2862,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSameClassCategoriesCorrect!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_browseSelectedMethods!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeListSortOrder!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test class list! !

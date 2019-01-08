@@ -86,7 +86,10 @@ shellName
 updateCaption
 
 	self caption: (gciSession titleBarFor: self shellName).
-! !
+!
+
+updateCaption: string
+	self caption: (gciSession titleBarFor: string)! !
 !JadeShell categoriesFor: #createComponents!private! !
 !JadeShell categoriesFor: #gciSession!private! !
 !JadeShell categoriesFor: #gciSession:!private! !
@@ -97,6 +100,7 @@ updateCaption
 !JadeShell categoriesFor: #primaryPresenter!public! !
 !JadeShell categoriesFor: #shellName!overrides!private! !
 !JadeShell categoriesFor: #updateCaption!overrides!private! !
+!JadeShell categoriesFor: #updateCaption:!overrides!private! !
 
 !JadeShell class methodsFor!
 

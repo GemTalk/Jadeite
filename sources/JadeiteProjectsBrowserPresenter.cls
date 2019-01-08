@@ -123,6 +123,16 @@ browseSelectedClass
 	self updateService: classService.
 	self updateAfterFindClass: classService!
 
+browseSelectedMethods
+	"convenience menu item to display randomly grouped methods in a browser"
+
+	| browser |
+	(browser := JadeiteMethodListBrowser showOnSession: gciSession) primaryPresenter
+		methods: methodListPresenter selections
+		selecting: nil.
+	browser updateCaption: 'Selected Methods'.
+	^browser!
+
 categoriesMenuStrings
 
 	false ifTrue: [
@@ -835,12 +845,13 @@ methodsMenuStrings
 				browseHierarchySenders;
 				browseMethodsContaining;
 				browseLiteralReferences;
+				browseSelectedMethods; 
 				removeMethods;
 				runMethodTests;
 				fileOutMethods;
 				runMethodTests;
 				gotoMethodDefinedPackage].
-	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' '&File out methods ...//fileOutMethods' '-' '&Remove Method(s) ...//removeMethods'  'Run &Tests/Ctrl+B/runMethodTests' 'Go To Defining Package//gotoMethodDefinedPackage')!
+	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods'  '&File out methods ...//fileOutMethods' '-' '&Remove Method(s) ...//removeMethods'  'Run &Tests/Ctrl+B/runMethodTests' 'Go To Defining Package//gotoMethodDefinedPackage')!
 
 moveMethods: methodServices toCategory: targetCategory
 	| classService |
@@ -1230,7 +1241,7 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: projectListPresenter selections notEmpty.
 			^true].
-	(#(#browseHierarchyImplementors #browseHierarchySenders) includes: command)
+	(#(#browseHierarchyImplementors #browseHierarchySenders #browseSelectedMethods) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: methodListPresenter selections notEmpty.
 			^true].
@@ -1945,6 +1956,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseHierarchySenders!public!queries! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseMethodHistory!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseSelectedClass!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #browseSelectedMethods!menu handlers!public!queries! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #categoryListPresenter!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #checkout!project menu handlers!public! !
