@@ -3383,7 +3383,9 @@ browseChangedThing
 				[:ex |
 				shell destroy.
 				MessageBox notify: 'The change you have selected cannot be browsed'].
-	shell currentCard updateAfterFindClass: classService!
+	shell currentCard
+		updateAfterFindClass: classService;
+		findMethod: selection selector asSymbol!
 
 operationSelected
 
