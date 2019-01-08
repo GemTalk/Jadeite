@@ -376,6 +376,18 @@ test_autoDirtyDisplayRemoveMethod
 	self assert: self packageListPresenter selection name = 'RowanSample1-Core'.
 	self assert: self packageListPresenter selection isDirty!
 
+test_blankCategoryRenameInvalid
+	self testsIssue: #issue380
+		withTitle: '(3.0.53) rename protocol is broken: `UndefinedObject does not understand #''select:''`'.
+	self selectRowanSample1Class.
+	self categoryListPresenter selection: 'accessing'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #ok. 
+	[self projectsPresenter basicRenameCategoryFrom: 'accessing' to: String new.
+	self assert: self categoryListPresenter list size equals: 1.
+	self assert: self categoryListPresenter selection equals: 'accessing']
+		ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_browseSameClassCategoriesCorrect
 	"related bug found while fixing issue #344"
 
@@ -1931,6 +1943,38 @@ test_removeProject
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_renameCategory
+	self testsIssue: #issue380
+		withTitle: '(3.0.53) rename protocol is broken: `UndefinedObject does not understand #''select:''`'.
+	self selectRowanSample1Class.
+	self categoryListPresenter selection: 'accessing'.
+	self assert: self categoryListPresenter list size equals: 1.
+	self assert: self categoryListPresenter selection equals: 'accessing'.
+	self projectsPresenter basicRenameCategoryFrom: 'accessing' to: 'accessingNew'.
+	self assert: self categoryListPresenter list size equals: 1.
+	self assert: self categoryListPresenter selection equals: 'accessingNew'!
+
+test_renameDisabledWithMultipleCategoriesSelected
+	| commandQuery |
+	self testsIssue: #issue380
+		withTitle: '(3.0.53) rename protocol is broken: `UndefinedObject does not understand #''select:''`'.
+	self selectRowanSample1Class.
+	self categoryListPresenter selection: 'accessing'.
+	self assert: self categoryListPresenter selections size equals: 1.
+	commandQuery := self
+				queryCommand: #renameMethodCategory
+				inPresenter: self projectsPresenter
+				view: self categoryListPresenter view.
+	self assert: commandQuery isEnabled.
+	self projectsPresenter basicAddMethodCategory: 'added'.
+	self categoryListPresenter selections: #('added' 'accessing').
+	self assert: self categoryListPresenter selections size equals: 2.
+	commandQuery := self
+				queryCommand: #renameMethodCategory
+				inPresenter: self projectsPresenter
+				view: self categoryListPresenter view.
+	self deny: commandQuery isEnabled!
+
 test_rowanTestsHierarchy
 	
 	self testsIssue: #issue239 withTitle: 'long update times possible when selecting a package with `hierarchy` tab selected'.
@@ -2682,6 +2726,105 @@ test_twoBrowsersUpdateHierarchy
 		in: secondPresenter classHierarchyPresenter]
 			ensure: [secondBrowser destroy]!
 
+test_UnsavedChangesActionChangeSelectionIgnoreChanges
+	self testsIssue: #issue388
+		withTitle: '(3.0.53) useful to be able to open method browser on selected methods in project browser'.
+	
+	[| source |
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
+	self selectServiceNamed: self sampleClassName in: self classListPresenter.
+	self selectCategoryNamed: 'accessing'.
+	source := 'sampleMethod  
+		| aaa | 
+		aaa := 123. 
+		^aaa'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self assert: self methodListPresenter selection selector equals: #sampleMethod.
+	self methodSourcePresenter value: 'new text'.
+	self methodSourcePresenter view isModified: true.
+	TestMessageBox plannedResult: #no.	"answer that we want to ignore changes"
+	self selectWithChangeEventMethodNamed: #foo.
+	self assert: self methodListPresenter selection selector equals: #foo]
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				self projectsPresenter basicRemoveMethods	"for next test"]!
+
+test_UnsavedChangesActionChangeSelectionStayOnMethod
+	self testsIssue: #issue386
+		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[| source |
+	self selectRowanSample1Class.
+	self selectCategoryNamed: 'accessing'.
+	source := 'sampleMethod  
+		| aaa | 
+		aaa := 123. 
+		^aaa'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self assert: self methodListPresenter selection selector equals: #sampleMethod.
+	self methodSourcePresenter value: 'new text'.
+	self methodSourcePresenter view isModified: true.
+	TestMessageBox plannedResult: #yes.	"answer that we want to stay on method"
+	self selectWithChangeEventMethodNamed: #foo.
+	self assert: self methodListPresenter selection selector equals: #sampleMethod]
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				self projectsPresenter basicRemoveMethods]!
+
+test_UnsavedChangesActionCloseWindow
+	self testsIssue: #issue386
+		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[| source |
+	self selectRowanSample1Class.
+	self selectCategoryNamed: 'accessing'.
+	source := 'sampleMethod  
+		| aaa | 
+		aaa := 123. 
+		^aaa'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self assert: self methodListPresenter selection selector equals: #sampleMethod.
+	self methodSourcePresenter value: 'new text'.
+	self methodSourcePresenter view isModified: true.
+	TestMessageBox plannedResult: #no.	"answer that we want to ignore changes"
+	projectsBrowser view close.
+	self deny: projectsBrowser isOpen]
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				JadeiteTestResource current projectsBrowser: nil.
+				projectsBrowser := JadeiteTestResource current openProjectsBrowser	"for next test"]!
+
+test_UnsavedChangesActionCloseWindowStayOnMethod
+	self testsIssue: #issue386
+		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[| source |
+	self selectRowanSample1Class.
+	self selectCategoryNamed: 'accessing'.
+	source := 'sampleMethod  
+		| aaa | 
+		aaa := 123. 
+		^aaa'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self assert: self methodListPresenter selection selector equals: #sampleMethod.
+	self methodSourcePresenter value: 'new text'.
+	self methodSourcePresenter view isModified: true.
+	TestMessageBox plannedResult: #yes.	"answer that we want to stay on selection"
+	projectsBrowser view close.
+	self assert: projectsBrowser isOpen.
+	self assert: self methodListPresenter selection selector equals: #sampleMethod]
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				self projectsPresenter basicRemoveMethods]!
+
 test_variablesTab
 	"at least do something with the variables tab"
 
@@ -2722,105 +2865,6 @@ test_verifyValidCategory
 	self deny: (self projectsPresenter verifyValidCategory: '*rowankernel') .
 	self deny: (self projectsPresenter verifyValidCategory: '*rowankernelx') .!
 
-testUnsavedChangesActionChangeSelectionIgnoreChanges
-	self testsIssue: #issue388
-		withTitle: '(3.0.53) useful to be able to open method browser on selected methods in project browser'.
-	
-	[| source |
-	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
-	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
-	self selectServiceNamed: self sampleClassName in: self classListPresenter.
-	self selectCategoryNamed: 'accessing'.
-	source := 'sampleMethod  
-		| aaa | 
-		aaa := 123. 
-		^aaa'.
-	self methodSourcePresenter value: source.
-	self projectsPresenter editSaveMethod: self classListPresenter selection.
-	self assert: self methodListPresenter selection selector equals: #sampleMethod.
-	self methodSourcePresenter value: 'new text'.
-	self methodSourcePresenter view isModified: true.
-	TestMessageBox plannedResult: #no.	"answer that we want to ignore changes"
-	self selectWithChangeEventMethodNamed: #foo.
-	self assert: self methodListPresenter selection selector equals: #foo]
-			ensure: 
-				[TestMessageBox disableJadeiteTestMessageBox.
-				self projectsPresenter basicRemoveMethods	"for next test"]!
-
-testUnsavedChangesActionChangeSelectionStayOnMethod
-	self testsIssue: #issue386
-		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
-	TestMessageBox enableJadeiteTestMessageBox.
-	
-	[| source |
-	self selectRowanSample1Class.
-	self selectCategoryNamed: 'accessing'.
-	source := 'sampleMethod  
-		| aaa | 
-		aaa := 123. 
-		^aaa'.
-	self methodSourcePresenter value: source.
-	self projectsPresenter editSaveMethod: self classListPresenter selection.
-	self assert: self methodListPresenter selection selector equals: #sampleMethod.
-	self methodSourcePresenter value: 'new text'.
-	self methodSourcePresenter view isModified: true. 
-	TestMessageBox plannedResult: #yes.	"answer that we want to stay on method"
-	self selectWithChangeEventMethodNamed: #foo.
-	self assert: self methodListPresenter selection selector equals: #sampleMethod]
-			ensure: 
-				[TestMessageBox disableJadeiteTestMessageBox.
-				self projectsPresenter basicRemoveMethods]!
-
-testUnsavedChangesActionCloseWindow
-	self testsIssue: #issue386
-		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
-	TestMessageBox enableJadeiteTestMessageBox.
-	
-	[| source |
-	self selectRowanSample1Class.
-	self selectCategoryNamed: 'accessing'.
-	source := 'sampleMethod  
-		| aaa | 
-		aaa := 123. 
-		^aaa'.
-	self methodSourcePresenter value: source.
-	self projectsPresenter editSaveMethod: self classListPresenter selection.
-	self assert: self methodListPresenter selection selector equals: #sampleMethod.
-	self methodSourcePresenter value: 'new text'.
-	self methodSourcePresenter view isModified: true.
-	TestMessageBox plannedResult: #no.	"answer that we want to ignore changes"
-	projectsBrowser view close.
-	self deny: projectsBrowser isOpen]
-			ensure: 
-				[TestMessageBox disableJadeiteTestMessageBox.
-				JadeiteTestResource current projectsBrowser: nil.
-				projectsBrowser := JadeiteTestResource current openProjectsBrowser	"for next test"]!
-
-testUnsavedChangesActionCloseWindowStayOnMethod
-	self testsIssue: #issue386
-		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
-	TestMessageBox enableJadeiteTestMessageBox.
-	
-	[| source |
-	self selectRowanSample1Class.
-	self selectCategoryNamed: 'accessing'.
-	source := 'sampleMethod  
-		| aaa | 
-		aaa := 123. 
-		^aaa'.
-	self methodSourcePresenter value: source.
-	self projectsPresenter editSaveMethod: self classListPresenter selection.
-	self assert: self methodListPresenter selection selector equals: #sampleMethod.
-	self methodSourcePresenter value: 'new text'.
-	self methodSourcePresenter view isModified: true.
-	TestMessageBox plannedResult: #yes.	"answer that we want to stay on selection"
-	projectsBrowser view close.
-	self assert: projectsBrowser isOpen.
-	self assert: self methodListPresenter selection selector equals: #sampleMethod]
-			ensure: 
-				[TestMessageBox disableJadeiteTestMessageBox.
-				self projectsPresenter basicRemoveMethods]!
-
 waitForPresenter: presenter
 	[presenter list isEmpty] whileTrue: [(Delay forMilliseconds: 50) wait]! !
 !JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodGoo!dirty project!private! !
@@ -2857,13 +2901,14 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_acceptDefinedMethodInExtensionClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addDuplicatePackage!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addPackageReloadProject!public!test projects! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveHierarchyCategory!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_blankCategoryRenameInvalid!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSameClassCategoriesCorrect!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSelectedMethods!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeListSortOrder!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classSideSelection!public!test class hierarchy!test class list!tests! !
@@ -2933,6 +2978,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeAbortedClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_renameCategory!public!test categories! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_renameDisabledWithMultipleCategoriesSelected!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_rowanTestsHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassCommentInClassList!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassCommentInHierarchy!public!test class hierarchy!tests! !
@@ -2969,11 +3016,11 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersNoUpdateWithoutPackageSelection!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdate!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateHierarchy!public!test two browsers! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindow!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindowStayOnMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_variablesTab!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_verifyValidCategory!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #testUnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #testUnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #testUnsavedChangesActionCloseWindow!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #testUnsavedChangesActionCloseWindowStayOnMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #waitForPresenter:!private!selection! !
 

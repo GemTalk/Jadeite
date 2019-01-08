@@ -87,6 +87,15 @@ basicRemoveMethods
 	service meta: self isClassSideSelected.
 	self removeMethods: (Array with: service)!
 
+basicRenameCategoryFrom: old to: new
+	| service |
+	new isEmpty ifTrue: [^MessageBox notify: 'New category name cannot be blank'].
+	service := self selectedClass
+				command: #renameCategoryFrom:to:;
+				commandArgs: (Array with: old with: new).
+	self issueCommand: (Array with: service).
+	categoryListPresenter selection: new!
+
 basicUnloadProjects: projectNames
 	| browserService |
 	browserService := RowanBrowserService new.
@@ -945,8 +954,12 @@ pkgsMenuStrings
 
 populateFilterList
 	self isCategoryTabSelected
-		ifTrue: [categoryListPresenter list: (ListModel withAll: self selectedClass categories)]
-		ifFalse: [variableListPresenter list: (ListModel withAll: self selectedClass variables)]!
+		ifTrue: 
+			[categoryListPresenter list: (ListModel new searchPolicy: SearchPolicy equality).
+			categoryListPresenter list addAll: self selectedClass categories]
+		ifFalse: 
+			[variableListPresenter list: (ListModel new searchPolicy: SearchPolicy equality).
+			variableListPresenter list addAll: self selectedClass categories]!
 
 postOkToChangeEvent
 	| service |
@@ -1375,7 +1388,7 @@ removeMethods: services
 	self issueCommand: services!
 
 renameMethodCategory
-	| new service old |
+	| new old |
 	old := categoryListPresenter selection.
 	(new := Prompter
 				on: old
@@ -1384,11 +1397,7 @@ renameMethodCategory
 		ifTrue: [^self].
 	(categoryListPresenter list includes: new)
 		ifTrue: [^MessageBox notify: 'category ' , new , ' already exists'].
-	service := self selectedClass
-				command: #renameCategoryFrom:to:;
-				commandArgs: (Array with: old with: new).
-	self issueCommand: (Array with: service).
-	categoryListPresenter selection: new!
+	self basicRenameCategoryFrom: old to: new!
 
 resetCategoryText
 	methodCategoryText value: String new. !
@@ -1950,6 +1959,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicProjectTabLabel!displaying!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethodCategories!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethods!menu handlers support!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #basicRenameCategoryFrom:to:!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicUnloadProjects:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #behaviorIdentifier!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseHierarchyImplementors!menu handlers!public!queries! !

@@ -63,7 +63,7 @@ tearDown
 			[methodListBrowser destroy.
 			methodListBrowser := nil]!
 
-testUnsavedChangesActionChangeSelectionIgnoreChanges
+test_UnsavedChangesActionChangeSelectionIgnoreChanges
 	| methodListPresenter |
 	self testsIssue: #issue386
 		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
@@ -90,7 +90,7 @@ testUnsavedChangesActionChangeSelectionIgnoreChanges
 				self removeMethods: methodListPresenter model asBag in: 'RowanSample1'.
 				self removeMethods: methodListPresenter model asBag in: 'RowanSample1Test']!
 
-testUnsavedChangesActionChangeSelectionStayOnMethod
+test_UnsavedChangesActionChangeSelectionStayOnMethod
 	| methodListPresenter |
 	self testsIssue: #issue386
 		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
@@ -117,7 +117,7 @@ testUnsavedChangesActionChangeSelectionStayOnMethod
 				self removeMethods: methodListPresenter model asBag in: 'RowanSample1'.
 				self removeMethods: methodListPresenter model asBag in: 'RowanSample1Test']!
 
-testUnsavedChangesActionCloseWindow
+test_UnsavedChangesActionCloseWindow
 	| methodListPresenter |
 	self testsIssue: #issue386
 		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
@@ -137,14 +137,14 @@ testUnsavedChangesActionCloseWindow
 	self assert: methodListPresenter list size equals: 2.
 	methodListBrowser primaryPresenter methodSourcePresenter documentPresenter value: 'new text'.
 	TestMessageBox plannedResult: #no.	"answer that we want to stay on frame"
-	 methodListBrowser view close. 
+	methodListBrowser view close.
 	self deny: methodListBrowser isOpen]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
 				self removeMethods: methodListPresenter model asBag in: 'RowanSample1'.
 				self removeMethods: methodListPresenter model asBag in: 'RowanSample1Test']!
 
-testUnsavedChangesActionCloseWindowStayOnMethod
+test_UnsavedChangesActionCloseWindowStayOnMethod
 	| methodListPresenter |
 	self testsIssue: #issue386
 		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
@@ -164,7 +164,7 @@ testUnsavedChangesActionCloseWindowStayOnMethod
 	self assert: methodListPresenter list size equals: 2.
 	methodListBrowser primaryPresenter methodSourcePresenter documentPresenter value: 'new text'.
 	TestMessageBox plannedResult: #yes.	"answer that we want to stay on frame"
-	methodListBrowser view close. 
+	methodListBrowser view close.
 	self assert: methodListBrowser isOpen.
 	self assert: methodListPresenter selectionByIndex equals: 1]
 			ensure: 
@@ -176,8 +176,8 @@ testUnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #saveMethod:in:category:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectListAt:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #testUnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #testUnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #testUnsavedChangesActionCloseWindow!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #testUnsavedChangesActionCloseWindowStayOnMethod!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindow!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindowStayOnMethod!public!tests! !
 
