@@ -228,6 +228,7 @@ confirmCategoryRemoval: selections
 	^(MessageBox confirm: ws contents) == true!
 
 copyProjectInfo
+	projectInfoTab selection last ifNil:[^self]. 
 	(projectInfoTab selection first perform: projectInfoTab selection last asSymbol) displayString copyToClipboard!
 
 createComponents
