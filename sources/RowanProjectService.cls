@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanProjectService
-	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded'
+	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome'
 	classVariableNames: 'DefaultProjectName'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -161,6 +161,9 @@ projectsUpdate: presenter
 			proj isSkew: isSkew].
 	!
 
+projectUrl
+	^projectUrl!
+
 releaseReferencedServices
 	| copy |
 	packages isNil ifTrue: [^self].
@@ -179,6 +182,9 @@ removedProject: presenter
 
 replicateFrom: newService
 	^self isProjectService ifTrue: [name isNil ifFalse: [super replicateFrom: newService]]!
+
+rowanProjectsHome
+	^rowanProjectsHome!
 
 sha
 	^sha!
@@ -205,10 +211,12 @@ sha: anObject
 !RowanProjectService categoriesFor: #projectPackagesUpdate:browser:!public!updating! !
 !RowanProjectService categoriesFor: #projectSelectionUpdate:!public!updating! !
 !RowanProjectService categoriesFor: #projectsUpdate:!public!updating! !
+!RowanProjectService categoriesFor: #projectUrl!accessing!public! !
 !RowanProjectService categoriesFor: #releaseReferencedServices!Init / Release!public! !
 !RowanProjectService categoriesFor: #remoteServiceName!must not strip!public! !
 !RowanProjectService categoriesFor: #removedProject:!public!updating! !
 !RowanProjectService categoriesFor: #replicateFrom:!public!updating! !
+!RowanProjectService categoriesFor: #rowanProjectsHome!accessing!public! !
 !RowanProjectService categoriesFor: #sha!accessing!public! !
 !RowanProjectService categoriesFor: #sha:!accessing!public! !
 
