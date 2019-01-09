@@ -1377,8 +1377,8 @@ test_issue261
 	
 	[self selectServiceNamed: 'Izmir' in: self projectListPresenter.
 	view := self projectsPresenter projectInfoTab view.
-	self assert: (view columns first contentFromRow: (view list at: 1)) equals: 'Izmir'.
-	self assert: (view columns first contentFromRow: (view list at: 5)).	"isDirty"]
+	self assert: (view columns first contentFromRow: (view list at: 3)) equals: 'Izmir'.
+	self assert: (view columns first contentFromRow: (view list at: 7)).	"isDirty"]
 			ensure: [self projectsPresenter basicUnloadProjects: #('Izmir')]!
 
 test_literalReferences
@@ -1694,13 +1694,14 @@ test_projectInfoTab
 	| view |
 	self testsIssue: #issue261 withTitle: 'Project tab should display reason for project font styling'.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self assert: (self projectsPresenter projectInfoTab view getItemText: 1) equals: 'name'.
-	self assert: (self projectsPresenter projectInfoTab view getItemText: 2) equals: 'sha'.
-	self assert: (self projectsPresenter projectInfoTab view getItemText: 3) equals: 'branch'.
-	self assert: (self projectsPresenter projectInfoTab view getItemText: 4) equals: 'isSkew'.
-	self assert: (self projectsPresenter projectInfoTab view getItemText: 5) equals: 'isDirty'.
+	self assert: (self projectsPresenter projectInfoTab view getItemText: 1) equals: 'rowanProjectsHome'.
+	self assert: (self projectsPresenter projectInfoTab view getItemText: 3) equals: 'name'.
+	self assert: (self projectsPresenter projectInfoTab view getItemText: 4) equals: 'sha'.
+	self assert: (self projectsPresenter projectInfoTab view getItemText: 5) equals: 'branch'.
+	self assert: (self projectsPresenter projectInfoTab view getItemText: 6) equals: 'isSkew'.
+	self assert: (self projectsPresenter projectInfoTab view getItemText: 7) equals: 'isDirty'.
 	view := self projectsPresenter projectInfoTab view.
-	self assert: (view columns first contentFromRow: (view list at: 1)) equals: 'Rowan'. "don't know the state of the rowan project so just test the name"!
+	self assert: (view columns first contentFromRow: (view list at: 3)) equals: 'Rowan'. "don't know the state of the rowan project so just test the name"!
 
 test_projectRemoved
 	"Gracefully remove a project from the project list if it was 

@@ -207,6 +207,8 @@ stonOn: anObject
 
 	^super stonOn: anObject   "Dolphin strips out the #stonOn: in Object. try to save it"!
 
+sunitMethodsUpdate: presenter browser: browser!
+
 superclassListUpdate: presenter
 	!
 
@@ -317,6 +319,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #replicateFrom:!public!replication!updating! !
 !RowanService categoriesFor: #sortAspect!accessing!public! !
 !RowanService categoriesFor: #stonOn:!must not strip!public! !
+!RowanService categoriesFor: #sunitMethodsUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #superclassListUpdate:!public!updating! !
 !RowanService categoriesFor: #testClasses:!public!updating! !
 !RowanService categoriesFor: #testPackages:!public!updating! !

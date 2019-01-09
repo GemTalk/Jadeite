@@ -128,6 +128,7 @@ package methodNames
 	add: #JadeiteSUnitPresenter -> #registerPresentersForUpdates;
 	add: #JadeiteSUnitPresenter -> #updateClasses;
 	add: #JadeiteSUnitPresenter -> #updateMethods;
+	add: #JadeiteSUnitPresenter -> #updateMethodsFrom:;
 	add: #JadeiteSUnitPresenter -> #updatePackages;
 	add: #JadeiteSUnitPresenter -> #updateServices:;
 	add: #JadeLoginShell -> #aboutJadeite;
@@ -1380,7 +1381,7 @@ refresh
 registerPresentersForUpdates
 	BrowserUpdate current register: packageListPresenter 	selector: #testPackages:.
 	BrowserUpdate current register: classListPresenter 		selector: #testClasses:.
-	BrowserUpdate current register: methodListPresenter 	selector: #classesMethodsUpdate:browser: browser: self.!
+	BrowserUpdate current register: methodListPresenter 	selector: #sunitMethodsUpdate:browser: browser: self.!
 
 updateClasses
 	| packageServices |
@@ -1390,14 +1391,22 @@ updateClasses
 	self issueCommand: packageServices!
 
 updateMethods
-	| classServices methodServices |
+	| classServices |
 	classServices := classListPresenter selections.
 	self updateServices: classServices.
+	^self updateMethodsFrom: classServices!
+
+updateMethodsFrom: classServices
+	| methodServices selectedSelectors |
 	classServices isEmpty ifTrue: [^methodListPresenter list: ListModel new].
+	selectedSelectors := methodListPresenter selections
+				collect: [:methodService | methodService selector].
 	methodServices := Set new.
 	classServices do: [:classService | methodServices addAll: classService visibleTests].
 	methodListPresenter
-		model: (ListModel withAll: (methodServices asSortedCollection: [:x :y | x selector < y selector]))!
+		model: (ListModel withAll: (methodServices asSortedCollection: [:x :y | x selector < y selector])).
+	methodListPresenter selections: (methodListPresenter model
+				select: [:methodService | selectedSelectors includes: methodService selector])!
 
 updatePackages
 	| browserService |
@@ -1420,6 +1429,7 @@ updateServices: services
 !JadeiteSUnitPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteSUnitPresenter categoriesFor: #updateClasses!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #updateMethods!event handlers!public! !
+!JadeiteSUnitPresenter categoriesFor: #updateMethodsFrom:!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #updatePackages!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #updateServices:!private! !
 

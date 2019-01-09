@@ -324,6 +324,17 @@ stonOn: stonWriter
 								ifNotNil: [:value | dictionary at: each asSymbol put: value]
 								ifNil: [self stonShouldWriteNilInstVars ifTrue: [dictionary at: each asSymbol put: nil]]]]]!
 
+sunitMethodsUpdate: presenter browser: browser
+	| selections oldClassService |
+	browser classListPresenter selections isEmpty ifTrue: [^self].
+	browser classListPresenter selections size > 1
+		ifFalse: [browser classListPresenter selection name asString = name asString ifFalse: [^self]].
+	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
+	selections := browser classListPresenter selections asOrderedCollection.
+	oldClassService := selections detect: [:classService | classService = self] ifNone: [^self].
+	oldClassService become: self. 
+	browser updateMethodsFrom: selections!
+
 template
 	^template!
 
@@ -442,6 +453,7 @@ visibleTests
 !RowanClassService categoriesFor: #shouldClearMethods!public!replication!testing! !
 !RowanClassService categoriesFor: #shouldColorAsExtension!public!testing! !
 !RowanClassService categoriesFor: #stonOn:!must not strip!public!ston! !
+!RowanClassService categoriesFor: #sunitMethodsUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #template!accessing!private! !
 !RowanClassService categoriesFor: #template:!accessing!private! !
 !RowanClassService categoriesFor: #toolTip!public! !
