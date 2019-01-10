@@ -279,20 +279,12 @@ selectMethodNamed: selector
 	^self selectMethodsNamed: (Array with: selector)!
 
 selectMethodsNamed: selectors
-	| selections | 
-	selections := OrderedCollection new. 
-	self methodListPresenter resetSelection. 
-	selectors do: 
-			[:selector |
-			| service |
-			service := self methodListPresenter list
-						detect: [:methodService | methodService selector = selector]
-						ifNone: [self error: 'Selector ''' , selector , ''' not found'].
-			self methodListPresenter selections: (self methodListPresenter selections asOrderedCollection
-						add: service;
-						yourself).
-			selections add: service. ].
-	^selections!
+	| methodServices |
+	self methodListPresenter resetSelection.
+	methodServices := selectors
+				collect: [:selector | self methodListPresenter list detect: [:svc | svc selector = selector]].
+	self methodListPresenter selection: methodServices .
+	^methodServices!
 
 selectRowanSample1Class
 	"big assumption - RowanSample1 class will allways be in RowanSample1 project"

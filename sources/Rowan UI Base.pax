@@ -1608,8 +1608,7 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 	methodSourcePresenter value: methodSource1.
 	self displayNoMods: methodSourcePresenter.
 	(self compilationWarningFrom: classService selectedMethods)
-		ifNotNil: [:warning | self statusBarText: warning].
-	^self!
+		ifNotNil: [:warning | self statusBarText: warning].!
 
 issueCommand: services
 	^self class issueCommand: services session: self gciSession.

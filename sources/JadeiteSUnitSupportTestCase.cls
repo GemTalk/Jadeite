@@ -32,21 +32,26 @@ methodListPresenter
 projectsPresenter
 	^projectsBrowser currentCard!
 
+selecProjectBrowserMethodNamed: selector
+	^self selecProjectBrowserMethodsNamed: (Array with: selector)!
+
+selecProjectBrowserMethodsNamed: selectors
+	| methodServices methodPresenter |
+	methodPresenter := self projectsPresenter methodListPresenter.
+	methodPresenter resetSelection.
+	methodServices := selectors
+				collect: [:selector | methodPresenter list detect: [:svc | svc selector = selector]].
+	methodPresenter selections: methodServices.
+	^methodServices!
+
 selectSUnitBrowserMethodsNamed: selectors
-	| selections methodListPresenter |
-	selections := OrderedCollection new.
-	methodListPresenter := sunitBrowser primaryPresenter methodListPresenter.
-	methodListPresenter resetSelection.
-	selectors do: 
-			[:selector |
-			| service |
-			service := methodListPresenter list detect: [:methodService | methodService selector = selector]
-						ifNone: [self error: 'Selector ''' , selector , ''' not found'].
-			methodListPresenter selections: (methodListPresenter selections asOrderedCollection
-						add: service;
-						yourself).
-			selections add: service].
-	^selections!
+	| methodServices |
+	self methodListPresenter resetSelection.
+	methodServices := selectors
+				collect: [:selector | self methodListPresenter list detect: [:svc | svc selector = selector]].
+	self methodListPresenter selection: methodServices.
+	self methodListPresenter view invalidate.
+	^methodServices!
 
 setUp
 	super setUp. 
@@ -261,8 +266,7 @@ test_openSunitBrowser
 test_refresh
 	| source newMethod |
 	self testsIssue: #issue279 withTitle: 'Sunit browser refresh, auto or manual'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
 	
 	[self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
@@ -402,12 +406,40 @@ test_testsRunInSelectedTestClass
 	self assert: self sunitPresenter runAll isKindOf: JadeTestResult. "runSelected sends back the result of the last test" 
 	self assert: (session executeString: 'RowanSample1Test testClassVar') equals: #RowanSample1SubClassTest.
 	]
-			ensure: [projectsBrowser destroy]! !
+			ensure: [projectsBrowser destroy]!
+
+test_updateMethodFromProjectBrowser
+	self testsIssue: #issue395 withTitle: '(3.0.54) Sunit can display non-test methods'.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
+	self selectSUnitBrowserMethodsNamed: (Array with: #test1).
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self selecProjectBrowserMethodNamed: #test1.
+	self assert: sunitBrowser primaryPresenter methodListPresenter selections first selector
+		equals: #test1.
+	self assert: sunitBrowser primaryPresenter methodListPresenter selections size equals: 1.
+	self assert: self methodListPresenter selections first selector equals: #test1.
+	self assert: self methodListPresenter selections size equals: 1.
+	self selectSUnitBrowserMethodsNamed: (Array with: #test2).
+	self assert: sunitBrowser primaryPresenter methodListPresenter selections first selector
+		equals: #test2.
+	self assert: sunitBrowser primaryPresenter methodListPresenter selections size equals: 1.
+	self assert: self projectsPresenter methodListPresenter selections first selector equals: #test1.
+	self assert: self projectsPresenter methodListPresenter selections size equals: 1.
+	self selecProjectBrowserMethodNamed: #test2.
+	self assert: sunitBrowser primaryPresenter methodListPresenter selections first selector
+		equals: #test2.
+	self assert: sunitBrowser primaryPresenter methodListPresenter selections size equals: 1.
+	self assert: self projectsPresenter methodListPresenter selections first selector equals: #test2.
+	self assert: self projectsPresenter methodListPresenter selections size equals: 1! !
 !JadeiteSUnitSupportTestCase categoriesFor: #assertPackageInList:!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #denyPackageInList:!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #isSampleProjectLoaded!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #methodListPresenter!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #projectsPresenter!private!support! !
+!JadeiteSUnitSupportTestCase categoriesFor: #selecProjectBrowserMethodNamed:!public!support! !
+!JadeiteSUnitSupportTestCase categoriesFor: #selecProjectBrowserMethodsNamed:!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #selectSUnitBrowserMethodsNamed:!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #setUp!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #setupRunInSelectedTestClassTest!private!support! !
@@ -433,4 +465,5 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserPassingDebugTestShowsResult!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitTabPassingDebugTestShowsResult!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_testsRunInSelectedTestClass!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_updateMethodFromProjectBrowser!public!test updates from other browsers!tests! !
 

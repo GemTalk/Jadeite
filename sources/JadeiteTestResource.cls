@@ -27,8 +27,8 @@ isAvailable
 	^session notNil and: [transcript notNil]!
 
 openProjectsBrowser
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	(projectsBrowser isNil or: [projectsBrowser isOpen not])
+		ifTrue: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	^projectsBrowser!
 
 openWindow: aBlock

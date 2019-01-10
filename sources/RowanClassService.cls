@@ -280,7 +280,7 @@ removedClass: presenter
 	presenter model remove: removal. !
 
 replicateFrom: newService
-	newService isClassService ifTrue: [^super replicateFrom: newService].!
+	newService isClassService ifTrue: [^super replicateFrom: newService]!
 
 selectedMethods
 
@@ -332,7 +332,7 @@ sunitMethodsUpdate: presenter browser: browser
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	selections := browser classListPresenter selections asOrderedCollection.
 	oldClassService := selections detect: [:classService | classService = self] ifNone: [^self].
-	oldClassService become: self. 
+	oldClassService oneWayBecome: self. 
 	browser updateMethodsFrom: selections!
 
 template
