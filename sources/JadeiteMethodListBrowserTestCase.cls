@@ -10,6 +10,15 @@ JadeiteMethodListBrowserTestCase comment: ''!
 !JadeiteMethodListBrowserTestCase categoriesForClass!Unclassified! !
 !JadeiteMethodListBrowserTestCase methodsFor!
 
+methodListMethodListPresenter
+	^methodListBrowser primaryPresenter methodListPresenter methodListPresenter!
+
+methodListSourcePresenter
+	^methodListBrowser primaryPresenter methodSourcePresenter!
+
+methodSourcePresenter
+	^methodListBrowser primaryPresenter methodSourcePresenter!
+
 removeMethods: methodServices in: className
 	"remove method outside the browsers for performance"
 
@@ -62,6 +71,36 @@ tearDown
 		ifNotNil: 
 			[methodListBrowser destroy.
 			methodListBrowser := nil]!
+
+test_methodBrowserSaveMethod
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	
+	[| source source2 selection |
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self assert: self methodListPresenter selection selector equals: #test1.
+	self assert: self methodListPresenter selections size equals: 1. 
+	methodListBrowser := JadePresenter browseImplementorsOf: 'test1' session: session.
+	self assert: self methodListPresenter selection selector equals: #test1.
+	self assert: self methodListPresenter selections size equals: 1. 
+	self assert: self methodListMethodListPresenter list size equals: 1.
+	selection := self methodListMethodListPresenter selection.
+	source := 'test1 self assert: RowanSample1 new foo = ''foo2'''.
+	self methodListSourcePresenter documentPresenter value: source.
+	self assert: self methodListSourcePresenter documentPresenter isModified.
+	self methodListSourcePresenter editSaveMethod.
+	self assert: self methodListSourcePresenter documentPresenter value equals: source.
+	self assert: self methodSourcePresenter documentPresenter value equals: source.
+	self assert: self classListPresenter selection name equals: 'RowanSample1Test'.
+	self methodListMethodListPresenter selections: Array new.
+	self methodListMethodListPresenter selection: selection.
+	self assert: self methodListSourcePresenter documentPresenter value equals: source.
+	source2 := 'test1 self assert: RowanSample1 new foo = ''changedAgain'''.
+	self methodSourcePresenter value: source2.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self assert: self methodSourcePresenter documentPresenter value equals: source2.
+	self assert: self methodListSourcePresenter documentPresenter value equals: source2]
+			ensure: [projectsBrowser destroy]!
 
 test_UnsavedChangesActionChangeSelectionIgnoreChanges
 	| methodListPresenter |
@@ -171,11 +210,15 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 				[TestMessageBox disableJadeiteTestMessageBox.
 				self removeMethods: methodListPresenter model asBag in: 'RowanSample1'.
 				self removeMethods: methodListPresenter model asBag in: 'RowanSample1Test']! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #methodListMethodListPresenter!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #methodListSourcePresenter!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #methodSourcePresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #removeMethods:in:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #sampleMethodSource!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #saveMethod:in:category:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectListAt:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_methodBrowserSaveMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindow!public!tests! !

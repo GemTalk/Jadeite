@@ -149,7 +149,7 @@ remoteServiceName
 removeDeletedClassesIn: presenter
 	| updatedClasses removedClasses selections |
 	updatedClasses := classes select: [:classService | classService packageName = name]
-				thenCollect: [:classService | classService name].
+				thenCollect: [:classService | classService name asString].
 	removedClasses := presenter list
 				reject: [:classService | (updatedClasses includes: classService name) and: [classService packageName = name]].
 	removedClasses isEmpty ifTrue:[^self]. 
