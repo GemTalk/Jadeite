@@ -1860,12 +1860,9 @@ updatePackageInfo
 	classDefinitionPresenter ensureVisible!
 
 updatePackages
-	| selections |
 	packageListPresenter clear.
-	selections := projectListPresenter selections isEmpty
-				ifTrue: [Array with: RowanProjectService new]
-				ifFalse: [projectListPresenter selections].
-	self updateServices: selections.
+	projectListPresenter selections isEmpty ifTrue: [^self].
+	self updateServices: projectListPresenter selections.
 	self sundryCleanup!
 
 updatePresenter: presenter selections: selections

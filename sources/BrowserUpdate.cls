@@ -35,7 +35,8 @@ basicIssueCommand: services session: session
 	stonString := STON toString: services.
 	[stonResultString := session serverPerform: #updateFromSton: with: stonString]
 		ensure: [services do: [:service | service clearCommand]].
-	^self update: services afterStonReplication: stonResultString.!
+	^self update: services afterStonReplication: stonResultString.
+!
 
 basicUpdateServices: services session: session
 	| stonString stonResults |
@@ -170,6 +171,7 @@ updateService: service session: session
 
 updateServices: services session: session
 	inUpdate ifTrue: [^self].
+	services isEmpty ifTrue:[^self]. 
 	inUpdate := true.
 	
 	[[Cursor wait showWhile: [^self basicUpdateServices: services session: session]]

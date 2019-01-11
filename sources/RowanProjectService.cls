@@ -28,6 +28,15 @@ addPackageNamed: newPackageName using: presenter
 	presenter packageListPresenter selection: packageService.
 	presenter refreshFromServer!
 
+allClasses
+	"for testing"
+
+	^packages inject: OrderedCollection new
+		into: 
+			[:coll :packageService |
+			packageService classes ifNotNil: [:classes | coll addAll: classes].
+			coll]!
+
 basicName: aString
 	"don't round trip to the server to get information" 
 	name := aString!
@@ -129,6 +138,16 @@ newTextView
 		alignment: #center.
 	^edit!
 
+packages
+
+	^packages!
+
+prepareForReplication
+
+	"I don't *think* we need packages when sending to the server"
+	super prepareForReplication.
+	packages := nil.!
+
 projectLogUsing: presenter
 	| textEdit projectName queryService |
 	projectName := self name.
@@ -193,6 +212,7 @@ sha: anObject
 	sha := anObject! !
 !RowanProjectService categoriesFor: #=!comparing!public! !
 !RowanProjectService categoriesFor: #addPackageNamed:using:!presenter support!public! !
+!RowanProjectService categoriesFor: #allClasses!accessing!public! !
 !RowanProjectService categoriesFor: #basicName:!accessing!public! !
 !RowanProjectService categoriesFor: #branch!accessing!public! !
 !RowanProjectService categoriesFor: #branch:!accessing!public! !
@@ -207,6 +227,8 @@ sha: anObject
 !RowanProjectService categoriesFor: #isSkew!accessing!private! !
 !RowanProjectService categoriesFor: #isSkew:!accessing!private! !
 !RowanProjectService categoriesFor: #newTextView!displaying!private! !
+!RowanProjectService categoriesFor: #packages!accessing!public! !
+!RowanProjectService categoriesFor: #prepareForReplication!public!replication! !
 !RowanProjectService categoriesFor: #projectLogUsing:!presenter support!public! !
 !RowanProjectService categoriesFor: #projectPackagesUpdate:browser:!public!updating! !
 !RowanProjectService categoriesFor: #projectSelectionUpdate:!public!updating! !

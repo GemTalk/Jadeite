@@ -320,6 +320,118 @@ test_runClassTests
 	self methodListPresenter list do: [:methodService | self assert: methodService passed]]
 			ensure: [projectsBrowser destroy]!
 
+test_saveMethodInProjectBrowser
+	"should show up in sunit browser and disappear when removed"
+
+	| source |
+	self testsIssue: #issue395 withTitle: '(3.0.54) Sunit can display non-test methods'.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
+	self selectSUnitBrowserMethodsNamed: (Array with: #test1).
+	self assertIsNil: (self sunitPresenter methodListPresenter model
+				detect: [:methodService | methodService selector = #testInProjectBrowser]
+				ifNone: []).
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	source := 'testInProjectBrowser  
+		| aaa | 
+		aaa := 123. 
+		^aaa'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	
+	[self assert: self projectsPresenter methodListPresenter selection selector
+		equals: #testInProjectBrowser.
+	self denyIsNil: (self sunitPresenter methodListPresenter model
+				detect: [:methodService | methodService selector = #testInProjectBrowser]
+				ifNone: [])]
+			ensure: [self projectsPresenter basicRemoveMethods].
+	self assertIsNil: (self projectsPresenter methodListPresenter model
+				detect: [:methodService | methodService selector = #testInProjectBrowser]
+				ifNone: []).
+	self assertIsNil: (self sunitPresenter methodListPresenter model
+				detect: [:methodService | methodService selector = #testInProjectBrowser]
+				ifNone: [])!
+
+test_selectCategoryInProjectBrowserDoesNotUpdateSunitBrowser
+	| sunitDisplayedMethodCount sunitDisplaySelectors |
+	self testsIssue: #issue395 withTitle: '(3.0.54) Sunit can display non-test methods'.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanClassServiceTest' in: self sunitPresenter classListPresenter.
+	sunitDisplayedMethodCount := self sunitPresenter methodListPresenter list size.
+	sunitDisplaySelectors := self sunitPresenter methodListPresenter list
+				collect: [:methodService | methodService selector].
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanClassServiceTest' in: self classListPresenter.
+	self selectCategoryNamed: 'support'.
+	self assert: self sunitPresenter methodListPresenter list size equals: sunitDisplayedMethodCount.	"no changes"
+	self assert: (self sunitPresenter methodListPresenter list
+				collect: [:methodService | methodService selector])
+		equals: sunitDisplaySelectors.
+	self projectsPresenter methodListPresenter list
+		do: [:methodService | self deny: ('test*' match: methodService selector asString)].
+	self categoryListPresenter selections: #(). 
+	self selectCategoryNamed: 'tests'.
+	self assert: self sunitPresenter methodListPresenter list size equals: sunitDisplayedMethodCount.	"no changes"
+	self assert: (self sunitPresenter methodListPresenter list
+				collect: [:methodService | methodService selector])
+		equals: sunitDisplaySelectors.
+	self projectsPresenter methodListPresenter list
+		do: [:methodService | self assert: ('test*' match: methodService selector asString)].
+
+!
+
+test_selectInProjectBrowserDoesNotUpdateSunitBrowser
+	| sunitDisplayedMethodCount sunitDisplaySelectors |
+	self testsIssue: #issue395 withTitle: '(3.0.54) Sunit can display non-test methods'.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanClassServiceTest' in: self sunitPresenter classListPresenter.
+	sunitDisplayedMethodCount := self sunitPresenter methodListPresenter list size.
+	sunitDisplaySelectors := self sunitPresenter methodListPresenter list
+				collect: [:methodService | methodService selector].
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanClassServiceTest' in: self classListPresenter.
+	self assert: self sunitPresenter methodListPresenter list size equals: sunitDisplayedMethodCount.	"no changes"
+	self assert: (self sunitPresenter methodListPresenter list
+				collect: [:methodService | methodService selector])
+		equals: sunitDisplaySelectors.
+	self selectServiceNamed: 'RowanAnsweringServiceTest' in: self classListPresenter.	"click away in project browser and back - no changes"
+	self selectServiceNamed: 'RowanClassServiceTest' in: self classListPresenter.
+	self assert: self sunitPresenter methodListPresenter list size equals: sunitDisplayedMethodCount.	"no changes"
+	self assert: (self sunitPresenter methodListPresenter list
+				collect: [:methodService | methodService selector])
+		equals: sunitDisplaySelectors!
+
+test_selectMethodFromProjectBrowser
+	self testsIssue: #issue395 withTitle: '(3.0.54) Sunit can display non-test methods'.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
+	self selectSUnitBrowserMethodsNamed: (Array with: #test1).
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self selecProjectBrowserMethodNamed: #test1.
+	self assert: sunitBrowser primaryPresenter methodListPresenter selections first selector
+		equals: #test1.
+	self assert: sunitBrowser primaryPresenter methodListPresenter selections size equals: 1.
+	self assert: self methodListPresenter selections first selector equals: #test1.
+	self assert: self methodListPresenter selections size equals: 1.
+	self selectSUnitBrowserMethodsNamed: (Array with: #test2).
+	self assert: sunitBrowser primaryPresenter methodListPresenter selections first selector
+		equals: #test2.
+	self assert: sunitBrowser primaryPresenter methodListPresenter selections size equals: 1.
+	self assert: self projectsPresenter methodListPresenter selections first selector equals: #test1.
+	self assert: self projectsPresenter methodListPresenter selections size equals: 1.
+	self selecProjectBrowserMethodNamed: #test2.
+	self assert: sunitBrowser primaryPresenter methodListPresenter selections first selector
+		equals: #test2.
+	self assert: sunitBrowser primaryPresenter methodListPresenter selections size equals: 1.
+	self assert: self projectsPresenter methodListPresenter selections first selector equals: #test2.
+	self assert: self projectsPresenter methodListPresenter selections size equals: 1!
+
 test_sunitBrowserHasRowanPackages
 	self assert: (self sunitPresenter isKindOf: JadeiteSUnitPresenter).	"a different presenter is used in the projects browser"
 	self assert: self sunitPresenter packageListPresenter list size > 0.
@@ -406,33 +518,7 @@ test_testsRunInSelectedTestClass
 	self assert: self sunitPresenter runAll isKindOf: JadeTestResult. "runSelected sends back the result of the last test" 
 	self assert: (session executeString: 'RowanSample1Test testClassVar') equals: #RowanSample1SubClassTest.
 	]
-			ensure: [projectsBrowser destroy]!
-
-test_updateMethodFromProjectBrowser
-	self testsIssue: #issue395 withTitle: '(3.0.54) Sunit can display non-test methods'.
-	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
-	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
-	self selectSUnitBrowserMethodsNamed: (Array with: #test1).
-	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
-	self selectRowanSample1Test.
-	self selecProjectBrowserMethodNamed: #test1.
-	self assert: sunitBrowser primaryPresenter methodListPresenter selections first selector
-		equals: #test1.
-	self assert: sunitBrowser primaryPresenter methodListPresenter selections size equals: 1.
-	self assert: self methodListPresenter selections first selector equals: #test1.
-	self assert: self methodListPresenter selections size equals: 1.
-	self selectSUnitBrowserMethodsNamed: (Array with: #test2).
-	self assert: sunitBrowser primaryPresenter methodListPresenter selections first selector
-		equals: #test2.
-	self assert: sunitBrowser primaryPresenter methodListPresenter selections size equals: 1.
-	self assert: self projectsPresenter methodListPresenter selections first selector equals: #test1.
-	self assert: self projectsPresenter methodListPresenter selections size equals: 1.
-	self selecProjectBrowserMethodNamed: #test2.
-	self assert: sunitBrowser primaryPresenter methodListPresenter selections first selector
-		equals: #test2.
-	self assert: sunitBrowser primaryPresenter methodListPresenter selections size equals: 1.
-	self assert: self projectsPresenter methodListPresenter selections first selector equals: #test2.
-	self assert: self projectsPresenter methodListPresenter selections size equals: 1! !
+			ensure: [projectsBrowser destroy]! !
 !JadeiteSUnitSupportTestCase categoriesFor: #assertPackageInList:!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #denyPackageInList:!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #isSampleProjectLoaded!private!support! !
@@ -459,11 +545,14 @@ test_updateMethodFromProjectBrowser
 !JadeiteSUnitSupportTestCase categoriesFor: #test_refresh!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_registeredPresentersInSUnitBrowserCleanedUp!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_runClassTests!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_saveMethodInProjectBrowser!public!test updates from other browsers!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_selectCategoryInProjectBrowserDoesNotUpdateSunitBrowser!public!test updates from other browsers!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_selectInProjectBrowserDoesNotUpdateSunitBrowser!public!test updates from other browsers!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_selectMethodFromProjectBrowser!public!test updates from other browsers!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanPackages!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestMethods!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserPassingDebugTestShowsResult!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitTabPassingDebugTestShowsResult!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_testsRunInSelectedTestClass!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_updateMethodFromProjectBrowser!public!test updates from other browsers!tests! !
 

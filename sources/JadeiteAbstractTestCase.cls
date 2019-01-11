@@ -283,7 +283,7 @@ selectMethodsNamed: selectors
 	self methodListPresenter resetSelection.
 	methodServices := selectors
 				collect: [:selector | self methodListPresenter list detect: [:svc | svc selector = selector]].
-	self methodListPresenter selection: methodServices .
+	self methodListPresenter selections: methodServices.
 	^methodServices!
 
 selectRowanSample1Class
