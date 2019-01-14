@@ -207,7 +207,6 @@ methodSourceUpdate: presenter browser: browser
 	selection = self
 		ifTrue: 
 			[presenter view isModified
-				ifTrue:[presenter view backcolor: Color red faded faded]
 				ifFalse: 
 					[presenter value: source.
 					browser displayNoMods: presenter]]!

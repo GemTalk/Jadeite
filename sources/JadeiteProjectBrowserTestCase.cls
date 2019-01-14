@@ -1514,6 +1514,58 @@ test_methodTabSelected
 	
 	!
 
+test_modifiedSourceShouldNotChange
+	| secondBrowser source originalSource |
+	self testsIssue: #issue400
+		withTitle: '(3.0.55) Selecting class in one project browser loses method edits in another'.
+	self selectRowanSample1Class.
+	self selectMethodNamed: #foo.
+	originalSource := 'foo ^''foo'''.
+	self assert: self methodSourcePresenter value equals: originalSource.
+	source := 'foo  ^''I am changed'''.
+	self methodSourcePresenter value: source.
+	self methodSourcePresenter view isModified: true.
+	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	
+	[| methodServices |
+	self selectServiceNamed: 'RowanSample1' in: secondBrowser currentCard projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: secondBrowser currentCard packageListPresenter.
+	self selectServiceNamed: self sampleClassName in: secondBrowser currentCard classListPresenter.
+	self assert: self methodSourcePresenter value equals: source.	"unchanged"
+	secondBrowser currentCard methodListPresenter resetSelection.
+	methodServices := (Array with: #foo)
+				collect: [:selector | secondBrowser currentCard methodListPresenter list detect: [:svc | svc selector = selector]].
+	secondBrowser currentCard methodListPresenter selections: methodServices.
+	self assert: self methodSourcePresenter value equals: source.	"unchanged"
+	self assert: secondBrowser currentCard methodSourcePresenter value equals: originalSource]
+			ensure: 
+				[self methodSourcePresenter value: originalSource.
+				self methodSourcePresenter view isModified: false.
+				secondBrowser topShell exit]!
+
+test_modifiedSourceShouldNotChangeMethodList
+	| source originalSource |
+	self testsIssue: #issue400
+		withTitle: '(3.0.55) Selecting class in one project browser loses method edits in another'.
+	self selectRowanSample1Class.
+	self selectMethodNamed: #foo.
+	originalSource := 'foo ^''foo'''.
+	self assert: self methodSourcePresenter value equals: originalSource.
+	source := 'foo  ^''I am changed'''.
+	self methodSourcePresenter value: source.
+	self methodSourcePresenter view isModified: true.
+	
+	[methodListBrowser := self projectsPresenter browseImplementorsOf: #foo.
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter selection
+				selector
+		equals: #foo.
+	self assert: self methodSourcePresenter value equals: source.	"unchanged"
+	self assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter value
+		equals: originalSource]
+			ensure: 
+				[self methodSourcePresenter value: originalSource.
+				self methodSourcePresenter view isModified: false]!
+
 test_multipleCompileMethod
 	self testsIssue: #issue170
 		withTitle: 'Editing methods to create new method and updating created method gets errors'.
@@ -2957,6 +3009,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_methodsContaining!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_methodsContainingCaption!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_methodTabSelected!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_modifiedSourceShouldNotChange!public!test two browsers! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_modifiedSourceShouldNotChangeMethodList!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noSelectionHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noStepPoints!public!test step points! !

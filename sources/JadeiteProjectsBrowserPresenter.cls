@@ -1817,6 +1817,7 @@ updateMethodReferences: services
 	^services!
 
 updateMethodSource
+	methodSourcePresenter view isModified ifTrue:[^self].
 	self sundryCleanup.
 	methodListPresenter selections isEmpty
 		ifTrue: 
