@@ -263,12 +263,7 @@ projectName
 	^projectName!
 
 releaseReferencedServices
-	| copy |
-	methods
-		ifNotNil: 
-			[copy := methods copy.
-			methods := Array new.
-			copy do: [:service | service releaseReferencedServices]]!
+	methods := Array new!
 
 remoteServiceName
 	^'Rowan classServiceClass'!
@@ -332,7 +327,7 @@ sunitMethodsUpdate: presenter browser: browser
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	selections := browser classListPresenter selections asOrderedCollection.
 	oldClassService := selections detect: [:classService | classService = self] ifNone: [^self].
-	oldClassService oneWayBecome: self. 
+	oldClassService replicateFrom: self. 
 	browser updateMethodsFrom: selections!
 
 template
@@ -441,7 +436,7 @@ visibleTests
 !RowanClassService categoriesFor: #packageName:!accessing!private! !
 !RowanClassService categoriesFor: #prepareForReplication!public!replication! !
 !RowanClassService categoriesFor: #projectName!accessing!private! !
-!RowanClassService categoriesFor: #releaseReferencedServices!Init / Release!public! !
+!RowanClassService categoriesFor: #releaseReferencedServices!public! !
 !RowanClassService categoriesFor: #remoteServiceName!must not strip!public! !
 !RowanClassService categoriesFor: #removedClass:!public!updating! !
 !RowanClassService categoriesFor: #replicateFrom:!public!replication! !

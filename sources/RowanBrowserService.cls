@@ -55,12 +55,8 @@ projectsUpdate: presenter
 	self updateList: presenter whilePreservingSelections: projects!
 
 releaseReferencedServices
-	| copy |
-	projects
-		ifNotNil: 
-			[copy := projects copy.
-			projects := Array new.
-			copy do: [:service | service releaseReferencedServices]]!
+	projects ifNotNil: [projects do: [:service | service releaseReferencedServices]].
+	projects := Array new!
 
 reloadProjects: selections presenter: presenter
 	self

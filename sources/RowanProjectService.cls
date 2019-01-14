@@ -178,17 +178,15 @@ projectsUpdate: presenter
 			proj sha: sha.
 			proj isDirty: isDirty.
 			proj isSkew: isSkew].
+	presenter view invalidate. 
 	!
 
 projectUrl
 	^projectUrl!
 
 releaseReferencedServices
-	| copy |
-	packages isNil ifTrue: [^self].
-	copy := packages copy.
-	packages := Array new.
-	copy do: [:service | service releaseReferencedServices]!
+	packages ifNotNil: [packages do: [:service | service releaseReferencedServices]].
+	packages := Array new!
 
 remoteServiceName
 	^'Rowan projectServiceClass'!

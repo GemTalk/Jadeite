@@ -25,9 +25,9 @@ gciSession: aGciSession
 	gciSession := aGciSession.
 	myPresenter notNil ifTrue: [myPresenter gciSession: aGciSession].
 	gciSession
-		when: #'logoutRequested:'	send: #'logoutRequested:'	to: self;
-		when: #'logoutPending'	send: #'exit'			to: self;
-		when: #forceJadeiteWindowClose	send: #destroy	to: self;		
+		when: #'logoutRequested:'			send: #'logoutRequested:'	to: self;
+		when: #'logoutPending'			send: #'exit'			to: self;
+		when: #forceJadeiteWindowClose	send: #exit			to: self;		
 		yourself.
 !
 

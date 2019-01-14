@@ -137,11 +137,8 @@ projectName: anObject
 	projectName := anObject!
 
 releaseReferencedServices
-	| copy |
-	classes ifNil: [^self].
-	copy := classes copy.
-	classes := Array new.
-	copy do: [:service | service releaseReferencedServices]!
+	classes ifNotNil: [classes do: [:service | service releaseReferencedServices]].
+	classes := Array new!
 
 remoteServiceName
 	^'Rowan packageServiceClass'!
