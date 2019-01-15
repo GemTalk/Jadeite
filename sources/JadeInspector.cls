@@ -28,6 +28,12 @@ createSchematicWiring
 	instVarListPresenter 	when: #'actionPerformed' 	send: #'inspectInstVar' 	to: self.
 !
 
+createView: string
+	| newView |
+	newView := super createView: string.
+	(model isKindOf: ExternalInteger) ifTrue: [self registerWindow: newView handle rootObject: model].
+	^newView!
+
 inspectInstVar
 
 	JadeInspector 
@@ -84,6 +90,7 @@ selectedInstVar
 !JadeInspector categoriesFor: #contextObject!private! !
 !JadeInspector categoriesFor: #createComponents!accessing!private! !
 !JadeInspector categoriesFor: #createSchematicWiring!accessing!private! !
+!JadeInspector categoriesFor: #createView:!public! !
 !JadeInspector categoriesFor: #inspectInstVar!accessing!private! !
 !JadeInspector categoriesFor: #instVarListPresenter!accessing!private! !
 !JadeInspector categoriesFor: #instVarListPresenter:!accessing!private! !

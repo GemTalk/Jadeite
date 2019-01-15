@@ -106,6 +106,7 @@ package methodNames
 	add: #JadeImageStripper -> #requiredClasses;
 	add: #JadeImageStripper -> #requiredPackageNames;
 	add: #JadeInspector -> #displayObject;
+	add: #JadeInspector -> #onViewClosed;
 	add: #JadeInspector -> #onViewOpened;
 	add: #JadeInspector -> #saveDocument;
 	add: #JadeInspector -> #setDocumentPresenterLabel;
@@ -226,6 +227,7 @@ package methodNames
 	add: #JadeTextDocument -> #onPromptToSaveChanges:;
 	add: #JadeTextDocument -> #openDictionaryBrowser;
 	add: #JadeTextDocument -> #openProjectsBrowser;
+	add: #JadeTextDocument -> #registerWindow:rootObject:;
 	add: #JadeTextDocument -> #update:afterStonReplication:;
 	add: #JadeTextDocument -> #updateServices:;
 	add: #JadeToolsToolBarPresenter -> #browseClasses;
@@ -1188,6 +1190,10 @@ displayObject
 		yourself.
 	className := theClassName!
 
+onViewClosed
+	RowanBrowserService new releaseWindow: self view handle value session: self gciSession.
+	super onViewClosed. !
+
 onViewOpened
 	super onViewOpened.
 	self displayObject.
@@ -1255,6 +1261,7 @@ shellNameExtraInfo
 updateCaption
 	self caption: (gciSession titleBarFor: self shellName).! !
 !JadeInspector categoriesFor: #displayObject!accessing!private! !
+!JadeInspector categoriesFor: #onViewClosed!event handling!public! !
 !JadeInspector categoriesFor: #onViewOpened!event handling!private! !
 !JadeInspector categoriesFor: #saveDocument!menu handlers!public! !
 !JadeInspector categoriesFor: #setDocumentPresenterLabel!displaying!private! !
@@ -3205,6 +3212,12 @@ openDictionaryBrowser
 openProjectsBrowser
 	^JadeiteProjectsSystemBrowser showOnSession: gciSession!
 
+registerWindow: handle rootObject: oop
+	^RowanBrowserService new
+		registerWindow: handle value
+		rootObject: oop value
+		session: self gciSession!
+
 update: services afterStonReplication: stonResults
 	BrowserUpdate current update: services afterStonReplication: stonResults!
 
@@ -3215,6 +3228,7 @@ updateServices: services
 !JadeTextDocument categoriesFor: #onPromptToSaveChanges:!private! !
 !JadeTextDocument categoriesFor: #openDictionaryBrowser!Jade!private! !
 !JadeTextDocument categoriesFor: #openProjectsBrowser!Jade!private! !
+!JadeTextDocument categoriesFor: #registerWindow:rootObject:!private! !
 !JadeTextDocument categoriesFor: #update:afterStonReplication:!public!services! !
 !JadeTextDocument categoriesFor: #updateServices:!public!services! !
 

@@ -29,7 +29,7 @@ inspectInstVarAt: index
 	inspector inspectInstVar. !
 
 tearDown
-	inspector ifNotNil: [inspector destroy]!
+	inspector ifNotNil: [inspector view close]!
 
 test_abortTransactionInBasicInspector
 	"foolishly or wisely, Dolphin runs different code paths
@@ -251,6 +251,31 @@ test_forwardBack
 	self assert: forwardQuery isEnabled.
 !
 
+test_inspectorRootObjectRegistered
+	| remoteObject inspectorHandle |
+	self testsIssue: #issue385 withTitle: 'Inspector should keep associated root object alive'.
+	remoteObject := session executeString: 'Object new'.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspectorHandle := inspector view handle value.
+	self assert: (session
+				executeString: 'RowanBrowserService new openWindows at: ' , inspectorHandle printString
+						, ' ifAbsent:[]')
+		equals: remoteObject value.
+	inspector view close.
+	self assertIsNil: (session
+				executeString: 'RowanBrowserService new openWindows at: ' , inspectorHandle printString
+						, ' ifAbsent:[]')!
+
+test_inspectorRootSpecialObjectNotRegistered
+	| remoteObject inspectorHandle |
+	self testsIssue: #issue385 withTitle: 'Inspector should keep associated root object alive'.
+	remoteObject := session executeString: '$a'.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspectorHandle := inspector view handle value.
+	self assertIsNil: (session
+				executeString: 'RowanBrowserService new openWindows at: ' , inspectorHandle printString
+						, ' ifAbsent:[]')!
+
 test_inspectString
 	| remoteObject |
 	remoteObject := session
@@ -397,20 +422,22 @@ test_registeredPresentersInInspectorCleanedUp
 !JadeiteInspectorTestCase categoriesFor: #tearDown!private! !
 !JadeiteInspectorTestCase categoriesFor: #test_abortTransactionInBasicInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_abortTransactionInNavigationInspector!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_basicInspectorDisplayedSizeLimit!public!test! !
-!JadeiteInspectorTestCase categoriesFor: #test_caption!public!test! !
-!JadeiteInspectorTestCase categoriesFor: #test_captionChange!public!test! !
+!JadeiteInspectorTestCase categoriesFor: #test_basicInspectorDisplayedSizeLimit!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_caption!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_captionChange!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInBasicInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusCodePane!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusInstVars!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!test! !
-!JadeiteInspectorTestCase categoriesFor: #test_inspectString!public!test! !
-!JadeiteInspectorTestCase categoriesFor: #test_menuBarItemNames!public!test! !
-!JadeiteInspectorTestCase categoriesFor: #test_menuItemsEnabled!public!test! !
-!JadeiteInspectorTestCase categoriesFor: #test_navigationInspectorDisplayedSizeLimit!public!test! !
-!JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowser!public!test! !
-!JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowserOnClass!public!test! !
-!JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowser!public!test! !
-!JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowserOnClass!public!test! !
+!JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectorRootObjectRegistered!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectorRootSpecialObjectNotRegistered!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectString!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_menuBarItemNames!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_menuItemsEnabled!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_navigationInspectorDisplayedSizeLimit!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowser!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowserOnClass!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowser!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowserOnClass!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_registeredPresentersInInspectorCleanedUp!public!tests! !
 

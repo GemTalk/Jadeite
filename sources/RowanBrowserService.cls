@@ -54,9 +54,21 @@ projectsUpdate: presenter
 	presenter model removeAll: removals. 
 	self updateList: presenter whilePreservingSelections: projects!
 
+registerWindow: handle rootObject: oop session: session
+	self
+		command: #saveRootObject:windowHandle:;
+		commandArgs: (Array with: oop with: handle).
+	JadePresenter issueCommand: (Array with: self) session: session!
+
 releaseReferencedServices
 	projects ifNotNil: [projects do: [:service | service releaseReferencedServices]].
 	projects := Array new!
+
+releaseWindow: handle session: session
+	self
+		command: #releaseWindowHandle:;
+		commandArgs: (Array with: handle).
+	JadePresenter issueCommand: (Array with: self) session: session!
 
 reloadProjects: selections presenter: presenter
 	self
@@ -106,7 +118,9 @@ testPackages: presenter
 !RowanBrowserService categoriesFor: #prepareForReplication!public!replication! !
 !RowanBrowserService categoriesFor: #projects!accessing!public! !
 !RowanBrowserService categoriesFor: #projectsUpdate:!public!updating! !
+!RowanBrowserService categoriesFor: #registerWindow:rootObject:session:!public!registering windows! !
 !RowanBrowserService categoriesFor: #releaseReferencedServices!public! !
+!RowanBrowserService categoriesFor: #releaseWindow:session:!public!registering windows! !
 !RowanBrowserService categoriesFor: #reloadProjects:presenter:!commands!public! !
 !RowanBrowserService categoriesFor: #removedMethods!accessing!private! !
 !RowanBrowserService categoriesFor: #removedMethods:!accessing!private! !
