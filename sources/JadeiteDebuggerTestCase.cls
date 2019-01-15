@@ -351,6 +351,45 @@ test_implementorsSendersCaption
 	[self assert: ('Senders of ''branch'' for *' match: methodListBrowser caption)]
 		ensure: [self assert: methodListBrowser view close]!
 
+test_inspectedDebuggerObjectHeld
+	| inspector |
+	self testsIssue: #issue385 withTitle: '(3.0.53) Inspector should keep associated root object alive'.
+	self
+		saveMethod: 'issue385
+		| abc |
+		abc := Array with: Object new. 
+		self halt. 
+		^abc'
+		in: 'RowanSample1'
+		category: 'other'.
+	self openDebuggerOn: 'RowanSample1 new issue385'.
+	self debuggerDo: [debugger variableListPresenter selectionByIndex: 2].
+	self debuggerDo: [inspector := debugger inspectVariable].
+	
+	[self assert: (session
+				executeString: '(self at: 1) class = Object'
+				fromContext: inspector model
+				environment: 0).
+	self assert: inspector documentPresenter value equals: 'anArray( anObject)'.
+	process terminate. 
+	self closeDebuggers. 
+
+	"do stuff while the debugger is closed to hopefully recycle the oop (if the bug was present)"
+	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	[self assert: (session
+				executeString: '(self at: 1) class = Object'
+				fromContext: inspector model
+				environment: 0)]
+			ensure: [projectsBrowser view close].
+	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	
+	[self assert: (session
+				executeString: '(self at: 1) class = Object'
+				fromContext: inspector model
+				environment: 0)]
+			ensure: [projectsBrowser view close]]
+			ensure: [inspector view close]!
+
 test_registeredPresentersInProjectBrowserCleanedUp
 	| registeredPresenters  |
 	registeredPresenters := BrowserUpdate current registeredPresenters size.
@@ -832,7 +871,7 @@ testUnsavedChangesActionStepping
 	debugger methodSourcePresenter documentPresenter value: 'step over'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
 	TestMessageBox plannedResult: #no.	"don't save changes"
-	self debuggerDo: [[debugger stepOver] fork].
+	self debuggerDo: [debugger stepOver].
 	self assert: debugger methodSourcePresenter documentPresenter value equals: originalSource.
 	debugger methodSourcePresenter documentPresenter value: 'step into'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
@@ -864,6 +903,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_frameDoubleClickNoActionInBlockContext!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_implementersFromDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_inspectedDebuggerObjectHeld!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_restartInBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_selectAfterDiveNoStepPoint!public!tests! !
