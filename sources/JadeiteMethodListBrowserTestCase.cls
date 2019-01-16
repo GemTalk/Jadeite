@@ -24,10 +24,10 @@ removeMethods: methodServices in: className
 
 	| classService |
 	classService := RowanClassService named: className.
-	classService methods: (methodServices select: [:service | service className = className]).
 	classService
-		command: #removeMethods;
-		commandArgs: Array new.
+		command: #removeMethods:;
+		commandArgs: (Array
+					with: (methodServices select: [:service | service className asString = className])).
 	self issueCommand: classService!
 
 sampleMethodSource
@@ -101,6 +101,17 @@ test_methodBrowserSaveMethod
 	self assert: self methodSourcePresenter documentPresenter value equals: source2.
 	self assert: self methodListSourcePresenter documentPresenter value equals: source2]
 			ensure: [projectsBrowser destroy]!
+
+test_removeMethod
+	self saveMethod: 'deleteMe ^123'  in: 'RowanSample1' category: 'other'. 
+	self saveMethod: 'deleteMe ^#test'  in: 'RowanSample1Test' category: 'other'. 
+	methodListBrowser := JadePresenter browseImplementorsOf: #deleteMe session: session.
+	self assert: self methodListMethodListPresenter list size equals: 2. 
+	self assert: self methodListMethodListPresenter selection className asString equals: 'RowanSample1'.  "first alphabetically"
+	self removeMethods: (Array with: self methodListMethodListPresenter selection) in: 'RowanSample1'. 
+	self assert: self methodListMethodListPresenter list size equals: 1. 
+	self assert: self methodListMethodListPresenter selections isEmpty.
+	self assert: self methodListMethodListPresenter list first className asString equals: 'RowanSample1Test'!
 
 test_UnsavedChangesActionChangeSelectionIgnoreChanges
 	| methodListPresenter |
@@ -219,6 +230,7 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectListAt:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_methodBrowserSaveMethod!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindow!public!tests! !

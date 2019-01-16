@@ -25,7 +25,7 @@ addHierarchyService: service to: treeModel withParent: parentService
 basicPrepareForReplication
 	"don't call anything potentially recursive here.
 	method & package services don't iterate over subcollections"
-	self shouldClearMethods ifTrue: [methods := nil].
+	methods := nil. 
 	hierarchyServices := nil.
 	selectedMethods := nil.
 	methods ifNotNil: [methods do: [:methodService | methodService basicPrepareForReplication]].
@@ -296,10 +296,6 @@ selectedPackageServices
 selectedPackageServices: anObject
 	selectedPackageServices := anObject!
 
-shouldClearMethods
-
-	^(#(#removeMethods) includes: command) not!
-
 shouldColorAsExtension
 	^definedPackageName = self notRowanizedPackageName
 		ifTrue: [false]
@@ -445,7 +441,6 @@ visibleTests
 !RowanClassService categoriesFor: #selectedPackageServiceNames!private!updating! !
 !RowanClassService categoriesFor: #selectedPackageServices!accessing!private! !
 !RowanClassService categoriesFor: #selectedPackageServices:!accessing!private! !
-!RowanClassService categoriesFor: #shouldClearMethods!public!replication!testing! !
 !RowanClassService categoriesFor: #shouldColorAsExtension!public!testing! !
 !RowanClassService categoriesFor: #stonOn:!must not strip!public!ston! !
 !RowanClassService categoriesFor: #sunitMethodsUpdate:browser:!public!updating! !

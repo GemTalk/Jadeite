@@ -1387,8 +1387,9 @@ removeMethodCategories
 removeMethods: services
 	services do: 
 			[:classService |
-			classService command: #removeMethods.
-			classService methods: methodListPresenter selections].
+			classService
+				command: #removeMethods:;
+				commandArgs: (Array with: methodListPresenter selections)].
 	self issueCommand: services!
 
 renameMethodCategory

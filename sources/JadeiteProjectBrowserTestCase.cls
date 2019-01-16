@@ -430,14 +430,14 @@ test_browseSelectedMethods
 	self deny: commandQuery isEnabled.
 	self selectMethodsNamed: (Array
 				with: #fileoutClass
-				with: #removeMethods
+				with: #removeMethods:
 				with: #addCategory:).
 	methodListBrowser := self projectsPresenter browseSelectedMethods.
 	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
 	self assert: methodListPresenter list size equals: 3.
 	self assert: methodListPresenter list first selector equals: #addCategory:.
 	self assert: methodListPresenter list second selector equals: #fileoutClass.
-	self assert: methodListPresenter list third selector equals: #removeMethods.
+	self assert: methodListPresenter list third selector equals: #removeMethods:.
 	self assert: ('Selected Methods*' match: methodListBrowser caption).
 	commandQuery := self
 				queryCommand: #browseSelectedMethods
@@ -454,10 +454,10 @@ test_categoryTextDisplay
 	self assert: self projectsPresenter methodCategoryText value equals: String new.
 	self selectCategoryNamed: 'client commands'.
 	self assert: self projectsPresenter methodCategoryText value equals: String new.
-	self selectMethodNamed: #removeMethods.
+	self selectMethodNamed: #removeMethods:.
 	self assert: self projectsPresenter methodCategoryText value equals: 'Category: client commands'.
 	self selectMethodsNamed: (Array
-				with: #removeMethods
+				with: #removeMethods:
 				with: #renameCategoryFrom:to:
 				with: #addCategory:).
 	self assert: self projectsPresenter methodCategoryText value equals: 'Category: client commands'.	"category is shown if all selected methods are in same category"
