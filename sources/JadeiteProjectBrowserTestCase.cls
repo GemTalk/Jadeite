@@ -2711,6 +2711,27 @@ test_twoBrowsersNoUpdateWithoutPackageSelection
 	self assert: secondPresenter methodListPresenter model isEmpty]
 			ensure: [secondBrowser destroy]!
 
+test_twoBrowsersRemoveMethod
+	| secondBrowser secondPresenter |
+	self testsIssue: #issue404 withTitle: 'Removing a method using method browser'.
+	self selectRowanSample1Class.
+	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	
+	[secondPresenter := secondBrowser currentCard.
+	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
+	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
+	self denyMethodInList: #sampleMethod presenter: secondPresenter methodListPresenter.
+	self denyMethodInList: #sampleMethod.
+	self saveSampleMethod.
+	self assertMethodInList: #sampleMethod. 
+	self assert: self methodListPresenter selection selector equals: #sampleMethod.
+	self assertMethodInList: #sampleMethod presenter: secondPresenter methodListPresenter.
+	self projectsPresenter basicRemoveMethods.
+	self denyMethodInList: #sampleMethod presenter: secondPresenter methodListPresenter.
+	self denyMethodInList: #sampleMethod]
+			ensure: [secondBrowser destroy]!
+
 test_twoBrowsersUpdate
 	| secondBrowser secondPresenter |
 	self testsIssue: #issue374
@@ -3068,6 +3089,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassDoesNotAppearInDifferentHierarchy!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassRearrangesItselfInHierarchy!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersNoUpdateWithoutPackageSelection!public!test two browsers! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersRemoveMethod!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdate!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateHierarchy!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !

@@ -1191,8 +1191,9 @@ displayObject
 	className := theClassName!
 
 onViewClosed
-	RowanBrowserService new releaseWindow: self view handle value session: self gciSession.
-	super onViewClosed. !
+	self gciSession isValidSession
+		ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: self gciSession].
+	super onViewClosed!
 
 onViewOpened
 	super onViewOpened.

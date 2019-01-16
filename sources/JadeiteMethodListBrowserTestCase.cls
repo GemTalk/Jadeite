@@ -113,6 +113,28 @@ test_removeMethod
 	self assert: self methodListMethodListPresenter selections isEmpty.
 	self assert: self methodListMethodListPresenter list first className asString equals: 'RowanSample1Test'!
 
+test_removeMethodInProjectBrowser
+	self
+		saveMethod: 'deleteMe ^123'
+		in: 'RowanSample1'
+		category: 'other'.
+	self
+		saveMethod: 'deleteMe ^#test'
+		in: 'RowanSample1Test'
+		category: 'other'.
+	methodListBrowser := JadePresenter browseImplementorsOf: #deleteMe session: session.
+	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	
+	[self selectRowanSample1Class.
+	self selectMethodNamed: #deleteMe.
+	self projectsPresenter basicRemoveMethods.
+	self denyMethodInList: #deleteMe.
+	self assert: self methodListMethodListPresenter list size equals: 1.
+	self assert: self methodListMethodListPresenter selections isEmpty.
+	self assert: self methodListMethodListPresenter list first className asString
+		equals: 'RowanSample1Test']
+			ensure: [projectsBrowser destroy]!
+
 test_UnsavedChangesActionChangeSelectionIgnoreChanges
 	| methodListPresenter |
 	self testsIssue: #issue386
@@ -231,6 +253,7 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_methodBrowserSaveMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethod!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodInProjectBrowser!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindow!public!tests! !
