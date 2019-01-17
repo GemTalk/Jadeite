@@ -755,6 +755,106 @@ test_dragClassInHierarchyDoesNotWalkback
 	self assert: (self projectsPresenter onDragClassHierarchy: dragDropSession)
 		equals: self projectsPresenter!
 
+test_dragDropMethodFailCompile
+	| dragDropSession source |
+	self testsIssue: #issue286
+		withTitle: '(3.0.50) method drag drop only drags a single method when multiple methods selected?'.
+	self selectRowanSample1Class.
+	self projectsPresenter classDefinitionPresenter
+		value: 'Object rwSubclass: ''Def''
+	instVarNames: #(def)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''RowanSample1-Core''
+	options: #()
+'.
+	self projectsPresenter editSaveClass.
+	self projectsPresenter classDefinitionPresenter
+		value: 'Object rwSubclass: ''Abc''
+	instVarNames: #(abc)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''RowanSample1-Core''
+	options: #()
+'.
+	self projectsPresenter editSaveClass.
+	self assert: self classListPresenter selection name equals: 'Abc'.
+	source := 'dragMe  ^abc'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	dragDropSession := self classListPresenter view dragDropSessionClass new.
+	self projectsPresenter onDragMethod: dragDropSession.
+	dragDropSession suggestedTarget: (self serviceNamed: 'Def' in: self classListPresenter).
+	dragDropSession suggestedSource: self methodListPresenter selections.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #ok.
+	
+	[self projectsPresenter onDropOnClassList: dragDropSession.	"should raise fail dialog here. answer ok"
+	self assert: self projectsPresenter selectedClass name equals: 'Abc'.	"stay on drag source class"
+	self assert: self methodListPresenter selections size equals: 1	"don't lose selection"]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
+test_dragDropMultipleMethods
+	"don't really drop but we can simulate it and exercise the methods involved"
+
+	| dragDropSession source |
+	self testsIssue: #issue86
+		withTitle: '(3.0.50) method drag drop only drags a single method when multiple methods selected?'.
+	self selectRowanSample1Class.
+	self selectCategoriesNamed: (Array with: 'accessing').
+	source := 'dragMe1  ^1'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	source := 'dragMe2  ^2'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	source := 'dragMe3  ^3'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self selectMethodsNamed: #(#dragMe1 #dragMe2 #dragMe3).
+	dragDropSession := self classHierarchyPresenter view dragDropSessionClass new.
+	self projectsPresenter onDragMethod: dragDropSession.
+	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSubClass' in: self classListPresenter).
+	dragDropSession suggestedSource: self methodListPresenter selections. 
+	self projectsPresenter onDropOnClassList: dragDropSession.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanSubClass'.
+	self assert: self methodListPresenter selections size equals: 3. 
+	self assert: self methodListPresenter selections first selector equals: #dragMe1. 
+	self assert: self methodListPresenter selections second selector equals: #dragMe2. 
+	self assert: self methodListPresenter selections third selector equals: #dragMe3.!
+
+test_dragDropMultipleMethodsHierarchy
+	"don't really drop but we can simulate it and exercise the methods involved"
+
+	| dragDropSession source |
+	self testsIssue: #issue86
+		withTitle: '(3.0.50) method drag drop only drags a single method when multiple methods selected?'.
+	self selectRowanSample1Class.
+	self selectCategoriesNamed: (Array with: 'accessing').
+	source := 'dragMe1  ^1'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	source := 'dragMe2  ^2'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	source := 'dragMe3  ^3'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self selectHierarchyTab.
+	self selectMethodsNamed: #(#dragMe1 #dragMe2 #dragMe3).
+	dragDropSession := self classHierarchyPresenter view dragDropSessionClass new.
+	self projectsPresenter onDragMethod: dragDropSession.
+	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSubClass' in: self classListPresenter).
+	dragDropSession suggestedSource: self methodListPresenter selections. 
+	self projectsPresenter onDropMethodsOnClassHierarchy: dragDropSession.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanSubClass'.
+	self assert: self methodListPresenter selections size equals: 3. 
+	self assert: self methodListPresenter selections first selector equals: #dragMe1. 
+	self assert: self methodListPresenter selections second selector equals: #dragMe2. 
+	self assert: self methodListPresenter selections third selector equals: #dragMe3.!
+
 test_dropMethodOnClassHierarchy
 	"don't really drop but we can simulate it and exercise the methods involved"
 
@@ -2992,6 +3092,9 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dragClassDoesNotWalkback!public!test drag drop! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dragClassInHierarchyDoesNotWalkback!public!test class hierarchy!test drag drop! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dragDropMethodFailCompile!public!test class hierarchy!test drag drop! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dragDropMultipleMethods!public!test class hierarchy!test drag drop! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dragDropMultipleMethodsHierarchy!public!test class hierarchy!test drag drop! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassHierarchy!public!test class hierarchy!test drag drop! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassList!public!test class list!test drag drop! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVars!public!tests! !

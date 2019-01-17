@@ -277,6 +277,12 @@ removedClass: presenter
 replicateFrom: newService
 	newService isClassService ifTrue: [^super replicateFrom: newService]!
 
+saveMethod: source category: category session: session
+	self
+		command: #saveMethodSource:category:;
+		commandArgs: (Array with: source with: category).
+	BrowserUpdate current issueCommand: (Array with: self) session: session!
+
 selectedMethods
 
 	^selectedMethods
@@ -436,6 +442,7 @@ visibleTests
 !RowanClassService categoriesFor: #remoteServiceName!must not strip!public! !
 !RowanClassService categoriesFor: #removedClass:!public!updating! !
 !RowanClassService categoriesFor: #replicateFrom:!public!replication! !
+!RowanClassService categoriesFor: #saveMethod:category:session:!actions!public! !
 !RowanClassService categoriesFor: #selectedMethods!accessing!private! !
 !RowanClassService categoriesFor: #selectedPackageNames!private! !
 !RowanClassService categoriesFor: #selectedPackageServiceNames!private!updating! !

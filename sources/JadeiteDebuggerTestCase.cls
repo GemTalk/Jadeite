@@ -109,9 +109,9 @@ saveMethod: source in: className category: category
 	| classService |
 	classService := RowanClassService named: className.
 	classService
-		command: #saveMethodSource:category:;
-		commandArgs: (Array with: source with: 'other').
-	self issueCommand: classService!
+		saveMethod: source
+		category: category
+		session: session!
 
 saveMethodWithHalt
 	| source |
@@ -887,7 +887,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #menuItemIsEnabled:!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #methodListBrowser!private! !
 !JadeiteDebuggerTestCase categoriesFor: #openDebuggerOn:!private! !
-!JadeiteDebuggerTestCase categoriesFor: #saveMethod:in:category:!public!support! !
+!JadeiteDebuggerTestCase categoriesFor: #saveMethod:in:category:!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #saveMethodWithHalt!private! !
 !JadeiteDebuggerTestCase categoriesFor: #selectFrameAt:!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #setUp!private!setup teardown! !

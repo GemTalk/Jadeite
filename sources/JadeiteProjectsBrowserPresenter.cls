@@ -61,6 +61,33 @@ basicAddMethodCategory: string
 			self issueCommand: (Array with: service)].
 	self selectCategoriesNamed: (Array with: string)!
 
+basicOnDropClassList: dragDropSession
+	| classService failedCompilations newSelections |
+	failedCompilations := OrderedCollection new.
+	classService := dragDropSession suggestedTarget.
+	classService meta: self isClassSideSelected.
+	dragDropSession dragObjects do: 
+			[:dragDropObject |
+			
+			[classService
+				saveMethod: dragDropObject object source
+				category: dragDropObject object category
+				session: gciSession]
+					on: GsCompileError
+					do: [:ex | failedCompilations add: dragDropObject object]].
+	failedCompilations isEmpty
+		ifTrue: 
+			[self selectedClass == classService
+				ifFalse: 
+					[self isHierarchyTabSelected
+						ifTrue: [self selectClassInClassHierarchyNamed: classService name]
+						ifFalse: [self selectClass: classService]].
+			newSelections := methodListPresenter list select: 
+							[:methodService |
+							(dragDropSession dragObjects collect: [:ea | ea object selector]) includes: methodService selector].
+			methodListPresenter selections: newSelections].
+	^failedCompilations!
+
 basicProjectTabLabel
 	| label |
 	projectListPresenter selections isEmpty ifTrue: [^'Projects'].
@@ -908,21 +935,13 @@ onDragMethod: aSession
 onDropMethodsOnClassHierarchy: aSession
 	^self onDropOnClassList: aSession!
 
-onDropOnClassList: aSession
-	| classService selector newSelection |
-	classService := aSession suggestedTarget.
-	classService meta: self isClassSideSelected.
-	selector := aSession suggestedSource selector.
-	methodSourcePresenter value: aSession suggestedSource source.	"method may not be selected"
-	self editSaveMethod: classService.
-	self selectedClass == classService
+onDropOnClassList: dragDropSession
+	| failedCompilations |
+	failedCompilations := self basicOnDropClassList: dragDropSession.
+	failedCompilations isEmpty
 		ifFalse: 
-			[self isHierarchyTabSelected
-				ifTrue: [self selectClassInClassHierarchyNamed: classService name]
-				ifFalse: [self selectClass: classService]].
-	newSelection := methodListPresenter list detect: [:methodService | methodService selector == selector]
-				ifNone: [^self].
-	methodListPresenter selection: newSelection!
+			[MessageBox notify: 'Methods failing compilation: '
+						, (failedCompilations collect: [:methodService | methodService selector]) asArray printString]!
 
 onDropOnMethodCategory: aSession
 	| methodServices targetCategory |
@@ -1962,6 +1981,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #addSubclass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #allClasses!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicAddMethodCategory:!menu handlers support!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #basicOnDropClassList:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicProjectTabLabel!displaying!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethodCategories!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethods!menu handlers support!private! !

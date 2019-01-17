@@ -1647,17 +1647,11 @@ onDropMethodsOnClass: aString session: aSession
 	self updateCommand: stream contents.
 !
 
-onDropMethodsOnClassHierarchy: aSession 
+onDropMethodsOnClassHierarchy: aSession
+	self onDropMethodsOnClass: aSession suggestedTarget last session: aSession!
 
-	self
-		onDropMethodsOnClass: aSession suggestedTarget last
-		session: aSession.!
-
-onDropMethodsOnClassList: aSession 
-
-	self
-		onDropMethodsOnClass: aSession suggestedTarget 
-		session: aSession.!
+onDropMethodsOnClassList: aSession
+	self onDropMethodsOnClass: aSession suggestedTarget session: aSession!
 
 onDropOnClassCategory: aSession 
 
