@@ -81,7 +81,7 @@ basicOnDropClassList: dragDropSession
 				ifFalse: 
 					[self isHierarchyTabSelected
 						ifTrue: [self selectClassInClassHierarchyNamed: classService name]
-						ifFalse: [self selectClass: classService]].
+						ifFalse: [self selectClassNamed: classService name]].
 			newSelections := methodListPresenter list select: 
 							[:methodService |
 							(dragDropSession dragObjects collect: [:ea | ea object selector]) includes: methodService selector].
@@ -527,8 +527,10 @@ editSaveClass
 		isModified: false;
 		backcolor: Color white.
 	packageListPresenter selection selectedClass
-		ifNotNil: [:classService | self selectClass: classService].
-	self isHierarchyTabSelected ifTrue: [self updateHierarchy]!
+		ifNotNil: 
+			[:classService |
+			classService isNewClass: false.
+			self selectClassNamed: classService name]!
 
 editSaveClassComment
 	| classService |
@@ -559,12 +561,10 @@ editSaveMethod: classService
 			self selectMethodsFrom: classService]!
 
 expandHierarchyAt: classService
-	| selection |
 	Cursor wait showWhile: 
 			[classService command: #oneLevelClassHierarchy.
 			self issueCommand: (Array with: classService).
-			selection := classHierarchyPresenter model asBag detect: [:svc | svc name = classService name].
-			classHierarchyPresenter selection: selection]!
+			self selectClassNamed: classService name]!
 
 fileOutCategories
 	| path suggestedFileName classSide |
@@ -1480,11 +1480,6 @@ selectCategoryNamed: category
 selectCategoryTab
 	(self view viewNamed: 'categoryList') ensureVisible!
 
-selectClass: classSelection
-	| selection |
-	selection := classListPresenter list detect: [:svc | svc name = classSelection name] ifNone: [].
-	^selection ifNotNil: [classListPresenter selection: selection]!
-
 selectClassInClassHierarchyNamed: className
 	| selection |
 	selection := classHierarchyPresenter model asBag
@@ -1575,7 +1570,7 @@ selectPackage: newPackageSelection
 	methodSelection := methodListPresenter selectionOrNil.
 	classSelection := classListPresenter selectionOrNil.
 	packageListPresenter selection: newPackageSelection.
-	classSelection ifNotNil: [self selectClass: classSelection].
+	classSelection ifNotNil: [self selectClassNamed: classSelection name].
 	methodSelection ifNotNil: [self selectionMethod: methodSelection]!
 
 selectSourceTabNamed: tabName
@@ -1781,7 +1776,7 @@ updateCommand: aString onSuccessDo: aBlock
 	^nil!
 
 updateHierarchy
-	| service selection |
+	| service |
 	classHierarchyPresenter model: TreeModel new.
 	packageListPresenter selectionOrNil ifNil: [^self].
 	Cursor wait showWhile: 
@@ -1790,11 +1785,7 @@ updateHierarchy
 			self issueCommand: (Array with: service).
 			service isPackageService
 				ifTrue: [service hierarchyServices: Array new]
-				ifFalse: 
-					[service name = 'Object'
-						ifFalse: 
-							[selection := classHierarchyPresenter model asBag detect: [:svc | svc name = service name].
-							classHierarchyPresenter selection: selection]]]!
+				ifFalse: [service name = 'Object' ifFalse: [self selectClassNamed: service name]]]!
 
 updateMenuBar
 	| shellView menuBar methodFilterMenu textAreaMenu methodMenu |
@@ -2117,7 +2108,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoryFrom:!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoryNamed:!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoryTab!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectClass:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassInClassHierarchyNamed:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassInClassListNamed:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassListTab!public!selection! !

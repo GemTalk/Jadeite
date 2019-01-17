@@ -517,6 +517,36 @@ test_classListNotBlank
 	
 	!
 
+test_classListSelectionShouldNotUpdateOtherHierarchy
+	| secondBrowser |
+	self testsIssue: #issue374
+		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Definitions' in: self packageListPresenter.
+	self selectServiceNamed: 'RwClassDefinition' in: self classListPresenter.
+	self selectHierarchyTab.
+	self
+		assertLinearAncestry: #('Object' 'RwDefinition' 'RwAbstractClassDefinition' 'RwClassDefinition')
+		in: self classHierarchyPresenter.
+	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	
+	[self selectServiceNamed: 'Rowan' in: secondBrowser currentCard projectListPresenter.
+	self selectServiceNamed: 'Rowan-Definitions' in: secondBrowser currentCard packageListPresenter.
+	self selectServiceNamed: 'RwMethodDefinition' in: secondBrowser currentCard classListPresenter.
+	self
+		assertLinearAncestry: #('Object' 'RwDefinition' 'RwAbstractClassDefinition' 'RwClassDefinition')
+		in: self classHierarchyPresenter.
+	self selectServiceNamed: 'RwPackageDefinition' in: secondBrowser currentCard classListPresenter.
+	self
+		assertLinearAncestry: #('Object' 'RwDefinition' 'RwAbstractClassDefinition' 'RwClassDefinition')
+		in: self classHierarchyPresenter.
+	self selectServiceNamed: 'RwClassExtensionDefinition' in: secondBrowser currentCard classListPresenter.
+	self
+		assertLinearAncestry: #('Object' 'RwDefinition' 'RwAbstractClassDefinition' 'RwClassDefinition')
+		in: self classHierarchyPresenter.
+	]
+			ensure: [secondBrowser topShell exit]!
+
 test_classSideSelection
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
@@ -3084,6 +3114,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeListSortOrder!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test class list! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classListSelectionShouldNotUpdateOtherHierarchy!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classSideSelection!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInClassList!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInHierarchy!public!test class hierarchy! !

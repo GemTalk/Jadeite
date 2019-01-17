@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanClassService
-	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests'
+	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -202,7 +202,8 @@ initialize
 	super initialize. 
 	filters := Array new. 
 	selectedPackageServices := Array new. "method list browser will not have packages to select"
-	isTestCase := false. !
+	isTestCase := false. 
+	isNewClass := false. !
 
 instVarNames
 	^instVarNames!
@@ -218,6 +219,12 @@ isDefined
 isExtension
 
 	^isExtension!
+
+isNewClass
+	^isNewClass!
+
+isNewClass: anObject
+	isNewClass := anObject!
 
 isTestCase
 	^isTestCase!
@@ -309,7 +316,8 @@ shouldColorAsExtension
 
 stonOn: stonWriter
 	| instanceVariableNames |
-	(instanceVariableNames := self class allInstVarNames reject: [:iv | self excludedInstVars includes: iv]) isEmpty
+	(instanceVariableNames := self class allInstVarNames
+				reject: [:iv | self excludedInstVars includes: iv]) isEmpty
 		ifTrue: [stonWriter writeObject: self do: [stonWriter encodeMap: #()]]
 		ifFalse: 
 			[stonWriter writeObject: self
@@ -317,7 +325,7 @@ stonOn: stonWriter
 					[:dictionary |
 					instanceVariableNames do: 
 							[:each |
-							(self instVarAt: (instanceVariableNames indexOf: each))
+							(self instVarNamed: each)
 								ifNotNil: [:value | dictionary at: each asSymbol put: value]
 								ifNil: [self stonShouldWriteNilInstVars ifTrue: [dictionary at: each asSymbol put: nil]]]]]!
 
@@ -355,22 +363,23 @@ updatedClass: presenter
 	presenter view invalidate. !
 
 updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
+	"a newly added class should show up in the list but selection (say) of an existing class
+	should in another browser that isn't in the displayed hierarchy but exists in the full 
+	hierarchy should not"
+
 	| classNode superclassService selections selectedPackageNames |
-	classNode := classHierarchyPresenter model getNodeFor: self ifAbsent: [].
+	classNode := classHierarchyPresenter model getNodeFor: self ifAbsent: [isNewClass ifFalse: [^self]].
 	superclassService := classHierarchyPresenter model asBag
 				detect: [:classService | classService name = superclassName]
 				ifNone: [^self].
-	classNode ifNotNil: [^self moveNodeToBeChildOf: superclassService in: classHierarchyPresenter].
+	(classNode notNil and:[classNode object isNewClass not]) ifTrue: [^self moveNodeToBeChildOf: superclassService in: classHierarchyPresenter].
 	projectBrowser packageListPresenter selections isEmpty ifTrue: [^self].
 	selectedPackageNames := projectBrowser packageListPresenter selections
 				collect: [:packageService | packageService name].
 	(selectedPackageNames includes: packageName) ifFalse: [^self].
 	selections := classHierarchyPresenter selections.
 	classHierarchyPresenter model remove: self ifAbsent: [].
-	classHierarchyPresenter model add: self asChildOf: superclassService.
-	selections isEmpty ifTrue: [^self].
-	classHierarchyPresenter selection: selections first ifAbsent: [^self].
-	classHierarchyPresenter view expand: selections first!
+	classHierarchyPresenter model add: self asChildOf: superclassService.!
 
 updateListIn: presenter from: visibleMethods
 	| newSelections |
@@ -426,6 +435,8 @@ visibleTests
 !RowanClassService categoriesFor: #isClassService!public!testing! !
 !RowanClassService categoriesFor: #isDefined!public!testing! !
 !RowanClassService categoriesFor: #isExtension!public!testing! !
+!RowanClassService categoriesFor: #isNewClass!accessing!private! !
+!RowanClassService categoriesFor: #isNewClass:!accessing!private! !
 !RowanClassService categoriesFor: #isTestCase!public!testing! !
 !RowanClassService categoriesFor: #meta!accessing!private! !
 !RowanClassService categoriesFor: #meta:!accessing!private! !

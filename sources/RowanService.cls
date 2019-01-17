@@ -64,6 +64,24 @@ commandArgs
 commandArgs: anObject
 	commandArgs := anObject!
 
+debugPrintOn: aStream
+	self printOn: aStream.
+	self class instVarNames do: 
+			[:instVarName |
+			aStream
+				tab;
+				nextPutAll: instVarName;
+				nextPut: $:;
+				space;
+				nextPutAll: (self instVarNamed: instVarName) printString;
+				cr]!
+
+debugPrintString
+	| ws |
+	ws := WriteStream on: String new.
+	self debugPrintOn: ws.
+	^ws contents!
+
 dictionaryUpdate: presenter
 	!
 
@@ -278,6 +296,8 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #command:!accessing!public! !
 !RowanService categoriesFor: #commandArgs!accessing!public! !
 !RowanService categoriesFor: #commandArgs:!accessing!public! !
+!RowanService categoriesFor: #debugPrintOn:!printing!public! !
+!RowanService categoriesFor: #debugPrintString!printing!public! !
 !RowanService categoriesFor: #dictionaryUpdate:!public!updating! !
 !RowanService categoriesFor: #displayString!displaying!public! !
 !RowanService categoriesFor: #emptyFilterListsIn:!Init / Release!private! !
