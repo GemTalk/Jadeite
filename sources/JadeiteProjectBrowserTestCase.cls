@@ -1192,6 +1192,22 @@ test_findClass
 	self assert: self packageListPresenter selection name equals: 'Cypress-Definitions'.
 	self assert: self projectListPresenter selection name equals: 'Cypress'!
 
+test_gitBranchesDoesNotShowHead
+	"this may be a brittle test because it assumes RowanSample1 has only the master branch.
+	But it's based on the local checkout so the test runner can control this. "
+
+	| branchesString branches |
+	self testsIssue: #issue311
+		withTitle: 'improper `checkout list` display, when any tag is checked out (walkback in 3.0.56)'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	branchesString := session
+				executeString: 'Rowan gitTools gitbranchIn: (RwProject newNamed: ''RowanSample1'') repositoryRootPath with: '''''.
+	self assert: (branchesString copyWithout: Character lf) equals: '* master'.
+	branches := (RowanProjectService new name: 'RowanSample1')
+				basicCheckoutUsing: self projectsPresenter.
+	self assert: branches isKindOf: Collection.
+	self assert: branches first equals: '*master'!
+
 test_goToDefinedClassFromClassList
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Extensions') in: self packageListPresenter.
@@ -3138,6 +3154,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_extensionMethodSelection!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_filtersUpdatedInHierarchyView!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findClass!public!test class list!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_gitBranchesDoesNotShowHead!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromHierarchy!public!test class hierarchy!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromClassList!public!test class list!test defined package! !

@@ -37,6 +37,17 @@ allClasses
 			packageService classes ifNotNil: [:classes | coll addAll: classes].
 			coll]!
 
+basicCheckoutUsing: presenter
+	| branches query branchString |
+	query := RowanQueryService new
+				command: #projectBranches:;
+				commandArgs: (Array with: self name).
+	branchString := (presenter issueCommand: (Array with: query)) first answer.
+	branches := (branchString subStrings: Character lf) asOrderedCollection.
+	branches := branches reject: [:string | '*HEAD*' match: string].
+	branches := branches collect: [:string | string copyWithout: Character space].
+	^branches!
+
 basicName: aString
 	"don't round trip to the server to get information" 
 	name := aString!
@@ -58,22 +69,16 @@ changesUsing: session
 	^RowanPatchBrowser showOn: (RowanPatch new operations: operations; session: session) name: name!
 
 checkoutUsing: presenter
-	| branchString query branchName |
-	query := RowanQueryService new
-				command: #projectBranches:;
-				commandArgs: (Array with: self name).
-	branchString := (presenter issueCommand: (Array with: query)) first answer.
-	branchString := branchString subStrings asOrderedCollection
-				remove: '*';
-				yourself.
+	| branchName branches |
+	branches := self basicCheckoutUsing: presenter.
 	branchName := ChoicePrompter
 				on: branch
-				choices: branchString
+				choices: branches
 				caption: 'Select branch to checkout:'.
 	branchName isNil ifTrue: [^self].
 	self
 		command: #checkout:;
-		commandArgs: (Array with: branchName).
+		commandArgs: (Array with: (branchName copyWithout: $*)).
 	presenter issueCommand: (Array with: self)!
 
 defaultProjectName
@@ -211,6 +216,7 @@ sha: anObject
 !RowanProjectService categoriesFor: #=!comparing!public! !
 !RowanProjectService categoriesFor: #addPackageNamed:using:!presenter support!public! !
 !RowanProjectService categoriesFor: #allClasses!accessing!public! !
+!RowanProjectService categoriesFor: #basicCheckoutUsing:!presenter support!private! !
 !RowanProjectService categoriesFor: #basicName:!accessing!public! !
 !RowanProjectService categoriesFor: #branch!accessing!public! !
 !RowanProjectService categoriesFor: #branch:!accessing!public! !
