@@ -362,6 +362,14 @@ updatedClass: presenter
 	update replicateFrom: self.
 	presenter view invalidate. !
 
+updatedClassDefinition: classDefinitionPresenter browser: browser
+	browser selectedClass = self
+		ifTrue: 
+			[classDefinitionPresenter view isModified
+				ifFalse: 
+					[classDefinitionPresenter value: template.
+					browser displayNoMods: classDefinitionPresenter]]!
+
 updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
 	"a newly added class should show up in the list but selection (say) of an existing class
 	should in another browser that isn't in the displayed hierarchy but exists in the full 
@@ -471,6 +479,7 @@ visibleTests
 !RowanClassService categoriesFor: #toolTip!public! !
 !RowanClassService categoriesFor: #updateCategories:!private!updating! !
 !RowanClassService categoriesFor: #updatedClass:!public!updating! !
+!RowanClassService categoriesFor: #updatedClassDefinition:browser:!public!updating! !
 !RowanClassService categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !
 !RowanClassService categoriesFor: #updateListIn:from:!private!updating! !
 !RowanClassService categoriesFor: #updateVariables:!private!updating! !

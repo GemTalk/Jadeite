@@ -22,6 +22,11 @@ addSystemBrowserWithLayoutInfo: each
 	
 !
 
+cardsPresenter
+
+	^cardsPresenter
+!
+
 commitTransaction
 	| commitResult |
 	commitResult := super commitTransaction.
@@ -41,6 +46,7 @@ systemBrowserPresenter
 	^JadeiteProjectsBrowserPresenter! !
 !JadeiteProjectsSystemBrowser categoriesFor: #addSystemBrowser!layout!public! !
 !JadeiteProjectsSystemBrowser categoriesFor: #addSystemBrowserWithLayoutInfo:!layout!public! !
+!JadeiteProjectsSystemBrowser categoriesFor: #cardsPresenter!layout!public! !
 !JadeiteProjectsSystemBrowser categoriesFor: #commitTransaction!public! !
 !JadeiteProjectsSystemBrowser categoriesFor: #layoutFilePath!layout!public! !
 !JadeiteProjectsSystemBrowser categoriesFor: #shellName!overrides!private! !

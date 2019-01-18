@@ -244,7 +244,11 @@ tearDown
 	methodListBrowser
 		ifNotNil: 
 			[methodListBrowser destroy.
-			methodListBrowser := nil].!
+			methodListBrowser := nil].
+	secondBrowser
+		ifNotNil: 
+			[secondBrowser destroy.
+			secondBrowser := nil]!
 
 test_abstractTestsShown
 	| commandQuery methodService |
@@ -507,6 +511,42 @@ test_changeListSortOrder
 		equals: #('tests' 'other' 'other' 'other' 'Class Definition' 'Class Definition') asOrderedCollection]
 			ensure: [changesBrowser destroy]!
 
+test_classDefinitionUpdatesAcrossTabs
+	| source firstTab secondTab newSource |
+	self testsIssue: #issue412 withTitle: '(3.0.56) incorrect project browser update on method accept '.
+	firstTab := self projectsPresenter topShell cardsPresenter view cardLayout currentCard.
+	self selectRowanSample1Test.
+	self projectsPresenter addSystemBrowser.
+	secondTab := self projectsPresenter topShell cardsPresenter view cardLayout currentCard.
+	self selectRowanSample1Test.
+	source := 'TestCase rwSubclass: ''RowanSample1Test''
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''RowanSample1-Tests''
+	options: #()
+'.
+	self assert: self projectsPresenter classDefinitionPresenter value equals: source replaceCrLfWithLf.
+	self projectsPresenter topShell cardsPresenter view cardLayout cyclePreviousCard.
+	newSource := 'TestCase rwSubclass: ''RowanSample1Test''
+	instVarNames: #( abc)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''RowanSample1-Tests''
+	options: #()
+'.
+	self projectsPresenter classDefinitionPresenter value: newSource replaceCrLfWithLf.
+	self projectsPresenter editSaveClass.
+	self assert: self projectsPresenter topShell cardsPresenter view cardLayout currentCard
+		sameAs: firstTab.
+	self assert: self projectsPresenter classDefinitionPresenter value equals: newSource replaceCrLfWithLf.
+	self projectsPresenter topShell cardsPresenter view cardLayout cycleNextCard. 
+	self assert: self projectsPresenter topShell cardsPresenter view cardLayout currentCard
+		sameAs: secondTab.
+	self assert: self projectsPresenter classDefinitionPresenter value equals: newSource replaceCrLfWithLf!
+
 test_classListNotBlank
 	| rowanClass |
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
@@ -746,6 +786,26 @@ test_definedClassMenuItem
 	self assert: self projectsPresenter definedClassMenuItemLabel equals: menuLabel.
 	self projectsPresenter updateClassMenu: self classListPresenter view contextMenu.	"triggered just before pop-up menu opens"
 	self assert: classMenuItem description equals: menuLabel!
+
+test_dontChangeTabOnMethodSave
+	| source firstTab secondTab |
+	self testsIssue: #issue412 withTitle: '(3.0.56) incorrect project browser update on method accept '.
+	firstTab := self projectsPresenter topShell cardsPresenter view cardLayout currentCard.
+	self selectRowanSample1Class.
+	self selectMethodNamed: #foo.
+	self projectsPresenter addSystemBrowser.
+	secondTab :=self projectsPresenter topShell cardsPresenter view cardLayout currentCard.
+	self selectRowanSample1Class.	"select class/method in new tab"
+	self selectMethodNamed: #foo.
+	self projectsPresenter topShell cardsPresenter view cardLayout cyclePreviousCard.	"go to tab 1"
+	source := 'foo ^''fooChanged'''.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self assert: self methodSourcePresenter value equals: source.
+	self assert: self projectsPresenter topShell cardsPresenter view cardLayout currentCard sameAs: firstTab. "still on tab 1"
+	self projectsPresenter topShell cardsPresenter view cardLayout cycleNextCard.	"go to tab 2"
+	self assert: self projectsPresenter topShell cardsPresenter view cardLayout currentCard sameAs: secondTab.
+	self assert: self methodSourcePresenter value equals: source!
 
 test_dragClassDoesNotWalkback
 	"Not really a drag drop but make sure that 
@@ -1834,16 +1894,17 @@ test_openNewProjectBrowser
 	[self assert: newBrowser isKindOf: JadeiteProjectsSystemBrowser] ensure: [newBrowser exit]!
 
 test_openNewProjectTab
-	| menu item firstCard |
+	| menu item firstCard cardCount |
 	self testsIssue: #issue243
 		withTitle: '`browse class` menu in method view of project browser leaves method and goes to class'.
-	self assert: self projectsPresenter parentPresenter view cards size equals: 1. 
+	cardCount := self projectsPresenter parentPresenter view cards size.
+	self assert: self projectsPresenter parentPresenter view cards size equals: cardCount.
 	menu := Menu fromStrings: self projectsPresenter jadeMenuStrings.
 	self
 		denyIsNil: (item := menu items detect: [:menuItem | menuItem command == #addSystemBrowser] ifNone: []).
 	firstCard := projectsBrowser currentCard.
 	item commandDescription performAgainst: projectsBrowser.
-	self assert:self projectsPresenter parentPresenter view cards size equals: 2. 
+	self assert: self projectsPresenter parentPresenter view cards size equals: cardCount + 1.
 	self deny: projectsBrowser currentCard == firstCard!
 
 test_openProjectsBrowser
@@ -2682,7 +2743,7 @@ test_twoBrowsersAddedClassAppears
 	self selectRowanSample1Class.
 	self openSecondBrowser.
 	
-	[secondPresenter := secondBrowser currentCard.
+	secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
@@ -2694,8 +2755,7 @@ test_twoBrowsersAddedClassAppears
 	self assert: self classListPresenter selection name = 'TestClass'.
 	self assert: secondPresenter classListPresenter selection name equals: 'RowanSample1'.	"no selection change in second browser ..."
 	self assert: secondPresenter classListPresenter list size equals: 3.	"... but new class shows up"
-	self assert: secondPresenter classListPresenter list last name equals: 'TestClass']
-			ensure: [secondBrowser destroy]!
+	self assert: secondPresenter classListPresenter list last name equals: 'TestClass'!
 
 test_twoBrowsersAddedClassAppearsInHierarchy1
 	| secondPresenter family |
@@ -2704,8 +2764,7 @@ test_twoBrowsersAddedClassAppearsInHierarchy1
 	self selectRowanSample1Class.
 	self selectHierarchyTab.
 	self openSecondBrowser.
-	
-	[secondPresenter := secondBrowser currentCard.
+	secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
@@ -2732,8 +2791,7 @@ test_twoBrowsersAddedClassAppearsInHierarchy1
 	family at: 'RowanSample1' put: (Array with: 'RowanSubClass' with: 'TestClass').
 	family at: 'RowanSubClass' put: Array new.
 	family at: 'TestClass' put: Array new.
-	self assertAncestry: family in: secondPresenter classHierarchyPresenter]
-			ensure: [secondBrowser destroy]!
+	self assertAncestry: family in: secondPresenter classHierarchyPresenter!
 
 test_twoBrowsersAddedClassAppearsInHierarchy2
 	| secondPresenter family |
@@ -2742,8 +2800,7 @@ test_twoBrowsersAddedClassAppearsInHierarchy2
 	self selectRowanSample1Class.
 	self selectHierarchyTab.
 	self openSecondBrowser.
-	
-	[secondPresenter := secondBrowser currentCard.
+	secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
@@ -2773,8 +2830,7 @@ test_twoBrowsersAddedClassAppearsInHierarchy2
 	family at: 'RowanSample1' put: (Array with: 'RowanSubClass').
 	family at: 'RowanSubClass' put: (Array with: 'SubSubSub').
 	family at: 'TestClass' put: Array new.
-	self assertAncestry: family in: secondPresenter classHierarchyPresenter]
-			ensure: [secondBrowser destroy]!
+	self assertAncestry: family in: secondPresenter classHierarchyPresenter!
 
 test_twoBrowsersAddedClassDoesNotAppearInDifferentHierarchy
 	| secondPresenter |
@@ -2783,8 +2839,7 @@ test_twoBrowsersAddedClassDoesNotAppearInDifferentHierarchy
 	self selectRowanSample1Class.
 	self selectHierarchyTab.
 	self openSecondBrowser.
-	
-	[secondPresenter := secondBrowser currentCard.
+	secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
@@ -2797,8 +2852,7 @@ test_twoBrowsersAddedClassDoesNotAppearInDifferentHierarchy
 				ifNone: []).
 	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Core'.	"add new class in first browser"
 	self assert: self classHierarchyPresenter selection name = 'TestClass'.
-	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'	"no change in second browser because new class not in hierarchy"]
-			ensure: [secondBrowser destroy]!
+	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'	"no change in second browser because new class not in hierarchy"!
 
 test_twoBrowsersAddedClassRearrangesItselfInHierarchy
 	| secondPresenter family |
@@ -2807,8 +2861,7 @@ test_twoBrowsersAddedClassRearrangesItselfInHierarchy
 	self selectRowanSample1Class.
 	self selectHierarchyTab.
 	self openSecondBrowser.
-	
-	[secondPresenter := secondBrowser currentCard.
+	secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
@@ -2845,8 +2898,7 @@ test_twoBrowsersAddedClassRearrangesItselfInHierarchy
 	family at: 'RowanSample1' put: (Array with: 'RowanSubClass').
 	family at: 'RowanSubClass' put: (Array with: 'TestClass').
 	family at: 'TestClass' put: Array new.
-	self assertAncestry: family in: secondPresenter classHierarchyPresenter]
-			ensure: [secondBrowser destroy]!
+	self assertAncestry: family in: secondPresenter classHierarchyPresenter!
 
 test_twoBrowsersNoUpdateWithoutPackageSelection
 	| secondPresenter |
@@ -2854,8 +2906,7 @@ test_twoBrowsersNoUpdateWithoutPackageSelection
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
 	self openSecondBrowser.
-	
-	[secondPresenter := secondBrowser currentCard.
+	secondPresenter := secondBrowser currentCard.
 	self assert: secondPresenter projectListPresenter selections isEmpty.
 	self assert: secondPresenter packageListPresenter model isEmpty.
 	self assert: secondPresenter classListPresenter model isEmpty.
@@ -2875,29 +2926,26 @@ test_twoBrowsersNoUpdateWithoutPackageSelection
 	self assert: secondPresenter classHierarchyPresenter model isEmpty.
 	self assert: secondPresenter categoryListPresenter model isEmpty.
 	self assert: secondPresenter variableListPresenter model isEmpty.
-	self assert: secondPresenter methodListPresenter model isEmpty]
-			ensure: [secondBrowser destroy]!
+	self assert: secondPresenter methodListPresenter model isEmpty!
 
 test_twoBrowsersRemoveMethod
 	| secondPresenter |
 	self testsIssue: #issue404 withTitle: 'Removing a method using method browser'.
 	self selectRowanSample1Class.
 	self openSecondBrowser.
-	
-	[secondPresenter := secondBrowser currentCard.
+	secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
 	self denyMethodInList: #sampleMethod presenter: secondPresenter methodListPresenter.
 	self denyMethodInList: #sampleMethod.
 	self saveSampleMethod.
-	self assertMethodInList: #sampleMethod. 
+	self assertMethodInList: #sampleMethod.
 	self assert: self methodListPresenter selection selector equals: #sampleMethod.
 	self assertMethodInList: #sampleMethod presenter: secondPresenter methodListPresenter.
 	self projectsPresenter basicRemoveMethods.
 	self denyMethodInList: #sampleMethod presenter: secondPresenter methodListPresenter.
-	self denyMethodInList: #sampleMethod]
-			ensure: [secondBrowser destroy]!
+	self denyMethodInList: #sampleMethod!
 
 test_twoBrowsersUpdate
 	| secondPresenter |
@@ -2909,8 +2957,7 @@ test_twoBrowsersUpdate
 	self assert: self classListPresenter list first name equals: 'RowanSample1'.
 	self assert: self classListPresenter list last name equals: 'RowanSubClass'.
 	self openSecondBrowser.
-	
-	[secondPresenter := secondBrowser currentCard.
+	secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
@@ -2933,8 +2980,7 @@ test_twoBrowsersUpdate
 	self assert: secondPresenter classListPresenter list size equals: 2.
 	self assert: secondPresenter classListPresenter list first name equals: 'RowanSample1'.
 	self assert: secondPresenter classListPresenter list last name equals: 'RowanSubClass'.
-	self assert: secondPresenter packageListPresenter selection name equals: 'RowanSample1-Core']
-			ensure: [secondBrowser destroy]!
+	self assert: secondPresenter packageListPresenter selection name equals: 'RowanSample1-Core'!
 
 test_twoBrowsersUpdateHierarchy
 	| secondPresenter |
@@ -2946,7 +2992,7 @@ test_twoBrowsersUpdateHierarchy
 		in: self classHierarchyPresenter.
 	self openSecondBrowser.
 	
-	[secondPresenter := secondBrowser currentCard.
+	secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectHierarchyTabIn: secondPresenter.
@@ -2963,8 +3009,7 @@ test_twoBrowsersUpdateHierarchy
 	self assert: self packageListPresenter selection name equals: 'RowanSample1-Tests'.
 	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'.
 	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
-		in: secondPresenter classHierarchyPresenter]
-			ensure: [secondBrowser destroy]!
+		in: secondPresenter classHierarchyPresenter!
 
 test_UnsavedChangesActionChangeSelectionIgnoreChanges
 	self testsIssue: #issue388
@@ -3151,6 +3196,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSelectedMethods!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeListSortOrder!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionUpdatesAcrossTabs!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListSelectionShouldNotUpdateOtherHierarchy!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classSideSelection!public!test class hierarchy!test class list!tests! !
@@ -3159,6 +3205,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleInvalidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleValidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dontChangeTabOnMethodSave!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dragClassDoesNotWalkback!public!test drag drop! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dragClassInHierarchyDoesNotWalkback!public!test class hierarchy!test drag drop! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dragDropMethodFailCompile!public!test class hierarchy!test drag drop! !

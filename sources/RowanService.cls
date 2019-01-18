@@ -246,6 +246,11 @@ updateClassSelectionFor: presenter!
 
 updatedClass: aPresenter!
 
+updatedClassDefinition: classDefinitionPresenter browser: browser
+
+	
+	!
+
 updatedClassInHierarchy: aPresenter browser: projectBrowser!
 
 updateDictionarySelectionsFor: presenter
@@ -348,6 +353,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #updateClassHierarchySelectionFor:!public!updating! !
 !RowanService categoriesFor: #updateClassSelectionFor:!public!updating! !
 !RowanService categoriesFor: #updatedClass:!public!updating! !
+!RowanService categoriesFor: #updatedClassDefinition:browser:!public!updating! !
 !RowanService categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !
 !RowanService categoriesFor: #updateDictionarySelectionsFor:!public!updating! !
 !RowanService categoriesFor: #updateList:whilePreservingSelections:!private! !

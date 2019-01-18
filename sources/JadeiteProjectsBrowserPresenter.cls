@@ -274,7 +274,7 @@ createSchematicWiring
 	super createSchematicWiring.
 	self
 		createSchematicWiringForProjectList;
-		createSchematicWiringForMethodFilterTabs.!
+		createSchematicWiringForMethodFilterTabs!
 
 createSchematicWiringForClassHierarchy
 		
@@ -529,7 +529,7 @@ editSaveClass
 			^self].
 	classDefinitionPresenter view
 		isModified: false;
-		backcolor: Color white.
+		backcolor: JadeTextStyles default colorForNoEdits.
 	packageListPresenter selection selectedClass
 		ifNotNil: 
 			[:classService |
@@ -874,7 +874,8 @@ methodMenuBreak: aMenu
 
 methodSelectionChanged
 	self updateMethodSource.
-	methodSourcePresenter ensureVisible!
+	self topShell cardsPresenter view currentCard presenter == self
+		ifTrue: [methodSourcePresenter ensureVisible]!
 
 methodsMenuStrings
 	false
@@ -1373,6 +1374,7 @@ registerPresentersForUpdates
 	BrowserUpdate current register: classListPresenter 		selector: #classesUpdate:browser: browser: self.
 	BrowserUpdate current register: classListPresenter 		selector: #removedClass:.
 	BrowserUpdate current register: classListPresenter 		selector: #updatedClass:.
+	BrowserUpdate current register: classDefinitionPresenter 	selector: #updatedClassDefinition:browser: browser: self.
 	BrowserUpdate current register: classListPresenter 		selector: #removed:.
 	BrowserUpdate current register: packageListPresenter 	selector: #projectPackagesUpdate:browser: browser: self.
 	BrowserUpdate current register: packageListPresenter 	selector: #removed:.
