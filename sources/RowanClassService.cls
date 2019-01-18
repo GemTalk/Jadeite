@@ -372,14 +372,18 @@ updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
 	superclassService := classHierarchyPresenter model asBag
 				detect: [:classService | classService name = superclassName]
 				ifNone: [^self].
-	(classNode notNil and:[classNode object isNewClass not]) ifTrue: [^self moveNodeToBeChildOf: superclassService in: classHierarchyPresenter].
+	(classNode notNil and: [classNode object isNewClass not])
+		ifTrue: [^self moveNodeToBeChildOf: superclassService in: classHierarchyPresenter].
 	projectBrowser packageListPresenter selections isEmpty ifTrue: [^self].
 	selectedPackageNames := projectBrowser packageListPresenter selections
 				collect: [:packageService | packageService name].
 	(selectedPackageNames includes: packageName) ifFalse: [^self].
-	selections := classHierarchyPresenter selections.
-	classHierarchyPresenter model remove: self ifAbsent: [].
-	classHierarchyPresenter model add: self asChildOf: superclassService.!
+	classNode
+		ifNil: [classHierarchyPresenter model add: self asChildOf: superclassService]
+		ifNotNil: 
+			[:node |
+			node object replicateFrom: self.
+			classHierarchyPresenter model move: node object asChildOf: superclassService]!
 
 updateListIn: presenter from: visibleMethods
 	| newSelections |

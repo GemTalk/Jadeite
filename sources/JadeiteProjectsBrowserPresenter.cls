@@ -277,6 +277,7 @@ createSchematicWiring
 		createSchematicWiringForMethodFilterTabs.!
 
 createSchematicWiringForClassHierarchy
+		
 	classHierarchyPresenter
 		when: #drag:
 			send: #onDragClass:
@@ -788,7 +789,7 @@ isOkayToChange
 		classDefinitionPresenter ensureVisible.
 		gciSession isValidSession
 			ifTrue: [ (MessageBox confirm: 'Stay on unsaved class definition?' caption: 'Class has unsaved changes!!') ifTrue: [^false]]
-			ifFalse: [(MessageBox confirm: 'Copy changes to Clipboard?' caption: 'Class has unsaved changes!!') ifTrue: [classDefinitionPresenter selectAll; copySelection]].
+			ifFalse: [self halt.  (MessageBox confirm: 'Copy changes to Clipboard?' caption: 'Class has unsaved changes!!') ifTrue: [classDefinitionPresenter selectAll; copySelection]].
 		classDefinitionPresenter view isModified: false.
 	].
 	self postOkToChangeEvent. 
@@ -1714,7 +1715,7 @@ updateClassInfo
 	classCommentPresenter value: service comment.
 	classDefinitionPresenter view isModified
 		ifTrue: 
-			[service template = classDefinition ifTrue: [^self].
+			[service template = classDefinition ifTrue: [^self].  self halt. 
 			(MessageBox confirm: 'Copy changes to clipboard?' caption: 'Class has unsaved changes!!')
 				ifTrue: [classDefinitionPresenter value copyToClipboard]].
 	classDefinitionPresenter value: service template.
@@ -1727,29 +1728,6 @@ updateClassInfo
 	definedClassPackageText value: 'Defined Package: ' , self selectedClass definedPackageName.
 	self updateClassMenu: nil.
 	self updateSUnitTab!
-
-updateClassInfo: service
-	self resetCategoryText.
-	service
-		ifNil: 
-			[self resetDefinedClassPackage.
-			^self].
-	classCommentPresenter value: service comment.
-	classDefinitionPresenter view isModified
-		ifTrue: 
-			[service template = classDefinition ifTrue: [^self].
-			(MessageBox confirm: 'Copy changes to clipboard?' caption: 'Class has unsaved changes!!')
-				ifTrue: [classDefinitionPresenter value copyToClipboard]].
-	classDefinitionPresenter value: service template.
-	classDefinitionPresenter view
-		backcolor: Color white;
-		isModified: false.
-	self setTestClass: service.
-	classDefinitionPresenter ensureVisible.
-	self sundryCleanup.
-	definedClassPackageText value: 'Defined Package: ' , service definedPackageName.
-	self updateClassMenu: nil.
-	self updateSUnitTab: service!
 
 updateClassMenu: menu
 	| item |
@@ -2149,7 +2127,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateAndSelectA:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClasses!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClassInfo!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateClassInfo:!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClassMenu:!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateCommand:onSuccessDo:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateHierarchy!event handlers!public!updating! !

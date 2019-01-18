@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 JadeiteAbstractTestCase subclass: #JadeiteProjectBrowserTestCase
-	instanceVariableNames: 'transcriptWritesWereEnabled methodListBrowser'
+	instanceVariableNames: 'transcriptWritesWereEnabled methodListBrowser secondBrowser'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -129,6 +129,11 @@ modifySampleMethodFoo
 	self projectsPresenter editSaveMethod: self classListPresenter selection. 
 
 	!
+
+openSecondBrowser
+	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	secondBrowser caption: 'second browser'.
+	^secondBrowser!
 
 packageNamed: aString
 	^self packageListPresenter list
@@ -518,7 +523,6 @@ test_classListNotBlank
 	!
 
 test_classListSelectionShouldNotUpdateOtherHierarchy
-	| secondBrowser |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
@@ -528,7 +532,7 @@ test_classListSelectionShouldNotUpdateOtherHierarchy
 	self
 		assertLinearAncestry: #('Object' 'RwDefinition' 'RwAbstractClassDefinition' 'RwClassDefinition')
 		in: self classHierarchyPresenter.
-	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self openSecondBrowser.
 	
 	[self selectServiceNamed: 'Rowan' in: secondBrowser currentCard projectListPresenter.
 	self selectServiceNamed: 'Rowan-Definitions' in: secondBrowser currentCard packageListPresenter.
@@ -1661,7 +1665,7 @@ test_methodTabSelected
 	!
 
 test_modifiedSourceShouldNotChange
-	| secondBrowser source originalSource |
+	| source originalSource |
 	self testsIssue: #issue400
 		withTitle: '(3.0.55) Selecting class in one project browser loses method edits in another'.
 	self selectRowanSample1Class.
@@ -1671,7 +1675,7 @@ test_modifiedSourceShouldNotChange
 	source := 'foo  ^''I am changed'''.
 	self methodSourcePresenter value: source.
 	self methodSourcePresenter view isModified: true.
-	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self openSecondBrowser.
 	
 	[| methodServices |
 	self selectServiceNamed: 'RowanSample1' in: secondBrowser currentCard projectListPresenter.
@@ -2672,11 +2676,11 @@ test_twoBrowsersAddedClassAppears
 	"if the same package is selected, a new class appears but the existing
 	class selection doesn't change"
 
-	| secondBrowser secondPresenter |
+	| secondPresenter |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
-	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self openSecondBrowser.
 	
 	[secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
@@ -2694,12 +2698,12 @@ test_twoBrowsersAddedClassAppears
 			ensure: [secondBrowser destroy]!
 
 test_twoBrowsersAddedClassAppearsInHierarchy1
-	| secondBrowser secondPresenter family |
+	| secondPresenter family |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
 	self selectHierarchyTab.
-	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self openSecondBrowser.
 	
 	[secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
@@ -2732,12 +2736,12 @@ test_twoBrowsersAddedClassAppearsInHierarchy1
 			ensure: [secondBrowser destroy]!
 
 test_twoBrowsersAddedClassAppearsInHierarchy2
-	| secondBrowser secondPresenter family |
+	| secondPresenter family |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
 	self selectHierarchyTab.
-	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self openSecondBrowser.
 	
 	[secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
@@ -2773,12 +2777,12 @@ test_twoBrowsersAddedClassAppearsInHierarchy2
 			ensure: [secondBrowser destroy]!
 
 test_twoBrowsersAddedClassDoesNotAppearInDifferentHierarchy
-	| secondBrowser secondPresenter |
+	| secondPresenter |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
 	self selectHierarchyTab.
-	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self openSecondBrowser.
 	
 	[secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
@@ -2797,12 +2801,12 @@ test_twoBrowsersAddedClassDoesNotAppearInDifferentHierarchy
 			ensure: [secondBrowser destroy]!
 
 test_twoBrowsersAddedClassRearrangesItselfInHierarchy
-	| secondBrowser secondPresenter family |
+	| secondPresenter family |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
 	self selectHierarchyTab.
-	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self openSecondBrowser.
 	
 	[secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
@@ -2836,7 +2840,7 @@ test_twoBrowsersAddedClassRearrangesItselfInHierarchy
 		package: 'RowanSample1-Core'.	"changed superclass"
 	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'.
 	self assert: secondPresenter classHierarchyPresenter model size equals: 4.
-	family := Dictionary new.	
+	family := Dictionary new.
 	family at: 'Object' put: (Array with: 'RowanSample1').
 	family at: 'RowanSample1' put: (Array with: 'RowanSubClass').
 	family at: 'RowanSubClass' put: (Array with: 'TestClass').
@@ -2845,14 +2849,14 @@ test_twoBrowsersAddedClassRearrangesItselfInHierarchy
 			ensure: [secondBrowser destroy]!
 
 test_twoBrowsersNoUpdateWithoutPackageSelection
-	| secondBrowser secondPresenter |
+	| secondPresenter |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
-	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self openSecondBrowser.
 	
 	[secondPresenter := secondBrowser currentCard.
-	self assert: secondPresenter projectListPresenter selections isEmpty. 
+	self assert: secondPresenter projectListPresenter selections isEmpty.
 	self assert: secondPresenter packageListPresenter model isEmpty.
 	self assert: secondPresenter classListPresenter model isEmpty.
 	self assert: secondPresenter classHierarchyPresenter model isEmpty.
@@ -2865,7 +2869,7 @@ test_twoBrowsersNoUpdateWithoutPackageSelection
 		instVars: Array new
 		package: 'RowanSample1-Core'.
 	self assert: self classListPresenter selection name = 'TestClass'.
-	self assert: secondPresenter projectListPresenter selections isEmpty. 
+	self assert: secondPresenter projectListPresenter selections isEmpty.
 	self assert: secondPresenter packageListPresenter model isEmpty.
 	self assert: secondPresenter classListPresenter model isEmpty.
 	self assert: secondPresenter classHierarchyPresenter model isEmpty.
@@ -2875,10 +2879,10 @@ test_twoBrowsersNoUpdateWithoutPackageSelection
 			ensure: [secondBrowser destroy]!
 
 test_twoBrowsersRemoveMethod
-	| secondBrowser secondPresenter |
+	| secondPresenter |
 	self testsIssue: #issue404 withTitle: 'Removing a method using method browser'.
 	self selectRowanSample1Class.
-	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self openSecondBrowser.
 	
 	[secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
@@ -2896,7 +2900,7 @@ test_twoBrowsersRemoveMethod
 			ensure: [secondBrowser destroy]!
 
 test_twoBrowsersUpdate
-	| secondBrowser secondPresenter |
+	| secondPresenter |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
@@ -2904,7 +2908,7 @@ test_twoBrowsersUpdate
 	self assert: self classListPresenter list size equals: 2.
 	self assert: self classListPresenter list first name equals: 'RowanSample1'.
 	self assert: self classListPresenter list last name equals: 'RowanSubClass'.
-	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self openSecondBrowser.
 	
 	[secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
@@ -2933,14 +2937,14 @@ test_twoBrowsersUpdate
 			ensure: [secondBrowser destroy]!
 
 test_twoBrowsersUpdateHierarchy
-	| secondBrowser secondPresenter |
+	| secondPresenter |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
 	self selectHierarchyTab.
 	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
 		in: self classHierarchyPresenter.
-	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self openSecondBrowser.
 	
 	[secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
@@ -3114,6 +3118,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #issue261createTestProject!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue284methodCreation!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #modifySampleMethodFoo!dirty project!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #openSecondBrowser!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #packageNamed:!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectList!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectNamed:!private!project support! !
