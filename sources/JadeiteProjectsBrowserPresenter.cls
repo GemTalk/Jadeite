@@ -1381,6 +1381,7 @@ registerPresentersForUpdates
 	BrowserUpdate current register: categoryListPresenter 	selector: #filterUpdate:browser: browser: self.
 	BrowserUpdate current register: classHierarchyPresenter 	selector: #classHierarchyUpdate:browser: browser: self.
 	BrowserUpdate current register: classHierarchyPresenter 	selector: #updatedClass:.
+	BrowserUpdate current register: classHierarchyPresenter 	selector: #removedClass:.
 	BrowserUpdate current register: classHierarchyPresenter 	selector: #updatedClassInHierarchy:browser: browser: self.
 	BrowserUpdate current register: classHierarchyPresenter 	selector: #removed:.
 	BrowserUpdate current register: variableListPresenter 	selector: #filterUpdate:browser: browser: self.
@@ -1394,7 +1395,7 @@ releasedReferencedServices: selectionChangingEvent
 
 removeClass
 	| packageService selection |
-	selection := classListPresenter selectionIfNone: [^self].
+	selection := self selectedClass ifNil:[^self].
 	(MessageBox confirm: 'Really delete class ' , selection name , '?') ifFalse: [^self].
 	packageService := packageListPresenter selection.
 	packageService

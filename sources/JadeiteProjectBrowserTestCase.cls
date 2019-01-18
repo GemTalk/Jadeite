@@ -2194,6 +2194,34 @@ test_removeAbortedClass
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_removeClassFromHierarchy
+	self testsIssue: #issue377 withTitle: '(3.0.53) remove class in hierarchy class view does not work'.
+	self selectRowanSample1Test.
+	self selectHierarchyTab.
+	self assertLinearAncestry: #('Object' 'TestAsserter' 'TestCase' 'RowanSample1Test')
+		in: self classHierarchyPresenter.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestMessageBox plannedResult: #yes.
+	self projectsPresenter removeClass.
+	self assertLinearAncestry: #('Object' 'TestAsserter' 'TestCase') in: self classHierarchyPresenter]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
+test_removeClassFromList
+	self testsIssue: #issue377 withTitle: '(3.0.53) remove class in hierarchy class view does not work'.
+	self selectRowanSample1Test.
+	self denyIsNil: (self classListPresenter list
+				detect: [:classService | classService name = 'RowanSample1Test']
+				ifNone: []).
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestMessageBox plannedResult: #yes.
+	self projectsPresenter removeClass.
+	self assertIsNil: (self classListPresenter list
+				detect: [:classService | classService name = 'RowanSample1Test']
+				ifNone: [])]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_removeProject
 	| targetProject |
 	self testsIssue: #issue129 withTitle: 'Expose unload project.'.
@@ -3273,6 +3301,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_registeredPresentersInMethodBrowserCleanedUp!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeAbortedClass!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassFromHierarchy!public!test class hierarchy!test class list!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassFromList!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameCategory!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameDisabledWithMultipleCategoriesSelected!public!test categories! !
