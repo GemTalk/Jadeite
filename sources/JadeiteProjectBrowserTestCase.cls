@@ -1800,6 +1800,23 @@ test_openChangesBrowser
 	changesBrowser := changesItem commandDescription performAgainst: self projectsPresenter.
 	[self assert: (changesBrowser isKindOf: RowanPatchBrowser)] ensure: [changesBrowser destroy]!
 
+test_openNewBrowserTabWhileSUnitTabSelected
+	| addBrowserButton jadeMenu cards index |
+	self testsIssue: #issue389 withTitle: 'Add Browser Panel (Tab) when in Sunit Subpanel fails'.
+	self selectRowanSample1Class.
+	self selectSUnitTab.
+	jadeMenu := projectsBrowser view menuBar items detect: [:menu | '*Jadeite*' match: menu text]
+				ifNone: [].
+	addBrowserButton := jadeMenu items
+				detect: [:item | #addSystemBrowser match: item commandDescription command]
+				ifNone: [].
+	addBrowserButton commandDescription performAgainst: self projectsPresenter.
+	cards := self projectsPresenter parentPresenter view cards.
+	self assert: cards size equals: 2.
+	index := cards indexOf: self projectsPresenter view.
+	self assert: index equals: 2.
+	self assert: self projectsPresenter view arrangement equals: '2 Projects'!
+
 test_openNewProjectBrowser
 	"make sure that we can open a new project browser from an existing browser"
 
@@ -3187,6 +3204,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noSelectionHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noStepPoints!public!test step points! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openChangesBrowser!public!test menus! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_openNewBrowserTabWhileSUnitTabSelected!public!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectBrowser!public!test menus!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectTab!public!test menus!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openProjectsBrowser!public!test projects! !

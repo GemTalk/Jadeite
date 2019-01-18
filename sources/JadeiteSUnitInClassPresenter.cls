@@ -10,6 +10,10 @@ JadeiteSUnitInClassPresenter comment: ''!
 !JadeiteSUnitInClassPresenter categoriesForClass!Unclassified! !
 !JadeiteSUnitInClassPresenter methodsFor!
 
+addSystemBrowser
+
+	^parentPresenter addSystemBrowser!
+
 browseIt
 	^self debug!
 
@@ -99,6 +103,7 @@ runAndMesureTime
 
 runSelected
 	self runTests: methodListPresenter selection in: testClassService name! !
+!JadeiteSUnitInClassPresenter categoriesFor: #addSystemBrowser!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #browseIt!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #debug!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #editFind!menu handlers support!public! !

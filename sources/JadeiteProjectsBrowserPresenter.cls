@@ -43,6 +43,9 @@ addSubclass
 		ensureVisible;
 		value: answerService answer!
 
+addSystemBrowser
+	^self topShell addSystemBrowser!
+
 allClasses
 	| browserService |
 	browserService := RowanBrowserService new.
@@ -1970,6 +1973,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #addPackage!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addPackageDictionaryInfoTo:!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addSubclass!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #addSystemBrowser!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #allClasses!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicAddMethodCategory:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicOnDropClassList:!drag & drop!public! !
