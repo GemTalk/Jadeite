@@ -298,6 +298,25 @@ test_registeredPresentersInSUnitBrowserCleanedUp
 	secondBrowser := nil.
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
 
+test_resetStatusBar
+	self testsIssue: #issue411 withTitle: 'SUnit browser''s colored status bar is sticky'.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'JadeServerTest' in: self sunitPresenter classListPresenter.
+	self sunitPresenter runAll.
+	self
+		assert: ('* run, * passed, 0 failures, 0 errors' match: self sunitPresenter textResultPresenter value).
+	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color darkGreen.
+	self selectServiceNamed: 'RowanAnsweringServiceTest' in: self sunitPresenter classListPresenter.
+	self assert: self sunitPresenter textResultPresenter value equals: String new.
+	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color face3d.
+	self sunitPresenter runAll.
+	self
+		assert: ('* run, * passed, 0 failures, 0 errors' match: self sunitPresenter textResultPresenter value).
+	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color darkGreen.
+	self selectServiceNamed: 'Rowan-Tests' in: self sunitPresenter packageListPresenter.
+	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color face3d.
+	!
+
 test_runClassTests
 	self testsIssue: #issue341 withTitle: 'Run sunit tests from class pass when they should not'.
 	projectsBrowser
@@ -544,6 +563,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_openSunitBrowser!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_refresh!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_registeredPresentersInSUnitBrowserCleanedUp!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_resetStatusBar!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_runClassTests!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_saveMethodInProjectBrowser!public!test updates from other browsers!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_selectCategoryInProjectBrowserDoesNotUpdateSunitBrowser!public!test updates from other browsers!tests! !

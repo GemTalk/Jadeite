@@ -57,16 +57,18 @@ getTestCounter
 	^'Total Tests: ', testCounter first printString!
 
 onClassesChanged
-	self updateMethods.
-	status value: nil.
-	status value: self.
-!
+	Cursor wait showWhile: 
+			[self updateMethods.
+			status value: nil.
+			status value: self.
+			self reset]!
 
 onPackageChanged
 	Cursor wait showWhile: 
 			[self updateClasses.
 			status value: nil.
-			status value: self]!
+			status value: self.
+			self reset]!
 
 packagesSize
 	^'Packages: ' , packageListPresenter model size printString!
