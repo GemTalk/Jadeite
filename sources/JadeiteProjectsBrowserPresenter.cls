@@ -958,6 +958,13 @@ onSetFocus: aView stack: aString
 
 	"no need for constant trips to the server"!
 
+onViewClosed
+	"the sunitPresenter doesn't seem to get it's events cleaned up on 
+	a normal window exit. Help it out."
+
+	super onViewClosed.
+	BrowserUpdate current removeEventsTriggeredFor: sunitPresenter methodListPresenter!
+
 onViewOpened
 	"copied to RowanDebugger"
 	super onViewOpened.
@@ -2054,6 +2061,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropOnClassList:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropOnMethodCategory:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onSetFocus:stack:!event handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #openDictionaryBrowserOn:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #pkgsMenuStrings!menus!public! !
