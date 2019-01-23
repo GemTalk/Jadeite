@@ -301,6 +301,11 @@ setFailure
 setPassed
 	testResult := 'passed'!
 
+shouldReplicateInstVarAtIndex: index newService: newService
+	| isTestResultInstVar |
+	isTestResultInstVar := (self class indexOfInstVar: 'testResult') = index.
+	^isTestResultInstVar not or: [isTestResultInstVar and: [(newService instVarAt: index) notNil]]!
+
 sortAspect
 
 	^selector!
@@ -367,6 +372,13 @@ testResult
 
 testResult: anObject
 	testResult := anObject!
+
+testResultUpdate: presenter
+	| existingService |
+	existingService := presenter list detect: [:methodService | methodService = self] ifNone:[^self]. 
+	existingService replicateFrom: self. 
+	presenter view invalidate. 
+!
 
 toolTip
 	| ws |
@@ -462,6 +474,7 @@ user: anObject
 !RowanMethodService categoriesFor: #setError!public!sunit! !
 !RowanMethodService categoriesFor: #setFailure!public!sunit! !
 !RowanMethodService categoriesFor: #setPassed!public!sunit! !
+!RowanMethodService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!replication!testing! !
 !RowanMethodService categoriesFor: #sortAspect!accessing!public! !
 !RowanMethodService categoriesFor: #source!accessing!private! !
 !RowanMethodService categoriesFor: #source:!accessing!private! !
@@ -474,6 +487,7 @@ user: anObject
 !RowanMethodService categoriesFor: #superSource:!accessing!private! !
 !RowanMethodService categoriesFor: #testResult!accessing!public! !
 !RowanMethodService categoriesFor: #testResult:!accessing!public! !
+!RowanMethodService categoriesFor: #testResultUpdate:!public!updating! !
 !RowanMethodService categoriesFor: #toolTip!accessing!displaying!private! !
 !RowanMethodService categoriesFor: #unimplementedSelectors!public! !
 !RowanMethodService categoriesFor: #updateSelectorFromCompiledMethod:!private! !

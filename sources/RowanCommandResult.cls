@@ -16,9 +16,17 @@ doNothing: anObject
 
 prepareForReplication!
 
+testResultUpdate: presenter
+	| existingService |
+	existingService := presenter list detect: [:methodService | methodService = self] ifNone:[^self]. 
+	existingService replicateFrom: self. 
+	presenter view invalidate. 
+!
+
 updateSelector
 	^#doNothing:! !
 !RowanCommandResult categoriesFor: #doNothing:!private! !
 !RowanCommandResult categoriesFor: #prepareForReplication!public!replication! !
+!RowanCommandResult categoriesFor: #testResultUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #updateSelector!public! !
 

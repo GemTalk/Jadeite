@@ -73,6 +73,12 @@ newBrowser
 
 	^parentPresenter newBrowser!
 
+onViewOpened
+
+	super onViewOpened. 
+	self registerPresentersForUpdates.
+	!
+
 queryCommand: aCommandQuery
 	aCommandQuery isEnabled: true. 
 	^false!
@@ -117,6 +123,7 @@ runSelected
 !JadeiteSUnitInClassPresenter categoriesFor: #jadeExecute!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #jadeInspect!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #newBrowser!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #queryCommand:!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #refresh!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #runAll!public! !

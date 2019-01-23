@@ -215,7 +215,14 @@ removedProject: presenter!
 replicateFrom: newService
 	newService name = self name
 		ifTrue: 
-			[1 to: self class instSize do: [:index | self instVarAt: index put: (newService instVarAt: index)]]!
+			[1 to: self class instSize
+				do: 
+					[:index |
+					(self shouldReplicateInstVarAtIndex: index newService: newService)
+						ifTrue: [self instVarAt: index put: (newService instVarAt: index)]]]!
+
+shouldReplicateInstVarAtIndex: index newService: anObject
+	^true!
 
 sortAspect
 
@@ -233,6 +240,9 @@ superclassListUpdate: presenter
 testClasses: presenter!
 
 testPackages: presenter!
+
+testResultUpdate: presenter
+	!
 
 toolTip
 	^self displayString
@@ -342,12 +352,14 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #removedClass:!public!updating! !
 !RowanService categoriesFor: #removedProject:!public!updating! !
 !RowanService categoriesFor: #replicateFrom:!public!replication!updating! !
+!RowanService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
 !RowanService categoriesFor: #sortAspect!accessing!public! !
 !RowanService categoriesFor: #stonOn:!must not strip!public! !
 !RowanService categoriesFor: #sunitMethodsUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #superclassListUpdate:!public!updating! !
 !RowanService categoriesFor: #testClasses:!public!updating! !
 !RowanService categoriesFor: #testPackages:!public!updating! !
+!RowanService categoriesFor: #testResultUpdate:!public!updating! !
 !RowanService categoriesFor: #toolTip!printing!public! !
 !RowanService categoriesFor: #updateClassCategorySelectionsFor:!public!updating! !
 !RowanService categoriesFor: #updateClassHierarchySelectionFor:!public!updating! !

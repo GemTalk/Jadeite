@@ -116,6 +116,7 @@ package methodNames
 	add: #JadeInspector -> #updateCaption;
 	add: #JadeiteSUnitAbstractPresenter -> #methodListPresenter;
 	add: #JadeiteSUnitAbstractPresenter -> #methodListPresenter:;
+	add: #JadeiteSUnitInClassPresenter -> #registerPresentersForUpdates;
 	add: #JadeiteSUnitInClassPresenter -> #testClassService:;
 	add: #JadeiteSUnitPresenter -> #browseClass;
 	add: #JadeiteSUnitPresenter -> #browseMethods;
@@ -127,6 +128,7 @@ package methodNames
 	add: #JadeiteSUnitPresenter -> #queryCommand:;
 	add: #JadeiteSUnitPresenter -> #refresh;
 	add: #JadeiteSUnitPresenter -> #registerPresentersForUpdates;
+	add: #JadeiteSUnitPresenter -> #update:orRemove:;
 	add: #JadeiteSUnitPresenter -> #updateClasses;
 	add: #JadeiteSUnitPresenter -> #updateMethods;
 	add: #JadeiteSUnitPresenter -> #updateMethodsFrom:;
@@ -1308,14 +1310,21 @@ methodListPresenter: anObject
 
 !JadeiteSUnitInClassPresenter methodsFor!
 
+registerPresentersForUpdates
+	BrowserUpdate current register: methodListPresenter		selector: #testResultUpdate:.!
+
 testClassService: classService
 	| listModel |
 	testClassService := classService.
-	self reset.
+	"self reset."
+	textResultPresenter value: String new.
+	methodListPresenter view invalidate.
+	textResultPresenter view backcolor: Color face3d.
 	listModel := testClassService isNil
 				ifTrue: [ListModel new]
 				ifFalse: [ListModel withAll: classService visibleTests].
 	methodListPresenter model: listModel! !
+!JadeiteSUnitInClassPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteSUnitInClassPresenter categoriesFor: #testClassService:!accessing!public! !
 
 !JadeiteSUnitPresenter methodsFor!
@@ -1390,7 +1399,25 @@ refresh
 registerPresentersForUpdates
 	BrowserUpdate current register: packageListPresenter 	selector: #testPackages:.
 	BrowserUpdate current register: classListPresenter 		selector: #testClasses:.
-	BrowserUpdate current register: methodListPresenter 	selector: #sunitMethodsUpdate:browser: browser: self.!
+	BrowserUpdate current register: methodListPresenter 	selector: #sunitMethodsUpdate:browser: browser: self.
+	BrowserUpdate current register: methodListPresenter		selector: #testResultUpdate:.!
+
+update: newMethods orRemove: removals
+	methodListPresenter model do: 
+			[:existing |
+			| new |
+			new := newMethods detect: [:newService | newService = existing]
+						ifNone: 
+							[removals add: existing.
+							nil].
+			new
+				ifNotNil: 
+					[existing replicateFrom: new.
+					new replicateFrom: existing. 
+					newMethods remove: new. "order matters so we get the right test result"]].
+	methodListPresenter model addAll: newMethods.
+	removals do:[:removedService |
+		methodListPresenter model remove: removedService ifAbsent:[]].!
 
 updateClasses
 	| packageServices |
@@ -1406,16 +1433,17 @@ updateMethods
 	^self updateMethodsFrom: classServices!
 
 updateMethodsFrom: classServices
-	| methodServices selectedSelectors |
+	| newMethods selectedSelectors removals |
 	classServices isEmpty ifTrue: [^methodListPresenter list: ListModel new].
 	selectedSelectors := methodListPresenter selections
 				collect: [:methodService | methodService selector].
-	methodServices := Set new.
-	classServices do: [:classService | methodServices addAll: classService visibleTests].
-	methodListPresenter
-		model: (ListModel withAll: (methodServices asSortedCollection: [:x :y | x selector < y selector])).
+	removals := OrderedCollection new.
+	newMethods := Set new.
+	classServices do: [:classService | newMethods addAll: classService visibleTests].
+	self update: newMethods orRemove: removals.
 	methodListPresenter selections: (methodListPresenter model
-				select: [:methodService | selectedSelectors includes: methodService selector])!
+				select: [:methodService | selectedSelectors includes: methodService selector]).
+	methodListPresenter view invalidate. !
 
 updatePackages
 	| browserService |
@@ -1436,6 +1464,7 @@ updateServices: services
 !JadeiteSUnitPresenter categoriesFor: #queryCommand:!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #refresh!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
+!JadeiteSUnitPresenter categoriesFor: #update:orRemove:!event handlers!private! !
 !JadeiteSUnitPresenter categoriesFor: #updateClasses!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #updateMethods!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #updateMethodsFrom:!event handlers!public! !

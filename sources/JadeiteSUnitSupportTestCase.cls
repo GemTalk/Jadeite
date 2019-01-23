@@ -44,6 +44,9 @@ selecProjectBrowserMethodsNamed: selectors
 	methodPresenter selections: methodServices.
 	^methodServices!
 
+selectSUnitBrowserMethodNamed: selector
+	^self selectSUnitBrowserMethodsNamed: (Array with: selector)!
+
 selectSUnitBrowserMethodsNamed: selectors
 	| methodServices |
 	self methodListPresenter resetSelection.
@@ -219,6 +222,23 @@ test_commitWithSelections
 				sunitBrowser primaryPresenter perform: commitCommand.
 				self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
+
+test_dontClearResults
+	self testsIssue: #issue410
+		withTitle: 'Selecting class in Project Browser changes test status icons in SUnit Browser'.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
+	self assert: self sunitPresenter methodListPresenter list size equals: 4.
+	self selectSUnitBrowserMethodNamed: #test1.
+	self sunitPresenter runSelected.
+	self assert: self sunitPresenter methodListPresenter selections first selector equals: #test1.
+	self assert: self sunitPresenter methodListPresenter selections first testResult equals: 'passed'.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self assert: self methodListPresenter selections first selector equals: #test1.
+	self assert: self sunitPresenter methodListPresenter selections first selector equals: #test1.
+	self assert: self sunitPresenter methodListPresenter selections first testResult equals: 'passed'!
 
 test_inheritedTests
 	| classTestSelectors testClassTestSelectors |
@@ -484,6 +504,29 @@ test_sunitBrowserPassingDebugTestShowsResult
 	self assert: self sunitPresenter methodListPresenter selections size equals: 1.
 	self assert: self sunitPresenter methodListPresenter selections first testResult equals: 'passed'!
 
+test_sunitBrowserUpdates
+	self testsIssue: #issue410
+		withTitle: 'Selecting class in Project Browser changes test status icons in SUnit Browser'.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self projectsPresenter selectSUnitTab.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list first selector
+		equals: #test1.
+	self assertIsNil: self projectsPresenter sunitPresenter methodListPresenter list first testResult.
+	self assert: self sunitPresenter methodListPresenter list first selector
+		equals: #test1.
+	self assertIsNil: self sunitPresenter methodListPresenter list first testResult.
+	self projectsPresenter sunitPresenter runAll.
+	"assert tests in sunit browser updated"
+	self assert: self  sunitPresenter methodListPresenter list first selector
+		equals: #test1.
+	self assert: self sunitPresenter methodListPresenter list first testResult equals: 'passed'.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list second selector
+		equals: #test2.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult equals: 'passed'!
+
 test_sunitTabPassingDebugTestShowsResult
 	| methodService |
 	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
@@ -499,6 +542,26 @@ test_sunitTabPassingDebugTestShowsResult
 	self projectsPresenter sunitPresenter debug.
 	self assert: methodService testResult equals: 'passed']
 			ensure: [projectsBrowser destroy]!
+
+test_sunitTabUpdates
+	self testsIssue: #issue410
+		withTitle: 'Selecting class in Project Browser changes test status icons in SUnit Browser'.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self projectsPresenter selectSUnitTab.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list first selector
+		equals: #test1.
+	self assertIsNil: self projectsPresenter sunitPresenter methodListPresenter list first testResult.
+	self sunitPresenter runAll.
+	"assert tests in project browser sunit presenter updated"
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list first selector
+		equals: #test1.
+	self assert: self sunitPresenter methodListPresenter list first testResult equals: 'passed'.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list second selector
+		equals: #test2.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult equals: 'passed'!
 
 test_testsRunInSelectedTestClass
 	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
@@ -545,6 +608,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #projectsPresenter!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #selecProjectBrowserMethodNamed:!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #selecProjectBrowserMethodsNamed:!public!support! !
+!JadeiteSUnitSupportTestCase categoriesFor: #selectSUnitBrowserMethodNamed:!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #selectSUnitBrowserMethodsNamed:!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #setUp!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #setupRunInSelectedTestClassTest!private!support! !
@@ -557,6 +621,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseSunitClass!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_commitNoSelections!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_commitWithSelections!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_dontClearResults!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_inheritedTests!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectNoDuplicates!public!tests! !
@@ -573,6 +638,8 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestMethods!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserPassingDebugTestShowsResult!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserUpdates!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitTabPassingDebugTestShowsResult!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitTabUpdates!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_testsRunInSelectedTestClass!public!tests! !
 

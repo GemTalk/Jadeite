@@ -21,59 +21,27 @@ reset
 	methodListPresenter view invalidate.
 	textResultPresenter view backcolor: Color face3d!
 
-runTests: methodServices
+runTestMethodServices: methodServices className: className
 	| jadeResult |
 	methodServices isEmpty ifTrue: [^self].
 	jadeResult := JadeTestResult new.
 	methodServices do: 
 			[:methodService |
-			| result resultArray |
-			result := gciSession
-						serverPerform: #runTestNamed:in:
-						with: methodService selector
-						with: methodService className.
-			resultArray := result subStrings: ','.
-			resultArray first ~= '0'
-				ifTrue: 
-					[methodService testResult: 'error'.
-					jadeResult addError: methodService selector].
-			resultArray second ~= '0'
-				ifTrue: 
-					[methodService testResult: 'failure'.
-					jadeResult addFailure: methodService selector].
-			resultArray third ~= '0'
-				ifTrue: 
-					[methodService testResult: 'passed'.
-					jadeResult addPassed: methodService selector]].
+			methodService
+				command: #runTest:inClassName:;
+				commandArgs: (Array with: methodService selector with: (className ifNil: [methodService className])).
+			self issueCommand: (Array with: methodService).
+			methodService testResult = 'error' ifTrue: [jadeResult addError: methodService selector].
+			methodService testResult = 'failure' ifTrue: [jadeResult addFailure: methodService selector].
+			methodService testResult = 'passed' ifTrue: [jadeResult addPassed: methodService selector]].
 	self updateResult: jadeResult.
 	^jadeResult!
 
-runTests: anOrderedCollection in: className
-	| jadeResult |
-	anOrderedCollection isEmpty ifTrue: [^self].
-	jadeResult := JadeTestResult new.
-	anOrderedCollection do: 
-			[:methodService |
-			| result resultArray |
-			result := gciSession
-						serverPerform: #runTestNamed:in:
-						with: methodService selector
-						with: className.
-			resultArray := result subStrings: ','.
-			resultArray first ~= '0'
-				ifTrue: 
-					[methodService testResult: 'error'.
-					jadeResult addError: methodService selector].
-			resultArray second ~= '0'
-				ifTrue: 
-					[methodService testResult: 'failure'.
-					jadeResult addFailure: methodService selector].
-			resultArray third ~= '0'
-				ifTrue: 
-					[methodService testResult: 'passed'.
-					jadeResult addPassed: methodService selector]].
-	self updateResult: jadeResult.
-	^jadeResult!
+runTests: methodServices
+	^self runTestMethodServices: methodServices className: nil!
+
+runTests: methodServices in: className
+	^self runTestMethodServices: methodServices className: className!
 
 setColorFor: aJadeTestResult
 	textResultPresenter value: aJadeTestResult summary.
@@ -103,6 +71,7 @@ updateResult: jadeResult
 	self setColorFor: jadeResult! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #createComponents!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #reset!public! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #runTestMethodServices:className:!private! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #runTests:!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #runTests:in:!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #setColorFor:!public! !
