@@ -27,13 +27,16 @@ runTestMethodServices: methodServices className: className
 	jadeResult := JadeTestResult new.
 	methodServices do: 
 			[:methodService |
+			| index |
 			methodService
 				command: #runTest:inClassName:;
 				commandArgs: (Array with: methodService selector with: (className ifNil: [methodService className])).
 			self issueCommand: (Array with: methodService).
 			methodService testResult = 'error' ifTrue: [jadeResult addError: methodService selector].
 			methodService testResult = 'failure' ifTrue: [jadeResult addFailure: methodService selector].
-			methodService testResult = 'passed' ifTrue: [jadeResult addPassed: methodService selector]].
+			methodService testResult = 'passed' ifTrue: [jadeResult addPassed: methodService selector].
+			index := methodServices indexOf: methodService.
+			methodListPresenter view ensureVisible: index].
 	self updateResult: jadeResult.
 	^jadeResult!
 

@@ -20,7 +20,10 @@ commitTransaction
 createComponents
 	super createComponents.
 	packageListPresenter := self add: ListPresenter new name: 'packages'.
-	classListPresenter := self add: ListPresenter new name: 'testClasses'!
+	classListPresenter := self add: ListPresenter new name: 'testClasses'.
+	packageListPresenter
+		model: (ListModel new list: (SortedCollection sortBlock: [:x :y | x name < y name])).
+	self initializeClassList!
 
 createSchematicWiring
 	super createSchematicWiring.
@@ -55,6 +58,10 @@ debug
 getTestCounter
 
 	^'Total Tests: ', testCounter first printString!
+
+initializeClassList
+	classListPresenter
+		model: (ListModel new list: (SortedCollection sortBlock: [:x :y | x name < y name]))!
 
 onClassesChanged
 	Cursor wait showWhile: 
@@ -135,6 +142,7 @@ testClassesSize
 !JadeiteSUnitPresenter categoriesFor: #createSchematicWiring!public! !
 !JadeiteSUnitPresenter categoriesFor: #debug!public! !
 !JadeiteSUnitPresenter categoriesFor: #getTestCounter!public! !
+!JadeiteSUnitPresenter categoriesFor: #initializeClassList!public! !
 !JadeiteSUnitPresenter categoriesFor: #onClassesChanged!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #onPackageChanged!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #packagesSize!public! !

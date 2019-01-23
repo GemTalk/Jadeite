@@ -1421,7 +1421,7 @@ update: newMethods orRemove: removals
 
 updateClasses
 	| packageServices |
-	classListPresenter list: ListModel new.
+	self initializeClassList.
 	packageServices := packageListPresenter selections.
 	packageServices do: [:packageService | packageService command: #testClasses].
 	self issueCommand: packageServices!
