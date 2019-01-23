@@ -106,8 +106,17 @@ testCount: anObject
 	testCount := anObject!
 
 testPackages: presenter
-	self initializePresenterList: presenter.
-	presenter model addAll: testPackages! !
+	| additions |
+	additions := OrderedCollection new.
+	testPackages do: 
+			[:newPackageService |
+			| updatedPackage |
+			updatedPackage := presenter model detect: [:packageService | packageService = newPackageService]
+						ifNone: 
+							[additions add: newPackageService.
+							nil].
+			updatedPackage ifNotNil: [updatedPackage replicateFrom: newPackageService]].
+	presenter model addAll: additions! !
 !RowanBrowserService categoriesFor: #=!comparing!public! !
 !RowanBrowserService categoriesFor: #allClasses!accessing!private! !
 !RowanBrowserService categoriesFor: #basicPrepareForReplication!public!replication! !

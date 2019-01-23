@@ -283,6 +283,31 @@ test_openSunitBrowser
 
 	self assert: (sunitBrowser isKindOf: JadeiteSUnitBrowser)!
 
+test_openTwoSUnitBrowsersLosingPackageSelection
+	"unreported bug - losing selections if second sunit browser open"
+
+	| secondSunitBrowser |
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
+	self selectSUnitBrowserMethodNamed: #test1.
+	self assert: self sunitPresenter packageListPresenter selections first name
+		equals: 'RowanSample1-Tests'.
+	self assert: self sunitPresenter classListPresenter selections first name equals: 'RowanSample1Test'.
+	self assert: self sunitPresenter methodListPresenter selections first selector equals: #test1.
+	secondSunitBrowser := self openWindow: [transcript jadeBrowseTests].
+	
+	[self assert: self sunitPresenter packageListPresenter selections first name
+		equals: 'RowanSample1-Tests'.
+	self assert: self sunitPresenter classListPresenter selections first name equals: 'RowanSample1Test'.
+	self assert: self sunitPresenter methodListPresenter selections first selector equals: #test1.
+	self selectServiceNamed: 'RowanSample1-Tests'
+		in: secondSunitBrowser primaryPresenter packageListPresenter.
+	self assert: self sunitPresenter packageListPresenter selections first name
+		equals: 'RowanSample1-Tests'.
+	self assert: self sunitPresenter classListPresenter selections first name equals: 'RowanSample1Test'.
+	self assert: self sunitPresenter methodListPresenter selections first selector equals: #test1]
+			ensure: [secondSunitBrowser destroy]!
+
 test_refresh
 	| source newMethod |
 	self testsIssue: #issue279 withTitle: 'Sunit browser refresh, auto or manual'.
@@ -626,6 +651,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectNoDuplicates!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_openSunitBrowser!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_openTwoSUnitBrowsersLosingPackageSelection!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_refresh!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_registeredPresentersInSUnitBrowserCleanedUp!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_resetStatusBar!public!tests! !
