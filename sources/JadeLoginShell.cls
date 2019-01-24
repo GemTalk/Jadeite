@@ -169,6 +169,11 @@ fillVersionList
 	list := list asSortedCollection: [:a :b | self isVersion: a lessThanOrEqualTo: b].
 	versionListPresenter list: list!
 
+gemTaskPresenter: string
+	" for testing "
+
+	gemTaskPresenter value: string!
+
 getDocumentData
 
 	self updateModel.
@@ -403,6 +408,7 @@ updateView
 !JadeLoginShell categoriesFor: #fileNew!commands!public! !
 !JadeLoginShell categoriesFor: #fileOpen!commands!public! !
 !JadeLoginShell categoriesFor: #fillVersionList!public! !
+!JadeLoginShell categoriesFor: #gemTaskPresenter:!public! !
 !JadeLoginShell categoriesFor: #getDocumentData!accessing!public! !
 !JadeLoginShell categoriesFor: #isModified!public! !
 !JadeLoginShell categoriesFor: #isModified:!public! !

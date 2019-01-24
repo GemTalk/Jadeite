@@ -11,6 +11,7 @@ package classNames
 	add: #JadeiteDevelopmentSUnitBrowserModel;
 	add: #JadeiteDictionaryBrowserTestCase;
 	add: #JadeiteInspectorTestCase;
+	add: #JadeiteLoginTestCase;
 	add: #JadeiteMessageBoxTestCase;
 	add: #JadeiteMethodListBrowserTestCase;
 	add: #JadeiteMiscellaneousTestCase;
@@ -54,6 +55,7 @@ package setPrerequisites: (IdentitySet new
 	add: '..\Core\Object Arts\Dolphin\MVP\Type Converters\Dolphin Type Converters';
 	add: 'GemStone Session';
 	add: 'Jade Deployment';
+	add: 'Jade Login';
 	add: 'Jade Test Browser';
 	add: 'Jade UI Base';
 	add: 'Rowan UI Base';
@@ -94,6 +96,11 @@ SUnitBrowserModel subclass: #JadeiteDevelopmentSUnitBrowserModel
 	classInstanceVariableNames: ''!
 TestCase subclass: #JadeiteAbstractTestCase
 	instanceVariableNames: 'session transcript projectsBrowser'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+TestCase subclass: #JadeiteLoginTestCase
+	instanceVariableNames: 'session jadeiteLogin'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

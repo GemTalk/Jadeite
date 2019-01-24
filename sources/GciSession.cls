@@ -365,6 +365,9 @@ isValidSession
 	^gciSessionId notNil
 !
 
+library: anObject
+	library := anObject!
+
 libraryVersion
 
 	^library 
@@ -385,13 +388,11 @@ loadLibrary: aClass debugPath: debugPath
 	].!
 
 logout
-	self stopHeartbeat.
-	self trigger: #logoutPending.
-	library ifNotNil: [library logoutSession: gciSessionId].
+	self privateLogout.
 	self trigger: #logout.
 	gciSessionId := nil.
 	library := nil.
-	GciSession current: nil. !
+	GciSession current: nil!
 
 logoutRequested
 
@@ -434,6 +435,12 @@ printString: anOopType
 		serverPerform: 'printStringOf:'
 		with: anOopType.
 !
+
+privateLogout
+	"extract private aspects of logout"
+	self stopHeartbeat.
+	self trigger: #logoutPending.
+	library ifNotNil: [library logoutSession: gciSessionId]!
 
 releaseOop: anOopType
 
@@ -874,6 +881,7 @@ withExplanation: aString doA: aBlock
 !GciSession categoriesFor: #isPackagePolicyEnabled!public! !
 !GciSession categoriesFor: #isRemoteGem!public! !
 !GciSession categoriesFor: #isValidSession!public! !
+!GciSession categoriesFor: #library:!accessing!private! !
 !GciSession categoriesFor: #libraryVersion!public! !
 !GciSession categoriesFor: #loadLibrary:debugPath:!public! !
 !GciSession categoriesFor: #logout!Jade!public! !
@@ -885,6 +893,7 @@ withExplanation: aString doA: aBlock
 !GciSession categoriesFor: #oopIllegal!public! !
 !GciSession categoriesFor: #oopTypeWithOop:!public! !
 !GciSession categoriesFor: #printString:!Jade convenience!public! !
+!GciSession categoriesFor: #privateLogout!Jade!private! !
 !GciSession categoriesFor: #releaseOop:!Jade convenience!public! !
 !GciSession categoriesFor: #releaseOops:!Jade!public! !
 !GciSession categoriesFor: #returningResultOrErrorDo:!long running!private! !
