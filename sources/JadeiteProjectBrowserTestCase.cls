@@ -250,6 +250,11 @@ tearDown
 			[secondBrowser destroy.
 			secondBrowser := nil]!
 
+test_abortRemovesProjectsInAllBrowsers
+	
+	self projectsPresenter abortTransaction. 
+!
+
 test_abstractTestsShown
 	| commandQuery methodService |
 	self testsIssue: #issue336
@@ -3211,6 +3216,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #selectTreeServicesNamed:in:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteProjectBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_abortRemovesProjectsInAllBrowsers!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abstractTestsShown!public!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_acceptDefinedMethodInExtensionClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addDuplicatePackage!public!tests! !

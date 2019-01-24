@@ -13,6 +13,9 @@ RowanBrowserService comment: ''!
 = projectService
 	^name = projectService name!
 
+aborted: presenter browser: browser
+	browser refreshFromServerAfterAbort: self!
+
 allClasses
 	^allClasses!
 
@@ -116,8 +119,11 @@ testPackages: presenter
 							[additions add: newPackageService.
 							nil].
 			updatedPackage ifNotNil: [updatedPackage replicateFrom: newPackageService]].
-	presenter model addAll: additions! !
+	presenter model addAll: additions.
+	presenter model copy do:[:oldPackageService |
+		(testPackages includes: oldPackageService) ifFalse:[presenter model remove: oldPackageService]]. ! !
 !RowanBrowserService categoriesFor: #=!comparing!public! !
+!RowanBrowserService categoriesFor: #aborted:browser:!public!updating! !
 !RowanBrowserService categoriesFor: #allClasses!accessing!private! !
 !RowanBrowserService categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanBrowserService categoriesFor: #excludedInstVars!public!ston! !

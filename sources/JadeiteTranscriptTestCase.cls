@@ -10,6 +10,36 @@ JadeiteTranscriptTestCase comment: ''!
 !JadeiteTranscriptTestCase categoriesForClass!Unclassified! !
 !JadeiteTranscriptTestCase methodsFor!
 
+test_abortRemovesProjectsInAllBrowsers
+	| sunitBrowser |
+	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	sunitBrowser := self openWindow: [transcript jadeBrowseTests].
+	
+	[self denyIsNil: (self projectListPresenter list
+				detect: [:projectService | projectService name = 'RowanSample1']
+				ifNone: []).
+	self denyIsNil: (transcript projectListPresenter projectListPresenter list
+				detect: [:projectService1 | projectService1 name = 'RowanSample1']
+				ifNone: []).
+	self denyIsNil: (sunitBrowser primaryPresenter packageListPresenter list
+				detect: [:projectService1 | projectService1 name = 'RowanSample1-Tests']
+				ifNone: []).
+	transcript toolbarPresenter abort.
+	self assertIsNil: (self projectListPresenter list
+				detect: [:projectService | projectService name = 'RowanSample1']
+				ifNone: []).
+	self assertIsNil: (transcript projectListPresenter projectListPresenter list
+				detect: [:projectService2 | projectService2 name = 'RowanSample1']
+				ifNone: []).
+	self assertIsNil: (sunitBrowser primaryPresenter packageListPresenter list
+				detect: [:projectService1 | projectService1 name = 'RowanSample1-Tests']
+				ifNone: []).
+	self cloneRowanSample1.
+	self ensureRowanSample1Loaded]
+			ensure: 
+				[projectsBrowser destroy.
+				sunitBrowser destroy]!
+
 test_abortTransaction
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
 	transcript projectListPresenter refresh.
@@ -193,6 +223,7 @@ test_transcriptNamedConsole
 	self assert: transcript transcriptPresenter documentPresenter value isEmpty.
 	self assert: transcript transcriptPresenter documentPresenter view displayValue isEmpty]
 			ensure: [wasInstalled ifFalse: [transcript flipTranscript	"turn back off"]]! !
+!JadeiteTranscriptTestCase categoriesFor: #test_abortRemovesProjectsInAllBrowsers!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_abortTransaction!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseClassMenuItem!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseFindClassMenuItem!public!test menus! !

@@ -10,6 +10,10 @@ RowanService comment: ''!
 !RowanService categoriesForClass!Kernel-Objects! !
 !RowanService methodsFor!
 
+aborted: presenter browser: browser
+	
+	!
+
 basicPrepareForReplication
 	"don't call anything potentially recursive here"!
 
@@ -294,6 +298,7 @@ updateType: anObject
 variableDataUpdate: aPresenter!
 
 variableListUpdate: aPresenter! !
+!RowanService categoriesFor: #aborted:browser:!public!updating! !
 !RowanService categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanService categoriesFor: #classCategoryUpdate:!public!updating! !
 !RowanService categoriesFor: #classCommentUpdate:!public!updating! !

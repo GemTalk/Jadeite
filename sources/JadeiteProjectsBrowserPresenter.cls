@@ -12,7 +12,7 @@ JadeiteProjectsBrowserPresenter comment: 'In packages pane, show projects & pack
 
 abortTransaction
 	super abortTransaction.
-	self refreshFromServerAfterAbort!
+	self refreshFromServerAfterAbort: nil!
 
 aboutToChange: aSelectionChangingEvent
 	aSelectionChangingEvent value ifTrue: [
@@ -1353,8 +1353,10 @@ refreshFromServer
 	self updateSUnitTab.
 	self redrawAllViews!
 
-refreshFromServerAfterAbort
-	self refreshGlobalSelections!
+refreshFromServerAfterAbort: browserService
+	browserService
+		ifNil: [self refreshGlobalSelections]
+		ifNotNil: [browserService projectsUpdate: projectListPresenter]!
 
 refreshMethodsOn: presenter
 	| classService classPresenter |
@@ -1378,6 +1380,7 @@ registerPresentersForUpdates
 
 	BrowserUpdate current register: projectListPresenter 		selector: #projectsUpdate:.
 	BrowserUpdate current register: projectListPresenter 		selector: #removedProject:.
+	BrowserUpdate current register: projectListPresenter 		selector: #aborted:browser: browser: self.
 	BrowserUpdate current register: classListPresenter 		selector: #classesUpdate:browser: browser: self.
 	BrowserUpdate current register: classListPresenter 		selector: #removedClass:.
 	BrowserUpdate current register: classListPresenter 		selector: #updatedClass:.
@@ -2083,7 +2086,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshClass!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshClassListOrHierarchy!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshFromServer!event handlers!menu handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #refreshFromServerAfterAbort!event handlers!menu handlers!public!updating! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #refreshFromServerAfterAbort:!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshMethodsOn:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #registerClassData!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #registerPresentersForUpdates!event handlers!initialize/release!public!register presenters! !

@@ -15,6 +15,13 @@ createComponents
 	methodListPresenter := self add: ListPresenter new name: 'testCases'.
 	textResultPresenter := self add: TextPresenter new name: 'textResult'!
 
+refresh
+
+	self subclassResponsibility!
+
+refreshFromServerAfterAbort: browserService
+	self refresh!
+
 reset
 	methodListPresenter model do: [:each | each testResult: nil].
 	textResultPresenter value: String new.
@@ -73,6 +80,8 @@ updateResult: jadeResult
 	jadeResult setSummary.
 	self setColorFor: jadeResult! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #createComponents!public! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #refresh!event handlers!public! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #refreshFromServerAfterAbort:!event handlers!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #reset!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #runTestMethodServices:className:!private! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #runTests:!public! !

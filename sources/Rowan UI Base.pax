@@ -140,6 +140,7 @@ package methodNames
 	add: #JadeMethodListPresenter -> #searchForAnyTextMatching:;
 	add: #JadeNavigationInspector -> #browseClass;
 	add: #JadeNavigationInspector -> #setNewInspectedObject;
+	add: #JadePresenter -> #abortTransaction;
 	add: #JadePresenter -> #basicCloneProject:root:;
 	add: #JadePresenter -> #browseHierarchyImplementorsOf:className:;
 	add: #JadePresenter -> #browseHierarchySendersOf:className:;
@@ -1397,10 +1398,11 @@ refresh
 	self reset!
 
 registerPresentersForUpdates
-	BrowserUpdate current register: packageListPresenter 	selector: #testPackages:.
-	BrowserUpdate current register: classListPresenter 		selector: #testClasses:.
-	BrowserUpdate current register: methodListPresenter 	selector: #sunitMethodsUpdate:browser: browser: self.
-	BrowserUpdate current register: methodListPresenter		selector: #testResultUpdate:.!
+	BrowserUpdate current register: packageListPresenter selector: #testPackages:.
+	BrowserUpdate current register: classListPresenter 	selector: #testClasses:.
+	BrowserUpdate current register: methodListPresenter selector: #sunitMethodsUpdate:browser: browser: self.
+	BrowserUpdate current register: methodListPresenter selector: #testResultUpdate:.
+	BrowserUpdate current register: packageListPresenter selector: #aborted:browser: browser: self!
 
 update: newMethods orRemove: removals
 	methodListPresenter model do: 
@@ -1547,6 +1549,14 @@ resource_Default_view
 !JadeNavigationInspector class categoriesFor: #resource_Default_view!public!resources-views! !
 
 !JadePresenter methodsFor!
+
+abortTransaction
+	"Even if it takes a windy path, try to make sure
+	all aborts in Jadeite pass through here"
+	| browserService |
+	browserService := RowanBrowserService new command: #abortTransaction. 
+	self issueCommand: (Array with: browserService). 
+	Sound informationBeep!
 
 basicCloneProject: path root: root
 	| service |
@@ -1704,6 +1714,7 @@ reportCompileError: anArrayOfArray in: methodSourcePresenter
 
 update: services afterStonReplication: stonResults
 	^BrowserUpdate current update: services afterStonReplication: stonResults! !
+!JadePresenter categoriesFor: #abortTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #basicCloneProject:root:!menu handlers!private! !
 !JadePresenter categoriesFor: #browseHierarchyImplementorsOf:className:!browsing!public! !
 !JadePresenter categoriesFor: #browseHierarchySendersOf:className:!browsing!public! !

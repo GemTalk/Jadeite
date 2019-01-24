@@ -176,6 +176,9 @@ queryCommand: aCommandQuery
 refresh
 	self refreshProjects!
 
+refreshFromServerAfterAbort: browserService
+	browserService projectsUpdate: projectListPresenter . !
+
 refreshProjects
 	| browserService |
 	browserService := RowanBrowserService new.
@@ -184,7 +187,8 @@ refreshProjects
 
 registerPresentersForUpdates
 	BrowserUpdate current register: projectListPresenter selector: #projectsUpdate:.
-	BrowserUpdate current register: projectListPresenter selector: #removedProject:!
+	BrowserUpdate current register: projectListPresenter selector: #removedProject:.
+	BrowserUpdate current register: projectListPresenter selector: #aborted:browser: browser: self!
 
 unloadProjects
 	| projectNames ws |
@@ -236,8 +240,9 @@ writeProject
 !JadeiteProjectListPresenter categoriesFor: #pushToGit!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #queryCommand:!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #refresh!menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #refreshFromServerAfterAbort:!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #refreshProjects!public! !
-!JadeiteProjectListPresenter categoriesFor: #registerPresentersForUpdates!event handlers!private! !
+!JadeiteProjectListPresenter categoriesFor: #registerPresentersForUpdates!private!register presenters! !
 !JadeiteProjectListPresenter categoriesFor: #unloadProjects!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #writeProject!menu handlers!public! !
 

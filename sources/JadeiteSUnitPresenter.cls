@@ -10,10 +10,6 @@ JadeiteSUnitPresenter comment: ''!
 !JadeiteSUnitPresenter categoriesForClass!Unclassified! !
 !JadeiteSUnitPresenter methodsFor!
 
-abortTransaction
-	super abortTransaction.
-	self refresh!
-
 commitTransaction
 	super commitTransaction!
 
@@ -80,6 +76,9 @@ onPackageChanged
 packagesSize
 	^'Packages: ' , packageListPresenter model size printString!
 
+refreshFromServerAfterAbort: browserService
+	browserService testPackages: packageListPresenter!
+
 runAll
 	^classListPresenter selections size > 1
 		ifTrue: [self runTests: methodListPresenter model]
@@ -136,7 +135,6 @@ testCasesSize
 
 testClassesSize
 	^'Test Classes:' , classListPresenter model size printString! !
-!JadeiteSUnitPresenter categoriesFor: #abortTransaction!public!transaction management! !
 !JadeiteSUnitPresenter categoriesFor: #commitTransaction!public!transaction management! !
 !JadeiteSUnitPresenter categoriesFor: #createComponents!public! !
 !JadeiteSUnitPresenter categoriesFor: #createSchematicWiring!public! !
@@ -146,6 +144,7 @@ testClassesSize
 !JadeiteSUnitPresenter categoriesFor: #onClassesChanged!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #onPackageChanged!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #packagesSize!public! !
+!JadeiteSUnitPresenter categoriesFor: #refreshFromServerAfterAbort:!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #runAll!public! !
 !JadeiteSUnitPresenter categoriesFor: #runSelected!public! !
 !JadeiteSUnitPresenter categoriesFor: #selectClassNamed:!public!selection! !
