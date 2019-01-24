@@ -10,6 +10,10 @@ RowanCommandResult comment: 'Needs to be in GemStone Objects package (for the mo
 !RowanCommandResult categoriesForClass!Unclassified! !
 !RowanCommandResult methodsFor!
 
+aborted: presenter browser: browser
+	
+!
+
 doNothing: anObject
 
 	"as the name implies"!
@@ -25,6 +29,7 @@ testResultUpdate: presenter
 
 updateSelector
 	^#doNothing:! !
+!RowanCommandResult categoriesFor: #aborted:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #doNothing:!private! !
 !RowanCommandResult categoriesFor: #prepareForReplication!public!replication! !
 !RowanCommandResult categoriesFor: #testResultUpdate:!public!updating! !

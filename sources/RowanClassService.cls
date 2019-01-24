@@ -47,16 +47,6 @@ behaviorIdentifier
 categories
 	^categories!
 
-classesMethodsUpdate: presenter browser: browser
-	| classNames |
-	browser classListPresenter selections isEmpty ifTrue: [^self].
-	browser classListPresenter selections size > 1
-		ifFalse: [browser classListPresenter selection name asString = name asString ifFalse: [^self]].	"sunit browser"
-	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
-	classNames := browser classListPresenter selections collect: [:classService | classService name].
-	(classNames includes: name) ifFalse: [^self].
-	methods ifNotNil: [self displayMethodsOn: presenter browser: browser]!
-
 classHierarchyUpdate: presenter browser: browser
 	| treeModel subclasses parent |
 	hierarchyServices ifNil: [^self].
@@ -97,6 +87,7 @@ classHierarchyUpdate: presenter browser: browser
 
 classMethodsUpdate: presenter browser: browser
 	browser selectedClass name asString = name asString ifFalse: [^self].
+	meta = browser isClassSideSelected ifFalse:[^self].
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	self displayMethodsOn: presenter browser: browser!
 
@@ -174,7 +165,7 @@ filterUpdate: presenter browser: browser
 	browser isCategoryTabSelected
 		ifTrue: 
 			[presenter list = categories ifTrue: [^self].
-			self updateCategories: presenter]
+			self updateCategories: presenter browser: browser]
 		ifFalse: 
 			[presenter list = variables ifTrue: [^self].
 			self updateVariables: presenter]!
@@ -349,12 +340,13 @@ template: anObject
 toolTip
 	^'Defined package: ' , self definedPackageName!
 
-updateCategories: presenter
+updateCategories: presenter browser: browser
 	"update without losing selections if appropriate"
-	presenter list copy do:[:category |
-		(categories includes: category) ifFalse:[presenter model remove: category]].
-	categories do:[:category |
-		(presenter list includes: category) ifFalse:[presenter model add: category]]. !
+	meta = browser isClassSideSelected ifFalse:[^self].
+	presenter list copy
+		do: [:category | (categories includes: category) ifFalse: [presenter model remove: category]].
+	categories
+		do: [:category | (presenter list includes: category) ifFalse: [presenter model add: category]]!
 
 updatedClass: presenter
 	| update |
@@ -420,7 +412,6 @@ visibleTests
 !RowanClassService categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanClassService categoriesFor: #behaviorIdentifier!accessing!public! !
 !RowanClassService categoriesFor: #categories!accessing!private! !
-!RowanClassService categoriesFor: #classesMethodsUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #classMethodsUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #classOrHierarchyPresenter:!private!updating! !
@@ -477,7 +468,7 @@ visibleTests
 !RowanClassService categoriesFor: #template!accessing!private! !
 !RowanClassService categoriesFor: #template:!accessing!private! !
 !RowanClassService categoriesFor: #toolTip!public! !
-!RowanClassService categoriesFor: #updateCategories:!private!updating! !
+!RowanClassService categoriesFor: #updateCategories:browser:!private!updating! !
 !RowanClassService categoriesFor: #updatedClass:!public!updating! !
 !RowanClassService categoriesFor: #updatedClassDefinition:browser:!public!updating! !
 !RowanClassService categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !

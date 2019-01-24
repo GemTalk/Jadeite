@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 JadeiteAbstractTestCase subclass: #JadeiteProjectBrowserTestCase
-	instanceVariableNames: 'transcriptWritesWereEnabled methodListBrowser secondBrowser'
+	instanceVariableNames: 'transcriptWritesWereEnabled methodListBrowser secondBrowser secondPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -133,6 +133,7 @@ modifySampleMethodFoo
 openSecondBrowser
 	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
 	secondBrowser caption: 'second browser'.
+	secondPresenter := secondBrowser currentCard.
 	^secondBrowser!
 
 packageNamed: aString
@@ -811,6 +812,36 @@ test_dontChangeTabOnMethodSave
 	self projectsPresenter topShell cardsPresenter view cardLayout cycleNextCard.	"go to tab 2"
 	self assert: self projectsPresenter topShell cardsPresenter view cardLayout currentCard sameAs: secondTab.
 	self assert: self methodSourcePresenter value equals: source!
+
+test_dontUpdateWithDifferentMeta
+	"don't update method or categories if the meta of the new
+	class service is different than the selected class/instance tab"
+
+	self testsIssue: #issue417 withTitle: '(3.0.56) extra method entries in project browser on accesp'.
+	self selectRowanSample1Test.
+	self assert: self categoryListPresenter list asArray equals: #('tests').
+	self
+		assert: (self methodListPresenter list collect: [:methodService | methodService selector]) asArray
+		equals: #(#test1 #test2 #testError #testFailure).
+	self openSecondBrowser.
+	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: secondPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: secondPresenter classListPresenter.
+	self assert: self categoryListPresenter list asArray equals: #('tests').
+	self
+		assert: (self methodListPresenter list collect: [:methodService | methodService selector]) asArray
+		equals: #(#test1 #test2 #testError #testFailure).
+	self selectClassTabIn: secondPresenter.
+	self assert: self categoryListPresenter list asArray equals: #('tests').
+	self
+		assert: (self methodListPresenter list collect: [:methodService | methodService selector]) asArray
+		equals: #(#test1 #test2 #testError #testFailure).
+	self selectClassTab.
+	self assert: secondPresenter categoryListPresenter list asArray equals: #().
+	self
+		assert: (secondPresenter methodListPresenter list collect: [:methodService | methodService selector])
+				asArray
+		equals: #()!
 
 test_dragClassDoesNotWalkback
 	"Not really a drag drop but make sure that 
@@ -2770,13 +2801,10 @@ test_twoBrowsersAddedClassAppears
 	"if the same package is selected, a new class appears but the existing
 	class selection doesn't change"
 
-	| secondPresenter |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
 	self openSecondBrowser.
-	
-	secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
@@ -2791,13 +2819,12 @@ test_twoBrowsersAddedClassAppears
 	self assert: secondPresenter classListPresenter list last name equals: 'TestClass'!
 
 test_twoBrowsersAddedClassAppearsInHierarchy1
-	| secondPresenter family |
+	| family |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
 	self selectHierarchyTab.
 	self openSecondBrowser.
-	secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
@@ -2827,13 +2854,12 @@ test_twoBrowsersAddedClassAppearsInHierarchy1
 	self assertAncestry: family in: secondPresenter classHierarchyPresenter!
 
 test_twoBrowsersAddedClassAppearsInHierarchy2
-	| secondPresenter family |
+	| family |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
 	self selectHierarchyTab.
 	self openSecondBrowser.
-	secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
@@ -2866,13 +2892,11 @@ test_twoBrowsersAddedClassAppearsInHierarchy2
 	self assertAncestry: family in: secondPresenter classHierarchyPresenter!
 
 test_twoBrowsersAddedClassDoesNotAppearInDifferentHierarchy
-	| secondPresenter |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
 	self selectHierarchyTab.
 	self openSecondBrowser.
-	secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
@@ -2888,13 +2912,12 @@ test_twoBrowsersAddedClassDoesNotAppearInDifferentHierarchy
 	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'	"no change in second browser because new class not in hierarchy"!
 
 test_twoBrowsersAddedClassRearrangesItselfInHierarchy
-	| secondPresenter family |
+	| family |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
 	self selectHierarchyTab.
 	self openSecondBrowser.
-	secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
@@ -2934,12 +2957,10 @@ test_twoBrowsersAddedClassRearrangesItselfInHierarchy
 	self assertAncestry: family in: secondPresenter classHierarchyPresenter!
 
 test_twoBrowsersNoUpdateWithoutPackageSelection
-	| secondPresenter |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
 	self openSecondBrowser.
-	secondPresenter := secondBrowser currentCard.
 	self assert: secondPresenter projectListPresenter selections isEmpty.
 	self assert: secondPresenter packageListPresenter model isEmpty.
 	self assert: secondPresenter classListPresenter model isEmpty.
@@ -2962,11 +2983,9 @@ test_twoBrowsersNoUpdateWithoutPackageSelection
 	self assert: secondPresenter methodListPresenter model isEmpty!
 
 test_twoBrowsersRemoveMethod
-	| secondPresenter |
 	self testsIssue: #issue404 withTitle: 'Removing a method using method browser'.
 	self selectRowanSample1Class.
 	self openSecondBrowser.
-	secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
@@ -2981,7 +3000,6 @@ test_twoBrowsersRemoveMethod
 	self denyMethodInList: #sampleMethod!
 
 test_twoBrowsersUpdate
-	| secondPresenter |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
@@ -2990,7 +3008,6 @@ test_twoBrowsersUpdate
 	self assert: self classListPresenter list first name equals: 'RowanSample1'.
 	self assert: self classListPresenter list last name equals: 'RowanSubClass'.
 	self openSecondBrowser.
-	secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
@@ -3016,7 +3033,6 @@ test_twoBrowsersUpdate
 	self assert: secondPresenter packageListPresenter selection name equals: 'RowanSample1-Core'!
 
 test_twoBrowsersUpdateHierarchy
-	| secondPresenter |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
@@ -3024,8 +3040,6 @@ test_twoBrowsersUpdateHierarchy
 	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
 		in: self classHierarchyPresenter.
 	self openSecondBrowser.
-	
-	secondPresenter := secondBrowser currentCard.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectHierarchyTabIn: secondPresenter.
@@ -3240,6 +3254,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleValidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontChangeTabOnMethodSave!public!test two browsers! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dontUpdateWithDifferentMeta!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dragClassDoesNotWalkback!public!test drag drop! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dragClassInHierarchyDoesNotWalkback!public!test class hierarchy!test drag drop! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dragDropMethodFailCompile!public!test class hierarchy!test drag drop! !
