@@ -373,17 +373,17 @@ updateView
 		ifNone: [versionListPresenter list last].
 	versionListPresenter		selection: selection.
 	stoneHostPresenter 		value: self model stoneHost.
-	stoneNamePresenter 	value: self model stoneName.
+	stoneNamePresenter 		value: self model stoneName.
 	gemTypePresenter 		value: self model gemType.
 	gemHostPresenter 		value: self model gemHost.
 	gemServicePresenter 	value: self model gemService.
 	gemTaskPresenter 		value: self model gemTask.
-	userIDPresenter 			value: self model gsUserID.
+	userIDPresenter 		value: self model gsUserID.
 	passwordPresenter 		value: self model gsPassword.
 	loginTypePresenter		value: self model loginType.
-	hostUserIDPresenter	value: self model hostUserID.
+	hostUserIDPresenter		value: self model hostUserID.
 	hostPasswordPresenter	value: self model hostPassword.
-	initialsPresenter				value: self model initials.
+	initialsPresenter		value: self model initials.
 	useSocketPresenter		value: self model useSocket.
 	debugPathPresenter		value: self model debugPath.
 	self isModified: false.

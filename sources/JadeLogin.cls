@@ -19,16 +19,17 @@ asXML
 		setAttribute: 'stoneHost' 		value: stoneHost;
 		setAttribute: 'stoneName' 		value: stoneName;
 		setAttribute: 'stoneNRS' 		value: stoneNRS;
-		setAttribute: 'gemType' 			value: gemType;
-		setAttribute: 'gemHost' 			value: gemHost;
+		setAttribute: 'gemType' 		value: gemType;
+		setAttribute: 'gemHost' 		value: gemHost;
 		setAttribute: 'gemService' 		value: gemService;
-		setAttribute: 'gemNRS' 			value: gemNRS;
+		setAttribute: 'gemNRS' 		value: gemNRS;
 		setAttribute: 'hostUserID' 		value: hostUserID;
 		setAttribute: 'hostPassword' 	value: hostPassword;
 		setAttribute: 'gsUserID' 		value: gsUserID;
 		setAttribute: 'gsPassword' 		value: gsPassword;
-		setAttribute: 'initials'				value: initials;
+		setAttribute: 'initials'			value: initials;
 		setAttribute: 'useSocket'		value: useSocket printString;
+		setAttribute: 'gemTask'		value: gemTask;
 		yourself.
 	doc setDocumentElement: root.
 	^doc xml.
@@ -206,6 +207,7 @@ initializeFromXML: aString
 	gsPassword	:= (element getAttribute: 'gsPassword'	) ifNil: [''].
 	initials		:= (element getAttribute: 'initials'		) ifNil: [''].
 	useSocket		:= (element getAttribute: 'useSocket') 	= 'true'.
+	gemTask 		:= (element getAttribute: 'gemTask'		) ifNil: [''].
 !
 
 initials
