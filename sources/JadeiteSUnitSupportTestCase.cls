@@ -223,6 +223,20 @@ test_commitWithSelections
 				self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_dontChangeTabs
+	| methodService |
+	self testsIssue: #issue405 withTitle: 'SUnit select class flips sunit pane in PB to the method'.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	methodService := self projectsPresenter methodListPresenter list
+				detect: [:svc | svc selector = #test1].
+	self projectsPresenter methodListPresenter selection: methodService.
+	self projectsPresenter selectSUnitTab.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
+	self assert: self projectsPresenter textAreaTabs currentCard
+				= (self projectsPresenter view viewNamed: 'sunit')!
+
 test_dontClearResults
 	self testsIssue: #issue410
 		withTitle: 'Selecting class in Project Browser changes test status icons in SUnit Browser'.
@@ -646,6 +660,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseSunitClass!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_commitNoSelections!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_commitWithSelections!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_dontChangeTabs!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_dontClearResults!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_inheritedTests!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectClasses!public!tests! !
