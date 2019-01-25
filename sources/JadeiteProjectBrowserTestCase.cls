@@ -2784,7 +2784,7 @@ test_tabNames_projectsBrowserNotLost
 	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
 	self selectServicesNamed: (Array with: 'RowanAnsweringService') in: self classListPresenter.
 	self assert: (projectTabs at: index) arrangement equals: index printString , ' Rowan-Services-Core'.
-	self selectCategoryNamed: 'commands'.
+	self selectCategoryNamed: 'client commands'.
 	self assert: (projectTabs at: index) arrangement equals: index printString , ' Rowan-Services-Core'.	"no change. this was a bug"
 	index := 1.
 	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1-Core'	"not affected by other tab"!

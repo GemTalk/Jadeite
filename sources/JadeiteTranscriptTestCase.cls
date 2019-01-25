@@ -49,6 +49,64 @@ test_abortTransaction
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded!
 
+test_autoCommitOff
+	| answeringService |
+	self testsIssue: #issue396 withTitle: 'Ability to turn on autocommit would be nice'.
+	transcript autoCommit: false.
+	session executeString: 'UserGlobals at: #TestCommit put: true'.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	self abortTransaction.
+	self assertIsNil: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	"any service call will commit the transaction"
+	session executeString: 'UserGlobals at: #TestCommit put: true'.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	answeringService := RowanAnsweringService new.
+	answeringService
+		command: #exec:;
+		commandArgs: (Array with: '3+4').
+	self issueCommand: answeringService.
+	self assert: answeringService answer equals: '7'.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	self abortTransaction.
+	self assertIsNil: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]')	"autoCommit off. TestCommit was not committed"!
+
+test_autoCommitOn
+	| answeringService |
+	self testsIssue: #issue396 withTitle: 'Ability to turn on autocommit would be nice'.
+	
+	[transcript autoCommit: true.
+	session executeString: 'UserGlobals at: #TestCommit put: true'.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	self abortTransaction.
+	self assertIsNil: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	"any service call will commit the transaction"
+	session executeString: 'UserGlobals at: #TestCommit put: true'.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	answeringService := RowanAnsweringService new.
+	answeringService
+		command: #exec:;
+		commandArgs: (Array with: '3+4').
+	self issueCommand: answeringService.
+	self assert: answeringService answer equals: '7'.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	self abortTransaction.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]')	"TestCommit was committed"]
+			ensure: 
+				[session executeString: 'UserGlobals removeKey: #TestCommit'.
+				self commitTransaction.
+				transcript autoCommit: false]!
+
+test_autoCommitSet
+	self testsIssue: #issue396 withTitle: 'Ability to turn on autocommit would be nice'.
+	transcript autoCommit: false.
+	self assert: (session executeString: 'SessionTemps current at: #''Jadeite_AutoCommit''')
+		equals: false.
+	transcript autoCommit: true.
+	
+	[self assert: (session executeString: 'SessionTemps current at: #''Jadeite_AutoCommit''')
+		equals: true]
+			ensure: [transcript autoCommit: false]!
+
 test_browseClassMenuItem
 	| browseMenu browseClassItem |
 	self testsIssue: #issue235 withTitle: 'Need Find Class/Method from console'.
@@ -225,6 +283,9 @@ test_transcriptNamedConsole
 			ensure: [wasInstalled ifFalse: [transcript flipTranscript	"turn back off"]]! !
 !JadeiteTranscriptTestCase categoriesFor: #test_abortRemovesProjectsInAllBrowsers!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_abortTransaction!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_autoCommitOff!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_autoCommitOn!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_autoCommitSet!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseClassMenuItem!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseFindClassMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseImplementors!public!tests! !

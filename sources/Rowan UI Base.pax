@@ -636,7 +636,7 @@ JadeDebugger subclass: #RowanDebugger
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggerClass semaphore'!
 JadeTranscript subclass: #JadeiteTranscript
-	instanceVariableNames: 'projectListPresenter isTranscriptInstalled'
+	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

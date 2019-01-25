@@ -17,6 +17,11 @@ answer
 answer: anObject
 	answer := anObject!
 
+flipAutoCommitFor: session
+	command := #flipAutoCommit.
+	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	^answer!
+
 flipTranscriptIn: session
 	command := #flipTranscript.
 	BrowserUpdate current issueCommand: (Array with: self) session: session!
@@ -28,10 +33,18 @@ isAnsweringService
 isTranscriptInstalledIn: session
 	command := #transcriptInstalled.
 	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	^answer!
+
+setAutoCommit: boolean for: session
+	command := #setAutoCommit:. 
+	commandArgs := Array with: boolean. 
+	BrowserUpdate current issueCommand: (Array with: self) session: session.
 	^answer! !
 !RowanAnsweringService categoriesFor: #answer!accessing!private! !
 !RowanAnsweringService categoriesFor: #answer:!accessing!private! !
+!RowanAnsweringService categoriesFor: #flipAutoCommitFor:!commands!public! !
 !RowanAnsweringService categoriesFor: #flipTranscriptIn:!commands!public! !
 !RowanAnsweringService categoriesFor: #isAnsweringService!public!testing! !
 !RowanAnsweringService categoriesFor: #isTranscriptInstalledIn:!commands!public! !
+!RowanAnsweringService categoriesFor: #setAutoCommit:for:!commands!public! !
 

@@ -373,6 +373,7 @@ setUp
 	super setUp.
 	session := JadeiteTestResource current session.
 	transcript := JadeiteTestResource current transcript.
+	transcript autoCommit: false.
 	self ensureRowanSample1Loaded. !
 
 testsIssue: aSymbol withTitle: anObject
