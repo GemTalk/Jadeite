@@ -1520,6 +1520,10 @@ selectClassNamed: className
 		ifTrue: [self selectClassInClassListNamed: className]
 		ifFalse: [self selectClassInClassHierarchyNamed: className]!
 
+selectClassTab
+
+	instanceClassTabs lastCard!
+
 selectCommentTab
 	self selectSourceTabNamed: 'classDocumentation'!
 
@@ -2108,6 +2112,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassInClassListNamed:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassListTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassNamed:!private!selection! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #selectClassTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectCommentTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedClass!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedClasses!private!selection! !

@@ -1672,6 +1672,7 @@ openProjectBrowserOn: classService selector: selector
 	| shell |
 	shell := JadeiteProjectsSystemBrowser showOnSession: gciSession.
 	shell currentCard updateAfterFindClass: classService.
+	classService meta ifTrue: [shell currentCard selectClassTab].
 	shell currentCard findMethod: selector.
 	^shell!
 

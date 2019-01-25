@@ -72,6 +72,32 @@ tearDown
 			[methodListBrowser destroy.
 			methodListBrowser := nil]!
 
+test_doubleClickActionClassMethod
+	self testsIssue: #issue403
+		withTitle: 'Double click in method browser change class to show instance methods'.
+	methodListBrowser := JadePresenter browseImplementorsOf: #bar session: session.
+	self assert: self methodListMethodListPresenter list size equals: 1.
+	self assert: self methodListMethodListPresenter selection meta.
+	projectsBrowser := methodListBrowser primaryPresenter methodListPresenter browseClass.
+	
+	[self assert: self classListPresenter selection meta.
+	self assert: self projectsPresenter isClassSideSelected.
+	self assert: self methodListPresenter selection selector equals: #bar]
+			ensure: [projectsBrowser destroy]!
+
+test_doubleClickActionInstanceMethod
+	self testsIssue: #issue403
+		withTitle: 'Double click in method browser change class to show instance methods'.
+	methodListBrowser := JadePresenter browseImplementorsOf: #foo session: session.
+	self assert: self methodListMethodListPresenter list size equals: 1.
+	self deny: self methodListMethodListPresenter selection meta.
+	projectsBrowser := methodListBrowser primaryPresenter methodListPresenter browseClass.
+	
+	[self deny: self classListPresenter selection meta.
+	self deny: self projectsPresenter isClassSideSelected.
+	self assert: self methodListPresenter selection selector equals: #foo]
+			ensure: [projectsBrowser destroy]!
+
 test_methodBrowserSaveMethod
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
 	
@@ -251,6 +277,8 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #saveMethod:in:category:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectListAt:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionClassMethod!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionInstanceMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_methodBrowserSaveMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodInProjectBrowser!public!tests! !

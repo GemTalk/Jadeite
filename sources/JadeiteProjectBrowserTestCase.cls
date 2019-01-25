@@ -248,11 +248,6 @@ tearDown
 			[secondBrowser destroy.
 			secondBrowser := nil]!
 
-test_abortRemovesProjectsInAllBrowsers
-	
-	self projectsPresenter abortTransaction. 
-!
-
 test_abstractTestsShown
 	| commandQuery methodService |
 	self testsIssue: #issue336
@@ -493,12 +488,12 @@ test_changeListSortOrder
 	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch typeString])
 		equals: #('Removal' 'Modification' 'Addition' 'Addition' 'Addition' 'Addition') asOrderedCollection.
 	changesBrowser operationListPresenter view columnClicked: 2.	"ascending class name"
-	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch className])
-		equals: #('RowanSample1' 'RowanSample1' 'RowanSample1' 'RowanSample1Test' 'rwSubclass:' 'rwSubclass:')
+	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch className]) 
+		equals: #('DirtyProject1' 'DirtyProject2' 'RowanSample1' 'RowanSample1' 'RowanSample1' 'RowanSample1Test')
 				asOrderedCollection.
 	changesBrowser operationListPresenter view columnClicked: 2.	"descending class name"
-	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch className])
-		equals: #('rwSubclass:' 'rwSubclass:' 'RowanSample1Test' 'RowanSample1' 'RowanSample1' 'RowanSample1')
+	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch className]) 
+		equals: #('RowanSample1Test' 'RowanSample1' 'RowanSample1' 'RowanSample1' 'DirtyProject2' 'DirtyProject1')
 				asOrderedCollection.
 	changesBrowser operationListPresenter view columnClicked: 3.	"ascending selector"
 	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch selector])
@@ -3226,7 +3221,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #selectTreeServicesNamed:in:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteProjectBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_abortRemovesProjectsInAllBrowsers!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abstractTestsShown!public!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_acceptDefinedMethodInExtensionClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addDuplicatePackage!public!tests! !

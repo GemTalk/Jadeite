@@ -19,6 +19,7 @@ basicRemoveMethods
 browseClass
 	| classService selector |
 	classService := RowanClassService new name: methodListPresenter selection className.
+	classService meta: methodListPresenter selection meta. 
 	BrowserUpdate current updateService: classService session: gciSession.
 	selector := methodListPresenter selection selector.
 	^Cursor wait showWhile: 
@@ -82,7 +83,7 @@ selections
 
 	^methodListPresenter selections! !
 !JadeiteBasicMethodListPresenter categoriesFor: #basicRemoveMethods!private! !
-!JadeiteBasicMethodListPresenter categoriesFor: #browseClass!public! !
+!JadeiteBasicMethodListPresenter categoriesFor: #browseClass!menu handlers!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #browseHierarchyImplementors!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #browseHierarchySenders!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #methodListPresenter!accessing!public! !
