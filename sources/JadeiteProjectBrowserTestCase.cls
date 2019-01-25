@@ -161,9 +161,6 @@ rowanProjectNames
 
 	^#('Cypress' 'Rowan' 'STON' 'Tonel')!
 
-saveClass: className withInstVars: instVars package: aString
-	self saveClass: className superclass: 'Object' instVars: instVars package: aString!
-
 saveHooMethod
 
 	| source |
@@ -3216,7 +3213,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #projectNamed:!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #queryCommand:inPresenter:view:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #rowanProjectNames!constants!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #saveClass:withInstVars:package:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveHooMethod!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUnimplementedSelector!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUniqueString!private! !

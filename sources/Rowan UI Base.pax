@@ -3425,7 +3425,7 @@ initialize: aStream
 	definition := (aStream upTo: Character lf) copyReplaceAll: Character cr asString
 				with: Character cr asString , Character lf asString.
 	className := (definition subStrings includes: 'rwSubclass:')
-				ifTrue: [(definition subStrings at: 3) copyWithoutAll: #($')]
+				ifTrue: [(definition subStrings fourth) copyWithoutAll: #($')]
 				ifFalse: 
 					[i := definition indexOf: $#.
 					j := definition indexOf: Character cr.
@@ -3450,7 +3450,8 @@ browseChangedThing
 				MessageBox notify: 'The change you have selected cannot be browsed'].
 	shell currentCard
 		updateAfterFindClass: classService;
-		findMethod: selection selector asSymbol!
+		findMethod: selection selector asSymbol.
+	^shell!
 
 operationSelected
 

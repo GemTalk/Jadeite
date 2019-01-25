@@ -105,14 +105,6 @@ openDebuggerOn: aString
 		yourself.
 !
 
-saveMethod: source in: className category: category
-	| classService |
-	classService := RowanClassService named: className.
-	classService
-		saveMethod: source
-		category: category
-		session: session!
-
 saveMethodWithHalt
 	| source |
 	source := 'sampleMethodWithHalt
@@ -887,7 +879,6 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #menuItemIsEnabled:!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #methodListBrowser!private! !
 !JadeiteDebuggerTestCase categoriesFor: #openDebuggerOn:!private! !
-!JadeiteDebuggerTestCase categoriesFor: #saveMethod:in:category:!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #saveMethodWithHalt!private! !
 !JadeiteDebuggerTestCase categoriesFor: #selectFrameAt:!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #setUp!private!setup teardown! !

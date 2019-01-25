@@ -11,7 +11,6 @@ MCClassDefinition comment: ''!
 !MCClassDefinition methodsFor!
 
 className
-
 	^className.
 !
 

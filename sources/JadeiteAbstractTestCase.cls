@@ -198,6 +198,9 @@ saveClass: className superclass: superName instVars: instVars package: aString
 	options: #()'.
 	self projectsPresenter editSaveClass!
 
+saveClass: className withInstVars: instVars package: aString
+	self saveClass: className superclass: 'Object' instVars: instVars package: aString!
+
 saveInterestingLoopMethod
 	| source |
 	source := self methodSourceForTest.
@@ -252,6 +255,14 @@ saveIssue216Method
 	self selectCategoriesNamed: (Array with: 'accessing'). 
 	self methodSourcePresenter value: source.
 	self projectsPresenter editSaveMethod: self classListPresenter selection!
+
+saveMethod: source in: className category: category
+	| classService |
+	classService := RowanClassService named: className.
+	classService
+		saveMethod: source
+		category: category
+		session: session!
 
 saveSampleMethod
 
@@ -436,10 +447,12 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #sampleClassName!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #sampleProjectName!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveClass:superclass:instVars:package:!private! !
+!JadeiteAbstractTestCase categoriesFor: #saveClass:withInstVars:package:!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveInterestingLoopMethod!browser support!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveIssue166Method!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveIssue169Method!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveIssue216Method!issue test support!private! !
+!JadeiteAbstractTestCase categoriesFor: #saveMethod:in:category:!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #saveSampleMethod!private! !
 !JadeiteAbstractTestCase categoriesFor: #selectCategoriesNamed:!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectCategoryNamed:!private!project browser support!selection! !
