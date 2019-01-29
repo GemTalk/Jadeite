@@ -61,6 +61,7 @@ basicAddMethodCategory: string
 			[service := self selectedClass
 						command: #addCategory:;
 						commandArgs: (Array with: string).
+			service meta: self isClassSideSelected. 
 			self issueCommand: (Array with: service)].
 	self selectCategoriesNamed: (Array with: string)!
 
@@ -1359,18 +1360,12 @@ refreshFromServerAfterAbort: browserService
 		ifNotNil: [browserService projectsUpdate: projectListPresenter]!
 
 refreshMethodsOn: presenter
-	| classService classPresenter |
-	classPresenter := self isClassListTabSelected
-				ifTrue: [classListPresenter]
-				ifFalse: [classHierarchyPresenter].
-	classService := classPresenter selectionOrNil ifNil: [^self].
+	| classService |
+	classService := self selectedClass ifNil:[^self].
+	classService meta: self isClassSideSelected. 
 	self isCategoryTabSelected
 		ifTrue: [classService filters: categoryListPresenter selections]
 		ifFalse: [classService filters: variableListPresenter selections].
-	classService methods isNil
-		ifTrue: 
-			["if we got an error recently, could be nil"
-			self updateServices: (Array with: classService)].
 	classService displayMethodsOn: presenter browser: self!
 
 registerClassData

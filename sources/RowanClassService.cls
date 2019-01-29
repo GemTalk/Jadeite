@@ -80,13 +80,14 @@ classHierarchyUpdate: presenter browser: browser
 				addHierarchyService: classService
 				to: treeModel
 				withParent: parent].
+	presenter model asArray = treeModel asArray ifTrue:[^self].  "no need for update"
 	treeModel asBag
 		do: [:classService | classService selectedPackageServices: browser packageListPresenter selections].
 	presenter model: treeModel.
 	presenter view expandAll!
 
 classMethodsUpdate: presenter browser: browser
-	browser selectedClass name asString = name asString ifFalse: [^self].
+	browser selectedClass = self ifFalse: [^self].
 	meta = browser isClassSideSelected ifFalse:[^self].
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	self displayMethodsOn: presenter browser: browser!
@@ -305,6 +306,11 @@ shouldColorAsExtension
 		ifTrue: [false]
 		ifFalse: [(self selectedPackageNames includes: definedPackageName) not]!
 
+shouldReplicateInstVarAtIndex: index newService: newService
+	(self class indexOfInstVar: 'meta') = index ifTrue: [^false].
+	(self class indexOfInstVar: 'methods') = index ifTrue: [newService meta = meta ifFalse: [^false]].
+	^true!
+
 stonOn: stonWriter
 	| instanceVariableNames |
 	(instanceVariableNames := self class allInstVarNames
@@ -367,7 +373,7 @@ updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
 	should in another browser that isn't in the displayed hierarchy but exists in the full 
 	hierarchy should not"
 
-	| classNode superclassService selections selectedPackageNames |
+	| classNode superclassService selectedPackageNames |
 	classNode := classHierarchyPresenter model getNodeFor: self ifAbsent: [isNewClass ifFalse: [^self]].
 	superclassService := classHierarchyPresenter model asBag
 				detect: [:classService | classService name = superclassName]
@@ -467,6 +473,7 @@ visibleTests
 !RowanClassService categoriesFor: #selectedPackageServices!accessing!private! !
 !RowanClassService categoriesFor: #selectedPackageServices:!accessing!private! !
 !RowanClassService categoriesFor: #shouldColorAsExtension!public!testing! !
+!RowanClassService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
 !RowanClassService categoriesFor: #stonOn:!must not strip!public!ston! !
 !RowanClassService categoriesFor: #sunitMethodsUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #template!accessing!private! !

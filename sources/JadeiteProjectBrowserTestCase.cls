@@ -2432,6 +2432,41 @@ test_selectMultipleProjects
 	self selectServicesNamed: self rowanProjectNames in: self projectListPresenter.
 	self assert: self projectListPresenter selections size = 4!
 
+test_separationOfClassAndInstance
+	self testsIssue: #issue418
+		withTitle: 'Navigating and category creation in class hiearchy view can''t keep class side/instance side straight'.
+	self selectRowanSample1Test.
+	self selectHierarchyTab.	"on instance/hierarchy"
+	self assertLinearAncestry: #('Object' 'TestAsserter' 'TestCase' 'RowanSample1Test')
+		in: self classHierarchyPresenter.
+	self openSecondBrowser.
+	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: secondPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: secondPresenter classListPresenter.
+	self selectHierarchyTabIn: secondPresenter.
+	self assertLinearAncestry: #('Object' 'TestAsserter' 'TestCase' 'RowanSample1Test')
+		in: secondPresenter classHierarchyPresenter.
+	self selectClassTabIn: secondPresenter.
+	self assertLinearAncestry: #('Object' 'TestAsserter' 'TestCase' 'RowanSample1Test')
+		in: secondPresenter classHierarchyPresenter.
+	self assertLinearAncestry: #('Object' 'TestAsserter' 'TestCase' 'RowanSample1Test')
+		in: self classHierarchyPresenter.
+	secondPresenter basicAddMethodCategory: 'tests'.
+	self assert: secondPresenter methodListPresenter list isEmpty.
+	self assert: self methodListPresenter list notEmpty. 
+	self projectsPresenter selectCategoryNamed: 'tests'.	"select category in instance"
+	self assert: self methodListPresenter list notEmpty.
+	self assert: self methodListPresenter list first selector equals: #test1.
+	self selectInstanceTabIn: secondPresenter.
+	self assert: self methodListPresenter list notEmpty.
+	self assert: self methodListPresenter list first selector equals: #test1.
+	self assert: secondPresenter methodListPresenter list notEmpty.
+	self assert: secondPresenter methodListPresenter list first selector equals: #test1.
+	self selectClassTab.
+	self assert: self methodListPresenter list isEmpty.
+	self assert: secondPresenter methodListPresenter list notEmpty.
+	self assert: secondPresenter methodListPresenter list first selector equals: #test1!
+
 test_setAndClearBreakpoint
 	" at least set breakpoints in the projects browser and method list browser for now"
 
@@ -2948,6 +2983,45 @@ test_twoBrowsersAddedClassRearrangesItselfInHierarchy
 	family at: 'TestClass' put: Array new.
 	self assertAncestry: family in: secondPresenter classHierarchyPresenter!
 
+test_twoBrowsersAddSameCategoryToClassAndInstance
+	self testsIssue: #issue418
+		withTitle: 'Navigating and category creation in class hiearchy view can''t keep class side/instance side straight'.
+	self selectRowanSample1Test.
+	self selectHierarchyTab.	"on instance/hierarchy"
+	self openSecondBrowser.
+	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: secondPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: secondPresenter classListPresenter. 
+	self selectHierarchyTabIn: secondPresenter.
+	self selectClassTab.	"second browser on class/hierarchy"
+	self deny: (self projectsPresenter categoryListPresenter list includes: 'fnoodle').
+	self deny: (secondPresenter categoryListPresenter list includes: 'fnoodle').
+	self projectsPresenter basicAddMethodCategory: 'fnoodle'.
+	self assert: self projectsPresenter categoryListPresenter selection equals: 'fnoodle'.
+	self deny: (secondPresenter categoryListPresenter list includes: 'fnoodle').
+	secondPresenter basicAddMethodCategory: 'fnoodle'.
+	self assert: secondPresenter categoryListPresenter selection equals: 'fnoodle'.
+	self assert: (self categoryListPresenter list includes: 'fnoodle')!
+
+test_twoBrowsersDontClearMethodList
+	self testsIssue: #issue418
+		withTitle: 'Navigating and category creation in class hiearchy view can''t keep class side/instance side straight'.
+	self selectRowanSample1Test.
+	self selectHierarchyTab.
+	self assert: self classHierarchyPresenter selection name equals: 'RowanSample1Test'.
+	self assert: self methodListPresenter list first selector equals: #test1.
+	self openSecondBrowser.
+	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: secondPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: secondPresenter classListPresenter.
+	self assert: secondPresenter classListPresenter selection name equals: 'RowanSample1Test'.
+	self selectHierarchyTabIn: secondPresenter.
+	self assert: self classHierarchyPresenter selection name equals: 'RowanSample1Test'.
+	self assert: self methodListPresenter list first selector equals: #test1.
+	self deny: self methodListPresenter list isEmpty.
+	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1Test'.
+	self assert: secondPresenter methodListPresenter list first selector equals: #test1.!
+
 test_twoBrowsersNoUpdateWithoutPackageSelection
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
@@ -3327,6 +3401,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultiplePackages!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultipleProjects!public!test projects! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_separationOfClassAndInstance!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_setAndClearBreakpoint!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_simpleHierarchyTest!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_stepPoint1!public!test step points! !
@@ -3350,6 +3425,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassAppearsInHierarchy2!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassDoesNotAppearInDifferentHierarchy!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassRearrangesItselfInHierarchy!public!test two browsers! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddSameCategoryToClassAndInstance!public!test two browsers! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersDontClearMethodList!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersNoUpdateWithoutPackageSelection!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersRemoveMethod!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdate!public!test two browsers! !
