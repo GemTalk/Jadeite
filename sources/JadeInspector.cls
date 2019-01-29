@@ -34,8 +34,8 @@ createView: string
 	(model isKindOf: ExternalInteger) ifTrue: [self registerWindow: newView handle rootObject: model].
 	^newView!
 
-inspectInstVar
-
+inspectInstVar	
+self halt. 
 	JadeInspector 
 		showOn: instVarListPresenter selection value 
 		session: gciSession.
@@ -58,35 +58,11 @@ maxPrintStringSize
 model: anObject
 	"often a GsObject, but could be an Integer, String, etc."
 
-	model := anObject.
-	codePane model: anObject.
-!
-
-selectedInstVar
-	| string |
-	instVarListPresenter selection key = 'self'
-		ifTrue: 
-			[string := instVarListPresenter selection value.
-			documentPresenter value: string.
-			^self].
-	instVarListPresenter selection key = '-.asOop'
-		ifTrue: 
-			[documentPresenter value: instVarListPresenter selection value.
-			^self].
-	string := 
-			[gciSession
-				serverPerform: #printStringOf:to:
-				with: instVarListPresenter selection value
-				with: self maxPrintStringSize]
-					on: GsRuntimeError
-					do: 
-						[:ex |
-						ex errorReport number == 2106
-							ifTrue: 
-								["Forward reference error"
-								ex return: 'an invalid or hidden object (perhaps a LargeObjectNode)'].
-						ex pass].
-	documentPresenter value: string! !
+	| object |
+	object := (anObject isKindOf: String) ifTrue: [anObject replaceLfWithCrLf] ifFalse: [anObject].
+	(anObject isKindOf: Symbol) ifTrue: [object := object asSymbol].
+	model := object.
+	codePane model: object! !
 !JadeInspector categoriesFor: #contextObject!private! !
 !JadeInspector categoriesFor: #createComponents!accessing!private! !
 !JadeInspector categoriesFor: #createSchematicWiring!accessing!private! !
@@ -97,7 +73,6 @@ selectedInstVar
 !JadeInspector categoriesFor: #isModified!private! !
 !JadeInspector categoriesFor: #maxPrintStringSize!private! !
 !JadeInspector categoriesFor: #model:!private! !
-!JadeInspector categoriesFor: #selectedInstVar!accessing!private! !
 
 !JadeInspector class methodsFor!
 
@@ -117,22 +92,15 @@ setNormalInspector
 	self setDefaultInspectorClass: JadeInspector!
 
 showOn: anObject session: aGciSession
-
 	| class view |
-	(anObject isKindOf: ExternalInteger) ifTrue: [	"OopType"
-		class := self defaultInspectorClass.
-		view := self defaultView.
-	] ifFalse: [	"Special object (Boolean, SmallInteger, Character, etc."
-		class := JadeInspector.
-		view := 'Special view'.
-	].
-	^class new 
+	class := self defaultInspectorClass.
+	view := self defaultView.
+	^class new
 		gciSession: aGciSession;
 		model: anObject;
 		createView: view;
 		showShell;
-		yourself.
-! !
+		yourself! !
 !JadeInspector class categoriesFor: #defaultInspectorClass!public! !
 !JadeInspector class categoriesFor: #setDefaultInspectorClass:!public! !
 !JadeInspector class categoriesFor: #setNormalInspector!public! !

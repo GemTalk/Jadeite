@@ -29,7 +29,7 @@ inspectInstVarAt: index
 	inspector inspectInstVar. !
 
 tearDown
-	inspector ifNotNil: [inspector view close]!
+	inspector ifNotNil: [inspector view destroy]!
 
 test_abortTransactionInBasicInspector
 	"foolishly or wisely, Dolphin runs different code paths
@@ -282,7 +282,7 @@ test_inspectString
 				executeString: '''abc'''
 				fromContext: nil
 				environment: 0.
-	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector := JadeNavigationInspector  showOn: remoteObject session: session.
 	self assert: (inspector isKindOf: JadeInspector).
 	self assert: inspector model = 'abc' !
 
@@ -381,6 +381,95 @@ test_openDictionaryBrowserOnClass
 	shell := inspector browseClass.
 	[self assert: (shell isKindOf: RowanSystemBrowser)] ensure: [shell destroy]!
 
+test_openNavigationInspectorOnBoolean
+	| remoteObject |
+	self testsIssue: #issue398 withTitle: 'String Inspectors don''t display lfs'.
+	remoteObject := session
+				executeString: 'true'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	
+	[self assert: (inspector isKindOf: JadeNavigationInspector).
+	self assert: inspector documentPresenter model value equals: 'true'.
+	inspector instVarListPresenter selectionByIndex: 2. "asOop"
+	self assert: inspector documentPresenter model value equals: '268'.]
+			ensure: [inspector destroy].
+	remoteObject := session
+				executeString: 'false'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: (inspector isKindOf: JadeNavigationInspector).
+	self assert: inspector documentPresenter model value equals: 'false'.
+	inspector instVarListPresenter selectionByIndex: 2. "asOop"
+	self assert: inspector documentPresenter model value equals: '12'.!
+
+test_openNavigationInspectorOnCharacter
+	| remoteObject |
+	self testsIssue: #issue398 withTitle: 'String Inspectors don''t display lfs'.
+	remoteObject := session
+				executeString: '$c'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: (inspector isKindOf: JadeNavigationInspector).
+	self assert: inspector documentPresenter model value equals: '$c'.
+	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
+	self assert: inspector documentPresenter model value equals: '25372'!
+
+test_openNavigationInspectorOnFloat
+	| remoteObject |
+	self testsIssue: #issue398 withTitle: 'String Inspectors don''t display lfs'.
+	remoteObject := session
+				executeString: '123.345'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: (inspector isKindOf: JadeNavigationInspector).
+	self assert: inspector documentPresenter model value equals: '123.345'.
+	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
+	self assert: inspector documentPresenter model value equals: '9650476537015991014'!
+
+test_openNavigationInspectorOnNil
+	| remoteObject |
+	self testsIssue: #issue398 withTitle: 'String Inspectors don''t display lfs'.
+	remoteObject := session
+				executeString: 'nil'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: (inspector isKindOf: JadeNavigationInspector).
+	self assert: inspector documentPresenter model value equals: 'nil'.
+	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
+	self assert: inspector documentPresenter model value equals: '20'!
+
+test_openNavigationInspectorOnSmallInteger
+	| remoteObject |
+	self testsIssue: #issue398 withTitle: 'String Inspectors don''t display lfs'.
+	remoteObject := session
+				executeString: '123'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: (inspector isKindOf: JadeNavigationInspector).
+	self assert: inspector documentPresenter model value equals: '123'.
+	inspector instVarListPresenter selectionByIndex: 2. "asOop"
+	self assert: inspector documentPresenter model value equals: '986'.!
+
+test_openNavigationInspectorOnSymbol
+	| remoteObject |
+	self testsIssue: #issue398 withTitle: 'String Inspectors don''t display lfs'.
+	remoteObject := session
+				executeString: '#abc'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: (inspector isKindOf: JadeNavigationInspector).
+	self assert: inspector documentPresenter model value equals: '#abc'.
+	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
+	self assert: inspector documentPresenter model value equals: '14351873'!
+
 test_openProjectsBrowser
 	| remoteObject shell |
 	remoteObject := session
@@ -415,7 +504,38 @@ test_registeredPresentersInInspectorCleanedUp
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters.
 	inspector destroy.
 	inspector := nil.
-	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters! !
+	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
+
+test_showReturnsNavigationInspector
+	| remoteObject |
+	self testsIssue: #issue398 withTitle: 'String Inspectors don''t display lfs'.
+	remoteObject := session
+				executeString: 'Array with: ''abc
+def'''
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: (inspector isKindOf: JadeNavigationInspector).
+	self assert: inspector documentPresenter model value equals: 'anArray( ''abc
+def'')'  replaceCrLfWithLf.
+	inspector instVarListPresenter selectionByIndex: 3.	"first element of array"
+	self assert: inspector documentPresenter model value equals: '''abc
+def''' replaceCrLfWithLf!
+
+test_showReturnsStringInspector
+	| remoteObject |
+	self testsIssue: #issue398 withTitle: 'String Inspectors don''t display lfs'.
+	remoteObject := session
+				executeString: '''abc
+def'''
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: (inspector isKindOf: JadeInspector).
+	self assert: inspector model = 'abc
+def'.
+	self assert: inspector documentPresenter model value = '''abc
+def'''! !
 !JadeiteInspectorTestCase categoriesFor: #commandQueryOn:!private! !
 !JadeiteInspectorTestCase categoriesFor: #enableForward:andBack:!private! !
 !JadeiteInspectorTestCase categoriesFor: #inspectInstVarAt:!private! !
@@ -437,7 +557,15 @@ test_registeredPresentersInInspectorCleanedUp
 !JadeiteInspectorTestCase categoriesFor: #test_navigationInspectorDisplayedSizeLimit!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowser!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowserOnClass!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnBoolean!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnCharacter!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnFloat!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnNil!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnSmallInteger!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnSymbol!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowser!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowserOnClass!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_registeredPresentersInInspectorCleanedUp!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_showReturnsNavigationInspector!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_showReturnsStringInspector!public!tests! !
 

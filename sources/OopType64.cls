@@ -122,7 +122,6 @@ objectInfo: anObject
 	objectInfo := anObject!
 
 printOn: aStream
-
 	aStream nextPutAll: 'Oop(' , self value printString , ')'.
 !
 

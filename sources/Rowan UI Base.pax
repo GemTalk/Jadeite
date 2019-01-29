@@ -106,9 +106,11 @@ package methodNames
 	add: #JadeImageStripper -> #requiredClasses;
 	add: #JadeImageStripper -> #requiredPackageNames;
 	add: #JadeInspector -> #displayObject;
+	add: #JadeInspector -> #displaySpecials;
 	add: #JadeInspector -> #onViewClosed;
 	add: #JadeInspector -> #onViewOpened;
 	add: #JadeInspector -> #saveDocument;
+	add: #JadeInspector -> #selectedInstVar;
 	add: #JadeInspector -> #setDocumentPresenterLabel;
 	add: #JadeInspector -> #setLastGsShape:;
 	add: #JadeInspector -> #shellName;
@@ -1165,10 +1167,9 @@ requiredPackageNames
 
 displayObject
 	| result stream theClassName oop size instVarNames |
-	(model isKindOf: ExternalInteger)
-		ifFalse: 
-			[className := model class name.
-			documentPresenter value: model. 
+	((model isKindOf: Character) or: [(model isKindOf: Float) or: [model isKindOf: Symbol]])
+		ifTrue: 
+			[instVarNames := self displaySpecials.
 			^self].
 	result := gciSession serverPerform: #inspect: with: model.
 	(result isKindOf: ByteArray) ifTrue: [result := result asString].
@@ -1194,6 +1195,17 @@ displayObject
 		yourself.
 	className := theClassName!
 
+displaySpecials
+	| instVarNames |
+	className := model class name.
+	documentPresenter value: model.
+	instVarNames := OrderedCollection with: 'self' -> model printString.
+	instVarNames add: '-.asOop' -> (gciSession executeString: model printString , ' asOop printString').
+	instVarListPresenter
+		list: instVarNames;
+		selection: instVarNames first.
+	^instVarNames!
+
 onViewClosed
 	self gciSession isValidSession
 		ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: self gciSession].
@@ -1207,6 +1219,35 @@ onViewOpened
 saveDocument
 	self rowanFixMe. "this would be very handy"
 	MessageBox notify: 'This feature not yet implemented'!
+
+selectedInstVar
+	| string |
+	instVarListPresenter selection key = 'self'
+		ifTrue: 
+			[string := instVarListPresenter selection value.
+			documentPresenter value: string.
+			^self].
+	instVarListPresenter selection key = '-.asOop'
+		ifTrue: 
+			[documentPresenter value: instVarListPresenter selection value.
+			^self].
+	string := 
+			[| answeringService |
+			answeringService := RowanAnsweringService new.
+			answeringService
+				command: #printStringOf:toMaxSize:;
+				commandArgs: (Array with: instVarListPresenter selection value value with: self maxPrintStringSize).
+			self issueCommand: (Array with: answeringService).
+			answeringService answer]
+					on: GsRuntimeError
+					do: 
+						[:ex | 
+						ex errorReport number == 2106
+							ifTrue: 
+								["Forward reference error"
+								ex return: 'an invalid or hidden object (perhaps a LargeObjectNode)'].
+						ex pass].
+	documentPresenter value: string!
 
 setDocumentPresenterLabel
 	(model isKindOf: String) ifTrue: [
@@ -1266,9 +1307,11 @@ shellNameExtraInfo
 updateCaption
 	self caption: (gciSession titleBarFor: self shellName).! !
 !JadeInspector categoriesFor: #displayObject!accessing!private! !
+!JadeInspector categoriesFor: #displaySpecials!accessing!private! !
 !JadeInspector categoriesFor: #onViewClosed!event handling!public! !
 !JadeInspector categoriesFor: #onViewOpened!event handling!private! !
 !JadeInspector categoriesFor: #saveDocument!menu handlers!public! !
+!JadeInspector categoriesFor: #selectedInstVar!accessing!private! !
 !JadeInspector categoriesFor: #setDocumentPresenterLabel!displaying!private! !
 !JadeInspector categoriesFor: #setLastGsShape:!accessing!private! !
 !JadeInspector categoriesFor: #shellName!displaying!private! !
