@@ -68,12 +68,15 @@ test_autoCommitOff
 	self assert: answeringService answer equals: '7'.
 	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
 	self abortTransaction.
-	self assertIsNil: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]')	"autoCommit off. TestCommit was not committed"!
+	
+	[self assertIsNil: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]')	"autoCommit off. TestCommit was not committed"]
+			ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
 
 test_autoCommitOn
 	| answeringService |
 	self testsIssue: #issue396 withTitle: 'Ability to turn on autocommit would be nice'.
-	
 	[transcript autoCommit: true.
 	session executeString: 'UserGlobals at: #TestCommit put: true'.
 	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
