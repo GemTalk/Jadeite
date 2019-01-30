@@ -67,7 +67,8 @@ setUp
 	super setUp.
 	session := GciSession current.
 	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: [].
-	self cloneRowanSample1.!
+	self unloadSampleProject.
+	self cloneRowanSample1!
 
 tearDown
 	super tearDown.
@@ -82,7 +83,13 @@ tearDown
 
 transcript
 
-	^transcript! !
+	^transcript!
+
+unloadSampleProject
+	transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName). 
+	session commit.
+
+! !
 !JadeiteTestResource categoriesFor: #cloneRowanSample1!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #isAvailable!public!testing! !
 !JadeiteTestResource categoriesFor: #openProjectsBrowser!private!setup teardown! !
@@ -96,6 +103,7 @@ transcript
 !JadeiteTestResource categoriesFor: #setUp!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #transcript!accessing!public! !
+!JadeiteTestResource categoriesFor: #unloadSampleProject!private!setup teardown! !
 
 !JadeiteTestResource class methodsFor!
 
