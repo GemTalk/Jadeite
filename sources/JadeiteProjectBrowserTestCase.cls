@@ -1081,7 +1081,7 @@ test_duplicateInstVarsInHierarchy
 	self projectsPresenter classDefinitionPresenter view isModified: false. !
 
 test_exitJadeiteInvalidSession
-	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector |
+	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector log |
 	"poison session and exit Jadeite. Make sure all Jadeite windows close"
 	self testsIssue: #issue267 withTitle: 'logout closes project browsers but not method list browsers'.
 	self selectRowanSample1Class.
@@ -1091,6 +1091,7 @@ test_exitJadeiteInvalidSession
 	sunitPresenter := transcript jadeBrowseTests.
 	workspace := projectsBrowser addWorkspace.
 	dictionaryBrowser := transcript openDictionaryBrowser.
+	log := self projectsPresenter projectLog. 
 	simpleInspector := JadeInspector showOn: (session
 						executeString: '123'
 						fromContext: nil
@@ -1108,6 +1109,7 @@ test_exitJadeiteInvalidSession
 	self assert: dictionaryBrowser isOpen.
 	self assert: simpleInspector isOpen.
 	self assert: complexInspector isOpen.
+	self assert: log isOpen. 
 	session beInvalidSession.
 	
 	[transcript exit.
@@ -1118,7 +1120,8 @@ test_exitJadeiteInvalidSession
 	self deny: workspace isOpen.
 	self deny: dictionaryBrowser isOpen.
 	self deny: simpleInspector isOpen.
-	self deny: complexInspector isOpen]
+	self deny: complexInspector isOpen.
+	self deny: log isOpen.]
 			ensure: 
 				[projectsBrowser := nil.
 				GciSession current: nil.
@@ -1130,7 +1133,7 @@ test_exitJadeiteInvalidSession
 							setUp]]!
 
 test_exitJadeiteValidSession
-	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector |
+	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector log |
 	"poison session and exit Jadeite. Make sure all Jadeite windows close"
 	self testsIssue: #issue267 withTitle: 'logout closes project browsers but not method list browsers'.
 	self selectRowanSample1Class.
@@ -1140,6 +1143,7 @@ test_exitJadeiteValidSession
 	sunitPresenter := transcript jadeBrowseTests.
 	workspace := projectsBrowser addWorkspace.
 	dictionaryBrowser := transcript openDictionaryBrowser.
+	log := self projectsPresenter projectLog. 
 	simpleInspector := JadeInspector showOn: (session
 						executeString: '123'
 						fromContext: nil
@@ -1157,6 +1161,7 @@ test_exitJadeiteValidSession
 	self assert: dictionaryBrowser isOpen.
 	self assert: simpleInspector isOpen.
 	self assert: complexInspector isOpen.
+	self assert: log isOpen. 
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #yes.
 	
@@ -1168,7 +1173,8 @@ test_exitJadeiteValidSession
 	self deny: workspace isOpen.
 	self deny: dictionaryBrowser isOpen.
 	self deny: simpleInspector isOpen.
-	self deny: complexInspector isOpen]
+	self deny: complexInspector isOpen.
+	self deny: log isOpen. ]
 			ensure: 
 				[projectsBrowser := nil.
 				GciSession current: nil.

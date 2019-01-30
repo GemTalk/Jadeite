@@ -125,9 +125,10 @@ isSkew
 isSkew: anObject
 	isSkew := anObject!
 
-newTextView
-	| edit |
-	Shell create view
+newTextView: session
+	| edit shell |
+	shell := JadeShell showOnSession: session.
+	shell view
 		layoutManager: BorderLayout new;
 		hasMaximize: false;
 		hasMinimize: false;
@@ -153,12 +154,12 @@ prepareForReplication
 	super prepareForReplication.
 	packages := nil.!
 
-projectLogUsing: presenter
+projectLogUsing: presenter session: session
 	| textEdit projectName queryService |
 	projectName := self name.
 	queryService := RowanQueryService command: #projectLog: withArgs: (Array with: projectName).
 	presenter issueCommand: (Array with: queryService).
-	textEdit := self newTextView.
+	textEdit := self newTextView: session.
 	textEdit topShell caption: (presenter gciSession titleBarFor: projectName , ' Project Log').
 	textEdit text: queryService queryResults!
 
@@ -230,10 +231,10 @@ sha: anObject
 !RowanProjectService categoriesFor: #isProjectService!public!testing! !
 !RowanProjectService categoriesFor: #isSkew!accessing!private! !
 !RowanProjectService categoriesFor: #isSkew:!accessing!private! !
-!RowanProjectService categoriesFor: #newTextView!displaying!private! !
+!RowanProjectService categoriesFor: #newTextView:!displaying!private! !
 !RowanProjectService categoriesFor: #packages!accessing!public! !
 !RowanProjectService categoriesFor: #prepareForReplication!public!replication! !
-!RowanProjectService categoriesFor: #projectLogUsing:!presenter support!public! !
+!RowanProjectService categoriesFor: #projectLogUsing:session:!presenter support!public! !
 !RowanProjectService categoriesFor: #projectPackagesUpdate:browser:!public!updating! !
 !RowanProjectService categoriesFor: #projectSelectionUpdate:!public!updating! !
 !RowanProjectService categoriesFor: #projectsUpdate:!public!updating! !

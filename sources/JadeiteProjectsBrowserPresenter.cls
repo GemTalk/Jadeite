@@ -1031,7 +1031,8 @@ projectListPresenter
 	^projectListPresenter!
 
 projectLog
-	projectListPresenter selection projectLogUsing: self!
+	projectListPresenter selection projectLogUsing: self session: gciSession
+!
 
 projectMenu
 	^Menu fromStrings: self projectMenuStrings!
