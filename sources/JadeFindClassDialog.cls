@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
-JadeValueDialog subclass: #JadeFindClassDialog
-	instanceVariableNames: 'classListPresenter nameEntryPresenter availableClasses'
+JadeFindDialog subclass: #JadeFindClassDialog
+	instanceVariableNames: 'classListPresenter availableClasses'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -14,15 +14,16 @@ createComponents
 
 	super createComponents.
 	classListPresenter 		:= self add: ListPresenter		new name: 'classList'.
-	nameEntryPresenter		:= self add: TextPresenter		new name: 'nameEntry'.
 !
 
 createSchematicWiring
 
 	super createSchematicWiring.
-	classListPresenter 		when: #actionPerformed send: #ok							to: self.
-	nameEntryPresenter		when: #valueChanged 	send: #updateClassList 	to: self.
+	classListPresenter 		when: #actionPerformed 	send: #ok			to: self.
 !
+
+initializeAvailable
+	^self model value asSortedCollection!
 
 ok
 
@@ -31,10 +32,9 @@ ok
 !
 
 onViewOpened
-	super onViewOpened.
 	availableClasses := self initializeAvailable.
 	self model value: nil.
-	nameEntryPresenter value: '*'!
+	super onViewOpened.!
 
 updateClassList 
 
@@ -47,6 +47,7 @@ updateClassList
 ! !
 !JadeFindClassDialog categoriesFor: #createComponents!private! !
 !JadeFindClassDialog categoriesFor: #createSchematicWiring!private! !
+!JadeFindClassDialog categoriesFor: #initializeAvailable!private! !
 !JadeFindClassDialog categoriesFor: #ok!private! !
 !JadeFindClassDialog categoriesFor: #onViewOpened!private! !
 !JadeFindClassDialog categoriesFor: #updateClassList!private! !

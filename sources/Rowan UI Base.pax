@@ -9,8 +9,11 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=').
 
 package classNames
 	add: #BrowserUpdate;
+	add: #JadeFindClassDialog;
+	add: #JadeFindDialog;
 	add: #JadeiteBasicMethodListPresenter;
 	add: #JadeiteFindClassDialog;
+	add: #JadeiteFindMethodDialog;
 	add: #JadeiteLoginShell;
 	add: #JadeiteMethodListBrowser;
 	add: #JadeiteMethodListPresenter;
@@ -100,7 +103,6 @@ package methodNames
 	add: #JadeErrorShell -> #doCopy;
 	add: #JadeErrorShell -> #onViewOpened;
 	add: #JadeFileIn -> #defineMethod:inClassNamed:inPackageNamed:inCategory:;
-	add: #JadeFindClassDialog -> #initializeAvailable;
 	add: #JadeImageStripper -> #closeLoginShells;
 	add: #JadeImageStripper -> #createVersionResource;
 	add: #JadeImageStripper -> #requiredClasses;
@@ -208,6 +210,7 @@ package methodNames
 	add: #JadeSystemBrowserPresenter -> #createSchematicWiringForClassHierarchyTabs;
 	add: #JadeSystemBrowserPresenter -> #currentMethodSource;
 	add: #JadeSystemBrowserPresenter -> #editSaveClass;
+	add: #JadeSystemBrowserPresenter -> #findClass;
 	add: #JadeSystemBrowserPresenter -> #handleClassCompileError:;
 	add: #JadeSystemBrowserPresenter -> #instanceClassTabs;
 	add: #JadeSystemBrowserPresenter -> #instanceClassTabs:;
@@ -328,6 +331,7 @@ package methodNames
 	add: 'JadePresenter class' -> #browseImplementorsOf:session:;
 	add: 'JadePresenter class' -> #browseLiteralReferences:;
 	add: 'JadePresenter class' -> #browseLiteralReferences:session:;
+	add: 'JadePresenter class' -> #browseMethodIn:class:presenter:;
 	add: 'JadePresenter class' -> #browseMethodsContaining:;
 	add: 'JadePresenter class' -> #browseMethodsContaining:session:;
 	add: 'JadePresenter class' -> #browseSendersIn:;
@@ -619,6 +623,21 @@ KeyValuePrompter subclass: #RowanKeyValuePrompter
 	classInstanceVariableNames: ''!
 MCVersionDialog subclass: #RowanSavePackageDialog
 	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeValueDialog subclass: #JadeFindDialog
+	instanceVariableNames: 'nameEntryPresenter'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeFindDialog subclass: #JadeFindClassDialog
+	instanceVariableNames: 'classListPresenter availableClasses'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeFindDialog subclass: #JadeiteFindMethodDialog
+	instanceVariableNames: 'listPresenter available'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1076,12 +1095,6 @@ defineMethod: methodString inClassNamed: className inPackageNamed: aPackageName 
 		showError: result on: methodString.
 ! !
 !JadeFileIn categoriesFor: #defineMethod:inClassNamed:inPackageNamed:inCategory:!public! !
-
-!JadeFindClassDialog methodsFor!
-
-initializeAvailable
-	^self model value asSortedCollection! !
-!JadeFindClassDialog categoriesFor: #initializeAvailable!private! !
 
 !JadeImageStripper methodsFor!
 
@@ -1856,6 +1869,15 @@ browseLiteralReferences: string session: session
 	shell updateCaptionFromSearchString: 'Literal References To ' , string asString printString.
 	^shell!
 
+browseMethodIn: session class: classService presenter: browser
+	| methodService |
+	methodService := JadeiteFindMethodDialog showModal: 'DefaultView' on: classService.
+	methodService
+		ifNotNil: 
+			[(browser methodListPresenter list includes: methodService)
+				ifFalse: [browser categoryListPresenter selection: methodService category].
+			browser methodListPresenter selection: methodService]!
+
 browseMethodsContaining: session
 	| string |
 	(string := Prompter prompt: 'Enter string:' caption: 'Browse Methods Containing ...') isNil
@@ -1973,6 +1995,7 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #browseImplementorsOf:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseLiteralReferences:!browsing!public! !
 !JadePresenter class categoriesFor: #browseLiteralReferences:session:!browsing!public! !
+!JadePresenter class categoriesFor: #browseMethodIn:class:presenter:!browsing!public! !
 !JadePresenter class categoriesFor: #browseMethodsContaining:!browsing!public! !
 !JadePresenter class categoriesFor: #browseMethodsContaining:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSendersIn:!browsing!public! !
@@ -2843,6 +2866,21 @@ editSaveClass
 				^self].
 	flag ifTrue: [self editSaveClassA]!
 
+findClass
+"
+	Array with: className with: dictionaryName with: catetory with: packageName.
+"
+	| find list |
+	list := self findClassList.
+	ignoreNextSetFocusEvent := true.
+	find := JadeFindClassDialog showModal: 'ThreeColumnView' on: list.
+	find ifNil: [^self].
+	self 
+		updateAfterFindClass: find value
+		isMeta: nil 
+		selector: ''.
+!
+
 handleClassCompileError: ex
 	| offset string explanation |
 	offset := ex list first at: 2.
@@ -3257,6 +3295,7 @@ verifyValidCategory: category
 !JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForClassHierarchyTabs!create schemantic wiring!public! !
 !JadeSystemBrowserPresenter categoriesFor: #currentMethodSource!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #editSaveClass!menu handlers!public! !
+!JadeSystemBrowserPresenter categoriesFor: #findClass!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #handleClassCompileError:!compiling!public! !
 !JadeSystemBrowserPresenter categoriesFor: #instanceClassTabs!accessing!private! !
 !JadeSystemBrowserPresenter categoriesFor: #instanceClassTabs:!accessing!private! !

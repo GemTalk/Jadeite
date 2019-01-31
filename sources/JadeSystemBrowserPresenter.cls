@@ -944,21 +944,6 @@ fileTypes
 		with: FileDialog allFilesType.
 !
 
-findClass
-"
-	Array with: className with: dictionaryName with: catetory with: packageName.
-"
-	| find list |
-	list := self findClassList.
-	ignoreNextSetFocusEvent := true.
-	find := JadeFindClassDialog showModal: 'ThreeColumnView' on: list.
-	find ifNil: [^self].
-	self 
-		updateAfterFindClass: find value
-		isMeta: nil 
-		selector: ''.
-!
-
 findClassList
 "
 	Array with: className with: dictionaryName with: catetory with: packageName.
@@ -2796,7 +2781,6 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #fileOutMethod!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #fileOutMethodOnPath:!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #fileTypes!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #findClass!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #findClassList!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #gciSession:!overrides!public! !
 !JadeSystemBrowserPresenter categoriesFor: #getSelectedMethod!public! !

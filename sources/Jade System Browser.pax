@@ -8,7 +8,6 @@ package basicPackageVersion: '0.179'.
 
 package classNames
 	add: #JadeAutoSystemBrowserPresenter;
-	add: #JadeFindClassDialog;
 	add: #JadeSystemBrowser;
 	add: #JadeSystemBrowserPresenter;
 	add: #SUnitResultDialog;
@@ -94,11 +93,6 @@ JadeBrowserPresenter subclass: #JadeSystemBrowserPresenter
 	classInstanceVariableNames: ''!
 JadeSystemBrowserPresenter subclass: #JadeAutoSystemBrowserPresenter
 	instanceVariableNames: 'lastGsShape bottomArrangement'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-JadeValueDialog subclass: #JadeFindClassDialog
-	instanceVariableNames: 'classListPresenter nameEntryPresenter availableClasses'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

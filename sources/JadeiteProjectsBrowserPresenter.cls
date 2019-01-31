@@ -677,6 +677,13 @@ findClass
 	find := JadeiteFindClassDialog showModal: 'DefaultView' on: self allClasses.
 	find ifNotNil: [self updateAfterFindClass: find]!
 
+findMethod
+	self selectedClass isNil ifTrue: [^self].
+	^self class
+		browseMethodIn: gciSession
+		class: self selectedClass
+		presenter: self !
+
 findMethod: selector
 	"assume we have a populated method list"
 
@@ -895,9 +902,10 @@ methodsMenuStrings
 				removeMethods;
 				runMethodTests;
 				fileOutMethods;
+				findMethod; 
 				runMethodTests;
 				gotoMethodDefinedPackage].
-	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods'  '&File out methods ...//fileOutMethods' '-' '&Remove Method(s) ...//removeMethods'  'Run &Tests/Ctrl+B/runMethodTests' 'Go To Defining Package//gotoMethodDefinedPackage')!
+	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods'  '&File out methods ...//fileOutMethods' 'Find Method .../Ctrl+Shift+M/findMethod'  '-' '&Remove Method(s) ...//removeMethods'  'Run &Tests/Ctrl+B/runMethodTests' 'Go To Defining Package//gotoMethodDefinedPackage')!
 
 moveMethods: methodServices toCategory: targetCategory
 	| classService |
@@ -2024,6 +2032,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #fileOutMethodsOnPath:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #filterTabChanged!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #findClass!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #findMethod!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #findMethod:!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #getViews!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gitCommit!project menu handlers!public! !

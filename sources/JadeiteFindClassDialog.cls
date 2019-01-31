@@ -14,17 +14,13 @@ initializeAvailable
 	"sorted on server"
 	^self model value!
 
-updateClassList 
-
+updateList
 	| list |
 	list := availableClasses select: [:each | nameEntryPresenter value , '*' match: each name].
 	classListPresenter list: list.
-	list size >= 1 ifTrue: [
-		classListPresenter selectionByIndex: 1.
-	].
-! !
+	list size >= 1 ifTrue: [classListPresenter selectionByIndex: 1]! !
 !JadeiteFindClassDialog categoriesFor: #initializeAvailable!private! !
-!JadeiteFindClassDialog categoriesFor: #updateClassList!private! !
+!JadeiteFindClassDialog categoriesFor: #updateList!private! !
 
 !JadeiteFindClassDialog class methodsFor!
 
