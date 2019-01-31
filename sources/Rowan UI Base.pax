@@ -332,12 +332,12 @@ package methodNames
 	add: 'JadePresenter class' -> #browseImplementorsOf:session:;
 	add: 'JadePresenter class' -> #browseLiteralReferences:;
 	add: 'JadePresenter class' -> #browseLiteralReferences:session:;
-	add: 'JadePresenter class' -> #browseMethodIn:class:presenter:;
 	add: 'JadePresenter class' -> #browseMethodsContaining:;
 	add: 'JadePresenter class' -> #browseMethodsContaining:session:;
 	add: 'JadePresenter class' -> #browseSendersIn:;
 	add: 'JadePresenter class' -> #browseSendersOf:session:;
 	add: 'JadePresenter class' -> #convertToPattern:;
+	add: 'JadePresenter class' -> #findMethodIn:class:presenter:;
 	add: 'JadePresenter class' -> #issueCommand:session:;
 	add: 'JadePresenter class' -> #openDictionaryBrowserOn:session:;
 	add: 'JadePresenter class' -> #openGitHubJadeiteProject;
@@ -1877,11 +1877,6 @@ browseLiteralReferences: string session: session
 	shell updateCaptionFromSearchString: 'Literal References To ' , string asString printString.
 	^shell!
 
-browseMethodIn: session class: classService presenter: browser
-	| methodService |
-	methodService := JadeiteFindMethodDialog showModal: 'DefaultView' on: classService.
-	^self basicBrowseMethod: methodService presenter: browser!
-
 browseMethodsContaining: session
 	| string |
 	(string := Prompter prompt: 'Enter string:' caption: 'Browse Methods Containing ...') isNil
@@ -1924,6 +1919,11 @@ convertToPattern: wildcardString
 		do: [:i | list add: $* afterIndex: i].
 	wildcardString last = $* ifTrue: [list addLast: $*].
 	^list asArray!
+
+findMethodIn: session class: classService presenter: browser
+	| methodService |
+	methodService := JadeiteFindMethodDialog showModal: 'DefaultView' on: classService.
+	^self basicBrowseMethod: methodService presenter: browser!
 
 issueCommand: services session: session
 	^BrowserUpdate current issueCommand: services session: session!
@@ -2000,12 +2000,12 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #browseImplementorsOf:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseLiteralReferences:!browsing!public! !
 !JadePresenter class categoriesFor: #browseLiteralReferences:session:!browsing!public! !
-!JadePresenter class categoriesFor: #browseMethodIn:class:presenter:!browsing!public! !
 !JadePresenter class categoriesFor: #browseMethodsContaining:!browsing!public! !
 !JadePresenter class categoriesFor: #browseMethodsContaining:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSendersIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSendersOf:session:!browsing!public! !
 !JadePresenter class categoriesFor: #convertToPattern:!browsing support!private! !
+!JadePresenter class categoriesFor: #findMethodIn:class:presenter:!browsing!public! !
 !JadePresenter class categoriesFor: #issueCommand:session:!public! !
 !JadePresenter class categoriesFor: #openDictionaryBrowserOn:session:!browsing support!public! !
 !JadePresenter class categoriesFor: #openGitHubJadeiteProject!browsing!public! !

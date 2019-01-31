@@ -27,9 +27,7 @@ basicPrepareForReplication
 		ifNotNil: [removedMethods do: [:methodService | methodService basicPrepareForReplication]]!
 
 excludedInstVars
-
-	^#( 'hierarchyServices' )
-!
+	^super excludedInstVars , #('hierarchyServices')!
 
 hash
 	^name hash!
@@ -88,20 +86,6 @@ removedMethods: anObject
 replicateFrom: newService
 	self isBrowserService ifTrue: [super replicateFrom: newService]!
 
-stonOn: stonWriter
-	| instanceVariableNames |
-	(instanceVariableNames := self class allInstVarNames reject: [:iv | self excludedInstVars includes: iv]) isEmpty
-		ifTrue: [stonWriter writeObject: self do: [stonWriter encodeMap: #()]]
-		ifFalse: 
-			[stonWriter writeObject: self
-				streamMap: 
-					[:dictionary |
-					instanceVariableNames do: 
-							[:each |
-							(self instVarAt: (instanceVariableNames indexOf: each))
-								ifNotNil: [:value | dictionary at: each asSymbol put: value]
-								ifNil: [self stonShouldWriteNilInstVars ifTrue: [dictionary at: each asSymbol put: nil]]]]]!
-
 testCount
 	^testCount!
 
@@ -140,7 +124,6 @@ testPackages: presenter
 !RowanBrowserService categoriesFor: #removedMethods!accessing!private! !
 !RowanBrowserService categoriesFor: #removedMethods:!accessing!private! !
 !RowanBrowserService categoriesFor: #replicateFrom:!public!replication!updating! !
-!RowanBrowserService categoriesFor: #stonOn:!must not strip!public!ston! !
 !RowanBrowserService categoriesFor: #testCount!accessing!private! !
 !RowanBrowserService categoriesFor: #testCount:!accessing!private! !
 !RowanBrowserService categoriesFor: #testPackages:!public!updating! !

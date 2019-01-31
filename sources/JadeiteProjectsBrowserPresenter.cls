@@ -680,9 +680,9 @@ findClass
 findMethod
 	self selectedClass isNil ifTrue: [^self].
 	^self class
-		browseMethodIn: gciSession
+		findMethodIn: gciSession
 		class: self selectedClass
-		presenter: self !
+		presenter: self!
 
 findMethod: selector
 	"assume we have a populated method list"

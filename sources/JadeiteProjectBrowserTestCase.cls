@@ -1320,8 +1320,14 @@ test_findMethodDoesNotChangeCategories
 	self assert: self categoryListPresenter selection equals: 'Accessing'. 
 	self assert: self methodListPresenter selection selector equals: #filters. !
 
+test_findMethodDoesNothingWhenClassNotSelected
+	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self assert: self projectsPresenter findMethod equals: self projectsPresenter. "would normally raise a dialog" !
+
 test_findMethodShowsAllMethods
-	| methodService methodListSize unopenedDialog |
+	| methodListSize unopenedDialog |
 	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
@@ -1333,6 +1339,30 @@ test_findMethodShowsAllMethods
 	self assert: unopenedDialog listPresenter list size
 		equals: self projectsPresenter selectedClass methods size.
 	self assert: unopenedDialog listPresenter list size > methodListSize!
+
+test_findMethodShowsOnlyOneSide
+	| unopenedDialog |
+	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanService' in: self classListPresenter.
+	unopenedDialog := JadeiteFindMethodDialog create: 'DefaultView'
+				on: self projectsPresenter selectedClass.
+	self assertIsNil: (unopenedDialog listPresenter list
+				detect: [:methodService | methodService selector = #autoCommit]
+				ifNone: []).
+	self denyIsNil: (unopenedDialog listPresenter list
+				detect: [:methodService | methodService selector = #answer:]
+				ifNone: []). 
+	self projectsPresenter selectClassTab.
+	unopenedDialog := JadeiteFindMethodDialog create: 'DefaultView'
+				on: self projectsPresenter selectedClass.
+	self denyIsNil: (unopenedDialog listPresenter list
+				detect: [:methodService | methodService selector = #autoCommit]
+				ifNone: []).
+	self assertIsNil: (unopenedDialog listPresenter list
+				detect: [:methodService | methodService selector = #answer:]
+				ifNone: []). !
 
 test_gitBranchesDoesNotShowHead
 	"this may be a brittle test because it assumes RowanSample1 has only the master branch.
@@ -3388,7 +3418,9 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findClass!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodChangesCategories!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodDoesNotChangeCategories!public!test categories! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodDoesNothingWhenClassNotSelected!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodShowsAllMethods!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodShowsOnlyOneSide!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gitBranchesDoesNotShowHead!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromHierarchy!public!test class hierarchy!test defined package! !

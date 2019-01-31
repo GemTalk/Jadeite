@@ -32,6 +32,10 @@ ok
 	super ok.
 !
 
+onViewClosed
+	super onViewClosed.
+	self model value removeAllEventsTriggered!
+
 onViewOpened
 
 	super onViewOpened. 
@@ -46,6 +50,7 @@ updateList
 !JadeiteFindMethodDialog categoriesFor: #createSchematicWiring!private! !
 !JadeiteFindMethodDialog categoriesFor: #listPresenter!accessing!private! !
 !JadeiteFindMethodDialog categoriesFor: #ok!event handlers!public! !
+!JadeiteFindMethodDialog categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteFindMethodDialog categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteFindMethodDialog categoriesFor: #updateList!private! !
 

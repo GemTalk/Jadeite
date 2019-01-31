@@ -95,6 +95,11 @@ emptyFilterListsIn: browser
 	browser categoryListPresenter sortBlock: [:x :y | x < y].
 	browser variableListPresenter sortBlock: [:x :y | x < y].!
 
+excludedInstVars
+
+	^#( 'events' )
+!
+
 filterUpdate: presenter browser: anObject
 	!
 
@@ -230,9 +235,20 @@ sortAspect
 
 	^name!
 
-stonOn: anObject
-
-	^super stonOn: anObject   "Dolphin strips out the #stonOn: in Object. try to save it"!
+stonOn: stonWriter
+	| instanceVariableNames |
+	(instanceVariableNames := self class allInstVarNames
+				reject: [:iv | self excludedInstVars includes: iv]) isEmpty
+		ifTrue: [stonWriter writeObject: self do: [stonWriter encodeMap: #()]]
+		ifFalse: 
+			[stonWriter writeObject: self
+				streamMap: 
+					[:dictionary |
+					instanceVariableNames do: 
+							[:each |
+							(self instVarNamed: each)
+								ifNotNil: [:value | dictionary at: each asSymbol put: value]
+								ifNil: [self stonShouldWriteNilInstVars ifTrue: [dictionary at: each asSymbol put: nil]]]]]!
 
 sunitMethodsUpdate: presenter browser: browser!
 
@@ -318,6 +334,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #dictionaryUpdate:!public!updating! !
 !RowanService categoriesFor: #displayString!displaying!public! !
 !RowanService categoriesFor: #emptyFilterListsIn:!Init / Release!private! !
+!RowanService categoriesFor: #excludedInstVars!public!ston! !
 !RowanService categoriesFor: #filterUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #frameListUpdate:!Debugger!public!updating! !
 !RowanService categoriesFor: #globalsUpdate:!public!updating! !
@@ -356,7 +373,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #replicateFrom:!public!replication!updating! !
 !RowanService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
 !RowanService categoriesFor: #sortAspect!accessing!public! !
-!RowanService categoriesFor: #stonOn:!must not strip!public! !
+!RowanService categoriesFor: #stonOn:!must not strip!public!ston! !
 !RowanService categoriesFor: #sunitMethodsUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #superclassListUpdate:!public!updating! !
 !RowanService categoriesFor: #testClasses:!public!updating! !

@@ -135,7 +135,7 @@ displayStringFor: displayThing
 
 excludedInstVars
 
-	^#( 'hierarchyServices' )
+	^super excludedInstVars, #( 'hierarchyServices' )
 !
 
 expand
@@ -311,21 +311,6 @@ shouldReplicateInstVarAtIndex: index newService: newService
 	(self class indexOfInstVar: 'methods') = index ifTrue: [newService meta = meta ifFalse: [^false]].
 	^true!
 
-stonOn: stonWriter
-	| instanceVariableNames |
-	(instanceVariableNames := self class allInstVarNames
-				reject: [:iv | self excludedInstVars includes: iv]) isEmpty
-		ifTrue: [stonWriter writeObject: self do: [stonWriter encodeMap: #()]]
-		ifFalse: 
-			[stonWriter writeObject: self
-				streamMap: 
-					[:dictionary |
-					instanceVariableNames do: 
-							[:each |
-							(self instVarNamed: each)
-								ifNotNil: [:value | dictionary at: each asSymbol put: value]
-								ifNil: [self stonShouldWriteNilInstVars ifTrue: [dictionary at: each asSymbol put: nil]]]]]!
-
 sunitMethodsUpdate: presenter browser: browser
 	| selections oldClassService |
 	browser classListPresenter selections isEmpty ifTrue: [^self].
@@ -474,7 +459,6 @@ visibleTests
 !RowanClassService categoriesFor: #selectedPackageServices:!accessing!private! !
 !RowanClassService categoriesFor: #shouldColorAsExtension!public!testing! !
 !RowanClassService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
-!RowanClassService categoriesFor: #stonOn:!must not strip!public!ston! !
 !RowanClassService categoriesFor: #sunitMethodsUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #template!accessing!private! !
 !RowanClassService categoriesFor: #template:!accessing!private! !
