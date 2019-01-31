@@ -1290,6 +1290,50 @@ test_findClass
 	self assert: self packageListPresenter selection name equals: 'Cypress-Definitions'.
 	self assert: self projectListPresenter selection name equals: 'Cypress'!
 
+test_findMethodChangesCategories
+	| methodService | 
+	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
+	self assertMethodInList: #behavior. 
+	self assert: self methodListPresenter selections isEmpty. 
+	methodService  := self projectsPresenter methodListPresenter list detect:[:svc | svc selector = #behavior].
+	self selectCategoryNamed: 'client commands'. 
+	self denyMethodInList: #behavior. 
+	JadePresenter basicBrowseMethod: methodService presenter: self projectsPresenter.
+	self assert: self categoryListPresenter selection equals: 'Accessing'. 
+	self assert: self methodListPresenter selection selector equals: #behavior. !
+
+test_findMethodDoesNotChangeCategories
+	| methodService | 
+	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
+	self assertMethodInList: #behavior. 
+	self assert: self methodListPresenter selections isEmpty. 
+	methodService  := self projectsPresenter methodListPresenter list detect:[:svc | svc selector = #filters].
+	self selectCategoryNamed: 'Accessing'. 
+	self assertMethodInList: #behavior. 
+	JadePresenter basicBrowseMethod: methodService presenter: self projectsPresenter.
+	self assert: self categoryListPresenter selection equals: 'Accessing'. 
+	self assert: self methodListPresenter selection selector equals: #filters. !
+
+test_findMethodShowsAllMethods
+	| methodService methodListSize unopenedDialog |
+	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
+	self selectCategoryNamed: 'other'.
+	methodListSize := self methodListPresenter list size.
+	unopenedDialog := JadeiteFindMethodDialog create: 'DefaultView'
+				on: self projectsPresenter selectedClass.
+	self assert: unopenedDialog listPresenter list size
+		equals: self projectsPresenter selectedClass methods size.
+	self assert: unopenedDialog listPresenter list size > methodListSize!
+
 test_gitBranchesDoesNotShowHead
 	"this may be a brittle test because it assumes RowanSample1 has only the master branch.
 	But it's based on the local checkout so the test runner can control this. "
@@ -3342,6 +3386,9 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_extensionMethodSelection!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_filtersUpdatedInHierarchyView!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findClass!public!test class list!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodChangesCategories!public!test categories! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodDoesNotChangeCategories!public!test categories! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodShowsAllMethods!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gitBranchesDoesNotShowHead!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromHierarchy!public!test class hierarchy!test defined package! !

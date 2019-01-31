@@ -324,6 +324,7 @@ package methodNames
 	add: 'JadeInspector class' -> #resource_Special_view;
 	add: 'JadeNavigationInspector class' -> #resource_Default_view;
 	add: 'JadePresenter class' -> #allClassesIn:;
+	add: 'JadePresenter class' -> #basicBrowseMethod:presenter:;
 	add: 'JadePresenter class' -> #browseClassIn:;
 	add: 'JadePresenter class' -> #browseHierarchyImplementorsOf:className:session:;
 	add: 'JadePresenter class' -> #browseHierarchySendersOf:className:session:;
@@ -1801,6 +1802,13 @@ allClassesIn: session
 	self issueCommand: (Array with: browserService) session: session.
 	^browserService allClasses!
 
+basicBrowseMethod: methodService presenter: browser
+	methodService
+		ifNotNil: 
+			[(browser methodListPresenter list includes: methodService)
+				ifFalse: [browser categoryListPresenter selection: methodService category].
+			browser methodListPresenter selection: methodService]!
+
 browseClassIn: session
 	| classService browser |
 	classService := JadeiteFindClassDialog showModal: 'DefaultView' on: (self allClassesIn: session).
@@ -1872,11 +1880,7 @@ browseLiteralReferences: string session: session
 browseMethodIn: session class: classService presenter: browser
 	| methodService |
 	methodService := JadeiteFindMethodDialog showModal: 'DefaultView' on: classService.
-	methodService
-		ifNotNil: 
-			[(browser methodListPresenter list includes: methodService)
-				ifFalse: [browser categoryListPresenter selection: methodService category].
-			browser methodListPresenter selection: methodService]!
+	^self basicBrowseMethod: methodService presenter: browser!
 
 browseMethodsContaining: session
 	| string |
@@ -1988,6 +1992,7 @@ symbolsFrom: selector session: session
 				commandArgs: (Array with: list asArray).
 	^(self issueCommand: (Array with: service) session: session) first answer! !
 !JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
+!JadePresenter class categoriesFor: #basicBrowseMethod:presenter:!browsing!public! !
 !JadePresenter class categoriesFor: #browseClassIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseHierarchyImplementorsOf:className:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseHierarchySendersOf:className:session:!browsing!public! !

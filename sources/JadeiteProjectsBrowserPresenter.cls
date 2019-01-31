@@ -1736,7 +1736,7 @@ updateClassInfo
 	classCommentPresenter value: service comment.
 	classDefinitionPresenter view isModified
 		ifTrue: 
-			[service template = classDefinition ifTrue: [^self].  self halt. 
+			[service template = classDefinition ifTrue: [^self].  
 			(MessageBox confirm: 'Copy changes to clipboard?' caption: 'Class has unsaved changes!!')
 				ifTrue: [classDefinitionPresenter value copyToClipboard]].
 	classDefinitionPresenter value: service template.

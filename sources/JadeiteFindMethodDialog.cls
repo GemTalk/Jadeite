@@ -21,6 +21,11 @@ createSchematicWiring
 	super createSchematicWiring.
 	listPresenter 		when: #actionPerformed 	send: #ok			to: self.!
 
+listPresenter
+	"Private - for testing"
+
+	^listPresenter!
+
 ok
 	self model value removeAllEventsTriggered.
 	self model value: listPresenter selectionOrNil.
@@ -39,6 +44,7 @@ updateList
 	list size >= 1 ifTrue: [listPresenter selectionByIndex: 1]! !
 !JadeiteFindMethodDialog categoriesFor: #createComponents!private! !
 !JadeiteFindMethodDialog categoriesFor: #createSchematicWiring!private! !
+!JadeiteFindMethodDialog categoriesFor: #listPresenter!accessing!private! !
 !JadeiteFindMethodDialog categoriesFor: #ok!event handlers!public! !
 !JadeiteFindMethodDialog categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteFindMethodDialog categoriesFor: #updateList!private! !
