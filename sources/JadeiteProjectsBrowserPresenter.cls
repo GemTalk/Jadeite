@@ -1413,14 +1413,14 @@ registerPresentersForUpdates
 	BrowserUpdate current register: projectListPresenter 		selector: #aborted:browser: browser: self.
 	BrowserUpdate current register: classListPresenter 		selector: #classesUpdate:browser: browser: self.
 	BrowserUpdate current register: classListPresenter 		selector: #removedClass:.
-	BrowserUpdate current register: classListPresenter 		selector: #updatedClass:.
+	BrowserUpdate current register: classListPresenter 		selector: #updatedClass:browser: browser: self.
 	BrowserUpdate current register: classDefinitionPresenter 	selector: #updatedClassDefinition:browser: browser: self.
 	BrowserUpdate current register: classListPresenter 		selector: #removed:.
 	BrowserUpdate current register: packageListPresenter 	selector: #projectPackagesUpdate:browser: browser: self.
 	BrowserUpdate current register: packageListPresenter 	selector: #removed:.
 	BrowserUpdate current register: categoryListPresenter 	selector: #filterUpdate:browser: browser: self.
 	BrowserUpdate current register: classHierarchyPresenter 	selector: #classHierarchyUpdate:browser: browser: self.
-	BrowserUpdate current register: classHierarchyPresenter 	selector: #updatedClass:.
+	BrowserUpdate current register: classListPresenter 		selector: #updatedClass:browser: browser: self.
 	BrowserUpdate current register: classHierarchyPresenter 	selector: #removedClass:.
 	BrowserUpdate current register: classHierarchyPresenter 	selector: #updatedClassInHierarchy:browser: browser: self.
 	BrowserUpdate current register: classHierarchyPresenter 	selector: #removed:.

@@ -306,7 +306,7 @@ package methodNames
 	add: #RowanCommandResult -> #updateClassCategorySelectionsFor:;
 	add: #RowanCommandResult -> #updateClassHierarchySelectionFor:;
 	add: #RowanCommandResult -> #updateClassSelectionFor:;
-	add: #RowanCommandResult -> #updatedClass:;
+	add: #RowanCommandResult -> #updatedClass:browser:;
 	add: #RowanCommandResult -> #updatedClassDefinition:browser:;
 	add: #RowanCommandResult -> #updatedClassInHierarchy:browser:;
 	add: #RowanCommandResult -> #updateDictionarySelectionsFor:;
@@ -3913,8 +3913,8 @@ updateClassHierarchySelectionFor: presenter!
 
 updateClassSelectionFor: presenter!
 
-updatedClass: aPresenter
-!
+updatedClass: aPresenter browser: anObject
+	!
 
 updatedClassDefinition: classDefinitionPresenter browser: browser
 
@@ -3972,7 +3972,7 @@ updateType
 !RowanCommandResult categoriesFor: #updateClassCategorySelectionsFor:!public!updating! !
 !RowanCommandResult categoriesFor: #updateClassHierarchySelectionFor:!public!updating! !
 !RowanCommandResult categoriesFor: #updateClassSelectionFor:!public!updating! !
-!RowanCommandResult categoriesFor: #updatedClass:!public!updating! !
+!RowanCommandResult categoriesFor: #updatedClass:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #updatedClassDefinition:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #updateDictionarySelectionsFor:!public!updating! !

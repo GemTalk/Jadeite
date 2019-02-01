@@ -304,7 +304,8 @@ selectedPackageServices: anObject
 shouldColorAsExtension
 	^definedPackageName = self notRowanizedPackageName
 		ifTrue: [false]
-		ifFalse: [(self selectedPackageNames includes: definedPackageName) not]!
+		ifFalse: 
+			[((selectedPackageServices collect: [:service | service name]) includes: definedPackageName) not]!
 
 shouldReplicateInstVarAtIndex: index newService: newService
 	(self class indexOfInstVar: 'meta') = index ifTrue: [^false].
@@ -339,11 +340,13 @@ updateCategories: presenter browser: browser
 	categories
 		do: [:category | (presenter list includes: category) ifFalse: [presenter model add: category]]!
 
-updatedClass: presenter
+updatedClass: presenter browser: browser
+	"only project browser should use this"
 	| update |
-	update := presenter model asBag detect:[:classService | classService name = name] ifNone:[^self ].
+	selectedPackageServices  := browser packageListPresenter selections. 
+	update := presenter model asBag detect: [:classService | classService name = name] ifNone: [^self].
 	update replicateFrom: self.
-	presenter view invalidate. !
+	presenter view invalidate!
 
 updatedClassDefinition: classDefinitionPresenter browser: browser
 	browser selectedClass = self
@@ -464,7 +467,7 @@ visibleTests
 !RowanClassService categoriesFor: #template:!accessing!private! !
 !RowanClassService categoriesFor: #toolTip!public! !
 !RowanClassService categoriesFor: #updateCategories:browser:!private!updating! !
-!RowanClassService categoriesFor: #updatedClass:!public!updating! !
+!RowanClassService categoriesFor: #updatedClass:browser:!public!updating! !
 !RowanClassService categoriesFor: #updatedClassDefinition:browser:!public!updating! !
 !RowanClassService categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !
 !RowanClassService categoriesFor: #updateListIn:from:!private!updating! !

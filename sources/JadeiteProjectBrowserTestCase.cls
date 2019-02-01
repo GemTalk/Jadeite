@@ -535,6 +535,49 @@ test_changeListSortOrder
 		equals: #('tests' 'other' 'other' 'other' 'Class Definition' 'Class Definition') asOrderedCollection]
 			ensure: [changesBrowser destroy]!
 
+test_classColoring
+	| classService sunitBrowser |
+	self testsIssue: #issue426 withTitle: 'Strange case of classes turning purple'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	sunitBrowser := self openWindow: [transcript jadeBrowseTests].
+	
+	[sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'.
+	sunitBrowser primaryPresenter selectClassNamed: 'RowanClassServiceTest'.
+	classService := self classListPresenter list
+				detect: [:service | service name = 'RowanClassServiceTest'].
+	self deny: classService shouldColorAsExtension.
+	sunitBrowser primaryPresenter selectClassNamed: 'RowanPackageServiceTest'.
+	classService := self classListPresenter list
+				detect: [:service | service name = 'RowanPackageServiceTest'].
+	self deny: classService shouldColorAsExtension.
+	self selectHierarchyTab.
+	classService := self classHierarchyPresenter model asBag 
+				detect: [:service | service name = 'RowanClassServiceTest'].
+	self deny: classService shouldColorAsExtension.
+	classService := self classHierarchyPresenter model asBag
+				detect: [:service | service name = 'RowanPackageServiceTest'].
+	self deny: classService shouldColorAsExtension]
+			ensure: [sunitBrowser destroy]!
+
+test_classColoringExtension
+	| classService sunitBrowser |
+	self testsIssue: #issue426 withTitle: 'Strange case of classes turning purple'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	sunitBrowser := self openWindow: [transcript jadeBrowseTests].
+	
+	[sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'.
+	sunitBrowser primaryPresenter selectClassNamed: 'RwRowanProjectIssuesTest'.
+	classService := self classListPresenter list
+				detect: [:service | service name = 'RwRowanProjectIssuesTest'].
+	self assert: classService shouldColorAsExtension.
+	self selectHierarchyTab.
+	classService := self classHierarchyPresenter model asBag
+				detect: [:service | service name = 'RwRowanProjectIssuesTest'].
+	self assert: classService shouldColorAsExtension]
+			ensure: [sunitBrowser destroy]!
+
 test_classDefinitionUpdatesAcrossTabs
 	| source firstTab secondTab newSource |
 	self testsIssue: #issue412 withTitle: '(3.0.56) incorrect project browser update on method accept '.
@@ -1244,9 +1287,9 @@ test_extensionColoringInHierarchy
 	self selectHierarchyTab.
 	self
 		assert: self projectsPresenter classHierarchyPresenter selection name = 'RwPlatformSpecification'.
-	self deny: self projectsPresenter classHierarchyPresenter selection shouldColorAsExtension.
+	self deny: (self projectsPresenter classHierarchyPresenter selection shouldColorAsExtension).
 	self selectClassInHierarchyNamed: 'RwGemStoneSpecification'.
-	self assert: self projectsPresenter classHierarchyPresenter selection shouldColorAsExtension!
+	self assert: (self projectsPresenter classHierarchyPresenter selection shouldColorAsExtension)!
 
 test_extensionMethodSelection
 	| source |
@@ -3417,6 +3460,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSelectedMethods!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeListSortOrder!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classColoring!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classColoringExtension!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionUpdatesAcrossTabs!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListSelectionShouldNotUpdateOtherHierarchy!public!test two browsers! !

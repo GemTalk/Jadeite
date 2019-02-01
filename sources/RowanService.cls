@@ -274,7 +274,8 @@ updateClassHierarchySelectionFor: presenter!
 
 updateClassSelectionFor: presenter!
 
-updatedClass: aPresenter!
+updatedClass: aPresenter browser: anObject
+	!
 
 updatedClassDefinition: classDefinitionPresenter browser: browser
 
@@ -386,7 +387,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #updateClassCategorySelectionsFor:!public!updating! !
 !RowanService categoriesFor: #updateClassHierarchySelectionFor:!public!updating! !
 !RowanService categoriesFor: #updateClassSelectionFor:!public!updating! !
-!RowanService categoriesFor: #updatedClass:!public!updating! !
+!RowanService categoriesFor: #updatedClass:browser:!public!updating! !
 !RowanService categoriesFor: #updatedClassDefinition:browser:!public!updating! !
 !RowanService categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !
 !RowanService categoriesFor: #updateDictionarySelectionsFor:!public!updating! !
