@@ -996,7 +996,8 @@ onViewClosed
 	a normal window exit. Help it out."
 
 	super onViewClosed.
-	BrowserUpdate current removeEventsTriggeredFor: sunitPresenter methodListPresenter!
+	BrowserUpdate current removeEventsTriggeredFor: sunitPresenter methodListPresenter.
+	BrowserUpdate current removeEventsTriggeredFor: self!
 
 onViewOpened
 	"copied to RowanDebugger"

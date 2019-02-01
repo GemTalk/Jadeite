@@ -15,6 +15,10 @@ createSchematicWiring
 	super createSchematicWiring. 
 	self  	 when: #'closeRequested:'		send: #'onCloseRequested:'	to: self primaryPresenter.!
 
+onViewClosed
+	super onViewClosed.
+	BrowserUpdate current removeEventsTriggeredFor: self primaryPresenter!
+
 presenterClass
 
 	^JadeiteMethodListPresenter!
@@ -24,6 +28,7 @@ shellName
 	^'Jadeite Method List Browser'.
 ! !
 !JadeiteMethodListBrowser categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
+!JadeiteMethodListBrowser categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteMethodListBrowser categoriesFor: #presenterClass!private! !
 !JadeiteMethodListBrowser categoriesFor: #shellName!private! !
 

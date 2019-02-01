@@ -2287,21 +2287,23 @@ test_refreshFromServer
 
 test_registeredPresentersInMethodBrowserCleanedUp
 	| registeredPresenters |
-	registeredPresenters := BrowserUpdate current registeredPresenters size.
+	registeredPresenters := BrowserUpdate current registeredPresenters.
 	methodListBrowser := self projectsPresenter browseImplementorsOf: #size.
-	self assert: BrowserUpdate current registeredPresenters size > registeredPresenters.
-	methodListBrowser destroy.
+	self assert: BrowserUpdate current registeredPresenters size > registeredPresenters size.
+	methodListBrowser view close.
 	methodListBrowser := nil.
-	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
+	"difference := BrowserUpdate current registeredPresenters difference: registeredPresenters. uncomment to figure out which presenters are left around"
+	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters size!
 
 test_registeredPresentersInProjectBrowserCleanedUp
-	| registeredPresenters secondBrowser |
-	registeredPresenters := BrowserUpdate current registeredPresenters size.
+	| registeredPresenters |
+	registeredPresenters := BrowserUpdate current registeredPresenters.
 	secondBrowser := JadeiteProjectsSystemBrowser showOnSession: session.
-	self assert: BrowserUpdate current registeredPresenters size > registeredPresenters.
+	self assert: BrowserUpdate current registeredPresenters size > registeredPresenters size.
 	secondBrowser destroy.
 	secondBrowser := nil.
-	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
+	"difference := BrowserUpdate current registeredPresenters difference: registeredPresenters. uncomment to figure out which presenters are left around"
+	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters size!
 
 test_removeAbortedClass
 	"make sure we can safely remove an aborted class during post-abort refresh"
