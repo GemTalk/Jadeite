@@ -52,7 +52,7 @@ test_abortTransaction
 test_autoCommitOff
 	| answeringService |
 	self testsIssue: #issue396 withTitle: 'Ability to turn on autocommit would be nice'.
-	transcript autoCommit: false.
+	self setAutoCommit: false.
 	session executeString: 'UserGlobals at: #TestCommit put: true'.
 	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
 	self abortTransaction.
@@ -77,7 +77,8 @@ test_autoCommitOff
 test_autoCommitOn
 	| answeringService |
 	self testsIssue: #issue396 withTitle: 'Ability to turn on autocommit would be nice'.
-	[transcript autoCommit: true.
+	
+	[self setAutoCommit: true.
 	session executeString: 'UserGlobals at: #TestCommit put: true'.
 	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
 	self abortTransaction.
@@ -97,14 +98,14 @@ test_autoCommitOn
 			ensure: 
 				[session executeString: 'UserGlobals removeKey: #TestCommit'.
 				self commitTransaction.
-				transcript autoCommit: false]!
+				self setAutoCommit: false]!
 
 test_autoCommitSet
 	self testsIssue: #issue396 withTitle: 'Ability to turn on autocommit would be nice'.
-	transcript autoCommit: false.
+	self setAutoCommit: false.
 	self assert: (session executeString: 'SessionTemps current at: #''Jadeite_AutoCommit''')
 		equals: false.
-	transcript autoCommit: true.
+	self setAutoCommit: true.
 	
 	[self assert: (session executeString: 'SessionTemps current at: #''Jadeite_AutoCommit''')
 		equals: true]

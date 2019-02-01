@@ -369,15 +369,18 @@ serviceNamed: name in: presenter
 	service := presenter list detect: [:service | service name = name] ifNone: [].
 	^service!
 
-setUp
+setAutoCommit: aBoolean
 	| browserService |
+	browserService := RowanBrowserService new
+				command: #autoCommit:;
+				commandArgs: (Array with: aBoolean).
+	self issueCommand: browserService!
+
+setUp
 	super setUp.
 	session := JadeiteTestResource current session.
 	transcript := JadeiteTestResource current transcript.
-	browserService := RowanBrowserService new
-				command: #autoCommit:;
-				commandArgs: (Array with: false).
-	self issueCommand: browserService.
+	self setAutoCommit: false.
 	self ensureRowanSample1Loaded!
 
 testsIssue: aSymbol withTitle: anObject
@@ -473,6 +476,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #selectServicesNamed:in:!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectWithChangeEventMethodNamed:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #serviceNamed:in:!private!selection! !
+!JadeiteAbstractTestCase categoriesFor: #setAutoCommit:!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #testsIssue:withTitle:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #transcript!public!transcript support! !
