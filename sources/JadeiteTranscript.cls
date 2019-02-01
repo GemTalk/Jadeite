@@ -19,10 +19,7 @@ autoCommit
 	^autoCommit value!
 
 autoCommit: boolean
-	"for testing"
-	| answeringService |
-	answeringService := RowanAnsweringService new.
-	autoCommit value: (answeringService setAutoCommit: boolean for: self gciSession)!
+	autoCommit value: boolean!
 
 browseClass
 	^JadePresenter browseClassIn: self gciSession!
@@ -47,9 +44,11 @@ createComponents
 	projectListPresenter := self add: JadeiteProjectListPresenter new name: 'Projects'!
 
 flipAutoCommit
-	| answeringService |
-	answeringService := RowanAnsweringService new.
-	autoCommit value: (answeringService flipAutoCommitFor: self gciSession)!
+	| browserService |
+	browserService := RowanBrowserService new.
+	browserService command: #flipAutoCommit; commandArgs: Array new. 
+	self issueCommand: (Array with: browserService). 
+	!
 
 flipDebugger
 	RowanDebugger debuggerClass == RowanDebugger
@@ -123,7 +122,8 @@ onViewOpened
 	JadeTextStyles default resetColors.	"reset colors on login"
 	answeringService := RowanAnsweringService new.
 	installed := answeringService isTranscriptInstalledIn: self gciSession.
-	isTranscriptInstalled value: installed!
+	isTranscriptInstalled value: installed.
+	self registerPresentersForUpdates!
 
 openDictionaryBrowser
 	gciSession hasServer ifTrue: [^RowanSystemBrowser showOnSession: gciSession]!
@@ -157,6 +157,9 @@ queryCommand: query
 			[query isChecked: RowanDebugger debuggerClass = RowanDebugger.
 			^true]!
 
+registerPresentersForUpdates
+	BrowserUpdate current register: self selector: #autoCommitUpdate:!
+
 toolbarPresenter
 	^toolbarPresenter! !
 !JadeiteTranscript categoriesFor: #abortTransaction!menu handlers!public! !
@@ -176,13 +179,14 @@ toolbarPresenter
 !JadeiteTranscript categoriesFor: #initialize!initialization!public! !
 !JadeiteTranscript categoriesFor: #isTranscriptInstalled!public! !
 !JadeiteTranscript categoriesFor: #onCloseRequested:!event handling!public! !
-!JadeiteTranscript categoriesFor: #onViewOpened!public!updating! !
+!JadeiteTranscript categoriesFor: #onViewOpened!event handling!public! !
 !JadeiteTranscript categoriesFor: #openDictionaryBrowser!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #openGitHubJadeiteProject!event handling!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #openGitHubRowanProject!event handling!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #openJadeiteProjectsBrowser!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #projectListPresenter!accessing!public! !
 !JadeiteTranscript categoriesFor: #queryCommand:!private! !
+!JadeiteTranscript categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteTranscript categoriesFor: #toolbarPresenter!accessing!public! !
 
 !JadeiteTranscript class methodsFor!

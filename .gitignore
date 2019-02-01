@@ -20,6 +20,9 @@ runtime/Jade.*
 tempBkp/*
 runtime/Jadeite.exe
 runtime/Jadeite.xml
+icons/camera.bmp
+icons/camera.jpg
+icons/camera16.jpg
 runtime.zip
 
 Jadeite.prefs

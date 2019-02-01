@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
-	instanceVariableNames: 'projectListPresenter stonCritical projectInfoTab projectLabel projectDictionaryTabs comparisonPresenter comparisonTab definedClassPackageText definedMethodPackageText methodCategoryText'
+	instanceVariableNames: 'projectListPresenter stonCritical projectInfoTab projectLabel projectDictionaryTabs comparisonPresenter comparisonTab definedClassPackageText definedMethodPackageText methodCategoryText autoCommit'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -53,6 +53,10 @@ allClasses
 		command: #allClasses.
 	self issueCommand: (Array with: browserService).
 	^browserService allClasses!
+
+autoCommit: boolean
+
+	autoCommit value: boolean!
 
 basicAddMethodCategory: string
 	| service |
@@ -275,7 +279,11 @@ createSchematicWiring
 	super createSchematicWiring.
 	self
 		createSchematicWiringForProjectList;
-		createSchematicWiringForMethodFilterTabs!
+		createSchematicWiringForMethodFilterTabs.
+	autoCommit
+		when: #valueChanged
+		send: #updateAutoCommit
+		to: self!
 
 createSchematicWiringForClassHierarchy
 		
@@ -694,6 +702,17 @@ findMethod: selector
 		categoryListPresenter selection: methodService category]. 
 	methodListPresenter selections: (Array with: methodService)!
 
+flipAutoCommit
+	| browserService |
+	browserService := RowanBrowserService new.
+	browserService command: #flipAutoCommit; commandArgs: Array new. 
+	self issueCommand: (Array with: browserService). 
+	!
+
+gciSession: aGciSession
+	super gciSession: aGciSession.
+	autoCommit := ValueHolder with: self autoCommit.!
+
 getViews
 	classHierarchyTabs := self view viewNamed: 'classHierarchyTabs'.
 	instanceClassTabs := self view viewNamed: 'instanceClassTabs'.
@@ -981,7 +1000,8 @@ onViewOpened
 	projectListPresenter view contextMenu: (self projectMenu).
 	packageListPresenter view contextMenu: (Menu fromStrings: self pkgsMenuStrings).
 	self updateMenuBar.
-	self updateProjects. !
+	self updateProjects. 
+	self updateAutoCommit.!
 
 openDictionaryBrowserOn: classService
 	^JadePresenter openDictionaryBrowserOn: classService session: self gciSession!
@@ -1401,7 +1421,8 @@ registerPresentersForUpdates
 	BrowserUpdate current register: variableListPresenter 	selector: #filterUpdate:browser: browser: self.
 	BrowserUpdate current register: methodListPresenter 	selector: #classMethodsUpdate:browser: browser: self.
 	BrowserUpdate current register: methodListPresenter 	selector: #removed:.
-	BrowserUpdate current register: methodSourcePresenter 	selector: #methodSourceUpdate:browser: browser: self. !
+	BrowserUpdate current register: methodSourcePresenter 	selector: #methodSourceUpdate:browser: browser: self. 
+	BrowserUpdate current register: self 					selector: #autoCommitUpdate:.!
 
 releasedReferencedServices: selectionChangingEvent
 	selectionChangingEvent window presenter selectionOrNil
@@ -1723,6 +1744,13 @@ updateAndSelectA: aView
 	aView notNil ifTrue: [aView ensureVisible].
 !
 
+updateAutoCommit
+	| autoCommitButtonView |
+	autoCommitButtonView := self topShell view viewNamed: 'autoCommitButton'.
+	autoCommit value
+		ifTrue: [autoCommitButtonView backcolor: Color green]
+		ifFalse: [autoCommitButtonView backcolor: Color default]!
+
 updateClasses
 	self updateServices: packageListPresenter selections.!
 
@@ -1974,6 +2002,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #addSubclass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addSystemBrowser!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #allClasses!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #autoCommit:!initialize/release!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicAddMethodCategory:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicOnDropClassList:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicProjectTabLabel!displaying!private! !
@@ -2034,6 +2063,8 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #findClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #findMethod!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #findMethod:!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #flipAutoCommit!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #gciSession:!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #getViews!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gitCommit!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoClass!menu handlers!public! !
@@ -2149,6 +2180,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #update:afterStonReplication:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateAfterFindClass:!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateAndSelectA:!public!updating! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #updateAutoCommit!public!register presenters!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClasses!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClassInfo!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClassMenu:!event handlers!public!updating! !

@@ -145,6 +145,7 @@ package methodNames
 	add: #JadeNavigationInspector -> #browseClass;
 	add: #JadeNavigationInspector -> #setNewInspectedObject;
 	add: #JadePresenter -> #abortTransaction;
+	add: #JadePresenter -> #autoCommit;
 	add: #JadePresenter -> #basicCloneProject:root:;
 	add: #JadePresenter -> #browseHierarchyImplementorsOf:className:;
 	add: #JadePresenter -> #browseHierarchySendersOf:className:;
@@ -503,7 +504,7 @@ RowanService subclass: #RowanAnsweringService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanBrowserService
-	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount'
+	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount autoCommit'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -573,7 +574,7 @@ JadeMethodListPresenter subclass: #RowanMethodListPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanMethodListPresenter subclass: #JadeiteMethodListPresenter
-	instanceVariableNames: 'textAreaTabs comparisonTab comparisonPresenter'
+	instanceVariableNames: 'textAreaTabs comparisonTab comparisonPresenter autoCommit'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -583,7 +584,7 @@ JadeAutoSystemBrowserPresenter subclass: #RowanSystemBrowserPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
-	instanceVariableNames: 'projectListPresenter stonCritical projectInfoTab projectLabel projectDictionaryTabs comparisonPresenter comparisonTab definedClassPackageText definedMethodPackageText methodCategoryText'
+	instanceVariableNames: 'projectListPresenter stonCritical projectInfoTab projectLabel projectDictionaryTabs comparisonPresenter comparisonTab definedClassPackageText definedMethodPackageText methodCategoryText autoCommit'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1615,6 +1616,15 @@ abortTransaction
 	self issueCommand: (Array with: browserService). 
 	Sound informationBeep!
 
+autoCommit
+	| answeringService |
+	answeringService := RowanAnsweringService new.
+	answeringService
+		command: #autoCommit;
+		commandArgs: Array new.
+	self issueCommand: (Array with: answeringService).
+	^answeringService answer!
+
 basicCloneProject: path root: root
 	| service |
 	service := RowanProjectService new.
@@ -1773,6 +1783,7 @@ reportCompileError: anArrayOfArray in: methodSourcePresenter
 update: services afterStonReplication: stonResults
 	^BrowserUpdate current update: services afterStonReplication: stonResults! !
 !JadePresenter categoriesFor: #abortTransaction!public!transaction management! !
+!JadePresenter categoriesFor: #autoCommit!browsing support!public! !
 !JadePresenter categoriesFor: #basicCloneProject:root:!menu handlers!private! !
 !JadePresenter categoriesFor: #browseHierarchyImplementorsOf:className:!browsing!public! !
 !JadePresenter categoriesFor: #browseHierarchySendersOf:className:!browsing!public! !

@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanBrowserService
-	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount'
+	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount autoCommit'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -18,6 +18,9 @@ aborted: presenter browser: browser
 
 allClasses
 	^allClasses!
+
+autoCommitUpdate: browser
+	browser autoCommit: autoCommit!
 
 basicPrepareForReplication
 	"don't call anything potentially recursive here.
@@ -109,6 +112,7 @@ testPackages: presenter
 !RowanBrowserService categoriesFor: #=!comparing!public! !
 !RowanBrowserService categoriesFor: #aborted:browser:!public!updating! !
 !RowanBrowserService categoriesFor: #allClasses!accessing!private! !
+!RowanBrowserService categoriesFor: #autoCommitUpdate:!public!updating! !
 !RowanBrowserService categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanBrowserService categoriesFor: #excludedInstVars!public!ston! !
 !RowanBrowserService categoriesFor: #hash!comparing!public! !

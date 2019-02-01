@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanMethodListPresenter subclass: #JadeiteMethodListPresenter
-	instanceVariableNames: 'textAreaTabs comparisonTab comparisonPresenter'
+	instanceVariableNames: 'textAreaTabs comparisonTab comparisonPresenter autoCommit'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -9,6 +9,9 @@ JadeiteMethodListPresenter guid: (GUID fromString: '{c27cfd96-c166-40cb-83b6-607
 JadeiteMethodListPresenter comment: ''!
 !JadeiteMethodListPresenter categoriesForClass!Unclassified! !
 !JadeiteMethodListPresenter methodsFor!
+
+autoCommit: boolean
+	autoCommit value: boolean!
 
 comparisonTab
 	^comparisonTab
@@ -28,11 +31,26 @@ createComponents
 createSchematicWiring
 	super createSchematicWiring.
 	self getViews.
-	methodListPresenter when: #methodSelectionChanged	send: #updateMethodSource 	to: self!
+	methodListPresenter when: #methodSelectionChanged	send: #updateMethodSource 	to: self.
+	autoCommit
+		when: #valueChanged
+		send: #updateAutoCommit
+		to: self!
 
 fileSave
 
 	self halt. !
+
+flipAutoCommit
+	| browserService |
+	browserService := RowanBrowserService new.
+	browserService command: #flipAutoCommit; commandArgs: Array new. 
+	self issueCommand: (Array with: browserService). 
+	!
+
+gciSession: aGciSession
+	super gciSession: aGciSession.
+	autoCommit := ValueHolder with: self autoCommit.!
 
 getViews 
 	textAreaTabs := parentPresenter view viewNamed: 'textAreaTabs'!
@@ -62,6 +80,15 @@ onCloseRequested: aCloseEvent
 				ifTrue: [methodSourcePresenter isOkayToChange]
 				ifFalse: [true])!
 
+onViewOpened
+
+	super onViewOpened. 
+	self registerPresentersForUpdates.
+	self updateAutoCommit.!
+
+registerPresentersForUpdates
+	BrowserUpdate current register: self selector: #autoCommitUpdate:!
+
 removeComparisonTab
 	self textTabs remove: self comparisonTab ifAbsent: []!
 
@@ -76,6 +103,13 @@ showComparisonTab
 
 textTabs
 	^(textAreaTabs subViews detect: [:each | each class == TabViewXP]) model!
+
+updateAutoCommit
+	| autoCommitButtonView |
+	autoCommitButtonView := self topShell view viewNamed: 'autoCommitButton'.
+	autoCommit value
+		ifTrue: [autoCommitButtonView backcolor: Color green]
+		ifFalse: [autoCommitButtonView backcolor: Color default]!
 
 updateMethodSource
 	methodListPresenter selections isEmpty ifTrue: [^methodSourcePresenter value: String new].
@@ -100,20 +134,26 @@ updateSource
 	selection := methodListPresenter selectionOrNil. 
 	methodSourcePresenter methodService: selection. 
 	methodSourcePresenter update. ! !
+!JadeiteMethodListPresenter categoriesFor: #autoCommit:!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #comparisonTab!private!selection!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #contextObject!public! !
 !JadeiteMethodListPresenter categoriesFor: #createComponents!public! !
 !JadeiteMethodListPresenter categoriesFor: #createSchematicWiring!public! !
 !JadeiteMethodListPresenter categoriesFor: #fileSave!public! !
+!JadeiteMethodListPresenter categoriesFor: #flipAutoCommit!menu handlers!public! !
+!JadeiteMethodListPresenter categoriesFor: #gciSession:!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #getViews!public! !
 !JadeiteMethodListPresenter categoriesFor: #methodListSelection!public! !
 !JadeiteMethodListPresenter categoriesFor: #methods:selecting:!public! !
 !JadeiteMethodListPresenter categoriesFor: #methods:selectingAnyMatch:!public! !
 !JadeiteMethodListPresenter categoriesFor: #onCloseRequested:!event handlers!public! !
+!JadeiteMethodListPresenter categoriesFor: #onViewOpened!event handlers!public! !
+!JadeiteMethodListPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteMethodListPresenter categoriesFor: #removeComparisonTab!private!selection!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #selectionChanging:!event handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #showComparisonTab!private!selection!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #textTabs!private!text tabs! !
+!JadeiteMethodListPresenter categoriesFor: #updateAutoCommit!public!updating! !
 !JadeiteMethodListPresenter categoriesFor: #updateMethodSource!public!updating! !
 !JadeiteMethodListPresenter categoriesFor: #updateMultiMethodComparison!private!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #updateSingleMethodSource!private!text tabs! !
