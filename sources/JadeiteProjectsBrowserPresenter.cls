@@ -54,6 +54,11 @@ allClasses
 	self issueCommand: (Array with: browserService).
 	^browserService allClasses!
 
+autoCommit
+	"Private - for testing"
+
+	^autoCommit value!
+
 autoCommit: boolean
 
 	autoCommit value: boolean!
@@ -711,7 +716,7 @@ flipAutoCommit
 
 gciSession: aGciSession
 	super gciSession: aGciSession.
-	autoCommit := ValueHolder with: self autoCommit.!
+	autoCommit := ValueHolder with: self remoteAutoCommit.!
 
 getViews
 	classHierarchyTabs := self view viewNamed: 'classHierarchyTabs'.
@@ -2002,6 +2007,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #addSubclass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addSystemBrowser!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #allClasses!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #autoCommit!accessing!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #autoCommit:!initialize/release!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicAddMethodCategory:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicOnDropClassList:!drag & drop!public! !

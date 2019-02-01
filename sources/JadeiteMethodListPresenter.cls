@@ -10,6 +10,11 @@ JadeiteMethodListPresenter comment: ''!
 !JadeiteMethodListPresenter categoriesForClass!Unclassified! !
 !JadeiteMethodListPresenter methodsFor!
 
+autoCommit
+	"for testing"
+
+	^autoCommit value!
+
 autoCommit: boolean
 	autoCommit value: boolean!
 
@@ -50,7 +55,7 @@ flipAutoCommit
 
 gciSession: aGciSession
 	super gciSession: aGciSession.
-	autoCommit := ValueHolder with: self autoCommit.!
+	autoCommit := ValueHolder with: self remoteAutoCommit.!
 
 getViews 
 	textAreaTabs := parentPresenter view viewNamed: 'textAreaTabs'!
@@ -134,6 +139,7 @@ updateSource
 	selection := methodListPresenter selectionOrNil. 
 	methodSourcePresenter methodService: selection. 
 	methodSourcePresenter update. ! !
+!JadeiteMethodListPresenter categoriesFor: #autoCommit!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #autoCommit:!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #comparisonTab!private!selection!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #contextObject!public! !

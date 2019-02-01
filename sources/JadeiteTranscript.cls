@@ -73,13 +73,13 @@ gciSession: aGciSession
 	stoneInfoPresenter	gciSession: aGciSession.
 	toolbarPresenter	gciSession: aGciSession.
 	transcriptPresenter	gciSession: aGciSession.
+	autoCommit := ValueHolder with: self remoteAutoCommit. 
 
 !
 
 initialize
 	super initialize. 
-	isTranscriptInstalled := ValueHolder with: true.
-	autoCommit := ValueHolder with: false. !
+	isTranscriptInstalled := ValueHolder with: true.!
 
 isTranscriptInstalled
 	^isTranscriptInstalled value!
@@ -160,6 +160,15 @@ queryCommand: query
 registerPresentersForUpdates
 	BrowserUpdate current register: self selector: #autoCommitUpdate:!
 
+remoteAutoCommit
+	| answeringService |
+	answeringService := RowanAnsweringService new.
+	answeringService
+		command: #autoCommit;
+		commandArgs: Array new.
+	self issueCommand: (Array with: answeringService).
+	^answeringService answer!
+
 toolbarPresenter
 	^toolbarPresenter! !
 !JadeiteTranscript categoriesFor: #abortTransaction!menu handlers!public! !
@@ -187,6 +196,7 @@ toolbarPresenter
 !JadeiteTranscript categoriesFor: #projectListPresenter!accessing!public! !
 !JadeiteTranscript categoriesFor: #queryCommand:!private! !
 !JadeiteTranscript categoriesFor: #registerPresentersForUpdates!public!register presenters! !
+!JadeiteTranscript categoriesFor: #remoteAutoCommit!accessing!private! !
 !JadeiteTranscript categoriesFor: #toolbarPresenter!accessing!public! !
 
 !JadeiteTranscript class methodsFor!

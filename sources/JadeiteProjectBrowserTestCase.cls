@@ -348,6 +348,32 @@ test_addRemoveHierarchyCategory
 	self projectsPresenter basicRemoveMethodCategories.
 	self deny: (self categoryListPresenter list includes: 'jadeite test')!
 
+test_autoCommit
+	| methodListPresenter autoCommit |
+	self testsIssue: #issue421 withTitle: 'Need a way to know if you are in autocommit'.
+	methodListBrowser := JadePresenter browseImplementorsOf: #size session: session.
+	methodListPresenter := methodListBrowser primaryPresenter.
+	autoCommit := self projectsPresenter remoteAutoCommit.
+	self assert: self projectsPresenter autoCommit equals: autoCommit.
+	self assert: methodListPresenter autoCommit equals: autoCommit.
+	self assert: transcript autoCommit equals: autoCommit.
+	self projectsPresenter flipAutoCommit.
+	self assert: self projectsPresenter remoteAutoCommit.
+	self assert: self projectsPresenter autoCommit.
+	self assert: methodListPresenter autoCommit.
+	self assert: transcript autoCommit.
+	methodListPresenter flipAutoCommit.
+	self deny: (autoCommit := self projectsPresenter remoteAutoCommit).
+	self deny: self projectsPresenter autoCommit.
+	self deny: methodListPresenter autoCommit.
+	self deny: transcript autoCommit.
+	transcript flipAutoCommit.
+	self assert: self projectsPresenter remoteAutoCommit.
+	self assert: self projectsPresenter autoCommit.
+	self assert: methodListPresenter autoCommit.
+	self assert: transcript autoCommit.
+!
+
 test_autoDirtyDisplayMoveMethodsToCategory
 	self testsIssue: #issue16 withTitle: 'Review/revisit semantics of font color/italic/bold etc.'.
 	self selectServicesNamed: #('RowanSample1') in: self projectListPresenter.
@@ -3381,6 +3407,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addPackageReloadProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveHierarchyCategory!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommit!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_blankCategoryRenameInvalid!public!test categories! !

@@ -145,7 +145,6 @@ package methodNames
 	add: #JadeNavigationInspector -> #browseClass;
 	add: #JadeNavigationInspector -> #setNewInspectedObject;
 	add: #JadePresenter -> #abortTransaction;
-	add: #JadePresenter -> #autoCommit;
 	add: #JadePresenter -> #basicCloneProject:root:;
 	add: #JadePresenter -> #browseHierarchyImplementorsOf:className:;
 	add: #JadePresenter -> #browseHierarchySendersOf:className:;
@@ -163,6 +162,7 @@ package methodNames
 	add: #JadePresenter -> #openDictionaryBrowserOn:selector:;
 	add: #JadePresenter -> #openProjectBrowserOn:selector:;
 	add: #JadePresenter -> #refreshGlobalSelections;
+	add: #JadePresenter -> #remoteAutoCommit;
 	add: #JadePresenter -> #reportCompileError:in:;
 	add: #JadePresenter -> #update:afterStonReplication:;
 	add: #JadePresenterA -> #clearBreakPointAt:in:;
@@ -1616,15 +1616,6 @@ abortTransaction
 	self issueCommand: (Array with: browserService). 
 	Sound informationBeep!
 
-autoCommit
-	| answeringService |
-	answeringService := RowanAnsweringService new.
-	answeringService
-		command: #autoCommit;
-		commandArgs: Array new.
-	self issueCommand: (Array with: answeringService).
-	^answeringService answer!
-
 basicCloneProject: path root: root
 	| service |
 	service := RowanProjectService new.
@@ -1754,6 +1745,15 @@ refreshGlobalSelections
 	BrowserUpdate current updateServices: BrowserUpdate current selectedServices
 		session: self gciSession!
 
+remoteAutoCommit
+	| answeringService |
+	answeringService := RowanAnsweringService new.
+	answeringService
+		command: #autoCommit;
+		commandArgs: Array new.
+	self issueCommand: (Array with: answeringService).
+	^answeringService answer!
+
 reportCompileError: anArrayOfArray in: methodSourcePresenter
 
 	| source position stream string indicators |
@@ -1783,7 +1783,6 @@ reportCompileError: anArrayOfArray in: methodSourcePresenter
 update: services afterStonReplication: stonResults
 	^BrowserUpdate current update: services afterStonReplication: stonResults! !
 !JadePresenter categoriesFor: #abortTransaction!public!transaction management! !
-!JadePresenter categoriesFor: #autoCommit!browsing support!public! !
 !JadePresenter categoriesFor: #basicCloneProject:root:!menu handlers!private! !
 !JadePresenter categoriesFor: #browseHierarchyImplementorsOf:className:!browsing!public! !
 !JadePresenter categoriesFor: #browseHierarchySendersOf:className:!browsing!public! !
@@ -1801,6 +1800,7 @@ update: services afterStonReplication: stonResults
 !JadePresenter categoriesFor: #openDictionaryBrowserOn:selector:!browsing!public! !
 !JadePresenter categoriesFor: #openProjectBrowserOn:selector:!browsing!public! !
 !JadePresenter categoriesFor: #refreshGlobalSelections!menu handlers!public! !
+!JadePresenter categoriesFor: #remoteAutoCommit!browsing support!public! !
 !JadePresenter categoriesFor: #reportCompileError:in:!compile support!public! !
 !JadePresenter categoriesFor: #update:afterStonReplication:!browsing support!public! !
 

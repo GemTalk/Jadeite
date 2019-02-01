@@ -370,11 +370,15 @@ serviceNamed: name in: presenter
 	^service!
 
 setUp
+	| browserService |
 	super setUp.
 	session := JadeiteTestResource current session.
 	transcript := JadeiteTestResource current transcript.
-	transcript autoCommit: false.
-	self ensureRowanSample1Loaded. !
+	browserService := RowanBrowserService new
+				command: #autoCommit:;
+				commandArgs: (Array with: false).
+	self issueCommand: browserService.
+	self ensureRowanSample1Loaded!
 
 testsIssue: aSymbol withTitle: anObject
 	"send this to help identify which tests test which issues"
