@@ -348,6 +348,26 @@ test_addRemoveHierarchyCategory
 	self projectsPresenter basicRemoveMethodCategories.
 	self deny: (self categoryListPresenter list includes: 'jadeite test')!
 
+test_addSubclass
+	self testsIssue: #issue422
+		withTitle: '(3.0.58) Add subclass in hierachy view adds to wrong class (or does not work)'.
+	self selectRowanSample1Test.
+	self selectHierarchyTab.
+	self selectClassInHierarchyNamed: 'TestCase'.
+	
+	[self projectsPresenter addSubclass.
+	self assert: self projectsPresenter classDefinitionPresenter value
+		equals: 'TestCase rwSubclass: ''NewSubclass''
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''(NONE)''
+	options: #()
+'
+				replaceCrLfWithLf]
+			ensure: [self projectsPresenter classDefinitionPresenter view isModified: false]!
+
 test_autoCommit
 	| methodListPresenter autoCommit |
 	self testsIssue: #issue421 withTitle: 'Need a way to know if you are in autocommit'.
@@ -3452,6 +3472,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addPackageReloadProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveHierarchyCategory!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_addSubclass!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommit!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!tests! !

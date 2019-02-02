@@ -34,7 +34,7 @@ addPackageDictionaryInfoTo: aStream
 
 addSubclass
 	| classService answerService |
-	classService := classListPresenter selectionOrNil ifNil: [^self].
+	classService := self selectedClass ifNil: [^self].
 	classService
 		command: #subclassCreationTemplate;
 		commandArgs: Array new. 
