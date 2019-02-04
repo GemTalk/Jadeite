@@ -44,13 +44,18 @@ updateClassList
 	list size >= 1 ifTrue: [
 		classListPresenter selectionByIndex: 1.
 	].
-! !
+!
+
+updateList
+
+	^self updateClassList! !
 !JadeFindClassDialog categoriesFor: #createComponents!private! !
 !JadeFindClassDialog categoriesFor: #createSchematicWiring!private! !
 !JadeFindClassDialog categoriesFor: #initializeAvailable!private! !
 !JadeFindClassDialog categoriesFor: #ok!private! !
 !JadeFindClassDialog categoriesFor: #onViewOpened!private! !
 !JadeFindClassDialog categoriesFor: #updateClassList!private! !
+!JadeFindClassDialog categoriesFor: #updateList!public! !
 
 !JadeFindClassDialog class methodsFor!
 
