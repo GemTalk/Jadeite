@@ -10,6 +10,11 @@ JadeFindClassDialog comment: ''!
 !JadeFindClassDialog categoriesForClass!Unclassified! !
 !JadeFindClassDialog methodsFor!
 
+classListPresenter
+	"for testing"
+
+	^classListPresenter!
+
 createComponents
 
 	super createComponents.
@@ -49,6 +54,7 @@ updateClassList
 updateList
 
 	^self updateClassList! !
+!JadeFindClassDialog categoriesFor: #classListPresenter!private! !
 !JadeFindClassDialog categoriesFor: #createComponents!private! !
 !JadeFindClassDialog categoriesFor: #createSchematicWiring!private! !
 !JadeFindClassDialog categoriesFor: #initializeAvailable!private! !

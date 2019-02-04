@@ -80,6 +80,14 @@ test_browseReferencesInDictionaryBrowser
 	self assert: ('*Date*' match: source)]
 			ensure: [methodListBrowser destroy]!
 
+test_findClass
+	| methodListSize unopenedDialog |
+	self testsIssue: #issue430 withTitle: '(3.0.60) Find Class in system browser recently broken'.
+	self selectDictionary: 'RowanKernel'.
+	self selectClass: 'RowanAnsweringService'.
+	unopenedDialog := JadeFindClassDialog create: 'ThreeColumnView' on: dictionaryBrowser currentCard findClassList.
+	[self assert: unopenedDialog classListPresenter list size equals: dictionaryBrowser currentCard findClassList size] ensure: [unopenedDialog destroy]!
+
 test_menusDontAddBreaks
 	"not a great test, but make sure we don't add a breakpoint menu item in 
 	the menu bar"
@@ -111,6 +119,7 @@ test_selectTestClass
 !JadeiteDictionaryBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteDictionaryBrowserTestCase categoriesFor: #test_browseReferences!public!test! !
 !JadeiteDictionaryBrowserTestCase categoriesFor: #test_browseReferencesInDictionaryBrowser!public!test! !
+!JadeiteDictionaryBrowserTestCase categoriesFor: #test_findClass!public!test! !
 !JadeiteDictionaryBrowserTestCase categoriesFor: #test_menusDontAddBreaks!public!test!test menus! !
 !JadeiteDictionaryBrowserTestCase categoriesFor: #test_selectTestClass!public!test! !
 
