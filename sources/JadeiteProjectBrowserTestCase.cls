@@ -1453,6 +1453,14 @@ test_findMethodShowsOnlyOneSide
 				detect: [:methodService | methodService selector = #answer:]
 				ifNone: []). !
 
+test_findMethodSUnitBrowser
+	"make sure find method works when sunit is open" 
+	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectSUnitTab.
+	self assert: self projectsPresenter findMethod equals: self projectsPresenter. "error occurred just calling the method" !
+
 test_gitBranchesDoesNotShowHead
 	"this may be a brittle test because it assumes RowanSample1 has only the master branch.
 	But it's based on the local checkout so the test runner can control this. "
@@ -3516,6 +3524,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodDoesNothingWhenClassNotSelected!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodShowsAllMethods!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodShowsOnlyOneSide!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodSUnitBrowser!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gitBranchesDoesNotShowHead!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromHierarchy!public!test class hierarchy!test defined package! !

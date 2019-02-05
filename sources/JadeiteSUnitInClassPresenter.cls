@@ -49,6 +49,10 @@ findClass
 
 	^parentPresenter findClass!
 
+findMethod
+
+	^parentPresenter findMethod!
+
 jadeBrowseTests
 
 	^parentPresenter topShell jadeBrowseTests!
@@ -117,6 +121,7 @@ runSelected
 !JadeiteSUnitInClassPresenter categoriesFor: #editSave!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #editSelectAll!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #findClass!menu handlers support!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #findMethod!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #jadeBrowseTests!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #jadeDebug!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #jadeDisplay!menu handlers support!public! !
