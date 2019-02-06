@@ -121,6 +121,7 @@ package methodNames
 	add: #JadeiteSUnitAbstractPresenter -> #methodListPresenter;
 	add: #JadeiteSUnitAbstractPresenter -> #methodListPresenter:;
 	add: #JadeiteSUnitInClassPresenter -> #registerPresentersForUpdates;
+	add: #JadeiteSUnitInClassPresenter -> #testClassService;
 	add: #JadeiteSUnitInClassPresenter -> #testClassService:;
 	add: #JadeiteSUnitPresenter -> #browseClass;
 	add: #JadeiteSUnitPresenter -> #browseMethods;
@@ -1372,6 +1373,10 @@ methodListPresenter: anObject
 registerPresentersForUpdates
 	BrowserUpdate current register: methodListPresenter		selector: #testResultUpdate:.!
 
+testClassService
+
+	^testClassService!
+
 testClassService: classService
 	| listModel |
 	testClassService := classService.
@@ -1384,6 +1389,7 @@ testClassService: classService
 				ifFalse: [ListModel withAll: classService visibleTests].
 	methodListPresenter model: listModel! !
 !JadeiteSUnitInClassPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
+!JadeiteSUnitInClassPresenter categoriesFor: #testClassService!accessing!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #testClassService:!accessing!public! !
 
 !JadeiteSUnitPresenter methodsFor!

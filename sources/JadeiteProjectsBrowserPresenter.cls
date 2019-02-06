@@ -1978,7 +1978,7 @@ updateSingleMethodSource
 updateSUnitTab
 	self selectedClass
 		ifNil: [sunitPresenter testClassService: nil]
-		ifNotNil: [:service | self setTestClass: service]!
+		ifNotNil: [:service | sunitPresenter testClassService ifNil: [self setTestClass: service]]!
 
 updateSUnitTab: service
 	service ifNil: [sunitPresenter testClassService: nil] ifNotNil: [self setTestClass: service]!

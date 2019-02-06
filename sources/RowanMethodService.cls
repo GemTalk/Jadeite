@@ -304,7 +304,7 @@ setPassed
 shouldReplicateInstVarAtIndex: index newService: newService
 	| isTestResultInstVar |
 	isTestResultInstVar := (self class indexOfInstVar: 'testResult') = index.
-	^isTestResultInstVar not or: [isTestResultInstVar and: [(newService instVarAt: index) notNil]]!
+	^isTestResultInstVar not or: [ isTestResultInstVar and: [(newService instVarAt: index) notNil]]!
 
 sortAspect
 

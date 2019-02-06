@@ -461,6 +461,30 @@ test_selectCategoryInProjectBrowserDoesNotUpdateSunitBrowser
 
 !
 
+test_selectClassDoesNotLoseTestResults
+	| secondBrowser |
+	self testsIssue: #issue432
+		withTitle: 'Fix for cross-browser clearing test results is incomplete in 3.0.60'.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self projectsPresenter selectSUnitTab.
+	secondBrowser := JadeiteProjectsSystemBrowser showOnSession: session.
+	
+	[
+	self projectsPresenter sunitPresenter runAll.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult
+		equals: 'passed'.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list second testResult
+		equals: 'passed'.
+	self selectServiceNamed: 'RowanSample1' in: secondBrowser currentCard projectListPresenter .
+	self selectServiceNamed: 'RowanSample1-Tests' in: secondBrowser currentCard packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: secondBrowser currentCard classListPresenter.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult
+		equals: 'passed'.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list second testResult
+		equals: 'passed']
+			ensure: [secondBrowser destroy]!
+
 test_selectInProjectBrowserDoesNotUpdateSunitBrowser
 	| sunitDisplayedMethodCount sunitDisplaySelectors |
 	self testsIssue: #issue395 withTitle: '(3.0.54) Sunit can display non-test methods'.
@@ -673,6 +697,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_runClassTests!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_saveMethodInProjectBrowser!public!test updates from other browsers!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_selectCategoryInProjectBrowserDoesNotUpdateSunitBrowser!public!test updates from other browsers!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_selectClassDoesNotLoseTestResults!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_selectInProjectBrowserDoesNotUpdateSunitBrowser!public!test updates from other browsers!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_selectMethodFromProjectBrowser!public!test updates from other browsers!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanPackages!public!tests! !
