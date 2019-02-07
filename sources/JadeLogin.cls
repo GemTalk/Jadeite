@@ -313,7 +313,6 @@ updateFrom: aJadeLogin
 	gemType 		:= aJadeLogin gemType.
 	gemHost 		:= aJadeLogin gemHost.
 	gemService 	:= aJadeLogin gemService.
-	self halt. 
 	gemTask 		:= aJadeLogin gemTask.
 	gemNRS 		:= aJadeLogin gemNRS.
 	loginType		:= aJadeLogin loginType.
