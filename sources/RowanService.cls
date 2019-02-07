@@ -261,7 +261,7 @@ testClasses: presenter!
 
 testPackages: presenter!
 
-testResultUpdate: presenter
+testResultUpdate: presenter browser: anObject
 	!
 
 toolTip
@@ -382,7 +382,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #superclassListUpdate:!public!updating! !
 !RowanService categoriesFor: #testClasses:!public!updating! !
 !RowanService categoriesFor: #testPackages:!public!updating! !
-!RowanService categoriesFor: #testResultUpdate:!public!updating! !
+!RowanService categoriesFor: #testResultUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #toolTip!printing!public! !
 !RowanService categoriesFor: #updateClassCategorySelectionsFor:!public!updating! !
 !RowanService categoriesFor: #updateClassHierarchySelectionFor:!public!updating! !

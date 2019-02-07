@@ -112,7 +112,11 @@ runAndMesureTime
 	MessageBox notify: timeMessage contents!
 
 runSelected
-	self runTests: methodListPresenter selection in: testClassService name! !
+	self runTests: methodListPresenter selection in: testClassService name!
+
+selectedClass
+
+	^self parentPresenter selectedClass! !
 !JadeiteSUnitInClassPresenter categoriesFor: #addSystemBrowser!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #browseIt!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #debug!public! !
@@ -134,6 +138,7 @@ runSelected
 !JadeiteSUnitInClassPresenter categoriesFor: #runAll!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #runAndMesureTime!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #runSelected!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #selectedClass!accessing!public! !
 
 !JadeiteSUnitInClassPresenter class methodsFor!
 

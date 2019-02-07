@@ -99,6 +99,10 @@ selectClassNamed: name
 	classService := classListPresenter list detect: [:service | service name = name] ifNone: [^self].
 	classListPresenter selection: classService!
 
+selectedClass
+
+	^classListPresenter selectionOrNil!
+
 selectedFilters
 	"no categories in sunit browser"
 	^Array new !
@@ -148,6 +152,7 @@ testClassesSize
 !JadeiteSUnitPresenter categoriesFor: #runAll!public! !
 !JadeiteSUnitPresenter categoriesFor: #runSelected!public! !
 !JadeiteSUnitPresenter categoriesFor: #selectClassNamed:!public!selection! !
+!JadeiteSUnitPresenter categoriesFor: #selectedClass!accessing!public! !
 !JadeiteSUnitPresenter categoriesFor: #selectedFilters!accessing!public! !
 !JadeiteSUnitPresenter categoriesFor: #selectMethodNamed:!public!selection! !
 !JadeiteSUnitPresenter categoriesFor: #selectPackageNamed:!public!selection! !

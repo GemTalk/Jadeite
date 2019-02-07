@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superSource superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod'
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superSource superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -65,9 +65,9 @@ appendToSourceMenu: aMenu presenter: methodSourcePresenter
 	aMenu addCommand: menuCommand description: 'Browse Senders of ' , messageSelector printString!
 
 basicPrepareForReplication
-	"don't iterate over subcollections"
 	stepPoints := Array new.
-	breakPoints := Array new!
+	breakPoints := Array new.
+	testRunClassName := nil!
 
 basicSubSuperIcon
 	hasSupers ifTrue: [^JadeSystemBrowserPresenter overriddenIcon].
@@ -373,12 +373,12 @@ testResult
 testResult: anObject
 	testResult := anObject!
 
-testResultUpdate: presenter
+testResultUpdate: presenter browser: browser
 	| existingService |
-	existingService := presenter list detect: [:methodService | methodService = self] ifNone:[^self]. 
-	existingService replicateFrom: self. 
-	presenter view invalidate. 
-!
+	existingService := presenter list detect: [:methodService | methodService = self] ifNone: [^self].
+	browser selectedClass name = testRunClassName ifFalse:[^self].
+	existingService replicateFrom: self.
+	presenter view invalidate!
 
 toolTip
 	| ws |
@@ -487,7 +487,7 @@ user: anObject
 !RowanMethodService categoriesFor: #superSource:!accessing!private! !
 !RowanMethodService categoriesFor: #testResult!accessing!public! !
 !RowanMethodService categoriesFor: #testResult:!accessing!public! !
-!RowanMethodService categoriesFor: #testResultUpdate:!public!updating! !
+!RowanMethodService categoriesFor: #testResultUpdate:browser:!public!updating! !
 !RowanMethodService categoriesFor: #toolTip!accessing!displaying!private! !
 !RowanMethodService categoriesFor: #unimplementedSelectors!public! !
 !RowanMethodService categoriesFor: #updateSelectorFromCompiledMethod:!private! !

@@ -525,7 +525,7 @@ RowanService subclass: #RowanFrameService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superSource superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod'
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superSource superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1371,7 +1371,7 @@ methodListPresenter: anObject
 !JadeiteSUnitInClassPresenter methodsFor!
 
 registerPresentersForUpdates
-	BrowserUpdate current register: methodListPresenter		selector: #testResultUpdate:.!
+	BrowserUpdate current register: methodListPresenter selector: #testResultUpdate:browser: browser: self.!
 
 testClassService
 
@@ -1465,7 +1465,7 @@ registerPresentersForUpdates
 	BrowserUpdate current register: packageListPresenter selector: #testPackages:.
 	BrowserUpdate current register: classListPresenter 	selector: #testClasses:.
 	BrowserUpdate current register: methodListPresenter selector: #sunitMethodsUpdate:browser: browser: self.
-	BrowserUpdate current register: methodListPresenter selector: #testResultUpdate:.
+	BrowserUpdate current register: methodListPresenter selector: #testResultUpdate:browser: browser: self.
 	BrowserUpdate current register: packageListPresenter selector: #aborted:browser: browser: self!
 
 update: newMethods orRemove: removals

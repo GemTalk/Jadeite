@@ -987,6 +987,10 @@ onDropOnMethodCategory: aSession
 	targetCategory := aSession suggestedTarget trimBlanks.
 	self moveMethods: methodServices toCategory: targetCategory!
 
+onSetFocus
+	"updateProcess was hanging around on test runs. Don't think 
+	it was needed in Jadeite anyway"!
+
 onSetFocus: aView stack: aString
 
 	"no need for constant trips to the server"!
@@ -2110,6 +2114,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropMethodsOnClassHierarchy:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropOnClassList:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropOnMethodCategory:!drag & drop!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #onSetFocus!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onSetFocus:stack:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
