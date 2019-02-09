@@ -383,6 +383,10 @@ setUp
 	self setAutoCommit: false.
 	self ensureRowanSample1Loaded!
 
+tearDown
+	super tearDown.
+	SessionManager inputState pumpMessages.!
+
 testsIssue: aSymbol withTitle: anObject
 	"send this to help identify which tests test which issues"
 
@@ -478,6 +482,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #serviceNamed:in:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #setAutoCommit:!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
+!JadeiteAbstractTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #testsIssue:withTitle:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #transcript!public!transcript support! !
 !JadeiteAbstractTestCase categoriesFor: #transcriptProjectList!public!transcript support! !

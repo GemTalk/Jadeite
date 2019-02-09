@@ -37,7 +37,8 @@ test_abortRemovesProjectsInAllBrowsers
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded]
 			ensure: 
-				[projectsBrowser destroy.
+				[SessionManager inputState pumpMessages.
+				projectsBrowser destroy.
 				sunitBrowser destroy]!
 
 test_abortTransaction

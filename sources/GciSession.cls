@@ -832,16 +832,17 @@ withExplanation: aString doA: aBlock
 		haveResult ifTrue: [^result].
 		isHandlingClientForwarderSend.
 	] whileTrue: [].
-	dialog := WaitOnGemStoneDialog
+	"dialog := WaitOnGemStoneDialog
 		gciSession: self 
 		message: aString
-		havingWaited: 1.
+		havingWaited: 1."
 	[
 		SessionManager inputState loopWhile: [shouldRunEventLoop].
 		shouldRunEventLoop := true.
-		dialog view close.
+		"dialog view close."
 	] newProcess name: 'GciSession>>withExplanation:doA: - 3'; resume.
-	dialog showModal.
+	"dialog showModal."
+	[result isNil] whileTrue:[(Delay forMilliseconds: 1) wait].
 	SessionManager inputState pumpMessages.
 	^result.
 ! !

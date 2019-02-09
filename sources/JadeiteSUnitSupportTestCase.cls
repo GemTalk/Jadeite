@@ -57,7 +57,7 @@ selectSUnitBrowserMethodsNamed: selectors
 	^methodServices!
 
 setUp
-	super setUp. 
+	super setUp.
 	sunitBrowser := self openWindow: [transcript jadeBrowseTests].
 	transcript projectListPresenter refresh!
 
@@ -119,7 +119,7 @@ sunitPresenter
 	^sunitBrowser primaryPresenter!
 
 tearDown
-	sunitBrowser destroy.!
+	self assert:  sunitBrowser view close.!
 
 test_abortNoSelections
 	| abortCommand |

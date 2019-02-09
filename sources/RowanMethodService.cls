@@ -376,7 +376,7 @@ testResult: anObject
 testResultUpdate: presenter browser: browser
 	| existingService |
 	existingService := presenter list detect: [:methodService | methodService = self] ifNone: [^self].
-	browser selectedClass name = testRunClassName ifFalse:[^self].
+	testRunClassName ifNotNil: [browser selectedClass name = testRunClassName ifFalse: [^self]].
 	existingService replicateFrom: self.
 	presenter view invalidate!
 

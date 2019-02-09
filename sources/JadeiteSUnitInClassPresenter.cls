@@ -115,7 +115,6 @@ runSelected
 	self runTests: methodListPresenter selection in: testClassService name!
 
 selectedClass
-
 	^self parentPresenter selectedClass! !
 !JadeiteSUnitInClassPresenter categoriesFor: #addSystemBrowser!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #browseIt!public! !

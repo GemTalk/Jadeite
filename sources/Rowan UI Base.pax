@@ -510,7 +510,7 @@ RowanService subclass: #RowanBrowserService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanClassService
-	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass'
+	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1469,6 +1469,7 @@ registerPresentersForUpdates
 	BrowserUpdate current register: packageListPresenter selector: #aborted:browser: browser: self!
 
 update: newMethods orRemove: removals
+	| listModel |
 	methodListPresenter model do: 
 			[:existing |
 			| new |
@@ -1479,11 +1480,12 @@ update: newMethods orRemove: removals
 			new
 				ifNotNil: 
 					[existing replicateFrom: new.
-					new replicateFrom: existing. 
-					newMethods remove: new. "order matters so we get the right test result"]].
-	methodListPresenter model addAll: newMethods.
-	removals do:[:removedService |
-		methodListPresenter model remove: removedService ifAbsent:[]].!
+					new replicateFrom: existing.
+					newMethods remove: new	"order matters so we get the right test result"]].
+	listModel := ListModel withAll: ((methodListPresenter model union: newMethods)
+						asSortedCollection: [:x :y | x selector < y selector]).
+	listModel removeAll: removals. 
+	methodListPresenter model: listModel.!
 
 updateClasses
 	| packageServices |
@@ -1493,9 +1495,15 @@ updateClasses
 	self issueCommand: packageServices!
 
 updateMethods
-	| classServices |
+	| classServices browserServices |
 	classServices := classListPresenter selections.
-	self updateServices: classServices.
+	classServices do: 
+			[:service |
+			service
+				updateAfterCommand: false;
+				command: #fastRefresh].
+	self issueCommand: classServices.
+	classServices do: [:service | service updateAfterCommand: true].
 	^self updateMethodsFrom: classServices!
 
 updateMethodsFrom: classServices
@@ -1509,7 +1517,7 @@ updateMethodsFrom: classServices
 	self update: newMethods orRemove: removals.
 	methodListPresenter selections: (methodListPresenter model
 				select: [:methodService | selectedSelectors includes: methodService selector]).
-	methodListPresenter view invalidate. !
+	methodListPresenter view invalidate!
 
 updatePackages
 	| browserService |

@@ -82,7 +82,6 @@ openNormalInspector
 !
 
 queryCommand: query
-	(super queryCommand: query) ifTrue:[^true].
 	query command == #getPreviousObject
 		ifTrue: 
 			[query isEnabled: objectIndex ~= 1.
@@ -95,7 +94,7 @@ queryCommand: query
 		ifTrue: 
 			[query isEnabled: true.
 			^true].
-	^false!
+	^super queryCommand: query!
 
 removeObject
 

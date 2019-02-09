@@ -1027,13 +1027,15 @@ pkgsMenuStrings
 	'&Unload Package...//unloadPackage')!
 
 populateFilterList
+	| listModel |
+	listModel := ListModel new searchPolicy: SearchPolicy equality.
 	self isCategoryTabSelected
 		ifTrue: 
-			[categoryListPresenter model: (ListModel new searchPolicy: SearchPolicy equality).
-			categoryListPresenter model addAll: self selectedClass categories]
+			[listModel addAll: self selectedClass categories.
+			categoryListPresenter model: listModel]
 		ifFalse: 
-			[variableListPresenter model: (ListModel new searchPolicy: SearchPolicy equality).
-			variableListPresenter model addAll: self selectedClass variables]!
+			[listModel addAll: self selectedClass variables.
+			variableListPresenter model: listModel]!
 
 postOkToChangeEvent
 	| service |
@@ -1360,7 +1362,11 @@ refreshClass
 					^methodListPresenter clear].
 	selection meta: self isClassSideSelected.
 	selection selectedPackageServices: packageListPresenter selections.
-	self updateServices: (Array with: selection).
+	selection
+		updateAfterCommand: false;
+		command: #fastRefresh.
+	self issueCommand: (Array with: selection).
+	selection updateAfterCommand: true.
 	self updateClassInfo!
 
 refreshClassListOrHierarchy

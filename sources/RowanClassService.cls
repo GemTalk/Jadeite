@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanClassService
-	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass'
+	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -332,13 +332,20 @@ template: anObject
 toolTip
 	^'Defined package: ' , self definedPackageName!
 
+updateAfterCommand: boolean
+
+	updateAfterCommand := boolean!
+
 updateCategories: presenter browser: browser
 	"update without losing selections if appropriate"
-	meta = browser isClassSideSelected ifFalse:[^self].
+
+	| copy |
+	meta = browser isClassSideSelected ifFalse: [^self].
+	copy := presenter model.
 	presenter list copy
-		do: [:category | (categories includes: category) ifFalse: [presenter model remove: category]].
-	categories
-		do: [:category | (presenter list includes: category) ifFalse: [presenter model add: category]]!
+		do: [:category | (categories includes: category) ifFalse: [copy remove: category]].
+	categories do: [:category | (presenter list includes: category) ifFalse: [copy add: category]].
+	presenter model: copy!
 
 updatedClass: presenter browser: browser
 	"only project browser should use this"
@@ -380,17 +387,19 @@ updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
 			classHierarchyPresenter model move: node object asChildOf: superclassService]!
 
 updateListIn: presenter from: visibleMethods
-	| updated |
+	| updated copy |
+	copy := presenter model copy. 
 	presenter list copy do: 
 			[:old |
 			updated := visibleMethods detect: [:new | new = old] ifNone: [].
-			updated ifNil: [presenter model remove: old.] ifNotNil: [old replicateFrom: updated]].
+			updated ifNil: [copy remove: old.] ifNotNil: [old replicateFrom: updated]].
 	visibleMethods do: 
 			[:new |
-			updated := presenter list detect: [:old | new = old] ifNone: [].
-			updated ifNil: [presenter model add: new]].
+			updated := copy detect: [:old | new = old] ifNone: [].
+			updated ifNil: [copy add: new]].
 	(presenter parentPresenter class canUnderstand: #updateSUnitTab)
-		ifTrue: [presenter parentPresenter updateSUnitTab]!
+		ifTrue: [presenter parentPresenter updateSUnitTab].
+	presenter model: copy. !
 
 updateVariables: presenter
 	| selections availableSelections |
@@ -466,6 +475,7 @@ visibleTests
 !RowanClassService categoriesFor: #template!accessing!private! !
 !RowanClassService categoriesFor: #template:!accessing!private! !
 !RowanClassService categoriesFor: #toolTip!public! !
+!RowanClassService categoriesFor: #updateAfterCommand:!accessing!public! !
 !RowanClassService categoriesFor: #updateCategories:browser:!private!updating! !
 !RowanClassService categoriesFor: #updatedClass:browser:!public!updating! !
 !RowanClassService categoriesFor: #updatedClassDefinition:browser:!public!updating! !
