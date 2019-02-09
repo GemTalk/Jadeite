@@ -13,7 +13,7 @@ JadeiteDevelopmentSUnitBrowserModel comment: ''!
 runIndividualTests: tests
 	testProcess := 
 			[[self individualTests: tests do: [:each | self runTest: each]] ensure: [self stopTestProcess]]
-					fork!
+					forkAt: Processor activePriority + 1!
 
 stopTestProcess
 	testProcess

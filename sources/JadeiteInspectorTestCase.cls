@@ -29,6 +29,7 @@ inspectInstVarAt: index
 	inspector inspectInstVar. !
 
 tearDown
+	super tearDown.
 	inspector ifNotNil: [inspector view destroy]!
 
 test_abortTransactionInBasicInspector
