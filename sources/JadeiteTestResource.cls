@@ -113,7 +113,7 @@ current
 	^current!
 
 isAvailable
-	^self current isAvailable!
+	^[self current isAvailable] on: Error do: [:ex | false]!
 
 signalInitializationError
 	"TestSuite>>run: in the SUnit pacakge sends this method

@@ -59,6 +59,9 @@ assertLinearAncestry: family in: presenter
 			self assert: (presenter model childrenOf: parentNode) size equals: 1. 
 			self assert: (presenter model childrenOf: parentNode) first equals: childNode]!
 
+currentTabView
+	^self projectsPresenter topShell cardsPresenter view cardLayout currentCard!
+
 dirtyProjectForChangeBrowser
 	self selectRowanSample1Class.
 	self modifySampleMethodFoo.
@@ -119,6 +122,15 @@ issue284methodCreation
 	self methodSourcePresenter value: 'addedMethod  ^5'.
 	self projectsPresenter editSaveMethod: self classListPresenter selection!
 
+loadProjectNamed: projectName
+	| browserService projectService |
+	browserService := RowanBrowserService new.
+	projectService := RowanProjectService new name: projectName.
+	browserService
+		command: #reloadProjects:andUpdateServices:;
+		commandArgs: (Array with: (Array with: projectService) with: BrowserUpdate current selectedServices).
+	JadePresenter issueCommand: (Array with: browserService) session: session!
+
 modifySampleMethodFoo
 
 	| source |
@@ -130,6 +142,9 @@ modifySampleMethodFoo
 
 	!
 
+nextTabView
+	self projectsPresenter topShell cardsPresenter view cardLayout cycleNextCard!
+
 openSecondBrowser
 	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
 	secondBrowser caption: 'second browser'.
@@ -140,6 +155,9 @@ packageNamed: aString
 	^self packageListPresenter list
 		detect: [:projectService | projectService name = aString]
 		ifNone: []!
+
+previousTabView
+	self projectsPresenter topShell cardsPresenter view cardLayout cyclePreviousCard!
 
 projectList
 	^self projectListPresenter list!
@@ -877,21 +895,21 @@ test_definedClassMenuItem
 test_dontChangeTabOnMethodSave
 	| source firstTab secondTab |
 	self testsIssue: #issue412 withTitle: '(3.0.56) incorrect project browser update on method accept '.
-	firstTab := self projectsPresenter topShell cardsPresenter view cardLayout currentCard.
+	firstTab := self currentTabView.
 	self selectRowanSample1Class.
 	self selectMethodNamed: #foo.
 	self projectsPresenter addSystemBrowser.
-	secondTab :=self projectsPresenter topShell cardsPresenter view cardLayout currentCard.
+	secondTab := self currentTabView.
 	self selectRowanSample1Class.	"select class/method in new tab"
 	self selectMethodNamed: #foo.
-	self projectsPresenter topShell cardsPresenter view cardLayout cyclePreviousCard.	"go to tab 1"
+	self previousTabView.	"go to tab 1"
 	source := 'foo ^''fooChanged'''.
 	self methodSourcePresenter value: source.
 	self projectsPresenter editSaveMethod: self classListPresenter selection.
 	self assert: self methodSourcePresenter value equals: source.
-	self assert: self projectsPresenter topShell cardsPresenter view cardLayout currentCard sameAs: firstTab. "still on tab 1"
-	self projectsPresenter topShell cardsPresenter view cardLayout cycleNextCard.	"go to tab 2"
-	self assert: self projectsPresenter topShell cardsPresenter view cardLayout currentCard sameAs: secondTab.
+	self assert: self currentTabView sameAs: firstTab.	"still on tab 1"
+	self nextTabView.	"go to tab 2"
+	self assert: self currentTabView sameAs: secondTab.
 	self assert: self methodSourcePresenter value equals: source!
 
 test_dontUpdateWithDifferentMeta
@@ -1126,7 +1144,7 @@ test_duplicateInstVars
 		withInstVars: #('aa')
 		package: 'RowanSample1-Tests'.
 	self assert: ('ERROR: *' match: self projectsPresenter topShell statusBarText).
-	self projectsPresenter classDefinitionPresenter view isModified: false!
+	self projectsPresenter classDefinitionPresenter view isModified: false.!
 
 test_duplicateInstVarsHierarchy
 	self testsIssue: #issue228
@@ -3448,15 +3466,19 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodHoo!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #assertAncestry:in:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #assertLinearAncestry:in:!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #currentTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #dirtyProjectForChangeBrowser!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #family:ofNodesIn:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue261createTestProject!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue284methodCreation!issue test support!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #loadProjectNamed:!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #modifySampleMethodFoo!dirty project!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #nextTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #openSecondBrowser!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #packageNamed:!private!project support! !
+!JadeiteProjectBrowserTestCase categoriesFor: #previousTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectList!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectNamed:!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #queryCommand:inPresenter:view:!private! !

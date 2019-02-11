@@ -1378,16 +1378,12 @@ testClassService
 	^testClassService!
 
 testClassService: classService
-	| listModel |
+	classService ifNil: [^self].
 	testClassService := classService.
-	"self reset."
 	textResultPresenter value: String new.
 	methodListPresenter view invalidate.
 	textResultPresenter view backcolor: Color face3d.
-	listModel := testClassService isNil
-				ifTrue: [ListModel new]
-				ifFalse: [ListModel withAll: classService visibleTests].
-	methodListPresenter model: listModel! !
+	classService updateListIn: methodListPresenter from: classService visibleTests! !
 !JadeiteSUnitInClassPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteSUnitInClassPresenter categoriesFor: #testClassService!accessing!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #testClassService:!accessing!public! !

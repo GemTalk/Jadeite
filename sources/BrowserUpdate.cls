@@ -39,7 +39,7 @@ basicIssueCommand: services session: session
 !
 
 basicUpdateServices: services session: session
-	| stonString stonResults |
+	| stonString stonResults result |
 	services do: 
 			[:service |
 			service
@@ -47,7 +47,8 @@ basicUpdateServices: services session: session
 				command: nil	"updates don't have commands"].
 	stonString := STON toString: services.
 	stonResults := session serverPerform: #updateFromSton: with: stonString.
-	^self update: services afterStonReplication: stonResults!
+	result := self update: services afterStonReplication: stonResults.
+	^result!
 
 debug
 	^debug!
@@ -76,7 +77,6 @@ inUpdate: anObject
 issueCommand: services session: session
 	inUpdate ifTrue: [^self].
 	inUpdate := true.
-	
 	[[Cursor wait showWhile: [^self basicIssueCommand: services session: session]]
 		ensure: [inUpdate := false]]
 			ifCurtailed: [inUpdate := false]!

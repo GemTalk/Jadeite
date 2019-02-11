@@ -337,15 +337,16 @@ updateAfterCommand: boolean
 	updateAfterCommand := boolean!
 
 updateCategories: presenter browser: browser
-	"update without losing selections if appropriate"
+	"Update without losing selections. If no selections, 
+	just update a copy then replace the original."
 
-	| copy |
+	| theModel |
 	meta = browser isClassSideSelected ifFalse: [^self].
-	copy := presenter model.
+	theModel := presenter hasSelection ifTrue: [presenter model] ifFalse: [presenter model copy].
 	presenter list copy
-		do: [:category | (categories includes: category) ifFalse: [copy remove: category]].
-	categories do: [:category | (presenter list includes: category) ifFalse: [copy add: category]].
-	presenter model: copy!
+		do: [:category | (categories includes: category) ifFalse: [theModel remove: category]].
+	categories do: [:category | (presenter list includes: category) ifFalse: [theModel add: category]].
+	presenter hasSelection ifFalse: [presenter model: theModel]!
 
 updatedClass: presenter browser: browser
 	"only project browser should use this"
@@ -387,19 +388,22 @@ updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
 			classHierarchyPresenter model move: node object asChildOf: superclassService]!
 
 updateListIn: presenter from: visibleMethods
-	| updated copy |
-	copy := presenter model copy. 
+	| updated copy selections newSelections |
+	selections := presenter selections.
+	copy := presenter model copy.
 	presenter list copy do: 
 			[:old |
 			updated := visibleMethods detect: [:new | new = old] ifNone: [].
-			updated ifNil: [copy remove: old.] ifNotNil: [old replicateFrom: updated]].
+			updated ifNil: [copy remove: old] ifNotNil: [old replicateFrom: updated]].
 	visibleMethods do: 
 			[:new |
 			updated := copy detect: [:old | new = old] ifNone: [].
 			updated ifNil: [copy add: new]].
 	(presenter parentPresenter class canUnderstand: #updateSUnitTab)
 		ifTrue: [presenter parentPresenter updateSUnitTab].
-	presenter model: copy. !
+	presenter model: copy.
+	newSelections := presenter model select: [:methodService | selections includes: methodService].
+	presenter selections: newSelections!
 
 updateVariables: presenter
 	| selections availableSelections |
