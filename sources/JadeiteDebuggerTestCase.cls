@@ -100,7 +100,7 @@ openDebuggerOn: aString
 
 	self 
 		assert: RowanDebugger allInstances isEmpty;
-		debuggerDo: [process := [session executeString: aString] fork];		
+		debuggerDo: [process := [session executeString: aString] forkAt: Processor activePriority + 1];		
 		getDebugger;
 		yourself.
 !

@@ -111,6 +111,14 @@ basicProjectTabLabel
 	packageListPresenter selections size > 1 ifTrue: [^label].
 	^packageListPresenter selection name!
 
+basicRemoveClass: selection
+	| packageService |
+	packageService := packageListPresenter selection.
+	packageService
+		command: #removeClass:;
+		commandArgs: (Array with: selection).
+	self issueCommand: (Array with: packageService)!
+
 basicRemoveMethodCategories
 	| service |
 	service := self selectedClass
@@ -1445,14 +1453,10 @@ releasedReferencedServices: selectionChangingEvent
 		ifNotNil: [:service | service releaseReferencedServices]!
 
 removeClass
-	| packageService selection |
-	selection := self selectedClass ifNil:[^self].
+	| selection |
+	selection := self selectedClass ifNil: [^self].
 	(MessageBox confirm: 'Really delete class ' , selection name , '?') ifFalse: [^self].
-	packageService := packageListPresenter selection.
-	packageService
-		command: #removeClass:;
-		commandArgs: (Array with: selection).
-	self issueCommand: (Array with: packageService)!
+	self basicRemoveClass: selection!
 
 removeMethodCategories
 	| selections |
@@ -2023,6 +2027,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicAddMethodCategory:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicOnDropClassList:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicProjectTabLabel!displaying!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveClass:!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethodCategories!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethods!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRenameCategoryFrom:to:!menu handlers!public! !

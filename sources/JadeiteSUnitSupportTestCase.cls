@@ -567,12 +567,70 @@ test_sunitBrowserPassingDebugTestShowsResult
 	self assert: self sunitPresenter methodListPresenter selections size equals: 1.
 	self assert: self sunitPresenter methodListPresenter selections first testResult equals: 'passed'!
 
+test_sunitBrowserUpdateRightClassInHierarchy
+	"inherited test runs don't impact test results of super class test runs"
+
+	self testsIssue: #issue419 withTitle: 'Sunit confused by multiple Sunit tabs in project browser'.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
+	self assert: self sunitPresenter methodListPresenter list first testResult equals: nil.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'RowanSample1TestSubclass'
+		superclass: 'RowanSample1Test'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	
+	[self projectsPresenter selectSUnitTab.
+	self projectsPresenter sunitPresenter runAll.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult
+		equals: 'passed'.
+	self assert: self sunitPresenter methodListPresenter list first testResult equals: nil.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1TestSubclass' in: self sunitPresenter classListPresenter.
+	self projectsPresenter sunitPresenter runAll.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult
+		equals: 'passed'.
+	self assert: self sunitPresenter methodListPresenter list first testResult equals: 'passed']
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass].!
+
+test_sunitBrowserUpdateRightClassInHierarchy2
+	"inherited test runs don't impact test results of super class test runs"
+
+	self testsIssue: #issue419 withTitle: 'Sunit confused by multiple Sunit tabs in project browser'.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
+	self assert: self sunitPresenter methodListPresenter list first testResult equals: nil.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'RowanSample1TestSubclass'
+		superclass: 'RowanSample1Test'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	
+	[self projectsPresenter selectSUnitTab.
+	self projectsPresenter sunitPresenter reset. 
+	self sunitPresenter runAll.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult
+		equals: nil.
+	self assert: self sunitPresenter methodListPresenter list first testResult equals: 'passed'.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1TestSubclass' in: self sunitPresenter classListPresenter.
+	self sunitPresenter runAll.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult
+		equals: 'passed'.
+	self assert: self sunitPresenter methodListPresenter list first testResult equals: 'passed']
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
+
 test_sunitBrowserUpdates
 	self testsIssue: #issue410
 		withTitle: 'Selecting class in Project Browser changes test status icons in SUnit Browser'.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self projectsPresenter sunitPresenter reset. 
 	self selectRowanSample1Test.
 	self projectsPresenter selectSUnitTab.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list first selector
@@ -612,6 +670,7 @@ test_sunitTabUpdates
 	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self projectsPresenter sunitPresenter reset. 
 	self selectRowanSample1Test.
 	self projectsPresenter selectSUnitTab.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list first selector
@@ -704,6 +763,8 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestMethods!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserPassingDebugTestShowsResult!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserUpdateRightClassInHierarchy!public!test updates from other browsers! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserUpdateRightClassInHierarchy2!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserUpdates!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitTabPassingDebugTestShowsResult!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitTabUpdates!public!test updates from other browsers! !

@@ -35,7 +35,6 @@ createView: string
 	^newView!
 
 inspectInstVar	
-self halt. 
 	JadeInspector 
 		showOn: instVarListPresenter selection value 
 		session: gciSession.

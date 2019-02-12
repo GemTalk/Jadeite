@@ -295,7 +295,6 @@ selectionChanging: aSelectionChangingEvent
 	(documentPresenter view isKindOf: DeafObject) ifTrue: [^self].
 	documentPresenter view isModified ifFalse: [^self].
 	documentPresenter view ensureVisible.
-	self halt. 
 	MessageBox 
 		confirm: 'Save changes?' 
 		onYes: 			[aSelectionChangingEvent value: self fileSave] 
