@@ -1617,6 +1617,7 @@ selectMethodsFrom: classService
 
 selectMethodSourceTab
 	| methodSourceTab selection |
+	self halt. 
 	methodSourceTab := self view viewNamed: 'methodSource'.
 	methodListPresenter selectionOrNil ifNotNil: [^methodSourceTab ensureVisible].
 	selection := self isCategoryTabSelected

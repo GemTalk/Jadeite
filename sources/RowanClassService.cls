@@ -388,22 +388,19 @@ updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
 			classHierarchyPresenter model move: node object asChildOf: superclassService]!
 
 updateListIn: presenter from: visibleMethods
-	| updated copy selections newSelections |
-	selections := presenter selections.
-	copy := presenter model copy.
+	| updated theModel |
+	theModel := presenter hasSelection ifTrue: [presenter model] ifFalse: [presenter model copy].
 	presenter list copy do: 
 			[:old |
 			updated := visibleMethods detect: [:new | new = old] ifNone: [].
-			updated ifNil: [copy remove: old] ifNotNil: [old replicateFrom: updated]].
+			updated ifNil: [theModel remove: old] ifNotNil: [old replicateFrom: updated]].
 	visibleMethods do: 
 			[:new |
-			updated := copy detect: [:old | new = old] ifNone: [].
-			updated ifNil: [copy add: new]].
+			updated := theModel detect: [:old | new = old] ifNone: [].
+			updated ifNil: [theModel add: new]].
 	(presenter parentPresenter class canUnderstand: #updateSUnitTab)
 		ifTrue: [presenter parentPresenter updateSUnitTab].
-	presenter model: copy.
-	newSelections := presenter model select: [:methodService | selections includes: methodService].
-	presenter selections: newSelections!
+	presenter hasSelection ifFalse: [presenter model: theModel]!
 
 updateVariables: presenter
 	| selections availableSelections |
