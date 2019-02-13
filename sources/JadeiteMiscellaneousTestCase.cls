@@ -37,6 +37,27 @@ test_dolphinStackDumpBanners
 	self assert: ('*' , timestampString , '*' match: stream contents).
 	self assert: ('*Ending Dolphin stack dump started at*' match: stream contents).!
 
+test_releaseOops
+	| remoteObject service |
+	self testsIssue: #issue413 withTitle: '(3.0.56 & 3.0.62) running out vm memory quickly'.
+	session releaseAllOops.
+	self assert: (session executeString: 'System hiddenSetSize: 39') equals: 0.
+	remoteObject := session executeString: 'Array new'.
+	self assert: (session executeString: 'System hiddenSetSize: 39') = 1.
+	session releaseAllOops.
+	self assert: (session executeString: 'System hiddenSetSize: 39') equals: 0.
+	remoteObject := session executeString: 'Dictionary new'.
+	self assert: (session executeString: 'System hiddenSetSize: 39') = 1.
+	service := RowanAnsweringService new.
+	service command: #isTranscriptInstalled.
+	self issueCommand: service.
+	self assert: (session executeString: 'System hiddenSetSize: 39') equals: 0.
+	remoteObject := session executeString: 'Object new'.
+	self assert: (session executeString: 'System hiddenSetSize: 39') = 1.
+	service := RowanProjectService new name: 'Rowan'.
+	BrowserUpdate current updateServices: (Array with: service) session: session.
+	self assert: (session executeString: 'System hiddenSetSize: 39') equals: 0!
+
 test_symbolsFromSelector
 	| symbols wildAtFrontSymbols |
 	self testsIssue: #issue258
@@ -72,6 +93,7 @@ test_workspaceBrowseProjects
 				projectsBrowser destroy]! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_convertToPattern!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_symbolsFromSelector!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus! !
 
