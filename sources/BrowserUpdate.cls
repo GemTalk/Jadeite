@@ -49,6 +49,7 @@ basicUpdateServices: services session: session
 	stonString := STON toString: services.
 	stonResults := session serverPerform: #updateFromSton: with: stonString.
 	result := self update: services afterStonReplication: stonResults.
+	session releaseAllOops.
 	^result!
 
 debug

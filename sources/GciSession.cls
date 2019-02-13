@@ -797,6 +797,7 @@ withExplanation: aString do: aBlock
 	(result isKindOf: GsError) ifFalse: [^result].
 
 	error := result.
+	self releaseAllOops.
 	result := error signal.
 	result = #'resume' ifFalse: [self error: 'Unrecognized response of ' , result printString].
 	^self
