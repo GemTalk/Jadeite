@@ -442,6 +442,10 @@ privateLogout
 	self trigger: #logoutPending.
 	library ifNotNil: [library logoutSession: gciSessionId]!
 
+releaseAllOops
+	library ifNil: [^self].
+	library releaseAllOopsForSession: gciSessionId!
+
 releaseOop: anOopType
 
 	self releaseOops: (Array with: anOopType).
@@ -895,6 +899,7 @@ withExplanation: aString doA: aBlock
 !GciSession categoriesFor: #oopTypeWithOop:!public! !
 !GciSession categoriesFor: #printString:!Jade convenience!public! !
 !GciSession categoriesFor: #privateLogout!Jade!private! !
+!GciSession categoriesFor: #releaseAllOops!Jade!public! !
 !GciSession categoriesFor: #releaseOop:!Jade convenience!public! !
 !GciSession categoriesFor: #releaseOops:!Jade!public! !
 !GciSession categoriesFor: #returningResultOrErrorDo:!long running!private! !

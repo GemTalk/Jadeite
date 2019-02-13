@@ -118,7 +118,7 @@ test_caption
 	self assert: ('Inspector on SmallInteger for*' match: inspector caption).!
 
 test_captionChange
-	| remoteObject instVarPresenter |
+	| remoteObject |
 	self testsIssue: #issue154 withTitle: 'Change inspector title on dive #154'.
 	remoteObject := session
 				executeString: 'Array with: (Dictionary new at: #oc put: (OrderedCollection with: #leaf); yourself)'
@@ -259,8 +259,8 @@ test_inspectorRootObjectRegistered
 	inspector := JadeInspector showOn: remoteObject session: session.
 	inspectorHandle := inspector view handle value.
 	self assert: (session
-				executeString: 'RowanBrowserService new openWindows at: ' , inspectorHandle printString
-						, ' ifAbsent:[]')
+				executeString: '(RowanBrowserService new openWindows at: ' , inspectorHandle printString
+						, ' ifAbsent:[]) asOop')
 		equals: remoteObject value.
 	inspector view close.
 	self assertIsNil: (session

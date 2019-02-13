@@ -324,6 +324,12 @@ gciPollForSignal
 	^self invalidCall
 !
 
+gciReleaseAllOops
+
+	<cdecl: void GciReleaseAllOops>
+	^self invalidCall
+!
+
 gciReleaseOops: args _: numArgs
 
 	self subclassResponsibility!
@@ -458,6 +464,10 @@ pollForSignalSession: anInteger
 		self signalLastError.
 	].
 !
+
+releaseAllOopsForSession: anInteger
+	self critical: [self gciSetSessionId: anInteger].
+	self gciReleaseAllOops!
 
 sendInterpreted: aString to: anOopType with: anArray session: anInteger
 
@@ -665,6 +675,7 @@ version
 !GciSingleThreadedLibrary categoriesFor: #gciNewString:!private! !
 !GciSingleThreadedLibrary categoriesFor: #gciOopToChr:!private! !
 !GciSingleThreadedLibrary categoriesFor: #gciPollForSignal!private! !
+!GciSingleThreadedLibrary categoriesFor: #gciReleaseAllOops!private! !
 !GciSingleThreadedLibrary categoriesFor: #gciReleaseOops:_:!private! !
 !GciSingleThreadedLibrary categoriesFor: #gciSetNet:_:_:_:!private! !
 !GciSingleThreadedLibrary categoriesFor: #gciSetSessionId:!private! !
@@ -680,6 +691,7 @@ version
 !GciSingleThreadedLibrary categoriesFor: #logoutSession:!public!required! !
 !GciSingleThreadedLibrary categoriesFor: #nbResult!public!to investigate! !
 !GciSingleThreadedLibrary categoriesFor: #pollForSignalSession:!public! !
+!GciSingleThreadedLibrary categoriesFor: #releaseAllOopsForSession:!public!required! !
 !GciSingleThreadedLibrary categoriesFor: #sendInterpreted:to:with:session:!public! !
 !GciSingleThreadedLibrary categoriesFor: #session:clearStack:!public!required! !
 !GciSingleThreadedLibrary categoriesFor: #session:continue:withObject:!public! !

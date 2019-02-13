@@ -30,13 +30,14 @@ activeServices
 	^services!
 
 basicIssueCommand: services session: session
-	| stonString stonResultString |
-	services do:[:service | service prepareForReplication].
+	| stonString stonResultString updateResult |
+	services do: [:service | service prepareForReplication].
 	stonString := STON toString: services.
 	[stonResultString := session serverPerform: #updateFromSton: with: stonString]
 		ensure: [services do: [:service | service clearCommand]].
-	^self update: services afterStonReplication: stonResultString.
-!
+	updateResult := self update: services afterStonReplication: stonResultString.
+	session releaseAllOops.
+	^updateResult!
 
 basicUpdateServices: services session: session
 	| stonString stonResults result |
