@@ -138,7 +138,6 @@ package methodNames
 	add: #JadeiteSUnitPresenter -> #updateMethods;
 	add: #JadeiteSUnitPresenter -> #updateMethodsFrom:;
 	add: #JadeiteSUnitPresenter -> #updatePackages;
-	add: #JadeiteSUnitPresenter -> #updateServices:;
 	add: #JadeLoginShell -> #aboutJadeite;
 	add: #JadeMethodListPresenter -> #newProjectsBrowser;
 	add: #JadeMethodListPresenter -> #newWorkspace;
@@ -165,7 +164,9 @@ package methodNames
 	add: #JadePresenter -> #refreshGlobalSelections;
 	add: #JadePresenter -> #remoteAutoCommit;
 	add: #JadePresenter -> #reportCompileError:in:;
+	add: #JadePresenter -> #serviceFromSelection:;
 	add: #JadePresenter -> #update:afterStonReplication:;
+	add: #JadePresenter -> #updateServices:;
 	add: #JadePresenterA -> #clearBreakPointAt:in:;
 	add: #JadePresenterA -> #cloneProject;
 	add: #JadePresenterA -> #confirmReloadProjects:;
@@ -719,8 +720,7 @@ RowanShell subclass: #RowanPackageShell
 
 browseSelectedClass
 	| shell classService |
-	classService := RowanClassService new name: self currentSelectionOrLine.
-	BrowserUpdate current updateService: classService session: gciSession.
+	classService := self serviceFromSelection: documentPresenter.
 	^classService projectName = RowanService notRowanizedPackageName
 		ifTrue: 
 			[Cursor wait showWhile: 
@@ -1520,10 +1520,7 @@ updatePackages
 	browserService := RowanBrowserService new.
 	browserService command: #packagesWithTests.
 	self issueCommand: (Array with: browserService).
-	testCounter at: 1 put: browserService testCount. !
-
-updateServices: services
-	BrowserUpdate current updateServices: services session: gciSession! !
+	testCounter at: 1 put: browserService testCount. ! !
 !JadeiteSUnitPresenter categoriesFor: #browseClass!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #browseMethods!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #classListPresenter!accessing!private! !
@@ -1539,7 +1536,6 @@ updateServices: services
 !JadeiteSUnitPresenter categoriesFor: #updateMethods!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #updateMethodsFrom:!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #updatePackages!event handlers!public! !
-!JadeiteSUnitPresenter categoriesFor: #updateServices:!private! !
 
 !JadeLoginShell methodsFor!
 
@@ -1790,8 +1786,20 @@ reportCompileError: anArrayOfArray in: methodSourcePresenter
 	methodSourcePresenter view topShell statusBarText: (string copyFrom: 1 to: string size - 2).
 !
 
+serviceFromSelection: sourcePresenter
+	| range className classService |
+	range := sourcePresenter view selectionRange.
+	className := sourcePresenter value copyFrom: range start to: range stop.
+	className := gciSession executeString: className , ' class thisClass name'.
+	classService := RowanClassService named: className.
+	self updateService: classService.
+	^classService!
+
 update: services afterStonReplication: stonResults
-	^BrowserUpdate current update: services afterStonReplication: stonResults! !
+	^BrowserUpdate current update: services afterStonReplication: stonResults!
+
+updateServices: services
+	BrowserUpdate current updateServices: services session: gciSession! !
 !JadePresenter categoriesFor: #abortTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #basicCloneProject:root:!menu handlers!private! !
 !JadePresenter categoriesFor: #browseHierarchyImplementorsOf:className:!browsing!public! !
@@ -1812,7 +1820,9 @@ update: services afterStonReplication: stonResults
 !JadePresenter categoriesFor: #refreshGlobalSelections!menu handlers!public! !
 !JadePresenter categoriesFor: #remoteAutoCommit!browsing support!public! !
 !JadePresenter categoriesFor: #reportCompileError:in:!compile support!public! !
+!JadePresenter categoriesFor: #serviceFromSelection:!menu handlers!menu handlers support!private! !
 !JadePresenter categoriesFor: #update:afterStonReplication:!browsing support!public! !
+!JadePresenter categoriesFor: #updateServices:!private!services! !
 
 !JadePresenter class methodsFor!
 

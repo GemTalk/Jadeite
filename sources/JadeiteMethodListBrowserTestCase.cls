@@ -72,6 +72,31 @@ tearDown
 			[methodListBrowser destroy.
 			methodListBrowser := nil]!
 
+test_browseClass
+	| dictionaryPresenter |
+	self testsIssue: #issue429 withTitle: '(3.0.60) ''Browse Class'' on Transcript gets walkback'.
+	methodListBrowser := JadePresenter browseImplementorsOf: #test1 session: session.
+	self
+		saveMethod: 'test1
+
+	self assert: RowanSample1 new foo = ''foo''
+	Transcript cr; show: ''fnoodle''. 
+	String new.'
+		in: self methodListMethodListPresenter selection className
+		category: 'deleteMe'.
+	self methodSourcePresenter documentPresenter view selectionRange: (24 to: 35).
+	projectsBrowser := self methodSourcePresenter browseSelectedClass topShell.
+	[self assert: self projectsPresenter selectedClass name equals: 'RowanSample1']
+		ensure: [projectsBrowser destroy].
+	self methodSourcePresenter documentPresenter view selectionRange: (55 to: 64).
+	dictionaryPresenter := self methodSourcePresenter browseSelectedClass.
+	[self assert: dictionaryPresenter currentCard selectedClassName equals: 'TranscriptStreamPortable']
+		ensure: [dictionaryPresenter topShell destroy].
+	self methodSourcePresenter documentPresenter view selectionRange: (90 to: 95).
+	dictionaryPresenter := self methodSourcePresenter browseSelectedClass.
+	[self assert: ('String*' match: dictionaryPresenter currentCard selectedClassName)]
+		ensure: [dictionaryPresenter topShell destroy]!
+
 test_doubleClickActionClassMethod
 	self testsIssue: #issue403
 		withTitle: 'Double click in method browser change class to show instance methods'.
@@ -277,6 +302,7 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #saveMethod:in:category:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectListAt:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionClassMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionInstanceMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_methodBrowserSaveMethod!public!tests! !

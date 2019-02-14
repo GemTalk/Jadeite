@@ -219,17 +219,23 @@ test_browseClass
 	self selectRowanSample1Class.
 	self saveIssue169Method.
 	self openDebuggerOn: 'RowanSample1 new issue169'.
-	debugger documentPresenter view selectionRange: (81 to: 85).	"Select Rowan"
+	debugger documentPresenter view selectionRange: (81 to: 85).
 	self debuggerDo: [browser := debugger methodSourcePresenter browseSelectedClass].
 	
 	[self assert: (browser isKindOf: JadeiteProjectsBrowserPresenter).
 	self assert: browser classListPresenter selection name = 'Rowan']
 			ensure: [self assert: browser topShell view close].
-	debugger documentPresenter view selectionRange: (105 to: 110).	"Select String"
+	debugger documentPresenter view selectionRange: (105 to: 110).
 	self debuggerDo: [browser := debugger methodSourcePresenter browseSelectedClass].
 	
 	[self assert: (browser isKindOf: RowanSystemBrowser).
 	self assert: ('*String*' match: browser currentCard selectedClasses first)]
+			ensure: [self assert: browser topShell view close].
+	debugger documentPresenter view selectionRange: (119 to: 128).
+	self debuggerDo: [browser := debugger methodSourcePresenter browseSelectedClass].
+	
+	[self assert: (browser isKindOf: RowanSystemBrowser).
+	self assert: browser currentCard selectedClassName equals: 'TranscriptStreamPortable']
 			ensure: 
 				[self assert: browser topShell view close.
 				projectsBrowser destroy]!

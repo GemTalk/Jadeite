@@ -173,12 +173,9 @@ browseMethodHistory
 	MessageBox warning: 'Method history is not available yet'. !
 
 browseSelectedClass
-	| range className classService |
-	range := methodSourcePresenter view selectionRange.
-	className := methodSourcePresenter value copyFrom: range start to: range stop.
-	classService := RowanClassService named: className.
-	self updateService: classService.
-	self updateAfterFindClass: classService!
+	| classService |
+	classService := self serviceFromSelection: methodSourcePresenter.
+	^self updateAfterFindClass: classService!
 
 browseSelectedMethods
 	"convenience menu item to display randomly grouped methods in a browser"

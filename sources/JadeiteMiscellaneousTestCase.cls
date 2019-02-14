@@ -90,10 +90,24 @@ test_workspaceBrowseProjects
 	projectsBrowser := browseProjectsItem commandDescription performAgainst: workspace]
 			ensure: 
 				[workspace view close.
-				projectsBrowser destroy]! !
+				projectsBrowser destroy]!
+
+testClassServiceIsBehavior
+	| classService |
+	classService := RowanClassService new name: 'RowanClassServiceTest'.
+	self deny: classService isBehavior.	"because the class is not updated (oop = nil) we don't know. Assume false"
+	BrowserUpdate current updateServices: (Array with: classService) session: session.
+	self assert: classService isBehavior.
+	classService := RowanClassService new name: 'Transcript'.
+	BrowserUpdate current updateServices: (Array with: classService) session: session.
+	self deny: classService isBehavior.
+	classService := RowanClassService new name: 'String'.
+	BrowserUpdate current updateServices: (Array with: classService) session: session.
+	self assert: classService isBehavior! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_convertToPattern!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_symbolsFromSelector!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus! !
+!JadeiteMiscellaneousTestCase categoriesFor: #testClassServiceIsBehavior!public! !
 

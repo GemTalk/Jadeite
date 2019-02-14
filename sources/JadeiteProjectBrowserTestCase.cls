@@ -458,6 +458,33 @@ test_blankCategoryRenameInvalid
 	self assert: self categoryListPresenter selection equals: 'accessing']
 		ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+test_browseClass
+	| dictionaryPresenter |
+	self testsIssue: #issue429 withTitle: '(3.0.60) ''Browse Class'' on Transcript gets walkback'.
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'deleteThisMethod
+
+	self assert: RowanSample1 new foo = ''foo''
+	Transcript cr; show: ''fnoodle''. 
+	String new.'
+		in: self projectsPresenter selectedClass name
+		category: 'deleteMe'.
+	self selectMethodNamed: #deleteThisMethod.
+	self methodSourcePresenter view selectionRange: (35 to: 46).
+	self projectsPresenter browseSelectedClass.
+	self projectsPresenter selectedClass name equals: 'RowanSample1'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #deleteThisMethod.
+	self methodSourcePresenter view selectionRange: (66 to: 75).
+	dictionaryPresenter := self projectsPresenter browseSelectedClass.
+	[self assert: dictionaryPresenter selectedClassName equals: 'TranscriptStreamPortable']
+		ensure: [dictionaryPresenter topShell destroy].
+	self methodSourcePresenter view selectionRange: (101 to: 106).
+	dictionaryPresenter := self projectsPresenter browseSelectedClass.
+	[self assert: ('String*' match: dictionaryPresenter selectedClassName) ]
+		ensure: [dictionaryPresenter topShell destroy]!
+
 test_browseSameClassCategoriesCorrect
 	"related bug found while fixing issue #344"
 
@@ -3507,6 +3534,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_blankCategoryRenameInvalid!public!test categories! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSameClassCategoriesCorrect!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSelectedMethods!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test categories! !

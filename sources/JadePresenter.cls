@@ -90,7 +90,11 @@ updateMenuBar: aMenuBar withName: aString itemsFrom: aPresenter
 			insertItem: item
 			at: i.
 	].
-! !
+!
+
+updateService: service
+
+	^self updateServices: (Array with: service) ! !
 !JadePresenter categoriesFor: #commitTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #gciSession!public! !
 !JadePresenter categoriesFor: #gciSession:!public! !
@@ -101,4 +105,5 @@ updateMenuBar: aMenuBar withName: aString itemsFrom: aPresenter
 !JadePresenter categoriesFor: #subMenuPresenter!menus!public! !
 !JadePresenter categoriesFor: #updateMenuBar:!menus!public! !
 !JadePresenter categoriesFor: #updateMenuBar:withName:itemsFrom:!menus!public! !
+!JadePresenter categoriesFor: #updateService:!public!services! !
 

@@ -238,6 +238,7 @@ saveIssue169Method
 	self halt. 
 	image := Rowan image.
 	string := String new. 
+	Transcript cr. 
 	^self'.
 	self selectCategoriesNamed: (Array with: 'accessing'). 
 	self methodSourcePresenter value: source.

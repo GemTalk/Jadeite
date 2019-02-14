@@ -200,6 +200,14 @@ initialize
 instVarNames
 	^instVarNames!
 
+isBehavior
+	"assume that the class service has been updated
+	at least once. If we don't have a template, the update
+	couldn't be performed. The assumption is that we aren't
+	really a class"
+
+	^oop notNil and: [template notNil]!
+
 isClassService
 
 	^true!
@@ -443,6 +451,7 @@ visibleTests
 !RowanClassService categoriesFor: #hierarchyClassServices!public! !
 !RowanClassService categoriesFor: #initialize!Init / Release!public! !
 !RowanClassService categoriesFor: #instVarNames!accessing!public! !
+!RowanClassService categoriesFor: #isBehavior!public!testing! !
 !RowanClassService categoriesFor: #isClassService!public!testing! !
 !RowanClassService categoriesFor: #isDefined!public!testing! !
 !RowanClassService categoriesFor: #isExtension!public!testing! !
