@@ -64,7 +64,7 @@ onClassesChanged
 			[self updateMethods.
 			status value: nil.
 			status value: self.
-			self reset]!
+			self reset.]!
 
 onPackageChanged
 	Cursor wait showWhile: 

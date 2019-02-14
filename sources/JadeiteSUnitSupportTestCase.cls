@@ -534,6 +534,20 @@ test_selectMethodFromProjectBrowser
 	self assert: self projectsPresenter methodListPresenter selections first selector equals: #test2.
 	self assert: self projectsPresenter methodListPresenter selections size equals: 1!
 
+test_statusBar
+	"sanity check that the status bar matches what's in the method list"
+
+	| classService |
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'JadeServerTest' in: self sunitPresenter classListPresenter.
+	classService := self sunitPresenter classListPresenter selections first.
+	self assert: self sunitPresenter methodListPresenter list size
+		equals: classService visibleTests size.
+	self assert: self sunitPresenter testCasesSize
+		equals: 'Test Cases:' , self sunitPresenter methodListPresenter model size printString.
+	self assert: self sunitPresenter testClassesSize
+		equals: 'Test Classes:' , ((session executeString: 'RowanServicesTest allSubclasses size') + 2) printString  "brittle but we can update it as test classes are added" !
+
 test_sunitBrowserHasRowanPackages
 	self assert: (self sunitPresenter isKindOf: JadeiteSUnitPresenter).	"a different presenter is used in the projects browser"
 	self assert: self sunitPresenter packageListPresenter list size > 0.
@@ -759,6 +773,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_selectClassDoesNotLoseTestResults!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_selectInProjectBrowserDoesNotUpdateSunitBrowser!public!test updates from other browsers!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_selectMethodFromProjectBrowser!public!test updates from other browsers!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_statusBar!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanPackages!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestMethods!public!tests! !
