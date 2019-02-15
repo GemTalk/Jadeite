@@ -790,22 +790,16 @@ withExplanation: aString do: aBlock
 	"Here we make the call and handle any error."
 
 	| result error |
-	result := self
-		withExplanation: aString 
-		doA: aBlock.
+	result := self withExplanation: aString doA: aBlock.
 	self incrementEventCount.
 	(result isKindOf: GsError) ifFalse: [^result].
-
 	error := result.
-	self releaseAllOops.
+	error class = GsCompileError ifTrue:[self releaseAllOops].
 	result := error signal.
-	result = #'resume' ifFalse: [self error: 'Unrecognized response of ' , result printString].
-	^self
-		withExplanation: aString 
-		do: [library
-			session: gciSessionId
-			continue: error errorReport contextOop].
-!
+	self releaseAllOops. "we don't get here if compile error but we want to hang on to oops until debugger is closed otherwise" 
+	result = #resume ifFalse: [self error: 'Unrecognized response of ' , result printString].
+	^self withExplanation: aString
+		do: [library session: gciSessionId continue: error errorReport contextOop]!
 
 withExplanation: aString doA: aBlock
 	"Here we manage the UI feedback"

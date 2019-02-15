@@ -1016,6 +1016,8 @@ gsProcess: anObject
 	gsProcess := anObject.!
 
 onViewClosed
+	self gciSession isValidSession
+		ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: self gciSession].
 	(processList notNil and: [processList notEmpty])
 		ifTrue: 
 			[gsProcess := processList first.

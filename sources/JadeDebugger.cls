@@ -115,21 +115,17 @@ implement
 !
 
 initializeProcess: aProcess message: aString terminateOnClose: aBoolean
-
-	gsProcess := aProcess. 
+	self registerWindow: self view handle rootObject: aProcess oopType.
+	gsProcess := aProcess.
 	errorMessagePresenter value: aString.
 	terminateOnClose := aBoolean.
-	[
-		self getProcessList.
-	] on: GsError do: [:ex | 
-		ex debugger: self.
-		ex pass.
-	].
-	self class debuggers
-		at: gsProcess oopType asInteger
-		put: self.
-	self update.
-!
+	[self getProcessList] on: GsError
+		do: 
+			[:ex |
+			ex debugger: self.
+			ex pass].
+	self class debuggers at: gsProcess oopType asInteger put: self.
+	self update!
 
 inspectVariable
 
