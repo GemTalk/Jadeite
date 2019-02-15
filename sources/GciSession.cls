@@ -794,9 +794,7 @@ withExplanation: aString do: aBlock
 	self incrementEventCount.
 	(result isKindOf: GsError) ifFalse: [^result].
 	error := result.
-	error class = GsCompileError ifTrue:[self releaseAllOops].
-	result := error signal.
-	self releaseAllOops. "we don't get here if compile error but we want to hang on to oops until debugger is closed otherwise" 
+	[result := error signal] ensure: [self releaseAllOops].
 	result = #resume ifFalse: [self error: 'Unrecognized response of ' , result printString].
 	^self withExplanation: aString
 		do: [library session: gciSessionId continue: error errorReport contextOop]!
