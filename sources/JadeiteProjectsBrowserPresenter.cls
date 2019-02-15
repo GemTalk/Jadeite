@@ -826,7 +826,7 @@ isOkayToChange
 		classDefinitionPresenter ensureVisible.
 		gciSession isValidSession
 			ifTrue: [ (MessageBox confirm: 'Stay on unsaved class definition?' caption: 'Class has unsaved changes!!') ifTrue: [^false]]
-			ifFalse: [self halt.  (MessageBox confirm: 'Copy changes to Clipboard?' caption: 'Class has unsaved changes!!') ifTrue: [classDefinitionPresenter selectAll; copySelection]].
+			ifFalse: [(MessageBox confirm: 'Copy changes to Clipboard?' caption: 'Class has unsaved changes!!') ifTrue: [classDefinitionPresenter selectAll; copySelection]].
 		classDefinitionPresenter view isModified: false.
 	].
 	self postOkToChangeEvent. 

@@ -94,7 +94,7 @@ className
 	^className!
 
 className: anObject
-	className := anObject!
+	className := anObject asString!
 
 classService
 
@@ -107,7 +107,7 @@ copyBasicsFrom: oldService
 
 	oop 		:= oldService oop.
 	selector 	:= oldService selector.
-	className := oldService className.
+	className := oldService className asString.
 	meta 	:= oldService meta.!
 
 definedPackage

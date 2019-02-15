@@ -103,11 +103,36 @@ testClassServiceIsBehavior
 	self deny: classService isBehavior.
 	classService := RowanClassService new name: 'String'.
 	BrowserUpdate current updateServices: (Array with: classService) session: session.
-	self assert: classService isBehavior! !
+	self assert: classService isBehavior!
+
+testClassServiceNameIsString
+	| classService |
+	self testsIssue: #issue441 withTitle: '(3.0.62) suspicious code in RowanClassService>>hierarchyClassServiceFor:'.
+	classService := RowanClassService named: 'RowanClassServiceTest'.
+	self assert: classService name isKindOf: String. 
+	classService := RowanClassService new name: 'RowanClassServiceTest'.
+	self assert: classService name isKindOf: String. !
+
+testMethodServiceClassNameIsString
+	| methodService |
+	self testsIssue: #issue441
+		withTitle: '(3.0.62) suspicious code in RowanClassService>>hierarchyClassServiceFor:'.
+	methodService := RowanMethodService new
+				selector: 'fnoodle';
+				className: 'JadeiteMiscellaneousTestCase';
+				meta: false.
+	self assert: methodService className isKindOf: String.
+	methodService := RowanMethodService new
+				selector: 'fnoodle';
+				className: #JadeiteMiscellaneousTestCase;
+				meta: false.
+	self assert: methodService className isKindOf: String! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_convertToPattern!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_symbolsFromSelector!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testClassServiceIsBehavior!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #testClassServiceNameIsString!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #testMethodServiceClassNameIsString!public! !
 

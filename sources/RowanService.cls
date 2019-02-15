@@ -171,7 +171,7 @@ name
 	^name!
 
 name: aString
-	name := aString.!
+	name := aString asString!
 
 notRowanizedPackageName
 	^self class notRowanizedPackageName!
