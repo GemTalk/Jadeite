@@ -136,7 +136,7 @@ test_abortWithSelections
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
 	sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'.
 	sunitBrowser primaryPresenter selectClassNamed: 'RowanClassServiceTest'.
-	sunitBrowser primaryPresenter selectMethodNamed: #testAddCategory.
+	sunitBrowser primaryPresenter selectMethodNamed: #test_addCategory.
 	abortCommand := ((sunitBrowser view viewNamed: 'toolbar') itemAtIndex: 1) command.
 	sunitBrowser primaryPresenter perform: abortCommand.
 	
@@ -146,7 +146,7 @@ test_abortWithSelections
 		equals: 'RowanClassServiceTest'.
 	self assert: sunitBrowser primaryPresenter methodListPresenter selections size equals: 1.
 	self assert: sunitBrowser primaryPresenter methodListPresenter selections first selector
-		equals: #testAddCategory]
+		equals: #test_addCategory]
 			ensure: 
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
@@ -205,7 +205,7 @@ test_commitWithSelections
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
 	sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'.
 	sunitBrowser primaryPresenter selectClassNamed: 'RowanClassServiceTest'.
-	sunitBrowser primaryPresenter selectMethodNamed: #testAddCategory.
+	sunitBrowser primaryPresenter selectMethodNamed: #test_addCategory.
 	commitCommand := ((sunitBrowser view viewNamed: 'toolbar') itemAtIndex: 2) command.
 	sunitBrowser primaryPresenter perform: commitCommand.
 	
@@ -215,7 +215,7 @@ test_commitWithSelections
 		equals: 'RowanClassServiceTest'.
 	self assert: sunitBrowser primaryPresenter methodListPresenter selections size equals: 1.
 	self assert: sunitBrowser primaryPresenter methodListPresenter selections first selector
-		equals: #testAddCategory]
+		equals: #test_addCategory]
 			ensure: 
 				["don't want committed sample project in tests"
 				self unloadSampleProject.

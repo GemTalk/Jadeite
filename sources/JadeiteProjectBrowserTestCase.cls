@@ -500,7 +500,7 @@ test_browseSameClassCategoriesCorrect
 	methodListBrowser := self projectsPresenter browseImplementors.
 	self assert: self methodListPresenter list size equals: 1.	"original browser method list doesn't change"
 	methodInSameClass := methodListBrowser primaryPresenter methodListPresenter methodListPresenter
-				list detect: [:methodService | methodService className == #RwClassExtensionDefinition] ifNone: [].
+				list detect: [:methodService | methodService className = 'RwClassExtensionDefinition'] ifNone: [].
 	self denyIsNil: methodInSameClass.
 	methodListBrowser primaryPresenter methodListPresenter methodListPresenter
 		selection: methodInSameClass.
@@ -2298,7 +2298,7 @@ test_refreshAfterAbortMethodListLeaveCommitted
 	beforeSize := list size.
 	self assert: beforeSize > 1.
 	self
-		assertIsNil: (list detect: [:methodService | methodService className = #RowanService] ifNone: [])]
+		assertIsNil: (list detect: [:methodService | methodService className = 'RowanService'] ifNone: [])]
 			ensure: [methodListBrowser destroy].
 	self selectServiceNamed: 'RowanService' in: self classListPresenter.
 	self methodSourcePresenter value: 'classFromName  "do nothing"'.
@@ -2309,7 +2309,7 @@ test_refreshAfterAbortMethodListLeaveCommitted
 	afterSize := list size.
 	self assert: afterSize equals: beforeSize + 1.
 	self
-		denyIsNil: (list detect: [:methodService | methodService className = #RowanService] ifNone: []).
+		denyIsNil: (list detect: [:methodService | methodService className = 'RowanService'] ifNone: []).
 	abortItem := transcript view menuBar items third items
 				detect: [:menuItem | menuItem command == #abortTransaction].	"jadeite menu"
 	abortItem commandDescription performAgainst: transcript projectListPresenter.
