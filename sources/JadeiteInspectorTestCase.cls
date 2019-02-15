@@ -252,6 +252,31 @@ test_forwardBack
 	self assert: forwardQuery isEnabled.
 !
 
+test_inspectorHandlesError
+	| remoteObject |
+	self testsIssue: #issue433 withTitle: 'Walkback on new inspector in presence of #size method'.
+	remoteObject := session
+				executeString: 'RowanSample1 new'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	[self assert: ('Inspector on RowanSample1*' match: inspector caption)] ensure: [inspector destroy].
+	self
+		saveMethod: 'printString    self error: ''throw an error'''
+		in: 'RowanSample1'
+		category: 'printing'.
+	remoteObject := session
+				executeString: 'RowanSample1 new'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: ('Inspector on Oop(*)*' match: inspector caption).
+	self assert: ('*Oop*' match: inspector documentPresenter value).  "should show the oop"
+	self assert: ('*throw an error*' match: inspector documentPresenter value). "must show underlying error" 
+	inspector instVarListPresenter selectionByIndex: 2. 
+	self assert: inspector documentPresenter value isKindOf: Integer.
+	!
+
 test_inspectorRootObjectRegistered
 	| remoteObject inspectorHandle |
 	self testsIssue: #issue385 withTitle: 'Inspector should keep associated root object alive'.
@@ -550,6 +575,7 @@ def'''! !
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusCodePane!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusInstVars!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectorHandlesError!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorRootObjectRegistered!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorRootSpecialObjectNotRegistered!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectString!public!tests! !

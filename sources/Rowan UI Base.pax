@@ -107,6 +107,7 @@ package methodNames
 	add: #JadeImageStripper -> #createVersionResource;
 	add: #JadeImageStripper -> #requiredClasses;
 	add: #JadeImageStripper -> #requiredPackageNames;
+	add: #JadeInspector -> #displayError:;
 	add: #JadeInspector -> #displayObject;
 	add: #JadeInspector -> #displaySpecials;
 	add: #JadeInspector -> #onViewClosed;
@@ -1183,13 +1184,24 @@ requiredPackageNames
 
 !JadeInspector methodsFor!
 
+displayError: ex
+	| errorString instVarNames |
+	errorString := 'Error inspecting object ' , model printString , '. Error text: ' , ex printString.
+	instVarNames := OrderedCollection new.
+	instVarNames add: 'self' -> errorString.
+	(model isKindOf: ExternalInteger) ifTrue: [instVarNames add: '-.asOop' -> model value].
+	instVarListPresenter
+		list: instVarNames;
+		selection: instVarNames first. !
+
 displayObject
 	| result stream theClassName oop size instVarNames |
 	((model isKindOf: Character) or: [(model isKindOf: Float) or: [model isKindOf: Symbol]])
 		ifTrue: 
 			[instVarNames := self displaySpecials.
 			^self].
-	result := gciSession serverPerform: #inspect: with: model.
+	result := [gciSession serverPerform: #inspect: with: model] on: Error
+				do: [:ex | ^self displayError: ex].
 	(result isKindOf: ByteArray) ifTrue: [result := result asString].
 	(result isKindOf: String)
 		ifFalse: 
@@ -1314,8 +1326,9 @@ setLastGsShape: name
 	codePane setDocumentPresenterWith: (self registry getClass: name)!
 
 shellName
-	className ifNil: [^String new	"not available yet"].
-	^'Inspector on ' , className , self shellNameExtraInfo!
+	| inspectionTarget |
+	inspectionTarget := className ifNil: [model ifNil: [String new] ifNotNil: [model printString]].
+	^'Inspector on ' , inspectionTarget , self shellNameExtraInfo!
 
 shellNameExtraInfo
 	(model isKindOf: String) ifTrue: [^' (' , model size printString , ' characters)'].
@@ -1324,6 +1337,7 @@ shellNameExtraInfo
 
 updateCaption
 	self caption: (gciSession titleBarFor: self shellName).! !
+!JadeInspector categoriesFor: #displayError:!accessing!private! !
 !JadeInspector categoriesFor: #displayObject!accessing!private! !
 !JadeInspector categoriesFor: #displaySpecials!accessing!private! !
 !JadeInspector categoriesFor: #onViewClosed!event handling!public! !
