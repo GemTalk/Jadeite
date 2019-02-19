@@ -313,7 +313,10 @@ shouldColorAsExtension
 	^definedPackageName = self notRowanizedPackageName
 		ifTrue: [false]
 		ifFalse: 
-			[((selectedPackageServices collect: [:service | service name]) includes: definedPackageName) not]!
+			[selectedPackageServices isEmpty
+				ifTrue: [false]
+				ifFalse: 
+					[((selectedPackageServices collect: [:service | service name]) includes: definedPackageName) not]]!
 
 shouldReplicateInstVarAtIndex: index newService: newService
 	(self class indexOfInstVar: 'meta') = index ifTrue: [^false].
