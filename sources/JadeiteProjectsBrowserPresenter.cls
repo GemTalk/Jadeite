@@ -82,7 +82,8 @@ basicOnDropClassList: dragDropSession
 	dragDropSession dragObjects do: 
 			[:dragDropObject |
 			
-			[classService
+			[dragDropObject object source ifNil: [self updateService: dragDropObject object].
+			classService
 				saveMethod: dragDropObject object source
 				category: dragDropObject object category
 				session: gciSession]
