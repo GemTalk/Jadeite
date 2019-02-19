@@ -1152,6 +1152,22 @@ test_dropMethodOnClassList
 	self assert: newMethodService selector equals: #foo.
 	self deny: newMethodService meta. !
 
+test_dropNonSelectedMethod
+	"don't really drop but we can simulate it and exercise the methods involved"
+
+	| dragDropSession newMethodService |
+	self testsIssue: #issue443 withTitle: '(3.0.62) Error drag/drop of method'.
+	self selectRowanSample1Class.
+	dragDropSession := self classHierarchyPresenter view dragDropSessionClass new.
+	self projectsPresenter onDragMethod: dragDropSession.
+	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSubClass' in: self classListPresenter).
+	dragDropSession dragObjects add: (InternalDragDropObject object: (self serviceNamed: 'foo' in: self methodListPresenter)).
+	self projectsPresenter onDropOnClassList: dragDropSession.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanSubClass'.
+	newMethodService := self methodListPresenter selections first.
+	self assert: newMethodService selector equals: #foo.
+	self deny: newMethodService meta!
+
 test_duplicateInstVars
 	self testsIssue: #issue228
 		withTitle: 'lose selected class in project browser when new version created'.
@@ -3559,6 +3575,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dragDropMultipleMethodsHierarchy!public!test class hierarchy!test drag drop! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassHierarchy!public!test class hierarchy!test drag drop! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassList!public!test class list!test drag drop! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dropNonSelectedMethod!public!test class list!test drag drop! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVars!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsInHierarchy!public!test class hierarchy! !
