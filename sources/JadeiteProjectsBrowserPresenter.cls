@@ -174,9 +174,7 @@ browseMethodHistory
 	MessageBox warning: 'Method history is not available yet'. !
 
 browseSelectedClass
-	| classService |
-	classService := self serviceFromSelection: methodSourcePresenter.
-	^self updateAfterFindClass: classService!
+	^self browseSelectedClassIn: methodSourcePresenter newTab: Keyboard default isCtrlDown!
 
 browseSelectedMethods
 	"convenience menu item to display randomly grouped methods in a browser"

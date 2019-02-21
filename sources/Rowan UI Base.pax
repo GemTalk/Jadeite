@@ -153,6 +153,7 @@ package methodNames
 	add: #JadePresenter -> #browseImplementorsOf:;
 	add: #JadePresenter -> #browseLiteralReferences;
 	add: #JadePresenter -> #browseMethodsContaining;
+	add: #JadePresenter -> #browseSelectedClassIn:newTab:;
 	add: #JadePresenter -> #browseSendersOf;
 	add: #JadePresenter -> #browseSendersOf:;
 	add: #JadePresenter -> #compilationWarningFrom:;
@@ -720,16 +721,7 @@ RowanShell subclass: #RowanPackageShell
 !CodeSourcePresenter methodsFor!
 
 browseSelectedClass
-	| shell classService |
-	classService := self serviceFromSelection: documentPresenter.
-	^classService projectName = RowanService notRowanizedPackageName
-		ifTrue: 
-			[Cursor wait showWhile: 
-					[shell := RowanSystemBrowser showOnSession: gciSession.
-					shell selectClass: classService name asString selector: String new]]
-		ifFalse: 
-			[shell := JadeiteProjectsSystemBrowser showOnSession: gciSession.
-			shell currentCard updateAfterFindClass: classService]!
+	^self browseSelectedClassIn: documentPresenter newTab: false!
 
 executeSelectionOrLine
 
@@ -1675,6 +1667,21 @@ browseLiteralReferences
 browseMethodsContaining
 	^self class browseMethodsContaining: self gciSession!
 
+browseSelectedClassIn: documentPresenter newTab: openNewTab
+	| shell classService |
+	classService := self serviceFromSelection: documentPresenter.
+	^classService projectName = RowanService notRowanizedPackageName
+		ifTrue: 
+			[Cursor wait showWhile: 
+					[shell := RowanSystemBrowser showOnSession: gciSession.
+					shell selectClass: classService name asString selector: String new.
+					shell currentCard]]
+		ifFalse: 
+			[shell := openNewTab
+						ifTrue: [self addSystemBrowser]
+						ifFalse: [JadeiteProjectsSystemBrowser showOnSession: gciSession].
+			shell currentCard updateAfterFindClass: classService]!
+
 browseSendersOf
 	
 	^JadePresenter browseSendersIn: self gciSession
@@ -1824,6 +1831,7 @@ updateServices: services
 !JadePresenter categoriesFor: #browseImplementorsOf:!browsing!public! !
 !JadePresenter categoriesFor: #browseLiteralReferences!browsing!public! !
 !JadePresenter categoriesFor: #browseMethodsContaining!browsing!public! !
+!JadePresenter categoriesFor: #browseSelectedClassIn:newTab:!Jade!public! !
 !JadePresenter categoriesFor: #browseSendersOf!browsing!public! !
 !JadePresenter categoriesFor: #browseSendersOf:!browsing!menu handlers!public! !
 !JadePresenter categoriesFor: #compilationWarningFrom:!public! !

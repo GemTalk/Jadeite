@@ -472,8 +472,12 @@ test_browseClass
 		category: 'deleteMe'.
 	self selectMethodNamed: #deleteThisMethod.
 	self methodSourcePresenter view selectionRange: (35 to: 46).
-	self projectsPresenter browseSelectedClass.
-	self projectsPresenter selectedClass name equals: 'RowanSample1'.
+	secondPresenter := self projectsPresenter browseSelectedClass.
+	
+	[self assert: self projectsPresenter selectedClass name equals: 'RowanSample1Test'.
+	self deny: secondPresenter sameAs: self projectsPresenter.
+	self assert: secondPresenter selectedClass name equals: 'RowanSample1']
+			ensure: [secondPresenter topShell destroy].
 	self selectRowanSample1Test.
 	self selectMethodNamed: #deleteThisMethod.
 	self methodSourcePresenter view selectionRange: (66 to: 75).
@@ -482,7 +486,7 @@ test_browseClass
 		ensure: [dictionaryPresenter topShell destroy].
 	self methodSourcePresenter view selectionRange: (101 to: 106).
 	dictionaryPresenter := self projectsPresenter browseSelectedClass.
-	[self assert: ('String*' match: dictionaryPresenter selectedClassName) ]
+	[self assert: ('String*' match: dictionaryPresenter selectedClassName)]
 		ensure: [dictionaryPresenter topShell destroy]!
 
 test_browseSameClassCategoriesCorrect

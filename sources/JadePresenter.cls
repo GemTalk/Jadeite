@@ -10,6 +10,12 @@ JadePresenter comment: ''!
 !JadePresenter categoriesForClass!MVP-Presenters! !
 !JadePresenter methodsFor!
 
+addSystemBrowser
+	"only sent from browseSelectedClassIn:newTab:
+	Not implemented in all subclasses"
+
+	self subclassResponsibility!
+
 commitTransaction
 	"Even if it takes a windy path, try to make sure
 	all commits in Jadeite pass through here"
@@ -95,6 +101,7 @@ updateMenuBar: aMenuBar withName: aString itemsFrom: aPresenter
 updateService: service
 
 	^self updateServices: (Array with: service) ! !
+!JadePresenter categoriesFor: #addSystemBrowser!private! !
 !JadePresenter categoriesFor: #commitTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #gciSession!public! !
 !JadePresenter categoriesFor: #gciSession:!public! !
