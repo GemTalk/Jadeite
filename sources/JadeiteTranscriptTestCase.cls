@@ -271,6 +271,36 @@ test_openChangesBrowser
 	changesBrowser := changesItem commandDescription performAgainst:  transcript projectListPresenter.
 	[self assert: (changesBrowser isKindOf: RowanPatchBrowser)] ensure: [changesBrowser destroy]!
 
+test_popupMenuHasBrowseClass
+	| browseClassItem |
+	self testsIssue: #issue429 withTitle: '(3.0.60) ''Browse Class'' on Transcript gets walkback'.
+	browseClassItem := transcript transcriptPresenter documentPresenter view contextMenu items
+				detect: [:menu | 'Browse Class' match: menu text]
+				ifNone: [].
+	self denyIsNil: browseClassItem.
+	self assert: browseClassItem command equals: #browseSelectedClass.
+	self assert: (transcript transcriptPresenter class canUnderstand: #browseSelectedClass)!
+
+test_popupMenuHasBrowseImplementors
+	| browseClassItem |
+	self testsIssue: #issue429 withTitle: '(3.0.60) ''Browse Class'' on Transcript gets walkback'.
+	browseClassItem := transcript transcriptPresenter documentPresenter view contextMenu items
+				detect: [:menu | 'Browse Implementors' match: menu text]
+				ifNone: [].
+	self denyIsNil: browseClassItem.
+	self assert: browseClassItem command equals: #browseImplementors.
+	self assert: (transcript transcriptPresenter class canUnderstand: #browseImplementors)!
+
+test_popupMenuHasBrowseSenders
+	| browseClassItem |
+	self testsIssue: #issue429 withTitle: '(3.0.60) ''Browse Class'' on Transcript gets walkback'.
+	browseClassItem := transcript transcriptPresenter documentPresenter view contextMenu items
+				detect: [:menu | 'Browse Senders' match: menu text]
+				ifNone: [].
+	self denyIsNil: browseClassItem.
+	self assert: browseClassItem command equals: #browseSenders.
+	self assert: (transcript transcriptPresenter class canUnderstand: #browseSenders)!
+
 test_transcriptNamedConsole
 	| clearTranscriptMenuItem wasInstalled |
 	(wasInstalled := transcript isTranscriptInstalled) ifFalse: [transcript flipTranscript].
@@ -304,5 +334,8 @@ test_transcriptNamedConsole
 !JadeiteTranscriptTestCase categoriesFor: #test_menuNames!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_multiSelectProject!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_openChangesBrowser!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseClass!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseImplementors!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseSenders!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_transcriptNamedConsole!public!tests! !
 
