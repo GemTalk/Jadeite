@@ -1273,6 +1273,10 @@ queryCommand: aCommandQuery
 			ifTrue: 
 				[aCommandQuery isEnabled: self selectedClasses size == 1.
 				^true].
+	(#(#findMethod) includes: command)
+		ifTrue: 
+			[ aCommandQuery
+				isEnabled: self selectedClass notNil. ^true].
 	(#(#runClassTests) includes: command)
 		ifTrue: 
 			[aCommandQuery

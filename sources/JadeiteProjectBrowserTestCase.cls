@@ -1459,6 +1459,23 @@ test_findMethodChangesCategories
 	self assert: self categoryListPresenter selection equals: 'Accessing'. 
 	self assert: self methodListPresenter selection selector equals: #behavior. !
 
+test_findMethodDisabled
+	| commandQuery |
+	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
+	commandQuery := self
+				queryCommand: #findMethod
+				inPresenter: self projectsPresenter
+				view: self classListPresenter view.
+	self deny: commandQuery isEnabled.
+	self selectRowanSample1Test.
+	commandQuery := self
+				queryCommand: #findMethod
+				inPresenter: self projectsPresenter
+				view: self classListPresenter view.
+	self assert: commandQuery isEnabled.!
+
 test_findMethodDoesNotChangeCategories
 	| methodService | 
 	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
@@ -3591,6 +3608,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_filtersUpdatedInHierarchyView!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findClass!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodChangesCategories!public!test categories! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodDisabled!public!test menus!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodDoesNotChangeCategories!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodDoesNothingWhenClassNotSelected!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodShowsAllMethods!public!tests! !
