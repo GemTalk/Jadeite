@@ -2678,6 +2678,49 @@ test_saveMethodHierarchy
 	self assert: self methodListPresenter selection selector = #sampleMethod.
 	self assert: (session executeString: 'RowanSample1 new sampleMethod') = 123!
 
+test_selectionsRetainedFromClassListToHierarchy
+	self testsIssue: #issue448 withTitle: 'Class selection not retained from Hierarchy->Class view'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanAnsweringService' in: self classListPresenter.
+	self selectCategoryNamed: 'other'.
+	self selectMethodNamed: #answer.
+	self selectHierarchyTab.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanAnsweringService'.
+	self assert: self categoryListPresenter selection equals: 'other'.
+	self assert: self methodListPresenter selection selector equals: #answer.
+	self projectsPresenter selectClassListTab.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanAnsweringService'.
+	self assert: self categoryListPresenter selection equals: 'other'.
+	self assert: self methodListPresenter selection selector equals: #answer.
+	self selectHierarchyTab.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanAnsweringService'.
+	self assert: self categoryListPresenter selection equals: 'other'.
+	self assert: self methodListPresenter selection selector equals: #answer.
+	!
+
+test_selectionsRetainedFromHierarchyToClassList
+	self testsIssue: #issue448 withTitle: 'Class selection not retained from Hierarchy->Class view'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanService' in: self classListPresenter.
+	self selectHierarchyTab.
+	self selectClassInHierarchyNamed: 'RowanAnsweringService'.
+	self selectCategoryNamed: 'other'.
+	self selectMethodNamed: #answer.
+	self projectsPresenter selectClassListTab.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanAnsweringService'.
+	self assert: self categoryListPresenter selection equals: 'other'.
+	self assert: self methodListPresenter selection selector equals: #answer.
+	self selectHierarchyTab.
+	self selectCategoryNamed: 'other'.
+	self selectMethodNamed: #answer.
+	self projectsPresenter selectClassListTab.
+	self projectsPresenter selectClassListTab.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanAnsweringService'.
+	self assert: self categoryListPresenter selection equals: 'other'.
+	self assert: self methodListPresenter selection selector equals: #answer.!
+
 test_selectMultiplePackages
 	self selectServicesNamed: #() in: self projectListPresenter .
 	self assert: self packageListPresenter list isEmpty.
@@ -3720,6 +3763,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodAndUpdateSUnitTab!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodHierarchy!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_selectionsRetainedFromClassListToHierarchy!public!test class list! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_selectionsRetainedFromHierarchyToClassList!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultiplePackages!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultipleProjects!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_separationOfClassAndInstance!public!test two browsers! !

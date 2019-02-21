@@ -1388,14 +1388,20 @@ refreshClassListOrHierarchy
 				ifTrue: 
 					[self resetDefinedClassPackage.
 					^self].
-			(hierarchySelection isNil or: [listSelection isNil]) ifTrue: [^self updateClasses].
+			hierarchySelection isNil ifTrue: [^self updateClasses].
 			self updateClasses.
 			newSelection := classListPresenter list detect: [:service | hierarchySelection name = service name]
 						ifNone: 
 							[self resetDefinedClassPackage.
 							^classListPresenter resetSelection].
 			classListPresenter selection: newSelection]
-		ifFalse: [self updateHierarchy]!
+		ifFalse: 
+			[| selectedFilters selectedMethods |
+			selectedFilters := self selectedFilters.
+			selectedMethods := methodListPresenter selections.
+			self updateHierarchy.
+			categoryListPresenter selections: selectedFilters.
+			methodListPresenter selections: selectedMethods]!
 
 refreshFromServer
 	| services |
