@@ -3516,6 +3516,49 @@ test_variablesTab
 	self assert: self projectsPresenter variableListPresenter selection equals: 'variables'.
 	self assert: self methodListPresenter selection equals: selectedMethod	"... and back"!
 
+test_variablesUpdatedOnClassSaveInClassList
+	self testsIssue: #issue445 withTitle: '(3.0.63) class def / instance var oddities'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
+	self
+		saveClass: 'TempClass'
+		superclass: 'Object'
+		instVars: #()
+		package: 'RowanSample1-Core'.
+	self projectsPresenter selectVariableTab.
+	self assert: self categoryListPresenter list isEmpty.
+	self projectsPresenter selectCategoryTab.
+	self
+		saveClass: 'TempClass'
+		superclass: 'Object'
+		instVars: #('aaa')
+		package: 'RowanSample1-Core'.
+	self projectsPresenter selectVariableTab.
+	self assert: self categoryListPresenter list size equals: 1.
+	self assert: (self categoryListPresenter list includes: 'aaa')!
+
+test_variablesUpdatedOnClassSaveInHierarchy
+	self testsIssue: #issue445 withTitle: '(3.0.63) class def / instance var oddities'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
+	self selectHierarchyTab.
+	self
+		saveClass: 'TempClass'
+		superclass: 'Object'
+		instVars: #()
+		package: 'RowanSample1-Core'.
+	self projectsPresenter selectVariableTab.
+	self assert: self categoryListPresenter list isEmpty.
+	self projectsPresenter selectCategoryTab.
+	self
+		saveClass: 'TempClass'
+		superclass: 'Object'
+		instVars: #('aaa')
+		package: 'RowanSample1-Core'.
+	self projectsPresenter selectVariableTab.
+	self assert: self categoryListPresenter list size equals: 1.
+	self assert: (self categoryListPresenter list includes: 'aaa')!
+
 test_verifyValidCategory
 	self testsIssue: #issue205 withTitle: 'misspelled extension category name causes trouble'.
 	self assert: (self projectsPresenter verifyValidCategory: '*Rowan-Kernel') .
@@ -3714,6 +3757,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindow!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindowStayOnMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_variablesTab!public!test class list! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_variablesUpdatedOnClassSaveInClassList!public!test class list! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_variablesUpdatedOnClassSaveInHierarchy!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_verifyValidCategory!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #waitForPresenter:!private!selection! !
 

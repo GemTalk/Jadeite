@@ -675,6 +675,7 @@ fileOutMethodsOnPath: path
 
 filterTabChanged
 	self isClassSelected
+		ifTrue: [self updateService: self selectedClass]
 		ifFalse: 
 			[self clearFilterLists.
 			^self].
