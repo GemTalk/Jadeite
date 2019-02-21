@@ -108,10 +108,12 @@ package methodNames
 	add: #JadeImageStripper -> #requiredClasses;
 	add: #JadeImageStripper -> #requiredPackageNames;
 	add: #JadeInspector -> #displayError:;
+	add: #JadeInspector -> #displayInstVarError:instVar:;
 	add: #JadeInspector -> #displayObject;
 	add: #JadeInspector -> #displaySpecials;
 	add: #JadeInspector -> #onViewClosed;
 	add: #JadeInspector -> #onViewOpened;
+	add: #JadeInspector -> #printInstVar;
 	add: #JadeInspector -> #saveDocument;
 	add: #JadeInspector -> #selectedInstVar;
 	add: #JadeInspector -> #setDocumentPresenterLabel;
@@ -1186,6 +1188,9 @@ displayError: ex
 		list: instVarNames;
 		selection: instVarNames first. !
 
+displayInstVarError: ex instVar: anObject
+	^'Error inspecting object ' , anObject printString , '. Error text: ' , ex printString!
+
 displayObject
 	| result stream theClassName oop size instVarNames |
 	((model isKindOf: Character) or: [(model isKindOf: Float) or: [model isKindOf: Symbol]])
@@ -1238,6 +1243,18 @@ onViewOpened
 	self displayObject.
 	self updateCaption!
 
+printInstVar
+	| answeringService |
+	^
+	[answeringService := RowanAnsweringService new.
+	answeringService
+		command: #printStringOf:toMaxSize:;
+		commandArgs: (Array with: instVarListPresenter selection value value with: self maxPrintStringSize).
+	self issueCommand: (Array with: answeringService).
+	answeringService answer]
+			on: Error
+			do: [:ex | self displayInstVarError: ex instVar: instVarListPresenter selection value]!
+
 saveDocument
 	self rowanFixMe. "this would be very handy"
 	MessageBox notify: 'This feature not yet implemented'!
@@ -1253,22 +1270,14 @@ selectedInstVar
 		ifTrue: 
 			[documentPresenter value: instVarListPresenter selection value.
 			^self].
-	string := 
-			[| answeringService |
-			answeringService := RowanAnsweringService new.
-			answeringService
-				command: #printStringOf:toMaxSize:;
-				commandArgs: (Array with: instVarListPresenter selection value value with: self maxPrintStringSize).
-			self issueCommand: (Array with: answeringService).
-			answeringService answer]
-					on: GsRuntimeError
-					do: 
-						[:ex | 
-						ex errorReport number == 2106
-							ifTrue: 
-								["Forward reference error"
-								ex return: 'an invalid or hidden object (perhaps a LargeObjectNode)'].
-						ex pass].
+	string := [self printInstVar] on: GsRuntimeError
+				do: 
+					[:ex |
+					ex errorReport number == 2106
+						ifTrue: 
+							["Forward reference error"
+							ex return: 'an invalid or hidden object (perhaps a LargeObjectNode)'].
+					ex pass].
 	documentPresenter value: string!
 
 setDocumentPresenterLabel
@@ -1330,10 +1339,12 @@ shellNameExtraInfo
 updateCaption
 	self caption: (gciSession titleBarFor: self shellName).! !
 !JadeInspector categoriesFor: #displayError:!accessing!private! !
+!JadeInspector categoriesFor: #displayInstVarError:instVar:!accessing!private! !
 !JadeInspector categoriesFor: #displayObject!accessing!private! !
 !JadeInspector categoriesFor: #displaySpecials!accessing!private! !
 !JadeInspector categoriesFor: #onViewClosed!event handling!public! !
 !JadeInspector categoriesFor: #onViewOpened!event handling!private! !
+!JadeInspector categoriesFor: #printInstVar!accessing!private! !
 !JadeInspector categoriesFor: #saveDocument!menu handlers!public! !
 !JadeInspector categoriesFor: #selectedInstVar!accessing!private! !
 !JadeInspector categoriesFor: #setDocumentPresenterLabel!displaying!private! !

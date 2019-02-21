@@ -270,12 +270,24 @@ test_inspectorHandlesError
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self assert: ('Inspector on Oop(*)*' match: inspector caption).
-	self assert: ('*Oop*' match: inspector documentPresenter value).  "should show the oop"
-	self assert: ('*throw an error*' match: inspector documentPresenter value). "must show underlying error" 
-	inspector instVarListPresenter selectionByIndex: 2. 
-	self assert: inspector documentPresenter value isKindOf: Integer.
-	!
+	
+	[self assert: ('Inspector on Oop(*)*' match: inspector caption).
+	self assert: ('*Oop*' match: inspector documentPresenter value).	"should show the oop"
+	self assert: ('*throw an error*' match: inspector documentPresenter value).	"must show underlying error"
+	inspector instVarListPresenter selectionByIndex: 2.
+	self assert: inspector documentPresenter value isKindOf: Integer]
+			ensure: [inspector destroy].
+	remoteObject := session
+				executeString: 'Array with: RowanSample1 new'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	
+	[self assert: ('Inspector on Array*' match: inspector caption).
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: ('Error inspecting object*' match: inspector documentPresenter value).	"should show the oop"
+	self assert: ('*throw an error*' match: inspector documentPresenter value)	"must show underlying error"]
+			ensure: [inspector destroy]!
 
 test_inspectorRootObjectRegistered
 	| remoteObject inspectorHandle |
