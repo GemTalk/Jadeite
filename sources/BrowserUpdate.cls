@@ -79,8 +79,9 @@ inUpdate: anObject
 issueCommand: services session: session
 	inUpdate ifTrue: [^self].
 	inUpdate := true.
-	[[Cursor wait showWhile: [^self basicIssueCommand: services session: session]]
-		ensure: [inUpdate := false]]
+	
+	[Cursor wait
+		showWhile: [[^self basicIssueCommand: services session: session] ensure: [inUpdate := false]]]
 			ifCurtailed: [inUpdate := false]!
 
 performUpdate: updateBlock with: selector
@@ -173,11 +174,11 @@ updateService: service session: session
 
 updateServices: services session: session
 	inUpdate ifTrue: [^self].
-	services isEmpty ifTrue:[^self]. 
+	services isEmpty ifTrue: [^self].
 	inUpdate := true.
 	
-	[[Cursor wait showWhile: [^self basicUpdateServices: services session: session]]
-		ensure: [inUpdate := false]]
+	[Cursor wait
+		showWhile: [[^self basicUpdateServices: services session: session] ensure: [inUpdate := false]]]
 			ifCurtailed: [inUpdate := false]!
 
 updatesPerform: selector presenter: presenter
