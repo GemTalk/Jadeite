@@ -37,7 +37,6 @@ basicIssueCommand: services session: session
 		ensure: [services do: [:service | service clearCommand]].
 	updateResult := self update: services afterStonReplication: stonResultString.
 	session releaseAllOops.
-	inUpdate := false. 
 	^updateResult!
 
 basicUpdateServices: services session: session
@@ -51,7 +50,6 @@ basicUpdateServices: services session: session
 	stonResults := session serverPerform: #updateFromSton: with: stonString.
 	result := self update: services afterStonReplication: stonResults.
 	session releaseAllOops.
-	inUpdate := false. 
 	^result!
 
 debug
@@ -81,6 +79,7 @@ inUpdate: anObject
 issueCommand: services session: session
 	inUpdate ifTrue: [^self].
 	inUpdate := true.
+	
 	[[Cursor wait showWhile: [^self basicIssueCommand: services session: session]]
 		ensure: [inUpdate := false]]
 			ifCurtailed: [inUpdate := false]!
@@ -175,7 +174,7 @@ updateService: service session: session
 
 updateServices: services session: session
 	inUpdate ifTrue: [^self].
-	services isEmpty ifTrue:[^self]. 
+	services isEmpty ifTrue: [^self].
 	inUpdate := true.
 	
 	[[Cursor wait showWhile: [^self basicUpdateServices: services session: session]]
