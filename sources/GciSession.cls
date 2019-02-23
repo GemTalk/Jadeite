@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 Object subclass: #GciSession
-	instanceVariableNames: 'briefDescription clientForwarders eventCount gciSessionId gemHost gemNRS heartbeatProcess isHandlingClientForwarderSend isPackagePolicyEnabled library netPort netTask server stoneHost stoneName stoneNRS stoneSerial stoneSessionID userID'
+	instanceVariableNames: 'briefDescription clientForwarders eventCount gciSessionId gemHost gemNRS heartbeatProcess isHandlingClientForwarderSend isPackagePolicyEnabled library netPort netTask server stoneHost stoneName stoneNRS stoneSerial stoneSessionID userID blocking'
 	classVariableNames: 'Current GemCursor'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -82,6 +82,13 @@ beInvalidSession
 	gciSessionId := nil.
 	library := nil.
 !
+
+blocking
+	^blocking ifNil: [blocking := false]!
+
+blockWhile: aBlock
+	blocking := true.
+	^aBlock ensure: [blocking := false]!
 
 briefDescription
 
@@ -164,7 +171,6 @@ eventCount
 !
 
 executeString: aString
-
 	^self
 		executeString: aString 
 		fromContext: nil
@@ -805,44 +811,45 @@ withExplanation: aString doA: aBlock
 	| result haveResult shouldRunEventLoop dialog |
 	shouldRunEventLoop := true.
 	haveResult := false.
+	
+	[result := self handlingClientForwarderSendDo: aBlock.
+	haveResult := true.
+	shouldRunEventLoop := false.
+	SessionManager inputState prod]
+			newProcess
+		name: 'GciSession>>withExplanation:doA: - 1';
+		resume.
+	
 	[
-		result := self handlingClientForwarderSendDo: aBlock.
-		haveResult := true.
-		shouldRunEventLoop := false.
-		SessionManager inputState prod.
-	] newProcess name: 'GciSession>>withExplanation:doA: - 1'; resume.
-	[
-		[
-			(Delay forSeconds: 1) wait.
-			shouldRunEventLoop := false.
-			SessionManager inputState prod.
-		] newProcess name: 'GciSession>>withExplanation:doA: - 2'; resume.
-		isHandlingClientForwarderSend ifTrue: [
-			SessionManager inputState loopWhile: [shouldRunEventLoop].
-			shouldRunEventLoop := true.
-		] ifFalse: [
-			Cursor wait showWhile: [
-				SessionManager inputState loopWhile: [shouldRunEventLoop].
-				shouldRunEventLoop := true.
-			].
-		].
-		haveResult ifTrue: [^result].
-		isHandlingClientForwarderSend.
-	] whileTrue: [].
-	"dialog := WaitOnGemStoneDialog
-		gciSession: self 
-		message: aString
-		havingWaited: 1."
-	[
-		SessionManager inputState loopWhile: [shouldRunEventLoop].
-		shouldRunEventLoop := true.
-		"dialog view close."
-	] newProcess name: 'GciSession>>withExplanation:doA: - 3'; resume.
-	"dialog showModal."
-	[result isNil] whileTrue:[(Delay forMilliseconds: 1) wait].
+	[(Delay forSeconds: 1) wait.
+	shouldRunEventLoop := false.
+	SessionManager inputState prod]
+			newProcess
+		name: 'GciSession>>withExplanation:doA: - 2';
+		resume.
+	isHandlingClientForwarderSend
+		ifTrue: 
+			[SessionManager inputState loopWhile: [shouldRunEventLoop].
+			shouldRunEventLoop := true]
+		ifFalse: 
+			[Cursor wait showWhile: 
+					[self blocking
+						ifTrue: [[haveResult] whileFalse: [(Delay forMilliseconds: 1) wait]]
+						ifFalse: 
+							[SessionManager inputState loopWhile: [shouldRunEventLoop].
+							shouldRunEventLoop := true]]].
+	haveResult ifTrue: [^result].
+	isHandlingClientForwarderSend]
+			whileTrue: [].
+	
+	[SessionManager inputState loopWhile: [shouldRunEventLoop].
+	shouldRunEventLoop := true]
+			newProcess
+		name: 'GciSession>>withExplanation:doA: - 3';
+		resume.
+	[result isNil] whileTrue: [(Delay forMilliseconds: 1) wait].
 	SessionManager inputState pumpMessages.
-	^result.
-! !
+	^result! !
 !GciSession categoriesFor: #_executeString:fromContextOop:environment:!private! !
 !GciSession categoriesFor: #_library!accessing!private! !
 !GciSession categoriesFor: #_send:to:withAll:!private! !
@@ -851,6 +858,8 @@ withExplanation: aString doA: aBlock
 !GciSession categoriesFor: #attemptSocket!private! !
 !GciSession categoriesFor: #begin!Jade convenience!public! !
 !GciSession categoriesFor: #beInvalidSession!public! !
+!GciSession categoriesFor: #blocking!accessing!public! !
+!GciSession categoriesFor: #blockWhile:!public! !
 !GciSession categoriesFor: #briefDescription!public! !
 !GciSession categoriesFor: #clearStack:!Jade!public! !
 !GciSession categoriesFor: #clientForwardError:!public! !

@@ -1374,7 +1374,7 @@ refreshClass
 	selection
 		updateAfterCommand: false;
 		command: #fastRefresh.
-	self issueCommand: (Array with: selection).
+	gciSession blockWhile: [self issueCommand: (Array with: selection)].
 	selection updateAfterCommand: true.
 	self updateClassInfo!
 

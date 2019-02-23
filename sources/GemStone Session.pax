@@ -109,7 +109,7 @@ package!
 "Class Definitions"!
 
 Object subclass: #GciSession
-	instanceVariableNames: 'briefDescription clientForwarders eventCount gciSessionId gemHost gemNRS heartbeatProcess isHandlingClientForwarderSend isPackagePolicyEnabled library netPort netTask server stoneHost stoneName stoneNRS stoneSerial stoneSessionID userID'
+	instanceVariableNames: 'briefDescription clientForwarders eventCount gciSessionId gemHost gemNRS heartbeatProcess isHandlingClientForwarderSend isPackagePolicyEnabled library netPort netTask server stoneHost stoneName stoneNRS stoneSerial stoneSessionID userID blocking'
 	classVariableNames: 'Current GemCursor'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
