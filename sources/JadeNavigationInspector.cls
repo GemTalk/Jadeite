@@ -90,7 +90,7 @@ queryCommand: query
 		ifTrue: 
 			[query isEnabled: objectIndex < oopsCollection size.
 			^true].
-	query command == #browseClass
+	(query command == #browseClass or: [query command == #browseSelectedClass])
 		ifTrue: 
 			[query isEnabled: true.
 			^true].

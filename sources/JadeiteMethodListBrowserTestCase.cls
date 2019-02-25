@@ -90,11 +90,11 @@ test_browseClass
 		ensure: [projectsBrowser destroy].
 	self methodSourcePresenter documentPresenter view selectionRange: (55 to: 64).
 	dictionaryPresenter := self methodSourcePresenter browseSelectedClass.
-	[self assert: dictionaryPresenter currentCard selectedClassName equals: 'TranscriptStreamPortable']
+	[self assert: dictionaryPresenter selectedClassName equals: 'TranscriptStreamPortable']
 		ensure: [dictionaryPresenter topShell destroy].
 	self methodSourcePresenter documentPresenter view selectionRange: (90 to: 95).
 	dictionaryPresenter := self methodSourcePresenter browseSelectedClass.
-	[self assert: ('String*' match: dictionaryPresenter currentCard selectedClassName)]
+	[self assert: ('String*' match: dictionaryPresenter selectedClassName)]
 		ensure: [dictionaryPresenter topShell destroy]!
 
 test_doubleClickActionClassMethod

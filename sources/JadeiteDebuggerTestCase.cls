@@ -228,14 +228,14 @@ test_browseClass
 	debugger documentPresenter view selectionRange: (105 to: 110).
 	self debuggerDo: [browser := debugger methodSourcePresenter browseSelectedClass].
 	
-	[self assert: (browser isKindOf: RowanSystemBrowser).
-	self assert: ('*String*' match: browser currentCard selectedClasses first)]
+	[self assert: (browser isKindOf: RowanSystemBrowserPresenter).
+	self assert: ('*String*' match: browser selectedClasses first)]
 			ensure: [self assert: browser topShell view close].
 	debugger documentPresenter view selectionRange: (119 to: 128).
 	self debuggerDo: [browser := debugger methodSourcePresenter browseSelectedClass].
 	
-	[self assert: (browser isKindOf: RowanSystemBrowser).
-	self assert: browser currentCard selectedClassName equals: 'TranscriptStreamPortable']
+	[self assert: (browser isKindOf: RowanSystemBrowserPresenter).
+	self assert: browser selectedClassName equals: 'TranscriptStreamPortable']
 			ensure: 
 				[self assert: browser topShell view close.
 				projectsBrowser destroy]!

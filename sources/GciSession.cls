@@ -83,13 +83,6 @@ beInvalidSession
 	library := nil.
 !
 
-blocking
-	^blocking ifNil: [blocking := false]!
-
-blockWhile: aBlock
-	blocking := true.
-	^aBlock ensure: [blocking := false]!
-
 briefDescription
 
 	briefDescription ifNil: [
@@ -806,50 +799,17 @@ withExplanation: aString do: aBlock
 		do: [library session: gciSessionId continue: error errorReport contextOop]!
 
 withExplanation: aString doA: aBlock
-	"Here we manage the UI feedback"
+	"We've (temporarily) eliminated the complicated monitoring loop
+	to eventually bring something that is less intrusive. Another 
+	problem was that if server events got 'stacked up' the inputState
+	loopWhile: block would pick those up and run them in this thread
+	which is blocked. This caused many problems
 
-	| result haveResult shouldRunEventLoop dialog |
-	shouldRunEventLoop := true.
-	haveResult := false.
-	
-	[result := self handlingClientForwarderSendDo: aBlock.
-	haveResult := true.
-	shouldRunEventLoop := false.
-	SessionManager inputState prod]
-			newProcess
-		name: 'GciSession>>withExplanation:doA: - 1';
-		resume.
-	
-	[
-	[(Delay forSeconds: 1) wait.
-	shouldRunEventLoop := false.
-	SessionManager inputState prod]
-			newProcess
-		name: 'GciSession>>withExplanation:doA: - 2';
-		resume.
-	isHandlingClientForwarderSend
-		ifTrue: 
-			[SessionManager inputState loopWhile: [shouldRunEventLoop].
-			shouldRunEventLoop := true]
-		ifFalse: 
-			[Cursor wait showWhile: 
-					[self blocking
-						ifTrue: [[haveResult] whileFalse: [(Delay forMilliseconds: 1) wait]]
-						ifFalse: 
-							[SessionManager inputState loopWhile: [shouldRunEventLoop].
-							shouldRunEventLoop := true]]].
-	haveResult ifTrue: [^result].
-	isHandlingClientForwarderSend]
-			whileTrue: [].
-	
-	[SessionManager inputState loopWhile: [shouldRunEventLoop].
-	shouldRunEventLoop := true]
-			newProcess
-		name: 'GciSession>>withExplanation:doA: - 3';
-		resume.
-	[result isNil] whileTrue: [(Delay forMilliseconds: 1) wait].
-	SessionManager inputState pumpMessages.
-	^result! !
+	See https://github.com/jgfoster/Jade/blob/master/sources/GciSession.cls
+	for the original implementation when we're ready to implement
+	an improved monitoring solution"
+
+	^self handlingClientForwarderSendDo: aBlock! !
 !GciSession categoriesFor: #_executeString:fromContextOop:environment:!private! !
 !GciSession categoriesFor: #_library!accessing!private! !
 !GciSession categoriesFor: #_send:to:withAll:!private! !
@@ -858,8 +818,6 @@ withExplanation: aString doA: aBlock
 !GciSession categoriesFor: #attemptSocket!private! !
 !GciSession categoriesFor: #begin!Jade convenience!public! !
 !GciSession categoriesFor: #beInvalidSession!public! !
-!GciSession categoriesFor: #blocking!accessing!public! !
-!GciSession categoriesFor: #blockWhile:!public! !
 !GciSession categoriesFor: #briefDescription!public! !
 !GciSession categoriesFor: #clearStack:!Jade!public! !
 !GciSession categoriesFor: #clientForwardError:!public! !

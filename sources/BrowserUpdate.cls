@@ -64,7 +64,8 @@ debug: aBoolean
 initialize
 	self initializeUpdates.
 	debug := false.
-	inUpdate := false!
+	inUpdate := false.
+!
 
 initializeUpdates
 	updates := OrderedCollection new.
@@ -79,6 +80,7 @@ inUpdate: anObject
 issueCommand: services session: session
 	inUpdate ifTrue: [^self].
 	inUpdate := true.
+	
 	[[Cursor wait showWhile: [^self basicIssueCommand: services session: session]]
 		ensure: [inUpdate := false]]
 			ifCurtailed: [inUpdate := false]!
@@ -173,7 +175,7 @@ updateService: service session: session
 
 updateServices: services session: session
 	inUpdate ifTrue: [^self].
-	services isEmpty ifTrue:[^self]. 
+	services isEmpty ifTrue: [^self].
 	inUpdate := true.
 	
 	[[Cursor wait showWhile: [^self basicUpdateServices: services session: session]]
