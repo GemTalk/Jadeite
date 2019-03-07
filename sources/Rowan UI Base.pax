@@ -1748,13 +1748,15 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 		command: #saveMethodSource:category:;
 		commandArgs: (Array with: methodSource1 with: category).
 	[self issueCommand: (Array with: classService)] on: GsCompileError
-		do: [:ex | ^self reportCompileError: ex list in: methodSourcePresenter].
+		do: 
+			[:ex |
+			self reportCompileError: ex list in: methodSourcePresenter. ^false].
 	methodSourcePresenter view firstVisibleLine: firstVisibleLine.
 	methodSourcePresenter view goto: caretPosition.
 	methodSourcePresenter value: methodSource1.
 	self displayNoMods: methodSourcePresenter.
 	(self compilationWarningFrom: classService selectedMethods)
-		ifNotNil: [:warning | self statusBarText: warning].!
+		ifNotNil: [:warning | self statusBarText: warning]!
 
 issueCommand: services
 	^self class issueCommand: services session: self gciSession.

@@ -1407,6 +1407,23 @@ test_extensionMethodSelection
 			[self cloneRowanSample1.
 			self ensureRowanSample1Loaded]!
 
+test_failMethodCompile
+	| source |
+	self testsIssue: #issue458 withTitle: '(3.0.64) category error'.
+	self selectRowanSample1Test.
+	self projectsPresenter basicAddMethodCategory: 'newCategory'.
+	
+	[source := 'failCompile  aaaaa'.
+	self methodSourcePresenter value: source.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #ok.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self selectCategoryNamed: 'tests'.	"error happened here"
+	self assertIsNil: (self methodListPresenter list
+				detect: [:methodService | methodService selector = #failCompile]
+				ifNone: [])]
+			ensure: [self projectsPresenter basicRemoveMethodCategories]!
+
 test_filtersUpdatedInHierarchyView
 	| selectedClass browserServiceCategories |
 	self testsIssue: #issue343 withTitle: 'Category/Variables tab not updating correctly'.
@@ -3691,6 +3708,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_expansion!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_extensionColoringInHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_extensionMethodSelection!public!test class list! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_failMethodCompile!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_filtersUpdatedInHierarchyView!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findClass!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodChangesCategories!public!test categories! !

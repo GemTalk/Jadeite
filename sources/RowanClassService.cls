@@ -25,9 +25,9 @@ addHierarchyService: service to: treeModel withParent: parentService
 basicPrepareForReplication
 	"don't call anything potentially recursive here.
 	method & package services don't iterate over subcollections"
-	methods := nil. 
-	hierarchyServices := nil.
-	selectedMethods := nil.
+	methods := Array new. 
+	hierarchyServices := Array new.
+	selectedMethods := Array new. 
 	methods ifNotNil: [methods do: [:methodService | methodService basicPrepareForReplication]].
 	selectedMethods
 		ifNotNil: [selectedMethods do: [:methodService | methodService basicPrepareForReplication]].

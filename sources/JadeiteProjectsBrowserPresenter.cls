@@ -573,14 +573,20 @@ editSaveMethod
 	self redrawAllViews!
 
 editSaveMethod: classService
-	self
-		editSaveMethod: classService
-		in: methodSourcePresenter
-		category: self targetCategory.
+	| compileResult |
+	compileResult := self
+				editSaveMethod: classService
+				in: methodSourcePresenter
+				category: self targetCategory.
+	compileResult == false
+		ifTrue: [self updateService: classService	"If we got a compile error our methods need a refresh"].
 	classService selectedMethods
 		ifNotNil: 
-			["there will be no method selected on a compiler error"
-			self selectMethodsFrom: classService]!
+			[:methodServices |
+			methodServices notEmpty
+				ifTrue: 
+					["there will be no method selected on a compiler error"
+					self selectMethodsFrom: classService]]!
 
 expandHierarchyAt: classService
 	Cursor wait showWhile: 
