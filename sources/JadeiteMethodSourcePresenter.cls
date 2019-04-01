@@ -103,6 +103,12 @@ registerPresentersForUpdates
 		selector: #methodSourceUpdate:browser:
 		browser: self!
 
+statusBarText: aString
+
+	self topShell statusBarText: aString.
+	(self topShell view viewNamed: 'statusBarField') invalidate
+!
+
 update
 	^self updateMethodSource!
 
@@ -132,6 +138,7 @@ value: string
 !JadeiteMethodSourcePresenter categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteMethodSourcePresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteMethodSourcePresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
+!JadeiteMethodSourcePresenter categoriesFor: #statusBarText:!public! !
 !JadeiteMethodSourcePresenter categoriesFor: #update!public!updating! !
 !JadeiteMethodSourcePresenter categoriesFor: #updateMethodSource!public!updating! !
 !JadeiteMethodSourcePresenter categoriesFor: #value:!public! !

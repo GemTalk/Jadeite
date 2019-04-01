@@ -1702,7 +1702,6 @@ browseSendersOf: string
 	^self class browseSendersOf: string session: self gciSession!
 
 compilationWarningFrom: methodServices
-
 	methodServices do:[:methodService | 
 		methodService compilationWarnings ifNotNil:[:warning | ^warning]].
 	^nil!
@@ -1750,13 +1749,19 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 	[self issueCommand: (Array with: classService)] on: GsCompileError
 		do: 
 			[:ex |
-			self reportCompileError: ex list in: methodSourcePresenter. ^false].
+			self reportCompileError: ex list in: methodSourcePresenter.
+			^false].
 	methodSourcePresenter view firstVisibleLine: firstVisibleLine.
 	methodSourcePresenter view goto: caretPosition.
 	methodSourcePresenter value: methodSource1.
+	self setStatusBarDefault.
 	self displayNoMods: methodSourcePresenter.
 	(self compilationWarningFrom: classService selectedMethods)
-		ifNotNil: [:warning | self statusBarText: warning]!
+		ifNil: [self statusBarText: String new]
+		ifNotNil: 
+			[:warning |
+			(self topShell view viewNamed: 'statusBarField') backcolor: Color yellow faded.
+			self statusBarText: warning]!
 
 issueCommand: services
 	^self class issueCommand: services session: self gciSession.

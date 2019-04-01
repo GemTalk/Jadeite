@@ -916,7 +916,8 @@ methodMenuBreak: aMenu
 	selection appendToSourceMenu: aMenu presenter: methodSourcePresenter!
 
 methodSelectionChanged
-	self updateMethodSource.
+	self setStatusBarDefault.
+	self updateMethodSource. 
 	self topShell cardsPresenter view currentCard presenter == self
 		ifTrue: [methodSourcePresenter ensureVisible]!
 

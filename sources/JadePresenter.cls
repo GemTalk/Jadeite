@@ -44,9 +44,15 @@ resetCursor
 	[Cursor current: nil] forkAt: Processor userBackgroundPriority.
 !
 
+setStatusBarDefault
+    | statusBarView |
+    statusBarView := self topShell view viewNamed: 'statusBarField'.
+    statusBarView backcolor: statusBarView defaultBackcolor!
+
 statusBarText: aString
 
 	self topShell statusBarText: aString.
+	(self view viewNamed: 'statusBarField') invalidate
 !
 
 subMenuName
@@ -107,6 +113,7 @@ updateService: service
 !JadePresenter categoriesFor: #gciSession:!public! !
 !JadePresenter categoriesFor: #refreshFromServer!public! !
 !JadePresenter categoriesFor: #resetCursor!public! !
+!JadePresenter categoriesFor: #setStatusBarDefault!displaying!public! !
 !JadePresenter categoriesFor: #statusBarText:!public! !
 !JadePresenter categoriesFor: #subMenuName!menus!public! !
 !JadePresenter categoriesFor: #subMenuPresenter!menus!public! !
