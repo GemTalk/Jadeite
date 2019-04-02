@@ -18,6 +18,9 @@ className
 
 	^className!
 
+isUpdatableService
+	^false!
+
 key
 	"provided to match expectation of UI for JadeDebugger"
 
@@ -32,6 +35,7 @@ value
 	^value! !
 !RowanVariableService categoriesFor: #_key!public! !
 !RowanVariableService categoriesFor: #className!public! !
+!RowanVariableService categoriesFor: #isUpdatableService!public!testing! !
 !RowanVariableService categoriesFor: #key!public! !
 !RowanVariableService categoriesFor: #oop!public! !
 !RowanVariableService categoriesFor: #value!public! !

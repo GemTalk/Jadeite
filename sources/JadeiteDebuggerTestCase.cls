@@ -148,6 +148,9 @@ setUp
 		yourself.
 !
 
+statusBarValue
+	^(debugger view viewNamed: 'statusBarField') value!
+
 systemBrowser
 
 	^RowanSystemBrowser allInstances detect: [:each | true] ifNone: [nil]
@@ -198,18 +201,18 @@ test_badCompileInDebugger
 		array := Array with: .
 		^array'.
 	debugger methodSourcePresenter documentPresenter value: source.
-	debugger saveMethod. 
-	self assert: (debugger view viewNamed: 'statusBarText') value equals: 'expected a primary expression'.
+	debugger saveMethod.
+	self assert: self statusBarValue equals: 'expected a primary expression'.
 	self assert: debugger methodSourcePresenter documentPresenter view backcolor
 		equals: JadeTextStyles default colorForCompileError.
 	source := 'sampleMethodWithHalt
 		"this code will fail compile"
 		array := Array with: 1.'.
 	debugger methodSourcePresenter documentPresenter value: source.
-	debugger saveMethod. 
-	self assert: (debugger view viewNamed: 'statusBarText') value  equals: 'undefined symbol'.
+	debugger saveMethod.
+	self assert: self statusBarValue equals: 'undefined symbol'.
 	self assert: debugger methodSourcePresenter documentPresenter view backcolor
-		equals: JadeTextStyles default colorForCompileError.!
+		equals: JadeTextStyles default colorForCompileError!
 
 test_browseClass
 	| browser |
@@ -395,6 +398,30 @@ test_registeredPresentersInProjectBrowserCleanedUp
 	self assert: BrowserUpdate current registeredPresenters size > registeredPresenters.
 	self tearDown.  "this will close the debugger and do proper cleanup" 
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
+
+test_reloadWithDebuggerOpen
+	"reload a project with a debugger open. That was enough to trigger the error"
+
+	self testsIssue: #issue359
+		withTitle: '(3.0.52 & 3.0.62) `a UserDefinedError occurred (error 2318), reason:halt, Use on*Process: constructors` Error'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectRowanSample1Class.
+	self saveIssue169Method.
+	self denyIsNil: (self methodListPresenter list
+				detect: [:methodService | methodService selector = #issue169]
+				ifNone: []).
+	self assert: self projectListPresenter selection isDirty.
+	self openDebuggerOn: 'RowanSample1 new issue169'.
+	RowanBrowserService new reloadProjects: self projectListPresenter selections
+		presenter: self projectsPresenter.
+	self deny: self projectListPresenter selection isDirty.
+	self selectRowanSample1Class.
+	self assertIsNil: (self methodListPresenter list
+				detect: [:methodService | methodService selector = #issue169]
+				ifNone: [])]
+			ensure: [self assert: projectsBrowser topShell view close]!
 
 test_restartInBlock
 	| restartProcess |
@@ -888,6 +915,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #saveMethodWithHalt!private! !
 !JadeiteDebuggerTestCase categoriesFor: #selectFrameAt:!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #setUp!private!setup teardown! !
+!JadeiteDebuggerTestCase categoriesFor: #statusBarValue!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #systemBrowser!private! !
 !JadeiteDebuggerTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteDebuggerTestCase categoriesFor: #terminateGsProcess!private!running! !
@@ -902,6 +930,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_inspectedDebuggerObjectHeld!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_reloadWithDebuggerOpen!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_restartInBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_selectAfterDiveNoStepPoint!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_selectBlockContext!public!tests! !

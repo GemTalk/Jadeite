@@ -31,6 +31,9 @@ isExecutedBlockContext
 
 	^method className isNil!
 
+isUpdatableService
+	^false!
+
 method
 	^method!
 
@@ -57,6 +60,7 @@ vars
 !RowanFrameService categoriesFor: #gsMethod!public! !
 !RowanFrameService categoriesFor: #indexOfSubCollection:!public! !
 !RowanFrameService categoriesFor: #isExecutedBlockContext!public!testing! !
+!RowanFrameService categoriesFor: #isUpdatableService!public!testing! !
 !RowanFrameService categoriesFor: #method!public! !
 !RowanFrameService categoriesFor: #offsets!public! !
 !RowanFrameService categoriesFor: #printOn:!public! !

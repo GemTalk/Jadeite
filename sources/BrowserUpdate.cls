@@ -143,7 +143,7 @@ selectedServices
 			(presenter class canUnderstand: #selections)
 				ifTrue: 
 					[potentialSelections := presenter selections.
-					services addAll: (potentialSelections select: [:selection | selection isRowanService])]].
+					services addAll: (potentialSelections select: [:selection | selection isUpdatableService])]].
 	^services!
 
 update: services afterStonReplication: stonResults

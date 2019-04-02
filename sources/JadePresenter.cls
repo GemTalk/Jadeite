@@ -50,9 +50,8 @@ setStatusBarDefault
     statusBarView backcolor: statusBarView defaultBackcolor!
 
 statusBarText: aString
-
 	self topShell statusBarText: aString.
-	(self view viewNamed: 'statusBarField') invalidate
+	(self view topShell view viewNamed: 'statusBarField') invalidate
 !
 
 subMenuName

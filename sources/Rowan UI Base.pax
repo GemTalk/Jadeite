@@ -149,6 +149,7 @@ package methodNames
 	add: #JadeNavigationInspector -> #setNewInspectedObject;
 	add: #JadePresenter -> #abortTransaction;
 	add: #JadePresenter -> #basicCloneProject:root:;
+	add: #JadePresenter -> #browseClassReferences:;
 	add: #JadePresenter -> #browseHierarchyImplementorsOf:className:;
 	add: #JadePresenter -> #browseHierarchySendersOf:className:;
 	add: #JadePresenter -> #browseImplementorsOf;
@@ -210,7 +211,6 @@ package methodNames
 	add: #JadeShell -> #updateCaptionFromSearchString:;
 	add: #JadeSystemBrowserPresenter -> #basicAddMethodCategory:;
 	add: #JadeSystemBrowserPresenter -> #basicRemoveMethods;
-	add: #JadeSystemBrowserPresenter -> #browseClassReferences:;
 	add: #JadeSystemBrowserPresenter -> #browseMethodsAndSelect:;
 	add: #JadeSystemBrowserPresenter -> #browseMethodsAndSelect:type:;
 	add: #JadeSystemBrowserPresenter -> #createSchematicWiring;
@@ -272,7 +272,7 @@ package methodNames
 	add: #Object -> #isMethodService;
 	add: #Object -> #isPackageService;
 	add: #Object -> #isProjectService;
-	add: #Object -> #isRowanService;
+	add: #Object -> #isUpdatableService;
 	add: #Object -> #prepareForReplication;
 	add: #Object -> #rowanFixMe;
 	add: #ObjectLogBrowser -> #debug:;
@@ -331,8 +331,10 @@ package methodNames
 	add: 'JadeInspector class' -> #resource_Special_view;
 	add: 'JadeNavigationInspector class' -> #resource_Default_view;
 	add: 'JadePresenter class' -> #allClassesIn:;
+	add: 'JadePresenter class' -> #basicBrowseClassReferences:session:;
 	add: 'JadePresenter class' -> #basicBrowseMethod:presenter:;
 	add: 'JadePresenter class' -> #browseClassIn:;
+	add: 'JadePresenter class' -> #browseClassReferences:session:;
 	add: 'JadePresenter class' -> #browseHierarchyImplementorsOf:className:session:;
 	add: 'JadePresenter class' -> #browseHierarchySendersOf:className:session:;
 	add: 'JadePresenter class' -> #browseImplementorsIn:;
@@ -1652,6 +1654,9 @@ basicCloneProject: path root: root
 					with: true).
 	self issueCommand: (Array with: service)!
 
+browseClassReferences: className
+	^self class browseClassReferences: className session: self gciSession!
+
 browseHierarchyImplementorsOf: string className: className
 	^self class
 		browseHierarchyImplementorsOf: string
@@ -1843,6 +1848,7 @@ updateServices: services
 	BrowserUpdate current updateServices: services session: gciSession! !
 !JadePresenter categoriesFor: #abortTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #basicCloneProject:root:!menu handlers!private! !
+!JadePresenter categoriesFor: #browseClassReferences:!menu handlers!public! !
 !JadePresenter categoriesFor: #browseHierarchyImplementorsOf:className:!browsing!public! !
 !JadePresenter categoriesFor: #browseHierarchySendersOf:className:!browsing!public! !
 !JadePresenter categoriesFor: #browseImplementorsOf!browsing!public! !
@@ -1875,6 +1881,12 @@ allClassesIn: session
 	self issueCommand: (Array with: browserService) session: session.
 	^browserService allClasses!
 
+basicBrowseClassReferences: className session: session
+	| service |
+	service := RowanQueryService command: #browseClassReferences: withArgs: (Array with: className).
+	self issueCommand: (Array with: service) session: session.
+	^service!
+
 basicBrowseMethod: methodService presenter: browser
 	methodService
 		ifNotNil: 
@@ -1891,6 +1903,14 @@ browseClassIn: session
 				ifTrue: [^self openDictionaryBrowserOn: classService session: session].
 			browser := JadeiteProjectsSystemBrowser showOnSession: session.
 			browser currentCard updateAfterFindClass: classService]!
+
+browseClassReferences: className session: session
+	| service |
+	service := self basicBrowseClassReferences: className session: session.
+	^self
+		openMethodListOn: service
+		selecting: className
+		session: session!
 
 browseHierarchyImplementorsOf: string className: className session: session
 	| service shell |
@@ -2065,8 +2085,10 @@ symbolsFrom: selector session: session
 				commandArgs: (Array with: list asArray).
 	^(self issueCommand: (Array with: service) session: session) first answer! !
 !JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
+!JadePresenter class categoriesFor: #basicBrowseClassReferences:session:!browsing!browsing support!public! !
 !JadePresenter class categoriesFor: #basicBrowseMethod:presenter:!browsing!public! !
 !JadePresenter class categoriesFor: #browseClassIn:!browsing!public! !
+!JadePresenter class categoriesFor: #browseClassReferences:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseHierarchyImplementorsOf:className:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseHierarchySendersOf:className:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseImplementorsIn:!browsing!public! !
@@ -2857,12 +2879,6 @@ basicRemoveMethods
 				, self requestString.
 	self updateCommand: string!
 
-browseClassReferences: className
-	| service |
-	service := RowanQueryService command: #browseClassReferences: withArgs: (Array with: className).
-	self issueCommand: (Array with: service).
-	^self openMethodListOn: service selecting: className!
-
 browseMethodsAndSelect: aString
 
 	(JadeiteMethodListBrowser showOnSession: self gciSession) primaryPresenter
@@ -3366,7 +3382,6 @@ verifyValidCategory: category
 	^service answer! !
 !JadeSystemBrowserPresenter categoriesFor: #basicAddMethodCategory:!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #basicRemoveMethods!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #browseClassReferences:!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #browseMethodsAndSelect:!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #browseMethodsAndSelect:type:!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!overrides!public! !
@@ -3818,8 +3833,7 @@ isProjectService
 
 	^false!
 
-isRowanService
-
+isUpdatableService
 	^false!
 
 prepareForReplication
@@ -3835,7 +3849,7 @@ rowanFixMe
 !Object categoriesFor: #isMethodService!public!testing! !
 !Object categoriesFor: #isPackageService!public!testing! !
 !Object categoriesFor: #isProjectService!public!testing! !
-!Object categoriesFor: #isRowanService!public!testing! !
+!Object categoriesFor: #isUpdatableService!public!testing! !
 !Object categoriesFor: #prepareForReplication!Jadeite!public! !
 !Object categoriesFor: #rowanFixMe!public!testing! !
 
