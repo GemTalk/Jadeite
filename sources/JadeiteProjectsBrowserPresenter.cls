@@ -145,6 +145,24 @@ basicRenameCategoryFrom: old to: new
 	self issueCommand: (Array with: service).
 	categoryListPresenter selection: new!
 
+basicRenameClass: classService to: newName
+	| answeringService oldName browser sourceView offset selectionRanges |
+	oldName := classService name.
+	classService
+		command: #renameClass:to:;
+		commandArgs: (Array with: classService name with: newName).
+	answeringService := self issueCommand: (Array with: classService).
+	self updateServices: packageListPresenter selections.
+	self selectClassNamed: newName.
+	answeringService first answer isEmpty
+		ifTrue: [^MessageBox notify: 'No methods updated after renaming ' , oldName , ' to ' , newName].
+	browser := JadeiteFindStringMethodListBrowser showOnSession: gciSession.
+	browser primaryPresenter findString: newName.
+	browser primaryPresenter methods: answeringService first answer
+		selecting: answeringService first answer first.
+	browser updateCaption: 'Methods updated after renaming ' , oldName , ' to ' , newName.
+	^browser!
+
 basicUnloadProjects: projectNames
 	| browserService |
 	browserService := RowanBrowserService new.
@@ -224,11 +242,12 @@ classesMenuStrings
 				browseClassReferences;
 				fileOutClass;
 				addSubclass;
+				renameClass;
 				removeClass;
 				removePriorVersions;
 				showSUnitBrowserOnClass].
 	definedLabel := self definedClassMenuItemLabel.
-	menuStrings := #('&Classes' '&Browse References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' '&File Out Class//fileOutClass' 'Add &Subclass//addSubclass' '&Remove//removeClass' '-' 'Set Compiler &Environment ...//setEnvironment'  '-')
+	menuStrings := #('&Classes' '&Browse References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' '&File Out Class//fileOutClass' 'Add &Subclass//addSubclass' '&Rename //renameClass' '&Remove//removeClass' '-' 'Set Compiler &Environment ...//setEnvironment'  '-')
 				asOrderedCollection.
 	menuStrings addLast: definedLabel , '//gotoClassDefinedPackage'.
 	^menuStrings!
@@ -1276,7 +1295,7 @@ queryCommand: aCommandQuery
 				ifTrue: 
 					[aCommandQuery isEnabled: false.
 					^true]].
-	(#(#browseClassReferences #fileOutClass #addSubclass #addMissingAccessors #removeClass #removePriorVersions)
+	(#(#browseClassReferences #fileOutClass #addSubclass #addMissingAccessors #renameClass #removeClass #removePriorVersions)
 		includes: command)
 			ifTrue: 
 				[aCommandQuery isEnabled: self selectedClasses size == 1.
@@ -1486,6 +1505,16 @@ removeMethods: services
 				command: #removeMethods:;
 				commandArgs: (Array with: methodListPresenter selections)].
 	self issueCommand: services!
+
+renameClass
+	| oldClassService newClassName |
+	oldClassService := self selectedClass ifNil: [^MessageBox notify: 'Class must be selected'].
+	(newClassName := Prompter
+				on: oldClassService name
+				prompt: 'Rename ' , oldClassService name , ' to:'
+				caption: 'Rename class') isNil
+		ifTrue: [^self].
+	self basicRenameClass: oldClassService to: newClassName!
 
 renameMethodCategory
 	| new old |
@@ -2045,6 +2074,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethodCategories!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethods!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRenameCategoryFrom:to:!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #basicRenameClass:to:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicUnloadProjects:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #behaviorIdentifier!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseHierarchyImplementors!menu handlers!public!queries! !
@@ -2171,6 +2201,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #removeClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #removeMethodCategories!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #removeMethods:!private!services! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #renameClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #renameMethodCategory!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #resetCategoryText!event handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #resetDefinedClassPackage!event handlers support!private! !

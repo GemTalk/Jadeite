@@ -14,6 +14,8 @@ package classNames
 	add: #JadeiteBasicMethodListPresenter;
 	add: #JadeiteFindClassDialog;
 	add: #JadeiteFindMethodDialog;
+	add: #JadeiteFindStringMethodListBrowser;
+	add: #JadeiteFindStringMethodListPresenter;
 	add: #JadeiteLoginShell;
 	add: #JadeiteMethodListBrowser;
 	add: #JadeiteMethodListPresenter;
@@ -586,6 +588,11 @@ RowanMethodListPresenter subclass: #JadeiteMethodListPresenter
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+JadeiteMethodListPresenter subclass: #JadeiteFindStringMethodListPresenter
+	instanceVariableNames: 'findString'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 JadeAutoSystemBrowserPresenter subclass: #RowanSystemBrowserPresenter
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -682,6 +689,11 @@ JadeMethodListBrowser subclass: #RowanMethodListBrowser
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanMethodListBrowser subclass: #JadeiteMethodListBrowser
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteMethodListBrowser subclass: #JadeiteFindStringMethodListBrowser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -1754,6 +1766,7 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 	[self issueCommand: (Array with: classService)] on: GsCompileError
 		do: 
 			[:ex |
+			(self topShell view viewNamed: 'statusBarField') backcolor: Color red faded.
 			self reportCompileError: ex list in: methodSourcePresenter.
 			^false].
 	methodSourcePresenter view firstVisibleLine: firstVisibleLine.

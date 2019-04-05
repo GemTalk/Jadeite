@@ -162,7 +162,7 @@ resetColors
 	JadeTextStyles default resetColors.
 	ColorDialog showModalOn: JadeTextStyles default colorForNoEdits.
 "
-	colorForCompileError 	:=  Color red faded.
+	colorForCompileError 	:= RGB red: 250 green: 220 blue: 200.
 	colorForNoEdits 		:= RGB red: 250 green: 240 blue: 200.
 	colorForUnsavedEdits 	:= RGB red: 240 green: 250 blue: 200.
 !
