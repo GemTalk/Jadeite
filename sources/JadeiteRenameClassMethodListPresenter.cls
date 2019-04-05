@@ -53,7 +53,7 @@ previousSelection
 	sourceView := self methodSourcePresenter documentPresenter view.
 	self methodSourcePresenter documentPresenter view setFocus.
 	offset := sourceView findString: findString startingAt: 1.
-	offset >= sourceView selectionRange start
+	(offset = 0 or:[offset >= sourceView selectionRange start])
 		ifTrue: 
 			[methodListPresenter selection = methodListPresenter methodListPresenter list first
 				ifTrue: 
@@ -81,6 +81,7 @@ resetAndFindLastIn: sourceView
 	offset := 0.
 	[offset := sourceView findString: findString startingAt: offset + 1.
 	offset = 0] whileFalse: [lastOffset := offset].
+	lastOffset ifNil:[^self].
 	sourceView selectionRange: (lastOffset to: lastOffset + findString size - 1).
 	self methodSourcePresenter documentPresenter view setFocus!
 
