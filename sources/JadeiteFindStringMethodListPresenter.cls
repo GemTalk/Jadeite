@@ -23,6 +23,10 @@ findString
 findString: anObject
 	findString := anObject!
 
+onViewOpened
+
+	super onViewOpened.!
+
 selectionChanged
 	| sourceView selectionRanges offset |
 	findString ifNil: [^self]. 
@@ -35,5 +39,6 @@ selectionChanged
 !JadeiteFindStringMethodListPresenter categoriesFor: #createSchematicWiring!initialization!public! !
 !JadeiteFindStringMethodListPresenter categoriesFor: #findString!accessing!private! !
 !JadeiteFindStringMethodListPresenter categoriesFor: #findString:!accessing!private! !
+!JadeiteFindStringMethodListPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteFindStringMethodListPresenter categoriesFor: #selectionChanged!event handlers!public! !
 

@@ -727,6 +727,183 @@ test_classListSelectionShouldNotUpdateOtherHierarchy
 	]
 			ensure: [secondBrowser topShell exit]!
 
+test_classRenameNoReferences
+	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #('inst1')
+		package: 'RowanSample1-Tests'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[self projectsPresenter selectClassNamed: 'TestClass'.
+	TestMessageBox plannedResult: #ok.	"expect dialog box saying class was renamed"
+	self projectsPresenter basicRenameClass: self projectsPresenter selectedClass to: 'RenamedClass'.
+	self assertIsNil: (self classListPresenter list
+				detect: [:classService | classService name asString = 'TestClass']
+				ifNone: []).
+	self assert: self classListPresenter selection name equals: 'RenamedClass']
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				self projectsPresenter basicRemoveClass: self classListPresenter selection]!
+
+test_classRenameNoReferencesHierarchy
+	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #('inst1')
+		package: 'RowanSample1-Tests'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[self projectsPresenter selectClassNamed: 'TestClass'.
+	self selectHierarchyTab.
+	self assert: self classHierarchyPresenter selection name equals: 'TestClass'.
+	TestMessageBox plannedResult: #ok.	"expect dialog box saying class was renamed"
+	self projectsPresenter basicRenameClass: self projectsPresenter selectedClass to: 'RenamedClass'.
+	self assertIsNil: (self classListPresenter list
+				detect: [:classService | classService name asString = 'TestClass']
+				ifNone: []).
+	self assert: self classHierarchyPresenter selection name equals: 'RenamedClass']
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
+
+test_classRenameWithReferences
+	| list |
+	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #('inst1')
+		package: 'RowanSample1-Tests'.
+	self
+		saveClass: 'RefersToTestClass'
+		superclass: 'Object'
+		instVars: #('inst1')
+		package: 'RowanSample1-Tests'.
+	self
+		saveMethod: 'meth  ^TestClass'
+		in: 'RefersToTestClass'
+		category: 'foo'.
+	
+	[self projectsPresenter selectClassNamed: 'TestClass'.
+	methodListBrowser := self projectsPresenter basicRenameClass: self projectsPresenter selectedClass
+				to: 'RenamedClass'.
+	self assert: self classListPresenter selection name equals: 'RenamedClass'.
+	list := methodListBrowser primaryPresenter methodListPresenter methodListPresenter list.
+	self assert: list size equals: 1.
+	self assert: list first selector equals: #meth.
+	self assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter selection equals: 'RenamedClass'. 
+	]
+			ensure: [self projectsPresenter basicRemoveClass: self classListPresenter selection]!
+
+test_classRenameWithReferencesFailingCompile
+	| list |
+	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'Sub'
+		superclass: 'Object'
+		instVars: #('inst1')
+		package: 'RowanSample1-Tests'.
+	self
+		saveClass: 'SubString'
+		superclass: 'Object'
+		instVars: #('inst1')
+		package: 'RowanSample1-Tests'.
+	self
+		saveClass: 'RefersToTestClass'
+		superclass: 'Object'
+		instVars: #('inst1')
+		package: 'RowanSample1-Tests'.
+	self
+		saveMethod: 'meth  | subString | subString := SubString. ^Sub'
+		in: 'RefersToTestClass'
+		category: 'wontCompile'.	"method refers to both. Will fail compilation
+							based on current limitations in recompile method server code"
+	
+	[self projectsPresenter selectClassNamed: 'Sub'.
+	methodListBrowser := self projectsPresenter basicRenameClass: self projectsPresenter selectedClass
+				to: 'RenamedClass'.
+	self assert: self classListPresenter selection name equals: 'RenamedClass'.
+	list := methodListBrowser primaryPresenter methodListPresenter methodListPresenter list.
+	self assert: list size equals: 1.
+	self assert: list first selector equals: #meth.
+	self assert: list first failedCompile.  "should show up as red. No way to easily test that" 
+	self assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter selection isEmpty]
+			ensure: [self projectsPresenter basicRemoveClass: self classListPresenter selection]!
+
+test_classRenameWithReferencesHierarchy
+	| list |
+	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #('inst1')
+		package: 'RowanSample1-Tests'.
+	self
+		saveClass: 'RefersToTestClass'
+		superclass: 'Object'
+		instVars: #('inst1')
+		package: 'RowanSample1-Tests'.
+	self
+		saveMethod: 'meth  ^TestClass'
+		in: 'RefersToTestClass'
+		category: 'foo'.
+	
+	[self projectsPresenter selectClassNamed: 'TestClass'.
+	self selectHierarchyTab.
+	self assert: self classHierarchyPresenter selection name equals: 'TestClass'.
+	methodListBrowser := self projectsPresenter basicRenameClass: self projectsPresenter selectedClass
+				to: 'RenamedClass'.
+	self assert: self classHierarchyPresenter selection name equals: 'RenamedClass'.
+	list := methodListBrowser primaryPresenter methodListPresenter methodListPresenter list.
+	self assert: list size equals: 1.
+	self assert: list first selector equals: #meth.
+	self assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter selection
+		equals: 'RenamedClass']
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
+
+test_classRenameWithReferencesSimilarNameButNoFailCompile
+	| list |
+	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'Sub'
+		superclass: 'Object'
+		instVars: #('inst1')
+		package: 'RowanSample1-Tests'.
+	self
+		saveClass: 'SubString'
+		superclass: 'Object'
+		instVars: #('inst1')
+		package: 'RowanSample1-Tests'.
+	self
+		saveClass: 'RefersToTestClass'
+		superclass: 'Object'
+		instVars: #('inst1')
+		package: 'RowanSample1-Tests'.
+	self
+		saveMethod: 'meth  | subString | subString := SubString. ^Sub'
+		in: 'RefersToTestClass'
+		category: 'foo'.
+	
+	[self projectsPresenter selectClassNamed: 'SubString'.
+	methodListBrowser := self projectsPresenter basicRenameClass: self projectsPresenter selectedClass
+				to: 'RenamedClass'.
+	self assert: self classListPresenter selection name equals: 'RenamedClass'.
+	list := methodListBrowser primaryPresenter methodListPresenter methodListPresenter list.
+	self assert: list size equals: 1.
+	self assert: list first selector equals: #meth.
+	self assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter selection
+		equals: 'RenamedClass']
+			ensure: [self projectsPresenter basicRemoveClass: self classListPresenter selection]!
+
 test_classSideSelection
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
@@ -3684,6 +3861,12 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionUpdatesAcrossTabs!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListSelectionShouldNotUpdateOtherHierarchy!public!test two browsers! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameNoReferences!public!test rename class! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameNoReferencesHierarchy!public!test rename class! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameWithReferences!public!test rename class! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameWithReferencesFailingCompile!public!test rename class! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameWithReferencesHierarchy!public!test rename class! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameWithReferencesSimilarNameButNoFailCompile!public!test rename class! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classSideSelection!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInClassList!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInHierarchy!public!test class hierarchy! !

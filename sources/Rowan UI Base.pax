@@ -12,10 +12,9 @@ package classNames
 	add: #JadeFindClassDialog;
 	add: #JadeFindDialog;
 	add: #JadeiteBasicMethodListPresenter;
+	add: #JadeiteBasicRenameClassMethodListPresenter;
 	add: #JadeiteFindClassDialog;
 	add: #JadeiteFindMethodDialog;
-	add: #JadeiteFindStringMethodListBrowser;
-	add: #JadeiteFindStringMethodListPresenter;
 	add: #JadeiteLoginShell;
 	add: #JadeiteMethodListBrowser;
 	add: #JadeiteMethodListPresenter;
@@ -27,6 +26,8 @@ package classNames
 	add: #JadeiteProjectListPresenter;
 	add: #JadeiteProjectsBrowserPresenter;
 	add: #JadeiteProjectsSystemBrowser;
+	add: #JadeiteRenameClassMethodListBrowser;
+	add: #JadeiteRenameClassMethodListPresenter;
 	add: #JadeiteTranscript;
 	add: #PackageMethodListPresenter;
 	add: #Rowan;
@@ -534,7 +535,7 @@ RowanService subclass: #RowanFrameService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superSource superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName'
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superSource superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -588,7 +589,7 @@ RowanMethodListPresenter subclass: #JadeiteMethodListPresenter
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeiteMethodListPresenter subclass: #JadeiteFindStringMethodListPresenter
+JadeiteMethodListPresenter subclass: #JadeiteRenameClassMethodListPresenter
 	instanceVariableNames: 'findString'
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -614,6 +615,11 @@ MethodListPresenter subclass: #PackageMethodListPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 PackageMethodListPresenter subclass: #JadeiteBasicMethodListPresenter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteBasicMethodListPresenter subclass: #JadeiteBasicRenameClassMethodListPresenter
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -693,7 +699,7 @@ RowanMethodListBrowser subclass: #JadeiteMethodListBrowser
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeiteMethodListBrowser subclass: #JadeiteFindStringMethodListBrowser
+JadeiteMethodListBrowser subclass: #JadeiteRenameClassMethodListBrowser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

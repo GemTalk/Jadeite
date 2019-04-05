@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superSource superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName'
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superSource superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -128,6 +128,9 @@ displayStringFor: displayThing
 			[displayThing forecolor: Color darkMagenta.
 			inSelectedPackage ifFalse: [displayThing font beUnderlined ]]!
 
+failedCompile
+	^failedCompile!
+
 hash
 	^(selector hash bitXor: className hash) bitXor: meta hash!
 
@@ -156,7 +159,8 @@ implementorsOf: aString
 
 initialize
 	super initialize. 
-	inSelectedPackage := true.  !
+	inSelectedPackage := true.  
+	failedCompile := false. !
 
 inSelectedPackage
 
@@ -431,6 +435,7 @@ user: anObject
 !RowanMethodService categoriesFor: #displayClassName!displaying!public! !
 !RowanMethodService categoriesFor: #displayOn:!displaying!public! !
 !RowanMethodService categoriesFor: #displayStringFor:!displaying!public! !
+!RowanMethodService categoriesFor: #failedCompile!accessing!public! !
 !RowanMethodService categoriesFor: #hash!comparing!public! !
 !RowanMethodService categoriesFor: #hasSubs!accessing!private! !
 !RowanMethodService categoriesFor: #hasSubs:!accessing!private! !

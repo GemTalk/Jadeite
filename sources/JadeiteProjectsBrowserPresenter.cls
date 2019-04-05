@@ -146,17 +146,18 @@ basicRenameCategoryFrom: old to: new
 	categoryListPresenter selection: new!
 
 basicRenameClass: classService to: newName
-	| answeringService oldName browser sourceView offset selectionRanges |
+	| answeringService oldName browser |
 	oldName := classService name.
 	classService
 		command: #renameClass:to:;
 		commandArgs: (Array with: classService name with: newName).
 	answeringService := self issueCommand: (Array with: classService).
 	self updateServices: packageListPresenter selections.
+	self refreshClassListOrHierarchy.
 	self selectClassNamed: newName.
 	answeringService first answer isEmpty
 		ifTrue: [^MessageBox notify: 'No methods updated after renaming ' , oldName , ' to ' , newName].
-	browser := JadeiteFindStringMethodListBrowser showOnSession: gciSession.
+	browser := JadeiteRenameClassMethodListBrowser showOnSession: gciSession.
 	browser primaryPresenter findString: newName.
 	browser primaryPresenter methods: answeringService first answer
 		selecting: answeringService first answer first.
