@@ -535,7 +535,7 @@ RowanService subclass: #RowanFrameService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superSource superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile'
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -590,7 +590,7 @@ RowanMethodListPresenter subclass: #JadeiteMethodListPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteMethodListPresenter subclass: #JadeiteRenameClassMethodListPresenter
-	instanceVariableNames: 'findString'
+	instanceVariableNames: 'findString newClassName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1772,7 +1772,7 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 	[self issueCommand: (Array with: classService)] on: GsCompileError
 		do: 
 			[:ex |
-			(self topShell view viewNamed: 'statusBarField') backcolor: Color red faded.
+			(self topShell view viewNamed: 'statusBarField') backcolor: Color default. 
 			self reportCompileError: ex list in: methodSourcePresenter.
 			^false].
 	methodSourcePresenter view firstVisibleLine: firstVisibleLine.

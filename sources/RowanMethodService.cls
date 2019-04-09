@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superSource superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile'
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -99,6 +99,12 @@ className: anObject
 classService
 
 	^RowanClassService named: className!
+
+comparisonSource
+	^comparisonSource!
+
+comparisonSource: anObject
+	comparisonSource := anObject!
 
 compilationWarnings
 	^compilationWarnings!
@@ -365,12 +371,6 @@ superDisplayString
 superDisplayString: anObject
 	superDisplayString := anObject!
 
-superSource
-	^superSource!
-
-superSource: anObject
-	superSource := anObject!
-
 testResult
 	^testResult!
 
@@ -429,6 +429,8 @@ user: anObject
 !RowanMethodService categoriesFor: #className!accessing!private! !
 !RowanMethodService categoriesFor: #className:!accessing!private! !
 !RowanMethodService categoriesFor: #classService!public! !
+!RowanMethodService categoriesFor: #comparisonSource!accessing!private! !
+!RowanMethodService categoriesFor: #comparisonSource:!accessing!private! !
 !RowanMethodService categoriesFor: #compilationWarnings!accessing!private! !
 !RowanMethodService categoriesFor: #copyBasicsFrom:!public!updating! !
 !RowanMethodService categoriesFor: #definedPackage!accessing!private! !
@@ -488,8 +490,6 @@ user: anObject
 !RowanMethodService categoriesFor: #subSuperIcon!displaying!public! !
 !RowanMethodService categoriesFor: #superDisplayString!accessing!private! !
 !RowanMethodService categoriesFor: #superDisplayString:!accessing!private! !
-!RowanMethodService categoriesFor: #superSource!accessing!private! !
-!RowanMethodService categoriesFor: #superSource:!accessing!private! !
 !RowanMethodService categoriesFor: #testResult!accessing!public! !
 !RowanMethodService categoriesFor: #testResult:!accessing!public! !
 !RowanMethodService categoriesFor: #testResultUpdate:browser:!public!updating! !

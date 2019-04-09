@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 JadeiteMethodListPresenter subclass: #JadeiteRenameClassMethodListPresenter
-	instanceVariableNames: 'findString'
+	instanceVariableNames: 'findString newClassName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -23,11 +23,14 @@ createSchematicWiring
 		send: #selectionChanged
 		to: self!
 
-findString
-	^findString!
-
 findString: anObject
 	findString := anObject!
+
+newClassName
+	^newClassName!
+
+newClassName: anObject
+	newClassName := anObject!
 
 nextSelection
 	| sourceView offset |
@@ -47,6 +50,12 @@ nextSelection
 				selectionByIndex: methodListPresenter methodListPresenter selectionByIndex + 1.
 			^self resetAndFindFirstIn: sourceView].
 	sourceView selectionRange: (offset to: offset + findString size - 1)!
+
+onViewOpened
+
+	super onViewOpened. 
+	self registerPresentersForUpdates.
+	self updateAutoCommit.!
 
 previousSelection
 	| sourceView offset |
@@ -86,23 +95,45 @@ resetAndFindLastIn: sourceView
 	self methodSourcePresenter documentPresenter view setFocus!
 
 selectionChanged
-	| sourceView selectionRanges offset |
-	findString ifNil: [^self]. 
+	| sourceView selectionRanges offset selection |
+	findString ifNil: [^self].
+	selection := methodListPresenter methodListPresenter selection.
+	findString := selection failedCompile ifTrue: [selection comparisonSource] ifFalse: [newClassName].
 	sourceView := self methodSourcePresenter documentPresenter view.
 	selectionRanges := OrderedCollection new.
 	offset := 1.
 	[(offset := sourceView findString: findString startingAt: offset + 1) = 0]
 		whileFalse: [selectionRanges add: (offset to: offset + findString size - 1)].
-	sourceView selectionRanges: selectionRanges! !
+	sourceView selectionRanges: selectionRanges.
+	self showComparison!
+
+showComparison
+	| selection |
+	selection := methodListPresenter methodListPresenter selectionIfNone: [^self].
+	selection failedCompile
+		ifTrue: 
+			[comparisonPresenter
+				beforeTitle: 'Current Source';
+				afterTitle: 'Proposed Source';
+				compare: selection source
+					with: (selection source copyReplaceAll: selection comparisonSource with: newClassName)]
+		ifFalse: 
+			[comparisonPresenter
+				beforeTitle: 'Old Source';
+				afterTitle: 'Current Source';
+				compare: selection comparisonSource with: selection source]! !
 !JadeiteRenameClassMethodListPresenter categoriesFor: #createComponents!initialization!public! !
 !JadeiteRenameClassMethodListPresenter categoriesFor: #createSchematicWiring!initialization!public! !
-!JadeiteRenameClassMethodListPresenter categoriesFor: #findString!accessing!private! !
 !JadeiteRenameClassMethodListPresenter categoriesFor: #findString:!accessing!private! !
+!JadeiteRenameClassMethodListPresenter categoriesFor: #newClassName!accessing!private! !
+!JadeiteRenameClassMethodListPresenter categoriesFor: #newClassName:!accessing!private! !
 !JadeiteRenameClassMethodListPresenter categoriesFor: #nextSelection!event handlers!public! !
+!JadeiteRenameClassMethodListPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteRenameClassMethodListPresenter categoriesFor: #previousSelection!event handlers!public! !
 !JadeiteRenameClassMethodListPresenter categoriesFor: #resetAndFindFirstIn:!event handlers!public! !
 !JadeiteRenameClassMethodListPresenter categoriesFor: #resetAndFindLastIn:!event handlers!public! !
 !JadeiteRenameClassMethodListPresenter categoriesFor: #selectionChanged!event handlers!public! !
+!JadeiteRenameClassMethodListPresenter categoriesFor: #showComparison!event handlers!public! !
 
 !JadeiteRenameClassMethodListPresenter class methodsFor!
 

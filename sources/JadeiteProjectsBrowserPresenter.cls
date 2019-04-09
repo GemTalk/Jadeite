@@ -158,7 +158,9 @@ basicRenameClass: classService to: newName
 	answeringService first answer isEmpty
 		ifTrue: [^MessageBox notify: 'No methods updated after renaming ' , oldName , ' to ' , newName].
 	browser := JadeiteRenameClassMethodListBrowser showOnSession: gciSession.
-	browser primaryPresenter findString: newName.
+	browser primaryPresenter
+		findString: newName;
+		newClassName: newName.
 	browser primaryPresenter methods: answeringService first answer
 		selecting: answeringService first answer first.
 	browser updateCaption: 'Methods updated after renaming ' , oldName , ' to ' , newName.
@@ -1725,7 +1727,7 @@ showSuperClassComparison
 			[comparisonPresenter
 				beforeTitle: methodService classMethodDisplayString;
 				afterTitle: methodService superDisplayString;
-				compare: methodService source with: methodService superSource]
+				compare: methodService source with: methodService comparisonSource]
 		ifFalse: 
 			[comparisonPresenter
 				beforeTitle: methodService classMethodDisplayString;
