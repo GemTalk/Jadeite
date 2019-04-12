@@ -332,6 +332,21 @@ test_addDuplicatePackage
 				self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_addInstVarWithVariablesTabOpen
+	self testsIssue: #issue447 withTitle: '(3.0.63) more odd behavior with add instance variable'.
+	self selectRowanSample1Test.
+	self projectsPresenter selectVariableTab.
+	self assert: self projectsPresenter methodFilterListPresenter list
+		equals: (OrderedCollection with: 'testSelector').
+	self
+		saveClass: 'RowanSample1Test'
+		superclass: 'TestCase'
+		instVars: #('foo' 'bar')
+		package: 'RowanSample1-Tests'.
+	self assert: self projectsPresenter methodFilterListPresenter list
+		equals: (OrderedCollection with: 'testSelector' with: 'bar' with: 'foo').
+	self projectsPresenter textAreaTabs currentCard name = 'classDefinition' "don't change to Method Source tab" !
+
 test_addPackageReloadProject
 	self testsIssue: #issue183
 		withTitle: 'Add package but don''t write it to disk then reload - walkback'.
@@ -3898,6 +3913,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abstractTestsShown!public!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_acceptDefinedMethodInExtensionClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addDuplicatePackage!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_addInstVarWithVariablesTabOpen!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addPackageReloadProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveHierarchyCategory!public!test class hierarchy! !
