@@ -647,6 +647,37 @@ test_classColoringExtension
 	self assert: classService shouldColorAsExtension]
 			ensure: [sunitBrowser destroy]!
 
+test_classDefinitionTemplateAfterRemove
+	self testsIssue: #issue449 withTitle: '(3.0.63) missing class definition template in empty package'.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'Foo'
+		withInstVars: #()
+		package: 'RowanSample1-Tests'.
+	self selectHierarchyTab.
+	self assert: self projectsPresenter selectedClass name equals: 'Foo'.
+	self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
+	self assert: self projectsPresenter classDefinitionPresenter value replaceCrLfWithLf
+		equals: 'Object rwSubclass: ''Foo''
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''RowanSample1-Tests''
+	options: #()
+'
+				replaceCrLfWithLf.	"leave the class template for convenience"
+	self selectClassListTab.
+	self assert: self projectsPresenter classDefinitionPresenter value replaceCrLfWithLf
+		equals:'Object rwSubclass: ''Foo''
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''RowanSample1-Tests''
+	options: #()
+' replaceCrLfWithLf	"show the typical default template"!
+
 test_classDefinitionUpdatesAcrossTabs
 	| source firstTab secondTab newSource |
 	self testsIssue: #issue412 withTitle: '(3.0.56) incorrect project browser update on method accept '.
@@ -834,7 +865,8 @@ test_classRenameWithReferencesFailingCompile
 	self assert: list size equals: 1.
 	self assert: list first selector equals: #meth.
 	self assert: list first failedCompile.  "should show up as red. No way to easily test that" 
-	self assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter selection isEmpty]
+	self assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter selectionRange  equals: (46 to: 48). "select old class on compile"
+	]
 			ensure: [self projectsPresenter basicRemoveClass: self classListPresenter selection]!
 
 test_classRenameWithReferencesHierarchy
@@ -3858,6 +3890,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeListSortOrder!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classColoring!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classColoringExtension!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionTemplateAfterRemove!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionUpdatesAcrossTabs!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListSelectionShouldNotUpdateOtherHierarchy!public!test two browsers! !

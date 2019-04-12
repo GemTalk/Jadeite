@@ -118,7 +118,14 @@ basicRemoveClass: selection
 	packageService
 		command: #removeClass:;
 		commandArgs: (Array with: selection).
-	self issueCommand: (Array with: packageService)!
+	self issueCommand: (Array with: packageService).
+	(textAreaTabs currentCard name = 'classDefinition' and: [classDefinitionPresenter value isNil])
+		ifTrue: 
+			[classDefinitionPresenter value: selection template.
+			classDefinitionPresenter view
+				backcolor: Color white;
+				isModified: false;
+				isReadOnly: false]!
 
 basicRemoveMethodCategories
 	| service |
@@ -834,6 +841,10 @@ initialize
 	super initialize.
 	stonCritical := Semaphore forMutualExclusion.!
 
+isClassDefinitionTabEmpty
+
+	self textAreaTabs!
+
 isClassSelected
 	^self selectedClass notNil!
 
@@ -1409,6 +1420,7 @@ refreshClass
 
 refreshClassListOrHierarchy
 	| newSelection listSelection hierarchySelection |
+	self resetClassTemplateIfEmpty.
 	self isClassListTabSelected
 		ifTrue: 
 			[listSelection := classListPresenter selectionOrNil.
@@ -1533,6 +1545,15 @@ renameMethodCategory
 
 resetCategoryText
 	methodCategoryText value: String new. !
+
+resetClassTemplateIfEmpty
+	(textAreaTabs currentCard name = 'classDefinition' and: [classDefinitionPresenter value isNil])
+		ifTrue: 
+			[classDefinitionPresenter value: self packageListPresenter selections first defaultTemplate.
+			classDefinitionPresenter view
+				backcolor: Color white;
+				isModified: false;
+				isReadOnly: false]!
 
 resetDefinedClassPackage
 	definedClassPackageText value: String new!
@@ -1830,7 +1851,7 @@ updateClassInfo
 	classCommentPresenter value: service comment.
 	classDefinitionPresenter view isModified
 		ifTrue: 
-			[service template = classDefinition ifTrue: [^self].  
+			[service template = classDefinition ifTrue: [^self].
 			(MessageBox confirm: 'Copy changes to clipboard?' caption: 'Class has unsaved changes!!')
 				ifTrue: [classDefinitionPresenter value copyToClipboard]].
 	classDefinitionPresenter value: service template.
@@ -1842,7 +1863,7 @@ updateClassInfo
 	self sundryCleanup.
 	definedClassPackageText value: 'Defined Package: ' , self selectedClass definedPackageName.
 	self updateClassMenu: nil.
-	self updateSUnitTab!
+	self updateSUnitTab.!
 
 updateClassMenu: menu
 	| item |
@@ -2073,7 +2094,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicAddMethodCategory:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicOnDropClassList:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicProjectTabLabel!displaying!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveClass:!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveClass:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethodCategories!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethods!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRenameCategoryFrom:to:!menu handlers!public! !
@@ -2145,6 +2166,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #hasExactlyOneCategorySelected!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #hierarchyClassDoubleClicked!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #initialize!initialize/release!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #isClassDefinitionTabEmpty!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #isClassSelected!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #isDictionariesTabSelected!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #isHierarchyTabSelected!public!testing! !
@@ -2207,6 +2229,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #renameClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #renameMethodCategory!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #resetCategoryText!event handlers support!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #resetClassTemplateIfEmpty!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #resetDefinedClassPackage!event handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #runClassTests!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #runMethodTests!menu handlers!public! !

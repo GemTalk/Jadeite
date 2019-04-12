@@ -1772,7 +1772,7 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 	[self issueCommand: (Array with: classService)] on: GsCompileError
 		do: 
 			[:ex |
-			(self topShell view viewNamed: 'statusBarField') backcolor: Color default. 
+			(self topShell view viewNamed: 'statusBarField') backcolor: Color yellow faded. 
 			self reportCompileError: ex list in: methodSourcePresenter.
 			^false].
 	methodSourcePresenter view firstVisibleLine: firstVisibleLine.
