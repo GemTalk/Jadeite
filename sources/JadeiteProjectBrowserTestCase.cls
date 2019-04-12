@@ -224,13 +224,15 @@ selectClassInHierarchyNamed: className
 	self selectTreeServicesNamed: (Array with: className) in: self classHierarchyPresenter!
 
 selectClassListTab
-	^self projectsPresenter classHierarchyTabs firstCard!
+	self projectsPresenter selectClassListTab.!
 
 selectHierarchyTab
 	self selectHierarchyTabIn: self projectsPresenter!
 
 selectHierarchyTabIn: presenter
-	presenter classHierarchyTabs lastCard!
+	presenter classHierarchyTabs
+		lastCard;
+		onTabChanged!
 
 selectSUnitTab
 	self projectsPresenter sunitPresenter ensureVisible!
@@ -654,11 +656,10 @@ test_classDefinitionTemplateAfterRemove
 		saveClass: 'Foo'
 		withInstVars: #()
 		package: 'RowanSample1-Tests'.
-	self selectHierarchyTab.
 	self assert: self projectsPresenter selectedClass name equals: 'Foo'.
 	self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
 	self assert: self projectsPresenter classDefinitionPresenter value replaceCrLfWithLf
-		equals: 'Object rwSubclass: ''Foo''
+		equals: 'Object rwSubclass: ''NameOfSubclass''
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -666,17 +667,39 @@ test_classDefinitionTemplateAfterRemove
 	category: ''RowanSample1-Tests''
 	options: #()
 '
+				replaceCrLfWithLf	"show the typical default template"!
+
+test_classDefinitionTemplateAfterRemoveInHierarchy
+	self testsIssue: #issue449 withTitle: '(3.0.63) missing class definition template in empty package'.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'Foo'
+		withInstVars: #()
+		package: 'RowanSample1-Tests'.
+	self selectHierarchyTab.
+	self assert: self projectsPresenter selectedClass name equals: 'Foo'.
+	self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
+	self assert: self projectsPresenter classDefinitionPresenter value replaceCrLfWithLf
+		equals: 'nil subclass: ''Object''
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #()
+'
 				replaceCrLfWithLf.	"leave the class template for convenience"
 	self selectClassListTab.
 	self assert: self projectsPresenter classDefinitionPresenter value replaceCrLfWithLf
-		equals:'Object rwSubclass: ''Foo''
+		equals: 'Object rwSubclass: ''NameOfSubclass''
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	category: ''RowanSample1-Tests''
 	options: #()
-' replaceCrLfWithLf	"show the typical default template"!
+'
+				replaceCrLfWithLf	"show the typical default template"!
 
 test_classDefinitionUpdatesAcrossTabs
 	| source firstTab secondTab newSource |
@@ -3891,6 +3914,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classColoring!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classColoringExtension!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionTemplateAfterRemove!public!test class list!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionTemplateAfterRemoveInHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionUpdatesAcrossTabs!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListSelectionShouldNotUpdateOtherHierarchy!public!test two browsers! !

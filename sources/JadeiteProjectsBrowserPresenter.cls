@@ -119,9 +119,10 @@ basicRemoveClass: selection
 		command: #removeClass:;
 		commandArgs: (Array with: selection).
 	self issueCommand: (Array with: packageService).
-	(textAreaTabs currentCard name = 'classDefinition' and: [classDefinitionPresenter value isNil])
-		ifTrue: 
-			[classDefinitionPresenter value: selection template.
+	self selectedClass
+		ifNil: [self resetClassTemplate "just emptied the last class in the package"]
+		ifNotNil: 
+			[classDefinitionPresenter value: self selectedClass template.
 			classDefinitionPresenter view
 				backcolor: Color white;
 				isModified: false;
@@ -1420,7 +1421,8 @@ refreshClass
 
 refreshClassListOrHierarchy
 	| newSelection listSelection hierarchySelection |
-	self resetClassTemplateIfEmpty.
+	(textAreaTabs currentCard name = 'classDefinition' and: [self selectedClass isNil])
+		ifTrue: [self resetClassTemplate].
 	self isClassListTabSelected
 		ifTrue: 
 			[listSelection := classListPresenter selectionOrNil.
@@ -1546,14 +1548,12 @@ renameMethodCategory
 resetCategoryText
 	methodCategoryText value: String new. !
 
-resetClassTemplateIfEmpty
-	(textAreaTabs currentCard name = 'classDefinition' and: [classDefinitionPresenter value isNil])
-		ifTrue: 
-			[classDefinitionPresenter value: self packageListPresenter selections first defaultTemplate.
-			classDefinitionPresenter view
-				backcolor: Color white;
-				isModified: false;
-				isReadOnly: false]!
+resetClassTemplate
+	classDefinitionPresenter value: self packageListPresenter selections first defaultTemplate.
+	classDefinitionPresenter view
+		backcolor: Color white;
+		isModified: false;
+		isReadOnly: false!
 
 resetDefinedClassPackage
 	definedClassPackageText value: String new!
@@ -2229,7 +2229,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #renameClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #renameMethodCategory!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #resetCategoryText!event handlers support!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #resetClassTemplateIfEmpty!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #resetClassTemplate!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #resetDefinedClassPackage!event handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #runClassTests!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #runMethodTests!menu handlers!public! !
