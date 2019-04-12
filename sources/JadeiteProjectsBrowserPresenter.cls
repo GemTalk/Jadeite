@@ -184,6 +184,7 @@ basicUnloadProjects: projectNames
 	packageListPresenter model: ListModel new.
 	classListPresenter model: ListModel new.
 	categoryListPresenter model: (ListModel new searchPolicy: SearchPolicy equality).
+	variableListPresenter model: ListModel new.
 	methodListPresenter model: ListModel new. 
 	self refreshGlobalSelections!
 
@@ -744,8 +745,9 @@ findMethod: selector
 	| methodService |
 	methodService := methodListPresenter list detect: [:service | service selector = selector]
 				ifNone: [^self].
-	self isCategoryTabSelected ifTrue:[
-		categoryListPresenter selection: methodService category]. 
+	self isCategoryTabSelected
+		ifTrue: [categoryListPresenter selection: methodService category]
+		ifFalse: [variableListPresenter selection: nil].
 	methodListPresenter selections: (Array with: methodService)!
 
 flipAutoCommit
@@ -1409,6 +1411,7 @@ refreshClass
 	selection := presenter selectionIfNone: 
 					[self resetDefinedClassPackage.
 					categoryListPresenter clear.
+					variableListPresenter clear. 
 					^methodListPresenter clear].
 	selection meta: self isClassSideSelected.
 	selection selectedPackageServices: packageListPresenter selections.
@@ -1443,7 +1446,9 @@ refreshClassListOrHierarchy
 			selectedFilters := self selectedFilters.
 			selectedMethods := methodListPresenter selections.
 			self updateHierarchy.
-			categoryListPresenter selections: selectedFilters.
+			self isCategoryTabSelected
+				ifTrue: [categoryListPresenter selections: selectedFilters]
+				ifFalse: [variableListPresenter selections: selectedFilters].
 			methodListPresenter selections: selectedMethods]!
 
 refreshFromServer

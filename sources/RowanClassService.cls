@@ -414,12 +414,11 @@ updateListIn: presenter from: visibleMethods
 	presenter hasSelection ifFalse: [presenter model: theModel]!
 
 updateVariables: presenter
-	| selections availableSelections |
-	variables ifNil:[^self].
-	selections := presenter selections.
-	presenter list: variables.
-	availableSelections := variables select: [:filter | selections includes: filter].
-	presenter selections: availableSelections!
+	variables ifNil: [^self].
+	presenter list copy
+		do: [:existingCategory | (variables includes: existingCategory) ifFalse: [presenter list remove: existingCategory]].
+	variables
+		do: [:newCategory | (presenter list includes: newCategory) ifFalse: [presenter model add: newCategory]]!
 
 variables
 	^variables!
