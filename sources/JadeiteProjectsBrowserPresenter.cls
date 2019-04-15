@@ -184,7 +184,7 @@ basicUnloadProjects: projectNames
 	packageListPresenter model: ListModel new.
 	classListPresenter model: ListModel new.
 	categoryListPresenter model: (ListModel new searchPolicy: SearchPolicy equality).
-	variableListPresenter model: ListModel new.
+	variableListPresenter model: (ListModel new searchPolicy: SearchPolicy equality).
 	methodListPresenter model: ListModel new. 
 	self refreshGlobalSelections!
 
@@ -274,8 +274,8 @@ cleanupComparisonBrowser
 		compare: String new with: String new!
 
 clearFilterLists
-	categoryListPresenter list: (ListModel new searchPolicy: SearchPolicy equality).
-	variableListPresenter list: ListModel new!
+	categoryListPresenter model: (ListModel new searchPolicy: SearchPolicy equality).
+	variableListPresenter model: (ListModel new searchPolicy: SearchPolicy equality).!
 
 comparisonTab
 	^comparisonTab

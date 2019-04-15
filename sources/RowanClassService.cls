@@ -415,10 +415,7 @@ updateListIn: presenter from: visibleMethods
 
 updateVariables: presenter
 	variables ifNil: [^self].
-	presenter list copy
-		do: [:existingCategory | (variables includes: existingCategory) ifFalse: [presenter list remove: existingCategory]].
-	variables
-		do: [:newCategory | (presenter list includes: newCategory) ifFalse: [presenter model add: newCategory]]!
+	presenter list: variables. !
 
 variables
 	^variables!

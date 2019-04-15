@@ -253,7 +253,8 @@ setUp
 	self disableTranscriptWrites.	"turn off gemstone transcript writes for performance"
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
 	self selectClassListTab.
-	self selectInstanceTab!
+	self selectInstanceTab.
+	self projectsPresenter selectCategoryTab.!
 
 tearDown
 	super tearDown.
@@ -267,6 +268,19 @@ tearDown
 		ifNotNil: 
 			[secondBrowser destroy.
 			secondBrowser := nil]!
+
+test_abortOnVariablesTab
+	self selectRowanSample1Test.
+	self projectsPresenter selectVariableTab.
+	self projectsPresenter variableListPresenter selectionByIndex: 1.
+	self abortTransaction.
+	
+	[self assert: self projectsPresenter variableListPresenter list isEmpty.
+	self assert: self classListPresenter list isEmpty.
+	self assert: self packageListPresenter list isEmpty]
+			ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
 
 test_abstractTestsShown
 	| commandQuery methodService |
@@ -332,6 +346,33 @@ test_addDuplicatePackage
 				self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_addInstVarVariablesStaySorted
+	self selectRowanSample1Test.
+	self projectsPresenter selectVariableTab.
+	self assert: self projectsPresenter methodFilterListPresenter list
+		equals: (OrderedCollection with: 'testSelector').
+	self
+		saveClass: 'RowanSample1Test'
+		superclass: 'TestCase'
+		instVars: #('foo' 'bar')
+		package: 'RowanSample1-Tests'.
+	self assert: self projectsPresenter methodFilterListPresenter list asArray
+		equals: (Array
+				with: 'bar'
+				with: 'foo'
+				with: 'testSelector').
+	self
+		saveClass: 'RowanSample1Test'
+		superclass: 'TestCase'
+		instVars: #('foo' 'bar' 'abc')
+		package: 'RowanSample1-Tests'.
+	self assert: self projectsPresenter methodFilterListPresenter list asArray
+		equals: (Array
+				with: 'abc'
+				with: 'bar'
+				with: 'foo'
+				with: 'testSelector')!
+
 test_addInstVarWithVariablesTabOpen
 	self testsIssue: #issue447 withTitle: '(3.0.63) more odd behavior with add instance variable'.
 	self selectRowanSample1Test.
@@ -344,8 +385,11 @@ test_addInstVarWithVariablesTabOpen
 		instVars: #('foo' 'bar')
 		package: 'RowanSample1-Tests'.
 	self assert: self projectsPresenter methodFilterListPresenter list
-		equals: (OrderedCollection with: 'testSelector' with: 'bar' with: 'foo').
-	self projectsPresenter textAreaTabs currentCard name = 'classDefinition' "don't change to Method Source tab" !
+		equals: (SortedCollection
+				with: 'bar'
+				with: 'foo'
+				with: 'testSelector').
+	self projectsPresenter textAreaTabs currentCard name = 'classDefinition'	"don't change tab to Method Source"!
 
 test_addPackageReloadProject
 	self testsIssue: #issue183
@@ -1170,6 +1214,20 @@ test_definedClassMenuItem
 	self projectsPresenter updateClassMenu: self classListPresenter view contextMenu.	"triggered just before pop-up menu opens"
 	self assert: classMenuItem description equals: menuLabel!
 
+test_deselectAllVariables
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
+	self projectsPresenter selectVariableTab.
+	self assert: self methodListPresenter list size
+		equals: self projectsPresenter selectedClass methods size.
+	self projectsPresenter variableListPresenter selection: 'instVarNames'.
+	self deny: self methodListPresenter list size
+		equals: self projectsPresenter selectedClass methods size.
+	self projectsPresenter variableListPresenter selectionByIndex: 0.
+	self assert: self methodListPresenter list size
+		equals: self projectsPresenter selectedClass methods size!
+
 test_dontChangeTabOnMethodSave
 	| source firstTab secondTab |
 	self testsIssue: #issue412 withTitle: '(3.0.56) incorrect project browser update on method accept '.
@@ -1201,9 +1259,7 @@ test_dontUpdateWithDifferentMeta
 		assert: (self methodListPresenter list collect: [:methodService | methodService selector]) asArray
 		equals: #(#test1 #test2 #testError #testFailure).
 	self openSecondBrowser.
-	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
-	self selectServiceNamed: 'RowanSample1-Tests' in: secondPresenter packageListPresenter.
-	self selectServiceNamed: 'RowanSample1Test' in: secondPresenter classListPresenter.
+	self selectRowanSample1Test.
 	self assert: self categoryListPresenter list asArray equals: #('tests').
 	self
 		assert: (self methodListPresenter list collect: [:methodService | methodService selector]) asArray
@@ -2775,6 +2831,29 @@ test_removeClassFromList
 				ifNone: [])]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+test_removeInstVarVariablesStaySorted
+	self selectRowanSample1Test.
+	self projectsPresenter selectVariableTab.
+	self assert: self projectsPresenter methodFilterListPresenter list
+		equals: (OrderedCollection with: 'testSelector').
+	self
+		saveClass: 'RowanSample1Test'
+		superclass: 'TestCase'
+		instVars: #('foo' 'bar')
+		package: 'RowanSample1-Tests'.
+	self assert: self projectsPresenter methodFilterListPresenter list asArray
+		equals: (Array
+				with: 'bar'
+				with: 'foo'
+				with: 'testSelector').
+	self
+		saveClass: 'RowanSample1Test'
+		superclass: 'TestCase'
+		instVars: #('foo')
+		package: 'RowanSample1-Tests'.
+	self assert: self projectsPresenter methodFilterListPresenter list asArray
+		equals: (Array with: 'foo' with: 'testSelector')!
+
 test_removeProject
 	| targetProject |
 	self testsIssue: #issue129 withTitle: 'Expose unload project.'.
@@ -2999,6 +3078,18 @@ test_selectMultipleProjects
 	self assert: self projectListPresenter selections isEmpty.
 	self selectServicesNamed: self rowanProjectNames in: self projectListPresenter.
 	self assert: self projectListPresenter selections size = 4!
+
+test_selectVariable
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
+	self projectsPresenter selectVariableTab.
+	self projectsPresenter variableListPresenter selection: 'instVarNames'.
+	self methodListPresenter list
+		do: [:methodService | self assert: (methodService source subStrings includes: 'instVarNames')].
+	self projectsPresenter variableListPresenter selection: 'isNewClass'.
+	self methodListPresenter list
+		do: [:methodService | self assert: (methodService source subStrings includes: 'isNewClass')]!
 
 test_separationOfClassAndInstance
 	self testsIssue: #issue418
@@ -3910,9 +4001,11 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #selectTreeServicesNamed:in:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteProjectBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_abortOnVariablesTab!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abstractTestsShown!public!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_acceptDefinedMethodInExtensionClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addDuplicatePackage!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_addInstVarVariablesStaySorted!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addInstVarWithVariablesTabOpen!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addPackageReloadProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!test categories! !
@@ -3946,6 +4039,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleInvalidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleValidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontChangeTabOnMethodSave!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontUpdateWithDifferentMeta!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dragClassDoesNotWalkback!public!test drag drop! !
@@ -4026,6 +4120,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeAbortedClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassFromHierarchy!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassFromList!public!test class hierarchy!test class list!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_removeInstVarVariablesStaySorted!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameCategory!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameDisabledWithMultipleCategoriesSelected!public!test categories! !
@@ -4041,6 +4136,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectionsRetainedFromHierarchyToClassList!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultiplePackages!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultipleProjects!public!test projects! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_selectVariable!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_separationOfClassAndInstance!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_setAndClearBreakpoint!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_simpleHierarchyTest!public!test class hierarchy!tests! !

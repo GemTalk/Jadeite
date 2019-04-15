@@ -382,7 +382,7 @@ setUp
 	session := JadeiteTestResource current session.
 	transcript := JadeiteTestResource current transcript.
 	self setAutoCommit: false.
-	self ensureRowanSample1Loaded!
+	self ensureRowanSample1Loaded.!
 
 tearDown
 	super tearDown.
