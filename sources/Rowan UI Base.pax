@@ -1772,7 +1772,7 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 	[self issueCommand: (Array with: classService)] on: GsCompileError
 		do: 
 			[:ex |
-			(self topShell view viewNamed: 'statusBarField') backcolor: Color yellow faded. 
+			(self topShell view viewNamed: 'statusBarField') backcolor: Color red faded.  
 			self reportCompileError: ex list in: methodSourcePresenter.
 			^false].
 	methodSourcePresenter view firstVisibleLine: firstVisibleLine.
@@ -1826,7 +1826,6 @@ remoteAutoCommit
 	^answeringService answer!
 
 reportCompileError: anArrayOfArray in: methodSourcePresenter
-
 	| source position stream string indicators |
 	indicators := OrderedCollection new.
 	methodSourcePresenter view clearContainerIndicators.
@@ -1835,21 +1834,22 @@ reportCompileError: anArrayOfArray in: methodSourcePresenter
 	methodSourcePresenter value: source.
 	methodSourcePresenter view caretPosition: position.
 	stream := WriteStream on: String new.
-	anArrayOfArray do: [:eachArray | 
-		| start |
-		start := eachArray at: 2.
-		string := eachArray at: 3.
-		stream nextPutAll: string , '; '.
-		indicators add: (ScintillaIndicator
-			styleName: 10 
-			range: (start to: (start + 10 min: source size)) 
-			tag: string).
-	].
+	anArrayOfArray do: 
+			[:eachArray |
+			| start range |
+			start := eachArray at: 2. 
+			source size - start >= 10 ifFalse:[start := source size - 10].
+			range := (start to: (start + 10 min: source size)). 
+			string := eachArray at: 3.
+			stream nextPutAll: string , '; '.
+			indicators add: (ScintillaIndicator
+						styleName: 1
+						range: range
+						tag: string)].
 	methodSourcePresenter view backcolor: JadeTextStyles default colorForCompileError.
 	methodSourcePresenter view indicators: indicators.
 	string := stream contents.
-	methodSourcePresenter view topShell statusBarText: (string copyFrom: 1 to: string size - 2).
-!
+	methodSourcePresenter view topShell statusBarText: (string copyFrom: 1 to: string size - 2)!
 
 serviceFromSelection: sourcePresenter
 	| range className classService |
