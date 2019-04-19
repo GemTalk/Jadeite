@@ -120,7 +120,8 @@ updateMethodSource
 	methodListPresenter selections isEmpty ifTrue: [^methodSourcePresenter value: String new].
 	methodListPresenter selections size = 1 ifTrue:[^self updateSingleMethodSource].	
 	self updateMultiMethodComparison.
-	self refreshBreakPointsIn: methodSourcePresenter documentPresenter
+	self refreshBreakPointsIn: methodSourcePresenter documentPresenter.
+	
 	!
 
 updateMultiMethodComparison
@@ -136,9 +137,11 @@ updateSingleMethodSource
 
 updateSource
 	| selection |
-	selection := methodListPresenter selectionOrNil. 
-	methodSourcePresenter methodService: selection. 
-	methodSourcePresenter update. ! !
+	selection := methodListPresenter selectionOrNil.
+	methodSourcePresenter methodService: selection.
+	methodSourcePresenter update.
+	('*METHOD SOURCE CANNOT BE DISPLAYED*' match: methodSourcePresenter documentPresenter value)
+		ifTrue: [methodSourcePresenter documentPresenter view backcolor: Color red faded faded].! !
 !JadeiteMethodListPresenter categoriesFor: #autoCommit!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #autoCommit:!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #comparisonTab!private!selection!text tabs! !

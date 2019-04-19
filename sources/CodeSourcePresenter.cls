@@ -205,7 +205,6 @@ jadeDebug
 !
 
 jadeDisplay
-
 	self jadeExecuteAndDisplay: true.
 !
 

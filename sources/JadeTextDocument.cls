@@ -201,7 +201,6 @@ jadeDebug
 	"Intercepted by CodeSourcePresenter"!
 
 jadeDisplay
-
 	self jadeExecuteAndDisplay: true.
 
 !

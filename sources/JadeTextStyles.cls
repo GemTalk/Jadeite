@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 Object subclass: #JadeTextStyles
-	instanceVariableNames: 'colorForCompileError colorForNoEdits colorForUnsavedEdits textStyles'
+	instanceVariableNames: 'colorForCompileError colorForNoEdits colorForUnsavedEdits textStyles colorForUndisplayableSource'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'default'!
@@ -21,6 +21,12 @@ colorForNoEdits
 
 colorForNoEdits: anObject
 	colorForNoEdits := anObject!
+
+colorForUndisplayableSource
+	^colorForUndisplayableSource!
+
+colorForUndisplayableSource: anObject
+	colorForUndisplayableSource := anObject!
 
 colorForUnsavedEdits
 	^colorForUnsavedEdits!
@@ -165,6 +171,7 @@ resetColors
 	colorForCompileError 	:= Color red faded faded faded.
 	colorForNoEdits 		:= RGB red: 250 green: 240 blue: 200.
 	colorForUnsavedEdits 	:= RGB red: 240 green: 250 blue: 200.
+	colorForUndisplayableSource 	:= Color red faded faded.
 !
 
 textStyles
@@ -178,6 +185,8 @@ textStyles: anObject
 !JadeTextStyles categoriesFor: #colorForCompileError:!accessing!public! !
 !JadeTextStyles categoriesFor: #colorForNoEdits!accessing!public! !
 !JadeTextStyles categoriesFor: #colorForNoEdits:!accessing!public! !
+!JadeTextStyles categoriesFor: #colorForUndisplayableSource!accessing!private! !
+!JadeTextStyles categoriesFor: #colorForUndisplayableSource:!accessing!private! !
 !JadeTextStyles categoriesFor: #colorForUnsavedEdits!accessing!public! !
 !JadeTextStyles categoriesFor: #colorForUnsavedEdits:!accessing!public! !
 !JadeTextStyles categoriesFor: #defaultTextStyles!public! !

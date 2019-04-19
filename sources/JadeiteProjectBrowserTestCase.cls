@@ -3783,6 +3783,53 @@ test_twoBrowsersUpdateHierarchy
 	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
 		in: secondPresenter classHierarchyPresenter!
 
+test_unicodeDisplayMethod
+	| methodSource secondMethodListBrowser |
+	self testsIssue: #issue
+		withTitle: '(3.0.65) browse methods containing `%` yields "Can''t hold $\x3B1" Dollphin error'.
+	session executeString: 'RowanServicesTest new compileUnicodeMethod'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanServicesTest' in: self classListPresenter.
+	self selectMethodNamed: #iAmAUnicodeMethod.
+	self assert: ('*METHOD SOURCE CANNOT BE DISPLAYED*' match: self methodSourcePresenter value).
+	self assert: self methodSourcePresenter view backcolor equals: Color red faded faded.
+	methodListBrowser := self projectsPresenter browseImplementors.
+	methodSource := methodListBrowser primaryPresenter methodSourcePresenter documentPresenter.
+	self assert: ('*METHOD SOURCE CANNOT BE DISPLAYED*' match: methodSource value).
+	self assert: methodSource view backcolor equals: Color red faded faded.
+	secondMethodListBrowser := methodListBrowser primaryPresenter methodListPresenter
+				browseImplementors.
+	
+	[methodSource := secondMethodListBrowser primaryPresenter methodSourcePresenter documentPresenter.
+	self assert: ('*METHOD SOURCE CANNOT BE DISPLAYED*' match: methodSource value).
+	self assert: methodSource view backcolor equals: JadeTextStyles default colorForUndisplayableSource]
+			ensure: 
+				[self projectsPresenter basicRemoveMethods.
+				secondMethodListBrowser view close]!
+
+test_unicodeSpecialMethodNotRed
+	"the method that generates the non-displayable source message
+	should itself not be colored red"
+
+	self testsIssue: #issue
+		withTitle: '(3.0.65) browse methods containing `%` yields "Can''t hold $\x3B1" Dollphin error'.
+	session executeString: 'RowanServicesTest new compileUnicodeMethod'.
+	
+	[self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanMethodService' in: self classListPresenter.
+	self selectClassTab.
+	self selectMethodNamed: #removeUnicode:.
+	self deny: self methodSourcePresenter view backcolor
+		equals: JadeTextStyles default colorForUndisplayableSource]
+			ensure: 
+				[self selectInstanceTab.
+				self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+				self selectServiceNamed: 'RowanServicesTest' in: self classListPresenter.
+				self selectMethodNamed: #iAmAUnicodeMethod.
+				self projectsPresenter basicRemoveMethods]!
+
 test_UnsavedChangesActionChangeSelectionIgnoreChanges
 	self testsIssue: #issue388
 		withTitle: '(3.0.53) useful to be able to open method browser on selected methods in project browser'.
@@ -4167,6 +4214,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersRemoveMethod!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdate!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateHierarchy!public!test two browsers! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_unicodeDisplayMethod!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_unicodeSpecialMethodNotRed!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindow!public!tests! !

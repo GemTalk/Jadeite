@@ -16,7 +16,7 @@ anyMethod
 !
 
 browseImplementors
-	self browseImplementorsOf: methodListPresenter selection selector!
+	^self browseImplementorsOf: methodListPresenter selection selector!
 
 browseSenders
 

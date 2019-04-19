@@ -82,6 +82,11 @@ createSchematicWiring
 	frameListPresenter when: #actionPerformed 	send: #browseFrameMethod	to: self.
 	documentPresenter when: #textChanged 		send: #methodValueChanged 	to: self!
 
+displayUncompilableSourceIn: sourcePresenter
+	sourcePresenter value size < 34 ifTrue: [^self].
+	((sourcePresenter value copyFrom: 2 to: 34) equals: 'METHOD SOURCE CANNOT BE DISPLAYED')
+		ifTrue: [sourcePresenter view backcolor: JadeTextStyles default colorForUndisplayableSource ]!
+
 documentPresenter
 
 	^documentPresenter!
@@ -135,7 +140,8 @@ methodValueChanged
 	frameListPresenter selectionIfNone: [^true].
 	documentPresenter view
 		backcolor: JadeTextStyles default colorForUnsavedEdits;
-		clearContainerIndicators!
+		clearContainerIndicators.
+	self displayUncompilableSourceIn: codePane documentPresenter!
 
 onCloseRequested: boolValueHolder
 	self isOkayToChangeFrame ifFalse: [^self].
@@ -270,6 +276,7 @@ selectedFrame
 	documentPresenter value: frame gsMethod source.
 	documentPresenter view isModified: false.
 	codePane gsMethod: frame gsMethod.
+	self displayUncompilableSourceIn: codePane documentPresenter.
 	frame stepPoint ifNotNil: [codePane showStepPoint: frame stepPoint].
 	(self view viewNamed: 'toolbar') update!
 
@@ -306,7 +313,8 @@ terminateProcess
 
 updateMethodSource
 
-	self selectedFrame!
+	self selectedFrame.
+	self displayUncompilableSourceIn:  codePane documentPresenter!
 
 variableDataPresenter
 	^variableDataPresenter!
@@ -323,6 +331,7 @@ variableListPresenter
 !RowanDebugger categoriesFor: #browseSenders!menu handlers!private! !
 !RowanDebugger categoriesFor: #createComponents!public! !
 !RowanDebugger categoriesFor: #createSchematicWiring!public! !
+!RowanDebugger categoriesFor: #displayUncompilableSourceIn:!private! !
 !RowanDebugger categoriesFor: #documentPresenter!Accessing!public! !
 !RowanDebugger categoriesFor: #errorMessagePresenter!Accessing!public! !
 !RowanDebugger categoriesFor: #frameListPresenter!Accessing!frames!public! !

@@ -1950,7 +1950,7 @@ updateMethodReferences: services
 	^services!
 
 updateMethodSource
-	methodSourcePresenter view isModified ifTrue:[^self].
+	methodSourcePresenter view isModified ifTrue: [^self].
 	self sundryCleanup.
 	methodListPresenter selections isEmpty
 		ifTrue: 
@@ -1967,7 +1967,8 @@ updateMethodSource
 			self updateSingleMethodSource.
 			definedMethodPackageText value: 'Defined Package: ' , methodListPresenter selection definedPackage.
 			methodCategoryText value: 'Category: ' , methodListPresenter selection category].
-	self updateSUnitTab.!
+	self updateSUnitTab.
+	self displayUncompilableSourceIn: methodSourcePresenter!
 
 updateMultiMethodComparison
 	comparisonPresenter

@@ -253,8 +253,8 @@ updateSource
 			[methodSourcePresenter gsMethod: gsMethod.
 			self doSearch].
 	methodListPresenter selectedMethod ifNil: [^self].
-	methodSourcePresenter documentPresenter
-		lastGsShape: (self registry getClass: methodListPresenter selectedMethod gsClass name)! !
+	self displayUncompilableSourceIn: methodSourcePresenter documentPresenter
+		! !
 !JadeMethodListPresenter categoriesFor: #browse:gsMethod:!public! !
 !JadeMethodListPresenter categoriesFor: #browse:method:!public! !
 !JadeMethodListPresenter categoriesFor: #browse:methodSelector:!public! !

@@ -525,6 +525,21 @@ test_terminateDoesNotWalkback
 				[TestMessageBox disableJadeiteTestMessageBox.
 				terminateProcess terminate]!
 
+test_unicodeMethod
+	self testsIssue: #issue
+		withTitle: '(3.0.65) browse methods containing `%` yields "Can''t hold $\x3B1" Dollphin error'.
+	session executeString: 'RowanServicesTest new compileUnicodeMethod'.
+	self openDebuggerOn: 'RowanServicesTest new iAmAUnicodeMethod'.
+	self assert: debugger frameListPresenter selection
+		equals: 'RowanServicesTest >> iAmAUnicodeMethod @3 line 5'.
+	self assert: debugger methodSourcePresenter documentPresenter view backcolor equals: JadeTextStyles default colorForUndisplayableSource .
+	self selectFrameAt: 1.
+	self deny: debugger methodSourcePresenter documentPresenter view backcolor equals: JadeTextStyles default colorForUndisplayableSource .
+	self selectFrameAt: 4.
+	self assert: debugger frameListPresenter selection
+		equals: 'RowanServicesTest >> iAmAUnicodeMethod @3 line 5'.
+	self assert: debugger methodSourcePresenter documentPresenter view backcolor equals: JadeTextStyles default colorForUndisplayableSource .!
+
 test1
 	"Basics of opening a debugger, viewing the UI, and resuming."
 
@@ -936,6 +951,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_selectBlockContext!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_sendersFromDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_terminateDoesNotWalkback!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_unicodeMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test1!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test2!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test3!public!tests! !

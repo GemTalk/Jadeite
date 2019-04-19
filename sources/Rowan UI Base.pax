@@ -165,6 +165,7 @@ package methodNames
 	add: #JadePresenter -> #compilationWarningFrom:;
 	add: #JadePresenter -> #currentMethodSourceFrom:;
 	add: #JadePresenter -> #displayNoMods:;
+	add: #JadePresenter -> #displayUncompilableSourceIn:;
 	add: #JadePresenter -> #editSaveMethod:in:category:;
 	add: #JadePresenter -> #issueCommand:;
 	add: #JadePresenter -> #openDictionaryBrowserOn:selector:;
@@ -1759,7 +1760,13 @@ displayNoMods: sourcePresenter
 	sourcePresenter view
 		backcolor: JadeTextStyles default colorForNoEdits;
 		isModified: false;
-		isReadOnly: false.!
+		isReadOnly: false.
+	self displayUncompilableSourceIn: sourcePresenter!
+
+displayUncompilableSourceIn: sourcePresenter
+	sourcePresenter value size < 34 ifTrue: [^self].
+	((sourcePresenter value copyFrom: 2 to: 34) equals: 'METHOD SOURCE CANNOT BE DISPLAYED')
+		ifTrue: [sourcePresenter view backcolor: JadeTextStyles default colorForUndisplayableSource ]!
 
 editSaveMethod: classService in: methodSourcePresenter category: category
 	| methodSource1 firstVisibleLine caretPosition |
@@ -1880,6 +1887,7 @@ updateServices: services
 !JadePresenter categoriesFor: #compilationWarningFrom:!public! !
 !JadePresenter categoriesFor: #currentMethodSourceFrom:!compile support!public! !
 !JadePresenter categoriesFor: #displayNoMods:!compile support!displaying!public! !
+!JadePresenter categoriesFor: #displayUncompilableSourceIn:!event handlers!public!text tabs!updating! !
 !JadePresenter categoriesFor: #editSaveMethod:in:category:!compile support!public! !
 !JadePresenter categoriesFor: #issueCommand:!browsing support!public! !
 !JadePresenter categoriesFor: #openDictionaryBrowserOn:selector:!browsing!public! !
