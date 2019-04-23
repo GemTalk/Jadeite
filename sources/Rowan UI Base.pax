@@ -1061,16 +1061,17 @@ updateCaption
 !JadeErrorShell methodsFor!
 
 doCopy
-	| copyStream |
-	copyStream := WriteStream on: String new. 
-	copyStream nextPutAll: caption;
-		cr; 
-		nextPutAll: stackPresenter value.
-	copyStream contents copyToClipboard.!
+	| stream |
+	Cursor wait showWhile: 
+			[stream := WriteStream on: String new.
+			RowanDebugger
+				dumpStackFor: gsError gsProcess
+				errorMessage: gsError messageText
+				on: stream.
+			stream contents copyToClipboard]!
 
 onViewOpened
-
-	| gsError gsProcess message detail stack stream |
+	| gsProcess message detail stack stream |
 	gsError := self model value.
 	super onViewOpened.
 	Sound warningBeep.
@@ -1078,17 +1079,19 @@ onViewOpened
 	message := gsError errorReport message.
 	isResumable := gsError isResumableInGem.
 	detail := message.
-	message := message notEmpty
-		ifTrue: [(message subStrings: Character lf) first]
-		ifFalse: [''].
+	message := message notEmpty ifTrue: [(message subStrings: Character lf) first] ifFalse: [''].
 	message := message copyFrom: 1 to: (message size min: 100).
 	self caption: message.
 	messagePresenter value: detail replaceLfWithCrLf.
 	stream := WriteStream on: String new.
 	stack := gsProcess stack.
-	stack do: [:each | stream nextPutAll: each; cr].
+	stack do: 
+			[:each |
+			stream
+				nextPutAll: each;
+				cr].
 	stackPresenter value: stream contents.
-	self model: #'terminate'.		"If window is closed without any buttons pressed!!"! !
+	self model: #terminate	"If window is closed without any buttons pressed!!"! !
 !JadeErrorShell categoriesFor: #doCopy!public! !
 !JadeErrorShell categoriesFor: #onViewOpened!public! !
 

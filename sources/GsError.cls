@@ -110,7 +110,6 @@ signal
 !
 
 terminateProcess
-
 	self gciSession terminate: self errorReport contextOop.
 	self error: 'We should never get here!!'.
 ! !

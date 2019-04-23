@@ -499,6 +499,54 @@ test_sendersFromDebugger
 				[self assert: browser topShell view close.
 				projectsBrowser destroy]!
 
+test_stackDumpDetailedFrame
+	| stream crlf nextLine matchString |
+	self testsIssue: #issue455 withTitle: 'Would like args & temps in stack dump'.
+	self openDebuggerOn: 'OrderedCollection with: 1 zork'.
+	debugger copyStack.
+	stream := ReadStream on: Clipboard current getText.
+	crlf := Character cr asString , Character lf asString.
+	stream upToAll: '===============================================' , crlf.
+	self assert: (stream upToAll: crlf) equals: '[1] MessageNotUnderstood >> defaultAction @2 line 3'.
+	self assert: stream next equals: Character tab.
+	self assert: ('receiver oop(*) == *' match: (stream upToAll: crlf)).
+	self assert: (stream upToAll: crlf) equals: String new.
+	self assert: (stream upToAll: crlf) equals: 'instance variables:'.
+	matchString := Character tab asString , '*' , ' oop(*) == *'.
+	[(nextLine := stream upToAll: crlf) = String new]
+		whileFalse: [self assert: (matchString match: nextLine)].
+	self assert: (stream upToAll: crlf) equals: 'temporary variables and parameters:'.
+	[(nextLine := stream upToAll: crlf) = '----------------------------------------------------']
+		whileFalse: [self assert: (matchString match: nextLine)]!
+
+test_stackDumpHeader
+	| stream crlf |
+	self testsIssue: #issue455 withTitle: 'Would like args & temps in stack dump'.
+	self openDebuggerOn: 'OrderedCollection with: 1 zork'.
+	debugger copyStack.
+	stream := ReadStream on: Clipboard current getText.
+	crlf := Character cr asString , Character lf asString.
+	self assert: (stream upToAll: crlf)
+		equals: 'a MessageNotUnderstood occurred (error 2010), a SmallInteger does not understand  #''zork'''.
+	self assert: (stream upToAll: crlf) equals: String new.	"blank line"
+	1 to: 7
+		do: 
+			[:index |
+			self assert: (stream next: 3) equals: '[' , index printString , ']'.
+			stream upToAll: crlf]	"short stack up front"!
+
+test_stackDumpTooLongString
+	| stream crlf nextLine matchString |
+	self testsIssue: #issue455 withTitle: 'Would like args & temps in stack dump'.
+	self openDebuggerOn: '| bigStringStream |
+bigStringStream := WriteStream on: String new. 
+1 to: 250 do:[:idx |
+	bigStringStream nextPutAll: idx printString].
+OrderedCollection with:  bigStringStream contents zork'.
+	debugger copyStack.
+	stream := ReadStream on: Clipboard current getText.
+	self assert: ('*-receiver oop(*) == ''1234567891011121314*...*' match: stream contents)!
+
 test_terminateDoesNotWalkback
 	"Terminate a process other than the primary one"
 
@@ -950,6 +998,9 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_selectAfterDiveNoStepPoint!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_selectBlockContext!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_sendersFromDebugger!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_stackDumpDetailedFrame!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_stackDumpHeader!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_stackDumpTooLongString!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_terminateDoesNotWalkback!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_unicodeMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test1!public!tests! !

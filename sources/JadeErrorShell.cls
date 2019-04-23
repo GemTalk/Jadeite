@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 JadeValueDialog subclass: #JadeErrorShell
-	instanceVariableNames: 'messagePresenter stackPresenter textEditPresenter isResumable'
+	instanceVariableNames: 'messagePresenter stackPresenter textEditPresenter isResumable gsError'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

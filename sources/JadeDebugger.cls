@@ -60,15 +60,14 @@ contextObject
 	^gciSession oopTypeWithOop: frame vars first key key asNumber!
 
 copyStack
-	| copyStream |
-	copyStream := WriteStream on: String new.
-	copyStream nextPutAll: errorMessagePresenter value.
-	frameListPresenter list do: 
-			[:frameString |
-			copyStream
-				cr;
-				nextPutAll: frameString].
-	copyStream contents copyToClipboard!
+	| stream |
+	Cursor wait showWhile: 
+			[stream := WriteStream on: String new.
+			self class
+				dumpStackFor: gsProcess
+				errorMessage: errorMessagePresenter value
+				on: stream.
+			stream contents copyToClipboard]!
 
 createComponents
 
@@ -376,6 +375,55 @@ debuggers
 	^debuggers.
 !
 
+dumpStackFor: gsProcess errorMessage: errorMessage on: stream
+	stream
+		nextPutAll: errorMessage;
+		cr.
+	1 to: gsProcess stack size
+		do: 
+			[:index |
+			self
+				printShortFrameAt: index
+				process: gsProcess
+				on: stream].
+	stream
+		cr;
+		nextPutAll: '==============================================='.
+	1 to: gsProcess stack size
+		do: 
+			[:index |
+			| theFrame |
+			self
+				printShortFrameAt: index
+				process: gsProcess
+				on: stream.
+			(theFrame := gsProcess frameForLevel: index)
+				ifNotNil: 
+					[| sortedVars sortedInstVars sortedTempsAndParms |
+					self printVar: theFrame vars first on: stream.
+					sortedVars := (theFrame vars copyFrom: 2 to: theFrame vars size)
+								asSortedCollection: [:x :y | x key value <= y key value].
+					sortedInstVars := sortedVars select: [:var | var key value first = $-].
+					stream
+						cr;
+						cr;
+						nextPutAll: 'instance variables:'.
+					self printVariables: sortedInstVars on: stream.
+					sortedTempsAndParms := sortedVars reject: [:var | var key value first = $-].
+					stream
+						cr;
+						cr;
+						nextPutAll: 'temporary variables and parameters:'.
+					self printVariables: sortedTempsAndParms on: stream].
+			gsProcess stack size = index
+				ifFalse: 
+					[stream
+						cr;
+						nextPutAll: '----------------------------------------------------']]!
+
+maxPrint
+	^200!
+
 openDebuggerOnException: gciError 
 
 	^self
@@ -391,31 +439,57 @@ openOn: gsProcess message: aString terminateOnClose: aBoolean
 		answer.
 !
 
-reportError: gsError 
+printShortFrameAt: index process: gsProcess on: stream
+	| frameString  |
+	frameString := gsProcess stack at: index.
+	^stream
+		cr;
+		nextPut: $[;
+		nextPutAll: index printString;
+		nextPut: $];
+		space;
+		nextPutAll: frameString!
 
-	| debugger answer | 
-	(debugger := self debuggerFor: gsError processOop) notNil ifTrue: [
-		debugger update.
-		Processor activeProcess terminate.
-		self error: 'We should never get here!!'.
-	].
-	(#(2709 6005) includes: gsError errorReport number) ifTrue: [
-		^self openDebuggerOnException: gsError.
-	].
+printVar: var on: stream
+	| valueString maxPrintSize |
+	stream
+		cr;
+		tab;
+		nextPutAll: var key value asUtf8String;
+		space;
+		nextPutAll: 'oop(';
+		print: var key key asUtf8String asNumber;
+		nextPut: $);
+		space;
+		nextPutAll: '==';
+		space.
+	valueString := var value asUtf8String.
+	maxPrintSize := valueString size min: self maxPrint.
+	stream nextPutAll: (valueString copyFrom: 1 to: maxPrintSize).
+	valueString size > self maxPrint ifTrue: [stream nextPutAll: '...']!
+
+printVariables: sortedVars on: stream
+	sortedVars do: [:var | self printVar: var on: stream]!
+
+reportError: gsError
+	| debugger answer |
+	(debugger := self debuggerFor: gsError processOop) notNil
+		ifTrue: 
+			[debugger update.
+			Processor activeProcess terminate.
+			self error: 'We should never get here!!'].
+	(#(2709 6005) includes: gsError errorReport number)
+		ifTrue: [^self openDebuggerOnException: gsError].
 	self aboutToShowErrorShellOn: gsError.	"allow RowanDebuggerTestCase to override and skip error dialog and go straight to debugger"
-	answer := (JadeErrorShell showModalOn: gsError) ifNil: [#'terminate'].	"Window was closed without pressing any button!!"
-	answer = #'terminate' ifTrue: [
-		gsError terminateProcess.
-		self error: 'We should never get here!!'.
-	].
-	answer = #'resume' ifTrue: [
-		^#'resume'.
-	].
-	answer = #'debug' ifTrue: [
-		^self openDebuggerOnException: gsError.
-	].
-	self error: 'Unexpected response of ' , answer printString , '!!'.
-!
+	answer := (JadeErrorShell showModalOn: gsError)
+				ifNil: [#terminate	"Window was closed without pressing any button!!"].
+	answer = #terminate
+		ifTrue: 
+			[gsError terminateProcess.
+			self error: 'We should never get here!!'].
+	answer = #resume ifTrue: [^#resume].
+	answer = #debug ifTrue: [^self openDebuggerOnException: gsError].
+	self error: 'Unexpected response of ' , answer printString , '!!'!
 
 resetDebuggers
 
@@ -434,8 +508,13 @@ resource_Default_view
 !JadeDebugger class categoriesFor: #aboutToShowErrorShellOn:!public! !
 !JadeDebugger class categoriesFor: #debuggerFor:!public! !
 !JadeDebugger class categoriesFor: #debuggers!public! !
+!JadeDebugger class categoriesFor: #dumpStackFor:errorMessage:on:!public!stack dumping support! !
+!JadeDebugger class categoriesFor: #maxPrint!private!stack dumping support! !
 !JadeDebugger class categoriesFor: #openDebuggerOnException:!public! !
 !JadeDebugger class categoriesFor: #openOn:message:terminateOnClose:!public! !
+!JadeDebugger class categoriesFor: #printShortFrameAt:process:on:!private!stack dumping support! !
+!JadeDebugger class categoriesFor: #printVar:on:!private!stack dumping support! !
+!JadeDebugger class categoriesFor: #printVariables:on:!private!stack dumping support! !
 !JadeDebugger class categoriesFor: #reportError:!public! !
 !JadeDebugger class categoriesFor: #resetDebuggers!public! !
 !JadeDebugger class categoriesFor: #resource_Default_view!public!resources-views! !

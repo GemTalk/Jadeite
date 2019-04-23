@@ -80,7 +80,7 @@ JadePresenterA subclass: #JadePreferencesPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeValueDialog subclass: #JadeErrorShell
-	instanceVariableNames: 'messagePresenter stackPresenter textEditPresenter isResumable'
+	instanceVariableNames: 'messagePresenter stackPresenter textEditPresenter isResumable gsError'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -135,7 +135,6 @@ stepOver: anInteger
 !
 
 terminate
-
 	gciSession terminate: oopType.
 	self error: 'Should not get here!!'.
 !
