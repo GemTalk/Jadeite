@@ -32,7 +32,7 @@ activeServices
 basicIssueCommand: services session: session
 	| stonString stonResultString updateResult |
 	services do: [:service | service prepareForReplication].
-	stonString := STON toString: services.
+	stonString := STON toString: services. 
 	[stonResultString := session serverPerform: #updateFromSton: with: stonString]
 		ensure: [services do: [:service | service clearCommand]].
 	updateResult := self update: services afterStonReplication: stonResultString.

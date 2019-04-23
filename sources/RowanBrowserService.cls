@@ -48,6 +48,18 @@ prepareForReplication
 	super prepareForReplication.
 	self basicPrepareForReplication!
 
+printOn: aStream
+	super printOn: aStream.
+	aStream nextPut: $(.
+	command
+		ifNotNil: 
+			[aStream
+				nextPutAll: 'command: ';
+				print: command;
+				nextPutAll: 'commandArgs: ';
+				print: commandArgs].
+	aStream nextPut: $)!
+
 projects
 	^projects!
 
@@ -119,11 +131,12 @@ testPackages: presenter
 !RowanBrowserService categoriesFor: #isBrowserService!public!testing! !
 !RowanBrowserService categoriesFor: #name!accessing!public! !
 !RowanBrowserService categoriesFor: #prepareForReplication!public!replication! !
+!RowanBrowserService categoriesFor: #printOn:!printing!public! !
 !RowanBrowserService categoriesFor: #projects!accessing!public! !
 !RowanBrowserService categoriesFor: #projectsUpdate:!public!updating! !
-!RowanBrowserService categoriesFor: #registerWindow:rootObject:session:!public!registering windows! !
+!RowanBrowserService categoriesFor: #registerWindow:rootObject:session:!commands!public!registering windows! !
 !RowanBrowserService categoriesFor: #releaseReferencedServices!public! !
-!RowanBrowserService categoriesFor: #releaseWindow:session:!public!registering windows! !
+!RowanBrowserService categoriesFor: #releaseWindow:session:!commands!public!registering windows! !
 !RowanBrowserService categoriesFor: #reloadProjects:presenter:!commands!public! !
 !RowanBrowserService categoriesFor: #removedMethods!accessing!private! !
 !RowanBrowserService categoriesFor: #removedMethods:!accessing!private! !

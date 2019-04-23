@@ -446,8 +446,8 @@ nbResult
 		| result |
 		result := self gciNbEnd: address.
 		(result isKindOf: SmallInteger ) ifFalse: [self error: 'Result of GciNbEnd() should be a SmallInteger but is ' , result printString , '!!?'].
-		result = 2 ifTrue: [
-			result := self oopAt: address.
+		result = 2 ifTrue: [ 
+			result := self oopAt: address. 
 			self signalIfError.
 			^self valueOfOop: result.
 		].

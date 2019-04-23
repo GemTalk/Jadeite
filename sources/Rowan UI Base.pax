@@ -114,6 +114,7 @@ package methodNames
 	add: #JadeInspector -> #displayInstVarError:instVar:;
 	add: #JadeInspector -> #displayObject;
 	add: #JadeInspector -> #displaySpecials;
+	add: #JadeInspector -> #displayUndisplayableCharacter;
 	add: #JadeInspector -> #onViewClosed;
 	add: #JadeInspector -> #onViewOpened;
 	add: #JadeInspector -> #printInstVar;
@@ -747,7 +748,6 @@ browseSelectedClass
 	^self browseSelectedClassIn: documentPresenter newTab: false!
 
 executeSelectionOrLine
-
 	[
 		^true -> (gciSession executeString: self currentSelectionOrLine fromContext: self parentPresenter contextObject environment: environment).
 	] on: GsCompileError do: [:ex | 
@@ -1245,10 +1245,21 @@ displayObject
 
 displaySpecials
 	| instVarNames |
+	((model isKindOf: Character) and: [model asInteger > 255])
+		ifTrue: [^self displayUndisplayableCharacter].
 	className := model class name.
 	documentPresenter value: model.
 	instVarNames := OrderedCollection with: 'self' -> model printString.
 	instVarNames add: '-.asOop' -> (gciSession executeString: model printString , ' asOop printString').
+	instVarListPresenter
+		list: instVarNames;
+		selection: instVarNames first.
+	^instVarNames!
+
+displayUndisplayableCharacter
+	| instVarNames |
+	className := model class name.
+	instVarNames := OrderedCollection with: 'self' -> 'Character not displayable'.
 	instVarListPresenter
 		list: instVarNames;
 		selection: instVarNames first.
@@ -1363,6 +1374,7 @@ updateCaption
 !JadeInspector categoriesFor: #displayInstVarError:instVar:!accessing!private! !
 !JadeInspector categoriesFor: #displayObject!accessing!private! !
 !JadeInspector categoriesFor: #displaySpecials!accessing!private! !
+!JadeInspector categoriesFor: #displayUndisplayableCharacter!accessing!private! !
 !JadeInspector categoriesFor: #onViewClosed!event handling!public! !
 !JadeInspector categoriesFor: #onViewOpened!event handling!private! !
 !JadeInspector categoriesFor: #printInstVar!accessing!private! !
