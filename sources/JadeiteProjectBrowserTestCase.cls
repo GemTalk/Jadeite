@@ -248,6 +248,18 @@ selectTreeServicesNamed: anArray in: presenter
 						add: service;
 						yourself)]!
 
+selectVariableListEntryForcingEvent: variable
+	| event index |
+	index := self variableListPresenter list indexOf: variable.
+	event := (SelectionChangingEvent forSource: self)
+				oldSelections: self variableListPresenter selections;
+				newSelections: (Array with: (self variableListPresenter list at: index));
+				cause: #test;
+				yourself.
+	self variableListPresenter onSelectionChanging: event.
+	event value
+		ifTrue: [self variableListPresenter selection: (self variableListPresenter list at: index)]!
+
 setUp
 	super setUp.
 	self disableTranscriptWrites.	"turn off gemstone transcript writes for performance"
@@ -664,6 +676,27 @@ test_changeListSortOrder
 	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch detailsString])
 		equals: #('tests' 'other' 'other' 'other' 'Class Definition' 'Class Definition') asOrderedCollection]
 			ensure: [changesBrowser destroy]!
+
+test_changeVariableWithModifiedMethodSource
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
+	self projectsPresenter selectVariableTab.
+	self projectsPresenter variableListPresenter selection: 'instVarNames'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[self methodSourcePresenter value: 'foo ^1'.
+	self methodSourcePresenter view isModified: true.
+	TestMessageBox plannedResult: #no.
+	self projectsPresenter variableListPresenter selection: 'classVarNames'.
+	self selectVariableListEntryForcingEvent: 'classVarNames'.
+	self assert: self projectsPresenter variableListPresenter selection equals: 'classVarNames'.
+	self methodSourcePresenter value: 'foo ^2'.
+	self methodSourcePresenter view isModified: true.
+	TestMessageBox plannedResult: #yes.
+	self selectVariableListEntryForcingEvent: 'instVarNames'.
+	self assert: self projectsPresenter variableListPresenter selection equals: 'classVarNames']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_classColoring
 	| classService sunitBrowser |
@@ -4046,6 +4079,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #selectHierarchyTabIn:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectSUnitTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectTreeServicesNamed:in:!private!selection! !
+!JadeiteProjectBrowserTestCase categoriesFor: #selectVariableListEntryForcingEvent:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteProjectBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abortOnVariablesTab!public!test variable tab! !
@@ -4067,6 +4101,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSelectedMethods!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeListSortOrder!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_changeVariableWithModifiedMethodSource!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classColoring!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classColoringExtension!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionTemplateAfterRemove!public!test class list!tests! !

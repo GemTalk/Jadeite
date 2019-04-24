@@ -516,6 +516,7 @@ createSchematicWiringForProjectList
 
 createSchematicWiringForVariableList
 	variableListPresenter
+		when: #selectionChanging: send: #aboutToChange: to: self;
 		when: #selectionChanged send: #selectMethodSourceTab to: self;
 		when: #selectionChanged send: #refreshMethodsOn: to: self with: methodListPresenter!
 
@@ -860,14 +861,13 @@ isHierarchyTabSelected
 	^classHierarchyTabs currentCard name = 'classHierarchy'!
 
 isOkayToChange
-	
 	methodSourcePresenter view isModified ifTrue: [
 		(self isOkayToChangeSource: methodSourcePresenter) ifFalse:[^false]
 	].
 	classDefinitionPresenter view isModified ifTrue: [
 		classDefinitionPresenter ensureVisible.
 		gciSession isValidSession
-			ifTrue: [ (MessageBox confirm: 'Stay on unsaved class definition?' caption: 'Class has unsaved changes!!') ifTrue: [^false]]
+			ifTrue: [ (MessageBox confirm: 'Stay on unsaved class definition?' caption: 'Class has unsaved changes!!')  ifTrue: [^false]]
 			ifFalse: [(MessageBox confirm: 'Copy changes to Clipboard?' caption: 'Class has unsaved changes!!') ifTrue: [classDefinitionPresenter selectAll; copySelection]].
 		classDefinitionPresenter view isModified: false.
 	].

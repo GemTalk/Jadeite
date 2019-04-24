@@ -16,7 +16,6 @@ open
 	^self result!
 
 result
-
 	^self class plannedResult! !
 !TestMessageBox categoriesFor: #open!accessing!public! !
 !TestMessageBox categoriesFor: #result!accessing!public! !
