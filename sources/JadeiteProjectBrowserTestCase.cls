@@ -678,6 +678,7 @@ test_changeListSortOrder
 			ensure: [changesBrowser destroy]!
 
 test_changeVariableWithModifiedMethodSource
+	self testsIssue: #issue454 withTitle: 'Variables tab, change variable selection, are not prompted to save method'.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
 	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
