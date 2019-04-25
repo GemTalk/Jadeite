@@ -90,6 +90,68 @@ test_abortTransactionInNavigationInspector
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_adHocInspect
+	| workspace |
+	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	workspace setDocumentData: '123'.
+	workspace setFocus.
+	inspector := workspace codePane jadeInspect.
+	self assert: inspector documentPresenter model value equals: '123'.
+	self assert: inspector instVarListPresenter selection key equals: 'self']
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
+test_autoCommitInAdHocInspect
+	| workspace |
+	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self setAutoCommit: true.
+	session executeString: 'UserGlobals at: #TestCommit put: true'.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	workspace setDocumentData: '123'.
+	workspace setFocus.
+	inspector := workspace codePane jadeInspect.
+	self assert: inspector documentPresenter model value equals: '123'.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]')]
+			ensure: 
+				[inspector topShell primaryPresenter view close.
+				workspace isModified: false.
+				workspace view close.
+				self setAutoCommit: false	"should have committed already"].
+	
+	[self abortTransaction.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]')]
+			ensure: 
+				[session executeString: 'UserGlobals removeKey: #TestCommit'.
+				self commitTransaction]!
+
+test_autoCommitOffInAdHocInspect
+	| workspace |
+	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self setAutoCommit: false.
+	session executeString: 'UserGlobals at: #TestCommit put: true'.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	workspace setDocumentData: '123'.
+	workspace setFocus.
+	inspector := workspace codePane jadeInspect.
+	self assert: inspector documentPresenter model value equals: '123'.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]')]
+			ensure: 
+				[inspector topShell primaryPresenter view close.
+				workspace isModified: false.
+				workspace view close].
+	
+	[self abortTransaction.
+	self assertIsNil: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]')]
+			ensure: [self commitTransaction]!
+
 test_basicInspectorDisplayedSizeLimit
 	| remoteObject |
 	self testsIssue: #issue361 withTitle: 'Inspectors should hold more than 5000 characters'.
@@ -580,6 +642,9 @@ def'''! !
 !JadeiteInspectorTestCase categoriesFor: #tearDown!private! !
 !JadeiteInspectorTestCase categoriesFor: #test_abortTransactionInBasicInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_abortTransactionInNavigationInspector!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_adHocInspect!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_autoCommitInAdHocInspect!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_autoCommitOffInAdHocInspect!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_basicInspectorDisplayedSizeLimit!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_caption!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_captionChange!public!tests! !

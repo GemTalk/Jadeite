@@ -152,6 +152,7 @@ package methodNames
 	add: #JadeNavigationInspector -> #browseClass;
 	add: #JadeNavigationInspector -> #setNewInspectedObject;
 	add: #JadePresenter -> #abortTransaction;
+	add: #JadePresenter -> #autoCommitExecutionString;
 	add: #JadePresenter -> #basicCloneProject:root:;
 	add: #JadePresenter -> #browseClassReferences:;
 	add: #JadePresenter -> #browseHierarchyImplementorsOf:className:;
@@ -165,9 +166,11 @@ package methodNames
 	add: #JadePresenter -> #browseSendersOf:;
 	add: #JadePresenter -> #compilationWarningFrom:;
 	add: #JadePresenter -> #currentMethodSourceFrom:;
+	add: #JadePresenter -> #currentSelectionOrLine;
 	add: #JadePresenter -> #displayNoMods:;
 	add: #JadePresenter -> #displayUncompilableSourceIn:;
 	add: #JadePresenter -> #editSaveMethod:in:category:;
+	add: #JadePresenter -> #executeSelectionOrLine:;
 	add: #JadePresenter -> #issueCommand:;
 	add: #JadePresenter -> #openDictionaryBrowserOn:selector:;
 	add: #JadePresenter -> #openProjectBrowserOn:selector:;
@@ -748,20 +751,13 @@ browseSelectedClass
 	^self browseSelectedClassIn: documentPresenter newTab: false!
 
 executeSelectionOrLine
-	[
-		^true -> (gciSession executeString: self currentSelectionOrLine fromContext: self parentPresenter contextObject environment: environment).
-	] on: GsCompileError do: [:ex | 
-		^false -> ex list.
-	].
-	self error: 'How did we get here?'.
-	^false -> #(nil).
-!
+	^self executeSelectionOrLine: self parentPresenter contextObject !
 
 jadeInspect
 	| result |
 	result := self jadeExecuteAndDisplay: false.
 	result == self ifTrue: [^self].
-	JadeInspector showOn: result session: gciSession! !
+	^JadeInspector showOn: result session: gciSession! !
 !CodeSourcePresenter categoriesFor: #browseSelectedClass!Jade!public! !
 !CodeSourcePresenter categoriesFor: #executeSelectionOrLine!Jade!private! !
 !CodeSourcePresenter categoriesFor: #jadeInspect!Jade!private! !
@@ -1677,6 +1673,9 @@ abortTransaction
 	self issueCommand: (Array with: browserService). 
 	Sound informationBeep!
 
+autoCommitExecutionString
+	^'RowanService autoCommit ifTrue:[System commitTransaction].'!
+
 basicCloneProject: path root: root
 	| service |
 	service := RowanProjectService new.
@@ -1771,6 +1770,9 @@ currentMethodSourceFrom: sourceString
 	^source.
 !
 
+currentSelectionOrLine
+	^self subclassResponsibility!
+
 displayNoMods: sourcePresenter
 	sourcePresenter view
 		backcolor: JadeTextStyles default colorForNoEdits;
@@ -1808,6 +1810,15 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 			[:warning |
 			(self topShell view viewNamed: 'statusBarField') backcolor: Color yellow faded.
 			self statusBarText: warning]!
+
+executeSelectionOrLine: contextObject
+	| answeringService |
+	answeringService := RowanAnsweringService new.
+	answeringService
+		command: #exec:context:;
+		commandArgs: (Array with: self currentSelectionOrLine with: contextObject).
+	self issueCommand: (Array with: answeringService).
+	^answeringService answer!
 
 issueCommand: services
 	^self class issueCommand: services session: self gciSession.
@@ -1888,6 +1899,7 @@ update: services afterStonReplication: stonResults
 updateServices: services
 	BrowserUpdate current updateServices: services session: gciSession! !
 !JadePresenter categoriesFor: #abortTransaction!public!transaction management! !
+!JadePresenter categoriesFor: #autoCommitExecutionString!menu handlers support!public! !
 !JadePresenter categoriesFor: #basicCloneProject:root:!menu handlers!private! !
 !JadePresenter categoriesFor: #browseClassReferences:!menu handlers!public! !
 !JadePresenter categoriesFor: #browseHierarchyImplementorsOf:className:!browsing!public! !
@@ -1901,9 +1913,11 @@ updateServices: services
 !JadePresenter categoriesFor: #browseSendersOf:!browsing!menu handlers!public! !
 !JadePresenter categoriesFor: #compilationWarningFrom:!public! !
 !JadePresenter categoriesFor: #currentMethodSourceFrom:!compile support!public! !
+!JadePresenter categoriesFor: #currentSelectionOrLine!menu handlers support!public! !
 !JadePresenter categoriesFor: #displayNoMods:!compile support!displaying!public! !
 !JadePresenter categoriesFor: #displayUncompilableSourceIn:!event handlers!public!text tabs!updating! !
 !JadePresenter categoriesFor: #editSaveMethod:in:category:!compile support!public! !
+!JadePresenter categoriesFor: #executeSelectionOrLine:!menu handlers!public! !
 !JadePresenter categoriesFor: #issueCommand:!browsing support!public! !
 !JadePresenter categoriesFor: #openDictionaryBrowserOn:selector:!browsing!public! !
 !JadePresenter categoriesFor: #openProjectBrowserOn:selector:!browsing!public! !

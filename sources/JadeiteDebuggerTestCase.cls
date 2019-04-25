@@ -187,6 +187,25 @@ Processor allProcesses includes: gsProcess'.
 	self assert: false.
 !
 
+test_adHocDebug
+	| workspace |
+	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	workspace setDocumentData: '123'.
+	self debuggerDo: 
+			[process := 
+					[workspace codePane documentPresenter setFocus.
+					workspace codePane jadeDebug]
+							forkAt: Processor activePriority + 1].
+	self getDebugger.
+	self assert: debugger methodSourcePresenter documentPresenter value equals: 'nil halt. 123'. 
+]
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
 test_badCompileInDebugger
 	| source |
 	self testsIssue: #issue219 withTitle: 'error when saving source with compile error in debugger'.
@@ -982,6 +1001,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #systemBrowser!private! !
 !JadeiteDebuggerTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteDebuggerTestCase categoriesFor: #terminateGsProcess!private!running! !
+!JadeiteDebuggerTestCase categoriesFor: #test_adHocDebug!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_badCompileInDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !

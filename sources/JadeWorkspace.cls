@@ -10,6 +10,11 @@ JadeWorkspace comment: 'model is an instance of GciSession'!
 !JadeWorkspace categoriesForClass!Unclassified! !
 !JadeWorkspace methodsFor!
 
+codePane
+	"Private -  for testing"
+
+	^codePane!
+
 onViewOpened
 
 	super onViewOpened.
@@ -55,6 +60,7 @@ updateCaption
 	environment ~~ 0 ifTrue: [string := string , ' @env' , environment printString].
 	self caption: string.
 ! !
+!JadeWorkspace categoriesFor: #codePane!private! !
 !JadeWorkspace categoriesFor: #onViewOpened!private! !
 !JadeWorkspace categoriesFor: #queryCommand:!public! !
 !JadeWorkspace categoriesFor: #setEnvironment:!public! !

@@ -10,6 +10,116 @@ JadeiteMiscellaneousTestCase comment: ''!
 !JadeiteMiscellaneousTestCase categoriesForClass!Unclassified! !
 !JadeiteMiscellaneousTestCase methodsFor!
 
+test_adHocDisplay
+	| workspace |
+	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	workspace setDocumentData: '123'.
+	workspace codePane documentPresenter setFocus.
+	workspace codePane jadeDisplay.
+	self assert: workspace codePane documentPresenter value equals: '123 123']
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
+test_adHocExecute
+	| workspace |
+	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	session executeString: 'UserGlobals removeKey: #foo ifAbsent:[]'.
+	workspace setDocumentData: 'UserGlobals at: #foo put: ''bar'''.
+	workspace codePane documentPresenter setFocus.
+	workspace codePane jadeExecute.
+	self assert: workspace codePane documentPresenter value equals: 'UserGlobals at: #foo put: ''bar'''.
+	self assert: (session executeString: 'UserGlobals at: #foo') equals: 'bar']
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
+test_autoCommitInAdHocDisplay
+	| workspace |
+	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
+	
+	[self setAutoCommit: true.
+	session executeString: 'UserGlobals at: #TestCommit put: true'.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	workspace := JadeWorkspace showOnSession: session.
+	workspace setDocumentData: '123'.
+	workspace codePane documentPresenter setFocus.
+	workspace codePane jadeDisplay.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	self abortTransaction.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	self assert: workspace codePane documentPresenter value equals: '123 123']
+			ensure: 
+				[session executeString: 'UserGlobals removeKey: #TestCommit'.
+				self commitTransaction.
+				self setAutoCommit: false.
+				workspace isModified: false.
+				workspace view close]!
+
+test_autoCommitInAdHocExecution
+	| workspace |
+	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
+	
+	[self setAutoCommit: true.
+	session executeString: 'UserGlobals at: #TestCommit put: true'.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	workspace := JadeWorkspace showOnSession: session.
+	workspace setDocumentData: '''doSomething'''.
+	workspace codePane documentPresenter setFocus.
+	workspace codePane jadeExecute.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	self abortTransaction.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]')	"TestCommit was committed"]
+			ensure: 
+				[session executeString: 'UserGlobals removeKey: #TestCommit'.
+				self commitTransaction.
+				self setAutoCommit: false.
+				workspace isModified: false.
+				workspace view close]!
+
+test_autoCommitOffInAdHocDisplay
+	| workspace |
+	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
+	
+	[self setAutoCommit: false.
+	session executeString: 'UserGlobals at: #TestCommit put: true'.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	workspace := JadeWorkspace showOnSession: session.
+	workspace setDocumentData: '123'.
+	workspace codePane documentPresenter setFocus.
+	workspace codePane jadeDisplay.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	self abortTransaction.
+	self assertIsNil: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	self assert: workspace codePane documentPresenter value equals: '123 123']
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
+test_autoCommitOffInAdHocExecution
+	| workspace |
+	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
+	
+	[self setAutoCommit: false.
+	session executeString: 'UserGlobals at: #TestCommit put: true'.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	workspace := JadeWorkspace showOnSession: session.
+	workspace setDocumentData: '''doSomething'''.
+	workspace codePane documentPresenter setFocus.
+	workspace codePane jadeExecute.
+	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]').
+	self abortTransaction.
+	self assertIsNil: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]')]
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
 test_convertToPattern
 	| pattern |
 	self testsIssue: #issue258
@@ -127,6 +237,12 @@ testMethodServiceClassNameIsString
 				className: #JadeiteMiscellaneousTestCase;
 				meta: false.
 	self assert: methodService className isKindOf: String! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_adHocDisplay!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_adHocExecute!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitInAdHocDisplay!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitInAdHocExecution!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocDisplay!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocExecution!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_convertToPattern!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !

@@ -320,11 +320,9 @@ fileIn
 !
 
 jadeInspect
-
 	| result |
 	result := self jadeExecuteAndDisplay: false.
-	JadeInspector showOn: result session: gciSession.
-! !
+	^JadeInspector showOn: result session: gciSession! !
 !JadeTextDocument categoriesFor: #fileIn!private! !
 !JadeTextDocument categoriesFor: #jadeInspect!menu handlers!private! !
 

@@ -127,22 +127,7 @@ environment: anInteger
 !
 
 executeSelectionOrLine
-	"Returns anAssociation
-		key:	true if compiled and returned a result
-			false if we have a compile error
-			nil if compile error with no details
-		value: result, compile errors, or general description of error"
-	[
-		^true -> (gciSession 
-			executeString: self currentSelectionOrLine 
-			fromContext: self contextObject
-			 environment: environment).
-	] on: GsCompileError do: [:ex | 
-		ex list notEmpty ifTrue: [^false -> ex list].
-		^nil -> ex description.
-	].
-	self error: 'How did we get here!!?'.
-!
+	^self executeSelectionOrLine: self contextObject!
 
 fileIn: aString
 
@@ -201,13 +186,13 @@ jadeDebug
 	"Intercepted by CodeSourcePresenter"!
 
 jadeDisplay
-	self jadeExecuteAndDisplay: true.
+	^self jadeExecuteAndDisplay: true.
 
 !
 
 jadeExecute
 
-	self jadeExecuteAndDisplay: false.
+	^self jadeExecuteAndDisplay: false.
 !
 
 jadeExecuteAndDisplay: showResult 
