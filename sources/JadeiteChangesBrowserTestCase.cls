@@ -27,6 +27,7 @@ addNewMethod
 		category: 'addition'!
 
 tearDown
+	super tearDown.
 	changesBrowser ifNotNil: [changesBrowser destroy]!
 
 test_browseMethodSelectsAddedClass

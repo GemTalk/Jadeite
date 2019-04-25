@@ -746,10 +746,10 @@ test_classDefinitionTemplateAfterRemove
 	self testsIssue: #issue449 withTitle: '(3.0.63) missing class definition template in empty package'.
 	self selectRowanSample1Test.
 	self
-		saveClass: 'Foo'
+		saveClass: 'Gnoofle'
 		withInstVars: #()
 		package: 'RowanSample1-Tests'.
-	self assert: self projectsPresenter selectedClass name equals: 'Foo'.
+	self assert: self projectsPresenter selectedClass name equals: 'Gnoofle'.
 	self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
 	self assert: self projectsPresenter classDefinitionPresenter value replaceCrLfWithLf
 		equals: 'Object rwSubclass: ''NameOfSubclass''
@@ -766,11 +766,11 @@ test_classDefinitionTemplateAfterRemoveInHierarchy
 	self testsIssue: #issue449 withTitle: '(3.0.63) missing class definition template in empty package'.
 	self selectRowanSample1Test.
 	self
-		saveClass: 'Foo'
+		saveClass: 'Gnoofle'
 		withInstVars: #()
 		package: 'RowanSample1-Tests'.
 	self selectHierarchyTab.
-	self assert: self projectsPresenter selectedClass name equals: 'Foo'.
+	self assert: self projectsPresenter selectedClass name equals: 'Gnoofle'.
 	self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
 	self assert: self projectsPresenter classDefinitionPresenter value replaceCrLfWithLf
 		equals: 'nil subclass: ''Object''

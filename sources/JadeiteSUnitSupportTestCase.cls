@@ -119,6 +119,7 @@ sunitPresenter
 	^sunitBrowser primaryPresenter!
 
 tearDown
+	super tearDown.
 	self assert:  sunitBrowser view close.!
 
 test_abortNoSelections
@@ -129,7 +130,7 @@ test_abortNoSelections
 	sunitBrowser primaryPresenter perform: abortCommand.
 	[self denyPackageInList: 'RowanSample1-Tests'] ensure: 
 			[self cloneRowanSample1.
-			self ensureRowanSample1Loaded]!
+			self ensureRowanSample1Loaded].!
 
 test_abortWithSelections
 	| abortCommand |

@@ -31,6 +31,7 @@ setUp
 	GciSession current: currentSession!
 
 tearDown
+	super tearDown. 
 	session
 		ifNotNil: 
 			[session privateLogout.
