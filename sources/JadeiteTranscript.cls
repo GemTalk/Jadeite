@@ -150,7 +150,7 @@ queryCommand: query
 			^true].
 	query commandSymbol = #flipAutoCommit
 		ifTrue: 
-			[query isChecked: autoCommit value.
+			[query isChecked: autoCommit value == true.
 			^true].
 	query commandSymbol = #flipDebugger
 		ifTrue: 

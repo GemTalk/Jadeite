@@ -221,7 +221,7 @@ removedClass: aPresenter!
 removedProject: presenter!
 
 replicateFrom: newService
-	newService name = self name
+	(newService class = self class and: [newService name = self name])
 		ifTrue: 
 			[1 to: self class instSize
 				do: 

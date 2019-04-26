@@ -112,6 +112,7 @@ textTabs
 updateAutoCommit
 	| autoCommitButtonView |
 	autoCommitButtonView := self topShell view viewNamed: 'autoCommitButton'.
+	autoCommit value == #failed ifTrue: [^autoCommitButtonView backcolor: Color red].
 	autoCommit value
 		ifTrue: [autoCommitButtonView backcolor: Color green]
 		ifFalse: [autoCommitButtonView backcolor: Color default]!

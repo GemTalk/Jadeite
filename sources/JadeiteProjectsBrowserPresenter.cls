@@ -60,7 +60,6 @@ autoCommit
 	^autoCommit value!
 
 autoCommit: boolean
-
 	autoCommit value: boolean!
 
 basicAddMethodCategory: string
@@ -1465,7 +1464,8 @@ refreshFromServer
 refreshFromServerAfterAbort: browserService
 	browserService
 		ifNil: [self refreshGlobalSelections]
-		ifNotNil: [browserService projectsUpdate: projectListPresenter]!
+		ifNotNil: [browserService projectsUpdate: projectListPresenter].
+	self autoCommit: (autoCommit value == #failed ifTrue: [false] ifFalse: [autoCommit value])!
 
 refreshMethodsOn: presenter
 	| classService |
@@ -1839,6 +1839,7 @@ updateAndSelectA: aView
 updateAutoCommit
 	| autoCommitButtonView |
 	autoCommitButtonView := self topShell view viewNamed: 'autoCommitButton'.
+	autoCommit value == #failed ifTrue: [^autoCommitButtonView backcolor: Color red].
 	autoCommit value
 		ifTrue: [autoCommitButtonView backcolor: Color green]
 		ifFalse: [autoCommitButtonView backcolor: Color default]!
