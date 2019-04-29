@@ -257,18 +257,6 @@ logoutRequested: aValueHolder
 	aValueHolder value: true.
 !
 
-onCloseRequested: boolValueHolder
-
-	super onCloseRequested: boolValueHolder.
-"
-	boolValueHolder value ifTrue: [
-		| start |
-		self view hide.
-		start := Time millisecondClockValue.
-		SessionManager inputState loopWhile: [(Time millisecondClockValue - start) abs < 100].
-	].
-"!
-
 onViewClosed
 
 	gciSession notNil ifTrue: [
@@ -458,7 +446,6 @@ validateUserInterface
 !JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:!Jade!private! !
 !JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:result:!Jade!private! !
 !JadeTextDocument categoriesFor: #logoutRequested:!private! !
-!JadeTextDocument categoriesFor: #onCloseRequested:!private! !
 !JadeTextDocument categoriesFor: #onViewClosed!private! !
 !JadeTextDocument categoriesFor: #onViewOpened!private! !
 !JadeTextDocument categoriesFor: #parentPresenter!public! !

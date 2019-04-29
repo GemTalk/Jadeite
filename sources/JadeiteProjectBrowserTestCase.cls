@@ -59,6 +59,12 @@ assertLinearAncestry: family in: presenter
 			self assert: (presenter model childrenOf: parentNode) size equals: 1. 
 			self assert: (presenter model childrenOf: parentNode) first equals: childNode]!
 
+cleanupTextPaneForClose: ws
+	^ws codePane documentPresenter view isModified
+		ifTrue: 
+			[ws codePane documentPresenter view isModified: false.
+			ws codePane documentPresenter value: nil]!
+
 currentTabView
 	^self projectsPresenter topShell cardsPresenter view cardLayout currentCard!
 
@@ -1134,6 +1140,8 @@ test_closeConsoleInvalidSession
 	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector |
 	"poison session and exit Jadeite. Make sure all Jadeite windows close"
 	self testsIssue: #issue267 withTitle: 'logout closes project browsers but not method list browsers'.
+	JadeWorkspace allInstances do: [:ws | self cleanupTextPaneForClose: ws].	"otherwise the test will hang"
+	JadeiteTranscript allInstances do: [:text | self cleanupTextPaneForClose: text].
 	self selectRowanSample1Class.
 	self selectMethodNamed: #foo.
 	methodListBrowser := self projectsPresenter browseImplementors.
@@ -1183,6 +1191,8 @@ test_closeConsoleValidSession
 	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector |
 	"poison session and exit Jadeite. Make sure all Jadeite windows close"
 	self testsIssue: #issue267 withTitle: 'logout closes project browsers but not method list browsers'.
+	JadeWorkspace allInstances do: [:ws | self cleanupTextPaneForClose: ws].	"otherwise the test will hang"
+	JadeiteTranscript allInstances do: [:text | self cleanupTextPaneForClose: text].
 	self selectRowanSample1Class.
 	self selectMethodNamed: #foo.
 	methodListBrowser := self projectsPresenter browseImplementors.
@@ -4052,6 +4062,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodHoo!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #assertAncestry:in:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #assertLinearAncestry:in:!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #cleanupTextPaneForClose:!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #currentTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #dirtyProjectForChangeBrowser!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !

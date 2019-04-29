@@ -3476,7 +3476,6 @@ issueCommand: services
 onPromptToSaveChanges: aBooleanValue
 	"we were calling #getDocumentData essentially to test for nil. 
 	That uses #asString which some objects don't understand - like booleans."
-
 	documentPresenter value ifNil: [self isModified: false].
 	^super onPromptToSaveChanges: aBooleanValue!
 
