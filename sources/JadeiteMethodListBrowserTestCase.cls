@@ -97,6 +97,44 @@ test_browseClass
 	[self assert: ('String*' match: dictionaryPresenter selectedClassName)]
 		ensure: [dictionaryPresenter topShell destroy]!
 
+test_compileErrorDisplay
+	| source |
+	self testsIssue: #issue459 withTitle: 'CompileWarnings should be more noticable ... '.
+	methodListBrowser := JadePresenter browseImplementorsOf: #test1 session: session.
+	self assert: methodListBrowser primaryPresenter methodListPresenter selection selector
+		equals: #test1.
+	source := 'test1 self assert: RowanSample1 new foo = ''abc'.	"won't compile"
+	self methodListSourcePresenter documentPresenter value: source.
+	self assert: self methodListSourcePresenter documentPresenter isModified.
+	self methodListSourcePresenter editSaveMethod.
+	self assert: (methodListBrowser view viewNamed: 'statusBarField') forecolor equals: Color black.
+	self assert: (methodListBrowser view viewNamed: 'statusBarField') backcolor equals: Color red faded!
+
+test_compileErrorDisplayGoesAway
+	| source |
+	self testsIssue: #issue459 withTitle: 'CompileWarnings should be more noticable ... '.
+	self
+		saveMethod: 'abc1  self foogle'
+		in: 'RowanSample1'
+		category: 'other'.
+	self
+		saveMethod: 'abc2  self foogle'
+		in: 'RowanSample1'
+		category: 'other'.
+	methodListBrowser := JadePresenter browseSendersOf: #foogle session: session.
+	self assert: methodListBrowser primaryPresenter methodListPresenter selection selector equals: #abc1.
+	source := 'abc1  self foo #'.	"won't compile"
+	self methodListSourcePresenter documentPresenter value: source.
+	self assert: self methodListSourcePresenter documentPresenter isModified.
+	self methodListSourcePresenter editSaveMethod.
+	self assert: (methodListBrowser view viewNamed: 'statusBarField') forecolor equals: Color black.
+	self assert: (methodListBrowser view viewNamed: 'statusBarField') backcolor equals: Color red faded.
+	self assert: (methodListBrowser view viewNamed: 'statusBarField') model value
+		equals: 'invalid pound sign'.
+	methodListBrowser primaryPresenter methodListPresenter primaryPresenter selectionByIndex: 2.
+	self deny: (methodListBrowser view viewNamed: 'statusBarField') backcolor equals: Color red faded.
+	self assert: (methodListBrowser view viewNamed: 'statusBarField') model value equals: String new!
+
 test_doubleClickActionClassMethod
 	self testsIssue: #issue403
 		withTitle: 'Double click in method browser change class to show instance methods'.
@@ -303,6 +341,8 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectListAt:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_compileErrorDisplay!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_compileErrorDisplayGoesAway!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionClassMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionInstanceMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_methodBrowserSaveMethod!public!tests! !

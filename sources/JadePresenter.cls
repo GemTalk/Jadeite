@@ -45,9 +45,9 @@ resetCursor
 !
 
 setStatusBarDefault
-    | statusBarView |
-    statusBarView := self topShell view viewNamed: 'statusBarField'.
-    statusBarView backcolor: statusBarView defaultBackcolor!
+	| statusBarView |
+	statusBarView := self topShell view viewNamed: 'statusBarField'.
+	statusBarView backcolor: statusBarView defaultBackcolor!
 
 statusBarText: aString
 	self topShell statusBarText: aString.

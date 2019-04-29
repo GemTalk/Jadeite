@@ -38,6 +38,12 @@ methodListPresenter
 
 	^methodListPresenter!
 
+methodSelectionChanged
+
+	self trigger: #'methodSelectionChanged'.
+	self setStatusBarDefault
+!
+
 onViewClosed
 	super onViewClosed.
 	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter]!
@@ -87,6 +93,7 @@ selections
 !JadeiteBasicMethodListPresenter categoriesFor: #browseHierarchyImplementors!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #browseHierarchySenders!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #methodListPresenter!accessing!public! !
+!JadeiteBasicMethodListPresenter categoriesFor: #methodSelectionChanged!drag & drop!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
