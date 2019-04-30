@@ -105,6 +105,21 @@ test_adHocInspect
 				[workspace isModified: false.
 				workspace view close]!
 
+test_adHocInspectComplexObject
+	| workspace |
+	self testsIssue: #issue464 withTitle: '(3.0.67) String does not understand #format: ... during doit'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	workspace setDocumentData: 'RowanSample1Test new setTestSelector: #test1'.
+	workspace setFocus.
+	inspector := workspace codePane jadeInspect.
+	self assert: inspector documentPresenter model value equals: 'RowanSample1Test>>#test1'.
+	self assert: inspector instVarListPresenter selection key equals: 'self']
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
 test_autoCommitInAdHocInspect
 	| workspace |
 	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
@@ -274,6 +289,28 @@ test_commitTransactionInNavigationInspectorFocusInstVars
 	self denyProjectInList: 'RowanSample1'.
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded!
+
+test_dive
+	| workspace index |
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[workspace setDocumentData: 'ClassOrganizer new'.
+	workspace setFocus.
+	inspector := workspace codePane jadeInspect.
+	self assert: (inspector model value isKindOf: Integer).	"the oop"
+	self assert: inspector instVarListPresenter selection key equals: 'self'.
+	self assert: inspector instVarListPresenter selection value equals: 'aClassOrganizer'.
+	inspector instVarListPresenter selectionByIndex: 8.
+	self assert: inspector instVarListPresenter selection key equals: '-rootClass'. 
+	inspector instVarListPresenter view onActionPerformed.  "event for double click"
+	self assert: inspector instVarListPresenter selection key equals: 'self'.
+	self assert: inspector documentPresenter value equals: 'Object'.
+	index := (inspector instVarListPresenter list collect:[:assoc | assoc key]) indexOf: '-name'. 
+	inspector instVarListPresenter selectionByIndex: index.
+	self assert: inspector documentPresenter value equals: '#''Object'''. ]
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
 
 test_forwardBack
 	| remoteObject backQuery forwardQuery |
@@ -643,6 +680,7 @@ def'''! !
 !JadeiteInspectorTestCase categoriesFor: #test_abortTransactionInBasicInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_abortTransactionInNavigationInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_adHocInspect!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_adHocInspectComplexObject!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_autoCommitInAdHocInspect!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_autoCommitOffInAdHocInspect!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_basicInspectorDisplayedSizeLimit!public!tests! !
@@ -651,6 +689,7 @@ def'''! !
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInBasicInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusCodePane!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusInstVars!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_dive!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorHandlesError!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorRootObjectRegistered!public!tests! !

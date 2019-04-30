@@ -206,6 +206,15 @@ test_adHocDebug
 				[workspace isModified: false.
 				workspace view close]!
 
+test_adHocExecutionSelf
+	self openDebuggerOn: '''gloop'' halt'.
+	debugger frameListPresenter selectionByIndex: 3.
+	debugger methodSourcePresenter documentPresenter value: 'self'.
+	debugger methodSourcePresenter documentPresenter view setFocus.
+	self debuggerDo: [debugger jadeDisplay].
+	self assert: debugger methodSourcePresenter documentPresenter value equals: 'self ''gloop'''.
+	debugger methodSourcePresenter documentPresenter view isModified: false!
+
 test_badCompileInDebugger
 	| source |
 	self testsIssue: #issue219 withTitle: 'error when saving source with compile error in debugger'.
@@ -1002,6 +1011,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteDebuggerTestCase categoriesFor: #terminateGsProcess!private!running! !
 !JadeiteDebuggerTestCase categoriesFor: #test_adHocDebug!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionSelf!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_badCompileInDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !

@@ -536,7 +536,7 @@ RowanService subclass: #RowanDebuggerService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanFrameService
-	instanceVariableNames: 'label method stepPoint vars'
+	instanceVariableNames: 'label method stepPoint vars oop'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1813,11 +1813,15 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 			self statusBarText: warning]!
 
 executeSelectionOrLine: contextObject
-	| answeringService answer |
+	| answeringService answer oop |
+	oop := (contextObject isKindOf: ExternalInteger)
+				ifTrue: [contextObject value]
+				ifFalse: [contextObject].	"services wants a local special as a context"
+	oop ifNil: [oop := 20]. 
 	answeringService := RowanAnsweringService new.
 	answeringService
 		command: #exec:context:;
-		commandArgs: (Array with: self currentSelectionOrLine with: contextObject).
+		commandArgs: (Array with: self currentSelectionOrLine with: oop).
 	self issueCommand: (Array with: answeringService).
 	answer := answeringService answer.
 	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
@@ -3474,11 +3478,15 @@ aboutJadeite
 	JadeLoginShell aboutJadeite!
 
 executeSelectionOrLine: contextObject
-	| answeringService answer |
+	| answeringService answer oop |
+	oop := (contextObject isKindOf: ExternalInteger)
+				ifTrue: [contextObject value]
+				ifFalse: [contextObject].	"services wants a local special as a context"
+	oop ifNil: [oop := 20]. 
 	answeringService := RowanAnsweringService new.
 	answeringService
 		command: #exec:context:;
-		commandArgs: (Array with: self currentSelectionOrLine with: contextObject).
+		commandArgs: (Array with: self currentSelectionOrLine with: oop).
 	self issueCommand: (Array with: answeringService).
 	answer := answeringService answer.
 	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].

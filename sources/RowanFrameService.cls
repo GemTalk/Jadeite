@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanFrameService
-	instanceVariableNames: 'label method stepPoint vars'
+	instanceVariableNames: 'label method stepPoint vars oop'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -41,6 +41,12 @@ offsets
 
 	^method stepPoints collect: [:each | each key start]!
 
+oop
+	^oop!
+
+oop: anObject
+	oop := anObject!
+
 printOn: aStream
 
 	aStream nextPutAll: (label ifNil: ['?'])
@@ -63,6 +69,8 @@ vars
 !RowanFrameService categoriesFor: #isUpdatableService!public!testing! !
 !RowanFrameService categoriesFor: #method!public! !
 !RowanFrameService categoriesFor: #offsets!public! !
+!RowanFrameService categoriesFor: #oop!accessing!private! !
+!RowanFrameService categoriesFor: #oop:!accessing!private! !
 !RowanFrameService categoriesFor: #printOn:!public! !
 !RowanFrameService categoriesFor: #source!public! !
 !RowanFrameService categoriesFor: #stepPoint!public! !

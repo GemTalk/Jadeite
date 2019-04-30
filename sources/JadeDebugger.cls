@@ -57,7 +57,7 @@ codeSourcePresenterClass
 !
 
 contextObject
-	^gciSession oopTypeWithOop: frame vars first key key asNumber!
+	^gciSession oopTypeWithOop: frame oop!
 
 copyStack
 	| stream |

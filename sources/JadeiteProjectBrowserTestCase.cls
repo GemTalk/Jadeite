@@ -465,6 +465,62 @@ test_addSubclass
 				replaceCrLfWithLf]
 			ensure: [self projectsPresenter classDefinitionPresenter view isModified: false]!
 
+test_adHocInspectComplexObjectInProjectBrowser
+	| inspector |
+	self testsIssue: #issue464 withTitle: '(3.0.67) String does not understand #format: ... during doit'.
+	self methodSourcePresenter value: 'RowanSample1Test new setTestSelector: #test1'.
+	self methodSourcePresenter setFocus.
+	
+	[inspector := self projectsPresenter jadeInspect.
+	self assert: (inspector model value isKindOf: Integer).	"the oop"
+	self assert: inspector instVarListPresenter selection key equals: 'self'.
+	self assert: inspector instVarListPresenter selection value equals: 'RowanSample1Test>>#test1'.
+	inspector instVarListPresenter selectionByIndex: 2.
+	self assert: inspector instVarListPresenter selection key equals: '-.asOop'.
+	self assert: inspector instVarListPresenter selection value
+		equals: inspector model value printString.
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector instVarListPresenter selection key equals: '-testSelector'.
+	self assert: (inspector instVarListPresenter selection value isKindOf: OopType64)]
+			ensure: 
+				[inspector view close.
+				self methodSourcePresenter view isModified: false]!
+
+test_adHocInspectComplexObjectInProjectBrowser2
+	| inspector |
+	self testsIssue: #issue464 withTitle: '(3.0.67) String does not understand #format: ... during doit'.
+	self methodSourcePresenter value: 'ClassOrganizer new'.
+	self methodSourcePresenter setFocus.
+	
+	[inspector := self projectsPresenter jadeInspect.
+	self assert: (inspector model value isKindOf: Integer).	"the oop"
+	self assert: inspector instVarListPresenter selection key equals: 'self'.
+	self assert: inspector instVarListPresenter selection value equals: 'aClassOrganizer'.
+	inspector instVarListPresenter selectionByIndex: 2.
+	self assert: inspector instVarListPresenter selection key equals: '-.asOop'.
+	self assert: inspector instVarListPresenter selection value
+		equals: inspector model value printString.
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector instVarListPresenter selection key equals: '-classes'. 
+	self assert: (inspector instVarListPresenter selection value isKindOf: OopType64).
+	self assert: ('aClassSet(*' match: inspector documentPresenter value).
+	inspector instVarListPresenter selectionByIndex: 4.
+	self assert: inspector instVarListPresenter selection key equals: '-classNames'. 
+	self assert: inspector instVarListPresenter selection value equals: (OopType64 fromInteger: 20).
+	self assert: inspector documentPresenter value equals: 'nil'.
+	inspector instVarListPresenter selectionByIndex: 5.
+	self assert: inspector instVarListPresenter selection key equals: '-user'.
+	self assert: (inspector instVarListPresenter selection value isKindOf: OopType64).
+	self assert: ('aSymbolList( aSymbolDictionary(*' match: inspector documentPresenter value).
+	inspector instVarListPresenter selectionByIndex: 8.
+	self assert: inspector instVarListPresenter selection key equals: '-rootClass'. 
+	self assert: (inspector instVarListPresenter selection value isKindOf: OopType64).
+	self assert: inspector documentPresenter value equals: 'Object'
+	]
+			ensure: 
+				[inspector view close.
+				self methodSourcePresenter view isModified: false]!
+
 test_autoCommit
 	| methodListPresenter autoCommit |
 	self testsIssue: #issue421 withTitle: 'Need a way to know if you are in autocommit'.
@@ -4104,6 +4160,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveHierarchyCategory!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addSubclass!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_adHocInspectComplexObjectInProjectBrowser!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_adHocInspectComplexObjectInProjectBrowser2!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommit!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!tests! !

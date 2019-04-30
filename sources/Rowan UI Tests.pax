@@ -54,6 +54,7 @@ package setPrerequisites: (IdentitySet new
 	add: '..\Core\Object Arts\Dolphin\MVP\Views\Scintilla\Dolphin Scintilla View';
 	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Tree\Dolphin Tree Presenter';
 	add: '..\Core\Object Arts\Dolphin\MVP\Type Converters\Dolphin Type Converters';
+	add: 'GemStone C Interface';
 	add: 'GemStone Session';
 	add: 'Jade Deployment';
 	add: 'Jade Inspector';

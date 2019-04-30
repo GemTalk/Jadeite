@@ -1238,7 +1238,7 @@ jadeInspect
 
 	| result |
 	result := self jadeExecuteAndDisplay: false.	result == self ifTrue: [^self].	"flag for compile error"
-	JadeInspector showOn: result session: gciSession.
+	^JadeInspector showOn: result session: gciSession.
 !
 
 jadeMenuStrings
