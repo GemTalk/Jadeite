@@ -29,7 +29,6 @@ package methodNames
 	add: #JadeInspector -> #documentPresenter;
 	add: #JadeiteProjectsBrowserPresenter -> #definedClassPackageText;
 	add: #JadeiteProjectsBrowserPresenter -> #definedMethodPackageText;
-	add: #JadeTextDocument -> #executeSelectionOrLine:;
 	add: #RowanPatchBrowser -> #operationListPresenter;
 	add: #SUnitBrowserModel -> #debugIndividualTestsWithResources:;
 	add: 'MessageBox class' -> #new;
@@ -187,18 +186,6 @@ definedMethodPackageText
 	^definedMethodPackageText! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #definedClassPackageText!initialize/release!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #definedMethodPackageText!initialize/release!public! !
-
-!JadeTextDocument methodsFor!
-
-executeSelectionOrLine: contextObject
-	| answeringService |
-	answeringService := RowanAnsweringService new.
-	answeringService
-		command: #exec:context:;
-		commandArgs: (Array with: self currentSelectionOrLine with: contextObject).
-	self issueCommand: (Array with: answeringService).
-	^answeringService answer! !
-!JadeTextDocument categoriesFor: #executeSelectionOrLine:!Jade!private! !
 
 !MessageBox class methodsFor!
 

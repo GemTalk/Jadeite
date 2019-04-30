@@ -246,6 +246,7 @@ package methodNames
 	add: #JadeSystemBrowserPresenter -> #updateSelector;
 	add: #JadeSystemBrowserPresenter -> #verifyValidCategory:;
 	add: #JadeTextDocument -> #aboutJadeite;
+	add: #JadeTextDocument -> #executeSelectionOrLine:;
 	add: #JadeTextDocument -> #issueCommand:;
 	add: #JadeTextDocument -> #onPromptToSaveChanges:;
 	add: #JadeTextDocument -> #openDictionaryBrowser;
@@ -1812,13 +1813,15 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 			self statusBarText: warning]!
 
 executeSelectionOrLine: contextObject
-	| answeringService |
+	| answeringService answer |
 	answeringService := RowanAnsweringService new.
 	answeringService
 		command: #exec:context:;
 		commandArgs: (Array with: self currentSelectionOrLine with: contextObject).
 	self issueCommand: (Array with: answeringService).
-	^answeringService answer!
+	answer := answeringService answer.
+	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
+	^answer!
 
 issueCommand: services
 	^self class issueCommand: services session: self gciSession.
@@ -1917,7 +1920,7 @@ updateServices: services
 !JadePresenter categoriesFor: #displayNoMods:!compile support!displaying!public! !
 !JadePresenter categoriesFor: #displayUncompilableSourceIn:!event handlers!public!text tabs!updating! !
 !JadePresenter categoriesFor: #editSaveMethod:in:category:!compile support!public! !
-!JadePresenter categoriesFor: #executeSelectionOrLine:!menu handlers!public! !
+!JadePresenter categoriesFor: #executeSelectionOrLine:!menu handlers!private! !
 !JadePresenter categoriesFor: #issueCommand:!browsing support!public! !
 !JadePresenter categoriesFor: #openDictionaryBrowserOn:selector:!browsing!public! !
 !JadePresenter categoriesFor: #openProjectBrowserOn:selector:!browsing!public! !
@@ -3470,6 +3473,17 @@ verifyValidCategory: category
 aboutJadeite
 	JadeLoginShell aboutJadeite!
 
+executeSelectionOrLine: contextObject
+	| answeringService answer |
+	answeringService := RowanAnsweringService new.
+	answeringService
+		command: #exec:context:;
+		commandArgs: (Array with: self currentSelectionOrLine with: contextObject).
+	self issueCommand: (Array with: answeringService).
+	answer := answeringService answer.
+	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
+	^answer!
+
 issueCommand: services
 	^BrowserUpdate current issueCommand: services session: self gciSession!
 
@@ -3497,6 +3511,7 @@ update: services afterStonReplication: stonResults
 updateServices: services
 	BrowserUpdate current updateServices: services session: gciSession! !
 !JadeTextDocument categoriesFor: #aboutJadeite!private! !
+!JadeTextDocument categoriesFor: #executeSelectionOrLine:!Jade!private! !
 !JadeTextDocument categoriesFor: #issueCommand:!public!services! !
 !JadeTextDocument categoriesFor: #onPromptToSaveChanges:!private! !
 !JadeTextDocument categoriesFor: #openDictionaryBrowser!Jade!private! !
