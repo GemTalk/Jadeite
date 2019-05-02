@@ -1448,7 +1448,10 @@ refreshClassListOrHierarchy
 			self isCategoryTabSelected
 				ifTrue: [categoryListPresenter selections: selectedFilters]
 				ifFalse: [variableListPresenter selections: selectedFilters].
-			methodListPresenter selections: selectedMethods]!
+			classHierarchyPresenter selections isEmpty
+				ifFalse: 
+					["No selection if in the refreshing after rename. Done later"
+					methodListPresenter selections: selectedMethods]]!
 
 refreshFromServer
 	| services |

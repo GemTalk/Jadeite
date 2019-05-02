@@ -3015,6 +3015,31 @@ test_renameDisabledWithMultipleCategoriesSelected
 				view: self categoryListPresenter view.
 	self deny: commandQuery isEnabled!
 
+test_renameInClassListWithMethodListOpen
+	self testsIssue: #issue465 withTitle: '(3.067) error after rename class in hierarchy view'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	methodListBrowser := self projectsPresenter browseSelectedMethods.
+	TestMessageBox enableJadeiteTestMessageBox.
+	self projectsPresenter basicRenameClass: self projectsPresenter selectedClass to: 'Fnoodly'.
+	
+	[TestMessageBox plannedResult: #ok.
+	self assert: self projectsPresenter selectedClass name = 'Fnoodly']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
+test_renameInHierarchyWithMethodListOpen
+	self testsIssue: #issue465 withTitle: '(3.067) error after rename class in hierarchy view'.
+	self selectRowanSample1Test.
+	self selectHierarchyTab.
+	self selectMethodNamed: #test1.
+	methodListBrowser := self projectsPresenter browseSelectedMethods.
+	TestMessageBox enableJadeiteTestMessageBox.
+	self projectsPresenter basicRenameClass: self projectsPresenter selectedClass to: 'Fnoodly'.
+	
+	[TestMessageBox plannedResult: #ok.
+	self assert: self projectsPresenter selectedClass name = 'Fnoodly']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_rowanTestsHierarchy
 	
 	self testsIssue: #issue239 withTitle: 'long update times possible when selecting a package with `hierarchy` tab selected'.
@@ -4276,6 +4301,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameCategory!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameDisabledWithMultipleCategoriesSelected!public!test categories! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_renameInClassListWithMethodListOpen!public!test class list! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_renameInHierarchyWithMethodListOpen!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_rowanTestsHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassCommentInClassList!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassCommentInHierarchy!public!test class hierarchy!tests! !
