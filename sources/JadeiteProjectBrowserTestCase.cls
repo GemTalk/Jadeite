@@ -89,6 +89,12 @@ disableTranscriptWrites
 	(transcriptWritesWereEnabled := transcript isTranscriptInstalled)
 		ifTrue: [transcript flipTranscript]	"turn off gemstone transcript writes for performance"!
 
+executeStringInOtherSession: string
+	| executionString |
+	executionString := '(UserGlobals at: #otherSession) '.
+	executionString := executionString , string.
+	session executeString: executionString!
+
 family: family ofNodesIn: presenter
 	| nodeFamily services |
 	nodeFamily := Dictionary new. 
@@ -136,6 +142,16 @@ loadProjectNamed: projectName
 		command: #reloadProjects:andUpdateServices:;
 		commandArgs: (Array with: (Array with: projectService) with: BrowserUpdate current selectedServices).
 	JadePresenter issueCommand: (Array with: browserService) session: session!
+
+loginOtherSession
+	session
+		executeString: 'UserGlobals at: #otherSession put: (GsExternalSession gemNRS: ''' , session gemNRS
+				, ''' stoneNRS: ''' , session stoneName
+				, ''' username: ''SystemUser'' password: ''swordfish'') login'!
+
+logoutOtherSession
+	^session executeString: '
+				(UserGlobals at: #otherSession) logout.'!
 
 modifySampleMethodFoo
 
@@ -546,6 +562,99 @@ test_autoCommit
 	self assert: methodListPresenter autoCommit.
 	self assert: transcript autoCommit.
 !
+
+test_autoCommitButtonFailureResetOnAbort
+	self testsIssue: #issue462
+		withTitle: '(3.0.66) silent commit conflict/failure when auto commit is enabled'.
+	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color default.
+	session executeString: 'UserGlobals at: #autoCommitTest put: (#key -> #value)'.
+	self commitTransaction.
+	self loginOtherSession.
+	
+	[RowanAnsweringService new setAutoCommit: true for: session.
+	self
+		executeStringInOtherSession: 'abort;
+			executeString: ''(UserGlobals at: #autoCommitTest) value: #newValue'';
+			commit'.
+	session executeString: '(UserGlobals at: #autoCommitTest) value: #stillAnotherNewValue'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self
+		saveMethod: 'test1 ^123'
+		in: 'RowanSample1Test'
+		category: 'tests'.
+	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color red.
+	self assert: self projectsPresenter autoCommit equals: #failed.
+	self abortTransaction.
+	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color green]
+			ensure: 
+				[self logoutOtherSession.
+				self abortTransaction.
+				session executeString: 'UserGlobals removeKey: #autoCommitTest'.
+				RowanAnsweringService new setAutoCommit: false for: session.
+				self commitTransaction]!
+
+test_autoCommitClickButtonAfterFailure
+	self testsIssue: #issue462
+		withTitle: '(3.0.66) silent commit conflict/failure when auto commit is enabled'.
+	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color default.
+	session executeString: 'UserGlobals at: #autoCommitTest put: (#key -> #value)'.
+	self commitTransaction.
+	self loginOtherSession.
+	
+	[RowanAnsweringService new setAutoCommit: true for: session.
+	self
+		executeStringInOtherSession: 'abort;
+			executeString: ''(UserGlobals at: #autoCommitTest) value: #newValue'';
+			commit'.
+	session executeString: '(UserGlobals at: #autoCommitTest) value: #stillAnotherNewValue'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self
+		saveMethod: 'test1 ^123'
+		in: 'RowanSample1Test'
+		category: 'tests'.
+	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color red.
+	self assert: self projectsPresenter autoCommit equals: #failed.
+	"flipAutoCommit is sent from the menu or button"
+	self projectsPresenter flipAutoCommit.
+	self deny: self projectsPresenter autoCommit.
+	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color default]
+			ensure: 
+				[self logoutOtherSession.
+				self abortTransaction.
+				session executeString: 'UserGlobals removeKey: #autoCommitTest'.
+				RowanAnsweringService new setAutoCommit: false for: session.
+				self commitTransaction]!
+
+test_autoCommitFailure
+	self testsIssue: #issue462
+		withTitle: '(3.0.66) silent commit conflict/failure when auto commit is enabled'.
+	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color default.
+	session executeString: 'UserGlobals at: #autoCommitTest put: (#key -> #value)'.
+	self commitTransaction.
+	self loginOtherSession.
+	
+	[RowanAnsweringService new setAutoCommit: true for: session.
+	self
+		executeStringInOtherSession: 'abort;
+			executeString: ''(UserGlobals at: #autoCommitTest) value: #newValue'';
+			commit'.
+	session executeString: '(UserGlobals at: #autoCommitTest) value: #stillAnotherNewValue'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self
+		saveMethod: 'test1 ^123'
+		in: 'RowanSample1Test'
+		category: 'tests'.
+	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color red.
+	self assert: self projectsPresenter autoCommit equals: #failed]
+			ensure: 
+				[self logoutOtherSession.
+				self abortTransaction.
+				session executeString: 'UserGlobals removeKey: #autoCommitTest'.
+				RowanAnsweringService new setAutoCommit: false for: session.
+				self commitTransaction]!
 
 test_autoDirtyDisplayMoveMethodsToCategory
 	self testsIssue: #issue16 withTitle: 'Review/revisit semantics of font color/italic/bold etc.'.
@@ -4147,11 +4256,14 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #currentTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #dirtyProjectForChangeBrowser!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #executeStringInOtherSession:!public!support!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #family:ofNodesIn:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue261createTestProject!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue284methodCreation!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #loadProjectNamed:!private!project support! !
+!JadeiteProjectBrowserTestCase categoriesFor: #loginOtherSession!public!support! !
+!JadeiteProjectBrowserTestCase categoriesFor: #logoutOtherSession!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #modifySampleMethodFoo!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #nextTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #openSecondBrowser!private! !
@@ -4187,7 +4299,10 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addSubclass!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_adHocInspectComplexObjectInProjectBrowser!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_adHocInspectComplexObjectInProjectBrowser2!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommit!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommit!public!test auto commit! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitButtonFailureResetOnAbort!public!test auto commit! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitClickButtonAfterFailure!public!test auto commit! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitFailure!public!test auto commit! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_blankCategoryRenameInvalid!public!test categories! !

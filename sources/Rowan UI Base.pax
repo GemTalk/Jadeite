@@ -80,6 +80,7 @@ package methodNames
 	add: #GciSession -> #computeGemHost;
 	add: #GciSession -> #computeStoneHost;
 	add: #GciSession -> #executeString:fromContext:environment:;
+	add: #GciSession -> #gemNRS;
 	add: #GciSession -> #hasServer;
 	add: #GciSession -> #initializeServer;
 	add: #GciSession -> #oopTypeFor:;
@@ -291,6 +292,7 @@ package methodNames
 	add: #Presenter -> #updateReady:;
 	add: #Presenter -> #updateSelectionsFor:;
 	add: #Presenter -> #updateSelectionsForUpdate:;
+	add: #RowanCommandResult -> #autoCommitUpdate:;
 	add: #RowanCommandResult -> #basicPrepareForReplication;
 	add: #RowanCommandResult -> #classCategoryUpdate:;
 	add: #RowanCommandResult -> #classCommentUpdate:;
@@ -803,6 +805,10 @@ executeString: aString fromContext: anObject environment: anInteger
 		].
 !
 
+gemNRS
+
+	^gemNRS!
+
 hasServer
 
 	^server notNil.
@@ -939,6 +945,7 @@ verifyRowanLoaded
 !GciSession categoriesFor: #computeGemHost!public!title bar! !
 !GciSession categoriesFor: #computeStoneHost!public!title bar! !
 !GciSession categoriesFor: #executeString:fromContext:environment:!long running!public! !
+!GciSession categoriesFor: #gemNRS!public!title bar! !
 !GciSession categoriesFor: #hasServer!public! !
 !GciSession categoriesFor: #initializeServer!private! !
 !GciSession categoriesFor: #oopTypeFor:!public! !
@@ -3984,6 +3991,9 @@ updateSelectionsForUpdate: update
 
 !RowanCommandResult methodsFor!
 
+autoCommitUpdate: browser
+	!
+
 basicPrepareForReplication!
 
 classCategoryUpdate: presenter
@@ -4096,6 +4106,7 @@ updateType
 	"old-style command results don't use updateType"
 
 	^nil! !
+!RowanCommandResult categoriesFor: #autoCommitUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanCommandResult categoriesFor: #classCategoryUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #classCommentUpdate:!public!updating! !

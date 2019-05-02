@@ -1468,7 +1468,7 @@ refreshFromServerAfterAbort: browserService
 	browserService
 		ifNil: [self refreshGlobalSelections]
 		ifNotNil: [browserService projectsUpdate: projectListPresenter].
-	self autoCommit: (autoCommit value == #failed ifTrue: [false] ifFalse: [autoCommit value])!
+	self autoCommit: (autoCommit value == #failed ifTrue: [true] ifFalse: [autoCommit value])!
 
 refreshMethodsOn: presenter
 	| classService |
