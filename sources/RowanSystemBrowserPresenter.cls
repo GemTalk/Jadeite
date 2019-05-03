@@ -146,7 +146,7 @@ registerTabPresentersForUpdates
 
 resetClassDefinitionPresenter
 	classDefinitionPresenter view
-		backcolor: Color white;
+		backcolor: JadeTextStyles default colorForNoEdits;
 		isModified: false;
 		yourself!
 
@@ -240,7 +240,7 @@ updateClassInfo
 										, (classDefinition copyFrom: index + 12 to: classDefinition size)]]].
 	classDefinitionPresenter value: classDefinition.
 	classDefinitionPresenter view
-		backcolor: Color white;
+		backcolor: JadeTextStyles default colorForNoEdits;
 		isModified: false;
 		yourself!
 
@@ -277,7 +277,7 @@ updateFromCommand: update
 										, (classDefinition copyFrom: index + 12 to: classDefinition size)]]].
 	classDefinitionPresenter value: classDefinition.
 	classDefinitionPresenter view
-		backcolor: Color white;
+		backcolor: JadeTextStyles default colorForNoEdits;
 		isModified: false;
 		yourself!
 

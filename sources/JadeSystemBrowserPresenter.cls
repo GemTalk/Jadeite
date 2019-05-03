@@ -295,12 +295,12 @@ classDefChanged
 	inUpdate ifTrue: [^self].
 	classDefinitionPresenter value = classDefinition ifTrue: [
 		classDefinitionPresenter view 
-			backcolor: Color white;
+			backcolor:JadeTextStyles default colorForNoEdits;
 			isModified: false;
 			yourself.
 	] ifFalse: [
 		classDefinitionPresenter view 
-			backcolor: (Color red: 255 green: 240 blue: 240);
+			backcolor: JadeTextStyles default colorForUnsavedEdits;
 			isModified: true;
 			yourself.
 	].
@@ -2367,7 +2367,7 @@ updateClassInfo
 	].
 	classDefinitionPresenter value: classDefinition.
 	classDefinitionPresenter view 
-		backcolor: Color white;
+		backcolor: JadeTextStyles default colorForNoEdits;
 		isModified: false;
 		yourself.
 !
