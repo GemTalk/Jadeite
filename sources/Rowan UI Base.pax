@@ -391,6 +391,7 @@ package setPrerequisites: (IdentitySet new
 	add: '..\Core\Object Arts\Dolphin\MVP\Dialogs\Common\Dolphin Common Dialogs';
 	add: '..\Core\Object Arts\Dolphin\MVP\Views\Control Bars\Dolphin Control Bars';
 	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Difference\Dolphin Differences Presenter';
+	add: '..\Core\Object Arts\Dolphin\MVP\Dialogs\Find\Dolphin Find Dialog';
 	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Font\Dolphin Font Presenter';
 	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Key-Value Prompter';
 	add: '..\Core\Object Arts\Dolphin\MVP\Models\List\Dolphin List Models';
@@ -430,6 +431,7 @@ package setPrerequisites: (IdentitySet new
 	add: '..\Core\Contributions\ITC Gorisek\Source Tracking System';
 	add: '..\Core\Contributions\Solutions Software\SSW EditableListView';
 	add: '..\Core\Contributions\Camp Smalltalk\SUnit\SUnit';
+	add: '..\Core\Object Arts\Dolphin\ActiveX\Components\VBScript\VBScript Regular Expressions';
 	add: '..\Core\Object Arts\Dolphin\ActiveX\Shell\Windows Shell';
 	yourself).
 
@@ -1173,6 +1175,8 @@ requiredClasses
 		add: WaitOnGemStoneDialog;
 		addAll: RowanService withAllSubclasses;
 		addAll: RowanCommandResult withAllSubclasses;
+		add: AdvancedFindDialog;
+		add: IRegExp2;
 		yourself!
 
 requiredPackageNames
