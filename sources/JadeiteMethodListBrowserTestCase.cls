@@ -136,16 +136,23 @@ test_compileErrorDisplayGoesAway
 	self assert: (methodListBrowser view viewNamed: 'statusBarField') model value equals: String new!
 
 test_doubleClickActionClassMethod
+	| methodServices methodListPresenter |
 	self testsIssue: #issue403
 		withTitle: 'Double click in method browser change class to show instance methods'.
 	methodListBrowser := JadePresenter browseImplementorsOf: #bar session: session.
-	self assert: self methodListMethodListPresenter list size equals: 1.
-	self assert: self methodListMethodListPresenter selection meta.
-	projectsBrowser := methodListBrowser primaryPresenter methodListPresenter browseClass.
+	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter.
+	methodListPresenter methodListPresenter resetSelection. 
+	methodServices := (Array with: #bar) collect: 
+					[:selector |
+					methodListPresenter methodListPresenter list
+						detect: [:svc | svc selector = selector and: [svc className = 'RowanSample1']]].
+	methodListPresenter methodListPresenter selections: methodServices.
+	self assert: methodListPresenter selection meta.
+	projectsBrowser := methodListPresenter browseClass.
 	
 	[self assert: self classListPresenter selection meta.
 	self assert: self projectsPresenter isClassSideSelected.
-	self assert: self methodListPresenter selection selector equals: #bar]
+	self assert: methodListPresenter selection selector equals: #bar]
 			ensure: [projectsBrowser destroy]!
 
 test_doubleClickActionInstanceMethod

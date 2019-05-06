@@ -92,6 +92,12 @@ runSelected
 		ifTrue: [self runTests: methodListPresenter selections]
 		ifFalse: [self runTests: methodListPresenter selections in: classListPresenter selections first name]!
 
+runTestMethodServices: methodServices className: className
+	| jadeResult |
+	jadeResult := super runTestMethodServices: methodServices className: className.
+	self methodListPresenter view ensureSelectionVisible.
+	^jadeResult!
+
 selectClassNamed: name
 	"for testing at the moment"
 
@@ -151,6 +157,7 @@ testClassesSize
 !JadeiteSUnitPresenter categoriesFor: #refreshFromServerAfterAbort:!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #runAll!public! !
 !JadeiteSUnitPresenter categoriesFor: #runSelected!public! !
+!JadeiteSUnitPresenter categoriesFor: #runTestMethodServices:className:!private! !
 !JadeiteSUnitPresenter categoriesFor: #selectClassNamed:!public!selection! !
 !JadeiteSUnitPresenter categoriesFor: #selectedClass!accessing!public! !
 !JadeiteSUnitPresenter categoriesFor: #selectedFilters!accessing!public! !

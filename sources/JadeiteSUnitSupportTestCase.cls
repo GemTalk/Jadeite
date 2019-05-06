@@ -509,6 +509,22 @@ test_selectInProjectBrowserDoesNotUpdateSunitBrowser
 				collect: [:methodService | methodService selector])
 		equals: sunitDisplaySelectors!
 
+test_selectionRemainsVisible
+	| position methodListPresenter |
+	self testsIssue: #issue467
+		withTitle: '(3.0.68) nice to have selected test remain visible aftr pressing the `run selected` button'.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RwRowanProjectIssuesTest' in: self sunitPresenter classListPresenter.
+	methodListPresenter := self sunitPresenter methodListPresenter.
+	self selectServiceNamed: 'testIssue217' in: methodListPresenter.
+	self assert: self sunitPresenter runSelected isKindOf: JadeTestResult.	"runSelected sends back the result of the last test"
+	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color darkGreen.
+	self assert: self sunitPresenter textResultPresenter value
+		equals: '1 run, 1 passed, 0 failures, 0 errors'.
+	self assert: methodListPresenter selections first selector equals: #testIssue217.
+	position := methodListPresenter view itemRect:  methodListPresenter selectionByIndex first. 
+	self assert: ((0@0 extent: methodListPresenter view rectangle extent) contains: position)!
+
 test_selectMethodFromProjectBrowser
 	self testsIssue: #issue395 withTitle: '(3.0.54) Sunit can display non-test methods'.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
@@ -773,6 +789,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_selectCategoryInProjectBrowserDoesNotUpdateSunitBrowser!public!test updates from other browsers!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_selectClassDoesNotLoseTestResults!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_selectInProjectBrowserDoesNotUpdateSunitBrowser!public!test updates from other browsers!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_selectionRemainsVisible!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_selectMethodFromProjectBrowser!public!test updates from other browsers!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_statusBar!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanPackages!public!tests! !
