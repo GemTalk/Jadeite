@@ -363,7 +363,8 @@ test_addAccessors
 		superclass: 'Object'
 		instVars: #('var1' 'var2' 'var3')
 		package: 'RowanSample1-Core'.
-	self projectsPresenter selectVariableTab.
+	
+	[self projectsPresenter selectVariableTab.
 	self variableListPresenter selections: #('var1' 'var3').
 	self projectsPresenter addVariableAccessors.
 	self selectMethodNamed: #var1.
@@ -379,7 +380,8 @@ test_addAccessors
 				ifNone: []).
 	self assertIsNil: (self methodListPresenter list
 				detect: [:methodService | methodService selector = #var2:]
-				ifNone: [])!
+				ifNone: [])]
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_addAccessorsClassTab
 	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
@@ -389,14 +391,16 @@ test_addAccessorsClassTab
 		superclass: 'Object'
 		instVars: #()
 		package: 'RowanSample1-Core'.
-	self projectsPresenter selectClassTab.
+	
+	[self projectsPresenter selectClassTab.
 	self projectsPresenter selectVariableTab.
 	self variableListPresenter selections: #('format').
 	self projectsPresenter addVariableAccessors.
 	self selectMethodNamed: #format.
 	self assert: self methodListPresenter selections first selector equals: #format.
 	self selectMethodNamed: #format:.
-	self assert: self methodListPresenter selections first selector equals: #format:!
+	self assert: self methodListPresenter selections first selector equals: #format:]
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_addAccessorsHierarchyTab
 	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
@@ -407,7 +411,8 @@ test_addAccessorsHierarchyTab
 		superclass: 'Object'
 		instVars: #('var1' 'var2' 'var3')
 		package: 'RowanSample1-Core'.
-	self projectsPresenter selectVariableTab.
+	
+	[self projectsPresenter selectVariableTab.
 	self variableListPresenter selections: #('var1' 'var3').
 	self projectsPresenter addVariableAccessors.
 	self selectMethodNamed: #var1.
@@ -423,7 +428,8 @@ test_addAccessorsHierarchyTab
 				ifNone: []).
 	self assertIsNil: (self methodListPresenter list
 				detect: [:methodService | methodService selector = #var2:]
-				ifNone: [])!
+				ifNone: [])]
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_addAccessorsHierarchyTabVerifySource
 	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
@@ -434,15 +440,32 @@ test_addAccessorsHierarchyTabVerifySource
 		superclass: 'Object'
 		instVars: #('var1' 'var2' 'var3')
 		package: 'RowanSample1-Core'.
-	self projectsPresenter selectVariableTab.
+	
+	[self projectsPresenter selectVariableTab.
 	self variableListPresenter selections: #('var1').
 	self projectsPresenter addVariableAccessors.
 	self selectMethodNamed: #var1.
 	self assert: self methodSourcePresenter value equals: 'var1
-	^var1'. 
+	^var1'.
 	self selectMethodNamed: #var1:.
 	self assert: self methodSourcePresenter value equals: 'var1: object
-	var1 := object'. !
+	var1 := object']
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
+
+test_addAccessorsVariablesStaySelected
+	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
+	self selectRowanSample1Class.
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #('var1' 'var2' 'var3')
+		package: 'RowanSample1-Core'.
+	
+	[self projectsPresenter selectVariableTab.
+	self variableListPresenter selections: #('var1' 'var3').
+	self projectsPresenter addVariableAccessors.
+	self assert: self variableListPresenter selections equals: #('var1' 'var3')]
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_addAccessorsVerifySource
 	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
@@ -452,15 +475,17 @@ test_addAccessorsVerifySource
 		superclass: 'Object'
 		instVars: #('var1' 'var2' 'var3')
 		package: 'RowanSample1-Core'.
-	self projectsPresenter selectVariableTab.
+	
+	[self projectsPresenter selectVariableTab.
 	self variableListPresenter selections: #('var1').
 	self projectsPresenter addVariableAccessors.
 	self selectMethodNamed: #var1.
 	self assert: self methodSourcePresenter value equals: 'var1
-	^var1'. 
+	^var1'.
 	self selectMethodNamed: #var1:.
 	self assert: self methodSourcePresenter value equals: 'var1: object
-	var1 := object'. !
+	var1 := object']
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_addDuplicatePackage
 	| projectService addPackageResult packageName |
@@ -1519,7 +1544,8 @@ test_confirmOverrideExistingAccessorMethods
 		superclass: 'Object'
 		instVars: #('abc')
 		package: 'RowanSample1-Core'.
-	self
+	
+	[self
 		saveMethod: 'abc  ^123'
 		in: 'TestClass'
 		category: 'accessing'.
@@ -1537,7 +1563,8 @@ test_confirmOverrideExistingAccessorMethods
 	^abc'.
 	self selectMethodNamed: #abc:.
 	self assert: self methodSourcePresenter value equals: 'abc: object
-	abc := object'!
+	abc := object']
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_definedClassMenuItem
 	| classMenuItem menuLabel |
@@ -1600,7 +1627,8 @@ test_dontOverrideExistingAccessorMethods
 		superclass: 'Object'
 		instVars: #('abc')
 		package: 'RowanSample1-Core'.
-	self
+	
+	[self
 		saveMethod: 'abc  ^123'
 		in: 'TestClass'
 		category: 'accessing'.
@@ -1617,7 +1645,8 @@ test_dontOverrideExistingAccessorMethods
 	self selectMethodNamed: #abc.
 	self assert: self methodSourcePresenter value equals: 'abc  ^123'.
 	self selectMethodNamed: #abc:.
-	self assert: self methodSourcePresenter value equals: 'abc: foo ^123'!
+	self assert: self methodSourcePresenter value equals: 'abc: foo ^123']
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_dontUpdateWithDifferentMeta
 	"don't update method or categories if the meta of the new
@@ -4456,6 +4485,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsClassTab!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsHierarchyTab!public!test class hierarchy!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsHierarchyTabVerifySource!public!test class hierarchy!test variable tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsVariablesStaySelected!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsVerifySource!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addDuplicatePackage!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addInstVarVariablesStaySorted!public!test variable tab! !

@@ -47,8 +47,9 @@ addSystemBrowser
 	^self topShell addSystemBrowser!
 
 addVariableAccessors
-	self confirmOverwriteAccessor ifFalse:[^self]. 
-	self methodFilterListPresenter selections do: 
+	| cachedSelections |
+	self confirmOverwriteAccessor ifFalse: [^self].
+	(cachedSelections := self methodFilterListPresenter selections) do: 
 			[:variable |
 			| sourceStream classService |
 			classService := self selectedClass.
@@ -61,7 +62,8 @@ addVariableAccessors
 			classService
 				saveMethod: sourceStream contents
 				category: 'accessing'
-				session: self gciSession]!
+				session: self gciSession].
+	self methodFilterListPresenter selections: cachedSelections!
 
 allClasses
 	| browserService |
