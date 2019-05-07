@@ -355,6 +355,113 @@ test_acceptDefinedMethodInExtensionClass
 	self assert: self classListPresenter selection name equals: 'RowanSample1'.
 	self assert: self packageListPresenter selection name equals: 'RowanSample1-Extensions'!
 
+test_addAccessors
+	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
+	self selectRowanSample1Class.
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #('var1' 'var2' 'var3')
+		package: 'RowanSample1-Core'.
+	self projectsPresenter selectVariableTab.
+	self variableListPresenter selections: #('var1' 'var3').
+	self projectsPresenter addVariableAccessors.
+	self selectMethodNamed: #var1.
+	self assert: self methodListPresenter selections first selector equals: #var1.
+	self selectMethodNamed: #var1:.
+	self assert: self methodListPresenter selections first selector equals: #var1:.
+	self selectMethodNamed: #var3.
+	self assert: self methodListPresenter selections first selector equals: #var3.
+	self selectMethodNamed: #var3:.
+	self assert: self methodListPresenter selections first selector equals: #var3:.
+	self
+		assertIsNil: (self methodListPresenter list detect: [:methodService | methodService selector = #var2]
+				ifNone: []).
+	self assertIsNil: (self methodListPresenter list
+				detect: [:methodService | methodService selector = #var2:]
+				ifNone: [])!
+
+test_addAccessorsClassTab
+	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
+	self selectRowanSample1Class.
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #()
+		package: 'RowanSample1-Core'.
+	self projectsPresenter selectClassTab.
+	self projectsPresenter selectVariableTab.
+	self variableListPresenter selections: #('format').
+	self projectsPresenter addVariableAccessors.
+	self selectMethodNamed: #format.
+	self assert: self methodListPresenter selections first selector equals: #format.
+	self selectMethodNamed: #format:.
+	self assert: self methodListPresenter selections first selector equals: #format:!
+
+test_addAccessorsHierarchyTab
+	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
+	self selectRowanSample1Class.
+	self selectHierarchyTab.
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #('var1' 'var2' 'var3')
+		package: 'RowanSample1-Core'.
+	self projectsPresenter selectVariableTab.
+	self variableListPresenter selections: #('var1' 'var3').
+	self projectsPresenter addVariableAccessors.
+	self selectMethodNamed: #var1.
+	self assert: self methodListPresenter selections first selector equals: #var1.
+	self selectMethodNamed: #var1:.
+	self assert: self methodListPresenter selections first selector equals: #var1:.
+	self selectMethodNamed: #var3.
+	self assert: self methodListPresenter selections first selector equals: #var3.
+	self selectMethodNamed: #var3:.
+	self assert: self methodListPresenter selections first selector equals: #var3:.
+	self
+		assertIsNil: (self methodListPresenter list detect: [:methodService | methodService selector = #var2]
+				ifNone: []).
+	self assertIsNil: (self methodListPresenter list
+				detect: [:methodService | methodService selector = #var2:]
+				ifNone: [])!
+
+test_addAccessorsHierarchyTabVerifySource
+	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
+	self selectRowanSample1Class.
+	self selectHierarchyTab.
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #('var1' 'var2' 'var3')
+		package: 'RowanSample1-Core'.
+	self projectsPresenter selectVariableTab.
+	self variableListPresenter selections: #('var1').
+	self projectsPresenter addVariableAccessors.
+	self selectMethodNamed: #var1.
+	self assert: self methodSourcePresenter value equals: 'var1
+	^var1'. 
+	self selectMethodNamed: #var1:.
+	self assert: self methodSourcePresenter value equals: 'var1: object
+	var1 := object'. !
+
+test_addAccessorsVerifySource
+	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
+	self selectRowanSample1Class.
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #('var1' 'var2' 'var3')
+		package: 'RowanSample1-Core'.
+	self projectsPresenter selectVariableTab.
+	self variableListPresenter selections: #('var1').
+	self projectsPresenter addVariableAccessors.
+	self selectMethodNamed: #var1.
+	self assert: self methodSourcePresenter value equals: 'var1
+	^var1'. 
+	self selectMethodNamed: #var1:.
+	self assert: self methodSourcePresenter value equals: 'var1: object
+	var1 := object'. !
+
 test_addDuplicatePackage
 	| projectService addPackageResult packageName |
 	self testsIssue: #issue266
@@ -4290,6 +4397,11 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abortOnVariablesTab!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abstractTestsShown!public!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_acceptDefinedMethodInExtensionClass!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessors!public!test variable tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsClassTab!public!test variable tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsHierarchyTab!public!test class hierarchy!test variable tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsHierarchyTabVerifySource!public!test class hierarchy!test variable tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsVerifySource!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addDuplicatePackage!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addInstVarVariablesStaySorted!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addInstVarWithVariablesTabOpen!public!test variable tab! !

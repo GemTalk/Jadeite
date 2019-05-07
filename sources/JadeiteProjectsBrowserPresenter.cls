@@ -46,6 +46,22 @@ addSubclass
 addSystemBrowser
 	^self topShell addSystemBrowser!
 
+addVariableAccessors
+	self methodFilterListPresenter selections do: 
+			[:variable |
+			| sourceStream classService |
+			classService := self selectedClass.
+			sourceStream := self getterMethodSourceFor: variable.
+			classService
+				saveMethod: sourceStream contents
+				category: 'accessing'
+				session: self gciSession.
+			sourceStream := self setterMethodSourceFor: variable.
+			classService
+				saveMethod: sourceStream contents
+				category: 'accessing'
+				session: self gciSession]!
+
 allClasses
 	| browserService |
 	browserService := RowanBrowserService new.
@@ -760,6 +776,17 @@ flipAutoCommit
 gciSession: aGciSession
 	super gciSession: aGciSession.
 	autoCommit := ValueHolder with: self remoteAutoCommit.!
+
+getterMethodSourceFor: variable
+	| sourceStream |
+	sourceStream := WriteStream on: String new.
+	sourceStream
+		nextPutAll: variable;
+		cr;
+		tab;
+		nextPut: $^;
+		nextPutAll: variable.
+	^sourceStream!
 
 getViews
 	classHierarchyTabs := self view viewNamed: 'classHierarchyTabs'.
@@ -1738,6 +1765,16 @@ setMethodFilterFor: presenter
 		ifFalse: [filters := variableListPresenter selections].
 	presenter model do: [:service | service filters: filters]!
 
+setterMethodSourceFor: variable
+	| sourceStream |
+	sourceStream := WriteStream on: String new.
+	sourceStream
+		nextPutAll: variable , ': object';
+		cr;
+		tab;
+		nextPutAll: variable , ' := object'.
+	^sourceStream!
+
 setTestClass: service
 	sunitPresenter testClassService: (service isTestCase ifTrue: [service] ifFalse: [nil])!
 
@@ -2098,6 +2135,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #addPackageDictionaryInfoTo:!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addSubclass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addSystemBrowser!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #addVariableAccessors!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #allClasses!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #autoCommit!accessing!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #autoCommit:!initialize/release!public! !
@@ -2165,6 +2203,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #findMethod:!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #flipAutoCommit!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gciSession:!accessing!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #getterMethodSourceFor:!menu handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #getViews!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gitCommit!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoClass!menu handlers!public! !
@@ -2270,6 +2309,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #setDefaultProjectTablLabel!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setDefaultProjectTablLabel:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setMethodFilterFor:!event handlers support!private!services!updating! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #setterMethodSourceFor:!menu handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setTestClass:!event handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #showSUnitBrowserOnClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #showSuperClassComparison!private!text tabs! !
