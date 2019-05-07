@@ -47,6 +47,7 @@ addSystemBrowser
 	^self topShell addSystemBrowser!
 
 addVariableAccessors
+	self confirmOverwriteAccessor ifFalse:[^self]. 
 	self methodFilterListPresenter selections do: 
 			[:variable |
 			| sourceStream classService |
@@ -316,6 +317,22 @@ confirmCategoryRemoval: selections
 		nextPutAll: methodListPresenter list size printString;
 		nextPutAll: ' methods?'.
 	^(MessageBox confirm: ws contents) == true!
+
+confirmOverwriteAccessor
+	| existing selectors |
+	existing := OrderedCollection new.
+	selectors := self selectedClass methods collect: [:methodService | methodService selector].
+	self methodFilterListPresenter selections do: 
+			[:variable |
+			| setter |
+			(selectors includes: variable asSymbol) ifTrue: [existing add: variable].
+			setter := (variable , ':') asSymbol.
+			(selectors includes: setter) ifTrue: [existing add: setter]].
+	existing isEmpty
+		ifFalse: 
+			[^MessageBox
+				confirm: 'These methods will be overridden - ' , existing asArray printString , ' Continue?'].
+	^true!
 
 copyProjectInfo
 	projectInfoTab selection last ifNil:[^self]. 
@@ -2165,6 +2182,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #clearFilterLists!event handlers support!private!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #comparisonTab!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #confirmCategoryRemoval:!menu handlers support!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #confirmOverwriteAccessor!menu handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #copyProjectInfo!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!public! !

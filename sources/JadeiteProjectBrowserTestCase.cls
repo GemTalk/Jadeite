@@ -1511,6 +1511,34 @@ test_closeConsoleValidSession
 							tearDown;
 							setUp]]!
 
+test_confirmOverrideExistingAccessorMethods
+	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
+	self selectRowanSample1Class.
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #('abc')
+		package: 'RowanSample1-Core'.
+	self
+		saveMethod: 'abc  ^123'
+		in: 'TestClass'
+		category: 'accessing'.
+	self
+		saveMethod: 'abc: foo ^123'
+		in: 'TestClass'
+		category: 'accessing'.
+	self projectsPresenter selectVariableTab.
+	self variableListPresenter selections: #('abc').
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #yes.	"proceed with accessor creation"
+	[self projectsPresenter addVariableAccessors] ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self selectMethodNamed: #abc.
+	self assert: self methodSourcePresenter value equals: 'abc
+	^abc'.
+	self selectMethodNamed: #abc:.
+	self assert: self methodSourcePresenter value equals: 'abc: object
+	abc := object'!
+
 test_definedClassMenuItem
 	| classMenuItem menuLabel |
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
@@ -1563,6 +1591,33 @@ test_dontChangeTabOnMethodSave
 	self nextTabView.	"go to tab 2"
 	self assert: self currentTabView sameAs: secondTab.
 	self assert: self methodSourcePresenter value equals: source!
+
+test_dontOverrideExistingAccessorMethods
+	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
+	self selectRowanSample1Class.
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #('abc')
+		package: 'RowanSample1-Core'.
+	self
+		saveMethod: 'abc  ^123'
+		in: 'TestClass'
+		category: 'accessing'.
+	self
+		saveMethod: 'abc: foo ^123'
+		in: 'TestClass'
+		category: 'accessing'.
+	self projectsPresenter selectVariableTab.
+	self variableListPresenter selections: #('abc').
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.	"do not create accessors"
+	[self projectsPresenter addVariableAccessors] ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self variableListPresenter selections: #().
+	self selectMethodNamed: #abc.
+	self assert: self methodSourcePresenter value equals: 'abc  ^123'.
+	self selectMethodNamed: #abc:.
+	self assert: self methodSourcePresenter value equals: 'abc: foo ^123'!
 
 test_dontUpdateWithDifferentMeta
 	"don't update method or categories if the meta of the new
@@ -4442,9 +4497,11 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleInvalidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleValidSession!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_confirmOverrideExistingAccessorMethods!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontChangeTabOnMethodSave!public!test two browsers! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dontOverrideExistingAccessorMethods!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontUpdateWithDifferentMeta!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dragClassDoesNotWalkback!public!test drag drop! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dragClassInHierarchyDoesNotWalkback!public!test class hierarchy!test drag drop! !
