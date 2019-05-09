@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanClassService
-	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand'
+	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand isInSymbolList'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -126,11 +126,14 @@ displayString
 	| displayString |
 	displayString := self name.
 	versions ~= 1
-		ifTrue: [displayString := displayString , ' (' , version printString , '/' , versions printString , ')'].
+		ifTrue: 
+			[displayString := displayString , ' (' , version printString , '/' , versions printString , ')'].
+	isInSymbolList == false ifTrue: [displayString := displayString , ' {' , oop printString , '}'].
 	^displayString!
 
 displayStringFor: displayThing
 	self shouldColorAsExtension ifTrue: [displayThing forecolor: Color darkMagenta].
+	isInSymbolList ifFalse: [displayThing forecolor: Color darkRed].
 	^self displayString!
 
 excludedInstVars
