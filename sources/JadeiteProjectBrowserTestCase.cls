@@ -2573,6 +2573,24 @@ test_hierarchySendersFromMethodList
 				[methodListBrowser destroy.
 				hierarchyMethodListBrowser destroy]!
 
+test_hierarchyWithNonResolvableClass
+	| unresolvableClassService |
+	self testsIssue: #issue442
+		withTitle: '(3.0.62) odd (but legal) class hierarchy causes trouble for Project Browser'.
+	session executeString: 'RowanClassServiceTest new createHierarchyWithNonResolvableClass'.
+	
+	[self projectsPresenter refreshFromServer.
+	self selectServiceNamed: 'Issue470' in: self projectListPresenter.
+	self selectServiceNamed: 'Issue470-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'Issue470Class3' in: self classListPresenter.
+	self selectHierarchyTab.
+	self assert: self projectsPresenter selectedClass name equals: 'Issue470Class3'.
+	unresolvableClassService := self projectsPresenter classHierarchyPresenter model asArray at: 3.
+	self assert: unresolvableClassService name equals: 'Issue470Class2'.
+	self assert: ('Issue470Class2 {*}' match: unresolvableClassService displayString).
+	self deny: unresolvableClassService isInSymbolList]
+			ensure: [self projectsPresenter basicUnloadProjects: #('Issue470')]!
+
 test_implementorsSendersCaption
 	self testsIssue: #issue209 withTitle: 'MethodListBrowser needs the token in the title bar'.
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
@@ -4576,6 +4594,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySelectTwoBrowsers!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySenders!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySendersFromMethodList!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyWithNonResolvableClass!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_issue261!public!test menus!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_literalReferences!public!tests! !

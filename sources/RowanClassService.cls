@@ -223,6 +223,9 @@ isExtension
 
 	^isExtension!
 
+isInSymbolList
+	^isInSymbolList!
+
 isNewClass
 	^isNewClass!
 
@@ -457,6 +460,7 @@ visibleTests
 !RowanClassService categoriesFor: #isClassService!public!testing! !
 !RowanClassService categoriesFor: #isDefined!public!testing! !
 !RowanClassService categoriesFor: #isExtension!public!testing! !
+!RowanClassService categoriesFor: #isInSymbolList!accessing!private! !
 !RowanClassService categoriesFor: #isNewClass!accessing!private! !
 !RowanClassService categoriesFor: #isNewClass:!accessing!private! !
 !RowanClassService categoriesFor: #isTestCase!public!testing! !
