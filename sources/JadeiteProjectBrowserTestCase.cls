@@ -4372,6 +4372,37 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 				[TestMessageBox disableJadeiteTestMessageBox.
 				self projectsPresenter basicRemoveMethods]!
 
+test_updateHierarchyAfterClassRecompile
+	| selection |
+	self selectRowanSample1Test.
+	self selectHierarchyTab.
+	self
+		saveClass: 'RowanSample1Test'
+		superclass: 'TestCase'
+		instVars: #('ab')
+		package: 'RowanSample1-Tests'.
+	
+	[selection := self classHierarchyPresenter selection.
+	self assert: selection name equals: 'RowanSample1Test'.
+	self assert: selection version equals: 2.
+	self assert: selection versions equals: 2.
+	self classHierarchyPresenter selection displayString equals: 'RowanSample1Test (2/2)'.
+	self assert: self projectsPresenter classDefinitionPresenter value
+		equals: 'TestCase rwSubclass: ''RowanSample1Test''
+	instVarNames: #(''ab'')
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''RowanSample1-Tests''
+	options: #()']
+			ensure: 
+				["restore the class"
+				self
+					saveClass: 'RowanSample1Test'
+					superclass: 'TestCase'
+					instVars: #()
+					package: 'RowanSample1-Tests']!
+
 test_variablesTab
 	"at least do something with the variables tab"
 
@@ -4685,6 +4716,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindow!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindowStayOnMethod!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_updateHierarchyAfterClassRecompile!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_variablesTab!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_variablesUpdatedOnClassSaveInClassList!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_variablesUpdatedOnClassSaveInHierarchy!public!test class list! !

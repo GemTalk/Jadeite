@@ -387,6 +387,7 @@ updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
 	hierarchy should not"
 
 	| classNode superclassService selectedPackageNames |
+	classHierarchyPresenter view invalidate.
 	classNode := classHierarchyPresenter model getNodeFor: self ifAbsent: [isNewClass ifFalse: [^self]].
 	superclassService := classHierarchyPresenter model asBag
 				detect: [:classService | classService name = superclassName]
@@ -425,6 +426,14 @@ updateVariables: presenter
 
 variables
 	^variables!
+
+version
+	"Private - for testing"
+	^version!
+
+versions
+	"Private - for testing"
+	^versions!
 
 visibleTests
 	^visibleTests ifNil: [Array new]! !
@@ -499,6 +508,8 @@ visibleTests
 !RowanClassService categoriesFor: #updateListIn:from:!private!updating! !
 !RowanClassService categoriesFor: #updateVariables:!private!updating! !
 !RowanClassService categoriesFor: #variables!accessing!private! !
+!RowanClassService categoriesFor: #version!displaying!private! !
+!RowanClassService categoriesFor: #versions!displaying!private! !
 !RowanClassService categoriesFor: #visibleTests!accessing!private! !
 
 !RowanClassService class methodsFor!
