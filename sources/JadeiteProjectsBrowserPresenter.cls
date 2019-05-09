@@ -71,7 +71,7 @@ allClasses
 	browserService
 		command: #allClasses.
 	self issueCommand: (Array with: browserService).
-	^browserService allClasses!
+	^browserService allClasses ifNil:[Array new]!
 
 autoCommit
 	"Private - for testing"
