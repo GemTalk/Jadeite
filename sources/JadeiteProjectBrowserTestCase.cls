@@ -59,6 +59,14 @@ assertLinearAncestry: family in: presenter
 			self assert: (presenter model childrenOf: parentNode) size equals: 1. 
 			self assert: (presenter model childrenOf: parentNode) first equals: childNode]!
 
+cleanupExistingWindows
+	JadeWorkspace allInstances do: [:ws | self cleanupTextPaneForClose: ws].	"otherwise the test will hang"
+	JadeiteTranscript allInstances do: [:text | self cleanupTextPaneForClose: text].
+	JadeiteProjectsBrowserPresenter allInstances do: 
+			[:presenter |
+			presenter methodSourcePresenter view isModified: false.
+			presenter classDefinitionPresenter view isModified: false]!
+
 cleanupTextPaneForClose: ws
 	^ws codePane documentPresenter view isModified
 		ifTrue: 
@@ -236,39 +244,11 @@ saveMethodWithUniqueString
 saveTestClass
 	self saveTestClassWithInstVars: Array new package: 'Rowan-Services-Tests'!
 
-saveTestClassWithInstVars: instVars package: aString
-	self
-		saveClass: 'TestClass'
-		withInstVars: instVars
-		package: aString!
-
-selectClassInHierarchyNamed: className
-	self selectTreeServicesNamed: (Array with: className) in: self classHierarchyPresenter!
-
 selectClassListTab
 	self projectsPresenter selectClassListTab.!
 
-selectHierarchyTab
-	self selectHierarchyTabIn: self projectsPresenter!
-
-selectHierarchyTabIn: presenter
-	presenter classHierarchyTabs
-		lastCard;
-		onTabChanged!
-
 selectSUnitTab
 	self projectsPresenter sunitPresenter ensureVisible!
-
-selectTreeServicesNamed: anArray in: presenter
-	presenter resetSelection.
-	anArray do: 
-			[:name |
-			| service |
-			service := presenter model asBag detect: [:svc | svc name = name]
-						ifNone: [self error: 'Tree element ' , name , ' not found'].
-			presenter selections: (presenter selections asOrderedCollection
-						add: service;
-						yourself)]!
 
 selectVariableListEntryForcingEvent: variable
 	| event index |
@@ -1436,9 +1416,10 @@ test_classVersionIncrementedInHierarchy
 test_closeConsoleInvalidSession
 	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector |
 	"poison session and exit Jadeite. Make sure all Jadeite windows close"
+
+	"otherwise the test will hang"
 	self testsIssue: #issue267 withTitle: 'logout closes project browsers but not method list browsers'.
-	JadeWorkspace allInstances do: [:ws | self cleanupTextPaneForClose: ws].	"otherwise the test will hang"
-	JadeiteTranscript allInstances do: [:text | self cleanupTextPaneForClose: text].
+	self cleanupExistingWindows.
 	self selectRowanSample1Class.
 	self selectMethodNamed: #foo.
 	methodListBrowser := self projectsPresenter browseImplementors.
@@ -1488,8 +1469,7 @@ test_closeConsoleValidSession
 	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector |
 	"poison session and exit Jadeite. Make sure all Jadeite windows close"
 	self testsIssue: #issue267 withTitle: 'logout closes project browsers but not method list browsers'.
-	JadeWorkspace allInstances do: [:ws | self cleanupTextPaneForClose: ws].	"otherwise the test will hang"
-	JadeiteTranscript allInstances do: [:text | self cleanupTextPaneForClose: text].
+	self cleanupExistingWindows.
 	self selectRowanSample1Class.
 	self selectMethodNamed: #foo.
 	methodListBrowser := self projectsPresenter browseImplementors.
@@ -1535,6 +1515,45 @@ test_closeConsoleValidSession
 						resource current
 							tearDown;
 							setUp]]!
+
+test_compileClass
+	self testsIssue: #issue390 withTitle: 'Rename instance variable with accessor method is... wonky'.
+	self selectRowanSample1Class.
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #('abc')
+		package: 'RowanSample1-Core'.
+	[self assert: self projectsPresenter selectedClass name = 'TestClass']
+		ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
+
+test_compileClassCompilerError
+	"class definition string has a compile error. 
+	Should get handled by the project browser"
+
+	self testsIssue: #issue390 withTitle: 'Rename instance variable with accessor method is... wonky'.
+	self selectRowanSample1Class.
+	self projectsPresenter classDefinitionPresenter
+		value: 'Object rwSubclass: ''TestClass''
+	instVarNames: # abc )
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''RowanSample1-Core''
+	options: #()'.
+	self projectsPresenter editSaveClass.
+	
+	[self assert: self projectsPresenter classDefinitionPresenter value
+		equals: 'Object rwSubclass: ''TestClass''
+	instVarNames:  invalid pound sign # abc )
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''RowanSample1-Core''
+	options: #()']
+			ensure: 
+				[self projectsPresenter classDefinitionPresenter view isModified: false.
+				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_confirmOverrideExistingAccessorMethods
 	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
@@ -1874,68 +1893,6 @@ test_dropNonSelectedMethod
 	newMethodService := self methodListPresenter selections first.
 	self assert: newMethodService selector equals: #foo.
 	self deny: newMethodService meta!
-
-test_duplicateInstVars
-	self testsIssue: #issue228
-		withTitle: 'lose selected class in project browser when new version created'.
-	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
-	self selectServicesNamed: #('RowanSample1-Tests') in: self packageListPresenter.
-	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
-	self selectClassTab.
-	self selectServiceNamed: 'TestClass' in: self classListPresenter.
-	self
-		saveClass: 'SubClass'
-		superclass: 'TestClass'
-		instVars: #('aa')
-		package: 'RowanSample1-Tests'.
-	self selectServiceNamed: 'SubClass' in: self classListPresenter.
-	self
-		saveClass: 'TestClass'
-		withInstVars: #('aa')
-		package: 'RowanSample1-Tests'.
-	self assert: ('ERROR: *' match: self projectsPresenter topShell statusBarText).
-	self projectsPresenter classDefinitionPresenter view isModified: false.!
-
-test_duplicateInstVarsHierarchy
-	self testsIssue: #issue228
-		withTitle: 'lose selected class in project browser when new version created'.
-	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
-	self selectServicesNamed: #('RowanSample1-Tests') in: self packageListPresenter.
-	self selectHierarchyTab.
-	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
-	self selectClassInHierarchyNamed: 'TestClass'.
-	self
-		saveClass: 'SubClass'
-		superclass: 'TestClass'
-		instVars: #('aa')
-		package: 'RowanSample1-Tests'.
-	self
-		saveClass: 'TestClass'
-		withInstVars: #('aa')
-		package: 'RowanSample1-Tests'.
-	[self assert: ('ERROR: *' match: self projectsPresenter topShell statusBarText)]
-		ensure: [self projectsPresenter classDefinitionPresenter view isModified: false]!
-
-test_duplicateInstVarsInHierarchy
-	self testsIssue: #issue228
-		withTitle: 'lose selected class in project browser when new version created'.
-	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
-	self selectServicesNamed: #('RowanSample1-Tests') in: self packageListPresenter.
-	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
-	self selectHierarchyTab. 
-	self selectServiceNamed: 'TestClass' in: self classListPresenter.
-	self
-		saveClass: 'SubClass'
-		superclass: 'TestClass'
-		instVars: #('aa')
-		package: 'RowanSample1-Tests'.
-	self selectServiceNamed: 'SubClass' in: self classListPresenter.
-	self
-		saveClass: 'TestClass'
-		withInstVars: #('aa')
-		package: 'RowanSample1-Tests'.
-	self assert: ('ERROR: *' match: self projectsPresenter topShell statusBarText).
-	self projectsPresenter classDefinitionPresenter view isModified: false. !
 
 test_exitJadeiteInvalidSession
 	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector log |
@@ -3071,7 +3028,7 @@ test_refreshAfterAbortMethodListLeaveCommitted
 	
 	[list := methodListBrowser primaryPresenter methodListPresenter methodListPresenter list.
 	beforeSize := list size.
-	self assert: beforeSize > 1.
+	self assert: beforeSize = 1.
 	self
 		assertIsNil: (list detect: [:methodService | methodService className = 'RowanService'] ifNone: [])]
 			ensure: [methodListBrowser destroy].
@@ -4492,11 +4449,12 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodHoo!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #assertAncestry:in:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #assertLinearAncestry:in:!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #cleanupTextPaneForClose:!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #cleanupExistingWindows!public!support! !
+!JadeiteProjectBrowserTestCase categoriesFor: #cleanupTextPaneForClose:!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #currentTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #dirtyProjectForChangeBrowser!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #executeStringInOtherSession:!public!support!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #executeStringInOtherSession:!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #family:ofNodesIn:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue261createTestProject!issue test support!private! !
@@ -4517,13 +4475,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUnimplementedSelector!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUniqueString!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveTestClass!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #saveTestClassWithInstVars:package:!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #selectClassInHierarchyNamed:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectClassListTab!private!selection! !
-!JadeiteProjectBrowserTestCase categoriesFor: #selectHierarchyTab!private!selection! !
-!JadeiteProjectBrowserTestCase categoriesFor: #selectHierarchyTabIn:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectSUnitTab!private!selection! !
-!JadeiteProjectBrowserTestCase categoriesFor: #selectTreeServicesNamed:in:!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectVariableListEntryForcingEvent:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteProjectBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
@@ -4576,6 +4529,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleInvalidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleValidSession!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_compileClass!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_compileClassCompilerError!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_confirmOverrideExistingAccessorMethods!public!test variable tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab! !
@@ -4590,9 +4545,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassHierarchy!public!test class hierarchy!test drag drop! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassList!public!test class list!test drag drop! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dropNonSelectedMethod!public!test class list!test drag drop! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVars!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsHierarchy!public!test class hierarchy! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_duplicateInstVarsInHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_exitJadeiteInvalidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_exitJadeiteValidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_expansion!public!test class hierarchy! !

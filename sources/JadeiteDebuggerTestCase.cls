@@ -295,6 +295,45 @@ test_browseClassVariablePane
 	self assert: projectsBrowser currentCard classListPresenter selection name equals: 'RowanClassService'	"receiver is Array class"]
 			ensure: [projectsBrowser destroy]!
 
+test_compileClassRecompileMethodsCompileError
+	self testsIssue: #issue390 withTitle: 'Rename instance variable with accessor method is... wonky'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self selectRowanSample1Class.
+	self projectsPresenter classDefinitionPresenter
+		value: 'Object rwSubclass: ''TestClass''
+	instVarNames: #( abc )
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''RowanSample1-Core''
+	options: #()'.
+	self projectsPresenter editSaveClass.
+	self
+		saveMethod: 'abc ^abc'
+		in: 'TestClass'
+		category: 'accessing'.
+	"recompile class without needed inst var. Expect debugger."
+	self debuggerDo: 
+			[process := 
+					[self projectsPresenter classDefinitionPresenter
+						value: 'Object rwSubclass: ''TestClass''
+	instVarNames: #( )
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''RowanSample1-Core''
+	options: #()'.
+					self projectsPresenter editSaveClass]
+							forkAt: Processor activePriority + 1].
+	self getDebugger.
+	debugger variableListPresenter list first value
+		equals: 'a CompileError occurred (error 1001), compilation errors -- parameter 1 is error descriptor'.
+	[] ensure: 
+			[self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
+			self projectsPresenter classDefinitionPresenter view isModified: false.
+			projectsBrowser destroy]!
+
 test_debuggerModifiedSourcePaneChangeFrame
 	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
 	TestMessageBox enableJadeiteTestMessageBox.
@@ -322,6 +361,98 @@ test_debuggerModifiedSourcePaneStayOnFrame
 	[self selectFrameAt: 2] forkAt: Processor activePriority + 1.	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
 	self assert: debugger frameListPresenter selectionByIndex equals: 4. "did not change frames"]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
+test_duplicateInstVars
+	self testsIssue: #issue228
+		withTitle: 'lose selected class in project browser when new version created'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
+	self selectServicesNamed: #('RowanSample1-Tests') in: self packageListPresenter.
+	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
+	self selectClassTab.
+	self selectServiceNamed: 'TestClass' in: self classListPresenter.
+	self
+		saveClass: 'SubClass'
+		superclass: 'TestClass'
+		instVars: #('aa')
+		package: 'RowanSample1-Tests'.
+	self selectServiceNamed: 'SubClass' in: self classListPresenter.
+	self debuggerDo: 
+			[process := 
+					[self
+						saveClass: 'TestClass'
+						withInstVars: #('aa')
+						package: 'RowanSample1-Tests']
+							forkAt: Processor activePriority + 1].
+	self getDebugger.
+	self assert: debugger variableListPresenter list first key value equals: #receiver.
+	self assert: debugger variableListPresenter list first className equals: 'ImproperOperation']
+			ensure: 
+				[self projectsPresenter classDefinitionPresenter view isModified: false.
+				projectsBrowser destroy]!
+
+test_duplicateInstVarsHierarchy
+	self testsIssue: #issue228
+		withTitle: 'lose selected class in project browser when new version created'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
+	self selectServicesNamed: #('RowanSample1-Tests') in: self packageListPresenter.
+	self selectHierarchyTab.
+	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
+	self selectClassInHierarchyNamed: 'TestClass'.
+	self
+		saveClass: 'SubClass'
+		superclass: 'TestClass'
+		instVars: #('aa')
+		package: 'RowanSample1-Tests'.
+	self debuggerDo: 
+			[process := 
+					[self
+						saveClass: 'TestClass'
+						withInstVars: #('aa')
+						package: 'RowanSample1-Tests']
+							forkAt: Processor activePriority + 1].
+	self getDebugger.
+	self assert: debugger variableListPresenter list first key value equals: #receiver.
+	self assert: debugger variableListPresenter list first className equals: 'ImproperOperation']
+			ensure: 
+				[self projectsPresenter classDefinitionPresenter view isModified: false.
+				projectsBrowser destroy]!
+
+test_duplicateInstVarsInHierarchy
+	self testsIssue: #issue228
+		withTitle: 'lose selected class in project browser when new version created'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
+	self selectServicesNamed: #('RowanSample1-Tests') in: self packageListPresenter.
+	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
+	self selectHierarchyTab.
+	self selectServiceNamed: 'TestClass' in: self classListPresenter.
+	self
+		saveClass: 'SubClass'
+		superclass: 'TestClass'
+		instVars: #('aa')
+		package: 'RowanSample1-Tests'.
+	self selectServiceNamed: 'SubClass' in: self classListPresenter.
+	self debuggerDo: 
+			[process := 
+					[self
+						saveClass: 'TestClass'
+						withInstVars: #('aa')
+						package: 'RowanSample1-Tests']
+							forkAt: Processor activePriority + 1].
+	self getDebugger.
+	self assert: debugger variableListPresenter list first key value equals: #receiver.
+	self assert: debugger variableListPresenter list first className equals: 'ImproperOperation']
+			ensure: 
+				[self projectsPresenter classDefinitionPresenter view isModified: false.
+				projectsBrowser destroy]!
 
 test_frameDoubleClick
 	| projectPresenter |
@@ -1015,8 +1146,12 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_badCompileInDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_compileClassRecompileMethodsCompileError!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneChangeFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneStayOnFrame!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_duplicateInstVars!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_duplicateInstVarsHierarchy!public!test class hierarchy! !
+!JadeiteDebuggerTestCase categoriesFor: #test_duplicateInstVarsInHierarchy!public!test class hierarchy! !
 !JadeiteDebuggerTestCase categoriesFor: #test_frameDoubleClick!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_frameDoubleClickNoActionInBlockContext!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_implementersFromDebugger!public!tests! !

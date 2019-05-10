@@ -599,6 +599,13 @@ editReplace
 	View focus == methodSourcePresenter view ifTrue: [View focus findReplace]!
 
 editSaveClass
+	"a two stage class compilation is used. First stage compiles
+	the class and stores an anonymous method to be used in 
+	stage  two. If a compile error occurs, it is handled nicely. 
+	If a compile error happens during the method recompilation
+	a debugger is raised as not much information is available 
+	without a stack."
+
 	| packageService |
 	packageService := packageListPresenter selection.
 	packageService
@@ -611,6 +618,10 @@ editSaveClass
 				ifTrue: [self handleClassCompileError: ex]
 				ifFalse: [self statusBarText: 'ERROR: ' , ex messageText].
 			^self].
+	packageService
+		command: #recompileMethodsAfterClassCompilation;
+		commandArgs: #().
+	self issueCommand: (Array with: packageService).
 	classDefinitionPresenter view
 		isModified: false;
 		backcolor: JadeTextStyles default colorForNoEdits.

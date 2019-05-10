@@ -202,19 +202,6 @@ test_workspaceBrowseProjects
 				[workspace view close.
 				projectsBrowser destroy]!
 
-testClassServiceIsBehavior
-	| classService |
-	classService := RowanClassService new name: 'RowanClassServiceTest'.
-	self deny: classService isBehavior.	"because the class is not updated (oop = nil) we don't know. Assume false"
-	BrowserUpdate current updateServices: (Array with: classService) session: session.
-	self assert: classService isBehavior.
-	classService := RowanClassService new name: 'Transcript'.
-	BrowserUpdate current updateServices: (Array with: classService) session: session.
-	self deny: classService isBehavior.
-	classService := RowanClassService new name: 'String'.
-	BrowserUpdate current updateServices: (Array with: classService) session: session.
-	self assert: classService isBehavior!
-
 testClassServiceNameIsString
 	| classService |
 	self testsIssue: #issue441 withTitle: '(3.0.62) suspicious code in RowanClassService>>hierarchyClassServiceFor:'.
@@ -248,7 +235,6 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_symbolsFromSelector!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus! !
-!JadeiteMiscellaneousTestCase categoriesFor: #testClassServiceIsBehavior!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testClassServiceNameIsString!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testMethodServiceClassNameIsString!public! !
 

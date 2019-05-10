@@ -277,6 +277,12 @@ saveSampleMethod
 
 	!
 
+saveTestClassWithInstVars: instVars package: aString
+	self
+		saveClass: 'TestClass'
+		withInstVars: instVars
+		package: aString!
+
 selectCategoriesNamed: categories
 	categories do: 
 			[:category |
@@ -291,11 +297,22 @@ selectCategoriesNamed: categories
 selectCategoryNamed: category
 	self selectCategoriesNamed: (Array with: category)!
 
+selectClassInHierarchyNamed: className
+	self selectTreeServicesNamed: (Array with: className) in: self classHierarchyPresenter!
+
 selectClassTab
 	self selectClassTabIn: self projectsPresenter!
 
 selectClassTabIn: presenter
 	presenter instanceClassTabs lastCard!
+
+selectHierarchyTab
+	self selectHierarchyTabIn: self projectsPresenter!
+
+selectHierarchyTabIn: presenter
+	presenter classHierarchyTabs
+		lastCard;
+		onTabChanged!
 
 selectInstanceTab
 	self selectInstanceTabIn: self projectsPresenter!
@@ -340,6 +357,17 @@ selectServicesNamed: anArray in: presenter
 			| service |
 			service := presenter list detect: [:svc | svc name = name]
 						ifNone: [self error: 'List element ' , name , ' not found'].
+			presenter selections: (presenter selections asOrderedCollection
+						add: service;
+						yourself)]!
+
+selectTreeServicesNamed: anArray in: presenter
+	presenter resetSelection.
+	anArray do: 
+			[:name |
+			| service |
+			service := presenter model asBag detect: [:svc | svc name = name]
+						ifNone: [self error: 'Tree element ' , name , ' not found'].
 			presenter selections: (presenter selections asOrderedCollection
 						add: service;
 						yourself)]!
@@ -467,10 +495,14 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #saveIssue216Method!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveMethod:in:category:!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #saveSampleMethod!private! !
+!JadeiteAbstractTestCase categoriesFor: #saveTestClassWithInstVars:package:!private! !
 !JadeiteAbstractTestCase categoriesFor: #selectCategoriesNamed:!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectCategoryNamed:!private!project browser support!selection! !
+!JadeiteAbstractTestCase categoriesFor: #selectClassInHierarchyNamed:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectClassTab!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectClassTabIn:!private!selection! !
+!JadeiteAbstractTestCase categoriesFor: #selectHierarchyTab!private!selection! !
+!JadeiteAbstractTestCase categoriesFor: #selectHierarchyTabIn:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectInstanceTab!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectInstanceTabIn:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectMethodNamed:!private!selection! !
@@ -479,6 +511,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #selectRowanSample1Test!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectServiceNamed:in:!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectServicesNamed:in:!private!project browser support!selection! !
+!JadeiteAbstractTestCase categoriesFor: #selectTreeServicesNamed:in:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectWithChangeEventMethodNamed:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #serviceNamed:in:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #setAutoCommit:!private!setup teardown! !
