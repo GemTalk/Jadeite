@@ -197,13 +197,6 @@ projectNamed: aString
 		detect: [:projectService | projectService name = aString]
 		ifNone: []!
 
-queryCommand: commandSymbol inPresenter: presenter view: view
-	| commandQuery |
-	commandQuery := CommandQuery new commandDescription: (CommandDescription new command: commandSymbol)
-				source: view.
-	presenter queryCommand: commandQuery.
-	^commandQuery!
-
 rowanProjectNames
 	"this may change"
 
@@ -845,6 +838,81 @@ test_browseClass
 	[self assert: ('String*' match: dictionaryPresenter selectedClassName)]
 		ensure: [dictionaryPresenter topShell destroy]!
 
+test_browseHierarchyImplementorsEnablement
+	| commandQuery |
+	self testsIssue: #issue399
+		withTitle: 'The "exactly one object" warning may also provide an unrelated debugger stack'.
+	self selectRowanSample1Test.
+	self selectCategoryNamed: 'tests'.
+	self selectMethodNamed: #test1.
+	commandQuery := self
+				queryCommand: #browseHierarchyImplementors
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	self selectMethodsNamed: #(#test1 #test2).
+	commandQuery := self
+				queryCommand: #browseHierarchyImplementors
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled.
+	self selectMethodsNamed: #().
+	commandQuery := self
+				queryCommand: #browseHierarchyImplementors
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled!
+
+test_browseHierarchySendersEnablement
+	| commandQuery |
+	self testsIssue: #issue399
+		withTitle: 'The "exactly one object" warning may also provide an unrelated debugger stack'.
+	self selectRowanSample1Test.
+	self selectCategoryNamed: 'tests'.
+	self selectMethodNamed: #test1.
+	commandQuery := self
+				queryCommand: #browseHierarchySenders
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	self selectMethodsNamed: #(#test1 #test2).
+	commandQuery := self
+				queryCommand: #browseHierarchySenders
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled.
+	self selectMethodsNamed: #().
+	commandQuery := self
+				queryCommand: #browseHierarchySenders
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled!
+
+test_browseImplementorsEnablement
+	| commandQuery |
+	self testsIssue: #issue399
+		withTitle: 'The "exactly one object" warning may also provide an unrelated debugger stack'.
+	self selectRowanSample1Test.
+	self selectCategoryNamed: 'tests'.
+	self selectMethodNamed: #test1.
+	commandQuery := self
+				queryCommand: #browseImplementors
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	self selectMethodsNamed: #(#test1 #test2).
+	commandQuery := self
+				queryCommand: #browseImplementors
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled.
+	self selectMethodsNamed: #().
+	commandQuery := self
+				queryCommand: #browseImplementors
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled!
+
 test_browseSameClassCategoriesCorrect
 	"related bug found while fixing issue #344"
 
@@ -903,6 +971,31 @@ test_browseSelectedMethods
 				view: self methodListPresenter view.
 	self assert: commandQuery isEnabled.
 !
+
+test_browseSendersEnablement
+	| commandQuery |
+	self testsIssue: #issue399
+		withTitle: 'The "exactly one object" warning may also provide an unrelated debugger stack'.
+	self selectRowanSample1Test.
+	self selectCategoryNamed: 'tests'.
+	self selectMethodNamed: #test1.
+	commandQuery := self
+				queryCommand: #browseSenders
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	self selectMethodsNamed: #(#test1 #test2).
+	commandQuery := self
+				queryCommand: #browseSenders
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled.
+	self selectMethodsNamed: #().
+	commandQuery := self
+				queryCommand: #browseSenders
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled!
 
 test_categoryTextDisplay
 	self testsIssue: #issue232 withTitle: 'cannot tell which `category` a method is in (Oscar-3.0.41)'.
@@ -4469,7 +4562,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #previousTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectList!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectNamed:!private!project support! !
-!JadeiteProjectBrowserTestCase categoriesFor: #queryCommand:inPresenter:view:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #rowanProjectNames!constants!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveHooMethod!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUnimplementedSelector!private! !
@@ -4506,8 +4598,12 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_blankCategoryRenameInvalid!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_browseHierarchyImplementorsEnablement!public!test menus! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_browseHierarchySendersEnablement!public!test menus! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_browseImplementorsEnablement!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSameClassCategoriesCorrect!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSelectedMethods!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_browseSendersEnablement!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeListSortOrder!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeVariableWithModifiedMethodSource!public!test variable tab! !

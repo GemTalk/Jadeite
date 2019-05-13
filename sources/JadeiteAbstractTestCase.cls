@@ -174,6 +174,13 @@ projectListPresenter
 projectsPresenter
 	^projectsBrowser currentCard!
 
+queryCommand: commandSymbol inPresenter: presenter view: view
+	| commandQuery |
+	commandQuery := CommandQuery new commandDescription: (CommandDescription new command: commandSymbol)
+				source: view.
+	presenter queryCommand: commandQuery.
+	^commandQuery!
+
 rowanProjectsHome
 	^'$ROWAN_PROJECTS_HOME'!
 
@@ -483,6 +490,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #packageListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #projectListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #projectsPresenter!private!project browser support! !
+!JadeiteAbstractTestCase categoriesFor: #queryCommand:inPresenter:view:!private! !
 !JadeiteAbstractTestCase categoriesFor: #rowanProjectsHome!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #rowanSample1Path!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #sampleClassName!private!project browser support! !

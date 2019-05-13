@@ -211,7 +211,7 @@ behaviorIdentifier
 
 browseHierarchyImplementors
 	^self browseHierarchyImplementorsOf: self selectedMethodName
-		className: methodListPresenter selection className!
+		className: methodListPresenter selections first className!
 
 browseHierarchySenders
 	^self browseHierarchySendersOf: self selectedMethodName
@@ -1439,7 +1439,11 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: projectListPresenter selections notEmpty.
 			^true].
-	(#(#browseHierarchyImplementors #browseHierarchySenders #browseSelectedMethods) includes: command)
+	(#(#browseHierarchyImplementors #browseHierarchySenders) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: (methodListPresenter selections size = 1).
+			^true].
+	(#(#browseSelectedMethods) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: methodListPresenter selections notEmpty.
 			^true].
@@ -1728,7 +1732,7 @@ selectedMethodCategory
 
 selectedMethodName
 
-	^methodListPresenter selection selector
+	^methodListPresenter selections first selector
 !
 
 selectionMethod: methodSelection

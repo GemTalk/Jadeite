@@ -65,6 +65,15 @@ selectListAt: integer
 	event value ifFalse: [^self].
 	methodListPresenter selection: (methodListPresenter list at: integer)!
 
+selectMethodsNamed: selectors
+	| methodServices methodListPresenter |
+	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
+	methodListPresenter resetSelection.
+	methodServices := selectors
+				collect: [:selector | methodListPresenter list detect: [:svc | svc selector = selector]].
+	methodListPresenter selections: methodServices.
+	^methodServices!
+
 tearDown
 	super tearDown.
 	methodListBrowser
@@ -96,6 +105,114 @@ test_browseClass
 	dictionaryPresenter := self methodSourcePresenter browseSelectedClass.
 	[self assert: ('String*' match: dictionaryPresenter selectedClassName)]
 		ensure: [dictionaryPresenter topShell destroy]!
+
+test_browseHierarchyImplementorsEnablement
+	| commandQuery methodListPresenter |
+	self testsIssue: #issue399
+		withTitle: 'The "exactly one object" warning may also provide an unrelated debugger stack'.
+	methodListBrowser := JadePresenter browseSendersOf: #foo session: session.
+	self selectMethodsNamed: #(#test1).
+	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter.
+	methodListPresenter methodListPresenter selection: (methodListPresenter methodListPresenter list
+				detect: [:methodService | methodService selector = #test1]).
+	commandQuery := self
+				queryCommand: #browseHierarchyImplementors
+				inPresenter: methodListPresenter
+				view: methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	self selectMethodsNamed: #(#test1 #testFailure).
+	commandQuery := self
+				queryCommand: #browseHierarchyImplementors
+				inPresenter: methodListPresenter
+				view: methodListPresenter view.
+	self deny: commandQuery isEnabled.
+	self selectMethodsNamed: #().
+	commandQuery := self
+				queryCommand: #browseHierarchyImplementors
+				inPresenter: methodListPresenter
+				view: methodListPresenter view.
+	self deny: commandQuery isEnabled!
+
+test_browseHierarchySendersEnablement
+	| commandQuery methodListPresenter |
+	self testsIssue: #issue399
+		withTitle: 'The "exactly one object" warning may also provide an unrelated debugger stack'.
+	methodListBrowser := JadePresenter browseSendersOf: #foo session: session.
+	self selectMethodsNamed: #(#test1).
+	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter.
+	methodListPresenter methodListPresenter selection: (methodListPresenter methodListPresenter list
+				detect: [:methodService | methodService selector = #test1]).
+	commandQuery := self
+				queryCommand: #browseHierarchySenders
+				inPresenter: methodListPresenter
+				view: methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	self selectMethodsNamed: #(#test1 #testFailure).
+	commandQuery := self
+				queryCommand: #browseHierarchySenders
+				inPresenter: methodListPresenter
+				view: methodListPresenter view.
+	self deny: commandQuery isEnabled.
+	self selectMethodsNamed: #().
+	commandQuery := self
+				queryCommand: #browseHierarchySenders
+				inPresenter: methodListPresenter
+				view: methodListPresenter view.
+	self deny: commandQuery isEnabled!
+
+test_browseImplementorsEnablement
+	| commandQuery methodListPresenter |
+	self testsIssue: #issue399
+		withTitle: 'The "exactly one object" warning may also provide an unrelated debugger stack'.
+	methodListBrowser := JadePresenter browseSendersOf: #foo session: session.
+	self selectMethodsNamed: #(#test1).
+	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter.
+	methodListPresenter methodListPresenter selection: (methodListPresenter methodListPresenter list
+				detect: [:methodService | methodService selector = #test1]).
+	commandQuery := self
+				queryCommand: #browseImplementors
+				inPresenter: methodListPresenter
+				view: methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	self selectMethodsNamed: #(#test1 #testFailure).
+	commandQuery := self
+				queryCommand: #browseImplementors
+				inPresenter: methodListPresenter
+				view: methodListPresenter view.
+	self deny: commandQuery isEnabled.
+	self selectMethodsNamed: #().
+	commandQuery := self
+				queryCommand: #browseImplementors
+				inPresenter: methodListPresenter
+				view: methodListPresenter view.
+	self deny: commandQuery isEnabled!
+
+test_browseSendersEnablement
+	| commandQuery methodListPresenter |
+	self testsIssue: #issue399
+		withTitle: 'The "exactly one object" warning may also provide an unrelated debugger stack'.
+	methodListBrowser := JadePresenter browseSendersOf: #foo session: session.
+	self selectMethodsNamed: #(#test1).
+	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter.
+	methodListPresenter methodListPresenter selection: (methodListPresenter methodListPresenter list
+				detect: [:methodService | methodService selector = #test1]).
+	commandQuery := self
+				queryCommand: #browseSenders
+				inPresenter: methodListPresenter
+				view: methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	self selectMethodsNamed: #(#test1 #testFailure).
+	commandQuery := self
+				queryCommand: #browseSenders
+				inPresenter: methodListPresenter
+				view: methodListPresenter view.
+	self deny: commandQuery isEnabled.
+	self selectMethodsNamed: #().
+	commandQuery := self
+				queryCommand: #browseSenders
+				inPresenter: methodListPresenter
+				view: methodListPresenter view.
+	self deny: commandQuery isEnabled!
 
 test_compileErrorDisplay
 	| source |
@@ -346,8 +463,13 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #sampleMethodSource!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #saveMethod:in:category:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectListAt:!public!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsNamed:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchyImplementorsEnablement!public!test menus! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchySendersEnablement!public!test menus! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseImplementorsEnablement!public!test menus! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersEnablement!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_compileErrorDisplay!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_compileErrorDisplayGoesAway!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionClassMethod!public!tests! !
