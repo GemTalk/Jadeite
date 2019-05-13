@@ -28,7 +28,56 @@ addNewMethod
 
 tearDown
 	super tearDown.
-	changesBrowser ifNotNil: [changesBrowser destroy]!
+	changesBrowser ifNotNil: [changesBrowser destroy].
+	projectsBrowser ifNotNil: [projectsBrowser destroy]!
+
+test_browseImplementors
+	| methodListBrowser |
+	self testsIssue: #issue407
+		withTitle: '(3.0.56) would like option to browse class OR method from changes window'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self selectRowanSample1Class.
+	self
+		saveMethod: 'fnoodle  ^123'
+		in: 'RowanSample1'
+		category: 'deleteMe'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	self assert: changesBrowser operationListPresenter list first isKindOf: MCAddition.
+	changesBrowser operationListPresenter selection: changesBrowser operationListPresenter list first.
+	self assert: changesBrowser operationListPresenter selection className equals: 'RowanSample1'.
+	self assert: changesBrowser operationListPresenter selection selector equals: 'fnoodle'.
+	methodListBrowser := changesBrowser browseImplementors.
+	
+	[self assert: methodListBrowser primaryPresenter methodListPresenter selection selector
+		equals: #fnoodle]
+			ensure: 
+				[methodListBrowser destroy.
+				projectsBrowser destroy]!
+
+test_browseImplementorsSelectsChangedMethod
+	| methodListBrowser |
+	self testsIssue: #issue407
+		withTitle: '(3.0.56) would like option to browse class OR method from changes window'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self selectRowanSample1Class.
+	self
+		saveMethod: 'size  ^super size'
+		in: 'RowanSample1'
+		category: 'deleteMe'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	changesBrowser operationListPresenter selectionByIndex: 1.
+	methodListBrowser := changesBrowser browseImplementors.
+	
+	[self assert: methodListBrowser primaryPresenter methodListPresenter selection selector equals: #size.
+	self assert: methodListBrowser primaryPresenter methodListPresenter selection className
+		equals: 'RowanSample1']
+			ensure: 
+				[methodListBrowser destroy.
+				projectsBrowser destroy]!
 
 test_browseMethodSelectsAddedClass
 	| projectService secondProjectBrowser |
@@ -71,10 +120,46 @@ test_browseMethodSelectsAddedMethod
 		equals: 'RowanSample1Test']
 			ensure: 
 				[secondProjectBrowser currentCard basicRemoveMethods.
-				secondProjectBrowser destroy]! !
+				secondProjectBrowser destroy]!
+
+test_browseSenders
+	| methodListBrowser |
+	self testsIssue: #issue407
+		withTitle: '(3.0.56) would like option to browse class OR method from changes window'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectRowanSample1Class.
+	self
+		saveMethod: 'fnoodle  ^123'
+		in: 'RowanSample1'
+		category: 'deleteMe'.
+	self
+		saveMethod: 'sendsFnoodle  ^self fnoodle'
+		in: 'RowanSample1'
+		category: 'deleteMe'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	self assert: changesBrowser operationListPresenter list first isKindOf: MCAddition.
+	self assert: changesBrowser operationListPresenter list last isKindOf: MCAddition.
+	changesBrowser operationListPresenter selectionByIndex: 2.
+	self assert: changesBrowser operationListPresenter selection className equals: 'RowanSample1'.
+	self assert: changesBrowser operationListPresenter selection selector equals: 'sendsFnoodle'.
+	changesBrowser operationListPresenter selectionByIndex: 1.
+	self assert: changesBrowser operationListPresenter selection className equals: 'RowanSample1'.
+	self assert: changesBrowser operationListPresenter selection selector equals: 'fnoodle'.
+	methodListBrowser := changesBrowser browseSenders.
+	
+	[self assert: methodListBrowser primaryPresenter methodListPresenter selection selector
+		equals: #sendsFnoodle]
+			ensure: [methodListBrowser destroy]]
+			ensure: [projectsBrowser destroy]! !
 !JadeiteChangesBrowserTestCase categoriesFor: #addNewClass!private! !
 !JadeiteChangesBrowserTestCase categoriesFor: #addNewMethod!private! !
-!JadeiteChangesBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
+!JadeiteChangesBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
+!JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementors!public!tests! !
+!JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementorsSelectsChangedMethod!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseMethodSelectsAddedClass!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseMethodSelectsAddedMethod!public!tests! !
+!JadeiteChangesBrowserTestCase categoriesFor: #test_browseSenders!public!tests! !
 

@@ -268,6 +268,8 @@ package methodNames
 	add: #ListPresenter -> #selectServiceStartingWith:;
 	add: #MCClassDefinition -> #initialize:;
 	add: #MCPatchBrowser -> #browseChangedThing;
+	add: #MCPatchBrowser -> #browseImplementors;
+	add: #MCPatchBrowser -> #browseSenders;
 	add: #MCPatchBrowser -> #operationSelected;
 	add: #MethodListPresenter -> #browseClass;
 	add: #MethodListPresenter -> #selectedMethodsAreTestCases;
@@ -3718,6 +3720,37 @@ browseChangedThing
 		findMethod: selection selector asSymbol.
 	^shell!
 
+browseImplementors
+	| selection shell methodListPresenter changedMethod |
+	selection := operationListPresenter selectionOrNil.
+	selection isNil ifTrue: [^MessageBox notify: 'Nothing to browse'].
+	selection isRemoval ifTrue: [^MessageBox notify: 'Cannot browse a removed item'].
+	
+	[shell := JadePresenter browseImplementorsOf: selection selector session: self gciSession.
+	methodListPresenter := shell primaryPresenter methodListPresenter methodListPresenter.
+	changedMethod := methodListPresenter  list
+				detect: [:methodService | methodService className = selection className]
+				ifNone: [^self].
+	methodListPresenter selection: changedMethod]
+			on: Error
+			do: 
+				[:ex |
+				shell destroy.
+				MessageBox notify: 'The change you have selected cannot be browsed'].
+	^shell!
+
+browseSenders
+	| selection shell |
+	selection := operationListPresenter selectionOrNil.
+	selection isNil ifTrue: [^MessageBox notify: 'Nothing to browse'].
+	selection isRemoval ifTrue: [^MessageBox notify: 'Cannot browse a removed item'].
+	[shell := JadePresenter browseSendersOf: selection selector session: self gciSession] on: Error
+		do: 
+			[:ex |
+			shell destroy.
+			MessageBox notify: 'The change you have selected cannot be browsed'].
+	^shell!
+
 operationSelected
 
 	| operation |
@@ -3739,6 +3772,8 @@ operationSelected
 	].
 ! !
 !MCPatchBrowser categoriesFor: #browseChangedThing!public! !
+!MCPatchBrowser categoriesFor: #browseImplementors!public! !
+!MCPatchBrowser categoriesFor: #browseSenders!public! !
 !MCPatchBrowser categoriesFor: #operationSelected!public! !
 
 !MethodListPresenter methodsFor!
