@@ -3760,6 +3760,27 @@ test_stepPoint3
 	self assert: (methodService stepPoints at: 9) value equals: #asOop.
 	self assert: (methodService stepPoints at: 9) key equals: (392 to: 396)!
 
+test_sunitBarEnabledOnEntry
+	self testsIssue: #issue179 withTitle: 'SUnit tab issues'.
+	self selectRowanSample1Test.
+	self selectSUnitTab.
+	self assert: self projectsPresenter textAreaTabs currentCard name equals: 'sunit'.
+	"this is a proxy for testing the enablement of the sunit bar. We just have
+	to trust that when the methodListPresenter is enabled, the sunit bar is enabled."
+	self assert: self projectsPresenter sunitPresenter methodListPresenter view hasFocus!
+
+test_sunitBarEnabledOnReEntry
+	self testsIssue: #issue179 withTitle: 'SUnit tab issues'.
+	self selectRowanSample1Test.
+	self selectSUnitTab.
+	self assert: self projectsPresenter textAreaTabs currentCard name equals: 'sunit'.
+	"this is a proxy for testing the enablement of the sunit bar. We just have
+	to trust that when the methodListPresenter is enabled, the sunit bar is enabled."
+	self assert: self projectsPresenter sunitPresenter methodListPresenter view hasFocus.
+	self projectsPresenter selectCommentTab.
+	self selectSUnitTab.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter view hasFocus!
+
 test_sunitBrowserForTestClass
 	| sunitItem sunitBrowser |
 	self testsIssue: #issue336
@@ -4734,6 +4755,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_stepPoint1!public!test step points! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_stepPoint2!public!test step points! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_stepPoint3!public!test step points! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitBarEnabledOnEntry!public!test sunit tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitBarEnabledOnReEntry!public!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitBrowserForTestClass!public!test menus!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitBrowserIsEnabledForTestClass!public!test menus!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitBrowserNoSelectedTest!public!test menus!test sunit tab! !

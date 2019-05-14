@@ -1857,6 +1857,8 @@ textAreaTabs
 textTabChanged
 	methodSourcePresenter view cancelCallTip.
 	textAreaTabs currentCard name = 'projectInfo' ifTrue: [projectInfoTab ensureVisible].
+	textAreaTabs currentCard name = 'sunit'
+		ifTrue: [sunitPresenter methodListPresenter setFocus	"to ensure sunit bar is enabled"].
 	self updateMenuBar!
 
 textTabs
