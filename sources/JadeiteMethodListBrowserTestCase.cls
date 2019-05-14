@@ -287,10 +287,10 @@ test_doubleClickActionInstanceMethod
 
 test_methodBrowserSaveMethod
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
-	
+	 
 	[| source source2 selection |
 	self selectRowanSample1Test.
-	self selectMethodNamed: #test1.
+	self selectMethodNamedInProjectBrowser: #test1.
 	self assert: self methodListPresenter selection selector equals: #test1.
 	self assert: self methodListPresenter selections size equals: 1. 
 	methodListBrowser := JadePresenter browseImplementorsOf: 'test1' session: session.
@@ -339,7 +339,7 @@ test_removeMethodInProjectBrowser
 	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
 	
 	[self selectRowanSample1Class.
-	self selectMethodNamed: #deleteMe.
+	self selectMethodNamedInProjectBrowser: #deleteMe.
 	self projectsPresenter basicRemoveMethods.
 	self denyMethodInList: #deleteMe.
 	self assert: self methodListMethodListPresenter list size equals: 1.

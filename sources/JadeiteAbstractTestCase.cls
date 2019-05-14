@@ -330,6 +330,13 @@ selectInstanceTabIn: presenter
 selectMethodNamed: selector
 	^self selectMethodsNamed: (Array with: selector)!
 
+selectMethodNamedInProjectBrowser: selector
+	| methodServices |
+	self methodListPresenter resetSelection.
+	methodServices := self methodListPresenter list detect: [:svc | svc selector = selector].
+	self methodListPresenter selections: (Array with: methodServices).
+	^methodServices!
+
 selectMethodsNamed: selectors
 	| methodServices |
 	self methodListPresenter resetSelection.
@@ -514,6 +521,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #selectInstanceTab!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectInstanceTabIn:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectMethodNamed:!private!selection! !
+!JadeiteAbstractTestCase categoriesFor: #selectMethodNamedInProjectBrowser:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectMethodsNamed:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectRowanSample1Class!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectRowanSample1Test!private!selection! !
