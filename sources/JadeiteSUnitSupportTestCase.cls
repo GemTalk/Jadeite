@@ -513,7 +513,7 @@ test_selectionRemainsVisible
 	| position methodListPresenter |
 	self testsIssue: #issue467
 		withTitle: '(3.0.68) nice to have selected test remain visible aftr pressing the `run selected` button'.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'Rowan-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'RwRowanProjectIssuesTest' in: self sunitPresenter classListPresenter.
 	methodListPresenter := self sunitPresenter methodListPresenter.
 	self selectServiceNamed: 'testIssue217' in: methodListPresenter.
@@ -563,7 +563,7 @@ test_statusBar
 	self assert: self sunitPresenter testCasesSize
 		equals: 'Test Cases:' , self sunitPresenter methodListPresenter model size printString.
 	self assert: self sunitPresenter testClassesSize
-		equals: 'Test Classes:' , ((session executeString: 'RowanServicesTest allSubclasses size') + 2) printString  "brittle but we can update it as test classes are added" !
+		equals: 'Test Classes:' , ((session executeString: 'RowanServicesTest allSubclasses size') + 1) printString  "brittle but we can update it as test classes are added" !
 
 test_sunitBrowserHasRowanPackages
 	self assert: (self sunitPresenter isKindOf: JadeiteSUnitPresenter).	"a different presenter is used in the projects browser"
