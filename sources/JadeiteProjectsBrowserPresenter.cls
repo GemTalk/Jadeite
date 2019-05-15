@@ -1512,7 +1512,7 @@ refreshClassListOrHierarchy
 			classHierarchyPresenter selections isEmpty
 				ifFalse: 
 					["No selection if in the refreshing after rename. Done later"
-					methodListPresenter selections: selectedMethods]]!
+					self selectMethods: selectedMethods]]!
 
 refreshFromServer
 	| services |
@@ -1741,6 +1741,16 @@ selectionMethod: methodSelection
 				detect: [:svc | svc selector = methodSelection selector]
 				ifNone: [].
 	^newMethodSelection ifNotNil: [methodListPresenter selection: newMethodSelection]!
+
+selectMethods: methodSelections
+	| newMethodSelections newSelection |
+	newMethodSelections := OrderedCollection new.
+	methodSelections do: 
+			[:methodSelection |
+			newSelection := methodListPresenter list detect: [:svc | svc selector = methodSelection selector]
+						ifNone: [].
+			newSelection ifNotNil: [newMethodSelections add: newSelection]].
+	^methodListPresenter selections: newMethodSelections!
 
 selectMethodsFrom: classService
 	| selections |
@@ -2338,6 +2348,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedMethodCategory!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedMethodName!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectionMethod:!private!selection! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #selectMethods:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectMethodsFrom:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectMethodSourceTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectPackage:!private!selection! !

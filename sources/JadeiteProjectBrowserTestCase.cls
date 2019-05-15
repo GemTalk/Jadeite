@@ -2915,20 +2915,6 @@ test_noSelectionHierarchy
 
 !
 
-test_noStepPoints
-	"see corresponding server test. Character ranges should be the same."
-
-	| classService methodService |
-	self selectRowanSample1Class.
-	classService := self projectsPresenter selectedClass.
-	classService
-		command: #saveMethodSource:category:;
-		commandArgs: (Array with: 'abc' with: 'test step points').
-	self issueCommand: classService.
-	methodService := (self selectMethodNamed: #abc) first.
-	self assert: methodService stepPoints size equals: 0. 
-	!
-
 test_openChangesBrowser
 	| changesBrowser changesItem |
 	self testsIssue: #issue384
@@ -3657,108 +3643,6 @@ test_simpleHierarchyTest
 	self assert: self projectsPresenter classHierarchyPresenter selection name = 'RowanProjectService'.
 	self selectClassListTab.
 	self assert: self projectsPresenter classListPresenter selection name = 'RowanProjectService'!
-
-test_stepPoint1
-	"see corresponding server test. Character ranges should be the same." 
-	| sourceString classService methodService |
-	self selectRowanSample1Class.
-	sourceString := session executeString: 'RowanMethodServiceTest new stepPoint1Source'.
-	classService := self projectsPresenter selectedClass.
-	classService
-		command: #saveMethodSource:category:;
-		commandArgs: (Array with: sourceString with: 'test step points').
-	self issueCommand: classService.
-	methodService := (self selectMethodNamed: #simpleMethod) first.
-	self assert: methodService stepPoints size equals: 4.
-	self assert: (methodService source copyFrom: 42 to: 44) asSymbol
-		equals: (methodService stepPoints at: 1) value.	"#new"
-	self assert: (methodService stepPoints at: 1) key equals: (42 to: 44).
-	self assert: (methodService source copyFrom: 89 to: 91) asSymbol
-		equals: (methodService stepPoints at: 2) value.	"#new"
-	self assert: (methodService stepPoints at: 2) key equals: (89 to: 91).
-	self assert: (methodService source copyFrom: 66 to: 69) asSymbol
-		equals: (methodService stepPoints at: 3) value.	"#add:"
-	self assert: (methodService stepPoints at: 3) key equals: (66 to: 69).
-	self assert: (methodService source copyFrom: 121 to: 124) asSymbol
-		equals: (methodService stepPoints at: 4) value.	"#size"
-	self assert: (methodService stepPoints at: 4) key equals: (121 to: 124)!
-
-test_stepPoint2
-	"see corresponding server test. Character ranges should be the same."
-
-	| sourceString classService methodService |
-	self selectRowanSample1Class.
-	sourceString := session executeString: 'RowanMethodServiceTest new stepPoint2Source'.
-	classService := self projectsPresenter selectedClass.
-	classService
-		command: #saveMethodSource:category:;
-		commandArgs: (Array with: sourceString with: 'test step points').
-	self issueCommand: classService.
-	methodService := (self selectMethodNamed: #simpleMethod2) first.
-	self assert: methodService stepPoints size equals: 7.
-	self assert: (methodService source copyFrom: 43 to: 45) asSymbol
-		equals: (methodService stepPoints at: 1) value.	"#new"
-	self assert: (methodService stepPoints at: 1) key equals: (43 to: 45).
-	self assert: (methodService source copyFrom: 91 to: 104) asSymbol
-		equals: (methodService stepPoints at: 2) value.	"#forClassNamed:"
-	self assert: (methodService stepPoints at: 2) key equals: (91 to: 104).
-	self assert: (methodService source copyFrom: 67 to: 70) asSymbol
-		equals: (methodService stepPoints at: 3) value.	"#add:"
-	self assert: (methodService stepPoints at: 3) key equals: (67 to: 70).
-	self assert: (methodService source copyFrom: 145 to: 147) asSymbol
-		equals: (methodService stepPoints at: 4) value.	"#do:"
-	self assert: (methodService stepPoints at: 4) key equals: (145 to: 147).
-	self assert: (methodService source copyFrom: 295 to: 298) asSymbol
-		equals: (methodService stepPoints at: 5) value.	"#size"
-	self assert: (methodService stepPoints at: 5) key equals: (295 to: 298).
-	self assert: (methodService source copyFrom: 225 to: 234) asSymbol
-		equals: (methodService stepPoints at: 6) value.	"#stepPoints"
-	self assert: (methodService stepPoints at: 6) key equals: (225 to: 234).
-	self assert: (methodService source copyFrom: 268 to: 271) asSymbol
-		equals: (methodService stepPoints at: 7) value.	"#size"
-	self assert: (methodService stepPoints at: 7) key equals: (268 to: 271)!
-
-test_stepPoint3
-	"see corresponding server test. Character ranges should be the same."
-
-	| sourceString classService methodService |
-	self selectRowanSample1Class.
-	sourceString := session executeString: 'RowanMethodServiceTest new stepPoint3Source'.
-	classService := self projectsPresenter selectedClass.
-	classService
-		command: #saveMethodSource:category:;
-		commandArgs: (Array with: sourceString with: 'test step points').
-	self issueCommand: classService.
-	methodService := (self selectMethodNamed: #initialize:status:) first.
-	self assert: methodService stepPoints size equals: 9.
-	self assert: (methodService source copyFrom: 109 to: 111) asSymbol
-		equals: (methodService stepPoints at: 1) value.
-	self assert: (methodService stepPoints at: 1) value equals: #new.
-	self assert: (methodService stepPoints at: 1) key equals: (109 to: 111).
-	self assert: (methodService source copyFrom: 165 to: 174) asSymbol
-		equals: (methodService stepPoints at: 2) value.
-	self assert: (methodService stepPoints at: 2) value equals: #stackDepth.
-	self assert: (methodService stepPoints at: 2) key equals: (165 to: 174).
-	self assert: (methodService source copyFrom: 149 to: 152) asSymbol
-		equals: (methodService stepPoints at: 3) value.
-	self assert: (methodService stepPoints at: 3) value equals: #new:.
-	self assert: (methodService stepPoints at: 3) key equals: (149 to: 152).
-	self assert: (methodService source copyFrom: 216 to: 225) asSymbol
-		equals: (methodService stepPoints at: 4) value.
-	self assert: (methodService stepPoints at: 4) value equals: #stackDepth.
-	self assert: (methodService stepPoints at: 4) key equals: (216 to: 225).
-	self assert: (methodService source copyFrom: 290 to: 297) asSymbol equals: #process:.
-	self assert: (methodService stepPoints at: 5) value equals: #process:level:organizer:.
-	self assert: (methodService stepPoints at: 5) key equals: (290 to: 297).
-	self assert: (methodService source copyFrom: 260 to: 262) asSymbol equals: #at:.
-	self assert: (methodService stepPoints at: 6) value equals: #at:put:.
-	self assert: (methodService stepPoints at: 6) key equals: (260 to: 262).
-
-	"7 & 8 are present in 3.2.15 but are incorrect presumably due to optimization. Later server versions may get this fixed"
-	self assert: (methodService source copyFrom: 392 to: 396) asSymbol
-		equals: (methodService stepPoints at: 9) value.	"#asOop"
-	self assert: (methodService stepPoints at: 9) value equals: #asOop.
-	self assert: (methodService stepPoints at: 9) key equals: (392 to: 396)!
 
 test_sunitBarEnabledOnEntry
 	self testsIssue: #issue179 withTitle: 'SUnit tab issues'.
@@ -4557,6 +4441,129 @@ test_verifyValidCategory
 	self deny: (self projectsPresenter verifyValidCategory: '*rowankernel') .
 	self deny: (self projectsPresenter verifyValidCategory: '*rowankernelx') .!
 
+test_zzznoStepPoints
+	"see corresponding server test. Character ranges should be the same."
+	"test broken"
+
+	| classService methodService |
+	self selectRowanSample1Class.
+	classService := self projectsPresenter selectedClass.
+	classService
+		command: #saveMethodSource:category:;
+		commandArgs: (Array with: 'abc' with: 'test step points').
+	self issueCommand: classService.
+	methodService := (self selectMethodNamed: #abc) first.
+	self assert: methodService stepPoints size equals: 0!
+
+test_zzzstepPoint1
+	"see corresponding server test. Character ranges should be the same."
+
+	"test broken"
+
+	| sourceString classService methodService |
+	self selectRowanSample1Class.
+	sourceString := session executeString: 'RowanMethodServiceTest new stepPoint1Source'.
+	classService := self projectsPresenter selectedClass.
+	classService
+		command: #saveMethodSource:category:;
+		commandArgs: (Array with: sourceString with: 'test step points').
+	self issueCommand: classService.
+	methodService := (self selectMethodNamed: #simpleMethod) first.
+	self assert: methodService stepPoints size equals: 4.
+	self assert: (methodService source copyFrom: 42 to: 44) asSymbol
+		equals: (methodService stepPoints at: 1) value.	"#new"
+	self assert: (methodService stepPoints at: 1) key equals: (42 to: 44).
+	self assert: (methodService source copyFrom: 89 to: 91) asSymbol
+		equals: (methodService stepPoints at: 2) value.	"#new"
+	self assert: (methodService stepPoints at: 2) key equals: (89 to: 91).
+	self assert: (methodService source copyFrom: 66 to: 69) asSymbol
+		equals: (methodService stepPoints at: 3) value.	"#add:"
+	self assert: (methodService stepPoints at: 3) key equals: (66 to: 69).
+	self assert: (methodService source copyFrom: 121 to: 124) asSymbol
+		equals: (methodService stepPoints at: 4) value.	"#size"
+	self assert: (methodService stepPoints at: 4) key equals: (121 to: 124)!
+
+test_zzzstepPoint2
+	"see corresponding server test. Character ranges should be the same."
+
+	"test broken"
+
+	| sourceString classService methodService |
+	self selectRowanSample1Class.
+	sourceString := session executeString: 'RowanMethodServiceTest new stepPoint2Source'.
+	classService := self projectsPresenter selectedClass.
+	classService
+		command: #saveMethodSource:category:;
+		commandArgs: (Array with: sourceString with: 'test step points').
+	self issueCommand: classService.
+	methodService := (self selectMethodNamed: #simpleMethod2) first.
+	self assert: methodService stepPoints size equals: 7.
+	self assert: (methodService source copyFrom: 43 to: 45) asSymbol
+		equals: (methodService stepPoints at: 1) value.	"#new"
+	self assert: (methodService stepPoints at: 1) key equals: (43 to: 45).
+	self assert: (methodService source copyFrom: 91 to: 104) asSymbol
+		equals: (methodService stepPoints at: 2) value.	"#forClassNamed:"
+	self assert: (methodService stepPoints at: 2) key equals: (91 to: 104).
+	self assert: (methodService source copyFrom: 67 to: 70) asSymbol
+		equals: (methodService stepPoints at: 3) value.	"#add:"
+	self assert: (methodService stepPoints at: 3) key equals: (67 to: 70).
+	self assert: (methodService source copyFrom: 145 to: 147) asSymbol
+		equals: (methodService stepPoints at: 4) value.	"#do:"
+	self assert: (methodService stepPoints at: 4) key equals: (145 to: 147).
+	self assert: (methodService source copyFrom: 295 to: 298) asSymbol
+		equals: (methodService stepPoints at: 5) value.	"#size"
+	self assert: (methodService stepPoints at: 5) key equals: (295 to: 298).
+	self assert: (methodService source copyFrom: 225 to: 234) asSymbol
+		equals: (methodService stepPoints at: 6) value.	"#stepPoints"
+	self assert: (methodService stepPoints at: 6) key equals: (225 to: 234).
+	self assert: (methodService source copyFrom: 268 to: 271) asSymbol
+		equals: (methodService stepPoints at: 7) value.	"#size"
+	self assert: (methodService stepPoints at: 7) key equals: (268 to: 271)!
+
+test_zzzstepPoint3
+	"see corresponding server test. Character ranges should be the same."
+
+	"test broken"
+
+	| sourceString classService methodService |
+	self selectRowanSample1Class.
+	sourceString := session executeString: 'RowanMethodServiceTest new stepPoint3Source'.
+	classService := self projectsPresenter selectedClass.
+	classService
+		command: #saveMethodSource:category:;
+		commandArgs: (Array with: sourceString with: 'test step points').
+	self issueCommand: classService.
+	methodService := (self selectMethodNamed: #initialize:status:) first.
+	self assert: methodService stepPoints size equals: 9.
+	self assert: (methodService source copyFrom: 109 to: 111) asSymbol
+		equals: (methodService stepPoints at: 1) value.
+	self assert: (methodService stepPoints at: 1) value equals: #new.
+	self assert: (methodService stepPoints at: 1) key equals: (109 to: 111).
+	self assert: (methodService source copyFrom: 165 to: 174) asSymbol
+		equals: (methodService stepPoints at: 2) value.
+	self assert: (methodService stepPoints at: 2) value equals: #stackDepth.
+	self assert: (methodService stepPoints at: 2) key equals: (165 to: 174).
+	self assert: (methodService source copyFrom: 149 to: 152) asSymbol
+		equals: (methodService stepPoints at: 3) value.
+	self assert: (methodService stepPoints at: 3) value equals: #new:.
+	self assert: (methodService stepPoints at: 3) key equals: (149 to: 152).
+	self assert: (methodService source copyFrom: 216 to: 225) asSymbol
+		equals: (methodService stepPoints at: 4) value.
+	self assert: (methodService stepPoints at: 4) value equals: #stackDepth.
+	self assert: (methodService stepPoints at: 4) key equals: (216 to: 225).
+	self assert: (methodService source copyFrom: 290 to: 297) asSymbol equals: #process:.
+	self assert: (methodService stepPoints at: 5) value equals: #process:level:organizer:.
+	self assert: (methodService stepPoints at: 5) key equals: (290 to: 297).
+	self assert: (methodService source copyFrom: 260 to: 262) asSymbol equals: #at:.
+	self assert: (methodService stepPoints at: 6) value equals: #at:put:.
+	self assert: (methodService stepPoints at: 6) key equals: (260 to: 262).
+
+	"7 & 8 are present in 3.2.15 but are incorrect presumably due to optimization. Later server versions may get this fixed"
+	self assert: (methodService source copyFrom: 392 to: 396) asSymbol
+		equals: (methodService stepPoints at: 9) value.	"#asOop"
+	self assert: (methodService stepPoints at: 9) value equals: #asOop.
+	self assert: (methodService stepPoints at: 9) key equals: (392 to: 396)!
+
 waitForPresenter: presenter
 	[presenter list isEmpty] whileTrue: [(Delay forMilliseconds: 50) wait]! !
 !JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodGoo!dirty project!private! !
@@ -4709,7 +4716,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_modifiedSourceShouldNotChangeMethodList!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noSelectionHierarchy!public!test class hierarchy! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_noStepPoints!public!test step points! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openChangesBrowser!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewBrowserTabWhileSUnitTabSelected!public!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectBrowser!public!test menus!test projects! !
@@ -4752,9 +4758,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_separationOfClassAndInstance!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_setAndClearBreakpoint!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_simpleHierarchyTest!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_stepPoint1!public!test step points! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_stepPoint2!public!test step points! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_stepPoint3!public!test step points! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitBarEnabledOnEntry!public!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitBarEnabledOnReEntry!public!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitBrowserForTestClass!public!test menus!test sunit tab! !
@@ -4792,5 +4795,9 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_variablesUpdatedOnClassSaveInClassList!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_variablesUpdatedOnClassSaveInHierarchy!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_verifyValidCategory!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_zzznoStepPoints!public!test step points! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_zzzstepPoint1!public!test step points! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_zzzstepPoint2!public!test step points! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_zzzstepPoint3!public!test step points! !
 !JadeiteProjectBrowserTestCase categoriesFor: #waitForPresenter:!private!selection! !
 
