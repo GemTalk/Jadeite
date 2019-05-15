@@ -78,6 +78,11 @@ deselectProjects
 
 	self projectListPresenter selectionByIndex: 0.!
 
+destroy: view
+
+	(Delay forMilliseconds: 2) wait. 
+	view destroy. !
+
 ensureRowanSample1Loaded
 	self loadProjectNamed: self sampleProjectName.!
 
@@ -480,6 +485,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #denyMethodInList:presenter:!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #denyProjectInList:!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #deselectProjects!private!project browser support!selection! !
+!JadeiteAbstractTestCase categoriesFor: #destroy:!public!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Loaded!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #fail:!asserting!public! !
 !JadeiteAbstractTestCase categoriesFor: #interestingLoopMethodSource!constants!private! !

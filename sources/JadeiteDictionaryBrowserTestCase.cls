@@ -50,7 +50,7 @@ setUp
 
 tearDown
 	super tearDown.
-	dictionaryBrowser ifNotNil: [dictionaryBrowser destroy]!
+	dictionaryBrowser ifNotNil: [self destroy: dictionaryBrowser]!
 
 test_browseReferences
 	| methodBrowser |
@@ -62,13 +62,13 @@ test_browseReferences
 	
 	[self assert: (methodBrowser isKindOf: JadeiteMethodListBrowser).	"<<< bug was that no action was taken. Should get a browser back"
 	self assert: ('Jadeite Method List Browser*' match: methodBrowser caption)]
-			ensure: [methodBrowser destroy].
+			ensure: [self destroy: methodBrowser].
 	dictionaryBrowser currentCard classHierarchyTabs lastCard.
 	methodBrowser := dictionaryBrowser currentCard browseClassReferences.
 	
 	[self assert: (methodBrowser isKindOf: JadeiteMethodListBrowser).
 	self assert: ('Jadeite Method List Browser*' match: methodBrowser caption)	"<<< bug was that no action was taken. Should get a browser back"]
-			ensure: [methodBrowser destroy]!
+			ensure: [self destroy: methodBrowser]!
 
 test_browseReferencesInDictionaryBrowser
 	| methodListBrowser source |
@@ -78,15 +78,19 @@ test_browseReferencesInDictionaryBrowser
 	
 	[source := methodListBrowser primaryPresenter methodSourcePresenter documentPresenter value.
 	self assert: ('*Date*' match: source)]
-			ensure: [methodListBrowser destroy]!
+			ensure: [self destroy: methodListBrowser]!
 
 test_findClass
 	| methodListSize unopenedDialog |
 	self testsIssue: #issue430 withTitle: '(3.0.60) Find Class in system browser recently broken'.
 	self selectDictionary: 'RowanKernel'.
 	self selectClass: 'RowanAnsweringService'.
-	unopenedDialog := JadeFindClassDialog create: 'ThreeColumnView' on: dictionaryBrowser currentCard findClassList.
-	[self assert: unopenedDialog classListPresenter list size equals: dictionaryBrowser currentCard findClassList size] ensure: [unopenedDialog destroy]!
+	unopenedDialog := JadeFindClassDialog create: 'ThreeColumnView'
+				on: dictionaryBrowser currentCard findClassList.
+	
+	[self assert: unopenedDialog classListPresenter list size
+		equals: dictionaryBrowser currentCard findClassList size]
+			ensure: [self destroy: unopenedDialog]!
 
 test_menusDontAddBreaks
 	"not a great test, but make sure we don't add a breakpoint menu item in 

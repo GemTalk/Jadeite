@@ -90,6 +90,7 @@ methodValueChanged
 				clearContainerIndicators]!
 
 onViewClosed
+	(Delay forMilliseconds: 2) wait.  "let paint events finish" 
 	super onViewClosed.
 	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter]!
 

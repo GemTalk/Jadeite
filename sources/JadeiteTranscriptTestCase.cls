@@ -38,8 +38,8 @@ test_abortRemovesProjectsInAllBrowsers
 	self ensureRowanSample1Loaded]
 			ensure: 
 				[SessionManager inputState pumpMessages.
-				projectsBrowser destroy.
-				sunitBrowser destroy]!
+				self destroy: projectsBrowser.
+				self destroy: sunitBrowser]!
 
 test_abortTransaction
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
@@ -143,10 +143,10 @@ test_browseImplementors
 	methodListBrowser := transcript browseImplementorsOf.
 	methodList := methodListBrowser primaryPresenter methodListPresenter methodListPresenter list.
 	self assert: methodList notEmpty.
-	self assert: ('Implementors of ''size'' for*' match: methodListBrowser caption).]
+	self assert: ('Implementors of ''size'' for*' match: methodListBrowser caption)]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
-				methodListBrowser destroy]!
+				self destroy: methodListBrowser]!
 
 test_browseImplementorsMenuItem
 	| browseMenu browseImplementorsItem |
@@ -205,10 +205,10 @@ test_browseSenders
 	methodListBrowser := transcript browseSendersOf.
 	methodList := methodListBrowser primaryPresenter methodListPresenter methodListPresenter list.
 	self assert: methodList notEmpty.
-	self assert: ('Senders of ''abort'' for*' match: methodListBrowser caption).]
+	self assert: ('Senders of ''abort'' for*' match: methodListBrowser caption)]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
-				methodListBrowser destroy]!
+				self destroy: methodListBrowser]!
 
 test_browseSendersMenuItem
 	| browseMenu browseSendersItem |
@@ -261,15 +261,15 @@ test_multiSelectProject
 	self assert: transcript projectListPresenter projectListPresenter selections size equals: projectCount!
 
 test_openChangesBrowser
-	| changesBrowser changesItem  projectService |
+	| changesBrowser changesItem projectService |
 	self testsIssue: #issue384
 		withTitle: '(3.0.53) sort by `type` in changes view does not do complete job'.
 	projectService := transcript projectListPresenter projectListPresenter list first.
 	transcript projectListPresenter projectListPresenter selection: projectService.
 	changesItem := transcript projectListPresenter projectListPresenter view queryContextMenu items
-				detect: [:menuItem | menuItem command == #projectChanges]. 
-	changesBrowser := changesItem commandDescription performAgainst:  transcript projectListPresenter.
-	[self assert: (changesBrowser isKindOf: RowanPatchBrowser)] ensure: [changesBrowser destroy]!
+				detect: [:menuItem | menuItem command == #projectChanges].
+	changesBrowser := changesItem commandDescription performAgainst: transcript projectListPresenter.
+	[self assert: (changesBrowser isKindOf: RowanPatchBrowser)] ensure: [self destroy: changesBrowser]!
 
 test_popupMenuHasBrowseClass
 	| browseClassItem |

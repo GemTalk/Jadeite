@@ -269,7 +269,7 @@ test_browseClass
 	self assert: browser selectedClassName equals: 'TranscriptStreamPortable']
 			ensure: 
 				[self assert: browser topShell view close.
-				projectsBrowser destroy]!
+				self destroy: projectsBrowser]!
 
 test_browseClassVariablePane
 	| dictionaryBrowser dictionaryPresenter |
@@ -286,14 +286,15 @@ test_browseClassVariablePane
 	[self assert: (dictionaryBrowser isKindOf: RowanSystemBrowser).
 	dictionaryPresenter := dictionaryBrowser currentCard.
 	self assert: dictionaryPresenter classListPresenter selection equals: 'Array'	"receiver is Array class"]
-			ensure: [dictionaryBrowser destroy].
+			ensure: [self destroy: dictionaryBrowser].
 	debugger variableListPresenter selectionByIndex: 2.
 	self assert: debugger variableDataPresenter value equals: 'aRowanClassService:nil'.
 	projectsBrowser := debugger browseObjectClass.
 	
 	[self assert: (projectsBrowser isKindOf: JadeiteProjectsSystemBrowser).
-	self assert: projectsBrowser currentCard classListPresenter selection name equals: 'RowanClassService'	"receiver is Array class"]
-			ensure: [projectsBrowser destroy]!
+	self assert: projectsBrowser currentCard classListPresenter selection name
+		equals: 'RowanClassService'	"receiver is Array class"]
+			ensure: [self destroy: projectsBrowser]!
 
 test_compileClassRecompileMethodsCompileError
 	self testsIssue: #issue390 withTitle: 'Rename instance variable with accessor method is... wonky'.
@@ -332,7 +333,7 @@ test_compileClassRecompileMethodsCompileError
 	[] ensure: 
 			[self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
 			self projectsPresenter classDefinitionPresenter view isModified: false.
-			projectsBrowser destroy]!
+			self destroy: projectsBrowser]!
 
 test_debuggerModifiedSourcePaneChangeFrame
 	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
@@ -391,7 +392,7 @@ test_duplicateInstVars
 	self assert: debugger variableListPresenter list first className equals: 'ImproperOperation']
 			ensure: 
 				[self projectsPresenter classDefinitionPresenter view isModified: false.
-				projectsBrowser destroy]!
+				self destroy: projectsBrowser]!
 
 test_duplicateInstVarsHierarchy
 	self testsIssue: #issue228
@@ -421,7 +422,7 @@ test_duplicateInstVarsHierarchy
 	self assert: debugger variableListPresenter list first className equals: 'ImproperOperation']
 			ensure: 
 				[self projectsPresenter classDefinitionPresenter view isModified: false.
-				projectsBrowser destroy]!
+				self destroy: projectsBrowser]!
 
 test_duplicateInstVarsInHierarchy
 	self testsIssue: #issue228
@@ -452,7 +453,7 @@ test_duplicateInstVarsInHierarchy
 	self assert: debugger variableListPresenter list first className equals: 'ImproperOperation']
 			ensure: 
 				[self projectsPresenter classDefinitionPresenter view isModified: false.
-				projectsBrowser destroy]!
+				self destroy: projectsBrowser]!
 
 test_frameDoubleClick
 	| projectPresenter |
@@ -494,7 +495,7 @@ test_implementersFromDebugger
 	self assert: ('*Implementors of ''classFromName''*' match: browser topShell caption)]
 			ensure: 
 				[self assert: browser topShell view close.
-				projectsBrowser destroy]!
+				self destroy: projectsBrowser]!
 
 test_implementorsSendersCaption
 	| methodListBrowser |
@@ -603,7 +604,7 @@ test_restartInBlock
 			ensure: [restartProcess terminate]]
 			ensure: 
 				[self projectsPresenter clearBreakPointAt: 8 in: self projectsPresenter.	"inside the block"
-				projectsBrowser destroy]!
+				self destroy: projectsBrowser]!
 
 test_selectAfterDiveNoStepPoint
 	self testsIssue: #issue166
@@ -624,8 +625,8 @@ test_selectAfterDiveNoStepPoint
 	self assert: debugger documentPresenter value replaceLfWithCrLf
 		equals: self interestingLoopMethodSource]
 			ensure: 
-				[self projectsPresenter clearBreakPointAt: 8 in: self projectsPresenter.	
-				projectsBrowser destroy]!
+				[self projectsPresenter clearBreakPointAt: 8 in: self projectsPresenter.
+				self destroy: projectsBrowser]!
 
 test_selectBlockContext
 	self testsIssue: #issue166
@@ -639,7 +640,7 @@ test_selectBlockContext
 	self debuggerDo: [debugger stepInto].
 	self selectFrameAt: 2.	"<<< bug occurred here"
 	self assert: ('issue166*' match: debugger documentPresenter value)]
-			ensure: [projectsBrowser destroy]!
+			ensure: [self destroy: projectsBrowser]!
 
 test_sendersFromDebugger
 	| browser |
@@ -656,7 +657,7 @@ test_sendersFromDebugger
 	self assert: ('*Senders of ''classFromName''*' match: browser topShell caption)]
 			ensure: 
 				[self assert: browser topShell view close.
-				projectsBrowser destroy]!
+				self destroy: projectsBrowser]!
 
 test_stackDumpDetailedFrame
 	| stream crlf nextLine matchString |
@@ -1060,7 +1061,7 @@ testSaveMethod
 		assert: view selection equals: 'testMethod';
 		debuggerDo: [debugger resumeProcess];
 		assert: (session executeString: 'RowanSample1 new testMethod') equals: number]
-			ensure: [projectsBrowser destroy]!
+			ensure: [self destroy: projectsBrowser]!
 
 testStackMenuEnablement
 	| frameContextMenu |

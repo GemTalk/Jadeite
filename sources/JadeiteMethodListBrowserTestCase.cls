@@ -78,7 +78,7 @@ tearDown
 	super tearDown.
 	methodListBrowser
 		ifNotNil: 
-			[methodListBrowser destroy.
+			[self destroy: methodListBrowser.
 			methodListBrowser := nil]!
 
 test_browseClass
@@ -96,15 +96,15 @@ test_browseClass
 	self methodSourcePresenter documentPresenter view selectionRange: (24 to: 35).
 	projectsBrowser := self methodSourcePresenter browseSelectedClass topShell.
 	[self assert: self projectsPresenter selectedClass name equals: 'RowanSample1']
-		ensure: [projectsBrowser destroy].
+		ensure: [self destroy: projectsBrowser].
 	self methodSourcePresenter documentPresenter view selectionRange: (55 to: 64).
 	dictionaryPresenter := self methodSourcePresenter browseSelectedClass.
 	[self assert: dictionaryPresenter selectedClassName equals: 'TranscriptStreamPortable']
-		ensure: [dictionaryPresenter topShell destroy].
+		ensure: [self destroy: dictionaryPresenter topShell].
 	self methodSourcePresenter documentPresenter view selectionRange: (90 to: 95).
 	dictionaryPresenter := self methodSourcePresenter browseSelectedClass.
 	[self assert: ('String*' match: dictionaryPresenter selectedClassName)]
-		ensure: [dictionaryPresenter topShell destroy]!
+		ensure: [self destroy: dictionaryPresenter topShell]!
 
 test_browseHierarchyImplementorsEnablement
 	| commandQuery methodListPresenter |
@@ -258,7 +258,7 @@ test_doubleClickActionClassMethod
 		withTitle: 'Double click in method browser change class to show instance methods'.
 	methodListBrowser := JadePresenter browseImplementorsOf: #bar session: session.
 	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter.
-	methodListPresenter methodListPresenter resetSelection. 
+	methodListPresenter methodListPresenter resetSelection.
 	methodServices := (Array with: #bar) collect: 
 					[:selector |
 					methodListPresenter methodListPresenter list
@@ -270,7 +270,7 @@ test_doubleClickActionClassMethod
 	[self assert: self classListPresenter selection meta.
 	self assert: self projectsPresenter isClassSideSelected.
 	self assert: methodListPresenter selection selector equals: #bar]
-			ensure: [projectsBrowser destroy]!
+			ensure: [self destroy: projectsBrowser]!
 
 test_doubleClickActionInstanceMethod
 	self testsIssue: #issue403
@@ -283,19 +283,19 @@ test_doubleClickActionInstanceMethod
 	[self deny: self classListPresenter selection meta.
 	self deny: self projectsPresenter isClassSideSelected.
 	self assert: self methodListPresenter selection selector equals: #foo]
-			ensure: [projectsBrowser destroy]!
+			ensure: [self destroy: projectsBrowser]!
 
 test_methodBrowserSaveMethod
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
-	 
+	
 	[| source source2 selection |
 	self selectRowanSample1Test.
 	self selectMethodNamedInProjectBrowser: #test1.
 	self assert: self methodListPresenter selection selector equals: #test1.
-	self assert: self methodListPresenter selections size equals: 1. 
+	self assert: self methodListPresenter selections size equals: 1.
 	methodListBrowser := JadePresenter browseImplementorsOf: 'test1' session: session.
 	self assert: self methodListPresenter selection selector equals: #test1.
-	self assert: self methodListPresenter selections size equals: 1. 
+	self assert: self methodListPresenter selections size equals: 1.
 	self assert: self methodListMethodListPresenter list size equals: 1.
 	selection := self methodListMethodListPresenter selection.
 	source := 'test1 self assert: RowanSample1 new foo = ''foo2'''.
@@ -313,7 +313,7 @@ test_methodBrowserSaveMethod
 	self projectsPresenter editSaveMethod: self classListPresenter selection.
 	self assert: self methodSourcePresenter documentPresenter value equals: source2.
 	self assert: self methodListSourcePresenter documentPresenter value equals: source2]
-			ensure: [projectsBrowser destroy]!
+			ensure: [self destroy: projectsBrowser]!
 
 test_removeMethod
 	self saveMethod: 'deleteMe ^123'  in: 'RowanSample1' category: 'other'. 
@@ -346,7 +346,7 @@ test_removeMethodInProjectBrowser
 	self assert: self methodListMethodListPresenter selections isEmpty.
 	self assert: self methodListMethodListPresenter list first className asString
 		equals: 'RowanSample1Test']
-			ensure: [projectsBrowser destroy]!
+			ensure: [self destroy: projectsBrowser]!
 
 test_UnsavedChangesActionChangeSelectionIgnoreChanges
 	| methodListPresenter |

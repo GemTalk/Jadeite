@@ -28,8 +28,8 @@ addNewMethod
 
 tearDown
 	super tearDown.
-	changesBrowser ifNotNil: [changesBrowser destroy].
-	projectsBrowser ifNotNil: [projectsBrowser destroy]!
+	changesBrowser ifNotNil: [self destroy: changesBrowser].
+	projectsBrowser ifNotNil: [self destroy: projectsBrowser]!
 
 test_browseImplementors
 	| methodListBrowser |
@@ -53,8 +53,8 @@ test_browseImplementors
 	[self assert: methodListBrowser primaryPresenter methodListPresenter selection selector
 		equals: #fnoodle]
 			ensure: 
-				[methodListBrowser destroy.
-				projectsBrowser destroy]!
+				[self destroy: methodListBrowser.
+				self destroy: projectsBrowser]!
 
 test_browseImplementorsSelectsChangedMethod
 	| methodListBrowser |
@@ -76,15 +76,15 @@ test_browseImplementorsSelectsChangedMethod
 	self assert: methodListBrowser primaryPresenter methodListPresenter selection className
 		equals: 'RowanSample1']
 			ensure: 
-				[methodListBrowser destroy.
-				projectsBrowser destroy]!
+				[self destroy: methodListBrowser.
+				self destroy: projectsBrowser]!
 
 test_browseMethodSelectsAddedClass
 	| projectService secondProjectBrowser |
 	self testsIssue: #issue415 withTitle: 'Browse changes on a class definition change handled poorly'.
 	projectsBrowser
 		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
-	self selectRowanSample1Class. 
+	self selectRowanSample1Class.
 	self addNewClass.
 	projectService := transcript projectListPresenter projectListPresenter list
 				detect: [:service | service name = 'RowanSample1'].
@@ -92,15 +92,15 @@ test_browseMethodSelectsAddedClass
 	changesBrowser := projectService changesUsing: session.
 	self assert: changesBrowser operationListPresenter list first isKindOf: MCAddition.
 	changesBrowser operationListPresenter selection: changesBrowser operationListPresenter list first.
-	self assert: changesBrowser operationListPresenter selection className equals: 'NewTestClass'. 
+	self assert: changesBrowser operationListPresenter selection className equals: 'NewTestClass'.
 	secondProjectBrowser := changesBrowser browseChangedThing.
 	
 	[self assert: secondProjectBrowser currentCard classListPresenter selection name
 		equals: 'NewTestClass']
 			ensure: 
 				[secondProjectBrowser currentCard basicRemoveMethods.
-				secondProjectBrowser destroy.
-				projectsBrowser destroy]!
+				self destroy: secondProjectBrowser.
+				self destroy: projectsBrowser]!
 
 test_browseMethodSelectsAddedMethod
 	| projectService secondProjectBrowser |
@@ -120,7 +120,7 @@ test_browseMethodSelectsAddedMethod
 		equals: 'RowanSample1Test']
 			ensure: 
 				[secondProjectBrowser currentCard basicRemoveMethods.
-				secondProjectBrowser destroy]!
+				self destroy: secondProjectBrowser]!
 
 test_browseSenders
 	| methodListBrowser |
@@ -152,8 +152,8 @@ test_browseSenders
 	
 	[self assert: methodListBrowser primaryPresenter methodListPresenter selection selector
 		equals: #sendsFnoodle]
-			ensure: [methodListBrowser destroy]]
-			ensure: [projectsBrowser destroy]! !
+			ensure: [self destroy: methodListBrowser]]
+			ensure: [self destroy: projectsBrowser]! !
 !JadeiteChangesBrowserTestCase categoriesFor: #addNewClass!private! !
 !JadeiteChangesBrowserTestCase categoriesFor: #addNewMethod!private! !
 !JadeiteChangesBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !

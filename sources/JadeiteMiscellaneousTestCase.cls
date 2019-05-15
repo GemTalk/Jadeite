@@ -200,7 +200,7 @@ test_workspaceBrowseProjects
 	projectsBrowser := browseProjectsItem commandDescription performAgainst: workspace]
 			ensure: 
 				[workspace view close.
-				projectsBrowser destroy]!
+				self destroy: projectsBrowser]!
 
 testClassServiceNameIsString
 	| classService |

@@ -30,7 +30,7 @@ inspectInstVarAt: index
 
 tearDown
 	super tearDown.
-	inspector ifNotNil: [inspector view destroy]!
+	inspector ifNotNil: [self destroy: inspector view]!
 
 test_abortTransactionInBasicInspector
 	"foolishly or wisely, Dolphin runs different code paths
@@ -359,7 +359,8 @@ test_inspectorHandlesError
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	[self assert: ('Inspector on RowanSample1*' match: inspector caption)] ensure: [inspector destroy].
+	[self assert: ('Inspector on RowanSample1*' match: inspector caption)]
+		ensure: [self destroy: inspector].
 	self
 		saveMethod: 'printString    self error: ''throw an error'''
 		in: 'RowanSample1'
@@ -375,7 +376,7 @@ test_inspectorHandlesError
 	self assert: ('*throw an error*' match: inspector documentPresenter value).	"must show underlying error"
 	inspector instVarListPresenter selectionByIndex: 2.
 	self assert: inspector documentPresenter value isKindOf: Integer]
-			ensure: [inspector destroy].
+			ensure: [self destroy: inspector].
 	remoteObject := session
 				executeString: 'Array with: RowanSample1 new'
 				fromContext: nil
@@ -386,7 +387,7 @@ test_inspectorHandlesError
 	inspector instVarListPresenter selectionByIndex: 3.
 	self assert: ('Error inspecting object*' match: inspector documentPresenter value).	"should show the oop"
 	self assert: ('*throw an error*' match: inspector documentPresenter value)	"must show underlying error"]
-			ensure: [inspector destroy]!
+			ensure: [self destroy: inspector]!
 
 test_inspectorRootObjectRegistered
 	| remoteObject inspectorHandle |
@@ -506,7 +507,7 @@ test_openDictionaryBrowser
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	shell := inspector browseClass.
-	[self assert: (shell isKindOf: RowanSystemBrowser)] ensure: [shell destroy]!
+	[self assert: (shell isKindOf: RowanSystemBrowser)] ensure: [self destroy: shell]!
 
 test_openDictionaryBrowserOnClass
 	| remoteObject shell |
@@ -516,7 +517,7 @@ test_openDictionaryBrowserOnClass
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	shell := inspector browseClass.
-	[self assert: (shell isKindOf: RowanSystemBrowser)] ensure: [shell destroy]!
+	[self assert: (shell isKindOf: RowanSystemBrowser)] ensure: [self destroy: shell]!
 
 test_openNavigationInspectorOnBoolean
 	| remoteObject |
@@ -529,9 +530,9 @@ test_openNavigationInspectorOnBoolean
 	
 	[self assert: (inspector isKindOf: JadeNavigationInspector).
 	self assert: inspector documentPresenter model value equals: 'true'.
-	inspector instVarListPresenter selectionByIndex: 2. "asOop"
-	self assert: inspector documentPresenter model value equals: '268'.]
-			ensure: [inspector destroy].
+	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
+	self assert: inspector documentPresenter model value equals: '268']
+			ensure: [self destroy: inspector].
 	remoteObject := session
 				executeString: 'false'
 				fromContext: nil
@@ -539,8 +540,8 @@ test_openNavigationInspectorOnBoolean
 	inspector := JadeInspector showOn: remoteObject session: session.
 	self assert: (inspector isKindOf: JadeNavigationInspector).
 	self assert: inspector documentPresenter model value equals: 'false'.
-	inspector instVarListPresenter selectionByIndex: 2. "asOop"
-	self assert: inspector documentPresenter model value equals: '12'.!
+	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
+	self assert: inspector documentPresenter model value equals: '12'!
 
 test_openNavigationInspectorOnCharacter
 	| remoteObject |
@@ -615,7 +616,7 @@ test_openProjectsBrowser
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	shell := inspector browseClass.
-	[self assert: (shell isKindOf: JadeiteProjectsSystemBrowser)] ensure: [shell destroy]!
+	[self assert: (shell isKindOf: JadeiteProjectsSystemBrowser)] ensure: [self destroy: shell]!
 
 test_openProjectsBrowserOnClass
 	| remoteObject shell |
@@ -625,7 +626,7 @@ test_openProjectsBrowserOnClass
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	shell := inspector browseClass.
-	[self assert: (shell isKindOf: JadeiteProjectsSystemBrowser)] ensure: [shell destroy]!
+	[self assert: (shell isKindOf: JadeiteProjectsSystemBrowser)] ensure: [self destroy: shell]!
 
 test_registeredPresentersInInspectorCleanedUp
 	"we don't register any yet, but this test will fail if we add any. 
@@ -639,7 +640,7 @@ test_registeredPresentersInInspectorCleanedUp
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters.
-	inspector destroy.
+	self destroy: inspector.
 	inspector := nil.
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
 

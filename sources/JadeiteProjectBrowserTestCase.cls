@@ -269,11 +269,11 @@ tearDown
 		ifTrue: [transcriptWritesWereEnabled == true ifTrue: [transcript flipTranscript]].
 	methodListBrowser
 		ifNotNil: 
-			[methodListBrowser destroy.
+			[self destroy: methodListBrowser.
 			methodListBrowser := nil].
 	secondBrowser
 		ifNotNil: 
-			[secondBrowser destroy.
+			[self destroy: secondBrowser.
 			secondBrowser := nil]!
 
 test_abortOnVariablesTab
@@ -826,17 +826,17 @@ test_browseClass
 	[self assert: self projectsPresenter selectedClass name equals: 'RowanSample1Test'.
 	self deny: secondPresenter sameAs: self projectsPresenter.
 	self assert: secondPresenter selectedClass name equals: 'RowanSample1']
-			ensure: [secondPresenter topShell destroy].
+			ensure: [self destroy: secondPresenter topShell].
 	self selectRowanSample1Test.
 	self selectMethodNamed: #deleteThisMethod.
 	self methodSourcePresenter view selectionRange: (66 to: 75).
 	dictionaryPresenter := self projectsPresenter browseSelectedClass.
 	[self assert: dictionaryPresenter selectedClassName equals: 'TranscriptStreamPortable']
-		ensure: [dictionaryPresenter topShell destroy].
+		ensure: [self destroy: dictionaryPresenter topShell].
 	self methodSourcePresenter view selectionRange: (101 to: 106).
 	dictionaryPresenter := self projectsPresenter browseSelectedClass.
 	[self assert: ('String*' match: dictionaryPresenter selectedClassName)]
-		ensure: [dictionaryPresenter topShell destroy]!
+		ensure: [self destroy: dictionaryPresenter topShell]!
 
 test_browseHierarchyImplementorsEnablement
 	| commandQuery |
@@ -939,7 +939,7 @@ test_browseSameClassCategoriesCorrect
 	self assert: self projectsPresenter categoryListPresenter list notEmpty.
 	self assert: newBrowser currentCard categoryListPresenter list
 		equals: self projectsPresenter categoryListPresenter list]
-			ensure: [newBrowser destroy]!
+			ensure: [self destroy: newBrowser]!
 
 test_browseSelectedMethods
 	| methodListPresenter  commandQuery |
@@ -1032,11 +1032,11 @@ test_changeListSortOrder
 	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch typeString])
 		equals: #('Removal' 'Modification' 'Addition' 'Addition' 'Addition' 'Addition') asOrderedCollection.
 	changesBrowser operationListPresenter view columnClicked: 2.	"ascending class name"
-	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch className]) 
+	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch className])
 		equals: #('DirtyProject1' 'DirtyProject2' 'RowanSample1' 'RowanSample1' 'RowanSample1' 'RowanSample1Test')
 				asOrderedCollection.
 	changesBrowser operationListPresenter view columnClicked: 2.	"descending class name"
-	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch className]) 
+	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch className])
 		equals: #('RowanSample1Test' 'RowanSample1' 'RowanSample1' 'RowanSample1' 'DirtyProject2' 'DirtyProject1')
 				asOrderedCollection.
 	changesBrowser operationListPresenter view columnClicked: 3.	"ascending selector"
@@ -1051,7 +1051,7 @@ test_changeListSortOrder
 	changesBrowser operationListPresenter view columnClicked: 4.	"descending details"
 	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch detailsString])
 		equals: #('tests' 'other' 'other' 'other' 'Class Definition' 'Class Definition') asOrderedCollection]
-			ensure: [changesBrowser destroy]!
+			ensure: [self destroy: changesBrowser]!
 
 test_changeVariableWithModifiedMethodSource
 	self testsIssue: #issue454 withTitle: 'Variables tab, change variable selection, are not prompted to save method'.
@@ -1092,13 +1092,13 @@ test_classColoring
 				detect: [:service | service name = 'RowanPackageServiceTest'].
 	self deny: classService shouldColorAsExtension.
 	self selectHierarchyTab.
-	classService := self classHierarchyPresenter model asBag 
+	classService := self classHierarchyPresenter model asBag
 				detect: [:service | service name = 'RowanClassServiceTest'].
 	self deny: classService shouldColorAsExtension.
 	classService := self classHierarchyPresenter model asBag
 				detect: [:service | service name = 'RowanPackageServiceTest'].
 	self deny: classService shouldColorAsExtension]
-			ensure: [sunitBrowser destroy]!
+			ensure: [self destroy: sunitBrowser]!
 
 test_classColoringExtension
 	| classService sunitBrowser |
@@ -1116,7 +1116,7 @@ test_classColoringExtension
 	classService := self classHierarchyPresenter model asBag
 				detect: [:service | service name = 'RwRowanProjectIssuesTest'].
 	self assert: classService shouldColorAsExtension]
-			ensure: [sunitBrowser destroy]!
+			ensure: [self destroy: sunitBrowser]!
 
 test_classDefinitionTemplateAfterRemove
 	self testsIssue: #issue449 withTitle: '(3.0.63) missing class definition template in empty package'.
@@ -2431,7 +2431,7 @@ test_gotoDefinedPackage
 	[self assert: dictionaryPresenter dictionaryListPresenter selection key = 'Globals'.
 	self assert: dictionaryPresenter classCategoryPresenter selection value = 'Kernel'.
 	self assert: dictionaryPresenter classListPresenter selection = 'ByteArray']
-			ensure: [dictionaryPresenter topShell destroy]!
+			ensure: [self destroy: dictionaryPresenter topShell]!
 
 test_hierarchyCleanedUpAfterUnload
 	"hierarchy classes were being left in the display
@@ -2481,13 +2481,13 @@ test_hierarchyImplementors
 	[self assert: ('Hierarchy Implementors of ''isEmpty'' for *' match: methodListBrowser caption).
 	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
 	hierarchyListSize := methodListPresenter list size]
-			ensure: [methodListBrowser destroy].
+			ensure: [self destroy: methodListBrowser].
 	methodListBrowser := self projectsPresenter browseImplementors.
 	
 	[self assert: ('Implementors of ''isEmpty'' for *' match: methodListBrowser caption).
 	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
 	self assert: methodListPresenter list size > hierarchyListSize	"always a superset"]
-			ensure: [methodListBrowser destroy]!
+			ensure: [self destroy: methodListBrowser]!
 
 test_hierarchyImplementorsFromMethodList
 	"a little risky testing base code that might change but it is convenient"
@@ -2504,8 +2504,8 @@ test_hierarchyImplementorsFromMethodList
 	[self assert: methodListPresenter methodListPresenter list size
 				>= hierarchyMethodListPresenter primaryPresenter methodListPresenter methodListPresenter list size	"always a superset"]
 			ensure: 
-				[methodListBrowser destroy.
-				hierarchyMethodListPresenter destroy]!
+				[self destroy: methodListBrowser.
+				self destroy: hierarchyMethodListPresenter]!
 
 test_hierarchyImplementorsSendersCaption
 	self testsIssue: #issue209 withTitle: 'MethodListBrowser needs the token in the title bar'.
@@ -2515,10 +2515,10 @@ test_hierarchyImplementorsSendersCaption
 	self selectMethodNamed: #branch.
 	methodListBrowser := self projectsPresenter browseHierarchyImplementors.
 	[self assert: ('Hierarchy Implementors of ''branch'' for *' match: methodListBrowser caption)]
-		ensure: [methodListBrowser destroy].
+		ensure: [self destroy: methodListBrowser].
 	methodListBrowser := self projectsPresenter browseHierarchySenders.
 	[self assert: ('Hierarchy Senders of ''branch'' for *' match: methodListBrowser caption)]
-		ensure: [methodListBrowser destroy]!
+		ensure: [self destroy: methodListBrowser]!
 
 test_hierarchyMethodsNotDisplayed
 	| className source |
@@ -2576,7 +2576,7 @@ test_hierarchySelectTwoBrowsers
 	self assert: (firstBrowser currentCard classHierarchyPresenter isKindOf: TreePresenter).
 	self assert: secondBrowser currentCard classHierarchyPresenter selection name = 'RowanSample1Test'.
 	self assert: (secondBrowser currentCard classHierarchyPresenter isKindOf: TreePresenter)]
-			ensure: [secondBrowser destroy]!
+			ensure: [self destroy: secondBrowser]!
 
 test_hierarchySenders
 	"a little risky testing base code that might change but it is convenient"
@@ -2591,13 +2591,13 @@ test_hierarchySenders
 	[self assert: ('Hierarchy Senders of ''isEmpty'' for *' match: methodListBrowser caption).
 	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
 	hierarchyListSize := methodListPresenter list size]
-			ensure: [methodListBrowser destroy].
+			ensure: [self destroy: methodListBrowser].
 	methodListBrowser := self projectsPresenter browseSenders.
 	
 	[self assert: ('Senders of ''isEmpty'' for *' match: methodListBrowser caption).
 	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
 	self assert: methodListPresenter list size >= hierarchyListSize	"always a superset"]
-			ensure: [methodListBrowser destroy]!
+			ensure: [self destroy: methodListBrowser]!
 
 test_hierarchySendersFromMethodList
 	"a little risky testing base code that might change but it is convenient"
@@ -2620,8 +2620,8 @@ test_hierarchySendersFromMethodList
 	methodList
 		do: [:methodService | self assert: (hierarchyClassNames includes: methodService className asString)]]
 			ensure: 
-				[methodListBrowser destroy.
-				hierarchyMethodListBrowser destroy]!
+				[self destroy: methodListBrowser.
+				self destroy: hierarchyMethodListBrowser]!
 
 test_hierarchyWithNonResolvableClass
 	| unresolvableClassService |
@@ -2649,10 +2649,10 @@ test_implementorsSendersCaption
 	self selectMethodNamed: #branch.
 	methodListBrowser := self projectsPresenter browseImplementors.
 	[self assert: ('Implementors of ''branch'' for *' match: methodListBrowser caption)]
-		ensure: [methodListBrowser destroy].
+		ensure: [self destroy: methodListBrowser].
 	methodListBrowser := self projectsPresenter browseSenders.
 	[self assert: ('Senders of ''branch'' for *' match: methodListBrowser caption)]
-		ensure: [methodListBrowser destroy]!
+		ensure: [self destroy: methodListBrowser]!
 
 test_issue261
 	"create a loaded project and test the info display"
@@ -2769,7 +2769,7 @@ test_methodsContainingCaption
 	self testsIssue: #issue209 withTitle: 'MethodListBrowser needs the token in the title bar'.
 	methodListBrowser := JadePresenter browseMethodsContaining: 'updateFromSton:' session: session.
 	[self assert: ('Methods containing ''updateFromSton:'' for *' match: methodListBrowser caption)]
-		ensure: [methodListBrowser destroy]!
+		ensure: [self destroy: methodListBrowser]!
 
 test_methodTabSelected
 	"when a method is changed the method source tab should be selected"
@@ -2937,7 +2937,7 @@ test_openChangesBrowser
 	changesItem := self projectListPresenter view queryContextMenu items
 				detect: [:menuItem | menuItem command == #projectChanges].
 	changesBrowser := changesItem commandDescription performAgainst: self projectsPresenter.
-	[self assert: (changesBrowser isKindOf: RowanPatchBrowser)] ensure: [changesBrowser destroy]!
+	[self assert: (changesBrowser isKindOf: RowanPatchBrowser)] ensure: [self destroy: changesBrowser]!
 
 test_openNewBrowserTabWhileSUnitTabSelected
 	| addBrowserButton jadeMenu cards index |
@@ -3001,7 +3001,7 @@ test_openProjectsBrowserFromMethodList
 		equals: #foo.
 	secondProjectsBrowser := methodListBrowser primaryPresenter methodListPresenter browseClass.
 	[self assert: (secondProjectsBrowser isKindOf: JadeiteProjectsSystemBrowser)]
-		ensure: [secondProjectsBrowser destroy]!
+		ensure: [self destroy: secondProjectsBrowser]!
 
 test_packagesShownInMultipleProjects
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
@@ -3124,7 +3124,7 @@ test_refreshAfterAbortMethodListLeaveCommitted
 	self assert: beforeSize = 1.
 	self
 		assertIsNil: (list detect: [:methodService | methodService className = 'RowanService'] ifNone: [])]
-			ensure: [methodListBrowser destroy].
+			ensure: [self destroy: methodListBrowser].
 	self selectServiceNamed: 'RowanService' in: self classListPresenter.
 	self methodSourcePresenter value: 'classFromName  "do nothing"'.
 	self projectsPresenter editSaveMethod: self classListPresenter selection.
@@ -3241,7 +3241,7 @@ test_registeredPresentersInProjectBrowserCleanedUp
 	registeredPresenters := BrowserUpdate current registeredPresenters.
 	secondBrowser := JadeiteProjectsSystemBrowser showOnSession: session.
 	self assert: BrowserUpdate current registeredPresenters size > registeredPresenters size.
-	secondBrowser destroy.
+	self destroy: secondBrowser.
 	secondBrowser := nil.
 	"difference := BrowserUpdate current registeredPresenters difference: registeredPresenters. uncomment to figure out which presenters are left around"
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters size!
@@ -3795,7 +3795,7 @@ test_sunitBrowserForTestClass
 		equals: 'RowanSample1Test'.
 	self assert: sunitBrowser primaryPresenter packageListPresenter selection name
 		equals: 'RowanSample1-Tests']
-			ensure: [sunitBrowser destroy]!
+			ensure: [self destroy: sunitBrowser]!
 
 test_sunitBrowserIsEnabledForTestClass
 	| commandQuery |
@@ -3925,7 +3925,7 @@ test_sunitUpdatesProperly
 				detect: [:methodService | methodService selector == #testMethod2]
 				ifNone: [].
 	self denyIsNil: newMethodService]
-			ensure: [secondBrowser destroy]!
+			ensure: [self destroy: secondBrowser]!
 
 test_symbolsWithoutImplementorsFound
 	"I think the only way for a symbol to get added to AllSymbols is to commit it"
@@ -4494,8 +4494,8 @@ test_variablesTab
 		equals: #allInstVarNames.
 	dictionaryBrowser := methodListBrowser primaryPresenter methodListPresenter browseClass.
 	[self assert: self methodListPresenter list size equals: methodListSize] ensure: 
-			[dictionaryBrowser destroy.
-			methodListBrowser destroy].
+			[self destroy: dictionaryBrowser.
+			self destroy: methodListBrowser].
 	variableSize := self projectsPresenter variableListPresenter list size.
 	self selectHierarchyTab.
 	self assert: self projectsPresenter variableListPresenter list size equals: variableSize.
