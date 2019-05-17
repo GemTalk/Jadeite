@@ -277,6 +277,10 @@ tearDown
 			secondBrowser := nil]!
 
 test_abortOnVariablesTab
+	self unloadSampleProject.
+	self commitTransaction.	"if sample project was loaded and committed outside test, test will fail"
+	self cloneRowanSample1.
+	self ensureRowanSample1Loaded.
 	self selectRowanSample1Test.
 	self projectsPresenter selectVariableTab.
 	self projectsPresenter variableListPresenter selectionByIndex: 1.

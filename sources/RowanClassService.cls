@@ -277,8 +277,8 @@ remoteServiceName
 removedClass: presenter
 	| removal |
 	updateType == #removedClass: ifFalse: [^self].
-	removal := presenter model asBag detect:[:classService | classService name = name] ifNone:[^self ].
-	presenter model remove: removal. !
+	removal := presenter model asBag detect: [:classService | classService name = name] ifNone: [].
+	removal ifNotNil: [presenter model removeWithoutNotification: removal ifAbsent: []]!
 
 replicateFrom: newService
 	newService isClassService ifTrue: [^super replicateFrom: newService]!

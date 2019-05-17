@@ -131,14 +131,19 @@ basicProjectTabLabel
 	^packageListPresenter selection name!
 
 basicRemoveClass: selection
-	| packageService |
+	| packageService parentNode |
+	parentNode := classHierarchyPresenter model parentNodeOf: selection.
 	packageService := packageListPresenter selection.
 	packageService
 		command: #removeClass:;
 		commandArgs: (Array with: selection).
 	self issueCommand: (Array with: packageService).
+	classListPresenter model: classListPresenter model.	"force a gui update"
+	classHierarchyPresenter model: classHierarchyPresenter model.
+	classHierarchyPresenter selection: (classHierarchyPresenter model asBag
+				detect: [:classService | classService name = parentNode object name]).
 	self selectedClass
-		ifNil: [self resetClassTemplate "just emptied the last class in the package"]
+		ifNil: [self resetClassTemplate	"just emptied the last class in the package"]
 		ifNotNil: 
 			[classDefinitionPresenter value: self selectedClass template.
 			classDefinitionPresenter view
