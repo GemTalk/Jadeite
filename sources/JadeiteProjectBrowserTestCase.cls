@@ -3395,7 +3395,8 @@ test_renameInHierarchyWithMethodListOpen
 	self projectsPresenter basicRenameClass: self projectsPresenter selectedClass to: 'Fnoodly'.
 	
 	[TestMessageBox plannedResult: #ok.
-	self assert: self projectsPresenter selectedClass name = 'Fnoodly']
+	self assert: self projectsPresenter selectedClass name = 'Fnoodly'.
+	self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_rowanTestsHierarchy
