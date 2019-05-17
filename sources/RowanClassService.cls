@@ -28,6 +28,7 @@ basicPrepareForReplication
 	methods := Array new. 
 	hierarchyServices := Array new.
 	selectedMethods := Array new. 
+	visibleTests := Array new. 
 	methods ifNotNil: [methods do: [:methodService | methodService basicPrepareForReplication]].
 	selectedMethods
 		ifNotNil: [selectedMethods do: [:methodService | methodService basicPrepareForReplication]].

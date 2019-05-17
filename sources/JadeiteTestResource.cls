@@ -86,10 +86,11 @@ transcript
 	^transcript!
 
 unloadSampleProject
-	transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName). 
-	session commit.
-
-! !
+	transcript projectListPresenter primaryPresenter list
+		detect: [:projectService | projectService name = self sampleProjectName]
+		ifNone: [^self].
+	transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName).
+	session commit! !
 !JadeiteTestResource categoriesFor: #cloneRowanSample1!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #isAvailable!public!testing! !
 !JadeiteTestResource categoriesFor: #openProjectsBrowser!private!setup teardown! !

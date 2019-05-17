@@ -228,6 +228,7 @@ browseSelectedMethods
 	"convenience menu item to display randomly grouped methods in a browser"
 
 	| browser |
+	self updateServices: methodListPresenter selections. 
 	(browser := JadeiteMethodListBrowser showOnSession: gciSession) primaryPresenter
 		methods: methodListPresenter selections
 		selecting: nil.

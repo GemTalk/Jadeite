@@ -155,6 +155,8 @@ test_abortWithSelections
 test_browseMethods
 	| browseMethodMenuItem browser selectors |
 	self testsIssue: #issue207 withTitle: 'should be able to browe source for test from SUit browser'.
+	self testsIssue: #issue471
+		withTitle: 'First Browse Methods invocation from SUnit browser does not display source'.
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'JadeServerTest' in: self sunitPresenter classListPresenter.
 	selectors := self sunitPresenter methodListPresenter list collect: [:service | service selector].
@@ -166,7 +168,10 @@ test_browseMethods
 	
 	[self assert: (browser isKindOf: JadeiteMethodListBrowser).
 	self assert: browser primaryPresenter methodListPresenter methodListPresenter list size
-		equals: selectors size]
+		equals: selectors size.
+	self assert: browser primaryPresenter methodListPresenter selection selector equals: selectors first.
+	self assert: browser primaryPresenter methodSourcePresenter documentPresenter value
+		equals: self sunitPresenter methodListPresenter selections first source]
 			ensure: [browser view close]!
 
 test_browseSunitClass

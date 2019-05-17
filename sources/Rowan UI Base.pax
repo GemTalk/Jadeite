@@ -1466,6 +1466,7 @@ browseClass
 
 browseMethods
 	| browser |
+	self updateServices: methodListPresenter selections. 
 	(browser := JadeiteMethodListBrowser showOnSession: gciSession) primaryPresenter
 		methods: methodListPresenter selections
 		selecting: nil.
@@ -1955,7 +1956,7 @@ allClassesIn: session
 	browserService := RowanBrowserService new.
 	browserService command: #allClasses.
 	self issueCommand: (Array with: browserService) session: session.
-	^browserService allClasses!
+	^browserService allClasses ifNil:[Array new].!
 
 basicBrowseClassReferences: className session: session
 	| service |
