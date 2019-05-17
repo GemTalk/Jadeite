@@ -179,7 +179,7 @@ onViewOpened
 
 	super onViewOpened.
 	self registerPresentersForUpdates.
-	BrowserUpdate current inUpdate: false	"The debugger isn't opened in a forked process so make sure our 'semaphore' won't block updates"!
+	BrowserUpdate current inUpdate signal	"The debugger isn't opened in a forked process so make sure our 'semaphore' won't block updates"!
 
 processListPresenter
 	^processListPresenter!

@@ -64,7 +64,7 @@ debug: aBoolean
 initialize
 	self initializeUpdates.
 	debug := false.
-	inUpdate := false.
+	inUpdate := Semaphore forMutualExclusion.
 !
 
 initializeUpdates
@@ -78,12 +78,12 @@ inUpdate: anObject
 	^inUpdate := anObject!
 
 issueCommand: services session: session
-	inUpdate ifTrue: [^self].
-	inUpdate := true.
+	inUpdate critical: [Cursor wait showWhile: [^self basicIssueCommand: services session: session]]
+	"inUpdate := true.
 	
 	[[Cursor wait showWhile: [^self basicIssueCommand: services session: session]]
 		ensure: [inUpdate := false]]
-			ifCurtailed: [inUpdate := false]!
+			ifCurtailed: [inUpdate := false]"!
 
 performUpdate: updateBlock with: selector
 	updates do: 
@@ -174,13 +174,14 @@ updateService: service session: session
 	self updateServices: (Array with: service) session: session!
 
 updateServices: services session: session
-	inUpdate ifTrue: [^self].
 	services isEmpty ifTrue: [^self].
-	inUpdate := true.
+	inUpdate critical: [Cursor wait showWhile: [^self basicUpdateServices: services session: session]]
+
+	"inUpdate := true.
 	
 	[[Cursor wait showWhile: [^self basicUpdateServices: services session: session]]
 		ensure: [inUpdate := false]]
-			ifCurtailed: [inUpdate := false]!
+			ifCurtailed: [inUpdate := false]"!
 
 updatesPerform: selector presenter: presenter
 	"the update may know which client updates 
@@ -214,7 +215,7 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #debug:!accessing!private! !
 !BrowserUpdate categoriesFor: #initialize!initialization!public! !
 !BrowserUpdate categoriesFor: #initializeUpdates!initialization!public! !
-!BrowserUpdate categoriesFor: #inUpdate!accessing!public! !
+!BrowserUpdate categoriesFor: #inUpdate!accessing!private! !
 !BrowserUpdate categoriesFor: #inUpdate:!accessing!private! !
 !BrowserUpdate categoriesFor: #issueCommand:session:!commands!public! !
 !BrowserUpdate categoriesFor: #performUpdate:with:!private!updating! !
