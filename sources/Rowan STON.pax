@@ -29,6 +29,9 @@ package methodNames
 	add: #Character -> #stonOn:;
 	add: #Class -> #stonName;
 	add: #Collection -> #stonOn:;
+	add: #Date -> #_monthAbbrev:;
+	add: #Date -> #_yearMonthDay;
+	add: #Date -> #asStringUsingFormat:;
 	add: #Date -> #stonContainSubObjects;
 	add: #Date -> #stonOn:;
 	add: #Dictionary -> #stonOn:;
@@ -43,9 +46,11 @@ package methodNames
 	add: #Object -> #stonProcessSubObjects:;
 	add: #Object -> #stonShouldWriteNilInstVars;
 	add: #SequenceableCollection -> #stonOn:;
+	add: #SmallInteger -> #_digitsAsString;
 	add: #String -> #stonContainSubObjects;
 	add: #String -> #stonOn:;
 	add: #Symbol -> #stonOn:;
+	add: #Time -> #asStringUsingFormat:;
 	add: #Time -> #stonContainSubObjects;
 	add: #Time -> #stonOn:;
 	add: #UndefinedObject -> #stonOn:;
@@ -227,6 +232,72 @@ fromSton: stonReader
 
 !Date methodsFor!
 
+_monthAbbrev: anIndex
+	"ported from GemStone"
+
+	"Private.  Returns a three-letter String that gives the abbreviation, in the
+ user's native language, of the name of the month whose numeric index is
+ anIndex.  The index is a number between 1 and 12 inclusive, where 1 signifies
+ January."
+
+	| theMonth itsAbbrev |
+	theMonth := Date nameOfMonth: anIndex.	"get its full name"
+	itsAbbrev := String new.
+	1 to: 3
+		do: 
+			[:aChar |
+			"take the first three letters"
+			itsAbbrev := itsAbbrev , (theMonth at: aChar)].
+	^itsAbbrev!
+
+_yearMonthDay
+	^Array
+		with: self year
+		with: self monthIndex
+		with: self dayOfMonth!
+
+asStringUsingFormat: anArray
+	"adapted from GemStone"
+
+	"Returns a String that expresses the receiver in the format defined by anArray.
+ Generates an error if anArray contains an incorrect formatting specification.
+
+ See the class documentation of Date for a complete description of the
+ String-formatting specification Array."
+
+	| t dateSeparator monthName aString day yearNumber |
+	t := self _yearMonthDay.
+	dateSeparator := (anArray at: 4) asString.
+	(anArray at: 5) == 2
+		ifTrue: [monthName := self _monthAbbrev: (t at: 2)]
+		ifFalse: 
+			[(anArray at: 5) == 3
+				ifTrue: [monthName := Date nameOfMonth: (t at: 2)]
+				ifFalse: [monthName := (t at: 2) _digitsAsString]	"month as number is default"].	"get the month name according to the format"
+	(anArray at: 6) == 2
+		ifTrue: [yearNumber := ((t at: 1) \\ 100) _digitsAsString]
+		ifFalse: [yearNumber := (t at: 1) printString].	"YYYY is default"
+	day := (t at: 3) _digitsAsString.
+	(anArray at: 1) == 2
+		ifTrue: [aString := monthName , dateSeparator]
+		ifFalse: 
+			[(anArray at: 1) == 3
+				ifTrue: [aString := yearNumber , dateSeparator]
+				ifFalse: [aString := day , dateSeparator]	"yearNumber first"].	"month first"	"day first is default"
+	(anArray at: 2) == 1
+		ifTrue: [aString := aString , day , dateSeparator]
+		ifFalse: 
+			[(anArray at: 2) == 3
+				ifTrue: [aString := aString , yearNumber , dateSeparator]
+				ifFalse: [aString := aString , monthName , dateSeparator]	"month second is default"].	"day second"	"yearNumber second"
+	(anArray at: 3) == 1
+		ifTrue: [aString := aString , day]
+		ifFalse: 
+			[(anArray at: 3) == 2
+				ifTrue: [aString := aString , monthName]
+				ifFalse: [aString := aString , yearNumber]	"month third"].	"day third"	"yearNumber third is default"
+	^aString!
+
 stonContainSubObjects 
 	^ false
 !
@@ -238,8 +309,11 @@ stonOn: stonWriter
     writeObject: self
     listSingleton: (self asStringUsingFormat: #(3 2 1 $- 1 1 $: false))
 ! !
-!Date categoriesFor: #stonContainSubObjects!must not strip!public! !
-!Date categoriesFor: #stonOn:!must not strip!public! !
+!Date categoriesFor: #_monthAbbrev:!must not strip!public!ston! !
+!Date categoriesFor: #_yearMonthDay!must not strip!public!ston! !
+!Date categoriesFor: #asStringUsingFormat:!must not strip!public!ston! !
+!Date categoriesFor: #stonContainSubObjects!must not strip!public!ston! !
+!Date categoriesFor: #stonOn:!must not strip!public!ston! !
 
 !Date class methodsFor!
 
@@ -390,6 +464,18 @@ fromSton: stonReader
 ! !
 !SequenceableCollection class categoriesFor: #fromSton:!must not strip!public! !
 
+!SmallInteger methodsFor!
+
+_digitsAsString
+	"adapted from GemStone for ston"
+
+	"Returns self as a String of at least two digits."
+
+	| aString |
+	self < 10 ifTrue: [aString := '0' , self printString] ifFalse: [aString := self printString].
+	^aString! !
+!SmallInteger categoriesFor: #_digitsAsString!must not strip!public!ston! !
+
 !String methodsFor!
 
 stonContainSubObjects
@@ -410,6 +496,39 @@ stonOn: stonWriter
 
 !Time methodsFor!
 
+asStringUsingFormat: anArray
+	"adapted from GemStone"
+
+	"Returns a String that expresses the receiver in Greenwich Mean Time
+ in the format defined by anArray.  Generates an error if anArray
+ contains an incorrect formatting specification.
+
+ See the class documentation of Time for a complete description of the
+ String-formatting specification Array."
+
+	| timeSeparator hourInt hour min sec aString |
+	timeSeparator := anArray at: 1.
+	hourInt := milliseconds // 3600000.
+	hour := hourInt _digitsAsString.
+	min := (milliseconds \\ 3600000 // 60000) _digitsAsString.
+	sec := (milliseconds // 1000 \\ 60) _digitsAsString.
+	aString := String new.
+	(anArray at: 3)
+		ifTrue: 
+			["12-hour format"
+			hourInt > 12
+				ifTrue: 
+					[aString := aString , (hourInt - 12) _digitsAsString , timeSeparator asString , min.
+					(anArray at: 2) ifTrue: [aString := aString , timeSeparator asString , sec]]
+				ifFalse: 
+					[aString := aString , (hourInt == 0 ifTrue: ['12'] ifFalse: [hour]) , timeSeparator asString , min.
+					(anArray at: 2) ifTrue: [aString := aString , timeSeparator asString , sec]].
+			aString := aString , (hourInt >= 12 ifTrue: [' PM'] ifFalse: [' AM'])]
+		ifFalse: 
+			[aString := aString , hour , timeSeparator asString , min.
+			(anArray at: 2) ifTrue: [aString := aString , timeSeparator asString , sec]].
+	^aString!
+
 stonContainSubObjects
 	^false!
 
@@ -417,6 +536,7 @@ stonOn: stonWriter
 	"Use an ISO style HH:MM:SS representation"
 
 	stonWriter writeObject: self listSingleton: (self asStringUsingFormat: #($: true false))! !
+!Time categoriesFor: #asStringUsingFormat:!must not strip!public!ston! !
 !Time categoriesFor: #stonContainSubObjects!must not strip!public! !
 !Time categoriesFor: #stonOn:!must not strip!public! !
 

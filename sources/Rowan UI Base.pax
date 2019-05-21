@@ -15,6 +15,7 @@ package classNames
 	add: #JadeiteBasicRenameClassMethodListPresenter;
 	add: #JadeiteFindClassDialog;
 	add: #JadeiteFindMethodDialog;
+	add: #JadeiteLogger;
 	add: #JadeiteLoginShell;
 	add: #JadeiteMethodListBrowser;
 	add: #JadeiteMethodListPresenter;
@@ -45,6 +46,7 @@ package classNames
 	add: #RowanFrameService;
 	add: #RowanGlobalsUpdate;
 	add: #RowanKeyValuePrompter;
+	add: #RowanLoggingService;
 	add: #RowanMethodListBrowser;
 	add: #RowanMethodListPresenter;
 	add: #RowanMethodSelectionPresenter;
@@ -458,8 +460,13 @@ Error subclass: #RowanDebuggerStepPointError
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Model subclass: #BrowserUpdate
-	instanceVariableNames: 'updates debug inUpdate'
+	instanceVariableNames: 'updates debug inUpdate logger'
 	classVariableNames: 'Current'
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+Model subclass: #JadeiteLogger
+	instanceVariableNames: 'loggingService isLogging nextId logFileName'
+	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Model subclass: #RowanService
@@ -544,6 +551,11 @@ RowanService subclass: #RowanDebuggerService
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanFrameService
 	instanceVariableNames: 'label method stepPoint vars oop'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanLoggingService
+	instanceVariableNames: 'fileName id date time comment services mode location'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -3997,6 +4009,7 @@ debug: anArray
 redrawAllViews!
 
 update: browserUpdate withSelector: selector
+
 	browserUpdate updatesPerform: selector presenter: self. !
 
 update: browserUpdate withSelector: selector browser: browser

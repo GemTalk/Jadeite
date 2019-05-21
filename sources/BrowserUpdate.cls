@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 Model subclass: #BrowserUpdate
-	instanceVariableNames: 'updates debug inUpdate'
+	instanceVariableNames: 'updates debug inUpdate logger'
 	classVariableNames: 'Current'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -30,25 +30,33 @@ activeServices
 	^services!
 
 basicIssueCommand: services session: session
-	| stonString stonResultString updateResult |
+	| stonString stonResultString updateResult loggedServices |
 	services do: [:service | service prepareForReplication].
-	stonString := STON toString: services. 
+	loggedServices := services asOrderedCollection
+				addFirst: logger newLoggingService;
+				yourself.
+	stonString := STON toString: loggedServices.
+	self logSentServices: loggedServices.
 	[stonResultString := session serverPerform: #updateFromSton: with: stonString]
 		ensure: [services do: [:service | service clearCommand]].
-	updateResult := self update: services afterStonReplication: stonResultString.
+	updateResult := self update: loggedServices afterStonReplication: stonResultString.
 	session releaseAllOops.
 	^updateResult!
 
 basicUpdateServices: services session: session
-	| stonString stonResults result |
+	| stonString stonResults result loggedServices |
 	services do: 
 			[:service |
 			service
 				prepareForReplication;
 				command: nil	"updates don't have commands"].
-	stonString := STON toString: services.
+	loggedServices := services asOrderedCollection
+				addFirst: logger newLoggingService;
+				yourself.
+	stonString := STON toString: loggedServices.
+	self logSentServices: loggedServices.
 	stonResults := session serverPerform: #updateFromSton: with: stonString.
-	result := self update: services afterStonReplication: stonResults.
+	result := self update: loggedServices afterStonReplication: stonResults.
 	session releaseAllOops.
 	^result!
 
@@ -65,6 +73,7 @@ initialize
 	self initializeUpdates.
 	debug := false.
 	inUpdate := Semaphore forMutualExclusion.
+	logger := JadeiteLogger new. 
 !
 
 initializeUpdates
@@ -77,13 +86,21 @@ inUpdate
 inUpdate: anObject
 	^inUpdate := anObject!
 
+isLogging
+
+	^logger isLogging!
+
+isLogging: boolean
+	^logger isLogging: boolean!
+
 issueCommand: services session: session
-	inUpdate critical: [Cursor wait showWhile: [^self basicIssueCommand: services session: session]]
-	"inUpdate := true.
-	
-	[[Cursor wait showWhile: [^self basicIssueCommand: services session: session]]
-		ensure: [inUpdate := false]]
-			ifCurtailed: [inUpdate := false]"!
+	inUpdate critical: [Cursor wait showWhile: [^self basicIssueCommand: services session: session]]!
+
+logReceivedServices: services
+	logger logReceivedServices: services!
+
+logSentServices: services
+	logger logSentServices: services!
 
 performUpdate: updateBlock with: selector
 	updates do: 
@@ -146,12 +163,22 @@ selectedServices
 					services addAll: (potentialSelections select: [:selection | selection isUpdatableService])]].
 	^services!
 
+startLogging
+	logger startLogging!
+
+stopLogging
+	logger stopLogging!
+
 update: services afterStonReplication: stonResults
 	"assume we get back the 'same' services as we sent"
 
-	| updatedServices |
+	| updatedServices loggedServices |
 	self initializeUpdates.
 	updatedServices := STON fromString: stonResults.
+	loggedServices := services asOrderedCollection
+				addFirst: logger loggingService;
+				yourself.
+	self logReceivedServices: loggedServices.
 	updatedServices do: [:newService | services do: [:service | service replicateFrom: newService]].
 	self updates: updatedServices.
 	updatedServices do: [:service | service releaseReferencedServices].
@@ -171,17 +198,11 @@ updates: aCollection
 	self updateReady!
 
 updateService: service session: session
-	self updateServices: (Array with: service) session: session!
+	^self updateServices: (Array with: service) session: session!
 
 updateServices: services session: session
 	services isEmpty ifTrue: [^self].
-	inUpdate critical: [Cursor wait showWhile: [^self basicUpdateServices: services session: session]]
-
-	"inUpdate := true.
-	
-	[[Cursor wait showWhile: [^self basicUpdateServices: services session: session]]
-		ensure: [inUpdate := false]]
-			ifCurtailed: [inUpdate := false]"!
+	inUpdate critical: [Cursor wait showWhile: [^self basicUpdateServices: services session: session]]!
 
 updatesPerform: selector presenter: presenter
 	"the update may know which client updates 
@@ -217,7 +238,11 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #initializeUpdates!initialization!public! !
 !BrowserUpdate categoriesFor: #inUpdate!accessing!private! !
 !BrowserUpdate categoriesFor: #inUpdate:!accessing!private! !
+!BrowserUpdate categoriesFor: #isLogging!public!testing! !
+!BrowserUpdate categoriesFor: #isLogging:!public!testing! !
 !BrowserUpdate categoriesFor: #issueCommand:session:!commands!public! !
+!BrowserUpdate categoriesFor: #logReceivedServices:!logging!public! !
+!BrowserUpdate categoriesFor: #logSentServices:!logging!public! !
 !BrowserUpdate categoriesFor: #performUpdate:with:!private!updating! !
 !BrowserUpdate categoriesFor: #register:selector:!public!registeringPresenters! !
 !BrowserUpdate categoriesFor: #register:selector:browser:!public!registeringPresenters! !
@@ -226,6 +251,8 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #registeredPresenters!public!registeringPresenters! !
 !BrowserUpdate categoriesFor: #registeredTreePresenters!private!registeringPresenters! !
 !BrowserUpdate categoriesFor: #selectedServices!accessing!public! !
+!BrowserUpdate categoriesFor: #startLogging!logging!public! !
+!BrowserUpdate categoriesFor: #stopLogging!logging!public! !
 !BrowserUpdate categoriesFor: #update:afterStonReplication:!public!updating! !
 !BrowserUpdate categoriesFor: #updateReady!public!updating! !
 !BrowserUpdate categoriesFor: #updates!accessing!public! !
@@ -244,7 +271,15 @@ clearCurrent
 	Current := nil!
 
 current
-	^Current ifNil: [Current := self new]! !
+	^Current ifNil: [Current := self new]!
+
+startLogging
+	Current startLogging!
+
+stopLogging
+	Current stopLogging! !
 !BrowserUpdate class categoriesFor: #clearCurrent!accessing!public! !
 !BrowserUpdate class categoriesFor: #current!accessing!public! !
+!BrowserUpdate class categoriesFor: #startLogging!logging!public! !
+!BrowserUpdate class categoriesFor: #stopLogging!logging!public! !
 
