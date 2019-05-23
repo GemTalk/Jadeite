@@ -96,6 +96,10 @@ isLogging: boolean
 issueCommand: services session: session
 	inUpdate critical: [Cursor wait showWhile: [^self basicIssueCommand: services session: session]]!
 
+logFileName
+
+	^logger logFileName!
+
 logReceivedServices: services
 	logger logReceivedServices: services!
 
@@ -241,6 +245,7 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #isLogging!public!testing! !
 !BrowserUpdate categoriesFor: #isLogging:!public!testing! !
 !BrowserUpdate categoriesFor: #issueCommand:session:!commands!public! !
+!BrowserUpdate categoriesFor: #logFileName!accessing!public! !
 !BrowserUpdate categoriesFor: #logReceivedServices:!logging!public! !
 !BrowserUpdate categoriesFor: #logSentServices:!logging!public! !
 !BrowserUpdate categoriesFor: #performUpdate:with:!private!updating! !

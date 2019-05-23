@@ -58,10 +58,14 @@ package methodNames
 	add: 'Character class' -> #fromSton:;
 	add: 'Collection class' -> #fromSton:;
 	add: 'Date class' -> #fromSton:;
+	add: 'Date class' -> #fromStream:usingFormat:;
+	add: 'Date class' -> #fromString:usingFormat:;
 	add: 'Dictionary class' -> #fromSton:;
 	add: 'Object class' -> #fromSton:;
 	add: 'SequenceableCollection class' -> #fromSton:;
 	add: 'Time class' -> #fromSton:;
+	add: 'Time class' -> #fromStream:usingFormat:;
+	add: 'Time class' -> #fromString:usingFormat:;
 	yourself.
 
 package binaryGlobalNames: (Set new
@@ -320,8 +324,104 @@ stonOn: stonWriter
 fromSton: stonReader
 
 	^ self fromStream: stonReader parseListSingleton readStream usingFormat: #(3 2 1 $- 1 1)
-! !
+!
+
+fromStream: aStream usingFormat: anArray
+	"adapted from GemStone"
+
+	"Creates and returns an instance of the receiver by reading a String from
+ aStream.  The String expresses the date in the format specified by anArray.
+ The expression is terminated either by a space Character or by the end of the
+ Stream.  Generates an error if the String does not conform to the format,
+ or if anArray contains an incorrect formatting specification.
+
+ See the class documentation of Date for a complete description of the
+ String-formatting specification Array.
+
+ If the month format (5th element) indicates either an abbreviation (2) or an
+ entire name (3), then this method tries to determine the month by decoding a
+ Character substring.  That substring may include any number of characters, but
+ must exactly match a legal month name (or the initial portion of that month
+ name).  If the substring matches more than one month, the first month matched
+ is used (the search begins with January)."
+
+	| dayInt monthInt yearInt dateDelim result parseField parseBlocks |
+	"This block returns a string up from the input stream up to the specified
+ delimiter.  If also allows an end-of-file if that parameter is set true.
+ It then skips over the delimiter if it is found.
+"
+	parseField := 
+			[:delim :allowEof |
+			| str |
+			str := aStream contents class new.
+			[(aStream peek = delim) not and: [aStream atEnd not]] whileTrue: [str := str , aStream next asString].
+			aStream atEnd
+				ifTrue: [allowEof ifFalse: [self error: 'Bad Date Format']]
+				ifFalse: [aStream next	"skip over delimiter"].
+			str].
+	parseBlocks := {
+				[:delim |
+				| nextField |
+				nextField := parseField value: delim value: delim = $\x20.
+				dayInt := Integer fromString: nextField asString].
+				
+				[:delim |
+				| nextField |
+				nextField := parseField value: delim value: delim = $\x20.
+				nextField = '' ifTrue: [self error: 'Bad Date Format'].
+				(anArray at: 5) == 1
+					ifTrue: [monthInt := Integer fromString: nextField asString]
+					ifFalse: [monthInt := Date nameOfMonth: nextField asInteger].
+				(monthInt < 1 or: [monthInt > 12]) ifTrue: [self error: 'Bad Date Format']].
+				
+				[:delim |
+				| nextField |
+				nextField := parseField value: delim value: delim = $\x20.
+				yearInt := Integer fromString: nextField asString.
+				(anArray at: 6) == 2
+					ifTrue: [yearInt > 99 ifFalse: [yearInt := yearInt + (Date today year // 100 * 100)]]]}.
+	"parse day"
+	"parse month"
+	"parse year"
+	dateDelim := anArray at: 4.
+
+	"parse the date, with day, month, year in the specified format order"
+	(parseBlocks at: (anArray at: 1)) value: dateDelim.
+	(parseBlocks at: (anArray at: 2)) value: dateDelim.
+	(parseBlocks at: (anArray at: 3)) value: $\x20.
+	result := self
+				newDay: dayInt
+				monthNumber: monthInt
+				year: yearInt.
+	^result!
+
+fromString: aString usingFormat: anArray
+	"adapted from GemStone"
+
+	"Creates and returns an instance of the receiver from the String aString.
+ The String expresses the date in the format specified by anArray.  The
+ expression is terminated either by a space Character or by the end of the
+ String.  Generates an error if the String does not conform to the format,
+ or if anArray contains an incorrect formatting specification.
+
+ See the class documentation of Date for a complete description of the
+ String-formatting specification Array.
+
+ If the month format (5th element) indicates either an abbreviation (2) or an
+ entire name (3), then this method tries to determine the month by decoding a
+ character substring.  That substring may include any number of Characters, but
+ must exactly match a legal month name (or the initial portion of that month
+ name).  If the substring matches more than one month, the first month matched
+ is used (the search begins with January)."
+
+	| s result |
+	s := ReadStream on: aString.
+	result := self fromStream: s usingFormat: anArray.
+	[s atEnd] whileFalse: [(s next isEquivalent: $\x20) ifFalse: [self _errIncorrectFormat: aString]].
+	^result! !
 !Date class categoriesFor: #fromSton:!must not strip!public! !
+!Date class categoriesFor: #fromStream:usingFormat:!must not strip!public!ston! !
+!Date class categoriesFor: #fromString:usingFormat:!must not strip!public!ston! !
 
 !Dictionary methodsFor!
 
@@ -543,8 +643,79 @@ stonOn: stonWriter
 !Time class methodsFor!
 
 fromSton: stonReader
-	^self fromString: stonReader parseListSingleton usingFormat: #($: true false)! !
+	^self fromString: stonReader parseListSingleton usingFormat: #($: true false)!
+
+fromStream: aStream usingFormat: anArray
+	"Creates and returns an instance of the receiver by reading a String from
+ aStream.  The String expresses Greenwich Mean Time in the format specified by
+ anArray.  The expression is terminated either by a space Character or by the
+ end of the Stream.  Generates an error if the String does not conform to the
+ format, or if anArray contains an incorrect formatting specification.
+
+ See the class documentation of Time for a complete description of the
+ String-formatting specification Array."
+
+	| hourInt minInt secInt timeDelim ampm ampmPresent secondsPresent parseField totalSeconds |
+	"This block returns a string up from the input stream up to the specified
+ delimiter.  If also allows an end-of-file if that parameter is set true.
+ It then skips over the delimiter if it is found.
+"
+	parseField := 
+			[:delim :allowEof |
+			| str |
+			str := aStream contents class new.
+			[(aStream peek = delim) not and: [aStream atEnd not]]
+				whileTrue: [str := str , aStream next asString].
+			aStream atEnd
+				ifTrue: [allowEof ifFalse: [self error: 'Bad Time format']]
+				ifFalse: [aStream next	"skip over delimiter"].
+			str].
+	timeDelim := anArray at: 1.
+	secondsPresent := anArray at: 2.
+	ampmPresent := anArray at: 3.
+	hourInt := Integer fromString: (parseField value: timeDelim value: false).
+	minInt := Integer
+				fromString: (parseField value: (secondsPresent ifTrue: [timeDelim] ifFalse: [$\x20])
+						value: (secondsPresent not and: [ampmPresent not])).
+	secondsPresent
+		ifTrue: [secInt := Integer fromString: (parseField value: $\x20 value: ampmPresent not)]
+		ifFalse: [secInt := 0].
+	ampmPresent
+		ifTrue: 
+			[hourInt < 0 ifTrue: [self error: 'Bad Time format'].
+			hourInt > 12 ifTrue: [self error: 'Bad Time format'].
+			ampm := String new.
+			ampm := ampm
+						, aStream next asString;
+						add: aStream next.
+			ampm = 'PM'
+				ifTrue: 
+					[hourInt := hourInt + 12.
+					hourInt == 24 ifTrue: [hourInt := 12]]
+				ifFalse: 
+					[ampm = 'AM' ifFalse: [self error: 'Bad Time format'].
+					hourInt == 12 ifTrue: [hourInt := 0]]].
+	totalSeconds := hourInt * 3600 + (minInt * 60) + secInt.
+	^self fromSeconds: totalSeconds!
+
+fromString: aString usingFormat: anArray
+	"Creates and returns an instance of the receiver from the String aString.
+ The String expresses local time in the format specified by anArray.
+ The expression is terminated either by a space Character or by the end of the
+ String.  Generates an error if the String does not conform to the format,
+ or if anArray contains an incorrect formatting specification.
+
+ See the class documentation of Time for a complete description of the
+ String-formatting specification Array."
+
+	| s result |
+	s := ReadStream on: aString.
+	result := self fromStream: s usingFormat: anArray.
+	[s atEnd] whileFalse: [s next = $\x20 ifFalse: [self error: 'Invalid Time format']].
+	^result! !
 !Time class categoriesFor: #fromSton:!must not strip!public! !
+!Time class categoriesFor: #fromStream:usingFormat:!public!ston! !
+!Time class categoriesFor: #fromString:usingFormat:!public!ston! !
 
 !UndefinedObject methodsFor!
 

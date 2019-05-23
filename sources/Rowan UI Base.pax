@@ -16,6 +16,8 @@ package classNames
 	add: #JadeiteFindClassDialog;
 	add: #JadeiteFindMethodDialog;
 	add: #JadeiteLogger;
+	add: #JadeiteLoggerPresenter;
+	add: #JadeiteLoggerShell;
 	add: #JadeiteLoginShell;
 	add: #JadeiteMethodListBrowser;
 	add: #JadeiteMethodListPresenter;
@@ -589,6 +591,11 @@ RowanService subclass: #RowanVariableService
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+JadePresenter subclass: #JadeiteLoggerPresenter
+	instanceVariableNames: 'logListPresenter'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 JadePresenterA subclass: #RowanPresenter
 	instanceVariableNames: 'projectToolsOop'
 	classVariableNames: ''
@@ -706,6 +713,11 @@ JadeDebugger subclass: #RowanDebugger
 	classInstanceVariableNames: 'debuggerClass semaphore'!
 JadeTranscript subclass: #JadeiteTranscript
 	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeShell subclass: #JadeiteLoggerShell
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

@@ -89,6 +89,11 @@ debugPrintString
 dictionaryUpdate: presenter
 	!
 
+displayName
+	"for logging. for now"
+
+	^name!
+
 displayString
 
 	^self name!
@@ -134,6 +139,10 @@ isDirty
 
 isDirty: anObject
 	isDirty := anObject!
+
+isLoggingService
+
+	^false!
 
 isMethodService
 
@@ -335,6 +344,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #debugPrintOn:!printing!public! !
 !RowanService categoriesFor: #debugPrintString!printing!public! !
 !RowanService categoriesFor: #dictionaryUpdate:!public!updating! !
+!RowanService categoriesFor: #displayName!displaying!public! !
 !RowanService categoriesFor: #displayString!displaying!public! !
 !RowanService categoriesFor: #emptyFilterListsIn:!Init / Release!private! !
 !RowanService categoriesFor: #excludedInstVars!public!ston! !
@@ -348,6 +358,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #isClassService!public!testing! !
 !RowanService categoriesFor: #isDirty!accessing!public! !
 !RowanService categoriesFor: #isDirty:!accessing!public! !
+!RowanService categoriesFor: #isLoggingService!public!testing! !
 !RowanService categoriesFor: #isMethodService!public!testing! !
 !RowanService categoriesFor: #isPackageService!public!testing! !
 !RowanService categoriesFor: #isProjectService!public!testing! !

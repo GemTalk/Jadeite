@@ -122,6 +122,9 @@ definedPackage
 displayClassName
 	^className , (meta ifTrue: [' class'] ifFalse: [String new])!
 
+displayName
+	^className , '>>' , selector!
+
 displayOn: aStream
 	aStream
 		nextPutAll: (className ifNil: ['?']);
@@ -435,6 +438,7 @@ user: anObject
 !RowanMethodService categoriesFor: #copyBasicsFrom:!public!updating! !
 !RowanMethodService categoriesFor: #definedPackage!accessing!private! !
 !RowanMethodService categoriesFor: #displayClassName!displaying!public! !
+!RowanMethodService categoriesFor: #displayName!displaying!public! !
 !RowanMethodService categoriesFor: #displayOn:!displaying!public! !
 !RowanMethodService categoriesFor: #displayStringFor:!displaying!public! !
 !RowanMethodService categoriesFor: #failedCompile!accessing!public! !

@@ -30,6 +30,10 @@ isLogging
 isLogging: anObject
 	isLogging := anObject!
 
+logFileName
+
+	^logFileName!
+
 loggingService
 	^loggingService!
 
@@ -59,12 +63,12 @@ startLogging
 
 stopLogging
 	nextId := nil.
-	isLogging := false.
-	logFileName := nil! !
+	isLogging := false.! !
 !JadeiteLogger categoriesFor: #defaultLogFileName!operations!private! !
 !JadeiteLogger categoriesFor: #initialize!initialization!private! !
 !JadeiteLogger categoriesFor: #isLogging!accessing!private! !
 !JadeiteLogger categoriesFor: #isLogging:!accessing!private! !
+!JadeiteLogger categoriesFor: #logFileName!public! !
 !JadeiteLogger categoriesFor: #loggingService!accessing!private! !
 !JadeiteLogger categoriesFor: #loggingService:!accessing!private! !
 !JadeiteLogger categoriesFor: #logReceivedServices:!accessing!logging!public! !
