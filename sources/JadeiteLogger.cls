@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 Model subclass: #JadeiteLogger
-	instanceVariableNames: 'loggingService isLogging nextId logFileName'
+	instanceVariableNames: 'loggingService isLogging nextGroupId logFileName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -27,8 +27,9 @@ initialize
 isLogging
 	^isLogging!
 
-isLogging: anObject
-	isLogging := anObject!
+isLogging: boolean
+	isLogging := boolean.
+	loggingService isLogging: boolean!
 
 logFileName
 
@@ -38,7 +39,8 @@ loggingService
 	^loggingService!
 
 loggingService: anObject
-	loggingService := anObject!
+	loggingService := anObject.
+	loggingService isLogging: isLogging!
 
 logReceivedServices: services
 	isLogging ifTrue: [loggingService logReceivedServices: services]!
@@ -48,22 +50,23 @@ logSentServices: services
 
 newLoggingService
 	| inst |
-	inst := RowanLoggingService newWithId: self nextId.
+	inst := RowanLoggingService newWithGroupId: self nextGroupId.
+	inst command: #logReceivedServices.
 	inst fileName: logFileName.
-	loggingService := inst.
+	self loggingService: inst.
 	^inst!
 
-nextId
-	^nextId ifNil: [nextId := 1] ifNotNil: [nextId := nextId + 1]!
+nextGroupId
+	^nextGroupId ifNil: [nextGroupId := 1] ifNotNil: [nextGroupId := nextGroupId + 1]!
 
 startLogging
-	nextId := nil.
-	isLogging := true.
+	nextGroupId := nil.
+	self isLogging: true.
 	logFileName := self defaultLogFileName!
 
 stopLogging
-	nextId := nil.
-	isLogging := false.! !
+	nextGroupId := nil.
+	self isLogging: false! !
 !JadeiteLogger categoriesFor: #defaultLogFileName!operations!private! !
 !JadeiteLogger categoriesFor: #initialize!initialization!private! !
 !JadeiteLogger categoriesFor: #isLogging!accessing!private! !
@@ -74,7 +77,7 @@ stopLogging
 !JadeiteLogger categoriesFor: #logReceivedServices:!accessing!logging!public! !
 !JadeiteLogger categoriesFor: #logSentServices:!accessing!logging!public! !
 !JadeiteLogger categoriesFor: #newLoggingService!accessing!logging!public! !
-!JadeiteLogger categoriesFor: #nextId!accessing!public! !
+!JadeiteLogger categoriesFor: #nextGroupId!accessing!public! !
 !JadeiteLogger categoriesFor: #startLogging!operations!public! !
 !JadeiteLogger categoriesFor: #stopLogging!operations!public! !
 

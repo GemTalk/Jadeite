@@ -467,7 +467,7 @@ Model subclass: #BrowserUpdate
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Model subclass: #JadeiteLogger
-	instanceVariableNames: 'loggingService isLogging nextId logFileName'
+	instanceVariableNames: 'loggingService isLogging nextGroupId logFileName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -557,7 +557,7 @@ RowanService subclass: #RowanFrameService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanLoggingService
-	instanceVariableNames: 'fileName id date time comment services mode location'
+	instanceVariableNames: 'fileName id groupId date time comment services mode location isLogging'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

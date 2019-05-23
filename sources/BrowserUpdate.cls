@@ -30,35 +30,23 @@ activeServices
 	^services!
 
 basicIssueCommand: services session: session
-	| stonString stonResultString updateResult loggedServices |
+	| stonString stonResultString updateResult loggedServices newLoggingService |
 	services do: [:service | service prepareForReplication].
+	newLoggingService := logger newLoggingService services: services.
+	self logSentServices: services.
 	loggedServices := services asOrderedCollection
-				addFirst: logger newLoggingService;
+				addFirst: newLoggingService;
 				yourself.
 	stonString := STON toString: loggedServices.
-	self logSentServices: loggedServices.
 	[stonResultString := session serverPerform: #updateFromSton: with: stonString]
 		ensure: [services do: [:service | service clearCommand]].
-	updateResult := self update: loggedServices afterStonReplication: stonResultString.
+	updateResult := self update: services afterStonReplication: stonResultString.
 	session releaseAllOops.
 	^updateResult!
 
 basicUpdateServices: services session: session
-	| stonString stonResults result loggedServices |
-	services do: 
-			[:service |
-			service
-				prepareForReplication;
-				command: nil	"updates don't have commands"].
-	loggedServices := services asOrderedCollection
-				addFirst: logger newLoggingService;
-				yourself.
-	stonString := STON toString: loggedServices.
-	self logSentServices: loggedServices.
-	stonResults := session serverPerform: #updateFromSton: with: stonString.
-	result := self update: loggedServices afterStonReplication: stonResults.
-	session releaseAllOops.
-	^result!
+	services do: [:service | service command: #update].
+	^self basicIssueCommand: services session: session!
 
 debug
 	^debug!
@@ -176,13 +164,12 @@ stopLogging
 update: services afterStonReplication: stonResults
 	"assume we get back the 'same' services as we sent"
 
-	| updatedServices loggedServices |
+	| updatedServices |
 	self initializeUpdates.
 	updatedServices := STON fromString: stonResults.
-	loggedServices := services asOrderedCollection
-				addFirst: logger loggingService;
-				yourself.
-	self logReceivedServices: loggedServices.
+	logger loggingService replicateFrom: updatedServices last.
+	updatedServices := updatedServices copyWithout: updatedServices last.
+	self logReceivedServices: updatedServices.
 	updatedServices do: [:newService | services do: [:service | service replicateFrom: newService]].
 	self updates: updatedServices.
 	updatedServices do: [:service | service releaseReferencedServices].

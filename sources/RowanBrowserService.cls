@@ -10,8 +10,8 @@ RowanBrowserService comment: ''!
 !RowanBrowserService categoriesForClass!Unclassified! !
 !RowanBrowserService methodsFor!
 
-= projectService
-	^name = projectService name!
+= browserService
+	^browserService isBrowserService and: [name = browserService name]!
 
 aborted: presenter browser: browser
 	browser refreshFromServerAfterAbort: self!

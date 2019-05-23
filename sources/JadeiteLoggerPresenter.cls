@@ -19,25 +19,40 @@ createSchematicWiring
 	super createSchematicWiring.
 	logListPresenter when: #'actionPerformed' send: #'inspectService' to: self.!
 
-inputClientFile
-	| rs objects |
+inputClientFile: objects
+	| rs |
 	rs := FileStream open: BrowserUpdate current logFileName mode: #read.
-	objects := ListModel new.
-	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close].
-	logListPresenter model: objects!
+	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close]!
+
+inputFiles
+	| sorted |
+	sorted := SortedCollection
+				sortBlock: [:x :y | x groupId < y groupId or: [x groupId = y groupId and: [x id < y id]]].
+	self inputClientFile: sorted.
+	self inputServerFile: sorted.
+	logListPresenter model: (ListModel withAll: sorted).
+	logListPresenter view vertScrollPos: 100000 "seems there should be a better way to show the bottom of the list"!
+
+inputServerFile: objects
+	| rs serverFileContents |
+	serverFileContents := gciSession
+				executeString: '(RowanLoggingService new fileName: ''' , BrowserUpdate current logFileName
+						, ''') logFileContents'.
+	rs := ReadStream on: serverFileContents.
+	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close]!
 
 inspectService
 
 	logListPresenter selections inspect!
 
 onViewOpened
-
 	super onViewOpened.
-	self inputClientFile. 
-! !
+	self inputFiles! !
 !JadeiteLoggerPresenter categoriesFor: #createComponents!initialization!public! !
 !JadeiteLoggerPresenter categoriesFor: #createSchematicWiring!initialization!public! !
-!JadeiteLoggerPresenter categoriesFor: #inputClientFile!private! !
+!JadeiteLoggerPresenter categoriesFor: #inputClientFile:!private! !
+!JadeiteLoggerPresenter categoriesFor: #inputFiles!private! !
+!JadeiteLoggerPresenter categoriesFor: #inputServerFile:!private! !
 !JadeiteLoggerPresenter categoriesFor: #inspectService!operations!public! !
 !JadeiteLoggerPresenter categoriesFor: #onViewOpened!event handlers!public! !
 
