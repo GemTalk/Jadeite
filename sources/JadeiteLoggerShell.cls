@@ -14,12 +14,22 @@ inputFiles
 
 	^self primaryPresenter inputFiles!
 
+onViewClosed
+	BrowserUpdate current logComment: 'Closing Logger Browser {' , self identityHash printString , '}'.
+	super onViewClosed!
+
+onViewOpened
+	BrowserUpdate current logComment: 'Opening Logger Browser {' , self identityHash printString , '}'.
+	super onViewOpened!
+
 presenterClass
 	^JadeiteLoggerPresenter!
 
 shellName
 	^'Jadeite Logger Browser'! !
 !JadeiteLoggerShell categoriesFor: #inputFiles!menu handlers!public! !
+!JadeiteLoggerShell categoriesFor: #onViewClosed!event handlers!public! !
+!JadeiteLoggerShell categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteLoggerShell categoriesFor: #presenterClass!overrides!private! !
 !JadeiteLoggerShell categoriesFor: #shellName!overrides!private! !
 

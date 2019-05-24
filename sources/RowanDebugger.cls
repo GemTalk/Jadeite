@@ -164,22 +164,22 @@ onIdleEntered
 
 onViewClosed
 	"Private - copied from RowanSystemBrowserPresenter>>onViewClosed"
-	BrowserUpdate current logComment: 'Closing Debugger'. 
-	processList := processListPresenter list collect: [:each | GsProcess session: gciSession oopType: each oopType].
+
+	BrowserUpdate current logComment: 'Closing Debugger {' , self identityHash printString , '}'.
+	processList := processListPresenter list
+				collect: [:each | GsProcess session: gciSession oopType: each oopType].
 	super onViewClosed.
-	subPresenters do: [:presenter |
-		BrowserUpdate current removeEventsTriggeredFor: presenter.
-	].
+	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter].
 	"Allow test to know when view is closed"
-	self class signalSemaphore.
-!
+	self class signalSemaphore!
 
 onViewOpened
 	"Private - copied from RowanProjectsBrowserPresenter>>onViewOpened"
 
 	super onViewOpened.
 	self registerPresentersForUpdates.
-	BrowserUpdate current inUpdate signal	"The debugger isn't opened in a forked process so make sure our 'semaphore' won't block updates"!
+	BrowserUpdate current inUpdate signal.	"The debugger isn't opened in a forked process so make sure our 'semaphore' won't block updates"
+	BrowserUpdate current logComment: 'Opening Debugger {' , self identityHash printString , '}'!
 
 processListPresenter
 	^processListPresenter!

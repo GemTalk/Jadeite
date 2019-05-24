@@ -25,6 +25,12 @@ clientIdDisplayString
 
 	^id printString!
 
+comment
+	^comment!
+
+comment: anObject
+	comment := anObject!
+
 date
 	^date!
 
@@ -36,12 +42,12 @@ displayCommand
 	ws := WriteStream on: String new.
 	services do: 
 			[:service |
-			ws
-				nextPutAll: (service displayName ifNil: [String new]);
-				space.
 			service command
 				ifNil: [ws nextPutAll: (service updateType ifNil: [String new] ifNotNil: [:u | u , ';'])]
-				ifNotNil: [ws nextPutAll: (service command ifNil: [String new] ifNotNil: [:u | u , ';'])]].
+				ifNotNil: [ws nextPutAll: (service command ifNil: [String new] ifNotNil: [:u | u , ';'])].
+			ws
+				space;
+				nextPutAll: (service displayName ifNil: [String new])].
 	^ws contents!
 
 displayString
@@ -113,7 +119,8 @@ logComment: aString
 				open: fileName
 				mode: #append
 				text: true.
-	[ws nextPutAll: stonString] ensure: [ws close]!
+	[ws nextPutAll: stonString] ensure: [ws close].
+	comment := nil	"service may be reused. Clear comment"!
 
 logReceivedServices: theServices
 	mode := #received.
@@ -157,26 +164,13 @@ time
 	^time!
 
 time: anObject
-	time := anObject!
-
-updateType
-	| ws |
-	ws := WriteStream on: String new.
-	(services reject: [:service | service isLoggingService]) do: 
-			[:service |
-			ws
-				nextPutAll: (service displayName ifNil: [String new]);
-				space.
-			mode = #received
-				ifTrue: 
-					[ws
-						nextPutAll: (service updateType ifNil: [String new]);
-						nextPut: $;]].
-	^ws contents! !
+	time := anObject! !
 !RowanLoggingService categoriesFor: #=!comparing!public! !
 !RowanLoggingService categoriesFor: #clientDisplayString!displaying!public! !
 !RowanLoggingService categoriesFor: #clientGroupIdDisplayString!displaying!public! !
 !RowanLoggingService categoriesFor: #clientIdDisplayString!displaying!public! !
+!RowanLoggingService categoriesFor: #comment!accessing!private! !
+!RowanLoggingService categoriesFor: #comment:!accessing!private! !
 !RowanLoggingService categoriesFor: #date!accessing!private! !
 !RowanLoggingService categoriesFor: #date:!accessing!private! !
 !RowanLoggingService categoriesFor: #displayCommand!displaying!public! !
@@ -202,7 +196,6 @@ updateType
 !RowanLoggingService categoriesFor: #services:!accessing!private! !
 !RowanLoggingService categoriesFor: #time!accessing!private! !
 !RowanLoggingService categoriesFor: #time:!accessing!private! !
-!RowanLoggingService categoriesFor: #updateType!displaying!public! !
 
 !RowanLoggingService class methodsFor!
 

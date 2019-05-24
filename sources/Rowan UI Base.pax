@@ -269,6 +269,8 @@ package methodNames
 	add: #JadeTreeMethodListPresenter -> #browseMethodsFromString:methodName:;
 	add: #JadeTreeMethodListPresenter -> #browseMethodsFromString:methodName:type:;
 	add: #JadeTreeMethodListPresenter -> #onDropMethodsTree:;
+	add: #JadeWorkspace -> #onViewClosed;
+	add: #JadeWorkspace -> #onViewOpened;
 	add: #ListPresenter -> #selectServiceStartingWith:;
 	add: #MCClassDefinition -> #initialize:;
 	add: #MCPatchBrowser -> #browseChangedThing;
@@ -467,7 +469,7 @@ Model subclass: #BrowserUpdate
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Model subclass: #JadeiteLogger
-	instanceVariableNames: 'loggingService isLogging nextGroupId logFileName'
+	instanceVariableNames: 'loggingService isLogging nextGroupId logFileName shouldGetNewLoggerGroup'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -592,7 +594,7 @@ RowanService subclass: #RowanVariableService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenter subclass: #JadeiteLoggerPresenter
-	instanceVariableNames: 'logListPresenter'
+	instanceVariableNames: 'logListPresenter clientFilename serverFilename'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -823,6 +825,7 @@ computeStoneHost
 
 executeString: aString fromContext: anObject environment: anInteger
 	| oopType | 
+	BrowserUpdate current logComment: 'GciSession executeString: ', aString. 
 	oopType := self oopTypeFor: anObject.
 	^self
 		withExplanation: aString 
@@ -1306,12 +1309,14 @@ displayUndisplayableCharacter
 onViewClosed
 	self gciSession isValidSession
 		ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: self gciSession].
+	BrowserUpdate current logComment: 'Closing Inspector {' , self identityHash printString , '}'.
 	super onViewClosed!
 
 onViewOpened
 	super onViewOpened.
 	self displayObject.
-	self updateCaption!
+	self updateCaption.
+	BrowserUpdate current logComment: 'Opening Inspector {' , self identityHash printString , '}'!
 
 printInstVar
 	| answeringService |
@@ -3693,6 +3698,24 @@ onDropMethodsTree: aDragDropSession
 !JadeTreeMethodListPresenter categoriesFor: #browseMethodsFromString:methodName:!public! !
 !JadeTreeMethodListPresenter categoriesFor: #browseMethodsFromString:methodName:type:!public! !
 !JadeTreeMethodListPresenter categoriesFor: #onDropMethodsTree:!public! !
+
+!JadeWorkspace methodsFor!
+
+onViewClosed
+	super onViewClosed.
+	BrowserUpdate current logComment: 'Closing Workspace {' , self identityHash printString , '}'
+
+	"documentPresenter view styler: JadeExpressionStyler new."!
+
+onViewOpened
+
+	super onViewOpened.
+	codePane setDocumentPresenterWith: (self registry getClass: 'Object').
+	BrowserUpdate current logComment: 'Opening Workspace {' , self identityHash printString , '}'.
+
+	"documentPresenter view styler: JadeExpressionStyler new."! !
+!JadeWorkspace categoriesFor: #onViewClosed!private! !
+!JadeWorkspace categoriesFor: #onViewOpened!private! !
 
 !ListPresenter methodsFor!
 

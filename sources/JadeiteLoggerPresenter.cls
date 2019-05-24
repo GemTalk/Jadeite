@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 JadePresenter subclass: #JadeiteLoggerPresenter
-	instanceVariableNames: 'logListPresenter'
+	instanceVariableNames: 'logListPresenter clientFilename serverFilename'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -20,8 +20,9 @@ createSchematicWiring
 	logListPresenter when: #'actionPerformed' send: #'inspectService' to: self.!
 
 inputClientFile: objects
-	| rs |
-	rs := FileStream open: BrowserUpdate current logFileName mode: #read.
+	| rs filename |
+	filename := clientFilename ifNil: [BrowserUpdate current logFileName].
+	rs := FileStream open: filename mode: #read.
 	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close]!
 
 inputFiles
@@ -34,11 +35,16 @@ inputFiles
 	logListPresenter view vertScrollPos: 100000 "seems there should be a better way to show the bottom of the list"!
 
 inputServerFile: objects
+	"don't use a service call otherwise the returned string will slowly be turned into objects by ston"
+
 	| rs serverFileContents |
-	serverFileContents := gciSession
-				executeString: '(RowanLoggingService new fileName: ''' , BrowserUpdate current logFileName
-						, ''') logFileContents'.
-	rs := ReadStream on: serverFileContents.
+	rs := serverFilename
+				ifNil: 
+					[serverFileContents := gciSession
+								executeString: '(RowanLoggingService new fileName: ''' , BrowserUpdate current logFileName
+										, ''') logFileContents'.
+					ReadStream on: serverFileContents]
+				ifNotNil: [FileStream open: serverFilename mode: #read].
 	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close]!
 
 inspectService

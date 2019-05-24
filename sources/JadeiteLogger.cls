@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 Model subclass: #JadeiteLogger
-	instanceVariableNames: 'loggingService isLogging nextGroupId logFileName'
+	instanceVariableNames: 'loggingService isLogging nextGroupId logFileName shouldGetNewLoggerGroup'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -20,9 +20,9 @@ defaultLogFileName
 	^ws contents!
 
 initialize
-
-	super initialize. 
-	isLogging := false. !
+	super initialize.
+	isLogging := false.
+	shouldGetNewLoggerGroup := true!
 
 isLogging
 	^isLogging!
@@ -32,6 +32,7 @@ isLogging: boolean
 	loggingService isLogging: boolean!
 
 logComment: string
+	self newLoggingService.
 	isLogging ifTrue: [loggingService logComment: string]!
 
 logFileName
@@ -53,14 +54,28 @@ logSentServices: services
 
 newLoggingService
 	| inst |
-	inst := RowanLoggingService newWithGroupId: self nextGroupId.
-	inst command: #logReceivedServices.
-	inst fileName: logFileName.
-	self loggingService: inst.
-	^inst!
+	^shouldGetNewLoggerGroup
+		ifTrue: 
+			[inst := RowanLoggingService newWithGroupId: self nextGroupId.
+			inst command: #logReceivedServices.
+			inst fileName: logFileName.
+			self loggingService: inst.
+			inst]
+		ifFalse: [loggingService]!
+
+newServiceLoggingService
+	self newLoggingService.
+	shouldGetNewLoggerGroup := false.
+	^loggingService!
 
 nextGroupId
 	^nextGroupId ifNil: [nextGroupId := 1] ifNotNil: [nextGroupId := nextGroupId + 1]!
+
+shouldGetNewLoggerGroup
+	^shouldGetNewLoggerGroup!
+
+shouldGetNewLoggerGroup: boolean
+	shouldGetNewLoggerGroup := boolean!
 
 startLogging
 	nextGroupId := nil.
@@ -81,7 +96,10 @@ stopLogging
 !JadeiteLogger categoriesFor: #logReceivedServices:!accessing!logging!public! !
 !JadeiteLogger categoriesFor: #logSentServices:!accessing!logging!public! !
 !JadeiteLogger categoriesFor: #newLoggingService!accessing!logging!public! !
+!JadeiteLogger categoriesFor: #newServiceLoggingService!accessing!logging!public! !
 !JadeiteLogger categoriesFor: #nextGroupId!accessing!public! !
+!JadeiteLogger categoriesFor: #shouldGetNewLoggerGroup!accessing!private! !
+!JadeiteLogger categoriesFor: #shouldGetNewLoggerGroup:!accessing!private! !
 !JadeiteLogger categoriesFor: #startLogging!operations!public! !
 !JadeiteLogger categoriesFor: #stopLogging!operations!public! !
 

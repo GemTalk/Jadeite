@@ -32,7 +32,7 @@ activeServices
 basicIssueCommand: services session: session
 	| stonString stonResultString updateResult loggedServices newLoggingService |
 	services do: [:service | service prepareForReplication].
-	newLoggingService := logger newLoggingService services: services.
+	newLoggingService := logger newServiceLoggingService services: services.
 	self logSentServices: services.
 	loggedServices := services asOrderedCollection
 				addFirst: newLoggingService;
@@ -92,7 +92,8 @@ logFileName
 	^logger logFileName!
 
 logReceivedServices: services
-	logger logReceivedServices: services!
+	logger logReceivedServices: services.
+	logger shouldGetNewLoggerGroup: true!
 
 logSentServices: services
 	logger logSentServices: services!
@@ -147,6 +148,12 @@ registeredPresenters
 registeredTreePresenters
 	^self registeredPresenters select: [:presenter | presenter isKindOf: TreePresenter]!
 
+removeEventsTriggeredFor: anObject
+	super removeEventsTriggeredFor: anObject.
+	self
+		logComment: 'Remove events triggered for ' , anObject printString , ' {'
+				, anObject identityHash printString , '}'!
+
 selectedServices
 	| services potentialSelections |
 	services := OrderedCollection new.
@@ -157,6 +164,10 @@ selectedServices
 					[potentialSelections := presenter selections.
 					services addAll: (potentialSelections select: [:selection | selection isUpdatableService])]].
 	^services!
+
+shouldGetNewLoggerGroup: boolean
+
+	logger shouldGetNewLoggerGroup: boolean!
 
 startLogging
 	logger startLogging!
@@ -246,7 +257,9 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #registeredListServices!private!registeringPresenters! !
 !BrowserUpdate categoriesFor: #registeredPresenters!public!registeringPresenters! !
 !BrowserUpdate categoriesFor: #registeredTreePresenters!private!registeringPresenters! !
+!BrowserUpdate categoriesFor: #removeEventsTriggeredFor:!public!registeringPresenters! !
 !BrowserUpdate categoriesFor: #selectedServices!accessing!public! !
+!BrowserUpdate categoriesFor: #shouldGetNewLoggerGroup:!accessing!public! !
 !BrowserUpdate categoriesFor: #startLogging!logging!public! !
 !BrowserUpdate categoriesFor: #stopLogging!logging!public! !
 !BrowserUpdate categoriesFor: #update:afterStonReplication:!public!updating! !

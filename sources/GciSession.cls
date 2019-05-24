@@ -585,16 +585,15 @@ serverPerform: aSymbol with: arg1 with: arg2 with: arg3 with: arg4
 
 serverPerform: aSymbol withArguments: anArray
 	| answer |
-	server isNil ifTrue: [
-		MessageBox notify: 'Unable to perform action due to server initialization failure.'.
-		^self.
-	].
+	server isNil
+		ifTrue: 
+			[MessageBox notify: 'Unable to perform action due to server initialization failure.'.
+			^self].
 	answer := self
-		send: aSymbol
-		to: server
-		withAll: anArray.
-	^answer.
-!
+				send: aSymbol
+				to: server
+				withAll: anArray.
+	^answer!
 
 serverPerformInterpreted: aSymbol with: arg1 with: arg2
 

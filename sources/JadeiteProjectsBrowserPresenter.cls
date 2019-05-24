@@ -1158,6 +1158,7 @@ postOkToChangeEvent
 	service := self isClassListTabSelected
 				ifTrue: [classListPresenter selectionIfNone: [^self]]
 				ifFalse: [classHierarchyPresenter selectionIfNone: [^self]].
+	service ifNil:[^self]. 
 	classDefinitionPresenter value: service template.
 	classDefinitionPresenter view
 		backcolor: JadeTextStyles default colorForNoEdits;

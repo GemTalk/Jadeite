@@ -15,13 +15,6 @@ codePane
 
 	^codePane!
 
-onViewOpened
-
-	super onViewOpened.
-	codePane setDocumentPresenterWith: (self registry getClass: 'Object').
-
-	"documentPresenter view styler: JadeExpressionStyler new."!
-
 queryCommand: aCommandQuery
 
 	| cmd |
@@ -61,7 +54,6 @@ updateCaption
 	self caption: string.
 ! !
 !JadeWorkspace categoriesFor: #codePane!private! !
-!JadeWorkspace categoriesFor: #onViewOpened!private! !
 !JadeWorkspace categoriesFor: #queryCommand:!public! !
 !JadeWorkspace categoriesFor: #setEnvironment:!public! !
 !JadeWorkspace categoriesFor: #setEnvironment0!public! !

@@ -61,6 +61,8 @@ package methodNames
 	add: 'Date class' -> #fromStream:usingFormat:;
 	add: 'Date class' -> #fromString:usingFormat:;
 	add: 'Dictionary class' -> #fromSton:;
+	add: 'Interval class' -> #fromSton:;
+	add: 'Interval class' -> #writeStream;
 	add: 'Object class' -> #fromSton:;
 	add: 'SequenceableCollection class' -> #fromSton:;
 	add: 'Time class' -> #fromSton:;
@@ -467,6 +469,26 @@ fromSton: stonReader
 stonOn: stonWriter
 	stonWriter writeInteger: self! !
 !Integer categoriesFor: #stonOn:!must not strip!public!ston! !
+
+!Interval class methodsFor!
+
+fromSton: stonReader
+	| result values intervalStream |
+	values := OrderedCollection new.
+	result := self streamContents: 
+					[:stream |
+					intervalStream := stream.
+					stonReader parseListDo: [:each | values add: each]].
+	values size >= 1 ifTrue: [intervalStream collection start: values first].
+	values size >= 2 ifTrue: [intervalStream collection stop: values second].
+	values size >= 3 ifTrue: [intervalStream collection step: values third].
+	^result!
+
+writeStream
+	
+	^(self from: 0 to: 0) writeStream! !
+!Interval class categoriesFor: #fromSton:!instance creation!private! !
+!Interval class categoriesFor: #writeStream!instance creation!private! !
 
 !Number methodsFor!
 
