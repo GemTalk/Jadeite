@@ -79,12 +79,14 @@ makeDefault
 
 onViewClosed
 	super onViewClosed.
+	BrowserUpdate current
+		logComment: 'Closing Project List Browser {' , self identityHash printString , '}'.
 	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter]!
 
 onViewOpened
-
 	super onViewOpened.
-	self registerPresentersForUpdates.!
+	BrowserUpdate current logComment: 'Opening Project List Browser {' , self identityHash printString , '}'.
+	self registerPresentersForUpdates!
 
 openChangesShell: changesString
 	| shell editor rs |

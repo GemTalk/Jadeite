@@ -1113,18 +1113,21 @@ onViewClosed
 	a normal window exit. Help it out."
 
 	super onViewClosed.
+	BrowserUpdate current logComment: 'Closing Projects Browser {' , self identityHash printString, '}'.
 	BrowserUpdate current removeEventsTriggeredFor: sunitPresenter methodListPresenter.
 	BrowserUpdate current removeEventsTriggeredFor: self!
 
 onViewOpened
 	"copied to RowanDebugger"
+
 	super onViewOpened.
-	self registerPresentersForUpdates. 
-	projectListPresenter view contextMenu: (self projectMenu).
+	BrowserUpdate current logComment: 'Opening Projects Browser {' , self identityHash printString , '}'.
+	self registerPresentersForUpdates.
+	projectListPresenter view contextMenu: self projectMenu.
 	packageListPresenter view contextMenu: (Menu fromStrings: self pkgsMenuStrings).
 	self updateMenuBar.
-	self updateProjects. 
-	self updateAutoCommit.!
+	self updateProjects.
+	self updateAutoCommit!
 
 openDictionaryBrowserOn: classService
 	^JadePresenter openDictionaryBrowserOn: classService session: self gciSession!

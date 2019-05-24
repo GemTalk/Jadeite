@@ -164,7 +164,7 @@ onIdleEntered
 
 onViewClosed
 	"Private - copied from RowanSystemBrowserPresenter>>onViewClosed"
-
+	BrowserUpdate current logComment: 'Closing Debugger'. 
 	processList := processListPresenter list collect: [:each | GsProcess session: gciSession oopType: each oopType].
 	super onViewClosed.
 	subPresenters do: [:presenter |

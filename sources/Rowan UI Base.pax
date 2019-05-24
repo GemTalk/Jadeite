@@ -1505,10 +1505,11 @@ methodListPresenter
 
 onViewClosed
 	super onViewClosed.
+	BrowserUpdate current logComment: 'Closing SUnit Browser {' , self identityHash printString , '}'.
 	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter]!
 
 onViewOpened
-	
+	BrowserUpdate current logComment: 'Opening SUnit Browser {' , self identityHash printString , '}'.
 	testCounter := Array with: 0 with: OrderedCollection new.
 	super onViewOpened.
 	self registerPresentersForUpdates.

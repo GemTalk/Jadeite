@@ -17,7 +17,14 @@ createSchematicWiring
 
 onViewClosed
 	super onViewClosed.
+	BrowserUpdate current
+		logComment: 'Closing Method List Browser {' , self identityHash printString , '}'.
 	BrowserUpdate current removeEventsTriggeredFor: self primaryPresenter!
+
+onViewOpened
+	super onViewOpened.
+	BrowserUpdate current
+		logComment: 'Opening Method List Browser {' , self identityHash printString , '}'!
 
 presenterClass
 
@@ -29,6 +36,7 @@ shellName
 ! !
 !JadeiteMethodListBrowser categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
 !JadeiteMethodListBrowser categoriesFor: #onViewClosed!event handlers!public! !
+!JadeiteMethodListBrowser categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteMethodListBrowser categoriesFor: #presenterClass!private! !
 !JadeiteMethodListBrowser categoriesFor: #shellName!private! !
 

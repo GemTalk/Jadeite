@@ -84,6 +84,9 @@ isLogging: boolean
 issueCommand: services session: session
 	inUpdate critical: [Cursor wait showWhile: [^self basicIssueCommand: services session: session]]!
 
+logComment: string
+	logger logComment: string!
+
 logFileName
 
 	^logger logFileName!
@@ -232,6 +235,7 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #isLogging!public!testing! !
 !BrowserUpdate categoriesFor: #isLogging:!public!testing! !
 !BrowserUpdate categoriesFor: #issueCommand:session:!commands!public! !
+!BrowserUpdate categoriesFor: #logComment:!logging!public! !
 !BrowserUpdate categoriesFor: #logFileName!accessing!public! !
 !BrowserUpdate categoriesFor: #logReceivedServices:!logging!public! !
 !BrowserUpdate categoriesFor: #logSentServices:!logging!public! !

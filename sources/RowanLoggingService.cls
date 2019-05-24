@@ -14,26 +14,24 @@ id is the numbering within that group for display sorting. '!
 = methodService
 	^methodService isLoggingService and: [groupId = methodService groupId]!
 
-basicServerDisplayString
-	| ws |
-	ws := WriteStream on: String new.
-	ws
-		nextPutAll: date shortString;
-		space.
-	time printOn: ws format: 'HH:mm:ss'.
-	ws
-		space;
-		nextPutAll: mode;
-		space;
-		nextPut: $-;
-		space;
-		nextPutAll: self updateType.
-	^ws contents!
-
 clientDisplayString
 	^location == #client ifTrue: [self displayString] ifFalse: [String new]!
 
-commandSent
+clientGroupIdDisplayString
+
+	^groupId printString!
+
+clientIdDisplayString
+
+	^id printString!
+
+date
+	^date!
+
+date: anObject
+	date := anObject!
+
+displayCommand
 	| ws |
 	ws := WriteStream on: String new.
 	services do: 
@@ -41,18 +39,10 @@ commandSent
 			ws
 				nextPutAll: (service displayName ifNil: [String new]);
 				space.
-			mode = #received
-				ifFalse: 
-					[ws
-						nextPutAll: (service command ifNil: [#update]);
-						nextPut: $;]].
+			service command
+				ifNil: [ws nextPutAll: (service updateType ifNil: [String new] ifNotNil: [:u | u , ';'])]
+				ifNotNil: [ws nextPutAll: (service command ifNil: [String new] ifNotNil: [:u | u , ';'])]].
 	^ws contents!
-
-date
-	^date!
-
-date: anObject
-	date := anObject!
 
 displayString
 	| ws |
@@ -61,13 +51,20 @@ displayString
 		nextPutAll: date shortString;
 		space.
 	time printOn: ws format: 'HH:mm:ss'.
-	ws
-		space;
-		nextPutAll: mode;
-		space;
-		nextPut: $-;
-		space;
-		nextPutAll: self commandSent.
+	comment
+		ifNotNil: 
+			[ws
+				space;
+				nextPutAll: comment].
+	mode
+		ifNotNil: 
+			[ws
+				space;
+				nextPutAll: mode;
+				space;
+				nextPut: $-;
+				space;
+				nextPutAll: self displayCommand].
 	^ws contents!
 
 fileName
@@ -103,6 +100,21 @@ isLoggingService
 
 	^true!
 
+logComment: aString
+	| stonString ws |
+	id := id + 1.
+	comment := aString.
+	date := Date today.
+	time := Time now.
+	location := #client.
+	mode := nil.
+	stonString := STON toString: self.
+	ws := FileStream
+				open: fileName
+				mode: #append
+				text: true.
+	[ws nextPutAll: stonString] ensure: [ws close]!
+
 logReceivedServices: theServices
 	mode := #received.
 	self logServices: theServices!
@@ -132,7 +144,7 @@ printString
 	^self class name , ' ' , self displayString!
 
 serverDisplayString
-	^location == #server ifTrue: [self basicServerDisplayString] ifFalse: [String new]!
+	^location == #server ifTrue: [self displayString] ifFalse: [String new]!
 
 services
 
@@ -150,24 +162,25 @@ time: anObject
 updateType
 	| ws |
 	ws := WriteStream on: String new.
-	services do: 
+	(services reject: [:service | service isLoggingService]) do: 
 			[:service |
 			ws
 				nextPutAll: (service displayName ifNil: [String new]);
 				space.
-			mode = #sent
-				ifFalse: 
+			mode = #received
+				ifTrue: 
 					[ws
-						nextPutAll: (service updateType ifNil:[String new]);
+						nextPutAll: (service updateType ifNil: [String new]);
 						nextPut: $;]].
 	^ws contents! !
 !RowanLoggingService categoriesFor: #=!comparing!public! !
-!RowanLoggingService categoriesFor: #basicServerDisplayString!printing!public! !
-!RowanLoggingService categoriesFor: #clientDisplayString!printing!public! !
-!RowanLoggingService categoriesFor: #commandSent!printing!public! !
+!RowanLoggingService categoriesFor: #clientDisplayString!displaying!public! !
+!RowanLoggingService categoriesFor: #clientGroupIdDisplayString!displaying!public! !
+!RowanLoggingService categoriesFor: #clientIdDisplayString!displaying!public! !
 !RowanLoggingService categoriesFor: #date!accessing!private! !
 !RowanLoggingService categoriesFor: #date:!accessing!private! !
-!RowanLoggingService categoriesFor: #displayString!printing!public! !
+!RowanLoggingService categoriesFor: #displayCommand!displaying!public! !
+!RowanLoggingService categoriesFor: #displayString!displaying!public! !
 !RowanLoggingService categoriesFor: #fileName!accessing!private! !
 !RowanLoggingService categoriesFor: #fileName:!accessing!private! !
 !RowanLoggingService categoriesFor: #groupId!accessing!private! !
@@ -178,17 +191,18 @@ updateType
 !RowanLoggingService categoriesFor: #initialize!initialization!public! !
 !RowanLoggingService categoriesFor: #isLogging:!public! !
 !RowanLoggingService categoriesFor: #isLoggingService!public!testing! !
+!RowanLoggingService categoriesFor: #logComment:!logging!public! !
 !RowanLoggingService categoriesFor: #logReceivedServices:!logging!public! !
 !RowanLoggingService categoriesFor: #logSentServices:!logging!public! !
 !RowanLoggingService categoriesFor: #logServices:!logging!public! !
 !RowanLoggingService categoriesFor: #mode!accessing!public! !
-!RowanLoggingService categoriesFor: #printString!printing!public! !
-!RowanLoggingService categoriesFor: #serverDisplayString!printing!public! !
+!RowanLoggingService categoriesFor: #printString!displaying!public! !
+!RowanLoggingService categoriesFor: #serverDisplayString!displaying!public! !
 !RowanLoggingService categoriesFor: #services!accessing!public! !
 !RowanLoggingService categoriesFor: #services:!accessing!private! !
 !RowanLoggingService categoriesFor: #time!accessing!private! !
 !RowanLoggingService categoriesFor: #time:!accessing!private! !
-!RowanLoggingService categoriesFor: #updateType!printing!public! !
+!RowanLoggingService categoriesFor: #updateType!displaying!public! !
 
 !RowanLoggingService class methodsFor!
 

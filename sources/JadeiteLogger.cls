@@ -31,6 +31,9 @@ isLogging: boolean
 	isLogging := boolean.
 	loggingService isLogging: boolean!
 
+logComment: string
+	isLogging ifTrue: [loggingService logComment: string]!
+
 logFileName
 
 	^logFileName!
@@ -71,6 +74,7 @@ stopLogging
 !JadeiteLogger categoriesFor: #initialize!initialization!private! !
 !JadeiteLogger categoriesFor: #isLogging!accessing!private! !
 !JadeiteLogger categoriesFor: #isLogging:!accessing!private! !
+!JadeiteLogger categoriesFor: #logComment:!accessing!logging!public! !
 !JadeiteLogger categoriesFor: #logFileName!public! !
 !JadeiteLogger categoriesFor: #loggingService!accessing!private! !
 !JadeiteLogger categoriesFor: #loggingService:!accessing!private! !
