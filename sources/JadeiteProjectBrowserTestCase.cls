@@ -146,10 +146,11 @@ loadProjectNamed: projectName
 	| browserService projectService |
 	browserService := RowanBrowserService new.
 	projectService := RowanProjectService new name: projectName.
+	projectService command: #update.
 	browserService
 		command: #reloadProjects:andUpdateServices:;
 		commandArgs: (Array with: (Array with: projectService) with: BrowserUpdate current selectedServices).
-	JadePresenter issueCommand: (Array with: browserService) session: session!
+	BrowserUpdate current issueCommand: (Array with: browserService) session: session!
 
 loginOtherSession
 	session

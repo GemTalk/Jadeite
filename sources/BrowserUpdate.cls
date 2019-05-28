@@ -163,6 +163,7 @@ selectedServices
 				ifTrue: 
 					[potentialSelections := presenter selections.
 					services addAll: (potentialSelections select: [:selection | selection isUpdatableService])]].
+	services do:[:service | service command: #update]. 
 	^services!
 
 shouldGetNewLoggerGroup: boolean

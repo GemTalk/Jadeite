@@ -189,7 +189,6 @@ packagesUpdate: presenter!
 prepareForReplication
 	"only replicate what is absolutely necessary. Each service knows how to do that. 
 	This method prepares each command arg as well"
-
 	commandArgs ifNotNil: [:args | args basicPrepareForReplication]!
 
 printOn: aStream
