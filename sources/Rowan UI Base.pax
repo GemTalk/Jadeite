@@ -271,6 +271,7 @@ package methodNames
 	add: #JadeTreeMethodListPresenter -> #onDropMethodsTree:;
 	add: #JadeWorkspace -> #onViewClosed;
 	add: #JadeWorkspace -> #onViewOpened;
+	add: #ListModel -> #removeAtIndexWithoutNotification:;
 	add: #ListPresenter -> #selectServiceStartingWith:;
 	add: #MCClassDefinition -> #initialize:;
 	add: #MCPatchBrowser -> #browseChangedThing;
@@ -345,6 +346,8 @@ package methodNames
 	add: #RowanMethodDefinition -> #methodService;
 	add: #RowanPatch -> #operations:;
 	add: #RowanPatch -> #session:;
+	add: #SequencedGrowableCollection -> #removeAtIndexWithoutNotification:;
+	add: #SequencedGrowableCollection -> #removeWithoutNotification:ifAbsent:;
 	add: #TranscriptPresenter -> #clearTranscript;
 	add: #TreeModel -> #removeWithoutNotification:ifAbsent:;
 	add: 'JadeInspector class' -> #resource_Default_view;
@@ -1033,7 +1036,7 @@ methodMenuBreak: aMenu
 				selector: selection first asSymbol;
 				className: selectedClass asSymbol;
 				meta: self isClassSideSelected.
-	self issueCommand: (Array with: service). 
+	self updateService: service.
 	service appendToSourceMenu: aMenu presenter: methodSourcePresenter! !
 !JadeAutoSystemBrowserPresenter categoriesFor: #methodMenuBreak:!menus!public! !
 
@@ -3717,6 +3720,14 @@ onViewOpened
 !JadeWorkspace categoriesFor: #onViewClosed!private! !
 !JadeWorkspace categoriesFor: #onViewOpened!private! !
 
+!ListModel methodsFor!
+
+removeAtIndexWithoutNotification: anInteger
+	"Jadeite - Remove but don't trigger events"
+
+	^self list removeAtIndex: anInteger! !
+!ListModel categoriesFor: #removeAtIndexWithoutNotification:!public!removing! !
+
 !ListPresenter methodsFor!
 
 selectServiceStartingWith: aKeyPressEvent
@@ -4269,6 +4280,22 @@ session: aCollection
 	gciSession := aCollection! !
 !RowanPatch categoriesFor: #operations:!public! !
 !RowanPatch categoriesFor: #session:!public! !
+
+!SequencedGrowableCollection methodsFor!
+
+removeAtIndexWithoutNotification: index
+
+	self subclassResponsibility!
+
+removeWithoutNotification: oldElement ifAbsent: exceptionHandler
+	"Jadeite - remove without notification for ListModel only" 
+
+	| index |
+	^(index := self indexOf: oldElement) == 0
+		ifTrue: [exceptionHandler value]
+		ifFalse: [self removeAtIndexWithoutNotification: index]! !
+!SequencedGrowableCollection categoriesFor: #removeAtIndexWithoutNotification:!public!removing! !
+!SequencedGrowableCollection categoriesFor: #removeWithoutNotification:ifAbsent:!public!removing! !
 
 !TranscriptPresenter methodsFor!
 

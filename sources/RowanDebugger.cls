@@ -309,7 +309,7 @@ terminateProcess
 	(MessageBox confirm: 'Terminate process?' caption: 'GemStone/S Process Termination')
 		ifFalse: [^self].
 	self isOkayToChangeFrame ifFalse: [^self].
-	self _terminateProcess!
+	^self _terminateProcess!
 
 updateMethodSource
 

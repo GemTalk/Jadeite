@@ -50,7 +50,7 @@ classUpdate: presenter
 clearCommand
 
 	command := nil. 
-	commandArgs := nil. !
+	self commandArgs: nil. !
 
 clientDefinitionClass
 

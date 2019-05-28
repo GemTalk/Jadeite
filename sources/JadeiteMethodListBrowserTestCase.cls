@@ -27,7 +27,7 @@ removeMethods: methodServices in: className
 	classService
 		command: #removeMethods:;
 		commandArgs: (Array
-					with: (methodServices select: [:service | service className asString = className])).
+					with: (methodServices asArray select: [:service | service className asString = className])).
 	self issueCommand: classService!
 
 sampleMethodSource

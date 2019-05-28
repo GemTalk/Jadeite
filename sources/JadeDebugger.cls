@@ -205,8 +205,6 @@ selectedFrame
 
 selectedProcess
 	processListPresenter selectionOrNil ifNil: [^self].
-	gsProcess
-		ifNotNil: [gsProcess oopType value = processListPresenter selection oopType value ifFalse: [^self]].
 	self clearUI.
 	gsProcess := processListPresenter selectionOrNil.
 	self stack: gsProcess stack!

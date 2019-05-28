@@ -37,7 +37,7 @@ isTranscriptInstalledIn: session
 
 setAutoCommit: boolean for: session
 	command := #setAutoCommit:. 
-	commandArgs := Array with: boolean. 
+	self commandArgs: (Array with: boolean). 
 	BrowserUpdate current issueCommand: (Array with: self) session: session.
 	^answer! !
 !RowanAnsweringService categoriesFor: #answer!accessing!private! !

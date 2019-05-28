@@ -2885,6 +2885,21 @@ test_multipleCompileMethod
 	self selectMethodNamed: #pest.	"<< bug occurred here"
 	self assert: self methodSourcePresenter value equals: 'pest  ^55 + 1'!
 
+test_multiplePackageSelection
+	"verify package selection shows packages in both packages and alphabetizes them"
+
+	| coreClassNames testClassNames sortedClassNames |
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	coreClassNames := self classListPresenter list collect: [:classService | classService name].
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	testClassNames := self classListPresenter list collect: [:classService | classService name].
+	sortedClassNames := SortedCollection withAll: coreClassNames , testClassNames.
+	self selectServicesNamed: (Array with: 'Rowan-Services-Core' with: 'Rowan-Services-Tests')
+		in: self packageListPresenter.
+	self assert: (self classListPresenter list collect: [:classService | classService name]) asArray
+		equals: sortedClassNames asArray!
+
 test_noSelectionHierarchy
 	| roots children childrensNames grandchildren grandchildrensNames |
 	self testsIssue: #issue125 withTitle: 'Hierarchy view empty if class not selected'.
@@ -2902,20 +2917,21 @@ test_noSelectionHierarchy
 	self assert: (childrensNames includes: 'RowanService').
 	self deny: (childrensNames includes: 'RowanClassService').
 	grandchildren := self classHierarchyPresenter model getChildrenOf: (children detect: [:classService | classService name = 'RowanService']).
-	self assert: grandchildren size = 12. "this will probably change but it's a nice test to ensure all the expected services are present"
+	self assert: grandchildren size = 13. "this will probably change but it's a nice test to ensure all the expected services are present"
 	grandchildrensNames := grandchildren collect: [:classService | classService name].
 	self assert: (grandchildrensNames at: 1) equals: 'RowanAnsweringService'.
 	self assert: (grandchildrensNames at: 2) equals: 'RowanBrowserService'.
 	self assert: (grandchildrensNames at: 3) equals: 'RowanClassService'.
 	self assert: (grandchildrensNames at: 4) equals: 'RowanDebuggerService'.
 	self assert: (grandchildrensNames at: 5) equals: 'RowanFrameService'.
-	self assert: (grandchildrensNames at: 6) equals: 'RowanMethodService'.
-	self assert: (grandchildrensNames at: 7) equals: 'RowanPackageService'.
-	self assert: (grandchildrensNames at: 8) equals: 'RowanProcessService'.
-	self assert: (grandchildrensNames at: 9) equals: 'RowanProjectService'.
-	self assert: (grandchildrensNames at: 10) equals: 'RowanQueryService'.
-	self assert: (grandchildrensNames at: 11) equals: 'RowanTestService'.
-	self assert: (grandchildrensNames at: 12) equals: 'RowanVariableService'.
+	self assert: (grandchildrensNames at: 6) equals: 'RowanLoggingService'.
+	self assert: (grandchildrensNames at: 7) equals: 'RowanMethodService'.
+	self assert: (grandchildrensNames at: 8) equals: 'RowanPackageService'.
+	self assert: (grandchildrensNames at: 9) equals: 'RowanProcessService'.
+	self assert: (grandchildrensNames at: 10) equals: 'RowanProjectService'.
+	self assert: (grandchildrensNames at: 11) equals: 'RowanQueryService'.
+	self assert: (grandchildrensNames at: 12) equals: 'RowanTestService'.
+	self assert: (grandchildrensNames at: 13) equals: 'RowanVariableService'.
 
 !
 
@@ -4720,6 +4736,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_modifiedSourceShouldNotChange!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_modifiedSourceShouldNotChangeMethodList!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_multiplePackageSelection!public!test packages! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noSelectionHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openChangesBrowser!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewBrowserTabWhileSUnitTabSelected!public!test sunit tab! !

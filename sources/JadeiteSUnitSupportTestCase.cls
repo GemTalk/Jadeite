@@ -125,16 +125,20 @@ tearDown
 test_abortNoSelections
 	| abortCommand |
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
+	self unloadSampleProject.
+	self commitTransaction.	"ensure that the sample package wasn't committed"
 	self assertPackageInList: 'RowanSample1-Tests'.
 	abortCommand := ((sunitBrowser view viewNamed: 'toolbar') itemAtIndex: 1) command.
 	sunitBrowser primaryPresenter perform: abortCommand.
 	[self denyPackageInList: 'RowanSample1-Tests'] ensure: 
 			[self cloneRowanSample1.
-			self ensureRowanSample1Loaded].!
+			self ensureRowanSample1Loaded]!
 
 test_abortWithSelections
 	| abortCommand |
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
+	self unloadSampleProject.
+	self commitTransaction.	"ensure that the sample package wasn't committed"
 	sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'.
 	sunitBrowser primaryPresenter selectClassNamed: 'RowanClassServiceTest'.
 	sunitBrowser primaryPresenter selectMethodNamed: #test_addCategory.

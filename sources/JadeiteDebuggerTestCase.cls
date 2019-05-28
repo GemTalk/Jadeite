@@ -667,7 +667,7 @@ test_stackDumpDetailedFrame
 	stream := ReadStream on: Clipboard current getText.
 	crlf := Character cr asString , Character lf asString.
 	stream upToAll: '===============================================' , crlf.
-	self assert: (stream upToAll: crlf) equals: '[1] MessageNotUnderstood >> defaultAction @2 line 3'.
+	self assert: ('[1] MessageNotUnderstood >> defaultAction @* line *' match: (stream upToAll: crlf)).
 	self assert: stream next equals: Character tab.
 	self assert: ('receiver oop(*) == *' match: (stream upToAll: crlf)).
 	self assert: (stream upToAll: crlf) equals: String new.
@@ -723,10 +723,11 @@ test_terminateDoesNotWalkback
 		assert: (debugger _processList at: 2) oopType value equals: gsProcess.
 	TestMessageBox plannedResult: #yes.	"confirm we want to terminate process"
 	terminateProcess := 
-			[self
-				assert: debugger terminateProcess notNil;
-				assert: debugger _processList size equals: 1;
-				assert: debugger processListPresenter list size equals: 1]
+			[self assert: debugger terminateProcess notNil.
+			self
+				assert: debugger _processList size = 1 description: '_processList size was not 1';
+				assert: debugger processListPresenter list size = 1
+					description: 'processListPresenter list size was not 1']
 					fork.
 	self debuggerDo: [debugger resumeProcess]]
 			ensure: 

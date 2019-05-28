@@ -42,7 +42,7 @@ classesUpdate: presenter browser: browser
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	browser packageListPresenter selections detect: [:packageService | packageService name = name]
 		ifNone: [^self].
-	self removeDeletedClassesIn: presenter.
+	self removeDeletedClassesIn: presenter browser: browser.
 	condensedList := self condenseExtensions: presenter.
 	self updateList: presenter whilePreservingSelections: condensedList.
 	presenter list
@@ -143,17 +143,16 @@ releaseReferencedServices
 remoteServiceName
 	^'Rowan packageServiceClass'!
 
-removeDeletedClassesIn: presenter
-	| updatedClasses removedClasses selections |
+removeDeletedClassesIn: presenter browser: browser
+	| updatedClasses removedClasses |
 	updatedClasses := classes select: [:classService | classService packageName = name]
 				thenCollect: [:classService | classService name asString].
 	removedClasses := presenter list
-				reject: [:classService | (updatedClasses includes: classService name) and: [classService packageName = name]].
+				select: [:classService | classService packageName = name and: [(updatedClasses includes: classService name) not]].
 	removedClasses isEmpty ifTrue: [^self].
 	presenter model
 		setList: (ListModel withAll: (presenter list asArray copyWithoutAll: removedClasses))
-		searchPolicy: SearchPolicy equality.
-!
+		searchPolicy: SearchPolicy equality!
 
 replicateFrom: newService
 	^(self isPackageService and: [newService isPackageService])
@@ -182,7 +181,7 @@ testClasses: presenter
 !RowanPackageService categoriesFor: #addHierarchyService:to:withParent:!private!updating! !
 !RowanPackageService categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanPackageService categoriesFor: #classes!accessing!public! !
-!RowanPackageService categoriesFor: #classes:!public!updating! !
+!RowanPackageService categoriesFor: #classes:!accessing!public! !
 !RowanPackageService categoriesFor: #classesUpdate:browser:!public!updating! !
 !RowanPackageService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
 !RowanPackageService categoriesFor: #condenseExtensions:!private! !
@@ -197,7 +196,7 @@ testClasses: presenter
 !RowanPackageService categoriesFor: #projectName:!accessing!private! !
 !RowanPackageService categoriesFor: #releaseReferencedServices!Init / Release!public! !
 !RowanPackageService categoriesFor: #remoteServiceName!must not strip!public! !
-!RowanPackageService categoriesFor: #removeDeletedClassesIn:!private!updating! !
+!RowanPackageService categoriesFor: #removeDeletedClassesIn:browser:!private!updating! !
 !RowanPackageService categoriesFor: #replicateFrom:!public!updating! !
 !RowanPackageService categoriesFor: #selectedClass!accessing!public! !
 !RowanPackageService categoriesFor: #selectedClass:!accessing!public! !
