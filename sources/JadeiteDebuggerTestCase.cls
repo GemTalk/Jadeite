@@ -707,6 +707,20 @@ OrderedCollection with:  bigStringStream contents zork'.
 	stream := ReadStream on: Clipboard current getText.
 	self assert: ('*-receiver oop(*) == ''1234567891011121314*...*' match: stream contents)!
 
+test_switchProcesses
+	gsProcess := session executeString: '[(Delay forSeconds: 9999) wait] fork asOop.'.
+	session executeString: '(Delay forSeconds: 1) wait'.	"let forked process start"
+	self
+		openDebuggerOn: 'nil halt';
+		assert: debugger _processList size equals: 2;
+		assert: debugger processListPresenter list size equals: 2.
+	self debuggerDo: [debugger processListPresenter selectionByIndex: 2].
+	self debuggerDo: [self selectFrameAt: 6].
+	self
+		assert: debugger methodSourcePresenter documentPresenter value
+			equals: '[(Delay forSeconds: 9999) wait] fork asOop.';
+		assert: (debugger _processList at: 2) oopType value equals: gsProcess!
+
 test_terminateDoesNotWalkback
 	"Terminate a process other than the primary one"
 
@@ -1168,6 +1182,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_stackDumpDetailedFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_stackDumpHeader!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_stackDumpTooLongString!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_switchProcesses!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_terminateDoesNotWalkback!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_unicodeMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test1!public!tests! !
