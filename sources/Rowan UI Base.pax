@@ -722,7 +722,7 @@ JadeTranscript subclass: #JadeiteTranscript
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeShell subclass: #JadeiteLoggerShell
-	instanceVariableNames: ''
+	instanceVariableNames: 'clientFilenameText serverFilenameText'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
