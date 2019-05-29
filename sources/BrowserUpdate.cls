@@ -91,6 +91,11 @@ logFileName
 
 	^logger logFileName!
 
+loggingService
+	"for testing"
+
+	^logger loggingService!
+
 logReceivedServices: services
 	logger logReceivedServices: services.
 	logger shouldGetNewLoggerGroup: true!
@@ -249,6 +254,7 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #issueCommand:session:!commands!public! !
 !BrowserUpdate categoriesFor: #logComment:!logging!public! !
 !BrowserUpdate categoriesFor: #logFileName!accessing!public! !
+!BrowserUpdate categoriesFor: #loggingService!accessing!public! !
 !BrowserUpdate categoriesFor: #logReceivedServices:!logging!public! !
 !BrowserUpdate categoriesFor: #logSentServices:!logging!public! !
 !BrowserUpdate categoriesFor: #performUpdate:with:!private!updating! !

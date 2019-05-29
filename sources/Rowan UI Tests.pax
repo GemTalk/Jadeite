@@ -12,6 +12,7 @@ package classNames
 	add: #JadeiteDevelopmentSUnitBrowserModel;
 	add: #JadeiteDictionaryBrowserTestCase;
 	add: #JadeiteInspectorTestCase;
+	add: #JadeiteLoggerTestCase;
 	add: #JadeiteLoginTestCase;
 	add: #JadeiteMessageBoxTestCase;
 	add: #JadeiteMethodListBrowserTestCase;
@@ -124,6 +125,11 @@ JadeiteAbstractTestCase subclass: #JadeiteDictionaryBrowserTestCase
 	classInstanceVariableNames: ''!
 JadeiteAbstractTestCase subclass: #JadeiteInspectorTestCase
 	instanceVariableNames: 'inspector'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteAbstractTestCase subclass: #JadeiteLoggerTestCase
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

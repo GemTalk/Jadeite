@@ -88,8 +88,9 @@ displayName
 	"display with dirty indication * and/or default indication (default)"
 
 	| displayName |
+	name ifNil: [^String new].
 	displayName := name.
-	existsOnDisk == false ifTrue:[displayName := '(', displayName, ')']. 
+	existsOnDisk == false ifTrue: [displayName := '(' , displayName , ')'].
 	name = self class defaultProjectName ifTrue: [displayName := displayName , '*'].
 	^displayName!
 

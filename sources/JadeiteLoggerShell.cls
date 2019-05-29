@@ -39,12 +39,14 @@ presenterClass
 selectClientFile
 	self primaryPresenter
 		clientFilename: (FileOpenDialog showModalOn: self primaryPresenter clientFilename asValue).
-	clientFilenameText value: self primaryPresenter clientFilename!
+	clientFilenameText value: self primaryPresenter clientFilename.
+	self inputFiles. !
 
 selectServerFile
 	self primaryPresenter
 		serverFilename: (FileOpenDialog showModalOn: self primaryPresenter serverFilename asValue).
-	serverFilenameText value: self primaryPresenter serverFilename!
+	serverFilenameText value: self primaryPresenter serverFilename.
+	self inputFiles. !
 
 serverFilenameText
 	^serverFilenameText!
