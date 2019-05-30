@@ -79,7 +79,7 @@ isLogging
 	^logger isLogging!
 
 isLogging: boolean
-	^logger isLogging: boolean!
+	self isLogging ifTrue: [self stopLogging] ifFalse: [self  startLogging]!
 
 issueCommand: services session: session
 	inUpdate critical: [Cursor wait showWhile: [^self basicIssueCommand: services session: session]]!
@@ -249,8 +249,8 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #initializeUpdates!initialization!public! !
 !BrowserUpdate categoriesFor: #inUpdate!accessing!private! !
 !BrowserUpdate categoriesFor: #inUpdate:!accessing!private! !
-!BrowserUpdate categoriesFor: #isLogging!public!testing! !
-!BrowserUpdate categoriesFor: #isLogging:!public!testing! !
+!BrowserUpdate categoriesFor: #isLogging!logging!public!testing! !
+!BrowserUpdate categoriesFor: #isLogging:!logging!public!testing! !
 !BrowserUpdate categoriesFor: #issueCommand:session:!commands!public! !
 !BrowserUpdate categoriesFor: #logComment:!logging!public! !
 !BrowserUpdate categoriesFor: #logFileName!accessing!public! !

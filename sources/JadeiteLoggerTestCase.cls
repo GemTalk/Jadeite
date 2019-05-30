@@ -17,7 +17,7 @@ test_loggerContainsServices
 				command: #update;
 				commandArgs: Array new.
 	self issueCommand: service.
-	loggingService := BrowserUpdate current loggingService.
+	loggingService := BrowserUpdate current loggingService. 
 	self assert: loggingService services size equals: 1.
 	self assert: loggingService services first isProjectService.
 	self assert: loggingService services first name equals: 'Rowan'!
@@ -37,7 +37,7 @@ test_loggerMenuEnablement
 	[jadeiteItem := transcript view menuBar items detect: [:menuItem | '*Jadeite*' match: menuItem text].
 	loggingItem := jadeiteItem items
 				detect: [:item | (item class canUnderstand: #description) and: [item description = 'Logging']].
-	loggingItem commandDescription performAgainst: transcript.
+	loggingItem commandDescription performAgainst: transcript.	"this will reset the log file. That seems ok for now"
 	self assert: BrowserUpdate current isLogging equals: isLogging not]
 			ensure: [BrowserUpdate current isLogging: isLogging].
 	commandQuery := self

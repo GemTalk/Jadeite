@@ -59,9 +59,7 @@ flipDebugger
 		ifFalse: [RowanDebugger debuggerClass: RowanDebugger]!
 
 flipLogging
-	| browserUpdate |
-	browserUpdate := BrowserUpdate current.
-	browserUpdate isLogging ifTrue: [browserUpdate stopLogging] ifFalse: [browserUpdate startLogging]!
+	BrowserUpdate current isLogging: BrowserUpdate current isLogging not!
 
 flipTranscript
 	| answeringService |

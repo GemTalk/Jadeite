@@ -148,7 +148,6 @@ commit
 !
 
 debugString: aString fromContext: anObject environment: anInteger
-
 	^self
 		serverPerform: #'debugString:fromContext:environment:' with: aString with: anObject with: anInteger.
 !
