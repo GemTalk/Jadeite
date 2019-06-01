@@ -46,13 +46,6 @@ fileSave
 
 	self halt. !
 
-flipAutoCommit
-	| browserService |
-	browserService := RowanBrowserService new.
-	browserService command: #flipAutoCommit; commandArgs: Array new. 
-	self issueCommand: (Array with: browserService). 
-	!
-
 gciSession: aGciSession
 	super gciSession: aGciSession.
 	autoCommit := ValueHolder with: self remoteAutoCommit.!
@@ -149,7 +142,6 @@ updateSource
 !JadeiteMethodListPresenter categoriesFor: #createComponents!public! !
 !JadeiteMethodListPresenter categoriesFor: #createSchematicWiring!public! !
 !JadeiteMethodListPresenter categoriesFor: #fileSave!public! !
-!JadeiteMethodListPresenter categoriesFor: #flipAutoCommit!menu handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #gciSession:!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #getViews!public! !
 !JadeiteMethodListPresenter categoriesFor: #methodListSelection!public! !

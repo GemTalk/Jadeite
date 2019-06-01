@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 Object subclass: #GciSession
-	instanceVariableNames: 'briefDescription clientForwarders eventCount gciSessionId gemHost gemNRS heartbeatProcess isHandlingClientForwarderSend isPackagePolicyEnabled library netPort netTask server stoneHost stoneName stoneNRS stoneSerial stoneSessionID userID blocking'
+	instanceVariableNames: 'briefDescription clientForwarders eventCount gciSessionId gemHost gemNRS heartbeatProcess isHandlingClientForwarderSend isPackagePolicyEnabled library netPort netTask server stoneHost stoneName stoneNRS stoneSerial stoneSessionID userID blocking autoCommit'
 	classVariableNames: 'Current GemCursor'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -71,6 +71,12 @@ attemptSocket
 		^self.
 	].
 	^self become: (GciSessionWithSocket from: self withSocket: tempSocket).!
+
+autoCommit
+	^autoCommit!
+
+autoCommit: anObject
+	autoCommit := anObject!
 
 begin
 
@@ -814,6 +820,8 @@ withExplanation: aString doA: aBlock
 !GciSession categoriesFor: #_server!private! !
 !GciSession categoriesFor: #abort!Jade convenience!public! !
 !GciSession categoriesFor: #attemptSocket!private! !
+!GciSession categoriesFor: #autoCommit!accessing!private! !
+!GciSession categoriesFor: #autoCommit:!accessing!private! !
 !GciSession categoriesFor: #begin!Jade convenience!public! !
 !GciSession categoriesFor: #beInvalidSession!public! !
 !GciSession categoriesFor: #briefDescription!public! !
@@ -901,8 +909,11 @@ current
 	^Current!
 
 current: aGciSession
-
-	Current := aGciSession!
+	Current := aGciSession.
+	aGciSession
+		ifNotNil: 
+			["set to nil during logout"
+			aGciSession autoCommit: false]!
 
 libraryClass: libraryClass 
 stoneNRS: stoneNRS 

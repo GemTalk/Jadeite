@@ -195,16 +195,6 @@ jadeExecute
 	^self jadeExecuteAndDisplay: false.
 !
 
-jadeExecuteAndDisplay: showResult 
-	
-	[
-		| result |
-		result := self executeSelectionOrLine.
-		[self jadeExecuteAndDisplay: showResult result: result] postToInputQueue.
-	] newProcess 
-		name: 'GciSession';
-		resume.!
-
 jadeExecuteAndDisplay: showResult result: anAssociation
 
 	| textView result value selectionRange offset |
@@ -443,7 +433,6 @@ validateUserInterface
 !JadeTextDocument categoriesFor: #jadeDebug!menu handlers!private! !
 !JadeTextDocument categoriesFor: #jadeDisplay!menu handlers!private! !
 !JadeTextDocument categoriesFor: #jadeExecute!menu handlers!private! !
-!JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:!Jade!private! !
 !JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:result:!Jade!private! !
 !JadeTextDocument categoriesFor: #logoutRequested:!private! !
 !JadeTextDocument categoriesFor: #onViewClosed!private! !

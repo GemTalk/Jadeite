@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 JadeDebugger subclass: #RowanDebugger
-	instanceVariableNames: 'statusTextPresenter'
+	instanceVariableNames: 'statusTextPresenter idleProcess'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggerClass semaphore'!
@@ -17,6 +17,7 @@ _processList
 _terminateProcess: aGsProcess
 
 	| string |
+	BrowserUpdate current logComment: '#_terminateProcess:'.
 	string := '
 | gsProcess |
 gsProcess := Object _objectForOop: ' , aGsProcess oopType value printString , '.
@@ -29,6 +30,7 @@ Processor allProcesses includes: gsProcess'.
 !
 
 aboutToChangeFrame: aSelectionChangingEvent
+	BrowserUpdate current logComment: 'aboutToChangeFrame:'.
 	aSelectionChangingEvent
 		value: (codePane documentPresenter view isModified ifTrue: [self isOkayToChangeFrame] ifFalse: [true])!
 
@@ -114,11 +116,40 @@ getProcessList
 	"#getProcessList copied from RowanProjectsBrowserPresenter>>updatePresenters"
 
 	| debuggerService |
+	BrowserUpdate current logComment: 'Update debugger service'.
 	debuggerService := RowanDebuggerService onProcess: gsProcess.
 	self updateServices: (Array with: debuggerService).
-	debuggerService processes ifNil:[^self].
-	debuggerService processes notEmpty ifTrue:[
-		processListPresenter selection: debuggerService processes first]!
+	BrowserUpdate current logComment: 'Update debugger service complete'.
+	BrowserUpdate current
+		logComment: 'debuggerService processes: ' , debuggerService processes printString.
+	debuggerService processes ifNil: [^self].
+	debuggerService processes notEmpty
+		ifTrue: [processListPresenter selection: debuggerService processes first]!
+
+initializeIdleProcess
+	"Private - Support for automated testing so we know when UI is ready.
+	See #onIdleEntered"
+
+	| cachedClass cachedSession |
+	cachedClass := self class.
+	cachedSession := gciSession.
+	idleProcess := 
+			[
+			[
+			[(Delay forMilliseconds: 10) wait.
+			cachedSession isCallInProgress] whileTrue: [].
+			cachedClass signalSemaphore.
+			idleProcess suspend]
+					repeat]
+					newProcess.
+	idleProcess priority: Processor userBackgroundPriority!
+
+initializeProcess: aProcess message: aString terminateOnClose: aBoolean
+	super
+		initializeProcess: aProcess
+		message: aString
+		terminateOnClose: aBoolean.
+	self initializeIdleProcess!
 
 isOkayToChangeFrame
 	^codePane isOkayToChange!
@@ -148,19 +179,8 @@ onCloseRequested: boolValueHolder
 	super onCloseRequested: boolValueHolder!
 
 onIdleEntered
-	"Private - Support for automated testing so we know when UI is ready"
-
-	| cachedClass cachedSession |
-	cachedClass := self class.
-	cachedSession := gciSession.
-	[
-		[
-			(Delay forMilliseconds: 10) wait.
-			cachedSession isCallInProgress.
-		] whileTrue: [].
-		cachedClass signalSemaphore.
-	] forkAt: Processor userBackgroundPriority.
-	super onIdleEntered.!
+	[idleProcess resume] on: Error do: [:ex | ].
+	super onIdleEntered!
 
 onViewClosed
 	"Private - copied from RowanSystemBrowserPresenter>>onViewClosed"
@@ -263,22 +283,40 @@ selectedFrame
 	solutions."
 
 	| index breaks source |
+	BrowserUpdate current logComment: '#selectedFrame'.
+	BrowserUpdate current
+		logComment: '(index := frameListPresenter selectionByIndex) = 0 ifTrue: [^self].'.
+	BrowserUpdate current
+		logComment: 'frameListPresenter selectionByIndex: ' , frameListPresenter selectionByIndex printString.
 	(index := frameListPresenter selectionByIndex) = 0 ifTrue: [^self].
+	BrowserUpdate current logComment: 'setting index: ' , index printString.
+	BrowserUpdate current logComment: 'index := index + frameListOffset.'.
 	index := index + frameListOffset.
+	BrowserUpdate current logComment: '(frame := gsProcess frameForLevel: index) isNil ifTrue: [^self].'.
+	BrowserUpdate current logComment: (gsProcess frameForLevel: index) printString.
 	(frame := gsProcess frameForLevel: index) isNil ifTrue: [^self].
+	BrowserUpdate current logComment: 'frame stepPoint: ' , frame stepPoint printString.
 	frame stepPoint ifNil: [RowanDebuggerStepPointError signal].	"see comment in  RowanFrameService>>initializeProcess:level:organizer:"
+	BrowserUpdate current logComment: 'did not get error. Setting source'.
 	source := frame source.
 	breaks := frame breaks collect: [:each | frame offsets at: each].
 	breaks := breaks
 				collect: [:each | ((source copyFrom: 1 to: each) select: [:char | char = Character lf]) size + 1].
 	breaks := breaks asSet asSortedCollection asArray.
+	BrowserUpdate current logComment: 'finished setting breaks'.
+	BrowserUpdate current logComment: 'variableListPresenter list: frame vars.'.
+	BrowserUpdate current logComment: frame vars printString.
 	variableListPresenter list: frame vars.
+	BrowserUpdate current logComment: 'documentPresenter value: frame gsMethod source.'.
+	BrowserUpdate current logComment: frame gsMethod source.
 	documentPresenter value: frame gsMethod source.
+	BrowserUpdate current logComment: 'udpdated source pane'.
 	documentPresenter view isModified: false.
 	codePane gsMethod: frame gsMethod.
 	self displayUncompilableSourceIn: codePane documentPresenter.
 	frame stepPoint ifNotNil: [codePane showStepPoint: frame stepPoint].
-	(self view viewNamed: 'toolbar') update!
+	(self view viewNamed: 'toolbar') update.
+	BrowserUpdate current logComment: 'finished #selectedFrame'!
 
 statusBarText
 
@@ -289,18 +327,21 @@ statusBarText: aString
 
 stepInto
 	self isOkayToChangeFrame ifFalse:[^self].
+	BrowserUpdate current logComment: '#stepInto'.
 	gciSession stepInto: (GsProcess session: gciSession oopType: gsProcess oopType)
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
 	[self getProcessList] on: RowanDebuggerStepPointError do: [:ex | self stepInto]!
 
-stepOut
+stepOut	
 	self isOkayToChangeFrame ifFalse: [^self].
+	BrowserUpdate current logComment: '#stepOut'.
 	gciSession stepOut: (GsProcess session: gciSession oopType: gsProcess oopType)
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
 	[self getProcessList] on: RowanDebuggerStepPointError do: [:ex | self stepInto]!
 
 stepOver
 	self isOkayToChangeFrame ifFalse: [^self].
+	BrowserUpdate current logComment: '#stepOver'.
 	gciSession stepOver: (GsProcess session: gciSession oopType: gsProcess oopType)
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
 	[self getProcessList] on: RowanDebuggerStepPointError do: [:ex | self stepInto]!
@@ -337,6 +378,8 @@ variableListPresenter
 !RowanDebugger categoriesFor: #frameListPresenter!Accessing!frames!public! !
 !RowanDebugger categoriesFor: #gciSession:!public! !
 !RowanDebugger categoriesFor: #getProcessList!public! !
+!RowanDebugger categoriesFor: #initializeIdleProcess!initialization!public! !
+!RowanDebugger categoriesFor: #initializeProcess:message:terminateOnClose:!initialization!public! !
 !RowanDebugger categoriesFor: #isOkayToChangeFrame!public!testing! !
 !RowanDebugger categoriesFor: #methodListSelection!Accessing!public! !
 !RowanDebugger categoriesFor: #methodSourcePresenter!public! !

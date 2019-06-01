@@ -82,7 +82,13 @@ isLogging: boolean
 	self isLogging ifTrue: [self stopLogging] ifFalse: [self  startLogging]!
 
 issueCommand: services session: session
-	inUpdate critical: [Cursor wait showWhile: [^self basicIssueCommand: services session: session]]!
+	BrowserUpdate current logComment: 'About to get inUpdate semaphore for command'.
+	inUpdate critical: 
+			[Cursor wait showWhile: 
+					[| commandResult |
+					commandResult := self basicIssueCommand: services session: session.
+					BrowserUpdate current logComment: 'Released inUpdate semaphore'.
+					^commandResult]]!
 
 logComment: string
 	logger logComment: string!
@@ -213,7 +219,13 @@ updateService: service session: session
 
 updateServices: services session: session
 	services isEmpty ifTrue: [^self].
-	inUpdate critical: [Cursor wait showWhile: [^self basicUpdateServices: services session: session]]!
+	BrowserUpdate current logComment: 'About to get inUpdate semaphore for update'.
+	inUpdate critical: 
+			[Cursor wait showWhile: 
+					[| commandResult |
+					commandResult := self basicUpdateServices: services session: session.
+					BrowserUpdate current logComment: 'Released inUpdate semaphore'.
+					^commandResult]]!
 
 updatesPerform: selector presenter: presenter
 	"the update may know which client updates 

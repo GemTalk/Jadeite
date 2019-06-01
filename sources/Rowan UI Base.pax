@@ -105,8 +105,11 @@ package methodNames
 	add: #JadeAutoTextPresenter3 -> #setDefaultMethod;
 	add: #JadeDebugger -> #gsProcess;
 	add: #JadeDebugger -> #gsProcess:;
+	add: #JadeDebugger -> #initializeProcess:message:terminateOnClose:;
 	add: #JadeDebugger -> #onViewClosed;
 	add: #JadeDebugger -> #selectedFrameWithErrorHandling;
+	add: #JadeDebugger -> #stack:;
+	add: #JadeDebugger -> #update;
 	add: #JadeDebugger -> #updateCaption;
 	add: #JadeErrorShell -> #doCopy;
 	add: #JadeErrorShell -> #onViewOpened;
@@ -176,6 +179,7 @@ package methodNames
 	add: #JadePresenter -> #displayUncompilableSourceIn:;
 	add: #JadePresenter -> #editSaveMethod:in:category:;
 	add: #JadePresenter -> #executeSelectionOrLine:;
+	add: #JadePresenter -> #flipAutoCommit;
 	add: #JadePresenter -> #issueCommand:;
 	add: #JadePresenter -> #openDictionaryBrowserOn:selector:;
 	add: #JadePresenter -> #openProjectBrowserOn:selector:;
@@ -253,6 +257,7 @@ package methodNames
 	add: #JadeTextDocument -> #aboutJadeite;
 	add: #JadeTextDocument -> #executeSelectionOrLine:;
 	add: #JadeTextDocument -> #issueCommand:;
+	add: #JadeTextDocument -> #jadeExecuteAndDisplay:;
 	add: #JadeTextDocument -> #onPromptToSaveChanges:;
 	add: #JadeTextDocument -> #openDictionaryBrowser;
 	add: #JadeTextDocument -> #openProjectsBrowser;
@@ -712,7 +717,7 @@ JadeLoginShell subclass: #JadeiteLoginShell
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeDebugger subclass: #RowanDebugger
-	instanceVariableNames: 'statusTextPresenter'
+	instanceVariableNames: 'statusTextPresenter idleProcess'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggerClass semaphore'!
@@ -1070,9 +1075,25 @@ gsProcess
 gsProcess: anObject
 	gsProcess := anObject.!
 
+initializeProcess: aProcess message: aString terminateOnClose: aBoolean
+	self registerWindow: self view handle rootObject: aProcess oopType.
+	gsProcess := aProcess.
+	errorMessagePresenter value: aString.
+	terminateOnClose := aBoolean.
+	[self getProcessList] on: GsError
+		do: 
+			[:ex |
+			ex debugger: self.
+			ex pass].
+	self class debuggers at: gsProcess oopType asInteger put: self.
+	BrowserUpdate current logComment: 'About to update debugger service'.
+	self update!
+
 onViewClosed
+	BrowserUpdate current logComment: 'Releasing debugger'. 
 	self gciSession isValidSession
 		ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: self gciSession].
+	BrowserUpdate current logComment: 'Releasing debugger complete'. 
 	(processList notNil and: [processList notEmpty])
 		ifTrue: 
 			[gsProcess := processList first.
@@ -1083,8 +1104,39 @@ onViewClosed
 					self error: 'We should never get here!!']]!
 
 selectedFrameWithErrorHandling
+	BrowserUpdate current logComment: 'About to select frame with error handling'.
 	[self selectedFrame] on: RowanDebuggerStepPointError
-		do: [:ex | ex isNested ifTrue: [ex pass] ifFalse:[ex resume]]!
+		do: 
+			[:ex |
+			BrowserUpdate current logComment: 'Error selecting frame: ' , ex printString.
+			BrowserUpdate current logComment: 'isNested: ' , ex isNested printString.
+			ex isNested ifTrue: [ex pass] ifFalse: [ex resume]]!
+
+stack: aList
+	| index |
+	index := self stackInitialSelection.
+	frameListOffset := 0.
+	BrowserUpdate current logComment: 'About to give the frameListPresenter a list'.
+	frameListPresenter list: aList.
+	BrowserUpdate current logComment: 'Finished giving the frameListPresenter a list'.
+	aList notEmpty ifTrue: [frameListPresenter selectionByIndex: index].
+	BrowserUpdate current logComment: 'Selected index ', index printString.!
+
+update
+	| stack |
+	((stack := gsProcess stack) isEmpty or: [stack = #('' '')])
+		ifTrue: 
+			[MessageBox warning: 'We appear to have finished this process!!'.
+			self view close.
+			^self].
+	BrowserUpdate current logComment: 'About to update process list'.
+	BrowserUpdate current logComment: 'processList: ' , processList printString.
+	(2 <= processList size and: [processListPresenter selectionOrNil ~~ processList first])
+		ifTrue: 
+			[processListPresenter
+				list: processList;
+				selectionByIndex: 1	"This triggers a selection changed message that clears the current selection"]
+		ifFalse: [self stack: stack]!
 
 updateCaption
 	self caption: (gciSession
@@ -1093,8 +1145,11 @@ updateCaption
 				ifFalse: ['Rowan Debugger']))! !
 !JadeDebugger categoriesFor: #gsProcess!accessing!private! !
 !JadeDebugger categoriesFor: #gsProcess:!accessing!private! !
+!JadeDebugger categoriesFor: #initializeProcess:message:terminateOnClose:!public! !
 !JadeDebugger categoriesFor: #onViewClosed!event handlers!public! !
 !JadeDebugger categoriesFor: #selectedFrameWithErrorHandling!public! !
+!JadeDebugger categoriesFor: #stack:!public! !
+!JadeDebugger categoriesFor: #update!public! !
 !JadeDebugger categoriesFor: #updateCaption!public! !
 
 !JadeErrorShell methodsFor!
@@ -1875,6 +1930,13 @@ executeSelectionOrLine: contextObject
 	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
 	^answer!
 
+flipAutoCommit
+	| browserService |
+	browserService := RowanBrowserService new.
+	browserService command: #flipAutoCommit; commandArgs: Array new. 
+	self issueCommand: (Array with: browserService). 
+	!
+
 issueCommand: services
 	^self class issueCommand: services session: self gciSession.
 	!
@@ -1973,6 +2035,7 @@ updateServices: services
 !JadePresenter categoriesFor: #displayUncompilableSourceIn:!event handlers!public!text tabs!updating! !
 !JadePresenter categoriesFor: #editSaveMethod:in:category:!compile support!public! !
 !JadePresenter categoriesFor: #executeSelectionOrLine:!menu handlers!private! !
+!JadePresenter categoriesFor: #flipAutoCommit!menu handlers!public! !
 !JadePresenter categoriesFor: #issueCommand:!browsing support!public! !
 !JadePresenter categoriesFor: #openDictionaryBrowserOn:selector:!browsing!public! !
 !JadePresenter categoriesFor: #openProjectBrowserOn:selector:!browsing!public! !
@@ -3543,6 +3606,16 @@ executeSelectionOrLine: contextObject
 issueCommand: services
 	^BrowserUpdate current issueCommand: services session: self gciSession!
 
+jadeExecuteAndDisplay: showResult
+	BrowserUpdate current logComment: '#jadeExecuteAndDisplay:'.
+	
+	[| result |
+	result := self executeSelectionOrLine.
+	[self jadeExecuteAndDisplay: showResult result: result] postToInputQueue]
+			newProcess
+		name: 'GciSession';
+		resume!
+
 onPromptToSaveChanges: aBooleanValue
 	"we were calling #getDocumentData essentially to test for nil. 
 	That uses #asString which some objects don't understand - like booleans."
@@ -3569,6 +3642,7 @@ updateServices: services
 !JadeTextDocument categoriesFor: #aboutJadeite!private! !
 !JadeTextDocument categoriesFor: #executeSelectionOrLine:!Jade!private! !
 !JadeTextDocument categoriesFor: #issueCommand:!public!services! !
+!JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:!Jade!private! !
 !JadeTextDocument categoriesFor: #onPromptToSaveChanges:!private! !
 !JadeTextDocument categoriesFor: #openDictionaryBrowser!Jade!private! !
 !JadeTextDocument categoriesFor: #openProjectsBrowser!Jade!private! !
@@ -4056,7 +4130,6 @@ debug: anArray
 redrawAllViews!
 
 update: browserUpdate withSelector: selector
-
 	browserUpdate updatesPerform: selector presenter: self. !
 
 update: browserUpdate withSelector: selector browser: browser

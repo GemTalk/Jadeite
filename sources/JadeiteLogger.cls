@@ -22,7 +22,8 @@ defaultLogFileName
 initialize
 	super initialize.
 	isLogging := false.
-	shouldGetNewLoggerGroup := true "not used yet"!
+	shouldGetNewLoggerGroup := true.
+	self newLoggingService.!
 
 isLogging
 	^isLogging!

@@ -19,7 +19,12 @@ autoCommit
 	^autoCommit value!
 
 autoCommit: boolean
-	autoCommit value: boolean!
+	autoCommit value: boolean.
+	gciSession
+		ifNotNil: 
+			[:session |
+			"not inconceivable there are dead transcripts around from test runs"
+			session autoCommit: boolean]!
 
 browseClass
 	^JadePresenter browseClassIn: self gciSession!
@@ -69,19 +74,22 @@ flipTranscript
 
 gciSession: aGciSession
 	"don't do the force logout. We'll close us ourselves"
+
 	gciSession := aGciSession.
 	gciSession
-		when: #'logoutRequested:'			send: #'logoutRequested:'	to: self;
-		when: #'logoutPending'			send: #'exit'			to: self;
+		when: #logoutRequested:
+			send: #logoutRequested:
+			to: self;
+		when: #logoutPending
+			send: #exit
+			to: self;
 		yourself.
-	mySessionPresenter	gciSession: aGciSession.
-	allSessionsPresenter	gciSession: aGciSession.
-	stoneInfoPresenter	gciSession: aGciSession.
-	toolbarPresenter	gciSession: aGciSession.
-	transcriptPresenter	gciSession: aGciSession.
-	autoCommit := ValueHolder with: self remoteAutoCommit. 
-
-!
+	mySessionPresenter gciSession: aGciSession.
+	allSessionsPresenter gciSession: aGciSession.
+	stoneInfoPresenter gciSession: aGciSession.
+	toolbarPresenter gciSession: aGciSession.
+	transcriptPresenter gciSession: aGciSession.
+	autoCommit := ValueHolder with: aGciSession autoCommit!
 
 initialize
 	super initialize. 

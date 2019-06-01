@@ -113,19 +113,6 @@ implement
 	self halt.
 !
 
-initializeProcess: aProcess message: aString terminateOnClose: aBoolean
-	self registerWindow: self view handle rootObject: aProcess oopType.
-	gsProcess := aProcess.
-	errorMessagePresenter value: aString.
-	terminateOnClose := aBoolean.
-	[self getProcessList] on: GsError
-		do: 
-			[:ex |
-			ex debugger: self.
-			ex pass].
-	self class debuggers at: gsProcess oopType asInteger put: self.
-	self update!
-
 inspectVariable
 
 	| object |
@@ -227,13 +214,6 @@ showNextStatement
 
 !
 
-stack: aList
-	| index |
-	index := self stackInitialSelection.
-	frameListOffset := 0.
-	frameListPresenter list: aList.
-	aList notEmpty ifTrue: [frameListPresenter selectionByIndex: index]!
-
 stackInitialSelection
 
 	| list |
@@ -305,22 +285,6 @@ terminateProcess
 		ifFalse: [^self].
 	self _terminateProcess!
 
-update
-
-	| stack |
-	((stack := gsProcess stack) isEmpty or: [stack = #('' '')]) ifTrue: [
-		MessageBox warning: 'We appear to have finished this process!!'. 
-		self view close. 
-		^self.
-	].
-	(2 <= processList size and: [processListPresenter selectionOrNil ~~ processList first]) ifTrue: [
-		processListPresenter 
-			list: processList;	"This triggers a selection changed message that clears the current selection"
-			selectionByIndex: 1.
-	] ifFalse: [
-		self stack: stack.
-	].!
-
 updateSaveMethodOop: anInteger
 	"do nothing"
 ! !
@@ -335,7 +299,6 @@ updateSaveMethodOop: anInteger
 !JadeDebugger categoriesFor: #createSchematicWiring!public! !
 !JadeDebugger categoriesFor: #getProcessList!public! !
 !JadeDebugger categoriesFor: #implement!public! !
-!JadeDebugger categoriesFor: #initializeProcess:message:terminateOnClose:!public! !
 !JadeDebugger categoriesFor: #inspectVariable!menu handlers!private! !
 !JadeDebugger categoriesFor: #queryCommand:!public! !
 !JadeDebugger categoriesFor: #resumeProcess!menu handlers!private! !
@@ -345,7 +308,6 @@ updateSaveMethodOop: anInteger
 !JadeDebugger categoriesFor: #selectedProcess!public! !
 !JadeDebugger categoriesFor: #selectedVariable!public! !
 !JadeDebugger categoriesFor: #showNextStatement!public! !
-!JadeDebugger categoriesFor: #stack:!public! !
 !JadeDebugger categoriesFor: #stackInitialSelection!public! !
 !JadeDebugger categoriesFor: #stackInitialSelectionData!public! !
 !JadeDebugger categoriesFor: #statusBarText:!public! !
@@ -353,7 +315,6 @@ updateSaveMethodOop: anInteger
 !JadeDebugger categoriesFor: #stepOut!menu handlers!private! !
 !JadeDebugger categoriesFor: #stepOver!menu handlers!private! !
 !JadeDebugger categoriesFor: #terminateProcess!menu handlers!private! !
-!JadeDebugger categoriesFor: #update!public! !
 !JadeDebugger categoriesFor: #updateSaveMethodOop:!public! !
 
 !JadeDebugger class methodsFor!

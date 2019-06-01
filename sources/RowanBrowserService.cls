@@ -56,6 +56,7 @@ printOn: aStream
 			[aStream
 				nextPutAll: 'command: ';
 				print: command;
+				space;
 				nextPutAll: 'commandArgs: ';
 				print: commandArgs].
 	aStream nextPut: $)!

@@ -79,7 +79,8 @@ autoCommit
 	^autoCommit value!
 
 autoCommit: boolean
-	autoCommit value: boolean!
+	autoCommit value: boolean.
+	gciSession autoCommit: boolean!
 
 basicAddMethodCategory: string
 	| service |
@@ -805,16 +806,9 @@ findMethod: selector
 		ifFalse: [variableListPresenter selection: nil].
 	methodListPresenter selections: (Array with: methodService)!
 
-flipAutoCommit
-	| browserService |
-	browserService := RowanBrowserService new.
-	browserService command: #flipAutoCommit; commandArgs: Array new. 
-	self issueCommand: (Array with: browserService). 
-	!
-
 gciSession: aGciSession
 	super gciSession: aGciSession.
-	autoCommit := ValueHolder with: self remoteAutoCommit.!
+	autoCommit := ValueHolder with: aGciSession autoCommit!
 
 getterMethodSourceFor: variable
 	| sourceStream |
@@ -2265,7 +2259,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #findClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #findMethod!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #findMethod:!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #flipAutoCommit!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gciSession:!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #getterMethodSourceFor:!menu handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #getViews!public! !

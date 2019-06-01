@@ -40,6 +40,16 @@ test_adHocExecute
 				[workspace isModified: false.
 				workspace view close]!
 
+test_autoCommitDoesNotMakeRoundTripWhenOpeningBrowser
+	"Not a very good test but the last service logged should not be an #updateAutoCommit command which was the bug"
+
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[BrowserUpdate current loggingService services
+		do: [:service | self deny: service updateType = #updateAutoCommit]]
+			ensure: [self destroy: projectsBrowser]!
+
 test_autoCommitInAdHocDisplay
 	| workspace |
 	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
@@ -119,6 +129,16 @@ test_autoCommitOffInAdHocExecution
 			ensure: 
 				[workspace isModified: false.
 				workspace view close]!
+
+test_autoCommitUpdatedInSession
+	| autoCommit |
+	
+	[autoCommit := session autoCommit.
+	self setAutoCommit: true.
+	self assert: session autoCommit.
+	self setAutoCommit: false.
+	self deny: session autoCommit]
+			ensure: [self setAutoCommit: autoCommit]!
 
 test_convertToPattern
 	| pattern |
@@ -226,10 +246,12 @@ testMethodServiceClassNameIsString
 	self assert: methodService className isKindOf: String! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_adHocDisplay!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_adHocExecute!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitInAdHocDisplay!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitInAdHocExecution!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocDisplay!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocExecution!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitDoesNotMakeRoundTripWhenOpeningBrowser!auto commit!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitInAdHocDisplay!auto commit!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitInAdHocExecution!auto commit!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocDisplay!auto commit!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocExecution!auto commit!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitUpdatedInSession!auto commit!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_convertToPattern!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
