@@ -139,7 +139,7 @@ initializeIdleProcess
 			[(Delay forMilliseconds: 10) wait.
 			cachedSession isCallInProgress] whileTrue: [].
 			cachedClass signalSemaphore.
-			idleProcess suspend]
+			(idleProcess class canUnderstand: #suspend) ifTrue: [idleProcess suspend]]
 					repeat]
 					newProcess.
 	idleProcess priority: Processor userBackgroundPriority!
