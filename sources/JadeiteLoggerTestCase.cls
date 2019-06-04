@@ -10,6 +10,77 @@ JadeiteLoggerTestCase comment: ''!
 !JadeiteLoggerTestCase categoriesForClass!Unclassified! !
 !JadeiteLoggerTestCase methodsFor!
 
+setUp
+	super setUp.
+	BrowserUpdate current resetLoggingService.
+	Smalltalk at: #JadeiteTestLoggingServiceClass put: TestLoggingService.
+	BrowserUpdate current logFileName: 'jadeiteTestFilename.txt'!
+
+tearDown
+	super tearDown.
+	Smalltalk removeKey: #JadeiteTestLoggingServiceClass ifAbsent: [].
+	BrowserUpdate current resetLoggingService.  !
+
+test_equality
+	"sent & received logging services should have the same groupId because it's a service call.
+	id will vary based on number of comments logged"
+
+	| loggingServiceA loggingServiceB |
+	self testsIssue: #issue250 withTitle: 'Need logging capability in Jadeite'.
+	loggingServiceA := RowanLoggingService new
+				groupId: 1;
+				id: 2.
+	loggingServiceB := RowanLoggingService new
+				groupId: 1;
+				id: 2.
+	self assert: loggingServiceA equals: loggingServiceB.
+	loggingServiceA := RowanLoggingService new
+				groupId: 1;
+				id: 1.
+	loggingServiceB := RowanLoggingService new
+				groupId: 1;
+				id: 2.
+	self deny: loggingServiceA equals: loggingServiceB.
+	loggingServiceA := RowanLoggingService new
+				groupId: 1;
+				id: 1.
+	loggingServiceB := RowanLoggingService new
+				groupId: 2;
+				id: 1.
+	self deny: loggingServiceA equals: loggingServiceB!
+
+test_isLoggingDefaults
+	self testsIssue: #issue250 withTitle: 'Need logging capability in Jadeite'.
+	Smalltalk removeKey: #JadeiteTestLoggingServiceClass ifAbsent: [].
+	BrowserUpdate current resetLoggingService.
+	self assert: BrowserUpdate current loggingService isLogging equals: BrowserUpdate current isLogging	"JadeiteLogger holds the global setting"!
+
+test_logComment
+	| rs filename objects wasLogging loggingService initialId file |
+	self testsIssue: #issue250 withTitle: 'Need logging capability in Jadeite'.
+	file := File open: BrowserUpdate current logFileName mode: #truncate check: false.	"open and truncate if existing or create a new file"
+	file close.
+	wasLogging := BrowserUpdate current isLogging.
+	BrowserUpdate current isLogging: true.
+	BrowserUpdate current resetLoggingService.
+	initialId := BrowserUpdate current loggingService id.
+	
+	[BrowserUpdate current logComment: 'Test comment'.
+	filename := BrowserUpdate current logFileName.
+	objects := OrderedCollection new.
+	rs := FileStream open: filename mode: #read.
+	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close].
+	self assert: objects size equals: 1.
+	loggingService := objects first.
+	self assert: (loggingService isKindOf: TestLoggingService).
+	self assert: loggingService comment equals: 'Test comment'.
+	self assert: loggingService date equals: Date today.
+	self assert: ('TestLoggingService*Test comment' match: loggingService printString).
+	self assert: loggingService id equals: initialId + 1]
+			ensure: 
+				[file delete.
+				BrowserUpdate current isLogging: wasLogging]!
+
 test_loggerContainsServices
 	| loggingService service |
 	self testsIssue: #issue250 withTitle: 'Need logging capability in Jadeite'.
@@ -17,7 +88,7 @@ test_loggerContainsServices
 				command: #update;
 				commandArgs: Array new.
 	self issueCommand: service.
-	loggingService := BrowserUpdate current loggingService. 
+	loggingService := BrowserUpdate current loggingService.
 	self assert: loggingService services size equals: 1.
 	self assert: loggingService services first isProjectService.
 	self assert: loggingService services first name equals: 'Rowan'!
@@ -51,18 +122,138 @@ test_loggerMenuEnablement
 	logger := loggerItem commandDescription performAgainst: transcript.
 	[self assert: (logger isKindOf: JadeiteLoggerShell)] ensure: [logger view close]!
 
+test_loggingIds
+	"sent & received logging services should have the same groupId because it's a service call.
+	id will vary based on number of comments logged"
+
+	| rs filename objects wasLogging file service sentService receivedService |
+	self testsIssue: #issue250 withTitle: 'Need logging capability in Jadeite'.
+	file := File
+				open: BrowserUpdate current logFileName
+				mode: #truncate
+				check: false.	"open and truncate if existing or create a new file"
+	file close.
+	wasLogging := BrowserUpdate current isLogging.
+	BrowserUpdate current isLogging: true.
+	BrowserUpdate current resetLoggingService.
+	
+	[service := (RowanProjectService new name: 'Rowan')
+				command: #update;
+				commandArgs: Array new.
+	self issueCommand: service.
+	filename := BrowserUpdate current logFileName.
+	objects := OrderedCollection new.
+	rs := FileStream open: filename mode: #read.
+	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close].
+	sentService := objects detect: [:loggingService | loggingService mode = #sent].
+	receivedService := objects detect: [:loggingService | loggingService mode = #sent].
+	self assert: receivedService groupId equals: sentService groupId]
+			ensure: 
+				[file delete.
+				BrowserUpdate current isLogging: wasLogging]!
+
+test_logReceivedServices
+	| rs filename objects wasLogging file service receivedServices |
+	self testsIssue: #issue250 withTitle: 'Need logging capability in Jadeite'.
+	file := File
+				open: BrowserUpdate current logFileName
+				mode: #truncate
+				check: false.	"open and truncate if existing or create a new file"
+	file close.
+	wasLogging := BrowserUpdate current isLogging.
+	BrowserUpdate current isLogging: true.
+	
+	[service := (RowanProjectService new name: 'Rowan')
+				command: #update;
+				commandArgs: Array new.
+	self issueCommand: service.
+	filename := BrowserUpdate current logFileName.
+	objects := OrderedCollection new.
+	rs := FileStream open: filename mode: #read.
+	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close].
+	receivedServices := objects select: [:loggingService | loggingService mode = #received].
+	self assert: receivedServices size equals: 1.
+	self assert: (receivedServices first isKindOf: TestLoggingService).
+	self assert: (receivedServices first services first isKindOf: RowanProjectService).
+	self assert: receivedServices first location equals: #client.
+	self assert: receivedServices first mode equals: #received]
+			ensure: 
+				[file delete.
+				BrowserUpdate current isLogging: wasLogging]!
+
+test_logSentServices
+	| rs filename objects wasLogging file service sentServices |
+	self testsIssue: #issue250 withTitle: 'Need logging capability in Jadeite'.
+	file := File
+				open: BrowserUpdate current logFileName
+				mode: #truncate
+				check: false.	"open and truncate if existing or create a new file"
+	file close.
+	wasLogging := BrowserUpdate current isLogging.
+	BrowserUpdate current isLogging: true.
+	
+	[service := (RowanProjectService new name: 'Rowan')
+				command: #update;
+				commandArgs: Array new.
+	self issueCommand: service.
+	filename := BrowserUpdate current logFileName.
+	objects := OrderedCollection new.
+	rs := FileStream open: filename mode: #read.
+	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close].
+	sentServices := objects select: [:loggingService | loggingService mode = #sent].
+	self assert: sentServices size equals: 1.
+	self assert: (sentServices first isKindOf: TestLoggingService).
+	self assert: (sentServices first services first isKindOf: RowanProjectService).
+	self assert: sentServices first location equals: #client.
+	self assert: sentServices first mode equals: #sent]
+			ensure: 
+				[file delete.
+				BrowserUpdate current isLogging: wasLogging]!
+
 test_newLoggingServiceCreated
 	| loggingService service |
 	"every service call should create a new logging service regardless of logging enablement."
 	self testsIssue: #issue250 withTitle: 'Need logging capability in Jadeite'.
+	Smalltalk removeKey: #JadeiteTestLoggingServiceClass ifAbsent: [].	"Make sure we don't create an instance of TestLoggingService"
 	loggingService := BrowserUpdate current loggingService.
 	service := RowanBrowserService new
 				command: #packagesWithTests;
 				commandArgs: Array new.
 	self issueCommand: service.
 	self deny: BrowserUpdate current loggingService sameAs: loggingService.
-	self assert: (BrowserUpdate current loggingService isKindOf: RowanLoggingService)! !
-!JadeiteLoggerTestCase categoriesFor: #test_loggerContainsServices!public! !
-!JadeiteLoggerTestCase categoriesFor: #test_loggerMenuEnablement!public! !
-!JadeiteLoggerTestCase categoriesFor: #test_newLoggingServiceCreated!public! !
+	self assert: (BrowserUpdate current loggingService isKindOf: RowanLoggingService)!
+
+test_noFileWrittenWhenNotLogging
+	| rs filename objects wasLogging file |
+	self testsIssue: #issue250 withTitle: 'Need logging capability in Jadeite'.
+	self assert: BrowserUpdate current logFileName equals: 'jadeiteTestFilename.txt'.
+	file := File
+				open: BrowserUpdate current logFileName
+				mode: #truncate
+				check: false.	"open and truncate if existing or create a new file"
+	file close.
+	wasLogging := BrowserUpdate current isLogging.
+	BrowserUpdate current isLogging: false.
+	
+	[BrowserUpdate current logComment: 'Test comment'.
+	filename := BrowserUpdate current logFileName.
+	objects := OrderedCollection new.
+	rs := FileStream open: filename mode: #read.
+	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close].
+	self assert: objects size equals: 0]
+			ensure: 
+				[file delete.
+				BrowserUpdate current isLogging: wasLogging]! !
+!JadeiteLoggerTestCase categoriesFor: #setUp!public!setup teardown! !
+!JadeiteLoggerTestCase categoriesFor: #tearDown!public!setup teardown! !
+!JadeiteLoggerTestCase categoriesFor: #test_equality!public!tests! !
+!JadeiteLoggerTestCase categoriesFor: #test_isLoggingDefaults!public!tests! !
+!JadeiteLoggerTestCase categoriesFor: #test_logComment!public!tests! !
+!JadeiteLoggerTestCase categoriesFor: #test_loggerContainsServices!public!tests! !
+!JadeiteLoggerTestCase categoriesFor: #test_loggerMenuEnablement!public!tests! !
+!JadeiteLoggerTestCase categoriesFor: #test_loggingIds!public!tests! !
+!JadeiteLoggerTestCase categoriesFor: #test_logReceivedServices!public!tests! !
+!JadeiteLoggerTestCase categoriesFor: #test_logSentServices!public!tests! !
+!JadeiteLoggerTestCase categoriesFor: #test_newLoggingServiceCreated!public!tests! !
+!JadeiteLoggerTestCase categoriesFor: #test_noFileWrittenWhenNotLogging!public!tests! !
 

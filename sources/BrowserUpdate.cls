@@ -32,7 +32,7 @@ activeServices
 basicIssueCommand: services session: session
 	| stonString stonResultString updateResult loggedServices newLoggingService |
 	services do: [:service | service prepareForReplication].
-	newLoggingService := logger newServiceLoggingService services: services.
+	newLoggingService := logger newServiceLoggingService addServices: services.
 	self logSentServices: services.
 	loggedServices := services asOrderedCollection
 				addFirst: newLoggingService;
@@ -79,7 +79,7 @@ isLogging
 	^logger isLogging!
 
 isLogging: boolean
-	self isLogging ifTrue: [self stopLogging] ifFalse: [self  startLogging]!
+	boolean ifTrue: [self startLogging] ifFalse: [self stopLogging]!
 
 issueCommand: services session: session
 	BrowserUpdate current logComment: 'About to get inUpdate semaphore for command'.
@@ -96,6 +96,18 @@ logComment: string
 logFileName
 
 	^logger logFileName!
+
+logFileName: string
+
+	^logger logFileName: string!
+
+logger
+	"Private - for testing"
+
+	^logger!
+
+logger: anObject
+	logger := anObject!
 
 loggingService
 	"for testing"
@@ -165,6 +177,10 @@ removeEventsTriggeredFor: anObject
 		logComment: 'Remove events triggered for ' , anObject printString , ' {'
 				, anObject identityHash printString , '}'!
 
+resetLoggingService
+	logger loggingService: nil. 
+	logger newLoggingService!
+
 selectedServices
 	| services potentialSelections |
 	services := OrderedCollection new.
@@ -231,24 +247,30 @@ updatesPerform: selector presenter: presenter
 	"the update may know which client updates 
 	it wants us to care about. Respect that."
 
-	updates do: 
+	
+	[updates do: 
 			[:update |
 			(update updateType isNil or: [update updateType == selector])
-				ifTrue: [update perform: selector with: presenter]]!
+				ifTrue: [update perform: selector with: presenter]]]
+			on: Error
+			do: [:ex | self halt]!
 
 updatesPerform: selector presenter: presenter browser: browser
 	"the update may know which client updates 
 	it wants us to care about if updateType is set. 
 	Respect the server's wishes."
 
-	updates do: 
+	
+	[updates do: 
 			[:update |
 			(update updateType isNil or: [update updateType == selector])
 				ifTrue: 
 					[update
 						perform: selector
 						with: presenter
-						with: browser]]! !
+						with: browser]]]
+			on: Error
+			do: [:ex | self halt]! !
 !BrowserUpdate categoriesFor: #activeClassServices!accessing!public! !
 !BrowserUpdate categoriesFor: #activeMethodServices!accessing!public! !
 !BrowserUpdate categoriesFor: #activePackageServices!accessing!public! !
@@ -266,6 +288,9 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #issueCommand:session:!commands!public! !
 !BrowserUpdate categoriesFor: #logComment:!logging!public! !
 !BrowserUpdate categoriesFor: #logFileName!accessing!public! !
+!BrowserUpdate categoriesFor: #logFileName:!accessing!public! !
+!BrowserUpdate categoriesFor: #logger!accessing!private! !
+!BrowserUpdate categoriesFor: #logger:!accessing!private! !
 !BrowserUpdate categoriesFor: #loggingService!accessing!public! !
 !BrowserUpdate categoriesFor: #logReceivedServices:!logging!public! !
 !BrowserUpdate categoriesFor: #logSentServices:!logging!public! !
@@ -277,6 +302,7 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #registeredPresenters!public!registeringPresenters! !
 !BrowserUpdate categoriesFor: #registeredTreePresenters!private!registeringPresenters! !
 !BrowserUpdate categoriesFor: #removeEventsTriggeredFor:!public!registeringPresenters! !
+!BrowserUpdate categoriesFor: #resetLoggingService!initialization!public! !
 !BrowserUpdate categoriesFor: #selectedServices!accessing!public! !
 !BrowserUpdate categoriesFor: #shouldGetNewLoggerGroup:!accessing!public! !
 !BrowserUpdate categoriesFor: #startLogging!logging!public! !

@@ -12,7 +12,10 @@ id is the numbering within that group for display sorting. '!
 !RowanLoggingService methodsFor!
 
 = methodService
-	^methodService isLoggingService and: [groupId = methodService groupId]!
+	^methodService isLoggingService and: [groupId = methodService groupId and: [id = methodService id]]!
+
+addServices: newServices
+	services addAll: newServices!
 
 clientDisplayString
 	^location == #client ifTrue: [self displayString] ifFalse: [String new]!
@@ -86,7 +89,7 @@ groupId: anObject
 	groupId := anObject!
 
 hash
-	^groupId hash!
+	^groupId hash bitXor: id hash!
 
 id
 	^id!
@@ -99,12 +102,24 @@ initialize
 	services := OrderedCollection new.
 	isLogging := false. !
 
+isLogging
+	^isLogging!
+
 isLogging: aBoolean 
 	isLogging := aBoolean!
 
 isLoggingService
 
 	^true!
+
+isTestLoggingService
+	^false!
+
+location
+	^location!
+
+location: anObject
+	location := anObject!
 
 logComment: aString
 	| stonString ws |
@@ -132,8 +147,7 @@ logSentServices: theServices
 
 logServices: theServices
 	| stonString ws |
-	id := id + 1. 
-	services := theServices.
+	id := id + 1.
 	date := Date today.
 	time := Time now.
 	location := #client.
@@ -157,15 +171,13 @@ services
 
 	^services!
 
-services: anObject
-	services := anObject!
-
 time
 	^time!
 
 time: anObject
 	time := anObject! !
 !RowanLoggingService categoriesFor: #=!comparing!public! !
+!RowanLoggingService categoriesFor: #addServices:!accessing!public! !
 !RowanLoggingService categoriesFor: #clientDisplayString!displaying!public! !
 !RowanLoggingService categoriesFor: #clientGroupIdDisplayString!displaying!public! !
 !RowanLoggingService categoriesFor: #clientIdDisplayString!displaying!public! !
@@ -183,8 +195,12 @@ time: anObject
 !RowanLoggingService categoriesFor: #id!accessing!private! !
 !RowanLoggingService categoriesFor: #id:!accessing!private! !
 !RowanLoggingService categoriesFor: #initialize!initialization!public! !
+!RowanLoggingService categoriesFor: #isLogging!accessing!public! !
 !RowanLoggingService categoriesFor: #isLogging:!public! !
 !RowanLoggingService categoriesFor: #isLoggingService!public!testing! !
+!RowanLoggingService categoriesFor: #isTestLoggingService!public!testing! !
+!RowanLoggingService categoriesFor: #location!accessing!private! !
+!RowanLoggingService categoriesFor: #location:!accessing!private! !
 !RowanLoggingService categoriesFor: #logComment:!logging!public! !
 !RowanLoggingService categoriesFor: #logReceivedServices:!logging!public! !
 !RowanLoggingService categoriesFor: #logSentServices:!logging!public! !
@@ -193,18 +209,25 @@ time: anObject
 !RowanLoggingService categoriesFor: #printString!displaying!public! !
 !RowanLoggingService categoriesFor: #serverDisplayString!displaying!public! !
 !RowanLoggingService categoriesFor: #services!accessing!public! !
-!RowanLoggingService categoriesFor: #services:!accessing!private! !
 !RowanLoggingService categoriesFor: #time!accessing!private! !
 !RowanLoggingService categoriesFor: #time:!accessing!private! !
 
 !RowanLoggingService class methodsFor!
 
-newWithGroupId: integer
+basicNewWithGroupId: integer logger: logger
 	| inst |
 	inst := self new.
 	inst
 		groupId: integer;
 		id: 0.
-	^inst! !
-!RowanLoggingService class categoriesFor: #newWithGroupId:!instance creation!public! !
+	^inst!
+
+loggingServiceClass
+	^Smalltalk at: #JadeiteTestLoggingServiceClass ifAbsent: [self]!
+
+newWithGroupId: integer logger: logger
+	^self basicNewWithGroupId: integer logger: logger! !
+!RowanLoggingService class categoriesFor: #basicNewWithGroupId:logger:!instance creation!public! !
+!RowanLoggingService class categoriesFor: #loggingServiceClass!accessing!public! !
+!RowanLoggingService class categoriesFor: #newWithGroupId:logger:!instance creation!public! !
 

@@ -22,6 +22,7 @@ package classNames
 	add: #JadeiteTestResource;
 	add: #JadeiteTranscriptTestCase;
 	add: #RowanTestService;
+	add: #TestLoggingService;
 	add: #TestMessageBox;
 	add: #TestPrompter;
 	yourself.
@@ -62,6 +63,7 @@ package setPrerequisites: (IdentitySet new
 	add: 'Jade Login';
 	add: 'Jade Test Browser';
 	add: 'Jade UI Base';
+	add: 'Rowan STON';
 	add: 'Rowan UI Base';
 	add: '..\Core\Contributions\Camp Smalltalk\SUnit\SUnit';
 	add: '..\Core\Contributions\Odellsoft\SUnitBrowser\SUnitBrowser';
@@ -79,6 +81,11 @@ MessageBox subclass: #TestMessageBox
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanTestService
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanLoggingService subclass: #TestLoggingService
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

@@ -40,12 +40,16 @@ logFileName
 
 	^logFileName!
 
+logFileName: string
+	logFileName := string.
+	loggingService fileName: string!
+
 loggingService
 	^loggingService!
 
 loggingService: anObject
 	loggingService := anObject.
-	loggingService isLogging: isLogging!
+	loggingService ifNotNil: [loggingService isLogging: isLogging]!
 
 logReceivedServices: services
 	isLogging ifTrue: [loggingService logReceivedServices: services]!
@@ -57,7 +61,7 @@ newLoggingService
 	| inst |
 	^shouldGetNewLoggerGroup
 		ifTrue: 
-			[inst := RowanLoggingService newWithGroupId: self nextGroupId.
+			[inst := RowanLoggingService loggingServiceClass newWithGroupId: self nextGroupId logger: self.
 			inst command: #logReceivedServices.
 			inst fileName: logFileName.
 			self loggingService: inst.
@@ -65,7 +69,11 @@ newLoggingService
 		ifFalse: [loggingService]!
 
 newServiceLoggingService
-	self newLoggingService.
+	^self newLoggingService!
+
+newWithGroupId: integer logger: logger
+	(loggingService isNil or: [loggingService isTestLoggingService not])
+		ifTrue: [^RowanLoggingService loggingServiceClass basicNewWithGroupId: integer logger: logger].
 	^loggingService!
 
 nextGroupId
@@ -91,12 +99,14 @@ stopLogging
 !JadeiteLogger categoriesFor: #isLogging:!accessing!private! !
 !JadeiteLogger categoriesFor: #logComment:!accessing!logging!public! !
 !JadeiteLogger categoriesFor: #logFileName!public! !
+!JadeiteLogger categoriesFor: #logFileName:!public! !
 !JadeiteLogger categoriesFor: #loggingService!accessing!private! !
 !JadeiteLogger categoriesFor: #loggingService:!accessing!private! !
 !JadeiteLogger categoriesFor: #logReceivedServices:!accessing!logging!public! !
 !JadeiteLogger categoriesFor: #logSentServices:!accessing!logging!public! !
-!JadeiteLogger categoriesFor: #newLoggingService!accessing!logging!public! !
+!JadeiteLogger categoriesFor: #newLoggingService!accessing!logging!private! !
 !JadeiteLogger categoriesFor: #newServiceLoggingService!accessing!logging!public! !
+!JadeiteLogger categoriesFor: #newWithGroupId:logger:!double dispatch!public! !
 !JadeiteLogger categoriesFor: #nextGroupId!accessing!public! !
 !JadeiteLogger categoriesFor: #shouldGetNewLoggerGroup!accessing!private! !
 !JadeiteLogger categoriesFor: #shouldGetNewLoggerGroup:!accessing!private! !
