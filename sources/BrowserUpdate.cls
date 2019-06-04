@@ -60,7 +60,7 @@ debug: aBoolean
 initialize
 	self initializeUpdates.
 	debug := false.
-	inUpdate := Semaphore forMutualExclusion.
+	inUpdate := JadeiteSemaphore forMutualExclusion.
 	logger := JadeiteLogger new. 
 !
 

@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 JadeDebugger subclass: #RowanDebugger
-	instanceVariableNames: 'statusTextPresenter idleProcess'
+	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggerClass semaphore'!
@@ -131,6 +131,7 @@ initializeIdleProcess
 	See #onIdleEntered"
 
 	| cachedClass cachedSession |
+	idleProcessSemaphore := Semaphore forMutualExclusion.
 	cachedClass := self class.
 	cachedSession := gciSession.
 	idleProcess := 
@@ -139,10 +140,11 @@ initializeIdleProcess
 			[(Delay forMilliseconds: 10) wait.
 			cachedSession isCallInProgress] whileTrue: [].
 			cachedClass signalSemaphore.
-			(idleProcess class canUnderstand: #suspend) ifTrue: [idleProcess suspend]]
+			idleProcessSemaphore wait]
 					repeat]
 					newProcess.
-	idleProcess priority: Processor userBackgroundPriority!
+	idleProcess priority: Processor userBackgroundPriority.
+	idleProcess resume!
 
 initializeProcess: aProcess message: aString terminateOnClose: aBoolean
 	super
@@ -179,7 +181,7 @@ onCloseRequested: boolValueHolder
 	super onCloseRequested: boolValueHolder!
 
 onIdleEntered
-	[idleProcess resume] on: Error do: [:ex | ].
+	idleProcessSemaphore signal.
 	super onIdleEntered!
 
 onViewClosed
@@ -191,14 +193,20 @@ onViewClosed
 	super onViewClosed.
 	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter].
 	"Allow test to know when view is closed"
-	self class signalSemaphore!
+	self class signalSemaphore.
+	self terminateIdleProcess!
+
+onViewDestroyed
+	"Private - copied from RowanSystemBrowserPresenter>>onViewClosed"
+
+	super onViewDestroyed.
+	self terminateIdleProcess!
 
 onViewOpened
 	"Private - copied from RowanProjectsBrowserPresenter>>onViewOpened"
 
 	super onViewOpened.
 	self registerPresentersForUpdates.
-	BrowserUpdate current inUpdate signal.	"The debugger isn't opened in a forked process so make sure our 'semaphore' won't block updates"
 	BrowserUpdate current logComment: 'Opening Debugger {' , self identityHash printString , '}'!
 
 processListPresenter
@@ -346,6 +354,12 @@ stepOver
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
 	[self getProcessList] on: RowanDebuggerStepPointError do: [:ex | self stepInto]!
 
+terminateIdleProcess
+	idleProcess
+		ifNotNil: 
+			[idleProcess terminate.
+			idleProcess := nil]!
+
 terminateProcess
 	(MessageBox confirm: 'Terminate process?' caption: 'GemStone/S Process Termination')
 		ifFalse: [^self].
@@ -387,6 +401,7 @@ variableListPresenter
 !RowanDebugger categoriesFor: #onCloseRequested:!event handlers!private! !
 !RowanDebugger categoriesFor: #onIdleEntered!event handlers!private! !
 !RowanDebugger categoriesFor: #onViewClosed!event handlers!private! !
+!RowanDebugger categoriesFor: #onViewDestroyed!event handlers!private! !
 !RowanDebugger categoriesFor: #onViewOpened!event handlers!private! !
 !RowanDebugger categoriesFor: #processListPresenter!Accessing!public! !
 !RowanDebugger categoriesFor: #queryCommand:!menu handlers!public! !
@@ -400,6 +415,7 @@ variableListPresenter
 !RowanDebugger categoriesFor: #stepInto!menu handlers!private! !
 !RowanDebugger categoriesFor: #stepOut!menu handlers!private! !
 !RowanDebugger categoriesFor: #stepOver!menu handlers!private! !
+!RowanDebugger categoriesFor: #terminateIdleProcess!private! !
 !RowanDebugger categoriesFor: #terminateProcess!menu handlers!private! !
 !RowanDebugger categoriesFor: #updateMethodSource!public! !
 !RowanDebugger categoriesFor: #variableDataPresenter!Accessing!public! !

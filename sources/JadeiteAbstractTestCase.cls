@@ -78,10 +78,9 @@ deselectProjects
 
 	self projectListPresenter selectionByIndex: 0.!
 
-destroy: view
-
-	(Delay forMilliseconds: 2) wait. 
-	view destroy. !
+destroy: visualThing
+	(Delay forMilliseconds: 2) wait.
+	(self class canUnderstand: #close) ifTrue: [visualThing close] ifFalse: [visualThing view close]!
 
 ensureRowanSample1Loaded
 	self loadProjectNamed: self sampleProjectName.!

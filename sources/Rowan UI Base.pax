@@ -31,6 +31,7 @@ package classNames
 	add: #JadeiteProjectsSystemBrowser;
 	add: #JadeiteRenameClassMethodListBrowser;
 	add: #JadeiteRenameClassMethodListPresenter;
+	add: #JadeiteSemaphore;
 	add: #JadeiteTranscript;
 	add: #PackageMethodListPresenter;
 	add: #Rowan;
@@ -466,6 +467,11 @@ Object subclass: #Rowan
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+Semaphore subclass: #JadeiteSemaphore
+	instanceVariableNames: 'lockingProcess'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 Error subclass: #RowanDebuggerStepPointError
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -717,7 +723,7 @@ JadeLoginShell subclass: #JadeiteLoginShell
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeDebugger subclass: #RowanDebugger
-	instanceVariableNames: 'statusTextPresenter idleProcess'
+	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggerClass semaphore'!
