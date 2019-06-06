@@ -109,6 +109,7 @@ package methodNames
 	add: #JadeDebugger -> #initializeProcess:message:terminateOnClose:;
 	add: #JadeDebugger -> #onViewClosed;
 	add: #JadeDebugger -> #selectedFrameWithErrorHandling;
+	add: #JadeDebugger -> #selectedProcess;
 	add: #JadeDebugger -> #stack:;
 	add: #JadeDebugger -> #update;
 	add: #JadeDebugger -> #updateCaption;
@@ -1118,6 +1119,13 @@ selectedFrameWithErrorHandling
 			BrowserUpdate current logComment: 'isNested: ' , ex isNested printString.
 			ex isNested ifTrue: [ex pass] ifFalse: [ex resume]]!
 
+selectedProcess
+	processListPresenter selectionOrNil ifNil: [^self].
+	self clearUI.
+	gsProcess := processListPresenter selectionOrNil.
+	BrowserUpdate current logComment: '#selectedProcess - about to send #stack:'. 
+	self stack: gsProcess stack!
+
 stack: aList
 	| index |
 	index := self stackInitialSelection.
@@ -1126,7 +1134,8 @@ stack: aList
 	frameListPresenter list: aList.
 	BrowserUpdate current logComment: 'Finished giving the frameListPresenter a list'.
 	aList notEmpty ifTrue: [frameListPresenter selectionByIndex: index].
-	BrowserUpdate current logComment: 'Selected index ', index printString.!
+	BrowserUpdate current logComment: 'Selected index ', index printString.
+	SessionManager inputState prod!
 
 update
 	| stack |
@@ -1142,7 +1151,10 @@ update
 			[processListPresenter
 				list: processList;
 				selectionByIndex: 1	"This triggers a selection changed message that clears the current selection"]
-		ifFalse: [self stack: stack]!
+		ifFalse: 
+			[BrowserUpdate current logComment: '#update - about to send #stack:'.
+			self stack: stack.
+			BrowserUpdate current logComment: '#update - finished #stack:']!
 
 updateCaption
 	self caption: (gciSession
@@ -1154,6 +1166,7 @@ updateCaption
 !JadeDebugger categoriesFor: #initializeProcess:message:terminateOnClose:!public! !
 !JadeDebugger categoriesFor: #onViewClosed!event handlers!public! !
 !JadeDebugger categoriesFor: #selectedFrameWithErrorHandling!public! !
+!JadeDebugger categoriesFor: #selectedProcess!public! !
 !JadeDebugger categoriesFor: #stack:!public! !
 !JadeDebugger categoriesFor: #update!public! !
 !JadeDebugger categoriesFor: #updateCaption!public! !

@@ -190,12 +190,6 @@ selectedFrame
 	]."
 !
 
-selectedProcess
-	processListPresenter selectionOrNil ifNil: [^self].
-	self clearUI.
-	gsProcess := processListPresenter selectionOrNil.
-	self stack: gsProcess stack!
-
 selectedVariable
 
 	| data |
@@ -305,7 +299,6 @@ updateSaveMethodOop: anInteger
 !JadeDebugger categoriesFor: #runToCursor!menu handlers!private! !
 !JadeDebugger categoriesFor: #saveMethod!menu handlers!private! !
 !JadeDebugger categoriesFor: #selectedFrame!public! !
-!JadeDebugger categoriesFor: #selectedProcess!public! !
 !JadeDebugger categoriesFor: #selectedVariable!public! !
 !JadeDebugger categoriesFor: #showNextStatement!public! !
 !JadeDebugger categoriesFor: #stackInitialSelection!public! !

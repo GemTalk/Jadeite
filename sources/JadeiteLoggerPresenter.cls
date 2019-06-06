@@ -28,6 +28,7 @@ createSchematicWiring
 inputClientFile: objects
 	| rs filename |
 	filename := clientFilename ifNil: [BrowserUpdate current logFileName].
+	filename isNil ifTrue:[^self].
 	rs := FileStream open: filename mode: #read.
 	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close]!
 
@@ -46,7 +47,8 @@ inputServerFile: objects
 	| rs serverFileContents |
 	rs := serverFilename
 				ifNil: 
-					[serverFileContents := gciSession
+					[BrowserUpdate current logFileName ifNil: [^self].
+					serverFileContents := gciSession
 								executeString: '(RowanLoggingService new fileName: ''' , BrowserUpdate current logFileName
 										, ''') logFileContents'.
 					ReadStream on: serverFileContents]

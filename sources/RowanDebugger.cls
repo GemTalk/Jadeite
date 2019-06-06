@@ -137,21 +137,24 @@ initializeIdleProcess
 	idleProcess := 
 			[
 			[
+			[
 			[(Delay forMilliseconds: 10) wait.
 			cachedSession isCallInProgress] whileTrue: [].
 			cachedClass signalSemaphore.
 			idleProcessSemaphore wait]
 					repeat]
+					ensure: [cachedClass ifNotNil: [:cls | cls signalSemaphore]]]
 					newProcess.
 	idleProcess priority: Processor userBackgroundPriority.
 	idleProcess resume!
 
 initializeProcess: aProcess message: aString terminateOnClose: aBoolean
-	super
+	
+	[super
 		initializeProcess: aProcess
 		message: aString
-		terminateOnClose: aBoolean.
-	self initializeIdleProcess!
+		terminateOnClose: aBoolean]
+			ensure: [self initializeIdleProcess]!
 
 isOkayToChangeFrame
 	^codePane isOkayToChange!
@@ -181,7 +184,7 @@ onCloseRequested: boolValueHolder
 	super onCloseRequested: boolValueHolder!
 
 onIdleEntered
-	idleProcessSemaphore signal.
+	idleProcessSemaphore ifNotNil: [:sem | sem signal].
 	super onIdleEntered!
 
 onViewClosed

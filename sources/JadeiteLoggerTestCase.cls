@@ -10,6 +10,13 @@ JadeiteLoggerTestCase comment: ''!
 !JadeiteLoggerTestCase categoriesForClass!Unclassified! !
 !JadeiteLoggerTestCase methodsFor!
 
+openLogBrowser
+	| browseItem loggerItem |
+	browseItem := transcript view menuBar items detect: [:menuItem | '*Browse*' match: menuItem text].
+	loggerItem := browseItem items
+				detect: [:item | (item class canUnderstand: #description) and: [item description = 'Browse Jadeite Logs']].
+	^loggerItem commandDescription performAgainst: transcript!
+
 setUp
 	super setUp.
 	BrowserUpdate current resetLoggingService.
@@ -81,6 +88,16 @@ test_logComment
 				[file delete.
 				BrowserUpdate current isLogging: wasLogging]!
 
+test_loggerCanHandleNilFilenames
+	| logger |
+	self testsIssue: #issue477 withTitle: 'Opening logger for first time gets error'.
+	BrowserUpdate current logFileName: nil.	"default location log file names for client & server"
+	logger := self openLogBrowser.	"just opening the logger browser gets past the bug"
+	
+	[self assert: (logger isKindOf: JadeiteLoggerShell).
+	self assert: logger primaryPresenter clientFilename isNil]
+			ensure: [logger view close]!
+
 test_loggerContainsServices
 	| loggingService service |
 	self testsIssue: #issue250 withTitle: 'Need logging capability in Jadeite'.
@@ -96,7 +113,7 @@ test_loggerContainsServices
 test_loggerMenuEnablement
 	"logging options should always be present, enabled, and functional"
 
-	| commandQuery loggingItem isLogging jadeiteItem browseItem loggerItem logger |
+	| commandQuery loggingItem isLogging jadeiteItem logger |
 	self testsIssue: #issue250 withTitle: 'Need logging capability in Jadeite'.
 	commandQuery := self
 				queryCommand: #flipLogging
@@ -116,10 +133,7 @@ test_loggerMenuEnablement
 				inPresenter: transcript
 				view: transcript view.
 	self assert: commandQuery isEnabled.
-	browseItem := transcript view menuBar items detect: [:menuItem | '*Browse*' match: menuItem text].
-	loggerItem := browseItem items
-				detect: [:item | (item class canUnderstand: #description) and: [item description = 'Browse Jadeite Logs']].
-	logger := loggerItem commandDescription performAgainst: transcript.
+	logger := self openLogBrowser.
 	[self assert: (logger isKindOf: JadeiteLoggerShell)] ensure: [logger view close]!
 
 test_loggingIds
@@ -244,11 +258,13 @@ test_noFileWrittenWhenNotLogging
 			ensure: 
 				[file delete.
 				BrowserUpdate current isLogging: wasLogging]! !
+!JadeiteLoggerTestCase categoriesFor: #openLogBrowser!private!support!tests! !
 !JadeiteLoggerTestCase categoriesFor: #setUp!public!setup teardown! !
 !JadeiteLoggerTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteLoggerTestCase categoriesFor: #test_equality!public!tests! !
 !JadeiteLoggerTestCase categoriesFor: #test_isLoggingDefaults!public!tests! !
 !JadeiteLoggerTestCase categoriesFor: #test_logComment!public!tests! !
+!JadeiteLoggerTestCase categoriesFor: #test_loggerCanHandleNilFilenames!public!tests! !
 !JadeiteLoggerTestCase categoriesFor: #test_loggerContainsServices!public!tests! !
 !JadeiteLoggerTestCase categoriesFor: #test_loggerMenuEnablement!public!tests! !
 !JadeiteLoggerTestCase categoriesFor: #test_loggingIds!public!tests! !
