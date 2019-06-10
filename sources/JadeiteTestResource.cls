@@ -66,6 +66,10 @@ session
 setUp
 	super setUp.
 	session := GciSession current.
+	session
+		ifNil: 
+			[MessageBox notify: 'GciSession current is nil. Login again.'.
+			^self].
 	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: [].
 	self unloadSampleProject.
 	self cloneRowanSample1!
@@ -109,12 +113,15 @@ unloadSampleProject
 !JadeiteTestResource class methodsFor!
 
 current
-	current ifNil: [current := self new].
+	current
+		ifNil: 
+			[current := self new.
+			current session ifNil: [^nil	"notified earlier"]].
 	current resourceHasValidSession ifFalse: [current := self new].
 	^current!
 
 isAvailable
-	^[self current isAvailable] on: Error do: [:ex | false]!
+	^self current isAvailable!
 
 signalInitializationError
 	"TestSuite>>run: in the SUnit pacakge sends this method
