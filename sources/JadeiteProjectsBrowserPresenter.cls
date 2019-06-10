@@ -1476,9 +1476,10 @@ refreshClass
 				ifFalse: [classHierarchyPresenter].
 	self setMethodFilterFor: presenter.
 	selection := presenter selectionIfNone: 
-					[self resetDefinedClassPackage.
+					[self resetClassTemplate.
+					self resetDefinedClassPackage.
 					categoryListPresenter clear.
-					variableListPresenter clear. 
+					variableListPresenter clear.
 					^methodListPresenter clear].
 	selection meta: self isClassSideSelected.
 	selection selectedPackageServices: packageListPresenter selections.
@@ -1626,6 +1627,11 @@ resetCategoryText
 	methodCategoryText value: String new. !
 
 resetClassTemplate
+	self packageListPresenter list isEmpty
+		ifTrue: 
+			[classDefinitionPresenter value: String new.
+			classDefinitionPresenter view isModified: false.
+			^self].
 	classDefinitionPresenter value: self packageListPresenter selections first defaultTemplate.
 	classDefinitionPresenter view
 		backcolor: JadeTextStyles default colorForNoEdits;

@@ -1211,6 +1211,65 @@ test_classDefinitionUpdatesAcrossTabs
 		sameAs: secondTab.
 	self assert: self projectsPresenter classDefinitionPresenter value equals: newSource replaceCrLfWithLf!
 
+test_classDeselection
+	| packageClassDefinition |
+	self testsIssue: #issue475 withTitle: '(3.0.69) ''incorrect'' class creation template'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Core-Definitions-Extensions' in: self packageListPresenter.
+	packageClassDefinition := 'Object rwSubclass: ''NameOfSubclass''
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''Rowan-Core-Definitions-Extensions''
+	options: #()
+'
+				replaceCrLfWithLf.
+	self assert: self projectsPresenter classDefinitionPresenter value equals: packageClassDefinition.
+	self selectServiceNamed: 'RwDefinition' in: self classListPresenter.	"extension class"
+	self assert: self projectsPresenter classDefinitionPresenter value
+		equals: 'Object rwSubclass: ''RwDefinition''
+	instVarNames: #( properties)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''Rowan-Definitions''
+	options: #()
+'
+				replaceCrLfWithLf.
+	self selectServicesNamed: #() in: self classListPresenter.
+	self assert: self projectsPresenter classDefinitionPresenter value equals: packageClassDefinition!
+
+test_classHierarchyDeselection
+	| packageClassDefinition |
+	self testsIssue: #issue475 withTitle: '(3.0.69) ''incorrect'' class creation template'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Core-Definitions-Extensions' in: self packageListPresenter.
+	packageClassDefinition := 'Object rwSubclass: ''NameOfSubclass''
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''Rowan-Core-Definitions-Extensions''
+	options: #()
+'
+				replaceCrLfWithLf.
+	self assert: self projectsPresenter classDefinitionPresenter value equals: packageClassDefinition.
+	self selectHierarchyTab.
+	self selectClassInHierarchyNamed: 'RwDefinition'.	"extension class"
+	self assert: self projectsPresenter classDefinitionPresenter value
+		equals: 'Object rwSubclass: ''RwDefinition''
+	instVarNames: #( properties)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''Rowan-Definitions''
+	options: #()
+'
+				replaceCrLfWithLf.
+	self selectServicesNamed: #() in: self classHierarchyPresenter.
+	self assert: self projectsPresenter classDefinitionPresenter value equals: packageClassDefinition!
+
 test_classListNotBlank
 	| rowanClass |
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
@@ -4662,6 +4721,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionTemplateAfterRemove!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionTemplateAfterRemoveInHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionUpdatesAcrossTabs!public!test two browsers! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classDeselection!public!test class list! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classHierarchyDeselection!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListNotBlank!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListSelectionShouldNotUpdateOtherHierarchy!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameNoReferences!public!test rename class! !
