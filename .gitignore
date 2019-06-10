@@ -21,6 +21,7 @@ runtime/Jade.*
 tempBkp/*
 runtime/Jadeite.exe
 runtime/Jadeite.xml
+runtime/bin/libgcirpc*
 icons/camera.bmp
 icons/camera.jpg
 icons/camera16.jpg
