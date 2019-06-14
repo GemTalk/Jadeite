@@ -222,6 +222,36 @@ test_workspaceBrowseProjects
 				[workspace view close.
 				self destroy: projectsBrowser]!
 
+test_workspaceJadeiteMenuAdHocExecutionItems
+	| workspace jadeiteMenu debugMenuItem executeMenuItem inspectMenuItem displayMenuItem |
+	self testsIssue: #issue474 withTitle: '(3.0.69) inconsistent debug menu on workspaces'.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Compile Error'.
+	
+	[jadeiteMenu := workspace view menuBar items detect: [:menu | '*Jadeite*' match: menu text]
+				ifNone: [].
+	self denyIsNil: jadeiteMenu.
+	debugMenuItem := jadeiteMenu items detect: [:command | '*De&bug*' match: command text] ifNone: [].
+	self denyIsNil: debugMenuItem.
+	self assert: debugMenuItem command equals: #jadeDebug.
+	self assert: (workspace class canUnderstand: #jadeDebug).
+	self assert: debugMenuItem commandDescription acceleratorKey = 4674.	"Ctrl-B"
+	executeMenuItem := jadeiteMenu items detect: [:command | '*Execute*' match: command text] ifNone: [].
+	self denyIsNil: executeMenuItem.
+	self assert: executeMenuItem command equals: #jadeExecute.
+	self assert: (workspace class canUnderstand: #jadeExecute).
+	self assert: executeMenuItem commandDescription acceleratorKey = 4677.	"Ctrl-E"
+	inspectMenuItem := jadeiteMenu items detect: [:command | '*Inspect*' match: command text] ifNone: [].
+	self denyIsNil: inspectMenuItem.
+	self assert: inspectMenuItem command equals: #jadeInspect.
+	self assert: (workspace class canUnderstand: #jadeInspect).
+	self assert: inspectMenuItem commandDescription acceleratorKey = 4689.	"Ctrl-Q"
+	displayMenuItem := jadeiteMenu items detect: [:command | '*Display*' match: command text] ifNone: [].
+	self denyIsNil: displayMenuItem.
+	self assert: displayMenuItem command equals: #jadeDisplay.
+	self assert: (workspace class canUnderstand: #jadeDisplay).
+	self assert: displayMenuItem commandDescription acceleratorKey = 4676	"Ctrl-D"]
+			ensure: [workspace view close]!
+
 testClassServiceNameIsString
 	| classService |
 	self testsIssue: #issue441 withTitle: '(3.0.62) suspicious code in RowanClassService>>hierarchyClassServiceFor:'.
@@ -257,6 +287,7 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_symbolsFromSelector!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceJadeiteMenuAdHocExecutionItems!public!test!test menus! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testClassServiceNameIsString!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testMethodServiceClassNameIsString!public! !
 
