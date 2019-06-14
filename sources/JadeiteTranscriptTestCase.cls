@@ -237,6 +237,33 @@ test_commitTransaction
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded.!
 
+test_jadeiteMenuAdHocExecutionItems
+	| jadeiteMenu debugMenuItem executeMenuItem inspectMenuItem displayMenuItem |
+	self testsIssue: #issue474 withTitle: '(3.0.69) inconsistent debug menu on workspaces'.
+	jadeiteMenu := transcript view menuBar items detect: [:menu | '*Jadeite*' match: menu text]
+				ifNone: [].
+	self denyIsNil: jadeiteMenu.
+	debugMenuItem := jadeiteMenu items detect: [:command | '*Debug*' match: command text] ifNone: [].
+	self denyIsNil: debugMenuItem.
+	self assert: debugMenuItem command equals: #jadeDebug.
+	self assert: (transcript class canUnderstand: #jadeDebug).
+	self assert: debugMenuItem commandDescription acceleratorKey = 4674.	"Ctrl-B"
+	executeMenuItem := jadeiteMenu items detect: [:command | '*Execute*' match: command text] ifNone: [].
+	self denyIsNil: executeMenuItem.
+	self assert: executeMenuItem command equals: #jadeExecute.
+	self assert: (transcript class canUnderstand: #jadeExecute).
+	self assert: executeMenuItem commandDescription acceleratorKey = 4677.	"Ctrl-E"
+	inspectMenuItem := jadeiteMenu items detect: [:command | '*Inspect*' match: command text] ifNone: [].
+	self denyIsNil: inspectMenuItem.
+	self assert: inspectMenuItem command equals: #jadeInspect.
+	self assert: (transcript class canUnderstand: #jadeInspect).
+	self assert: inspectMenuItem commandDescription acceleratorKey = 4689.	"Ctrl-Q"
+	displayMenuItem := jadeiteMenu items detect: [:command | '*Display*' match: command text] ifNone: [].
+	self denyIsNil: displayMenuItem.
+	self assert: displayMenuItem command equals: #jadeDisplay.
+	self assert: (transcript class canUnderstand: #jadeDisplay).
+	self assert: displayMenuItem commandDescription acceleratorKey = 4676	"Ctrl-D"!
+
 test_menuNames
 	| commitMenuItem checkoutMenuItem contextMenu |
 	self testsIssue: #issue342 withTitle: 'Console menu items not matching projects browser'.
@@ -331,6 +358,7 @@ test_transcriptNamedConsole
 !JadeiteTranscriptTestCase categoriesFor: #test_browseSenders!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseSendersMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_commitTransaction!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_jadeiteMenuAdHocExecutionItems!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_menuNames!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_multiSelectProject!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_openChangesBrowser!public!tests! !
