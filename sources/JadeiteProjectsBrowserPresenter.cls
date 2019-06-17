@@ -1038,6 +1038,12 @@ methodsMenuStrings
 				gotoMethodDefinedPackage].
 	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods'  '&File out methods ...//fileOutMethods' 'Find Method .../Ctrl+Shift+M/findMethod'  '-' '&Remove Method(s) ...//removeMethods'  'Run &Tests/Ctrl+B/runMethodTests' 'Go To Defining Package//gotoMethodDefinedPackage')!
 
+methodSourcePresenter: anObject
+	methodSourcePresenter := anObject!
+
+methodSourcePresenter1
+	^methodSourcePresenter!
+
 moveMethods: methodServices toCategory: targetCategory
 	| classService |
 	classService := self selectedClass.
@@ -1632,7 +1638,9 @@ resetClassTemplate
 			[classDefinitionPresenter value: String new.
 			classDefinitionPresenter view isModified: false.
 			^self].
-	classDefinitionPresenter value: self packageListPresenter selections first defaultTemplate.
+	classDefinitionPresenter value: (self packageListPresenter selections isEmpty
+				ifTrue: [String new]
+				ifFalse: [self packageListPresenter selections first defaultTemplate]).
 	classDefinitionPresenter view
 		backcolor: JadeTextStyles default colorForNoEdits;
 		isModified: false;
@@ -1691,6 +1699,9 @@ selectCategoryNamed: category
 
 selectCategoryTab
 	(self view viewNamed: 'categoryList') ensureVisible!
+
+selectClassDefinitionTab
+	self selectSourceTabNamed: 'classDefinition'!
 
 selectClassInClassHierarchyNamed: className
 	| selection |
@@ -2298,6 +2309,8 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodMenuBreak:!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodSelectionChanged!event handlers!public!text tabs!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodsMenuStrings!menus!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #methodSourcePresenter:!accessing!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #methodSourcePresenter1!accessing!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #moveMethods:toCategory:!drag & drop!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #newBrowser!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDragClass:!drag & drop!public! !
@@ -2350,6 +2363,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoryFrom:!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoryNamed:!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoryTab!public!selection! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #selectClassDefinitionTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassInClassHierarchyNamed:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassInClassListNamed:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassListTab!public!selection! !

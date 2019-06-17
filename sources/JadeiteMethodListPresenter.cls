@@ -63,7 +63,7 @@ methods: services selecting: string
 	(services isNil or: [services isEmpty]) ifTrue: [^self].
 	methodListPresenter
 		list: (ListModel withAll: services);
-		selectFirstMethod.
+		selectFirstMethod. 
 	self selecting: string!
 
 methods: services selectingAnyMatch: string
@@ -133,6 +133,7 @@ updateSource
 	selection := methodListPresenter selectionOrNil.
 	methodSourcePresenter methodService: selection.
 	methodSourcePresenter update.
+	self doSearch. 
 	('*METHOD SOURCE CANNOT BE DISPLAYED*' match: methodSourcePresenter documentPresenter value)
 		ifTrue: [methodSourcePresenter documentPresenter view backcolor: Color red faded faded].! !
 !JadeiteMethodListPresenter categoriesFor: #autoCommit!accessing!public! !

@@ -13,6 +13,9 @@ JadeiteMethodListBrowserTestCase comment: ''!
 methodListMethodListPresenter
 	^methodListBrowser primaryPresenter methodListPresenter methodListPresenter!
 
+methodListSelector
+	^self methodListMethodListPresenter selection selector!
+
 methodListSourcePresenter
 	^methodListBrowser primaryPresenter methodSourcePresenter!
 
@@ -29,6 +32,11 @@ removeMethods: methodServices in: className
 		commandArgs: (Array
 					with: (methodServices asArray select: [:service | service className asString = className])).
 	self issueCommand: classService!
+
+removeTestMethodAndCloseProjectBrowser
+	self removeMethods: (Array with: self projectsPresenter methodListPresenter selection)
+		in: self projectsPresenter selectedClassName.
+	^projectsBrowser view close!
 
 sampleMethodSource
 	^'sampleMethod  
@@ -67,12 +75,25 @@ selectListAt: integer
 
 selectMethodsNamed: selectors
 	| methodServices methodListPresenter |
-	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
+	methodListPresenter := self methodListMethodListPresenter.
 	methodListPresenter resetSelection.
 	methodServices := selectors
 				collect: [:selector | methodListPresenter list detect: [:svc | svc selector = selector]].
 	methodListPresenter selections: methodServices.
 	^methodServices!
+
+setupTestMethodInProjectBrowser
+	| source |
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self selectRowanSample1Test.
+	source := 'literalRefTest ^#(''foot'' #foot 123 nil true false)'.
+	self projectsPresenter selectMethodSourceTab.
+	self projectsPresenter methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection!
+
+sourcePresenter
+	^self methodListSourcePresenter documentPresenter!
 
 tearDown
 	super tearDown.
@@ -187,6 +208,27 @@ test_browseImplementorsEnablement
 				view: methodListPresenter view.
 	self deny: commandQuery isEnabled!
 
+test_browseLiteralReferences
+	self testsIssue: #issue328
+		withTitle: '(3.0.50) I would have thought that the literal string ''filetree'' would have been found'.
+	self setupTestMethodInProjectBrowser.
+	
+	[self testBrowseLiteral: 'foot'.
+	self testBrowseLiteral: #foot.
+	self testBrowseLiteral: 123.
+	self testBrowseLiteral: nil.
+	self testBrowseLiteral: true.
+	self testBrowseLiteral: false]
+			ensure: [self removeTestMethodAndCloseProjectBrowser]!
+
+test_browseLiteralReferencesBlankSearch
+	"nil or an empty string can be passed into the search from the dialog. Make sure we reject those inputs"
+
+	methodListBrowser := JadePresenter browseLiteralReferences: String new session: session.
+	self assertIsNil: methodListBrowser.
+	methodListBrowser := JadePresenter browseLiteralReferences: nil session: session.
+	self assertIsNil: methodListBrowser!
+
 test_browseSendersEnablement
 	| commandQuery methodListPresenter |
 	self testsIssue: #issue399
@@ -251,6 +293,21 @@ test_compileErrorDisplayGoesAway
 	methodListBrowser primaryPresenter methodListPresenter primaryPresenter selectionByIndex: 2.
 	self deny: (methodListBrowser view viewNamed: 'statusBarField') backcolor equals: Color red faded.
 	self assert: (methodListBrowser view viewNamed: 'statusBarField') model value equals: String new!
+
+test_doSearch
+	"browse literal references on the server doesn't always work - 
+	perhaps because of optimized selectors? 
+	Just test that we selected the literal if it's anywhere in the source
+	hence the conditional. "
+
+	methodListBrowser := JadePresenter browseLiteralReferences: nil printString session: session.
+	self assert: self methodListMethodListPresenter list size > 1.	"Always should be a lot of methods. Sanity check that our list isn't empty."
+	1 to: self methodListMethodListPresenter list size
+		do: 
+			[:index |
+			self methodListMethodListPresenter selectionByIndex: index.
+			(self methodListSourcePresenter documentPresenter value subStrings includes: 'nil')
+				ifTrue: [self assert: self methodListSourcePresenter documentPresenter selection equals: 'nil']]!
 
 test_doubleClickActionClassMethod
 	| methodServices methodListPresenter |
@@ -455,23 +512,37 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
 				self removeMethods: methodListPresenter model asBag in: 'RowanSample1'.
-				self removeMethods: methodListPresenter model asBag in: 'RowanSample1Test']! !
+				self removeMethods: methodListPresenter model asBag in: 'RowanSample1Test']!
+
+testBrowseLiteral: literal
+	methodListBrowser := JadePresenter browseLiteralReferences: literal printString session: session.
+	[self selectMethodNamed: #literalRefTest. 
+	self assert: self methodListSelector equals: #literalRefTest.
+	self assert: self sourcePresenter selection equals: literal printString]
+			ensure: [methodListBrowser view close]! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListMethodListPresenter!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #methodListSelector!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListSourcePresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodSourcePresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #removeMethods:in:!public!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #removeTestMethodAndCloseProjectBrowser!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #sampleMethodSource!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #saveMethod:in:category:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectListAt:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsNamed:!public!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #setupTestMethodInProjectBrowser!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #sourcePresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchyImplementorsEnablement!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchySendersEnablement!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseImplementorsEnablement!public!test menus! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseLiteralReferences!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseLiteralReferencesBlankSearch!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersEnablement!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_compileErrorDisplay!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_compileErrorDisplayGoesAway!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_doSearch!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionClassMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionInstanceMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_methodBrowserSaveMethod!public!tests! !
@@ -481,4 +552,5 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindow!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindowStayOnMethod!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #testBrowseLiteral:!private!support! !
 

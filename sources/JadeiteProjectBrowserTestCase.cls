@@ -918,6 +918,29 @@ test_browseImplementorsEnablement
 				view: self methodListPresenter view.
 	self deny: commandQuery isEnabled!
 
+test_browseLiteralReferences
+	| methodListPresenter source |
+	self testsIssue: #issue256
+		withTitle: 'Find string literals in addition to ''methods containing string'' would be useful'.
+	self selectRowanSample1Class.
+	source := 'theAString ^''apple'''.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	source := 'invokeA ^self apple'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	source := 'theASymbol ^#apple'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self selectMethodNamed: #theAString.
+	self selectMethodNamed: #invokeA.
+	methodListBrowser := JadePresenter browseLiteralReferences: '''apple''' session: session.
+	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
+	self assert: methodListPresenter list size equals: 1.
+	self assert: methodListPresenter selection selector equals: #theAString.
+	methodListPresenter list
+		do: [:methodService | self assert: ('*''apple''*' match: methodService source)]!
+
 test_browseSameClassCategoriesCorrect
 	"related bug found while fixing issue #344"
 
@@ -1526,6 +1549,16 @@ test_classSideSelection
 	self assertIsNil: (self methodListPresenter list
 				detect: [:methodService | methodService selector = #stonStringFor:]
 				ifNone: [])!
+
+test_classTemplateWhenNoPackagesSelected
+	"#resetClassTemplate is not a public method but still test that we
+	don't walkback if no packages are selected when the projects presenter
+	sends it"
+
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self projectsPresenter selectClassDefinitionTab.
+	self projectsPresenter resetClassTemplate.
+	self assert: self methodSourcePresenter value isEmpty!
 
 test_classVersionIncrementedInClassList
 	self testsIssue: #issue228
@@ -2729,29 +2762,6 @@ test_issue261
 	self assert: (view columns first contentFromRow: (view list at: 3)) equals: 'Izmir'.
 	self assert: (view columns first contentFromRow: (view list at: 7)).	"isDirty"]
 			ensure: [self projectsPresenter basicUnloadProjects: #('Izmir')]!
-
-test_literalReferences
-	| methodListPresenter source |
-	self testsIssue: #issue256
-		withTitle: 'Find string literals in addition to ''methods containing string'' would be useful'.
-	self selectRowanSample1Class.
-	source := 'theAString ^''apple'''.
-	self methodSourcePresenter value: source.
-	self projectsPresenter editSaveMethod: self classListPresenter selection.
-	source := 'invokeA ^self apple'.
-	self methodSourcePresenter value: source.
-	self projectsPresenter editSaveMethod: self classListPresenter selection.
-	source := 'theASymbol ^#apple'.
-	self methodSourcePresenter value: source.
-	self projectsPresenter editSaveMethod: self classListPresenter selection.
-	self selectMethodNamed: #theAString. 
-	self selectMethodNamed: #invokeA. 
-	methodListBrowser := JadePresenter browseLiteralReferences: 'apple' session: session.
-	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
-	self assert: methodListPresenter list size equals: 1.
-	self assert: methodListPresenter selection selector equals: #theAString. 
-	methodListPresenter list
-		do: [:methodService | self assert: ('*''apple''*' match: methodService source)]!
 
 test_makeDefault
 	| nonDefaultService |
@@ -4710,6 +4720,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseHierarchyImplementorsEnablement!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseHierarchySendersEnablement!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseImplementorsEnablement!public!test menus! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_browseLiteralReferences!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSameClassCategoriesCorrect!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSelectedMethods!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSendersEnablement!public!test menus! !
@@ -4732,6 +4743,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameWithReferencesHierarchy!public!test rename class! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameWithReferencesSimilarNameButNoFailCompile!public!test rename class! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classSideSelection!public!test class hierarchy!test class list!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classTemplateWhenNoPackagesSelected!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInClassList!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleInvalidSession!public!tests! !
@@ -4787,7 +4799,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyWithNonResolvableClass!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_issue261!public!test menus!test projects! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_literalReferences!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_makeDefault!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuAddPackageOnProjectMenu!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuEnablementDoesNotBreak!public!tests! !

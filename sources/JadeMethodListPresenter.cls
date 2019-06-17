@@ -208,7 +208,6 @@ selectFirstMethod
 !
 
 selecting: aString
-
 	searchBlock := [self searchFor: aString].
 	self doSearch.
 !

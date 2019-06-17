@@ -2148,12 +2148,15 @@ browseImplementorsOf: string session: session
 
 browseLiteralReferences: session
 	| string |
-	(string := Prompter prompt: 'Enter string:' caption: 'Browse Methods With Literal ...') isNil
-		ifTrue: [^self].
+	string := Prompter
+				prompt: 'Enter code to be compiled.
+Example: To search for literal string add single quotes'
+				caption: 'Browse Methods With Literal ...'.
 	^Cursor wait showWhile: [self browseLiteralReferences: string session: session]!
 
 browseLiteralReferences: string session: session
 	| service shell |
+	(string isNil or: [string isEmpty]) ifTrue: [^nil].
 	service := RowanQueryService command: #literalReferences: withArgs: (Array with: string).
 	self issueCommand: (Array with: service) session: session.
 	shell := self
