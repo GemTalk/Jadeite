@@ -112,6 +112,13 @@ displayStringFor: displayThing
 hash
 	^self name hash!
 
+initialize
+	super initialize.
+	isDirty := false.
+	isLoaded := false.
+	isSkew := false.
+	sha := 'not a project'!
+
 isLoaded
 
 	^sha isEmpty not!
@@ -228,6 +235,7 @@ sha: anObject
 !RowanProjectService categoriesFor: #displayName!accessing!displaying!public! !
 !RowanProjectService categoriesFor: #displayStringFor:!displaying!public! !
 !RowanProjectService categoriesFor: #hash!comparing!public! !
+!RowanProjectService categoriesFor: #initialize!Init / Release!public! !
 !RowanProjectService categoriesFor: #isLoaded!public!testing! !
 !RowanProjectService categoriesFor: #isProjectService!public!testing! !
 !RowanProjectService categoriesFor: #isSkew!accessing!private! !
@@ -270,10 +278,21 @@ icon
 	^##(self) defaultIcon!
 
 initialize
-	DefaultProjectName := nil! !
+	DefaultProjectName := nil!
+
+noneProject
+	| inst |
+	inst := self new.
+	inst
+		name: '(NONE)';
+		isDirty: false;
+		isSkew: false;
+		sha: 'not a project'.
+	^inst! !
 !RowanProjectService class categoriesFor: #defaultIconName!private! !
 !RowanProjectService class categoriesFor: #defaultProjectName!public! !
 !RowanProjectService class categoriesFor: #defaultProjectName:!public! !
 !RowanProjectService class categoriesFor: #icon!private! !
 !RowanProjectService class categoriesFor: #initialize!public! !
+!RowanProjectService class categoriesFor: #noneProject!instance creation!public! !
 

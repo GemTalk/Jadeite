@@ -15,6 +15,11 @@ abortTransaction
 	self refreshProjects.
 	self refreshGlobalSelections!
 
+addNoneProject
+	"project list does not add a none project"
+
+	!
+
 basicUnloadProjects: projectNames
 	| browserService |
 	browserService := RowanBrowserService new.
@@ -179,7 +184,7 @@ refresh
 	self refreshProjects!
 
 refreshFromServerAfterAbort: browserService
-	browserService projectsUpdate: projectListPresenter . !
+	browserService projectsUpdate: projectListPresenter browser: self. !
 
 refreshProjects
 	| browserService |
@@ -188,7 +193,7 @@ refreshProjects
 	self issueCommand: (Array with: browserService).!
 
 registerPresentersForUpdates
-	BrowserUpdate current register: projectListPresenter selector: #projectsUpdate:.
+	BrowserUpdate current register: projectListPresenter selector: #projectsUpdate:browser: browser: self.
 	BrowserUpdate current register: projectListPresenter selector: #removedProject:.
 	BrowserUpdate current register: projectListPresenter selector: #aborted:browser: browser: self!
 
@@ -223,6 +228,7 @@ writeProject
 	self issueCommand: projectServices.
 	MessageBox notify: 'Projects ' ,  ws contents  , ' written to disk'! !
 !JadeiteProjectListPresenter categoriesFor: #abortTransaction!menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #addNoneProject!public!updating! !
 !JadeiteProjectListPresenter categoriesFor: #basicUnloadProjects:!menu handlers!private! !
 !JadeiteProjectListPresenter categoriesFor: #browseProject!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #checkout!menu handlers!public! !

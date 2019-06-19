@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanBrowserService
-	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount autoCommit'
+	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount autoCommit dictionaries'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -28,6 +28,13 @@ basicPrepareForReplication
 
 	removedMethods
 		ifNotNil: [removedMethods do: [:methodService | methodService basicPrepareForReplication]]!
+
+dictionaryListUpdate: presenter
+	| removals |
+	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
+	removals := presenter list reject: [:dictionaryService | dictionaries includes: dictionaryService].
+	presenter model removeAll: removals.
+	self updateList: presenter whilePreservingSelections: dictionaries!
 
 excludedInstVars
 	^super excludedInstVars , #('hierarchyServices')!
@@ -70,6 +77,14 @@ projectsUpdate: presenter
 	removals := presenter list select:[:projectService | (projects includes: projectService) not]. 
 	presenter model removeAll: removals. 
 	self updateList: presenter whilePreservingSelections: projects!
+
+projectsUpdate: presenter browser: browser
+	| removals |
+	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
+	removals := presenter list select: [:projectService | (projects includes: projectService) not].
+	presenter model removeAll: removals.
+	self updateList: presenter whilePreservingSelections: projects.
+	browser addNoneProject!
 
 registerWindow: handle rootObject: oop session: session
 	self
@@ -127,6 +142,7 @@ testPackages: presenter
 !RowanBrowserService categoriesFor: #allClasses!accessing!private! !
 !RowanBrowserService categoriesFor: #autoCommitUpdate:!public!updating! !
 !RowanBrowserService categoriesFor: #basicPrepareForReplication!public!replication! !
+!RowanBrowserService categoriesFor: #dictionaryListUpdate:!public!updating! !
 !RowanBrowserService categoriesFor: #excludedInstVars!public!ston! !
 !RowanBrowserService categoriesFor: #hash!comparing!public! !
 !RowanBrowserService categoriesFor: #isBrowserService!public!testing! !
@@ -135,6 +151,7 @@ testPackages: presenter
 !RowanBrowserService categoriesFor: #printOn:!printing!public! !
 !RowanBrowserService categoriesFor: #projects!accessing!public! !
 !RowanBrowserService categoriesFor: #projectsUpdate:!public!updating! !
+!RowanBrowserService categoriesFor: #projectsUpdate:browser:!public!updating! !
 !RowanBrowserService categoriesFor: #registerWindow:rootObject:session:!commands!public!registering windows! !
 !RowanBrowserService categoriesFor: #releaseReferencedServices!public! !
 !RowanBrowserService categoriesFor: #releaseWindow:session:!commands!public!registering windows! !

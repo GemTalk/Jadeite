@@ -149,7 +149,7 @@ openGitHubRowanProject
 	^JadePresenter openGitHubRowanProject!
 
 openJadeiteProjectsBrowser
-	gciSession hasServer ifTrue: [^JadeiteProjectsSystemBrowser showOnSession: gciSession].
+	gciSession hasServer ifTrue: [^JadeiteBrowser showOnSession: gciSession].
 	MessageBox warning: 'Cannot open Jadeite Projects browser'
 		caption: 'Cannot open Jadeite Projects browser'!
 

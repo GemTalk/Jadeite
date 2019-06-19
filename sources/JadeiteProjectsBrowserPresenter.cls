@@ -1124,7 +1124,7 @@ onViewOpened
 	BrowserUpdate current logComment: 'Opening Projects Browser {' , self identityHash printString , '}'.
 	self registerPresentersForUpdates.
 	projectListPresenter view contextMenu: self projectMenu.
-	packageListPresenter view contextMenu: (Menu fromStrings: self pkgsMenuStrings).
+	self setupPackageMenu.
 	self updateMenuBar.
 	self updateProjects.
 	self updateAutoCommit!
@@ -1542,7 +1542,7 @@ refreshFromServer
 refreshFromServerAfterAbort: browserService
 	browserService
 		ifNil: [self refreshGlobalSelections]
-		ifNotNil: [browserService projectsUpdate: projectListPresenter].
+		ifNotNil: [browserService projectsUpdate: projectListPresenter browser: self].
 	self autoCommit: (autoCommit value == #failed ifTrue: [true] ifFalse: [autoCommit value])!
 
 refreshMethodsOn: presenter
@@ -1559,7 +1559,7 @@ registerClassData
 
 registerPresentersForUpdates
 
-	BrowserUpdate current register: projectListPresenter 		selector: #projectsUpdate:.
+	BrowserUpdate current register: projectListPresenter 		selector: #projectsUpdate:browser: browser: self.
 	BrowserUpdate current register: projectListPresenter 		selector: #removedProject:.
 	BrowserUpdate current register: projectListPresenter 		selector: #aborted:browser: browser: self.
 	BrowserUpdate current register: classListPresenter 		selector: #classesUpdate:browser: browser: self.
@@ -1849,6 +1849,9 @@ setterMethodSourceFor: variable
 
 setTestClass: service
 	sunitPresenter testClassService: (service isTestCase ifTrue: [service] ifFalse: [nil])!
+
+setupPackageMenu
+	packageListPresenter view contextMenu: (Menu fromStrings: self pkgsMenuStrings)!
 
 showSUnitBrowserOnClass
 	| sunitBrowser |
@@ -2346,7 +2349,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshFromServerAfterAbort:!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshMethodsOn:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #registerClassData!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #registerPresentersForUpdates!event handlers!initialize/release!public!register presenters! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #registerPresentersForUpdates!event handlers!initialize/release!private!register presenters! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #releasedReferencedServices:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #removeClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #removeMethodCategories!menu handlers!public! !
@@ -2390,6 +2393,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #setMethodFilterFor:!event handlers support!private!services!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setterMethodSourceFor:!menu handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setTestClass:!event handlers support!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #setupPackageMenu!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #showSUnitBrowserOnClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #showSuperClassComparison!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #sundryCleanup!initialize/release!private! !
@@ -2420,7 +2424,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #updatePresenter:selections:!event handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProject!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProjectInfo!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateProjects!event handlers!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #updateProjects!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProjectTab!event handlers support!private!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSelectionsForUpdate:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSingleMethodSource!event handlers support!private! !

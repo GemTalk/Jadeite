@@ -13,6 +13,7 @@ package classNames
 	add: #JadeFindDialog;
 	add: #JadeiteBasicMethodListPresenter;
 	add: #JadeiteBasicRenameClassMethodListPresenter;
+	add: #JadeiteBrowser;
 	add: #JadeiteBrowserPresenter;
 	add: #JadeiteFindClassDialog;
 	add: #JadeiteFindMethodDialog;
@@ -320,6 +321,7 @@ package methodNames
 	add: #RowanCommandResult -> #classHierarchyUpdate:browser:;
 	add: #RowanCommandResult -> #classMethodsUpdate:browser:;
 	add: #RowanCommandResult -> #classUpdate:;
+	add: #RowanCommandResult -> #dictionaryListUpdate:;
 	add: #RowanCommandResult -> #dictionaryUpdate:;
 	add: #RowanCommandResult -> #filterUpdate:browser:;
 	add: #RowanCommandResult -> #globalsUpdate:;
@@ -331,6 +333,7 @@ package methodNames
 	add: #RowanCommandResult -> #projectPackagesUpdate:browser:;
 	add: #RowanCommandResult -> #projectSelectionUpdate:;
 	add: #RowanCommandResult -> #projectsUpdate:;
+	add: #RowanCommandResult -> #projectsUpdate:browser:;
 	add: #RowanCommandResult -> #removed:;
 	add: #RowanCommandResult -> #removedClass:;
 	add: #RowanCommandResult -> #removedProject:;
@@ -555,7 +558,7 @@ RowanService subclass: #RowanAnsweringService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanBrowserService
-	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount autoCommit'
+	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount autoCommit dictionaries'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -655,7 +658,7 @@ RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: ''
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -775,6 +778,11 @@ JadeSystemBrowser subclass: #RowanSystemBrowser
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanSystemBrowser subclass: #JadeiteProjectsSystemBrowser
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteProjectsSystemBrowser subclass: #JadeiteBrowser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -4226,6 +4234,10 @@ classMethodsUpdate: presenter browser: anObject
 classUpdate: presenter
 	!
 
+dictionaryListUpdate: presenter
+
+	!
+
 dictionaryUpdate: presenter
 	!
 
@@ -4256,6 +4268,8 @@ projectSelectionUpdate: aPresenter
 
 projectsUpdate: aPresenter
 !
+
+projectsUpdate: presenter browser: browser!
 
 removed: presenter
 !
@@ -4319,6 +4333,7 @@ updateType
 !RowanCommandResult categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #classMethodsUpdate:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #classUpdate:!public!updating! !
+!RowanCommandResult categoriesFor: #dictionaryListUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #dictionaryUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #filterUpdate:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #globalsUpdate:!public!updating! !
@@ -4330,6 +4345,7 @@ updateType
 !RowanCommandResult categoriesFor: #projectPackagesUpdate:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #projectSelectionUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #projectsUpdate:!public!updating! !
+!RowanCommandResult categoriesFor: #projectsUpdate:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #removed:!public!updating! !
 !RowanCommandResult categoriesFor: #removedClass:!public!updating! !
 !RowanCommandResult categoriesFor: #removedProject:!public!updating! !

@@ -86,6 +86,10 @@ debugPrintString
 	self debugPrintOn: ws.
 	^ws contents!
 
+dictionaryListUpdate: presenter
+
+	!
+
 dictionaryUpdate: presenter
 	!
 
@@ -207,6 +211,8 @@ projectSelectionUpdate: aPresenter
 
 projectsUpdate: aPresenter!
 
+projectsUpdate: presenter browser: browser!
+
 releaseReferencedServices
 	"Give the service a chance to clean up unnecessary objects after replication"
 
@@ -300,7 +306,7 @@ updateList: presenter whilePreservingSelections: updates
 			[:service |
 			replicate := updates detect: [:update | update = service] ifNone: [nil].
 			replicate notNil ifTrue: [service replicateFrom: replicate]].
-	updates do: [:update | (presenter list includes: update) not ifTrue: [presenter model add: update]]!
+	updates do: [:update | (presenter list includes: update) ifFalse: [presenter model add: update]]!
 
 updateMethodFilterSelectionFor: presenter!
 
@@ -342,6 +348,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #commandArgs:!accessing!public! !
 !RowanService categoriesFor: #debugPrintOn:!printing!public! !
 !RowanService categoriesFor: #debugPrintString!printing!public! !
+!RowanService categoriesFor: #dictionaryListUpdate:!public!updating! !
 !RowanService categoriesFor: #dictionaryUpdate:!public!updating! !
 !RowanService categoriesFor: #displayName!displaying!public! !
 !RowanService categoriesFor: #displayString!displaying!public! !
@@ -377,6 +384,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #projectPackagesUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #projectSelectionUpdate:!public!updating! !
 !RowanService categoriesFor: #projectsUpdate:!public!updating! !
+!RowanService categoriesFor: #projectsUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #releaseReferencedServices!Init / Release!public! !
 !RowanService categoriesFor: #remoteService!public! !
 !RowanService categoriesFor: #remoteServiceName!must not strip!public! !
