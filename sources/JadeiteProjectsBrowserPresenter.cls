@@ -22,6 +22,10 @@ aboutToChange: aSelectionChangingEvent
 	
 !
 
+addNoneProject 
+
+	"ignore in this browser"!
+
 addPackage
 	| projectService newPackageName |
 	(newPackageName := Prompter prompt: 'Enter new package name:') isNil ifTrue: [^self].
@@ -1488,7 +1492,7 @@ refreshClass
 					variableListPresenter clear.
 					^methodListPresenter clear].
 	selection meta: self isClassSideSelected.
-	selection selectedPackageServices: packageListPresenter selections.
+	selection selectedPackageServices: packageListPresenter selections browser: self.
 	selection
 		updateAfterCommand: false;
 		command: #fastRefresh.
@@ -2208,6 +2212,7 @@ writeProject
 	self refreshFromServer. ! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #abortTransaction!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #aboutToChange:!event handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #addNoneProject!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addPackage!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addPackageDictionaryInfoTo:!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addSubclass!menu handlers!public! !

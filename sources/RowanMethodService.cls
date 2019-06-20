@@ -292,7 +292,7 @@ replicateFrom: newService
 selectedPackageServices
 	^selectedPackageServices!
 
-selectedPackageServices: anObject
+selectedPackageServices: anObject browser: anObject1
 	selectedPackageServices := anObject!
 
 selector
@@ -478,7 +478,7 @@ user: anObject
 !RowanMethodService categoriesFor: #remoteServiceName!must not strip!public! !
 !RowanMethodService categoriesFor: #replicateFrom:!public!updating! !
 !RowanMethodService categoriesFor: #selectedPackageServices!accessing!private! !
-!RowanMethodService categoriesFor: #selectedPackageServices:!accessing!private! !
+!RowanMethodService categoriesFor: #selectedPackageServices:browser:!accessing!private! !
 !RowanMethodService categoriesFor: #selector!accessing!private! !
 !RowanMethodService categoriesFor: #selector:!accessing!private! !
 !RowanMethodService categoriesFor: #selectorsDisplayString!displaying!public! !

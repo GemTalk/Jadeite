@@ -284,7 +284,7 @@ noneProject
 	| inst |
 	inst := self new.
 	inst
-		name: '(NONE)';
+		name: self notRowanizedPackageName;
 		isDirty: false;
 		isSkew: false;
 		sha: 'not a project'.

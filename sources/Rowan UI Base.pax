@@ -47,6 +47,7 @@ package classNames
 	add: #RowanDebugger;
 	add: #RowanDebuggerService;
 	add: #RowanDebuggerStepPointError;
+	add: #RowanDictionaryService;
 	add: #RowanDictionaryUpdate;
 	add: #RowanFrameService;
 	add: #RowanGlobalsUpdate;
@@ -569,6 +570,11 @@ RowanService subclass: #RowanClassService
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanDebuggerService
 	instanceVariableNames: 'initialProcessOop processes'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanDictionaryService
+	instanceVariableNames: 'classes'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

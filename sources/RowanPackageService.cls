@@ -46,7 +46,7 @@ classesUpdate: presenter browser: browser
 	condensedList := self condenseExtensions: presenter.
 	self updateList: presenter whilePreservingSelections: condensedList.
 	presenter list
-		do: [:classService | classService selectedPackageServices: browser packageListPresenter selections].
+		do: [:classService | classService selectedPackageServices: browser packageListPresenter selections browser: browser].
 	presenter view invalidate.
 	browser isClassSelected ifFalse: [self emptyFilterListsIn: browser]!
 
@@ -84,11 +84,11 @@ classHierarchyUpdate: presenter browser: browser
 				addHierarchyService: classService
 				to: treeModel
 				withParent: parent].
-	presenter model: treeModel. 
-	treeModel preOrderDo:  
+	presenter model: treeModel.
+	treeModel preOrderDo: 
 			[:classService |
-			classService selectedPackageServices: browser packageListPresenter selections.
-			classService expand == true ifTrue: [	presenter view expand: classService]].!
+			classService selectedPackageServices: browser packageListPresenter selections browser: browser.
+			classService expand == true ifTrue: [presenter view expand: classService]]!
 
 condenseExtensions: presenter
 	| defined newList |

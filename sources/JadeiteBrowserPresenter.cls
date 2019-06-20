@@ -21,17 +21,17 @@ createComponents
 
 createSchematicWiring
 	super createSchematicWiring.
-	dictionaryListPresenter when: #'selectionChanged' send: #'updateDictionary' to: self!
+	dictionaryPresenter when: #'selectionChanged' send: #'updateDictionary' to: self!
 
 dictionaryPresenter
 	^dictionaryPresenter!
 
-dictionaryPresenter: anObject
-	dictionaryPresenter := anObject!
+nonePackageSelected
+	^projectListPresenter selections includes: RowanProjectService noneProject!
 
 registerPresentersForUpdates
 	super registerPresentersForUpdates.
-	BrowserUpdate current register: dictionaryListPresenter selector: #dictionaryListUpdate:!
+	BrowserUpdate current register: dictionaryPresenter selector: #dictionaryListUpdate:!
 
 showDictionaryList
 	| newCard |
@@ -39,16 +39,16 @@ showDictionaryList
 		ifTrue: [packageDictionaryCards view removeSubView: packageListPresenter view].
 	packageDictionaryCards view cards isEmpty
 		ifTrue: 
-			[newCard := packageDictionaryCards add: dictionaryListPresenter.
-			newCard createView: dictionaryListPresenter class defaultView.
+			[newCard := packageDictionaryCards add: dictionaryPresenter.
+			newCard createView: dictionaryPresenter class defaultView.
 			packageDictionaryCards view cards first arrangement: 'Dictionaries'.
 			classListPresenter list: ListModel new].
 	self updateDictionaries!
 
 showPackageList
 	| newCard |
-	(packageDictionaryCards view cards includes: dictionaryListPresenter view)
-		ifTrue: [packageDictionaryCards view removeSubView: dictionaryListPresenter view].
+	(packageDictionaryCards view cards includes: dictionaryPresenter view)
+		ifTrue: [packageDictionaryCards view removeSubView: dictionaryPresenter view].
 	packageDictionaryCards view cards isEmpty
 		ifTrue: 
 			[newCard := packageDictionaryCards add: packageListPresenter.
@@ -66,12 +66,12 @@ updateDictionaries
 updateDictionary
 	classListPresenter model: ListModel new.
 	classHierarchyPresenter model: TreeModel new.
-	self updateServices: dictionaryListPresenter selections.
+	self updateServices: dictionaryPresenter selections.
 	self isClassListTabSelected ifFalse: [self updateHierarchy]!
 
 updateProject
 	self projectListPresenter selectionIfNone: [^self].
-	self projectListPresenter selection name = '(NONE)'
+	self projectListPresenter selection name = RowanService notRowanizedPackageName
 		ifTrue: 
 			[self showDictionaryList.
 			self updateTabLabel.
@@ -83,7 +83,7 @@ updateProject
 !JadeiteBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
 !JadeiteBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryPresenter!accessing!private! !
-!JadeiteBrowserPresenter categoriesFor: #dictionaryPresenter:!accessing!private! !
+!JadeiteBrowserPresenter categoriesFor: #nonePackageSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteBrowserPresenter categoriesFor: #showDictionaryList!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #showPackageList!event handlers!public!updating! !

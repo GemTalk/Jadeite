@@ -56,7 +56,7 @@ classHierarchyUpdate: presenter browser: browser
 	treeModel := TreeModel new
 				searchPolicy: SearchPolicy equality;
 				reset.
-	parent := nil.	
+	parent := nil.
 	subclasses := hierarchyServices at: #nil ifAbsent: [].
 	subclasses
 		ifNil: 
@@ -81,9 +81,9 @@ classHierarchyUpdate: presenter browser: browser
 				addHierarchyService: classService
 				to: treeModel
 				withParent: parent].
-	presenter model asArray = treeModel asArray ifTrue:[^self].  "no need for update"
+	presenter model asArray = treeModel asArray ifTrue: [^self].	"no need for update"
 	treeModel asBag
-		do: [:classService | classService selectedPackageServices: browser packageListPresenter selections].
+		do: [:classService | classService selectedPackageServices: browser packageListPresenter selections browser: browser].
 	presenter model: treeModel.
 	presenter view expandAll!
 
@@ -305,8 +305,10 @@ selectedPackageServiceNames
 selectedPackageServices
 	^selectedPackageServices!
 
-selectedPackageServices: anObject
-	selectedPackageServices := anObject!
+selectedPackageServices: anObject browser: browser
+	"selected packages don't apply when dictionaries are showing"
+
+	selectedPackageServices := browser nonePackageSelected ifTrue: [Array new] ifFalse: [anObject]!
 
 shouldColorAsExtension
 	^definedPackageName = self notRowanizedPackageName
@@ -360,8 +362,9 @@ updateCategories: presenter browser: browser
 
 updatedClass: presenter browser: browser
 	"only project browser should use this"
+
 	| update |
-	selectedPackageServices  := browser packageListPresenter selections. 
+	self selectedPackageServices: browser packageListPresenter selections browser: browser.
 	update := presenter model asBag detect: [:classService | classService name = name] ifNone: [^self].
 	update replicateFrom: self.
 	presenter view invalidate!
@@ -485,7 +488,7 @@ visibleTests
 !RowanClassService categoriesFor: #selectedPackageNames!private! !
 !RowanClassService categoriesFor: #selectedPackageServiceNames!private!updating! !
 !RowanClassService categoriesFor: #selectedPackageServices!accessing!private! !
-!RowanClassService categoriesFor: #selectedPackageServices:!accessing!private! !
+!RowanClassService categoriesFor: #selectedPackageServices:browser:!accessing!private! !
 !RowanClassService categoriesFor: #shouldColorAsExtension!public!testing! !
 !RowanClassService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
 !RowanClassService categoriesFor: #sunitMethodsUpdate:browser:!public!updating! !
