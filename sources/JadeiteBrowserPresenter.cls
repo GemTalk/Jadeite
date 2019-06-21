@@ -57,11 +57,45 @@ showPackageList
 			self setupPackageMenu.
 			classListPresenter list: ListModel new]!
 
+updateAfterFindClass: classService
+	| projectService |
+	self updateService: classService.
+	projectService := projectListPresenter list
+				detect: [:service | service name = classService projectName].	"it should always be found"
+	projectListPresenter selections: (Array with: projectService).
+	projectService = RowanProjectService noneProject
+		ifTrue: [self updateAfterFindClassInDictionary: classService].
+	self updateAfterFindClassInPackage: classService!
+
+updateAfterFindClassInDictionary: classService
+	| dictionaryService |
+	Cursor wait showWhile: 
+			[dictionaryService := dictionaryPresenter list
+						detect: [:service | service name = classService dictionaryName].
+			dictionaryPresenter selections: (Array with: dictionaryService).
+			self isClassListTabSelected
+				ifTrue: [self selectClassNamed: classService name asString]
+				ifFalse: 
+					[self selectClassInClassListNamed: classService name.
+					self updateHierarchy]]!
+
+updateAfterFindClassInPackage: classService
+	| packageService |
+	packageService := packageListPresenter list
+				detect: [:service | service name = classService definedPackageName]
+				ifNone: [^self].
+	packageListPresenter selections: (Array with: packageService).
+	self isClassListTabSelected
+		ifTrue: [self selectClassNamed: classService name asString]
+		ifFalse: 
+			[self selectClassInClassListNamed: classService name.
+			self updateHierarchy]!
+
 updateDictionaries
 	| browserService |
 	browserService := RowanBrowserService new.
 	browserService command: #updateDictionaries.
-	self issueCommand: (Array with: browserService)!
+	self issueCommand: (Array with: browserService).!
 
 updateDictionary
 	classListPresenter model: ListModel new.
@@ -87,6 +121,9 @@ updateProject
 !JadeiteBrowserPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteBrowserPresenter categoriesFor: #showDictionaryList!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #showPackageList!event handlers!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #updateAfterFindClass:!menu handlers!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #updateAfterFindClassInDictionary:!menu handlers!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #updateAfterFindClassInPackage:!menu handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateDictionaries!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateDictionary!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateProject!event handlers!public!updating! !
