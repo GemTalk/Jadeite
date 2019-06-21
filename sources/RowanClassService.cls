@@ -311,7 +311,7 @@ selectedPackageServices
 selectedPackageServices: anObject browser: browser
 	"selected packages don't apply when dictionaries are showing"
 
-	selectedPackageServices := browser nonePackageSelected ifTrue: [Array new] ifFalse: [anObject]!
+	selectedPackageServices := browser isRowanProjectSelected ifTrue: [anObject] ifFalse: [Array new]!
 
 shouldColorAsExtension
 	^definedPackageName = self notRowanizedPackageName

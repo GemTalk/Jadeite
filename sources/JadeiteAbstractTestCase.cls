@@ -82,6 +82,11 @@ destroy: visualThing
 	(Delay forMilliseconds: 2) wait.
 	(self class canUnderstand: #close) ifTrue: [visualThing close] ifFalse: [visualThing view close]!
 
+dictionaryPresenter
+	"dictionary list in projects browser"
+
+	^self projectsPresenter dictionaryPresenter!
+
 ensureRowanSample1Loaded
 	self loadProjectNamed: self sampleProjectName.!
 
@@ -485,6 +490,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #denyProjectInList:!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #deselectProjects!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #destroy:!public!setup teardown! !
+!JadeiteAbstractTestCase categoriesFor: #dictionaryPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Loaded!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #fail:!asserting!public! !
 !JadeiteAbstractTestCase categoriesFor: #interestingLoopMethodSource!constants!private! !

@@ -3668,7 +3668,7 @@ openDictionaryBrowser
 	gciSession hasServer ifTrue: [^RowanSystemBrowser showOnSession: gciSession]!
 
 openProjectsBrowser
-	^JadeiteProjectsSystemBrowser showOnSession: gciSession!
+	^JadeiteBrowser showOnSession: gciSession!
 
 registerWindow: handle rootObject: oop
 	^RowanBrowserService new

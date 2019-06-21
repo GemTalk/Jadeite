@@ -12,7 +12,7 @@ JadeiteBrowserPresenter comment: ''!
 
 addNoneProject
 	(projectListPresenter list includes: RowanProjectService noneProject)
-		ifFalse: [projectListPresenter list add: RowanProjectService noneProject]!
+		ifFalse: [projectListPresenter model add: RowanProjectService noneProject]!
 
 createComponents
 	super createComponents.
@@ -26,8 +26,16 @@ createSchematicWiring
 dictionaryPresenter
 	^dictionaryPresenter!
 
-nonePackageSelected
+isNoneProjectSelected
 	^projectListPresenter selections includes: RowanProjectService noneProject!
+
+isRowanProjectSelected
+	^(self isNoneProjectSelected or: [projectListPresenter selections isEmpty]) not!
+
+packageDictionaryCards
+	"for testing"
+
+	^packageDictionaryCards!
 
 registerPresentersForUpdates
 	super registerPresentersForUpdates.
@@ -117,7 +125,9 @@ updateProject
 !JadeiteBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
 !JadeiteBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryPresenter!accessing!private! !
-!JadeiteBrowserPresenter categoriesFor: #nonePackageSelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #isNoneProjectSelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #isRowanProjectSelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #packageDictionaryCards!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteBrowserPresenter categoriesFor: #showDictionaryList!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #showPackageList!event handlers!public!updating! !
