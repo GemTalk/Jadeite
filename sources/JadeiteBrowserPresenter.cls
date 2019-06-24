@@ -14,6 +14,16 @@ addNoneProject
 	(projectListPresenter list includes: RowanProjectService noneProject)
 		ifFalse: [projectListPresenter model add: RowanProjectService noneProject]!
 
+basicProjectTabLabel
+	| label |
+	projectListPresenter selections isEmpty ifTrue: [^'Projects'].
+	self isNoneProjectSelected ifFalse: [^super basicProjectTabLabel].
+	label := projectListPresenter selection name.
+	dictionaryPresenter list isEmpty ifTrue: [^label].
+	dictionaryPresenter selections isEmpty ifTrue: [^label].
+	dictionaryPresenter selections size > 1 ifTrue: [^label].
+	^dictionaryPresenter selection name!
+
 createComponents
 	super createComponents.
 	dictionaryPresenter := self add: ListPresenter new name: 'dictionariesList'.
@@ -114,10 +124,14 @@ updateDictionary
 	classListPresenter model: ListModel new.
 	classHierarchyPresenter model: TreeModel new.
 	self updateServices: dictionaryPresenter selections.
-	self isClassListTabSelected ifFalse: [self updateHierarchy]!
+	self isClassListTabSelected ifFalse: [self updateHierarchy].
+	self updateTabLabel!
 
 updateProject
-	self projectListPresenter selectionIfNone: [^self].
+	self projectListPresenter selectionIfNone: 
+			[packageListPresenter resetSelection.
+			dictionaryPresenter resetSelection.
+			^self].
 	self projectListPresenter selection name = RowanService notRowanizedPackageName
 		ifTrue: 
 			[self showDictionaryList.
@@ -127,6 +141,7 @@ updateProject
 			[self showPackageList.
 			super updateProject]! !
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #basicProjectTabLabel!public!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
 !JadeiteBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryPresenter!accessing!private! !

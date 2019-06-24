@@ -1808,6 +1808,16 @@ test_deselectAllVariables
 	self assert: self methodListPresenter list size
 		equals: self projectsPresenter selectedClass methods size!
 
+test_dictionarySelectionChangesTab
+	| browserTabs |
+	browserTabs := projectsBrowser cardsPresenter view.
+	self selectServiceNamed: RowanProjectService noneProject name in: self projectListPresenter.
+	self assert: browserTabs currentCard arrangement equals: '1 ' , RowanProjectService noneProject name.
+	self selectServiceNamed: #UserGlobals in: self dictionaryPresenter.
+	self assert: browserTabs currentCard arrangement equals: '1 UserGlobals'.
+	self projectListPresenter resetSelection.
+	self assert: browserTabs currentCard arrangement equals: '1 Projects'!
+
 test_dontChangeTabOnMethodSave
 	| source firstTab secondTab |
 	self testsIssue: #issue412 withTitle: '(3.0.56) incorrect project browser update on method accept '.
@@ -3025,6 +3035,14 @@ test_multiplePackageSelection
 		in: self packageListPresenter.
 	self assert: (self classListPresenter list collect: [:classService | classService name]) asArray
 		equals: sortedClassNames asArray!
+
+test_noneProjectRetainsSelectionWhenNewTabAdded
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectServiceNamed: RowanProjectService noneProject name in: self projectListPresenter.
+	self assert: self projectListPresenter selection equals: RowanProjectService noneProject.
+	projectsBrowser addSystemBrowser.
+	projectsBrowser cardsPresenter view previousCard.
+	self assert: self projectListPresenter selection equals: RowanProjectService noneProject!
 
 test_noSelectionHierarchy
 	| roots children childrensNames grandchildren grandchildrensNames |
@@ -4820,6 +4838,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_confirmOverrideExistingAccessorMethods!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dictionarySelectionChangesTab!public!test issue 217! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontChangeTabOnMethodSave!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontOverrideExistingAccessorMethods!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontUpdateWithDifferentMeta!public!test two browsers!tests! !
@@ -4881,6 +4900,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_modifiedSourceShouldNotChangeMethodList!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multiplePackageSelection!public!test packages!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_noneProjectRetainsSelectionWhenNewTabAdded!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noSelectionHierarchy!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openChangesBrowser!public!test menus!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewBrowserTabWhileSUnitTabSelected!public!test sunit tab!tests! !

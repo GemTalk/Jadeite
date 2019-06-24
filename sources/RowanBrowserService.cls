@@ -81,7 +81,9 @@ projectsUpdate: presenter
 projectsUpdate: presenter browser: browser
 	| removals |
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
-	removals := presenter list select: [:projectService | (projects includes: projectService) not].
+	removals := presenter list select: 
+					[:projectService |
+					(projects includes: projectService) not and: [projectService ~= RowanProjectService noneProject]].
 	presenter model removeAll: removals.
 	self updateList: presenter whilePreservingSelections: projects.
 	browser addNoneProject!

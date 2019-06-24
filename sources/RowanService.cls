@@ -124,7 +124,7 @@ initialize
 
 initializePresenterList: presenter
 	presenter sortBlock: [:x :y | x sortAspect < y sortAspect].
-	presenter model: ListModel new!
+	presenter list: ListModel new!
 
 isAnsweringService
 
