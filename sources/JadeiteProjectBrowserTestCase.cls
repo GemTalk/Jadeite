@@ -2431,6 +2431,13 @@ test_findMethodSUnitBrowser
 	self selectSUnitTab.
 	self assert: self projectsPresenter findMethod equals: self projectsPresenter. "error occurred just calling the method" !
 
+test_firstClickDictionaries
+	"make sure the first click on the (NONE) project shows the dictionaries"
+
+	self assert: self dictionaryPresenter list isEmpty.
+	self selectServiceNamed: RowanProjectService noneProject name in: self projectListPresenter.
+	self assert: self dictionaryPresenter list notEmpty!
+
 test_gitBranchesDoesNotShowHead
 	"this may be a brittle test because it assumes RowanSample1 has only the master branch.
 	But it's based on the local checkout so the test runner can control this. "
@@ -3207,6 +3214,10 @@ test_projectRemoved
 			ensure: 
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
+
+test_projectSingleSelection
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self deny: self projectsPresenter projectListPresenter view isMultiSelect!
 
 test_refreshAfterAbortMethodList
 	"method lists should remove deleted methods after an abort."
@@ -4836,6 +4847,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodShowsAllMethods!public!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodShowsOnlyOneSide!public!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodSUnitBrowser!public!test find!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_firstClickDictionaries!public!test issue 217! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gitBranchesDoesNotShowHead!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromHierarchy!public!test class hierarchy!test defined package!tests! !
@@ -4881,6 +4893,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectDisplaysSync!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectInfoTab!public!test menus!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectRemoved!public!test projects!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_projectSingleSelection!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodList!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodListLeaveCommitted!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterReloadInProjectsBrowserWithAddedMethod!public!test projects!tests! !
