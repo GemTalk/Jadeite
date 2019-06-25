@@ -1847,6 +1847,42 @@ test_dictionarySelectionIndependentInTab
 		equals: RowanProjectService noneProject name]
 			ensure: [projectsBrowser closeCard]!
 
+test_dictionaryViewClassHierarchy
+	| classNames |
+	self selectNoneProject.
+	self selectServiceNamed: 'RowanKernel' in: self dictionaryPresenter.
+	classNames := self classListPresenter list collect: [:classService | classService name].
+	self selectHierarchyTab.
+	self assert: (self classHierarchyPresenter model isKindOf: TreeModel).
+	classNames do: 
+			[:className |
+			self denyIsNil: (self classHierarchyPresenter model asBag
+						detect: [:classService | classService name = className]
+						ifNone: [])]!
+
+test_dictionaryViewClassHierarchySelectedClass
+	| firstChild root children |
+	self selectNoneProject.
+	self selectClassListTab.
+	self selectServiceNamed: 'RowanKernel' in: self dictionaryPresenter.
+	self selectServiceNamed: 'GsChoiceInteraction' in: self classListPresenter.
+	self selectHierarchyTab.
+	self assert: self classHierarchyPresenter model size equals: 3.
+	#('Object' 'GsInteraction' 'GsChoiceInteraction') do: 
+			[:className |
+			self denyIsNil: (self classHierarchyPresenter model asBag
+						detect: [:classService | classService name = className]
+						ifNone: [])].
+	self assert: self classHierarchyPresenter model roots size equals: 1.
+	self assert: self classHierarchyPresenter model roots first name equals: 'Object'.
+	root := self classHierarchyPresenter model roots first. 
+	self assert: (children := self classHierarchyPresenter model getChildrenOf: root) size equals: 1. 
+	firstChild := children first .
+	self assert: firstChild name equals: 'GsInteraction'.
+	self assert: (children := self classHierarchyPresenter model getChildrenOf: firstChild) size equals: 1.
+	self assert: children size equals: 1.
+	self assert: children first name equals: 'GsChoiceInteraction'!
+
 test_dontChangeTabOnMethodSave
 	| source firstTab secondTab |
 	self testsIssue: #issue412 withTitle: '(3.0.56) incorrect project browser update on method accept '.
@@ -4893,6 +4929,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dictionaryNameIsString!public!test issue 217! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dictionarySelectionChangesTab!public!test issue 217! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dictionarySelectionIndependentInTab!public!test class list!test find!test issue 217!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dictionaryViewClassHierarchy!public!test issue 217! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dictionaryViewClassHierarchySelectedClass!public!test issue 217! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontChangeTabOnMethodSave!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontOverrideExistingAccessorMethods!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontUpdateWithDifferentMeta!public!test two browsers!tests! !
