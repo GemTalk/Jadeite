@@ -574,7 +574,7 @@ RowanService subclass: #RowanDebuggerService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanDictionaryService
-	instanceVariableNames: 'classes'
+	instanceVariableNames: 'classes hierarchyServices'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

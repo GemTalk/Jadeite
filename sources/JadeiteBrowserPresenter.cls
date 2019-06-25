@@ -131,6 +131,23 @@ updateDictionary
 	self isClassListTabSelected ifFalse: [self updateHierarchy].
 	self updateTabLabel!
 
+updateHierarchy
+	| service |
+	classHierarchyPresenter model: TreeModel new.
+	packageListPresenter selectionOrNil ifNil: [^self].
+	dictionaryPresenter selectionOrNil ifNil: [^self].
+	Cursor wait showWhile: 
+			[service := classListPresenter selectionOrNil
+						ifNil: 
+							[self isNoneProjectSelected
+								ifTrue: [dictionaryPresenter selection]
+								ifFalse: [packageListPresenter selection]].
+			service command: #classHierarchy.
+			self issueCommand: (Array with: service).
+			service isPackageService
+				ifTrue: [service hierarchyServices: Array new]
+				ifFalse: [service name = 'Object' ifFalse: [self selectClassNamed: service name]]]!
+
 updateProject
 	self projectListPresenter selectionIfNone: 
 			[packageListPresenter resetSelection.
@@ -161,6 +178,7 @@ updateProject
 !JadeiteBrowserPresenter categoriesFor: #updateAfterFindClassInPackage:!menu handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateDictionaries!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateDictionary!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #updateHierarchy!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateProject!event handlers!public!updating! !
 
 !JadeiteBrowserPresenter class methodsFor!

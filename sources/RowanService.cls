@@ -14,6 +14,16 @@ aborted: presenter browser: browser
 	
 	!
 
+addHierarchyService: service to: treeModel withParent: parentService hierarchyServices: hierarchyServices
+	treeModel getNodeFor: service ifAbsent: [treeModel add: service asChildOf: parentService].
+	(hierarchyServices at: service ifAbsent: [^self]) do: 
+			[:classService |
+			self
+				addHierarchyService: classService
+				to: treeModel
+				withParent: service
+				hierarchyServices: hierarchyServices]!
+
 autoCommitUpdate: browser!
 
 basicPrepareForReplication
@@ -40,6 +50,47 @@ classHierarchyUpdate: presenter
 
 classHierarchyUpdate: presenter browser: browser
 !
+
+classHierarchyUpdate: presenter browser: browser hierarchyServices: hierarchyServices
+	| treeModel subclasses parent |
+	hierarchyServices ifNil: [^self].
+	hierarchyServices isEmpty ifTrue: [^self].
+	browser isClassListTabSelected ifTrue: [^self].
+	presenter selections notEmpty ifTrue: [(presenter selections includes: self) ifFalse: [^self]].
+	treeModel := TreeModel new
+				searchPolicy: SearchPolicy equality;
+				reset.
+	parent := nil.
+	subclasses := hierarchyServices at: #nil ifAbsent: [].
+	subclasses
+		ifNil: 
+			[| subs |
+			parent := self.
+			treeModel := presenter model.
+			subs := hierarchyServices at: #expand.
+			1 to: subs size
+				do: 
+					[:index |
+					| classService node |
+					classService := subs at: index.
+					node := treeModel getNodeFor: classService ifAbsent: [].
+					node
+						ifNotNil: 
+							[treeModel remove: classService ifAbsent: [].
+							subs at: index put: node object]].
+			subclasses := subs].
+	subclasses do: 
+			[:classService |
+			self
+				addHierarchyService: classService
+				to: treeModel
+				withParent: parent
+				hierarchyServices: hierarchyServices].
+	presenter model: treeModel.
+	treeModel preOrderDo: 
+			[:classService |
+			classService selectedPackageServices: browser packageListPresenter selections browser: browser.
+			classService expand == true ifTrue: [presenter view expand: classService]]!
 
 classMethodsUpdate: presenter browser: anObject
 	!
@@ -329,6 +380,7 @@ variableDataUpdate: aPresenter!
 
 variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #aborted:browser:!public!updating! !
+!RowanService categoriesFor: #addHierarchyService:to:withParent:hierarchyServices:!private! !
 !RowanService categoriesFor: #autoCommitUpdate:!public!updating! !
 !RowanService categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanService categoriesFor: #classCategoryUpdate:!public!updating! !
@@ -338,6 +390,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #classesUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #classHierarchyUpdate:!public!updating! !
 !RowanService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
+!RowanService categoriesFor: #classHierarchyUpdate:browser:hierarchyServices:!public!updating! !
 !RowanService categoriesFor: #classMethodsUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #classUpdate:!public!updating! !
 !RowanService categoriesFor: #clearCommand!Init / Release!public! !
