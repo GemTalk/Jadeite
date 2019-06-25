@@ -2166,7 +2166,7 @@ updateProjects
 updateProjectTab
 	| projectTabLabel |
 	projectTabLabel := self projectTabLabel.
-	self view arrangement: projectTabLabel.
+	self topShell cardsPresenter view currentCard arrangement: projectTabLabel.
 	self parentPresenter view updateTabs!
 
 updateSelectionsForUpdate: update

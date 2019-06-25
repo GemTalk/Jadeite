@@ -59,7 +59,9 @@ registerPresentersForUpdates
 showDictionaryList
 	| newCard |
 	(packageDictionaryCards view cards includes: packageListPresenter view)
-		ifTrue: [packageDictionaryCards view removeSubView: packageListPresenter view].
+		ifTrue: 
+			[packageDictionaryCards view removeSubView: packageListPresenter view.
+			packageListPresenter list: ListModel new].
 	packageDictionaryCards view cards isEmpty
 		ifTrue: 
 			[newCard := packageDictionaryCards add: dictionaryPresenter.
@@ -71,7 +73,9 @@ showDictionaryList
 showPackageList
 	| newCard |
 	(packageDictionaryCards view cards includes: dictionaryPresenter view)
-		ifTrue: [packageDictionaryCards view removeSubView: dictionaryPresenter view].
+		ifTrue: 
+			[packageDictionaryCards view removeSubView: dictionaryPresenter view.
+			dictionaryPresenter list: ListModel new].
 	packageDictionaryCards view cards isEmpty
 		ifTrue: 
 			[newCard := packageDictionaryCards add: packageListPresenter.

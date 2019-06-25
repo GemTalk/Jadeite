@@ -97,6 +97,10 @@ disableTranscriptWrites
 	(transcriptWritesWereEnabled := transcript isTranscriptInstalled)
 		ifTrue: [transcript flipTranscript]	"turn off gemstone transcript writes for performance"!
 
+ensureOneTab
+	projectsBrowser ifNil: [^self].
+	[projectsBrowser cardsPresenter view cards size = 1] whileFalse: [projectsBrowser closeCard]!
+
 executeStringInOtherSession: string
 	| executionString |
 	executionString := '(UserGlobals at: #otherSession) '.
@@ -240,6 +244,9 @@ saveTestClass
 
 selectClassListTab
 	self projectsPresenter selectClassListTab.!
+
+selectNoneProject
+	self selectServiceNamed: RowanProjectService noneProject name in: self projectListPresenter!
 
 selectSUnitTab
 	self projectsPresenter sunitPresenter ensureVisible!
@@ -1808,15 +1815,37 @@ test_deselectAllVariables
 	self assert: self methodListPresenter list size
 		equals: self projectsPresenter selectedClass methods size!
 
+test_dictionaryNameIsString
+	"for consistency, service names should be strings"
+	self selectNoneProject.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	self assert: (self dictionaryPresenter selection name isKindOf: String).!
+
 test_dictionarySelectionChangesTab
 	| browserTabs |
 	browserTabs := projectsBrowser cardsPresenter view.
-	self selectServiceNamed: RowanProjectService noneProject name in: self projectListPresenter.
+	self selectNoneProject.
 	self assert: browserTabs currentCard arrangement equals: '1 ' , RowanProjectService noneProject name.
 	self selectServiceNamed: #UserGlobals in: self dictionaryPresenter.
 	self assert: browserTabs currentCard arrangement equals: '1 UserGlobals'.
 	self projectListPresenter resetSelection.
 	self assert: browserTabs currentCard arrangement equals: '1 Projects'!
+
+test_dictionarySelectionIndependentInTab
+	| userGlobalsCard |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	self selectServiceNamed: #UserGlobals in: self dictionaryPresenter.
+	userGlobalsCard := projectsBrowser cardsPresenter view currentCard.
+	projectsBrowser addSystemBrowser.
+	
+	[self assert: userGlobalsCard presenter projectListPresenter selection name
+		equals: RowanProjectService noneProject name.
+	self selectNoneProject.
+	self selectServiceNamed: #Published in: self dictionaryPresenter.
+	self assert: userGlobalsCard presenter projectListPresenter selection name
+		equals: RowanProjectService noneProject name]
+			ensure: [projectsBrowser closeCard]!
 
 test_dontChangeTabOnMethodSave
 	| source firstTab secondTab |
@@ -2443,9 +2472,8 @@ test_findMethodSUnitBrowser
 
 test_firstClickDictionaries
 	"make sure the first click on the (NONE) project shows the dictionaries"
-
 	self assert: self dictionaryPresenter list isEmpty.
-	self selectServiceNamed: RowanProjectService noneProject name in: self projectListPresenter.
+	self selectNoneProject.
 	self assert: self dictionaryPresenter list notEmpty!
 
 test_gitBranchesDoesNotShowHead
@@ -2917,7 +2945,7 @@ test_minimumClassStateReturned
 
 	| classService |
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectServiceNamed: RowanProjectService noneProject name in: self projectListPresenter.
+	self selectNoneProject.
 	self selectServiceNamed: #Globals in: self dictionaryPresenter.
 	classService := self classListPresenter list detect: [:clsService | clsService name = 'Boolean'].
 	self assert: classService name equals: 'Boolean'.
@@ -3036,9 +3064,15 @@ test_multiplePackageSelection
 	self assert: (self classListPresenter list collect: [:classService | classService name]) asArray
 		equals: sortedClassNames asArray!
 
+test_noneProjectNotRemovedOnUpdate
+	self selectNoneProject.
+	BrowserUpdate current updateService: self projectListPresenter selection session: session.
+	self assert: (self projectListPresenter list includes: RowanProjectService noneProject).
+	self assert: self projectListPresenter selection name equals: RowanProjectService noneProject name!
+
 test_noneProjectRetainsSelectionWhenNewTabAdded
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectServiceNamed: RowanProjectService noneProject name in: self projectListPresenter.
+	self selectNoneProject.
 	self assert: self projectListPresenter selection equals: RowanProjectService noneProject.
 	projectsBrowser addSystemBrowser.
 	projectsBrowser cardsPresenter view previousCard.
@@ -4000,6 +4034,22 @@ test_symbolsWithoutImplementorsFound
 	self assert: symbols size equals: 1.
 	self assert: symbols first = #fnoodley1!
 
+test_systemTabsShowDictionariesAndProjects
+	| browserTabs |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self ensureOneTab. 
+	browserTabs := projectsBrowser cardsPresenter view.
+	self selectNoneProject.
+	self assert: browserTabs currentCard arrangement equals: '1 ' , RowanProjectService noneProject name.
+	projectsBrowser addSystemBrowser.
+	
+	[self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self assert: browserTabs currentCard arrangement equals: '2 Rowan'.
+	projectsBrowser cardsPresenter view previousCard.
+	self assert: browserTabs currentCard arrangement equals: '1 ' , RowanProjectService noneProject name.
+	projectsBrowser cardsPresenter view nextCard]
+			ensure: [projectsBrowser closeCard]!
+
 test_tabNames
 	| textTabs |
 	self testsIssue: #issue186 withTitle: 'icon in console menu'.
@@ -4751,6 +4801,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #currentTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #dirtyProjectForChangeBrowser!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #ensureOneTab!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #executeStringInOtherSession:!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #family:ofNodesIn:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
@@ -4772,6 +4823,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUniqueString!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveTestClass!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectClassListTab!private!selection! !
+!JadeiteProjectBrowserTestCase categoriesFor: #selectNoneProject!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectSUnitTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectVariableListEntryForcingEvent:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
@@ -4838,7 +4890,9 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_confirmOverrideExistingAccessorMethods!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dictionaryNameIsString!public!test issue 217! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dictionarySelectionChangesTab!public!test issue 217! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dictionarySelectionIndependentInTab!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontChangeTabOnMethodSave!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontOverrideExistingAccessorMethods!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontUpdateWithDifferentMeta!public!test two browsers!tests! !
@@ -4900,6 +4954,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_modifiedSourceShouldNotChangeMethodList!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multiplePackageSelection!public!test packages!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_noneProjectNotRemovedOnUpdate!public!test issue 217! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noneProjectRetainsSelectionWhenNewTabAdded!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noSelectionHierarchy!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openChangesBrowser!public!test menus!tests! !
@@ -4958,6 +5013,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabRefresh!public!test menus!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitUpdatesProperly!public!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsWithoutImplementorsFound!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabsShowDictionariesAndProjects!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!tests! !
