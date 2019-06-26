@@ -52,6 +52,28 @@ packageDictionaryCards
 
 	^packageDictionaryCards!
 
+refreshClass
+	| selection presenter |
+	presenter := self isClassListTabSelected
+				ifTrue: [classListPresenter]
+				ifFalse: [classHierarchyPresenter].
+	self setMethodFilterFor: presenter.
+	selection := presenter selectionIfNone: 
+					[self resetClassTemplate.
+					self resetDefinedClassPackage.
+					categoryListPresenter clear.
+					variableListPresenter clear.
+					^methodListPresenter clear].
+	selection meta: self isClassSideSelected.
+	self isNoneProjectSelected
+		ifFalse: [selection selectedPackageServices: packageListPresenter selections browser: self].
+	selection
+		updateAfterCommand: false;
+		command: #fastRefresh.
+	self issueCommand: (Array with: selection).
+	selection updateAfterCommand: true.
+	self updateClassInfo!
+
 registerPresentersForUpdates
 	super registerPresentersForUpdates.
 	BrowserUpdate current register: dictionaryPresenter selector: #dictionaryListUpdate:!
@@ -170,6 +192,7 @@ updateProject
 !JadeiteBrowserPresenter categoriesFor: #isRowanProjectSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #packageDictionaryCards!accessing!private! !
+!JadeiteBrowserPresenter categoriesFor: #refreshClass!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteBrowserPresenter categoriesFor: #showDictionaryList!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #showPackageList!event handlers!public!updating! !

@@ -1565,7 +1565,7 @@ test_classTemplateWhenNoPackagesSelected
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self projectsPresenter selectClassDefinitionTab.
 	self projectsPresenter resetClassTemplate.
-	self assert: self methodSourcePresenter value isEmpty!
+	self assert: self projectsPresenter classDefinitionPresenter value isEmpty!
 
 test_classVersionIncrementedInClassList
 	self testsIssue: #issue228
@@ -1826,7 +1826,7 @@ test_dictionarySelectionChangesTab
 	browserTabs := projectsBrowser cardsPresenter view.
 	self selectNoneProject.
 	self assert: browserTabs currentCard arrangement equals: '1 ' , RowanProjectService noneProject name.
-	self selectServiceNamed: #UserGlobals in: self dictionaryPresenter.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
 	self assert: browserTabs currentCard arrangement equals: '1 UserGlobals'.
 	self projectListPresenter resetSelection.
 	self assert: browserTabs currentCard arrangement equals: '1 Projects'!
@@ -1835,14 +1835,14 @@ test_dictionarySelectionIndependentInTab
 	| userGlobalsCard |
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectNoneProject.
-	self selectServiceNamed: #UserGlobals in: self dictionaryPresenter.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
 	userGlobalsCard := projectsBrowser cardsPresenter view currentCard.
 	projectsBrowser addSystemBrowser.
 	
 	[self assert: userGlobalsCard presenter projectListPresenter selection name
 		equals: RowanProjectService noneProject name.
 	self selectNoneProject.
-	self selectServiceNamed: #Published in: self dictionaryPresenter.
+	self selectServiceNamed: 'Published' in: self dictionaryPresenter.
 	self assert: userGlobalsCard presenter projectListPresenter selection name
 		equals: RowanProjectService noneProject name]
 			ensure: [projectsBrowser closeCard]!
@@ -1853,21 +1853,23 @@ test_dictionaryViewClassHierarchy
 	self selectServiceNamed: 'RowanKernel' in: self dictionaryPresenter.
 	classNames := self classListPresenter list collect: [:classService | classService name].
 	self selectHierarchyTab.
-	self assert: (self classHierarchyPresenter model isKindOf: TreeModel).
+	
+	[self assert: (self classHierarchyPresenter model isKindOf: TreeModel).
 	classNames do: 
 			[:className |
 			self denyIsNil: (self classHierarchyPresenter model asBag
 						detect: [:classService | classService name = className]
-						ifNone: [])]!
+						ifNone: [])]]
+			ensure: [self selectClassListTab].!
 
 test_dictionaryViewClassHierarchySelectedClass
 	| firstChild root children |
 	self selectNoneProject.
-	self selectClassListTab.
 	self selectServiceNamed: 'RowanKernel' in: self dictionaryPresenter.
 	self selectServiceNamed: 'GsChoiceInteraction' in: self classListPresenter.
 	self selectHierarchyTab.
-	self assert: self classHierarchyPresenter model size equals: 3.
+	
+	[self assert: self classHierarchyPresenter model size equals: 3.
 	#('Object' 'GsInteraction' 'GsChoiceInteraction') do: 
 			[:className |
 			self denyIsNil: (self classHierarchyPresenter model asBag
@@ -1875,13 +1877,15 @@ test_dictionaryViewClassHierarchySelectedClass
 						ifNone: [])].
 	self assert: self classHierarchyPresenter model roots size equals: 1.
 	self assert: self classHierarchyPresenter model roots first name equals: 'Object'.
-	root := self classHierarchyPresenter model roots first. 
-	self assert: (children := self classHierarchyPresenter model getChildrenOf: root) size equals: 1. 
-	firstChild := children first .
+	root := self classHierarchyPresenter model roots first.
+	self assert: (children := self classHierarchyPresenter model getChildrenOf: root) size equals: 1.
+	firstChild := children first.
 	self assert: firstChild name equals: 'GsInteraction'.
-	self assert: (children := self classHierarchyPresenter model getChildrenOf: firstChild) size equals: 1.
+	self assert: (children := self classHierarchyPresenter model getChildrenOf: firstChild) size
+		equals: 1.
 	self assert: children size equals: 1.
-	self assert: children first name equals: 'GsChoiceInteraction'!
+	self assert: children first name equals: 'GsChoiceInteraction']
+			ensure: [self selectClassListTab]!
 
 test_dontChangeTabOnMethodSave
 	| source firstTab secondTab |
@@ -2392,12 +2396,12 @@ test_findClassNotInProject
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'Object').
 	self assert: self classListPresenter selection name equals: 'Object'.
-	self assert: self dictionaryPresenter selection name equals: #Globals.
+	self assert: self dictionaryPresenter selection name equals: 'Globals'.
 	self assert: self projectListPresenter selection name equals: RowanProjectService noneProject name.
 	self assert: self projectsPresenter isNoneProjectSelected.
 	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'ExecBlock').
 	self assert: self classListPresenter selection name equals: 'ExecBlock'.
-	self assert: self dictionaryPresenter selection name equals: #Globals.
+	self assert: self dictionaryPresenter selection name equals: 'Globals'.
 	self assert: self projectListPresenter selection name equals: RowanProjectService noneProject name.
 	self assert: self projectsPresenter isNoneProjectSelected.
 	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'CypressClassDefinition').
@@ -2982,7 +2986,7 @@ test_minimumClassStateReturned
 	| classService |
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectNoneProject.
-	self selectServiceNamed: #Globals in: self dictionaryPresenter.
+	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
 	classService := self classListPresenter list detect: [:clsService | clsService name = 'Boolean'].
 	self assert: classService name equals: 'Boolean'.
 	self assert: classService versions equals: 1.
@@ -3054,6 +3058,19 @@ test_modifiedSourceShouldNotChangeMethodList
 			ensure: 
 				[self methodSourcePresenter value: originalSource.
 				self methodSourcePresenter view isModified: false]!
+
+test_multipleBrowsersUpdateClassList
+	| firstClassList |
+	self selectNoneProject.
+	self selectClassListTab.
+	self selectServiceNamed: 'RowanKernel' in: self dictionaryPresenter.
+	firstClassList := self classListPresenter list.
+	self openSecondBrowser.
+	self assert: self classListPresenter list equals: firstClassList.
+	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: secondPresenter packageListPresenter.
+	self assert: self classListPresenter list equals: firstClassList.
+	self deny: secondPresenter classListPresenter list equals: firstClassList!
 
 test_multipleCompileMethod
 	self testsIssue: #issue170
@@ -4990,6 +5007,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_minimumProjectList!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_modifiedSourceShouldNotChange!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_modifiedSourceShouldNotChangeMethodList!public!test two browsers!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_multipleBrowsersUpdateClassList!public!test issue 217! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multiplePackageSelection!public!test packages!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noneProjectNotRemovedOnUpdate!public!test issue 217! !

@@ -212,6 +212,11 @@ unloadProjects
 		caption: 'UNLOAD PROJECTS WARNING!!') ifFalse: [^self].
 	self basicUnloadProjects: projectNames!
 
+updatePackages
+	"no op for project list"
+
+	!
+
 writeProject
 	| projectServices ws |
 	projectServices := projectListPresenter selections.
@@ -252,5 +257,6 @@ writeProject
 !JadeiteProjectListPresenter categoriesFor: #refreshProjects!public! !
 !JadeiteProjectListPresenter categoriesFor: #registerPresentersForUpdates!private!register presenters! !
 !JadeiteProjectListPresenter categoriesFor: #unloadProjects!menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #updatePackages!public!updating! !
 !JadeiteProjectListPresenter categoriesFor: #writeProject!menu handlers!public! !
 

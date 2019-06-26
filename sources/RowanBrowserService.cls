@@ -27,7 +27,9 @@ basicPrepareForReplication
 	method services don't iterate over subcollections"
 
 	removedMethods
-		ifNotNil: [removedMethods do: [:methodService | methodService basicPrepareForReplication]]!
+		ifNotNil: [removedMethods do: [:methodService | methodService basicPrepareForReplication]].
+	dictionaries := nil .
+	!
 
 dictionaryListUpdate: presenter
 	| removals |
@@ -85,6 +87,7 @@ projectsUpdate: presenter browser: browser
 					[:projectService |
 					(projects includes: projectService) not and: [projectService ~= RowanProjectService noneProject]].
 	presenter model removeAll: removals.
+	presenter selections isEmpty ifTrue: [browser updatePackages].
 	self updateList: presenter whilePreservingSelections: projects.
 	browser addNoneProject!
 
@@ -96,7 +99,9 @@ registerWindow: handle rootObject: oop session: session
 
 releaseReferencedServices
 	projects ifNotNil: [projects do: [:service | service releaseReferencedServices]].
-	projects := Array new!
+	dictionaries ifNotNil: [dictionaries do: [:service | service releaseReferencedServices]].
+	projects := Array new.
+	dictionaries := nil.!
 
 releaseWindow: handle session: session
 	self

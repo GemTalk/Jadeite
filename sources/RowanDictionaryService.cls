@@ -10,6 +10,14 @@ RowanDictionaryService comment: ''!
 !RowanDictionaryService categoriesForClass!Kernel-Objects! !
 !RowanDictionaryService methodsFor!
 
+= dictionaryService
+	^dictionaryService isDictionaryService ifTrue: [name = dictionaryService name] ifFalse: [^false]!
+
+basicPrepareForReplication
+	super basicPrepareForReplication.
+	classes := nil. 
+	hierarchyServices := nil.!
+
 classes
 
 	^classes!
@@ -19,8 +27,7 @@ classes: anArray
 
 classesUpdate: presenter browser: browser
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
-	browser packageListPresenter selections detect: [:packageService | packageService name = name]
-		ifNone: [^self].
+	(self doesUpdateApply: browser) ifFalse: [^self].
 	self removeDeletedClassesIn: presenter browser: browser.
 	self updateList: presenter whilePreservingSelections: classes.
 	presenter list
@@ -34,9 +41,33 @@ classHierarchyUpdate: presenter browser: browser
 		browser: browser
 		hierarchyServices: hierarchyServices!
 
+doesUpdateApply: browser
+	^browser isNoneProjectSelected
+		ifTrue: [browser dictionaryPresenter selections includes: self]
+		ifFalse: [false]!
+
+hash
+	^self name hash!
+
+isDictionaryService
+
+	^true!
+
 prepareForReplication
 	super prepareForReplication.
+	classes := nil. 
 	hierarchyServices := nil.!
+
+releaseReferencedServices
+	hierarchyServices
+		ifNotNil: 
+			[hierarchyServices keysAndValuesDo: 
+					[:key :value |
+					key isBehavior ifTrue: [key releaseReferencedServices].
+					value do: [:service | service releaseReferencedServices]]].
+	hierarchyServices := nil.
+	classes ifNotNil: [classes do: [:service | service releaseReferencedServices]].
+	classes := Array new!
 
 removeDeletedClassesIn: presenter browser: browser
 	| updatedClasses removedClasses |
@@ -48,10 +79,16 @@ removeDeletedClassesIn: presenter browser: browser
 	presenter model
 		setList: (ListModel withAll: (presenter list asArray copyWithoutAll: removedClasses))
 		searchPolicy: SearchPolicy equality! !
+!RowanDictionaryService categoriesFor: #=!comparing!public! !
+!RowanDictionaryService categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanDictionaryService categoriesFor: #classes!accessing!public! !
 !RowanDictionaryService categoriesFor: #classes:!accessing!public! !
 !RowanDictionaryService categoriesFor: #classesUpdate:browser:!public!updating! !
 !RowanDictionaryService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
+!RowanDictionaryService categoriesFor: #doesUpdateApply:!private!testing! !
+!RowanDictionaryService categoriesFor: #hash!comparing!public! !
+!RowanDictionaryService categoriesFor: #isDictionaryService!public!testing! !
 !RowanDictionaryService categoriesFor: #prepareForReplication!public!replication! !
+!RowanDictionaryService categoriesFor: #releaseReferencedServices!Init / Release!public! !
 !RowanDictionaryService categoriesFor: #removeDeletedClassesIn:browser:!private! !
 

@@ -189,6 +189,10 @@ isClassService
 
 	^false!
 
+isDictionaryService
+
+	^false!
+
 isDirty
 	^isDirty!
 
@@ -415,6 +419,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #isAnsweringService!public!testing! !
 !RowanService categoriesFor: #isBrowserService!public!testing! !
 !RowanService categoriesFor: #isClassService!public!testing! !
+!RowanService categoriesFor: #isDictionaryService!public!testing! !
 !RowanService categoriesFor: #isDirty!accessing!public! !
 !RowanService categoriesFor: #isDirty:!accessing!public! !
 !RowanService categoriesFor: #isLoggingService!public!testing! !

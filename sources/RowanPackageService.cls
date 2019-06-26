@@ -40,8 +40,7 @@ classesUpdate: presenter browser: browser
 
 	| condensedList |
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
-	browser packageListPresenter selections detect: [:packageService | packageService name = name]
-		ifNone: [^self].
+	(self doesUpdateApply: browser) ifFalse: [^self].
 	self removeDeletedClassesIn: presenter browser: browser.
 	condensedList := self condenseExtensions: presenter.
 	self updateList: presenter whilePreservingSelections: condensedList.
@@ -80,6 +79,11 @@ displayStringFor: displayThing
 				beItalic;
 				beBold.
 			displayThing forecolor: Color black]!
+
+doesUpdateApply: browser
+	^browser isNoneProjectSelected
+		ifTrue: [false]
+		ifFalse: [browser packageListPresenter selections includes: self]!
 
 hash
 	^self name hash!
@@ -154,6 +158,7 @@ testClasses: presenter
 !RowanPackageService categoriesFor: #defaultTemplate!accessing!private! !
 !RowanPackageService categoriesFor: #defaultTemplate:!accessing!private! !
 !RowanPackageService categoriesFor: #displayStringFor:!displaying!public! !
+!RowanPackageService categoriesFor: #doesUpdateApply:!public!testing! !
 !RowanPackageService categoriesFor: #hash!comparing!public! !
 !RowanPackageService categoriesFor: #hierarchyServices:!public!updating! !
 !RowanPackageService categoriesFor: #isPackageService!public!testing! !

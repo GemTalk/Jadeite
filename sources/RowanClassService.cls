@@ -272,6 +272,7 @@ projectName
 	^projectName!
 
 releaseReferencedServices
+	hierarchyServices := nil.
 	methods := Array new!
 
 remoteServiceName
@@ -483,7 +484,7 @@ visibleTests
 !RowanClassService categoriesFor: #packageName:!accessing!private! !
 !RowanClassService categoriesFor: #prepareForReplication!public!replication! !
 !RowanClassService categoriesFor: #projectName!accessing!private! !
-!RowanClassService categoriesFor: #releaseReferencedServices!public! !
+!RowanClassService categoriesFor: #releaseReferencedServices!Init / Release!public! !
 !RowanClassService categoriesFor: #remoteServiceName!must not strip!public! !
 !RowanClassService categoriesFor: #removedClass:!public!updating! !
 !RowanClassService categoriesFor: #replicateFrom:!public!replication! !
