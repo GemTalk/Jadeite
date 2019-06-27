@@ -96,6 +96,12 @@ isPackageService
 
 	^true!
 
+packageUpdate: presenter
+	| packageInList |
+	packageInList := presenter list detect: [:packageService | packageService name = name] ifNone: [].
+	packageInList ifNotNil: [:packageService | packageService isDirty: isDirty].
+	presenter view invalidate!
+
 prepareForReplication
 	super prepareForReplication.
 	self basicPrepareForReplication!
@@ -162,6 +168,7 @@ testClasses: presenter
 !RowanPackageService categoriesFor: #hash!comparing!public! !
 !RowanPackageService categoriesFor: #hierarchyServices:!public!updating! !
 !RowanPackageService categoriesFor: #isPackageService!public!testing! !
+!RowanPackageService categoriesFor: #packageUpdate:!public!updating! !
 !RowanPackageService categoriesFor: #prepareForReplication!public!replication! !
 !RowanPackageService categoriesFor: #projectName!accessing!private! !
 !RowanPackageService categoriesFor: #projectName:!accessing!private! !

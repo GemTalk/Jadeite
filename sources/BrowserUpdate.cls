@@ -247,7 +247,6 @@ updatesPerform: selector presenter: presenter
 	"the update may know which client updates 
 	it wants us to care about. Respect that."
 
-	
 	[updates do: 
 			[:update |
 			(update updateType isNil or: [update updateType == selector])

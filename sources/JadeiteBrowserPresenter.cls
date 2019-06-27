@@ -100,8 +100,18 @@ showPackageList
 			dictionaryPresenter list: ListModel new].
 	packageDictionaryCards view cards isEmpty
 		ifTrue: 
-			[newCard := packageDictionaryCards add: packageListPresenter.
-			newCard createView: packageListPresenter class defaultView.
+			[| listView |
+			newCard := packageDictionaryCards add: packageListPresenter.
+			listView := newCard createView: 'Editable list view'.
+			listView
+				hasColumnHeaders: false;
+				hasGridLines: false;
+				isMultiSelect: true. 
+			(listView allColumns at: 1)
+				isEditable: false;
+				getImageBlock: IconicListAbstract;
+				isAutoResize: true;
+				customDrawBlock: [:each | each item displayStringFor: each].
 			packageDictionaryCards view cards first arrangement: 'Packages'.
 			self setupPackageMenu.
 			classListPresenter list: ListModel new]!

@@ -245,6 +245,8 @@ notRowanizedPackageName
 
 packagesUpdate: presenter!
 
+packageUpdate: presenter!
+
 prepareForReplication
 	"only replicate what is absolutely necessary. Each service knows how to do that. 
 	This method prepares each command arg as well"
@@ -436,6 +438,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #name:!accessing!public! !
 !RowanService categoriesFor: #notRowanizedPackageName!displaying!public! !
 !RowanService categoriesFor: #packagesUpdate:!public!updating! !
+!RowanService categoriesFor: #packageUpdate:!public!updating! !
 !RowanService categoriesFor: #prepareForReplication!public!replication! !
 !RowanService categoriesFor: #printOn:!printing!public! !
 !RowanService categoriesFor: #processListUpdate:!Debugger!public!updating! !

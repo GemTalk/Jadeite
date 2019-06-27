@@ -1032,6 +1032,13 @@ test_browseSendersEnablement
 				view: self methodListPresenter view.
 	self deny: commandQuery isEnabled!
 
+test_cannotSelectMultipleProjects
+	self selectServicesNamed: #() in: self projectListPresenter.
+	self assert: self projectListPresenter selections isEmpty.
+	self selectServicesNamed: self rowanProjectNames in: self projectListPresenter.
+	self assert: self rowanProjectNames size > 1. 
+	self assert: self projectListPresenter selections size = 1!
+
 test_categoryTextDisplay
 	self testsIssue: #issue232 withTitle: 'cannot tell which `category` a method is in (Oscar-3.0.41)'.
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
@@ -2614,7 +2621,6 @@ test_gotoDefinedMethodNotSameAsClass
 	self assert: self methodListPresenter selection selector = #_methodsModificationClass!
 
 test_gotoDefinedPackage
-	| dictionaryPresenter |
 	self testsIssue: #issue150 withTitle: 'Go to defining package -> Not found: a BlockClosure'.
 	"different project within projects browser"
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
@@ -2624,17 +2630,12 @@ test_gotoDefinedPackage
 	self assert: self projectListPresenter selection name = 'Cypress'.
 	self assert: self packageListPresenter selection name = 'Cypress-Definitions'.
 	self assert: self classListPresenter selection name = 'CypressDefinition'.
-
-	"go to dictionary browser"
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-GemStone-Kernel' in: self packageListPresenter.
 	self selectServiceNamed: 'ByteArray' in: self classListPresenter.
-	dictionaryPresenter := self projectsPresenter gotoClassDefinedPackage.
-	
-	[self assert: dictionaryPresenter dictionaryListPresenter selection key = 'Globals'.
-	self assert: dictionaryPresenter classCategoryPresenter selection value = 'Kernel'.
-	self assert: dictionaryPresenter classListPresenter selection = 'ByteArray']
-			ensure: [self destroy: dictionaryPresenter topShell]!
+	self projectsPresenter gotoClassDefinedPackage.
+	self assert: self dictionaryPresenter selection name = 'Globals'.
+	self assert: self classListPresenter selection name = 'ByteArray'!
 
 test_hierarchyCleanedUpAfterUnload
 	"hierarchy classes were being left in the display
@@ -3148,21 +3149,22 @@ test_noSelectionHierarchy
 	self assert: (childrensNames includes: 'RowanService').
 	self deny: (childrensNames includes: 'RowanClassService').
 	grandchildren := self classHierarchyPresenter model getChildrenOf: (children detect: [:classService | classService name = 'RowanService']).
-	self assert: grandchildren size = 13. "this will probably change but it's a nice test to ensure all the expected services are present"
+	self assert: grandchildren size equals: 14. "this will probably change but it's a nice test to ensure all the expected services are present"
 	grandchildrensNames := grandchildren collect: [:classService | classService name].
 	self assert: (grandchildrensNames at: 1) equals: 'RowanAnsweringService'.
 	self assert: (grandchildrensNames at: 2) equals: 'RowanBrowserService'.
 	self assert: (grandchildrensNames at: 3) equals: 'RowanClassService'.
 	self assert: (grandchildrensNames at: 4) equals: 'RowanDebuggerService'.
-	self assert: (grandchildrensNames at: 5) equals: 'RowanFrameService'.
-	self assert: (grandchildrensNames at: 6) equals: 'RowanLoggingService'.
-	self assert: (grandchildrensNames at: 7) equals: 'RowanMethodService'.
-	self assert: (grandchildrensNames at: 8) equals: 'RowanPackageService'.
-	self assert: (grandchildrensNames at: 9) equals: 'RowanProcessService'.
-	self assert: (grandchildrensNames at: 10) equals: 'RowanProjectService'.
-	self assert: (grandchildrensNames at: 11) equals: 'RowanQueryService'.
-	self assert: (grandchildrensNames at: 12) equals: 'RowanTestService'.
-	self assert: (grandchildrensNames at: 13) equals: 'RowanVariableService'.
+	self assert: (grandchildrensNames at: 5) equals: 'RowanDictionaryService'.
+	self assert: (grandchildrensNames at: 6) equals: 'RowanFrameService'.
+	self assert: (grandchildrensNames at: 7) equals: 'RowanLoggingService'.
+	self assert: (grandchildrensNames at: 8) equals: 'RowanMethodService'.
+	self assert: (grandchildrensNames at: 9) equals: 'RowanPackageService'.
+	self assert: (grandchildrensNames at: 10) equals: 'RowanProcessService'.
+	self assert: (grandchildrensNames at: 11) equals: 'RowanProjectService'.
+	self assert: (grandchildrensNames at: 12) equals: 'RowanQueryService'.
+	self assert: (grandchildrensNames at: 13) equals: 'RowanTestService'.
+	self assert: (grandchildrensNames at: 14) equals: 'RowanVariableService'.
 
 !
 
@@ -3179,6 +3181,7 @@ test_openChangesBrowser
 test_openNewBrowserTabWhileSUnitTabSelected
 	| addBrowserButton jadeMenu cards index |
 	self testsIssue: #issue389 withTitle: 'Add Browser Panel (Tab) when in Sunit Subpanel fails'.
+	[self projectsPresenter parentPresenter view cards size > 1] whileTrue:[projectsBrowser closeCard]. 
 	self selectRowanSample1Class.
 	self selectSUnitTab.
 	jadeMenu := projectsBrowser view menuBar items detect: [:menu | '*Jadeite*' match: menu text]
@@ -3814,12 +3817,6 @@ test_selectMultiplePackages
 	self serviceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
 	self serviceNamed: 'Rowan-JadeServer' in: self packageListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Core' 'Rowan-JadeServer') in: self packageListPresenter!
-
-test_selectMultipleProjects
-	self selectServicesNamed: #() in: self projectListPresenter .
-	self assert: self projectListPresenter selections isEmpty.
-	self selectServicesNamed: self rowanProjectNames in: self projectListPresenter.
-	self assert: self projectListPresenter selections size = 4!
 
 test_selectVariable
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
@@ -4914,6 +4911,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSameClassCategoriesCorrect!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSelectedMethods!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSendersEnablement!public!test menus!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_cannotSelectMultipleProjects!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeListSortOrder!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeVariableWithModifiedMethodSource!public!test variable tab!tests! !
@@ -5052,7 +5050,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectionsRetainedFromClassListToHierarchy!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectionsRetainedFromHierarchyToClassList!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultiplePackages!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultipleProjects!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectVariable!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_separationOfClassAndInstance!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_setAndClearBreakpoint!public!tests! !

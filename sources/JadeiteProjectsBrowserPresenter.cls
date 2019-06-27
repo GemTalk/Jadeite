@@ -1565,6 +1565,7 @@ registerPresentersForUpdates
 
 	BrowserUpdate current register: projectListPresenter 		selector: #projectsUpdate:browser: browser: self.
 	BrowserUpdate current register: projectListPresenter 		selector: #removedProject:.
+	BrowserUpdate current register: projectListPresenter 		selector: #projectsUpdate:.
 	BrowserUpdate current register: projectListPresenter 		selector: #aborted:browser: browser: self.
 	BrowserUpdate current register: classListPresenter 		selector: #classesUpdate:browser: browser: self.
 	BrowserUpdate current register: classListPresenter 		selector: #removedClass:.
@@ -1573,6 +1574,7 @@ registerPresentersForUpdates
 	BrowserUpdate current register: classListPresenter 		selector: #removed:.
 	BrowserUpdate current register: packageListPresenter 	selector: #projectPackagesUpdate:browser: browser: self.
 	BrowserUpdate current register: packageListPresenter 	selector: #removed:.
+	BrowserUpdate current register: packageListPresenter 	selector: #packageUpdate:.
 	BrowserUpdate current register: categoryListPresenter 	selector: #filterUpdate:browser: browser: self.
 	BrowserUpdate current register: classHierarchyPresenter 	selector: #classHierarchyUpdate:browser: browser: self.
 	BrowserUpdate current register: classListPresenter 		selector: #updatedClass:browser: browser: self.
