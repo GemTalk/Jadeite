@@ -51,7 +51,7 @@ browseFrameMethod
 					[shell := RowanSystemBrowser showOnSession: gciSession.
 					shell selectClass: classService name asString selector: frame gsMethod selector asString]]
 		ifFalse: 
-			[shell := JadeiteProjectsSystemBrowser showOnSession: gciSession.
+			[shell := JadeiteBrowser showOnSession: gciSession.
 			shell currentCard updateAfterFindClass: classService.
 			shell currentCard findMethod: frame gsMethod selector]!
 
@@ -68,7 +68,7 @@ browseObjectClass
 			[shell := RowanSystemBrowser showOnSession: gciSession.
 			shell selectClass: classService name asString selector: String new]
 		ifFalse: 
-			[shell := JadeiteProjectsSystemBrowser showOnSession: gciSession.
+			[shell := JadeiteBrowser showOnSession: gciSession.
 			shell currentCard updateAfterFindClass: classService].
 	^shell!
 

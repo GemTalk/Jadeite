@@ -71,7 +71,7 @@ basicPrepareForReplication
 
 basicSubSuperIcon
 	hasSupers ifTrue: [^JadeSystemBrowserPresenter overriddenIcon].
-	hasSubs ifTrue: [^JadeiteProjectsBrowserPresenter downArrowIcon].
+	hasSubs ifTrue: [^JadeiteBrowserPresenter downArrowIcon].
 	^Icon blank!
 
 breakPoints

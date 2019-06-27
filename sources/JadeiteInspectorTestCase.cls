@@ -616,7 +616,7 @@ test_openProjectsBrowser
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	shell := inspector browseClass.
-	[self assert: (shell isKindOf: JadeiteProjectsSystemBrowser)] ensure: [self destroy: shell]!
+	[self assert: (shell isKindOf: JadeiteBrowser)] ensure: [self destroy: shell]!
 
 test_openProjectsBrowserOnClass
 	| remoteObject shell |
@@ -626,7 +626,7 @@ test_openProjectsBrowserOnClass
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	shell := inspector browseClass.
-	[self assert: (shell isKindOf: JadeiteProjectsSystemBrowser)] ensure: [self destroy: shell]!
+	[self assert: (shell isKindOf: JadeiteBrowser)] ensure: [self destroy: shell]!
 
 test_registeredPresentersInInspectorCleanedUp
 	"we don't register any yet, but this test will fail if we add any. 

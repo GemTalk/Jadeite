@@ -188,7 +188,7 @@ test_browseSunitClass
 				ifNone: [].
 	browser := browseClassMenuItem commandDescription performAgainst: self sunitPresenter.
 	
-	[self assert: (browser isKindOf: JadeiteProjectsSystemBrowser).
+	[self assert: (browser isKindOf: JadeiteBrowser).
 	self assert: browser currentCard classListPresenter selection name = 'JadeServerTest']
 			ensure: [browser view close]!
 
@@ -478,7 +478,7 @@ test_selectClassDoesNotLoseTestResults
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
 	self selectRowanSample1Test.
 	self projectsPresenter selectSUnitTab.
-	secondBrowser := JadeiteProjectsSystemBrowser showOnSession: session.
+	secondBrowser := JadeiteBrowser showOnSession: session.
 	
 	[self projectsPresenter sunitPresenter runAll.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult

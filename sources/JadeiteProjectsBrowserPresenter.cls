@@ -1059,7 +1059,7 @@ moveMethods: methodServices toCategory: targetCategory
 	self selectMethodsFrom: classService!
 
 newBrowser
-	^JadeiteProjectsSystemBrowser showOnSession: gciSession!
+	^JadeiteBrowser showOnSession: gciSession!
 
 onDragClass: aSession
 	| className |

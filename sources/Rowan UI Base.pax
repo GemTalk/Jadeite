@@ -1587,7 +1587,7 @@ browseClass
 	selection := classListPresenter selections isEmpty
 				ifTrue: [^MessageBox notify: 'No class selected']
 				ifFalse: [classListPresenter selections first].
-	shell := JadeiteProjectsSystemBrowser showOnSession: gciSession.
+	shell := JadeiteBrowser showOnSession: gciSession.
 	shell currentCard updateAfterFindClass: selection.
 	^shell!
 
@@ -1743,7 +1743,7 @@ aboutJadeite
 
 newProjectsBrowser
 
-	^JadeiteProjectsSystemBrowser showOnSession: gciSession!
+	^JadeiteBrowser showOnSession: gciSession!
 
 newWorkspace
 
@@ -1781,7 +1781,7 @@ browseClass
 			[shell := RowanSystemBrowser showOnSession: gciSession.
 			shell selectClass: classService name asString selector: String new]
 		ifFalse: 
-			[shell := JadeiteProjectsSystemBrowser showOnSession: gciSession.
+			[shell := JadeiteBrowser showOnSession: gciSession.
 			shell currentCard updateAfterFindClass: classService].
 	^shell!
 
@@ -1871,7 +1871,7 @@ browseSelectedClassIn: documentPresenter newTab: openNewTab
 		ifFalse: 
 			[shell := openNewTab
 						ifTrue: [self addSystemBrowser]
-						ifFalse: [JadeiteProjectsSystemBrowser showOnSession: gciSession].
+						ifFalse: [JadeiteBrowser showOnSession: gciSession].
 			shell currentCard updateAfterFindClass: classService]!
 
 browseSendersOf
@@ -1988,7 +1988,7 @@ openDictionaryBrowserOn: classService selector: selector
 
 openProjectBrowserOn: classService selector: selector
 	| shell |
-	shell := JadeiteProjectsSystemBrowser showOnSession: gciSession.
+	shell := JadeiteBrowser showOnSession: gciSession.
 	shell currentCard updateAfterFindClass: classService.
 	classService meta ifTrue: [shell currentCard selectClassTab].
 	shell currentCard findMethod: selector.
@@ -2114,7 +2114,7 @@ browseClassIn: session
 		ifNotNil: 
 			[classService projectName = RowanService notRowanizedPackageName
 				ifTrue: [^self openDictionaryBrowserOn: classService session: session].
-			browser := JadeiteProjectsSystemBrowser showOnSession: session.
+			browser := JadeiteBrowser showOnSession: session.
 			browser currentCard updateAfterFindClass: classService]!
 
 browseClassReferences: className session: session
@@ -3885,7 +3885,7 @@ browseChangedThing
 	selection isRemoval ifTrue: [^MessageBox notify: 'Cannot browse a removed item'].
 	
 	[classService := RowanClassService named: selection className.
-	shell := JadeiteProjectsSystemBrowser showOnSession: gciSession.
+	shell := JadeiteBrowser showOnSession: gciSession.
 	shell currentCard updateServices: (Array with: classService)]
 			on: Error
 			do: 

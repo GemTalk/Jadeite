@@ -253,7 +253,7 @@ test_browseClass
 	debugger documentPresenter view selectionRange: (81 to: 85).
 	self debuggerDo: [browser := debugger methodSourcePresenter browseSelectedClass].
 	
-	[self assert: (browser isKindOf: JadeiteProjectsBrowserPresenter).
+	[self assert: (browser isKindOf: JadeiteBrowserPresenter).
 	self assert: browser classListPresenter selection name = 'Rowan']
 			ensure: [self assert: browser topShell view close].
 	debugger documentPresenter view selectionRange: (105 to: 110).
@@ -291,7 +291,7 @@ test_browseClassVariablePane
 	self assert: debugger variableDataPresenter value equals: 'aRowanClassService:nil'.
 	projectsBrowser := debugger browseObjectClass.
 	
-	[self assert: (projectsBrowser isKindOf: JadeiteProjectsSystemBrowser).
+	[self assert: (projectsBrowser isKindOf: JadeiteBrowser).
 	self assert: projectsBrowser currentCard classListPresenter selection name
 		equals: 'RowanClassService'	"receiver is Array class"]
 			ensure: [self destroy: projectsBrowser]!

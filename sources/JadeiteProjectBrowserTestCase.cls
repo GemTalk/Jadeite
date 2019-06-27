@@ -62,7 +62,7 @@ assertLinearAncestry: family in: presenter
 cleanupExistingWindows
 	JadeWorkspace allInstances do: [:ws | self cleanupTextPaneForClose: ws].	"otherwise the test will hang"
 	JadeiteTranscript allInstances do: [:text | self cleanupTextPaneForClose: text].
-	JadeiteProjectsBrowserPresenter allInstances do: 
+	JadeiteBrowserPresenter allInstances do: 
 			[:presenter |
 			presenter methodSourcePresenter view isModified: false.
 			presenter classDefinitionPresenter view isModified: false]!
@@ -3203,7 +3203,7 @@ test_openNewProjectBrowser
 	self
 		denyIsNil: (item := menu items detect: [:menuItem | menuItem command == #newBrowser] ifNone: []).
 	newBrowser := item commandDescription performAgainst: self projectsPresenter.
-	[self assert: newBrowser isKindOf: JadeiteProjectsSystemBrowser] ensure: [newBrowser exit]!
+	[self assert: newBrowser isKindOf: JadeiteBrowser] ensure: [newBrowser exit]!
 
 test_openNewProjectTab
 	| menu item firstCard cardCount |
@@ -3222,7 +3222,7 @@ test_openNewProjectTab
 test_openProjectsBrowser
 	"project browser opened in setup"
 
-	self assert: projectsBrowser class equals: JadeiteProjectsSystemBrowser.
+	self assert: projectsBrowser class equals: JadeiteBrowser.
 	self
 		denyIsNil: (self projectList detect: [:projectService | projectService name = 'Rowan'] ifNone: [])!
 
@@ -3237,7 +3237,7 @@ test_openProjectsBrowserFromMethodList
 				selector
 		equals: #foo.
 	secondProjectsBrowser := methodListBrowser primaryPresenter methodListPresenter browseClass.
-	[self assert: (secondProjectsBrowser isKindOf: JadeiteProjectsSystemBrowser)]
+	[self assert: (secondProjectsBrowser isKindOf: JadeiteBrowser)]
 		ensure: [self destroy: secondProjectsBrowser]!
 
 test_packageDictionaryCardsTabName
@@ -3487,7 +3487,7 @@ test_registeredPresentersInMethodBrowserCleanedUp
 test_registeredPresentersInProjectBrowserCleanedUp
 	| registeredPresenters |
 	registeredPresenters := BrowserUpdate current registeredPresenters.
-	secondBrowser := JadeiteProjectsSystemBrowser showOnSession: session.
+	secondBrowser := JadeiteBrowser showOnSession: session.
 	self assert: BrowserUpdate current registeredPresenters size > registeredPresenters size.
 	self destroy: secondBrowser.
 	secondBrowser := nil.

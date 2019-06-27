@@ -31,7 +31,7 @@ basicUnloadProjects: projectNames
 
 browseProject
 	| shell presenter service serviceNames |
-	shell := JadeiteProjectsSystemBrowser showOnSession: gciSession.
+	shell := JadeiteBrowser showOnSession: gciSession.
 	presenter := shell currentCard projectListPresenter.
 	serviceNames := projectListPresenter selections collect: [:service | service name].
 	service := presenter list detect: [:projectService | serviceNames includes: projectService name]
