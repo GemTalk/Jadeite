@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanDictionaryService
-	instanceVariableNames: 'classes hierarchyServices'
+	instanceVariableNames: 'classes hierarchyServices globals'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -49,6 +49,12 @@ doesUpdateApply: browser
 		ifTrue: [browser dictionaryPresenter selections includes: self]
 		ifFalse: [false]!
 
+globals
+	^globals!
+
+globals: anObject
+	globals := anObject!
+
 hash
 	^self name hash!
 
@@ -90,6 +96,8 @@ removeDeletedClassesIn: presenter browser: browser
 !RowanDictionaryService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
 !RowanDictionaryService categoriesFor: #displayStringFor:!displaying!public! !
 !RowanDictionaryService categoriesFor: #doesUpdateApply:!private!testing! !
+!RowanDictionaryService categoriesFor: #globals!accessing!public! !
+!RowanDictionaryService categoriesFor: #globals:!accessing!public! !
 !RowanDictionaryService categoriesFor: #hash!comparing!public! !
 !RowanDictionaryService categoriesFor: #isDictionaryService!public!testing! !
 !RowanDictionaryService categoriesFor: #prepareForReplication!public!replication! !

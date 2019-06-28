@@ -575,7 +575,7 @@ RowanService subclass: #RowanDebuggerService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanDictionaryService
-	instanceVariableNames: 'classes hierarchyServices'
+	instanceVariableNames: 'classes hierarchyServices globals'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -665,7 +665,7 @@ RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards'
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

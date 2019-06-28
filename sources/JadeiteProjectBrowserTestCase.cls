@@ -1826,12 +1826,14 @@ test_deselectAllVariables
 
 test_dictionaryNameIsString
 	"for consistency, service names should be strings"
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectNoneProject.
 	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
 	self assert: (self dictionaryPresenter selection name isKindOf: String).!
 
 test_dictionarySelectionChangesTab
 	| browserTabs |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	browserTabs := projectsBrowser cardsPresenter view.
 	self selectNoneProject.
 	self assert: browserTabs currentCard arrangement equals: '1 ' , RowanProjectService noneProject name.
@@ -1858,6 +1860,7 @@ test_dictionarySelectionIndependentInTab
 
 test_dictionaryViewClassHierarchy
 	| classNames |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectNoneProject.
 	self selectServiceNamed: 'RowanKernel' in: self dictionaryPresenter.
 	classNames := self classListPresenter list collect: [:classService | classService name].
@@ -1869,10 +1872,11 @@ test_dictionaryViewClassHierarchy
 			self denyIsNil: (self classHierarchyPresenter model asBag
 						detect: [:classService | classService name = className]
 						ifNone: [])]]
-			ensure: [self selectClassListTab].!
+			ensure: [self selectClassListTab]!
 
 test_dictionaryViewClassHierarchySelectedClass
 	| firstChild root children |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectNoneProject.
 	self selectServiceNamed: 'RowanKernel' in: self dictionaryPresenter.
 	self selectServiceNamed: 'GsChoiceInteraction' in: self classListPresenter.
@@ -2521,6 +2525,7 @@ test_findMethodSUnitBrowser
 
 test_firstClickDictionaries
 	"make sure the first click on the (NONE) project shows the dictionaries"
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self assert: self dictionaryPresenter list isEmpty.
 	self selectNoneProject.
 	self assert: self dictionaryPresenter list notEmpty!
@@ -2540,6 +2545,45 @@ test_gitBranchesDoesNotShowHead
 				basicCheckoutUsing: self projectsPresenter.
 	self assert: branches isKindOf: Collection.
 	self assert: branches first equals: '*master'!
+
+test_globalsTabHeaders
+	| globalsView columns |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	self projectsPresenter selectGlobalsTab.
+	globalsView := self projectsPresenter globalsTab.
+	columns := globalsView allColumns.
+	self assert: columns first text equals: 'Name'.
+	self assert: columns second text equals: 'Class'.
+	self assert: columns third text equals: 'Oop'.
+	self assert: columns fourth text equals: 'Value'!
+
+test_globalsTabValues
+	"sanity check that a few expected value are present"
+
+	| globalsView allUsers |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
+	self projectsPresenter selectGlobalsTab.
+	globalsView := self projectsPresenter globalsTab.
+	allUsers := globalsView model detect: [:array | array first = 'Globals.AllUsers'].
+	self assert: allUsers second equals: #UserProfileSet.
+	self assert: allUsers third isKindOf: Integer.
+	self assert: ('anUserProfileSet*' match: allUsers fourth).
+	allUsers := globalsView model detect: [:array | array first = 'Globals.false'].
+	self assert: allUsers second equals: #Boolean.
+	self assert: allUsers third isKindOf: Integer.
+	self assert: allUsers fourth equals: 'false'.
+	allUsers := globalsView model detect: [:array | array first = 'Globals.true'].
+	self assert: allUsers second equals: #Boolean.
+	self assert: allUsers third isKindOf: Integer.
+	self assert: allUsers fourth equals: 'true'.
+	allUsers := globalsView model detect: [:array | array first = 'Globals.nil'].
+	self assert: allUsers second equals: #UndefinedObject.
+	self assert: allUsers third isKindOf: Integer.
+	self assert: allUsers fourth equals: 'nil'!
 
 test_goToDefinedClassFromClassList
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
@@ -3064,6 +3108,7 @@ test_modifiedSourceShouldNotChangeMethodList
 
 test_multipleBrowsersUpdateClassList
 	| firstClassList |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectNoneProject.
 	self selectClassListTab.
 	self selectServiceNamed: 'RowanKernel' in: self dictionaryPresenter.
@@ -3121,6 +3166,7 @@ test_multiplePackageSelection
 		equals: sortedClassNames asArray!
 
 test_noneProjectNotRemovedOnUpdate
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectNoneProject.
 	BrowserUpdate current updateService: self projectListPresenter selection session: session.
 	self assert: (self projectListPresenter list includes: RowanProjectService noneProject).
@@ -3248,7 +3294,7 @@ test_openProjectsBrowserFromMethodList
 test_packageAndDictionaryViewClass
 	"test for the same view for a consistent look and feel.
 	EditableListView is a subclass of ListView"
-
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self assert: self projectsPresenter packageListPresenter view class equals: EditableListView.
 	self selectServiceNamed: RowanProjectService noneProject name in: self projectListPresenter.
@@ -4992,6 +5038,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodSUnitBrowser!public!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_firstClickDictionaries!public!test issue 217! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gitBranchesDoesNotShowHead!public!test projects!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_globalsTabHeaders!public!test class list!test find!test issue 217!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_globalsTabValues!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromHierarchy!public!test class hierarchy!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromClassList!public!test class list!test defined package!tests! !

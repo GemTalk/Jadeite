@@ -1768,6 +1768,9 @@ selectedMethodName
 selectedPackageNames
 	^packageListPresenter selections collect: [:packageService | packageService name]!
 
+selectGlobalsTab
+	self selectSourceTabNamed: 'globalsTab'!
+
 selectionMethod: methodSelection
 	| newMethodSelection |
 	newMethodSelection := methodListPresenter list
@@ -2387,6 +2390,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedMethodCategory!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedMethodName!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedPackageNames!public!selection! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #selectGlobalsTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectionMethod:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectMethods:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectMethodsFrom:!private!selection! !
