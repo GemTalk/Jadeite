@@ -267,9 +267,11 @@ setUp
 	super setUp.
 	self disableTranscriptWrites.	"turn off gemstone transcript writes for performance"
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self ensureOneTab. 
 	self selectClassListTab.
 	self selectInstanceTab.
-	self projectsPresenter selectCategoryTab.!
+	self projectsPresenter selectCategoryTab.
+!
 
 tearDown
 	super tearDown.
@@ -3243,6 +3245,20 @@ test_openProjectsBrowserFromMethodList
 	[self assert: (secondProjectsBrowser isKindOf: JadeiteBrowser)]
 		ensure: [self destroy: secondProjectsBrowser]!
 
+test_packageAndDictionaryViewClass
+	"test for the same view for a consistent look and feel.
+	EditableListView is a subclass of ListView"
+
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self assert: self projectsPresenter packageListPresenter view class equals: EditableListView.
+	self selectServiceNamed: RowanProjectService noneProject name in: self projectListPresenter.
+	self assert: self projectsPresenter dictionaryPresenter view class equals: EditableListView.
+	self assert: self projectsPresenter projectListPresenter view class equals: ListView.
+	self assert: self projectsPresenter classListPresenter view class equals: ListView.
+	self assert: self projectsPresenter categoryListPresenter view class equals: ListView.
+	self assert: self projectsPresenter variableListPresenter view class equals: ListView.
+	self assert: self projectsPresenter methodListPresenter view class equals: ListView!
+
 test_packageDictionaryCardsTabName
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectRowanSample1Class.
@@ -3810,7 +3826,8 @@ test_selectionsRetainedFromHierarchyToClassList
 	self assert: self methodListPresenter selection selector equals: #answer.!
 
 test_selectMultiplePackages
-	self selectServicesNamed: #() in: self projectListPresenter .
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServicesNamed: #() in: self projectListPresenter.
 	self assert: self packageListPresenter list isEmpty.
 	self selectServicesNamed: #('Rowan') in: self projectListPresenter.
 	self deny: self packageListPresenter list isEmpty.
@@ -5017,6 +5034,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectTab!public!test menus!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openProjectsBrowser!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openProjectsBrowserFromMethodList!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_packageAndDictionaryViewClass!public!test issue 217! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_packageDictionaryCardsTabName!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_packagesShownInMultipleProjects!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectDisplaysSync!public!test projects!tests! !

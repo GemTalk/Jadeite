@@ -41,6 +41,9 @@ classHierarchyUpdate: presenter browser: browser
 		browser: browser
 		hierarchyServices: hierarchyServices!
 
+displayStringFor: displayThing
+	displayThing forecolor: Color black!
+
 doesUpdateApply: browser
 	^browser isNoneProjectSelected
 		ifTrue: [browser dictionaryPresenter selections includes: self]
@@ -85,10 +88,25 @@ removeDeletedClassesIn: presenter browser: browser
 !RowanDictionaryService categoriesFor: #classes:!accessing!public! !
 !RowanDictionaryService categoriesFor: #classesUpdate:browser:!public!updating! !
 !RowanDictionaryService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
+!RowanDictionaryService categoriesFor: #displayStringFor:!displaying!public! !
 !RowanDictionaryService categoriesFor: #doesUpdateApply:!private!testing! !
 !RowanDictionaryService categoriesFor: #hash!comparing!public! !
 !RowanDictionaryService categoriesFor: #isDictionaryService!public!testing! !
 !RowanDictionaryService categoriesFor: #prepareForReplication!public!replication! !
 !RowanDictionaryService categoriesFor: #releaseReferencedServices!Init / Release!public! !
 !RowanDictionaryService categoriesFor: #removeDeletedClassesIn:browser:!private! !
+
+!RowanDictionaryService class methodsFor!
+
+defaultIconName
+	"Answer a filename to use for an icon of this class."
+
+	^File composeStem: 'Dictionary' extension: 'ico'.!
+
+icon
+	"Answers an Icon that can be used to represent this class"
+
+	^##(self) defaultIcon! !
+!RowanDictionaryService class categoriesFor: #defaultIconName!private! !
+!RowanDictionaryService class categoriesFor: #icon!private! !
 

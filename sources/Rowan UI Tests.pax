@@ -66,6 +66,7 @@ package setPrerequisites: (IdentitySet new
 	add: 'Jade UI Base';
 	add: 'Rowan STON';
 	add: 'Rowan UI Base';
+	add: '..\Core\Contributions\Solutions Software\SSW EditableListView';
 	add: '..\Core\Contributions\Camp Smalltalk\SUnit\SUnit';
 	add: '..\Core\Contributions\Odellsoft\SUnitBrowser\SUnitBrowser';
 	add: '..\Core\Contributions\Odellsoft\SUnitBrowser\SUnitBrowserModelApp';

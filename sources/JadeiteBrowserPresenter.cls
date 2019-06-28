@@ -29,6 +29,23 @@ createComponents
 	dictionaryPresenter := self add: ListPresenter new name: 'dictionariesList'.
 	packageDictionaryCards := self add: Presenter new name: 'packageDictionaryCards'.!
 
+createListViewFor: newCard
+	"Editable because creating the desired ListView gave 
+	mysterious errors when connecting the view."
+
+	| listView |
+	listView := newCard createView: 'Editable list view'.
+	listView
+		hasColumnHeaders: false;
+		hasGridLines: false;
+		isMultiSelect: true.
+	(listView allColumns at: 1)
+		isEditable: false;
+		getImageBlock: IconicListAbstract;
+		isAutoResize: true;
+		customDrawBlock: [:each | each item displayStringFor: each].
+	^listView!
+
 createSchematicWiring
 	super createSchematicWiring.
 	dictionaryPresenter when: #'selectionChanged' send: #'updateDictionary' to: self!
@@ -87,7 +104,7 @@ showDictionaryList
 	packageDictionaryCards view cards isEmpty
 		ifTrue: 
 			[newCard := packageDictionaryCards add: dictionaryPresenter.
-			newCard createView: dictionaryPresenter class defaultView.
+			self createListViewFor: newCard.
 			packageDictionaryCards view cards first arrangement: 'Dictionaries'.
 			classListPresenter list: ListModel new].
 	self updateDictionaries!
@@ -100,18 +117,8 @@ showPackageList
 			dictionaryPresenter list: ListModel new].
 	packageDictionaryCards view cards isEmpty
 		ifTrue: 
-			[| listView |
-			newCard := packageDictionaryCards add: packageListPresenter.
-			listView := newCard createView: 'Editable list view'.
-			listView
-				hasColumnHeaders: false;
-				hasGridLines: false;
-				isMultiSelect: true. 
-			(listView allColumns at: 1)
-				isEditable: false;
-				getImageBlock: IconicListAbstract;
-				isAutoResize: true;
-				customDrawBlock: [:each | each item displayStringFor: each].
+			[newCard := packageDictionaryCards add: packageListPresenter.
+			self createListViewFor: newCard.
 			packageDictionaryCards view cards first arrangement: 'Packages'.
 			self setupPackageMenu.
 			classListPresenter list: ListModel new]!
@@ -182,8 +189,8 @@ updateHierarchy
 
 updateProject
 	self projectListPresenter selectionIfNone: 
-			[packageListPresenter resetSelection.
-			dictionaryPresenter resetSelection.
+			[packageListPresenter clear.
+			dictionaryPresenter clear. 
 			^self].
 	self projectListPresenter selection name = RowanService notRowanizedPackageName
 		ifTrue: 
@@ -196,6 +203,7 @@ updateProject
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #basicProjectTabLabel!public!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
+!JadeiteBrowserPresenter categoriesFor: #createListViewFor:!private! !
 !JadeiteBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryPresenter!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #isNoneProjectSelected!public!testing! !
