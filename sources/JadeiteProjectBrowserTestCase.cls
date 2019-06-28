@@ -2547,17 +2547,17 @@ test_gitBranchesDoesNotShowHead
 	self assert: branches first equals: '*master'!
 
 test_globalsTabHeaders
-	| globalsView columns |
+	| globalsView header |
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectNoneProject.
 	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
 	self projectsPresenter selectGlobalsTab.
 	globalsView := self projectsPresenter globalsTab.
-	columns := globalsView allColumns.
-	self assert: columns first text equals: 'Name'.
-	self assert: columns second text equals: 'Class'.
-	self assert: columns third text equals: 'Oop'.
-	self assert: columns fourth text equals: 'Value'!
+	header := globalsView model detect: [:array | array first = 'Name'].
+	self assert: header first equals: 'Name'.
+	self assert: header second equals: 'Class'.
+	self assert: header third equals: 'Oop'.
+	self assert: header fourth equals: 'Value'!
 
 test_globalsTabValues
 	"sanity check that a few expected value are present"
