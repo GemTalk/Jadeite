@@ -829,8 +829,7 @@ getViews
 	classHierarchyTabs := self view viewNamed: 'classHierarchyTabs'.
 	instanceClassTabs := self view viewNamed: 'instanceClassTabs'.
 	methodFilterTabs := self view viewNamed: 'methodFilterTabs'.
-	textAreaTabs := self view viewNamed: 'textAreaTabs'.
-	projectInfoTab := self view viewNamed: 'projectInfo'!
+	textAreaTabs := self view viewNamed: 'textAreaTabs'.!
 
 gitCommit
 	| projectName message service promptResult |
@@ -1476,8 +1475,7 @@ redrawAllViews
 	"for now, just update a few views. Not sure if there's a better way to do this."
 	projectListPresenter view invalidate.
 	packageListPresenter view invalidate.
-	classListPresenter view invalidate.
-	projectInfoTab view invalidate!
+	classListPresenter view invalidate.!
 
 refreshClass
 	| selection presenter |
@@ -1769,7 +1767,9 @@ selectedPackageNames
 	^packageListPresenter selections collect: [:packageService | packageService name]!
 
 selectGlobalsTab
-	self selectSourceTabNamed: 'globalsTab'!
+	| tab |
+	tab := self view viewNamed: 'globalsTab' ifNone:[^nil].
+	^tab ensureVisible!
 
 selectionMethod: methodSelection
 	| newMethodSelection |
@@ -1821,6 +1821,9 @@ selectPackage: newPackageSelection
 	packageListPresenter selection: newPackageSelection.
 	classSelection ifNotNil: [self selectClassNamed: classSelection name].
 	methodSelection ifNotNil: [self selectionMethod: methodSelection]!
+
+selectProjectTab
+	self selectSourceTabNamed: 'projectInfo'!
 
 selectSourceTabNamed: tabName
 	| tab |
@@ -2113,7 +2116,7 @@ updatePackage
 
 updatePackageInfo
 	| service |
-	self updateProjectTab.
+	self updateSystemTab.
 	service := packageListPresenter selectionIfNone: [^self].
 	classDefinitionPresenter value: service defaultTemplate.
 	classDefinitionPresenter view
@@ -2145,7 +2148,7 @@ updateProject
 updateProjectInfo
 	| services array |
 	services := projectListPresenter selections.
-	self updateProjectTab.
+	self updateSystemTab.
 	services isEmpty ifTrue: [^projectInfoTab list: ListModel new].
 	array := Array writeStream: services size.
 	array nextPut: (Array with: services first with: 'rowanProjectsHome').
@@ -2167,12 +2170,6 @@ updateProjects
 	browserService
 		command: #updateProjects.
 	self issueCommand: (Array with: browserService).!
-
-updateProjectTab
-	| projectTabLabel |
-	projectTabLabel := self projectTabLabel.
-	self topShell cardsPresenter view currentCard arrangement: projectTabLabel.
-	self parentPresenter view updateTabs!
 
 updateSelectionsForUpdate: update
 	update updatePackageSelectionsFor: packageListPresenter.
@@ -2197,8 +2194,14 @@ updateSUnitTab
 updateSUnitTab: service
 	service ifNil: [sunitPresenter testClassService: nil] ifNotNil: [self setTestClass: service]!
 
+updateSystemTab
+	| projectTabLabel |
+	projectTabLabel := self projectTabLabel.
+	self topShell cardsPresenter view currentCard arrangement: projectTabLabel.
+	self parentPresenter view updateTabs!
+
 updateTabLabel
-	self updateProjectTab!
+	self updateSystemTab!
 
 writeProject
 	| projectServices ws |
@@ -2396,6 +2399,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectMethodsFrom:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectMethodSourceTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectPackage:!private!selection! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #selectProjectTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectSourceTabNamed:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectSUnitTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectVariableTab!public!selection! !
@@ -2436,11 +2440,11 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProject!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProjectInfo!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProjects!event handlers!menu handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateProjectTab!event handlers support!private!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSelectionsForUpdate:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSingleMethodSource!event handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSUnitTab!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSUnitTab:!event handlers!public!updating! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #updateSystemTab!event handlers support!private!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateTabLabel!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #writeProject!project menu handlers!public! !
 
