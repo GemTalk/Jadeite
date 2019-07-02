@@ -186,6 +186,7 @@ package methodNames
 	add: #JadePresenter -> #executeSelectionOrLine:;
 	add: #JadePresenter -> #flipAutoCommit;
 	add: #JadePresenter -> #issueCommand:;
+	add: #JadePresenter -> #openBrowserInNewTab:on:;
 	add: #JadePresenter -> #openDictionaryBrowserOn:selector:;
 	add: #JadePresenter -> #openProjectBrowserOn:selector:;
 	add: #JadePresenter -> #refreshGlobalSelections;
@@ -379,6 +380,7 @@ package methodNames
 	add: 'JadePresenter class' -> #browseLiteralReferences:session:;
 	add: 'JadePresenter class' -> #browseMethodsContaining:;
 	add: 'JadePresenter class' -> #browseMethodsContaining:session:;
+	add: 'JadePresenter class' -> #browseReferencesTo:session:;
 	add: 'JadePresenter class' -> #browseSendersIn:;
 	add: 'JadePresenter class' -> #browseSendersOf:session:;
 	add: 'JadePresenter class' -> #convertToPattern:;
@@ -1861,19 +1863,9 @@ browseMethodsContaining
 	^self class browseMethodsContaining: self gciSession!
 
 browseSelectedClassIn: documentPresenter newTab: openNewTab
-	| shell classService |
+	| classService |
 	classService := self serviceFromSelection: documentPresenter.
-	^classService projectName = RowanService notRowanizedPackageName
-		ifTrue: 
-			[Cursor wait showWhile: 
-					[shell := RowanSystemBrowser showOnSession: gciSession.
-					shell selectClass: classService name asString selector: String new.
-					shell currentCard]]
-		ifFalse: 
-			[shell := openNewTab
-						ifTrue: [self addSystemBrowser]
-						ifFalse: [JadeiteBrowser showOnSession: gciSession].
-			shell currentCard updateAfterFindClass: classService]!
+	^self openBrowserInNewTab: openNewTab on: classService!
 
 browseSendersOf
 	
@@ -1981,6 +1973,13 @@ issueCommand: services
 	^self class issueCommand: services session: self gciSession.
 	!
 
+openBrowserInNewTab: openNewTab on: classService
+	| shell |
+	shell := openNewTab
+				ifTrue: [self addSystemBrowser]
+				ifFalse: [JadeiteBrowser showOnSession: gciSession].
+	^shell currentCard updateAfterFindClass: classService!
+
 openDictionaryBrowserOn: classService selector: selector
 	| shell |
 	shell := RowanSystemBrowser showOnSession: gciSession.
@@ -2077,6 +2076,7 @@ updateServices: services
 !JadePresenter categoriesFor: #executeSelectionOrLine:!menu handlers!private! !
 !JadePresenter categoriesFor: #flipAutoCommit!menu handlers!public! !
 !JadePresenter categoriesFor: #issueCommand:!browsing support!public! !
+!JadePresenter categoriesFor: #openBrowserInNewTab:on:!Jade!public! !
 !JadePresenter categoriesFor: #openDictionaryBrowserOn:selector:!browsing!public! !
 !JadePresenter categoriesFor: #openProjectBrowserOn:selector:!browsing!public! !
 !JadePresenter categoriesFor: #refreshGlobalSelections!menu handlers!public! !
@@ -2204,6 +2204,19 @@ browseMethodsContaining: string session: session
 	shell updateCaptionFromSearchString: 'Methods Containing ' , string asString printString.
 	^shell!
 
+browseReferencesTo: string session: session
+	| queryService shell |
+	queryService := RowanQueryService new
+				command: #browseReferencesTo:;
+				commandArgs: (Array with: string asSymbol).
+	self issueCommand: (Array with: queryService) session: session.
+	shell := self
+				openMethodListOn: queryService
+				selecting: string
+				session: session.
+	shell updateCaptionFromSearchString: 'References to ' , string.
+	^shell!
+
 browseSendersIn: session
 	^self
 		promptForMatchingSymbolsIn: session
@@ -2314,6 +2327,7 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #browseLiteralReferences:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseMethodsContaining:!browsing!public! !
 !JadePresenter class categoriesFor: #browseMethodsContaining:session:!browsing!public! !
+!JadePresenter class categoriesFor: #browseReferencesTo:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSendersIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSendersOf:session:!browsing!public! !
 !JadePresenter class categoriesFor: #convertToPattern:!browsing support!private! !

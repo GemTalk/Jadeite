@@ -24,14 +24,36 @@ basicProjectTabLabel
 	dictionaryPresenter selections size > 1 ifTrue: [^label].
 	^dictionaryPresenter selection name!
 
+basicUnloadProjects: projectNames
+	super basicUnloadProjects: projectNames.
+	dictionaryPresenter model: ListModel new!
+
+browseGlobalClass
+	| selection |
+	selection := globalsTab selectionIfNone: [^self].
+	^self openBrowserInNewTab: false on: (RowanClassService new name: (selection at: 2))!
+
+browseGlobalReferences
+	| selection string rs |
+	selection := globalsTab selectionIfNone: [^self].
+	rs := ReadStream on: (selection at: 1).
+	rs upTo: $..
+	string := rs upToEnd.
+	^JadePresenter browseReferencesTo: string session: gciSession!
+
 buildGlobalsTab
 	| globalsTabView |
 	globalsTab
 		ifNil: 
 			[globalsTab := ListPresenter new.
+			globalsTab
+				when: #actionPerformed
+				send: #inspectGlobal
+				to: self.
 			globalsTab parentPresenter: self textAreaTabs.
 			globalsTabView := globalsTab createView: 'Editable list view'.
 			globalsTabView hasColumnHeaders: false.
+			globalsTabView contextMenu: self globalsMenu.
 			3 timesRepeat: [globalsTabView addColumn].
 			1 to: 4
 				do: 
@@ -40,7 +62,8 @@ buildGlobalsTab
 						isEditable: false;
 						isAutoResize: true;
 						getImageBlock: IconicListAbstract;
-						getContentsBlock: [:each | each at: index]]].
+						getContentsBlock: [:each | each at: index]]]
+		ifNotNil: [globalsTabView := globalsPresenter view].
 	globalsTabView
 		arrangement: 'Globals';
 		name: 'globalsTab'.
@@ -87,9 +110,9 @@ createListViewFor: newCard
 	| listView |
 	listView := newCard createView: 'Editable list view'.
 	listView
+		isMultiSelect: true;
 		hasColumnHeaders: false;
-		hasGridLines: false;
-		isMultiSelect: true.
+		hasGridLines: false.
 	(listView allColumns at: 1)
 		isEditable: false;
 		getImageBlock: IconicListAbstract;
@@ -104,8 +127,26 @@ createSchematicWiring
 dictionaryPresenter
 	^dictionaryPresenter!
 
+globalsMenu
+	^Menu fromStrings: self globalsMenuStrings!
+
+globalsMenuStrings
+	self rowanFixMe.	"this really is a cumbersome way to build a menu."
+	0 == 1
+		ifTrue: 
+			[self
+				inspectGlobal;
+				browseGlobalClass;
+				browseGlobalReferences].
+	^#('Projects' 'Inspect//inspectGlobal' 'Browse Class//browseGlobalClass' 'Browse References//browseGlobalReferences')!
+
 globalsTab
 	^globalsTab!
+
+inspectGlobal
+	| selection |
+	selection := globalsTab selectionIfNone: [^self].
+	^JadeInspector showOn: (OopType32 fromInteger: (selection at: 3)) session: gciSession!
 
 isNoneProjectSelected
 	^projectListPresenter selections includes: RowanProjectService noneProject!
@@ -122,6 +163,15 @@ packageDictionaryCards
 	"for testing"
 
 	^packageDictionaryCards!
+
+queryCommand: aCommandQuery
+	| command |
+	command := aCommandQuery command.
+	(#(#inspectGlobal #browseGlobalClass #browseGlobalReferences) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: globalsTab selections isEmpty not.
+			^true]
+		ifFalse: [^super queryCommand: aCommandQuery]!
 
 refreshClass
 	| selection presenter |
@@ -310,17 +360,24 @@ updateProjectTabFor: services
 	projectInfoTab list: array contents! !
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #basicProjectTabLabel!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #basicUnloadProjects:!menu handlers support!private! !
+!JadeiteBrowserPresenter categoriesFor: #browseGlobalClass!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #browseGlobalReferences!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #buildGlobalsTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #buildProjectTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
 !JadeiteBrowserPresenter categoriesFor: #createListViewFor:!private! !
 !JadeiteBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryPresenter!accessing!private! !
+!JadeiteBrowserPresenter categoriesFor: #globalsMenu!menus!public! !
+!JadeiteBrowserPresenter categoriesFor: #globalsMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #globalsTab!accessing!private! !
+!JadeiteBrowserPresenter categoriesFor: #inspectGlobal!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #isNoneProjectSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #isRowanProjectSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #packageDictionaryCards!accessing!private! !
+!JadeiteBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!public! !
 !JadeiteBrowserPresenter categoriesFor: #refreshClass!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteBrowserPresenter categoriesFor: #removeAppropriateTab!private!tabs! !

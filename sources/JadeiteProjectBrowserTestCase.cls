@@ -73,6 +73,12 @@ cleanupTextPaneForClose: ws
 			[ws codePane documentPresenter view isModified: false.
 			ws codePane documentPresenter value: nil]!
 
+closeExistingInspectors
+	"not so elegant way of making sure the test gets the right inspector. Close others first"
+
+	JadeNavigationInspector allInstances do: [:oldInspector | oldInspector view close].
+	JadeInspector allInstances do: [:oldInspector | oldInspector view close]!
+
 currentTabView
 	^self projectsPresenter topShell cardsPresenter view cardLayout currentCard!
 
@@ -271,6 +277,7 @@ setUp
 	self selectClassListTab.
 	self selectInstanceTab.
 	self projectsPresenter selectCategoryTab.
+	self projectListPresenter resetSelection. 
 !
 
 tearDown
@@ -2546,6 +2553,89 @@ test_gitBranchesDoesNotShowHead
 	self assert: branches isKindOf: Collection.
 	self assert: branches first equals: '*master'!
 
+test_globalsBrowseClassMenuItem
+	| browseClassItem selection |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	browseClassItem := self projectsPresenter globalsTab view contextMenu items
+				detect: [:item | item text = 'Browse Class'].
+	self assert: browseClassItem command equals: #browseGlobalClass.
+	session executeString: 'UserGlobals at: #test_globalsBrowseClassMenuItem put: ''fnoodle'''.
+	
+	[self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	selection := self projectsPresenter globalsTab list
+				detect: [:array | (array at: 1) equals: 'UserGlobals.test_globalsBrowseClassMenuItem'].
+	self projectsPresenter globalsTab selection: selection.
+	secondBrowser := self projectsPresenter browseGlobalClass.
+	self assert: ('String*' match: secondBrowser classListPresenter selection name)]
+			ensure: 
+				[session executeString: 'UserGlobals removeKey: #test_globalsBrowseClassMenuItem'.
+				secondBrowser topShell destroy]!
+
+test_globalsBrowseReferencesMenuItem
+	| browseRefererencesItem selection |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	browseRefererencesItem := self projectsPresenter globalsTab view contextMenu items
+				detect: [:item | item text = 'Browse References'].
+	self assert: browseRefererencesItem command equals: #browseGlobalReferences.
+	
+	[self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	selection := self projectsPresenter globalsTab list
+				detect: [:array | (array at: 1) equals: 'UserGlobals.UserGlobals'].
+	self projectsPresenter globalsTab selection: selection.
+	methodListBrowser := self projectsPresenter browseGlobalReferences.
+	self assert: ('*UserGlobals*'
+				match: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter value).
+	self
+		assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list notEmpty]
+			ensure: [methodListBrowser topShell destroy]!
+
+test_globalsDoubleClick
+	| selection inspector |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self closeExistingInspectors.
+	self selectNoneProject.
+	session executeString: 'UserGlobals at: #test_globalsDoubleClick put: false'.
+	
+	[self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	selection := self projectsPresenter globalsTab list
+				detect: [:array | (array at: 1) equals: 'UserGlobals.test_globalsDoubleClick'].
+	self projectsPresenter globalsTab selection: selection.
+	self projectsPresenter globalsTab onActionPerformed. "double click"
+	inspector := JadeNavigationInspector allInstances first.
+	self assert: inspector model value equals: 12.	"false"
+	self assert: inspector documentPresenter value equals: 'false'.
+	inspector instVarListPresenter selectionByIndex: 2.
+	self assert: inspector documentPresenter value equals: '12'.
+	self assert: inspector instVarListPresenter selection key equals: '-.asOop']
+			ensure: 
+				[session executeString: 'UserGlobals removeKey: #test_globalsDoubleClick'.
+				inspector view close]!
+
+test_globalsInspectMenuItem
+	| inspectItem selection inspector |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	inspectItem := self projectsPresenter globalsTab view contextMenu items
+				detect: [:item | item text = 'Inspect'].
+	self assert: inspectItem command equals: #inspectGlobal.
+	session executeString: 'UserGlobals at: #test_globalsContextMenu put: true'.
+	
+	[self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	selection := self projectsPresenter globalsTab list
+				detect: [:array | (array at: 1) equals: 'UserGlobals.test_globalsContextMenu'].
+	self projectsPresenter globalsTab selection: selection.
+	inspector := self projectsPresenter inspectGlobal.
+	self assert: inspector model value equals: 268.	"true"
+	self assert: inspector documentPresenter value equals: 'true'.
+	inspector instVarListPresenter selectionByIndex: 2.
+	self assert: inspector documentPresenter value equals: '268'.
+	self assert: inspector instVarListPresenter selection key equals: '-.asOop']
+			ensure: 
+				[session executeString: 'UserGlobals removeKey: #test_globalsContextMenu'.
+				inspector view close]!
+
 test_globalsTabHeaders
 	| globalsView header |
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
@@ -4177,18 +4267,18 @@ test_tabNames
 
 test_tabNames_projectsBrowser
 	| textTabs |
-	self rowanFixMe. "fix the oddity that one tab is created differently" 
+	self rowanFixMe.	"fix the oddity that one tab is created differently"
 	self testsIssue: #issue186 withTitle: 'icon in console menu'.
 	self selectRowanSample1Class.
 	self saveHooMethod.
 	textTabs := self projectsPresenter textTabs.
 	self assert: textTabs size equals: 6.
-	self assert: (textTabs at: 1) text equals: 'Project'.
-	self assert: (textTabs at: 2) text equals: 'Class Definition'.
-	self assert: (textTabs at: 3) text equals: 'Class Documentation'.
-	self assert: (textTabs at: 4) text equals: 'Method Source'.
-	self assert: (textTabs at: 5) text equals: 'SUnit'.
-	self assert: (textTabs at: 6)  equals: 'Comparison' "for some as yet unknown reason, this is created differently"!
+	self assert: (textTabs at: 1) text equals: 'Class Definition'.
+	self assert: (textTabs at: 2) text equals: 'Class Documentation'.
+	self assert: (textTabs at: 3) text equals: 'Method Source'.
+	self assert: (textTabs at: 4) text equals: 'SUnit'.
+	self assert: (textTabs at: 5) equals: 'Comparison'.	"for some as yet unknown reason, this is created differently"
+	self assert: (textTabs at: 6) equals: 'Project'!
 
 test_tabNames_projectsBrowserNotLost
 	"why we have to put the text in the arrangement field is beyond me"
@@ -4219,6 +4309,27 @@ test_tabNames_projectsBrowserNotLost
 	self assert: (projectTabs at: index) arrangement equals: index printString , ' Rowan-Services-Core'.	"no change. this was a bug"
 	index := 1.
 	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1-Core'	"not affected by other tab"!
+
+test_textTabsChange
+	| tabNames |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectRowanSample1Class.
+	tabNames := (self projectsPresenter textAreaTabs cards
+				collect: [:card | card arrangement displayString]) asArray.
+	self assert: tabNames
+		equals: #('Class Definition' 'Class Documentation' 'Method Source' 'SUnit' 'Comparison' 'Project').
+	self selectNoneProject.
+	tabNames := (self projectsPresenter textAreaTabs cards
+				collect: [:card | card arrangement displayString]) asArray.
+	self assert: tabNames
+		equals: #('Class Definition' 'Class Documentation' 'Method Source' 'SUnit' 'Comparison' 'Globals')!
+
+test_textTabSelectedWithProjectChange
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self assert: self projectsPresenter textAreaTabs currentCard displayString equals: 'projectInfoTab'.
+	self selectNoneProject.
+	self assert: self projectsPresenter textAreaTabs currentCard displayString equals: 'globalsTab'!
 
 test_twoBrowsersAddedClassAppears
 	"if the same package is selected, a new class appears but the existing
@@ -4911,6 +5022,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #assertLinearAncestry:in:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #cleanupExistingWindows!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #cleanupTextPaneForClose:!public!support! !
+!JadeiteProjectBrowserTestCase categoriesFor: #closeExistingInspectors!private!support!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #currentTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #dirtyProjectForChangeBrowser!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
@@ -5038,6 +5150,10 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodSUnitBrowser!public!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_firstClickDictionaries!public!test issue 217! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gitBranchesDoesNotShowHead!public!test projects!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_globalsBrowseClassMenuItem!public!test class list!test find!test issue 217!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_globalsBrowseReferencesMenuItem!public!test class list!test find!test issue 217!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_globalsDoubleClick!public!test class list!test find!test issue 217!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_globalsInspectMenuItem!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_globalsTabHeaders!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_globalsTabValues!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package!tests! !
@@ -5136,6 +5252,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_textTabsChange!public!test class list!test find!test issue 217!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_textTabSelectedWithProjectChange!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassAppears!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassAppearsInHierarchy1!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassAppearsInHierarchy2!public!test two browsers!tests! !
