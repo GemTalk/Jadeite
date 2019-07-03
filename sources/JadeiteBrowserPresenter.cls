@@ -24,6 +24,20 @@ basicProjectTabLabel
 	dictionaryPresenter selections size > 1 ifTrue: [^label].
 	^dictionaryPresenter selection name!
 
+basicRemoveGlobal: qualifiedString
+	| symbol rs dictionaryService globalDictionaryName |
+	rs := ReadStream on: qualifiedString.
+	globalDictionaryName := rs upTo: $..
+	dictionaryService := dictionaryPresenter list
+				detect: [:service | service name = globalDictionaryName].
+	symbol := rs upToEnd asSymbol.
+	dictionaryService
+		command: #removeGlobalNamed:;
+		commandArgs: (Array with: symbol).
+	self issueCommand: (Array with: dictionaryService).
+	self removeGlobalsTab.
+	self buildGlobalsTab!
+
 basicUnloadProjects: projectNames
 	super basicUnloadProjects: projectNames.
 	dictionaryPresenter model: ListModel new!
@@ -34,11 +48,9 @@ browseGlobalClass
 	^self openBrowserInNewTab: false on: (RowanClassService new name: (selection at: 2))!
 
 browseGlobalReferences
-	| selection string rs |
+	| selection string |
 	selection := globalsTab selectionIfNone: [^self].
-	rs := ReadStream on: (selection at: 1).
-	rs upTo: $..
-	string := rs upToEnd.
+	string := self selectedGlobalName: selection.
 	^JadePresenter browseReferencesTo: string session: gciSession!
 
 buildGlobalsTab
@@ -137,8 +149,9 @@ globalsMenuStrings
 			[self
 				inspectGlobal;
 				browseGlobalClass;
-				browseGlobalReferences].
-	^#('Projects' 'Inspect//inspectGlobal' 'Browse Class//browseGlobalClass' 'Browse References//browseGlobalReferences')!
+				browseGlobalReferences;
+				removeGlobal].
+	^#('Projects' 'Inspect//inspectGlobal' 'Browse Class//browseGlobalClass' 'Browse References//browseGlobalReferences' 'Remove Global//removeGlobal')!
 
 globalsTab
 	^globalsTab!
@@ -200,17 +213,33 @@ registerPresentersForUpdates
 	BrowserUpdate current register: dictionaryPresenter selector: #dictionaryListUpdate:!
 
 removeAppropriateTab
-	| globalsTabView projectInfoView |
-	self isNoneProjectSelected
-		ifTrue: 
-			[projectInfoView := self view viewNamed: 'projectInfoTab' ifNone: [nil].
-			projectInfoView ifNotNil: [self textAreaTabs removeSubView: projectInfoView].
-			projectInfoTab := nil]
-		ifFalse: 
-			[globalsTabView := self view viewNamed: 'globalsTab' ifNone: [nil].
-			globalsTabView ifNotNil: [self textAreaTabs removeSubView: globalsTabView].
-			globalsTab := nil].
-	^projectInfoView!
+	self isNoneProjectSelected ifTrue: [self removeProjectTab] ifFalse: [self removeGlobalsTab]!
+
+removeGlobal
+	| selection string |
+	selection := globalsTab selectionIfNone: [^self].
+	string := self selectedGlobalName: selection.
+	MessageBox confirm: 'Really remove #' , string , '?'.
+	^self basicRemoveGlobal: (selection at: 1)!
+
+removeGlobalsTab
+	| globalsTabView |
+	globalsTabView := self view viewNamed: 'globalsTab' ifNone: [nil].
+	globalsTabView ifNotNil: [self textAreaTabs removeSubView: globalsTabView].
+	globalsTab := nil!
+
+removeProjectTab
+	| projectInfoView |
+	projectInfoView := self view viewNamed: 'projectInfoTab' ifNone: [nil].
+	projectInfoView ifNotNil: [self textAreaTabs removeSubView: projectInfoView].
+	projectInfoTab := nil!
+
+selectedGlobalName: selection
+	| string rs |
+	rs := ReadStream on: (selection at: 1).
+	rs upTo: $..
+	string := rs upToEnd.
+	^string!
 
 showDictionaryList
 	| newCard |
@@ -360,6 +389,7 @@ updateProjectTabFor: services
 	projectInfoTab list: array contents! !
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #basicProjectTabLabel!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #basicRemoveGlobal:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicUnloadProjects:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #browseGlobalClass!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #browseGlobalReferences!menu handlers!public! !
@@ -381,6 +411,10 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #refreshClass!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteBrowserPresenter categoriesFor: #removeAppropriateTab!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #removeGlobal!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #removeGlobalsTab!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #removeProjectTab!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #selectedGlobalName:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #showDictionaryList!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #showPackageList!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateAfterFindClass:!menu handlers!public!updating! !

@@ -3702,6 +3702,23 @@ test_removeClassFromList
 				ifNone: [])]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+test_removeGlobal
+	| removeGlobalItem selection |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	removeGlobalItem := self projectsPresenter globalsTab view contextMenu items
+				detect: [:item | item text = 'Remove Global'].
+	self assert: removeGlobalItem command equals: #removeGlobal.
+	session executeString: 'UserGlobals at: #test_removeGlobal put: ''foo'''.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	selection := self projectsPresenter globalsTab list
+				detect: [:array | (array at: 1) equals: 'UserGlobals.test_removeGlobal'].
+	self projectsPresenter globalsTab selection: selection.
+	self projectsPresenter basicRemoveGlobal: selection first.
+	self assertIsNil: (self projectsPresenter globalsTab list
+				detect: [:array | (array at: 1) equals: 'UserGlobals.test_removeGlobal']
+				ifNone: [])!
+
 test_removeInstVarVariablesStaySorted
 	self selectRowanSample1Test.
 	self projectsPresenter selectVariableTab.
@@ -5022,7 +5039,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #assertLinearAncestry:in:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #cleanupExistingWindows!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #cleanupTextPaneForClose:!public!support! !
-!JadeiteProjectBrowserTestCase categoriesFor: #closeExistingInspectors!private!support!test class list!test find!test issue 217!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #closeExistingInspectors!private!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #currentTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #dirtyProjectForChangeBrowser!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
@@ -5215,6 +5232,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeAbortedClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassFromHierarchy!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassFromList!public!test class hierarchy!test class list!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_removeGlobal!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeInstVarVariablesStaySorted!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameCategory!public!test categories!tests! !
