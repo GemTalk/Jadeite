@@ -51,7 +51,7 @@ browseGlobalReferences
 	| selection string |
 	selection := globalsTab selectionIfNone: [^self].
 	string := self selectedGlobalName: selection.
-	^JadePresenter browseReferencesTo: string session: gciSession!
+	^JadePresenter browseSymbolReferencesTo: '#' , string session: gciSession!
 
 buildGlobalsTab
 	| globalsTabView |

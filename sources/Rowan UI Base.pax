@@ -380,9 +380,9 @@ package methodNames
 	add: 'JadePresenter class' -> #browseLiteralReferences:session:;
 	add: 'JadePresenter class' -> #browseMethodsContaining:;
 	add: 'JadePresenter class' -> #browseMethodsContaining:session:;
-	add: 'JadePresenter class' -> #browseReferencesTo:session:;
 	add: 'JadePresenter class' -> #browseSendersIn:;
 	add: 'JadePresenter class' -> #browseSendersOf:session:;
+	add: 'JadePresenter class' -> #browseSymbolReferencesTo:session:;
 	add: 'JadePresenter class' -> #convertToPattern:;
 	add: 'JadePresenter class' -> #findMethodIn:class:presenter:;
 	add: 'JadePresenter class' -> #issueCommand:session:;
@@ -2204,19 +2204,6 @@ browseMethodsContaining: string session: session
 	shell updateCaptionFromSearchString: 'Methods Containing ' , string asString printString.
 	^shell!
 
-browseReferencesTo: string session: session
-	| queryService shell |
-	queryService := RowanQueryService new
-				command: #browseReferencesTo:;
-				commandArgs: (Array with: string asSymbol).
-	self issueCommand: (Array with: queryService) session: session.
-	shell := self
-				openMethodListOn: queryService
-				selecting: string
-				session: session.
-	shell updateCaptionFromSearchString: 'References to ' , string.
-	^shell!
-
 browseSendersIn: session
 	^self
 		promptForMatchingSymbolsIn: session
@@ -2232,6 +2219,23 @@ browseSendersOf: string session: session
 				selecting: string
 				session: session.
 	shell updateCaptionFromSearchString: 'Senders of ' , string asString printString.
+	^shell!
+
+browseSymbolReferencesTo: string session: session
+	"do a literal symbol search which will compile the string,
+	then strip off the preceding octothorpe before selection"
+
+	| queryService shell basicString |
+	queryService := RowanQueryService new
+				command: #literalReferences:;
+				commandArgs: (Array with: string asSymbol).
+	self issueCommand: (Array with: queryService) session: session.
+	basicString := string copyWithout: $#.
+	shell := self
+				openMethodListOn: queryService
+				selecting: basicString
+				session: session.
+	shell updateCaptionFromSearchString: 'References to ' , basicString.
 	^shell!
 
 convertToPattern: wildcardString
@@ -2327,9 +2331,9 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #browseLiteralReferences:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseMethodsContaining:!browsing!public! !
 !JadePresenter class categoriesFor: #browseMethodsContaining:session:!browsing!public! !
-!JadePresenter class categoriesFor: #browseReferencesTo:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSendersIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSendersOf:session:!browsing!public! !
+!JadePresenter class categoriesFor: #browseSymbolReferencesTo:session:!browsing!public! !
 !JadePresenter class categoriesFor: #convertToPattern:!browsing support!private! !
 !JadePresenter class categoriesFor: #findMethodIn:class:presenter:!browsing!public! !
 !JadePresenter class categoriesFor: #issueCommand:session:!public! !
