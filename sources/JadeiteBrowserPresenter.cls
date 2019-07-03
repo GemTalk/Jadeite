@@ -10,9 +10,29 @@ JadeiteBrowserPresenter comment: ''!
 !JadeiteBrowserPresenter categoriesForClass!Unclassified! !
 !JadeiteBrowserPresenter methodsFor!
 
+addDictionary
+	| newDictionaryName |
+	(newDictionaryName := Prompter prompt: 'Enter new dictionary name:') isNil ifTrue: [^self].
+	(dictionaryPresenter list detect: [:service | service name = newDictionaryName] ifNone: [])
+		ifNotNil: [^MessageBox notify: 'Dictionary ' , newDictionaryName , ' already exists'].
+	^self basicAddDictionaryNamed: newDictionaryName!
+
 addNoneProject
 	(projectListPresenter list includes: RowanProjectService noneProject)
 		ifFalse: [projectListPresenter model add: RowanProjectService noneProject]!
+
+basicAddDictionaryNamed: newDictionaryName
+	| insertionIndex dictionaryService |
+	insertionIndex := dictionaryPresenter selectionByIndex = 0
+				ifTrue: [dictionaryPresenter list size + 1]
+				ifFalse: [dictionaryPresenter selectionByIndex + 1].
+	dictionaryService := RowanDictionaryService new name: newDictionaryName.
+	dictionaryService
+		command: #insertAt:;
+		commandArgs: (Array with: insertionIndex).
+	self issueCommand: (Array with: dictionaryService).
+	dictionaryPresenter
+		selection: (dictionaryPresenter list detect: [:newService | newService name = newDictionaryName])!
 
 basicProjectTabLabel
 	| label |
@@ -136,6 +156,18 @@ createSchematicWiring
 	super createSchematicWiring.
 	dictionaryPresenter when: #'selectionChanged' send: #'updateDictionary' to: self!
 
+dictionaryMenu
+	^Menu fromStrings: self dictionaryMenuStrings!
+
+dictionaryMenuStrings
+	self rowanFixMe.	"this really is a cumbersome way to build a menu."
+	0 == 1
+		ifTrue: 
+			[self
+				addDictionary;
+				removeDictionary].
+	^#('Dictionaries' 'Insert Dictionary//addDictionary' 'Remove Dictionary//removeDictionary')!
+
 dictionaryPresenter
 	^dictionaryPresenter!
 
@@ -215,6 +247,8 @@ registerPresentersForUpdates
 removeAppropriateTab
 	self isNoneProjectSelected ifTrue: [self removeProjectTab] ifFalse: [self removeGlobalsTab]!
 
+removeDictionary!
+
 removeGlobal
 	| selection string |
 	selection := globalsTab selectionIfNone: [^self].
@@ -252,6 +286,7 @@ showDictionaryList
 			[newCard := packageDictionaryCards add: dictionaryPresenter.
 			self createListViewFor: newCard.
 			packageDictionaryCards view cards first arrangement: 'Dictionaries'.
+			dictionaryPresenter view contextMenu: self dictionaryMenu.
 			classListPresenter list: ListModel new].
 	self updateDictionaries!
 
@@ -387,7 +422,9 @@ updateProjectTabFor: services
 			array nextPut: (Array with: service with: 'projectUrl').
 			service == services last ifFalse: [array nextPut: (Array with: RowanProjectService new with: nil)]].
 	projectInfoTab list: array contents! !
+!JadeiteBrowserPresenter categoriesFor: #addDictionary!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #basicAddDictionaryNamed:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicProjectTabLabel!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #basicRemoveGlobal:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicUnloadProjects:!menu handlers support!private! !
@@ -398,6 +435,8 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
 !JadeiteBrowserPresenter categoriesFor: #createListViewFor:!private! !
 !JadeiteBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
+!JadeiteBrowserPresenter categoriesFor: #dictionaryMenu!menus!public! !
+!JadeiteBrowserPresenter categoriesFor: #dictionaryMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryPresenter!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #globalsMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #globalsMenuStrings!menus!public! !
@@ -411,6 +450,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #refreshClass!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteBrowserPresenter categoriesFor: #removeAppropriateTab!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #removeDictionary!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #removeGlobal!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #removeGlobalsTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #removeProjectTab!private!tabs! !

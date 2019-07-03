@@ -32,11 +32,20 @@ basicPrepareForReplication
 	!
 
 dictionaryListUpdate: presenter
-	| removals |
-	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
+	"no sort. dictionaries maintain their server order"
+	| removals replicate |
+	presenter list isEmpty ifTrue: [presenter list: ListModel new].
 	removals := presenter list reject: [:dictionaryService | dictionaries includes: dictionaryService].
 	presenter model removeAll: removals.
-	self updateList: presenter whilePreservingSelections: dictionaries!
+	presenter list copy do: 
+			[:service |
+			replicate := dictionaries detect: [:update | update = service] ifNone: [nil].
+			replicate notNil ifTrue: [service replicateFrom: replicate]].
+	1 to: dictionaries size
+		do: 
+			[:index |
+			(dictionaries at: index) = (presenter model at: index ifAbsent: [RowanDictionaryService new])
+				ifFalse: [presenter model add: (dictionaries at: index) afterIndex: index - 1]]!
 
 excludedInstVars
 	^super excludedInstVars , #('hierarchyServices')!

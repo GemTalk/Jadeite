@@ -481,6 +481,22 @@ test_addAccessorsVerifySource
 	var1 := object']
 			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
+test_addDictionary
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	self projectsPresenter basicAddDictionaryNamed: 'Test_addDictionary'.
+	self assert: (self dictionaryPresenter list at: 2) name equals: 'Test_addDictionary'.
+	self assert: self dictionaryPresenter selection name equals: 'Test_addDictionary'.
+	self abortTransaction.
+	
+	[self
+		assertIsNil: (self dictionaryPresenter detect: [:dictionaryService | dictionaryService name = 'Test_addDictionary']
+				ifNone: [])]
+			ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
+
 test_addDuplicatePackage
 	| projectService addPackageResult packageName |
 	self testsIssue: #issue266
@@ -2553,6 +2569,23 @@ test_gitBranchesDoesNotShowHead
 	self assert: branches isKindOf: Collection.
 	self assert: branches first equals: '*master'!
 
+test_globalRemove
+	| removeGlobalItem selection |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	removeGlobalItem := self projectsPresenter globalsTab view contextMenu items
+				detect: [:item | item text = 'Remove Global'].
+	self assert: removeGlobalItem command equals: #removeGlobal.
+	session executeString: 'UserGlobals at: #test_removeGlobal put: ''foo'''.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	selection := self projectsPresenter globalsTab list
+				detect: [:array | (array at: 1) equals: 'UserGlobals.test_removeGlobal'].
+	self projectsPresenter globalsTab selection: selection.
+	self projectsPresenter basicRemoveGlobal: selection first.
+	self assertIsNil: (self projectsPresenter globalsTab list
+				detect: [:array | (array at: 1) equals: 'UserGlobals.test_removeGlobal']
+				ifNone: [])!
+
 test_globalsBrowseClassMenuItem
 	| browseClassItem selection |
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
@@ -3701,23 +3734,6 @@ test_removeClassFromList
 				detect: [:classService | classService name = 'RowanSample1Test']
 				ifNone: [])]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
-
-test_removeGlobal
-	| removeGlobalItem selection |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectNoneProject.
-	removeGlobalItem := self projectsPresenter globalsTab view contextMenu items
-				detect: [:item | item text = 'Remove Global'].
-	self assert: removeGlobalItem command equals: #removeGlobal.
-	session executeString: 'UserGlobals at: #test_removeGlobal put: ''foo'''.
-	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
-	selection := self projectsPresenter globalsTab list
-				detect: [:array | (array at: 1) equals: 'UserGlobals.test_removeGlobal'].
-	self projectsPresenter globalsTab selection: selection.
-	self projectsPresenter basicRemoveGlobal: selection first.
-	self assertIsNil: (self projectsPresenter globalsTab list
-				detect: [:array | (array at: 1) equals: 'UserGlobals.test_removeGlobal']
-				ifNone: [])!
 
 test_removeInstVarVariablesStaySorted
 	self selectRowanSample1Test.
@@ -5079,6 +5095,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsHierarchyTabVerifySource!public!test class hierarchy!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsVariablesStaySelected!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsVerifySource!public!test variable tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_addDictionary!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addDuplicatePackage!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addInstVarVariablesStaySorted!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addInstVarWithVariablesTabOpen!public!test variable tab!tests! !
@@ -5167,6 +5184,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodSUnitBrowser!public!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_firstClickDictionaries!public!test issue 217! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gitBranchesDoesNotShowHead!public!test projects!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_globalRemove!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_globalsBrowseClassMenuItem!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_globalsBrowseReferencesMenuItem!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_globalsDoubleClick!public!test class list!test find!test issue 217!tests! !
@@ -5232,7 +5250,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeAbortedClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassFromHierarchy!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassFromList!public!test class hierarchy!test class list!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_removeGlobal!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeInstVarVariablesStaySorted!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameCategory!public!test categories!tests! !
