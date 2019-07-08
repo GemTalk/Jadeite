@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
-JadeiteAbstractTestCase subclass: #JadeiteProjectBrowserTestCase
-	instanceVariableNames: 'transcriptWritesWereEnabled methodListBrowser secondBrowser secondPresenter'
+JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserTestCase
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -73,12 +73,6 @@ cleanupTextPaneForClose: ws
 			[ws codePane documentPresenter view isModified: false.
 			ws codePane documentPresenter value: nil]!
 
-closeExistingInspectors
-	"not so elegant way of making sure the test gets the right inspector. Close others first"
-
-	JadeNavigationInspector allInstances do: [:oldInspector | oldInspector view close].
-	JadeInspector allInstances do: [:oldInspector | oldInspector view close]!
-
 currentTabView
 	^self projectsPresenter topShell cardsPresenter view cardLayout currentCard!
 
@@ -98,14 +92,6 @@ dirtyProjectForChangeBrowser
 	self selectRowanSample1Test.
 	self selectMethodNamed: #test1.
 	self projectsPresenter basicRemoveMethods!
-
-disableTranscriptWrites
-	(transcriptWritesWereEnabled := transcript isTranscriptInstalled)
-		ifTrue: [transcript flipTranscript]	"turn off gemstone transcript writes for performance"!
-
-ensureOneTab
-	projectsBrowser ifNil: [^self].
-	[projectsBrowser cardsPresenter view cards size = 1] whileFalse: [projectsBrowser closeCard]!
 
 executeStringInOtherSession: string
 	| executionString |
@@ -186,12 +172,6 @@ modifySampleMethodFoo
 nextTabView
 	self projectsPresenter topShell cardsPresenter view cardLayout cycleNextCard!
 
-openSecondBrowser
-	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
-	secondBrowser caption: 'second browser'.
-	secondPresenter := secondBrowser currentCard.
-	^secondBrowser!
-
 packageNamed: aString
 	^self packageListPresenter list
 		detect: [:projectService | projectService name = aString]
@@ -248,12 +228,6 @@ saveMethodWithUniqueString
 saveTestClass
 	self saveTestClassWithInstVars: Array new package: 'Rowan-Services-Tests'!
 
-selectClassListTab
-	self projectsPresenter selectClassListTab.!
-
-selectNoneProject
-	self selectServiceNamed: RowanProjectService noneProject name in: self projectListPresenter!
-
 selectSUnitTab
 	self projectsPresenter sunitPresenter ensureVisible!
 
@@ -268,30 +242,6 @@ selectVariableListEntryForcingEvent: variable
 	self variableListPresenter onSelectionChanging: event.
 	event value
 		ifTrue: [self variableListPresenter selection: (self variableListPresenter list at: index)]!
-
-setUp
-	super setUp.
-	self disableTranscriptWrites.	"turn off gemstone transcript writes for performance"
-	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
-	self ensureOneTab. 
-	self selectClassListTab.
-	self selectInstanceTab.
-	self projectsPresenter selectCategoryTab.
-	self projectListPresenter resetSelection. 
-!
-
-tearDown
-	super tearDown.
-	session isValidSession
-		ifTrue: [transcriptWritesWereEnabled == true ifTrue: [transcript flipTranscript]].
-	methodListBrowser
-		ifNotNil: 
-			[self destroy: methodListBrowser.
-			methodListBrowser := nil].
-	secondBrowser
-		ifNotNil: 
-			[self destroy: secondBrowser.
-			secondBrowser := nil]!
 
 test_abortOnVariablesTab
 	self unloadSampleProject.
@@ -480,22 +430,6 @@ test_addAccessorsVerifySource
 	self assert: self methodSourcePresenter value equals: 'var1: object
 	var1 := object']
 			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
-
-test_addDictionary
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectNoneProject.
-	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
-	self projectsPresenter basicAddDictionaryNamed: 'Test_addDictionary'.
-	self assert: (self dictionaryPresenter list at: 2) name equals: 'Test_addDictionary'.
-	self assert: self dictionaryPresenter selection name equals: 'Test_addDictionary'.
-	self abortTransaction.
-	
-	[self
-		assertIsNil: (self dictionaryPresenter detect: [:dictionaryService | dictionaryService name = 'Test_addDictionary']
-				ifNone: [])]
-			ensure: 
-				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
 
 test_addDuplicatePackage
 	| projectService addPackageResult packageName |
@@ -1847,82 +1781,6 @@ test_deselectAllVariables
 	self assert: self methodListPresenter list size
 		equals: self projectsPresenter selectedClass methods size!
 
-test_dictionaryNameIsString
-	"for consistency, service names should be strings"
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectNoneProject.
-	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
-	self assert: (self dictionaryPresenter selection name isKindOf: String).!
-
-test_dictionarySelectionChangesTab
-	| browserTabs |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	browserTabs := projectsBrowser cardsPresenter view.
-	self selectNoneProject.
-	self assert: browserTabs currentCard arrangement equals: '1 ' , RowanProjectService noneProject name.
-	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
-	self assert: browserTabs currentCard arrangement equals: '1 UserGlobals'.
-	self projectListPresenter resetSelection.
-	self assert: browserTabs currentCard arrangement equals: '1 Projects'!
-
-test_dictionarySelectionIndependentInTab
-	| userGlobalsCard |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectNoneProject.
-	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
-	userGlobalsCard := projectsBrowser cardsPresenter view currentCard.
-	projectsBrowser addSystemBrowser.
-	
-	[self assert: userGlobalsCard presenter projectListPresenter selection name
-		equals: RowanProjectService noneProject name.
-	self selectNoneProject.
-	self selectServiceNamed: 'Published' in: self dictionaryPresenter.
-	self assert: userGlobalsCard presenter projectListPresenter selection name
-		equals: RowanProjectService noneProject name]
-			ensure: [projectsBrowser closeCard]!
-
-test_dictionaryViewClassHierarchy
-	| classNames |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectNoneProject.
-	self selectServiceNamed: 'RowanKernel' in: self dictionaryPresenter.
-	classNames := self classListPresenter list collect: [:classService | classService name].
-	self selectHierarchyTab.
-	
-	[self assert: (self classHierarchyPresenter model isKindOf: TreeModel).
-	classNames do: 
-			[:className |
-			self denyIsNil: (self classHierarchyPresenter model asBag
-						detect: [:classService | classService name = className]
-						ifNone: [])]]
-			ensure: [self selectClassListTab]!
-
-test_dictionaryViewClassHierarchySelectedClass
-	| firstChild root children |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectNoneProject.
-	self selectServiceNamed: 'RowanKernel' in: self dictionaryPresenter.
-	self selectServiceNamed: 'GsChoiceInteraction' in: self classListPresenter.
-	self selectHierarchyTab.
-	
-	[self assert: self classHierarchyPresenter model size equals: 3.
-	#('Object' 'GsInteraction' 'GsChoiceInteraction') do: 
-			[:className |
-			self denyIsNil: (self classHierarchyPresenter model asBag
-						detect: [:classService | classService name = className]
-						ifNone: [])].
-	self assert: self classHierarchyPresenter model roots size equals: 1.
-	self assert: self classHierarchyPresenter model roots first name equals: 'Object'.
-	root := self classHierarchyPresenter model roots first.
-	self assert: (children := self classHierarchyPresenter model getChildrenOf: root) size equals: 1.
-	firstChild := children first.
-	self assert: firstChild name equals: 'GsInteraction'.
-	self assert: (children := self classHierarchyPresenter model getChildrenOf: firstChild) size
-		equals: 1.
-	self assert: children size equals: 1.
-	self assert: children first name equals: 'GsChoiceInteraction']
-			ensure: [self selectClassListTab]!
-
 test_dontChangeTabOnMethodSave
 	| source firstTab secondTab |
 	self testsIssue: #issue412 withTitle: '(3.0.56) incorrect project browser update on method accept '.
@@ -2426,27 +2284,6 @@ test_findClass
 	self assert: self packageListPresenter selection name equals: 'Cypress-Definitions'.
 	self assert: self projectListPresenter selection name equals: 'Cypress'!
 
-test_findClassNotInProject
-	"we no longer open the old dictionary browser"
-
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'Object').
-	self assert: self classListPresenter selection name equals: 'Object'.
-	self assert: self dictionaryPresenter selection name equals: 'Globals'.
-	self assert: self projectListPresenter selection name equals: RowanProjectService noneProject name.
-	self assert: self projectsPresenter isNoneProjectSelected.
-	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'ExecBlock').
-	self assert: self classListPresenter selection name equals: 'ExecBlock'.
-	self assert: self dictionaryPresenter selection name equals: 'Globals'.
-	self assert: self projectListPresenter selection name equals: RowanProjectService noneProject name.
-	self assert: self projectsPresenter isNoneProjectSelected.
-	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'CypressClassDefinition').
-	self assert: self classListPresenter selection name equals: 'CypressClassDefinition'.
-	self assert: self classListPresenter selection definedPackageName equals: 'Cypress-Definitions'.
-	self assert: self packageListPresenter selection name equals: 'Cypress-Definitions'.
-	self assert: self projectListPresenter selection name equals: 'Cypress'.
-	self deny: self projectsPresenter isNoneProjectSelected!
-
 test_findMethodChangesCategories
 	| methodService | 
 	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
@@ -2546,13 +2383,6 @@ test_findMethodSUnitBrowser
 	self selectSUnitTab.
 	self assert: self projectsPresenter findMethod equals: self projectsPresenter. "error occurred just calling the method" !
 
-test_firstClickDictionaries
-	"make sure the first click on the (NONE) project shows the dictionaries"
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self assert: self dictionaryPresenter list isEmpty.
-	self selectNoneProject.
-	self assert: self dictionaryPresenter list notEmpty!
-
 test_gitBranchesDoesNotShowHead
 	"this may be a brittle test because it assumes RowanSample1 has only the master branch.
 	But it's based on the local checkout so the test runner can control this. "
@@ -2568,145 +2398,6 @@ test_gitBranchesDoesNotShowHead
 				basicCheckoutUsing: self projectsPresenter.
 	self assert: branches isKindOf: Collection.
 	self assert: branches first equals: '*master'!
-
-test_globalRemove
-	| removeGlobalItem selection |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectNoneProject.
-	removeGlobalItem := self projectsPresenter globalsTab view contextMenu items
-				detect: [:item | item text = 'Remove Global'].
-	self assert: removeGlobalItem command equals: #removeGlobal.
-	session executeString: 'UserGlobals at: #test_removeGlobal put: ''foo'''.
-	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
-	selection := self projectsPresenter globalsTab list
-				detect: [:array | (array at: 1) equals: 'UserGlobals.test_removeGlobal'].
-	self projectsPresenter globalsTab selection: selection.
-	self projectsPresenter basicRemoveGlobal: selection first.
-	self assertIsNil: (self projectsPresenter globalsTab list
-				detect: [:array | (array at: 1) equals: 'UserGlobals.test_removeGlobal']
-				ifNone: [])!
-
-test_globalsBrowseClassMenuItem
-	| browseClassItem selection |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectNoneProject.
-	browseClassItem := self projectsPresenter globalsTab view contextMenu items
-				detect: [:item | item text = 'Browse Class'].
-	self assert: browseClassItem command equals: #browseGlobalClass.
-	session executeString: 'UserGlobals at: #test_globalsBrowseClassMenuItem put: ''fnoodle'''.
-	
-	[self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
-	selection := self projectsPresenter globalsTab list
-				detect: [:array | (array at: 1) equals: 'UserGlobals.test_globalsBrowseClassMenuItem'].
-	self projectsPresenter globalsTab selection: selection.
-	secondBrowser := self projectsPresenter browseGlobalClass.
-	self assert: ('String*' match: secondBrowser classListPresenter selection name)]
-			ensure: 
-				[session executeString: 'UserGlobals removeKey: #test_globalsBrowseClassMenuItem'.
-				secondBrowser topShell destroy]!
-
-test_globalsBrowseReferencesMenuItem
-	| browseRefererencesItem selection |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectNoneProject.
-	browseRefererencesItem := self projectsPresenter globalsTab view contextMenu items
-				detect: [:item | item text = 'Browse References'].
-	self assert: browseRefererencesItem command equals: #browseGlobalReferences.
-	
-	[self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
-	selection := self projectsPresenter globalsTab list
-				detect: [:array | (array at: 1) equals: 'UserGlobals.UserGlobals'].
-	self projectsPresenter globalsTab selection: selection.
-	methodListBrowser := self projectsPresenter browseGlobalReferences.
-	self assert: ('*UserGlobals*'
-				match: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter value).
-	self
-		assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list notEmpty]
-			ensure: [methodListBrowser topShell destroy]!
-
-test_globalsDoubleClick
-	| selection inspector |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self closeExistingInspectors.
-	self selectNoneProject.
-	session executeString: 'UserGlobals at: #test_globalsDoubleClick put: false'.
-	
-	[self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
-	selection := self projectsPresenter globalsTab list
-				detect: [:array | (array at: 1) equals: 'UserGlobals.test_globalsDoubleClick'].
-	self projectsPresenter globalsTab selection: selection.
-	self projectsPresenter globalsTab onActionPerformed. "double click"
-	inspector := JadeNavigationInspector allInstances first.
-	self assert: inspector model value equals: 12.	"false"
-	self assert: inspector documentPresenter value equals: 'false'.
-	inspector instVarListPresenter selectionByIndex: 2.
-	self assert: inspector documentPresenter value equals: '12'.
-	self assert: inspector instVarListPresenter selection key equals: '-.asOop']
-			ensure: 
-				[session executeString: 'UserGlobals removeKey: #test_globalsDoubleClick'.
-				inspector view close]!
-
-test_globalsInspectMenuItem
-	| inspectItem selection inspector |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectNoneProject.
-	inspectItem := self projectsPresenter globalsTab view contextMenu items
-				detect: [:item | item text = 'Inspect'].
-	self assert: inspectItem command equals: #inspectGlobal.
-	session executeString: 'UserGlobals at: #test_globalsContextMenu put: true'.
-	
-	[self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
-	selection := self projectsPresenter globalsTab list
-				detect: [:array | (array at: 1) equals: 'UserGlobals.test_globalsContextMenu'].
-	self projectsPresenter globalsTab selection: selection.
-	inspector := self projectsPresenter inspectGlobal.
-	self assert: inspector model value equals: 268.	"true"
-	self assert: inspector documentPresenter value equals: 'true'.
-	inspector instVarListPresenter selectionByIndex: 2.
-	self assert: inspector documentPresenter value equals: '268'.
-	self assert: inspector instVarListPresenter selection key equals: '-.asOop']
-			ensure: 
-				[session executeString: 'UserGlobals removeKey: #test_globalsContextMenu'.
-				inspector view close]!
-
-test_globalsTabHeaders
-	| globalsView header |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectNoneProject.
-	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
-	self projectsPresenter selectGlobalsTab.
-	globalsView := self projectsPresenter globalsTab.
-	header := globalsView model detect: [:array | array first = 'Name'].
-	self assert: header first equals: 'Name'.
-	self assert: header second equals: 'Class'.
-	self assert: header third equals: 'Oop'.
-	self assert: header fourth equals: 'Value'!
-
-test_globalsTabValues
-	"sanity check that a few expected value are present"
-
-	| globalsView allUsers |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectNoneProject.
-	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
-	self projectsPresenter selectGlobalsTab.
-	globalsView := self projectsPresenter globalsTab.
-	allUsers := globalsView model detect: [:array | array first = 'Globals.AllUsers'].
-	self assert: allUsers second equals: #UserProfileSet.
-	self assert: allUsers third isKindOf: Integer.
-	self assert: ('anUserProfileSet*' match: allUsers fourth).
-	allUsers := globalsView model detect: [:array | array first = 'Globals.false'].
-	self assert: allUsers second equals: #Boolean.
-	self assert: allUsers third isKindOf: Integer.
-	self assert: allUsers fourth equals: 'false'.
-	allUsers := globalsView model detect: [:array | array first = 'Globals.true'].
-	self assert: allUsers second equals: #Boolean.
-	self assert: allUsers third isKindOf: Integer.
-	self assert: allUsers fourth equals: 'true'.
-	allUsers := globalsView model detect: [:array | array first = 'Globals.nil'].
-	self assert: allUsers second equals: #UndefinedObject.
-	self assert: allUsers third isKindOf: Integer.
-	self assert: allUsers fourth equals: 'nil'!
 
 test_goToDefinedClassFromClassList
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
@@ -3149,34 +2840,6 @@ test_methodTabSelected
 	
 	!
 
-test_minimumClassStateReturned
-	"in order to speed up the retrieval of the Globals symbol dictionary,
-	just return the absolute basics. Spot check a few of the internal variables."
-
-	| classService |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectNoneProject.
-	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
-	classService := self classListPresenter list detect: [:clsService | clsService name = 'Boolean'].
-	self assert: classService name equals: 'Boolean'.
-	self assert: classService versions equals: 1.
-	self assert: classService version equals: 1.
-	self assert: classService methods equals: Array new.
-	self assertIsNil: classService variables.
-	self assertIsNil: classService categories.
-	self assertIsNil: classService instVarNames.
-	self assertIsNil: classService template!
-
-test_minimumProjectList
-	| projectNames |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	projectNames := self projectListPresenter list collect: [:projectService | projectService name].
-	self assert: (projectNames includes: RowanProjectService noneProject name).
-	self assert: (projectNames includes: 'Cypress').
-	self assert: (projectNames includes: 'Rowan').
-	self assert: (projectNames includes: 'STON').
-	self assert: (projectNames includes: 'Tonel')!
-
 test_modifiedSourceShouldNotChange
 	| source originalSource |
 	self testsIssue: #issue400
@@ -3229,20 +2892,6 @@ test_modifiedSourceShouldNotChangeMethodList
 				[self methodSourcePresenter value: originalSource.
 				self methodSourcePresenter view isModified: false]!
 
-test_multipleBrowsersUpdateClassList
-	| firstClassList |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectNoneProject.
-	self selectClassListTab.
-	self selectServiceNamed: 'RowanKernel' in: self dictionaryPresenter.
-	firstClassList := self classListPresenter list.
-	self openSecondBrowser.
-	self assert: self classListPresenter list equals: firstClassList.
-	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
-	self selectServiceNamed: 'RowanSample1-Tests' in: secondPresenter packageListPresenter.
-	self assert: self classListPresenter list equals: firstClassList.
-	self deny: secondPresenter classListPresenter list equals: firstClassList!
-
 test_multipleCompileMethod
 	self testsIssue: #issue170
 		withTitle: 'Editing methods to create new method and updating created method gets errors'.
@@ -3287,21 +2936,6 @@ test_multiplePackageSelection
 		in: self packageListPresenter.
 	self assert: (self classListPresenter list collect: [:classService | classService name]) asArray
 		equals: sortedClassNames asArray!
-
-test_noneProjectNotRemovedOnUpdate
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectNoneProject.
-	BrowserUpdate current updateService: self projectListPresenter selection session: session.
-	self assert: (self projectListPresenter list includes: RowanProjectService noneProject).
-	self assert: self projectListPresenter selection name equals: RowanProjectService noneProject name!
-
-test_noneProjectRetainsSelectionWhenNewTabAdded
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectNoneProject.
-	self assert: self projectListPresenter selection equals: RowanProjectService noneProject.
-	projectsBrowser addSystemBrowser.
-	projectsBrowser cardsPresenter view previousCard.
-	self assert: self projectListPresenter selection equals: RowanProjectService noneProject!
 
 test_noSelectionHierarchy
 	| roots children childrensNames grandchildren grandchildrensNames |
@@ -3414,27 +3048,6 @@ test_openProjectsBrowserFromMethodList
 	[self assert: (secondProjectsBrowser isKindOf: JadeiteBrowser)]
 		ensure: [self destroy: secondProjectsBrowser]!
 
-test_packageAndDictionaryViewClass
-	"test for the same view for a consistent look and feel.
-	EditableListView is a subclass of ListView"
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self assert: self projectsPresenter packageListPresenter view class equals: EditableListView.
-	self selectServiceNamed: RowanProjectService noneProject name in: self projectListPresenter.
-	self assert: self projectsPresenter dictionaryPresenter view class equals: EditableListView.
-	self assert: self projectsPresenter projectListPresenter view class equals: ListView.
-	self assert: self projectsPresenter classListPresenter view class equals: ListView.
-	self assert: self projectsPresenter categoryListPresenter view class equals: ListView.
-	self assert: self projectsPresenter variableListPresenter view class equals: ListView.
-	self assert: self projectsPresenter methodListPresenter view class equals: ListView!
-
-test_packageDictionaryCardsTabName
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectRowanSample1Class.
-	self assert: self projectsPresenter packageDictionaryCards view currentCard arrangement equals: 'Packages'.
-	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'Array').
-	self assert: self projectsPresenter packageDictionaryCards view currentCard arrangement equals: 'Dictionaries'!
-
 test_packagesShownInMultipleProjects
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
 	self assertIsNil: (self serviceNamed: 'RowanService' in: self classListPresenter).
@@ -3507,10 +3120,6 @@ test_projectRemoved
 			ensure: 
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
-
-test_projectSingleSelection
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self deny: self projectsPresenter projectListPresenter view isMultiSelect!
 
 test_refreshAfterAbortMethodList
 	"method lists should remove deleted methods after an abort."
@@ -4270,22 +3879,6 @@ test_symbolsWithoutImplementorsFound
 	self assert: symbols size equals: 1.
 	self assert: symbols first = #fnoodley1!
 
-test_systemTabsShowDictionariesAndProjects
-	| browserTabs |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self ensureOneTab. 
-	browserTabs := projectsBrowser cardsPresenter view.
-	self selectNoneProject.
-	self assert: browserTabs currentCard arrangement equals: '1 ' , RowanProjectService noneProject name.
-	projectsBrowser addSystemBrowser.
-	
-	[self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self assert: browserTabs currentCard arrangement equals: '2 Rowan'.
-	projectsBrowser cardsPresenter view previousCard.
-	self assert: browserTabs currentCard arrangement equals: '1 ' , RowanProjectService noneProject name.
-	projectsBrowser cardsPresenter view nextCard]
-			ensure: [projectsBrowser closeCard]!
-
 test_tabNames
 	| textTabs |
 	self testsIssue: #issue186 withTitle: 'icon in console menu'.
@@ -4342,27 +3935,6 @@ test_tabNames_projectsBrowserNotLost
 	self assert: (projectTabs at: index) arrangement equals: index printString , ' Rowan-Services-Core'.	"no change. this was a bug"
 	index := 1.
 	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1-Core'	"not affected by other tab"!
-
-test_textTabsChange
-	| tabNames |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectRowanSample1Class.
-	tabNames := (self projectsPresenter textAreaTabs cards
-				collect: [:card | card arrangement displayString]) asArray.
-	self assert: tabNames
-		equals: #('Class Definition' 'Class Documentation' 'Method Source' 'SUnit' 'Comparison' 'Project').
-	self selectNoneProject.
-	tabNames := (self projectsPresenter textAreaTabs cards
-				collect: [:card | card arrangement displayString]) asArray.
-	self assert: tabNames
-		equals: #('Class Definition' 'Class Documentation' 'Method Source' 'SUnit' 'Comparison' 'Globals')!
-
-test_textTabSelectedWithProjectChange
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
-	self assert: self projectsPresenter textAreaTabs currentCard displayString equals: 'projectInfoTab'.
-	self selectNoneProject.
-	self assert: self projectsPresenter textAreaTabs currentCard displayString equals: 'globalsTab'!
 
 test_twoBrowsersAddedClassAppears
 	"if the same package is selected, a new class appears but the existing
@@ -5055,11 +4627,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #assertLinearAncestry:in:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #cleanupExistingWindows!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #cleanupTextPaneForClose:!public!support! !
-!JadeiteProjectBrowserTestCase categoriesFor: #closeExistingInspectors!private!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #currentTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #dirtyProjectForChangeBrowser!dirty project!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #disableTranscriptWrites!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #ensureOneTab!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #executeStringInOtherSession:!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #family:ofNodesIn:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
@@ -5070,7 +4639,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #logoutOtherSession!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #modifySampleMethodFoo!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #nextTabView!public!views! !
-!JadeiteProjectBrowserTestCase categoriesFor: #openSecondBrowser!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #packageNamed:!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #previousTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectList!private!project support! !
@@ -5080,12 +4648,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUnimplementedSelector!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUniqueString!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveTestClass!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #selectClassListTab!private!selection! !
-!JadeiteProjectBrowserTestCase categoriesFor: #selectNoneProject!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectSUnitTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectVariableListEntryForcingEvent:!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
-!JadeiteProjectBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abortOnVariablesTab!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abstractTestsShown!public!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_acceptDefinedMethodInExtensionClass!public!tests! !
@@ -5095,7 +4659,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsHierarchyTabVerifySource!public!test class hierarchy!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsVariablesStaySelected!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsVerifySource!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_addDictionary!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addDuplicatePackage!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addInstVarVariablesStaySorted!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addInstVarWithVariablesTabOpen!public!test variable tab!tests! !
@@ -5150,11 +4713,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_confirmOverrideExistingAccessorMethods!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_dictionaryNameIsString!public!test issue 217! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_dictionarySelectionChangesTab!public!test issue 217! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_dictionarySelectionIndependentInTab!public!test class list!test find!test issue 217!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_dictionaryViewClassHierarchy!public!test issue 217! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_dictionaryViewClassHierarchySelectedClass!public!test issue 217! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontChangeTabOnMethodSave!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontOverrideExistingAccessorMethods!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontUpdateWithDifferentMeta!public!test two browsers!tests! !
@@ -5174,7 +4732,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_failMethodCompile!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_filtersUpdatedInHierarchyView!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findClass!public!test class list!test find!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_findClassNotInProject!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodChangesCategories!public!test categories!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodDisabled!public!test find!test menus!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodDoesNotChangeCategories!public!test categories!test find!tests! !
@@ -5182,15 +4739,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodShowsAllMethods!public!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodShowsOnlyOneSide!public!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodSUnitBrowser!public!test find!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_firstClickDictionaries!public!test issue 217! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gitBranchesDoesNotShowHead!public!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_globalRemove!public!test class list!test find!test issue 217!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_globalsBrowseClassMenuItem!public!test class list!test find!test issue 217!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_globalsBrowseReferencesMenuItem!public!test class list!test find!test issue 217!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_globalsDoubleClick!public!test class list!test find!test issue 217!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_globalsInspectMenuItem!public!test class list!test find!test issue 217!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_globalsTabHeaders!public!test class list!test find!test issue 217!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_globalsTabValues!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromHierarchy!public!test class hierarchy!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromClassList!public!test class list!test defined package!tests! !
@@ -5217,15 +4766,10 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_methodsContaining!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_methodsContainingCaption!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_methodTabSelected!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_minimumClassStateReturned!public!test class list!test find!test issue 217!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_minimumProjectList!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_modifiedSourceShouldNotChange!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_modifiedSourceShouldNotChangeMethodList!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_multipleBrowsersUpdateClassList!public!test issue 217! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multiplePackageSelection!public!test packages!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_noneProjectNotRemovedOnUpdate!public!test issue 217! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_noneProjectRetainsSelectionWhenNewTabAdded!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noSelectionHierarchy!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openChangesBrowser!public!test menus!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewBrowserTabWhileSUnitTabSelected!public!test sunit tab!tests! !
@@ -5233,13 +4777,10 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectTab!public!test menus!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openProjectsBrowser!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openProjectsBrowserFromMethodList!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_packageAndDictionaryViewClass!public!test issue 217! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_packageDictionaryCardsTabName!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_packagesShownInMultipleProjects!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectDisplaysSync!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectInfoTab!public!test menus!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectRemoved!public!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_projectSingleSelection!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodList!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodListLeaveCommitted!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterReloadInProjectsBrowserWithAddedMethod!public!test projects!tests! !
@@ -5283,12 +4824,9 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabRefresh!public!test menus!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitUpdatesProperly!public!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsWithoutImplementorsFound!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabsShowDictionariesAndProjects!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_textTabsChange!public!test class list!test find!test issue 217!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_textTabSelectedWithProjectChange!public!test class list!test find!test issue 217!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassAppears!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassAppearsInHierarchy1!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassAppearsInHierarchy2!public!test two browsers!tests! !

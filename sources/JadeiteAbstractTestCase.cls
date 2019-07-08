@@ -354,6 +354,9 @@ selectMethodsNamed: selectors
 	self methodListPresenter selections: methodServices.
 	^methodServices!
 
+selectNoneProject
+	self selectServiceNamed: RowanProjectService noneProject name in: self projectListPresenter!
+
 selectRowanSample1Class
 	"big assumption - RowanSample1 class will allways be in RowanSample1 project"
 
@@ -534,6 +537,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #selectMethodNamed:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectMethodNamedInProjectBrowser:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectMethodsNamed:!private!selection! !
+!JadeiteAbstractTestCase categoriesFor: #selectNoneProject!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #selectRowanSample1Class!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectRowanSample1Test!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectServiceNamed:in:!private!project browser support!selection! !

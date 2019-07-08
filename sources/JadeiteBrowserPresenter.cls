@@ -44,6 +44,14 @@ basicProjectTabLabel
 	dictionaryPresenter selections size > 1 ifTrue: [^label].
 	^dictionaryPresenter selection name!
 
+basicRemoveDictionaries: dictionaryNames
+	| browserService |
+	browserService := RowanBrowserService new.
+	browserService
+		command: #removeDictionariesNamed:;
+		commandArgs: (Array with: dictionaryNames).
+	self issueCommand: (Array with: browserService)!
+
 basicRemoveGlobal: qualifiedString
 	| symbol rs dictionaryService globalDictionaryName |
 	rs := ReadStream on: qualifiedString.
@@ -84,6 +92,7 @@ buildGlobalsTab
 				to: self.
 			globalsTab parentPresenter: self textAreaTabs.
 			globalsTabView := globalsTab createView: 'Editable list view'.
+			globalsTabView backcolor: JadeTextStyles default colorForNoEdits.
 			globalsTabView hasColumnHeaders: false.
 			globalsTabView contextMenu: self globalsMenu.
 			3 timesRepeat: [globalsTabView addColumn].
@@ -109,6 +118,7 @@ buildProjectTab
 			[projectInfoTab := ListPresenter new.
 			projectInfoTab parentPresenter: self textAreaTabs.
 			projectInfoView := projectInfoTab createView: 'Editable list view'.
+			projectInfoView backcolor: JadeTextStyles default colorForNoEdits.
 			projectInfoView
 				hasColumnHeaders: false;
 				hasGridLines: false;
@@ -165,8 +175,8 @@ dictionaryMenuStrings
 		ifTrue: 
 			[self
 				addDictionary;
-				removeDictionary].
-	^#('Dictionaries' 'Insert Dictionary//addDictionary' 'Remove Dictionary//removeDictionary')!
+				removeDictionaries].
+	^#('Dictionaries' 'Insert Dictionary//addDictionary' 'Remove Dictionaries//removeDictionaries')!
 
 dictionaryPresenter
 	^dictionaryPresenter!
@@ -212,7 +222,7 @@ packageDictionaryCards
 queryCommand: aCommandQuery
 	| command |
 	command := aCommandQuery command.
-	(#(#inspectGlobal #browseGlobalClass #browseGlobalReferences) includes: command)
+	(#(#inspectGlobal #browseGlobalClass #browseGlobalReferences #removeDictionaries) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: globalsTab selections isEmpty not.
 			^true]
@@ -240,14 +250,31 @@ refreshClass
 	selection updateAfterCommand: true.
 	self updateClassInfo!
 
+refreshFromServerAfterAbort: browserService
+	browserService
+		ifNil: [self refreshGlobalSelections]
+		ifNotNil: 
+			[browserService projectsUpdate: projectListPresenter browser: self.
+			browserService dictionaryListUpdate: dictionaryPresenter].
+	self autoCommit: (autoCommit value == #failed ifTrue: [true] ifFalse: [autoCommit value])!
+
 registerPresentersForUpdates
 	super registerPresentersForUpdates.
-	BrowserUpdate current register: dictionaryPresenter selector: #dictionaryListUpdate:!
+	BrowserUpdate current register: dictionaryPresenter	selector: #dictionaryListUpdate:.
+	BrowserUpdate current register: dictionaryPresenter	selector: #aborted:browser: browser: self!
 
 removeAppropriateTab
 	self isNoneProjectSelected ifTrue: [self removeProjectTab] ifFalse: [self removeGlobalsTab]!
 
-removeDictionary!
+removeDictionaries
+	| dictionaryNames |
+	dictionaryPresenter selections isEmpty ifTrue: [^self].
+	dictionaryNames := dictionaryPresenter selections
+				collect: [:dictionaryService | dictionaryService name].
+	(MessageBox
+		confirm: 'Really remove dictionary(s) ' , (dictionaryNames fold: [:a :b | a , ' ' , b]) , ' ?')
+			ifFalse: [^self].
+	self basicRemoveDictionaries: dictionaryNames!
 
 removeGlobal
 	| selection string |
@@ -426,6 +453,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #basicAddDictionaryNamed:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicProjectTabLabel!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #basicRemoveDictionaries:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicRemoveGlobal:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicUnloadProjects:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #browseGlobalClass!menu handlers!public! !
@@ -446,11 +474,12 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #isRowanProjectSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #packageDictionaryCards!accessing!private! !
-!JadeiteBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!public! !
+!JadeiteBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #refreshClass!event handlers!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #refreshFromServerAfterAbort:!public! !
 !JadeiteBrowserPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteBrowserPresenter categoriesFor: #removeAppropriateTab!private!tabs! !
-!JadeiteBrowserPresenter categoriesFor: #removeDictionary!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #removeDictionaries!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #removeGlobal!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #removeGlobalsTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #removeProjectTab!private!tabs! !

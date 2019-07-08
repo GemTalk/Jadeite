@@ -1541,12 +1541,6 @@ refreshFromServer
 	self updateSUnitTab.
 	self redrawAllViews!
 
-refreshFromServerAfterAbort: browserService
-	browserService
-		ifNil: [self refreshGlobalSelections]
-		ifNotNil: [browserService projectsUpdate: projectListPresenter browser: self].
-	self autoCommit: (autoCommit value == #failed ifTrue: [true] ifFalse: [autoCommit value])!
-
 refreshMethodsOn: presenter
 	| classService |
 	classService := self selectedClass ifNil:[^self].
@@ -2359,7 +2353,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshClass!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshClassListOrHierarchy!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshFromServer!event handlers!menu handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #refreshFromServerAfterAbort:!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshMethodsOn:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #registerClassData!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #registerPresentersForUpdates!event handlers!initialize/release!private!register presenters! !

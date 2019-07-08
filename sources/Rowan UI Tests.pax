@@ -17,6 +17,8 @@ package classNames
 	add: #JadeiteMessageBoxTestCase;
 	add: #JadeiteMethodListBrowserTestCase;
 	add: #JadeiteMiscellaneousTestCase;
+	add: #JadeiteProjectBrowserAbstractTestCase;
+	add: #JadeiteProjectBrowserDictionaryTestCase;
 	add: #JadeiteProjectBrowserTestCase;
 	add: #JadeiteSUnitSupportTestCase;
 	add: #JadeiteTestResource;
@@ -157,8 +159,8 @@ JadeiteAbstractTestCase subclass: #JadeiteMiscellaneousTestCase
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeiteAbstractTestCase subclass: #JadeiteProjectBrowserTestCase
-	instanceVariableNames: 'transcriptWritesWereEnabled methodListBrowser secondBrowser secondPresenter'
+JadeiteAbstractTestCase subclass: #JadeiteProjectBrowserAbstractTestCase
+	instanceVariableNames: 'secondBrowser methodListBrowser secondPresenter transcriptWritesWereEnabled'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -168,6 +170,16 @@ JadeiteAbstractTestCase subclass: #JadeiteSUnitSupportTestCase
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteAbstractTestCase subclass: #JadeiteTranscriptTestCase
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserDictionaryTestCase
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserTestCase
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
