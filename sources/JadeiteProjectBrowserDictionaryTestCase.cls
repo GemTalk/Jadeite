@@ -422,6 +422,18 @@ test_removeDictionaryNoSelection
 	self assert: (self dictionaryPresenter list collect: [:dictionaryService | dictionaryService name])
 		equals: dictionaryNames!
 
+test_selectProjectClearHierarchy
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	self selectServiceNamed: 'JadeServer' in: self classListPresenter.
+	self selectHierarchyTab.
+	self deny: self classHierarchyPresenter model isEmpty.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self assert: self classHierarchyPresenter model isEmpty.
+	self selectClassListTab.
+	self assert: self classListPresenter model isEmpty!
+
 test_systemTabsShowDictionariesAndProjects
 	| browserTabs |
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
@@ -485,6 +497,7 @@ test_textTabSelectedWithProjectChange
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_projectSingleSelection!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeDictionary!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeDictionaryNoSelection!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_selectProjectClearHierarchy!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_systemTabsShowDictionariesAndProjects!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_textTabsChange!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_textTabSelectedWithProjectChange!public!test issue 217! !
