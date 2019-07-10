@@ -87,10 +87,15 @@ classHierarchyUpdate: presenter browser: browser hierarchyServices: hierarchySer
 				withParent: parent
 				hierarchyServices: hierarchyServices].
 	presenter model: treeModel.
-	treeModel preOrderDo: 
+	presenter view disableRedraw.
+	
+	[treeModel preOrderDo: 
 			[:classService |
 			classService selectedPackageServices: browser packageListPresenter selections browser: browser.
-			classService expand == true ifTrue: [presenter view expand: classService]]!
+			classService expand == true ifTrue: [presenter view expand: classService]]]
+			ensure: [presenter view enableRedraw].
+	presenter selectionIfNone: [^presenter view ensureItemVisible: treeModel roots first].
+	presenter view ensureSelectionVisible!
 
 classMethodsUpdate: presenter browser: anObject
 	!
