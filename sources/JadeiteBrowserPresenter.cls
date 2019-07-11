@@ -222,11 +222,15 @@ packageDictionaryCards
 queryCommand: aCommandQuery
 	| command |
 	command := aCommandQuery command.
-	(#(#inspectGlobal #browseGlobalClass #browseGlobalReferences #removeDictionaries) includes: command)
+	(#(#inspectGlobal #browseGlobalClass #browseGlobalReferences) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: globalsTab selections isEmpty not.
-			^true]
-		ifFalse: [^super queryCommand: aCommandQuery]!
+			^true].
+	(#(#removeDictionaries) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: self dictionaryPresenter selections notEmpty.
+			^true].
+	^super queryCommand: aCommandQuery!
 
 refreshClass
 	| selection presenter |

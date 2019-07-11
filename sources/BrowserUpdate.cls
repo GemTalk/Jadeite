@@ -36,7 +36,7 @@ basicIssueCommand: services session: session
 	self logSentServices: services.
 	loggedServices := services asOrderedCollection
 				addFirst: newLoggingService;
-				yourself.
+				yourself. 
 	stonString := STON toString: loggedServices.
 	[stonResultString := session serverPerform: #updateFromSton: with: stonString]
 		ensure: [services do: [:service | service clearCommand]].

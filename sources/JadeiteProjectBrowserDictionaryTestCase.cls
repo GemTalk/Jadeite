@@ -42,6 +42,18 @@ test_addDictionary
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_canSelectUnauthorizedObjectStub
+	"RowanClassService instVarNames was getting set to a STONReference
+	for a few classes in the hierarchy browser. Made UnauthorizedObjectStub
+	inaccessible. Add a sanity check so it doesn't get broken again"
+
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
+	self selectHierarchyTab.
+	self selectClassInHierarchyNamed: 'UnauthorizedObjectStub'.
+	self assert: ('*UnauthorizedObjectStub*' match: self projectsPresenter classDefinitionPresenter value)!
+
 test_dictionaryNameIsString
 	"for consistency, service names should be strings"
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
@@ -285,6 +297,23 @@ test_globalsTabValues
 	self assert: allUsers third isKindOf: Integer.
 	self assert: allUsers fourth equals: 'nil'!
 
+test_insertDictionaryMenuItemEnablement
+	| commandQuery |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	commandQuery := self
+				queryCommand: #addDictionary
+				inPresenter: self projectsPresenter
+				view: self dictionaryPresenter view.
+	self assert: commandQuery isEnabled.
+	self dictionaryPresenter resetSelection.
+	commandQuery := self
+				queryCommand: #addDictionary
+				inPresenter: self projectsPresenter
+				view: self dictionaryPresenter view.
+	self assert: commandQuery isEnabled!
+
 test_insertDictionaryRandomly
 	"order matters when adding a dictionary to the list.
 	Insertion done immediately following selected dictionary
@@ -413,6 +442,23 @@ test_removeDictionary
 				detect: [:dictionaryService | dictionaryService name = dictionaryName]
 				ifNone: [])!
 
+test_removeDictionaryMenuItemEnablement
+	| commandQuery |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	commandQuery := self
+				queryCommand: #removeDictionaries
+				inPresenter: self projectsPresenter
+				view: self dictionaryPresenter view.
+	self assert: commandQuery isEnabled.
+	self dictionaryPresenter resetSelection.
+	commandQuery := self
+				queryCommand: #removeDictionaries
+				inPresenter: self projectsPresenter
+				view: self dictionaryPresenter view.
+	self deny: commandQuery isEnabled!
+
 test_removeDictionaryNoSelection
 	| dictionaryNames |
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
@@ -472,6 +518,7 @@ test_textTabSelectedWithProjectChange
 	self assert: self projectsPresenter textAreaTabs currentCard displayString equals: 'globalsTab'! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_abortInTranscriptRemovesDictionaryInBrowser!public! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_addDictionary!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_canSelectUnauthorizedObjectStub!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_dictionaryNameIsString!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_dictionarySelectionChangesTab!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_dictionarySelectionIndependentInTab!public!test issue 217! !
@@ -486,6 +533,7 @@ test_textTabSelectedWithProjectChange
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_globalsInspectMenuItem!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_globalsTabHeaders!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_globalsTabValues!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_insertDictionaryMenuItemEnablement!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_insertDictionaryRandomly!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_minimumClassStateReturned!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_minimumProjectList!public!test issue 217! !
@@ -496,6 +544,7 @@ test_textTabSelectedWithProjectChange
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_packageDictionaryCardsTabName!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_projectSingleSelection!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeDictionary!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeDictionaryMenuItemEnablement!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeDictionaryNoSelection!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_selectProjectClearHierarchy!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_systemTabsShowDictionariesAndProjects!public!test issue 217! !
