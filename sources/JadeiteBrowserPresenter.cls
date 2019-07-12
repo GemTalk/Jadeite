@@ -319,6 +319,24 @@ removeProjectTab
 	projectInfoView ifNotNil: [self textAreaTabs removeSubView: projectInfoView].
 	projectInfoTab := nil!
 
+runAll
+	self selectSUnitTab.
+	self sunitPresenter methodListPresenter view selectAll. 
+	self sunitPresenter runAll!
+
+runSelected
+	| sunitTabSelections toSelect |
+	sunitTabSelections := OrderedCollection new.
+	methodListPresenter selections do: 
+			[:selectedTestMethodService |
+			toSelect := self sunitPresenter methodListPresenter list
+						detect: [:sunitTabMethodService | sunitTabMethodService selector = selectedTestMethodService selector]
+						ifNone: [].
+			toSelect ifNotNil: [sunitTabSelections add: toSelect]].
+	self sunitPresenter methodListPresenter selections: sunitTabSelections.
+	self selectSUnitTab.
+	^self sunitPresenter runSelected!
+
 selectedGlobalName: selection
 	| string rs |
 	rs := ReadStream on: (selection at: 1).
@@ -509,6 +527,8 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #removeGlobal!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #removeGlobalsTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #removeProjectTab!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #runAll!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #runSelected!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #selectedGlobalName:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #showDictionaryList!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #showPackageList!event handlers!public!updating! !

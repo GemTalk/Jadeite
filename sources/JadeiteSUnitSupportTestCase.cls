@@ -10,6 +10,14 @@ JadeiteSUnitSupportTestCase comment: ''!
 !JadeiteSUnitSupportTestCase categoriesForClass!Unclassified! !
 !JadeiteSUnitSupportTestCase methodsFor!
 
+assertMenuItem: command isEnabled: boolean
+	| commandQuery |
+	commandQuery := self
+				queryCommand: command
+				inPresenter: self projectsPresenter
+				view: self dictionaryPresenter view.
+	boolean ifTrue: [self assert: commandQuery isEnabled] ifFalse: [self deny: commandQuery isEnabled]!
+
 assertPackageInList: name
 	self denyIsNil: (sunitBrowser primaryPresenter packageListPresenter list
 				detect: [:packageService | packageService name = name]
@@ -120,7 +128,8 @@ sunitPresenter
 
 tearDown
 	super tearDown.
-	self assert:  sunitBrowser view close.!
+	self assert: sunitBrowser view close.
+	projectsBrowser ifNotNil: [self destroy: projectsBrowser]!
 
 test_abortNoSelections
 	| abortCommand |
@@ -332,12 +341,66 @@ test_openTwoSUnitBrowsersLosingPackageSelection
 	self assert: self sunitPresenter methodListPresenter selections first selector equals: #test1]
 			ensure: [self destroy: secondSunitBrowser]!
 
+test_projectBrowserRunAllTests
+	"https://github.com/GemTalk/Jadeite/issues/218#issuecomment-445919980"
+	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'JadeServerTest' in: self classListPresenter.
+	self projectsPresenter runAll.
+	self assert: self projectsPresenter isSunitTabSelected.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selections size
+		equals: self projectsPresenter sunitPresenter methodListPresenter list size.
+	self projectsPresenter sunitPresenter methodListPresenter selections
+		do: [:methodService | self assert: methodService testResult equals: 'passed']!
+
+test_projectBrowserRunSelectedTests
+	"https://github.com/GemTalk/Jadeite/issues/218#issuecomment-445919980"
+	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanClassServiceTest' in: self classListPresenter.
+	self selecProjectBrowserMethodNamed: #test_addCategory.
+	self projectsPresenter runSelected.
+	self assert: self projectsPresenter isSunitTabSelected.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selection size equals: 1.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first selector
+		equals: #test_addCategory.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first testResult
+		equals: 'passed'!
+
+test_projectBrowserTestRunningMenuItemEnablement
+	"https://github.com/GemTalk/Jadeite/issues/218#issuecomment-445919980"
+
+	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanClassServiceTest' in: self classListPresenter.
+	self assertMenuItem: #runMethodTests isEnabled: false.
+	self assertMenuItem: #runAll isEnabled: true.
+	self assertMenuItem: #runSelected isEnabled: false.
+	self selecProjectBrowserMethodNamed: #test_addCategory.
+	self assertMenuItem: #runMethodTests isEnabled: true.
+	self assertMenuItem: #runAll isEnabled: true.
+	self assertMenuItem: #runSelected isEnabled: true.
+	self selecProjectBrowserMethodNamed: #setUp.
+	self assertMenuItem: #runMethodTests isEnabled: false.
+	self assertMenuItem: #runAll isEnabled: true.
+	self assertMenuItem: #runSelected isEnabled: false!
+
 test_refresh
 	| source newMethod |
 	self testsIssue: #issue279 withTitle: 'Sunit browser refresh, auto or manual'.
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
-	
-	[self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
 	self assert: self sunitPresenter methodListPresenter list size equals: 4.
 	newMethod := self sunitPresenter methodListPresenter list
@@ -355,8 +418,7 @@ test_refresh
 				detect: [:methodService | methodService selector == #testMethod]
 				ifNone: [].
 	self denyIsNil: newMethod.
-	self assert: self sunitPresenter methodListPresenter list size equals: 5]
-			ensure: [self destroy: projectsBrowser]!
+	self assert: self sunitPresenter methodListPresenter list size equals: 5!
 
 test_registeredPresentersInSUnitBrowserCleanedUp
 	| registeredPresenters secondBrowser |
@@ -366,6 +428,23 @@ test_registeredPresentersInSUnitBrowserCleanedUp
 	self destroy: secondBrowser.
 	secondBrowser := nil.
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
+
+test_resetMenuItemsNamedProperly
+	"https://github.com/GemTalk/Jadeite/issues/218#issuecomment-445919980"
+
+	| resetMenuItem |
+	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self projectsPresenter selectSUnitTab.
+	resetMenuItem := self projectsPresenter sunitPresenter methodListPresenter view contextMenu items
+				detect: [:menuItem | '*Reset*' match: menuItem text]
+				ifNone: [].
+	self denyIsNil: resetMenuItem.
+	resetMenuItem := self sunitPresenter methodListPresenter view contextMenu items
+				detect: [:menuItem | '*Reset*' match: menuItem text]
+				ifNone: [].
+	self denyIsNil: resetMenuItem!
 
 test_resetStatusBar
 	self testsIssue: #issue411 withTitle: 'SUnit browser''s colored status bar is sticky'.
@@ -391,7 +470,7 @@ test_runClassTests
 	projectsBrowser
 		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	
-	[self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter.
 	self projectsPresenter selectSUnitTab.
@@ -405,8 +484,7 @@ test_runClassTests
 	self selectServiceNamed: 'RowanAnsweringServiceTest' in: self classListPresenter.
 	self projectsPresenter selectSUnitTab.
 	self projectsPresenter runClassTests.
-	self methodListPresenter list do: [:methodService | self assert: methodService passed]]
-			ensure: [self destroy: projectsBrowser]!
+	self methodListPresenter list do: [:methodService | self assert: methodService passed]!
 
 test_saveMethodInProjectBrowser
 	"should show up in sunit browser and disappear when removed"
@@ -479,8 +557,7 @@ test_selectClassDoesNotLoseTestResults
 	self selectRowanSample1Test.
 	self projectsPresenter selectSUnitTab.
 	secondBrowser := JadeiteBrowser showOnSession: session.
-	
-	[self projectsPresenter sunitPresenter runAll.
+	self projectsPresenter sunitPresenter runAll.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult
 		equals: 'passed'.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list second testResult
@@ -491,8 +568,7 @@ test_selectClassDoesNotLoseTestResults
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult
 		equals: 'passed'.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list second testResult
-		equals: 'passed']
-			ensure: [self destroy: secondBrowser]!
+		equals: 'passed'!
 
 test_selectInProjectBrowserDoesNotUpdateSunitBrowser
 	| sunitDisplayedMethodCount sunitDisplaySelectors |
@@ -692,16 +768,14 @@ test_sunitTabPassingDebugTestShowsResult
 	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
 	projectsBrowser
 		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
-	
-	[self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter.
 	self projectsPresenter selectSUnitTab.
 	methodService := self projectsPresenter sunitPresenter methodListPresenter list first.
 	self projectsPresenter sunitPresenter methodListPresenter selection: (Array with: methodService).
 	self projectsPresenter sunitPresenter debug.
-	self assert: methodService testResult equals: 'passed']
-			ensure: [self destroy: projectsBrowser]!
+	self assert: methodService testResult equals: 'passed'!
 
 test_sunitTabUpdates
 	self testsIssue: #issue410
@@ -727,8 +801,7 @@ test_sunitTabUpdates
 test_testsRunInSelectedTestClass
 	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
 	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
-	
-	[self setupRunInSelectedTestClassTest.
+	self setupRunInSelectedTestClassTest.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
 	self selectSUnitBrowserMethodsNamed: (Array with: #test_method).
@@ -762,8 +835,8 @@ test_testsRunInSelectedTestClass
 		equals: #RowanSample1SubClassTest.
 	self assert: self sunitPresenter runAll isKindOf: JadeTestResult.	"runSelected sends back the result of the last test"
 	self assert: (session executeString: 'RowanSample1Test testClassVar')
-		equals: #RowanSample1SubClassTest]
-			ensure: [self destroy: projectsBrowser]! !
+		equals: #RowanSample1SubClassTest! !
+!JadeiteSUnitSupportTestCase categoriesFor: #assertMenuItem:isEnabled:!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #assertPackageInList:!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #denyPackageInList:!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #isSampleProjectLoaded!private!support! !
@@ -791,8 +864,12 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectNoDuplicates!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_openSunitBrowser!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_openTwoSUnitBrowsersLosingPackageSelection!public!test updates from other browsers! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_projectBrowserRunAllTests!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_projectBrowserRunSelectedTests!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_projectBrowserTestRunningMenuItemEnablement!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_refresh!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_registeredPresentersInSUnitBrowserCleanedUp!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_resetMenuItemsNamedProperly!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_resetStatusBar!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_runClassTests!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_saveMethodInProjectBrowser!public!test updates from other browsers!tests! !

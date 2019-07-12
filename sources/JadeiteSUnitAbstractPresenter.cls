@@ -15,6 +15,9 @@ createComponents
 	methodListPresenter := self add: ListPresenter new name: 'testCases'.
 	textResultPresenter := self add: TextPresenter new name: 'textResult'!
 
+editSelectAll
+	methodListPresenter selections: methodListPresenter list. !
+
 refresh
 
 	self subclassResponsibility!
@@ -80,6 +83,7 @@ updateResult: jadeResult
 	jadeResult setSummary.
 	self setColorFor: jadeResult! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #createComponents!public! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #editSelectAll!menu handlers support!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #refresh!event handlers!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #refreshFromServerAfterAbort:!event handlers!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #reset!public! !

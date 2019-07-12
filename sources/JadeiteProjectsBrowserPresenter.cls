@@ -6,7 +6,9 @@ RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteProjectsBrowserPresenter guid: (GUID fromString: '{258266f3-948d-47d3-afa6-c6d0c941ddc5}')!
-JadeiteProjectsBrowserPresenter comment: 'In packages pane, show projects & packages. Remove class categories.'!
+JadeiteProjectsBrowserPresenter comment: 'Use subclass JadeiteBrowserPresenter now which integrates the dictionary browser. 
+In packages pane, show projects & packages. Remove class categories.
+'!
 !JadeiteProjectsBrowserPresenter categoriesForClass!Unclassified! !
 !JadeiteProjectsBrowserPresenter methodsFor!
 
@@ -865,7 +867,7 @@ gotoMethodDefinedPackage
 
 	| selectedCategory selectedMethod className |
 	selectedCategory := categoryListPresenter selectionIfNone: [].
-	selectedMethod := methodListPresenter selectionIfNone: [].
+	selectedMethod := methodListPresenter selectionIfNone: [^self].
 	className := self selectedClass name.
 	self selectClassListTab.
 	self gotoProjectNamed: selectedMethod projectName.
@@ -969,7 +971,7 @@ jadeMenuStrings
 	^#(
 		'&Jadeite'
 		'&Abort Transaction//abortTransaction'
-		'&Commit Transaction//commitTransaction'
+		'&Commit Transaction//commitTransaction' 
 		'-'
 		'&New Projects Browser/Ctrl+N/newBrowser'
 		'&New Projects Tab/Ctrl+T/addSystemBrowser'
@@ -1038,8 +1040,9 @@ methodsMenuStrings
 				fileOutMethods;
 				findMethod; 
 				runMethodTests;
-				gotoMethodDefinedPackage].
-	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods'  '&File out methods ...//fileOutMethods' 'Find Method .../Ctrl+Shift+M/findMethod'  '-' '&Remove Method(s) ...//removeMethods'  'Run &Tests/Ctrl+B/runMethodTests' 'Go To Defining Package//gotoMethodDefinedPackage')!
+				gotoMethodDefinedPackage; runAll; runSelected].
+	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods'  '&File out methods ...//fileOutMethods' 'Find Method .../Ctrl+Shift+M/findMethod'  '-' '&Remove Method(s) ...//removeMethods'  'Debug &Tests/Ctrl+B/runMethodTests' 		'Run All Tests/Ctrl+Shift+A/runAll'
+		'Run Selected/Ctrl+Shift+S/runSelected' '-' 'Go To Defining Package//gotoMethodDefinedPackage' )!
 
 methodSourcePresenter: anObject
 	methodSourcePresenter := anObject!
@@ -1391,14 +1394,14 @@ queryCommand: aCommandQuery
 				^true].
 	(#(#findMethod) includes: command)
 		ifTrue: 
-			[ aCommandQuery
-				isEnabled: self selectedClass notNil. ^true].
-	(#(#runClassTests) includes: command)
+			[aCommandQuery isEnabled: self selectedClass notNil.
+			^true].
+	(#(#runClassTests #runAll) includes: command)
 		ifTrue: 
 			[aCommandQuery
 				isEnabled: (self selectedClass ifNil: [false] ifNotNil: [:classService | classService isTestCase]).
 			^true].
-	(#(#runMethodTests) includes: command)
+	(#( #runSelected #runMethodTests) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: (methodListPresenter selections notEmpty
 						and: [methodListPresenter selections first isTestMethod]).
@@ -1453,7 +1456,7 @@ queryCommand: aCommandQuery
 			^true].
 	(#(#browseHierarchyImplementors #browseHierarchySenders) includes: command)
 		ifTrue: 
-			[aCommandQuery isEnabled: (methodListPresenter selections size = 1).
+			[aCommandQuery isEnabled: methodListPresenter selections size = 1.
 			^true].
 	(#(#browseSelectedMethods) includes: command)
 		ifTrue: 

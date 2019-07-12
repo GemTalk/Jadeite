@@ -481,6 +481,23 @@ test_projectInfoTabMenuItemNames
 	self projectsPresenter projectInfoTab selectionByIndex: 8.
 	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'projectUrl'!
 
+test_projectListMenuItemsEnabled
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self projectListPresenter view contextMenu itemsDo: 
+			[:item |
+			| query |
+			query := CommandQuery commandDescription: item source: self projectListPresenter view.
+			self projectsPresenter queryCommand: query.
+			self assert: query isEnabled].
+	self selectNoneProject.
+	self projectListPresenter view contextMenu itemsDo: 
+			[:item |
+			| query |
+			query := CommandQuery commandDescription: item source: self projectListPresenter view.
+			self projectsPresenter queryCommand: query.
+			('*Refresh*' match: item text) ifTrue: [self assert: query isEnabled] ifFalse: [self deny: query isEnabled]]!
+
 test_projectSingleSelection
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self deny: self projectsPresenter projectListPresenter view isMultiSelect!
@@ -617,6 +634,7 @@ test_textTabSelectedWithProjectChange
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_packageDictionaryCardsTabName!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_projectInfoTabMenuCopy!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_projectInfoTabMenuItemNames!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_projectListMenuItemsEnabled!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_projectSingleSelection!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeDictionary!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeDictionaryMenuItemEnablement!public!test issue 217! !
