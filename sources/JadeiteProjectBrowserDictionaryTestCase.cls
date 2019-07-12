@@ -54,6 +54,24 @@ test_canSelectUnauthorizedObjectStub
 	self selectClassInHierarchyNamed: 'UnauthorizedObjectStub'.
 	self assert: ('*UnauthorizedObjectStub*' match: self projectsPresenter classDefinitionPresenter value)!
 
+test_compileMethodInNonPackagedClass
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self testsRowanIssue: #issue499
+		withTitle: 'RwPrjBrowserTool>>addOrUpdateMethod:inProtocol:forClassNamed:isMeta: returns nil'.	"Rowan issue"
+	self selectNoneProject.
+	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
+	self selectServiceNamed: 'Array' in: self classListPresenter.
+	self methodSourcePresenter value: 'foo ^''foo'''.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	
+	[self assert: self methodListPresenter selection selector equals: #foo.
+	self assert: self methodSourcePresenter value equals: 'foo ^''foo'''.
+	self assert: (session executeString: 'Array includesSelector: #foo')]
+			ensure: 
+				[self abortTransaction.
+				self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
+
 test_dictionaryNameIsString
 	"for consistency, service names should be strings"
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
@@ -426,6 +444,43 @@ test_packageDictionaryCardsTabName
 	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'Array').
 	self assert: self projectsPresenter packageDictionaryCards view currentCard arrangement equals: 'Dictionaries'!
 
+test_projectInfoTabMenuCopy
+	| copyItem |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectServiceNamed: 'Tonel' in: self projectListPresenter.
+	copyItem := self projectsPresenter projectInfoTab view contextMenu items
+				detect: [:item | item text = 'Copy'].
+	self assert: copyItem command equals: #copyProjectInfo.
+	self projectsPresenter projectInfoTab selectionByIndex: 1.
+	self projectsPresenter copyProjectInfo.
+	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'rowanProjectsHome'.
+	"we don't know what the path is so just ensure it's not equal to the answer to the next assert:"
+	self deny: Clipboard current getText equals: 'false'.
+	self projectsPresenter projectInfoTab selectionByIndex: 7.
+	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'isDirty'.
+	self projectsPresenter copyProjectInfo.	"Tonel isn't usually changed so probably safe to assume answer is false"
+	self assert: Clipboard current getText equals: 'false'!
+
+test_projectInfoTabMenuItemNames
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectServiceNamed: 'Tonel' in: self projectListPresenter.
+	self projectsPresenter projectInfoTab selectionByIndex: 1.
+	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'rowanProjectsHome'.
+	self projectsPresenter projectInfoTab selectionByIndex: 2.
+	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: nil.
+	self projectsPresenter projectInfoTab selectionByIndex: 3.
+	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'name'.
+	self projectsPresenter projectInfoTab selectionByIndex: 4.
+	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'sha'.
+	self projectsPresenter projectInfoTab selectionByIndex: 5.
+	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'branch'.
+	self projectsPresenter projectInfoTab selectionByIndex: 6.
+	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'isSkew'.
+	self projectsPresenter projectInfoTab selectionByIndex: 7.
+	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'isDirty'.
+	self projectsPresenter projectInfoTab selectionByIndex: 8.
+	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'projectUrl'!
+
 test_projectSingleSelection
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self deny: self projectsPresenter projectListPresenter view isMultiSelect!
@@ -467,6 +522,23 @@ test_removeDictionaryNoSelection
 	self projectsPresenter removeDictionaries.	"should be no-op"
 	self assert: (self dictionaryPresenter list collect: [:dictionaryService | dictionaryService name])
 		equals: dictionaryNames!
+
+test_removeMethodInNonPackagedClass
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
+	self selectServiceNamed: 'Array' in: self classListPresenter.
+	self methodSourcePresenter value: 'foo ^''foo'''.
+	
+	[self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self assert: self methodListPresenter selection selector equals: #foo.
+	self projectsPresenter removeMethods: self classListPresenter selections.
+	self deny: (self methodListPresenter selectionIfNone: [false])]
+			ensure: 
+				[self dictionaryPresenter resetSelection.	"to avoid long refresh"
+				self abortTransaction.
+				self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
 
 test_selectProjectClearHierarchy
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
@@ -519,6 +591,7 @@ test_textTabSelectedWithProjectChange
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_abortInTranscriptRemovesDictionaryInBrowser!public! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_addDictionary!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_canSelectUnauthorizedObjectStub!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_compileMethodInNonPackagedClass!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_dictionaryNameIsString!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_dictionarySelectionChangesTab!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_dictionarySelectionIndependentInTab!public!test issue 217! !
@@ -542,10 +615,13 @@ test_textTabSelectedWithProjectChange
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_noneProjectRetainsSelectionWhenNewTabAdded!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_packageAndDictionaryViewClass!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_packageDictionaryCardsTabName!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_projectInfoTabMenuCopy!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_projectInfoTabMenuItemNames!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_projectSingleSelection!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeDictionary!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeDictionaryMenuItemEnablement!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeDictionaryNoSelection!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeMethodInNonPackagedClass!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_selectProjectClearHierarchy!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_systemTabsShowDictionariesAndProjects!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_textTabsChange!public!test issue 217! !

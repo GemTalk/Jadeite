@@ -452,6 +452,16 @@ testsIssue: aSymbol withTitle: anObject
 
 	!
 
+testsRowanIssue: aSymbol withTitle: anObject
+	"send this to help identify which tests test which Rowan project issues"
+
+	" a helpful parameter format is #issue<issueNumber>"
+
+	"Issues currently reside in: 
+		https://github.com/GemTalk/Rowan/issues"
+
+	!
+
 transcript
 	^transcript!
 
@@ -549,6 +559,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #testsIssue:withTitle:!issue test support!public!support! !
+!JadeiteAbstractTestCase categoriesFor: #testsRowanIssue:withTitle:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #transcript!public!transcript support! !
 !JadeiteAbstractTestCase categoriesFor: #transcriptProjectList!public!transcript support! !
 !JadeiteAbstractTestCase categoriesFor: #transcriptProjectNamed:!public!transcript support! !

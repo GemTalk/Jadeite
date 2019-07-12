@@ -120,6 +120,7 @@ buildProjectTab
 			projectInfoView := projectInfoTab createView: 'Editable list view'.
 			projectInfoView backcolor: JadeTextStyles default colorForNoEdits.
 			projectInfoView
+				contextMenu: self projectInfoMenu; 
 				hasColumnHeaders: false;
 				hasGridLines: false;
 				isMultiSelect: true.
@@ -219,6 +220,18 @@ packageDictionaryCards
 
 	^packageDictionaryCards!
 
+projectInfoMenu
+	^Menu fromStrings: self projectInfoMenuStrings!
+
+projectInfoMenuStrings
+	self rowanFixMe.	"this really is a cumbersome way to build a menu."
+	0 == 1
+		ifTrue: 
+			[self
+				copyProjectInfo
+				].
+	^#('Dictionaries' 'Copy//copyProjectInfo')!
+
 queryCommand: aCommandQuery
 	| command |
 	command := aCommandQuery command.
@@ -229,6 +242,13 @@ queryCommand: aCommandQuery
 	(#(#removeDictionaries) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: self dictionaryPresenter selections notEmpty.
+			^true].
+	(self projectMenuCommands includes: command)
+		ifTrue: 
+			[aCommandQuery
+				isEnabled: (projectListPresenter selections notEmpty and: 
+							[(projectListPresenter selections includes: RowanProjectService noneProject) not
+								or: [command = #refreshFromServer]]).
 			^true].
 	^super queryCommand: aCommandQuery!
 
@@ -478,6 +498,8 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #isRowanProjectSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #packageDictionaryCards!accessing!private! !
+!JadeiteBrowserPresenter categoriesFor: #projectInfoMenu!menus!public! !
+!JadeiteBrowserPresenter categoriesFor: #projectInfoMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #refreshClass!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #refreshFromServerAfterAbort:!public! !

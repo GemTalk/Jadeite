@@ -1451,10 +1451,6 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isChecked: true.
 			^true].
-	(self projectMenuCommands includes: command)
-		ifTrue: 
-			[aCommandQuery isEnabled: projectListPresenter selections notEmpty.
-			^true].
 	(#(#browseHierarchyImplementors #browseHierarchySenders) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: (methodListPresenter selections size = 1).
