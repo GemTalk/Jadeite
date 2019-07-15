@@ -27,7 +27,8 @@ debug
 				with: methodService selector
 				with: testClassService name]
 					ifCurtailed: [^self].
-			methodService setPassed]!
+			methodService setPassed].
+	methodListPresenter view invalidate!
 
 editFind
 
@@ -57,7 +58,8 @@ jadeBrowseTests
 	^parentPresenter topShell jadeBrowseTests!
 
 jadeDebug
-	"hot key hook"  !
+	"hot key hook"  
+	self debug!
 
 jadeDisplay
 

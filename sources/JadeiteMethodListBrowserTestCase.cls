@@ -99,7 +99,8 @@ tearDown
 	super tearDown.
 	methodListBrowser
 		ifNotNil: 
-			[self destroy: methodListBrowser.
+			[methodListBrowser primaryPresenter methodSourcePresenter documentPresenter view isModified: false.
+			self destroy: methodListBrowser.
 			methodListBrowser := nil]!
 
 test_browseClass
