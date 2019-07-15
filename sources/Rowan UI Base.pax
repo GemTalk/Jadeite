@@ -3978,7 +3978,7 @@ browseClass
 
 	| selection browserClass |
 	selection := methodListPresenter selection.
-	browserClass := Smalltalk at: #RowanSystemBrowser.		"Avoid circular dependencies on load order"
+	browserClass := Smalltalk at: #JadeiteBrowser.		"Avoid circular dependencies on load order"
 	(browserClass showOnSession: self gciSession)
 		selectClass: selection gsClass name
 		selector: selection name.

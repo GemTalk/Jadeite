@@ -502,6 +502,10 @@ test_projectSingleSelection
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self deny: self projectsPresenter projectListPresenter view isMultiSelect!
 
+test_protectedDictionaryNames
+	self assert: self projectsPresenter protectedDictionaries
+		equals: #('Published' 'Globals' 'UserGlobals')!
+
 test_removeDictionary
 	| dictionaryName |
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
@@ -636,6 +640,7 @@ test_textTabSelectedWithProjectChange
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_projectInfoTabMenuItemNames!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_projectListMenuItemsEnabled!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_projectSingleSelection!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_protectedDictionaryNames!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeDictionary!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeDictionaryMenuItemEnablement!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeDictionaryNoSelection!public!test issue 217! !

@@ -13,6 +13,7 @@ JadeiteBrowserPresenter comment: ''!
 addDictionary
 	| newDictionaryName |
 	(newDictionaryName := Prompter prompt: 'Enter new dictionary name:') isNil ifTrue: [^self].
+	newDictionaryName isEmpty ifTrue: [^MessageBox notify: 'Blank dictionary names not allowed'].
 	(dictionaryPresenter list detect: [:service | service name = newDictionaryName] ifNone: [])
 		ifNotNil: [^MessageBox notify: 'Dictionary ' , newDictionaryName , ' already exists'].
 	^self basicAddDictionaryNamed: newDictionaryName!
@@ -232,6 +233,9 @@ projectInfoMenuStrings
 				].
 	^#('Dictionaries' 'Copy//copyProjectInfo')!
 
+protectedDictionaries
+	^#('Published' 'Globals' 'UserGlobals')!
+
 queryCommand: aCommandQuery
 	| command |
 	command := aCommandQuery command.
@@ -295,6 +299,9 @@ removeDictionaries
 	dictionaryPresenter selections isEmpty ifTrue: [^self].
 	dictionaryNames := dictionaryPresenter selections
 				collect: [:dictionaryService | dictionaryService name].
+	(dictionaryNames includesAnyOf: self protectedDictionaries)
+		ifTrue: 
+			[^MessageBox notify: 'Cannot remove protected dictionaries ' , self protectedDictionaries printString].
 	(MessageBox
 		confirm: 'Really remove dictionary(s) ' , (dictionaryNames fold: [:a :b | a , ' ' , b]) , ' ?')
 			ifFalse: [^self].
@@ -518,6 +525,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #packageDictionaryCards!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #projectInfoMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #projectInfoMenuStrings!menus!public! !
+!JadeiteBrowserPresenter categoriesFor: #protectedDictionaries!constants!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #refreshClass!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #refreshFromServerAfterAbort:!public! !

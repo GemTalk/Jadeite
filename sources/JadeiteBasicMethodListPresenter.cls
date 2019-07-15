@@ -19,13 +19,10 @@ basicRemoveMethods
 browseClass
 	| classService selector |
 	classService := RowanClassService new name: methodListPresenter selection className.
-	classService meta: methodListPresenter selection meta. 
+	classService meta: methodListPresenter selection meta.
 	BrowserUpdate current updateService: classService session: gciSession.
 	selector := methodListPresenter selection selector.
-	^Cursor wait showWhile: 
-			[classService projectName = RowanService notRowanizedPackageName
-				ifTrue: [self openDictionaryBrowserOn: classService selector: selector]
-				ifFalse: [self openProjectBrowserOn: classService selector: selector]]!
+	^Cursor wait showWhile: [self openProjectBrowserOn: classService selector: selector]!
 
 browseHierarchyImplementors
 	^self browseHierarchyImplementorsOf: methodListPresenter selection selector className: methodListPresenter selection className!
