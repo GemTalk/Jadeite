@@ -10,7 +10,24 @@ JadeiteProjectBrowserDictionaryTestCase comment: ''!
 !JadeiteProjectBrowserDictionaryTestCase categoriesForClass!Unclassified! !
 !JadeiteProjectBrowserDictionaryTestCase methodsFor!
 
+assertDictionaryInList: dictionaryName
+	self denyIsNil: (self dictionaryPresenter list
+				detect: [:dictionaryService | dictionaryService name = dictionaryName]
+				ifNone: [])!
+
+assertDictionaryNotInList: dictionaryName
+	self assertIsNil: (self dictionaryPresenter list
+				detect: [:dictionaryService | dictionaryService name = dictionaryName]
+				ifNone: [])!
+
 test_abortInTranscriptRemovesDictionaryInBrowser
+	"This test will not work currently because of issue
+	https://github.com/GemTalk/Rowan/issues/349
+
+	Work around was to commit after a dictionary add
+	or removal"
+
+	true ifTrue: [^self].
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectNoneProject.
 	self projectsPresenter basicAddDictionaryNamed: 'Test_Abort'.
@@ -27,20 +44,18 @@ test_abortInTranscriptRemovesDictionaryInBrowser
 				self ensureRowanSample1Loaded]!
 
 test_addDictionary
+	| dictionaryName |
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectNoneProject.
+	dictionaryName := 'Test_addDictionary'.
 	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
-	self projectsPresenter basicAddDictionaryNamed: 'Test_addDictionary'.
-	self assert: (self dictionaryPresenter list at: 2) name equals: 'Test_addDictionary'.
-	self assert: self dictionaryPresenter selection name equals: 'Test_addDictionary'.
-	self abortTransaction.
-	
-	[self assertIsNil: (self dictionaryPresenter list
-				detect: [:dictionaryService | dictionaryService name = 'Test_addDictionary']
-				ifNone: [])]
-			ensure: 
-				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+	self projectsPresenter basicAddDictionaryNamed: dictionaryName.
+	self assert: (self dictionaryPresenter list at: 2) name equals: dictionaryName.
+	self assert: self dictionaryPresenter selection name equals: dictionaryName.
+	self projectsPresenter basicRemoveDictionaries: (Array with: dictionaryName).
+	self assertIsNil: (self dictionaryPresenter list
+				detect: [:dictionaryService | dictionaryService name = dictionaryName]
+				ifNone: [])!
 
 test_canSelectUnauthorizedObjectStub
 	"RowanClassService instVarNames was getting set to a STONReference
@@ -53,6 +68,26 @@ test_canSelectUnauthorizedObjectStub
 	self selectHierarchyTab.
 	self selectClassInHierarchyNamed: 'UnauthorizedObjectStub'.
 	self assert: ('*UnauthorizedObjectStub*' match: self projectsPresenter classDefinitionPresenter value)!
+
+test_commitAfterDictionaryAddOrRemove
+	"Tests workaround for issue
+	https://github.com/GemTalk/Rowan/issues/349
+
+	Work around was to commit after a dictionary add
+	or removal"
+
+	| dictionaryName |
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	dictionaryName := 'Test_CommitAfterAdd'.
+	self projectsPresenter basicAddDictionaryNamed: dictionaryName.
+	self assertDictionaryInList: dictionaryName.
+	transcript toolbarPresenter abort.
+	self assertDictionaryInList: dictionaryName.
+	self projectsPresenter basicRemoveDictionaries: (Array with: dictionaryName).
+	self assertDictionaryNotInList: dictionaryName.
+	transcript toolbarPresenter abort.
+	self assertDictionaryNotInList: dictionaryName!
 
 test_compileMethodInNonPackagedClass
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
@@ -351,9 +386,9 @@ test_insertDictionaryRandomly
 	self assert: (self dictionaryPresenter list at: self dictionaryPresenter list size) name
 		equals: 'AddedDictionaryLast'.
 	self assert: self dictionaryPresenter selection name equals: 'AddedDictionaryLast'.
-	self abortTransaction.
-	
-	[self assertIsNil: (self dictionaryPresenter list
+	self projectsPresenter
+		basicRemoveDictionaries: #('AddedDictionary2' 'AddedDictionary3' 'AddedDictionaryLast').
+	self assertIsNil: (self dictionaryPresenter list
 				detect: [:dictionaryService | dictionaryService name = 'AddedDictionary2']
 				ifNone: []).
 	self assertIsNil: (self dictionaryPresenter list
@@ -361,10 +396,7 @@ test_insertDictionaryRandomly
 				ifNone: []).
 	self assertIsNil: (self dictionaryPresenter list
 				detect: [:dictionaryService | dictionaryService name = 'AddedDictionaryLast']
-				ifNone: [])]
-			ensure: 
-				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				ifNone: [])!
 
 test_minimumClassStateReturned
 	"in order to speed up the retrieval of the Globals symbol dictionary,
@@ -609,9 +641,12 @@ test_textTabSelectedWithProjectChange
 	self assert: self projectsPresenter textAreaTabs currentCard displayString equals: 'projectInfoTab'.
 	self selectNoneProject.
 	self assert: self projectsPresenter textAreaTabs currentCard displayString equals: 'globalsTab'! !
-!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_abortInTranscriptRemovesDictionaryInBrowser!public! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #assertDictionaryInList:!private!support! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #assertDictionaryNotInList:!private!support! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_abortInTranscriptRemovesDictionaryInBrowser!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_addDictionary!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_canSelectUnauthorizedObjectStub!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_commitAfterDictionaryAddOrRemove!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_compileMethodInNonPackagedClass!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_dictionaryNameIsString!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_dictionarySelectionChangesTab!public!test issue 217! !

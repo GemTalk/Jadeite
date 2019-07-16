@@ -16,7 +16,9 @@ addDictionary
 	newDictionaryName isEmpty ifTrue: [^MessageBox notify: 'Blank dictionary names not allowed'].
 	(dictionaryPresenter list detect: [:service | service name = newDictionaryName] ifNone: [])
 		ifNotNil: [^MessageBox notify: 'Dictionary ' , newDictionaryName , ' already exists'].
-	^self basicAddDictionaryNamed: newDictionaryName!
+	(MessageBox
+		confirm: 'Really add dictionary ' , newDictionaryName , '? This will commit the transaction')
+			ifTrue: [^self basicAddDictionaryNamed: newDictionaryName]!
 
 addNoneProject
 	(projectListPresenter list includes: RowanProjectService noneProject)
@@ -303,7 +305,8 @@ removeDictionaries
 		ifTrue: 
 			[^MessageBox notify: 'Cannot remove protected dictionaries ' , self protectedDictionaries printString].
 	(MessageBox
-		confirm: 'Really remove dictionary(s) ' , (dictionaryNames fold: [:a :b | a , ' ' , b]) , ' ?')
+		confirm: 'Really remove dictionary(s) ' , (dictionaryNames fold: [:a :b | a , ' ' , b]) , ' ?
+This will commit the transaction.')
 			ifFalse: [^self].
 	self basicRemoveDictionaries: dictionaryNames!
 
