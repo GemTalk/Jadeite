@@ -24,6 +24,7 @@ package classNames
 	add: #JadeiteMethodListBrowser;
 	add: #JadeiteMethodListPresenter;
 	add: #JadeiteMethodSourcePresenter;
+	add: #JadeiteMultilinePrompter;
 	add: #JadeitePreferences;
 	add: #JadeitePreferencesPresenter;
 	add: #JadeitePreferencesShell;
@@ -732,6 +733,11 @@ JadeFindDialog subclass: #JadeiteFindMethodDialog
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeFindClassDialog subclass: #JadeiteFindClassDialog
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+StsMultilinePrompter subclass: #JadeiteMultilinePrompter
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

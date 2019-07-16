@@ -839,7 +839,7 @@ gitCommit
 		ifTrue: [MessageBox notify: 'Only one project may be committed'].
 	projectName := projectListPresenter selection name.
 	message := String new asValue.
-	promptResult := StsMultilinePrompter
+	promptResult := JadeiteMultilinePrompter
 				on: message
 				prompt: 'Enter Git commit message. (Note - This will NOT do a GemStone commit)'
 				caption: 'Committing Project ' , projectName.
