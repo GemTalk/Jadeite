@@ -69,6 +69,23 @@ test_canSelectUnauthorizedObjectStub
 	self selectClassInHierarchyNamed: 'UnauthorizedObjectStub'.
 	self assert: ('*UnauthorizedObjectStub*' match: self projectsPresenter classDefinitionPresenter value)!
 
+test_changeMethodInDictionaryViewShowsDirtyInProject
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectRowanSample1Test.
+	self cloneRowanSample1.
+	self ensureRowanSample1Loaded.	"make sure project is not dirty"
+	self deny: self projectListPresenter selection isDirty.
+	
+	[self
+		saveMethod: 'test3 ^3'
+		in: 'RowanSample1Test'
+		category: 'tests'.
+	self assert: self projectListPresenter selection isDirty]
+			ensure: 
+				[self abortTransaction.
+				self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
+
 test_commitAfterDictionaryAddOrRemove
 	"Tests workaround for issue
 	https://github.com/GemTalk/Rowan/issues/349
@@ -657,6 +674,7 @@ test_textTabSelectedWithProjectChange
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_abortInTranscriptRemovesDictionaryInBrowser!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_addDictionary!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_canSelectUnauthorizedObjectStub!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_changeMethodInDictionaryViewShowsDirtyInProject!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_commitAfterDictionaryAddOrRemove!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_compileMethodInNonPackagedClass!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_dictionaryNameIsString!public!test issue 217! !

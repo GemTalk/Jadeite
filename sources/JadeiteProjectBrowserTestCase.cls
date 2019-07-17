@@ -4248,7 +4248,8 @@ test_unicodeDisplayMethod
 	self testsIssue: #issue
 		withTitle: '(3.0.65) browse methods containing `%` yields "Can''t hold $\x3B1" Dollphin error'.
 	session executeString: 'RowanServicesTest new compileUnicodeMethod'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	
+	[self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
 	self selectServiceNamed: 'RowanServicesTest' in: self classListPresenter.
 	self selectMethodNamed: #iAmAUnicodeMethod.
@@ -4266,7 +4267,11 @@ test_unicodeDisplayMethod
 	self assert: methodSource view backcolor equals: JadeTextStyles default colorForUndisplayableSource]
 			ensure: 
 				[self projectsPresenter basicRemoveMethods.
-				secondMethodListBrowser view close]!
+				secondMethodListBrowser view close]]
+			ensure: 
+				[self abortTransaction.
+				self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
 
 test_unicodeSpecialMethodNotRed
 	"the method that generates the non-displayable source message
