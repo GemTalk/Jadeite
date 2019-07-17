@@ -170,6 +170,13 @@ createSchematicWiring
 	super createSchematicWiring.
 	dictionaryPresenter when: #'selectionChanged' send: #'updateDictionary' to: self!
 
+createSchematicWiringForMethodSource
+
+	super createSchematicWiringForMethodSource.
+	methodSourcePresenter  		
+		when: #'textChanged'				send: #'methodValueChanged'	to: self
+!
+
 dictionaryMenu
 	^Menu fromStrings: self dictionaryMenuStrings!
 
@@ -515,6 +522,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
 !JadeiteBrowserPresenter categoriesFor: #createListViewFor:!private! !
 !JadeiteBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
+!JadeiteBrowserPresenter categoriesFor: #createSchematicWiringForMethodSource!create schemantic wiring!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryPresenter!accessing!private! !

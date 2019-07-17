@@ -622,6 +622,8 @@ test_selectAfterDiveNoStepPoint
 		equals: '[] in  ExecBlock1 (RowanSample1) >> interestingLoop @2 line 8'.
 	[self selectFrameAt: 2] fork.	"<<< Walkback occurred here"	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
 	(Delay forMilliseconds: 100) wait.
+	[debugger documentPresenter value replaceLfWithCrLf isEmpty]
+		whileTrue: [(Delay forMilliseconds: 10) wait].
 	self assert: debugger documentPresenter value replaceLfWithCrLf
 		equals: self interestingLoopMethodSource]
 			ensure: 

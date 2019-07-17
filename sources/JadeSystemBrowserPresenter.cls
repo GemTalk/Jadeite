@@ -506,7 +506,7 @@ createSchematicWiringForMethodSource
 		when: #'valueChanged'			send: #'methodValueChanged'	to: self;
 		when: #'focusLost'				send: #'cancelCallTip'			to: methodSourcePresenter view;
 		yourself.
-!
+	!
 
 createSchematicWiringForOverrideList
 

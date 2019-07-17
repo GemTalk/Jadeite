@@ -15,7 +15,7 @@ createSchematicWiring
 	documentPresenter
 		when: #textChanged
 		send: #methodValueChanged
-		to: self!
+		to: self.!
 
 editMenuStrings
 	false ifTrue: [
