@@ -53,10 +53,11 @@ createComponents
 
 flipAutoCommit
 	| browserService |
-	browserService := RowanBrowserService new.
-	browserService command: #flipAutoCommit; commandArgs: Array new. 
-	self issueCommand: (Array with: browserService). 
-	!
+	browserService := RowanAutoCommitService new.
+	browserService
+		command: #flipAutoCommit;
+		commandArgs: Array new.
+	self issueCommand: (Array with: browserService)!
 
 flipDebugger
 	RowanDebugger debuggerClass == RowanDebugger

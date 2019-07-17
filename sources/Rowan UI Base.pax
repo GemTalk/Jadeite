@@ -39,6 +39,7 @@ package classNames
 	add: #PackageMethodListPresenter;
 	add: #Rowan;
 	add: #RowanAnsweringService;
+	add: #RowanAutoCommitService;
 	add: #RowanBrowserService;
 	add: #RowanClassCategoryUpdate;
 	add: #RowanClassesUpdate;
@@ -562,8 +563,13 @@ RowanService subclass: #RowanAnsweringService
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+RowanService subclass: #RowanAutoCommitService
+	instanceVariableNames: 'autoCommit'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 RowanService subclass: #RowanBrowserService
-	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount autoCommit dictionaries'
+	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount dictionaries'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1970,7 +1976,7 @@ executeSelectionOrLine: contextObject
 
 flipAutoCommit
 	| browserService |
-	browserService := RowanBrowserService new.
+	browserService := RowanAutoCommitService new.
 	browserService command: #flipAutoCommit; commandArgs: Array new. 
 	self issueCommand: (Array with: browserService). 
 	!
@@ -1993,12 +1999,13 @@ openDictionaryBrowserOn: classService selector: selector
 	^shell!
 
 openProjectBrowserOn: classService selector: selector
-	| shell |
-	shell := JadeiteBrowser showOnSession: gciSession.
-	shell currentCard updateAfterFindClass: classService.
-	classService meta ifTrue: [shell currentCard selectClassTab].
-	shell currentCard findMethod: selector.
-	^shell!
+	| projectBrowser |
+	projectBrowser := JadeiteBrowser showOnSession: gciSession.
+	classService ifNil: [^projectBrowser].
+	projectBrowser currentCard updateAfterFindClass: classService.
+	classService meta ifTrue: [projectBrowser currentCard selectClassTab].
+	projectBrowser currentCard findMethod: selector.
+	^projectBrowser!
 
 refreshGlobalSelections
 	"refresh selections in all browsers."

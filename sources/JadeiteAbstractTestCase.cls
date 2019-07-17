@@ -425,11 +425,11 @@ serviceNamed: name in: presenter
 	^service!
 
 setAutoCommit: aBoolean
-	| browserService |
-	browserService := RowanBrowserService new
+	| autoCommitService |
+	autoCommitService := RowanAutoCommitService new
 				command: #autoCommit:;
 				commandArgs: (Array with: aBoolean).
-	self issueCommand: browserService!
+	self issueCommand: autoCommitService!
 
 setUp
 	super setUp.

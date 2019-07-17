@@ -613,6 +613,23 @@ test_adHocInspectComplexObjectInProjectBrowser2
 				[inspector view close.
 				self methodSourcePresenter view isModified: false]!
 
+test_allClassesAutoCommitOn
+	"all classes is used by findClass and was returning
+	an empty list when auto commit was turned on"
+
+	| classCount |
+	self testsIssue: #issue484 withTitle: '(Oscar-3.0.72) Empty Find Class dialog'.
+	self setAutoCommit: false.
+	self assert: self projectsPresenter allClasses notEmpty.
+	classCount := session executeString: 'ClassOrganizer new classes size'.
+	self assert: self projectsPresenter allClasses size equals: classCount.
+	self setAutoCommit: true.
+	
+	[self assert: self projectsPresenter allClasses notEmpty.
+	classCount := session executeString: 'ClassOrganizer new classes size'.
+	self assert: self projectsPresenter allClasses size equals: classCount]
+			ensure: [self setAutoCommit: false]!
+
 test_autoCommit
 	| methodListPresenter autoCommit |
 	self testsIssue: #issue421 withTitle: 'Need a way to know if you are in autocommit'.
@@ -2944,6 +2961,14 @@ test_newBrowserRetainsClassAndMethod
 	self assert: secondBrowser currentCard methodListPresenter selection selector equals: #test1.
 	self assert: secondBrowser currentCard classListPresenter selection name equals: 'RowanSample1Test'!
 
+test_newBrowserRetainsClassAndMethodClassSide
+	self selectRowanSample1Class.
+	self selectClassTab.
+	self selectMethodNamed: #bar.
+	secondBrowser := self projectsPresenter newBrowser.
+	self assert: secondBrowser currentCard methodListPresenter selection selector equals: #bar.
+	self assert: secondBrowser currentCard classListPresenter selection name equals: 'RowanSample1'!
+
 test_noSelectionHierarchy
 	| roots children childrensNames grandchildren grandchildrensNames |
 	self testsIssue: #issue125 withTitle: 'Hierarchy view empty if class not selected'.
@@ -2961,22 +2986,23 @@ test_noSelectionHierarchy
 	self assert: (childrensNames includes: 'RowanService').
 	self deny: (childrensNames includes: 'RowanClassService').
 	grandchildren := self classHierarchyPresenter model getChildrenOf: (children detect: [:classService | classService name = 'RowanService']).
-	self assert: grandchildren size equals: 14. "this will probably change but it's a nice test to ensure all the expected services are present"
+	self assert: grandchildren size equals: 15. "this will probably change but it's a nice test to ensure all the expected services are present"
 	grandchildrensNames := grandchildren collect: [:classService | classService name].
 	self assert: (grandchildrensNames at: 1) equals: 'RowanAnsweringService'.
-	self assert: (grandchildrensNames at: 2) equals: 'RowanBrowserService'.
-	self assert: (grandchildrensNames at: 3) equals: 'RowanClassService'.
-	self assert: (grandchildrensNames at: 4) equals: 'RowanDebuggerService'.
-	self assert: (grandchildrensNames at: 5) equals: 'RowanDictionaryService'.
-	self assert: (grandchildrensNames at: 6) equals: 'RowanFrameService'.
-	self assert: (grandchildrensNames at: 7) equals: 'RowanLoggingService'.
-	self assert: (grandchildrensNames at: 8) equals: 'RowanMethodService'.
-	self assert: (grandchildrensNames at: 9) equals: 'RowanPackageService'.
-	self assert: (grandchildrensNames at: 10) equals: 'RowanProcessService'.
-	self assert: (grandchildrensNames at: 11) equals: 'RowanProjectService'.
-	self assert: (grandchildrensNames at: 12) equals: 'RowanQueryService'.
-	self assert: (grandchildrensNames at: 13) equals: 'RowanTestService'.
-	self assert: (grandchildrensNames at: 14) equals: 'RowanVariableService'.
+	self assert: (grandchildrensNames at: 2) equals: 'RowanAutoCommitService'.
+	self assert: (grandchildrensNames at: 3) equals: 'RowanBrowserService'.
+	self assert: (grandchildrensNames at: 4) equals: 'RowanClassService'.
+	self assert: (grandchildrensNames at: 5) equals: 'RowanDebuggerService'.
+	self assert: (grandchildrensNames at: 6) equals: 'RowanDictionaryService'.
+	self assert: (grandchildrensNames at: 7) equals: 'RowanFrameService'.
+	self assert: (grandchildrensNames at: 8) equals: 'RowanLoggingService'.
+	self assert: (grandchildrensNames at: 9) equals: 'RowanMethodService'.
+	self assert: (grandchildrensNames at: 10) equals: 'RowanPackageService'.
+	self assert: (grandchildrensNames at: 11) equals: 'RowanProcessService'.
+	self assert: (grandchildrensNames at: 12) equals: 'RowanProjectService'.
+	self assert: (grandchildrensNames at: 13) equals: 'RowanQueryService'.
+	self assert: (grandchildrensNames at: 14) equals: 'RowanTestService'.
+	self assert: (grandchildrensNames at: 15) equals: 'RowanVariableService'.
 
 !
 
@@ -4680,6 +4706,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addSubclass!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_adHocInspectComplexObjectInProjectBrowser!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_adHocInspectComplexObjectInProjectBrowser2!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_allClassesAutoCommitOn!public!test class list!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommit!public!test auto commit!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitButtonFailureResetOnAbort!public!test auto commit!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitClickButtonAfterFailure!public!test auto commit!tests! !
@@ -4783,6 +4810,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multiplePackageSelection!public!test packages!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_newBrowserRetainsClassAndMethod!public!test class hierarchy!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_newBrowserRetainsClassAndMethodClassSide!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noSelectionHierarchy!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openChangesBrowser!public!test menus!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewBrowserTabWhileSUnitTabSelected!public!test sunit tab!tests! !
