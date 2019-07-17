@@ -1064,9 +1064,9 @@ newBrowser
 	| newBrowser newPresenter | 
 	newBrowser := JadeiteBrowser showOnSession: gciSession.
 	newPresenter := newBrowser currentCard. 
-	self isClassSelected ifFalse:[^self]. 
+	self isClassSelected ifFalse:[^newBrowser]. 
 	newPresenter updateAfterFindClass: self selectedClass. 
-	self class basicBrowseMethod:  methodListPresenter selection presenter: newBrowser currentCard.
+	self class basicBrowseMethod:  methodListPresenter selection presenter: newPresenter.
 	^newBrowser
 	!
 

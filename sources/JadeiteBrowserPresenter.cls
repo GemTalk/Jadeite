@@ -217,6 +217,11 @@ inspectGlobal
 isNoneProjectSelected
 	^projectListPresenter selections includes: RowanProjectService noneProject!
 
+isProjectItemEnabled: command
+	(command = #refreshFromServer or: [command = #cloneProject]) ifTrue: [^true].
+	^projectListPresenter selections notEmpty
+		and: [(projectListPresenter selections includes: RowanProjectService noneProject) not]!
+
 isRowanProjectSelected
 	^(self isNoneProjectSelected or: [projectListPresenter selections isEmpty]) not!
 
@@ -258,10 +263,7 @@ queryCommand: aCommandQuery
 			^true].
 	(self projectMenuCommands includes: command)
 		ifTrue: 
-			[aCommandQuery
-				isEnabled: (projectListPresenter selections notEmpty and: 
-							[(projectListPresenter selections includes: RowanProjectService noneProject) not
-								or: [command = #refreshFromServer]]).
+			[aCommandQuery isEnabled: (self isProjectItemEnabled: command).
 			^true].
 	^super queryCommand: aCommandQuery!
 
@@ -531,6 +533,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #globalsTab!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #inspectGlobal!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #isNoneProjectSelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #isProjectItemEnabled:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #isRowanProjectSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #packageDictionaryCards!accessing!private! !
