@@ -1061,7 +1061,14 @@ moveMethods: methodServices toCategory: targetCategory
 	self selectMethodsFrom: classService!
 
 newBrowser
-	^JadeiteBrowser showOnSession: gciSession!
+	| newBrowser newPresenter | 
+	newBrowser := JadeiteBrowser showOnSession: gciSession.
+	newPresenter := newBrowser currentCard. 
+	self isClassSelected ifFalse:[^self]. 
+	newPresenter updateAfterFindClass: self selectedClass. 
+	self class basicBrowseMethod:  methodListPresenter selection presenter: newBrowser currentCard.
+	^newBrowser
+	!
 
 onDragClass: aSession
 	| className |

@@ -2937,6 +2937,13 @@ test_multiplePackageSelection
 	self assert: (self classListPresenter list collect: [:classService | classService name]) asArray
 		equals: sortedClassNames asArray!
 
+test_newBrowserRetainsClassAndMethod
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	secondBrowser := self projectsPresenter newBrowser.
+	self assert: secondBrowser currentCard methodListPresenter selection selector equals: #test1.
+	self assert: secondBrowser currentCard classListPresenter selection name equals: 'RowanSample1Test'!
+
 test_noSelectionHierarchy
 	| roots children childrensNames grandchildren grandchildrensNames |
 	self testsIssue: #issue125 withTitle: 'Hierarchy view empty if class not selected'.
@@ -4770,6 +4777,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_modifiedSourceShouldNotChangeMethodList!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multiplePackageSelection!public!test packages!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_newBrowserRetainsClassAndMethod!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_noSelectionHierarchy!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openChangesBrowser!public!test menus!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewBrowserTabWhileSUnitTabSelected!public!test sunit tab!tests! !
