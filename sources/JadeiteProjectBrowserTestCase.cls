@@ -3154,6 +3154,48 @@ test_projectRemoved
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_reformatSource
+	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'reformatSourceTemporaryMethod ^#test'
+		in: 'RowanSample1Test'
+		category: 'other'.
+	self selectMethodNamed: #reformatSourceTemporaryMethod.
+	self assert: self methodSourcePresenter value equals: 'reformatSourceTemporaryMethod ^#test'.
+	self projectsPresenter reformatSource.
+	self assert: self methodSourcePresenter view isModified.
+	self assert: self methodSourcePresenter value
+		equals: 'reformatSourceTemporaryMethod
+  ^ #''test''' replaceCrLfWithLf!
+
+test_reformatSourceAppliesOnlyToCurrentBrowser
+	| methodServices |
+	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
+	self selectRowanSample1Class.
+	self
+		saveMethod: 'reformatSourceTemporaryMethod ^#test'
+		in: 'RowanSample1'
+		category: 'other'.
+	self selectMethodNamed: #reformatSourceTemporaryMethod.
+	self assert: self methodSourcePresenter value equals: 'reformatSourceTemporaryMethod ^#test'.
+	self openSecondBrowser.
+	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
+	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
+	methodServices := (Array with: #reformatSourceTemporaryMethod)
+				collect: [:selector | secondPresenter methodListPresenter list detect: [:svc | svc selector = selector]].
+	secondPresenter methodListPresenter selections: methodServices.
+	self assert: secondPresenter methodSourcePresenter value
+		equals: 'reformatSourceTemporaryMethod ^#test'.
+	self projectsPresenter reformatSource.
+	self assert: self methodSourcePresenter view isModified.
+	self assert: self methodSourcePresenter value
+		equals: 'reformatSourceTemporaryMethod
+  ^ #''test''' replaceCrLfWithLf.
+	self assert: secondPresenter methodSourcePresenter value
+		equals: 'reformatSourceTemporaryMethod ^#test'!
+
 test_refreshAfterAbortMethodList
 	"method lists should remove deleted methods after an abort."
 
@@ -4822,6 +4864,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectDisplaysSync!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectInfoTab!public!test menus!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectRemoved!public!test projects!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_reformatSource!public!test source! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_reformatSourceAppliesOnlyToCurrentBrowser!public!test source! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodList!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodListLeaveCommitted!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterReloadInProjectsBrowserWithAddedMethod!public!test projects!tests! !
