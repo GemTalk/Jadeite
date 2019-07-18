@@ -19,7 +19,7 @@ createSchematicWiring
 
 editMenuStrings
 	false ifTrue: [
-		self editSaveMethod; undo; redo; cutSelection; copySelection; pasteClipboard; clearSelection; selectAll; editFind; editFindNext; editReplace; 
+		self editSaveMethod; undo; redo; reformatSource; cutSelection; copySelection; pasteClipboard; clearSelection; selectAll; editFind; editFindNext; editReplace; 
 			jadeDisplay; jadeExecute; jadeInspect; browseSelectedClass.
 	].
 	^#(
@@ -29,7 +29,7 @@ editMenuStrings
 		'&Undo/Ctrl+Z/undo'
 		'&Redo/Ctrl+Y/redo'
 		'-'
-		'&Reformat Source/Ctrl+R/reformatSource'
+		'&Reformat Source/Ctrl+Shift+F/reformatSource'
 		'-'
 		'&Cu&t/Ctrl+X/cutSelection'
 		'&Copy/Ctrl+C/copySelection'
@@ -98,6 +98,19 @@ onViewOpened
 	super onViewOpened.
 	self registerPresentersForUpdates. !
 
+reformatSource
+	methodService
+		source: documentPresenter value;
+		command: #reformatSource;
+		commandArgs: Array new.
+	self issueCommand: (Array with: methodService).
+	documentPresenter value: methodService source.
+	documentPresenter view isModified: true.
+	documentPresenter view
+		backcolor: JadeTextStyles default colorForUnsavedEdits;
+		clearContainerIndicators.
+	^documentPresenter value!
+
 registerPresentersForUpdates
 	BrowserUpdate current
 		register: documentPresenter
@@ -138,6 +151,7 @@ value: string
 !JadeiteMethodSourcePresenter categoriesFor: #methodValueChanged!event handlers!public! !
 !JadeiteMethodSourcePresenter categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteMethodSourcePresenter categoriesFor: #onViewOpened!event handlers!public! !
+!JadeiteMethodSourcePresenter categoriesFor: #reformatSource!menu handlers!private! !
 !JadeiteMethodSourcePresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteMethodSourcePresenter categoriesFor: #statusBarText:!public! !
 !JadeiteMethodSourcePresenter categoriesFor: #update!public!updating! !

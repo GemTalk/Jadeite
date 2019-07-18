@@ -654,7 +654,7 @@ editMenuStrings
 		'&Undo/Ctrl+Z/editUndo'
 		'&Redo/Ctrl+Y/editRedo'
 		'-'
-		'&Reformat Source/Ctrl+R/reformatSource'
+		'&Reformat Source/Ctrl+Shift+F/reformatSource'
 		'-'
 		'&Cu&t/Ctrl+X/editCut'
 		'&Copy/Ctrl+C/editCopy'

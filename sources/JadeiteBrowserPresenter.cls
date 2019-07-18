@@ -261,11 +261,26 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: self dictionaryPresenter selections notEmpty.
 			^true].
+	(#(#reformatSource) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: self methodListPresenter selections size = 1.
+			^true].
 	(self projectMenuCommands includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: (self isProjectItemEnabled: command).
 			^true].
 	^super queryCommand: aCommandQuery!
+
+reformatSource 
+	methodListPresenter selection
+		source: methodSourcePresenter value;
+		command: #reformatSource;
+		commandArgs: Array new.
+	self issueCommand: (Array with: methodListPresenter selection).
+	methodSourcePresenter value: methodListPresenter selection source.
+	methodSourcePresenter view isModified: true. 
+	self methodValueChanged. 
+	^methodSourcePresenter value!
 
 refreshClass
 	| selection presenter |
@@ -541,6 +556,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #projectInfoMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #protectedDictionaries!constants!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!private! !
+!JadeiteBrowserPresenter categoriesFor: #reformatSource!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #refreshClass!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #refreshFromServerAfterAbort:!public! !
 !JadeiteBrowserPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
