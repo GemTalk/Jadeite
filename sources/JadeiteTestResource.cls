@@ -23,8 +23,19 @@ cloneRowanSample1
 					with: true).
 	JadePresenter issueCommand: (Array with: service) session: session!
 
+ensureRowanSample1Loaded
+	self loadProjectNamed: self sampleProjectName.!
+
 isAvailable
 	^session notNil and: [transcript notNil]!
+
+loadProjectNamed: projectName
+	| projectService |
+	projectService := RowanProjectService new name: projectName.
+	projectService
+		command: #reloadProject;
+		commandArgs: nil.
+	JadePresenter issueCommand: (Array with: projectService) session: session!
 
 openProjectsBrowser
 	(projectsBrowser isNil or: [projectsBrowser isOpen not])
@@ -72,7 +83,8 @@ setUp
 			^self].
 	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: [].
 	self unloadSampleProject.
-	self cloneRowanSample1!
+	self cloneRowanSample1.
+	self ensureRowanSample1Loaded!
 
 tearDown
 	super tearDown.
@@ -96,7 +108,9 @@ unloadSampleProject
 	transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName).
 	session commit! !
 !JadeiteTestResource categoriesFor: #cloneRowanSample1!private!setup teardown! !
+!JadeiteTestResource categoriesFor: #ensureRowanSample1Loaded!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #isAvailable!public!testing! !
+!JadeiteTestResource categoriesFor: #loadProjectNamed:!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #openProjectsBrowser!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #openWindow:!private! !
 !JadeiteTestResource categoriesFor: #projectsBrowser:!private!setup teardown! !
