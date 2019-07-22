@@ -290,9 +290,23 @@ removed: presenter
 	| service |
 	updateType == #removed: ifFalse: [^self	"server must tell us to remove service"].
 	service := presenter model asBag detect: [:svc | svc = self] ifNone: [^self].
-	presenter model remove: service!
+	presenter model remove: service.
+	presenter resetSelection. !
 
 removedClass: aPresenter!
+
+removeDeletedClassesIn: presenter browser: browser classes: classes
+	| updatedClasses removedClasses |
+	updatedClasses := classes select: [:classService | classService packageName = name]
+				thenCollect: [:classService | classService name asString].
+	removedClasses := presenter list
+				select: [:classService | classService packageName = name and: [(updatedClasses includes: classService name) not]].
+	removedClasses
+		do: [:removedClassService | (presenter selections includes: removedClassService) ifTrue: [presenter resetSelection]].
+	removedClasses isEmpty ifTrue: [^self].
+	presenter model
+		setList: (ListModel withAll: (presenter list asArray copyWithoutAll: removedClasses))
+		searchPolicy: SearchPolicy equality!
 
 removedProject: presenter!
 
@@ -457,6 +471,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #remoteServiceName!must not strip!public! !
 !RowanService categoriesFor: #removed:!public!updating! !
 !RowanService categoriesFor: #removedClass:!public!updating! !
+!RowanService categoriesFor: #removeDeletedClassesIn:browser:classes:!private!updating! !
 !RowanService categoriesFor: #removedProject:!public!updating! !
 !RowanService categoriesFor: #replicateFrom:!public!replication!updating! !
 !RowanService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !

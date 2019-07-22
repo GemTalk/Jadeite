@@ -529,10 +529,12 @@ visibleClasses
 	theClasses := OrderedCollection new.
 	self isNoneProjectSelected
 		ifTrue: 
-			[dictionaryPresenter selections
+			[self updateServices: dictionaryPresenter selections.
+			dictionaryPresenter selections
 				do: [:dictionaryService | dictionaryService classes ifNotNil: [theClasses addAll: dictionaryService classes]]]
 		ifFalse: 
-			[packageListPresenter selections
+			[self updateServices: packageListPresenter selections.
+			packageListPresenter selections
 				do: [:packageService | packageService classes ifNotNil: [theClasses addAll: packageService classes]]].
 	^theClasses! !
 !JadeiteBrowserPresenter categoriesFor: #addDictionary!menu handlers!public! !

@@ -120,15 +120,10 @@ remoteServiceName
 	^'Rowan packageServiceClass'!
 
 removeDeletedClassesIn: presenter browser: browser
-	| updatedClasses removedClasses |
-	updatedClasses := classes select: [:classService | classService packageName = name]
-				thenCollect: [:classService | classService name asString].
-	removedClasses := presenter list
-				select: [:classService | classService packageName = name and: [(updatedClasses includes: classService name) not]].
-	removedClasses isEmpty ifTrue: [^self].
-	presenter model
-		setList: (ListModel withAll: (presenter list asArray copyWithoutAll: removedClasses))
-		searchPolicy: SearchPolicy equality!
+	^super
+		removeDeletedClassesIn: presenter
+		browser: browser
+		classes: classes!
 
 replicateFrom: newService
 	^(self isPackageService and: [newService isPackageService])

@@ -2730,6 +2730,19 @@ test_issue261
 	self assert: (view columns first contentFromRow: (view list at: 7)).	"isDirty"]
 			ensure: [self projectsPresenter basicUnloadProjects: #('Izmir')]!
 
+test_loadProjectRemovingClass
+	self selectRowanSample1Test.
+	self assert: self classListPresenter list size equals: 1.
+	self
+		saveClass: 'FooTest'
+		superclass: 'RowanSample1Test'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	self assert: self classListPresenter selection name equals: 'FooTest'.
+	self loadProjectNamed: 'RowanSample1'.
+	self assert: self classListPresenter selections isEmpty.
+	self assert: self classListPresenter list size equals: 1!
+
 test_makeDefault
 	| nonDefaultService |
 	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
@@ -4822,6 +4835,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyWithNonResolvableClass!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_issue261!public!test menus!test projects!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_loadProjectRemovingClass!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_makeDefault!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuAddPackageOnProjectMenu!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuEnablementDoesNotBreak!public!tests! !
