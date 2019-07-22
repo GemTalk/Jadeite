@@ -35,6 +35,8 @@ addBreakPointMenuAt: stepPoint to: aMenu presenter: presenter
 				receiver: presenter parentPresenter
 				selector: command
 				arguments: args.
+	(aMenu items select: [:menuItem | menuItem notNil]) do: [:item | item text = desc ifTrue: [^self]].
+	aMenu addSeparator.
 	aMenu addCommand: menuCommand description: desc.
 	^menuCommand!
 
@@ -46,7 +48,6 @@ appendToSourceMenu: aMenu presenter: methodSourcePresenter
 	('*Methods*' match: aMenu text) ifTrue: [^self].	"Don't add breakpoints to the Methods menu. Let's keep it in the context menu for consistency."
 	('*Debug*' match: aMenu text) ifTrue: [^self].	"Don't add breakpoints to the Debug menu. Let's keep it in the context menu for consistency."
 	('*Jade*' match: aMenu text) ifTrue: [^self].	"Don't add breakpoints to the Jadeite menu. Let's keep it in the context menu for consistency."
-	aMenu addSeparator.
 	menuCommand := self
 				addBreakPointMenuAt: stepPoint
 				to: aMenu
