@@ -19,6 +19,9 @@ aborted: presenter browser: browser
 allClasses
 	^allClasses!
 
+allClasses: theClasses
+	allClasses := theClasses!
+
 basicPrepareForReplication
 	"don't call anything potentially recursive here.
 	method services don't iterate over subcollections"
@@ -27,6 +30,12 @@ basicPrepareForReplication
 		ifNotNil: [removedMethods do: [:methodService | methodService basicPrepareForReplication]].
 	dictionaries := nil .
 	!
+
+classHierarchyUpdate: presenter browser: browser
+	self
+		classHierarchyUpdate: presenter
+		browser: browser
+		hierarchyServices: hierarchyServices!
 
 dictionaryListUpdate: presenter
 	"no sort. dictionaries maintain their server order"
@@ -49,6 +58,10 @@ excludedInstVars
 
 hash
 	^name hash!
+
+initialize
+	super initialize.
+	allClasses := OrderedCollection new!
 
 isBrowserService
 
@@ -153,10 +166,13 @@ testPackages: presenter
 !RowanBrowserService categoriesFor: #=!comparing!public! !
 !RowanBrowserService categoriesFor: #aborted:browser:!public!updating! !
 !RowanBrowserService categoriesFor: #allClasses!accessing!private! !
+!RowanBrowserService categoriesFor: #allClasses:!accessing!private! !
 !RowanBrowserService categoriesFor: #basicPrepareForReplication!public!replication! !
+!RowanBrowserService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
 !RowanBrowserService categoriesFor: #dictionaryListUpdate:!public!updating! !
 !RowanBrowserService categoriesFor: #excludedInstVars!public!ston! !
 !RowanBrowserService categoriesFor: #hash!comparing!public! !
+!RowanBrowserService categoriesFor: #initialize!initialization!public! !
 !RowanBrowserService categoriesFor: #isBrowserService!public!testing! !
 !RowanBrowserService categoriesFor: #name!accessing!public! !
 !RowanBrowserService categoriesFor: #prepareForReplication!public!replication! !

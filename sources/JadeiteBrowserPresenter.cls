@@ -472,19 +472,17 @@ updateGlobalsTab
 updateHierarchy
 	| service |
 	classHierarchyPresenter model: TreeModel new.
-	packageListPresenter selectionOrNil ifNil: [^self].
-	dictionaryPresenter selectionOrNil ifNil: [^self].
 	Cursor wait showWhile: 
-			[service := classListPresenter selectionOrNil
-						ifNil: 
-							[self isNoneProjectSelected
-								ifTrue: [dictionaryPresenter selection]
-								ifFalse: [packageListPresenter selection]].
+			[service := classListPresenter selectionOrNil ifNil: [^self updateHierarchyForPacktionaries].
 			service command: #classHierarchy.
 			self issueCommand: (Array with: service).
-			service isPackageService
-				ifTrue: [service hierarchyServices: Array new]
-				ifFalse: [service name = 'Object' ifFalse: [self selectClassNamed: service name]]]!
+			service name = 'Object' ifFalse: [self selectClassNamed: service name]]!
+
+updateHierarchyForPacktionaries
+	| service |
+	service := RowanBrowserService new command: #classHierarchy.
+	service allClasses addAll: self visibleClasses.
+	self issueCommand: (Array with: service)!
 
 updateProject
 	self projectListPresenter selectionIfNone: 
@@ -524,7 +522,19 @@ updateProjectTabFor: services
 			array nextPut: (Array with: service with: 'isDirty').
 			array nextPut: (Array with: service with: 'projectUrl').
 			service == services last ifFalse: [array nextPut: (Array with: RowanProjectService new with: nil)]].
-	projectInfoTab list: array contents! !
+	projectInfoTab list: array contents!
+
+visibleClasses
+	| theClasses |
+	theClasses := OrderedCollection new.
+	self isNoneProjectSelected
+		ifTrue: 
+			[dictionaryPresenter selections
+				do: [:dictionaryService | dictionaryService classes ifNotNil: [theClasses addAll: dictionaryService classes]]]
+		ifFalse: 
+			[packageListPresenter selections
+				do: [:packageService | packageService classes ifNotNil: [theClasses addAll: packageService classes]]].
+	^theClasses! !
 !JadeiteBrowserPresenter categoriesFor: #addDictionary!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #basicAddDictionaryNamed:!menu handlers support!private! !
@@ -577,9 +587,11 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #updateDictionary!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateGlobalsTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #updateHierarchy!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #updateHierarchyForPacktionaries!private!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateProject!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateProjectInfo!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #updateProjectTabFor:!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #visibleClasses!private!updating! !
 
 !JadeiteBrowserPresenter class methodsFor!
 

@@ -10,6 +10,23 @@ JadeiteProjectBrowserAbstractTestCase comment: ''!
 !JadeiteProjectBrowserAbstractTestCase categoriesForClass!Unclassified! !
 !JadeiteProjectBrowserAbstractTestCase methodsFor!
 
+assertLinearAncestry: family in: presenter
+	"given a collection of class names in order from root to leaf,
+	test that each subsequent element of the collection is a child
+	of the previous element"
+
+	self assert: presenter model size equals: family size.
+	1 to: family size - 1
+		do: 
+			[:index |
+			| parentNode childNode parentName childName |
+			parentName := family at: index.
+			childName := family at: index + 1.
+			parentNode := presenter model asBag detect: [:classService | classService name = parentName] ifNone: [].
+			childNode := presenter model asBag detect: [:classService | classService name = childName] ifNone: [].
+			self assert: (presenter model childrenOf: parentNode) size equals: 1. 
+			self assert: (presenter model childrenOf: parentNode) first equals: childNode]!
+
 closeExistingInspectors
 	"not so elegant way of making sure the test gets the right inspector. Close others first"
 
@@ -60,6 +77,7 @@ tearDown
 		ifNotNil: 
 			[self destroy: secondBrowser.
 			secondBrowser := nil]! !
+!JadeiteProjectBrowserAbstractTestCase categoriesFor: #assertLinearAncestry:in:!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #closeExistingInspectors!private!support! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #disableTranscriptWrites!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #ensureOneTab!public!support! !

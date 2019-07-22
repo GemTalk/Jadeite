@@ -457,6 +457,31 @@ test_multipleBrowsersUpdateClassList
 	self assert: self classListPresenter list equals: firstClassList.
 	self deny: secondPresenter classListPresenter list equals: firstClassList!
 
+test_mutliSelectDictionaryHierarchy
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self testsIssue: #issue489 withTitle: '(3.0.73) package multi-select is not functional'.
+	self selectNoneProject.
+	self selectServicesNamed: #('UserGlobals' 'Published') in: self dictionaryPresenter.
+	self assert: (self classListPresenter list collect: [:classService | classService name]) asArray
+		equals: #('JadeServer' 'JadeServer64bit' 'JadeServer64bit24' 'JadeServer64bit32' 'JadeServer64bit3x' 'Rowan' 'RowanSample1' 'RowanSample1Test' 'RowanSubClass').
+	self selectHierarchyTab.
+	self
+		assert: (self classHierarchyPresenter model asArray collect: [:classService | classService name])
+		equals: #('Object' 'JadeServer' 'JadeServer64bit' 'JadeServer64bit24' 'JadeServer64bit3x' 'JadeServer64bit32' 'Rowan' 'RowanSample1' 'RowanSubClass' 'TestAsserter' 'TestCase' 'RowanSample1Test')!
+
+test_mutliSelectPackageHierarchy
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self testsIssue: #issue489 withTitle: '(3.0.73) package multi-select is not functional'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Kernel' 'Rowan-Services-Extensions')
+		in: self packageListPresenter.
+	self assert: (self classListPresenter list collect: [:classService | classService name]) asArray
+		equals: #('Rowan' 'RwGsPlatform' 'RwPlatform').
+	self selectHierarchyTab.
+	self
+		assert: (self classHierarchyPresenter model asArray collect: [:classService | classService name])
+		equals: #('Object' 'Rowan' 'RwPlatform' 'RwGsPlatform')!
+
 test_noneProjectNotRemovedOnUpdate
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectNoneProject.
@@ -696,6 +721,8 @@ test_textTabSelectedWithProjectChange
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_minimumClassStateReturned!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_minimumProjectList!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_multipleBrowsersUpdateClassList!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_mutliSelectDictionaryHierarchy!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_mutliSelectPackageHierarchy!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_noneProjectNotRemovedOnUpdate!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_noneProjectRetainsSelectionWhenNewTabAdded!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_packageAndDictionaryViewClass!public!test issue 217! !
