@@ -269,6 +269,19 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: (self isProjectItemEnabled: command).
 			^true].
+	#gotoDictionary = command
+		ifTrue: 
+			[self updateClassMenu: nil. 
+			self selectedClass
+				ifNil: 
+					[aCommandQuery isEnabled: false.
+					^true].
+			self isNoneProjectSelected
+				ifTrue: 
+					[aCommandQuery isEnabled: false.
+					^true].
+			aCommandQuery isEnabled: true.
+				^true].
 	^super queryCommand: aCommandQuery!
 
 reformatSource 
@@ -377,6 +390,10 @@ selectedGlobalName: selection
 	rs upTo: $..
 	string := rs upToEnd.
 	^string!
+
+selectNoneProject
+	projectListPresenter selection: (projectListPresenter list
+				detect: [:projectService | projectService name = RowanProjectService noneProject name])!
 
 showDictionaryList
 	| newCard |
@@ -580,6 +597,7 @@ visibleClasses
 !JadeiteBrowserPresenter categoriesFor: #runAll!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #runSelected!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #selectedGlobalName:!menu handlers support!private! !
+!JadeiteBrowserPresenter categoriesFor: #selectNoneProject!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #showDictionaryList!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #showPackageList!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateAfterFindClass:!menu handlers!public!updating! !

@@ -281,7 +281,7 @@ classDefinitionPresenter
 	^classDefinitionPresenter!
 
 classesMenuStrings
-	| definedLabel menuStrings |
+	| definedLabel containedDictionaryLabel menuStrings |
 	false
 		ifTrue: 
 			[self
@@ -293,9 +293,11 @@ classesMenuStrings
 				removePriorVersions;
 				showSUnitBrowserOnClass].
 	definedLabel := self definedClassMenuItemLabel.
+	containedDictionaryLabel := self containedDictionaryLabel. 
 	menuStrings := #('&Classes' '&Browse References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' '&File Out Class//fileOutClass' 'Add &Subclass//addSubclass' '&Rename //renameClass' '&Remove//removeClass' '-' 'Set Compiler &Environment ...//setEnvironment'  '-')
 				asOrderedCollection.
 	menuStrings addLast: definedLabel , '//gotoClassDefinedPackage'.
+	menuStrings addLast: containedDictionaryLabel, '//gotoDictionary'. 
 	^menuStrings!
 
 classHierarchyTabs
@@ -351,6 +353,13 @@ confirmOverwriteAccessor
 			[^MessageBox
 				confirm: 'These methods will be overridden - ' , existing asArray printString , ' Continue?'].
 	^true!
+
+containedDictionaryLabel
+	| containedDictionary |
+	containedDictionary := 'Go To Containing Dictionary'.
+	self selectedClass
+		ifNotNil: [:classService | containedDictionary := containedDictionary , ' (' , classService dictionaryName , ')'].
+	^containedDictionary!
 
 copyProjectInfo
 	projectInfoTab selection last ifNil:[^self]. 
@@ -580,6 +589,7 @@ definedClassMenuItemLabel
 	self selectedClass
 		ifNotNil: 
 			[:classService |
+			classService definedPackageName ifNil: [self updateService: self selectedClass].
 			classService definedPackageName = RowanService notRowanizedPackageName
 				ifFalse: [definedLabel := definedLabel , ' (' , classService definedPackageName , ')']].
 	^definedLabel!
@@ -861,6 +871,14 @@ gotoClassDefinedPackage
 	" find will go to the class in it's defined package project"
 
 	^self updateAfterFindClass: self selectedClass!
+
+gotoDictionary
+	" find will go to the class in the dictionary it lives"
+
+	| selectedClass |
+	selectedClass := self selectedClass.
+	self selectNoneProject.
+	^self updateAfterFindClassInDictionary: selectedClass!
 
 gotoMethodDefinedPackage
 	"find will go to the defined package of the selected class"
@@ -1997,15 +2015,21 @@ updateClassInfo
 	self updateSUnitTab.!
 
 updateClassMenu: menu
-	| item |
+	| gotoPackageItem gotoDictionaryItem |
 	(menu class canUnderstand: #items) ifFalse: [^self].
-	item := menu items
+	"Removal and adding of the item seems to be necessary to update the menu about to be displayed"
+	gotoPackageItem := menu items
 				detect: [:commandItem | commandItem commandDescription command = #gotoClassDefinedPackage]
 				ifNone: [^self].
-	"Removal and adding of the item seems to be necessary to update the menu about to be displayed"
-	menu removeItem: item.
-	item description: self definedClassMenuItemLabel.
-	menu addItem: item!
+	menu removeItem: gotoPackageItem.
+	gotoPackageItem description: self definedClassMenuItemLabel.
+	menu addItem: gotoPackageItem.
+	gotoDictionaryItem := menu items
+				detect: [:commandItem | commandItem commandDescription command = #gotoDictionary]
+				ifNone: [^self].
+	menu removeItem: gotoDictionaryItem.
+	gotoDictionaryItem description: self containedDictionaryLabel.
+	menu addItem: gotoDictionaryItem!
 
 updateCommand: aString onSuccessDo: aBlock
 
@@ -2252,6 +2276,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #comparisonTab!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #confirmCategoryRemoval:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #confirmOverwriteAccessor!menu handlers support!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #containedDictionaryLabel!menus!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #copyProjectInfo!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
@@ -2294,6 +2319,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #gitCommit!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoClassDefinedPackage!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #gotoDictionary!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoMethodDefinedPackage!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoPackageNamed:!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoProjectNamed:!menu handlers!public! !
