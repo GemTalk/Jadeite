@@ -29,7 +29,7 @@ editMenuStrings
 		'&Undo/Ctrl+Z/undo'
 		'&Redo/Ctrl+Y/redo'
 		'-'
-		'&Reformat Source/Ctrl+Shift+F/reformatSource'
+		'&Reformat Source/Ctrl+Shift+O/reformatSource'
 		'-'
 		'&Cu&t/Ctrl+X/cutSelection'
 		'&Copy/Ctrl+C/copySelection'

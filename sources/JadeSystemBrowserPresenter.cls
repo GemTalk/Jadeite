@@ -654,7 +654,7 @@ editMenuStrings
 		'&Undo/Ctrl+Z/editUndo'
 		'&Redo/Ctrl+Y/editRedo'
 		'-'
-		'&Reformat Source/Ctrl+Shift+F/reformatSource'
+		'&Reformat Source/Ctrl+Shift+O/reformatSource'
 		'-'
 		'&Cu&t/Ctrl+X/editCut'
 		'&Copy/Ctrl+C/editCopy'
@@ -1244,7 +1244,7 @@ jadeInspect
 jadeMenuStrings
 
 	false ifTrue: [
-		self abortTransaction; commitTransaction; newWorkspace; openSystemBrowser; rename; exit.
+		self abortTransaction; commitTransaction; newWorkspace; newProjectBrowser; rename; exit.
 	].
 	^#(
 		'&Jade'
@@ -1252,7 +1252,7 @@ jadeMenuStrings
 		'&CommitTransaction//commitTransaction'
 		'-'
 		'&New Workspace/Ctrl+N/newWorkspace'
-		'&Open System Browser/Ctrl+B/openSystemBrowser'
+		'&Open Projects Browser/Ctrl+B/newProjectBrowser'
 		'-'
 		'&Rename Selection/F2/rename'
 		'-'
