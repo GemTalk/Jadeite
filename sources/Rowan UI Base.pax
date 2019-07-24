@@ -3167,9 +3167,6 @@ createSchematicWiring
 		send: #textTabChanged
 		to: self.
 	methodFilterTabs
-		when: #currentCardChanging:
-			send: #aboutToChange:
-			to: self;
 		when: #currentCardChanged
 			send: #updateAndSelect:
 			to: self

@@ -3157,18 +3157,21 @@ test_reformatSource
 		saveMethod: 'reformatSourceTemporaryMethod ^#test'
 		in: 'RowanSample1Test'
 		category: 'other'.
-	self selectMethodNamed: #reformatSourceTemporaryMethod.
+	[self selectMethodNamed: #reformatSourceTemporaryMethod.
 	self assert: self methodSourcePresenter value equals: 'reformatSourceTemporaryMethod ^#test'.
 	self projectsPresenter reformatSource.
 	self assert: self methodSourcePresenter view isModified.
 	self assert: self methodSourcePresenter value
 		equals: 'reformatSourceTemporaryMethod
-  ^ #''test''' replaceCrLfWithLf!
+  ^ #''test''' replaceCrLfWithLf] ensure:[
+		self projectsPresenter removeMethods: self classListPresenter selections]!
 
 test_reformatSourceAppliesOnlyToCurrentBrowser
 	| methodServices |
 	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
 	self selectRowanSample1Class.
+	self methodSourcePresenter value: nil. 
+	self methodSourcePresenter isModified: false. 
 	self
 		saveMethod: 'reformatSourceTemporaryMethod ^#test'
 		in: 'RowanSample1'
@@ -3190,7 +3193,8 @@ test_reformatSourceAppliesOnlyToCurrentBrowser
 		equals: 'reformatSourceTemporaryMethod
   ^ #''test''' replaceCrLfWithLf.
 	self assert: secondPresenter methodSourcePresenter value
-		equals: 'reformatSourceTemporaryMethod ^#test'!
+		equals: 'reformatSourceTemporaryMethod ^#test'.
+	self methodSourcePresenter isModified: false. !
 
 test_refreshAfterAbortMethodList
 	"method lists should remove deleted methods after an abort."
@@ -3936,6 +3940,23 @@ test_sunitUpdatesProperly
 				ifNone: [].
 	self denyIsNil: newMethodService]
 			ensure: [self destroy: secondBrowser]!
+
+test_switchToVariableWithUnsavedChanges
+	"no confirmation dialogs raised when switching between category and variable tabs"
+
+	self testsIssue: #issue493
+		withTitle: '(oddity) change from category tab to variables tab should not give "method has unsaved changes" prompt'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self deny: self methodSourcePresenter view isModified.
+	self methodSourcePresenter value: 'test1 ^''aaaa'''.
+	self assert: self methodSourcePresenter view isModified.
+	self projectsPresenter selectVariableTab.
+	self assert: self methodSourcePresenter view isModified.
+	self assert: self methodSourcePresenter value equals: 'test1 ^''aaaa'''.
+	self projectsPresenter selectCategoryTab.
+	self assert: self methodSourcePresenter view isModified.
+	self assert: self methodSourcePresenter value equals: 'test1 ^''aaaa'''!
 
 test_symbolsWithoutImplementorsFound
 	"I think the only way for a symbol to get added to AllSymbols is to commit it"
@@ -4904,6 +4925,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabHandlesShortSelector!public!test class hierarchy!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabRefresh!public!test menus!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitUpdatesProperly!public!test sunit tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_switchToVariableWithUnsavedChanges!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsWithoutImplementorsFound!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!tests! !
