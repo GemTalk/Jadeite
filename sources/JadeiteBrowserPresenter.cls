@@ -438,7 +438,8 @@ updateAfterFindClassInDictionary: classService
 	| dictionaryService |
 	Cursor wait showWhile: 
 			[dictionaryService := dictionaryPresenter list
-						detect: [:service | service name = classService dictionaryName].
+						detect: [:service | service name = classService dictionaryName]
+						ifNone: [^self].
 			dictionaryPresenter selections: (Array with: dictionaryService).
 			self isClassListTabSelected
 				ifTrue: [self selectClassNamed: classService name asString]
