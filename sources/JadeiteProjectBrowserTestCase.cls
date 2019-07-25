@@ -3881,6 +3881,47 @@ test_sunitInheritedTests
 	self assert: testClassTestSelectors size > classTestSelectors size.	"the subclass inherits the super class's tests"
 	classTestSelectors do: [:selector | self assert: (testClassTestSelectors includes: selector)]!
 
+test_sunitRunAndMeasureTime
+	| runSelectedItem selection |
+	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[self selectRowanSample1Test.
+	self selectSUnitTab.
+	runSelectedItem := self projectsPresenter sunitPresenter methodListPresenter view queryContextMenu
+				items detect: [:menuItem | menuItem command == #runAndMesureTime].
+	selection := self projectsPresenter sunitPresenter methodListPresenter list
+				detect: [:methodService | methodService selector = #test1].
+	self projectsPresenter sunitPresenter methodListPresenter selections: (Array with: selection).
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first testResult
+		equals: nil.
+	TestMessageBox plannedResult: #ok.
+	runSelectedItem commandDescription performAgainst: self projectsPresenter sunitPresenter.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first testResult
+		equals: 'passed']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
+test_sunitRunSelected
+	| runSelectedItem selection |
+	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
+	self selectRowanSample1Test.
+	self selectSUnitTab.
+	runSelectedItem := self projectsPresenter sunitPresenter methodListPresenter view queryContextMenu
+				items detect: [:menuItem | menuItem command == #runSelected].
+	selection := self projectsPresenter sunitPresenter methodListPresenter list
+				detect: [:methodService | methodService selector = #test1].
+	self projectsPresenter sunitPresenter methodListPresenter selections: (Array with: selection).
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first testResult equals: nil. 
+	runSelectedItem commandDescription performAgainst: self projectsPresenter sunitPresenter.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first testResult equals: 'passed'.
+	
+	runSelectedItem := self projectsPresenter methodListPresenter view queryContextMenu
+				items detect: [:menuItem | menuItem command == #runMethodTests].
+	self selectMethodNamed: #test2. 
+	runSelectedItem commandDescription performAgainst: self projectsPresenter.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first testResult equals: 'passed'.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first selector equals: #test2. !
+
 test_sunitTabCanRefresh
 	self testsIssue: #issue279 withTitle: 'Sunit browser refresh, auto or manual'.
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
@@ -4934,6 +4975,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitBrowserNoSelectedTest!public!test menus!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitCtrlB!public!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitInheritedTests!public!test sunit tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitRunAndMeasureTime!public!test sunit tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitRunSelected!public!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitTabCanRefresh!public!test menus!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabHandlesShortSelector!public!test class hierarchy!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sUnitTabRefresh!public!test menus!test sunit tab!tests! !

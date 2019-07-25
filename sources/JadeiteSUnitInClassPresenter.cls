@@ -87,6 +87,10 @@ onViewOpened
 	!
 
 queryCommand: aCommandQuery
+	(#(#runSelected #runMethodTests #runAndMesureTime #debug) includes: aCommandQuery command)
+		ifTrue: 
+			[aCommandQuery isEnabled: methodListPresenter selections notEmpty.
+			^true].
 	(self parentPresenter queryCommand: aCommandQuery)
 		ifFalse: 
 			[aCommandQuery isEnabled: true.
@@ -118,7 +122,7 @@ runAndMesureTime
 	MessageBox notify: timeMessage contents!
 
 runMethodTests
-	^self debug!
+	^self runSelected!
 
 runSelected
 	self runTests: methodListPresenter selections in: testClassService name!

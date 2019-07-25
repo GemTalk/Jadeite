@@ -287,6 +287,94 @@ test_inheritedTests
 		self assert: (testClassTestSelectors includes: selector)].
 	!
 
+test_menuEnablementDebugInClassPresenter
+	| debugItem query |
+	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self selectRowanSample1Test.
+	self projectsPresenter selectSUnitTab.
+	self methodListPresenter resetSelection.
+	self sunitPresenter methodListPresenter resetSelection.
+	debugItem := self projectsPresenter sunitPresenter methodListPresenter view queryContextMenu items
+				detect: [:menuItem | menuItem command == #debug].
+	query := CommandQuery commandDescription: debugItem commandDescription
+				source: self projectsPresenter sunitPresenter methodListPresenter view.
+	self projectsPresenter queryCommand: query.
+	self deny: query isEnabled.
+	self selectMethodNamedInProjectBrowser: #test1.
+	self projectsPresenter queryCommand: query.
+	self assert: query isEnabled.
+	self projectsPresenter methodListPresenter resetSelection.
+	self projectsPresenter queryCommand: query.
+	self deny: query isEnabled.
+	self projectsPresenter selectSUnitTab.
+	self projectsPresenter sunitPresenter methodListPresenter selectionByIndex: #(1).	"#test1"
+	self projectsPresenter sunitPresenter queryCommand: query.
+	self assert: query isEnabled.
+	self projectsPresenter sunitPresenter methodListPresenter resetSelection.
+	self projectsPresenter sunitPresenter queryCommand: query.
+	self deny: query isEnabled!
+
+test_menuEnablementRunAndMesureTimeInClassPresenter
+	| runAndMesureTimeItem query |
+	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self selectRowanSample1Test.
+	self projectsPresenter selectSUnitTab.
+	self methodListPresenter resetSelection.
+	self sunitPresenter methodListPresenter resetSelection.
+	runAndMesureTimeItem := self projectsPresenter sunitPresenter methodListPresenter view
+				queryContextMenu items
+				detect: [:menuItem | menuItem command == #runAndMesureTime].
+	query := CommandQuery commandDescription: runAndMesureTimeItem commandDescription
+				source: self projectsPresenter sunitPresenter methodListPresenter view.
+	self projectsPresenter queryCommand: query.
+	self deny: query isEnabled.
+	self selectMethodNamedInProjectBrowser: #test1.
+	self projectsPresenter queryCommand: query.
+	self assert: query isEnabled.
+	self projectsPresenter methodListPresenter resetSelection.
+	self projectsPresenter queryCommand: query.
+	self deny: query isEnabled.
+	self projectsPresenter selectSUnitTab.
+	self projectsPresenter sunitPresenter methodListPresenter selectionByIndex: #(1).	"#test1"
+	self projectsPresenter sunitPresenter queryCommand: query.
+	self assert: query isEnabled.
+	self projectsPresenter sunitPresenter methodListPresenter resetSelection.
+	self projectsPresenter sunitPresenter queryCommand: query.
+	self deny: query isEnabled!
+
+test_menuEnablementRunSelectedInClassPresenter
+	| runSelectedItem query |
+	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self selectRowanSample1Test.
+	self projectsPresenter selectSUnitTab.
+	self methodListPresenter resetSelection.
+	self sunitPresenter methodListPresenter resetSelection.
+	runSelectedItem := self projectsPresenter sunitPresenter methodListPresenter view queryContextMenu
+				items detect: [:menuItem | menuItem command == #runSelected].
+	query := CommandQuery commandDescription: runSelectedItem commandDescription
+				source: self projectsPresenter sunitPresenter methodListPresenter view.
+	self projectsPresenter queryCommand: query.
+	self deny: query isEnabled.
+	self selectMethodNamedInProjectBrowser: #test1.
+	self projectsPresenter queryCommand: query.
+	self assert: query isEnabled.
+	self projectsPresenter methodListPresenter resetSelection.
+	self projectsPresenter queryCommand: query.
+	self deny: query isEnabled.
+	self projectsPresenter selectSUnitTab.
+	self projectsPresenter sunitPresenter methodListPresenter selectionByIndex: #(1).	"#test1"
+	self projectsPresenter sunitPresenter queryCommand: query.
+	self assert: query isEnabled.
+	self projectsPresenter sunitPresenter methodListPresenter resetSelection.
+	self projectsPresenter sunitPresenter queryCommand: query.
+	self deny: query isEnabled!
+
 test_multiSelectClasses
 	| jadeServerTestCount  rowanClassServiceTestCount|
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
@@ -860,6 +948,9 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_dontChangeTabs!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_dontClearResults!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_inheritedTests!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_menuEnablementDebugInClassPresenter!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_menuEnablementRunAndMesureTimeInClassPresenter!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_menuEnablementRunSelectedInClassPresenter!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectNoDuplicates!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_openSunitBrowser!public!tests! !

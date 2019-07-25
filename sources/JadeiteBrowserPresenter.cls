@@ -372,17 +372,7 @@ runAll
 	self sunitPresenter runAll!
 
 runSelected
-	| sunitTabSelections toSelect |
-	sunitTabSelections := OrderedCollection new.
-	methodListPresenter selections do: 
-			[:selectedTestMethodService |
-			toSelect := self sunitPresenter methodListPresenter list
-						detect: [:sunitTabMethodService | sunitTabMethodService selector = selectedTestMethodService selector]
-						ifNone: [].
-			toSelect ifNotNil: [sunitTabSelections add: toSelect]].
-	self sunitPresenter methodListPresenter selections: sunitTabSelections.
-	self selectSUnitTab.
-	^self sunitPresenter runSelected!
+	^self runMethodTests. !
 
 selectedGlobalName: selection
 	| string rs |

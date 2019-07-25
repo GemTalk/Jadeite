@@ -341,9 +341,9 @@ selectMethodNamed: selector
 
 selectMethodNamedInProjectBrowser: selector
 	| methodServices |
-	self methodListPresenter resetSelection.
-	methodServices := self methodListPresenter list detect: [:svc | svc selector = selector].
-	self methodListPresenter selections: (Array with: methodServices).
+	self projectsPresenter methodListPresenter resetSelection.
+	methodServices := self projectsPresenter  methodListPresenter list detect: [:svc | svc selector = selector].
+	self projectsPresenter  methodListPresenter selections: (Array with: methodServices).
 	^methodServices!
 
 selectMethodsNamed: selectors

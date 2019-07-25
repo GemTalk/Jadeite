@@ -1060,7 +1060,7 @@ methodsMenuStrings
 				runMethodTests;
 				gotoMethodDefinedPackage; runAll; runSelected].
 	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods'  '&File out methods ...//fileOutMethods' 'Find Method .../Ctrl+Shift+M/findMethod'  '-' '&Remove Method(s) ...//removeMethods'  'Debug &Tests/Ctrl+B/runMethodTests' 		'Run All Tests/Ctrl+Shift+A/runAll'
-		'Run Selected/Ctrl+Shift+S/runSelected' '-' 'Go To Defining Package//gotoMethodDefinedPackage' )!
+		'Run Selected/Ctrl+Shift+S/runMethodTests' '-' 'Go To Defining Package//gotoMethodDefinedPackage' )!
 
 methodSourcePresenter: anObject
 	methodSourcePresenter := anObject!
@@ -1422,7 +1422,7 @@ queryCommand: aCommandQuery
 			[aCommandQuery
 				isEnabled: (self selectedClass ifNil: [false] ifNotNil: [:classService | classService isTestCase]).
 			^true].
-	(#( #runSelected #runMethodTests) includes: command)
+	(#( #runSelected #runMethodTests #runAndMesureTime #debug) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: (methodListPresenter selections notEmpty
 						and: [methodListPresenter selections first isTestMethod]).
@@ -1667,6 +1667,21 @@ resetClassTemplate
 resetDefinedClassPackage
 	definedClassPackageText value: String new!
 
+runAndMesureTime
+	| selections |
+	self selectSUnitTab.
+	sunitPresenter reset.
+	selections := OrderedCollection new.
+	methodListPresenter selections do: 
+			[:methodService |
+			| service |
+			service := sunitPresenter methodListPresenter list
+						detect: [:sunitService | sunitService selector = methodService selector]
+						ifNone: [].
+			service ifNotNil: [selections add: service]].
+	sunitPresenter methodListPresenter selections: selections. 
+	^sunitPresenter runAndMesureTime!
+
 runClassTests
 	| classService answeringService |
 	classService := self selectedClass.
@@ -1690,13 +1705,16 @@ runClassTests
 			sunitPresenter ensureVisible]!
 
 runMethodTests
+	| sunitPresenterSelections | 
 	(JadePresenter runMethodTests: methodListPresenter selections in: self gciSession)
 		ifTrue: 
 			[| testResult |
 			sunitPresenter reset.
 			testResult := JadeTestResult new.
-			testResult
-				passed: (methodListPresenter selections collect: [:methodService | methodService selector]).
+			testResult passed: (methodListPresenter selections
+								collect: [:methodService | methodService selector]).
+			sunitPresenterSelections := self sunitPresenter methodListPresenter list select:[:methodService | methodListPresenter selections includes: methodService]. 
+			self sunitPresenter methodListPresenter selections: sunitPresenterSelections.
 			sunitPresenter updateResult: testResult.
 			sunitPresenter ensureVisible]!
 
@@ -2393,6 +2411,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #resetCategoryText!event handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #resetClassTemplate!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #resetDefinedClassPackage!event handlers support!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #runAndMesureTime!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #runClassTests!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #runMethodTests!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #savePackage!menu handlers!public! !
