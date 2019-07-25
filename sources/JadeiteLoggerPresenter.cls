@@ -56,8 +56,7 @@ inputServerFile: objects
 	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close]!
 
 inspectService
-
-	logListPresenter selections inspect!
+	SessionManager current isRuntime ifFalse: [logListPresenter selections inspect]!
 
 onViewOpened
 	super onViewOpened.

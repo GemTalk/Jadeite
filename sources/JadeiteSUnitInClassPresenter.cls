@@ -73,6 +73,9 @@ jadeInspect
 
 	"do nothing"!
 
+maximizeCode
+	^parentPresenter topShell maximizeCode!
+
 newBrowser
 
 	^parentPresenter newBrowser!
@@ -136,6 +139,7 @@ selectedClass
 !JadeiteSUnitInClassPresenter categoriesFor: #jadeDisplay!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #jadeExecute!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #jadeInspect!menu handlers support!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #maximizeCode!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #newBrowser!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #queryCommand:!menu handlers support!public! !

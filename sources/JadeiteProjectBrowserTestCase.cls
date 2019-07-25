@@ -2758,6 +2758,18 @@ test_makeDefault
 				detect: [:projectService | projectService name = 'RowanSample1'].
 	self assert: self projectListPresenter selection displayName = 'Rowan*'!
 
+test_maximizeCode
+	self testsIssue: #issue495 withTitle: 'minor error dialogs (3.0.73)'.
+	projectsBrowser maximizeCode.
+	self assert: (self projectsPresenter view viewNamed: 'textAreaTabs') arrangement equals: 100.
+	projectsBrowser maximizeCode.
+	self deny: (self projectsPresenter view viewNamed: 'textAreaTabs') arrangement equals: 100.
+	self selectSUnitTab.
+	projectsBrowser maximizeCode.
+	self assert: (self projectsPresenter view viewNamed: 'textAreaTabs') arrangement equals: 100.
+	projectsBrowser maximizeCode.
+	self deny: (self projectsPresenter view viewNamed: 'textAreaTabs') arrangement equals: 100!
+
 test_menuAddPackageOnProjectMenu
 	| transcriptProjectMenu transcriptCommands |
 	self testsIssue: #issue171 withTitle: 'Project menu quibbles'.
@@ -4858,6 +4870,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_issue261!public!test menus!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_loadProjectRemovingClass!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_makeDefault!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_maximizeCode!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuAddPackageOnProjectMenu!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuEnablementDoesNotBreak!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menusDontAddBreaks!public!tests! !
