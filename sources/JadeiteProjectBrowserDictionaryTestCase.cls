@@ -817,26 +817,15 @@ test_removeMethodInNonPackagedClass
 
 test_renameClassInDictionaryView
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	TestMessageBox enableJadeiteTestMessageBox.
-	
-	[self selectNoneProject.
+	self selectNoneProject.
 	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
 	self projectsPresenter selectClassNamed: 'RowanSample1Test'.
-	self assert: self projectsPresenter isNoneProjectSelected.
-	self assert: self dictionaryPresenter selections first name equals: 'UserGlobals'.
 	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1Test'.
-	TestMessageBox plannedResult: #ok.
-	self projectsPresenter basicRenameClass: self projectsPresenter selectedClass
-		to: 'RowanSample1TestRenamed'.
-	self assert: self projectsPresenter isNoneProjectSelected.
-	self assert: self dictionaryPresenter selections first name equals: 'UserGlobals'.
-	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1TestRenamed'.
-	TestMessageBox plannedResult: #ok.
-	self projectsPresenter basicRenameClass: self projectsPresenter selectedClass to: 'RowanSample1Test'.
-	self assert: self projectsPresenter isNoneProjectSelected.
-	self assert: self dictionaryPresenter selections first name equals: 'UserGlobals'.
-	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1Test']
-			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+	self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
+	self assertIsNil: self projectsPresenter selectedClass.
+	self assert: self projectsPresenter isClassDefinitionTabSelected.
+	self rowanFixMe. 
+	self assert: self projectsPresenter classDefinitionPresenter value notEmpty	"not sure what this should be yet"!
 
 test_selectProjectClearHierarchy
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.

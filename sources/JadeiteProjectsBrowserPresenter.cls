@@ -923,9 +923,8 @@ initialize
 	super initialize.
 	stonCritical := Semaphore forMutualExclusion.!
 
-isClassDefinitionTabEmpty
-
-	self textAreaTabs!
+isClassDefinitionTabSelected
+	^textAreaTabs currentCard name = 'classDefinition'!
 
 isClassSelected
 	^self selectedClass notNil!
@@ -2341,7 +2340,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #hasExactlyOneCategorySelected!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #hierarchyClassDoubleClicked!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #initialize!initialize/release!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #isClassDefinitionTabEmpty!public!testing! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #isClassDefinitionTabSelected!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #isClassSelected!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #isDictionariesTabSelected!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #isHierarchyTabSelected!public!testing! !

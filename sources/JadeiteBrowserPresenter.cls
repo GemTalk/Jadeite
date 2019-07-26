@@ -47,6 +47,32 @@ basicProjectTabLabel
 	dictionaryPresenter selections size > 1 ifTrue: [^label].
 	^dictionaryPresenter selection name!
 
+basicRemoveClass: theClassService
+	| service parentNode |
+	self isHierarchyTabSelected
+		ifTrue: [parentNode := classHierarchyPresenter model parentNodeOf: theClassService].
+	service := self isNoneProjectSelected
+				ifTrue: [dictionaryPresenter selection]
+				ifFalse: [packageListPresenter selection].
+	service
+		command: #removeClass:;
+		commandArgs: (Array with: theClassService).
+	self issueCommand: (Array with: service).
+	classListPresenter model: classListPresenter model.	"force a gui update"
+	self isHierarchyTabSelected
+		ifTrue: 
+			[classHierarchyPresenter model: classHierarchyPresenter model.
+			classHierarchyPresenter selection: (classHierarchyPresenter model asBag
+						detect: [:classService | classService name = parentNode object name])].
+	self selectedClass
+		ifNil: [self resetClassTemplate	"just emptied the last class in the package"]
+		ifNotNil: 
+			[classDefinitionPresenter value: self selectedClass template.
+			classDefinitionPresenter view
+				backcolor: JadeTextStyles default colorForNoEdits;
+				isModified: false;
+				isReadOnly: false]!
+
 basicRemoveDictionaries: dictionaryNames
 	| browserService |
 	browserService := RowanBrowserService new.
@@ -366,6 +392,22 @@ removeProjectTab
 	projectInfoView ifNotNil: [self textAreaTabs removeSubView: projectInfoView].
 	projectInfoTab := nil!
 
+resetClassTemplate
+	| presenter |
+	presenter := self isNoneProjectSelected ifTrue:[dictionaryPresenter] ifFalse:[packageListPresenter].
+	presenter list isEmpty
+		ifTrue: 
+			[classDefinitionPresenter value: String new.
+			classDefinitionPresenter view isModified: false.
+			^self].
+	classDefinitionPresenter value: (presenter selections isEmpty
+				ifTrue: [String new]
+				ifFalse: [presenter selections first defaultTemplate]).
+	classDefinitionPresenter view
+		backcolor: JadeTextStyles default colorForNoEdits;
+		isModified: false;
+		isReadOnly: false!
+
 runAll
 	self selectSUnitTab.
 	self sunitPresenter methodListPresenter view selectAll. 
@@ -466,7 +508,11 @@ updateDictionary
 	self updateServices: dictionaryPresenter selections.
 	self isClassListTabSelected ifFalse: [self updateHierarchy].
 	self updateTabLabel.
-	self updateGlobalsTab. !
+	self updateGlobalsTab.
+	classDefinitionPresenter value: dictionaryPresenter selections first defaultTemplate.
+	classDefinitionPresenter view
+		backcolor: JadeTextStyles default colorForNoEdits;
+		isModified: false!
 
 updateGlobalsTab
 	| array |
@@ -554,6 +600,7 @@ visibleClasses
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #basicAddDictionaryNamed:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicProjectTabLabel!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #basicRemoveClass:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicRemoveDictionaries:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicRemoveGlobal:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicUnloadProjects:!menu handlers support!private! !
@@ -590,6 +637,7 @@ visibleClasses
 !JadeiteBrowserPresenter categoriesFor: #removeGlobal!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #removeGlobalsTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #removeProjectTab!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #resetClassTemplate!private! !
 !JadeiteBrowserPresenter categoriesFor: #runAll!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #runSelected!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #selectedGlobalName:!menu handlers support!private! !

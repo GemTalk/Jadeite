@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanDictionaryService
-	instanceVariableNames: 'classes hierarchyServices globals'
+	instanceVariableNames: 'classes hierarchyServices globals defaultTemplate'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -40,6 +40,12 @@ classHierarchyUpdate: presenter browser: browser
 		classHierarchyUpdate: presenter
 		browser: browser
 		hierarchyServices: hierarchyServices!
+
+defaultTemplate
+	^defaultTemplate!
+
+defaultTemplate: anObject
+	defaultTemplate := anObject!
 
 displayStringFor: displayThing
 	displayThing forecolor: Color black!
@@ -89,6 +95,8 @@ removeDeletedClassesIn: presenter browser: browser
 !RowanDictionaryService categoriesFor: #classes:!accessing!public! !
 !RowanDictionaryService categoriesFor: #classesUpdate:browser:!public!updating! !
 !RowanDictionaryService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
+!RowanDictionaryService categoriesFor: #defaultTemplate!accessing!private! !
+!RowanDictionaryService categoriesFor: #defaultTemplate:!accessing!private! !
 !RowanDictionaryService categoriesFor: #displayStringFor:!displaying!public! !
 !RowanDictionaryService categoriesFor: #doesUpdateApply:!private!testing! !
 !RowanDictionaryService categoriesFor: #globals!accessing!public! !
