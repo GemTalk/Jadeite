@@ -57,6 +57,80 @@ test_addDictionary
 				detect: [:dictionaryService | dictionaryService name = dictionaryName]
 				ifNone: [])!
 
+test_addSubclassNoSuperclassPackage
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
+	self projectsPresenter selectClassNamed: 'Dictionary'.
+	self assert: self projectsPresenter selectedClass packageName
+		equals: RowanService notRowanizedPackageName.
+	self projectsPresenter addSubclass.
+	
+	[self assert: self projectsPresenter classDefinitionPresenter view isModified.
+	self assert: self projectsPresenter classDefinitionPresenter value
+		equals: 'Dictionary rwSubclass: ''NewSubclass''
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''Superclass is not packaged. Enter the desired package name''
+	options: #()
+'
+				replaceCrLfWithLf]
+			ensure: [self projectsPresenter classDefinitionPresenter view isModified: false]!
+
+test_addSubclassNoSuperclassPackageGoesToNewClass
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
+	self projectsPresenter selectClassNamed: 'Dictionary'.
+	self assert: self projectsPresenter selectedClass packageName
+		equals: RowanService notRowanizedPackageName.
+	self projectsPresenter addSubclass.
+	self assert: self projectsPresenter classDefinitionPresenter view isModified.
+	self assert: self projectsPresenter classDefinitionPresenter value
+		equals: 'Dictionary rwSubclass: ''NewSubclass''
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''Superclass is not packaged. Enter the desired package name''
+	options: #()
+'
+				replaceCrLfWithLf.
+	self projectsPresenter classDefinitionPresenter
+		value: 'Dictionary rwSubclass: ''NewSubclassAbc''
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''RowanSample1-Tests''
+	options: #()
+'.
+	self projectsPresenter editSaveClass.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Tests'.
+	self assert: self projectsPresenter selectedClass name equals: 'NewSubclassAbc'.
+	self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass!
+
+test_addSubclassWithPackage
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectRowanSample1Test.
+	self assert: self projectsPresenter selectedClass packageName equals: 'RowanSample1-Tests'.
+	self projectsPresenter addSubclass.
+	
+	[self assert: self projectsPresenter classDefinitionPresenter view isModified.
+	self assert: self projectsPresenter classDefinitionPresenter value
+		equals: 'RowanSample1Test rwSubclass: ''NewSubclass''
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''RowanSample1-Tests''
+	options: #()
+'
+				replaceCrLfWithLf]
+			ensure: [self projectsPresenter classDefinitionPresenter view isModified: false]!
+
 test_canSelectUnauthorizedObjectStub
 	"RowanClassService instVarNames was getting set to a STONReference
 	for a few classes in the hierarchy browser. Made UnauthorizedObjectStub
@@ -793,6 +867,9 @@ test_textTabSelectedWithProjectChange
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #assertDictionaryNotInList:!private!support! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_abortInTranscriptRemovesDictionaryInBrowser!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_addDictionary!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_addSubclassNoSuperclassPackage!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_addSubclassNoSuperclassPackageGoesToNewClass!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_addSubclassWithPackage!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_canSelectUnauthorizedObjectStub!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_changeMethodInDictionaryViewShowsDirtyInProject!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_commitAfterDictionaryAddOrRemove!public!test issue 217! !

@@ -632,30 +632,26 @@ editSaveClass
 	a debugger is raised as not much information is available 
 	without a stack."
 
-	| packageService |
-	packageService := packageListPresenter selection.
-	packageService
+	| browserService |
+	browserService := RowanBrowserService new.
+	browserService
 		command: #compileClass:;
 		commandArgs: (Array with: classDefinitionPresenter value).
-	[self issueCommand: (Array with: packageService)] on: Error
+	[self issueCommand: (Array with: browserService)] on: Error
 		do: 
 			[:ex |
 			(ex isKindOf: GsCompileError)
 				ifTrue: [self handleClassCompileError: ex]
 				ifFalse: [self statusBarText: 'ERROR: ' , ex messageText].
 			^self].
-	packageService
+	browserService
 		command: #recompileMethodsAfterClassCompilation;
 		commandArgs: #().
-	self issueCommand: (Array with: packageService).
+	self issueCommand: (Array with: browserService).
 	classDefinitionPresenter view
 		isModified: false;
 		backcolor: JadeTextStyles default colorForNoEdits.
-	packageListPresenter selection selectedClass
-		ifNotNil: 
-			[:classService |
-			classService isNewClass: false.
-			self selectClassNamed: classService name]!
+	self updateAfterFindClass: browserService selectedClass!
 
 editSaveClassComment
 	| classService |

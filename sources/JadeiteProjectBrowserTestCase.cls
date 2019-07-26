@@ -534,7 +534,7 @@ test_addSubclass
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
-	category: ''(NONE)''
+	category: ''Superclass is not packaged. Enter the desired package name''
 	options: #()
 '
 				replaceCrLfWithLf]
@@ -3911,6 +3911,7 @@ test_sunitRunSelected
 	selection := self projectsPresenter sunitPresenter methodListPresenter list
 				detect: [:methodService | methodService selector = #test1].
 	self projectsPresenter sunitPresenter methodListPresenter selections: (Array with: selection).
+	self projectsPresenter sunitPresenter reset. 
 	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first testResult equals: nil. 
 	runSelectedItem commandDescription performAgainst: self projectsPresenter sunitPresenter.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first testResult equals: 'passed'.
@@ -4549,12 +4550,14 @@ test_updateHierarchyAfterClassRecompile
 	self classHierarchyPresenter selection displayString equals: 'RowanSample1Test (2/2)'.
 	self assert: self projectsPresenter classDefinitionPresenter value
 		equals: 'TestCase rwSubclass: ''RowanSample1Test''
-	instVarNames: #(''ab'')
+	instVarNames: #( ab)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	category: ''RowanSample1-Tests''
-	options: #()']
+	options: #()
+'
+				replaceCrLfWithLf]
 			ensure: 
 				["restore the class"
 				self

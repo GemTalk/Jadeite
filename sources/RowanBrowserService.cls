@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanBrowserService
-	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount dictionaries'
+	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount dictionaries selectedClass'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -143,6 +143,10 @@ removedMethods: anObject
 replicateFrom: newService
 	self isBrowserService ifTrue: [super replicateFrom: newService]!
 
+selectedClass
+
+	^selectedClass!
+
 testCount
 	^testCount!
 
@@ -187,6 +191,7 @@ testPackages: presenter
 !RowanBrowserService categoriesFor: #removedMethods!accessing!private! !
 !RowanBrowserService categoriesFor: #removedMethods:!accessing!private! !
 !RowanBrowserService categoriesFor: #replicateFrom:!public!replication!updating! !
+!RowanBrowserService categoriesFor: #selectedClass!accessing!public! !
 !RowanBrowserService categoriesFor: #testCount!accessing!private! !
 !RowanBrowserService categoriesFor: #testCount:!accessing!private! !
 !RowanBrowserService categoriesFor: #testPackages:!public!updating! !
