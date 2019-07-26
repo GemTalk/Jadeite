@@ -449,6 +449,11 @@ updateAfterFindClassInPackage: classService
 			[self selectClassInClassListNamed: classService name.
 			self updateHierarchy]!
 
+updateClasses
+	self isNoneProjectSelected
+		ifTrue: [self updateServices: dictionaryPresenter selections]
+		ifFalse: [self updateServices: packageListPresenter selections]!
+
 updateDictionaries
 	| browserService |
 	browserService := RowanBrowserService new.
@@ -594,6 +599,7 @@ visibleClasses
 !JadeiteBrowserPresenter categoriesFor: #updateAfterFindClass:!menu handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateAfterFindClassInDictionary:!menu handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateAfterFindClassInPackage:!menu handlers!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #updateClasses!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateDictionaries!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateDictionary!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateGlobalsTab!private!tabs! !

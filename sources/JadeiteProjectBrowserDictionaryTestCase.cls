@@ -815,6 +815,29 @@ test_removeMethodInNonPackagedClass
 				self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_renameClassInDictionaryView
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[self selectNoneProject.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	self projectsPresenter selectClassNamed: 'RowanSample1Test'.
+	self assert: self projectsPresenter isNoneProjectSelected.
+	self assert: self dictionaryPresenter selections first name equals: 'UserGlobals'.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1Test'.
+	TestMessageBox plannedResult: #ok.
+	self projectsPresenter basicRenameClass: self projectsPresenter selectedClass
+		to: 'RowanSample1TestRenamed'.
+	self assert: self projectsPresenter isNoneProjectSelected.
+	self assert: self dictionaryPresenter selections first name equals: 'UserGlobals'.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1TestRenamed'.
+	TestMessageBox plannedResult: #ok.
+	self projectsPresenter basicRenameClass: self projectsPresenter selectedClass to: 'RowanSample1Test'.
+	self assert: self projectsPresenter isNoneProjectSelected.
+	self assert: self dictionaryPresenter selections first name equals: 'UserGlobals'.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1Test']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_selectProjectClearHierarchy
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectNoneProject.
@@ -913,6 +936,7 @@ test_textTabSelectedWithProjectChange
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeDictionaryMenuItemEnablement!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeDictionaryNoSelection!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeMethodInNonPackagedClass!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_renameClassInDictionaryView!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_selectProjectClearHierarchy!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_systemTabsShowDictionariesAndProjects!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_textTabsChange!public!test issue 217! !
