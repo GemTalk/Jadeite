@@ -39,6 +39,29 @@ tearDown
 			session library: nil.
 			session := nil]!
 
+test_dataCuratorLogin
+	| jadeiteShell transcript |
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestMessageBox plannedResult: #no.	"don't commit"
+	GciSession current logout.
+	JadeiteLoginShell allInstances first view close.	"should save to the remote JadeDefaultConnection.gss file"
+	jadeiteShell := JadeiteLoginShell show.
+	jadeiteLogin := jadeiteShell model.
+	jadeiteShell userIDPresenter value: 'DataCurator'.	
+	jadeiteShell login.
+	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == GciSession current]
+				ifNone: [].
+	self assert: ('*DataCurator*' match: transcript view text).	"test that window header says DataCurator"
+	TestMessageBox plannedResult: #no.
+	GciSession current logout.
+	jadeiteShell userIDPresenter value: 'SystemUser'.	
+	jadeiteShell login.
+	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == GciSession current]
+				ifNone: [].
+	self assert: ('*SystemUser*' match: transcript view text)	"test that window header says SystemUser again"]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_gemTask
 	| formerGemTask jadeiteShell |
 	self testsIssue: #issue416 withTitle: 'NetLDI task in login is not displayed correctly'.
@@ -86,6 +109,7 @@ testsIssue: aSymbol withTitle: anObject! !
 !JadeiteLoginTestCase categoriesFor: #login!private!setup teardown! !
 !JadeiteLoginTestCase categoriesFor: #setUp!public!setup teardown! !
 !JadeiteLoginTestCase categoriesFor: #tearDown!public!setup teardown! !
+!JadeiteLoginTestCase categoriesFor: #test_dataCuratorLogin!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #test_gemTask!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #test_simpleLogin!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #testsIssue:withTitle:!private! !

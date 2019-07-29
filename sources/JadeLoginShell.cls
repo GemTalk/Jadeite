@@ -392,7 +392,10 @@ updateView
 	useSocketPresenter		value: self model useSocket.
 	debugPathPresenter		value: self model debugPath.
 	self isModified: false.
-! !
+!
+
+userIDPresenter
+	^userIDPresenter! !
 !JadeLoginShell categoriesFor: #basicCaption!accessing!public! !
 !JadeLoginShell categoriesFor: #checkScintillaVersion!public! !
 !JadeLoginShell categoriesFor: #createComponents!public! !
@@ -431,6 +434,7 @@ updateView
 !JadeLoginShell categoriesFor: #updateCaption!public! !
 !JadeLoginShell categoriesFor: #updateModel!public! !
 !JadeLoginShell categoriesFor: #updateView!public! !
+!JadeLoginShell categoriesFor: #userIDPresenter!accessing!private! !
 
 !JadeLoginShell class methodsFor!
 
