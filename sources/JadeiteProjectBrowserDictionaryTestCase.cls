@@ -274,6 +274,15 @@ test_dictionaryViewClassHierarchySelectedClass
 	self assert: children first name equals: 'GsChoiceInteraction']
 			ensure: [self selectClassListTab]!
 
+test_dictionaryWithoutClassHasClassTemplate
+	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	self selectNoneProject.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	self projectsPresenter selectClassDefinitionTab.
+	self assertIsNil: self projectsPresenter selectedClass.
+	self rowanFixMe.
+	self assert: self projectsPresenter classDefinitionPresenter value notEmpty	"not sure what this should be yet"!
+
 test_findClassNotInProject
 	"we no longer open the old dictionary browser"
 
@@ -891,6 +900,7 @@ test_textTabSelectedWithProjectChange
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_dictionarySelectionIndependentInTab!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_dictionaryViewClassHierarchy!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_dictionaryViewClassHierarchySelectedClass!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_dictionaryWithoutClassHasClassTemplate!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_findClassNotInProject!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_firstClickDictionaries!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_globalRemove!public!test issue 217! !

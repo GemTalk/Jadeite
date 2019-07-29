@@ -509,6 +509,7 @@ updateDictionary
 	self isClassListTabSelected ifFalse: [self updateHierarchy].
 	self updateTabLabel.
 	self updateGlobalsTab.
+	dictionaryPresenter selections isEmpty ifTrue:[^self]. 
 	classDefinitionPresenter value: dictionaryPresenter selections first defaultTemplate.
 	classDefinitionPresenter view
 		backcolor: JadeTextStyles default colorForNoEdits;
