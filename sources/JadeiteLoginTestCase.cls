@@ -48,19 +48,23 @@ test_dataCuratorLogin
 	JadeiteLoginShell allInstances first view close.	"should save to the remote JadeDefaultConnection.gss file"
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteLogin := jadeiteShell model.
-	jadeiteShell userIDPresenter value: 'DataCurator'.	
+	jadeiteShell userIDPresenter value: 'DataCurator'.
 	jadeiteShell login.
 	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == GciSession current]
 				ifNone: [].
 	self assert: ('*DataCurator*' match: transcript view text).	"test that window header says DataCurator"
 	TestMessageBox plannedResult: #no.
 	GciSession current logout.
-	jadeiteShell userIDPresenter value: 'SystemUser'.	
+	jadeiteShell userIDPresenter value: 'SystemUser'.
 	jadeiteShell login.
 	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == GciSession current]
 				ifNone: [].
 	self assert: ('*SystemUser*' match: transcript view text)	"test that window header says SystemUser again"]
-			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				JadeiteTestResource current
+					tearDown;
+					setUp]!
 
 test_gemTask
 	| formerGemTask jadeiteShell |
@@ -73,7 +77,7 @@ test_gemTask
 	formerGemTask := jadeiteLogin gemTask.
 	self assert: formerGemTask equals: 'gemnetobject'.	"might need to change this assumption"
 	jadeiteLogin gemTask: 'gemnetdebug'.
-	jadeiteShell gemTaskPresenter: 'gemnetdebug'.  "update the gui"
+	jadeiteShell gemTaskPresenter: 'gemnetdebug'.	"update the gui"
 	jadeiteShell login.	"have to login so new task is accepted"
 	"somehow test that we are using gemnetdebug"
 	TestMessageBox plannedResult: #no.
@@ -83,7 +87,7 @@ test_gemTask
 	jadeiteLogin := jadeiteShell model.
 	self assert: jadeiteLogin gemTask equals: 'gemnetdebug'.
 	jadeiteLogin gemTask: 'gemnetobject'.
-	jadeiteShell gemTaskPresenter: 'gemnetobject'.  "update the gui"
+	jadeiteShell gemTaskPresenter: 'gemnetobject'.	"update the gui"
 	jadeiteShell login.
 	"somehow test that we are using gemnetobject"
 	TestMessageBox plannedResult: #no.
@@ -93,7 +97,10 @@ test_gemTask
 	jadeiteLogin := jadeiteShell model.
 	self assert: jadeiteLogin gemTask equals: 'gemnetobject'.
 	jadeiteShell login.
-	self assert: GciSession current isKindOf: GciSession!
+	[self assert: GciSession current isKindOf: GciSession] ensure: 
+			[JadeiteTestResource current
+				tearDown;
+				setUp	"reset the tes resource's session, etc"]!
 
 test_simpleLogin
 	self denyIsNil: session.
