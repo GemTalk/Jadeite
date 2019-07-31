@@ -1172,7 +1172,6 @@ isVariablesTabSelected
 !
 
 jadeDebug
-
 	[
 		gciSession debugString: self currentSelectionOrLine fromContext: nil environment: environment.
 	] on: GsCompileError do: [:ex | 

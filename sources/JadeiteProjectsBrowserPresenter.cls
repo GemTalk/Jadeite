@@ -1700,15 +1700,16 @@ runClassTests
 			sunitPresenter ensureVisible]!
 
 runMethodTests
-	| sunitPresenterSelections | 
-	(JadePresenter runMethodTests: methodListPresenter selections in: self gciSession)
+	| sunitPresenterSelections testMethodServices | 
+	testMethodServices := methodListPresenter selections select:[:methodService | methodService isTestMethod]. 
+	(JadePresenter runMethodTests: testMethodServices in: self gciSession)
 		ifTrue: 
 			[| testResult |
 			sunitPresenter reset.
 			testResult := JadeTestResult new.
-			testResult passed: (methodListPresenter selections
+			testResult passed: (testMethodServices
 								collect: [:methodService | methodService selector]).
-			sunitPresenterSelections := self sunitPresenter methodListPresenter list select:[:methodService | methodListPresenter selections includes: methodService]. 
+			sunitPresenterSelections := self sunitPresenter methodListPresenter list select:[:methodService | testMethodServices includes: methodService]. 
 			self sunitPresenter methodListPresenter selections: sunitPresenterSelections.
 			sunitPresenter updateResult: testResult.
 			sunitPresenter ensureVisible]!

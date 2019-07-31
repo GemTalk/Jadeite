@@ -3881,6 +3881,23 @@ test_sunitInheritedTests
 	self assert: testClassTestSelectors size > classTestSelectors size.	"the subclass inherits the super class's tests"
 	classTestSelectors do: [:selector | self assert: (testClassTestSelectors includes: selector)]!
 
+test_sunitOnlyRunTestMethods
+	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'nonTestMethod  ^123'
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	[self selectMethodsNamed: #(#nonTestMethod #test1). 
+	self projectsPresenter jadeDebug. 
+	self assert: self projectsPresenter isSunitTabSelected. 
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selections size equals: 1. 
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first selector equals: #test1. 
+	self assert: self projectsPresenter sunitPresenter textResultPresenter  value equals: '1 run, 1 passed, 0 failures, 0 errors'. 
+	] ensure: 
+			[self selectMethodNamed: #nonTestMethod.
+			self projectsPresenter removeMethods: self classListPresenter selections]!
+
 test_sunitRunAndMeasureTime
 	| runSelectedItem selection |
 	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
@@ -4978,6 +4995,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitBrowserNoSelectedTest!public!test menus!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitCtrlB!public!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitInheritedTests!public!test sunit tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitOnlyRunTestMethods!public!test sunit tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitRunAndMeasureTime!public!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitRunSelected!public!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitTabCanRefresh!public!test menus!test sunit tab!tests! !
