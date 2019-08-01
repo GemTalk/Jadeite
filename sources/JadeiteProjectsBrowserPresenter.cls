@@ -619,7 +619,7 @@ editFind
 	| tab |
 	tab := textAreaTabs currentCard.
 	tab setFocus.
-	(tab class canUnderstand: #editFind) ifTrue: [tab editFind]!
+	(tab class canUnderstand: #editFind) ifTrue: [^tab editFind]!
 
 editReplace
 	View focus == methodSourcePresenter view ifTrue: [View focus findReplace]!
@@ -977,7 +977,6 @@ jadeInspect
 	^super jadeInspect!
 
 jadeMenuStrings
-
 	false ifTrue: [
 		self abortTransaction; commitTransaction; newBrowser; addSystemBrowser; maximizeCode; findClass; gotoClass; refreshFromServer; exit.
 	]. 

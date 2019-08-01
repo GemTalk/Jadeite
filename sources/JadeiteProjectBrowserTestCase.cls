@@ -2284,6 +2284,20 @@ test_findClass
 	self assert: self packageListPresenter selection name equals: 'Cypress-Definitions'.
 	self assert: self projectListPresenter selection name equals: 'Cypress'!
 
+test_findDialogBasic
+	| methodSourceView findView |
+	self testsIssue: #issue468 withTitle: 'Find text dialog does not highlight correctly'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #testError.
+	methodSourceView := self projectsPresenter methodSourcePresenter view.
+	findView := methodSourceView findPrompt: 'RowanSample1'.
+	
+	[self assert: self methodSourcePresenter selection equals: String new.
+	self assert: findView patternPresenter value equals: 'RowanSample1'.
+	findView findNext.
+	self assert: self methodSourcePresenter selection equals: 'RowanSample1']
+			ensure: [findView view close]!
+
 test_findMethodChangesCategories
 	| methodService | 
 	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
@@ -2382,6 +2396,33 @@ test_findMethodSUnitBrowser
 	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
 	self selectSUnitTab.
 	self assert: self projectsPresenter findMethod equals: self projectsPresenter. "error occurred just calling the method" !
+
+test_findUsedEverywhere
+	"Want to pick up the Jadeite Find Dialog in any text pane"
+
+	| workspace |
+	self testsIssue: #issue468 withTitle: 'Find text dialog does not highlight correctly'.
+	self assert: self projectsPresenter methodSourcePresenter view isKindOf: JadeiteScintillaView.
+	self assert: self projectsPresenter classDefinitionPresenter view isKindOf: JadeiteScintillaView.
+	self assert: self projectsPresenter classCommentPresenter view isKindOf: JadeiteScintillaView.
+	self assert: self projectsPresenter comparisonPresenter beforePresenter view
+		isKindOf: JadeiteScintillaView.
+	self assert: self projectsPresenter comparisonPresenter afterPresenter view
+		isKindOf: JadeiteScintillaView.
+	methodListBrowser := JadePresenter browseImplementorsOf: #setUp session: session.
+	
+	[self assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter view
+		isKindOf: JadeiteScintillaView.
+	self assert: methodListBrowser primaryPresenter comparisonPresenter beforePresenter view
+		isKindOf: JadeiteScintillaView.
+	self assert: methodListBrowser primaryPresenter comparisonPresenter afterPresenter view
+		isKindOf: JadeiteScintillaView]
+			ensure: [methodListBrowser view close].
+	self assert: transcript transcriptPresenter documentPresenter view isKindOf: JadeiteScintillaView.
+	self assert: transcript codePane documentPresenter view isKindOf: JadeiteScintillaView.
+	workspace := JadeWorkspace showOnSession: session.
+	[self assert: workspace codePane documentPresenter view isKindOf: JadeiteScintillaView]
+		ensure: [workspace view close]!
 
 test_gitBranchesDoesNotShowHead
 	"this may be a brittle test because it assumes RowanSample1 has only the master branch.
@@ -4902,6 +4943,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_failMethodCompile!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_filtersUpdatedInHierarchyView!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findClass!public!test class list!test find!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_findDialogBasic!public!test find! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodChangesCategories!public!test categories!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodDisabled!public!test find!test menus!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodDoesNotChangeCategories!public!test categories!test find!tests! !
@@ -4909,6 +4951,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodShowsAllMethods!public!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodShowsOnlyOneSide!public!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodSUnitBrowser!public!test find!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_findUsedEverywhere!public!test find! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gitBranchesDoesNotShowHead!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromHierarchy!public!test class hierarchy!test defined package!tests! !

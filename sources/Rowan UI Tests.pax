@@ -30,6 +30,8 @@ package classNames
 	yourself.
 
 package methodNames
+	add: #DifferencesPresenter -> #afterPresenter;
+	add: #DifferencesPresenter -> #beforePresenter;
 	add: #JadeInspector -> #documentPresenter;
 	add: #JadeiteProjectsBrowserPresenter -> #definedClassPackageText;
 	add: #JadeiteProjectsBrowserPresenter -> #definedMethodPackageText;
@@ -51,6 +53,7 @@ package setPrerequisites: (IdentitySet new
 	add: '..\Core\Object Arts\Dolphin\Base\Dolphin';
 	add: '..\Core\Object Arts\Dolphin\MVP\Views\Common Controls\Dolphin Common Controls';
 	add: '..\Core\Object Arts\Dolphin\MVP\Views\Control Bars\Dolphin Control Bars';
+	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Difference\Dolphin Differences Presenter';
 	add: '..\Core\Object Arts\Dolphin\MVP\Models\List\Dolphin List Models';
 	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\List\Dolphin List Presenter';
 	add: '..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base';
@@ -194,6 +197,18 @@ TestResource subclass: #JadeiteTestResource
 
 
 "Loose Methods"!
+
+!DifferencesPresenter methodsFor!
+
+afterPresenter
+	"for testing" 
+	^afterPresenter!
+
+beforePresenter
+	"for testing" 
+	^beforePresenter! !
+!DifferencesPresenter categoriesFor: #afterPresenter!accessing!public! !
+!DifferencesPresenter categoriesFor: #beforePresenter!accessing!public! !
 
 !JadeInspector methodsFor!
 

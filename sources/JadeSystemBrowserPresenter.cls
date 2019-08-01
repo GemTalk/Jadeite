@@ -634,11 +634,9 @@ editDelete
 !
 
 editFind
-
 	textAreaTabs currentCard setFocus; editFind.!
 
 editFindNext
-
 	textAreaTabs currentCard setFocus; editFind.!
 
 editMenuStrings

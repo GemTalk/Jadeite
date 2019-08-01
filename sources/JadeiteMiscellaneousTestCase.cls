@@ -167,6 +167,31 @@ test_dolphinStackDumpBanners
 	self assert: ('*' , timestampString , '*' match: stream contents).
 	self assert: ('*Ending Dolphin stack dump started at*' match: stream contents).!
 
+test_findInWorkspace
+	| workspace findView documentPresenter |
+	self testsIssue: #issue468 withTitle: 'Find text dialog does not highlight correctly'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[workspace model value: '1234
+
+
+1254
+
+124'.
+	documentPresenter := workspace codePane documentPresenter.
+	findView := workspace codePane documentPresenter view findPrompt: '12*4'.
+	findView modePresenter value: #wildcardExpression.
+	findView wrapPresenter value: true.
+	findView findNext.
+	self assert: documentPresenter selection equals: '1234'.
+	findView findNext.
+	self assert: documentPresenter selection equals: '1254'.
+	findView findNext.	"Last one doesn't match pattern. wrap around finds first again"
+	self assert: documentPresenter selection equals: '1234']
+			ensure: 
+				[workspace view close.
+				findView view close]!
+
 test_releaseOops
 	| remoteObject service |
 	self testsIssue: #issue413 withTitle: '(3.0.56 & 3.0.62) running out vm memory quickly'.
@@ -284,6 +309,7 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitUpdatedInSession!auto commit!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_convertToPattern!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_findInWorkspace!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_symbolsFromSelector!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus! !
