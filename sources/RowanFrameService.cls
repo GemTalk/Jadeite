@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanFrameService
-	instanceVariableNames: 'label method stepPoint vars oop'
+	instanceVariableNames: 'label method stepPoint vars oop homeMethodSelector homeMethodClassName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -22,6 +22,14 @@ copyBasicsFrom: oldService
 gsMethod
 
 	^method!
+
+homeMethodClassName
+
+	^homeMethodClassName!
+
+homeMethodSelector
+
+	^homeMethodSelector!
 
 indexOfSubCollection: aString 
 
@@ -64,6 +72,8 @@ vars
 !RowanFrameService categoriesFor: #breaks!public! !
 !RowanFrameService categoriesFor: #copyBasicsFrom:!public! !
 !RowanFrameService categoriesFor: #gsMethod!public! !
+!RowanFrameService categoriesFor: #homeMethodClassName!accessing!public! !
+!RowanFrameService categoriesFor: #homeMethodSelector!accessing!public! !
 !RowanFrameService categoriesFor: #indexOfSubCollection:!public! !
 !RowanFrameService categoriesFor: #isExecutedBlockContext!public!testing! !
 !RowanFrameService categoriesFor: #isUpdatableService!public!testing! !

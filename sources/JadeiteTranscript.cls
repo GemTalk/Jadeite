@@ -60,9 +60,9 @@ flipAutoCommit
 	self issueCommand: (Array with: browserService)!
 
 flipDebugger
-	RowanDebugger debuggerClass == RowanDebugger
-		ifTrue: [RowanDebugger debuggerClass: JadeDebugger]
-		ifFalse: [RowanDebugger debuggerClass: RowanDebugger]!
+	JadeiteDebugger debuggerClass == JadeiteDebugger
+		ifTrue: [JadeiteDebugger debuggerClass: JadeDebugger]
+		ifFalse: [JadeiteDebugger debuggerClass: JadeiteDebugger]!
 
 flipLogging
 	BrowserUpdate current isLogging: BrowserUpdate current isLogging not!
@@ -169,7 +169,7 @@ queryCommand: query
 			^true].
 	query commandSymbol = #flipDebugger
 		ifTrue: 
-			[query isChecked: RowanDebugger debuggerClass = RowanDebugger.
+			[query isChecked: JadeiteDebugger debuggerClass = JadeiteDebugger.
 			^true].
 	query commandSymbol = #flipLogging
 		ifTrue: 

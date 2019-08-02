@@ -15,7 +15,7 @@ It''s recommended to run this set of tests with a fresh login to avoid counting 
 closeDebuggers
 	| list semaphore |
 	list := JadeiteMethodListBrowser allInstances , RowanSystemBrowser allInstances
-				, RowanDebugger allInstances.
+				, JadeiteDebugger allInstances.
 	JadeiteBrowser allInstances.
 	semaphore := Semaphore new.
 	list do: 
@@ -41,17 +41,15 @@ closeDebuggers
 			semaphore wait.
 			debugger == each ifTrue: [debugger := nil]].
 	list := JadeiteMethodListBrowser allInstances , RowanSystemBrowser allInstances
-				, RowanDebugger allInstances.
+				, JadeiteDebugger allInstances.
 	self assert: list isEmpty!
 
 debuggerDo: aBlock
-
-	self assert: RowanDebugger semaphore isNil.
-	RowanDebugger semaphore: Semaphore new.
+	self assert: JadeiteDebugger semaphore isNil.
+	JadeiteDebugger semaphore: Semaphore new.
 	aBlock value.
-	RowanDebugger semaphore wait.
-	RowanDebugger semaphore: nil.
-!
+	JadeiteDebugger semaphore wait.
+	JadeiteDebugger semaphore: nil!
 
 getClipboardContents
 	"Private - `Clipboard current getText` occasionally gets an `Access is denied` error.
@@ -70,7 +68,7 @@ getDebugger
 	"need a more definitive test to know when debugger is fully built"
 
 	100 timesRepeat: 
-			[debugger := RowanDebugger allInstances detect: [:each | true] ifNone: [nil].
+			[debugger := JadeiteDebugger allInstances detect: [:each | true] ifNone: [nil].
 			(debugger notNil and: 
 					[debugger documentPresenter view selection notEmpty and: 
 							[debugger gciSession notNil
@@ -82,7 +80,7 @@ getSecondDebugger
 	"Private - we opened up one debugger in the test, then another. find the second"
 
 	100 timesRepeat: 
-			[secondDebugger := RowanDebugger allInstances detect: [:each | true] ifNone: [nil].
+			[secondDebugger := JadeiteDebugger allInstances detect: [:each | true] ifNone: [nil].
 			(secondDebugger notNil and: 
 					[secondDebugger gsProcess notNil
 						and: [secondDebugger documentPresenter view selection notEmpty and: [secondDebugger ~~ debugger]]])
@@ -101,13 +99,11 @@ methodListBrowser
 !
 
 openDebuggerOn: aString
-
-	self 
-		assert: RowanDebugger allInstances isEmpty;
-		debuggerDo: [process := [session executeString: aString] forkAt: Processor activePriority + 1];		
+	self
+		assert: JadeiteDebugger allInstances isEmpty;
+		debuggerDo: [process := [session executeString: aString] forkAt: Processor activePriority + 1];
 		getDebugger;
-		yourself.
-!
+		yourself!
 
 saveMethodWithHalt
 	| source |
@@ -137,20 +133,12 @@ selectFrameAt: integer
 	debugger frameListPresenter selection: (debugger frameListPresenter list at: integer)!
 
 setUp
-
 	| list1 list2 |
 	super setUp.
 	self closeDebuggers.
-	RowanDebugger debuggerClass: RowanDebugger.
-	self assertIsNil: RowanDebugger semaphore.
-	list1 := JadeiteBrowser allInstances.
-	list2 := RowanMethodListBrowser allInstances.
-	self 
-		assert: session notNil;
-		assert: list1 isEmpty;
-		assert: list2 isEmpty;
-		yourself.
-!
+	JadeiteDebugger debuggerClass: JadeiteDebugger.
+	self assertIsNil: JadeiteDebugger semaphore.
+	self assert: session notNil!
 
 statusBarValue
 	^(debugger view viewNamed: 'statusBarField') value!
@@ -171,8 +159,8 @@ tearDown
 		terminateGsProcess;
 		closeDebuggers;
 		yourself.
-	RowanDebugger debuggerClass: nil.
-	RowanDebugger semaphore: nil.
+	JadeiteDebugger debuggerClass: nil.
+	JadeiteDebugger semaphore: nil.
 	super tearDown!
 
 terminateGsProcess
@@ -348,6 +336,88 @@ test_compileClassRecompileMethodsCompileError
 			[self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
 			self projectsPresenter classDefinitionPresenter view isModified: false.
 			self destroy: projectsBrowser]!
+
+test_compileInExecutedBlock
+	self testsIssue: #issue498
+		withTitle: 'Would like to be able to compile method in debugger when block frame selected'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectRowanSample1Test.
+	self
+		saveMethod: 'eek
+
+	#(1 2 3) do:[:idx |
+		self halt].'
+		in: 'RowanSample1Test'
+		category: 'other'.
+	
+	[self openDebuggerOn: 'RowanSample1Test new eek'.
+	debugger documentPresenter value: 'eek
+
+	#(1 2 3) do:[:idx |
+		self]'.
+	self debuggerDo: [debugger saveMethod].
+	self assert: debugger frameListPresenter selectionByIndex equals: 1.
+	self assert: (debugger frameListPresenter list at: 1) equals: 'RowanSample1Test >> eek @1 line 1']
+			ensure: [self projectsPresenter basicRemoveMethods]]
+			ensure: [projectsBrowser view close]!
+
+test_compileInExecutedBlockFailsWhenNoHomeMethod
+	self testsIssue: #issue498
+		withTitle: 'Would like to be able to compile method in debugger when block frame selected'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[self openDebuggerOn: '#(1 2 3) do:[:idx | self halt].'.
+	self assert: debugger frameListPresenter selectionByIndex equals: 4.
+	self assert: (debugger frameListPresenter list at: 4) equals: '[] in  Executed Code  @2 line 1'.
+	debugger documentPresenter value: '#(1 2 3) do:[:idx | self].'.
+	TestMessageBox plannedResult: 'ok'.
+	debugger saveMethod.
+	self assert: debugger frameListPresenter selectionByIndex equals: 4.
+	self assert: (debugger frameListPresenter list at: 4) equals: '[] in  Executed Code  @2 line 1']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
+test_compileInExecutedBlockSameSelectorOnStack
+	self testsIssue: #issue498
+		withTitle: 'Would like to be able to compile method in debugger when block frame selected'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectRowanSample1Test.
+	self
+		saveMethod: 'doSomething
+
+	#(1 2 3) do: [:idx | 
+			RowanSample1 new doSomething halt]'
+		in: 'RowanSample1Test'
+		category: 'other'.
+	self selectRowanSample1Class.
+	self
+		saveMethod: 'doSomething
+
+	#(1 2 3) do:[:idx |
+		self halt]'
+		in: 'RowanSample1'
+		category: 'other'.
+	
+	[self openDebuggerOn: 'RowanSample1Test new doSomething'.
+	self assert: debugger frameListPresenter selectionByIndex equals: 4.
+	self assert: (debugger frameListPresenter list at: 4)
+		equals: '[] in  ExecBlock1 (RowanSample1) >> doSomething @2 line 4'.
+	self assert: (debugger frameListPresenter list at: 9)
+		equals: 'RowanSample1Test >> doSomething @2 line 3'.
+	debugger documentPresenter value: 'doSomething
+	#(1 2 3) do:[:idx |
+		self]'.
+	self debuggerDo: [debugger saveMethod].
+	self assert: debugger frameListPresenter selectionByIndex equals: 1.
+	self assert: (debugger frameListPresenter list at: 1)
+		equals: 'RowanSample1 >> doSomething @1 line 1'.
+	self assert: (debugger frameListPresenter list at: 4)
+		equals: 'RowanSample1Test >> doSomething @2 line 3']
+			ensure: [self projectsPresenter basicRemoveMethods]]
+			ensure: [projectsBrowser view close]!
 
 test_debuggerModifiedSourcePaneChangeFrame
 	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
@@ -971,13 +1041,18 @@ x yourself';
 test8
 	"https://github.com/ericwinger/Jade/issues/20"
 
-	self 
-		assert: RowanDebugger allInstances isEmpty;
-		debuggerDo: [process := [session debugString: '#(abc def) do:[:symbol | symbol size]' fromContext: nil environment: 0] fork];
+	self
+		assert: JadeiteDebugger allInstances isEmpty;
+		debuggerDo: 
+				[process := 
+						[session
+							debugString: '#(abc def) do:[:symbol | symbol size]'
+							fromContext: nil
+							environment: 0]
+								fork];
 		getDebugger;
 		yourself.
-	self debuggerDo: [debugger resumeProcess].
-!
+	self debuggerDo: [debugger resumeProcess]!
 
 testBug74
 	"Open debugger on method with breakpoint"
@@ -1185,6 +1260,9 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseFrameMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileClassRecompileMethodsCompileError!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlock!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlockFailsWhenNoHomeMethod!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlockSameSelectorOnStack!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneChangeFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneStayOnFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_duplicateInstVars!public!tests! !

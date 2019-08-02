@@ -14,6 +14,10 @@ frameForLevel: anInteger
 
 	^frames at: anInteger!
 
+frames
+
+	^frames!
+
 gsProcessForSession: session
 	^GsProcess session: session oopType: self oopType!
 
@@ -41,6 +45,7 @@ stack
 
 	^frames collect: [:each | each printString]! !
 !RowanProcessService categoriesFor: #frameForLevel:!public! !
+!RowanProcessService categoriesFor: #frames!public! !
 !RowanProcessService categoriesFor: #gsProcessForSession:!public! !
 !RowanProcessService categoriesFor: #isUpdatableService!public!testing! !
 !RowanProcessService categoriesFor: #oop!public! !

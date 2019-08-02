@@ -16,6 +16,7 @@ package classNames
 	add: #JadeiteBasicRenameClassMethodListPresenter;
 	add: #JadeiteBrowser;
 	add: #JadeiteBrowserPresenter;
+	add: #JadeiteDebugger;
 	add: #JadeiteFindClassDialog;
 	add: #JadeiteFindMethodDialog;
 	add: #JadeiteLogger;
@@ -48,7 +49,6 @@ package classNames
 	add: #RowanClassHierarchyUpdate;
 	add: #RowanClassInfoUpdate;
 	add: #RowanClassService;
-	add: #RowanDebugger;
 	add: #RowanDebuggerService;
 	add: #RowanDebuggerStepPointError;
 	add: #RowanDictionaryService;
@@ -590,7 +590,7 @@ RowanService subclass: #RowanDictionaryService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanFrameService
-	instanceVariableNames: 'label method stepPoint vars oop'
+	instanceVariableNames: 'label method stepPoint vars oop homeMethodSelector homeMethodClassName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -759,7 +759,7 @@ JadeLoginShell subclass: #JadeiteLoginShell
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeDebugger subclass: #RowanDebugger
+JadeDebugger subclass: #JadeiteDebugger
 	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore'
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -1066,9 +1066,7 @@ verifyRowanLoaded
 !GsError methodsFor!
 
 debugError
-	^RowanDebugger debuggerClass reportError: self.
-
-! !
+	^JadeiteDebugger debuggerClass reportError: self! !
 !GsError categoriesFor: #debugError!public! !
 
 !GsMethod methodsFor!
@@ -1217,9 +1215,7 @@ update
 
 updateCaption
 	self caption: (gciSession
-				titleBarFor: (self class == RowanDebugger
-				ifTrue: ['Jadeite Debugger']
-				ifFalse: ['Rowan Debugger']))! !
+				titleBarFor: (self class == JadeiteDebugger ifTrue: ['Jadeite Debugger'] ifFalse: ['Rowan Debugger']))! !
 !JadeDebugger categoriesFor: #gsProcess!accessing!private! !
 !JadeDebugger categoriesFor: #gsProcess:!accessing!private! !
 !JadeDebugger categoriesFor: #initializeProcess:message:terminateOnClose:!public! !
@@ -1236,7 +1232,7 @@ doCopy
 	| stream |
 	Cursor wait showWhile: 
 			[stream := WriteStream on: String new.
-			RowanDebugger
+			JadeiteDebugger
 				dumpStackFor: gsError gsProcess
 				errorMessage: gsError messageText
 				on: stream.
@@ -2506,15 +2502,13 @@ updateMethodReferences: services
 !JadeProcessBrowser methodsFor!
 
 debugProcess
-
 	| oop oopType |
 	oop := (processesPresenter selection at: 2) asNumber.
 	oopType := gciSession oopTypeWithOop: oop.
-	RowanDebugger debuggerClass 
-		openOn: (GsProcess session: gciSession oopType: oopType) 
+	JadeiteDebugger debuggerClass
+		openOn: (GsProcess session: gciSession oopType: oopType)
 		message: 'background process'
-		terminateOnClose: false.
-! !
+		terminateOnClose: false! !
 !JadeProcessBrowser categoriesFor: #debugProcess!private! !
 
 !JadeServer methodsFor!
@@ -3353,31 +3347,30 @@ removeMethods
 	self basicRemoveMethods!
 
 runClassTests
-
 	| stream string list caption selection |
 	stream := (WriteStream on: String new)
-		nextPutAll: self behaviorIdentifier;
-		yourself.
-	string := self gciSession 
-		serverPerform: #'sbRunClassTests:' 
-		with: stream contents.
-	string isNil ifTrue: [self error: 'Test run did not return expected value!!'. ^self].
+				nextPutAll: self behaviorIdentifier;
+				yourself.
+	string := self gciSession serverPerform: #sbRunClassTests: with: stream contents.
+	string isNil
+		ifTrue: 
+			[self error: 'Test run did not return expected value!!'.
+			^self].
 	list := string subStrings: Character lf.
-	list size = 1 ifTrue: [
-		MessageBox notify: list first.
-		^self.
-	].
+	list size = 1
+		ifTrue: 
+			[MessageBox notify: list first.
+			^self].
 	caption := list first.
 	list := list copyFrom: 2 to: list size.
 	list := list asSortedCollection.
-	selection := SUnitResultDialog showModalOn: (Array with: self gciSession with: caption with: list).
+	selection := SUnitResultDialog showModalOn: (Array
+						with: self gciSession
+						with: caption
+						with: list).
 	selection isNil ifTrue: [^self].
-	[
-		self gciSession executeString: selection.
-	] on: GsError do: [:ex | 
-		RowanDebugger debuggerClass openDebuggerOnException: ex.
-	].
-!
+	[self gciSession executeString: selection] on: GsError
+		do: [:ex | JadeiteDebugger debuggerClass openDebuggerOnException: ex]!
 
 savePackage
 
@@ -4041,7 +4034,7 @@ editSaveMethod
 	"for older method source presenter"
 
 	| classService newMethodService |
-	(self parentPresenter isKindOf: RowanDebugger) ifTrue: [^self parentPresenter saveMethod]. "yuck, need to get Dolphin's menus sorted out"
+	(self parentPresenter isKindOf: JadeiteDebugger) ifTrue: [^self parentPresenter saveMethod].	"yuck, need to get Dolphin's menus sorted out"
 	classService := RowanClassService named: gsMethod className.
 	classService meta: gsMethod meta.
 	self
@@ -4186,14 +4179,12 @@ rowanFixMe
 !ObjectLogBrowser methodsFor!
 
 debug: anArray
-
 	| oopType |
 	oopType := gciSession oopTypeWithOop: (anArray at: 9) asNumber.
-	RowanDebugger debuggerClass 
-		openOn: (GsProcess session: gciSession oopType: oopType) 
+	JadeiteDebugger debuggerClass
+		openOn: (GsProcess session: gciSession oopType: oopType)
 		message: (anArray at: 8)
-		terminateOnClose: false.
-! !
+		terminateOnClose: false! !
 !ObjectLogBrowser categoriesFor: #debug:!public! !
 
 !Presenter methodsFor!
