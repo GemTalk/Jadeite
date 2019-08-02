@@ -141,7 +141,7 @@ onViewOpened
 	self registerPresentersForUpdates!
 
 openDictionaryBrowser
-	gciSession hasServer ifTrue: [^RowanSystemBrowser showOnSession: gciSession]!
+	gciSession hasServer ifTrue: [^JadeiteBrowser showOnSession: gciSession]!
 
 openGitHubJadeiteProject
 	^JadePresenter openGitHubJadeiteProject!

@@ -1150,9 +1150,6 @@ onViewOpened
 	self updateProjects.
 	self updateAutoCommit!
 
-openDictionaryBrowserOn: classService
-	^JadePresenter openDictionaryBrowserOn: classService session: self gciSession!
-
 pkgsMenuStrings
 	0 == 1
 		ifTrue: 
@@ -1968,13 +1965,11 @@ update: services afterStonReplication: stonResults
 	^result!
 
 updateAfterFindClass: classService
-	| projectService packageService|
+	| projectService packageService |
 	self updateService: classService.
 	projectService := projectListPresenter list
 				detect: [:service | service name = classService projectName]
-				ifNone: 
-					["old school"
-					^self openDictionaryBrowserOn: classService].
+				ifNone: [^self].
 	projectListPresenter selections: (Array with: projectService).
 	packageService := packageListPresenter list
 				detect: [:service | service name = classService definedPackageName]
@@ -2374,7 +2369,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #onSetFocus:stack:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #openDictionaryBrowserOn:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #pkgsMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #populateFilterList!event handlers support!private!services!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #postOkToChangeEvent!event handlers!public! !

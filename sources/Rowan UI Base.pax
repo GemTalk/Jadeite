@@ -191,7 +191,6 @@ package methodNames
 	add: #JadePresenter -> #flipAutoCommit;
 	add: #JadePresenter -> #issueCommand:;
 	add: #JadePresenter -> #openBrowserInNewTab:on:;
-	add: #JadePresenter -> #openDictionaryBrowserOn:selector:;
 	add: #JadePresenter -> #openProjectBrowserOn:selector:;
 	add: #JadePresenter -> #refreshGlobalSelections;
 	add: #JadePresenter -> #remoteAutoCommit;
@@ -391,7 +390,6 @@ package methodNames
 	add: 'JadePresenter class' -> #convertToPattern:;
 	add: 'JadePresenter class' -> #findMethodIn:class:presenter:;
 	add: 'JadePresenter class' -> #issueCommand:session:;
-	add: 'JadePresenter class' -> #openDictionaryBrowserOn:session:;
 	add: 'JadePresenter class' -> #openGitHubJadeiteProject;
 	add: 'JadePresenter class' -> #openGitHubRowanProject;
 	add: 'JadePresenter class' -> #openMethodListOn:selecting:session:;
@@ -2013,12 +2011,6 @@ openBrowserInNewTab: openNewTab on: classService
 				ifFalse: [JadeiteBrowser showOnSession: gciSession].
 	^shell currentCard updateAfterFindClass: classService!
 
-openDictionaryBrowserOn: classService selector: selector
-	| shell |
-	shell := RowanSystemBrowser showOnSession: gciSession.
-	shell selectClass: classService name asString selector: selector asString.
-	^shell!
-
 openProjectBrowserOn: classService selector: selector
 	| projectBrowser |
 	projectBrowser := JadeiteBrowser showOnSession: gciSession.
@@ -2111,7 +2103,6 @@ updateServices: services
 !JadePresenter categoriesFor: #flipAutoCommit!menu handlers!public! !
 !JadePresenter categoriesFor: #issueCommand:!browsing support!public! !
 !JadePresenter categoriesFor: #openBrowserInNewTab:on:!Jade!public! !
-!JadePresenter categoriesFor: #openDictionaryBrowserOn:selector:!browsing!public! !
 !JadePresenter categoriesFor: #openProjectBrowserOn:selector:!browsing!public! !
 !JadePresenter categoriesFor: #refreshGlobalSelections!menu handlers!public! !
 !JadePresenter categoriesFor: #remoteAutoCommit!browsing support!public! !
@@ -2287,13 +2278,6 @@ findMethodIn: session class: classService presenter: browser
 issueCommand: services session: session
 	^BrowserUpdate current issueCommand: services session: session!
 
-openDictionaryBrowserOn: classService session: session
-	| shell |
-	Cursor wait showWhile: 
-			[shell := RowanSystemBrowser showOnSession: session.
-			shell selectClass: classService name asString selector: String new.
-			^shell currentCard]!
-
 openGitHubJadeiteProject
 	ShellLibrary default shellOpen: 'https://github.com/GemTalk/Jadeite' directory: ''!
 
@@ -2369,7 +2353,6 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #convertToPattern:!browsing support!private! !
 !JadePresenter class categoriesFor: #findMethodIn:class:presenter:!browsing!public! !
 !JadePresenter class categoriesFor: #issueCommand:session:!public! !
-!JadePresenter class categoriesFor: #openDictionaryBrowserOn:session:!browsing support!public! !
 !JadePresenter class categoriesFor: #openGitHubJadeiteProject!browsing!public! !
 !JadePresenter class categoriesFor: #openGitHubRowanProject!browsing!public! !
 !JadePresenter class categoriesFor: #openMethodListOn:selecting:session:!public! !
@@ -3713,7 +3696,7 @@ onPromptToSaveChanges: aBooleanValue
 	^super onPromptToSaveChanges: aBooleanValue!
 
 openDictionaryBrowser
-	gciSession hasServer ifTrue: [^RowanSystemBrowser showOnSession: gciSession]!
+	gciSession hasServer ifTrue: [^JadeiteBrowser showOnSession: gciSession]!
 
 openProjectsBrowser
 	^JadeiteBrowser showOnSession: gciSession!
@@ -3743,9 +3726,7 @@ updateServices: services
 !JadeToolsToolBarPresenter methodsFor!
 
 browseClasses
-
-	RowanSystemBrowser showOnSession: gciSession.
-!
+	JadeiteBrowser showOnSession: gciSession!
 
 jadePreferences
 
