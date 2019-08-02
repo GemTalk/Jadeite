@@ -42,18 +42,13 @@ basicSelectedFrame
 
 browseFrameMethod
 	| classService shell |
-	frame gsMethod selector ifNil:[^self "block context"]. 
+	frame gsMethod selector ifNil: [^self	"block context"].
 	classService := RowanClassService new name: frame gsMethod className.
 	BrowserUpdate current updateService: classService session: gciSession.
-	^classService projectName = RowanService notRowanizedPackageName
-		ifTrue: 
-			[Cursor wait showWhile: 
-					[shell := RowanSystemBrowser showOnSession: gciSession.
-					shell selectClass: classService name asString selector: frame gsMethod selector asString]]
-		ifFalse: 
-			[shell := JadeiteBrowser showOnSession: gciSession.
-			shell currentCard updateAfterFindClass: classService.
-			shell currentCard findMethod: frame gsMethod selector]!
+	shell := JadeiteBrowser showOnSession: gciSession.
+	shell currentCard updateAfterFindClass: classService.
+	shell currentCard findMethod: frame gsMethod selector.
+	^shell!
 
 browseImplementors
 	^JadePresenter browseImplementorsOf: frame gsMethod selector session: self gciSession!

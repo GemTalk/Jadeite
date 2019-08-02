@@ -296,6 +296,18 @@ test_browseClassVariablePane
 		equals: 'RowanClassService'	"receiver is Array class"]
 			ensure: [self destroy: projectsBrowser]!
 
+test_browseFrameMethod
+	| browser |
+	self saveMethodWithHalt.
+	self openDebuggerOn: 'RowanSample1 new sampleMethodWithHalt'.
+	self selectFrameAt: 3.
+	browser := debugger browseFrameMethod.
+	
+	[self assert: browser isKindOf: JadeiteBrowser.
+	self assert: browser currentCard classListPresenter selection name equals: 'Object'.
+	self assert: browser currentCard methodListPresenter selection selector equals: #halt]
+			ensure: [browser view close]!
+
 test_compileClassRecompileMethodsCompileError
 	self testsIssue: #issue390 withTitle: 'Rename instance variable with accessor method is... wonky'.
 	projectsBrowser
@@ -1164,6 +1176,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_badCompileInDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_browseFrameMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileClassRecompileMethodsCompileError!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneChangeFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneStayOnFrame!public!tests! !
