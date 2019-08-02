@@ -13,32 +13,36 @@ It''s recommended to run this set of tests with a fresh login to avoid counting 
 !JadeiteDebuggerTestCase methodsFor!
 
 closeDebuggers
-
 	| list semaphore |
-	list := JadeiteMethodListBrowser allInstances , RowanSystemBrowser allInstances , RowanDebugger allInstances.
+	list := JadeiteMethodListBrowser allInstances , RowanSystemBrowser allInstances
+				, RowanDebugger allInstances.
+	JadeiteBrowser allInstances.
 	semaphore := Semaphore new.
-	list do: [:each | 
-		session removeEventsTriggeredFor: each.
-		[
+	list do: 
+			[:each |
+			session removeEventsTriggeredFor: each.
+			
 			[
-				each view close. 
-				each become: Object new.
-				semaphore signal.
-				SessionManager inputState prod.
-			] on: ProcessTermination do: [:ex | 	"A debugger wants to terminate the current process!!!!"
-				[
-					each become: Object new.
-					semaphore signal.
-					SessionManager inputState prod.
-				] forkAt: Processor userBackgroundPriority.
-				ex pass.
-			].
-		] fork.
-		semaphore wait.
-		debugger == each ifTrue: [debugger := nil].
-	].
-	list := JadeiteMethodListBrowser allInstances , RowanSystemBrowser allInstances , RowanDebugger allInstances.
-	self assert: list isEmpty.!
+			[each view close.
+			each become: Object new.
+			semaphore signal.
+			SessionManager inputState prod]
+					on: ProcessTermination
+					do: 
+						[:ex |
+						"A debugger wants to terminate the current process!!!!"
+						
+						[each become: Object new.
+						semaphore signal.
+						SessionManager inputState prod]
+								forkAt: Processor userBackgroundPriority.
+						ex pass]]
+					fork.
+			semaphore wait.
+			debugger == each ifTrue: [debugger := nil]].
+	list := JadeiteMethodListBrowser allInstances , RowanSystemBrowser allInstances
+				, RowanDebugger allInstances.
+	self assert: list isEmpty!
 
 debuggerDo: aBlock
 
@@ -139,7 +143,7 @@ setUp
 	self closeDebuggers.
 	RowanDebugger debuggerClass: RowanDebugger.
 	self assertIsNil: RowanDebugger semaphore.
-	list1 := RowanSystemBrowser allInstances.
+	list1 := JadeiteBrowser allInstances.
 	list2 := RowanMethodListBrowser allInstances.
 	self 
 		assert: session notNil;
@@ -153,7 +157,7 @@ statusBarValue
 
 systemBrowser
 
-	^RowanSystemBrowser allInstances detect: [:each | true] ifNone: [nil]
+	^JadeiteBrowser allInstances detect: [:each | true] ifNone: [nil]
 !
 
 tearDown
@@ -272,7 +276,6 @@ test_browseClass
 				self destroy: projectsBrowser]!
 
 test_browseClassVariablePane
-	| dictionaryBrowser dictionaryPresenter |
 	self testsIssue: #issue192
 		withTitle: 'Oscar-3.0.40: `browse object class` menu item in inspector (debugger) opens dictionary browser...'.
 	self openDebuggerOn: 'nil halt. Array with: RowanClassService new'.
@@ -281,12 +284,11 @@ test_browseClassVariablePane
 	self debuggerDo: [debugger stepInto].
 	debugger variableListPresenter selectionByIndex: 1.
 	self assert: debugger variableDataPresenter value equals: 'Array'.
-	dictionaryBrowser := debugger browseObjectClass.
+	projectsBrowser := debugger browseObjectClass.
 	
-	[self assert: (dictionaryBrowser isKindOf: RowanSystemBrowser).
-	dictionaryPresenter := dictionaryBrowser currentCard.
-	self assert: dictionaryPresenter classListPresenter selection equals: 'Array'	"receiver is Array class"]
-			ensure: [self destroy: dictionaryBrowser].
+	[self assert: (projectsBrowser isKindOf: JadeiteBrowser).
+	self assert: projectsBrowser currentCard classListPresenter selection name equals: 'Array'	"receiver is Array class"]
+			ensure: [projectsBrowser view close].
 	debugger variableListPresenter selectionByIndex: 2.
 	self assert: debugger variableDataPresenter value equals: 'aRowanClassService:nil'.
 	projectsBrowser := debugger browseObjectClass.
@@ -476,7 +478,7 @@ test_frameDoubleClick
 		debuggerDo: [debugger stepOver];
 		debuggerDo: [debugger stepInto].
 	self assert: ('*classHierarchy*' match: debugger frameListPresenter selection).
-	projectPresenter := debugger frameListPresenter trigger: #actionPerformed. "simulates double click"
+	projectPresenter := (debugger frameListPresenter trigger: #actionPerformed) currentCard. "simulates double click"
 	
 	[self assert: projectPresenter classListPresenter selection name equals: 'RowanClassService'.
 	self assert: projectPresenter methodListPresenter selection selector equals: #classHierarchy]
@@ -845,7 +847,7 @@ test3
 	"browse stack class"
 
 	| browser |
-	self 
+	self
 		openDebuggerOn: '| x | 
 nil halt.
 x := 1 -> 2.
@@ -854,18 +856,20 @@ x yourself';
 		assert: debugger documentPresenter view selection equals: '->';
 		debuggerDo: [debugger stepInto];
 		debuggerDo: [debugger browseFrameMethod];
-		assert: (browser := self systemBrowser) notNil;
-		assert: browser currentCard selectedClasses = #('Object');
-		assert: browser currentCard selectedMethodName = '->';
-		debuggerDo: [debugger resumeProcess];
-		yourself.
-!
+		assert: (browser := self systemBrowser) notNil.
+	
+	[self
+		assert: (browser currentCard selectedClasses collect: [:classService | classService name])
+			equals: #('Object');
+		assert: browser currentCard methodListPresenter selection name equals: '->';
+		debuggerDo: [debugger resumeProcess]]
+			ensure: [browser view close]!
 
 test4
 	"browse variable class"
 
 	| browser |
-	self 
+	self
 		openDebuggerOn: '| x | 
 nil halt.
 x := 1 -> 2.
@@ -875,11 +879,14 @@ x yourself';
 		debuggerDo: [debugger stepOver];
 		assert: (debugger variableListPresenter selectionByIndex: 2) notNil;
 		debuggerDo: [debugger browseObjectClass];
-		assert: (browser := self systemBrowser) notNil;
-		assert: browser currentCard selectedClasses = #('Association');
-		debuggerDo: [debugger resumeProcess];
-		yourself.
-!
+		assert: (browser := self systemBrowser) notNil.
+	
+	[self
+		assert: (browser currentCard classListPresenter selections
+					collect: [:classService | classService name])
+			equals: #('Association');
+		debuggerDo: [debugger resumeProcess]]
+			ensure: [browser view close]!
 
 test5
 	"browse implementors"
@@ -996,7 +1003,7 @@ x halt.
 '.
 	self 
 		openDebuggerOn: string;
-		assert: (view := debugger documentPresenter view) class equals: ScintillaView;
+		assert: (view := debugger documentPresenter view) class equals: JadeiteScintillaView;
 		assert: (view selectionRange: (3 to: 7)) notNil;
 		"debuggerDo: [debugger jadeDisplay];
 		assert: view selection equals: ' 5';

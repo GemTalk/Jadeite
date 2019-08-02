@@ -507,7 +507,7 @@ test_openDictionaryBrowser
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	shell := inspector browseClass.
-	[self assert: (shell isKindOf: RowanSystemBrowser)] ensure: [self destroy: shell]!
+	[self assert: (shell isKindOf: JadeiteBrowser)] ensure: [self destroy: shell]!
 
 test_openDictionaryBrowserOnClass
 	| remoteObject shell |
@@ -517,7 +517,7 @@ test_openDictionaryBrowserOnClass
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	shell := inspector browseClass.
-	[self assert: (shell isKindOf: RowanSystemBrowser)] ensure: [self destroy: shell]!
+	[self assert: (shell isKindOf: JadeiteBrowser)] ensure: [self destroy: shell]!
 
 test_openNavigationInspectorOnBoolean
 	| remoteObject |

@@ -1815,15 +1815,10 @@ searchForAnyTextMatching: aString
 
 browseClass
 	| shell classService |
-	classService := RowanClassService new name: className subStrings first. "strip off 'class' if meta"
+	classService := RowanClassService new name: className subStrings first.	"strip off 'class' if meta"
 	BrowserUpdate current updateService: classService session: gciSession.
-	classService projectName = RowanService notRowanizedPackageName
-		ifTrue: 
-			[shell := RowanSystemBrowser showOnSession: gciSession.
-			shell selectClass: classService name asString selector: String new]
-		ifFalse: 
-			[shell := JadeiteBrowser showOnSession: gciSession.
-			shell currentCard updateAfterFindClass: classService].
+	shell := JadeiteBrowser showOnSession: gciSession.
+	shell currentCard updateAfterFindClass: classService.
 	^shell!
 
 setNewInspectedObject
@@ -2152,9 +2147,7 @@ browseClassIn: session
 	classService := JadeiteFindClassDialog showModal: 'DefaultView' on: (self allClassesIn: session).
 	classService
 		ifNotNil: 
-			[classService projectName = RowanService notRowanizedPackageName
-				ifTrue: [^self openDictionaryBrowserOn: classService session: session].
-			browser := JadeiteBrowser showOnSession: session.
+			[browser := JadeiteBrowser showOnSession: session.
 			browser currentCard updateAfterFindClass: classService]!
 
 browseClassReferences: className session: session

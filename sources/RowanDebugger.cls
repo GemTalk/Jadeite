@@ -58,13 +58,8 @@ browseObjectClass
 	classService := RowanClassService new
 				name: variableListPresenter selection className asString subStrings first.	"strip off 'class' if meta"
 	BrowserUpdate current updateService: classService session: gciSession.
-	classService projectName = RowanService notRowanizedPackageName
-		ifTrue: 
-			[shell := RowanSystemBrowser showOnSession: gciSession.
-			shell selectClass: classService name asString selector: String new]
-		ifFalse: 
-			[shell := JadeiteBrowser showOnSession: gciSession.
-			shell currentCard updateAfterFindClass: classService].
+	shell := JadeiteBrowser showOnSession: gciSession.
+	shell currentCard updateAfterFindClass: classService.
 	^shell!
 
 browseSenders
