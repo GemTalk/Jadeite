@@ -132,6 +132,7 @@ loadProjectNamed: projectName
 	BrowserUpdate current issueCommand: (Array with: browserService) session: session!
 
 loginOtherSession
+	(Delay forSeconds: 1) wait.	"not sure if this is necessary"
 	session
 		executeString: 'UserGlobals at: #otherSession put: (GsExternalSession gemNRS: ''' , session gemNRS
 				, ''' stoneNRS: ''' , session stoneName
@@ -2102,6 +2103,7 @@ test_exitJadeiteInvalidSession
 			ensure: 
 				[projectsBrowser := nil.
 				GciSession current: nil.
+				(Delay forSeconds: 1) wait. "not sure if this is necessary"
 				JadeiteLoginShell allInstances first login.
 				self resources do: 
 						[:resource |
@@ -2120,7 +2122,7 @@ test_exitJadeiteValidSession
 	sunitPresenter := transcript jadeBrowseTests.
 	workspace := projectsBrowser addWorkspace.
 	dictionaryBrowser := transcript openDictionaryBrowser.
-	log := self projectsPresenter projectLog. 
+	log := self projectsPresenter projectLog.
 	simpleInspector := JadeInspector showOn: (session
 						executeString: '123'
 						fromContext: nil
@@ -2138,7 +2140,7 @@ test_exitJadeiteValidSession
 	self assert: dictionaryBrowser isOpen.
 	self assert: simpleInspector isOpen.
 	self assert: complexInspector isOpen.
-	self assert: log isOpen. 
+	self assert: log isOpen.
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #yes.
 	
@@ -2151,10 +2153,11 @@ test_exitJadeiteValidSession
 	self deny: dictionaryBrowser isOpen.
 	self deny: simpleInspector isOpen.
 	self deny: complexInspector isOpen.
-	self deny: log isOpen. ]
+	self deny: log isOpen]
 			ensure: 
 				[projectsBrowser := nil.
 				GciSession current: nil.
+				(Delay forSeconds: 1) wait.	"not sure if this is necessary"
 				JadeiteLoginShell allInstances first login.
 				self resources do: 
 						[:resource |
@@ -4440,6 +4443,38 @@ test_twoBrowsersUpdateHierarchy
 	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
 		in: secondPresenter classHierarchyPresenter!
 
+test_twoTabsHaveIndependentCompileErrors
+	self testsIssue: #issue440
+		withTitle: '(3.0.62) error message from previous compile error hangs around after error fixed'.
+	projectsBrowser addSystemBrowser.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	
+	[| source |
+	source := 'gloop
+	"I be unique"
+	^'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self assert: self projectsPresenter statusBarText view backcolor equals: Color red faded.
+	self assert: self projectsPresenter statusBarText value equals: 'expected start of a statement; '.
+	self previousTabView.
+	self deny: self projectsPresenter statusBarText view backcolor equals: Color red faded.
+	self deny: self projectsPresenter statusBarText value equals: 'expected start of a statement; '.
+	self selectRowanSample1Test.
+	source := 'gloop
+	"I be unique"
+	^''abc'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self assert: self projectsPresenter statusBarText view backcolor equals: Color red faded.
+	self assert: self projectsPresenter statusBarText value equals: 'missing end of literal mark (prime); expected start of a statement; '.
+	self nextTabView.
+	self assert: self projectsPresenter statusBarText view backcolor equals: Color red faded.
+	self assert: self projectsPresenter statusBarText value equals: 'expected start of a statement; '.
+	]
+			ensure: [projectsBrowser closeCard]!
+
 test_unicodeDisplayMethod
 	| methodSource secondMethodListBrowser |
 	self testsIssue: #issue
@@ -5061,6 +5096,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersRemoveMethod!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdate!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateHierarchy!public!test two browsers!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_twoTabsHaveIndependentCompileErrors!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_unicodeDisplayMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_unicodeSpecialMethodNotRed!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !

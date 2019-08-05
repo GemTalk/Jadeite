@@ -29,9 +29,7 @@ shellName
 !
 
 statusBarText: aString
-
-	(self view viewNamed: 'statusBarField') model: (ValueHolder with: aString).
-!
+	(self view viewNamed: 'statusBarField') model: (ValueHolder with: aString)!
 
 switchToListView
 

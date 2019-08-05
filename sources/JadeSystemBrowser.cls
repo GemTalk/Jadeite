@@ -255,7 +255,6 @@ statusBarText
 	^(self view viewNamed: 'statusBarField') model value!
 
 statusBarText: aString
-
 	(self view viewNamed: 'statusBarField') model: (ValueHolder with: aString).
 !
 

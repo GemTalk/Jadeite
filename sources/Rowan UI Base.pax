@@ -189,6 +189,7 @@ package methodNames
 	add: #JadePresenter -> #editSaveMethod:in:category:;
 	add: #JadePresenter -> #executeSelectionOrLine:;
 	add: #JadePresenter -> #flipAutoCommit;
+	add: #JadePresenter -> #insertCompileErrorText:into:;
 	add: #JadePresenter -> #issueCommand:;
 	add: #JadePresenter -> #openBrowserInNewTab:on:;
 	add: #JadePresenter -> #openProjectBrowserOn:selector:;
@@ -196,6 +197,8 @@ package methodNames
 	add: #JadePresenter -> #remoteAutoCommit;
 	add: #JadePresenter -> #reportCompileError:in:;
 	add: #JadePresenter -> #serviceFromSelection:;
+	add: #JadePresenter -> #setCompileErrorColor;
+	add: #JadePresenter -> #setCompileWarningColor;
 	add: #JadePresenter -> #update:afterStonReplication:;
 	add: #JadePresenter -> #updateServices:;
 	add: #JadePresenterA -> #clearBreakPointAt:in:;
@@ -670,12 +673,12 @@ JadeAutoSystemBrowserPresenter subclass: #RowanSystemBrowserPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
-	instanceVariableNames: 'projectListPresenter stonCritical projectInfoTab projectLabel projectDictionaryTabs comparisonPresenter comparisonTab definedClassPackageText definedMethodPackageText methodCategoryText autoCommit'
+	instanceVariableNames: 'projectListPresenter stonCritical projectInfoTab projectLabel projectDictionaryTabs comparisonPresenter comparisonTab definedClassPackageText definedMethodPackageText methodCategoryText autoCommit statusBarText'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab'
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1959,7 +1962,7 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 	[self issueCommand: (Array with: classService)] on: GsCompileError
 		do: 
 			[:ex |
-			(self topShell view viewNamed: 'statusBarField') backcolor: Color red faded.  
+			self setCompileErrorColor.
 			self reportCompileError: ex list in: methodSourcePresenter.
 			^false].
 	methodSourcePresenter view firstVisibleLine: firstVisibleLine.
@@ -1971,7 +1974,7 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 		ifNil: [self statusBarText: String new]
 		ifNotNil: 
 			[:warning |
-			(self topShell view viewNamed: 'statusBarField') backcolor: Color yellow faded.
+			self setCompileWarningColor.
 			self statusBarText: warning]!
 
 executeSelectionOrLine: contextObject
@@ -1995,6 +1998,9 @@ flipAutoCommit
 	browserService command: #flipAutoCommit; commandArgs: Array new. 
 	self issueCommand: (Array with: browserService). 
 	!
+
+insertCompileErrorText: string into: methodSourcePresenter
+	methodSourcePresenter view topShell statusBarText: (string copyFrom: 1 to: string size - 2)!
 
 issueCommand: services
 	^self class issueCommand: services session: self gciSession.
@@ -2048,9 +2054,9 @@ reportCompileError: anArrayOfArray in: methodSourcePresenter
 	anArrayOfArray do: 
 			[:eachArray |
 			| start range |
-			start := eachArray at: 2. 
-			source size - start >= 10 ifFalse:[start := source size - 10].
-			range := (start to: (start + 10 min: source size)). 
+			start := eachArray at: 2.
+			source size - start >= 10 ifFalse: [start := source size - 10].
+			range := start to: (start + 10 min: source size).
 			string := eachArray at: 3.
 			stream nextPutAll: string , '; '.
 			indicators add: (ScintillaIndicator
@@ -2060,7 +2066,7 @@ reportCompileError: anArrayOfArray in: methodSourcePresenter
 	methodSourcePresenter view backcolor: JadeTextStyles default colorForCompileError.
 	methodSourcePresenter view indicators: indicators.
 	string := stream contents.
-	methodSourcePresenter view topShell statusBarText: (string copyFrom: 1 to: string size - 2)!
+	self insertCompileErrorText: string into: methodSourcePresenter!
 
 serviceFromSelection: sourcePresenter
 	| range className classService |
@@ -2070,6 +2076,12 @@ serviceFromSelection: sourcePresenter
 	classService := RowanClassService named: className.
 	self updateService: classService.
 	^classService!
+
+setCompileErrorColor
+	(self topShell view viewNamed: 'statusBarField') backcolor: Color red faded!
+
+setCompileWarningColor
+	(self topShell view viewNamed: 'statusBarField') backcolor: Color yellow faded!
 
 update: services afterStonReplication: stonResults
 	^BrowserUpdate current update: services afterStonReplication: stonResults!
@@ -2097,6 +2109,7 @@ updateServices: services
 !JadePresenter categoriesFor: #editSaveMethod:in:category:!compile support!public! !
 !JadePresenter categoriesFor: #executeSelectionOrLine:!menu handlers!private! !
 !JadePresenter categoriesFor: #flipAutoCommit!menu handlers!public! !
+!JadePresenter categoriesFor: #insertCompileErrorText:into:!compile support!public! !
 !JadePresenter categoriesFor: #issueCommand:!browsing support!public! !
 !JadePresenter categoriesFor: #openBrowserInNewTab:on:!Jade!public! !
 !JadePresenter categoriesFor: #openProjectBrowserOn:selector:!browsing!public! !
@@ -2104,6 +2117,8 @@ updateServices: services
 !JadePresenter categoriesFor: #remoteAutoCommit!browsing support!public! !
 !JadePresenter categoriesFor: #reportCompileError:in:!compile support!public! !
 !JadePresenter categoriesFor: #serviceFromSelection:!menu handlers!menu handlers support!private! !
+!JadePresenter categoriesFor: #setCompileErrorColor!compile support!public! !
+!JadePresenter categoriesFor: #setCompileWarningColor!compile support!public! !
 !JadePresenter categoriesFor: #update:afterStonReplication:!browsing support!public! !
 !JadePresenter categoriesFor: #updateServices:!private!services! !
 

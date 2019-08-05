@@ -2148,7 +2148,6 @@ statusBarServerRequestText: aString
 !
 
 statusBarText: aString
-
 	self parentPresenter parentPresenter statusBarText: aString.
 !
 

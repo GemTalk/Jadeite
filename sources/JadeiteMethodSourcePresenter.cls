@@ -118,7 +118,6 @@ registerPresentersForUpdates
 		browser: self!
 
 statusBarText: aString
-
 	self topShell statusBarText: aString.
 	(self topShell view viewNamed: 'statusBarField') invalidate
 !
