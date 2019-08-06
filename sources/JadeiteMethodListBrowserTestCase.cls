@@ -33,6 +33,12 @@ removeMethods: methodServices in: className
 					with: (methodServices asArray select: [:service | service className asString = className])).
 	self issueCommand: classService!
 
+removeMultiKeywordSenderAndSendee
+	#('jadeiteSender' 'jadeiteSendeeWith:keyword:' 'jadeiteSender2') do: 
+			[:selector |
+			self selectServiceNamed: selector in: self projectsPresenter methodListPresenter.
+			self removeMethods: self methodListPresenter selections in: self projectsPresenter selectedClassName]!
+
 removeTestMethodAndCloseProjectBrowser
 	self removeMethods: (Array with: self projectsPresenter methodListPresenter selection)
 		in: self projectsPresenter selectedClassName.
@@ -81,6 +87,23 @@ selectMethodsNamed: selectors
 				collect: [:selector | methodListPresenter list detect: [:svc | svc selector = selector]].
 	methodListPresenter selections: methodServices.
 	^methodServices!
+
+setupMultiKeywordSenderAndSendee
+	| source |
+	source := 'jadeiteSender  ^self jadeiteSendeeWith: 1 keyword: 2'.
+	self projectsPresenter selectMethodSourceTab.
+	self projectsPresenter methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	source := 'jadeiteSender2  
+"comment with sendee #jadeiteSendeeWith: multiple keyword:"
+^self jadeiteSendeeWith: 1 keyword: 2'.
+	self projectsPresenter selectMethodSourceTab.
+	self projectsPresenter methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	source := 'jadeiteSendeeWith: multiple keyword: arguments	^multiple+arguments'.
+	self projectsPresenter selectMethodSourceTab.
+	self projectsPresenter methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection!
 
 setupTestMethodInProjectBrowser
 	| source |
@@ -229,6 +252,90 @@ test_browseLiteralReferencesBlankSearch
 	self assertIsNil: methodListBrowser.
 	methodListBrowser := JadePresenter browseLiteralReferences: nil session: session.
 	self assertIsNil: methodListBrowser!
+
+test_browseMultiKeywordSendersHighlighting
+	self testsIssue: #issue500
+		withTitle: '(Oscar-3.0.74) highlighting of multi-keyword selectors in senders/implementors browser is broken'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectRowanSample1Test.
+	self setupMultiKeywordSenderAndSendee.
+	methodListBrowser := JadePresenter browseSendersOf: #jadeiteSendeeWith:keyword: session: session.
+	
+	[self assert: self methodListSelector equals: #jadeiteSender.
+	self assert: self sourcePresenter selection equals: 'jadeiteSendeeWith:']
+			ensure: [methodListBrowser view close].
+	methodListBrowser := JadePresenter
+				browseHierarchySendersOf: 'jadeiteSendeeWith:keyword:'
+				className: 'RowanSample1Test'
+				session: session.
+	
+	[self assert: self methodListSelector equals: #jadeiteSender.
+	self assert: self sourcePresenter selection equals: 'jadeiteSendeeWith:']
+			ensure: [methodListBrowser view close]]
+			ensure: 
+				[self removeMultiKeywordSenderAndSendee.
+				projectsBrowser view close]!
+
+test_browseMultiKeywordSendersOnEverySender
+	self testsIssue: #issue500
+		withTitle: '(Oscar-3.0.74) highlighting of multi-keyword selectors in senders/implementors browser is broken'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectRowanSample1Test.
+	self setupMultiKeywordSenderAndSendee.
+	methodListBrowser := JadePresenter browseSendersOf: #jadeiteSendeeWith:keyword: session: session.
+	self assert: self methodListMethodListPresenter list size equals: 2.
+	
+	[self assert: self methodListSelector equals: #jadeiteSender.
+	self assert: self sourcePresenter selection equals: 'jadeiteSendeeWith:'.
+	self selectMethodNamed: #jadeiteSender2.
+	self assert: self methodListSelector equals: #jadeiteSender2.
+	self assert: self sourcePresenter selection equals: 'jadeiteSendeeWith:']
+			ensure: [methodListBrowser view close]]
+			ensure: 
+				[self removeMultiKeywordSenderAndSendee.
+				projectsBrowser view close]!
+
+test_browseSenderHighlightedWithEveryMethod
+	true
+		ifTrue: 
+			[^self	"test probably will error against 3.2.15. Not sure server returns proper 
+	sender index when inlined blocks are presenter. See AbstractDictionary>>_reportKeyNotFound:with:
+	when in a list of senders of value"].
+	self testsIssue: #issue500
+		withTitle: '(Oscar-3.0.74) highlighting of multi-keyword selectors in senders/implementors browser is broken'.
+	methodListBrowser := JadePresenter browseSendersOf: #value session: session.
+	self assert: self methodListMethodListPresenter list size > 1.	"should be many"
+	self methodListMethodListPresenter list do: 
+			[:methodService |
+			self methodListMethodListPresenter selection: methodService.
+			self assert: (self methodSourcePresenter documentPresenter selection copyFrom: 1 to: 5)
+				equals: 'value'	"May select non separator characters like '.'  or ']' See JadeiteMethodListPresenter>>selecting: for details"]!
+
+test_browseSenderHighlightingIgnoreComments
+	self testsIssue: #issue500
+		withTitle: '(Oscar-3.0.74) highlighting of multi-keyword selectors in senders/implementors browser is broken'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectRowanSample1Test.
+	self setupMultiKeywordSenderAndSendee.
+	methodListBrowser := JadePresenter browseSendersOf: #jadeiteSendeeWith:keyword: session: session.
+	
+	[self selectMethodNamed: #jadeiteSender2.
+	self assert: self methodListSelector equals: #jadeiteSender2.
+	self assert: self sourcePresenter selection equals: 'jadeiteSendeeWith:'.
+	self assert: self sourcePresenter selectionRange start equals: 84.	"not in the comment"
+	self assert: self sourcePresenter selectionRange start
+		equals: self methodListMethodListPresenter selection firstReference.
+	self assert: (self sourcePresenter value copyFrom: 40 to: 57) equals: 'jadeiteSendeeWith:'	"didn't highlight the comment"]
+			ensure: [methodListBrowser view close]]
+			ensure: 
+				[self removeMultiKeywordSenderAndSendee.
+				projectsBrowser view close]!
 
 test_browseSendersEnablement
 	| commandQuery methodListPresenter |
@@ -542,11 +649,13 @@ testBrowseLiteral: literal
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListSourcePresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodSourcePresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #removeMethods:in:!public!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #removeMultiKeywordSenderAndSendee!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #removeTestMethodAndCloseProjectBrowser!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #sampleMethodSource!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #saveMethod:in:category:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectListAt:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsNamed:!public!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #setupMultiKeywordSenderAndSendee!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #setupTestMethodInProjectBrowser!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #sourcePresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
@@ -554,8 +663,12 @@ testBrowseLiteral: literal
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchyImplementorsEnablement!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchySendersEnablement!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseImplementorsEnablement!public!test menus! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseLiteralReferences!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseLiteralReferencesBlankSearch!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseLiteralReferences!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseLiteralReferencesBlankSearch!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseMultiKeywordSendersHighlighting!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseMultiKeywordSendersOnEverySender!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSenderHighlightedWithEveryMethod!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSenderHighlightingIgnoreComments!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersEnablement!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_compileErrorDisplay!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_compileErrorDisplayGoesAway!public!tests! !

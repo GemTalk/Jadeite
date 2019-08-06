@@ -213,7 +213,7 @@ selecting: stringOrIndex
 			[| range stream |
 			stream := ReadStream on: methodSourcePresenter documentPresenter value.
 			stream position: stringOrIndex.
-			stream upTo: Character space.
+			stream nextWord.
 			range := Interval from: stringOrIndex to: stream position - 1.
 			methodSourcePresenter documentPresenter selectionRange: range]
 		ifFalse: 
