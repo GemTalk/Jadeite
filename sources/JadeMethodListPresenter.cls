@@ -207,10 +207,18 @@ selectFirstMethod
 	methodListPresenter selectFirstMethod.
 !
 
-selecting: aString
-	searchBlock := [self searchFor: aString].
-	self doSearch.
-!
+selecting: stringOrIndex
+	stringOrIndex isNumber
+		ifTrue: 
+			[| range stream |
+			stream := ReadStream on: methodSourcePresenter documentPresenter value.
+			stream position: stringOrIndex.
+			stream upTo: Character space.
+			range := Interval from: stringOrIndex to: stream position - 1.
+			methodSourcePresenter documentPresenter selectionRange: range]
+		ifFalse: 
+			[searchBlock := [self searchFor: stringOrIndex].
+			self doSearch]!
 
 selectingAnyMatch: aString
 	searchBlock := [self searchForAnyTextMatching: aString].

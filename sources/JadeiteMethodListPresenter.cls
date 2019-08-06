@@ -60,15 +60,14 @@ getViews
 methodListSelection
 	^methodListPresenter selectionOrNil!
 
-methods: services selecting: string
+methods: services selecting: stringOrIndex
 	"services can legitimately be nil if call was blocked because it
 	was already inUpdate"
-
 	(services isNil or: [services isEmpty]) ifTrue: [^self].
 	methodListPresenter
 		list: (ListModel withAll: services);
-		selectFirstMethod. 
-	self selecting: string!
+		selectFirstMethod.
+	self selecting: stringOrIndex!
 
 methods: services selectingAnyMatch: string
 	services isEmpty ifTrue: [^self].
@@ -129,7 +128,10 @@ updateMultiMethodComparison
 			with: (methodListPresenter selections at: 2) source.!
 
 updateSingleMethodSource
-	methodSourcePresenter value: methodListPresenter selection source.
+	| selection |
+	selection := methodListPresenter selection.
+	methodSourcePresenter value: selection source.
+	selection firstReference ifNotNil: [:index | self selecting: index].
 	methodSourcePresenter ensureVisible!
 
 updateSource

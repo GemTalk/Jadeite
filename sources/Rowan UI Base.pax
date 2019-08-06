@@ -603,7 +603,7 @@ RowanService subclass: #RowanLoggingService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource'
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -2296,9 +2296,11 @@ openGitHubRowanProject
 	ShellLibrary default shellOpen: 'https://github.com/GemTalk/Rowan' directory: ''!
 
 openMethodListOn: service selecting: string session: session
+	| selectionString |
+	selectionString := (ReadStream on: string) upTo: $:.
 	^JadeiteMethodListBrowser
 		openOn: service
-		selecting: string
+		selecting: selectionString
 		session: session!
 
 openMethodListOn: service selectingAnyMatch: string session: session

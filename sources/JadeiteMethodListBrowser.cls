@@ -48,9 +48,12 @@ shellName
 !JadeiteMethodListBrowser class methodsFor!
 
 openOn: service selecting: string session: gciSession
-	| shell |
+	| shell stringOrIndex |
+	stringOrIndex := service queryResults isEmpty
+				ifTrue: [String new]
+				ifFalse: [service queryResults first firstReference ifNil: [string]].
 	(shell := self showOnSession: gciSession) primaryPresenter methods: service queryResults
-		selecting: string.
+		selecting: stringOrIndex.
 	^shell!
 
 openOn: service selectingAnyMatch: string session: gciSession
