@@ -40,7 +40,12 @@ modePresenter
 
 patternPresenter
 
-	^patternPresenter! !
+	^patternPresenter!
+
+wrapPresenter
+	"for testing"
+
+	^wrapPresenter! !
 !JadeiteAdvancedFindDialog categoriesFor: #findNext!commands!public! !
 !JadeiteAdvancedFindDialog categoriesFor: #initialize!initializing!public! !
 !JadeiteAdvancedFindDialog categoriesFor: #isRegExpEnabled!public!testing! !
@@ -49,6 +54,7 @@ patternPresenter
 !JadeiteAdvancedFindDialog categoriesFor: #isWildCardEnabled:!accessing!public! !
 !JadeiteAdvancedFindDialog categoriesFor: #modePresenter!accessing!public! !
 !JadeiteAdvancedFindDialog categoriesFor: #patternPresenter!accessing!public! !
+!JadeiteAdvancedFindDialog categoriesFor: #wrapPresenter!accessing!public! !
 
 !JadeiteAdvancedFindDialog class methodsFor!
 

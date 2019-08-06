@@ -87,6 +87,16 @@ getSecondDebugger
 				ifTrue: [^self].
 			(Delay forMilliseconds: 10) wait]!
 
+keyDownEscapeIn: view
+	^view
+		postMessage: 16r100
+			wParam: 27
+			lParam: 0;
+		postMessage: 16r101
+			wParam: 27
+			lParam: 0;
+		yourself	"WM_KEYDOWN"	"VK_ESCAPE"	"WM_KEYUP"	"VK_ESCAPE"!
+
 menuItemIsEnabled: menuItem
 	| commandPolicy commandQuery |
 	commandPolicy := CommandPolicy defaultClass commandSource: debugger view.
@@ -104,6 +114,16 @@ openDebuggerOn: aString
 		debuggerDo: [process := [session executeString: aString] forkAt: Processor activePriority + 1];
 		getDebugger;
 		yourself!
+
+pressButtonIn: view
+	view
+		postMessage: 16r204
+			wParam: 0
+			lParam: 16r12C0064;
+		postMessage: 16r205
+			wParam: 0
+			lParam: 16r12C0064;
+		yourself	"WM_RBUTTONDOWN"	" (300 @ 100) "	"WM_RBUTTONUP"!
 
 saveMethodWithHalt
 	| source |
@@ -418,6 +438,47 @@ test_compileInExecutedBlockSameSelectorOnStack
 		equals: 'RowanSample1Test >> doSomething @2 line 3']
 			ensure: [self projectsPresenter basicRemoveMethods]]
 			ensure: [projectsBrowser view close]!
+
+test_contextMenu
+	| error time view |
+	self testsIssue: #issue68 withTitle: 'Debuggers (old and new) text panes get error on popup menu'.
+	ShortcutMenuStatus reset.
+	self openDebuggerOn: 'nil halt'.
+	view := debugger documentPresenter view.
+	
+	[| counter |
+	counter := 0.
+	[ShortcutMenuStatus status isNil] whileTrue: [(Delay forMilliseconds: 10) wait].
+	self assert: ShortcutMenuStatus isOpen.
+	
+	[counter := counter + 1.
+	(Delay forMilliseconds: 100) wait.
+	ShortcutMenuStatus isOpen and: [counter <= 10]]
+			whileTrue: [self keyDownEscapeIn: view	"WM_KEYDOWN"	"VK_ESCAPE"	"WM_KEYUP"	"VK_ESCAPE"].
+	Transcript show: '
+testContextMenu - counter = ' , counter printString]
+			fork.
+	self pressButtonIn: view.	"WM_RBUTTONDOWN"	" (300 @ 100) "	"WM_RBUTTONUP"
+	time := Time millisecondClockValue + 2000.
+	
+	[SessionManager current inputState loopWhile: 
+			[(Delay forMilliseconds: 1) wait.
+			"menu wasn't always closing. These transcript writes seem to poke it into shutting down ... somehow" 
+			Transcript
+				cr;
+				show: 'time: ';
+				print: time;
+				tab;
+				show: 'clock: ';
+				print: Time millisecondClockValue;
+				flush.
+			ShortcutMenuStatus isClosed not and: [Time millisecondClockValue < time]]]
+			on: Error
+			do: 
+				[:ex |
+				error := ex.
+				ex return].
+	self assert: error isNil!
 
 test_debuggerModifiedSourcePaneChangeFrame
 	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
@@ -916,7 +977,6 @@ x yourself';
 test3
 	"browse stack class"
 
-	| browser |
 	self
 		openDebuggerOn: '| x | 
 nil halt.
@@ -925,15 +985,16 @@ x yourself';
 		debuggerDo: [debugger stepOver];
 		assert: debugger documentPresenter view selection equals: '->';
 		debuggerDo: [debugger stepInto];
-		debuggerDo: [debugger browseFrameMethod];
-		assert: (browser := self systemBrowser) notNil.
+		debuggerDo: [projectsBrowser := debugger browseFrameMethod];
+		assert: projectsBrowser isKindOf: JadeiteBrowser.
 	
 	[self
-		assert: (browser currentCard selectedClasses collect: [:classService | classService name])
+		assert: (self projectsPresenter classListPresenter selections
+					collect: [:classService | classService name])
 			equals: #('Object');
-		assert: browser currentCard methodListPresenter selection name equals: '->';
+		assert: self projectsPresenter methodListPresenter selection name equals: '->';
 		debuggerDo: [debugger resumeProcess]]
-			ensure: [browser view close]!
+			ensure: [projectsBrowser view close]!
 
 test4
 	"browse variable class"
@@ -948,15 +1009,15 @@ x yourself';
 		debuggerDo: [debugger stepOver];
 		debuggerDo: [debugger stepOver];
 		assert: (debugger variableListPresenter selectionByIndex: 2) notNil;
-		debuggerDo: [debugger browseObjectClass];
-		assert: (browser := self systemBrowser) notNil.
+		debuggerDo: [projectsBrowser := debugger browseObjectClass];
+		assert: projectsBrowser isKindOf: JadeiteBrowser.
 	
 	[self
-		assert: (browser currentCard classListPresenter selections
+		assert: (self projectsPresenter classListPresenter selections
 					collect: [:classService | classService name])
 			equals: #('Association');
 		debuggerDo: [debugger resumeProcess]]
-			ensure: [browser view close]!
+			ensure: [projectsBrowser view close]!
 
 test5
 	"browse implementors"
@@ -1086,55 +1147,6 @@ x halt.
 		yourself.
 !
 
-testContextMenu
-	| error time view |
-	self testsIssue: #issue68 withTitle: 'Debuggers (old and new) text panes get error on popup menu'.
-	ShortcutMenuStatus reset.
-	self openDebuggerOn: 'nil halt'.
-	view := debugger documentPresenter view.
-	
-	[| counter |
-	counter := 0.
-	[ShortcutMenuStatus status isNil] whileTrue: [(Delay forMilliseconds: 10) wait].
-	self assert: ShortcutMenuStatus isOpen.
-	
-	[counter := counter + 1.
-	(Delay forMilliseconds: 100) wait.
-	ShortcutMenuStatus isOpen and: [counter <= 10]]
-			whileTrue: 
-				[view
-					postMessage: 16r100
-						wParam: 27
-						lParam: 0;
-					postMessage: 16r101
-						wParam: 27
-						lParam: 0;
-					yourself	"WM_KEYDOWN"	"VK_ESCAPE"	"WM_KEYUP"	"VK_ESCAPE"].
-	Transcript show: '
-testContextMenu - counter = ' , counter printString]
-			fork.
-	view
-		postMessage: 16r204
-			wParam: 0
-			lParam: 16r12C0064;
-		postMessage: 16r205
-			wParam: 0
-			lParam: 16r12C0064;
-		yourself.	"WM_RBUTTONDOWN"	" (300 @ 100) "	"WM_RBUTTONUP"
-	time := Time millisecondClockValue + 2000.
-	
-	[SessionManager current inputState
-		loopWhile: [ShortcutMenuStatus isClosed not and: [Time millisecondClockValue < time]]]
-			on: Error
-			do: 
-				[:ex |
-				error := ex.
-				ex return].
-	self
-		assert: error isNil;
-		debuggerDo: [debugger resumeProcess];
-		yourself!
-
 testErrorInPrintString
 	"https://github.com/ericwinger/Jade/issues/49"
 
@@ -1243,9 +1255,11 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #getClipboardContents!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #getDebugger!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #getSecondDebugger!private!support! !
+!JadeiteDebuggerTestCase categoriesFor: #keyDownEscapeIn:!private!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #menuItemIsEnabled:!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #methodListBrowser!private! !
 !JadeiteDebuggerTestCase categoriesFor: #openDebuggerOn:!private! !
+!JadeiteDebuggerTestCase categoriesFor: #pressButtonIn:!private!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #saveMethodWithHalt!private! !
 !JadeiteDebuggerTestCase categoriesFor: #selectFrameAt:!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #setUp!private!setup teardown! !
@@ -1263,6 +1277,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlockFailsWhenNoHomeMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlockSameSelectorOnStack!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_contextMenu!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneChangeFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneStayOnFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_duplicateInstVars!public!tests! !
@@ -1295,7 +1310,6 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test8!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testBug74!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testBug77!public! !
-!JadeiteDebuggerTestCase categoriesFor: #testContextMenu!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testErrorInPrintString!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testSaveMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testStackMenuEnablement!public!tests! !
