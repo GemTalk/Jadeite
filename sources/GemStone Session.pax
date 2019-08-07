@@ -130,7 +130,7 @@ GsError subclass: #GsAnsiError
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 GsError subclass: #GsCompileError
-	instanceVariableNames: 'list'
+	instanceVariableNames: 'list additionalArgs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

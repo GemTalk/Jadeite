@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 GsError subclass: #GsCompileError
-	instanceVariableNames: 'list'
+	instanceVariableNames: 'list additionalArgs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -10,18 +10,42 @@ GsCompileError comment: ''!
 !GsCompileError categoriesForClass!Unclassified! !
 !GsCompileError methodsFor!
 
-gatherData
+additionalArgs
+	^additionalArgs!
 
+descriptiveText
+	| writeStream |
+	writeStream := WriteStream on: String new.
+	writeStream
+		nextPutAll: additionalArgs second;
+		nextPutAll: '>>';
+		nextPutAll: (additionalArgs first copyFrom: 2 to: list first second);
+		space;
+		nextPutAll: list first third;
+		nextPutAll: '>>>>>';
+		nextPutAll: (additionalArgs first copyFrom: list first second + 1 to: additionalArgs first size - 1).
+	^writeStream contents!
+
+gatherData
 	super gatherData.
-	list := self class 
-		errorListFor: gciErrSType args first 
-		inSession: self gciSession.
-!
+	list := self class errorListFor: gciErrSType args first inSession: self gciSession.
+	gciErrSType args size > 1
+		ifTrue: 
+			[additionalArgs := OrderedCollection new.
+			2 to: gciErrSType args size
+				do: 
+					[:index |
+					additionalArgs add: (self gciSession
+								executeString: 'self printString'
+								fromContext: (gciErrSType args at: index)
+								environment: 0)]]!
 
 list
 
 	^list.
 ! !
+!GsCompileError categoriesFor: #additionalArgs!accessing!private! !
+!GsCompileError categoriesFor: #descriptiveText!accessing!public! !
 !GsCompileError categoriesFor: #gatherData!public! !
 !GsCompileError categoriesFor: #list!public! !
 
