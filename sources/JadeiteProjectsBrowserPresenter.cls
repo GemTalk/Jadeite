@@ -1057,7 +1057,7 @@ methodsMenuStrings
 				findMethod; 
 				runMethodTests;
 				gotoMethodDefinedPackage; runAll; runSelected].
-	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods'  '&File out methods ...//fileOutMethods' 'Find Method .../Ctrl+Shift+M/findMethod'  '-' '&Remove Method(s) ...//removeMethods'  'Debug &Tests/Ctrl+B/runMethodTests' 		'Run All Tests/Ctrl+Shift+A/runAll'
+	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf'  '-'  'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods'  'Find Method .../Ctrl+Shift+M/findMethod'  '-' '&Remove Method(s) ...//removeMethods'  'Debug &Tests/Ctrl+B/runMethodTests' 		'Run All Tests/Ctrl+Shift+A/runAll'
 		'Run Selected/Ctrl+Shift+S/runMethodTests' '-' 'Go To Defining Package//gotoMethodDefinedPackage' )!
 
 methodSourcePresenter: anObject
