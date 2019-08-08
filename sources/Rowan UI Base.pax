@@ -1713,7 +1713,8 @@ update: newMethods orRemove: removals
 	listModel := ListModel withAll: ((methodListPresenter model union: newMethods)
 						asSortedCollection: [:x :y | x selector < y selector]).
 	listModel removeAll: removals. 
-	methodListPresenter model: listModel.!
+	methodListPresenter model: listModel.
+	methodListPresenter view invalidate. !
 
 updateClasses
 	| packageServices |

@@ -165,6 +165,56 @@ test_abortWithSelections
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_addNewTestPackage
+	"test package should show up when test method is added"
+
+	| packageName className methodService |
+	packageName := 'AddedPackage'.
+	className := 'AddedTestClass'.
+	self assertIsNil: (self sunitPresenter packageListPresenter list
+				detect: [:packageService | packageService name = packageName]
+				ifNone: []).
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self projectsPresenter projectListPresenter selection addPackageNamed: packageName
+		using: self projectsPresenter.
+	
+	[| classService1 |
+	self assertIsNil: (self sunitPresenter packageListPresenter list
+				detect: [:packageService | packageService name = packageName]
+				ifNone: []).	"not added until method is created"
+	self
+		saveClass: className
+		superclass: 'TestCase'
+		instVars: #('abc')
+		package: packageName.
+	self assertIsNil: (self sunitPresenter packageListPresenter list
+				detect: [:packageService | packageService name = packageName]
+				ifNone: []).	"not added until method is created"
+	classService1 := RowanClassService named: className.
+	classService1
+		saveMethod: 'test_blah'
+		category: 'tests'
+		session: session.
+	self denyIsNil: (self sunitPresenter packageListPresenter list
+				detect: [:packageService | packageService name = packageName]
+				ifNone: []).
+	self selectServiceNamed: packageName in: self sunitPresenter packageListPresenter.
+	self denyIsNil: (self sunitPresenter classListPresenter list
+				detect: [:classService | classService name = className]
+				ifNone: []).
+	self selectServiceNamed: className in: self sunitPresenter classListPresenter.
+	methodService := self sunitPresenter methodListPresenter list
+				detect: [:svc | svc selector = #test_blah]
+				ifNone: [].
+	self assert: methodService selector equals: #test_blah.
+	self assert: self sunitPresenter methodListPresenter list size equals: 1]
+			ensure: 
+				[self abortTransaction.
+				self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
+
 test_browseMethods
 	| browseMethodMenuItem browser selectors |
 	self testsIssue: #issue207 withTitle: 'should be able to browe source for test from SUit browser'.
@@ -577,7 +627,7 @@ test_runClassTests
 test_saveMethodInProjectBrowser
 	"should show up in sunit browser and disappear when removed"
 
-	| source |
+	| source |	self halt. 
 	self testsIssue: #issue395 withTitle: '(3.0.54) Sunit can display non-test methods'.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
@@ -941,6 +991,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #tearDown!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_abortNoSelections!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_abortWithSelections!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_addNewTestPackage!public!test updates from other browsers!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseMethods!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseSunitClass!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_commitNoSelections!public!tests! !
