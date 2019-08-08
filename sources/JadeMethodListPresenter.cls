@@ -218,7 +218,8 @@ selecting: stringOrIndex
 			methodSourcePresenter documentPresenter selectionRange: range]
 		ifFalse: 
 			[searchBlock := [self searchFor: stringOrIndex].
-			self doSearch]!
+			self doSearch].
+	methodSourcePresenter documentPresenter view ensureCaretVisible!
 
 selectingAnyMatch: aString
 	searchBlock := [self searchForAnyTextMatching: aString].
