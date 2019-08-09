@@ -26,10 +26,16 @@ classes: anArray
 	classes := anArray!
 
 classesUpdate: presenter browser: browser
+	| updatedClasses |
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	(self doesUpdateApply: browser) ifFalse: [^self].
 	self removeDeletedClassesIn: presenter browser: browser.
-	self updateList: presenter whilePreservingSelections: classes.
+	presenter selectionOrNil
+		ifNil: 
+			[updatedClasses := classes asSet.
+			updatedClasses addAll: presenter list.
+			presenter list: (ListModel withAll: updatedClasses)]
+		ifNotNil: [self updateList: presenter whilePreservingSelections: classes].
 	presenter list
 		do: [:classService | classService selectedPackageServices: browser packageListPresenter selections browser: browser].
 	presenter view invalidate.

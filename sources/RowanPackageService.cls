@@ -43,7 +43,9 @@ classesUpdate: presenter browser: browser
 	(self doesUpdateApply: browser) ifFalse: [^self].
 	self removeDeletedClassesIn: presenter browser: browser.
 	condensedList := self condenseExtensions: presenter.
-	self updateList: presenter whilePreservingSelections: condensedList.
+	presenter selectionOrNil
+		ifNil: [presenter list: (ListModel withAll: condensedList)]
+		ifNotNil: [self updateList: presenter whilePreservingSelections: condensedList].
 	presenter list
 		do: [:classService | classService selectedPackageServices: browser packageListPresenter selections browser: browser].
 	presenter view invalidate.

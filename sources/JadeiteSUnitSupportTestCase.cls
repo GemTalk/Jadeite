@@ -627,7 +627,7 @@ test_runClassTests
 test_saveMethodInProjectBrowser
 	"should show up in sunit browser and disappear when removed"
 
-	| source |	self halt. 
+	| source |
 	self testsIssue: #issue395 withTitle: '(3.0.54) Sunit can display non-test methods'.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.

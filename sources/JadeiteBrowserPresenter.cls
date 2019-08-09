@@ -464,7 +464,8 @@ showDictionaryList
 			self createListViewFor: newCard.
 			packageDictionaryCards view cards first arrangement: 'Dictionaries'.
 			dictionaryPresenter view contextMenu: self dictionaryMenu.
-			classListPresenter list: ListModel new].
+			classListPresenter list: ListModel new.
+			classHierarchyPresenter model: TreeModel new].
 	self updateDictionaries!
 
 showPackageList
@@ -479,7 +480,8 @@ showPackageList
 			self createListViewFor: newCard.
 			packageDictionaryCards view cards first arrangement: 'Packages'.
 			self setupPackageMenu.
-			classListPresenter list: ListModel new]!
+			classListPresenter list: ListModel new.
+			classHierarchyPresenter model: TreeModel new]!
 
 statusBarText
 	
