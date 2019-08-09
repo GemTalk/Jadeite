@@ -426,12 +426,18 @@ runAll
 runSelected
 	^self runMethodTests. !
 
+selectedDictionaryNames
+	^dictionaryPresenter selections collect: [:dictionaryService | dictionaryService name]!
+
 selectedGlobalName: selection
 	| string rs |
 	rs := ReadStream on: (selection at: 1).
 	rs upTo: $..
 	string := rs upToEnd.
 	^string!
+
+selectedPackageNames
+	^packageListPresenter selections collect: [:packageService | packageService name]!
 
 selectNoneProject
 	projectListPresenter selection: (projectListPresenter list
@@ -574,8 +580,16 @@ updateHierarchy
 
 updateHierarchyForPacktionaries
 	| service |
-	service := RowanBrowserService new command: #classHierarchy.
-	service allClasses addAll: self visibleClasses.
+	service := RowanBrowserService new.
+	self isNoneProjectSelected
+		ifTrue: 
+			[service
+				command: #classHierarchyForDictionariesNamed:;
+				commandArgs: (Array with: self selectedDictionaryNames)]
+		ifFalse: 
+			[service
+				command: #classHierarchyForPackagesNamed:;
+				commandArgs: (Array with: self selectedPackageNames)].
 	self issueCommand: (Array with: service)!
 
 updateProject
@@ -616,21 +630,7 @@ updateProjectTabFor: services
 			array nextPut: (Array with: service with: 'isDirty').
 			array nextPut: (Array with: service with: 'projectUrl').
 			service == services last ifFalse: [array nextPut: (Array with: RowanProjectService new with: nil)]].
-	projectInfoTab list: array contents!
-
-visibleClasses
-	| theClasses |
-	theClasses := OrderedCollection new.
-	self isNoneProjectSelected
-		ifTrue: 
-			[self updateServices: dictionaryPresenter selections.
-			dictionaryPresenter selections
-				do: [:dictionaryService | dictionaryService classes ifNotNil: [theClasses addAll: dictionaryService classes]]]
-		ifFalse: 
-			[self updateServices: packageListPresenter selections.
-			packageListPresenter selections
-				do: [:packageService | packageService classes ifNotNil: [theClasses addAll: packageService classes]]].
-	^theClasses! !
+	projectInfoTab list: array contents! !
 !JadeiteBrowserPresenter categoriesFor: #addDictionary!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #basicAddDictionaryNamed:!menu handlers support!private! !
@@ -677,7 +677,9 @@ visibleClasses
 !JadeiteBrowserPresenter categoriesFor: #resetClassTemplate!private! !
 !JadeiteBrowserPresenter categoriesFor: #runAll!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #runSelected!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #selectedDictionaryNames!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #selectedGlobalName:!menu handlers support!private! !
+!JadeiteBrowserPresenter categoriesFor: #selectedPackageNames!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #selectNoneProject!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #setCompileErrorColor!compile support!public! !
 !JadeiteBrowserPresenter categoriesFor: #setCompileWarningColor!compile support!public! !
@@ -699,7 +701,6 @@ visibleClasses
 !JadeiteBrowserPresenter categoriesFor: #updateProject!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateProjectInfo!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #updateProjectTabFor:!private!tabs! !
-!JadeiteBrowserPresenter categoriesFor: #visibleClasses!private!updating! !
 
 !JadeiteBrowserPresenter class methodsFor!
 
