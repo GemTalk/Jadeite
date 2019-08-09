@@ -572,6 +572,10 @@ updateGlobalsTab
 updateHierarchy
 	| service |
 	classHierarchyPresenter model: TreeModel new.
+	projectListPresenter selectionOrNil ifNil: [^self].
+	self isNoneProjectSelected
+		ifTrue: [dictionaryPresenter selections isEmpty ifTrue: [^self]]
+		ifFalse: [packageListPresenter selections isEmpty ifTrue: [^self]].
 	Cursor wait showWhile: 
 			[service := classListPresenter selectionOrNil ifNil: [^self updateHierarchyForPacktionaries].
 			service command: #classHierarchy.
@@ -597,6 +601,7 @@ updateProject
 			[packageListPresenter clear.
 			dictionaryPresenter clear. 
 			^self].
+	classHierarchyPresenter model: TreeModel new. 
 	self projectListPresenter selection name = RowanService notRowanizedPackageName
 		ifTrue: 
 			[self showDictionaryList.
