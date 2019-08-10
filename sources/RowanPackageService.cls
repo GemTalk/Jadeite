@@ -44,7 +44,7 @@ classesUpdate: presenter browser: browser
 	self removeDeletedClassesIn: presenter browser: browser.
 	condensedList := self condenseExtensions: presenter.
 	presenter selectionOrNil
-		ifNil: [presenter list: (ListModel withAll: condensedList)]
+		ifNil: [presenter list: (ListModel withAll: condensedList asSet)]
 		ifNotNil: [self updateList: presenter whilePreservingSelections: condensedList].
 	presenter list
 		do: [:classService | classService selectedPackageServices: browser packageListPresenter selections browser: browser].
@@ -161,7 +161,7 @@ testClasses: presenter
 !RowanPackageService categoriesFor: #defaultTemplate!accessing!private! !
 !RowanPackageService categoriesFor: #defaultTemplate:!accessing!private! !
 !RowanPackageService categoriesFor: #displayStringFor:!displaying!public! !
-!RowanPackageService categoriesFor: #doesUpdateApply:!public!testing! !
+!RowanPackageService categoriesFor: #doesUpdateApply:!private!testing! !
 !RowanPackageService categoriesFor: #hash!comparing!public! !
 !RowanPackageService categoriesFor: #hierarchyServices:!public!updating! !
 !RowanPackageService categoriesFor: #isPackageService!public!testing! !
