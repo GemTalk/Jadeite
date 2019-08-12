@@ -87,6 +87,7 @@ classHierarchyUpdate: presenter browser: browser hierarchyServices: hierarchySer
 				withParent: parent
 				hierarchyServices: hierarchyServices].
 	presenter model: treeModel.
+	presenter view updateMode: #lazy. "faster for big tree building"
 	presenter view disableRedraw.
 	
 	[treeModel preOrderDo: 
@@ -95,7 +96,8 @@ classHierarchyUpdate: presenter browser: browser hierarchyServices: hierarchySer
 			classService expand == true ifTrue: [presenter view expand: classService]]]
 			ensure: [presenter view enableRedraw].
 	presenter selectionIfNone: [^presenter view ensureItemVisible: treeModel roots first].
-	presenter view ensureSelectionVisible!
+	presenter view ensureSelectionVisible.
+	presenter view updateMode: #dynamic. !
 
 classMethodsUpdate: presenter browser: anObject
 	!
