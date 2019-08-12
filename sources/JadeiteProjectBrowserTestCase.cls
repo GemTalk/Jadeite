@@ -3949,6 +3949,7 @@ test_sunitRunAndMeasureTime
 	
 	[self selectRowanSample1Test.
 	self selectSUnitTab.
+	self projectsPresenter sunitPresenter reset.
 	runSelectedItem := self projectsPresenter sunitPresenter methodListPresenter view queryContextMenu
 				items detect: [:menuItem | menuItem command == #runAndMesureTime].
 	selection := self projectsPresenter sunitPresenter methodListPresenter list
@@ -4468,12 +4469,17 @@ test_twoTabsHaveIndependentCompileErrors
 	self methodSourcePresenter value: source.
 	self projectsPresenter editSaveMethod: self classListPresenter selection.
 	self assert: self projectsPresenter statusBarText view backcolor equals: Color red faded.
-	self assert: self projectsPresenter statusBarText value equals: 'missing end of literal mark (prime); expected start of a statement; '.
+	self assert: self projectsPresenter statusBarText value
+		equals: 'missing end of literal mark (prime); expected start of a statement; '.
 	self nextTabView.
 	self assert: self projectsPresenter statusBarText view backcolor equals: Color red faded.
-	self assert: self projectsPresenter statusBarText value equals: 'expected start of a statement; '.
-	]
-			ensure: [projectsBrowser closeCard]!
+	self assert: self projectsPresenter statusBarText value equals: 'expected start of a statement; ']
+			ensure: 
+				[self methodSourcePresenter view isModified: false.
+				projectsBrowser closeCard.
+				self methodSourcePresenter view isModified: false.
+				projectsBrowser view close.
+				projectsBrowser := JadeiteTestResource current openProjectsBrowser]!
 
 test_unicodeDisplayMethod
 	| methodSource secondMethodListBrowser |

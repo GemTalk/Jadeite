@@ -343,6 +343,8 @@ refreshClass
 					categoryListPresenter clear.
 					variableListPresenter clear.
 					^methodListPresenter clear].
+	BrowserUpdate current isApplyingUpdates ifTrue: [^self].
+	selection wasRemoved ifTrue: [^self].
 	selection meta: self isClassSideSelected.
 	self isNoneProjectSelected
 		ifFalse: [selection selectedPackageServices: packageListPresenter selections browser: self].
@@ -363,8 +365,8 @@ refreshFromServerAfterAbort: browserService
 
 registerPresentersForUpdates
 	super registerPresentersForUpdates.
-	BrowserUpdate current register: dictionaryPresenter	selector: #dictionaryListUpdate:.
-	BrowserUpdate current register: dictionaryPresenter	selector: #aborted:browser: browser: self!
+	BrowserUpdate current register: dictionaryPresenter		selector: #dictionaryListUpdate:.
+	BrowserUpdate current register: dictionaryPresenter		selector: #aborted:browser: browser: self.!
 
 removeAppropriateTab
 	self isNoneProjectSelected ifTrue: [self removeProjectTab] ifFalse: [self removeGlobalsTab]!

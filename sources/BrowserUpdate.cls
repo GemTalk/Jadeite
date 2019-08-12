@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 Model subclass: #BrowserUpdate
-	instanceVariableNames: 'updates debug inUpdate logger'
+	instanceVariableNames: 'updates debug inUpdate logger applyingUpdates'
 	classVariableNames: 'Current'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -28,6 +28,10 @@ activeServices
 	services addAll: self activeClassServices.
 	services addAll: self activePackageServices.
 	^services!
+
+applyUpdateWhile: block
+	applyingUpdates := true.
+	block ensure: [applyingUpdates := false]!
 
 basicIssueCommand: services session: session
 	| stonString stonResultString updateResult loggedServices newLoggingService |
@@ -73,6 +77,14 @@ inUpdate
 
 inUpdate: anObject
 	^inUpdate := anObject!
+
+isApplyingUpdates
+	"we've come back from the server and
+	are in the middle of updating browsers. 
+	Send this to avoid untimely updates to
+	services until updates are fully applied"
+
+	^applyingUpdates == true!
 
 isLogging
 
@@ -226,9 +238,11 @@ updates
 updates: aCollection
 	"don't just reinitialize the updates instance variable because
 	presenters are registered to that object"
-	updates removeAll: updates.
-	updates addAll: aCollection.
-	self updateReady!
+
+	self applyUpdateWhile: 
+			[updates removeAll: updates.
+			updates addAll: aCollection.
+			self updateReady]!
 
 updateService: service session: session
 	^self updateServices: (Array with: service) session: session!
@@ -274,6 +288,7 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #activeMethodServices!accessing!public! !
 !BrowserUpdate categoriesFor: #activePackageServices!accessing!public! !
 !BrowserUpdate categoriesFor: #activeServices!accessing!public! !
+!BrowserUpdate categoriesFor: #applyUpdateWhile:!public!updating! !
 !BrowserUpdate categoriesFor: #basicIssueCommand:session:!commands!private! !
 !BrowserUpdate categoriesFor: #basicUpdateServices:session:!private!updating! !
 !BrowserUpdate categoriesFor: #debug!accessing!private! !
@@ -282,6 +297,7 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #initializeUpdates!initialization!public! !
 !BrowserUpdate categoriesFor: #inUpdate!accessing!private! !
 !BrowserUpdate categoriesFor: #inUpdate:!accessing!private! !
+!BrowserUpdate categoriesFor: #isApplyingUpdates!public!testing! !
 !BrowserUpdate categoriesFor: #isLogging!logging!public!testing! !
 !BrowserUpdate categoriesFor: #isLogging:!logging!public!testing! !
 !BrowserUpdate categoriesFor: #issueCommand:session:!commands!public! !

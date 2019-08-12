@@ -1504,6 +1504,7 @@ refreshClass
 					categoryListPresenter clear.
 					variableListPresenter clear.
 					^methodListPresenter clear].
+	selection wasRemoved ifTrue: [^self].
 	selection meta: self isClassSideSelected.
 	selection selectedPackageServices: packageListPresenter selections browser: self.
 	selection

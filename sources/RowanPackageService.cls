@@ -52,6 +52,7 @@ classesUpdate: presenter browser: browser
 	browser isClassSelected ifFalse: [self emptyFilterListsIn: browser]!
 
 classHierarchyUpdate: presenter browser: browser
+	browser isHierarchyTabSelected ifFalse: [^false].
 	self
 		classHierarchyUpdate: presenter
 		browser: browser

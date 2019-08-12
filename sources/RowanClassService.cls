@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanClassService
-	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand isInSymbolList dictionaryName'
+	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand isInSymbolList dictionaryName wasRemoved'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -202,7 +202,8 @@ initialize
 	filters := Array new. 
 	selectedPackageServices := Array new. "method list browser will not have packages to select"
 	isTestCase := false. 
-	isNewClass := false. !
+	isNewClass := false. 
+	wasRemoved := false. !
 
 instVarNames
 	^instVarNames!
@@ -436,7 +437,13 @@ versions
 	^versions!
 
 visibleTests
-	^visibleTests ifNil: [Array new]! !
+	^visibleTests ifNil: [Array new]!
+
+wasRemoved
+	^wasRemoved!
+
+wasRemoved: anObject
+	wasRemoved := anObject! !
 !RowanClassService categoriesFor: #=!comparing!public! !
 !RowanClassService categoriesFor: #addHierarchyService:to:withParent:!private!updating! !
 !RowanClassService categoriesFor: #basicPrepareForReplication!public!replication! !
@@ -508,9 +515,11 @@ visibleTests
 !RowanClassService categoriesFor: #updateListIn:from:!private!updating! !
 !RowanClassService categoriesFor: #updateVariables:!private!updating! !
 !RowanClassService categoriesFor: #variables!accessing!private! !
-!RowanClassService categoriesFor: #version!displaying!private! !
-!RowanClassService categoriesFor: #versions!displaying!private! !
+!RowanClassService categoriesFor: #version!accessing!private! !
+!RowanClassService categoriesFor: #versions!accessing!private! !
 !RowanClassService categoriesFor: #visibleTests!accessing!private! !
+!RowanClassService categoriesFor: #wasRemoved!accessing!private! !
+!RowanClassService categoriesFor: #wasRemoved:!accessing!private! !
 
 !RowanClassService class methodsFor!
 
