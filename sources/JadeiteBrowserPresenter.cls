@@ -590,7 +590,9 @@ updateHierarchy
 	Cursor wait showWhile: 
 			[service := classListPresenter selectionOrNil ifNil: [^self updateHierarchyForPacktionaries].
 			BrowserUpdate current applyUpdateWhile: 
-					[service command: #classHierarchy.
+					[service
+						updateAfterCommand: false;
+						command: #classHierarchy.
 					self issueCommand: (Array with: service).
 					self selectClassNamed: service name]]!
 
