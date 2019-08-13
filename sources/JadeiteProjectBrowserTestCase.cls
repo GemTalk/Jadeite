@@ -212,6 +212,9 @@ saveMethodWithUniqueString
 saveTestClass
 	self saveTestClassWithInstVars: Array new package: 'Rowan-Services-Tests'!
 
+selectCommentTab
+	self projectsPresenter classCommentPresenter ensureVisible!
+
 selectSUnitTab
 	self projectsPresenter sunitPresenter ensureVisible!
 
@@ -1119,6 +1122,25 @@ test_classColoringExtension
 				detect: [:service | service name = 'RwRowanProjectIssuesTest'].
 	self assert: classService shouldColorAsExtension]
 			ensure: [self destroy: sunitBrowser]!
+
+test_classComment
+	| comment okToChange |
+	self testsIssue: #issue424 withTitle: 'Background colors of text pane '.
+	self selectRowanSample1Class.
+	comment := self projectsPresenter selectedClass comment.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[self selectCommentTab.
+	self projectsPresenter classCommentPresenter value: 'change coming'.
+	self assert: self projectsPresenter selectedClass comment equals: comment.
+	self projectsPresenter classCommentPresenter value equals: 'change coming'.
+	TestMessageBox plannedResult: #yes.	"keep changes"
+	okToChange := self projectsPresenter isOkayToChange.
+	self deny: okToChange.
+	self projectsPresenter editSaveClassComment.
+	okToChange := self projectsPresenter isOkayToChange.
+	self assert: okToChange.]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_classDefinitionTemplateAfterRemove
 	self testsIssue: #issue449 withTitle: '(3.0.63) missing class definition template in empty package'.
@@ -4969,6 +4991,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUnimplementedSelector!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUniqueString!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveTestClass!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #selectCommentTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectSUnitTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectVariableListEntryForcingEvent:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abortOnVariablesTab!public!test variable tab!tests! !
@@ -5011,6 +5034,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeVariableWithModifiedMethodSource!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classColoring!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classColoringExtension!public!test class hierarchy!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classComment!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionTemplateAfterRemove!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionTemplateAfterRemoveInHierarchy!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionUpdatesAcrossTabs!public!test two browsers!tests! !

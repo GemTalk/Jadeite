@@ -291,20 +291,18 @@ classCategoryPresenter
 	^classCategoryPresenter!
 
 classDefChanged
-
 	inUpdate ifTrue: [^self].
-	classDefinitionPresenter value = classDefinition ifTrue: [
-		classDefinitionPresenter view 
-			backcolor:JadeTextStyles default colorForNoEdits;
-			isModified: false;
-			yourself.
-	] ifFalse: [
-		classDefinitionPresenter view 
-			backcolor: JadeTextStyles default colorForUnsavedEdits;
-			isModified: true;
-			yourself.
-	].
-!
+	classDefinitionPresenter value = classDefinition
+		ifTrue: 
+			[classDefinitionPresenter view
+				backcolor: JadeTextStyles default colorForNoEdits;
+				isModified: false;
+				yourself]
+		ifFalse: 
+			[classDefinitionPresenter view
+				backcolor: JadeTextStyles default colorForUnsavedEdits;
+				isModified: true;
+				yourself]!
 
 classesMenuStrings
 
@@ -1127,7 +1125,6 @@ isGlobalsTabSelected
 !
 
 isOkayToChange
-	
 	methodSourcePresenter view isModified ifTrue: [
 		methodSourcePresenter ensureVisible.
 		gciSession isValidSession

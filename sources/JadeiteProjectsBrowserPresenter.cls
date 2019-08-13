@@ -659,13 +659,16 @@ editSaveClass
 
 editSaveClassComment
 	| classService |
-	classService := self selectedClass ifNil:[^self].
+	classService := self selectedClass ifNil: [^self].
 	classService
 		command: #classComment:;
 		commandArgs: (Array with: classCommentPresenter value trimBlanks).
 	self issueCommand: (Array with: classService).
-	classCommentPresenter ensureVisible. 
-	self refreshFromServer. !
+	classCommentPresenter ensureVisible.
+	self refreshFromServer.
+	classCommentPresenter view
+		isModified: false;
+		backcolor: JadeTextStyles default colorForNoEdits!
 
 editSaveMethod
 	| selection |
@@ -942,19 +945,38 @@ isHierarchyTabSelected
 	^classHierarchyTabs currentCard name = 'classHierarchy'!
 
 isOkayToChange
-	methodSourcePresenter view isModified ifTrue: [
-		(self isOkayToChangeSource: methodSourcePresenter) ifFalse:[^false]
-	].
-	classDefinitionPresenter view isModified ifTrue: [
-		classDefinitionPresenter ensureVisible.
-		gciSession isValidSession
-			ifTrue: [ (MessageBox confirm: 'Stay on unsaved class definition?' caption: 'Class has unsaved changes!!')  ifTrue: [^false]]
-			ifFalse: [(MessageBox confirm: 'Copy changes to Clipboard?' caption: 'Class has unsaved changes!!') ifTrue: [classDefinitionPresenter selectAll; copySelection]].
-		classDefinitionPresenter view isModified: false.
-	].
-	self postOkToChangeEvent. 
-	^true.
-!
+	methodSourcePresenter view isModified
+		ifTrue: [(self isOkayToChangeSource: methodSourcePresenter) ifFalse: [^false]].
+	classDefinitionPresenter view isModified
+		ifTrue: 
+			[classDefinitionPresenter ensureVisible.
+			gciSession isValidSession
+				ifTrue: 
+					[(MessageBox confirm: 'Stay on unsaved class definition?' caption: 'Class has unsaved changes!!')
+						ifTrue: [^false]]
+				ifFalse: 
+					[(MessageBox confirm: 'Copy changes to Clipboard?' caption: 'Class has unsaved changes!!')
+						ifTrue: 
+							[classDefinitionPresenter
+								selectAll;
+								copySelection]].
+			classDefinitionPresenter view isModified: false].
+	classCommentPresenter view isModified
+		ifTrue: 
+			[classCommentPresenter ensureVisible.
+			gciSession isValidSession
+				ifTrue: 
+					[(MessageBox confirm: 'Stay on unsaved class comment?' caption: 'Class commen has unsaved changes!!')
+						ifTrue: [^false]]
+				ifFalse: 
+					[(MessageBox confirm: 'Copy changes to Clipboard?' caption: 'Class has unsaved changes!!')
+						ifTrue: 
+							[classCommentPresenter
+								selectAll;
+								copySelection]].
+			classCommentPresenter view isModified: false].
+	self postOkToChangeEvent.
+	^true!
 
 isSourceTabSelected
 
@@ -2153,6 +2175,9 @@ updatePackageInfo
 	service := packageListPresenter selectionIfNone: [^self].
 	classDefinitionPresenter value: service defaultTemplate.
 	classDefinitionPresenter view
+		backcolor: JadeTextStyles default colorForNoEdits;
+		isModified: false.
+	classCommentPresenter view
 		backcolor: JadeTextStyles default colorForNoEdits;
 		isModified: false.
 	classDefinitionPresenter ensureVisible!
