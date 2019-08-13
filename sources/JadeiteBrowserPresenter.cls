@@ -261,6 +261,10 @@ isProjectItemEnabled: command
 isRowanProjectSelected
 	^(self isNoneProjectSelected or: [projectListPresenter selections isEmpty]) not!
 
+noClassSelectedInEitherPresenter
+	classListPresenter selectionIfNone: [classHierarchyPresenter selectionIfNone: [^true]].
+	^false!
+
 onViewOpened
 
 	super onViewOpened. 
@@ -338,11 +342,14 @@ refreshClass
 				ifFalse: [classHierarchyPresenter].
 	self setMethodFilterFor: presenter.
 	selection := presenter selectionIfNone: 
-					[self resetClassTemplate.
-					self resetDefinedClassPackage.
-					categoryListPresenter clear.
-					variableListPresenter clear.
-					^methodListPresenter clear].
+					[self noClassSelectedInEitherPresenter
+						ifTrue: 
+							[self resetClassTemplate.
+							self resetDefinedClassPackage.
+							categoryListPresenter clear.
+							variableListPresenter clear.
+							^methodListPresenter clear]
+						ifFalse: [^self]].
 	BrowserUpdate current isApplyingUpdates ifTrue: [^self].
 	selection wasRemoved ifTrue: [^self].
 	selection meta: self isClassSideSelected.
@@ -582,9 +589,10 @@ updateHierarchy
 		ifFalse: [packageListPresenter selections isEmpty ifTrue: [^self]].
 	Cursor wait showWhile: 
 			[service := classListPresenter selectionOrNil ifNil: [^self updateHierarchyForPacktionaries].
-			service command: #classHierarchy.
-			self issueCommand: (Array with: service).
-			service name = 'Object' ifFalse: [self selectClassNamed: service name]]!
+			BrowserUpdate current applyUpdateWhile: 
+					[service command: #classHierarchy.
+					self issueCommand: (Array with: service).
+					self selectClassNamed: service name]]!
 
 updateHierarchyForPacktionaries
 	| service |
@@ -668,6 +676,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #isNoneProjectSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #isProjectItemEnabled:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #isRowanProjectSelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #noClassSelectedInEitherPresenter!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #packageDictionaryCards!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #projectInfoMenu!menus!public! !

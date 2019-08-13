@@ -447,7 +447,7 @@ visibleTests
 	^visibleTests ifNil: [Array new]!
 
 wasRemoved
-	^wasRemoved!
+	^wasRemoved == true!
 
 wasRemoved: anObject
 	wasRemoved := anObject! !
