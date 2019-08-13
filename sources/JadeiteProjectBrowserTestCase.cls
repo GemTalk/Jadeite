@@ -4418,6 +4418,76 @@ test_twoBrowsersUpdate
 	self assert: secondPresenter classListPresenter list last name equals: 'RowanSubClass'.
 	self assert: secondPresenter packageListPresenter selection name equals: 'RowanSample1-Core'!
 
+test_twoBrowsersUpdateClassHierarchyDifferentDictionarySelected
+	self selectRowanSample1Class.
+	self openSecondBrowser.
+	"no dictionary selected"
+	self selectServiceNamed: RowanProjectService noneProject name
+		in: secondPresenter projectListPresenter.
+	self selectServiceNamed: 'Published' in: secondPresenter dictionaryPresenter.
+	self selectHierarchyTabIn: secondPresenter.
+	self assertLinearAncestry: #('Object' 'Rowan') in: secondPresenter classHierarchyPresenter.
+	self selectHierarchyTab.	"in first browser"
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
+		in: self classHierarchyPresenter.
+	self assertLinearAncestry: #('Object' 'Rowan') in: secondPresenter classHierarchyPresenter!
+
+test_twoBrowsersUpdateClassHierarchyDifferentPackageSelected
+	self openSecondBrowser.
+
+	"different package selected"
+	self selectRowanSample1Class.
+	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: secondPresenter packageListPresenter.
+	self selectHierarchyTabIn: secondPresenter.
+	self assertLinearAncestry: #('Object' 'TestAsserter' 'TestCase' 'RowanSample1Test')
+		in: secondPresenter classHierarchyPresenter.
+	self selectHierarchyTab.	"in first browser"
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
+		in: self classHierarchyPresenter.
+	self assertLinearAncestry: #('Object' 'TestAsserter' 'TestCase' 'RowanSample1Test')
+		in: secondPresenter classHierarchyPresenter!
+
+test_twoBrowsersUpdateClassHierarchyNoDictionarySelected
+	self selectRowanSample1Class. 
+	self openSecondBrowser.
+	"no dictionary selected"
+	self selectServiceNamed: RowanProjectService noneProject name
+		in: secondPresenter projectListPresenter.
+	secondPresenter dictionaryPresenter resetSelection.
+	self selectHierarchyTabIn: secondPresenter.
+	self assert: secondPresenter classHierarchyPresenter model isEmpty.
+	self selectHierarchyTab.	"in first browser"
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
+		in: self classHierarchyPresenter.
+	self assert: secondPresenter classHierarchyPresenter model isEmpty!
+
+test_twoBrowsersUpdateClassHierarchyNoPackageSelected
+	self openSecondBrowser.
+	"no package selected"
+	self selectRowanSample1Class.
+	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
+	secondPresenter packageListPresenter resetSelection.
+	self selectHierarchyTabIn: secondPresenter.
+	self assert: secondPresenter classHierarchyPresenter model isEmpty.
+	self selectHierarchyTab.	"in first browser"
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
+		in: self classHierarchyPresenter.
+	self assert: secondPresenter classHierarchyPresenter model isEmpty!
+
+test_twoBrowsersUpdateClassHierarchyNoProjectSelected
+	self selectRowanSample1Class.
+	self openSecondBrowser.
+	"no project selected"
+	secondPresenter projectListPresenter resetSelection.
+	self selectHierarchyTabIn: secondPresenter.
+	self assert: secondPresenter classHierarchyPresenter model isEmpty.
+	self selectHierarchyTab.	"in first browser"
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
+		in: self classHierarchyPresenter.
+	self assert: secondPresenter classHierarchyPresenter model isEmpty.
+!
+
 test_twoBrowsersUpdateHierarchy
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
@@ -5101,6 +5171,11 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersNoUpdateWithoutPackageSelection!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersRemoveMethod!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdate!public!test two browsers!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateClassHierarchyDifferentDictionarySelected!public!test two browsers!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateClassHierarchyDifferentPackageSelected!public!test two browsers!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateClassHierarchyNoDictionarySelected!public!test two browsers!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateClassHierarchyNoPackageSelected!public!test two browsers!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateClassHierarchyNoProjectSelected!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateHierarchy!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoTabsHaveIndependentCompileErrors!public!test two browsers! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_unicodeDisplayMethod!public!tests! !

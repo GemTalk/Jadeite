@@ -52,6 +52,7 @@ classHierarchyUpdate: presenter browser: browser
 	| treeModel subclasses parent |
 	hierarchyServices ifNil: [^self].
 	browser isClassListTabSelected ifTrue: [^self].
+	browser classListPresenter selectionOrNil = self ifFalse:[^self]. 
 	presenter selections notEmpty ifTrue: [(presenter selections includes: self) ifFalse: [^self]].
 	treeModel := TreeModel new
 				searchPolicy: SearchPolicy equality;
@@ -85,14 +86,12 @@ classHierarchyUpdate: presenter browser: browser
 	treeModel asBag
 		do: [:classService | classService selectedPackageServices: browser packageListPresenter selections browser: browser].
 	presenter model: treeModel.
-	presenter view updateMode: #lazy. "faster for big tree building"
+	presenter view updateMode: #lazy.	"faster for big tree building"
 	presenter view disableRedraw.
-	
-	[presenter view expandAll]
-			ensure: [presenter view enableRedraw].
+	[presenter view expandAll] ensure: [presenter view enableRedraw].
 	presenter selectionIfNone: [^presenter view ensureItemVisible: treeModel roots first].
 	presenter view ensureSelectionVisible.
-	presenter view updateMode: #dynamic. !
+	presenter view updateMode: #dynamic!
 
 classMethodsUpdate: presenter browser: browser
 	browser selectedClass = self ifFalse: [^self].

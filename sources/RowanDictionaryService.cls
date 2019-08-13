@@ -42,6 +42,10 @@ classesUpdate: presenter browser: browser
 	browser isClassSelected ifFalse: [self emptyFilterListsIn: browser]!
 
 classHierarchyUpdate: presenter browser: browser
+	browser isHierarchyTabSelected ifFalse: [^false].
+	browser dictionaryPresenter selectionOrNil
+		ifNil: [^self]
+		ifNotNil: [:dictionaryService | dictionaryService name = name ifFalse: [^self]].
 	self
 		classHierarchyUpdate: presenter
 		browser: browser

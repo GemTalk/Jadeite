@@ -53,6 +53,9 @@ classesUpdate: presenter browser: browser
 
 classHierarchyUpdate: presenter browser: browser
 	browser isHierarchyTabSelected ifFalse: [^false].
+	browser packageListPresenter selectionOrNil
+		ifNil: [^self]
+		ifNotNil: [:packageService | packageService name = name ifFalse: [^self]].
 	self
 		classHierarchyUpdate: presenter
 		browser: browser

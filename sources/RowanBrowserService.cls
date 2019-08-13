@@ -32,6 +32,7 @@ basicPrepareForReplication
 	!
 
 classHierarchyUpdate: presenter browser: browser
+	browser isHierarchyTabSelected ifFalse: [^false].
 	self
 		classHierarchyUpdate: presenter
 		browser: browser
