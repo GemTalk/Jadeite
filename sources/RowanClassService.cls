@@ -128,11 +128,9 @@ dictionaryName
 	^dictionaryName!
 
 displayMethodsOn: presenter browser: browser
-	| visibleMethods selections |
+	| visibleMethods |
 	visibleMethods := self computeVisibleMethods: presenter browser: browser.
-	selections := presenter selections.
-	presenter list: visibleMethods.
-	presenter selections: (visibleMethods select: [:methodService | selections includes: methodService])!
+	self updateListIn: presenter from: visibleMethods!
 
 displayString
 	| displayString |
@@ -415,19 +413,28 @@ updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
 			classHierarchyPresenter model move: node object asChildOf: superclassService]!
 
 updateListIn: presenter from: visibleMethods
-	| updated theModel |
-	theModel := presenter hasSelection ifTrue: [presenter model] ifFalse: [presenter model copy].
+	| updated theModel toRemove toAdd |
+	theModel := presenter hasSelection
+				ifTrue: 
+					[(visibleMethods includesAnyOf: presenter selections)
+						ifTrue: [presenter model]
+						ifFalse: [presenter model copy]]
+				ifFalse: [presenter model copy].
+	toRemove := OrderedCollection new.
 	presenter list copy do: 
 			[:old |
 			updated := visibleMethods detect: [:new | new = old] ifNone: [].
-			updated ifNil: [theModel remove: old] ifNotNil: [old replicateFrom: updated]].
+			updated ifNil: [toRemove add: old] ifNotNil: [old replicateFrom: updated]].
+	theModel removeAll: toRemove.
+	toAdd := OrderedCollection new.
 	visibleMethods do: 
 			[:new |
 			updated := theModel detect: [:old | new = old] ifNone: [].
-			updated ifNil: [theModel add: new]].
+			updated ifNil: [toAdd add: new]].
+	theModel addAll: toAdd.
 	(presenter parentPresenter class canUnderstand: #updateSUnitTab)
 		ifTrue: [presenter parentPresenter updateSUnitTab].
-	presenter hasSelection ifFalse: [presenter model: theModel]!
+	theModel == presenter model ifFalse: [presenter model: theModel]!
 
 updateVariables: presenter
 	variables ifNil: [^self].
