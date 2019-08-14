@@ -128,9 +128,11 @@ dictionaryName
 	^dictionaryName!
 
 displayMethodsOn: presenter browser: browser
-	| visibleMethods |
+	| visibleMethods selections |
 	visibleMethods := self computeVisibleMethods: presenter browser: browser.
-	self updateListIn: presenter from: visibleMethods!
+	selections := presenter selections.
+	presenter list: visibleMethods.
+	presenter selections: (visibleMethods select: [:methodService | selections includes: methodService])!
 
 displayString
 	| displayString |

@@ -1023,6 +1023,25 @@ test_categoryTextDisplay
 	self selectMethodsNamed: (Array with: #browserTool with: #initialize).
 	self assert: self projectsPresenter methodCategoryText value equals: 'Categories: (Multiple)'!
 
+test_changeClassComment
+	| comment okToChange |
+	self testsIssue: #issue424 withTitle: 'Background colors of text pane '.
+	self selectRowanSample1Class.
+	comment := self projectsPresenter selectedClass comment.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[self selectCommentTab.
+	self projectsPresenter classCommentPresenter value: 'change coming'.
+	self assert: self projectsPresenter selectedClass comment equals: comment.
+	self projectsPresenter classCommentPresenter value equals: 'change coming'.
+	TestMessageBox plannedResult: #yes.	"keep changes"
+	okToChange := self projectsPresenter isOkayToChange.
+	self deny: okToChange.
+	self projectsPresenter editSaveClassComment.
+	okToChange := self projectsPresenter isOkayToChange.
+	self assert: okToChange]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_changeListSortOrder
 	| changesBrowser |
 	self testsIssue: #issue384
@@ -1122,25 +1141,6 @@ test_classColoringExtension
 				detect: [:service | service name = 'RwRowanProjectIssuesTest'].
 	self assert: classService shouldColorAsExtension]
 			ensure: [self destroy: sunitBrowser]!
-
-test_classComment
-	| comment okToChange |
-	self testsIssue: #issue424 withTitle: 'Background colors of text pane '.
-	self selectRowanSample1Class.
-	comment := self projectsPresenter selectedClass comment.
-	TestMessageBox enableJadeiteTestMessageBox.
-	
-	[self selectCommentTab.
-	self projectsPresenter classCommentPresenter value: 'change coming'.
-	self assert: self projectsPresenter selectedClass comment equals: comment.
-	self projectsPresenter classCommentPresenter value equals: 'change coming'.
-	TestMessageBox plannedResult: #yes.	"keep changes"
-	okToChange := self projectsPresenter isOkayToChange.
-	self deny: okToChange.
-	self projectsPresenter editSaveClassComment.
-	okToChange := self projectsPresenter isOkayToChange.
-	self assert: okToChange.]
-			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_classDefinitionTemplateAfterRemove
 	self testsIssue: #issue449 withTitle: '(3.0.63) missing class definition template in empty package'.
@@ -5030,11 +5030,11 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSendersEnablement!public!test menus!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_cannotSelectMultipleProjects!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test categories!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_changeClassComment!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeListSortOrder!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeVariableWithModifiedMethodSource!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classColoring!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classColoringExtension!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_classComment!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionTemplateAfterRemove!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionTemplateAfterRemoveInHierarchy!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionUpdatesAcrossTabs!public!test two browsers!tests! !
