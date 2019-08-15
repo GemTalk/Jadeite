@@ -141,8 +141,8 @@ displayString
 	isInSymbolList == false ifTrue: [displayString := displayString , ' {' , oop printString , '}'].
 	^displayString!
 
-displayStringFor: displayThing
-	self shouldColorAsExtension ifTrue: [displayThing forecolor: Color darkMagenta].
+displayStringFor: displayThing browser: browser
+	(self shouldColorAsExtension: browser) ifTrue: [displayThing forecolor: Color darkMagenta].
 	isInSymbolList ifFalse: [displayThing forecolor: Color darkRed].
 	^self displayString!
 
@@ -321,8 +321,8 @@ selectedPackageServices: anObject browser: browser
 
 	selectedPackageServices := browser isRowanProjectSelected ifTrue: [anObject] ifFalse: [Array new]!
 
-shouldColorAsExtension
-	^definedPackageName = self notRowanizedPackageName
+shouldColorAsExtension: browser
+	^browser isNoneProjectSelected
 		ifTrue: [false]
 		ifFalse: 
 			[selectedPackageServices isEmpty
@@ -475,7 +475,7 @@ wasRemoved: anObject
 !RowanClassService categoriesFor: #dictionaryName!accessing!private! !
 !RowanClassService categoriesFor: #displayMethodsOn:browser:!public!updating! !
 !RowanClassService categoriesFor: #displayString!displaying!public! !
-!RowanClassService categoriesFor: #displayStringFor:!displaying!public! !
+!RowanClassService categoriesFor: #displayStringFor:browser:!displaying!public! !
 !RowanClassService categoriesFor: #excludedInstVars!public!ston! !
 !RowanClassService categoriesFor: #expand!accessing!private! !
 !RowanClassService categoriesFor: #expand:!accessing!private! !
@@ -516,7 +516,7 @@ wasRemoved: anObject
 !RowanClassService categoriesFor: #selectedPackageServiceNames!private!updating! !
 !RowanClassService categoriesFor: #selectedPackageServices!accessing!private! !
 !RowanClassService categoriesFor: #selectedPackageServices:browser:!accessing!private! !
-!RowanClassService categoriesFor: #shouldColorAsExtension!public!testing! !
+!RowanClassService categoriesFor: #shouldColorAsExtension:!public!testing! !
 !RowanClassService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
 !RowanClassService categoriesFor: #sunitMethodsUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #template!accessing!private! !

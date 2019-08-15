@@ -131,6 +131,24 @@ test_addSubclassWithPackage
 				replaceCrLfWithLf]
 			ensure: [self projectsPresenter classDefinitionPresenter view isModified: false]!
 
+test_allClassesBlackInDictionaryView
+	"dictionary view should never show a purple (extension) class"
+
+	self testsIssue: #issue497
+		withTitle: 'Base classes with extension methods should be purple in the package containing the method'.
+	self selectNoneProject.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	self classListPresenter list
+		do: [:classService | self deny: (classService shouldColorAsExtension: self projectsPresenter)]!
+
+test_baseClassPurpleInPackageView
+	self testsIssue: #issue497
+		withTitle: 'Base classes with extension methods should be purple in the package containing the method'.
+	self selectServiceNamed: 'Cypress' in: self projectListPresenter.
+	self selectServiceNamed: 'Cypress-Environmental-Tools' in: self packageListPresenter.
+	self selectServiceNamed: 'Behavior' in: self classListPresenter.
+	self assert: (self classListPresenter selection shouldColorAsExtension: self projectsPresenter)!
+
 test_canSelectUnauthorizedObjectStub
 	"RowanClassService instVarNames was getting set to a STONReference
 	for a few classes in the hierarchy browser. Made UnauthorizedObjectStub
@@ -919,6 +937,8 @@ test_textTabSelectedWithProjectChange
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_addSubclassNoSuperclassPackage!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_addSubclassNoSuperclassPackageGoesToNewClass!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_addSubclassWithPackage!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_allClassesBlackInDictionaryView!public! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_baseClassPurpleInPackageView!public! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_canSelectUnauthorizedObjectStub!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_changeMethodInDictionaryViewShowsDirtyInProject!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_commitAfterDictionaryAddOrRemove!public!test issue 217! !

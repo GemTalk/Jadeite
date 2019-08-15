@@ -49,6 +49,7 @@ openSecondBrowser
 	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
 	secondBrowser caption: 'second browser'.
 	secondPresenter := secondBrowser currentCard.
+	secondPresenter selectClassListTab. 
 	^secondBrowser!
 
 selectClassListTab

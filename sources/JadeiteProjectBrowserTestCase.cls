@@ -1110,18 +1110,18 @@ test_classColoring
 	sunitBrowser primaryPresenter selectClassNamed: 'RowanClassServiceTest'.
 	classService := self classListPresenter list
 				detect: [:service | service name = 'RowanClassServiceTest'].
-	self deny: classService shouldColorAsExtension.
+	self deny: (classService shouldColorAsExtension: self projectsPresenter).
 	sunitBrowser primaryPresenter selectClassNamed: 'RowanPackageServiceTest'.
 	classService := self classListPresenter list
 				detect: [:service | service name = 'RowanPackageServiceTest'].
-	self deny: classService shouldColorAsExtension.
+	self deny: (classService shouldColorAsExtension: self projectsPresenter).
 	self selectHierarchyTab.
 	classService := self classHierarchyPresenter model asBag
 				detect: [:service | service name = 'RowanClassServiceTest'].
-	self deny: classService shouldColorAsExtension.
+	self deny: (classService shouldColorAsExtension: self projectsPresenter).
 	classService := self classHierarchyPresenter model asBag
 				detect: [:service | service name = 'RowanPackageServiceTest'].
-	self deny: classService shouldColorAsExtension]
+	self deny: (classService shouldColorAsExtension: self projectsPresenter)]
 			ensure: [self destroy: sunitBrowser]!
 
 test_classColoringExtension
@@ -1135,11 +1135,11 @@ test_classColoringExtension
 	sunitBrowser primaryPresenter selectClassNamed: 'RwRowanProjectIssuesTest'.
 	classService := self classListPresenter list
 				detect: [:service | service name = 'RwRowanProjectIssuesTest'].
-	self assert: classService shouldColorAsExtension.
+	self assert: (classService shouldColorAsExtension: self projectsPresenter).
 	self selectHierarchyTab.
 	classService := self classHierarchyPresenter model asBag
 				detect: [:service | service name = 'RwRowanProjectIssuesTest'].
-	self assert: classService shouldColorAsExtension]
+	self assert: (classService shouldColorAsExtension: self projectsPresenter)]
 			ensure: [self destroy: sunitBrowser]!
 
 test_classDefinitionTemplateAfterRemove
@@ -1808,10 +1808,12 @@ test_dontChangeTabOnMethodSave
 	| source firstTab secondTab |
 	self testsIssue: #issue412 withTitle: '(3.0.56) incorrect project browser update on method accept '.
 	firstTab := self currentTabView.
+	self selectClassListTab.
 	self selectRowanSample1Class.
 	self selectMethodNamed: #foo.
 	self projectsPresenter addSystemBrowser.
 	secondTab := self currentTabView.
+	self selectClassListTab.
 	self selectRowanSample1Class.	"select class/method in new tab"
 	self selectMethodNamed: #foo.
 	self previousTabView.	"go to tab 1"
@@ -2220,9 +2222,11 @@ test_extensionColoringInHierarchy
 	self selectHierarchyTab.
 	self
 		assert: self projectsPresenter classHierarchyPresenter selection name = 'RwPlatformSpecification'.
-	self deny: (self projectsPresenter classHierarchyPresenter selection shouldColorAsExtension).
+	self deny: (self projectsPresenter classHierarchyPresenter selection
+				shouldColorAsExtension: self projectsPresenter).
 	self selectClassInHierarchyNamed: 'RwGemStoneSpecification'.
-	self assert: (self projectsPresenter classHierarchyPresenter selection shouldColorAsExtension)!
+	self assert: (self projectsPresenter classHierarchyPresenter selection
+				shouldColorAsExtension: self projectsPresenter)!
 
 test_extensionMethodSelection
 	| source |
@@ -2688,10 +2692,10 @@ test_hierarchyMethodsNotDisplayed
 	self assert: self methodListPresenter list last selector equals: #subclassMethod2!
 
 test_hierarchySelectTwoBrowsers
-	| secondBrowser firstBrowser |
+	| firstBrowser |
 	self testsIssue: #issue122 withTitle: 'Hierarchy tab selection updates incorrectly.'.
 	firstBrowser := projectsBrowser.	"for easier reading"
-	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self openSecondBrowser. 
 	
 	[self selectRowanSample1Class.
 	self selectServicesNamed: (Array with: 'RowanSample1')
