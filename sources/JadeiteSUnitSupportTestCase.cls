@@ -323,6 +323,38 @@ test_dontClearResults
 	self assert: self sunitPresenter methodListPresenter selections first selector equals: #test1.
 	self assert: self sunitPresenter methodListPresenter selections first testResult equals: 'passed'!
 
+test_extensionTestShowsUpInSUnitBrowser
+	| source |
+	self testsIssue: #issue378
+		withTitle: '(3.0.53) test class not defined in package shows up in package of SUnit browser'.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self
+		saveClass: 'TestTestClass'
+		superclass: 'TestCase'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	
+	[self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'TestTestClass' in: self classListPresenter.
+	self projectsPresenter basicAddMethodCategory: '*rowansample1-core'.	"will put method in RowanSample1-Core package"
+	source := 'test_inExtensionMethod  
+		| aaa | 
+		aaa := 123. 
+		^aaa'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self assert: self projectsPresenter methodListPresenter selections first isExtension.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self denyIsNil: (self classListPresenter list
+				detect: [:classService | classService name = 'TestTestClass']
+				ifNone: []).
+	self selectServiceNamed: 'TestTestClass' in: self sunitPresenter classListPresenter.
+	self denyIsNil: (self methodListPresenter list
+				detect: [:methodService | methodService selector = #test_inExtensionMethod]
+				ifNone: [])]
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
+
 test_inheritedTests
 	| classTestSelectors testClassTestSelectors |
 	self testsIssue: #issue211 withTitle: 'SUnit browser and SUnit tab in Project browser missing inherited test cases'.
@@ -998,6 +1030,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_commitWithSelections!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_dontChangeTabs!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_dontClearResults!public!test updates from other browsers! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_extensionTestShowsUpInSUnitBrowser!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_inheritedTests!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_menuEnablementDebugInClassPresenter!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_menuEnablementRunAndMesureTimeInClassPresenter!public!tests! !
