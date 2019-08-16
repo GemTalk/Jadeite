@@ -1883,6 +1883,22 @@ test_dontUpdateWithDifferentMeta
 				asArray
 		equals: #()!
 
+test_doubleClickIncludesColon
+	"It's difficult to fake up a mouse event so ensure the method that grabs the colon
+	is setup as an event and includes the colon after being called"
+
+	self testsIssue: #issue301 withTitle: '(3.0.50) inconsistent selector selection on double-click'.
+	self
+		assert: (self methodSourcePresenter events at: #leftButtonDoubleClicked:) messages first asSymbol
+		equals: #methodDoubleClicked:.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self methodSourcePresenter selectionRange: (14 to: 19).
+	self assert: self methodSourcePresenter selection equals: 'assert'.
+	self projectsPresenter methodDoubleClicked: nil.
+	self assert: self methodSourcePresenter selectionRange equals: (14 to: 20).
+	self assert: self methodSourcePresenter selection equals: 'assert:'!
+
 test_dragClassDoesNotWalkback
 	"Not really a drag drop but make sure that 
 		class list is hooked up to the drag method we expect
@@ -5066,6 +5082,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontChangeTabOnMethodSave!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontOverrideExistingAccessorMethods!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontUpdateWithDifferentMeta!public!test two browsers!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_doubleClickIncludesColon!public!test source! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dragClassDoesNotWalkback!public!test drag drop!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dragClassInHierarchyDoesNotWalkback!public!test class hierarchy!test drag drop!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dragDropMethodFailCompile!public!test class hierarchy!test drag drop!tests! !

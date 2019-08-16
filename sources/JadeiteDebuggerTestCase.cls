@@ -508,6 +508,23 @@ test_debuggerModifiedSourcePaneStayOnFrame
 	self assert: debugger frameListPresenter selectionByIndex equals: 4. "did not change frames"]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+test_doubleClickIncludesColon
+	"It's difficult to fake up a mouse event so ensure the method that grabs the colon
+	is setup as an event and includes the colon after being called"
+
+	self testsIssue: #issue301 withTitle: '(3.0.50) inconsistent selector selection on double-click'.
+	self openDebuggerOn: 'Array with: 1; halt'.
+	self
+		assert: (debugger methodSourcePresenter documentPresenter events at: #leftButtonDoubleClicked:)
+				messages first
+				asSymbol
+		equals: #methodDoubleClicked:.
+	debugger methodSourcePresenter documentPresenter selectionRange: (7 to: 10).
+	self assert: debugger methodSourcePresenter documentPresenter selection equals: 'with'.
+	debugger methodSourcePresenter methodDoubleClicked: nil.
+	self assert: debugger methodSourcePresenter documentPresenter selectionRange equals: (7 to: 11).
+	self assert: debugger methodSourcePresenter documentPresenter selection equals: 'with:'!
+
 test_duplicateInstVars
 	self testsIssue: #issue228
 		withTitle: 'lose selected class in project browser when new version created'.
@@ -1280,6 +1297,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_contextMenu!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneChangeFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneStayOnFrame!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_doubleClickIncludesColon!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_duplicateInstVars!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_duplicateInstVarsHierarchy!public!test class hierarchy! !
 !JadeiteDebuggerTestCase categoriesFor: #test_duplicateInstVarsInHierarchy!public!test class hierarchy! !
