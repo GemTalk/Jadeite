@@ -134,7 +134,7 @@ projectListPresenter
 	^projectListPresenter!
 
 projectLog
-	projectListPresenter selection projectLogUsing: self session: gciSession!
+	projectListPresenter selections first projectLogUsing: self session: gciSession!
 
 pullFromGit
 	| projectServices ws |

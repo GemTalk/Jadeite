@@ -1258,6 +1258,7 @@ projectMenuStrings
 				writeProject;
 				checkout;
 				projectLog;
+				openCommitInGitHub;
 				refresh].
 	^#('Projects' '&Make Default//makeDefault' 
 		'-' 
@@ -1275,6 +1276,7 @@ projectMenuStrings
 		'&Add Package...//addPackage'
 		'-'
 		'Git Log//projectLog'
+		'Browse Commit In GitHub//openCommitInGitHub'
 		'&Refresh//refreshFromServer')!
 
 projectTabLabel

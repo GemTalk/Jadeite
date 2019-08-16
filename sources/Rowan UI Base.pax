@@ -769,7 +769,7 @@ JadeDebugger subclass: #JadeiteDebugger
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggerClass semaphore'!
 JadeWorkspace subclass: #JadeiteGitLog
-	instanceVariableNames: ''
+	instanceVariableNames: 'projectService'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

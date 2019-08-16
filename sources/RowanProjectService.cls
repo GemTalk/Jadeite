@@ -165,13 +165,14 @@ prepareForReplication
 	packages := nil.!
 
 projectLogUsing: parentPresenter session: session
-	| textEdit projectName queryService |
+	| gitLog projectName queryService |
 	projectName := self name.
-	textEdit := JadeiteGitLog showOnSession: session.
-	textEdit caption: (parentPresenter gciSession titleBarFor: projectName , ' Project Git Log').
+	gitLog := JadeiteGitLog showOnSession: session.
+	gitLog projectService: self. 
+	gitLog caption: (parentPresenter gciSession titleBarFor: projectName , ' Project Git Log').
 	queryService := RowanQueryService command: #projectLog: withArgs: (Array with: projectName).
 	parentPresenter issueCommand: (Array with: queryService).
-	textEdit codePane documentPresenter value: queryService queryResults!
+	gitLog codePane documentPresenter value: queryService queryResults!
 
 projectPackagesUpdate: presenter browser: browser
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].

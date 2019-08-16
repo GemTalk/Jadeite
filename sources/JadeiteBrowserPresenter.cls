@@ -291,6 +291,11 @@ onViewOpened
 	super onViewOpened. 
 	self showPackageList!
 
+openCommitInGitHub
+	| projectService |
+	projectService := projectListPresenter selection.
+	^JadePresenter openCommit: projectService sha inGitHub: projectService!
+
 packageDictionaryCards
 	"for testing"
 
@@ -306,7 +311,9 @@ projectInfoMenuStrings
 			[self
 				copyProjectInfo
 				].
-	^#('Dictionaries' 'Copy//copyProjectInfo')!
+	^#('Dictionaries' 
+	'Copy//copyProjectInfo'
+	'Browse Commit In GitHub//openCommitInGitHub')!
 
 protectedDictionaries
 	^#('Published' 'Globals' 'UserGlobals')!
@@ -702,6 +709,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #isRowanProjectSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #noClassSelectedInEitherPresenter!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #openCommitInGitHub!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #packageDictionaryCards!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #projectInfoMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #projectInfoMenuStrings!menus!public! !

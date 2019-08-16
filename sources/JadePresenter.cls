@@ -120,3 +120,9 @@ updateService: service
 !JadePresenter categoriesFor: #updateMenuBar:withName:itemsFrom:!menus!public! !
 !JadePresenter categoriesFor: #updateService:!public!services! !
 
+!JadePresenter class methodsFor!
+
+openCommit: sha inGitHub: projectService
+	^ShellLibrary default shellOpen: projectService projectUrl , '/commit/' , sha directory: ''! !
+!JadePresenter class categoriesFor: #openCommit:inGitHub:!browsing!public! !
+
