@@ -1274,7 +1274,7 @@ projectMenuStrings
 		'-'
 		'&Add Package...//addPackage'
 		'-'
-		'Log//projectLog'
+		'Git Log//projectLog'
 		'&Refresh//refreshFromServer')!
 
 projectTabLabel

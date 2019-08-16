@@ -133,7 +133,7 @@ isSkew
 isSkew: anObject
 	isSkew := anObject!
 
-newTextView: session
+newTextView: session using: parentPresenter
 	| edit shell |
 	shell := JadeShell showOnSession: session.
 	shell view
@@ -143,13 +143,15 @@ newTextView: session
 		extent: 800 @ 900;
 		caption: 'About';
 		addSubView: (edit := RichTextEdit new);
+		contextMenu: parentPresenter view contextMenu;
 		show.
 	edit
 		arrangement: #center;
 		isReadOnly: true;
 		canVScroll: true;
 		font: (Font name: 'Arial' pointSize: 10);
-		alignment: #center.
+		alignment: #center;
+		contextMenu: parentPresenter view contextMenu.
 	^edit!
 
 packages
@@ -162,14 +164,14 @@ prepareForReplication
 	super prepareForReplication.
 	packages := nil.!
 
-projectLogUsing: presenter session: session
+projectLogUsing: parentPresenter session: session
 	| textEdit projectName queryService |
 	projectName := self name.
+	textEdit := JadeiteGitLog showOnSession: session.
+	textEdit caption: (parentPresenter gciSession titleBarFor: projectName , ' Project Git Log').
 	queryService := RowanQueryService command: #projectLog: withArgs: (Array with: projectName).
-	presenter issueCommand: (Array with: queryService).
-	textEdit := self newTextView: session.
-	textEdit topShell caption: (presenter gciSession titleBarFor: projectName , ' Project Log').
-	textEdit text: queryService queryResults!
+	parentPresenter issueCommand: (Array with: queryService).
+	textEdit codePane documentPresenter value: queryService queryResults!
 
 projectPackagesUpdate: presenter browser: browser
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
@@ -240,7 +242,7 @@ sha: anObject
 !RowanProjectService categoriesFor: #isProjectService!public!testing! !
 !RowanProjectService categoriesFor: #isSkew!accessing!private! !
 !RowanProjectService categoriesFor: #isSkew:!accessing!private! !
-!RowanProjectService categoriesFor: #newTextView:!displaying!private! !
+!RowanProjectService categoriesFor: #newTextView:using:!displaying!private! !
 !RowanProjectService categoriesFor: #packages!accessing!public! !
 !RowanProjectService categoriesFor: #prepareForReplication!public!replication! !
 !RowanProjectService categoriesFor: #projectLogUsing:session:!presenter support!public! !

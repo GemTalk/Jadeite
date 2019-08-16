@@ -19,6 +19,7 @@ package classNames
 	add: #JadeiteDebugger;
 	add: #JadeiteFindClassDialog;
 	add: #JadeiteFindMethodDialog;
+	add: #JadeiteGitLog;
 	add: #JadeiteLogger;
 	add: #JadeiteLoggerPresenter;
 	add: #JadeiteLoggerShell;
@@ -767,6 +768,11 @@ JadeDebugger subclass: #JadeiteDebugger
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggerClass semaphore'!
+JadeWorkspace subclass: #JadeiteGitLog
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 JadeTranscript subclass: #JadeiteTranscript
 	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit'
 	classVariableNames: ''
@@ -3867,10 +3873,10 @@ onViewClosed
 	"documentPresenter view styler: JadeExpressionStyler new."!
 
 onViewOpened
-
 	super onViewOpened.
 	codePane setDocumentPresenterWith: (self registry getClass: 'Object').
-	BrowserUpdate current logComment: 'Opening Workspace {' , self identityHash printString , '}'.
+	BrowserUpdate current
+		logComment: 'Opening ' , self class name asString , ' {' , self identityHash printString , '}'
 
 	"documentPresenter view styler: JadeExpressionStyler new."! !
 !JadeWorkspace categoriesFor: #onViewClosed!private! !
