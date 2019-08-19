@@ -176,7 +176,7 @@ testClasses: presenter
 !RowanPackageService categoriesFor: #releaseReferencedServices!Init / Release!public! !
 !RowanPackageService categoriesFor: #remoteServiceName!must not strip!public! !
 !RowanPackageService categoriesFor: #removeDeletedClassesIn:browser:!private!updating! !
-!RowanPackageService categoriesFor: #replicateFrom:!public!updating! !
+!RowanPackageService categoriesFor: #replicateFrom:!public!replication! !
 !RowanPackageService categoriesFor: #selectedClass!accessing!public! !
 !RowanPackageService categoriesFor: #selectedClass:!accessing!public! !
 !RowanPackageService categoriesFor: #testClasses:!public!updating! !

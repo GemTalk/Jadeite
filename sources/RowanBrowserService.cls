@@ -191,7 +191,7 @@ testPackages: presenter
 !RowanBrowserService categoriesFor: #reloadProjects:presenter:!commands!public! !
 !RowanBrowserService categoriesFor: #removedMethods!accessing!private! !
 !RowanBrowserService categoriesFor: #removedMethods:!accessing!private! !
-!RowanBrowserService categoriesFor: #replicateFrom:!public!replication!updating! !
+!RowanBrowserService categoriesFor: #replicateFrom:!public!replication! !
 !RowanBrowserService categoriesFor: #selectedClass!accessing!public! !
 !RowanBrowserService categoriesFor: #testCount!accessing!private! !
 !RowanBrowserService categoriesFor: #testCount:!accessing!private! !

@@ -223,7 +223,9 @@ methodSourceUpdate: presenter browser: browser
 	selection ifNil: [^self].
 	selection = self
 		ifTrue: 
-			[presenter view isModified
+			[selection replicateFrom: self.
+			browser refreshBreakPointsIn: presenter.
+			presenter view isModified
 				ifFalse: 
 					[presenter value: source.
 					browser displayNoMods: presenter]]!
@@ -481,7 +483,7 @@ user: anObject
 !RowanMethodService categoriesFor: #references!accessing!private! !
 !RowanMethodService categoriesFor: #references:!accessing!private! !
 !RowanMethodService categoriesFor: #remoteServiceName!must not strip!public! !
-!RowanMethodService categoriesFor: #replicateFrom:!public!updating! !
+!RowanMethodService categoriesFor: #replicateFrom:!public!replication! !
 !RowanMethodService categoriesFor: #selectedPackageServices!accessing!private! !
 !RowanMethodService categoriesFor: #selectedPackageServices:browser:!accessing!private! !
 !RowanMethodService categoriesFor: #selector!accessing!private! !

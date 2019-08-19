@@ -1064,6 +1064,7 @@ methodsMenuStrings
 		ifTrue: 
 			["This helps us find senders"
 			self
+				browseBreakpoints;
 				browseImplementors;
 				browseImplementorsOf;
 				browseSenders;
@@ -1073,14 +1074,37 @@ methodsMenuStrings
 				browseMethodsContaining;
 				browseLiteralReferences;
 				browseSelectedMethods; 
+				clearAllBreaks;
 				removeMethods;
 				runMethodTests;
 				fileOutMethods;
 				findMethod; 
 				runMethodTests;
 				gotoMethodDefinedPackage; runAll; runSelected].
-	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf'  '-'  'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods'  'Find Method .../Ctrl+Shift+M/findMethod'  '-' '&Remove Method(s) ...//removeMethods'  'Debug &Tests/Ctrl+B/runMethodTests' 		'Run All Tests/Ctrl+Shift+A/runAll'
-		'Run Selected/Ctrl+Shift+S/runMethodTests' '-' 'Go To Defining Package//gotoMethodDefinedPackage' )!
+	^#('&Methods'
+'Browse &Implementors//browseImplementors'
+'Browse Implementors of ...//browseImplementorsOf'
+'Browse &Senders//browseSenders'
+'Browse Senders of ...//browseSendersOf'  
+'-'  
+'Browse Hierarchy Implementors//browseHierarchyImplementors'
+'Browse Hierarchy Senders//browseHierarchySenders'
+'-'
+'Browse Methods &Containing ...//browseMethodsContaining'
+'Browse Literal References ...//browseLiteralReferences'
+'Browse Selected Methods//browseSelectedMethods'
+'-'
+'Browse Breakpoints//browseBreakpoints'  
+'Clear All Breakpoints//clearAllBreaks'  
+'-'
+'Find Method .../Ctrl+Shift+M/findMethod'
+'-'
+'&Remove Method(s) ...//removeMethods'
+'Debug &Tests/Ctrl+B/runMethodTests' 
+'Run All Tests/Ctrl+Shift+A/runAll'
+'Run Selected/Ctrl+Shift+S/runMethodTests'
+'-'
+'Go To Defining Package//gotoMethodDefinedPackage' )!
 
 methodSourcePresenter: anObject
 	methodSourcePresenter := anObject!

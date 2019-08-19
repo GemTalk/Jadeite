@@ -172,6 +172,7 @@ package methodNames
 	add: #JadePresenter -> #abortTransaction;
 	add: #JadePresenter -> #autoCommitExecutionString;
 	add: #JadePresenter -> #basicCloneProject:root:;
+	add: #JadePresenter -> #browseBreakpoints;
 	add: #JadePresenter -> #browseClassReferences:;
 	add: #JadePresenter -> #browseHierarchyImplementorsOf:className:;
 	add: #JadePresenter -> #browseHierarchySendersOf:className:;
@@ -182,6 +183,7 @@ package methodNames
 	add: #JadePresenter -> #browseSelectedClassIn:newTab:;
 	add: #JadePresenter -> #browseSendersOf;
 	add: #JadePresenter -> #browseSendersOf:;
+	add: #JadePresenter -> #clearAllBreaks;
 	add: #JadePresenter -> #compilationWarningFrom:;
 	add: #JadePresenter -> #currentMethodSourceFrom:;
 	add: #JadePresenter -> #currentSelectionOrLine;
@@ -378,6 +380,7 @@ package methodNames
 	add: 'JadePresenter class' -> #allClassesIn:;
 	add: 'JadePresenter class' -> #basicBrowseClassReferences:session:;
 	add: 'JadePresenter class' -> #basicBrowseMethod:presenter:;
+	add: 'JadePresenter class' -> #browseBreakpointsIn:;
 	add: 'JadePresenter class' -> #browseClassIn:;
 	add: 'JadePresenter class' -> #browseClassReferences:session:;
 	add: 'JadePresenter class' -> #browseHierarchyImplementorsOf:className:session:;
@@ -391,6 +394,7 @@ package methodNames
 	add: 'JadePresenter class' -> #browseSendersIn:;
 	add: 'JadePresenter class' -> #browseSendersOf:session:;
 	add: 'JadePresenter class' -> #browseSymbolReferencesTo:session:;
+	add: 'JadePresenter class' -> #clearAllBreaksIn:;
 	add: 'JadePresenter class' -> #convertToPattern:;
 	add: 'JadePresenter class' -> #findMethodIn:class:presenter:;
 	add: 'JadePresenter class' -> #issueCommand:session:;
@@ -1870,6 +1874,9 @@ basicCloneProject: path root: root
 					with: true).
 	self issueCommand: (Array with: service)!
 
+browseBreakpoints
+	^self class browseBreakpointsIn: self gciSession!
+
 browseClassReferences: className
 	^self class browseClassReferences: className session: self gciSession!
 
@@ -1911,6 +1918,9 @@ browseSendersOf
 
 browseSendersOf: string
 	^self class browseSendersOf: string session: self gciSession!
+
+clearAllBreaks
+	^self class clearAllBreaksIn: self gciSession!
 
 compilationWarningFrom: methodServices
 	methodServices do:[:methodService | 
@@ -2098,6 +2108,7 @@ updateServices: services
 !JadePresenter categoriesFor: #abortTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #autoCommitExecutionString!menu handlers support!public! !
 !JadePresenter categoriesFor: #basicCloneProject:root:!menu handlers!private! !
+!JadePresenter categoriesFor: #browseBreakpoints!menu handlers!public! !
 !JadePresenter categoriesFor: #browseClassReferences:!menu handlers!public! !
 !JadePresenter categoriesFor: #browseHierarchyImplementorsOf:className:!browsing!public! !
 !JadePresenter categoriesFor: #browseHierarchySendersOf:className:!browsing!public! !
@@ -2108,6 +2119,7 @@ updateServices: services
 !JadePresenter categoriesFor: #browseSelectedClassIn:newTab:!Jade!public! !
 !JadePresenter categoriesFor: #browseSendersOf!browsing!public! !
 !JadePresenter categoriesFor: #browseSendersOf:!browsing!menu handlers!public! !
+!JadePresenter categoriesFor: #clearAllBreaks!menu handlers!public! !
 !JadePresenter categoriesFor: #compilationWarningFrom:!public! !
 !JadePresenter categoriesFor: #currentMethodSourceFrom:!compile support!public! !
 !JadePresenter categoriesFor: #currentSelectionOrLine!menu handlers support!public! !
@@ -2150,6 +2162,17 @@ basicBrowseMethod: methodService presenter: browser
 			[(browser methodListPresenter list includes: methodService)
 				ifFalse: [browser categoryListPresenter selection: methodService category].
 			browser methodListPresenter selection: methodService]!
+
+browseBreakpointsIn: session
+	| service shell |
+	service := RowanQueryService command: #breakPointMethods withArgs: Array new.
+	self issueCommand: (Array with: service) session: session.
+	shell := self
+				openMethodListOn: service
+				selectingAnyMatch: String new
+				session: session.
+	shell updateCaptionFromSearchString: 'Methods Containing BreakPoints'.
+	^shell!
 
 browseClassIn: session
 	| classService browser |
@@ -2279,6 +2302,11 @@ browseSymbolReferencesTo: string session: session
 	shell updateCaptionFromSearchString: 'References to ' , basicString.
 	^shell!
 
+clearAllBreaksIn: session
+	| service |
+	service := RowanAnsweringService command: #clearAllBreaks withArgs: Array new.
+	self issueCommand: (Array with: service) session: session!
+
 convertToPattern: wildcardString
 	| list |
 	list := (wildcardString subStrings: $*) asOrderedCollection.
@@ -2357,6 +2385,7 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
 !JadePresenter class categoriesFor: #basicBrowseClassReferences:session:!browsing!browsing support!public! !
 !JadePresenter class categoriesFor: #basicBrowseMethod:presenter:!browsing!public! !
+!JadePresenter class categoriesFor: #browseBreakpointsIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseClassIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseClassReferences:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseHierarchyImplementorsOf:className:session:!browsing!public! !
@@ -2370,6 +2399,7 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #browseSendersIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSendersOf:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSymbolReferencesTo:session:!browsing!public! !
+!JadePresenter class categoriesFor: #clearAllBreaksIn:!browsing!public! !
 !JadePresenter class categoriesFor: #convertToPattern:!browsing support!private! !
 !JadePresenter class categoriesFor: #findMethodIn:class:presenter:!browsing!public! !
 !JadePresenter class categoriesFor: #issueCommand:session:!public! !

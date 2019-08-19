@@ -254,7 +254,7 @@ sha: anObject
 !RowanProjectService categoriesFor: #releaseReferencedServices!Init / Release!public! !
 !RowanProjectService categoriesFor: #remoteServiceName!must not strip!public! !
 !RowanProjectService categoriesFor: #removedProject:!public!updating! !
-!RowanProjectService categoriesFor: #replicateFrom:!public!updating! !
+!RowanProjectService categoriesFor: #replicateFrom:!public!replication! !
 !RowanProjectService categoriesFor: #rowanProjectsHome!accessing!public! !
 !RowanProjectService categoriesFor: #sha!accessing!public! !
 !RowanProjectService categoriesFor: #sha:!accessing!public! !

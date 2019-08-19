@@ -475,7 +475,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #removedClass:!public!updating! !
 !RowanService categoriesFor: #removeDeletedClassesIn:browser:classes:!private!updating! !
 !RowanService categoriesFor: #removedProject:!public!updating! !
-!RowanService categoriesFor: #replicateFrom:!public!replication!updating! !
+!RowanService categoriesFor: #replicateFrom:!public!replication! !
 !RowanService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
 !RowanService categoriesFor: #sortAspect!accessing!public! !
 !RowanService categoriesFor: #stonOn:!must not strip!public!ston! !

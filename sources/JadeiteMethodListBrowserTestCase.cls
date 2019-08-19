@@ -126,6 +126,56 @@ tearDown
 			self destroy: methodListBrowser.
 			methodListBrowser := nil]!
 
+test_browseBreakpoints
+	| methodService |
+	self testsIssue: #issue225 withTitle: 'nice to have a breakpoint browser'.
+	methodListBrowser := JadePresenter browseBreakpointsIn: session.
+	[self assert: self methodListMethodListPresenter list size equals: 0]
+		ensure: [methodListBrowser view close].
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectRowanSample1Test.
+	methodService := self projectsPresenter methodListPresenter list
+				detect: [:service | service selector = #test1].
+	self projectsPresenter methodListPresenter selections: (Array with: methodService).
+	self projectsPresenter setBreakPointAt: 5 in: self projectsPresenter.
+	methodListBrowser := JadePresenter browseBreakpointsIn: session.
+	
+	[self assert: self methodListMethodListPresenter list size equals: 1.
+	self assert: self methodListPresenter selection selector equals: #test1]
+			ensure: [methodListBrowser view close].
+	JadePresenter clearAllBreaksIn: session.
+	methodListBrowser := JadePresenter browseBreakpointsIn: session.
+	[self assert: self methodListMethodListPresenter list size equals: 0]
+		ensure: [methodListBrowser view close]]
+			ensure: [projectsBrowser view close]!
+
+test_browseBreakpointsFromTranscript
+	| methodService |
+	self testsIssue: #issue225 withTitle: 'nice to have a breakpoint browser'.
+	methodListBrowser := transcript browseBreakpoints. 
+	[self assert: self methodListMethodListPresenter list size equals: 0]
+		ensure: [methodListBrowser view close].
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectRowanSample1Test.
+	methodService := self projectsPresenter methodListPresenter list
+				detect: [:service | service selector = #test1].
+	self projectsPresenter methodListPresenter selections: (Array with: methodService).
+	self projectsPresenter setBreakPointAt: 5 in: self projectsPresenter.
+	methodListBrowser := JadePresenter browseBreakpointsIn: session.
+	
+	[self assert: self methodListMethodListPresenter list size equals: 1.
+	self assert: self methodListPresenter selection selector equals: #test1]
+			ensure: [methodListBrowser view close].
+	JadePresenter clearAllBreaksIn: session.
+	methodListBrowser := transcript browseBreakpoints. 
+	[self assert: self methodListMethodListPresenter list size equals: 0]
+		ensure: [methodListBrowser view close]]
+			ensure: [projectsBrowser view close]!
+
 test_browseClass
 	| dictionaryPresenter |
 	self testsIssue: #issue429 withTitle: '(3.0.60) ''Browse Class'' on Transcript gets walkback'.
@@ -659,6 +709,8 @@ testBrowseLiteral: literal
 !JadeiteMethodListBrowserTestCase categoriesFor: #setupTestMethodInProjectBrowser!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #sourcePresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpoints!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpointsFromTranscript!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchyImplementorsEnablement!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchySendersEnablement!public!test menus! !
