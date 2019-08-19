@@ -1530,6 +1530,7 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: (self selectedClass notNil and: [self selectedClass isTestCase]).
 			^true].
+	
 	(self queryCommandHandlers: aCommandQuery) ifTrue: [^true].
 	(aCommandQuery canPerformAgainst: self) ifTrue: [aCommandQuery beEnabled].
 	^false	"There was no specific enablement of the command at this level"!

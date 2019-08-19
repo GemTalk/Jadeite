@@ -328,6 +328,22 @@ test_popupMenuHasBrowseSenders
 	self assert: browseClassItem command equals: #browseSenders.
 	self assert: (transcript transcriptPresenter class canUnderstand: #browseSenders)!
 
+test_projectMenuGitCommitMenuItem
+	| gitCommitMenuItem query |
+	self testsIssue: #issue317 withTitle: 'Commit when no changes results in walkback'.
+	gitCommitMenuItem := transcript projectListPresenter projectListPresenter view queryContextMenu
+				items detect: [:menu | '*Commit to Git*' match: menu text] ifNone: [].
+	self denyIsNil: gitCommitMenuItem.
+	self assert: gitCommitMenuItem command equals: #gitCommit.
+	self assert: (transcript projectListPresenter class canUnderstand: #gitCommit).
+	query := CommandQuery commandDescription: gitCommitMenuItem
+				source: transcript projectListPresenter view.
+	transcript projectListPresenter projectListPresenter list do: 
+			[:projectService |
+			transcript projectListPresenter projectListPresenter selection: projectService.
+			transcript projectListPresenter queryCommand: query.
+			projectService isDirty ifTrue: [self assert: query isEnabled] ifFalse: [self deny: query isEnabled]]!
+
 test_transcriptNamedConsole
 	| clearTranscriptMenuItem wasInstalled |
 	(wasInstalled := transcript isTranscriptInstalled) ifFalse: [transcript flipTranscript].
@@ -365,5 +381,6 @@ test_transcriptNamedConsole
 !JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseClass!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseImplementors!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseSenders!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_projectMenuGitCommitMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_transcriptNamedConsole!public!tests! !
 

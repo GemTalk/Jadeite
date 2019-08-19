@@ -3230,6 +3230,22 @@ test_projectInfoTab
 	view := self projectsPresenter projectInfoTab view.
 	self assert: (view columns first contentFromRow: (view list at: 3)) equals: 'Rowan'. "don't know the state of the rowan project so just test the name"!
 
+test_projectMenuGitCommitMenuItem
+	| gitCommitMenuItem query |
+	self testsIssue: #issue317 withTitle: 'Commit when no changes results in walkback'.
+	gitCommitMenuItem := self projectListPresenter view queryContextMenu items
+				detect: [:menu | '*Commit to Git*' match: menu text]
+				ifNone: [].
+	self denyIsNil: gitCommitMenuItem.
+	self assert: gitCommitMenuItem command equals: #gitCommit.
+	self assert: (self projectsPresenter class canUnderstand: #gitCommit).
+	query := CommandQuery commandDescription: gitCommitMenuItem source: self projectListPresenter view.
+	self projectListPresenter list do: 
+			[:projectService |
+			self projectListPresenter selection: projectService.
+			self projectsPresenter queryCommand: query.
+			projectService isDirty ifTrue: [self assert: query isEnabled] ifFalse: [self deny: query isEnabled]]!
+
 test_projectRemoved
 	"Gracefully remove a project from the project list if it was 
 	removed behind the tool's back"
@@ -5153,6 +5169,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_packagesShownInMultipleProjects!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectDisplaysSync!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectInfoTab!public!test menus!test projects!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_projectMenuGitCommitMenuItem!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectRemoved!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_reformatSource!public!test source! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_reformatSourceAppliesOnlyToCurrentBrowser!public!test source! !

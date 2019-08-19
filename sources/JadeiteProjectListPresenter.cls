@@ -20,6 +20,11 @@ addNoneProject
 
 	!
 
+allSelectedProjectsDirty
+	projectListPresenter selections detect: [:projectService | projectService isDirty not]
+		ifNone: [^true].
+	^false!
+
 basicUnloadProjects: projectNames
 	| browserService |
 	browserService := RowanBrowserService new.
@@ -41,7 +46,11 @@ browseProject
 checkout
 	projectListPresenter selection checkoutUsing: self.!
 
-commit
+createComponents
+	super createComponents.
+	projectListPresenter := self add: ListPresenter new name: 'projectList'!
+
+gitCommit
 	| projectName message service promptResult |
 	projectListPresenter hasSelection ifFalse: [MessageBox notify: 'No project selected'].
 	projectListPresenter selections size > 1
@@ -61,10 +70,6 @@ commit
 		commandArgs: (Array with: message value asString).
 	self issueCommand: (Array with: service).
 	MessageBox notify: 'Project ' , projectName , ' committed to local repository!!'!
-
-createComponents
-	super createComponents.
-	projectListPresenter := self add: ListPresenter new name: 'projectList'!
 
 list: list
 	projectListPresenter list: (SortedCollection sortBlock: [:x :y | x sortAspect < y sortAspect]).
@@ -169,7 +174,11 @@ pushToGit
 	self issueCommand: projectServices!
 
 queryCommand: aCommandQuery
-	(#(#unloadProjects #loadProjects #pullFromGit #pushToGit #commit #writeProject #projectChanges #browseProject #makeDefault #projectLog #checkout)
+	#gitCommit == aCommandQuery command
+		ifTrue: 
+			[aCommandQuery isEnabled: self allSelectedProjectsDirty.
+			^true].
+	(#(#unloadProjects #loadProjects #pullFromGit #pushToGit #writeProject #projectChanges #browseProject #makeDefault #projectLog #checkout)
 		includes: aCommandQuery command)
 			ifTrue: 
 				[aCommandQuery isEnabled: projectListPresenter selections notEmpty.
@@ -235,11 +244,12 @@ writeProject
 	MessageBox notify: 'Projects ' ,  ws contents  , ' written to disk'! !
 !JadeiteProjectListPresenter categoriesFor: #abortTransaction!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #addNoneProject!public!updating! !
+!JadeiteProjectListPresenter categoriesFor: #allSelectedProjectsDirty!public!testing! !
 !JadeiteProjectListPresenter categoriesFor: #basicUnloadProjects:!menu handlers!private! !
 !JadeiteProjectListPresenter categoriesFor: #browseProject!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #checkout!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #commit!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #createComponents!public! !
+!JadeiteProjectListPresenter categoriesFor: #gitCommit!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #list:!public! !
 !JadeiteProjectListPresenter categoriesFor: #loadProjects!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #makeDefault!menu handlers!public! !

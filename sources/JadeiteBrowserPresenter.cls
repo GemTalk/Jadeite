@@ -24,6 +24,11 @@ addNoneProject
 	(projectListPresenter list includes: RowanProjectService noneProject)
 		ifFalse: [projectListPresenter model add: RowanProjectService noneProject]!
 
+allSelectedProjectsDirty
+	projectListPresenter selections detect: [:projectService | projectService isDirty not]
+		ifNone: [^true].
+	^false!
+
 basicAddDictionaryNamed: newDictionaryName
 	| insertionIndex dictionaryService |
 	insertionIndex := dictionaryPresenter selectionByIndex = 0
@@ -332,6 +337,10 @@ queryCommand: aCommandQuery
 	(#(#reformatSource) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: self methodListPresenter selections size = 1.
+			^true].
+	#gitCommit == command
+		ifTrue: 
+			[aCommandQuery isEnabled: self allSelectedProjectsDirty.
 			^true].
 	(self projectMenuCommands includes: command)
 		ifTrue: 
@@ -680,6 +689,7 @@ updateProjectTabFor: services
 	projectInfoTab list: array contents! !
 !JadeiteBrowserPresenter categoriesFor: #addDictionary!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #allSelectedProjectsDirty!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #basicAddDictionaryNamed:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicProjectTabLabel!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #basicRemoveClass:!menu handlers support!private! !
