@@ -32,6 +32,7 @@ package classNames
 package methodNames
 	add: #DifferencesPresenter -> #afterPresenter;
 	add: #DifferencesPresenter -> #beforePresenter;
+	add: #EventMessageSequence -> #messages;
 	add: #JadeInspector -> #documentPresenter;
 	add: #JadeiteProjectsBrowserPresenter -> #definedClassPackageText;
 	add: #JadeiteProjectsBrowserPresenter -> #definedMethodPackageText;
@@ -208,6 +209,14 @@ beforePresenter
 	^beforePresenter! !
 !DifferencesPresenter categoriesFor: #afterPresenter!accessing!public! !
 !DifferencesPresenter categoriesFor: #beforePresenter!accessing!public! !
+
+!EventMessageSequence methodsFor!
+
+messages
+	"for jadeite testing"
+
+	^messages! !
+!EventMessageSequence categoriesFor: #messages!private! !
 
 !JadeInspector methodsFor!
 

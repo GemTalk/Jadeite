@@ -280,10 +280,18 @@ saveMethod
 		command: #saveMethodSource:category:;
 		commandArgs: (Array with: string with: frame method category).
 	[self issueCommand: (Array with: classService)] on: GsCompileError
-		do: [:ex | ^codePane reportCompileError: ex list in: documentPresenter].
-	self statusBarText: String new.
+		do: 
+			[:ex |
+			self setCompileErrorColor.
+			^codePane reportCompileError: ex list in: documentPresenter].
 	(self methodSourcePresenter compilationWarningFrom: classService selectedMethods)
-		ifNotNil: [:warning | MessageBox notify: warning].
+		ifNil: 
+			[statusTextPresenter view backcolor: JadeTextStyles default colorForNoEdits.
+			self statusBarText: String new]
+		ifNotNil: 
+			[:warning |
+			self setCompileWarningColor.
+			self statusBarText: warning].
 	documentPresenter isModified: false.
 	(gsProcess gsProcessForSession: gciSession)
 		trimStackToLevel: frameListPresenter selectionByIndex + frameListOffset.
@@ -336,12 +344,23 @@ selectHomeMethod
 	frameListPresenter selection: (frameListPresenter list
 				detect: [:str | str = (self homeFrameOf: frame) printString])!
 
+setCompileErrorColor
+	statusTextPresenter view backcolor: Color red faded!
+
+setCompileWarningColor
+	statusTextPresenter view backcolor: Color yellow faded!
+
 statusBarText
 
 	^statusTextPresenter value!
 
 statusBarText: aString
 	(self view topShell view viewNamed: 'statusBarField') value: aString. !
+
+statusTextPresenter
+	"Private - for testing"
+
+	^statusTextPresenter!
 
 stepInto
 	self isOkayToChangeFrame ifFalse:[^self].
@@ -422,8 +441,11 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #saveMethod!compiling!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #selectedFrame!frames!public! !
 !JadeiteDebugger categoriesFor: #selectHomeMethod!compiling!frames!menu handlers!private! !
+!JadeiteDebugger categoriesFor: #setCompileErrorColor!compiling!menu handlers!private! !
+!JadeiteDebugger categoriesFor: #setCompileWarningColor!compiling!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #statusBarText!Accessing!public! !
 !JadeiteDebugger categoriesFor: #statusBarText:!Accessing!public! !
+!JadeiteDebugger categoriesFor: #statusTextPresenter!Accessing!private! !
 !JadeiteDebugger categoriesFor: #stepInto!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #stepOut!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #stepOver!menu handlers!private! !

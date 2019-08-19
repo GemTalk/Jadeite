@@ -169,6 +169,10 @@ systemBrowser
 !
 
 tearDown
+	projectsBrowser
+		ifNotNil: 
+			[projectsBrowser view close.
+			projectsBrowser := nil].
 	debugger ifNotNil: [debugger documentPresenter view isModified: false].
 	secondDebugger ifNotNil: [secondDebugger documentPresenter view isModified: false].
 	process
@@ -356,6 +360,37 @@ test_compileClassRecompileMethodsCompileError
 			[self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
 			self projectsPresenter classDefinitionPresenter view isModified: false.
 			self destroy: projectsBrowser]!
+
+test_compileError
+	self testsIssue: #issue353
+		withTitle: 'Debugger has inferior status bar, and opens dialog for unused temps (3.0.74)'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'testCompileError
+
+	self assert: true'
+		in: 'RowanSample1Test'
+		category: 'tests'.
+	self selectServiceNamed: 'testCompileError' in: self methodListPresenter.
+	self projectsPresenter setBreakPointAt: 2 in: self projectsPresenter.
+	
+	[self openDebuggerOn: 'RowanSample1Test new testCompileError'.
+	debugger documentPresenter value: 'testCompileError
+
+	self assert: '''.
+	self debuggerDo: [debugger saveMethod].
+	self assert: debugger statusBarText
+		equals: 'missing end of literal mark (prime); expected a primary expression'.
+	self assert: debugger statusTextPresenter view backcolor equals: Color red faded.
+	debugger documentPresenter value: 'testCompileError
+	| warning |
+	self assert: true'.
+	self debuggerDo: [debugger saveMethod].
+	self assert: ('WARNING: unused method temp ''warning''*' match: debugger statusBarText).
+	self assert: debugger statusTextPresenter view backcolor equals: Color yellow faded]
+			ensure: [JadePresenter clearAllBreaksIn: session]!
 
 test_compileInExecutedBlock
 	self testsIssue: #issue498
@@ -1291,6 +1326,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseFrameMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileClassRecompileMethodsCompileError!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_compileError!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlockFailsWhenNoHomeMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlockSameSelectorOnStack!public!tests! !
