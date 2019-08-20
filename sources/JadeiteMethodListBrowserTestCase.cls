@@ -124,7 +124,11 @@ tearDown
 		ifNotNil: 
 			[methodListBrowser primaryPresenter methodSourcePresenter documentPresenter view isModified: false.
 			self destroy: methodListBrowser.
-			methodListBrowser := nil]!
+			methodListBrowser := nil].
+	projectsBrowser
+		ifNotNil: 
+			[projectsBrowser view close.
+			projectsBrowser := nil]!
 
 test_browseBreakpoints
 	| methodService |
@@ -413,6 +417,84 @@ test_browseSendersEnablement
 				inPresenter: methodListPresenter
 				view: methodListPresenter view.
 	self deny: commandQuery isEnabled!
+
+test_comparisonTabMultimethod
+	self testsIssue: #issue264
+		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanAnsweringService' in: self classListPresenter.
+	super selectMethodsNamed: #(#answer #answer:).
+	methodListBrowser := self projectsPresenter browseSelectedMethods.
+	self methodListMethodListPresenter view selectionsByIndex: #(1 2).
+	methodListBrowser primaryPresenter selectComparisonTab.
+	self assert: methodListBrowser primaryPresenter comparisonPresenter beforeTitlePresenter value
+		equals: 'RowanAnsweringService>>answer'.
+	self assert: methodListBrowser primaryPresenter comparisonPresenter beforePresenter value
+		equals: 'answer
+
+	^answer' replaceCrLfWithLf.
+	self assert: methodListBrowser primaryPresenter comparisonPresenter afterTitlePresenter value
+		equals: 'RowanAnsweringService>>answer:'.
+	self assert: methodListBrowser primaryPresenter comparisonPresenter afterPresenter value
+		equals: 'answer: anObject
+
+	answer := anObject' replaceCrLfWithLf!
+
+test_comparisonTabMultimethod2
+	self testsIssue: #issue264
+		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
+	methodListBrowser := JadePresenter browseImplementorsOf: 'asString' session: session.
+	self methodListMethodListPresenter view selectionsByIndex: #(5 6).	"Boolean & BinaryFloat"
+	methodListBrowser primaryPresenter selectComparisonTab.
+	self assert: methodListBrowser primaryPresenter comparisonPresenter beforeTitlePresenter value
+		equals: 'BinaryFloat>>asString'.
+	self assert: methodListBrowser primaryPresenter comparisonPresenter afterTitlePresenter value
+		equals: 'Boolean>>asString'.
+	self methodListMethodListPresenter view selectionsByIndex: #(1).	"AbstractException"
+	methodListBrowser primaryPresenter selectComparisonTab.
+	self assert: methodListBrowser primaryPresenter comparisonPresenter beforeTitlePresenter value
+		equals: 'AbstractException>>asString'.
+	self assert: methodListBrowser primaryPresenter comparisonPresenter afterTitlePresenter value
+		equals: 'Object>>asString'!
+
+test_comparisonTabNoMethodSelected
+	self testsIssue: #issue264
+		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self setupSupclassComparisonMethods.
+	methodListBrowser := JadePresenter browseImplementorsOf: #comparisonMethod session: session.
+	self methodListMethodListPresenter resetSelection.
+	methodListBrowser primaryPresenter selectComparisonTab.
+	self assert: methodListBrowser primaryPresenter comparisonPresenter beforeTitlePresenter value
+		equals: String new.
+	self assert: methodListBrowser primaryPresenter comparisonPresenter beforePresenter value
+		equals: String new.
+	self assert: methodListBrowser primaryPresenter comparisonPresenter afterTitlePresenter value
+		equals: String new.
+	self assert: methodListBrowser primaryPresenter comparisonPresenter afterPresenter value
+		equals: String new!
+
+test_comparisonTabSuperclass
+	self testsIssue: #issue264
+		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self setupSupclassComparisonMethods.
+	methodListBrowser := JadePresenter browseImplementorsOf: #comparisonMethod session: session.
+	self methodListMethodListPresenter selectionByIndex: 2.
+	methodListBrowser primaryPresenter selectComparisonTab.
+	self assert: methodListBrowser primaryPresenter comparisonPresenter beforeTitlePresenter value
+		equals: 'RowanSubClass>>comparisonMethod'.	"selected class on left"
+	self assert: methodListBrowser primaryPresenter comparisonPresenter beforePresenter value
+		equals: 'comparisonMethod  ^3 + 4'.
+	self assert: methodListBrowser primaryPresenter comparisonPresenter afterTitlePresenter value
+		equals: 'RowanSample1>>comparisonMethod'.	"superclass on left"
+	self assert: methodListBrowser primaryPresenter comparisonPresenter afterPresenter value
+		equals: 'comparisonMethod  ^self subclassResponsibility'!
 
 test_compileErrorDisplay
 	| source |
@@ -722,6 +804,10 @@ testBrowseLiteral: literal
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSenderHighlightedWithEveryMethod!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSenderHighlightingIgnoreComments!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersEnablement!public!test menus! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabMultimethod!public!test comparison tab! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabMultimethod2!public!test comparison tab! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabNoMethodSelected!public!test comparison tab! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabSuperclass!public!test comparison tab! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_compileErrorDisplay!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_compileErrorDisplayGoesAway!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doSearch!public!tests! !

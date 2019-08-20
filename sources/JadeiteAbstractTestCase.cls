@@ -159,7 +159,12 @@ methodSourcePresenter
 	^self projectsPresenter methodSourcePresenter!
 
 noBreakIn: aMenu
-	self assertIsNil: (aMenu items detect: [:command | '*Break*' match: command text] ifNone: [])!
+	self
+		assertIsNil: (aMenu items detect: 
+					[:command |
+					('*Break*' match: command text)
+						and: [(command text = 'Browse Breakpoints') not and: [(command text = 'Clear All Breakpoints') not]]]
+				ifNone: [])!
 
 openWindow: aBlock
 	"evaluate a block which is expected to return an object that responds to #view.
@@ -438,6 +443,18 @@ setUp
 	self setAutoCommit: false.
 	self ensureRowanSample1Loaded.!
 
+setupSupclassComparisonMethods
+	self selectRowanSample1Class.
+	self
+		saveMethod: 'comparisonMethod  ^self subclassResponsibility'
+		in: 'RowanSample1'
+		category: 'test support'.
+	self selectServiceNamed: 'RowanSubClass' in: self classListPresenter.
+	self
+		saveMethod: 'comparisonMethod  ^3 + 4'
+		in: 'RowanSubClass'
+		category: 'test support'!
+
 tearDown
 	super tearDown.
 	SessionManager inputState pumpMessages.!
@@ -557,6 +574,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #serviceNamed:in:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #setAutoCommit:!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
+!JadeiteAbstractTestCase categoriesFor: #setupSupclassComparisonMethods!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #testsIssue:withTitle:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #testsRowanIssue:withTitle:!issue test support!public!support! !

@@ -25,6 +25,7 @@ addNoneProject
 		ifFalse: [projectListPresenter model add: RowanProjectService noneProject]!
 
 allSelectedProjectsDirty
+	projectListPresenter selections isEmpty ifTrue:[^false]. 
 	projectListPresenter selections detect: [:projectService | projectService isDirty not]
 		ifNone: [^true].
 	^false!

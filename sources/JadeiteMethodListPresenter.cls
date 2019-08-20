@@ -18,6 +18,12 @@ autoCommit
 autoCommit: boolean
 	autoCommit value: boolean!
 
+cleanupComparisonBrowser
+	comparisonPresenter
+		beforeTitle: String new;
+		afterTitle: String new;
+		compare: String new with: String new!
+
 comparisonPresenter
 
 	^comparisonPresenter!
@@ -93,6 +99,9 @@ registerPresentersForUpdates
 removeComparisonTab
 	self textTabs remove: self comparisonTab ifAbsent: []!
 
+selectComparisonTab
+	comparisonPresenter ensureVisible!
+
 selectionChanging: aSelectionChangingEvent
 	aSelectionChangingEvent value: (methodSourcePresenter documentPresenter view isModified
 				ifTrue: [methodSourcePresenter isOkayToChange]
@@ -101,6 +110,21 @@ selectionChanging: aSelectionChangingEvent
 showComparisonTab
 	self textTabs add: self comparisonTab.
 	comparisonPresenter ensureVisible!
+
+showSuperClassComparison
+	| methodService |
+	methodService := methodListPresenter selection.
+	methodService hasSupers
+		ifTrue: 
+			[comparisonPresenter
+				beforeTitle: methodService classMethodDisplayString;
+				afterTitle: methodService superDisplayString;
+				compare: methodService source with: methodService comparisonSource]
+		ifFalse: 
+			[comparisonPresenter
+				beforeTitle: methodService classMethodDisplayString;
+				afterTitle: 'No super implementation';
+				compare: methodService source with: String new]!
 
 textTabs
 	^(textAreaTabs subViews detect: [:each | each class == TabViewXP]) model!
@@ -114,8 +138,14 @@ updateAutoCommit
 		ifFalse: [autoCommitButtonView backcolor: Color default]!
 
 updateMethodSource
-	methodListPresenter selections isEmpty ifTrue: [^methodSourcePresenter value: String new].
-	methodListPresenter selections size = 1 ifTrue: [^self updateSingleMethodSource].
+	methodListPresenter selections isEmpty
+		ifTrue: 
+			[self cleanupComparisonBrowser.
+			^methodSourcePresenter value: String new].
+	methodListPresenter selections size = 1
+		ifTrue: 
+			[self showSuperClassComparison.
+			^self updateSingleMethodSource].
 	self updateMultiMethodComparison.
 	self refreshBreakPointsIn: methodSourcePresenter documentPresenter.
 	self setStatusBarDefault!
@@ -144,6 +174,7 @@ updateSource
 		ifTrue: [methodSourcePresenter documentPresenter view backcolor: Color red faded faded].! !
 !JadeiteMethodListPresenter categoriesFor: #autoCommit!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #autoCommit:!accessing!public! !
+!JadeiteMethodListPresenter categoriesFor: #cleanupComparisonBrowser!private!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #comparisonPresenter!public! !
 !JadeiteMethodListPresenter categoriesFor: #comparisonTab!private!selection!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #contextObject!public! !
@@ -159,8 +190,10 @@ updateSource
 !JadeiteMethodListPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteMethodListPresenter categoriesFor: #removeComparisonTab!private!selection!text tabs! !
+!JadeiteMethodListPresenter categoriesFor: #selectComparisonTab!private!selection!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #selectionChanging:!event handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #showComparisonTab!private!selection!text tabs! !
+!JadeiteMethodListPresenter categoriesFor: #showSuperClassComparison!private!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #textTabs!private!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #updateAutoCommit!public!updating! !
 !JadeiteMethodListPresenter categoriesFor: #updateMethodSource!public!updating! !

@@ -1702,6 +1702,54 @@ test_closeConsoleValidSession
 							tearDown;
 							setUp]]!
 
+test_comparisonTabMultimethod
+	self testsIssue: #issue264
+		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanAnsweringService' in: self classListPresenter.
+	self selectMethodsNamed: #(#answer #answer:).
+	self projectsPresenter selectComparisonTab.
+	self assert: self projectsPresenter comparisonPresenter beforeTitlePresenter value
+		equals: 'RowanAnsweringService>>answer'.
+	self assert: self projectsPresenter comparisonPresenter beforePresenter value
+		equals: 'answer
+
+	^answer' replaceCrLfWithLf.
+	self assert: self projectsPresenter comparisonPresenter afterTitlePresenter value
+		equals: 'RowanAnsweringService>>answer:'.
+	self assert: self projectsPresenter comparisonPresenter afterPresenter value
+		equals: 'answer: anObject
+
+	answer := anObject' replaceCrLfWithLf!
+
+test_comparisonTabNoMethodSelected
+	self testsIssue: #issue264
+		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
+	self selectRowanSample1Test.
+	self projectsPresenter selectComparisonTab.
+	self assert: self projectsPresenter comparisonPresenter beforeTitlePresenter value
+		equals: String new.
+	self assert: self projectsPresenter comparisonPresenter beforePresenter value equals: String new.
+	self assert: self projectsPresenter comparisonPresenter afterTitlePresenter value equals: String new.
+	self assert: self projectsPresenter comparisonPresenter afterPresenter value equals: String new!
+
+test_comparisonTabSuperclass
+	self testsIssue: #issue264
+		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
+	self setupSupclassComparisonMethods.
+	self selectServiceNamed: 'RowanSubClass' in: self classListPresenter.
+	self selectMethodNamed: #comparisonMethod.
+	self projectsPresenter selectComparisonTab.
+	self assert: self projectsPresenter comparisonPresenter beforeTitlePresenter value
+		equals: 'RowanSubClass>>comparisonMethod'.	"selected class on left"
+	self assert: self projectsPresenter comparisonPresenter beforePresenter value
+		equals: 'comparisonMethod  ^3 + 4'.
+	self assert: self projectsPresenter comparisonPresenter afterTitlePresenter value
+		equals: 'RowanSample1>>comparisonMethod'.	"superclass on left"
+	self assert: self projectsPresenter comparisonPresenter afterPresenter value
+		equals: 'comparisonMethod  ^self subclassResponsibility'!
+
 test_compileClass
 	self testsIssue: #issue390 withTitle: 'Rename instance variable with accessor method is... wonky'.
 	self selectRowanSample1Class.
@@ -5114,6 +5162,9 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInHierarchy!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleInvalidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleValidSession!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_comparisonTabMultimethod!public!test comparison tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_comparisonTabNoMethodSelected!public!test comparison tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_comparisonTabSuperclass!public!test comparison tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_compileClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_compileClassCompilerError!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_confirmOverrideExistingAccessorMethods!public!test variable tab!tests! !

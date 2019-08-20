@@ -1815,6 +1815,9 @@ selectClassTab
 selectCommentTab
 	self selectSourceTabNamed: 'classDocumentation'!
 
+selectComparisonTab
+	self selectSourceTabNamed: 'comparisonTab'!
+
 selectedClass
 	^self isClassListTabSelected
 		ifTrue: [classListPresenter selectionIfNone: []]
@@ -1967,7 +1970,7 @@ showSuperClassComparison
 
 sundryCleanup
 	self statusBarText: String new.
-	self cleanupComparisonBrowser!
+	methodListPresenter selections notEmpty ifFalse: [self cleanupComparisonBrowser]!
 
 sunitPresenter
 	"for testing"
@@ -2472,6 +2475,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassNamed:!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectClassTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectCommentTab!public!selection! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #selectComparisonTab!public!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedClass!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedClasses!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #selectedClassName!private!selection! !

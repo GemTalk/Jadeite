@@ -787,7 +787,7 @@ test_projectListMenuItemsEnabled
 			| query |
 			query := CommandQuery commandDescription: item source: self projectListPresenter view.
 			self projectsPresenter queryCommand: query.
-			self assert: query isEnabled].
+			query command = #gitCommit ifFalse: [self assert: query isEnabled]].
 	self selectNoneProject.
 	self projectListPresenter view contextMenu itemsDo: 
 			[:item |
