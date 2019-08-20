@@ -2469,6 +2469,30 @@ test_findUsedEverywhere
 	[self assert: workspace codePane documentPresenter view isKindOf: JadeiteScintillaView]
 		ensure: [workspace view close]!
 
+test_getClassCommentWithDeprecationsOn
+	"code was trying to use deprecated method #description"
+
+	self testsIssue: #issue507 withTitle: '(NONE) package browsing invokes deprecated method (3.0.74)'.
+	session executeString: 'Deprecated doErrorOnDeprecated'.
+	
+	[self selectNoneProject.
+	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
+	self selectServiceNamed: 'AbstractException' in: self classListPresenter.
+	self assert: self projectsPresenter selectedClass comment notEmpty.
+	self selectServiceNamed: 'AbstractDictionary' in: self classListPresenter.
+	self assert: self projectsPresenter selectedClass comment notEmpty.
+	self selectClassTab.
+	self selectServiceNamed: 'AbstractException' in: self classListPresenter.
+	self assert: self projectsPresenter selectedClass comment notEmpty.
+	self selectServiceNamed: 'AbstractDictionary' in: self classListPresenter.
+	self assert: self projectsPresenter selectedClass comment notEmpty.
+	self selectHierarchyTab.
+	self selectServiceNamed: 'AbstractException' in: self classListPresenter.
+	self assert: self projectsPresenter selectedClass comment notEmpty.
+	self selectClassTab.
+	self assert: self projectsPresenter selectedClass comment notEmpty]
+			ensure: [session executeString: 'Deprecated doNothingOnDeprecated']!
+
 test_gitBranchesDoesNotShowHead
 	"this may be a brittle test because it assumes RowanSample1 has only the master branch.
 	But it's based on the local checkout so the test runner can control this. "
@@ -5124,6 +5148,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodShowsOnlyOneSide!public!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodSUnitBrowser!public!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findUsedEverywhere!public!test find! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_getClassCommentWithDeprecationsOn!public!test class list!test deprecated!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gitBranchesDoesNotShowHead!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromHierarchy!public!test class hierarchy!test defined package!tests! !
