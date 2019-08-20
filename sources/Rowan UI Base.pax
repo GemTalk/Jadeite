@@ -1351,6 +1351,7 @@ requiredClasses
 		addAll: RowanService withAllSubclasses;
 		addAll: RowanCommandResult withAllSubclasses;
 		add: AdvancedFindDialog;
+		add: JadeiteAdvancedFindDialog; 
 		add: IRegExp2;
 		yourself!
 
