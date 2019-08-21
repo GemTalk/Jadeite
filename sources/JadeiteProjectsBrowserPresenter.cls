@@ -187,7 +187,7 @@ basicRenameCategoryFrom: old to: new
 	categoryListPresenter selection: new!
 
 basicRenameClass: classService to: newName
-	| serviceArray oldName browser |
+	| serviceArray oldName browser answeringService |
 	oldName := classService name.
 	classService
 		command: #renameClass:to:;
@@ -199,14 +199,15 @@ basicRenameClass: classService to: newName
 	self updateServices: packageListPresenter selections.
 	self refreshClassListOrHierarchy.
 	self selectClassNamed: newName.
-	serviceArray first answer isEmpty
+	(serviceArray detect: [:service | service isAnsweringService]) answer isEmpty
 		ifTrue: [^MessageBox notify: 'No methods updated after renaming ' , oldName , ' to ' , newName].
 	browser := JadeiteRenameClassMethodListBrowser showOnSession: gciSession.
 	browser primaryPresenter
 		findString: newName;
 		newClassName: newName.
-	browser primaryPresenter methods: serviceArray first answer
-		selecting: serviceArray first answer first.
+	answeringService := serviceArray detect: [:service | service isAnsweringService].
+	browser primaryPresenter methods: answeringService answer
+		selecting: answeringService answer first.
 	browser updateCaption: 'Methods updated after renaming ' , oldName , ' to ' , newName.
 	^browser!
 
@@ -1646,8 +1647,7 @@ registerPresentersForUpdates
 	BrowserUpdate current register: self 					selector: #autoCommitUpdate:.!
 
 releasedReferencedServices: selectionChangingEvent
-	selectionChangingEvent window presenter selectionOrNil
-		ifNotNil: [:service | service releaseReferencedServices]!
+	selectionChangingEvent window presenter selectionOrNil ifNotNil: [:service | service postUpdate]!
 
 removeClass
 	| selection |

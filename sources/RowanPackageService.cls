@@ -108,6 +108,10 @@ packageUpdate: presenter
 	packageInList ifNotNil: [:packageService | packageService isDirty: isDirty].
 	presenter view invalidate!
 
+postUpdate
+	classes ifNotNil: [classes do: [:service | service postUpdate]].
+	classes := Array new!
+
 prepareForReplication
 	super prepareForReplication.
 	self basicPrepareForReplication!
@@ -117,10 +121,6 @@ projectName
 
 projectName: anObject
 	projectName := anObject!
-
-releaseReferencedServices
-	classes ifNotNil: [classes do: [:service | service releaseReferencedServices]].
-	classes := Array new!
 
 remoteServiceName
 	^'Rowan packageServiceClass'!
@@ -170,10 +170,10 @@ testClasses: presenter
 !RowanPackageService categoriesFor: #hierarchyServices:!public!updating! !
 !RowanPackageService categoriesFor: #isPackageService!public!testing! !
 !RowanPackageService categoriesFor: #packageUpdate:!public!updating! !
+!RowanPackageService categoriesFor: #postUpdate!Init / Release!public! !
 !RowanPackageService categoriesFor: #prepareForReplication!public!replication! !
 !RowanPackageService categoriesFor: #projectName!accessing!private! !
 !RowanPackageService categoriesFor: #projectName:!accessing!private! !
-!RowanPackageService categoriesFor: #releaseReferencedServices!Init / Release!public! !
 !RowanPackageService categoriesFor: #remoteServiceName!must not strip!public! !
 !RowanPackageService categoriesFor: #removeDeletedClassesIn:browser:!private!updating! !
 !RowanPackageService categoriesFor: #replicateFrom:!public!replication! !

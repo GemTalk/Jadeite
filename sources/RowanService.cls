@@ -29,6 +29,13 @@ autoCommitUpdate: browser!
 basicPrepareForReplication
 	"don't call anything potentially recursive here"!
 
+basicReplicateFrom: newService
+	1 to: self class instSize
+		do: 
+			[:index |
+			(self shouldReplicateInstVarAtIndex: index newService: newService)
+				ifTrue: [self instVarAt: index put: (newService instVarAt: index)]]!
+
 classCategoryUpdate: presenter
 	!
 
@@ -254,6 +261,11 @@ packagesUpdate: presenter!
 
 packageUpdate: presenter!
 
+postUpdate
+	"Give the service a chance to clean up unnecessary objects after replication"
+
+	!
+
 prepareForReplication
 	"only replicate what is absolutely necessary. Each service knows how to do that. 
 	This method prepares each command arg as well"
@@ -276,11 +288,6 @@ projectSelectionUpdate: aPresenter
 projectsUpdate: aPresenter!
 
 projectsUpdate: presenter browser: browser!
-
-releaseReferencedServices
-	"Give the service a chance to clean up unnecessary objects after replication"
-
-	!
 
 remoteService
 	^remoteService!
@@ -312,14 +319,13 @@ removeDeletedClassesIn: presenter browser: browser classes: classes
 
 removedProject: presenter!
 
+renamedClass: aClassService!
+
+renamedClassInHierarchy: presenter!
+
 replicateFrom: newService
 	(newService class = self class and: [newService name = self name])
-		ifTrue: 
-			[1 to: self class instSize
-				do: 
-					[:index |
-					(self shouldReplicateInstVarAtIndex: index newService: newService)
-						ifTrue: [self instVarAt: index put: (newService instVarAt: index)]]]!
+		ifTrue: [self basicReplicateFrom: newService]!
 
 shouldReplicateInstVarAtIndex: index newService: anObject
 	^true!
@@ -411,6 +417,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #addHierarchyService:to:withParent:hierarchyServices:!private! !
 !RowanService categoriesFor: #autoCommitUpdate:!public!updating! !
 !RowanService categoriesFor: #basicPrepareForReplication!public!replication! !
+!RowanService categoriesFor: #basicReplicateFrom:!public!replication! !
 !RowanService categoriesFor: #classCategoryUpdate:!public!updating! !
 !RowanService categoriesFor: #classCommentUpdate:!public!updating! !
 !RowanService categoriesFor: #classDefinitionUpdate:!public!updating! !
@@ -461,6 +468,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #notRowanizedPackageName!displaying!public! !
 !RowanService categoriesFor: #packagesUpdate:!public!updating! !
 !RowanService categoriesFor: #packageUpdate:!public!updating! !
+!RowanService categoriesFor: #postUpdate!Init / Release!public! !
 !RowanService categoriesFor: #prepareForReplication!public!replication! !
 !RowanService categoriesFor: #printOn:!printing!public! !
 !RowanService categoriesFor: #processListUpdate:!Debugger!public!updating! !
@@ -468,13 +476,14 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #projectSelectionUpdate:!public!updating! !
 !RowanService categoriesFor: #projectsUpdate:!public!updating! !
 !RowanService categoriesFor: #projectsUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #releaseReferencedServices!Init / Release!public! !
 !RowanService categoriesFor: #remoteService!public! !
 !RowanService categoriesFor: #remoteServiceName!must not strip!public! !
 !RowanService categoriesFor: #removed:!public!updating! !
 !RowanService categoriesFor: #removedClass:!public!updating! !
 !RowanService categoriesFor: #removeDeletedClassesIn:browser:classes:!private!updating! !
 !RowanService categoriesFor: #removedProject:!public!updating! !
+!RowanService categoriesFor: #renamedClass:!public!updating! !
+!RowanService categoriesFor: #renamedClassInHierarchy:!public!updating! !
 !RowanService categoriesFor: #replicateFrom:!public!replication! !
 !RowanService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
 !RowanService categoriesFor: #sortAspect!accessing!public! !

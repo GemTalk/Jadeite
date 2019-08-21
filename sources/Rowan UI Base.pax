@@ -583,7 +583,7 @@ RowanService subclass: #RowanBrowserService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanClassService
-	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand isInSymbolList dictionaryName wasRemoved'
+	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand isInSymbolList dictionaryName wasRemoved renamedName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -608,7 +608,7 @@ RowanService subclass: #RowanLoggingService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference'
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1703,6 +1703,7 @@ refresh
 registerPresentersForUpdates
 	BrowserUpdate current register: packageListPresenter selector: #testPackages:.
 	BrowserUpdate current register: classListPresenter 	selector: #testClasses:.
+	BrowserUpdate current register: classListPresenter 	selector: #renamedClass:.
 	BrowserUpdate current register: methodListPresenter selector: #sunitMethodsUpdate:browser: browser: self.
 	BrowserUpdate current register: methodListPresenter selector: #testResultUpdate:browser: browser: self.
 	BrowserUpdate current register: packageListPresenter selector: #aborted:browser: browser: self!

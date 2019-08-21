@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference'
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -138,6 +138,10 @@ displayStringFor: displayThing
 			[displayThing forecolor: Color darkMagenta.
 			inSelectedPackage ifFalse: [displayThing font beUnderlined ]]!
 
+equalBeforeRename: aMethodService
+	^renamedName = aMethodService className
+		and: [selector = aMethodService selector and: [meta = aMethodService meta]]!
+
 failedCompile
 	^failedCompile!
 
@@ -231,8 +235,10 @@ methodSourceUpdate: presenter browser: browser
 					browser displayNoMods: presenter]]!
 
 methodUpdate: presenter
-	presenter list
-		do: [:methodService | methodService = self ifTrue: [methodService replicateFrom: self]]!
+	presenter list do: 
+			[:methodService |
+			methodService replicateFrom: self	"#replicateFrom: will ensure we only replicate the proper methods"].
+	presenter view invalidate!
 
 name
 	selector isNil ifTrue:[^String new].
@@ -251,6 +257,10 @@ packageName
 
 packageName: anObject
 	packageName := anObject!
+
+postUpdate
+	super postUpdate.
+	renamedName := nil!
 
 prepareForReplication
 	super prepareForReplication.
@@ -290,10 +300,19 @@ references: anObject
 remoteServiceName
 	^'Rowan methodServiceClass'!
 
+renamedName
+	^renamedName!
+
+renamedName: anObject
+	renamedName := anObject!
+
 replicateFrom: newService
 	^(self isMethodService and: [newService isMethodService])
 		ifTrue: 
-			[self = newService ifTrue: [super replicateFrom: newService]]!
+			[(self = newService or: [newService equalBeforeRename: self])
+				ifTrue: 
+					[super replicateFrom: newService.
+					renamedName := nil]]!
 
 selectedPackageServices
 	^selectedPackageServices!
@@ -447,6 +466,7 @@ user: anObject
 !RowanMethodService categoriesFor: #displayName!displaying!public! !
 !RowanMethodService categoriesFor: #displayOn:!displaying!public! !
 !RowanMethodService categoriesFor: #displayStringFor:!displaying!public! !
+!RowanMethodService categoriesFor: #equalBeforeRename:!comparing!public! !
 !RowanMethodService categoriesFor: #failedCompile!accessing!public! !
 !RowanMethodService categoriesFor: #firstReference!accessing!private! !
 !RowanMethodService categoriesFor: #hash!comparing!public! !
@@ -476,6 +496,7 @@ user: anObject
 !RowanMethodService categoriesFor: #oopType!public! !
 !RowanMethodService categoriesFor: #packageName!accessing!private! !
 !RowanMethodService categoriesFor: #packageName:!accessing!private! !
+!RowanMethodService categoriesFor: #postUpdate!public!updating! !
 !RowanMethodService categoriesFor: #prepareForReplication!public!replication! !
 !RowanMethodService categoriesFor: #printOn:!printing!public! !
 !RowanMethodService categoriesFor: #projectName!accessing!private! !
@@ -483,6 +504,8 @@ user: anObject
 !RowanMethodService categoriesFor: #references!accessing!private! !
 !RowanMethodService categoriesFor: #references:!accessing!private! !
 !RowanMethodService categoriesFor: #remoteServiceName!must not strip!public! !
+!RowanMethodService categoriesFor: #renamedName!accessing!private! !
+!RowanMethodService categoriesFor: #renamedName:!accessing!private! !
 !RowanMethodService categoriesFor: #replicateFrom:!public!replication! !
 !RowanMethodService categoriesFor: #selectedPackageServices!accessing!private! !
 !RowanMethodService categoriesFor: #selectedPackageServices:browser:!accessing!private! !

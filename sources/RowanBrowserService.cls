@@ -73,6 +73,12 @@ name
 
 	^nil!
 
+postUpdate
+	projects ifNotNil: [projects do: [:service | service postUpdate]].
+	dictionaries ifNotNil: [dictionaries do: [:service | service postUpdate]].
+	projects := Array new.
+	dictionaries := nil!
+
 prepareForReplication
 	super prepareForReplication.
 	self basicPrepareForReplication!
@@ -116,12 +122,6 @@ registerWindow: handle rootObject: oop session: session
 		command: #saveRootObject:windowHandle:;
 		commandArgs: (Array with: oop with: handle).
 	JadePresenter issueCommand: (Array with: self) session: session!
-
-releaseReferencedServices
-	projects ifNotNil: [projects do: [:service | service releaseReferencedServices]].
-	dictionaries ifNotNil: [dictionaries do: [:service | service releaseReferencedServices]].
-	projects := Array new.
-	dictionaries := nil.!
 
 releaseWindow: handle session: session
 	self
@@ -180,13 +180,13 @@ testPackages: presenter
 !RowanBrowserService categoriesFor: #initialize!initialization!public! !
 !RowanBrowserService categoriesFor: #isBrowserService!public!testing! !
 !RowanBrowserService categoriesFor: #name!accessing!public! !
+!RowanBrowserService categoriesFor: #postUpdate!public! !
 !RowanBrowserService categoriesFor: #prepareForReplication!public!replication! !
 !RowanBrowserService categoriesFor: #printOn:!printing!public! !
 !RowanBrowserService categoriesFor: #projects!accessing!public! !
 !RowanBrowserService categoriesFor: #projectsUpdate:!public!updating! !
 !RowanBrowserService categoriesFor: #projectsUpdate:browser:!public!updating! !
 !RowanBrowserService categoriesFor: #registerWindow:rootObject:session:!commands!public!registering windows! !
-!RowanBrowserService categoriesFor: #releaseReferencedServices!public! !
 !RowanBrowserService categoriesFor: #releaseWindow:session:!commands!public!registering windows! !
 !RowanBrowserService categoriesFor: #reloadProjects:presenter:!commands!public! !
 !RowanBrowserService categoriesFor: #removedMethods!accessing!private! !

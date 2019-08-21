@@ -31,7 +31,9 @@ activeServices
 
 applyUpdateWhile: block
 	applyingUpdates := true.
-	block ensure: [applyingUpdates := false]!
+	block ensure: 
+			[applyingUpdates := false.
+			self postUpdate]!
 
 basicIssueCommand: services session: session
 	| stonString stonResultString updateResult loggedServices newLoggingService |
@@ -141,6 +143,10 @@ performUpdate: updateBlock with: selector
 				ifNotNil: [:type | type == selector ifTrue: [updateBlock value: update]].
 			]!
 
+postUpdate
+
+	!
+
 register: presenter selector: selector
 	"send the update to the presenter so that when the presenter gets
 	removed, it's events go with it."
@@ -226,7 +232,7 @@ update: services afterStonReplication: stonResults
 	self logReceivedServices: updatedServices.
 	updatedServices do: [:newService | services do: [:service | service replicateFrom: newService]].
 	self updates: updatedServices.
-	updatedServices do: [:service | service releaseReferencedServices].
+	updatedServices do: [:service | service postUpdate].
 	^updatedServices!
 
 updateReady
@@ -310,6 +316,7 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #logReceivedServices:!logging!public! !
 !BrowserUpdate categoriesFor: #logSentServices:!logging!public! !
 !BrowserUpdate categoriesFor: #performUpdate:with:!private!updating! !
+!BrowserUpdate categoriesFor: #postUpdate!public!updating! !
 !BrowserUpdate categoriesFor: #register:selector:!public!registeringPresenters! !
 !BrowserUpdate categoriesFor: #register:selector:browser:!public!registeringPresenters! !
 !BrowserUpdate categoriesFor: #registeredListPresenters!private!registeringPresenters! !

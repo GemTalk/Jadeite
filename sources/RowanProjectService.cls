@@ -158,6 +158,10 @@ packages
 
 	^packages!
 
+postUpdate
+	packages ifNotNil: [packages do: [:service | service postUpdate]].
+	packages := Array new!
+
 prepareForReplication
 
 	"I don't *think* we need packages when sending to the server"
@@ -201,10 +205,6 @@ projectsUpdate: presenter
 projectUrl
 	^projectUrl!
 
-releaseReferencedServices
-	packages ifNotNil: [packages do: [:service | service releaseReferencedServices]].
-	packages := Array new!
-
 remoteServiceName
 	^'Rowan projectServiceClass'!
 
@@ -245,13 +245,13 @@ sha: anObject
 !RowanProjectService categoriesFor: #isSkew:!accessing!private! !
 !RowanProjectService categoriesFor: #newTextView:using:!displaying!private! !
 !RowanProjectService categoriesFor: #packages!accessing!public! !
+!RowanProjectService categoriesFor: #postUpdate!Init / Release!public! !
 !RowanProjectService categoriesFor: #prepareForReplication!public!replication! !
 !RowanProjectService categoriesFor: #projectLogUsing:session:!presenter support!public! !
 !RowanProjectService categoriesFor: #projectPackagesUpdate:browser:!public!updating! !
 !RowanProjectService categoriesFor: #projectSelectionUpdate:!public!updating! !
 !RowanProjectService categoriesFor: #projectsUpdate:!public!updating! !
 !RowanProjectService categoriesFor: #projectUrl!accessing!public! !
-!RowanProjectService categoriesFor: #releaseReferencedServices!Init / Release!public! !
 !RowanProjectService categoriesFor: #remoteServiceName!must not strip!public! !
 !RowanProjectService categoriesFor: #removedProject:!public!updating! !
 !RowanProjectService categoriesFor: #replicateFrom:!public!replication! !

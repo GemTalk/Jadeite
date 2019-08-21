@@ -78,21 +78,21 @@ isDictionaryService
 
 	^true!
 
-prepareForReplication
-	super prepareForReplication.
-	classes := nil. 
-	hierarchyServices := nil.!
-
-releaseReferencedServices
+postUpdate
 	hierarchyServices
 		ifNotNil: 
 			[hierarchyServices keysAndValuesDo: 
 					[:key :value |
-					key isBehavior ifTrue: [key releaseReferencedServices].
-					value do: [:service | service releaseReferencedServices]]].
+					key isBehavior ifTrue: [key postUpdate].
+					value do: [:service | service postUpdate]]].
 	hierarchyServices := nil.
-	classes ifNotNil: [classes do: [:service | service releaseReferencedServices]].
+	classes ifNotNil: [classes do: [:service | service postUpdate]].
 	classes := Array new!
+
+prepareForReplication
+	super prepareForReplication.
+	classes := nil. 
+	hierarchyServices := nil.!
 
 removeDeletedClassesIn: presenter browser: browser
 	^super
@@ -113,8 +113,8 @@ removeDeletedClassesIn: presenter browser: browser
 !RowanDictionaryService categoriesFor: #globals:!accessing!public! !
 !RowanDictionaryService categoriesFor: #hash!comparing!public! !
 !RowanDictionaryService categoriesFor: #isDictionaryService!public!testing! !
+!RowanDictionaryService categoriesFor: #postUpdate!Init / Release!public! !
 !RowanDictionaryService categoriesFor: #prepareForReplication!public!replication! !
-!RowanDictionaryService categoriesFor: #releaseReferencedServices!Init / Release!public! !
 !RowanDictionaryService categoriesFor: #removeDeletedClassesIn:browser:!private! !
 
 !RowanDictionaryService class methodsFor!

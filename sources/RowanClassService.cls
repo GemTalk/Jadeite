@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanClassService
-	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand isInSymbolList dictionaryName wasRemoved'
+	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand isInSymbolList dictionaryName wasRemoved renamedName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -146,6 +146,9 @@ displayStringFor: displayThing browser: browser
 	isInSymbolList ifFalse: [displayThing forecolor: Color darkRed].
 	^self displayString!
 
+equalBeforeRename: aClassService
+	^self renamedName = aClassService name!
+
 excludedInstVars
 
 	^super excludedInstVars, #( 'hierarchyServices' )
@@ -271,16 +274,17 @@ packageName
 packageName: anObject
 	packageName := anObject!
 
+postUpdate
+	hierarchyServices := nil.
+	methods := Array new.
+	renamedName := nil!
+
 prepareForReplication
 	super prepareForReplication.
 	self basicPrepareForReplication!
 
 projectName
 	^projectName!
-
-releaseReferencedServices
-	hierarchyServices := nil.
-	methods := Array new!
 
 remoteServiceName
 	^'Rowan classServiceClass'!
@@ -291,8 +295,50 @@ removedClass: presenter
 	removal := presenter model asBag detect: [:classService | classService name = name] ifNone: [].
 	removal ifNotNil: [presenter model removeWithoutNotification: removal ifAbsent: []]!
 
+renamedClass: presenter
+	"because class service equality is name-based, 
+	we have to remove then add the class service
+	to ensure the list can find it"
+
+	presenter model asBag do: 
+			[:classService |
+			(self equalBeforeRename: classService)
+				ifTrue: 
+					[presenter model remove: classService.
+					classService replicateFrom: self.
+					classService renamedName: nil.
+					presenter model add: classService]].
+	presenter view invalidate!
+
+renamedClassInHierarchy: presenter
+	"because class service equality is name-based, 
+	we have to remove then add the class service
+	to ensure the tree can find it"
+
+	presenter model asBag do: 
+			[:classService |
+			(self equalBeforeRename: classService)
+				ifTrue: 
+					[| parent children |
+					parent := presenter model parentOf: classService.
+					children := presenter model getChildrenOf: classService.
+					children do: [:child | presenter model remove: child ifAbsent: []].
+					presenter model remove: classService ifAbsent: [].
+					classService replicateFrom: self.
+					classService renamedName: nil.
+					presenter model add: classService asChildOf: parent.
+					children do: [:child | presenter model add: child asChildOf: classService].
+					presenter view expand: parent.
+					presenter view ensureItemVisible: classService]]!
+
+renamedName
+	^renamedName!
+
+renamedName: anObject
+	renamedName := anObject!
+
 replicateFrom: newService
-	newService isClassService ifTrue: [^super replicateFrom: newService]!
+	newService isClassService ifTrue: [^super basicReplicateFrom: newService]!
 
 saveMethod: source category: category session: session
 	self
@@ -460,26 +506,27 @@ wasRemoved
 wasRemoved: anObject
 	wasRemoved := anObject! !
 !RowanClassService categoriesFor: #=!comparing!public! !
-!RowanClassService categoriesFor: #addHierarchyService:to:withParent:!private!updating! !
+!RowanClassService categoriesFor: #addHierarchyService:to:withParent:!private!updating support! !
 !RowanClassService categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanClassService categoriesFor: #behaviorIdentifier!accessing!public! !
 !RowanClassService categoriesFor: #categories!accessing!private! !
 !RowanClassService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #classMethodsUpdate:browser:!public!updating! !
-!RowanClassService categoriesFor: #classOrHierarchyPresenter:!private!updating! !
+!RowanClassService categoriesFor: #classOrHierarchyPresenter:!private!updating support! !
 !RowanClassService categoriesFor: #comment!accessing!public! !
 !RowanClassService categoriesFor: #comment:!accessing!public! !
-!RowanClassService categoriesFor: #computeVisibleMethods:browser:!private!updating! !
+!RowanClassService categoriesFor: #computeVisibleMethods:browser:!private!updating support! !
 !RowanClassService categoriesFor: #definedPackageName!accessing!private! !
 !RowanClassService categoriesFor: #definedPackageName:!accessing!private! !
 !RowanClassService categoriesFor: #dictionaryName!accessing!private! !
 !RowanClassService categoriesFor: #displayMethodsOn:browser:!public!updating! !
 !RowanClassService categoriesFor: #displayString!displaying!public! !
 !RowanClassService categoriesFor: #displayStringFor:browser:!displaying!public! !
+!RowanClassService categoriesFor: #equalBeforeRename:!comparing!public! !
 !RowanClassService categoriesFor: #excludedInstVars!public!ston! !
 !RowanClassService categoriesFor: #expand!accessing!private! !
 !RowanClassService categoriesFor: #expand:!accessing!private! !
-!RowanClassService categoriesFor: #filterMethods:!private!updating! !
+!RowanClassService categoriesFor: #filterMethods:!private!updating support! !
 !RowanClassService categoriesFor: #filters!accessing!public! !
 !RowanClassService categoriesFor: #filters:!accessing!public! !
 !RowanClassService categoriesFor: #filterUpdate:browser:!public!updating! !
@@ -499,21 +546,25 @@ wasRemoved: anObject
 !RowanClassService categoriesFor: #meta:!accessing!private! !
 !RowanClassService categoriesFor: #methods!accessing!private! !
 !RowanClassService categoriesFor: #methods:!accessing!private! !
-!RowanClassService categoriesFor: #moveNodeToBeChildOf:in:!private!updating! !
+!RowanClassService categoriesFor: #moveNodeToBeChildOf:in:!private!updating support! !
 !RowanClassService categoriesFor: #oop!accessing!private! !
 !RowanClassService categoriesFor: #oop:!accessing!private! !
 !RowanClassService categoriesFor: #packageName!accessing!private! !
 !RowanClassService categoriesFor: #packageName:!accessing!private! !
+!RowanClassService categoriesFor: #postUpdate!Init / Release!public! !
 !RowanClassService categoriesFor: #prepareForReplication!public!replication! !
 !RowanClassService categoriesFor: #projectName!accessing!private! !
-!RowanClassService categoriesFor: #releaseReferencedServices!Init / Release!public! !
 !RowanClassService categoriesFor: #remoteServiceName!must not strip!public! !
 !RowanClassService categoriesFor: #removedClass:!public!updating! !
+!RowanClassService categoriesFor: #renamedClass:!public!updating! !
+!RowanClassService categoriesFor: #renamedClassInHierarchy:!public!updating! !
+!RowanClassService categoriesFor: #renamedName!accessing!private! !
+!RowanClassService categoriesFor: #renamedName:!accessing!private! !
 !RowanClassService categoriesFor: #replicateFrom:!public!replication! !
 !RowanClassService categoriesFor: #saveMethod:category:session:!actions!public! !
 !RowanClassService categoriesFor: #selectedMethods!accessing!private! !
 !RowanClassService categoriesFor: #selectedPackageNames!private! !
-!RowanClassService categoriesFor: #selectedPackageServiceNames!private!updating! !
+!RowanClassService categoriesFor: #selectedPackageServiceNames!private!updating support! !
 !RowanClassService categoriesFor: #selectedPackageServices!accessing!private! !
 !RowanClassService categoriesFor: #selectedPackageServices:browser:!accessing!private! !
 !RowanClassService categoriesFor: #shouldColorAsExtension:!public!testing! !
@@ -523,12 +574,12 @@ wasRemoved: anObject
 !RowanClassService categoriesFor: #template:!accessing!private! !
 !RowanClassService categoriesFor: #toolTip!public! !
 !RowanClassService categoriesFor: #updateAfterCommand:!accessing!public! !
-!RowanClassService categoriesFor: #updateCategories:browser:!private!updating! !
+!RowanClassService categoriesFor: #updateCategories:browser:!private!updating support! !
 !RowanClassService categoriesFor: #updatedClass:browser:!public!updating! !
 !RowanClassService categoriesFor: #updatedClassDefinition:browser:!public!updating! !
 !RowanClassService categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !
-!RowanClassService categoriesFor: #updateListIn:from:!private!updating! !
-!RowanClassService categoriesFor: #updateVariables:!private!updating! !
+!RowanClassService categoriesFor: #updateListIn:from:!private!updating support! !
+!RowanClassService categoriesFor: #updateVariables:!private!updating support! !
 !RowanClassService categoriesFor: #variables!accessing!private! !
 !RowanClassService categoriesFor: #version!accessing!private! !
 !RowanClassService categoriesFor: #versions!accessing!private! !
