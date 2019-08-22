@@ -138,6 +138,10 @@ displayStringFor: displayThing
 			[displayThing forecolor: Color darkMagenta.
 			inSelectedPackage ifFalse: [displayThing font beUnderlined ]]!
 
+displayStringFor: displayThing browser: browser 
+	browser displayStringFor: self in:  displayThing
+	!
+
 equalBeforeRename: aMethodService
 	^renamedName = aMethodService className
 		and: [selector = aMethodService selector and: [meta = aMethodService meta]]!
@@ -466,6 +470,7 @@ user: anObject
 !RowanMethodService categoriesFor: #displayName!displaying!public! !
 !RowanMethodService categoriesFor: #displayOn:!displaying!public! !
 !RowanMethodService categoriesFor: #displayStringFor:!displaying!public! !
+!RowanMethodService categoriesFor: #displayStringFor:browser:!displaying!public! !
 !RowanMethodService categoriesFor: #equalBeforeRename:!comparing!public! !
 !RowanMethodService categoriesFor: #failedCompile!accessing!public! !
 !RowanMethodService categoriesFor: #firstReference!accessing!private! !

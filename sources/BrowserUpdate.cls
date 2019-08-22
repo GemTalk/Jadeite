@@ -266,7 +266,6 @@ updateServices: services session: session
 updatesPerform: selector presenter: presenter
 	"the update may know which client updates 
 	it wants us to care about. Respect that."
-
 	[updates do: 
 			[:update |
 			(update updateType isNil or: [update updateType == selector])
@@ -278,8 +277,6 @@ updatesPerform: selector presenter: presenter browser: browser
 	"the update may know which client updates 
 	it wants us to care about if updateType is set. 
 	Respect the server's wishes."
-
-	
 	[updates do: 
 			[:update |
 			(update updateType isNil or: [update updateType == selector])

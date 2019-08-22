@@ -177,7 +177,7 @@ filters: anObject
 
 filterUpdate: presenter browser: browser
 	browser selectedClass ifNil: [^self].
-	browser selectedClass name asString = name asString ifFalse: [^self].
+	browser selectedClass name asString = name asString ifFalse: [^self]. 
 	presenter model isEmpty ifTrue: [presenter list: SortedCollection new].
 	browser isCategoryTabSelected
 		ifTrue: 
@@ -305,7 +305,7 @@ renamedClass: presenter
 			[:classService |
 			(self equalBeforeRename: classService)
 				ifTrue: 
-					[| wasSelected |
+					[| wasSelected | 	
 					wasSelected := (presenter selectionIfNone: []) = classService.
 					presenter model remove: classService.
 					classService replicateFrom: self.
@@ -323,7 +323,7 @@ renamedClassInHierarchy: presenter
 			[:classService |
 			(self equalBeforeRename: classService)
 				ifTrue: 
-					[| parent children wasSelected |
+					[| parent children wasSelected | 	
 					wasSelected := presenter selection = classService.
 					parent := presenter model parentOf: classService.
 					children := presenter model getChildrenOf: classService.
@@ -344,7 +344,8 @@ renamedName: anObject
 	renamedName := anObject!
 
 replicateFrom: newService
-	newService isClassService ifTrue: [^super basicReplicateFrom: newService]!
+	newService isClassService
+		ifTrue: [self = newService ifTrue: [^super basicReplicateFrom: newService]]!
 
 saveMethod: source category: category session: session
 	self
@@ -377,10 +378,11 @@ shouldColorAsExtension: browser
 	^browser isNoneProjectSelected
 		ifTrue: [false]
 		ifFalse: 
-			[selectedPackageServices isEmpty
+			[browser selectedPackageServices isEmpty
 				ifTrue: [false]
 				ifFalse: 
-					[((selectedPackageServices collect: [:service | service name]) includes: definedPackageName) not]]!
+					[((browser selectedPackageServices collect: [:service | service name]) includes: definedPackageName)
+						not]]!
 
 shouldReplicateInstVarAtIndex: index newService: newService
 	(self class indexOfInstVar: 'meta') = index ifTrue: [^false].

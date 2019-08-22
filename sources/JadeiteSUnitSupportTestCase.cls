@@ -817,7 +817,7 @@ test_statusBar
 	self assert: self sunitPresenter testCasesSize
 		equals: 'Test Cases:' , self sunitPresenter methodListPresenter model size printString.
 	self assert: self sunitPresenter testClassesSize
-		equals: 'Test Classes:' , ((session executeString: 'RowanServicesTest allSubclasses size') + 1) printString  "brittle but we can update it as test classes are added" !
+		equals: 'Test Classes:' , ((session executeString: 'RowanServicesTest allSubclasses size') + 1 + 1) printString  "RwRowanProjectIssuesTest extension now shows up. Hence the other +1" !
 
 test_sunitBrowserHasRowanPackages
 	self assert: (self sunitPresenter isKindOf: JadeiteSUnitPresenter).	"a different presenter is used in the projects browser"
