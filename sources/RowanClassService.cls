@@ -304,10 +304,13 @@ renamedClass: presenter
 			[:classService |
 			(self equalBeforeRename: classService)
 				ifTrue: 
-					[presenter model remove: classService.
+					[| wasSelected |
+					wasSelected := presenter selection = classService.
+					presenter model remove: classService.
 					classService replicateFrom: self.
 					classService renamedName: nil.
-					presenter model add: classService]].
+					presenter model add: classService.
+					wasSelected ifTrue: [presenter selection: classService]]].
 	presenter view invalidate!
 
 renamedClassInHierarchy: presenter
@@ -319,7 +322,8 @@ renamedClassInHierarchy: presenter
 			[:classService |
 			(self equalBeforeRename: classService)
 				ifTrue: 
-					[| parent children |
+					[| parent children wasSelected |
+					wasSelected := presenter selection = classService.
 					parent := presenter model parentOf: classService.
 					children := presenter model getChildrenOf: classService.
 					children do: [:child | presenter model remove: child ifAbsent: []].
@@ -329,7 +333,8 @@ renamedClassInHierarchy: presenter
 					presenter model add: classService asChildOf: parent.
 					children do: [:child | presenter model add: child asChildOf: classService].
 					presenter view expand: parent.
-					presenter view ensureItemVisible: classService]]!
+					presenter view ensureItemVisible: classService.
+					wasSelected ifTrue: [presenter selection: classService]]]!
 
 renamedName
 	^renamedName!

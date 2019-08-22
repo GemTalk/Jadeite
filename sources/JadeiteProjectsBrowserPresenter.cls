@@ -1928,7 +1928,7 @@ setMethodFilterFor: presenter
 	self isCategoryTabSelected
 		ifTrue: [filters := categoryListPresenter selections]
 		ifFalse: [filters := variableListPresenter selections].
-	presenter model do: [:service | service filters: filters]!
+	presenter model asBag do: [:service | service filters: filters]!
 
 setterMethodSourceFor: variable
 	| sourceStream |

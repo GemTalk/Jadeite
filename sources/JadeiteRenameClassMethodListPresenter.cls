@@ -97,7 +97,7 @@ resetAndFindLastIn: sourceView
 selectionChanged
 	| sourceView selectionRanges offset selection |
 	findString ifNil: [^self].
-	selection := methodListPresenter methodListPresenter selection.
+	selection := methodListPresenter methodListPresenter selectionIfNone: [^self].
 	findString := selection failedCompile ifTrue: [selection comparisonSource] ifFalse: [newClassName].
 	sourceView := self methodSourcePresenter documentPresenter view.
 	selectionRanges := OrderedCollection new.
