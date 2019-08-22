@@ -297,15 +297,16 @@ removedClass: presenter
 
 renamedClass: presenter
 	"because class service equality is name-based, 
-	we have to remove then add the class service
-	to ensure the list can find it"
+	we can't just do a simple replication. We have to
+	remove then add the class service to ensure the
+	list doesn't get in trouble"
 
 	presenter model asBag do: 
 			[:classService |
 			(self equalBeforeRename: classService)
 				ifTrue: 
 					[| wasSelected |
-					wasSelected := presenter selection = classService.
+					wasSelected := (presenter selectionIfNone: []) = classService.
 					presenter model remove: classService.
 					classService replicateFrom: self.
 					classService renamedName: nil.
@@ -509,7 +510,11 @@ wasRemoved
 	^wasRemoved == true!
 
 wasRemoved: anObject
-	wasRemoved := anObject! !
+	wasRemoved := anObject!
+
+wasRenamed
+
+	^renamedName notNil! !
 !RowanClassService categoriesFor: #=!comparing!public! !
 !RowanClassService categoriesFor: #addHierarchyService:to:withParent:!private!updating support! !
 !RowanClassService categoriesFor: #basicPrepareForReplication!public!replication! !
@@ -591,6 +596,7 @@ wasRemoved: anObject
 !RowanClassService categoriesFor: #visibleTests!accessing!private! !
 !RowanClassService categoriesFor: #wasRemoved!accessing!private! !
 !RowanClassService categoriesFor: #wasRemoved:!accessing!private! !
+!RowanClassService categoriesFor: #wasRenamed!public!testing! !
 
 !RowanClassService class methodsFor!
 

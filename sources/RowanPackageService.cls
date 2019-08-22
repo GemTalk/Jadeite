@@ -69,6 +69,7 @@ condenseExtensions: presenter
 		addAll: classes.
 	defined := newList select: [:svc | svc isDefined] thenCollect: [:svc | svc name].
 	newList := newList reject: [:svc | svc isExtension and: [defined includes: svc name]].
+	newList := newList reject:[:svc | svc wasRenamed]. 
 	^newList!
 
 defaultTemplate

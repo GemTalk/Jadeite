@@ -3789,6 +3789,26 @@ test_renameClassUpdatedInSecondBrowser
 
 	!
 
+test_renameClassUpdatedInSecondBrowserHierarchy
+	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
+	self testsIssue: #issue465 withTitle: '(3.067) error after rename class in hierarchy view'.
+	self selectRowanSample1Class.
+	self openSecondBrowser.
+	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
+	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
+	self selectHierarchyTabIn: secondPresenter.
+	self assert: self classListPresenter selection name equals: 'RowanSample1'.
+	self assert: secondPresenter classListPresenter selection name equals: 'RowanSample1'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestMessageBox plannedResult: #ok.
+	self projectsPresenter basicRenameClass: self classListPresenter selection to: 'TestClassWasRenamed']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	JadeiteRenameClassMethodListBrowser allInstances do: [:browser | browser view close].	"referenced methods browser is opened"
+	self assert: self classListPresenter selection name equals: 'TestClassWasRenamed'.
+	self assert: secondPresenter classListPresenter selection name equals: 'TestClassWasRenamed'!
+
 test_renameDisabledWithMultipleCategoriesSelected
 	| commandQuery |
 	self testsIssue: #issue380
@@ -5388,6 +5408,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameClassSUnitBrowserUpdates!public!test rename class! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameClassSwitchToHierarchyOk!public!test rename class! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameClassUpdatedInSecondBrowser!public!test rename class! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_renameClassUpdatedInSecondBrowserHierarchy!public!test rename class! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameDisabledWithMultipleCategoriesSelected!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameInClassListWithMethodListOpen!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameInHierarchyWithMethodListOpen!public!test class hierarchy!tests! !

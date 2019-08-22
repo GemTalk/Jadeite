@@ -32,7 +32,7 @@ classesUpdate: presenter browser: browser
 	self removeDeletedClassesIn: presenter browser: browser.
 	presenter selectionOrNil
 		ifNil: 
-			[updatedClasses := classes asSet.
+			[updatedClasses := classes asSet reject: [:classService | classService wasRenamed].
 			updatedClasses addAll: presenter list.
 			presenter list: (ListModel withAll: updatedClasses)]
 		ifNotNil: [self updateList: presenter whilePreservingSelections: classes].

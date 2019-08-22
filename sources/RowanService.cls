@@ -304,12 +304,16 @@ removed: presenter
 
 removedClass: aPresenter!
 
-removeDeletedClassesIn: presenter browser: browser classes: classes
-	| updatedClasses removedClasses |
-	updatedClasses := classes select: [:classService | classService packageName = name]
+removeDeletedClassesIn: presenter browser: browser classes: theClasses
+	| updatedClasses removedClasses renamedClassNames |
+	updatedClasses := theClasses select: [:classService | classService packageName = name]
 				thenCollect: [:classService | classService name asString].
-	removedClasses := presenter list
-				select: [:classService | classService packageName = name and: [(updatedClasses includes: classService name) not]].
+	removedClasses := presenter list select: 
+					[:classService |
+					classService packageName = name
+						and: [(updatedClasses includes: classService name) not ]].
+	renamedClassNames := theClasses collect:[:classService | classService renamedName].
+	removedClasses := removedClasses reject: [:classService | renamedClassNames includes: classService name]. 
 	removedClasses
 		do: [:removedClassService | (presenter selections includes: removedClassService) ifTrue: [presenter view basicResetSelection]].
 	removedClasses isEmpty ifTrue: [^self].
@@ -390,8 +394,10 @@ updateList: presenter whilePreservingSelections: updates
 			[:service |
 			replicate := updates detect: [:update | update = service] ifNone: [nil].
 			replicate notNil ifTrue: [service replicateFrom: replicate]].
-	updates
-		do: [:update | (presenter list asBag includes: update) ifFalse: [presenter model add: update]]!
+	updates do: 
+			[:update |
+			((presenter list asBag includes: update) and: [update wasRenamed not])
+				ifFalse: [presenter model add: update]]!
 
 updateMethodFilterSelectionFor: presenter!
 
@@ -412,7 +418,12 @@ updateType: anObject
 
 variableDataUpdate: aPresenter!
 
-variableListUpdate: aPresenter! !
+variableListUpdate: aPresenter!
+
+wasRenamed
+	"not all services can be renamed"
+
+	^false! !
 !RowanService categoriesFor: #aborted:browser:!public!updating! !
 !RowanService categoriesFor: #addHierarchyService:to:withParent:hierarchyServices:!private! !
 !RowanService categoriesFor: #autoCommitUpdate:!public!updating! !
@@ -511,6 +522,7 @@ variableListUpdate: aPresenter! !
 !RowanService categoriesFor: #updateType:!accessing!public! !
 !RowanService categoriesFor: #variableDataUpdate:!Debugger!public!updating! !
 !RowanService categoriesFor: #variableListUpdate:!Debugger!public!updating! !
+!RowanService categoriesFor: #wasRenamed!public!testing! !
 
 !RowanService class methodsFor!
 
