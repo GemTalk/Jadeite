@@ -1703,7 +1703,7 @@ refresh
 registerPresentersForUpdates
 	BrowserUpdate current register: packageListPresenter selector: #testPackages:.
 	BrowserUpdate current register: classListPresenter 	selector: #testClasses:.
-	BrowserUpdate current register: classListPresenter 	selector: #renamedClass:.
+	BrowserUpdate current register: classListPresenter 	selector: #renamedClass:browser: browser: self.
 	BrowserUpdate current register: methodListPresenter selector: #sunitMethodsUpdate:browser: browser: self.
 	BrowserUpdate current register: methodListPresenter selector: #testResultUpdate:browser: browser: self.
 	BrowserUpdate current register: packageListPresenter selector: #aborted:browser: browser: self!

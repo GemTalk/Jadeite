@@ -295,7 +295,7 @@ removedClass: presenter
 	removal := presenter model asBag detect: [:classService | classService name = name] ifNone: [].
 	removal ifNotNil: [presenter model removeWithoutNotification: removal ifAbsent: []]!
 
-renamedClass: presenter
+renamedClass: presenter browser: browser
 	"because class service equality is name-based, 
 	we can't just do a simple replication. We have to
 	remove then add the class service to ensure the
@@ -305,16 +305,20 @@ renamedClass: presenter
 			[:classService |
 			(self equalBeforeRename: classService)
 				ifTrue: 
-					[| wasSelected | 	
+					[| wasSelected |
 					wasSelected := (presenter selectionIfNone: []) = classService.
 					presenter model remove: classService.
 					classService basicReplicateFrom: self.
 					classService renamedName: nil.
 					presenter model add: classService.
-					wasSelected ifTrue: [presenter selection: classService]]].
+					wasSelected
+						ifTrue: 
+							[presenter selection: classService.
+							browser classDefinitionPresenter value: template.
+							browser displayNoMods: browser classDefinitionPresenter]]].
 	presenter view invalidate!
 
-renamedClassInHierarchy: presenter
+renamedClassInHierarchy: presenter browser: anObject
 	"because class service equality is name-based, 
 	we have to remove then add the class service
 	to ensure the tree can find it"
@@ -323,7 +327,7 @@ renamedClassInHierarchy: presenter
 			[:classService |
 			(self equalBeforeRename: classService)
 				ifTrue: 
-					[| parent children wasSelected | 	
+					[| parent children wasSelected |
 					wasSelected := presenter selection = classService.
 					parent := presenter model parentOf: classService.
 					children := presenter model getChildrenOf: classService.
@@ -435,7 +439,7 @@ updatedClass: presenter browser: browser
 	presenter view invalidate!
 
 updatedClassDefinition: classDefinitionPresenter browser: browser
-	browser selectedClass = self
+	(browser selectedClass = self or: [self equalBeforeRename: browser selectedClass])
 		ifTrue: 
 			[classDefinitionPresenter view isModified
 				ifFalse: 
@@ -568,8 +572,8 @@ wasRenamed
 !RowanClassService categoriesFor: #projectName!accessing!private! !
 !RowanClassService categoriesFor: #remoteServiceName!must not strip!public! !
 !RowanClassService categoriesFor: #removedClass:!public!updating! !
-!RowanClassService categoriesFor: #renamedClass:!public!updating! !
-!RowanClassService categoriesFor: #renamedClassInHierarchy:!public!updating! !
+!RowanClassService categoriesFor: #renamedClass:browser:!public!updating! !
+!RowanClassService categoriesFor: #renamedClassInHierarchy:browser:!public!updating! !
 !RowanClassService categoriesFor: #renamedName!accessing!private! !
 !RowanClassService categoriesFor: #renamedName:!accessing!private! !
 !RowanClassService categoriesFor: #replicateFrom:!public!replication! !

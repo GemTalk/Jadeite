@@ -416,10 +416,19 @@ refreshFromServerAfterAbort: browserService
 
 registerPresentersForUpdates
 	super registerPresentersForUpdates.
-	BrowserUpdate current register: dictionaryPresenter		selector: #dictionaryListUpdate:.
-	BrowserUpdate current register: dictionaryPresenter		selector: #aborted:browser: browser: self.
-	BrowserUpdate current register: classListPresenter 		selector: #renamedClass:.
-	BrowserUpdate current register: classHierarchyPresenter 	selector: #renamedClassInHierarchy:!
+	BrowserUpdate current register: dictionaryPresenter selector: #dictionaryListUpdate:.
+	BrowserUpdate current
+		register: dictionaryPresenter
+		selector: #aborted:browser:
+		browser: self.
+	BrowserUpdate current
+		register: classListPresenter
+		selector: #renamedClass:browser:
+		browser: self.
+	BrowserUpdate current
+		register: classHierarchyPresenter
+		selector: #renamedClassInHierarchy:browser:
+		browser: self!
 
 removeAppropriateTab
 	self isNoneProjectSelected ifTrue: [self removeProjectTab] ifFalse: [self removeGlobalsTab]!

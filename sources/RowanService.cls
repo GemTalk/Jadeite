@@ -323,9 +323,11 @@ removeDeletedClassesIn: presenter browser: browser classes: theClasses
 
 removedProject: presenter!
 
-renamedClass: aClassService!
+renamedClass: aClassService browser: anObject
+	!
 
-renamedClassInHierarchy: presenter!
+renamedClassInHierarchy: presenter browser: anObject
+	!
 
 replicateFrom: newService
 	(newService class = self class and: [newService name = self name])
@@ -493,8 +495,8 @@ wasRenamed
 !RowanService categoriesFor: #removedClass:!public!updating! !
 !RowanService categoriesFor: #removeDeletedClassesIn:browser:classes:!private!updating! !
 !RowanService categoriesFor: #removedProject:!public!updating! !
-!RowanService categoriesFor: #renamedClass:!public!updating! !
-!RowanService categoriesFor: #renamedClassInHierarchy:!public!updating! !
+!RowanService categoriesFor: #renamedClass:browser:!public!updating! !
+!RowanService categoriesFor: #renamedClassInHierarchy:browser:!public!updating! !
 !RowanService categoriesFor: #replicateFrom:!public!replication! !
 !RowanService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
 !RowanService categoriesFor: #sortAspect!accessing!public! !

@@ -1377,6 +1377,25 @@ test_classRenameNoReferencesHierarchy
 				[TestMessageBox disableJadeiteTestMessageBox.
 				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
+test_classRenameResetsClassDefinition
+	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #('inst1')
+		package: 'RowanSample1-Tests'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[self projectsPresenter selectClassNamed: 'TestClass'.
+	TestMessageBox plannedResult: #ok.	"expect dialog box saying class was renamed"
+	self projectsPresenter basicRenameClass: self projectsPresenter selectedClass to: 'RenamedClass'.
+	self assert: ('*Object rwSubclass: ''RenamedClass''*'
+				match: self projectsPresenter classDefinitionPresenter value)]
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				self projectsPresenter basicRemoveClass: self classListPresenter selection]!
+
 test_classRenameWithReferences
 	| list |
 	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
@@ -5292,6 +5311,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListSelectionShouldNotUpdateOtherHierarchy!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameNoReferences!public!test rename class!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameNoReferencesHierarchy!public!test rename class!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameResetsClassDefinition!public!test rename class!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameWithReferences!public!test rename class!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameWithReferencesFailingCompile!public!test rename class!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameWithReferencesHierarchy!public!test rename class!tests! !
