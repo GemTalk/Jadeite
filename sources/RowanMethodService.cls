@@ -344,9 +344,12 @@ setPassed
 	testResult := 'passed'!
 
 shouldReplicateInstVarAtIndex: index newService: newService
+	"first reference is only valid on the first return of a method service for a particular browser. 
+	It may be better to (someday) move firstReference to the browser state" 
 	| isTestResultInstVar |
+	index = (self class indexOfInstVar: 'firstReference') ifTrue: [firstReference ifNotNil: [^false]].  
 	isTestResultInstVar := (self class indexOfInstVar: 'testResult') = index.
-	^isTestResultInstVar not or: [ isTestResultInstVar and: [(newService instVarAt: index) notNil]]!
+	^isTestResultInstVar not or: [isTestResultInstVar and: [(newService instVarAt: index) notNil]]!
 
 sortAspect
 

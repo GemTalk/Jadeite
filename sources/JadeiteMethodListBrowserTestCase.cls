@@ -79,9 +79,18 @@ selectListAt: integer
 	event value ifFalse: [^self].
 	methodListPresenter selection: (methodListPresenter list at: integer)!
 
+selectMethodNamed: selector
+	^self selectMethodsNamed: (Array with: selector) in: methodListBrowser!
+
+selectMethodNamed: selector in: browser
+	^self selectMethodsNamed: (Array with: selector) in: browser!
+
 selectMethodsNamed: selectors
+	^self selectMethodsNamed: selectors in: methodListBrowser!
+
+selectMethodsNamed: selectors in: browser
 	| methodServices methodListPresenter |
-	methodListPresenter := self methodListMethodListPresenter.
+	methodListPresenter := browser primaryPresenter methodListPresenter methodListPresenter.
 	methodListPresenter resetSelection.
 	methodServices := selectors
 				collect: [:selector | methodListPresenter list detect: [:svc | svc selector = selector]].
@@ -582,6 +591,29 @@ test_doubleClickActionInstanceMethod
 	self assert: self methodListPresenter selection selector equals: #foo]
 			ensure: [self destroy: projectsBrowser]!
 
+test_firstReferenceRetained
+	| fooBrowser barBrowser |
+	self testsIssue: #issue508
+		withTitle: 'senders lists get highlighting confused after opening a second senders list'.
+	fooBrowser := JadePresenter browseSendersOf: 'foo' session: session.
+	
+	[self selectMethodNamed: #testNewClassVersionB in: fooBrowser.
+	self assert: fooBrowser primaryPresenter methodSourcePresenter documentPresenter selection
+		equals: 'foo'.
+	barBrowser := JadePresenter browseSendersOf: 'bar' session: session.
+	self selectMethodNamed: #testNewClassVersionB in: barBrowser.
+	self assert: barBrowser primaryPresenter methodSourcePresenter documentPresenter selection
+		equals: 'bar'.
+	self selectMethodNamed: #testIssue91 in: fooBrowser.
+	self assert: fooBrowser primaryPresenter methodSourcePresenter documentPresenter selection
+		equals: 'foo'.
+	self selectMethodNamed: #testIssue72_addMethod in: barBrowser.
+	self assert: barBrowser primaryPresenter methodSourcePresenter documentPresenter selection
+		equals: 'bar']
+			ensure: 
+				[fooBrowser view close.
+				barBrowser view close]!
+
 test_methodBrowserSaveMethod
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
 	
@@ -786,7 +818,10 @@ testBrowseLiteral: literal
 !JadeiteMethodListBrowserTestCase categoriesFor: #sampleMethodSource!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #saveMethod:in:category:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectListAt:!public!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodNamed:!public!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodNamed:in:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsNamed:!public!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsNamed:in:!public!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #setupMultiKeywordSenderAndSendee!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #setupTestMethodInProjectBrowser!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #sourcePresenter!private!support! !
@@ -813,6 +848,7 @@ testBrowseLiteral: literal
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doSearch!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionClassMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionInstanceMethod!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_firstReferenceRetained!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_methodBrowserSaveMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatSource!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethod!public!tests! !
