@@ -551,6 +551,20 @@ test_openTwoSUnitBrowsersLosingPackageSelection
 	self assert: self sunitPresenter methodListPresenter selections first selector equals: #test1]
 			ensure: [self destroy: secondSunitBrowser]!
 
+test_packageRemovedOnClassRemoval
+	"If a class is removed and it's the last class
+	in a test package, make sure the test package
+	disappears from the sunit browser"
+
+	self testsIssue: #issue378
+		withTitle: '(3.0.53) test class not defined in package shows up in package of SUnit browser'.
+	self assertPackageInList: 'RowanSample1-Tests'.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
+	self assert: self projectsPresenter classListPresenter list isEmpty.
+	self denyPackageInList: 'RowanSample1-Tests'!
+
 test_projectBrowserRunAllTests
 	"https://github.com/GemTalk/Jadeite/issues/218#issuecomment-445919980"
 	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
@@ -1081,6 +1095,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectNoDuplicates!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_openSunitBrowser!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_openTwoSUnitBrowsersLosingPackageSelection!public!test updates from other browsers! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_packageRemovedOnClassRemoval!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_projectBrowserRunAllTests!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_projectBrowserRunSelectedTests!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_projectBrowserTestRunningMenuItemEnablement!public!tests! !
