@@ -3736,7 +3736,6 @@ test_renameClassSUnitBrowserUpdates
 	self assert: sunitBrowser primaryPresenter classListPresenter list first name
 		equals: 'RowanSample1Test'.
 	TestMessageBox enableJadeiteTestMessageBox.
-	
 	[TestMessageBox plannedResult: #ok.
 	self projectsPresenter basicRenameClass: self classListPresenter selection to: 'TestClassWasRenamed']
 			ensure: [TestMessageBox disableJadeiteTestMessageBox].

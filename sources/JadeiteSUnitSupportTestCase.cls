@@ -323,6 +323,25 @@ test_dontClearResults
 	self assert: self sunitPresenter methodListPresenter selections first selector equals: #test1.
 	self assert: self sunitPresenter methodListPresenter selections first testResult equals: 'passed'!
 
+test_extensionOnlyTestClassVisible
+	self testsIssue: #issue378
+		withTitle: '(3.0.53) test class not defined in package shows up in package of SUnit browser'.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self projectsPresenter methodListPresenter
+		selections: self projectsPresenter methodListPresenter list.
+	self projectsPresenter removeMethods: self projectsPresenter classListPresenter selections.
+	self assert: self methodListPresenter list isEmpty.
+	self
+		saveMethod: 'test_extension'
+		in: 'RowanSample1Test'
+		category: '*RowanSample1-Extensions'.
+	self selectServiceNamed: 'RowanSample1-Extensions'
+		in: sunitBrowser primaryPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: sunitBrowser primaryPresenter classListPresenter.
+	self assert: self methodListPresenter list size equals: 1.
+	self assert: self methodListPresenter list first selector equals: #test_extension!
+
 test_extensionTestShowsUpInSUnitBrowser
 	| source |
 	self testsIssue: #issue378
@@ -354,6 +373,27 @@ test_extensionTestShowsUpInSUnitBrowser
 				detect: [:methodService | methodService selector = #test_inExtensionMethod]
 				ifNone: [])]
 			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
+
+test_extensionTestsShowUpInExtensionAndDefinedPackages
+	self testsIssue: #issue378
+		withTitle: '(3.0.53) test class not defined in package shows up in package of SUnit browser'.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'test_extension'
+		in: 'RowanSample1Test'
+		category: '*RowanSample1-Extensions'.
+	self selectServiceNamed: 'RowanSample1-Extensions'
+		in: sunitBrowser primaryPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: sunitBrowser primaryPresenter classListPresenter.
+	self assert: self methodListPresenter list size equals: 5.
+	self assert: self methodListPresenter list first selector equals: #test_extension.
+	self assert: self methodListPresenter list second selector equals: #test1.
+	self selectServiceNamed: 'RowanSample1-Tests' in: sunitBrowser primaryPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: sunitBrowser primaryPresenter classListPresenter.
+	self assert: self methodListPresenter list size equals: 5.
+	self assert: self methodListPresenter list first selector equals: #test_extension.
+	self assert: self methodListPresenter list second selector equals: #test1!
 
 test_inheritedTests
 	| classTestSelectors testClassTestSelectors |
@@ -1030,7 +1070,9 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_commitWithSelections!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_dontChangeTabs!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_dontClearResults!public!test updates from other browsers! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_extensionOnlyTestClassVisible!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_extensionTestShowsUpInSUnitBrowser!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_extensionTestsShowUpInExtensionAndDefinedPackages!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_inheritedTests!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_menuEnablementDebugInClassPresenter!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_menuEnablementRunAndMesureTimeInClassPresenter!public!tests! !

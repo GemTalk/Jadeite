@@ -308,7 +308,7 @@ renamedClass: presenter
 					[| wasSelected | 	
 					wasSelected := (presenter selectionIfNone: []) = classService.
 					presenter model remove: classService.
-					classService replicateFrom: self.
+					classService basicReplicateFrom: self.
 					classService renamedName: nil.
 					presenter model add: classService.
 					wasSelected ifTrue: [presenter selection: classService]]].
@@ -329,7 +329,7 @@ renamedClassInHierarchy: presenter
 					children := presenter model getChildrenOf: classService.
 					children do: [:child | presenter model remove: child ifAbsent: []].
 					presenter model remove: classService ifAbsent: [].
-					classService replicateFrom: self.
+					classService basicReplicateFrom: self.
 					classService renamedName: nil.
 					presenter model add: classService asChildOf: parent.
 					children do: [:child | presenter model add: child asChildOf: classService].
