@@ -677,22 +677,6 @@ editSaveMethod
 	self updateSUnitTab.
 	self redrawAllViews!
 
-editSaveMethod: classService
-	| compileResult |
-	compileResult := self
-				editSaveMethod: classService
-				in: methodSourcePresenter
-				category: self targetCategory.
-	compileResult == false
-		ifTrue: [self updateService: classService	"If we got a compile error our methods need a refresh"].
-	classService selectedMethods
-		ifNotNil: 
-			[:methodServices |
-			methodServices notEmpty
-				ifTrue: 
-					["there will be no method selected on a compiler error"
-					self selectMethodsFrom: classService]]!
-
 expandHierarchyAt: classService
 	Cursor wait showWhile: 
 			[classService command: #oneLevelClassHierarchy.
@@ -2386,7 +2370,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #editSaveClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editSaveClassComment!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editSaveMethod!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #editSaveMethod:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #expandHierarchyAt:!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #fileOutCategories!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #fileOutCategoriesOnPath:!menu handlers support!private! !

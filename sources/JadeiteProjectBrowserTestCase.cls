@@ -1871,6 +1871,20 @@ test_deselectAllVariables
 	self assert: self methodListPresenter list size
 		equals: self projectsPresenter selectedClass methods size!
 
+test_displayCompileWarningsNicely
+	self testsIssue: #issue509 withTitle: 'Warning for unused temps should be grouped better (3.0.75)'.
+	self selectRowanSample1Test.
+	self projectsPresenter selectMethodSourceTab.
+	self methodSourcePresenter
+		value: 'failInConcreteClass
+	| abc def aa ddd |
+	self assert: self class name equals: ''SubTest'''.
+	self projectsPresenter editSaveMethod.
+	
+	[self assert: self projectsPresenter statusBarText value
+		equals: 'WARNING: unused method temp ''abc''; unused method temp ''def''; unused method temp ''aa''; unused method temp ''ddd''; ']
+			ensure: [self projectsPresenter removeMethods: (Array with: self projectsPresenter selectedClass)]!
+
 test_dontChangeTabOnMethodSave
 	| source firstTab secondTab |
 	self testsIssue: #issue412 withTitle: '(3.0.56) incorrect project browser update on method accept '.
@@ -5388,6 +5402,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_confirmOverrideExistingAccessorMethods!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_displayCompileWarningsNicely!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontChangeTabOnMethodSave!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontOverrideExistingAccessorMethods!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontUpdateWithDifferentMeta!public!test two browsers!tests! !

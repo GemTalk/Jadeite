@@ -1926,8 +1926,19 @@ clearAllBreaks
 	^self class clearAllBreaksIn: self gciSession!
 
 compilationWarningFrom: methodServices
-	methodServices do:[:methodService | 
-		methodService compilationWarnings ifNotNil:[:warning | ^warning]].
+	methodServices do: 
+			[:methodService |
+			methodService compilationWarnings
+				ifNotNil: 
+					[:warningStream |
+					| rs output |
+					rs := ReadStream on: warningStream.
+					output := 'WARNING: '.
+					[rs atEnd] whileFalse: 
+							[output := output , (rs upToAll: 'WARNING: ').
+							output := output , (rs upTo: Character lf).
+							output := output , '; '].
+					^output]].
 	^nil!
 
 currentMethodSourceFrom: sourceString

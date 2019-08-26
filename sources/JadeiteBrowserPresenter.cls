@@ -253,6 +253,23 @@ displayStringFor: methodService in: displayThing
 			[displayThing forecolor: Color darkMagenta.
 			methodService inSelectedPackage ifFalse: [displayThing font beUnderlined]]!
 
+editSaveMethod: classService
+	| compileResult |
+	compileResult := self
+				editSaveMethod: classService
+				in: methodSourcePresenter
+				category: self targetCategory.
+	compileResult == false
+		ifTrue: [self updateService: classService	"If we got a compile error our methods need a refresh"].
+	self statusBarText value ifNotNil:[^self].  "don't reselect methods when status bar is full so as not to upset the compile information"
+	classService selectedMethods
+		ifNotNil: 
+			[:methodServices |
+			methodServices notEmpty
+				ifTrue: 
+					["there will be no method selected on a compiler error"
+					self selectMethodsFrom: classService]]!
+
 globalsMenu
 	^Menu fromStrings: self globalsMenuStrings!
 
@@ -732,6 +749,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #dictionaryMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryPresenter!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #displayStringFor:in:!double dispatch!public! !
+!JadeiteBrowserPresenter categoriesFor: #editSaveMethod:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #globalsMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #globalsMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #globalsTab!accessing!private! !
