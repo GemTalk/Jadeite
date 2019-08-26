@@ -181,7 +181,12 @@ implementorsOf: aString
 initialize
 	super initialize. 
 	inSelectedPackage := true.  
-	failedCompile := false. !
+	failedCompile := false. 
+	meta := false. 
+	stepPoints := Array new. 
+	breakPoints := Array new. 
+	hasSupers := false. 
+	hasSubs := false. !
 
 inSelectedPackage
 
@@ -548,10 +553,20 @@ defaultIconName
 
 	^File composeStem: 'Message' extension: 'ico'.!
 
+fakeMethodFor: className selector: selector source: source
+	| inst |
+	inst := self new.
+	inst
+		className: className;
+		selector: selector;
+		source: source.
+	^inst!
+
 icon
 	"Answers an Icon that can be used to represent this class"
 
 	^##(self) defaultIcon ! !
 !RowanMethodService class categoriesFor: #defaultIconName!private! !
+!RowanMethodService class categoriesFor: #fakeMethodFor:selector:source:!instance creation!public! !
 !RowanMethodService class categoriesFor: #icon!private! !
 

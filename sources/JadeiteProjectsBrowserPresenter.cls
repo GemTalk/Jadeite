@@ -156,10 +156,7 @@ basicRemoveClass: selection
 		ifNil: [self resetClassTemplate	"just emptied the last class in the package"]
 		ifNotNil: 
 			[classDefinitionPresenter value: self selectedClass template.
-			classDefinitionPresenter view
-				backcolor: JadeTextStyles default colorForNoEdits;
-				isModified: false;
-				isReadOnly: false]!
+			self resetClassDefinitionPane]!
 
 basicRemoveMethodCategories
 	| service |
@@ -649,13 +646,14 @@ editSaveClass
 				ifTrue: [self handleClassCompileError: ex]
 				ifFalse: [self statusBarText: 'ERROR: ' , ex messageText].
 			^self].
-	browserService
+	
+	[browserService
 		command: #recompileMethodsAfterClassCompilation;
 		commandArgs: #().
-	self issueCommand: (Array with: browserService).
-	classDefinitionPresenter view
-		isModified: false;
-		backcolor: JadeTextStyles default colorForNoEdits.
+	self issueCommand: (Array with: browserService)]
+			on: GsCompileError
+			do: [:ex | ^self showMethodRecompilationError: ex. ].
+	self resetClassDefinitionPane.
 	self updateAfterFindClass: browserService selectedClass!
 
 editSaveClassComment
@@ -1229,9 +1227,7 @@ postOkToChangeEvent
 				ifFalse: [classHierarchyPresenter selectionIfNone: [^self]].
 	service ifNil:[^self]. 
 	classDefinitionPresenter value: service template.
-	classDefinitionPresenter view
-		backcolor: JadeTextStyles default colorForNoEdits;
-		isModified: false.
+	self resetClassDefinitionPane.
 	self sundryCleanup!
 
 projectChanges
@@ -1695,6 +1691,12 @@ renameMethodCategory
 resetCategoryText
 	methodCategoryText value: String new. !
 
+resetClassDefinitionPane
+	classDefinitionPresenter view
+		isModified: false;
+		backcolor: JadeTextStyles default colorForNoEdits;
+		isReadOnly: false. !
+
 resetClassTemplate
 	self packageListPresenter list isEmpty
 		ifTrue: 
@@ -1704,10 +1706,7 @@ resetClassTemplate
 	classDefinitionPresenter value: (self packageListPresenter selections isEmpty
 				ifTrue: [String new]
 				ifFalse: [self packageListPresenter selections first defaultTemplate]).
-	classDefinitionPresenter view
-		backcolor: JadeTextStyles default colorForNoEdits;
-		isModified: false;
-		isReadOnly: false!
+	self resetClassDefinitionPane!
 
 resetDefinedClassPackage
 	definedClassPackageText value: String new!
@@ -1946,6 +1945,28 @@ setTestClass: service
 setupPackageMenu
 	packageListPresenter view contextMenu: (Menu fromStrings: self pkgsMenuStrings)!
 
+showMethodRecompilationError: ex
+	| sourcePresenter browser source className errorText failedMethodService |
+	source := ex additionalArgs first.
+	source := source copyFrom: 2 to: source size - 1.	"copy without extra single quotes"
+	className := ex additionalArgs second.
+	failedMethodService := RowanMethodService
+				fakeMethodFor: className
+				selector: #methodFailingRecompile
+				source: source.
+	failedMethodService category: 'other'.
+	(browser := JadeiteMethodListBrowser showOnSession: gciSession) primaryPresenter
+		methods: (Array with: failedMethodService)
+		selecting: nil.
+	browser updateCaption: 'Methods Failing Recompilation'.
+	sourcePresenter := browser primaryPresenter methodSourcePresenter documentPresenter.
+	browser primaryPresenter setCompileErrorColor.
+	errorText := ex list first third.
+	browser primaryPresenter statusBarText: errorText.
+	self reportCompileError: ex list in: sourcePresenter.
+	sourcePresenter view isModified: false.
+	^browser!
+
 showSUnitBrowserOnClass
 	| sunitBrowser |
 	sunitBrowser := JadeiteSUnitBrowser showOnSession: gciSession.
@@ -2069,9 +2090,7 @@ updateClassInfo
 			(MessageBox confirm: 'Copy changes to clipboard?' caption: 'Class has unsaved changes!!')
 				ifTrue: [classDefinitionPresenter value copyToClipboard]].
 	classDefinitionPresenter value: service template.
-	classDefinitionPresenter view
-		backcolor: JadeTextStyles default colorForNoEdits;
-		isModified: false.
+	self resetClassDefinitionPane.
 	self setTestClass: service.
 	classDefinitionPresenter ensureVisible.
 	self sundryCleanup.
@@ -2204,9 +2223,7 @@ updatePackageInfo
 	self updateSystemTab.
 	service := packageListPresenter selectionIfNone: [^self].
 	classDefinitionPresenter value: service defaultTemplate.
-	classDefinitionPresenter view
-		backcolor: JadeTextStyles default colorForNoEdits;
-		isModified: false.
+	self resetClassDefinitionPane.
 	classCommentPresenter view
 		backcolor: JadeTextStyles default colorForNoEdits;
 		isModified: false.
@@ -2458,6 +2475,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #renameClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #renameMethodCategory!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #resetCategoryText!event handlers support!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #resetClassDefinitionPane!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #resetClassTemplate!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #resetDefinedClassPackage!event handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #runAndMesureTime!menu handlers!public! !
@@ -2499,6 +2517,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #setterMethodSourceFor:!menu handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setTestClass:!event handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #setupPackageMenu!event handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #showMethodRecompilationError:!menu handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #showSUnitBrowserOnClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #showSuperClassComparison!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #sundryCleanup!initialize/release!private! !

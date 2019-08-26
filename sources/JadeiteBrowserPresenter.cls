@@ -74,10 +74,7 @@ basicRemoveClass: theClassService
 		ifNil: [self resetClassTemplate	"just emptied the last class in the package"]
 		ifNotNil: 
 			[classDefinitionPresenter value: self selectedClass template.
-			classDefinitionPresenter view
-				backcolor: JadeTextStyles default colorForNoEdits;
-				isModified: false;
-				isReadOnly: false]!
+			self resetClassDefinitionPane]!
 
 basicRemoveDictionaries: dictionaryNames
 	| browserService |
@@ -468,7 +465,9 @@ removeProjectTab
 
 resetClassTemplate
 	| presenter |
-	presenter := self isNoneProjectSelected ifTrue:[dictionaryPresenter] ifFalse:[packageListPresenter].
+	presenter := self isNoneProjectSelected
+				ifTrue: [dictionaryPresenter]
+				ifFalse: [packageListPresenter].
 	presenter list isEmpty
 		ifTrue: 
 			[classDefinitionPresenter value: String new.
@@ -477,10 +476,7 @@ resetClassTemplate
 	classDefinitionPresenter value: (presenter selections isEmpty
 				ifTrue: [String new]
 				ifFalse: [presenter selections first defaultTemplate]).
-	classDefinitionPresenter view
-		backcolor: JadeTextStyles default colorForNoEdits;
-		isModified: false;
-		isReadOnly: false!
+	self resetClassDefinitionPane!
 
 runAll
 	self selectSUnitTab.
@@ -620,9 +616,7 @@ updateDictionary
 	self updateGlobalsTab.
 	dictionaryPresenter selections isEmpty ifTrue:[^self]. 
 	classDefinitionPresenter value: dictionaryPresenter selections first defaultTemplate.
-	classDefinitionPresenter view
-		backcolor: JadeTextStyles default colorForNoEdits;
-		isModified: false!
+	self resetClassDefinitionPane.!
 
 updateGlobalsTab
 	| array |

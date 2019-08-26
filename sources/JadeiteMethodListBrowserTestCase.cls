@@ -241,6 +241,18 @@ test_browseHierarchyImplementorsEnablement
 				view: methodListPresenter view.
 	self deny: commandQuery isEnabled!
 
+test_browseHierarchySenderHighlightingSameSelector
+	self testsIssue: #issue500
+		withTitle: '(Oscar-3.0.74) highlighting of multi-keyword selectors in senders/implementors browser is broken'.
+	methodListBrowser := JadePresenter
+				browseHierarchySendersOf: #servicePerform:withArguments:
+				className: 'RowanService'
+				session: session.
+	self methodListMethodListPresenter list do: 
+			[:methodService |
+			self methodListMethodListPresenter selection: methodService.
+			self assert: self methodSourcePresenter documentPresenter selection equals: 'servicePerform:']!
+
 test_browseHierarchySendersEnablement
 	| commandQuery methodListPresenter |
 	self testsIssue: #issue399
@@ -400,6 +412,15 @@ test_browseSenderHighlightingIgnoreComments
 				[self removeMultiKeywordSenderAndSendee.
 				projectsBrowser view close]!
 
+test_browseSenderHighlightingSameSelector
+	self testsIssue: #issue500
+		withTitle: '(Oscar-3.0.74) highlighting of multi-keyword selectors in senders/implementors browser is broken'.
+	methodListBrowser := JadePresenter browseSendersOf: #servicePerform:withArguments: session: session.
+	self methodListMethodListPresenter list do: 
+			[:methodService |
+			self methodListMethodListPresenter selection: methodService.
+			self assert: self methodSourcePresenter documentPresenter selection equals: 'servicePerform:']!
+
 test_browseSendersEnablement
 	| commandQuery methodListPresenter |
 	self testsIssue: #issue399
@@ -426,6 +447,24 @@ test_browseSendersEnablement
 				inPresenter: methodListPresenter
 				view: methodListPresenter view.
 	self deny: commandQuery isEnabled!
+
+test_browseSendersFoo
+	self testsIssue: #issue500
+		withTitle: '(Oscar-3.0.74) highlighting of multi-keyword selectors in senders/implementors browser is broken'.
+	methodListBrowser := JadePresenter browseSendersOf: #foo session: session.
+	self methodListMethodListPresenter list do: 
+			[:methodService |
+			self methodListMethodListPresenter selection: methodService.
+			self assert: ('foo*' match: self methodSourcePresenter documentPresenter selection)	"use match because we might pickup a '.'"]!
+
+test_browseSendersIsDirty
+	self testsIssue: #issue500
+		withTitle: '(Oscar-3.0.74) highlighting of multi-keyword selectors in senders/implementors browser is broken'.
+	methodListBrowser := JadePresenter browseSendersOf: #isDirty session: session.
+	self methodListMethodListPresenter list do: 
+			[:methodService |
+			self methodListMethodListPresenter selection: methodService.
+			self assert: ('isDirty*' match: self methodSourcePresenter documentPresenter selection)	"use match because we might pickup a '.'"]!
 
 test_comparisonTabMultimethod
 	self testsIssue: #issue264
@@ -830,6 +869,7 @@ testBrowseLiteral: literal
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpointsFromTranscript!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchyImplementorsEnablement!public!test menus! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchySenderHighlightingSameSelector!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchySendersEnablement!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseImplementorsEnablement!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseLiteralReferences!public!test browse methods! !
@@ -838,7 +878,10 @@ testBrowseLiteral: literal
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseMultiKeywordSendersOnEverySender!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSenderHighlightedWithEveryMethod!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSenderHighlightingIgnoreComments!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSenderHighlightingSameSelector!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersEnablement!public!test menus! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersFoo!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersIsDirty!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabMultimethod!public!test comparison tab! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabMultimethod2!public!test comparison tab! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabNoMethodSelected!public!test comparison tab! !

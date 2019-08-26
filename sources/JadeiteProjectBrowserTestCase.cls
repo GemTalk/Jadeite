@@ -4103,6 +4103,45 @@ test_setAndClearBreakpoint
 	methodListPresenter clearBreakPointAt: 2 in: methodListPresenter.
 	self assert: methodListPresenter methodListPresenter selection breakPoints size equals: 0!
 
+test_showMethodsFailingClassRecompilation
+	"show a method list browser with as much compile information as possible"
+
+	| failService |
+	self testsIssue: #issue390 withTitle: 'Rename instance variable with accessor method is... wonky'.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'FailCompile'
+		superclass: 'Object'
+		instVars: #(#aaa)
+		package: 'RowanSample1-Core'.
+	
+	[self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'FailCompile' in: self classListPresenter.
+	self projectsPresenter selectVariableTab.
+	self projectsPresenter variableListPresenter selection: 'aaa'.
+	self projectsPresenter addVariableAccessors.
+	self projectsPresenter classDefinitionPresenter
+		value: 'Object rwSubclass: ''FailCompile''
+	instVarNames: #(#bbb)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''RowanSample1-Core''
+	options: #()'.
+	methodListBrowser := self projectsPresenter editSaveClass.
+	failService := methodListBrowser primaryPresenter methodListPresenter methodListPresenter list
+				first.
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list size
+		equals: 1.
+	self assert: failService className = 'FailCompile'.
+	self assert: failService selector = #methodFailingRecompile.
+	self assert: failService category = 'other'.
+	self assert: ('*aaa*aaa*' match: failService source)]
+			ensure: 
+				[self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
+				methodListBrowser view close]!
+
 test_simpleHierarchyTest
 	"just make sure that we can select different classes and the hierarchy browser updates"
 
@@ -5445,6 +5484,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectVariable!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_separationOfClassAndInstance!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_setAndClearBreakpoint!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_showMethodsFailingClassRecompilation!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_simpleHierarchyTest!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitBarEnabledOnEntry!public!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitBarEnabledOnReEntry!public!test sunit tab!tests! !
