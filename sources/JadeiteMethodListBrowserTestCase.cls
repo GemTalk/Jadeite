@@ -683,6 +683,27 @@ test_methodBrowserSaveMethod
 	self assert: self methodListSourcePresenter documentPresenter value equals: source2]
 			ensure: [self destroy: projectsBrowser]!
 
+test_reformatIllegalSource
+	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
+	self
+		saveMethod: 'reformatSourceTemporaryMethod ^#test'
+		in: 'RowanSample1Test'
+		category: 'other'.
+	methodListBrowser := JadePresenter browseImplementorsOf: #reformatSourceTemporaryMethod
+				session: session.
+	
+	[self assert: self methodSourcePresenter documentPresenter value
+		equals: 'reformatSourceTemporaryMethod ^#test'.
+	self methodSourcePresenter documentPresenter value: 'reformatSourceTemporaryMethod ^#'.
+	self methodSourcePresenter reformatSource.
+	self assert: methodListBrowser statusBarText value
+		equals: 'Reformat failed. Illegal source' replaceCrLfWithLf.
+	self assert: methodListBrowser statusBarText view backcolor equals: Color red faded.
+	self assert: self methodSourcePresenter documentPresenter view isModified.
+	self assert: self methodSourcePresenter documentPresenter value
+		equals: 'reformatSourceTemporaryMethod ^#'	"unchanged"]
+			ensure: [self methodSourcePresenter documentPresenter view isModified: false]!
+
 test_reformatSource
 	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
 	self
@@ -893,6 +914,7 @@ testBrowseLiteral: literal
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionInstanceMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_firstReferenceRetained!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_methodBrowserSaveMethod!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatIllegalSource!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatSource!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodInProjectBrowser!public!tests! !

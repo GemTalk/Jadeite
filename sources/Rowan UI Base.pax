@@ -383,6 +383,7 @@ package methodNames
 	add: 'JadePresenter class' -> #browseBreakpointsIn:;
 	add: 'JadePresenter class' -> #browseClassIn:;
 	add: 'JadePresenter class' -> #browseClassReferences:session:;
+	add: 'JadePresenter class' -> #browseClassReferencesInSession:;
 	add: 'JadePresenter class' -> #browseHierarchyImplementorsOf:className:session:;
 	add: 'JadePresenter class' -> #browseHierarchySendersOf:className:session:;
 	add: 'JadePresenter class' -> #browseImplementorsIn:;
@@ -402,8 +403,8 @@ package methodNames
 	add: 'JadePresenter class' -> #openGitHubRowanProject;
 	add: 'JadePresenter class' -> #openMethodListOn:selecting:session:;
 	add: 'JadePresenter class' -> #openMethodListOn:selectingAnyMatch:session:;
-	add: 'JadePresenter class' -> #promptForMatchingSymbolsIn:actionBlock:promptCaption:;
-	add: 'JadePresenter class' -> #promptForSelectorWithCaption:;
+	add: 'JadePresenter class' -> #promptFor:withCaption:;
+	add: 'JadePresenter class' -> #promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:;
 	add: 'JadePresenter class' -> #runMethodTests:in:;
 	add: 'JadePresenter class' -> #symbolsFrom:session:;
 	add: 'JadeServer class' -> #gsString;
@@ -2192,6 +2193,13 @@ browseClassReferences: className session: session
 		selecting: className
 		session: session!
 
+browseClassReferencesInSession: session
+	^self
+		promptForMatchingSymbolsIn: session
+		actionBlock: [:className | Cursor wait showWhile: [self browseClassReferences: className session: session]]
+		promptCaption: 'Browse Class References Of ...'
+		searchType: 'class name'!
+
 browseHierarchyImplementorsOf: string className: className session: session
 	| service shell |
 	service := RowanQueryService command: #hierarchyImplementorsOf:inClass:
@@ -2220,7 +2228,8 @@ browseImplementorsIn: session
 	^self
 		promptForMatchingSymbolsIn: session
 		actionBlock: [:selector | Cursor wait showWhile: [self browseImplementorsOf: selector session: session]]
-		promptCaption: 'Browse Implementors Of ...'!
+		promptCaption: 'Browse Implementors Of ...'
+		searchType: 'selector'!
 
 browseImplementorsOf: string session: session
 	| service shell |
@@ -2274,7 +2283,8 @@ browseSendersIn: session
 	^self
 		promptForMatchingSymbolsIn: session
 		actionBlock: [:selector | Cursor wait showWhile: [self browseSendersOf: selector session: session]]
-		promptCaption: 'Browse Senders Of ...'!
+		promptCaption: 'Browse Senders Of ...'
+		searchType: 'selector'!
 
 browseSendersOf: string session: session
 	| service shell |
@@ -2346,18 +2356,9 @@ openMethodListOn: service selectingAnyMatch: string session: session
 		selectingAnyMatch: string
 		session: session!
 
-promptForMatchingSymbolsIn: session actionBlock: aBlock promptCaption: caption
-	| selector symbols |
-	(selector := self promptForSelectorWithCaption: caption) isNil ifTrue: [^self].
-	selector := selector copyWithout: Character space.
-	(selector includes: $*) ifFalse: [^aBlock value: selector].
-	symbols := self symbolsFrom: selector session: session.
-	(selector := ChoicePrompter choices: symbols) isNil ifTrue: [^self].
-	^aBlock value: selector!
-
-promptForSelectorWithCaption: caption
+promptFor: aString withCaption: caption
 	| string list stream |
-	(string := Prompter prompt: 'Enter selector:' caption: caption) isNil ifTrue: [^nil].
+	(string := Prompter prompt: 'Enter ' , aString , ':' caption: caption) isNil ifTrue: [^nil].
 	((string includes: $:) and: [string includes: Character space])
 		ifTrue: 
 			[list := string subStrings: Character space.
@@ -2367,6 +2368,15 @@ promptForSelectorWithCaption: caption
 			string := stream contents].
 	string := string copyWithout: Character space.
 	^string!
+
+promptForMatchingSymbolsIn: session actionBlock: aBlock promptCaption: caption searchType: aString
+	| selector symbols |
+	(selector := self promptFor: aString withCaption: caption) isNil ifTrue: [^self].
+	selector := selector copyWithout: Character space.
+	(selector includes: $*) ifFalse: [^aBlock value: selector].
+	symbols := self symbolsFrom: selector session: session.
+	(selector := ChoicePrompter choices: symbols) isNil ifTrue: [^self].
+	^aBlock value: selector!
 
 runMethodTests: methodServices in: session
 	| answeringService |
@@ -2390,6 +2400,7 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #browseBreakpointsIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseClassIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseClassReferences:session:!browsing!public! !
+!JadePresenter class categoriesFor: #browseClassReferencesInSession:!browsing!public! !
 !JadePresenter class categoriesFor: #browseHierarchyImplementorsOf:className:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseHierarchySendersOf:className:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseImplementorsIn:!browsing!public! !
@@ -2409,8 +2420,8 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #openGitHubRowanProject!browsing!public! !
 !JadePresenter class categoriesFor: #openMethodListOn:selecting:session:!public! !
 !JadePresenter class categoriesFor: #openMethodListOn:selectingAnyMatch:session:!public! !
-!JadePresenter class categoriesFor: #promptForMatchingSymbolsIn:actionBlock:promptCaption:!browsing support!private! !
-!JadePresenter class categoriesFor: #promptForSelectorWithCaption:!browsing support!private! !
+!JadePresenter class categoriesFor: #promptFor:withCaption:!browsing support!private! !
+!JadePresenter class categoriesFor: #promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:!browsing support!private! !
 !JadePresenter class categoriesFor: #runMethodTests:in:!public! !
 !JadePresenter class categoriesFor: #symbolsFrom:session:!browsing support!private! !
 

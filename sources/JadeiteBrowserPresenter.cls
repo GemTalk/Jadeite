@@ -365,15 +365,22 @@ queryCommand: aCommandQuery
 				^true].
 	^super queryCommand: aCommandQuery!
 
-reformatSource 
+reformatSource
 	methodListPresenter selection
 		source: methodSourcePresenter value;
 		command: #reformatSource;
 		commandArgs: Array new.
-	self issueCommand: (Array with: methodListPresenter selection).
+	[self issueCommand: (Array with: methodListPresenter selection)] on: Error
+		do: 
+			[:ex |
+			self setCompileErrorColor.
+			self statusBarText: 'Reformat failed. Illegal source'. 
+			^false].
 	methodSourcePresenter value: methodListPresenter selection source.
-	methodSourcePresenter view isModified: true. 
-	self methodValueChanged. 
+	methodSourcePresenter view isModified: true.
+	self methodValueChanged.
+	self setStatusBarDefault. 
+	self statusBarText: String new. 
 	^methodSourcePresenter value!
 
 refreshClass

@@ -322,45 +322,6 @@ test_browseFrameMethod
 	self assert: browser currentCard methodListPresenter selection selector equals: #halt]
 			ensure: [browser view close]!
 
-test_compileClassRecompileMethodsCompileError
-	self testsIssue: #issue390 withTitle: 'Rename instance variable with accessor method is... wonky'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
-	self selectRowanSample1Class.
-	self projectsPresenter classDefinitionPresenter
-		value: 'Object rwSubclass: ''TestClass''
-	instVarNames: #( abc )
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	category: ''RowanSample1-Core''
-	options: #()'.
-	self projectsPresenter editSaveClass.
-	self
-		saveMethod: 'abc ^abc'
-		in: 'TestClass'
-		category: 'accessing'.
-	"recompile class without needed inst var. Expect debugger."
-	self debuggerDo: 
-			[process := 
-					[self projectsPresenter classDefinitionPresenter
-						value: 'Object rwSubclass: ''TestClass''
-	instVarNames: #( )
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	category: ''RowanSample1-Core''
-	options: #()'.
-					self projectsPresenter editSaveClass]
-							forkAt: Processor activePriority + 1].
-	self getDebugger.
-	debugger variableListPresenter list first value
-		equals: 'a CompileError occurred (error 1001), compilation errors -- parameter 1 is error descriptor'.
-	[] ensure: 
-			[self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
-			self projectsPresenter classDefinitionPresenter view isModified: false.
-			self destroy: projectsBrowser]!
-
 test_compileError
 	self testsIssue: #issue353
 		withTitle: 'Debugger has inferior status bar, and opens dialog for unused temps (3.0.74)'.
@@ -747,6 +708,43 @@ test_inspectedDebuggerObjectHeld
 				environment: 0)]
 			ensure: [projectsBrowser view close]]
 			ensure: [inspector view close]!
+
+test_reformatIllegalSource
+	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
+	self
+		saveMethod: 'reformatSourceTemporaryMethod self halt. ^#test'
+		in: 'RowanSample1Test'
+		category: 'other'.
+	self openDebuggerOn: 'RowanSample1Test new reformatSourceTemporaryMethod'.
+	
+	[self assert: debugger documentPresenter value
+		equals: 'reformatSourceTemporaryMethod self halt. ^#test'.
+	debugger documentPresenter value: 'reformatSourceTemporaryMethod self halt. ^#'.
+	debugger reformatSource.
+	self assert: debugger statusTextPresenter view backcolor equals: Color red faded.
+	self assert: debugger documentPresenter view isModified.
+	self assert: debugger statusBarText equals: 'Reformat failed. Illegal source' replaceCrLfWithLf.
+	self assert: debugger documentPresenter value
+		equals: 'reformatSourceTemporaryMethod self halt. ^#' replaceCrLfWithLf	"unchanged"]
+			ensure: [debugger documentPresenter view isModified: false]!
+
+test_reformatSource
+	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
+	self
+		saveMethod: 'reformatSourceTemporaryMethod self halt. ^#test'
+		in: 'RowanSample1Test'
+		category: 'other'.
+	self openDebuggerOn: 'RowanSample1Test new reformatSourceTemporaryMethod'.
+	
+	[self assert: debugger documentPresenter value
+		equals: 'reformatSourceTemporaryMethod self halt. ^#test'.
+	debugger reformatSource.
+	self assert: debugger documentPresenter view isModified.
+	self assert: debugger documentPresenter value
+		equals: 'reformatSourceTemporaryMethod
+  self halt.
+  ^ #''test''' replaceCrLfWithLf]
+			ensure: [debugger documentPresenter view isModified: false]!
 
 test_registeredPresentersInProjectBrowserCleanedUp
 	| registeredPresenters  |
@@ -1325,7 +1323,6 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseFrameMethod!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_compileClassRecompileMethodsCompileError!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileError!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlockFailsWhenNoHomeMethod!public!tests! !
@@ -1342,6 +1339,8 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_implementersFromDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_inspectedDebuggerObjectHeld!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_reformatIllegalSource!public!test source! !
+!JadeiteDebuggerTestCase categoriesFor: #test_reformatSource!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reloadWithDebuggerOpen!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_restartInBlock!public!tests! !

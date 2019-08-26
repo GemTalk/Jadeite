@@ -3355,6 +3355,25 @@ test_projectRemoved
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_reformatIllegalSource
+	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'reformatSourceTemporaryMethod ^#test'
+		in: 'RowanSample1Test'
+		category: 'other'.
+	self selectMethodNamed: #reformatSourceTemporaryMethod.
+	
+	[self assert: self methodSourcePresenter value equals: 'reformatSourceTemporaryMethod ^#test'.
+	self methodSourcePresenter value: 'reformatSourceTemporaryMethod ^#'.
+	self projectsPresenter reformatSource.
+	self assert: self projectsPresenter statusBarText value
+		equals: 'Reformat failed. Illegal source' replaceCrLfWithLf.
+	self assert: self projectsPresenter statusBarText view backcolor equals: Color red faded.
+	self assert: self methodSourcePresenter view isModified.
+	self assert: self methodSourcePresenter value equals: 'reformatSourceTemporaryMethod ^#'	"unchanged"]
+			ensure: [self methodSourcePresenter view isModified: false]!
+
 test_reformatSource
 	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
 	self selectRowanSample1Test.
@@ -5446,6 +5465,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectInfoTab!public!test menus!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectMenuGitCommitMenuItem!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectRemoved!public!test projects!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_reformatIllegalSource!public!test source! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_reformatSource!public!test source! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_reformatSourceAppliesOnlyToCurrentBrowser!public!test source! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodList!public!test projects!tests! !

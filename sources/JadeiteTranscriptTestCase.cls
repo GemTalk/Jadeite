@@ -123,6 +123,19 @@ test_browseClassMenuItem
 	self assert: browseClassItem command equals: #browseClass.
 	self assert: (transcript class canUnderstand: #browseClass)!
 
+test_browseClassReferencesMenuItem
+	| browseMenu browseClassReferencesItem |
+	self testsIssue: #issue300
+		withTitle: '`would be nice to have `browse references to class` here as well'.
+	browseMenu := transcript view menuBar items detect: [:menu | '*Browse*' match: menu text] ifNone: [].
+	self denyIsNil: browseMenu.
+	browseClassReferencesItem := browseMenu items
+				detect: [:command | '*Browse*Class*References*' match: command text]
+				ifNone: [].
+	self denyIsNil: browseClassReferencesItem.
+	self assert: browseClassReferencesItem command equals: #browseClassReferences.
+	self assert: (transcript class canUnderstand: #browseClassReferences)!
+
 test_browseFindClassMenuItem
 	| browseMenu findClassMenuItem |
 	self testsIssue: #issue235 withTitle: 'Need Find Class/Method from console'.
@@ -270,8 +283,8 @@ test_menuNames
 	contextMenu := transcript projectListPresenter projectListPresenter view queryContextMenu.
 	commitMenuItem := contextMenu items detect: [:menu | 'Commit to Git ...' = menu text] ifNone: [].
 	self denyIsNil: commitMenuItem.
-	self assert: commitMenuItem command equals: #commit.
-	self assert: (transcript projectListPresenter class canUnderstand: #commit).
+	self assert: commitMenuItem command equals: #gitCommit.
+	self assert: (transcript projectListPresenter class canUnderstand: #gitCommit).
 	checkoutMenuItem := contextMenu items detect: [:menu | 'Checkout Git Branch ...' = menu text]
 				ifNone: [].
 	self denyIsNil: checkoutMenuItem.
@@ -365,6 +378,7 @@ test_transcriptNamedConsole
 !JadeiteTranscriptTestCase categoriesFor: #test_autoCommitOn!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_autoCommitSet!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseClassMenuItem!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_browseClassReferencesMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseFindClassMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseImplementors!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseImplementorsMenuItem!public!test menus! !

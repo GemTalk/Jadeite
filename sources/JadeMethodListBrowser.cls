@@ -28,6 +28,9 @@ shellName
 	^'Method List Browser'.
 !
 
+statusBarText
+	^(self view viewNamed: 'statusBarField') !
+
 statusBarText: aString
 	(self view viewNamed: 'statusBarField') model: (ValueHolder with: aString)!
 
@@ -46,6 +49,7 @@ switchToTreeView
 !JadeMethodListBrowser categoriesFor: #defaultPresenterName!public! !
 !JadeMethodListBrowser categoriesFor: #presenterClass!overrides!private! !
 !JadeMethodListBrowser categoriesFor: #shellName!overrides!private! !
+!JadeMethodListBrowser categoriesFor: #statusBarText!private! !
 !JadeMethodListBrowser categoriesFor: #statusBarText:!private! !
 !JadeMethodListBrowser categoriesFor: #switchToListView!public! !
 !JadeMethodListBrowser categoriesFor: #switchToTreeView!public! !

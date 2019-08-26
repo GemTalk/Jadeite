@@ -242,6 +242,28 @@ queryCommand: query
 	^super queryCommand: query
 !
 
+reformatSource
+	| methodService statusBarView |
+	methodService := self methodListSelection.
+	methodService
+		source: documentPresenter value;
+		command: #reformatSource;
+		commandArgs: Array new.
+	[self issueCommand: (Array with: methodService)] on: Error
+		do: 
+			[:ex |
+			self setCompileErrorColor.
+			self statusBarText: 'Reformat failed. Illegal source'.
+			^false].
+	documentPresenter value: methodService source.
+	documentPresenter view isModified: true.
+	documentPresenter view
+		backcolor: JadeTextStyles default colorForUnsavedEdits;
+		clearContainerIndicators.
+	statusTextPresenter view backcolor: statusTextPresenter view defaultBackcolor.
+	self statusBarText: String new.
+	^documentPresenter value!
+
 registerPresentersForUpdates
 	"copied from RowanProjectsBrowserPresenter>>registerPresentersForUpdates"
 
@@ -435,6 +457,7 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #onViewOpened!event handlers!private! !
 !JadeiteDebugger categoriesFor: #processListPresenter!Accessing!public! !
 !JadeiteDebugger categoriesFor: #queryCommand:!menu handlers!public! !
+!JadeiteDebugger categoriesFor: #reformatSource!menu handlers!public! !
 !JadeiteDebugger categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteDebugger categoriesFor: #restart!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #resumeProcess!menu handlers!private! !

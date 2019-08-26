@@ -103,12 +103,19 @@ reformatSource
 		source: documentPresenter value;
 		command: #reformatSource;
 		commandArgs: Array new.
-	self issueCommand: (Array with: methodService).
+	[self issueCommand: (Array with: methodService)] on: Error
+		do: 
+			[:ex |
+			self setCompileErrorColor.
+			self statusBarText: 'Reformat failed. Illegal source'.
+			^false].
 	documentPresenter value: methodService source.
 	documentPresenter view isModified: true.
 	documentPresenter view
 		backcolor: JadeTextStyles default colorForUnsavedEdits;
 		clearContainerIndicators.
+	self setStatusBarDefault.
+	self statusBarText: String new.
 	^documentPresenter value!
 
 registerPresentersForUpdates
