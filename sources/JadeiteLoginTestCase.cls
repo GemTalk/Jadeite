@@ -72,7 +72,8 @@ test_gemTask
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #no.	"don't commit"
 	GciSession current ifNotNil: [:sess | sess logout].
-	jadeiteShell := JadeiteLoginShell allInstances first.
+	JadeiteLoginShell allInstances do: [:inst | inst view close].
+	jadeiteShell := JadeiteLoginShell show position: 80 @ 20.
 	jadeiteLogin := jadeiteShell model.
 	formerGemTask := jadeiteLogin gemTask.
 	self assert: formerGemTask equals: 'gemnetobject'.	"might need to change this assumption"
@@ -82,7 +83,7 @@ test_gemTask
 	"somehow test that we are using gemnetdebug"
 	TestMessageBox plannedResult: #no.
 	GciSession current logout.
-	JadeiteLoginShell allInstances first view close.	"should save to the remote JadeDefaultConnection.gss file"
+	JadeiteLoginShell allInstances do: [:inst | inst view close].	"should save to the remote JadeDefaultConnection.gss file"
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteLogin := jadeiteShell model.
 	self assert: jadeiteLogin gemTask equals: 'gemnetdebug'.
@@ -92,7 +93,7 @@ test_gemTask
 	"somehow test that we are using gemnetobject"
 	TestMessageBox plannedResult: #no.
 	[GciSession current logout] ensure: [TestMessageBox disableJadeiteTestMessageBox].
-	JadeiteLoginShell allInstances first view close.	"should save to the remote JadeDefaultConnection.gss file"
+	JadeiteLoginShell allInstances do: [:inst | inst view close].	"should save to the remote JadeDefaultConnection.gss file"
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteLogin := jadeiteShell model.
 	self assert: jadeiteLogin gemTask equals: 'gemnetobject'.

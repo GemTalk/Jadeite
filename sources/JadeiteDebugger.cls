@@ -86,11 +86,6 @@ documentPresenter
 errorMessagePresenter
 	^errorMessagePresenter!
 
-executedCodeFrame
-	"no home frame so look here"
-
-	^frameListPresenter list detect: [:string | 'Executed Code*' match: string] ifNone: []!
-
 frameListPresenter
 	^frameListPresenter!
 
@@ -450,7 +445,6 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #displayUncompilableSourceIn:!private! !
 !JadeiteDebugger categoriesFor: #documentPresenter!Accessing!public! !
 !JadeiteDebugger categoriesFor: #errorMessagePresenter!Accessing!public! !
-!JadeiteDebugger categoriesFor: #executedCodeFrame!frames!public! !
 !JadeiteDebugger categoriesFor: #frameListPresenter!Accessing!frames!public! !
 !JadeiteDebugger categoriesFor: #gciSession:!public! !
 !JadeiteDebugger categoriesFor: #getProcessList!public! !
