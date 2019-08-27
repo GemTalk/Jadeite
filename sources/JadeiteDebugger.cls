@@ -86,6 +86,11 @@ documentPresenter
 errorMessagePresenter
 	^errorMessagePresenter!
 
+executedCodeFrame
+	"no home frame so look here"
+
+	^frameListPresenter list detect: [:string | 'Executed Code*' match: string] ifNone: []!
+
 frameListPresenter
 	^frameListPresenter!
 
@@ -115,6 +120,9 @@ getProcessList
 	debuggerService processes ifNil: [^self].
 	debuggerService processes notEmpty
 		ifTrue: [processListPresenter selection: debuggerService processes first]!
+
+homeFrame
+	^frameListPresenter list detect: [:str | str = (self homeFrameOf: frame) printString]!
 
 homeFrameOf: theFrame
 	^gsProcess frames detect: 
@@ -363,8 +371,7 @@ selectedFrame
 	BrowserUpdate current logComment: 'finished #selectedFrame'!
 
 selectHomeMethod
-	frameListPresenter selection: (frameListPresenter list
-				detect: [:str | str = (self homeFrameOf: frame) printString])!
+	frameListPresenter selection: self homeFrame!
 
 setCompileErrorColor
 	statusTextPresenter view backcolor: Color red faded!
@@ -391,11 +398,14 @@ stepInto
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
 	[self getProcessList] on: RowanDebuggerStepPointError do: [:ex | self stepInto]!
 
-stepOut	
+stepOut
+	| stepOutFrameIndex |
 	self isOkayToChangeFrame ifFalse: [^self].
 	BrowserUpdate current logComment: '#stepOut'.
+	stepOutFrameIndex := frameListPresenter selectionByIndex.
+	stepOutFrameIndex = 1 ifTrue: [stepOutFrameIndex := 2].
 	gciSession stepOut: (GsProcess session: gciSession oopType: gsProcess oopType)
-		inFrame: frameListPresenter selectionByIndex + frameListOffset.
+		inFrame: stepOutFrameIndex.
 	[self getProcessList] on: RowanDebuggerStepPointError do: [:ex | self stepInto]!
 
 stepOver
@@ -440,9 +450,11 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #displayUncompilableSourceIn:!private! !
 !JadeiteDebugger categoriesFor: #documentPresenter!Accessing!public! !
 !JadeiteDebugger categoriesFor: #errorMessagePresenter!Accessing!public! !
+!JadeiteDebugger categoriesFor: #executedCodeFrame!frames!public! !
 !JadeiteDebugger categoriesFor: #frameListPresenter!Accessing!frames!public! !
 !JadeiteDebugger categoriesFor: #gciSession:!public! !
 !JadeiteDebugger categoriesFor: #getProcessList!public! !
+!JadeiteDebugger categoriesFor: #homeFrame!compiling!frames!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #homeFrameOf:!frames!public! !
 !JadeiteDebugger categoriesFor: #initializeIdleProcess!initialization!public! !
 !JadeiteDebugger categoriesFor: #initializeProcess:message:terminateOnClose:!initialization!public! !

@@ -733,7 +733,6 @@ stepInto: aGsProcess inFrame: anInteger
 !
 
 stepOut: aGsProcess inFrame: anInteger
-
 	self
 		serverPerformInterpreted: #'step:inFrame:'
 		with: aGsProcess
@@ -741,7 +740,6 @@ stepOut: aGsProcess inFrame: anInteger
 !
 
 stepOver: aGsProcess inFrame: anInteger
-
 	self
 		serverPerformInterpreted: #'step:inFrame:'
 		with: aGsProcess

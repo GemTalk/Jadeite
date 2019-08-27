@@ -904,6 +904,140 @@ OrderedCollection with:  bigStringStream contents zork'.
 	stream := ReadStream on: Clipboard current getText.
 	self assert: ('*-receiver oop(*) == ''1234567891011121314*...*' match: stream contents)!
 
+test_stepOutMethod
+	"not in a block. Step out to higher level method context"
+
+	self
+		openDebuggerOn: '| abc |
+self halt.
+abc := Array with: 1 with: 2 with: 3. 
+abc do:[:int |
+	| array |
+	array := Array with: $a with: $b with: $c. 
+	array do: [:char | 
+		char size. 
+		char printString].
+	int size. 
+	int printString. 
+	int - 1]. 
+abc'.
+	self assert: debugger documentPresenter view selection equals: 'halt'.
+	self debuggerDo: [debugger stepOver].
+	self assert: debugger documentPresenter view selection equals: 'with:'.
+	self debuggerDo: [debugger stepInto].
+	self assert: debugger documentPresenter view selection equals: 'new:'.
+	self assert: debugger frameListPresenter selection
+		equals: 'Array class (SequenceableCollection class) >> with:with:with: @2 line 9'.
+	self debuggerDo: [debugger stepOut].
+	self assert: debugger frameListPresenter selection equals: 'Executed Code  @4 line 3'.	"on the top frame so should step one frame up"
+	self assert: debugger documentPresenter view selection equals: ':='!
+
+test_stepOutSelectedFrame1
+	self
+		openDebuggerOn: '| abc |
+self halt.
+abc := Array with: 1 with: 2 with: 3. 
+abc do:[:int |
+	| array |
+	array := Array with: $a with: $b with: $c. 
+	array do: [:char | 
+		char size. 
+		char printString].
+	int size. 
+	int printString. 
+	int - 1]. 
+abc'.
+	self assert: debugger documentPresenter view selection equals: 'halt'.
+	self debuggerDo: [debugger stepOver].
+	self assert: debugger documentPresenter view selection equals: 'with:'.
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepInto].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepInto].
+	self assert: debugger documentPresenter view selection equals: 'with:'.	"inner #with:with:with:"
+	debugger frameListPresenter selectionByIndex: 3.
+	self debuggerDo: [debugger stepOut].
+	self assert: ('Executed Code*' match: debugger frameListPresenter selection).	"on the top frame so should step one frame up"
+	self assert: debugger documentPresenter view selection equals: '[:'!
+
+test_stepOutSelectedFrame2
+	self
+		openDebuggerOn: '| abc |
+self halt.
+abc := Array with: 1 with: 2 with: 3. 
+abc do:[:int |
+	| array |
+	array := Array with: $a with: $b with: $c. 
+	array do: [:char | 
+		char size. 
+		char printString].
+	int size. 
+	int printString. 
+	int - 1]. 
+abc'.
+	self assert: debugger documentPresenter view selection equals: 'halt'.
+	self debuggerDo: [debugger stepOver].
+	self assert: debugger documentPresenter view selection equals: 'with:'.
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepInto].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepInto].
+	self assert: debugger documentPresenter view selection equals: 'with:'.	"inner #with:with:with:"
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepInto].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepInto].
+	self debuggerDo: [debugger stepOver].
+	self assert: debugger documentPresenter view selection equals: 'size'.	"innermost `size`"
+	debugger frameListPresenter selectionByIndex: 5.	"Executed code `home frame`"
+	self debuggerDo: [debugger stepOut].
+	self assert: ('Executed Code*' match: debugger frameListPresenter selection).	"on the top frame so should step one frame up"
+	self assert: debugger documentPresenter view selection equals: '[:'!
+
+test_stepOutTopFrame
+	self
+		openDebuggerOn: '| abc |
+self halt.
+abc := Array with: 1 with: 2 with: 3. 
+abc do:[:int |
+	| array |
+	array := Array with: $a with: $b with: $c. 
+	array do: [:char | 
+		char size. 
+		char printString].
+	int size. 
+	int printString. 
+	int - 1]. 
+abc'.
+	self assert: debugger documentPresenter view selection equals: 'halt'.
+	self debuggerDo: [debugger stepOver].
+	self assert: debugger documentPresenter view selection equals: 'with:'.
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepInto].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepInto].
+	self assert: debugger documentPresenter view selection equals: 'with:'.	"inner #with:with:with:"
+	self assert: debugger frameListPresenter selectionByIndex equals: 1.
+	self debuggerDo: [debugger stepOut].
+	self assert: debugger frameListPresenter selection equals: 'Array (Collection) >> do: @6 line 9'.	"on the top frame so should step one frame up"
+	self assert: debugger documentPresenter view selection equals: 'to:'.!
+
 test_switchProcesses
 	gsProcess := session executeString: '[(Delay forSeconds: 9999) wait] fork asOop.'.
 	session executeString: '(Delay forSeconds: 1) wait'.	"let forked process start"
@@ -1350,6 +1484,10 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_stackDumpDetailedFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_stackDumpHeader!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_stackDumpTooLongString!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_stepOutMethod!public!test step out! !
+!JadeiteDebuggerTestCase categoriesFor: #test_stepOutSelectedFrame1!public!test step out! !
+!JadeiteDebuggerTestCase categoriesFor: #test_stepOutSelectedFrame2!public!test step out! !
+!JadeiteDebuggerTestCase categoriesFor: #test_stepOutTopFrame!public!test step out! !
 !JadeiteDebuggerTestCase categoriesFor: #test_switchProcesses!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_terminateDoesNotWalkback!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_unicodeMethod!public!tests! !

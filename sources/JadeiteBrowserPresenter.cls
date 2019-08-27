@@ -261,7 +261,7 @@ editSaveMethod: classService
 				category: self targetCategory.
 	compileResult == false
 		ifTrue: [self updateService: classService	"If we got a compile error our methods need a refresh"].
-	self statusBarText value ifNotNil:[^self].  "don't reselect methods when status bar is full so as not to upset the compile information"
+	self statusBarText value ifNotNil:[:text | text isEmpty ifFalse:[^self]].  "don't reselect methods when status bar is full so as not to upset the compile information"
 	classService selectedMethods
 		ifNotNil: 
 			[:methodServices |

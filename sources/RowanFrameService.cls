@@ -42,6 +42,10 @@ isExecutedBlockContext
 isUpdatableService
 	^false!
 
+label
+
+	^label!
+
 method
 	^method!
 
@@ -77,6 +81,7 @@ vars
 !RowanFrameService categoriesFor: #indexOfSubCollection:!public! !
 !RowanFrameService categoriesFor: #isExecutedBlockContext!public!testing! !
 !RowanFrameService categoriesFor: #isUpdatableService!public!testing! !
+!RowanFrameService categoriesFor: #label!accessing!public! !
 !RowanFrameService categoriesFor: #method!public! !
 !RowanFrameService categoriesFor: #offsets!public! !
 !RowanFrameService categoriesFor: #oop!accessing!private! !
