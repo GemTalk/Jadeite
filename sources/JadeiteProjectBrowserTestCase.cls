@@ -1875,6 +1875,7 @@ test_displayCompileWarningsNicely
 	self testsIssue: #issue509 withTitle: 'Warning for unused temps should be grouped better (3.0.75)'.
 	self selectRowanSample1Test.
 	self projectsPresenter selectMethodSourceTab.
+	self selectCategoriesNamed: #('tests'). 
 	self methodSourcePresenter
 		value: 'failInConcreteClass
 	| abc def aa ddd |

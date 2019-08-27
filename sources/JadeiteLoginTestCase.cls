@@ -24,6 +24,8 @@ login
 	^jadeiteLogin login!
 
 setUp
+	"get a new session for this test"
+
 	| currentSession |
 	jadeiteLogin := self jadeLoginShell.
 	currentSession := GciSession current.

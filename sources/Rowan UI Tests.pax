@@ -134,11 +134,6 @@ JadeiteAbstractTestCase subclass: #JadeiteDebuggerTestCase
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeiteAbstractTestCase subclass: #JadeiteDictionaryBrowserTestCase
-	instanceVariableNames: 'dictionaryBrowser'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
 JadeiteAbstractTestCase subclass: #JadeiteInspectorTestCase
 	instanceVariableNames: 'inspector'
 	classVariableNames: ''
@@ -186,6 +181,11 @@ JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserDictionary
 	classInstanceVariableNames: ''!
 JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserTestCase
 	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+TestCase2 subclass: #JadeiteDictionaryBrowserTestCase
+	instanceVariableNames: 'dictionaryBrowser'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

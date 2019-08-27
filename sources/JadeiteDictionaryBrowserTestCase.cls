@@ -1,12 +1,13 @@
 "Filed out from Dolphin Smalltalk 7"!
 
-JadeiteAbstractTestCase subclass: #JadeiteDictionaryBrowserTestCase
+TestCase2 subclass: #JadeiteDictionaryBrowserTestCase
 	instanceVariableNames: 'dictionaryBrowser'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteDictionaryBrowserTestCase guid: (GUID fromString: '{3d66b039-3986-43f7-9e95-6a137a1473f7}')!
-JadeiteDictionaryBrowserTestCase comment: ''!
+JadeiteDictionaryBrowserTestCase comment: 'Tests may still work but don''t want them to appear on in the SUnit Browser
+since the browser is no longer supported. '!
 !JadeiteDictionaryBrowserTestCase categoriesForClass!Unclassified! !
 !JadeiteDictionaryBrowserTestCase methodsFor!
 
