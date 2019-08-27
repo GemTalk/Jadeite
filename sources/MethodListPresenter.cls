@@ -76,7 +76,7 @@ primaryPresenter
 !
 
 queryCommand: aCommandQuery
-	(#(#browseClass #browseImplementors #browseSenders #browseHierarchyImplementors #browseHierarchySenders)
+	(#(#browseClass #browseClassReferences #browseImplementors #browseSenders #browseHierarchyImplementors #browseHierarchySenders)
 		includes: aCommandQuery commandSymbol)
 			ifTrue: 
 				[aCommandQuery

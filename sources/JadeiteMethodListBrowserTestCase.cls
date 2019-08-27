@@ -214,6 +214,41 @@ test_browseClass
 	[self assert: ('String*' match: dictionaryPresenter selectedClassName)]
 		ensure: [self destroy: dictionaryPresenter topShell]!
 
+test_browseClassReferenceCaptionTitle
+	methodListBrowser := JadePresenter browseClassReferences: 'AbstractCharacter' session: session.
+	self assert: ('Class References of ''AbstractCharacter''*' match: methodListBrowser caption)!
+
+test_browseClassReferences
+	methodListBrowser := JadePresenter browseClassReferences: 'AbstractCharacter' session: session.
+	self methodListMethodListPresenter list do: 
+			[:methodService |
+			self methodListMethodListPresenter selection: methodService.
+			self assert: ('AbstractCharacter*' match: self methodSourcePresenter documentPresenter selection)	"use match because we might pickup a '.'"]!
+
+test_browseClassReferencesEnablement
+	| commandQuery methodListPresenter |
+	methodListBrowser := JadePresenter browseImplementorsOf: #defaultAction session: session.
+	self selectMethodsNamed: #(#defaultAction).
+	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter.
+	methodListPresenter methodListPresenter selectionByIndex: 1.
+	commandQuery := self
+				queryCommand: #browseClassReferences
+				inPresenter: methodListPresenter
+				view: methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	methodListPresenter methodListPresenter view selectionsByIndex: #(1 2).
+	commandQuery := self
+				queryCommand: #browseClassReferences
+				inPresenter: methodListPresenter
+				view: methodListPresenter view.
+	self deny: commandQuery isEnabled.
+	self selectMethodsNamed: #().
+	commandQuery := self
+				queryCommand: #browseClassReferences
+				inPresenter: methodListPresenter
+				view: methodListPresenter view.
+	self deny: commandQuery isEnabled!
+
 test_browseHierarchyImplementorsEnablement
 	| commandQuery methodListPresenter |
 	self testsIssue: #issue399
@@ -889,6 +924,9 @@ testBrowseLiteral: literal
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpoints!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpointsFromTranscript!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClassReferenceCaptionTitle!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClassReferences!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClassReferencesEnablement!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchyImplementorsEnablement!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchySenderHighlightingSameSelector!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchySendersEnablement!public!test menus! !

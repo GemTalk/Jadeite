@@ -16,6 +16,12 @@ aboutToEditLabel: anObject accept: aValueHolder
 	aValueHolder value: (self canEditLabel: anObject).
 !
 
+browseClassReferences
+	| browser |
+	browser := self browseClassReferences: self selectedClassName.
+	browser updateCaption: 'Class References of ' , self selectedClassName.
+	^browser!
+
 canEditLabel: anObject
 
 	^true.
@@ -311,6 +317,7 @@ userSelection
 	^nil.
 ! !
 !JadePresenterA categoriesFor: #aboutToEditLabel:accept:!label edit!public! !
+!JadePresenterA categoriesFor: #browseClassReferences!menu handlers!public! !
 !JadePresenterA categoriesFor: #canEditLabel:!label edit!public! !
 !JadePresenterA categoriesFor: #createDragDropSchematicWiringFor:!drag & drop!public! !
 !JadePresenterA categoriesFor: #createLabelEditSchematicWiringFor:!label edit!public! !

@@ -19,6 +19,11 @@ onDragClass: aSession className: class
 		dragObjects: list;
 		supportedOperations: #(#move #copy);
 		defaultOperation: #move;
-		yourself! !
+		yourself!
+
+selectedClassName
+
+	self subclassResponsibility! !
 !JadeBrowserPresenter categoriesFor: #onDragClass:className:!drag & drop!public! !
+!JadeBrowserPresenter categoriesFor: #selectedClassName!public!selection! !
 

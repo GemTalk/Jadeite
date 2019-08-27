@@ -2197,12 +2197,14 @@ browseClassIn: session
 			browser currentCard updateAfterFindClass: classService]!
 
 browseClassReferences: className session: session
-	| service |
+	| service browser |
 	service := self basicBrowseClassReferences: className session: session.
-	^self
-		openMethodListOn: service
-		selecting: className
-		session: session!
+	browser := self
+				openMethodListOn: service
+				selecting: className
+				session: session.
+	browser updateCaption: 'Class References of ''' , className , ''''.
+	^browser!
 
 browseClassReferencesInSession: session
 	^self

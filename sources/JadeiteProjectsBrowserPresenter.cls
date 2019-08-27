@@ -295,7 +295,7 @@ classesMenuStrings
 				showSUnitBrowserOnClass].
 	definedLabel := self definedClassMenuItemLabel.
 	containedDictionaryLabel := self containedDictionaryLabel. 
-	menuStrings := #('&Classes' '&Browse References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' '&File Out Class//fileOutClass' 'Add &Subclass//addSubclass' '&Rename //renameClass' '&Remove//removeClass' '-' 'Set Compiler &Environment ...//setEnvironment'  '-')
+	menuStrings := #('&Classes' '&Browse Class References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' '&File Out Class//fileOutClass' 'Add &Subclass//addSubclass' '&Rename //renameClass' '&Remove//removeClass' '-' 'Set Compiler &Environment ...//setEnvironment'  '-')
 				asOrderedCollection.
 	menuStrings addLast: definedLabel , '//gotoClassDefinedPackage'.
 	menuStrings addLast: containedDictionaryLabel, '//gotoDictionary'. 

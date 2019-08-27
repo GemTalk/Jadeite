@@ -192,9 +192,6 @@ breakAt: anInteger operation: aString
 	self updateCommand: stream contents , self requestString.
 !
 
-browseClassReferences
-	^self browseClassReferences: self selectedClassName!
-
 browseGlobalReferences
 
 	| string |
@@ -2702,7 +2699,6 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #addSubclass!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #behaviorIdentifier!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #breakAt:operation:!event handlers!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #browseClassReferences!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #browseGlobalReferences!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #browseImplementors!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #browseMethodHistory!menu handlers!public! !

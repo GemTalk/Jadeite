@@ -102,6 +102,9 @@ removeComparisonTab
 selectComparisonTab
 	comparisonPresenter ensureVisible!
 
+selectedClassName
+	^methodListPresenter methodListPresenter list first className!
+
 selectionChanging: aSelectionChangingEvent
 	aSelectionChangingEvent value: (methodSourcePresenter documentPresenter view isModified
 				ifTrue: [methodSourcePresenter isOkayToChange]
@@ -191,6 +194,7 @@ updateSource
 !JadeiteMethodListPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteMethodListPresenter categoriesFor: #removeComparisonTab!private!selection!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #selectComparisonTab!private!selection!text tabs! !
+!JadeiteMethodListPresenter categoriesFor: #selectedClassName!public!selection! !
 !JadeiteMethodListPresenter categoriesFor: #selectionChanging:!event handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #showComparisonTab!private!selection!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #showSuperClassComparison!private!text tabs! !
