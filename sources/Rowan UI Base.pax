@@ -467,7 +467,6 @@ package setPrerequisites: (IdentitySet new
 	add: 'Object Log Browser';
 	add: 'Rowan STON';
 	add: '..\Core\Object Arts\Dolphin\System\Compiler\Smalltalk Parser';
-	add: '..\Core\Contributions\ITC Gorisek\Source Tracking System';
 	add: '..\Core\Contributions\Solutions Software\SSW EditableListView';
 	add: '..\Core\Contributions\Camp Smalltalk\SUnit\SUnit';
 	add: '..\Core\Object Arts\Dolphin\ActiveX\Components\VBScript\VBScript Regular Expressions';
@@ -758,7 +757,7 @@ JadeFindClassDialog subclass: #JadeiteFindClassDialog
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-StsMultilinePrompter subclass: #JadeiteMultilinePrompter
+Prompter subclass: #JadeiteMultilinePrompter
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
