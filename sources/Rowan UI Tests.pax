@@ -57,7 +57,7 @@ package methodNames
 	add: #MethodHistoryBrowser -> #history:;
 	add: #MethodHistoryBrowser -> #slider;
 	add: #MethodHistoryBrowser -> #slider:;
-	add: #MethodHistoryBrowser -> #source;
+	"add: #MethodHistoryBrowser -> #source;"
 	add: #MethodHistoryBrowser -> #source:;
 	add: #SUnitBrowserModel -> #debugIndividualTestsWithResources:;
 	add: 'ChoicePrompter class' -> #create:;
@@ -97,7 +97,7 @@ package setPrerequisites: (IdentitySet new
 	add: 'Jade Login';
 	add: 'Jade Test Browser';
 	add: 'Jade UI Base';
-	add: 'Rowan STON';
+	"add: 'Rowan STON';"
 	add: 'Rowan UI Base';
 	add: '..\Core\Contributions\Solutions Software\SSW EditableListView';
 	add: '..\Core\Contributions\Camp Smalltalk\SUnit\SUnit';
@@ -422,8 +422,8 @@ slider
 slider: anObject
 	slider := anObject!
 
-source
-	^source!
+"source
+	^source!"
 
 source: anObject
 	source := anObject! !

@@ -38,7 +38,7 @@ ProgressDialog showModalWhile: [:progress |
 			value: percent;
 			text: 'Loading package: ' , name;
 			yourself.
-		PackageManager current install: 'sources\' , name , '.pax'.
+		PackageManager current install: 'sources\' , name , '.pax'
 	].
 ].
 SessionManager current splashShowAtStartup: false.
@@ -64,7 +64,7 @@ JadeiteLoginShell addToDevelopmentTools.
 JadeiteDevelopmentSUnitBrowser addToDevelopmentTools.
 JadeiteDevelopmentSUnitBrowser initialize."to open in ideaspace"
 "to prevent right-mouse drag errors #nmBeginRDrag:"
-ListView initializeNotificationMap. 
+"ListView initializeNotificationMap."
 Cursor wait showWhile: [
 	SourceManager default compressSources.
 	(Delay forMilliseconds: 200) wait.

@@ -1,4 +1,4 @@
-| package |
+﻿| package |
 package := Package name: 'Rowan UI Base'.
 package paxVersion: 1;
 	basicComment: 'Jadeite GUI tools built on Jade Smalltalk for Dolphin. '.
@@ -531,7 +531,7 @@ package setPrerequisites: (IdentitySet new
 	add: 'Jade UI Base';
 	add: 'Monticello';
 	add: 'Object Log Browser';
-	add: 'Rowan STON';
+	"add: 'Rowan STON';"
 	add: 'Rowan UI Base PreInstall';
 	add: '..\Core\Object Arts\Dolphin\System\Compiler\Smalltalk Parser';
 	add: '..\Core\Contributions\Solutions Software\SSW EditableListView';
@@ -1701,7 +1701,7 @@ requiredPackageNames
 		add: 'Jade from Dolphin';
 		add: 'Jade Process Browser';
 		add: 'Rowan UI Base';
-		add: 'Rowan STON';
+		"add: 'Rowan STON';"
 		add: 'Dolphin Announcements';
 		yourself! !
 !JadeImageStripper categoriesFor: #closeLoginShells!public! !
