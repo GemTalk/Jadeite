@@ -1,6 +1,6 @@
 "Filed out from Dolphin Smalltalk 7"!
 
-StsMultilinePrompter subclass: #JadeiteMultilinePrompter
+Prompter subclass: #JadeiteMultilinePrompter
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
