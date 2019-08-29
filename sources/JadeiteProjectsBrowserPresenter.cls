@@ -190,21 +190,24 @@ basicRenameClass: classService to: newName
 		command: #renameClass:to:;
 		commandArgs: (Array with: classService name with: newName).
 	[serviceArray := self issueCommand: (Array with: classService)] on: GsCompileError
-		do: [:ex | ^MessageBox notify: 'Compilation error during rename class. Class may be referenced in its hierarchy"
+		do: 
+			[:ex |
+			^MessageBox
+				notify: 'Compilation error during rename class. Class may be referenced in its hierarchy"
 
-' , ex descriptiveText].
+'
+						, ex descriptiveText].
 	self updateServices: packageListPresenter selections.
 	self refreshClassListOrHierarchy.
+	classListPresenter resetSelection. 
 	self selectClassNamed: newName.
-	(serviceArray detect: [:service | service isAnsweringService]) answer isEmpty
-		ifTrue: [^MessageBox notify: 'No methods updated after renaming ' , oldName , ' to ' , newName].
+	(serviceArray detect: [:service | service isAnsweringService]) answer isEmpty ifTrue: [^self].
 	browser := JadeiteRenameClassMethodListBrowser showOnSession: gciSession.
 	browser primaryPresenter
 		findString: newName;
 		newClassName: newName.
 	answeringService := serviceArray detect: [:service | service isAnsweringService].
-	browser primaryPresenter methods: answeringService answer
-		selecting: answeringService answer first.
+	browser primaryPresenter methods: answeringService answer selecting: answeringService answer first.
 	browser updateCaption: 'Methods updated after renaming ' , oldName , ' to ' , newName.
 	^browser!
 

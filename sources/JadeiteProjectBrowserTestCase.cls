@@ -1341,18 +1341,14 @@ test_classRenameNoReferences
 		superclass: 'Object'
 		instVars: #('inst1')
 		package: 'RowanSample1-Tests'.
-	TestMessageBox enableJadeiteTestMessageBox.
 	
 	[self projectsPresenter selectClassNamed: 'TestClass'.
-	TestMessageBox plannedResult: #ok.	"expect dialog box saying class was renamed"
 	self projectsPresenter basicRenameClass: self projectsPresenter selectedClass to: 'RenamedClass'.
 	self assertIsNil: (self classListPresenter list
 				detect: [:classService | classService name asString = 'TestClass']
 				ifNone: []).
 	self assert: self classListPresenter selection name equals: 'RenamedClass']
-			ensure: 
-				[TestMessageBox disableJadeiteTestMessageBox.
-				self projectsPresenter basicRemoveClass: self classListPresenter selection]!
+			ensure: [self projectsPresenter basicRemoveClass: self classListPresenter selection]!
 
 test_classRenameNoReferencesHierarchy
 	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
@@ -1362,20 +1358,16 @@ test_classRenameNoReferencesHierarchy
 		superclass: 'Object'
 		instVars: #('inst1')
 		package: 'RowanSample1-Tests'.
-	TestMessageBox enableJadeiteTestMessageBox.
 	
 	[self projectsPresenter selectClassNamed: 'TestClass'.
 	self selectHierarchyTab.
 	self assert: self classHierarchyPresenter selection name equals: 'TestClass'.
-	TestMessageBox plannedResult: #ok.	"expect dialog box saying class was renamed"
 	self projectsPresenter basicRenameClass: self projectsPresenter selectedClass to: 'RenamedClass'.
 	self assertIsNil: (self classListPresenter list
 				detect: [:classService | classService name asString = 'TestClass']
 				ifNone: []).
 	self assert: self classHierarchyPresenter selection name equals: 'RenamedClass']
-			ensure: 
-				[TestMessageBox disableJadeiteTestMessageBox.
-				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_classRenameResetsClassDefinition
 	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
@@ -1385,16 +1377,33 @@ test_classRenameResetsClassDefinition
 		superclass: 'Object'
 		instVars: #('inst1')
 		package: 'RowanSample1-Tests'.
-	TestMessageBox enableJadeiteTestMessageBox.
 	
 	[self projectsPresenter selectClassNamed: 'TestClass'.
-	TestMessageBox plannedResult: #ok.	"expect dialog box saying class was renamed"
 	self projectsPresenter basicRenameClass: self projectsPresenter selectedClass to: 'RenamedClass'.
 	self assert: ('*Object rwSubclass: ''RenamedClass''*'
 				match: self projectsPresenter classDefinitionPresenter value)]
-			ensure: 
-				[TestMessageBox disableJadeiteTestMessageBox.
-				self projectsPresenter basicRemoveClass: self classListPresenter selection]!
+			ensure: [self projectsPresenter basicRemoveClass: self classListPresenter selection]!
+
+test_classRenameShowsMethods
+	"don't lose the method display on rename" 
+	| methodList | 
+	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #('inst1')
+		package: 'RowanSample1-Tests'.
+	
+	[self projectsPresenter selectClassNamed: 'TestClass'.
+	methodList := self methodListPresenter list. 
+	self projectsPresenter basicRenameClass: self projectsPresenter selectedClass to: 'RenamedClass'.
+	self assertIsNil: (self classListPresenter list
+				detect: [:classService | classService name asString = 'TestClass']
+				ifNone: []).
+	self assert: self classListPresenter selection name equals: 'RenamedClass'.
+	self assert: self methodListPresenter list equals: methodList.]
+			ensure: [self projectsPresenter basicRemoveClass: self classListPresenter selection]!
 
 test_classRenameWithReferences
 	| list |
@@ -3731,16 +3740,12 @@ test_renameClassMethodListUpdates
 	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list first
 				className
 		equals: 'RowanSample1Test'.
-	TestMessageBox enableJadeiteTestMessageBox.
-	TestMessageBox plannedResult: #ok.
 	self projectsPresenter basicRenameClass: self classListPresenter selection to: 'TestClassWasRenamed'.
-	
-	[self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list size
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list size
 		equals: 1.
 	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list first
 				className
-		equals: 'TestClassWasRenamed']
-			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+		equals: 'TestClassWasRenamed'!
 
 test_renameClassShowsAsDefiniedInPackage
 	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
@@ -3759,23 +3764,19 @@ test_renameClassShowsAsDefiniedInPackage
 	self selectServiceNamed: 'RowanSample1-Extensions' in: self packageListPresenter.
 	self selectServiceNamed: 'TestClassWasRenamed' in: self classListPresenter.
 	self assert: self classListPresenter selection isExtension.
-	self selectHierarchyTab. 
+	self selectHierarchyTab.
 	self assert: self classHierarchyPresenter selection isExtension.
 	self assert: self classHierarchyPresenter selection name equals: 'TestClassWasRenamed'.
 	self selectClassListTab.
-	
-	[TestMessageBox plannedResult: #ok.
 	self projectsPresenter basicRenameClass: self classListPresenter selection
-		to: 'TestClassWasRenamedAgain']
-			ensure: [TestMessageBox disableJadeiteTestMessageBox].
+		to: 'TestClassWasRenamedAgain'.
 	JadeiteRenameClassMethodListBrowser allInstances do: [:browser | browser view close].	"referenced methods browser is opened"
 	self assert: self classListPresenter selection isExtension.
 	self assert: self classListPresenter selection name equals: 'TestClassWasRenamedAgain'.
-	self selectHierarchyTab. 
+	self selectHierarchyTab.
 	self assert: self classHierarchyPresenter selection isExtension.
 	self assert: self classHierarchyPresenter selection name equals: 'TestClassWasRenamedAgain'.
-	self selectClassListTab.
-	!
+	self selectClassListTab!
 
 test_renameClassSUnitBrowserUpdates
 	| sunitBrowser |
@@ -3788,10 +3789,7 @@ test_renameClassSUnitBrowserUpdates
 	self assert: sunitBrowser primaryPresenter classListPresenter list size equals: 1.
 	self assert: sunitBrowser primaryPresenter classListPresenter list first name
 		equals: 'RowanSample1Test'.
-	TestMessageBox enableJadeiteTestMessageBox.
-	[TestMessageBox plannedResult: #ok.
-	self projectsPresenter basicRenameClass: self classListPresenter selection to: 'TestClassWasRenamed']
-			ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self projectsPresenter basicRenameClass: self classListPresenter selection to: 'TestClassWasRenamed'.
 	self assert: sunitBrowser primaryPresenter classListPresenter list size equals: 1.
 	self assert: sunitBrowser primaryPresenter classListPresenter list first name
 		equals: 'TestClassWasRenamed']
@@ -3801,20 +3799,13 @@ test_renameClassSwitchToHierarchyOk
 	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
 	self testsIssue: #issue465 withTitle: '(3.067) error after rename class in hierarchy view'.
 	self selectRowanSample1Class.
-	TestMessageBox enableJadeiteTestMessageBox.
-	
-	[TestMessageBox plannedResult: #ok.
-	self projectsPresenter basicRenameClass: self classListPresenter selection to: 'TestClassWasRenamed']
-			ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self projectsPresenter basicRenameClass: self classListPresenter selection to: 'TestClassWasRenamed'.
 	JadeiteRenameClassMethodListBrowser allInstances do: [:browser | browser view close].	"referenced methods browser is opened"
 	self assert: self classListPresenter selection name equals: 'TestClassWasRenamed'.
 	self selectHierarchyTab.
 	self assert: self classHierarchyPresenter selection name equals: 'TestClassWasRenamed'.
-	
-	[TestMessageBox plannedResult: #ok.
 	self projectsPresenter basicRenameClass: self classListPresenter selection
-		to: 'TestClassWasRenamedAgain']
-			ensure: [TestMessageBox disableJadeiteTestMessageBox].
+		to: 'TestClassWasRenamedAgain'.
 	JadeiteRenameClassMethodListBrowser allInstances do: [:browser | browser view close].	"referenced methods browser is opened"
 	self assert: self classHierarchyPresenter selection name equals: 'TestClassWasRenamedAgain'.
 	self selectClassListTab.
@@ -3829,17 +3820,11 @@ test_renameClassUpdatedInSecondBrowser
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
 	self assert: self classListPresenter selection name equals: 'RowanSample1'.
-	self assert: secondPresenter classListPresenter selection name equals: 'RowanSample1'. 
-	TestMessageBox enableJadeiteTestMessageBox.
-	
-	[TestMessageBox plannedResult: #ok.
-	self projectsPresenter basicRenameClass: self classListPresenter selection to: 'TestClassWasRenamed']
-			ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self assert: secondPresenter classListPresenter selection name equals: 'RowanSample1'.
+	self projectsPresenter basicRenameClass: self classListPresenter selection to: 'TestClassWasRenamed'.
 	JadeiteRenameClassMethodListBrowser allInstances do: [:browser | browser view close].	"referenced methods browser is opened"
 	self assert: self classListPresenter selection name equals: 'TestClassWasRenamed'.
-	self assert: secondPresenter classListPresenter selection name equals: 'TestClassWasRenamed'. 
-
-	!
+	self assert: secondPresenter classListPresenter selection name equals: 'TestClassWasRenamed'!
 
 test_renameClassUpdatedInSecondBrowserHierarchy
 	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
@@ -3852,11 +3837,7 @@ test_renameClassUpdatedInSecondBrowserHierarchy
 	self selectHierarchyTabIn: secondPresenter.
 	self assert: self classListPresenter selection name equals: 'RowanSample1'.
 	self assert: secondPresenter classListPresenter selection name equals: 'RowanSample1'.
-	TestMessageBox enableJadeiteTestMessageBox.
-	
-	[TestMessageBox plannedResult: #ok.
-	self projectsPresenter basicRenameClass: self classListPresenter selection to: 'TestClassWasRenamed']
-			ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self projectsPresenter basicRenameClass: self classListPresenter selection to: 'TestClassWasRenamed'.
 	JadeiteRenameClassMethodListBrowser allInstances do: [:browser | browser view close].	"referenced methods browser is opened"
 	self assert: self classListPresenter selection name equals: 'TestClassWasRenamed'.
 	self assert: secondPresenter classListPresenter selection name equals: 'TestClassWasRenamed'!
@@ -5385,6 +5366,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameNoReferences!public!test rename class!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameNoReferencesHierarchy!public!test rename class!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameResetsClassDefinition!public!test rename class!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameShowsMethods!public!test rename class!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameWithReferences!public!test rename class!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameWithReferencesFailingCompile!public!test rename class!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classRenameWithReferencesHierarchy!public!test rename class!tests! !
