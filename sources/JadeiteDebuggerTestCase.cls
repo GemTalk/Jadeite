@@ -1370,6 +1370,48 @@ testSaveMethod
 		assert: (session executeString: 'RowanSample1 new testMethod') equals: number]
 			ensure: [self destroy: projectsBrowser]!
 
+testSaveMethodDuringTestRun
+	| commandQuery |
+	self testsIssue: #issue512
+		withTitle: '"run selected" can get disabled after save in debugger (3.0.76)'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	commandQuery := self
+				queryCommand: #runSelected
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	commandQuery := self
+				queryCommand: #debug
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	session executeString: '(RowanSample1Test compiledMethodAt: #test1) setBreakAtStepPoint: 1'.
+	self
+		debuggerDo: [process := [self projectsPresenter runMethodTests] forkAt: Processor activePriority + 1];
+		getDebugger.
+	self debuggerDo: 
+			[debugger methodSourcePresenter documentPresenter
+				value: 'test1
+	"add comment. no-op change"
+	self assert: RowanSample1 new foo = ''foo''   '].
+	self debuggerDo: [debugger saveMethod].
+	self debuggerDo: [debugger resumeProcess].
+	commandQuery := self
+				queryCommand: #runSelected
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	commandQuery := self
+				queryCommand: #debug
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled]
+			ensure: [projectsBrowser view close]!
+
 testStackMenuEnablement
 	| frameContextMenu |
 	self testsIssue: #issue103 withTitle: 'debugger, ''Executed Code'' stack frame, pop up menu items'.
@@ -1503,6 +1545,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #testBug77!public! !
 !JadeiteDebuggerTestCase categoriesFor: #testErrorInPrintString!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testSaveMethod!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #testSaveMethodDuringTestRun!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testStackMenuEnablement!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testUnsavedChangesActionChangeFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testUnsavedChangesActionChangeToHomeFrame!public!tests! !
