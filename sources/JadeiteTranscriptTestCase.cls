@@ -10,6 +10,28 @@ JadeiteTranscriptTestCase comment: ''!
 !JadeiteTranscriptTestCase categoriesForClass!Unclassified! !
 !JadeiteTranscriptTestCase methodsFor!
 
+allTranscriptPresenters
+	" presenters that may care about menu enablement" 
+	| presenters |
+	presenters := OrderedCollection new.
+	presenters add: transcript.
+	presenters add: transcript allSessionsPresenter.
+	presenters add: transcript mySessionPresenter.
+	presenters add: transcript stoneInfoPresenter.
+	presenters add: transcript transcriptPresenter.
+	presenters add: transcript projectListPresenter.
+	^presenters!
+
+menuItemIsEnabledInAllPresenters: aSymbol
+	| commandQuery |
+	self allTranscriptPresenters do: 
+			[:presenter |
+			commandQuery := self
+						queryCommand: aSymbol
+						inPresenter: presenter
+						view: presenter view.
+			self assert: commandQuery isEnabled]!
+
 test_abortRemovesProjectsInAllBrowsers
 	| sunitBrowser |
 	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
@@ -135,6 +157,27 @@ test_browseClassReferencesMenuItem
 	self denyIsNil: browseClassReferencesItem.
 	self assert: browseClassReferencesItem command equals: #browseClassReferences.
 	self assert: (transcript class canUnderstand: #browseClassReferences)!
+
+test_browseClassReferencesMenuItemIsEnabled
+	"these presenters either inherit from JadePresenter or
+	(somehow) test the menu enablement through JadeTranscript"
+
+	| commandQuery presenters |
+	self testsIssue: #issue300
+		withTitle: '`would be nice to have `browse references to class` here as well'.
+	presenters := OrderedCollection new.
+	presenters add: transcript.
+	presenters add: transcript allSessionsPresenter.
+	presenters add: transcript mySessionPresenter.
+	presenters add: transcript stoneInfoPresenter.
+	presenters add: transcript transcriptPresenter.
+	presenters do: 
+			[:presenter |
+			commandQuery := self
+						queryCommand: #browseClassReferences
+						inPresenter: presenter
+						view: presenter view.
+			self assert: commandQuery isEnabled]!
 
 test_browseFindClassMenuItem
 	| browseMenu findClassMenuItem |
@@ -372,6 +415,8 @@ test_transcriptNamedConsole
 	self assert: transcript transcriptPresenter documentPresenter value isEmpty.
 	self assert: transcript transcriptPresenter documentPresenter view displayValue isEmpty]
 			ensure: [wasInstalled ifFalse: [transcript flipTranscript	"turn back off"]]! !
+!JadeiteTranscriptTestCase categoriesFor: #allTranscriptPresenters!private!support! !
+!JadeiteTranscriptTestCase categoriesFor: #menuItemIsEnabledInAllPresenters:!private!support! !
 !JadeiteTranscriptTestCase categoriesFor: #test_abortRemovesProjectsInAllBrowsers!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_abortTransaction!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_autoCommitOff!public!tests! !
@@ -379,6 +424,7 @@ test_transcriptNamedConsole
 !JadeiteTranscriptTestCase categoriesFor: #test_autoCommitSet!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseClassMenuItem!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseClassReferencesMenuItem!public!test menus! !
+!JadeiteTranscriptTestCase categoriesFor: #test_browseClassReferencesMenuItemIsEnabled!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseFindClassMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseImplementors!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseImplementorsMenuItem!public!test menus! !

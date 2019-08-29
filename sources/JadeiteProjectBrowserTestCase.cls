@@ -1385,9 +1385,12 @@ test_classRenameResetsClassDefinition
 			ensure: [self projectsPresenter basicRemoveClass: self classListPresenter selection]!
 
 test_classRenameShowsMethods
-	"don't lose the method display on rename" 
-	| methodList | 
+	"don't lose the method display on rename"
+
+	| methodList |
 	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
+	"essentially by not using the test dialog box we test Jadeite's part of the fix for #513. The rest was in Rowan"
+	self testsIssue: #issue513 withTitle: 'Class rename also updates method sends (3.0.76)'.
 	self selectRowanSample1Test.
 	self
 		saveClass: 'TestClass'
@@ -1396,13 +1399,13 @@ test_classRenameShowsMethods
 		package: 'RowanSample1-Tests'.
 	
 	[self projectsPresenter selectClassNamed: 'TestClass'.
-	methodList := self methodListPresenter list. 
+	methodList := self methodListPresenter list.
 	self projectsPresenter basicRenameClass: self projectsPresenter selectedClass to: 'RenamedClass'.
 	self assertIsNil: (self classListPresenter list
 				detect: [:classService | classService name asString = 'TestClass']
 				ifNone: []).
 	self assert: self classListPresenter selection name equals: 'RenamedClass'.
-	self assert: self methodListPresenter list equals: methodList.]
+	self assert: self methodListPresenter list equals: methodList]
 			ensure: [self projectsPresenter basicRemoveClass: self classListPresenter selection]!
 
 test_classRenameWithReferences

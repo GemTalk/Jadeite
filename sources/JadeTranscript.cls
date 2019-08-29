@@ -10,6 +10,12 @@ JadeTranscript comment: ''!
 !JadeTranscript categoriesForClass!Unclassified! !
 !JadeTranscript methodsFor!
 
+allSessionsPresenter
+	^allSessionsPresenter!
+
+allSessionsPresenter: anObject
+	allSessionsPresenter := anObject!
+
 autocompletion
 
 	JadeAutocompletationConfigurationShell show.
@@ -81,6 +87,12 @@ gciSession: aGciSession
 hasClassSideSelected
 	^false!
 
+historyPresenter
+	^historyPresenter!
+
+historyPresenter: anObject
+	historyPresenter := anObject!
+
 inspectOop
 
 	| string result |
@@ -92,6 +104,12 @@ inspectOop
 	result := gciSession executeString: 'Object _objectForOop: ' , string.
 	JadeInspector showOn: result session: gciSession.
 !
+
+mySessionPresenter
+	^mySessionPresenter!
+
+mySessionPresenter: anObject
+	mySessionPresenter := anObject!
 
 onCloseRequested: boolValueHolder
 	| answer |
@@ -164,6 +182,12 @@ sleepAndCommit
 	].
 !
 
+stoneInfoPresenter
+	^stoneInfoPresenter!
+
+stoneInfoPresenter: anObject
+	stoneInfoPresenter := anObject!
+
 transcriptPresenter
 	"Private - for tests" 
 	^transcriptPresenter!
@@ -177,6 +201,8 @@ turnAutoMigrateOn
 
 	gciSession executeString: 'MCPlatformSupport autoMigrate: true'.
 ! !
+!JadeTranscript categoriesFor: #allSessionsPresenter!accessing!private! !
+!JadeTranscript categoriesFor: #allSessionsPresenter:!accessing!private! !
 !JadeTranscript categoriesFor: #autocompletion!event handling!public! !
 !JadeTranscript categoriesFor: #browseMonticelloRepositories!event handling!public! !
 !JadeTranscript categoriesFor: #createComponents!public! !
@@ -186,13 +212,19 @@ turnAutoMigrateOn
 !JadeTranscript categoriesFor: #disableNativeCode!event handling!public! !
 !JadeTranscript categoriesFor: #gciSession:!private! !
 !JadeTranscript categoriesFor: #hasClassSideSelected!public! !
+!JadeTranscript categoriesFor: #historyPresenter!accessing!private! !
+!JadeTranscript categoriesFor: #historyPresenter:!accessing!private! !
 !JadeTranscript categoriesFor: #inspectOop!event handling!public! !
+!JadeTranscript categoriesFor: #mySessionPresenter!accessing!private! !
+!JadeTranscript categoriesFor: #mySessionPresenter:!accessing!private! !
 !JadeTranscript categoriesFor: #onCloseRequested:!event handling!public! !
 !JadeTranscript categoriesFor: #onIdleEntered!public! !
 !JadeTranscript categoriesFor: #onViewOpened!public!updating! !
 !JadeTranscript categoriesFor: #queryCommand:!public!updating! !
 !JadeTranscript categoriesFor: #resetCursor!event handling!public! !
 !JadeTranscript categoriesFor: #sleepAndCommit!event handling!public! !
+!JadeTranscript categoriesFor: #stoneInfoPresenter!accessing!private! !
+!JadeTranscript categoriesFor: #stoneInfoPresenter:!accessing!private! !
 !JadeTranscript categoriesFor: #transcriptPresenter!private! !
 !JadeTranscript categoriesFor: #turnAutoMigrateOff!event handling!public! !
 !JadeTranscript categoriesFor: #turnAutoMigrateOn!event handling!public! !

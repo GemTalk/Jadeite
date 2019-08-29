@@ -288,6 +288,12 @@ removeQuotesFromSelection
 selectAll
 	^self editSelectAll!
 
+selectedClassName
+	"assume the selection is the class name" 
+	self halt. 
+	^documentPresenter selection
+	!
+
 selectionChanging: aSelectionChangingEvent 
 
 	(documentPresenter view isKindOf: DeafObject) ifTrue: [^self].
@@ -461,6 +467,7 @@ updateCodeFont
 !CodeSourcePresenter categoriesFor: #removeMenu!menus!public! !
 !CodeSourcePresenter categoriesFor: #removeQuotesFromSelection!edit!private! !
 !CodeSourcePresenter categoriesFor: #selectAll!public! !
+!CodeSourcePresenter categoriesFor: #selectedClassName!public! !
 !CodeSourcePresenter categoriesFor: #selectionChanging:!public! !
 !CodeSourcePresenter categoriesFor: #selectLfIfEndingOnCr!edit!private! !
 !CodeSourcePresenter categoriesFor: #setBreakAtStepPoint:!Breakpoints!public! !
