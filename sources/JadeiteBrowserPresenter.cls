@@ -102,6 +102,9 @@ basicUnloadProjects: projectNames
 	super basicUnloadProjects: projectNames.
 	dictionaryPresenter model: ListModel new!
 
+browseClassReferences
+	^JadePresenter browseClassReferences: self selectedClassName session: self gciSession!
+
 browseGlobalClass
 	| selection |
 	selection := globalsTab selectionIfNone: [^self].
@@ -735,6 +738,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #basicRemoveDictionaries:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicRemoveGlobal:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicUnloadProjects:!menu handlers support!private! !
+!JadeiteBrowserPresenter categoriesFor: #browseClassReferences!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #browseGlobalClass!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #browseGlobalReferences!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #buildGlobalsTab!private!tabs! !

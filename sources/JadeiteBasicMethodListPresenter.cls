@@ -24,6 +24,9 @@ browseClass
 	selector := methodListPresenter selection selector.
 	^Cursor wait showWhile: [self openProjectBrowserOn: classService selector: selector]!
 
+browseClassReferences
+	^JadePresenter browseClassReferences: self selectedClassName session: self gciSession!
+
 browseHierarchyImplementors
 	^self browseHierarchyImplementorsOf: methodListPresenter selection selector className: methodListPresenter selection className!
 
@@ -90,6 +93,7 @@ selections
 	^methodListPresenter selections! !
 !JadeiteBasicMethodListPresenter categoriesFor: #basicRemoveMethods!private! !
 !JadeiteBasicMethodListPresenter categoriesFor: #browseClass!menu handlers!public! !
+!JadeiteBasicMethodListPresenter categoriesFor: #browseClassReferences!menu handlers!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #browseHierarchyImplementors!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #browseHierarchySenders!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #methodListPresenter!accessing!public! !
