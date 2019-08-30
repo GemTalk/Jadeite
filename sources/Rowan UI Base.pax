@@ -321,6 +321,7 @@ package methodNames
 	add: #Presenter -> #updateReady:;
 	add: #Presenter -> #updateSelectionsFor:;
 	add: #Presenter -> #updateSelectionsForUpdate:;
+	add: #ProcessorScheduler -> #userBreak:;
 	add: #RowanCommandResult -> #autoCommitUpdate:;
 	add: #RowanCommandResult -> #basicPrepareForReplication;
 	add: #RowanCommandResult -> #classCategoryUpdate:;
@@ -4304,6 +4305,18 @@ updateSelectionsForUpdate: update
 !Presenter categoriesFor: #updateReady:!public!rowan! !
 !Presenter categoriesFor: #updateSelectionsFor:!public!rowan! !
 !Presenter categoriesFor: #updateSelectionsForUpdate:!public!rowan! !
+
+!ProcessorScheduler methodsFor!
+
+userBreak: interruptArg 
+	"Private - The user pressed the interrupt key combination (e.g. CTRL+BREAK) to interrupt the
+	active process. Forward to the SessionManager as the response will depend on the application
+	requirements."
+	GciSession current softBreak. 
+	self enableInterrupts.
+	SessionManager current onUserBreak.
+	[GciSession current executeString: '3+4'] fork. "do something to trigger the softBreak handling" ! !
+!ProcessorScheduler categoriesFor: #userBreak:!interrupts-handling!private! !
 
 !RowanCommandResult methodsFor!
 
