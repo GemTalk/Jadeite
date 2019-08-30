@@ -321,6 +321,7 @@ package methodNames
 	add: #Presenter -> #updateReady:;
 	add: #Presenter -> #updateSelectionsFor:;
 	add: #Presenter -> #updateSelectionsForUpdate:;
+	add: #ProcessorScheduler -> #userBreak:;
 	add: #RowanCommandResult -> #autoCommitUpdate:;
 	add: #RowanCommandResult -> #basicPrepareForReplication;
 	add: #RowanCommandResult -> #classCategoryUpdate:;
@@ -466,6 +467,7 @@ package setPrerequisites: (IdentitySet new
 	add: 'Monticello';
 	add: 'Object Log Browser';
 	add: 'Rowan STON';
+	add: 'Rowan UI Base PreInstall';
 	add: '..\Core\Object Arts\Dolphin\System\Compiler\Smalltalk Parser';
 	add: '..\Core\Contributions\ITC Gorisek\Source Tracking System';
 	add: '..\Core\Contributions\Solutions Software\SSW EditableListView';
@@ -473,6 +475,9 @@ package setPrerequisites: (IdentitySet new
 	add: '..\Core\Object Arts\Dolphin\ActiveX\Components\VBScript\VBScript Regular Expressions';
 	add: '..\Core\Object Arts\Dolphin\ActiveX\Shell\Windows Shell';
 	yourself).
+
+package setManualPrerequisites: #(
+	'Rowan UI Base PreInstall').
 
 package!
 
@@ -4304,6 +4309,19 @@ updateSelectionsForUpdate: update
 !Presenter categoriesFor: #updateReady:!public!rowan! !
 !Presenter categoriesFor: #updateSelectionsFor:!public!rowan! !
 !Presenter categoriesFor: #updateSelectionsForUpdate:!public!rowan! !
+
+!ProcessorScheduler methodsFor!
+
+userBreak: interruptArg
+	"Private - The user pressed the interrupt key combination (e.g. CTRL+BREAK) to interrupt the active process. Forward to the SessionManager as the response will depend on the application
+requirements."
+
+	"Jadeite override - interrupt the server process with a soft break every time" 
+	GciSession current ifNotNil: [:session | session softBreak].
+	self enableInterrupts.
+	[SessionManager current onUserBreak]
+		ensure: [[GciSession current ifNotNil: [:session | session executeString: '3+4']] fork]	"do something to trigger the softBreak handling"! !
+!ProcessorScheduler categoriesFor: #userBreak:!private! !
 
 !RowanCommandResult methodsFor!
 
