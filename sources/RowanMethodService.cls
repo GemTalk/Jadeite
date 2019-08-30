@@ -66,8 +66,6 @@ appendToSourceMenu: aMenu presenter: methodSourcePresenter
 	aMenu addCommand: menuCommand description: 'Browse Senders of ' , messageSelector printString!
 
 basicPrepareForReplication
-	stepPoints := Array new.
-	breakPoints := Array new.
 	testRunClassName := nil!
 
 basicSubSuperIcon
