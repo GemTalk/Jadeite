@@ -37,6 +37,7 @@ package methodNames
 	add: #Dictionary -> #stonOn:;
 	add: #Dictionary -> #stonProcessSubObjects:;
 	add: #Integer -> #stonOn:;
+	add: #Interval -> #stonOn:;
 	add: #Number -> #stonContainSubObjects;
 	add: #Number -> #stonOn:;
 	add: #Object -> #fromSton:;
@@ -469,6 +470,12 @@ fromSton: stonReader
 stonOn: stonWriter
 	stonWriter writeInteger: self! !
 !Integer categoriesFor: #stonOn:!must not strip!public!ston! !
+
+!Interval methodsFor!
+
+stonOn: stonWriter
+	stonWriter writeObject: self! !
+!Interval categoriesFor: #stonOn:!public!ston! !
 
 !Interval class methodsFor!
 

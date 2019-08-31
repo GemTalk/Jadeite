@@ -801,6 +801,33 @@ test_restartInBlock
 				[self projectsPresenter clearBreakPointAt: 8 in: self projectsPresenter.	"inside the block"
 				self destroy: projectsBrowser]!
 
+test_runningTestDoesNotLoseStepPoint
+	self testsIssue: #issue226 withTitle: 'have to reset method in order to disable a break point'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'AST-Kernel-Tests-Core' in: self packageListPresenter.
+	self projectsPresenter isHierarchyTabSelected
+		ifTrue: 
+			[self selectTreeServicesNamed: (Array with: 'RBGemStoneNumberParserTest')
+				in: self classHierarchyPresenter]
+		ifFalse: [self selectServiceNamed: 'RBGemStoneNumberParserTest' in: self classListPresenter].
+	self selectMethodNamed: #testNumberParser.
+	session
+		executeString: '(RBGemStoneNumberParserTest compiledMethodAt: #testNumberParser) setBreakAtStepPoint: 2'.
+	self projectsPresenter updateService: self methodListPresenter selection.
+	
+	[self
+		debuggerDo: [process := [self projectsPresenter runMethodTests] forkAt: Processor activePriority + 1];
+		getDebugger.
+	self debuggerDo: [debugger resumeProcess].
+	self assert: self projectsPresenter isSunitTabSelected.
+	self projectsPresenter selectMethodSourceTab.
+	self assert: self methodListPresenter selections first stepPoints notEmpty]
+			ensure: 
+				[session
+					executeString: '(RBGemStoneNumberParserTest compiledMethodAt: #testNumberParser) clearBreakAtStepPoint: 2']!
+
 test_selectAfterDiveNoStepPoint
 	self testsIssue: #issue166
 		withTitle: 'Debugger step with unsaved edits results in empty source pane'.
@@ -1520,6 +1547,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reloadWithDebuggerOpen!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_restartInBlock!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_runningTestDoesNotLoseStepPoint!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_selectAfterDiveNoStepPoint!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_selectBlockContext!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_sendersFromDebugger!public!tests! !
