@@ -199,6 +199,7 @@ package methodNames
 	add: #JadePresenter -> #refreshGlobalSelections;
 	add: #JadePresenter -> #remoteAutoCommit;
 	add: #JadePresenter -> #reportCompileError:in:;
+	add: #JadePresenter -> #selectionRangeFrom:source:;
 	add: #JadePresenter -> #serviceFromSelection:;
 	add: #JadePresenter -> #setCompileErrorColor;
 	add: #JadePresenter -> #setCompileWarningColor;
@@ -2089,20 +2090,27 @@ reportCompileError: anArrayOfArray in: methodSourcePresenter
 	stream := WriteStream on: String new.
 	anArrayOfArray do: 
 			[:eachArray |
-			| start range |
-			start := eachArray at: 2.
-			source size - start >= 10 ifFalse: [start := source size - 10].
-			range := start to: (start + 10 min: source size).
+			| range |
+			range := self selectionRangeFrom: eachArray source: source.
 			string := eachArray at: 3.
 			stream nextPutAll: string , '; '.
 			indicators add: (ScintillaIndicator
 						styleName: 1
 						range: range
 						tag: string)].
+	"to help visibility, select first compile failure range"
+	methodSourcePresenter view
+		selectionRange: (self selectionRangeFrom: anArrayOfArray first source: source).
 	methodSourcePresenter view backcolor: JadeTextStyles default colorForCompileError.
 	methodSourcePresenter view indicators: indicators.
 	string := stream contents.
 	self insertCompileErrorText: string into: methodSourcePresenter!
+
+selectionRangeFrom: eachArray source: source
+	| start |
+	start := eachArray at: 2.
+	source size - start >= 10 ifFalse: [start := source size - 10].
+	^start to: (start + 10 min: source size)!
 
 serviceFromSelection: sourcePresenter
 	| range className classService |
@@ -2154,6 +2162,7 @@ updateServices: services
 !JadePresenter categoriesFor: #refreshGlobalSelections!menu handlers!public! !
 !JadePresenter categoriesFor: #remoteAutoCommit!browsing support!public! !
 !JadePresenter categoriesFor: #reportCompileError:in:!compile support!public! !
+!JadePresenter categoriesFor: #selectionRangeFrom:source:!compile support!private! !
 !JadePresenter categoriesFor: #serviceFromSelection:!menu handlers!menu handlers support!private! !
 !JadePresenter categoriesFor: #setCompileErrorColor!compile support!public! !
 !JadePresenter categoriesFor: #setCompileWarningColor!compile support!public! !
