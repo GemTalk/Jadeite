@@ -35,6 +35,12 @@ isTranscriptInstalledIn: session
 	BrowserUpdate current issueCommand: (Array with: self) session: session.
 	^answer!
 
+needsCommit: session
+	command := #needsCommit.
+	self commandArgs: Array new.
+	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	^answer!
+
 setAutoCommit: boolean for: session
 	command := #setAutoCommit:. 
 	self commandArgs: (Array with: boolean). 
@@ -46,5 +52,6 @@ setAutoCommit: boolean for: session
 !RowanAnsweringService categoriesFor: #flipTranscriptIn:!commands!public! !
 !RowanAnsweringService categoriesFor: #isAnsweringService!public!testing! !
 !RowanAnsweringService categoriesFor: #isTranscriptInstalledIn:!commands!public! !
+!RowanAnsweringService categoriesFor: #needsCommit:!commands!public! !
 !RowanAnsweringService categoriesFor: #setAutoCommit:for:!commands!public! !
 

@@ -40,6 +40,20 @@ classHierarchyPresenter
 classListPresenter
 	^self projectsPresenter classListPresenter!
 
+cleanupExistingWindows
+	JadeWorkspace allInstances do: [:ws | self cleanupTextPaneForClose: ws].	"otherwise the test will hang"
+	JadeiteTranscript allInstances do: [:text | self cleanupTextPaneForClose: text].
+	JadeiteBrowserPresenter allInstances do: 
+			[:presenter |
+			presenter methodSourcePresenter view isModified: false.
+			presenter classDefinitionPresenter view isModified: false]!
+
+cleanupTextPaneForClose: ws
+	^ws codePane documentPresenter view isModified
+		ifTrue: 
+			[ws codePane documentPresenter view isModified: false.
+			ws codePane documentPresenter value: nil]!
+
 cloneRowanSample1
 	JadeiteTestResource current cloneRowanSample1!
 
@@ -511,6 +525,8 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #categoryListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #classHierarchyPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #classListPresenter!private!project browser support! !
+!JadeiteAbstractTestCase categoriesFor: #cleanupExistingWindows!public!support! !
+!JadeiteAbstractTestCase categoriesFor: #cleanupTextPaneForClose:!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #cloneRowanSample1!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #commitTransaction!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #createDebuggerTestMethod!issue test support!private! !

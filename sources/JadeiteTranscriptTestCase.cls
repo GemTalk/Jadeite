@@ -277,6 +277,45 @@ test_browseSendersMenuItem
 	self assert: browseSendersItem command equals: #browseSendersOf.
 	self assert: (transcript class canUnderstand: #browseSendersOf)!
 
+test_closeConsoleNeedingCommit
+	"expect dialog asking for commit"
+
+	self testsIssue: #issue267 withTitle: 'logout closes project browsers but not method list browsers'.
+	self cleanupExistingWindows.
+	session executeString: 'UserGlobals at: #test_closeConsoleNeedingCommit put: 123'.	"we now need a commit"
+	
+	[TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #yes.	"commit"
+	[[transcript view close] ensure: [TestMessageBox disableJadeiteTestMessageBox]] ensure: 
+			[JadeiteLoginShell allInstances first login.
+			self resources do: 
+					[:resource |
+					resource current
+						tearDown;
+						setUp.
+					self setUp]].
+	self
+		denyIsNil: (session executeString: 'UserGlobals at: #test_closeConsoleNeedingCommit ifAbsent:[]').
+	self assert: (session executeString: 'UserGlobals at: #test_closeConsoleNeedingCommit') equals: 123]
+			ensure: 
+				[session executeString: 'UserGlobals removeKey: #test_closeConsoleNeedingCommit'.
+				self commitTransaction]!
+
+test_closeConsoleNoCommitNeeded
+	"expect dialog asking for commit"
+
+	self testsIssue: #issue267 withTitle: 'logout closes project browsers but not method list browsers'.
+	self cleanupExistingWindows.
+	self abortTransaction.
+	self deny: (session executeString: 'System needsCommit').
+	[transcript view close	"no dialog appears. test would hang otherwise"] ensure: 
+			[JadeiteLoginShell allInstances first login.
+			self resources do: 
+					[:resource |
+					resource current
+						tearDown;
+						setUp]]!
+
 test_commitTransaction
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
 	self cloneRowanSample1.
@@ -433,6 +472,8 @@ test_transcriptNamedConsole
 !JadeiteTranscriptTestCase categoriesFor: #test_browseProjectsMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseSenders!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseSendersMenuItem!public!test menus! !
+!JadeiteTranscriptTestCase categoriesFor: #test_closeConsoleNeedingCommit!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_closeConsoleNoCommitNeeded!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_commitTransaction!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_jadeiteMenuAdHocExecutionItems!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_menuNames!public!tests! !

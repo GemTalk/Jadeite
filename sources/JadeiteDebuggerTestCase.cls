@@ -342,6 +342,7 @@ test_compileError
 
 	self assert: '''.
 	self debuggerDo: [debugger saveMethod].
+	self assert: debugger methodSourcePresenter documentPresenter view selectionRange equals: (24 to: 34).
 	self assert: debugger statusBarText
 		equals: 'missing end of literal mark (prime); expected a primary expression'.
 	self assert: debugger statusTextPresenter view backcolor equals: Color red faded.

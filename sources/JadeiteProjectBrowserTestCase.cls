@@ -42,20 +42,6 @@ assertAncestry: family in: presenter
 			[:parent :children |
 			self assert: children asOrderedCollection equals: (presenter model childrenOf: parent)]!
 
-cleanupExistingWindows
-	JadeWorkspace allInstances do: [:ws | self cleanupTextPaneForClose: ws].	"otherwise the test will hang"
-	JadeiteTranscript allInstances do: [:text | self cleanupTextPaneForClose: text].
-	JadeiteBrowserPresenter allInstances do: 
-			[:presenter |
-			presenter methodSourcePresenter view isModified: false.
-			presenter classDefinitionPresenter view isModified: false]!
-
-cleanupTextPaneForClose: ws
-	^ws codePane documentPresenter view isModified
-		ifTrue: 
-			[ws codePane documentPresenter view isModified: false.
-			ws codePane documentPresenter value: nil]!
-
 currentTabView
 	^self projectsPresenter topShell cardsPresenter view cardLayout currentCard!
 
@@ -1819,6 +1805,19 @@ test_compileClassCompilerError
 			ensure: 
 				[self projectsPresenter classDefinitionPresenter view isModified: false.
 				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
+
+test_compileErrorDisplay
+	| source |
+	self testsIssue: #issue459 withTitle: 'CompileWarnings should be more noticable ... '.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	source := 'test1 self assert: RowanSample1 new foo = ''abc'.	"won't compile"
+	self methodSourcePresenter value: source.
+	self assert: self methodSourcePresenter isModified.
+	self projectsPresenter editSaveMethod.
+	self assert: self methodSourcePresenter view selectionRange equals: (37 to: 47).
+	self assert: self projectsPresenter statusBarText view forecolor equals: Color black.
+	self assert: self projectsPresenter statusBarText view backcolor equals: Color red faded!
 
 test_confirmOverrideExistingAccessorMethods
 	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
@@ -5292,8 +5291,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodGoo!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodHoo!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #assertAncestry:in:!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #cleanupExistingWindows!public!support! !
-!JadeiteProjectBrowserTestCase categoriesFor: #cleanupTextPaneForClose:!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #currentTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #dirtyProjectForChangeBrowser!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #executeStringInOtherSession:!public!support! !
@@ -5385,6 +5382,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_comparisonTabSuperclass!public!test comparison tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_compileClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_compileClassCompilerError!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_compileErrorDisplay!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_confirmOverrideExistingAccessorMethods!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab!tests! !

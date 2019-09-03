@@ -609,6 +609,11 @@ test_compileErrorDisplayGoesAway
 	self methodListSourcePresenter documentPresenter value: source.
 	self assert: self methodListSourcePresenter documentPresenter isModified.
 	self methodListSourcePresenter editSaveMethod.
+	self
+		assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter selectionRange
+		equals: (7 to: 17).
+	self assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter value size
+		equals: 17.	"selection goes up to end"
 	self assert: (methodListBrowser view viewNamed: 'statusBarField') forecolor equals: Color black.
 	self assert: (methodListBrowser view viewNamed: 'statusBarField') backcolor equals: Color red faded.
 	self assert: (methodListBrowser view viewNamed: 'statusBarField') model value
