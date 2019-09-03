@@ -328,7 +328,7 @@ renamedClassInHierarchy: presenter browser: anObject
 			(self equalBeforeRename: classService)
 				ifTrue: 
 					[| parent children wasSelected |
-					wasSelected := presenter selection = classService.
+					wasSelected := (presenter selectionIfNone:[]) = classService.
 					parent := presenter model parentOf: classService.
 					children := presenter model getChildrenOf: classService.
 					children do: [:child | presenter model remove: child ifAbsent: []].

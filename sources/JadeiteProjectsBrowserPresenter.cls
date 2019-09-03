@@ -99,6 +99,13 @@ basicAddMethodCategory: string
 			self issueCommand: (Array with: service)].
 	self selectCategoriesNamed: (Array with: string)!
 
+basicCopyClass: oldClassService to: newClassName
+	oldClassService
+		command: #copyClassTo:;
+		commandArgs: (Array with: newClassName).
+	self issueCommand: (Array with: oldClassService).
+	self updateAfterFindClass: (RowanClassService new name: newClassName)!
+
 basicOnDropClassList: dragDropSession
 	| classService failedCompilations newSelections |
 	failedCompilations := OrderedCollection new.
@@ -292,13 +299,14 @@ classesMenuStrings
 				browseClassReferences;
 				fileOutClass;
 				addSubclass;
+				copyClass;
 				renameClass;
 				removeClass;
 				removePriorVersions;
 				showSUnitBrowserOnClass].
 	definedLabel := self definedClassMenuItemLabel.
 	containedDictionaryLabel := self containedDictionaryLabel. 
-	menuStrings := #('&Classes' '&Browse Class References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' '&File Out Class//fileOutClass' 'Add &Subclass//addSubclass' '&Rename //renameClass' '&Remove//removeClass' '-' 'Set Compiler &Environment ...//setEnvironment'  '-')
+	menuStrings := #('&Classes' '&Browse Class References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' '&File Out Class//fileOutClass' 'Add &Subclass//addSubclass' '&Rename ... //renameClass' 'Copy ...//copyClass' '&Remove//removeClass' '-' 'Set Compiler &Environment ...//setEnvironment'  '-')
 				asOrderedCollection.
 	menuStrings addLast: definedLabel , '//gotoClassDefinedPackage'.
 	menuStrings addLast: containedDictionaryLabel, '//gotoDictionary'. 
@@ -364,6 +372,17 @@ containedDictionaryLabel
 	self selectedClass
 		ifNotNil: [:classService | containedDictionary := containedDictionary , ' (' , classService dictionaryName , ')'].
 	^containedDictionary!
+
+copyClass
+	| oldClassService newClassName |
+	oldClassService := self selectedClass ifNil: [^MessageBox notify: 'Class must be selected'].
+	(newClassName := Prompter
+				on: oldClassService name
+				prompt: 'Copy ' , oldClassService name , ' to:'
+				caption: 'Copy class') isNil
+		ifTrue: [^self].
+	self basicCopyClass: oldClassService to: newClassName.
+!
 
 copyProjectInfo
 	projectInfoTab selection last ifNil:[^self]. 
@@ -2322,6 +2341,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #autoCommit!accessing!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #autoCommit:!initialize/release!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicAddMethodCategory:!menu handlers support!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #basicCopyClass:to:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicOnDropClassList:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicProjectTabLabel!displaying!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveClass:!menu handlers support!private! !
@@ -2349,6 +2369,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #confirmCategoryRemoval:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #confirmOverwriteAccessor!menu handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #containedDictionaryLabel!menus!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #copyClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #copyProjectInfo!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!public! !

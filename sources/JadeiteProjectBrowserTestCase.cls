@@ -1128,6 +1128,37 @@ test_classColoringExtension
 	self assert: (classService shouldColorAsExtension: self projectsPresenter)]
 			ensure: [self destroy: sunitBrowser]!
 
+test_classCopy
+	self testsIssue: #issue506 withTitle: 'Usefful to be able to copy a class ...'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
+	self projectsPresenter isHierarchyTabSelected
+		ifTrue: [self selectTreeServicesNamed: (Array with: 'RowanSample1') in: self classHierarchyPresenter]
+		ifFalse: [self selectServiceNamed: 'RowanSample1' in: self classListPresenter].
+	self projectsPresenter basicCopyClass: self projectsPresenter selectedClass to: 'Fnoodle'.
+	self assert: self projectsPresenter selectedClass name equals: 'Fnoodle'.
+	self assert: self categoryListPresenter list first equals: 'accessing'.
+	self assert: self methodListPresenter list first selector equals: #foo.
+	self selectClassTab.
+	self assert: self categoryListPresenter list first equals: '*rowansample1-extensions'.
+	self assert: self methodListPresenter list first selector equals: #bar!
+
+test_classCopyHierarchy
+	self testsIssue: #issue506 withTitle: 'Usefful to be able to copy a class ...'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
+	self projectsPresenter isHierarchyTabSelected
+		ifTrue: [self selectTreeServicesNamed: (Array with: 'RowanSample1') in: self classHierarchyPresenter]
+		ifFalse: [self selectServiceNamed: 'RowanSample1' in: self classListPresenter].
+	self selectHierarchyTab.
+	self projectsPresenter basicCopyClass: self projectsPresenter selectedClass to: 'Fnoodle'.
+	self assert: self projectsPresenter selectedClass name equals: 'Fnoodle'.
+	self assert: self categoryListPresenter list first equals: 'accessing'.
+	self assert: self methodListPresenter list first selector equals: #foo.
+	self selectClassTab.
+	self assert: self categoryListPresenter list first equals: '*rowansample1-extensions'.
+	self assert: self methodListPresenter list first selector equals: #bar!
+
 test_classDefinitionTemplateAfterRemove
 	self testsIssue: #issue449 withTitle: '(3.0.63) missing class definition template in empty package'.
 	self selectRowanSample1Test.
@@ -5356,6 +5387,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeVariableWithModifiedMethodSource!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classColoring!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classColoringExtension!public!test class hierarchy!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classCopy!public!test class list!test sunit tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_classCopyHierarchy!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionTemplateAfterRemove!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionTemplateAfterRemoveInHierarchy!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionUpdatesAcrossTabs!public!test two browsers!tests! !
