@@ -2642,6 +2642,17 @@ test_goToDefinedClassFromClassList
 	self assert: self classListPresenter selection name = 'RwGsPlatform'.
 	self assert: self packageListPresenter selection name = 'Rowan-GemStone-Core'!
 
+test_goToDefinedClassFromClassListViaButton
+	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Services-Extensions') in: self packageListPresenter.
+	self selectServicesNamed: (Array with: 'RwGsPlatform') in: self classListPresenter.
+	self assert: self projectsPresenter isClassListTabSelected.
+	self assert: self projectsPresenter definedClassPackageText view command
+		equals: #gotoClassDefinedPackageViaButton.
+	self projectsPresenter gotoClassDefinedPackageViaButton.
+	self assert: self classListPresenter selection name = 'RwGsPlatform'.
+	self assert: self packageListPresenter selection name = 'Rowan-GemStone-Core'!
+
 test_goToDefinedClassFromHierarchy
 	| gotoClass |
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
@@ -2655,6 +2666,23 @@ test_goToDefinedClassFromHierarchy
 	self deny: self projectsPresenter isClassListTabSelected.
 	self selectClassInHierarchyNamed: 'RwGemStoneSpecification'.
 	self projectsPresenter gotoClassDefinedPackage.
+	self assert: self packageListPresenter selection name = 'Rowan-GemStone-Specifications'!
+
+test_goToDefinedClassFromHierarchyViaButton
+	| gotoClass |
+	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Specifications') in: self packageListPresenter.
+	self selectServicesNamed: (Array with: 'RwPlatformSpecification') in: self classListPresenter.
+	gotoClass := self classListPresenter list
+				detect: [:classService | classService name = 'RwGemStoneSpecification']
+				ifNone: [].
+	self assertIsNil: gotoClass.	"Our guy is an extension"
+	self selectHierarchyTab.
+	self deny: self projectsPresenter isClassListTabSelected.
+	self selectClassInHierarchyNamed: 'RwGemStoneSpecification'.
+	self assert: self projectsPresenter definedClassPackageText view command
+		equals: #gotoClassDefinedPackageViaButton.
+	self projectsPresenter gotoClassDefinedPackageViaButton.
 	self assert: self packageListPresenter selection name = 'Rowan-GemStone-Specifications'!
 
 test_goToDefinedMethodFromClassList
@@ -2696,6 +2724,23 @@ test_goToDefinedMethodFromHierarchy
 	self selectMethodNamed: #classServiceClass.
 	self deny: self projectsPresenter isClassListTabSelected.
 	self projectsPresenter gotoMethodDefinedPackage.
+	self assert: self packageListPresenter selection name = 'Rowan-Services-Extensions'.
+	self assert: self classListPresenter selection name = 'RwGsPlatform'.
+	self assert: self categoryListPresenter selection = '*rowan-services-extensions'.
+	self assert: self methodListPresenter selection selector = #classServiceClass.
+	self assert: self projectsPresenter isClassListTabSelected	"make my life easier by forcing the class side to be seleted"!
+
+test_goToDefinedMethodFromHierarchyViaButton
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Extensions' in: self packageListPresenter.
+	self selectServiceNamed: 'RwGsPlatform' in: self classListPresenter.
+	self selectHierarchyTab.
+	self selectCategoryNamed: '*rowan-services-extensions'.
+	self selectMethodNamed: #classServiceClass.
+	self deny: self projectsPresenter isClassListTabSelected.
+	self assert: self projectsPresenter definedMethodPackageText view command
+		equals: #gotoMethodDefinedPackageViaButton.
+	self projectsPresenter gotoMethodDefinedPackageViaButton.
 	self assert: self packageListPresenter selection name = 'Rowan-Services-Extensions'.
 	self assert: self classListPresenter selection name = 'RwGsPlatform'.
 	self assert: self categoryListPresenter selection = '*rowan-services-extensions'.
@@ -5452,10 +5497,13 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_getClassCommentWithDeprecationsOn!public!test class list!test deprecated!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gitBranchesDoesNotShowHead!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassListViaButton!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromHierarchy!public!test class hierarchy!test defined package!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromHierarchyViaButton!public!test class hierarchy!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromClassList!public!test class list!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromClassListClassSide!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromHierarchy!public!test class hierarchy!test defined package!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromHierarchyViaButton!public!test class hierarchy!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedMethodNotSameAsClass!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedPackage!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyCleanedUpAfterUnload!public!test class hierarchy!test projects!tests! !
