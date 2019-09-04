@@ -393,8 +393,8 @@ createComponents
 	projectListPresenter := self add: ListPresenter new name: 'projectList'.
 	packageListPresenter := self add: ListPresenter new name: 'packagesList'.
 	comparisonPresenter := self add: DifferencesPresenter new name: 'comparisonTab'.
-	definedClassPackageText := self add: TextPresenter new name: 'definedPackageClassText'.
-	definedMethodPackageText := self add: TextPresenter new name: 'definedPackageMethodText'.
+	definedClassPackageText := self add: Presenter new name: 'definedPackageClassText'.
+	definedMethodPackageText := self add: Presenter new name: 'definedPackageMethodText'.
 	methodCategoryText := self add: TextPresenter new name: 'categoryMethodText'.
 	statusBarText := self add: TextPresenter new name: 'statusBarField'!
 
@@ -878,7 +878,19 @@ gotoClass
 gotoClassDefinedPackage
 	" find will go to the class in it's defined package project"
 
-	^self updateAfterFindClass: self selectedClass!
+	| selectedCategory selectedMethod |
+	selectedCategory := categoryListPresenter selectionIfNone: [].
+	selectedMethod := methodListPresenter selectionIfNone: [].
+	self updateAfterFindClass: self selectedClass.
+	selectedCategory ifNotNil: [:category | categoryListPresenter selection: category].
+	selectedMethod
+		ifNotNil: 
+			[methodListPresenter selection: (methodListPresenter list
+						detect: [:methodService | methodService selector = selectedMethod selector]).	"It better be there"
+			self updateMenuBar	"to refresh method menu"]!
+
+gotoClassDefinedPackageViaButton
+	^self gotoClassDefinedPackage!
 
 gotoDictionary
 	" find will go to the class in the dictionary it lives"
@@ -903,6 +915,9 @@ gotoMethodDefinedPackage
 	methodListPresenter selection: (methodListPresenter list
 				detect: [:methodService | methodService selector = selectedMethod selector])	"It better be there".
 	self updateMenuBar. "to refresh method menu"!
+
+gotoMethodDefinedPackageViaButton
+	^self gotoMethodDefinedPackage!
 
 gotoPackageNamed: packageName
 	| packageService |
@@ -1203,7 +1218,11 @@ onViewOpened
 	self setupPackageMenu.
 	self updateMenuBar.
 	self updateProjects.
-	self updateAutoCommit!
+	self updateAutoCommit.
+	definedClassPackageText view isMultiline: false.
+	definedClassPackageText view alignment: #left.
+	definedMethodPackageText view isMultiline: false.
+	definedMethodPackageText view alignment: #left!
 
 pkgsMenuStrings
 	0 == 1
@@ -1715,7 +1734,7 @@ resetClassTemplate
 	self resetClassDefinitionPane!
 
 resetDefinedClassPackage
-	definedClassPackageText value: String new!
+	definedClassPackageText view text: String new.!
 
 runAndMesureTime
 	| selections |
@@ -2100,7 +2119,7 @@ updateClassInfo
 	self setTestClass: service.
 	classDefinitionPresenter ensureVisible.
 	self sundryCleanup.
-	definedClassPackageText value: 'Defined Package: ' , self selectedClass definedPackageName.
+	definedClassPackageText view text: 'Defined Package: ' , self selectedClass definedPackageName.
 	self updateClassMenu: nil.
 	self updateSUnitTab.!
 
@@ -2195,7 +2214,7 @@ updateMethodSource
 	methodListPresenter selections isEmpty
 		ifTrue: 
 			[methodCategoryText value: 'Category: '.
-			definedMethodPackageText value: String new.
+			definedMethodPackageText view text: String new.
 			^methodSourcePresenter setDefaultMethod].
 	self updateServices: methodListPresenter selections.
 	methodListPresenter selections size > 1
@@ -2205,7 +2224,8 @@ updateMethodSource
 		ifFalse: 
 			[self showSuperClassComparison.
 			self updateSingleMethodSource.
-			definedMethodPackageText value: 'Defined Package: ' , methodListPresenter selection definedPackage.
+			definedMethodPackageText view
+				text: 'Defined Package: ' , methodListPresenter selection definedPackage.
 			methodCategoryText value: 'Category: ' , methodListPresenter selection category].
 	self updateSUnitTab.
 	self displayUncompilableSourceIn: methodSourcePresenter!
@@ -2411,8 +2431,10 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #gitCommit!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoClassDefinedPackage!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #gotoClassDefinedPackageViaButton!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoDictionary!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoMethodDefinedPackage!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #gotoMethodDefinedPackageViaButton!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoPackageNamed:!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoProjectNamed:!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #hasCategorySelected!public!testing! !
