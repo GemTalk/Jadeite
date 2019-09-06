@@ -60,15 +60,13 @@ nextPutAll: anObject
 !
 
 onViewOpened
-
 	super onViewOpened.
-	(gciSession indexOfClientForwarder: self) = 2 	"This registers the object if it isn't present"
-		ifFalse: [self error: 'Transcript should be the second client forwarder!!'].
-	documentPresenter view 
+	(gciSession indexOfClientForwarder: self) = 2
+		ifFalse: [self error: 'Transcript should be the second client forwarder!!'].	"This registers the object if it isn't present"
+	documentPresenter view
 		backcolor: Color face3d;
 		isReadOnly: true;
-		yourself.
-!
+		yourself!
 
 show: aString
 

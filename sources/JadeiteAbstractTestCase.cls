@@ -101,8 +101,11 @@ dictionaryPresenter
 
 	^self projectsPresenter dictionaryPresenter!
 
+disableInteractionsWhile: block
+	^JadeiteTestResource current disableInteractionsWhile: block!
+
 ensureRowanSample1Loaded
-	self loadProjectNamed: self sampleProjectName.!
+	JadeiteTestResource current ensureRowanSample1Loaded!
 
 fail: aString
 	TestMessageBox disableJadeiteTestMessageBox.
@@ -455,7 +458,7 @@ setUp
 	session := JadeiteTestResource current session.
 	transcript := JadeiteTestResource current transcript.
 	self setAutoCommit: false.
-	self ensureRowanSample1Loaded.!
+	self ensureRowanSample1Loaded!
 
 setupSupclassComparisonMethods
 	self selectRowanSample1Class.
@@ -537,6 +540,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #deselectProjects!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #destroy:!public!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #dictionaryPresenter!private!project browser support! !
+!JadeiteAbstractTestCase categoriesFor: #disableInteractionsWhile:!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Loaded!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #fail:!asserting!public! !
 !JadeiteAbstractTestCase categoriesFor: #interestingLoopMethodSource!constants!private! !

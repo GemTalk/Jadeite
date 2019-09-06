@@ -12,22 +12,48 @@ JadeiteTestResource comment: ''!
 
 cloneRowanSample1
 	| sample1Path root service |
-	sample1Path := self rowanSample1Path.
-	root := self rowanProjectsHome.
-	service := RowanProjectService new.
-	service
-		command: #newGitProject:root:useSsh:;
-		commandArgs: (Array
-					with: sample1Path
-					with: root
-					with: true).
-	JadePresenter issueCommand: (Array with: service) session: session!
+	self disableInteractionsWhile: 
+			[sample1Path := self rowanSample1Path.
+			root := self rowanProjectsHome.
+			service := RowanProjectService new.
+			service
+				command: #newGitProject:root:useSsh:;
+				commandArgs: (Array
+							with: sample1Path
+							with: root
+							with: true).
+			JadePresenter issueCommand: (Array with: service) session: session]!
+
+disableInteractionsWhile: block
+	"interactions like confirm: and notify: are enabled by 
+	default on all service commands. Disable for the duration
+	of this block"
+
+	| answeringService wasEnabled |
+	answeringService := RowanAnsweringService new.
+	answeringService
+		command: #interactionHandlerActive;
+		commandArgs: Array new.
+	self issueCommand: answeringService.
+	wasEnabled := answeringService answer.
+	answeringService
+		command: #setEnableInteractionHandler:;
+		commandArgs: (Array with: false).
+	self issueCommand: answeringService.
+	[block value] ensure: 
+			[answeringService
+				command: #setEnableInteractionHandler:;
+				commandArgs: (Array with: wasEnabled).
+			self issueCommand: answeringService]!
 
 ensureRowanSample1Loaded
-	self loadProjectNamed: self sampleProjectName.!
+	self disableInteractionsWhile: [self loadProjectNamed: self sampleProjectName]!
 
 isAvailable
 	^session notNil and: [transcript notNil]!
+
+issueCommand: service
+	^JadePresenter issueCommand: (Array with: service) session: session!
 
 loadProjectNamed: projectName
 	| projectService |
@@ -108,8 +134,10 @@ unloadSampleProject
 	transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName).
 	session commit! !
 !JadeiteTestResource categoriesFor: #cloneRowanSample1!private!setup teardown! !
+!JadeiteTestResource categoriesFor: #disableInteractionsWhile:!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #ensureRowanSample1Loaded!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #isAvailable!public!testing! !
+!JadeiteTestResource categoriesFor: #issueCommand:!public!setup teardown! !
 !JadeiteTestResource categoriesFor: #loadProjectNamed:!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #openProjectsBrowser!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #openWindow:!private! !

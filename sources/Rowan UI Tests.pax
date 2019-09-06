@@ -86,7 +86,7 @@ package!
 
 MessageBox subclass: #TestMessageBox
 	instanceVariableNames: ''
-	classVariableNames: 'PlannedResult'
+	classVariableNames: 'LastMessageBox PlannedResult'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanTestService

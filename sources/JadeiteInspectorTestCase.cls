@@ -424,6 +424,22 @@ test_inspectString
 	self assert: (inspector isKindOf: JadeInspector).
 	self assert: inspector model = 'abc' !
 
+test_interactionInspect
+	"user can send #inspect to any object in server code and Jadeite should 
+	open an inspector properly."
+
+	| list answeringService |
+	self testsIssue: #issue303 withTitle: 'Need to handle confirm:'.
+	list := JadeInspector allInstances , JadeNavigationInspector allInstances.
+	list do: [:insp | insp view close].
+	self assert: JadeNavigationInspector allInstances size equals: 0.
+	answeringService := RowanAnsweringService new.
+	answeringService command: #exec:; commandArgs: (Array with:  'UserGlobals inspect').
+	self issueCommand: answeringService. 
+	self assert: JadeNavigationInspector allInstances size equals: 1.
+	inspector := JadeNavigationInspector allInstances first.
+	self assert: ('Inspector on SymbolDictionary for*' match: inspector caption)!
+
 test_menuBarItemNames
 	| remoteObject |
 	self testsIssue: #issue194 withTitle: 'Oscar-3.0.40: Wodkspace window still uses `Jade` labels'.
@@ -696,6 +712,7 @@ def'''! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorRootObjectRegistered!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorRootSpecialObjectNotRegistered!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectString!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_interactionInspect!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_menuBarItemNames!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_menuItemsEnabled!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_navigationInspectorDisplayedSizeLimit!public!tests! !

@@ -92,10 +92,13 @@ package methodNames
 	add: #Collection -> #prepareForReplication;
 	add: #GciSession -> #computeGemHost;
 	add: #GciSession -> #computeStoneHost;
+	add: #GciSession -> #confirmMessageBox:;
 	add: #GciSession -> #executeString:fromContext:environment:;
 	add: #GciSession -> #gemNRS;
 	add: #GciSession -> #hasServer;
+	add: #GciSession -> #informMessageBox:;
 	add: #GciSession -> #initializeServer;
+	add: #GciSession -> #inspectServerObject:;
 	add: #GciSession -> #oopTypeFor:;
 	add: #GciSession -> #postLoadClientPreferences;
 	add: #GciSession -> #postLoadServerPreferences;
@@ -917,6 +920,11 @@ computeStoneHost
 	list := (list at: 1) subStrings: $@.
 	stoneHost := list at: 2.!
 
+confirmMessageBox: prompt
+	"send string back to the server and let it unpack it"
+
+	^self oopForString: (MessageBox confirm: prompt caption: 'Rowan Confirmation') printString!
+
 executeString: aString fromContext: anObject environment: anInteger
 	| oopType | 
 	BrowserUpdate current logComment: 'GciSession executeString: ', aString. 
@@ -939,6 +947,10 @@ hasServer
 
 	^server notNil.
 !
+
+informMessageBox: prompt
+	"send string back to the server and let it unpack it"
+	^self oopForString: (MessageBox notify: prompt caption: 'Rowan Notification') printString!
 
 initializeServer
 "
@@ -974,6 +986,14 @@ Server initialization failed. Most functionality will be broken!!'.
 			yourself.
 	].
 !
+
+inspectServerObject: oop
+	"send string back to the server and let it unpack it"
+
+	| oopType |
+	oopType := OopType64 fromInteger: oop.
+	JadeInspector showOn: oopType session: self.
+	^oopType!
 
 oopTypeFor: anObject 
 
@@ -1021,12 +1041,13 @@ postLoginAs: aString useSocket: aBoolean
 	self verifyRowanLoaded
 		ifFalse: 
 			[^MessageBox notify: 'Rowan not loaded or $ROWAN_PROJECTS_HOME not set. Logging out.'	"log out in RowinLoginShell>>postLogin:"].
-	server := self executeString: '(Rowan jadeServerClassNamed: #JadeServer) theJadeiteServer installTranscript; yourself'.
+	server := self
+				executeString: '(Rowan jadeServerClassNamed: #JadeServer) theJadeiteServer installTranscript; yourself'.
 	self postLoadClientPreferences.
 	self postLoadServerPreferences.
 	aBoolean ifTrue: [self attemptSocket].
 	self setInitials: aString.	"This gets back the session and serial number"
-	GciSession current: self. !
+	GciSession current: self!
 
 preferencesFile
 
@@ -1070,10 +1091,13 @@ verifyRowanLoaded
 		executeString: '(System myUserProfile objectNamed: ''Rowan'') notNil and:[(System gemEnvironmentVariable: ''ROWAN_PROJECTS_HOME'') notNil] '! !
 !GciSession categoriesFor: #computeGemHost!public!title bar! !
 !GciSession categoriesFor: #computeStoneHost!public!title bar! !
+!GciSession categoriesFor: #confirmMessageBox:!must not strip!public!server interactions! !
 !GciSession categoriesFor: #executeString:fromContext:environment:!long running!public! !
 !GciSession categoriesFor: #gemNRS!public!title bar! !
 !GciSession categoriesFor: #hasServer!public! !
+!GciSession categoriesFor: #informMessageBox:!must not strip!public!server interactions! !
 !GciSession categoriesFor: #initializeServer!private! !
+!GciSession categoriesFor: #inspectServerObject:!must not strip!public!server interactions! !
 !GciSession categoriesFor: #oopTypeFor:!public! !
 !GciSession categoriesFor: #postLoadClientPreferences!private! !
 !GciSession categoriesFor: #postLoadServerPreferences!private! !

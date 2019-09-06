@@ -469,7 +469,7 @@ returningResultOrErrorDo: aBlock
 
 	^[
 		aBlock value.
-	] on: GciError do: [:ex | 
+	] on: GciError do: [:ex |
 		ex return: (GsError forSession: self gciErrSType: ex tag).
 	].
 !

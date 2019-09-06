@@ -247,6 +247,50 @@ test_workspaceBrowseProjects
 				[workspace view close.
 				self destroy: projectsBrowser]!
 
+test_workspaceConfirmInteraction
+	| workspace result |
+	self testsIssue: #issue303 withTitle: 'Need to handle confirm:'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Interactions'.
+	workspace codePane documentPresenter value: 'self confirm: ''hi'''.
+	workspace codePane selectAll.
+	
+	[TestMessageBox plannedResult: #no.
+	result := workspace executeSelectionOrLine.	"JadeTextDocument>>jadeExecuteAndDisplay: creates a new process which is hard to test. Send the underlying
+										commands instead which do not fork"
+	workspace jadeExecuteAndDisplay: true result: result.
+	self assert: workspace codePane documentPresenter value equals: 'self confirm: ''hi'' false'.
+	workspace codePane documentPresenter value: 'self confirm: ''hi'''.
+	workspace codePane selectAll.
+	TestMessageBox plannedResult: #yes.
+	result := workspace executeSelectionOrLine.
+	workspace jadeExecuteAndDisplay: true result: result.
+	self assert: workspace codePane documentPresenter value equals: 'self confirm: ''hi'' true'.
+	self assert: TestMessageBox lastMessageBox caption equals: 'Rowan Confirmation'.
+	self assert: TestMessageBox lastMessageBox text equals: 'hi']
+			ensure: 
+				[workspace view close.
+				TestMessageBox disableJadeiteTestMessageBox]!
+
+test_workspaceInformInteraction
+	| workspace result |
+	self testsIssue: #issue303 withTitle: 'Need to handle confirm:'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Interactions'.
+	workspace codePane documentPresenter value: 'self inform: ''hi'''.
+	workspace codePane selectAll.
+	
+	[TestMessageBox plannedResult: #ok.
+	result := workspace executeSelectionOrLine.	"JadeTextDocument>>jadeExecuteAndDisplay: creates a new process which is hard to test. Send the underlying
+										commands instead which do not fork"
+	workspace jadeExecuteAndDisplay: false result: result.
+	self assert: workspace codePane documentPresenter value equals: 'self inform: ''hi'''.
+	self assert: TestMessageBox lastMessageBox caption equals: 'Rowan Notification'.
+	self assert: TestMessageBox lastMessageBox text equals: 'hi']
+			ensure: 
+				[workspace view close.
+				TestMessageBox disableJadeiteTestMessageBox]!
+
 test_workspaceJadeiteMenuAdHocExecutionItems
 	| workspace jadeiteMenu debugMenuItem executeMenuItem inspectMenuItem displayMenuItem |
 	self testsIssue: #issue474 withTitle: '(3.0.69) inconsistent debug menu on workspaces'.
@@ -313,6 +357,8 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_symbolsFromSelector!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceConfirmInteraction!public!test!test menus! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceInformInteraction!public!test!test menus! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceJadeiteMenuAdHocExecutionItems!public!test!test menus! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testClassServiceNameIsString!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testMethodServiceClassNameIsString!public! !

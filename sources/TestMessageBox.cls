@@ -2,13 +2,17 @@
 
 MessageBox subclass: #TestMessageBox
 	instanceVariableNames: ''
-	classVariableNames: 'PlannedResult'
+	classVariableNames: 'LastMessageBox PlannedResult'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 TestMessageBox guid: (GUID fromString: '{f514e15b-9c9a-46e2-98c3-1de5dc78c906}')!
 TestMessageBox comment: ''!
 !TestMessageBox categoriesForClass!MVP-Views-Support! !
 !TestMessageBox methodsFor!
+
+initialize
+	self class lastMessageBox: self.
+	^super initialize!
 
 open
 	"don't open the dialog. Just send the result"
@@ -17,6 +21,7 @@ open
 
 result
 	^self class plannedResult! !
+!TestMessageBox categoriesFor: #initialize!initialization!public! !
 !TestMessageBox categoriesFor: #open!accessing!public! !
 !TestMessageBox categoriesFor: #result!accessing!public! !
 
@@ -27,6 +32,16 @@ disableJadeiteTestMessageBox
 
 enableJadeiteTestMessageBox
 	Smalltalk at: #JadeiteTestsActive put: true!
+
+lastMessageBox
+	"store a copy of the last message box for testing"
+
+	^LastMessageBox!
+
+lastMessageBox: messageBox
+	"store a copy of the last message box for testing"
+
+	LastMessageBox := messageBox!
 
 plannedResult
 	"test needs to setup expected result each time.
@@ -42,6 +57,8 @@ plannedResult: answer
 	PlannedResult := answer! !
 !TestMessageBox class categoriesFor: #disableJadeiteTestMessageBox!actions!public! !
 !TestMessageBox class categoriesFor: #enableJadeiteTestMessageBox!actions!public! !
+!TestMessageBox class categoriesFor: #lastMessageBox!accessing!public! !
+!TestMessageBox class categoriesFor: #lastMessageBox:!accessing!public! !
 !TestMessageBox class categoriesFor: #plannedResult!accessing!public! !
 !TestMessageBox class categoriesFor: #plannedResult:!accessing!public! !
 
