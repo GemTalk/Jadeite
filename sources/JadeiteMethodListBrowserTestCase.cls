@@ -10,6 +10,14 @@ JadeiteMethodListBrowserTestCase comment: ''!
 !JadeiteMethodListBrowserTestCase categoriesForClass!Unclassified! !
 !JadeiteMethodListBrowserTestCase methodsFor!
 
+browseLiteralTest: literal
+	methodListBrowser := JadePresenter browseLiteralReferences: literal printString session: session.
+	
+	[self selectMethodNamed: #literalRefTest.
+	self assert: self methodListSelector equals: #literalRefTest.
+	self assert: self sourcePresenter selection equals: literal printString]
+			ensure: [methodListBrowser view close]!
+
 methodListMethodListPresenter
 	^methodListBrowser primaryPresenter methodListPresenter methodListPresenter!
 
@@ -347,12 +355,12 @@ test_browseLiteralReferences
 		withTitle: '(3.0.50) I would have thought that the literal string ''filetree'' would have been found'.
 	self setupTestMethodInProjectBrowser.
 	
-	[self testBrowseLiteral: 'foot'.
-	self testBrowseLiteral: #foot.
-	self testBrowseLiteral: 123.
-	self testBrowseLiteral: nil.
-	self testBrowseLiteral: true.
-	self testBrowseLiteral: false]
+	[self browseLiteralTest: 'foot'.	"expect this to fail (at least in 3.2.15). The index given by the server is off by 1"
+	self browseLiteralTest: #foot.
+	self browseLiteralTest: 123.
+	self browseLiteralTest: nil.
+	self browseLiteralTest: true.
+	self browseLiteralTest: false]
 			ensure: [self removeTestMethodAndCloseProjectBrowser]!
 
 test_browseLiteralReferencesBlankSearch
@@ -900,14 +908,8 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
 				self removeMethods: methodListPresenter model asBag in: 'RowanSample1'.
-				self removeMethods: methodListPresenter model asBag in: 'RowanSample1Test']!
-
-testBrowseLiteral: literal
-	methodListBrowser := JadePresenter browseLiteralReferences: literal printString session: session.
-	[self selectMethodNamed: #literalRefTest. 
-	self assert: self methodListSelector equals: #literalRefTest.
-	self assert: self sourcePresenter selection equals: literal printString]
-			ensure: [methodListBrowser view close]! !
+				self removeMethods: methodListPresenter model asBag in: 'RowanSample1Test']! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #browseLiteralTest:!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListMethodListPresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListSelector!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListSourcePresenter!private!support! !
@@ -965,5 +967,4 @@ testBrowseLiteral: literal
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindow!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindowStayOnMethod!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #testBrowseLiteral:!private!support! !
 

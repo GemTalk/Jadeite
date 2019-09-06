@@ -38,6 +38,7 @@ package methodNames
 	add: #JadeInspector -> #documentPresenter;
 	add: #JadeiteProjectsBrowserPresenter -> #definedClassPackageText;
 	add: #JadeiteProjectsBrowserPresenter -> #definedMethodPackageText;
+	add: #JadePresenter -> #browseClassReferences;
 	add: #RowanPatchBrowser -> #operationListPresenter;
 	add: #SUnitBrowserModel -> #debugIndividualTestsWithResources:;
 	add: 'MessageBox class' -> #new;
@@ -247,6 +248,12 @@ definedMethodPackageText
 	^definedMethodPackageText! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #definedClassPackageText!initialize/release!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #definedMethodPackageText!initialize/release!public! !
+
+!JadePresenter methodsFor!
+
+browseClassReferences
+	^JadePresenter browseClassReferencesInSession: self gciSession! !
+!JadePresenter categoriesFor: #browseClassReferences!menu handlers!public! !
 
 !MessageBox class methodsFor!
 

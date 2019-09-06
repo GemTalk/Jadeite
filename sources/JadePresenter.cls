@@ -16,9 +16,6 @@ addSystemBrowser
 
 	self subclassResponsibility!
 
-browseClassReferences
-	^JadePresenter browseClassReferencesInSession: self gciSession!
-
 commitTransaction
 	"Even if it takes a windy path, try to make sure
 	all commits in Jadeite pass through here"
@@ -110,7 +107,6 @@ updateService: service
 
 	^self updateServices: (Array with: service) ! !
 !JadePresenter categoriesFor: #addSystemBrowser!private! !
-!JadePresenter categoriesFor: #browseClassReferences!menu handlers!public! !
 !JadePresenter categoriesFor: #commitTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #gciSession!public! !
 !JadePresenter categoriesFor: #gciSession:!public! !

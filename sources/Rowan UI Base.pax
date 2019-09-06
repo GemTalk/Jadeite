@@ -2245,11 +2245,10 @@ browseClassReferences: className session: session
 	^browser!
 
 browseClassReferencesInSession: session
-	^self
-		promptForMatchingSymbolsIn: session
-		actionBlock: [:className | Cursor wait showWhile: [self browseClassReferences: className session: session]]
-		promptCaption: 'Browse Class References Of ...'
-		searchType: 'class name'!
+	| classService |
+	classService := JadeiteFindClassDialog showModal: 'DefaultView' on: (self allClassesIn: session).
+	classService
+		ifNotNil: [Cursor wait showWhile: [^self browseClassReferences: classService name session: session]]!
 
 browseHierarchyImplementorsOf: string className: className session: session
 	| service shell |

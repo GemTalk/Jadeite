@@ -2390,7 +2390,7 @@ test_extensionMethodSelection
 	self assert: self methodListPresenter selection selector equals: #addMovedClassToPatchSet2.
 	self assert: self categoryListPresenter selection equals: '*rowan-gemstone-loader-extensions'.
 	self assert: self classListPresenter selection name equals: 'RwClassMove'.
-	self assert: self projectsPresenter definedMethodPackageText value
+	self assert: self projectsPresenter definedMethodPackageText view text
 		equals: 'Defined Package: Rowan-GemStone-Loader-Extensions'.
 	self assert: self projectsPresenter methodCategoryText value
 		equals: 'Category: *rowan-gemstone-loader-extensions'.
