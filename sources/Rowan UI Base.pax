@@ -394,6 +394,7 @@ package methodNames
 	add: 'JadePresenter class' -> #browseImplementorsIn:;
 	add: 'JadePresenter class' -> #browseImplementorsOf:session:;
 	add: 'JadePresenter class' -> #browseLiteralReferences:;
+	add: 'JadePresenter class' -> #browseLiteralReferences:initialSuggestion:;
 	add: 'JadePresenter class' -> #browseLiteralReferences:session:;
 	add: 'JadePresenter class' -> #browseMethodsContaining:;
 	add: 'JadePresenter class' -> #browseMethodsContaining:session:;
@@ -2293,12 +2294,21 @@ browseImplementorsOf: string session: session
 	^shell!
 
 browseLiteralReferences: session
+	^self browseLiteralReferences: session initialSuggestion: String new!
+
+browseLiteralReferences: session initialSuggestion: initialString
 	| string |
 	string := Prompter
+				on: initialString asValue
 				prompt: 'Enter code to be compiled.
 Example: To search for literal string add single quotes'
 				caption: 'Browse Methods With Literal ...'.
-	^Cursor wait showWhile: [self browseLiteralReferences: string session: session]!
+	^Cursor wait showWhile: 
+			[[self browseLiteralReferences: string session: session] on: GsCompileError
+				do: 
+					[:ex |
+					MessageBox notify: 'Error compiling expression: ' , string.
+					^self browseLiteralReferences: session initialSuggestion: string]]!
 
 browseLiteralReferences: string session: session
 	| service shell |
@@ -2456,6 +2466,7 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #browseImplementorsIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseImplementorsOf:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseLiteralReferences:!browsing!public! !
+!JadePresenter class categoriesFor: #browseLiteralReferences:initialSuggestion:!browsing!public! !
 !JadePresenter class categoriesFor: #browseLiteralReferences:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseMethodsContaining:!browsing!public! !
 !JadePresenter class categoriesFor: #browseMethodsContaining:session:!browsing!public! !
