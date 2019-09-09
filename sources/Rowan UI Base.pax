@@ -17,6 +17,7 @@ package classNames
 	add: #JadeiteBrowser;
 	add: #JadeiteBrowserPresenter;
 	add: #JadeiteDebugger;
+	add: #JadeiteDebuggerMethodSourcePresenter;
 	add: #JadeiteFindClassDialog;
 	add: #JadeiteFindMethodDialog;
 	add: #JadeiteGitLog;
@@ -655,6 +656,11 @@ JadePresenter subclass: #JadeiteLoggerPresenter
 	classInstanceVariableNames: ''!
 JadePresenterA subclass: #RowanPresenter
 	instanceVariableNames: 'projectToolsOop'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+MethodSourcePresenter subclass: #JadeiteDebuggerMethodSourcePresenter
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -2044,7 +2050,7 @@ executeSelectionOrLine: contextObject
 	oop := (contextObject isKindOf: ExternalInteger)
 				ifTrue: [contextObject value]
 				ifFalse: [contextObject].	"services wants a local special as a context"
-	oop ifNil: [oop := 20]. 
+	oop ifNil: [oop := 20].
 	answeringService := RowanAnsweringService new.
 	answeringService
 		command: #exec:context:;

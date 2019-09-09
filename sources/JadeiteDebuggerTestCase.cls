@@ -222,6 +222,55 @@ test_adHocDebug
 				[workspace isModified: false.
 				workspace view close]!
 
+test_adHocExecutionEvaluatesArgs
+	self
+		saveMethod: 'testAdHocExecutionWith: arg1
+	| temp1 |
+	temp1 := arg1. 
+	self halt.
+	^temp1'
+		in: 'RowanSample1Test'
+		category: 'tests'.
+	
+	[self openDebuggerOn: 'RowanSample1Test new testAdHocExecutionWith: 1 '.
+	debugger methodSourcePresenter documentPresenter selectionRange: (53 to: 56).
+	self assert: debugger methodSourcePresenter documentPresenter selection equals: 'arg1'.
+	debugger methodSourcePresenter documentPresenter view setFocus.
+	debugger methodSourcePresenter jadeDisplay.
+	self assert: debugger methodSourcePresenter documentPresenter selection equals: ' 1']
+			ensure: 
+				[session executeString: 'RowanSample1Test removeSelector: #testAdHocExecutionWith: ifAbsent:[]']!
+
+test_adHocExecutionEvaluatesTemp
+	self
+		saveMethod: 'testAdHocExecutionWith: arg1
+	| temp1 |
+	temp1 := arg1. 
+	self halt.
+	^temp1'
+		in: 'RowanSample1Test'
+		category: 'tests'.
+	
+	[self openDebuggerOn: 'RowanSample1Test new testAdHocExecutionWith: 1 '.
+	debugger variableListPresenter selectionByIndex: 3.
+	self assert: debugger variableListPresenter selection _key equals: #arg1.
+	self assert: debugger variableListPresenter selection value equals: '1'.
+	debugger variableListPresenter selectionByIndex: 4.
+	self assert: debugger variableListPresenter selection _key equals: #temp1.
+	self assert: debugger variableListPresenter selection value equals: '1'.
+	debugger methodSourcePresenter documentPresenter selectionRange: (44 to: 57).
+	self assert: debugger methodSourcePresenter documentPresenter selection equals: 'temp1 := arg1.'.
+	debugger methodSourcePresenter documentPresenter replaceSelection: 'temp1 := 5.'.
+	debugger methodSourcePresenter documentPresenter selectionRange: (44 to: 53).
+	debugger methodSourcePresenter documentPresenter view setFocus.
+	debugger methodSourcePresenter executeSelectionOrLine.
+	debugger methodSourcePresenter documentPresenter selectionRange: (44 to: 48).
+	self assert: debugger methodSourcePresenter documentPresenter selection equals: 'temp1'.
+	debugger methodSourcePresenter jadeDisplay.
+	self assert: debugger methodSourcePresenter documentPresenter selection equals: ' 5']
+			ensure: 
+				[session executeString: 'RowanSample1Test removeSelector: #testAdHocExecutionWith: ifAbsent:[]']!
+
 test_adHocExecutionSelf
 	self openDebuggerOn: '''gloop'' halt'.
 	debugger frameListPresenter selectionByIndex: 3.
@@ -230,6 +279,32 @@ test_adHocExecutionSelf
 	self debuggerDo: [debugger jadeDisplay].
 	self assert: debugger methodSourcePresenter documentPresenter value equals: 'self ''gloop'''.
 	debugger methodSourcePresenter documentPresenter view isModified: false!
+
+test_adHocExecutionUpdatesVariablesList
+	self
+		saveMethod: 'testAdHocExecutionWith: arg1
+	| temp1 |
+	temp1 := arg1. 
+	self halt.
+	^temp1'
+		in: 'RowanSample1Test'
+		category: 'tests'.
+	
+	[self openDebuggerOn: 'RowanSample1Test new testAdHocExecutionWith: 1 '.
+	debugger variableListPresenter selectionByIndex: 4.
+	self assert: debugger variableListPresenter selection _key equals: #temp1.
+	self assert: debugger variableListPresenter selection value equals: '1'.
+	debugger methodSourcePresenter documentPresenter selectionRange: (44 to: 57).
+	self assert: debugger methodSourcePresenter documentPresenter selection equals: 'temp1 := arg1.'.
+	debugger methodSourcePresenter documentPresenter replaceSelection: 'temp1 := 5.'.
+	debugger methodSourcePresenter documentPresenter selectionRange: (44 to: 53).
+	debugger methodSourcePresenter documentPresenter view setFocus.
+	debugger methodSourcePresenter executeSelectionOrLine.
+	debugger variableListPresenter selectionByIndex: 4.
+	self assert: debugger variableListPresenter selection _key equals: #temp1.
+	self assert: debugger variableListPresenter selection value equals: 5]
+			ensure: 
+				[session executeString: 'RowanSample1Test removeSelector: #testAdHocExecutionWith: ifAbsent:[]']!
 
 test_badCompileInDebugger
 	| source |
@@ -1521,8 +1596,11 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #systemBrowser!private! !
 !JadeiteDebuggerTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteDebuggerTestCase categoriesFor: #terminateGsProcess!private!running! !
-!JadeiteDebuggerTestCase categoriesFor: #test_adHocDebug!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionSelf!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_adHocDebug!public!test ad hoc execution! !
+!JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionEvaluatesArgs!public!test ad hoc execution! !
+!JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionEvaluatesTemp!public!test ad hoc execution! !
+!JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionSelf!public!test ad hoc execution! !
+!JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionUpdatesVariablesList!public!test ad hoc execution! !
 !JadeiteDebuggerTestCase categoriesFor: #test_badCompileInDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !

@@ -30,6 +30,23 @@ oop
 
 	^oop!
 
+printOn: aStream
+	super printOn: aStream.
+	aStream
+		nextPutAll: '( ';
+		print: key;
+		space;
+		nextPutAll: '->';
+		space;
+		print: value;
+		nextPutAll: ' )'!
+
+updateVariable: listPresenter debugger: debugger
+	listPresenter list
+		do: [:variableService | variableService _key = key ifTrue: [variableService replicateFrom: self]].
+	listPresenter list: listPresenter list.
+	listPresenter view invalidate.!
+
 value
 
 	^value! !
@@ -38,5 +55,7 @@ value
 !RowanVariableService categoriesFor: #isUpdatableService!public!testing! !
 !RowanVariableService categoriesFor: #key!public! !
 !RowanVariableService categoriesFor: #oop!public! !
+!RowanVariableService categoriesFor: #printOn:!printing!public! !
+!RowanVariableService categoriesFor: #updateVariable:debugger:!public!updating! !
 !RowanVariableService categoriesFor: #value!public! !
 

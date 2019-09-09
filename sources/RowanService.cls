@@ -418,6 +418,9 @@ updateType
 updateType: anObject
 	updateType := anObject!
 
+updateVariable: listPresenter debugger: anObject
+	!
+
 variableDataUpdate: aPresenter!
 
 variableListUpdate: aPresenter!
@@ -522,6 +525,7 @@ wasRenamed
 !RowanService categoriesFor: #updateSuperclassSelectionFor:!public!updating! !
 !RowanService categoriesFor: #updateType!accessing!public! !
 !RowanService categoriesFor: #updateType:!accessing!public! !
+!RowanService categoriesFor: #updateVariable:debugger:!public!updating! !
 !RowanService categoriesFor: #variableDataUpdate:!Debugger!public!updating! !
 !RowanService categoriesFor: #variableListUpdate:!Debugger!public!updating! !
 !RowanService categoriesFor: #wasRenamed!public!testing! !
