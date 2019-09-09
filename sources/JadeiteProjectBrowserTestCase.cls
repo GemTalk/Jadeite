@@ -2776,6 +2776,14 @@ test_gotoDefinedPackage
 	self assert: self dictionaryPresenter selection name = 'Globals'.
 	self assert: self classListPresenter selection name = 'ByteArray'!
 
+test_goToDefinedPackageNoClassSelected
+	self testsIssue: #issue501 withTitle: 'Make defined package text into a clickable button'.
+	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Services-Extensions') in: self packageListPresenter.
+	self assertIsNil: (self classListPresenter selectionIfNone: []).
+	self projectsPresenter gotoClassDefinedPackage.	"walkback occurred here"
+	self assertIsNil: (self classListPresenter selectionIfNone: [])!
+
 test_hierarchyCleanedUpAfterUnload
 	"hierarchy classes were being left in the display
 	after project was unloaded"
@@ -5506,6 +5514,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromHierarchyViaButton!public!test class hierarchy!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedMethodNotSameAsClass!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedPackage!public!test defined package!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedPackageNoClassSelected!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyCleanedUpAfterUnload!public!test class hierarchy!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyFindsAllSubclassImplementors!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementors!public!tests! !

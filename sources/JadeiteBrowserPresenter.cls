@@ -582,6 +582,7 @@ statusBarText: string
 
 updateAfterFindClass: classService
 	| projectService |
+	classService ifNil: [^self].
 	self updateService: classService.
 	projectService := projectListPresenter list
 				detect: [:service | service name = classService projectName].	"it should always be found"
