@@ -325,6 +325,9 @@ clearFilterLists
 	categoryListPresenter model: (ListModel new searchPolicy: SearchPolicy equality).
 	variableListPresenter model: (ListModel new searchPolicy: SearchPolicy equality).!
 
+clearMethodBreakpoints
+	^JadePresenter clearMethodBreakpoints: methodListPresenter selections in: self gciSession!
+
 comparisonTab
 	^comparisonTab
 		ifNil: 
@@ -1093,38 +1096,17 @@ methodsMenuStrings
 				browseHierarchySenders;
 				browseMethodsContaining;
 				browseLiteralReferences;
-				browseSelectedMethods; 
-				clearAllBreaks;
+				browseSelectedMethods;
+				clearMethodBreakpoints;
 				removeMethods;
 				runMethodTests;
 				fileOutMethods;
-				findMethod; 
+				findMethod;
 				runMethodTests;
-				gotoMethodDefinedPackage; runAll; runSelected].
-	^#('&Methods'
-'Browse &Implementors//browseImplementors'
-'Browse Implementors of ...//browseImplementorsOf'
-'Browse &Senders//browseSenders'
-'Browse Senders of ...//browseSendersOf'  
-'-'  
-'Browse Hierarchy Implementors//browseHierarchyImplementors'
-'Browse Hierarchy Senders//browseHierarchySenders'
-'-'
-'Browse Methods &Containing ...//browseMethodsContaining'
-'Browse Literal References ...//browseLiteralReferences'
-'Browse Selected Methods//browseSelectedMethods'
-'-'
-'Browse Breakpoints//browseBreakpoints'  
-'Clear All Breakpoints//clearAllBreaks'  
-'-'
-'Find Method .../Ctrl+Shift+M/findMethod'
-'-'
-'&Remove Method(s) ...//removeMethods'
-'Debug &Tests/Ctrl+B/runMethodTests' 
-'Run All Tests/Ctrl+Shift+A/runAll'
-'Run Selected/Ctrl+Shift+S/runMethodTests'
-'-'
-'Go To Defining Package//gotoMethodDefinedPackage' )!
+				gotoMethodDefinedPackage;
+				runAll;
+				runSelected].
+	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods' '-' 'Browse Breakpoints//browseBreakpoints' 'Clear Method Breakpoints//clearMethodBreaks' '-' 'Find Method .../Ctrl+Shift+M/findMethod' '-' '&Remove Method(s) ...//removeMethods' 'Debug &Tests/Ctrl+B/runMethodTests' 'Run All Tests/Ctrl+Shift+A/runAll' 'Run Selected/Ctrl+Shift+S/runMethodTests' '-' 'Go To Defining Package//gotoMethodDefinedPackage')!
 
 methodSourcePresenter: anObject
 	methodSourcePresenter := anObject!
@@ -2385,6 +2367,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #classHierarchyTabs!accessing!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #cleanupComparisonBrowser!initialize/release!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #clearFilterLists!event handlers support!private!updating! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #clearMethodBreakpoints!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #comparisonTab!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #confirmCategoryRemoval:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #confirmOverwriteAccessor!menu handlers support!public! !

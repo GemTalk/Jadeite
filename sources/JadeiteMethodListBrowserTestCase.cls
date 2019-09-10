@@ -509,6 +509,33 @@ test_browseSendersIsDirty
 			self methodListMethodListPresenter selection: methodService.
 			self assert: ('isDirty*' match: self methodSourcePresenter documentPresenter selection)	"use match because we might pickup a '.'"]!
 
+test_clearAllBreakpointsMenuItemOnMethodList
+	"the clear breakpoints menu item should only show up when you've
+	browsed breakpoints."
+
+	| methodListPresenter commandQuery menuItem methodsMenu |
+	self testsIssue: #issue515 withTitle: '(3.0.77) clear all breakpoints menu item would be useful'.
+	methodListBrowser := transcript browseBreakpoints.
+	methodsMenu := methodListBrowser view menuBar items detect: [:menu | '*Methods*' match: menu text]
+				ifNone: [].
+	menuItem := methodsMenu items detect: [:command | 'Clear All Breakpoints' match: command text]
+				ifNone: [].
+	self denyIsNil: menuItem.
+	
+	[methodListPresenter := methodListBrowser primaryPresenter.
+	commandQuery := self
+				queryCommand: #clearAllBreakpoints
+				inPresenter: methodListPresenter
+				view: methodListPresenter view.
+	self assert: commandQuery isEnabled]
+			ensure: [methodListBrowser view close].
+	methodListBrowser := JadePresenter browseImplementorsOf: #size session: session.
+	methodsMenu := methodListBrowser view menuBar items detect: [:menu | '*Methods*' match: menu text]
+				ifNone: [].
+	menuItem := methodsMenu items detect: [:command | 'Clear All Breakpoints' match: command text]
+				ifNone: [].
+	self assertIsNil: menuItem!
+
 test_comparisonTabMultimethod
 	self testsIssue: #issue264
 		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
@@ -948,6 +975,7 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersEnablement!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersFoo!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersIsDirty!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_clearAllBreakpointsMenuItemOnMethodList!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabMultimethod!public!test comparison tab! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabMultimethod2!public!test comparison tab! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabNoMethodSelected!public!test comparison tab! !

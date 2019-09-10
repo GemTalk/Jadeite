@@ -1647,6 +1647,47 @@ test_classVersionIncrementedInHierarchy
 	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
 	self assert: self classListPresenter selection displayString equals: 'TestClass (5/5)'!
 
+test_clearAllBreakpoints
+	self testsIssue: #issue515 withTitle: '(3.0.77) clear all breakpoints menu item would be useful'.
+	self projectsPresenter clearAllBreaks.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
+	self selectMethodNamed: #test2.
+	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
+	self selectMethodNamed: #testError.
+	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
+	self selectMethodNamed: #testFailure.
+	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
+	methodListBrowser := JadePresenter browseBreakpointsIn: session.
+	
+	[self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list size
+		equals: 4]
+			ensure: [methodListBrowser view close].
+	self projectsPresenter clearAllBreaks.
+	methodListBrowser := JadePresenter browseBreakpointsIn: session.
+	
+	[self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list size
+		equals: 0]
+			ensure: [methodListBrowser view close]!
+
+test_clearMethodBreakpoints
+	self testsIssue: #issue515 withTitle: '(3.0.77) clear all breakpoints menu item would be useful'.
+	self projectsPresenter clearAllBreaks.
+	
+	[self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
+	self selectMethodNamed: #test2.
+	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
+	self assert: self methodListPresenter selection selector equals: #test2.
+	self assert: self methodListPresenter selection breakPoints size equals: 1.
+	self projectsPresenter clearMethodBreakpoints.
+	self assert: self methodListPresenter selection breakPoints isEmpty.
+	self selectMethodNamed: #test1.
+	self assert: self methodListPresenter selection breakPoints size equals: 1]
+			ensure: [self projectsPresenter clearAllBreaks]!
+
 test_closeConsoleInvalidSession
 	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector |
 	"poison session and exit Jadeite. Make sure all Jadeite windows close"
@@ -5513,6 +5554,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classTemplateWhenNoPackagesSelected!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInClassList!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInHierarchy!public!test class hierarchy!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_clearAllBreakpoints!public!test class hierarchy!test methods! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_clearMethodBreakpoints!public!test class hierarchy!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleInvalidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleValidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_comparisonTabMultimethod!public!test comparison tab! !
@@ -5585,12 +5628,12 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuAddPackageOnProjectMenu!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuEnablementDoesNotBreak!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menusDontAddBreaks!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_methodsContaining!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_methodsContainingCaption!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_methodTabSelected!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_methodsContaining!public!test methods! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_methodsContainingCaption!public!test methods! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_methodTabSelected!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_modifiedSourceShouldNotChange!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_modifiedSourceShouldNotChangeMethodList!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multiplePackageSelection!public!test packages!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_newBrowserRetainsClassAndMethod!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_newBrowserRetainsClassAndMethodClassSide!public!test class hierarchy!tests! !
@@ -5634,11 +5677,11 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_rowanTestsHierarchy!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassCommentInClassList!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassCommentInHierarchy!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethod!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethodHierarchy!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethod!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodAndUpdateSUnitTab!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodHierarchy!public!test class hierarchy!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethod!public!test methods! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethodHierarchy!public!test class hierarchy!test methods! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethod!public!test methods! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodAndUpdateSUnitTab!public!test methods! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodHierarchy!public!test class hierarchy!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectionsRetainedFromClassListToHierarchy!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectionsRetainedFromHierarchyToClassList!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultiplePackages!public!tests! !

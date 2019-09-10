@@ -24,6 +24,12 @@ cleanupComparisonBrowser
 		afterTitle: String new;
 		compare: String new with: String new!
 
+clearAllBreakpoints
+	^JadePresenter clearAllBreaksIn: self gciSession!
+
+clearMethodBreakpoints
+	^JadePresenter clearMethodBreakpoints: methodListPresenter selections in: self gciSession!
+
 comparisonPresenter
 
 	^comparisonPresenter!
@@ -92,6 +98,15 @@ onViewOpened
 	super onViewOpened. 
 	self registerPresentersForUpdates.
 	self updateAutoCommit.!
+
+queryCommand: aCommandQuery
+	| command |
+	command := aCommandQuery command.
+	(#(#clearMethodBreakpoints) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: methodListPresenter selections notEmpty.
+			^true].
+	^super queryCommand: aCommandQuery!
 
 registerPresentersForUpdates
 	BrowserUpdate current register: self selector: #autoCommitUpdate:!
@@ -178,6 +193,8 @@ updateSource
 !JadeiteMethodListPresenter categoriesFor: #autoCommit!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #autoCommit:!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #cleanupComparisonBrowser!private!text tabs! !
+!JadeiteMethodListPresenter categoriesFor: #clearAllBreakpoints!menu handlers!public! !
+!JadeiteMethodListPresenter categoriesFor: #clearMethodBreakpoints!menu handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #comparisonPresenter!public! !
 !JadeiteMethodListPresenter categoriesFor: #comparisonTab!private!selection!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #contextObject!public! !
@@ -191,6 +208,7 @@ updateSource
 !JadeiteMethodListPresenter categoriesFor: #methods:selectingAnyMatch:!public! !
 !JadeiteMethodListPresenter categoriesFor: #onCloseRequested:!event handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #onViewOpened!event handlers!public! !
+!JadeiteMethodListPresenter categoriesFor: #queryCommand:!menu handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteMethodListPresenter categoriesFor: #removeComparisonTab!private!selection!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #selectComparisonTab!private!selection!text tabs! !

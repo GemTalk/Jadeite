@@ -188,6 +188,7 @@ package methodNames
 	add: #JadePresenter -> #browseSendersOf;
 	add: #JadePresenter -> #browseSendersOf:;
 	add: #JadePresenter -> #clearAllBreaks;
+	add: #JadePresenter -> #clearMethodBreakpoints:;
 	add: #JadePresenter -> #compilationWarningFrom:;
 	add: #JadePresenter -> #currentMethodSourceFrom:;
 	add: #JadePresenter -> #currentSelectionOrLine;
@@ -403,6 +404,7 @@ package methodNames
 	add: 'JadePresenter class' -> #browseSendersOf:session:;
 	add: 'JadePresenter class' -> #browseSymbolReferencesTo:session:;
 	add: 'JadePresenter class' -> #clearAllBreaksIn:;
+	add: 'JadePresenter class' -> #clearMethodBreakpoints:in:;
 	add: 'JadePresenter class' -> #convertToPattern:;
 	add: 'JadePresenter class' -> #findMethodIn:class:presenter:;
 	add: 'JadePresenter class' -> #issueCommand:session:;
@@ -1962,6 +1964,9 @@ browseSendersOf: string
 clearAllBreaks
 	^self class clearAllBreaksIn: self gciSession!
 
+clearMethodBreakpoints: methodServices
+	^self class clearMethodBreakpoints: methodServices in: self gciSession!
+
 compilationWarningFrom: methodServices
 	methodServices do: 
 			[:methodService |
@@ -2178,6 +2183,7 @@ updateServices: services
 !JadePresenter categoriesFor: #browseSendersOf!browsing!public! !
 !JadePresenter categoriesFor: #browseSendersOf:!browsing!menu handlers!public! !
 !JadePresenter categoriesFor: #clearAllBreaks!menu handlers!public! !
+!JadePresenter categoriesFor: #clearMethodBreakpoints:!menu handlers!public! !
 !JadePresenter categoriesFor: #compilationWarningFrom:!public! !
 !JadePresenter categoriesFor: #currentMethodSourceFrom:!compile support!public! !
 !JadePresenter categoriesFor: #currentSelectionOrLine!menu handlers support!public! !
@@ -2385,6 +2391,11 @@ clearAllBreaksIn: session
 	service := RowanAnsweringService command: #clearAllBreaks withArgs: Array new.
 	self issueCommand: (Array with: service) session: session!
 
+clearMethodBreakpoints: methodServices in: session
+	| service |
+	service := RowanAnsweringService command: #clearMethodBreaks: withArgs: (Array with: methodServices).
+	self issueCommand: (Array with: service) session: session!
+
 convertToPattern: wildcardString
 	| list |
 	list := (wildcardString subStrings: $*) asOrderedCollection.
@@ -2480,6 +2491,7 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #browseSendersOf:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSymbolReferencesTo:session:!browsing!public! !
 !JadePresenter class categoriesFor: #clearAllBreaksIn:!browsing!public! !
+!JadePresenter class categoriesFor: #clearMethodBreakpoints:in:!browsing!public! !
 !JadePresenter class categoriesFor: #convertToPattern:!browsing support!private! !
 !JadePresenter class categoriesFor: #findMethodIn:class:presenter:!browsing!public! !
 !JadePresenter class categoriesFor: #issueCommand:session:!public! !
