@@ -4516,6 +4516,58 @@ test_symbolsWithoutImplementorsFound
 	self assert: symbols size equals: 1.
 	self assert: symbols first = #fnoodley1!
 
+test_systemTabNamesDictionaryClass
+	self testsIssue: #issue381
+		withTitle: '(3.0.53) useful to have class displayed when code pane is maximized'.
+	self deselectProjects.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 Projects'.
+	self selectNoneProject.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 (NONE)'.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 UserGlobals'.
+	self selectServiceNamed: 'JadeServer' in: self classListPresenter.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 JadeServer'!
+
+test_systemTabNamesDictionaryClassHierarchy
+	self testsIssue: #issue381
+		withTitle: '(3.0.53) useful to have class displayed when code pane is maximized'.
+	self deselectProjects.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 Projects'.
+	self selectNoneProject.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 (NONE)'.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 UserGlobals'.
+	self selectHierarchyTab.
+	self selectClassInHierarchyNamed: 'JadeServer'.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 JadeServer'!
+
+test_systemTabNamesProjectClassHierarchy
+	self testsIssue: #issue381
+		withTitle: '(3.0.53) useful to have class displayed when code pane is maximized'.
+	self deselectProjects.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 Projects'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 RowanSample1'.
+	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement
+		equals: '1 RowanSample1-Core'.
+	self selectHierarchyTab. 
+	self selectClassInHierarchyNamed: 'RowanSample1'.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 RowanSample1'!
+
+test_systemTabNamesProjectClassList
+	self testsIssue: #issue381
+		withTitle: '(3.0.53) useful to have class displayed when code pane is maximized'.
+	self deselectProjects.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 Projects'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 RowanSample1'.
+	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement
+		equals: '1 RowanSample1-Core'.
+	self selectServiceNamed: 'RowanSample1' in: self classListPresenter.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 RowanSample1'!
+
 test_tabNames
 	| textTabs |
 	self testsIssue: #issue186 withTitle: 'icon in console menu'.
@@ -5611,6 +5663,10 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitUpdatesProperly!public!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_switchToVariableWithUnsavedChanges!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsWithoutImplementorsFound!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesDictionaryClass!public!test system tab names! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesDictionaryClassHierarchy!public!test system tab names! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesProjectClassHierarchy!public!test system tab names! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesProjectClassList!public!test system tab names! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!tests! !

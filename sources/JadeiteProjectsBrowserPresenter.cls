@@ -137,12 +137,12 @@ basicOnDropClassList: dragDropSession
 basicProjectTabLabel
 	| label |
 	projectListPresenter selections isEmpty ifTrue: [^'Projects'].
-	label := projectListPresenter selections size > 1
-				ifTrue: ['Projects']
-				ifFalse: [projectListPresenter selection name].
+	label := projectListPresenter selection name.
+	packageListPresenter list isEmpty ifTrue: [^label].
 	packageListPresenter selections isEmpty ifTrue: [^label].
 	packageListPresenter selections size > 1 ifTrue: [^label].
-	^packageListPresenter selection name!
+	label := packageListPresenter selection name.
+	^self selectedClass ifNil: [label] ifNotNil: [self selectedClass name]!
 
 basicRemoveClass: selection
 	| packageService parentNode |
@@ -2246,7 +2246,7 @@ updatePackage
 
 updatePackageInfo
 	| service |
-	self updateSystemTab.
+	self updateTabLabel.
 	service := packageListPresenter selectionIfNone: [^self].
 	classDefinitionPresenter value: service defaultTemplate.
 	self resetClassDefinitionPane.
@@ -2279,7 +2279,7 @@ updateProject
 updateProjectInfo
 	| services array |
 	services := projectListPresenter selections.
-	self updateSystemTab.
+	self updateTabLabel.
 	services isEmpty ifTrue: [^projectInfoTab list: ListModel new].
 	array := Array writeStream: services size.
 	array nextPut: (Array with: services first with: 'rowanProjectsHome').

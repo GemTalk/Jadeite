@@ -43,15 +43,16 @@ basicAddDictionaryNamed: newDictionaryName
 	dictionaryPresenter
 		selection: (dictionaryPresenter list detect: [:newService | newService name = newDictionaryName])!
 
-basicProjectTabLabel
+basicDictionaryTabLabel
 	| label |
+	label := projectListPresenter selection name.
+	label := self shouldShowNoneTabLabel ifTrue: [label] ifFalse: [dictionaryPresenter selection name].
+	^self selectedClass ifNil: [label] ifNotNil: [self selectedClass name]!
+
+basicProjectTabLabel
 	projectListPresenter selections isEmpty ifTrue: [^'Projects'].
 	self isNoneProjectSelected ifFalse: [^super basicProjectTabLabel].
-	label := projectListPresenter selection name.
-	dictionaryPresenter list isEmpty ifTrue: [^label].
-	dictionaryPresenter selections isEmpty ifTrue: [^label].
-	dictionaryPresenter selections size > 1 ifTrue: [^label].
-	^dictionaryPresenter selection name!
+	^self basicDictionaryTabLabel!
 
 basicRemoveClass: theClassService
 	| service parentNode |
@@ -226,6 +227,14 @@ createSchematicWiring
 	classCommentPresenter
 		when: #valueChanged
 		send: #classCommentChanged
+		to: self.
+	classListPresenter
+		when: #selectionChanged
+		send: #updateTabLabel
+		to: self.
+	classHierarchyPresenter
+		when: #selectionChanged
+		send: #updateTabLabel
 		to: self!
 
 createSchematicWiringForMethodSource
@@ -542,6 +551,10 @@ setCompileWarningColor
 setStatusBarDefault
 	statusBarText view backcolor: statusBarText view defaultBackcolor!
 
+shouldShowNoneTabLabel
+	^dictionaryPresenter list isEmpty
+		or: [dictionaryPresenter selections isEmpty or: [dictionaryPresenter selections size > 1]]!
+
 showDictionaryList
 	| newCard |
 	(packageDictionaryCards view cards includes: packageListPresenter view)
@@ -711,7 +724,7 @@ updateProjectInfo
 	self isNoneProjectSelected ifTrue: [^self buildGlobalsTab].
 	self buildProjectTab.
 	services := projectListPresenter selections.
-	self updateSystemTab.
+	self updateTabLabel.
 	services isEmpty ifTrue: [^projectInfoTab list: ListModel new].
 	self updateProjectTabFor: services!
 
@@ -734,7 +747,8 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #allSelectedProjectsDirty!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #basicAddDictionaryNamed:!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #basicProjectTabLabel!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #basicDictionaryTabLabel!displaying!private! !
+!JadeiteBrowserPresenter categoriesFor: #basicProjectTabLabel!displaying!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #basicRemoveClass:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicRemoveDictionaries:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicRemoveGlobal:!menu handlers support!private! !
@@ -791,6 +805,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #setCompileErrorColor!compile support!public! !
 !JadeiteBrowserPresenter categoriesFor: #setCompileWarningColor!compile support!public! !
 !JadeiteBrowserPresenter categoriesFor: #setStatusBarDefault!compile support!public! !
+!JadeiteBrowserPresenter categoriesFor: #shouldShowNoneTabLabel!displaying!private!testing! !
 !JadeiteBrowserPresenter categoriesFor: #showDictionaryList!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #showPackageList!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #statusBarText!accessing!public! !
