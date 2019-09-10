@@ -14,6 +14,12 @@ abortTransaction
 	super abortTransaction.
 	projectListPresenter refresh!
 
+areBreakpointsDisabled
+	^areBreakpointsDisabled!
+
+areBreakpointsDisabled: anObject
+	areBreakpointsDisabled := anObject!
+
 autoCommit
 	"for testing"
 	^autoCommit value!
@@ -223,6 +229,8 @@ remoteAutoCommit
 toolbarPresenter
 	^toolbarPresenter! !
 !JadeiteTranscript categoriesFor: #abortTransaction!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #areBreakpointsDisabled!accessing!private! !
+!JadeiteTranscript categoriesFor: #areBreakpointsDisabled:!accessing!private! !
 !JadeiteTranscript categoriesFor: #autoCommit!accessing!private! !
 !JadeiteTranscript categoriesFor: #autoCommit:!accessing!private! !
 !JadeiteTranscript categoriesFor: #browseBreakpoints!menu handlers!public! !

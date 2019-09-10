@@ -332,6 +332,21 @@ test_commitTransaction
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded.!
 
+test_flipBreakPointsDisabled
+	| breakPointsDisabled |
+	self testsIssue: #issue515 withTitle: '(3.0.77) clear all breakpoints menu item would be useful'.
+	
+	[breakPointsDisabled := transcript areBreakpointsDisabled value.
+	transcript flipBreakpointsDisabled.
+	self assert: transcript areBreakpointsDisabled value equals: breakPointsDisabled not.
+	self assert: (session executeString: 'SessionTemps current at: #Jadeite_BreakPointsAreDisabled')
+		equals: breakPointsDisabled not.
+	transcript flipBreakpointsDisabled.
+	self assert: transcript areBreakpointsDisabled value equals: breakPointsDisabled.
+	self assert: (session executeString: 'SessionTemps current at: #Jadeite_BreakPointsAreDisabled')
+		equals: breakPointsDisabled]
+			ensure: [transcript areBreakpointsDisabled value: breakPointsDisabled]!
+
 test_jadeiteMenuAdHocExecutionItems
 	| jadeiteMenu debugMenuItem executeMenuItem inspectMenuItem displayMenuItem |
 	self testsIssue: #issue474 withTitle: '(3.0.69) inconsistent debug menu on workspaces'.
@@ -475,6 +490,7 @@ test_transcriptNamedConsole
 !JadeiteTranscriptTestCase categoriesFor: #test_closeConsoleNeedingCommit!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_closeConsoleNoCommitNeeded!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_commitTransaction!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_flipBreakPointsDisabled!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_jadeiteMenuAdHocExecutionItems!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_menuNames!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_multiSelectProject!public!tests! !
