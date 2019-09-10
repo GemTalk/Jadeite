@@ -1106,7 +1106,7 @@ methodsMenuStrings
 				gotoMethodDefinedPackage;
 				runAll;
 				runSelected].
-	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods' '-' 'Browse Breakpoints//browseBreakpoints' 'Clear Method Breakpoints//clearMethodBreaks' '-' 'Find Method .../Ctrl+Shift+M/findMethod' '-' '&Remove Method(s) ...//removeMethods' 'Debug &Tests/Ctrl+B/runMethodTests' 'Run All Tests/Ctrl+Shift+A/runAll' 'Run Selected/Ctrl+Shift+S/runMethodTests' '-' 'Go To Defining Package//gotoMethodDefinedPackage')!
+	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods' '-' 'Browse Breakpoints//browseBreakpoints' 'Clear Method Breakpoints//clearMethodBreakpoints' '-' 'Find Method .../Ctrl+Shift+M/findMethod' '-' '&Remove Method(s) ...//removeMethods' 'Debug &Tests/Ctrl+B/runMethodTests' 'Run All Tests/Ctrl+Shift+A/runAll' 'Run Selected/Ctrl+Shift+S/runMethodTests' '-' 'Go To Defining Package//gotoMethodDefinedPackage')!
 
 methodSourcePresenter: anObject
 	methodSourcePresenter := anObject!
@@ -1410,7 +1410,7 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: globalsPresenter selections notEmpty.
 			^true].
-	(#(#fileOutMethods) includes: command)
+	(#(#fileOutMethods #clearMethodBreakpoints ) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: self methodListPresenter selections notEmpty.
 			^true].

@@ -17,10 +17,20 @@ answer
 answer: anObject
 	answer := anObject!
 
+breakPointsAreDisabled: session
+	command := #breakPointsAreDisabled.
+	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	^answer!
+
 flipAutoCommitFor: session
 	command := #flipAutoCommit.
 	BrowserUpdate current issueCommand: (Array with: self) session: session.
 	^answer!
+
+flipBreakpointsDisabledIn: session with: boolean
+	command := #setBreakPointsAreDisabled:. 
+	commandArgs := Array with: boolean. 
+	BrowserUpdate current issueCommand: (Array with: self) session: session!
 
 flipTranscriptIn: session
 	command := #flipTranscript.
@@ -48,7 +58,9 @@ setAutoCommit: boolean for: session
 	^answer! !
 !RowanAnsweringService categoriesFor: #answer!accessing!private! !
 !RowanAnsweringService categoriesFor: #answer:!accessing!private! !
+!RowanAnsweringService categoriesFor: #breakPointsAreDisabled:!commands!public! !
 !RowanAnsweringService categoriesFor: #flipAutoCommitFor:!commands!public! !
+!RowanAnsweringService categoriesFor: #flipBreakpointsDisabledIn:with:!commands!public! !
 !RowanAnsweringService categoriesFor: #flipTranscriptIn:!commands!public! !
 !RowanAnsweringService categoriesFor: #isAnsweringService!public!testing! !
 !RowanAnsweringService categoriesFor: #isTranscriptInstalledIn:!commands!public! !
