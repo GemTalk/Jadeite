@@ -274,6 +274,11 @@ packageName
 packageName: anObject
 	packageName := anObject!
 
+postReload
+	" don't retain reference to (possibly) different version of class"
+
+	oop := nil!
+
 postUpdate
 	hierarchyServices := nil.
 	methods := Array new.
@@ -567,6 +572,7 @@ wasRenamed
 !RowanClassService categoriesFor: #oop:!accessing!private! !
 !RowanClassService categoriesFor: #packageName!accessing!private! !
 !RowanClassService categoriesFor: #packageName:!accessing!private! !
+!RowanClassService categoriesFor: #postReload!public!replication! !
 !RowanClassService categoriesFor: #postUpdate!Init / Release!public! !
 !RowanClassService categoriesFor: #prepareForReplication!public!replication! !
 !RowanClassService categoriesFor: #projectName!accessing!private! !

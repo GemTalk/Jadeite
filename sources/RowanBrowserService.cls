@@ -148,6 +148,9 @@ selectedClass
 
 	^selectedClass!
 
+selectedClass: anObject
+	selectedClass := anObject!
+
 testCount
 	^testCount!
 
@@ -193,6 +196,7 @@ testPackages: presenter
 !RowanBrowserService categoriesFor: #removedMethods:!accessing!private! !
 !RowanBrowserService categoriesFor: #replicateFrom:!public!replication! !
 !RowanBrowserService categoriesFor: #selectedClass!accessing!public! !
+!RowanBrowserService categoriesFor: #selectedClass:!accessing!public! !
 !RowanBrowserService categoriesFor: #testCount!accessing!private! !
 !RowanBrowserService categoriesFor: #testCount:!accessing!private! !
 !RowanBrowserService categoriesFor: #testPackages:!public!updating! !

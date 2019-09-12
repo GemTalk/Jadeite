@@ -265,6 +265,37 @@ displayStringFor: methodService in: displayThing
 			[displayThing forecolor: Color darkMagenta.
 			methodService inSelectedPackage ifFalse: [displayThing font beUnderlined]]!
 
+editSaveClass
+	"a two stage class compilation is used. First stage compiles
+	the class and stores an anonymous method to be used in 
+	stage  two. If a compile error occurs, it is handled nicely. 
+	If a compile error happens during the method recompilation
+	a debugger is raised as not much information is available 
+	without a stack."
+
+	| browserService |
+	browserService := RowanBrowserService new.
+	browserService
+		command: #compileClass:;
+		commandArgs: (Array with: classDefinitionPresenter value).
+	browserService selectedClass: self selectedClass name. 
+	[self issueCommand: (Array with: browserService)] on: Error
+		do: 
+			[:ex |
+			(ex isKindOf: GsCompileError)
+				ifTrue: [self handleClassCompileError: ex]
+				ifFalse: [self statusBarText: 'ERROR: ' , ex messageText].
+			^self].
+	
+	[browserService
+		command: #recompileMethodsAfterClassCompilation;
+		commandArgs: #().
+	self issueCommand: (Array with: browserService)]
+			on: GsCompileError
+			do: [:ex | ^self showMethodRecompilationError: ex. ].
+	self resetClassDefinitionPane.
+	self updateAfterFindClass: browserService selectedClass!
+
 editSaveMethod: classService
 	| compileResult |
 	compileResult := self
@@ -768,6 +799,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #dictionaryMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryPresenter!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #displayStringFor:in:!double dispatch!public! !
+!JadeiteBrowserPresenter categoriesFor: #editSaveClass!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #editSaveMethod:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #globalsMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #globalsMenuStrings!menus!public! !

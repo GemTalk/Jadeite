@@ -261,6 +261,11 @@ packagesUpdate: presenter!
 
 packageUpdate: presenter!
 
+postReload
+	"most services will do nothing"
+
+	!
+
 postUpdate
 	"Give the service a chance to clean up unnecessary objects after replication"
 
@@ -484,6 +489,7 @@ wasRenamed
 !RowanService categoriesFor: #notRowanizedPackageName!displaying!public! !
 !RowanService categoriesFor: #packagesUpdate:!public!updating! !
 !RowanService categoriesFor: #packageUpdate:!public!updating! !
+!RowanService categoriesFor: #postReload!public!replication! !
 !RowanService categoriesFor: #postUpdate!Init / Release!public! !
 !RowanService categoriesFor: #prepareForReplication!public!replication! !
 !RowanService categoriesFor: #printOn:!printing!public! !
