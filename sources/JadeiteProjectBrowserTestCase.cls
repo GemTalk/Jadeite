@@ -3798,8 +3798,8 @@ test_reloadAfterClassCompile
 		instVars: #('erbleldy')
 		package: 'RowanSample1-Tests'.
 	self assert: self classListPresenter selection version equals: 2.
-	self projectsPresenter loadProjects. self halt. 
-	self assert: self classListPresenter selection version equals: 1]
+	self projectsPresenter loadProjects.
+	self assert: self classListPresenter selection version equals: 3	"see https://github.com/GemTalk/Rowan/issues/506"]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_removeAbortedClass
