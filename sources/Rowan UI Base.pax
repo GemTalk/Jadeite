@@ -2561,7 +2561,8 @@ loadProjectsFrom: browser
 	| selections |
 	selections := browser projectListPresenter selections.
 	(self confirmReloadProjects: selections)
-		ifTrue: [RowanBrowserService new reloadProjects: selections presenter: self]!
+		ifTrue: [RowanBrowserService new reloadProjects: selections presenter: self].
+	BrowserUpdate current selectedServices do: [:service | service postReload]!
 
 methodListSelection
 	

@@ -1048,7 +1048,6 @@ jadeMenuStrings
 
 loadProjects
 	self loadProjectsFrom: self.
-	BrowserUpdate current selectedServices do: [:service | service postReload].
 	self refreshGlobalSelections!
 
 makeDefault

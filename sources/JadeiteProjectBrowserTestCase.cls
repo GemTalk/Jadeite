@@ -1878,6 +1878,31 @@ test_compileClassCompilerError
 				[self projectsPresenter classDefinitionPresenter view isModified: false.
 				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
+test_compileClassExistingInAnotherPackage
+	self testsIssue: #issue516 withTitle: 'Rename instance variable with accessor method is... wonky'.
+	self
+		assert: (session executeString: '(Rowan image symbolList resolveSymbol: #RowanSample1Test) notNil').
+	self selectRowanSample1Class.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestMessageBox plannedResult: #yes.	"create and move class"
+	self
+		saveClass: 'RowanSample1Test'
+		superclass: 'Object'
+		instVars: #('erbleldy')
+		package: 'RowanSample1-Core'.	"this will force a confirmation dialog"
+	self
+		assert: (session executeString: '(Rowan image symbolList resolveSymbol: #RowanSample1Test) notNil').
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
+	self assertIsNil: (self classListPresenter list
+				detect: [:classService | classService name = 'RowanSample1Test']
+				ifNone: []).
+	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter.	"class has moved"
+	self assert: (self classListPresenter selection instVarNames includes: #erbleldy)]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_compileErrorDisplay
 	| source |
 	self testsIssue: #issue459 withTitle: 'CompileWarnings should be more noticable ... '.
@@ -1890,6 +1915,26 @@ test_compileErrorDisplay
 	self assert: self methodSourcePresenter view selectionRange equals: (37 to: 47).
 	self assert: self projectsPresenter statusBarText view forecolor equals: Color black.
 	self assert: self projectsPresenter statusBarText view backcolor equals: Color red faded!
+
+test_confirmationDialogDuringCompileClassExistingInAnotherPackage
+	self testsIssue: #issue516 withTitle: 'Rename instance variable with accessor method is... wonky'.
+	self
+		assert: (session executeString: '(Rowan image symbolList resolveSymbol: #RowanSample1Test) notNil').
+	self selectRowanSample1Class.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestMessageBox plannedResult: #no.	"don't create class"
+	self
+		saveClass: 'RowanSample1Test'
+		superclass: 'Object'
+		instVars: #('erbleldy')
+		package: 'RowanSample1-Core'.	"this will force a confirmation dialog"
+	self
+		assert: (session executeString: '(Rowan image symbolList resolveSymbol: #RowanSample1Test) notNil').	"class still exists"
+	self selectRowanSample1Test.
+	self assert: self classListPresenter selection name equals: 'RowanSample1Test'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Tests'	"class still in test package"]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_confirmOverrideExistingAccessorMethods
 	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
@@ -3741,6 +3786,22 @@ test_registeredPresentersInProjectBrowserCleanedUp
 	"difference := BrowserUpdate current registeredPresenters difference: registeredPresenters. uncomment to figure out which presenters are left around"
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters size!
 
+test_reloadAfterClassCompile
+	self testsIssue: #issue516 withTitle: 'Rename instance variable with accessor method is... wonky'.
+	self selectRowanSample1Test.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestMessageBox plannedResult: #yes.
+	self
+		saveClass: 'RowanSample1Test'
+		superclass: 'TestCase'
+		instVars: #('erbleldy')
+		package: 'RowanSample1-Tests'.
+	self assert: self classListPresenter selection version equals: 2.
+	self projectsPresenter loadProjects. self halt. 
+	self assert: self classListPresenter selection version equals: 1]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_removeAbortedClass
 	"make sure we can safely remove an aborted class during post-abort refresh"
 
@@ -5561,9 +5622,11 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_comparisonTabMultimethod!public!test comparison tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_comparisonTabNoMethodSelected!public!test comparison tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_comparisonTabSuperclass!public!test comparison tab! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_compileClass!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_compileClassCompilerError!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_compileErrorDisplay!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_compileClass!public!test compiing!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_compileClassCompilerError!public!test compiing!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_compileClassExistingInAnotherPackage!public!test compiing!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_compileErrorDisplay!public!test compiing!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_confirmationDialogDuringCompileClassExistingInAnotherPackage!public!test compiing!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_confirmOverrideExistingAccessorMethods!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab!tests! !
@@ -5659,6 +5722,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshFromServer!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_registeredPresentersInMethodBrowserCleanedUp!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_reloadAfterClassCompile!public!test compiing!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeAbortedClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassFromHierarchy!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassFromList!public!test class hierarchy!test class list!tests! !
