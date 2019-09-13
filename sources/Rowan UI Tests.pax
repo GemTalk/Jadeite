@@ -156,7 +156,7 @@ JadeiteAbstractTestCase subclass: #JadeiteMethodListBrowserTestCase
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteAbstractTestCase subclass: #JadeiteMiscellaneousTestCase
-	instanceVariableNames: ''
+	instanceVariableNames: 'workspace'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

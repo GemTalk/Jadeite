@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 JadeiteAbstractTestCase subclass: #JadeiteMiscellaneousTestCase
-	instanceVariableNames: ''
+	instanceVariableNames: 'workspace'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -9,6 +9,10 @@ JadeiteMiscellaneousTestCase guid: (GUID fromString: '{3f3dd3e4-13f5-42ea-b424-b
 JadeiteMiscellaneousTestCase comment: ''!
 !JadeiteMiscellaneousTestCase categoriesForClass!Unclassified! !
 !JadeiteMiscellaneousTestCase methodsFor!
+
+tearDown
+	super tearDown.
+	workspace ifNotNil: [workspace view close]!
 
 test_adHocDisplay
 	| workspace |
@@ -321,6 +325,38 @@ test_workspaceJadeiteMenuAdHocExecutionItems
 	self assert: displayMenuItem commandDescription acceleratorKey = 4676	"Ctrl-D"]
 			ensure: [workspace view close]!
 
+test_workspacePlainStringImplementors
+	| methodListBrowser browseImplementorsItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Implementors'.
+	workspace codePane documentPresenter value: 'env:categorysDo:'.
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseImplementorsItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseImplementorsOf:]]
+				ifNone: [].
+	self assert: browseImplementorsItem text equals: 'Browse Implementors of #env:categorysDo:'.
+	methodListBrowser := workspace codePane browseImplementors.
+	[self assert: ('Implementors of ''env:categorysDo:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
+test_workspacePlainStringSenders
+	| methodListBrowser browseSendersItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Implementors'.
+	workspace codePane documentPresenter value: 'env:categorysDo:'.
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseSendersItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseSendersOf:]]
+				ifNone: [].
+	self assert: browseSendersItem text equals: 'Browse Senders of #env:categorysDo:'.
+	methodListBrowser := workspace codePane browseSenders.
+	[self assert: ('Senders of ''env:categorysDo:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
 testClassServiceNameIsString
 	| classService |
 	self testsIssue: #issue441 withTitle: '(3.0.62) suspicious code in RowanClassService>>hierarchyClassServiceFor:'.
@@ -343,6 +379,7 @@ testMethodServiceClassNameIsString
 				className: #JadeiteMiscellaneousTestCase;
 				meta: false.
 	self assert: methodService className isKindOf: String! !
+!JadeiteMiscellaneousTestCase categoriesFor: #tearDown!private!support! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_adHocDisplay!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_adHocExecute!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitDoesNotMakeRoundTripWhenOpeningBrowser!auto commit!public! !
@@ -360,6 +397,8 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceConfirmInteraction!public!test!test menus! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceInformInteraction!public!test!test menus! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceJadeiteMenuAdHocExecutionItems!public!test!test menus! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspacePlainStringImplementors!public!test browse! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspacePlainStringSenders!public!test browse! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testClassServiceNameIsString!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testMethodServiceClassNameIsString!public! !
 
