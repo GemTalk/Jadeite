@@ -65,8 +65,11 @@ createSchematicWiring
 	super createSchematicWiring.
 	documentPresenter
 		when: #aboutToDisplayMenu:
-		send: #methodMenu:
-		to: self!
+			send: #methodMenu:
+			to: self;
+		when: #leftButtonDoubleClicked:
+			send: #methodDoubleClicked:
+			to: self!
 
 currentSelectionOrLine
 
@@ -226,6 +229,17 @@ jadeExecuteAndDisplay: showResult
 menuTitle: aString
 
 	menuTitle := aString.
+!
+
+methodDoubleClicked: anObject
+
+	| range string |
+	range := documentPresenter view selectionRange.
+	string := documentPresenter value.
+	string size = range stop ifTrue: [^self].
+	(string at: range stop + 1) = $: ifFalse: [^self].
+	range stop: range stop + 1.
+	documentPresenter view selectionRange: range.
 !
 
 methodMenu: aMenu
@@ -458,6 +472,7 @@ updateCodeFont
 !CodeSourcePresenter categoriesFor: #jadeExecute!Jade!private! !
 !CodeSourcePresenter categoriesFor: #jadeExecuteAndDisplay:!Jade!private! !
 !CodeSourcePresenter categoriesFor: #menuTitle:!menus!public! !
+!CodeSourcePresenter categoriesFor: #methodDoubleClicked:!Jade!private! !
 !CodeSourcePresenter categoriesFor: #methodMenu:!menus!private! !
 !CodeSourcePresenter categoriesFor: #mySave!private! !
 !CodeSourcePresenter categoriesFor: #pasteClipboard!public! !

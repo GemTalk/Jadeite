@@ -276,6 +276,23 @@ test_workspaceConfirmInteraction
 				[workspace view close.
 				TestMessageBox disableJadeiteTestMessageBox]!
 
+test_workspaceDoubleClickIncludesColon
+	"It's difficult to fake up a mouse event so ensure the method that grabs the colon
+	is setup as an event and includes the colon after being called"
+
+	self testsIssue: #issue301 withTitle: '(3.0.50) inconsistent selector selection on double-click'.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Double Click'.
+	workspace codePane documentPresenter value: 'Array with: 1; halt'.
+	self
+		assert: (workspace codePane documentPresenter events at: #leftButtonDoubleClicked:) messages first
+				asSymbol
+		equals: #methodDoubleClicked:.
+	workspace codePane documentPresenter selectionRange: (7 to: 10).
+	self assert: workspace codePane documentPresenter selection equals: 'with'.
+	workspace codePane  methodDoubleClicked: nil.
+	self assert: workspace codePane documentPresenter selectionRange equals: (7 to: 11).
+	self assert: workspace codePane documentPresenter selection equals: 'with:'!
+
 test_workspaceInformInteraction
 	| workspace result |
 	self testsIssue: #issue303 withTitle: 'Need to handle confirm:'.
@@ -325,6 +342,70 @@ test_workspaceJadeiteMenuAdHocExecutionItems
 	self assert: displayMenuItem commandDescription acceleratorKey = 4676	"Ctrl-D"]
 			ensure: [workspace view close]!
 
+test_workspaceMessageImplementors
+	| methodListBrowser browseImplementorsItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Implementors'.
+	workspace codePane documentPresenter value: 'RBParser parseExpression: 123'.
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseImplementorsItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseImplementorsOf:]]
+				ifNone: [].
+	self assert: browseImplementorsItem text equals: 'Browse Implementors of #parseExpression:'.
+	methodListBrowser := workspace codePane browseImplementors.
+	[self assert: ('Implementors of ''parseExpression:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
+test_workspaceMessageImplementorsWithEndingQuote
+	| methodListBrowser browseImplementorsItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Implementors'.
+	workspace codePane documentPresenter value: 'RBParser parseExpression: ''env:categorysDo:'''.
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseImplementorsItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseImplementorsOf:]]
+				ifNone: [].
+	self assert: browseImplementorsItem text equals: 'Browse Implementors of #parseExpression:'.
+	methodListBrowser := workspace codePane browseImplementors.
+	[self assert: ('Implementors of ''parseExpression:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
+test_workspaceMessageSenders
+	| methodListBrowser browseSendersItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Implementors'.
+	workspace codePane documentPresenter value: 'RBParser parseExpression: 123'.
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseSendersItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseSendersOf:]]
+				ifNone: [].
+	self assert: browseSendersItem text equals: 'Browse Senders of #parseExpression:'.
+	methodListBrowser := workspace codePane browseSenders.
+	[self assert: ('Senders of ''parseExpression:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
+test_workspaceMessageSendersWithEndingQuote
+	| methodListBrowser browseSendersItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Implementors'.
+	workspace codePane documentPresenter value: 'RBParser parseExpression: ''env:categorysDo:'''.
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseSendersItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseSendersOf:]]
+				ifNone: [].
+	self assert: browseSendersItem text equals: 'Browse Senders of #parseExpression:'.
+	methodListBrowser := workspace codePane browseSenders.
+	[self assert: ('Senders of ''parseExpression:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
 test_workspacePlainStringImplementors
 	| methodListBrowser browseImplementorsItem menu |
 	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
@@ -346,6 +427,102 @@ test_workspacePlainStringSenders
 	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
 	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Implementors'.
 	workspace codePane documentPresenter value: 'env:categorysDo:'.
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseSendersItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseSendersOf:]]
+				ifNone: [].
+	self assert: browseSendersItem text equals: 'Browse Senders of #env:categorysDo:'.
+	methodListBrowser := workspace codePane browseSenders.
+	[self assert: ('Senders of ''env:categorysDo:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
+test_workspaceStringWithQuotesImplementors
+	| methodListBrowser browseImplementorsItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Implementors'.
+	workspace codePane documentPresenter value: '''env:categorysDo:'''.
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseImplementorsItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseImplementorsOf:]]
+				ifNone: [].
+	self assert: browseImplementorsItem text equals: 'Browse Implementors of #env:categorysDo:'.
+	methodListBrowser := workspace codePane browseImplementors.
+	[self assert: ('Implementors of ''env:categorysDo:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
+test_workspaceStringWithQuotesSenders
+	| methodListBrowser browseSendersItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Implementors'.
+	workspace codePane documentPresenter value: '''env:categorysDo:'''.
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseSendersItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseSendersOf:]]
+				ifNone: [].
+	self assert: browseSendersItem text equals: 'Browse Senders of #env:categorysDo:'.
+	methodListBrowser := workspace codePane browseSenders.
+	[self assert: ('Senders of ''env:categorysDo:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
+test_workspaceSymbolImplementors
+	| methodListBrowser browseImplementorsItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Implementors'.
+	workspace codePane documentPresenter value: '#env:categorysDo:'.
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseImplementorsItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseImplementorsOf:]]
+				ifNone: [].
+	self assert: browseImplementorsItem text equals: 'Browse Implementors of #env:categorysDo:'.
+	methodListBrowser := workspace codePane browseImplementors.
+	[self assert: ('Implementors of ''env:categorysDo:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
+test_workspaceSymbolSenders
+	| methodListBrowser browseSendersItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Implementors'.
+	workspace codePane documentPresenter value: '#env:categorysDo:'.
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseSendersItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseSendersOf:]]
+				ifNone: [].
+	self assert: browseSendersItem text equals: 'Browse Senders of #env:categorysDo:'.
+	methodListBrowser := workspace codePane browseSenders.
+	[self assert: ('Senders of ''env:categorysDo:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
+test_workspaceSymbolWithQuotesImplementors
+	| methodListBrowser browseImplementorsItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Implementors'.
+	workspace codePane documentPresenter value: '#''env:categorysDo:'''.
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseImplementorsItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseImplementorsOf:]]
+				ifNone: [].
+	self assert: browseImplementorsItem text equals: 'Browse Implementors of #env:categorysDo:'.
+	methodListBrowser := workspace codePane browseImplementors.
+	[self assert: ('Implementors of ''env:categorysDo:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
+test_workspaceSymbolWithQuotesSenders
+	| methodListBrowser browseSendersItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Implementors'.
+	workspace codePane documentPresenter value: '#''env:categorysDo:'''.
 	workspace codePane selectAll.
 	menu := workspace codePane documentPresenter view contextMenu.
 	workspace codePane methodMenu: menu.
@@ -395,10 +572,21 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_symbolsFromSelector!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceConfirmInteraction!public!test!test menus! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceDoubleClickIncludesColon!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceInformInteraction!public!test!test menus! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceJadeiteMenuAdHocExecutionItems!public!test!test menus! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageImplementors!public!test browse! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageImplementorsWithEndingQuote!public!test browse! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageSenders!public!test browse! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageSendersWithEndingQuote!public!test browse! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspacePlainStringImplementors!public!test browse! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspacePlainStringSenders!public!test browse! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceStringWithQuotesImplementors!public!test browse! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceStringWithQuotesSenders!public!test browse! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolImplementors!public!test browse! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolSenders!public!test browse! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolWithQuotesImplementors!public!test browse! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolWithQuotesSenders!public!test browse! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testClassServiceNameIsString!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testMethodServiceClassNameIsString!public! !
 

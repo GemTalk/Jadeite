@@ -26,15 +26,18 @@ codePresenterIsMethod
 	^true!
 
 createSchematicWiring
-
 	super createSchematicWiring.
 	documentPresenter
-		when: #'hoverStart:'				send: #'hoverStart:'			to: self;
-		when: #'hoverEnd:'				send: #'hoverEnd:'			to: self;
-		when: #'focusLost'				send: #'cancelCallTip'			to: documentPresenter view;
-		when: #'leftButtonDoubleClicked:'	send: #'methodDoubleClicked:'	to: self;
-		yourself.
-!
+		when: #hoverStart:
+			send: #hoverStart:
+			to: self;
+		when: #hoverEnd:
+			send: #hoverEnd:
+			to: self;
+		when: #focusLost
+			send: #cancelCallTip
+			to: documentPresenter view;
+		yourself!
 
 defaultMethod
 
@@ -64,17 +67,6 @@ hoverStart: aPoint
 	documentPresenter view 
 		showCallTip: indicator tag
 		at: charIndex.
-!
-
-methodDoubleClicked: anObject
-
-	| range string |
-	range := documentPresenter view selectionRange.
-	string := documentPresenter value.
-	string size = range stop ifTrue: [^self].
-	(string at: range stop + 1) = $: ifFalse: [^self].
-	range stop: range stop + 1.
-	documentPresenter view selectionRange: range.
 !
 
 methodMenu: aMenu
@@ -242,7 +234,6 @@ updateMethodStepPoints
 !MethodSourcePresenter categoriesFor: #gsMethod:!public! !
 !MethodSourcePresenter categoriesFor: #hoverEnd:!Jade!private! !
 !MethodSourcePresenter categoriesFor: #hoverStart:!Jade!private! !
-!MethodSourcePresenter categoriesFor: #methodDoubleClicked:!Jade!private! !
 !MethodSourcePresenter categoriesFor: #methodMenu:!menu handlers!public! !
 !MethodSourcePresenter categoriesFor: #methodSource!public! !
 !MethodSourcePresenter categoriesFor: #newSelector!public! !
