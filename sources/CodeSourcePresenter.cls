@@ -29,12 +29,10 @@ addQuotesToSelection
 !
 
 browseImplementors
-
-	^self browseImplementorsOf: self currentSelector.!
+	^self browseImplementorsOf: self currentSelection!
 
 browseSenders
-
-	^self browseSendersOf: self currentSelector.!
+	^self browseSendersOf: self currentSelection!
 
 clearBreakAtStepPoint: anInteger
 
@@ -63,23 +61,19 @@ copySelection
 		yourself.
 !
 
+createSchematicWiring
+	super createSchematicWiring.
+	documentPresenter
+		when: #aboutToDisplayMenu:
+		send: #methodMenu:
+		to: self!
+
 currentSelectionOrLine
 
 	| range |
 	documentPresenter hasSelection ifFalse: [documentPresenter view selectCurrentLine].
 	range := documentPresenter view selectionRange.
 	^(documentPresenter value copyFrom: range start to: range stop) replaceCrLfWithLf.
-!
-
-currentSelector
-
-	| selection |
-	selection := documentPresenter view selection.
-	^[
-		(SmalltalkParser parseMethod: selection) selector.
-	] on: Error do: [:ex | 
-		selection.
-	]
 !
 
 cutSelection
@@ -233,6 +227,9 @@ menuTitle: aString
 
 	menuTitle := aString.
 !
+
+methodMenu: aMenu
+	self methodMenuBreak: aMenu!
 
 mySave
 !
@@ -438,8 +435,8 @@ updateCodeFont
 !CodeSourcePresenter categoriesFor: #codeFont:!public! !
 !CodeSourcePresenter categoriesFor: #codePresenterIsMethod!public! !
 !CodeSourcePresenter categoriesFor: #copySelection!edit!private! !
+!CodeSourcePresenter categoriesFor: #createSchematicWiring!Jade!private! !
 !CodeSourcePresenter categoriesFor: #currentSelectionOrLine!Jade!private! !
-!CodeSourcePresenter categoriesFor: #currentSelector!public! !
 !CodeSourcePresenter categoriesFor: #cutSelection!public! !
 !CodeSourcePresenter categoriesFor: #documentPresenter!public! !
 !CodeSourcePresenter categoriesFor: #editCut!edit!private! !
@@ -461,6 +458,7 @@ updateCodeFont
 !CodeSourcePresenter categoriesFor: #jadeExecute!Jade!private! !
 !CodeSourcePresenter categoriesFor: #jadeExecuteAndDisplay:!Jade!private! !
 !CodeSourcePresenter categoriesFor: #menuTitle:!menus!public! !
+!CodeSourcePresenter categoriesFor: #methodMenu:!menus!private! !
 !CodeSourcePresenter categoriesFor: #mySave!private! !
 !CodeSourcePresenter categoriesFor: #pasteClipboard!public! !
 !CodeSourcePresenter categoriesFor: #queryCommand:!public! !

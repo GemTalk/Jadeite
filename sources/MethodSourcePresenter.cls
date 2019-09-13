@@ -31,7 +31,6 @@ createSchematicWiring
 	documentPresenter
 		when: #'hoverStart:'				send: #'hoverStart:'			to: self;
 		when: #'hoverEnd:'				send: #'hoverEnd:'			to: self;
-		when: #'aboutToDisplayMenu:'		send: #'methodMenu:'		to: self;
 		when: #'focusLost'				send: #'cancelCallTip'			to: documentPresenter view;
 		when: #'leftButtonDoubleClicked:'	send: #'methodDoubleClicked:'	to: self;
 		yourself.
@@ -244,7 +243,7 @@ updateMethodStepPoints
 !MethodSourcePresenter categoriesFor: #hoverEnd:!Jade!private! !
 !MethodSourcePresenter categoriesFor: #hoverStart:!Jade!private! !
 !MethodSourcePresenter categoriesFor: #methodDoubleClicked:!Jade!private! !
-!MethodSourcePresenter categoriesFor: #methodMenu:!Jade!private! !
+!MethodSourcePresenter categoriesFor: #methodMenu:!menu handlers!public! !
 !MethodSourcePresenter categoriesFor: #methodSource!public! !
 !MethodSourcePresenter categoriesFor: #newSelector!public! !
 !MethodSourcePresenter categoriesFor: #onViewOpened!public! !

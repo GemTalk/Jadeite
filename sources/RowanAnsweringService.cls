@@ -22,6 +22,12 @@ breakPointsAreDisabled: session
 	BrowserUpdate current issueCommand: (Array with: self) session: session.
 	^answer!
 
+expressionSelector: string session: session
+	command := #expressionSelector:.
+	commandArgs := Array with: string.
+	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	^answer!
+
 flipAutoCommitFor: session
 	command := #flipAutoCommit.
 	BrowserUpdate current issueCommand: (Array with: self) session: session.
@@ -59,6 +65,7 @@ setAutoCommit: boolean for: session
 !RowanAnsweringService categoriesFor: #answer!accessing!private! !
 !RowanAnsweringService categoriesFor: #answer:!accessing!private! !
 !RowanAnsweringService categoriesFor: #breakPointsAreDisabled:!commands!public! !
+!RowanAnsweringService categoriesFor: #expressionSelector:session:!commands!public! !
 !RowanAnsweringService categoriesFor: #flipAutoCommitFor:!commands!public! !
 !RowanAnsweringService categoriesFor: #flipBreakpointsDisabledIn:with:!commands!public! !
 !RowanAnsweringService categoriesFor: #flipTranscriptIn:!commands!public! !

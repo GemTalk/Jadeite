@@ -47,7 +47,6 @@ package setPrerequisites: (IdentitySet new
 	add: '..\Core\Object Arts\Dolphin\MVP\Type Converters\Dolphin Type Converters';
 	add: '..\Core\Object Arts\Dolphin\MVP\Models\Value\Dolphin Value Models';
 	add: 'GemStone Session';
-	add: '..\Core\Object Arts\Dolphin\System\Compiler\Smalltalk Parser';
 	add: '..\Core\Object Arts\Dolphin\ActiveX\Shell\Windows Shell';
 	yourself).
 
