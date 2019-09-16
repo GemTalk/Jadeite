@@ -1878,6 +1878,19 @@ test_compileClassCompilerError
 				[self projectsPresenter classDefinitionPresenter view isModified: false.
 				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
+test_compileClassDirtiesPackageAndProject
+	self ensureRowanSample1Loaded.	"reload to control dirty state"
+	self selectRowanSample1Class.
+	self deny: self projectListPresenter selection isDirty.
+	self deny: self packageListPresenter selection isDirty.
+	self
+		saveClass: 'RowanSample1'
+		superclass: 'Object'
+		instVars: #('abc')
+		package: 'RowanSample1-Core'.
+	self assert: self projectListPresenter selection isDirty.
+	self assert: self packageListPresenter selection isDirty!
+
 test_compileClassExistingInAnotherPackage
 	self testsIssue: #issue516 withTitle: 'Rename instance variable with accessor method is... wonky'.
 	self
@@ -5670,6 +5683,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_comparisonTabSuperclass!public!test comparison tab! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_compileClass!public!test compiing!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_compileClassCompilerError!public!test compiing!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_compileClassDirtiesPackageAndProject!public!test compiing! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_compileClassExistingInAnotherPackage!public!test compiing!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_compileErrorDisplay!public!test compiing!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_confirmationDialogDuringCompileClassExistingInAnotherPackage!public!test compiing!tests! !
