@@ -2199,6 +2199,7 @@ updateMethodSource
 			definedMethodPackageText view text: String new.
 			^methodSourcePresenter setDefaultMethod].
 	self updateServices: methodListPresenter selections.
+	methodListPresenter selections isEmpty ifTrue: [^self].
 	methodListPresenter selections size > 1
 		ifTrue: 
 			[self updateMultiMethodComparison.

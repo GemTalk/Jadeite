@@ -41,6 +41,7 @@ methodListPresenter
 methodSelectionChanged
 
 	self trigger: #'methodSelectionChanged'.
+	self updateServices: methodListPresenter selections. 
 	self setStatusBarDefault
 !
 

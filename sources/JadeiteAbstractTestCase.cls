@@ -180,7 +180,7 @@ noBreakIn: aMenu
 		assertIsNil: (aMenu items detect: 
 					[:command |
 					('*Break*' match: command text)
-						and: [(command text = 'Browse Breakpoints') not and: [(command text = 'Clear All Breakpoints') not]]]
+						and: [(command text = 'Browse Breakpoints') not and: [(command text = 'Clear Method Breakpoints') not]]]
 				ifNone: [])!
 
 openWindow: aBlock

@@ -828,6 +828,26 @@ test_removeMethodInProjectBrowser
 		equals: 'RowanSample1Test']
 			ensure: [self destroy: projectsBrowser]!
 
+test_removeMethodOutsideServices
+	"does Jadeite handle a removed selector ok?"
+
+	| selection |
+	self
+		saveMethod: 'testAdHocExecutionWith: arg1
+	| temp1 |
+	temp1 := arg1. 
+	self halt.
+	^temp1'
+		in: 'RowanSample1Test'
+		category: 'tests'.
+	methodListBrowser := JadePresenter browseImplementorsOf: #testAdHocExecutionWith: session: session.
+	selection := self methodListMethodListPresenter selectionIfNone: [].
+	self denyIsNil: selection.
+	self assert: (self methodListMethodListPresenter list includes: selection).
+	session executeString: 'RowanSample1Test removeSelector: #testAdHocExecutionWith: ifAbsent:[]'.
+	self selectMethodNamed: #testAdHocExecutionWith:.
+	self deny: (self methodListMethodListPresenter list includes: selection)!
+
 test_UnsavedChangesActionChangeSelectionIgnoreChanges
 	| methodListPresenter |
 	self testsIssue: #issue386
@@ -991,6 +1011,7 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatSource!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodInProjectBrowser!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodOutsideServices!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindow!public!tests! !

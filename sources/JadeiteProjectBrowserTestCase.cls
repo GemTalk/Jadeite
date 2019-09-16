@@ -3476,33 +3476,36 @@ test_projectDisplaysSync
 	stay sync'ed automaticall"
 
 	"project removal in projects browser"
-	self denyIsNil: (self projectNamed: 'RowanSample1').
-	self assert: self transcriptTab isKindOf: JadeiteProjectListPresenter.
-	self denyIsNil: (self transcriptProjectNamed: 'RowanSample1').
-	self unloadSampleProject.
-	self assertIsNil: (self projectNamed: 'RowanSample1').
-	self assertIsNil: (self transcriptProjectNamed: 'RowanSample1').
-	"project addition in projects browser"
-	self cloneRowanSample1. 
-	self ensureRowanSample1Loaded. 
-	[self denyIsNil: (self transcriptProjectNamed: 'RowanSample1').
-	self denyIsNil: (self projectNamed: 'RowanSample1')]
-			ensure: [self unloadSampleProject].
-	self assertIsNil: (self projectNamed: 'RowanSample1').
-	self assertIsNil: (self transcriptProjectNamed: 'RowanSample1').
-	"project addition in project list"
-	self loadRowanSample1InProjectList.
-	self denyIsNil: (self transcriptProjectNamed: 'RowanSample1').
-	self denyIsNil: (self projectNamed: 'RowanSample1').
-	"project removal in project list"
-	(self transcriptTab projectListPresenter list
-		detect: [:projectService | projectService name = self sampleProjectName]
-		ifNone: []) notNil
-		ifTrue: [self transcriptTab basicUnloadProjects: (Array with: self sampleProjectName)].
-	
-	[self assertIsNil: (self projectNamed: 'RowanSample1').
-	self assertIsNil: (self transcriptProjectNamed: 'RowanSample1')]
-			ensure: [self loadRowanSample1InProjectList]!
+
+	self disableInteractionsWhile: 
+			[self denyIsNil: (self projectNamed: 'RowanSample1').
+			self assert: self transcriptTab isKindOf: JadeiteProjectListPresenter.
+			self denyIsNil: (self transcriptProjectNamed: 'RowanSample1').
+			self unloadSampleProject.
+			self assertIsNil: (self projectNamed: 'RowanSample1').
+			self assertIsNil: (self transcriptProjectNamed: 'RowanSample1').
+			"project addition in projects browser"
+			self cloneRowanSample1.
+			self ensureRowanSample1Loaded.
+			
+			[self denyIsNil: (self transcriptProjectNamed: 'RowanSample1').
+			self denyIsNil: (self projectNamed: 'RowanSample1')]
+					ensure: [self unloadSampleProject].
+			self assertIsNil: (self projectNamed: 'RowanSample1').
+			self assertIsNil: (self transcriptProjectNamed: 'RowanSample1').
+			"project addition in project list"
+			self loadRowanSample1InProjectList.
+			self denyIsNil: (self transcriptProjectNamed: 'RowanSample1').
+			self denyIsNil: (self projectNamed: 'RowanSample1').
+			"project removal in project list"
+			(self transcriptTab projectListPresenter list
+				detect: [:projectService | projectService name = self sampleProjectName]
+				ifNone: []) notNil
+				ifTrue: [self transcriptTab basicUnloadProjects: (Array with: self sampleProjectName)].
+			
+			[self assertIsNil: (self projectNamed: 'RowanSample1').
+			self assertIsNil: (self transcriptProjectNamed: 'RowanSample1')]
+					ensure: [self loadRowanSample1InProjectList]]!
 
 test_projectInfoTab
 	| view |
@@ -3877,6 +3880,27 @@ test_removeInstVarVariablesStaySorted
 		package: 'RowanSample1-Tests'.
 	self assert: self projectsPresenter methodFilterListPresenter list asArray
 		equals: (Array with: 'foo' with: 'testSelector')!
+
+test_removeMethodOutsideServices
+	"does Jadeite handle a removed selector ok?"
+
+	| selection |
+	self
+		saveMethod: 'testAdHocExecutionWith: arg1
+	| temp1 |
+	temp1 := arg1. 
+	self halt.
+	^temp1'
+		in: 'RowanSample1Test'
+		category: 'tests'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #testAdHocExecutionWith:.
+	selection := self methodListPresenter selectionIfNone: [].
+	self denyIsNil: selection.
+	self assert: (self methodListPresenter list includes: selection).
+	session executeString: 'RowanSample1Test removeSelector: #testAdHocExecutionWith: ifAbsent:[]'.
+	self selectMethodNamed: #testAdHocExecutionWith:.
+	self deny: (self methodListPresenter list includes: selection)!
 
 test_removeProject
 	| targetProject |
@@ -4711,9 +4735,9 @@ test_tabNames_projectsBrowserNotLost
 	index := 1.
 	self assert: (projectTabs at: index) arrangement equals: index printString , ' Projects'.
 	self selectRowanSample1Class.
-	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1-Core'.
+	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1'. "display class name" 
 	self selectCategoryNamed: 'accessing'.
-	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1-Core'.	"no change. this was a bug"
+	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1'.	"no change. this was a bug"
 	self projectsPresenter topShell addSystemBrowser.
 	projectTabs := self projectsPresenter parentPresenter view cards.
 	index := 2.
@@ -4721,11 +4745,11 @@ test_tabNames_projectsBrowserNotLost
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
 	self selectServicesNamed: (Array with: 'RowanAnsweringService') in: self classListPresenter.
-	self assert: (projectTabs at: index) arrangement equals: index printString , ' Rowan-Services-Core'.
+	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanAnsweringService'.
 	self selectCategoryNamed: 'client commands'.
-	self assert: (projectTabs at: index) arrangement equals: index printString , ' Rowan-Services-Core'.	"no change. this was a bug"
+	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanAnsweringService'.	"no change. this was a bug"
 	index := 1.
-	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1-Core'	"not affected by other tab"!
+	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1'	"not affected by other tab"!
 
 test_twoBrowsersAddedClassAppears
 	"if the same package is selected, a new class appears but the existing
@@ -5727,6 +5751,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassFromHierarchy!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassFromList!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeInstVarVariablesStaySorted!public!test variable tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_removeMethodOutsideServices!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameCategory!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameClassMethodListUpdates!public!test rename class! !

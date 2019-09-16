@@ -125,6 +125,18 @@ pressButtonIn: view
 			lParam: 16r12C0064;
 		yourself	"WM_RBUTTONDOWN"	" (300 @ 100) "	"WM_RBUTTONUP"!
 
+removeMethodNamed: aSymbol
+	| classService methodService |
+	methodService := RowanMethodService new
+				selector: aSymbol;
+				className: 'RowanSample1Test';
+				meta: false.
+	classService := RowanClassService new name: 'RowanSample1Test'.
+	classService
+		command: #removeMethods:;
+		commandArgs: (Array with: (Array with: methodService)).
+	^self issueCommand: classService!
+
 saveMethodWithHalt
 	| source |
 	source := 'sampleMethodWithHalt
@@ -238,8 +250,7 @@ test_adHocExecutionEvaluatesArgs
 	debugger methodSourcePresenter documentPresenter view setFocus.
 	debugger methodSourcePresenter jadeDisplay.
 	self assert: debugger methodSourcePresenter documentPresenter selection equals: ' 1']
-			ensure: 
-				[session executeString: 'RowanSample1Test removeSelector: #testAdHocExecutionWith: ifAbsent:[]']!
+			ensure: [self removeMethodNamed: #testAdHocExecutionWith:]!
 
 test_adHocExecutionEvaluatesTemp
 	self
@@ -268,8 +279,7 @@ test_adHocExecutionEvaluatesTemp
 	self assert: debugger methodSourcePresenter documentPresenter selection equals: 'temp1'.
 	debugger methodSourcePresenter jadeDisplay.
 	self assert: debugger methodSourcePresenter documentPresenter selection equals: ' 5']
-			ensure: 
-				[session executeString: 'RowanSample1Test removeSelector: #testAdHocExecutionWith: ifAbsent:[]']!
+			ensure: [self removeMethodNamed: #testAdHocExecutionWith:]!
 
 test_adHocExecutionSelf
 	self openDebuggerOn: '''gloop'' halt'.
@@ -303,8 +313,7 @@ test_adHocExecutionUpdatesVariablesList
 	debugger variableListPresenter selectionByIndex: 4.
 	self assert: debugger variableListPresenter selection _key equals: #temp1.
 	self assert: debugger variableListPresenter selection value equals: 5]
-			ensure: 
-				[session executeString: 'RowanSample1Test removeSelector: #testAdHocExecutionWith: ifAbsent:[]']!
+			ensure: [self removeMethodNamed: #testAdHocExecutionWith:]!
 
 test_badCompileInDebugger
 	| source |
@@ -607,17 +616,23 @@ test_duplicateInstVars
 	self selectServicesNamed: #('RowanSample1-Tests') in: self packageListPresenter.
 	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
 	self selectClassTab.
-	self selectServiceNamed: 'TestClass' in: self classListPresenter.
 	self
 		saveClass: 'SubClass'
 		superclass: 'TestClass'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	self selectServiceNamed: 'SubClass' in: self classListPresenter.
+	self
+		saveClass: 'SubSubClass'
+		superclass: 'SubClass'
 		instVars: #('aa')
 		package: 'RowanSample1-Tests'.
 	self selectServiceNamed: 'SubClass' in: self classListPresenter.
 	self debuggerDo: 
 			[process := 
-					[self
-						saveClass: 'TestClass'
+					[self selectServiceNamed: 'SubClass' in: self classListPresenter.
+					self
+						saveClass: 'SubClass'
 						withInstVars: #('aa')
 						package: 'RowanSample1-Tests']
 							forkAt: Processor activePriority + 1].
@@ -626,6 +641,10 @@ test_duplicateInstVars
 	self assert: debugger variableListPresenter list first className equals: 'ImproperOperation']
 			ensure: 
 				[self projectsPresenter classDefinitionPresenter view isModified: false.
+				self selectServiceNamed: 'SubSubClass' in: self classListPresenter.
+				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
+				self selectServiceNamed: 'SubClass' in: self classListPresenter.
+				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
 				self destroy: projectsBrowser]!
 
 test_duplicateInstVarsHierarchy
@@ -642,12 +661,20 @@ test_duplicateInstVarsHierarchy
 	self
 		saveClass: 'SubClass'
 		superclass: 'TestClass'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	self selectClassInHierarchyNamed: 'SubClass'.
+	self
+		saveClass: 'SubSubClass'
+		superclass: 'SubClass'
 		instVars: #('aa')
 		package: 'RowanSample1-Tests'.
+	self selectClassInHierarchyNamed: 'SubSubClass'.
 	self debuggerDo: 
 			[process := 
-					[self
-						saveClass: 'TestClass'
+					[self selectClassInHierarchyNamed: 'SubClass'.
+					self
+						saveClass: 'SubClass'
 						withInstVars: #('aa')
 						package: 'RowanSample1-Tests']
 							forkAt: Processor activePriority + 1].
@@ -656,6 +683,10 @@ test_duplicateInstVarsHierarchy
 	self assert: debugger variableListPresenter list first className equals: 'ImproperOperation']
 			ensure: 
 				[self projectsPresenter classDefinitionPresenter view isModified: false.
+				self selectClassInHierarchyNamed: 'SubSubClass'.
+				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
+				self selectClassInHierarchyNamed: 'SubClass'.
+				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
 				self destroy: projectsBrowser]!
 
 test_duplicateInstVarsInHierarchy
@@ -672,13 +703,20 @@ test_duplicateInstVarsInHierarchy
 	self
 		saveClass: 'SubClass'
 		superclass: 'TestClass'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	self selectClassInHierarchyNamed: 'SubClass'.
+	self
+		saveClass: 'SubSubClass'
+		superclass: 'SubClass'
 		instVars: #('aa')
 		package: 'RowanSample1-Tests'.
-	self selectServiceNamed: 'SubClass' in: self classListPresenter.
+	self selectClassInHierarchyNamed: 'SubSubClass'.
 	self debuggerDo: 
 			[process := 
-					[self
-						saveClass: 'TestClass'
+					[self selectClassInHierarchyNamed: 'SubClass'.
+					self
+						saveClass: 'SubClass'
 						withInstVars: #('aa')
 						package: 'RowanSample1-Tests']
 							forkAt: Processor activePriority + 1].
@@ -687,6 +725,10 @@ test_duplicateInstVarsInHierarchy
 	self assert: debugger variableListPresenter list first className equals: 'ImproperOperation']
 			ensure: 
 				[self projectsPresenter classDefinitionPresenter view isModified: false.
+				self selectClassInHierarchyNamed: 'SubSubClass'.
+				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
+				self selectClassInHierarchyNamed: 'SubClass'.
+				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
 				self destroy: projectsBrowser]!
 
 test_frameDoubleClick
@@ -1589,6 +1631,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #methodListBrowser!private! !
 !JadeiteDebuggerTestCase categoriesFor: #openDebuggerOn:!private! !
 !JadeiteDebuggerTestCase categoriesFor: #pressButtonIn:!private!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #removeMethodNamed:!private!test ad hoc execution! !
 !JadeiteDebuggerTestCase categoriesFor: #saveMethodWithHalt!private! !
 !JadeiteDebuggerTestCase categoriesFor: #selectFrameAt:!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #setUp!private!setup teardown! !
