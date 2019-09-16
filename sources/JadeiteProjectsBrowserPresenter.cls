@@ -697,6 +697,7 @@ editSaveClassComment
 editSaveMethod
 	| selection |
 	selection := self selectedClass.
+	selection ifNil: [^self].
 	selection meta: self isClassSideSelected.
 	self editSaveMethod: selection.
 	self updateSUnitTab.

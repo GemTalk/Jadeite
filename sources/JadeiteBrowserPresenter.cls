@@ -351,6 +351,9 @@ isProjectItemEnabled: command
 isRowanProjectSelected
 	^(self isNoneProjectSelected or: [projectListPresenter selections isEmpty]) not!
 
+methodToReformat
+	^methodListPresenter selectionIfNone: [RowanMethodService new]!
+
 noClassSelectedInEitherPresenter
 	classListPresenter selectionIfNone: [classHierarchyPresenter selectionIfNone: [^true]].
 	^false!
@@ -400,7 +403,7 @@ queryCommand: aCommandQuery
 			^true].
 	(#(#reformatSource) includes: command)
 		ifTrue: 
-			[aCommandQuery isEnabled: self methodListPresenter selections size = 1.
+			[aCommandQuery isEnabled: self methodListPresenter selections size <= 1.
 			^true].
 	#gitCommit == command
 		ifTrue: 
@@ -426,21 +429,22 @@ queryCommand: aCommandQuery
 	^super queryCommand: aCommandQuery!
 
 reformatSource
-	methodListPresenter selection
+	| methodService |
+	(methodService := self methodToReformat)
 		source: methodSourcePresenter value;
 		command: #reformatSource;
 		commandArgs: Array new.
-	[self issueCommand: (Array with: methodListPresenter selection)] on: Error
+	[self issueCommand: (Array with: methodService)] on: Error
 		do: 
-			[:ex |
+			[:ex | self halt. 
 			self setCompileErrorColor.
-			self statusBarText: 'Reformat failed. Illegal source'. 
+			self statusBarText: 'Reformat failed. Illegal source'.
 			^false].
-	methodSourcePresenter value: methodListPresenter selection source.
+	methodSourcePresenter value: methodService source.
 	methodSourcePresenter view isModified: true.
 	self methodValueChanged.
-	self setStatusBarDefault. 
-	self statusBarText: String new. 
+	self setStatusBarDefault.
+	self statusBarText: String new.
 	^methodSourcePresenter value!
 
 refreshClass
@@ -809,6 +813,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #isNoneProjectSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #isProjectItemEnabled:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #isRowanProjectSelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #methodToReformat!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #noClassSelectedInEitherPresenter!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #openCommitInGitHub!menu handlers!public! !
@@ -817,7 +822,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #projectInfoMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #protectedDictionaries!constants!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #reformatSource!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #reformatSource!menu handlers!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #refreshClass!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #refreshFromServerAfterAbort:!public! !
 !JadeiteBrowserPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !

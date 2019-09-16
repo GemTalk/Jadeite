@@ -3573,6 +3573,28 @@ test_reformatIllegalSource
 	self assert: self methodSourcePresenter value equals: 'reformatSourceTemporaryMethod ^#'	"unchanged"]
 			ensure: [self methodSourcePresenter view isModified: false]!
 
+test_reformatMenuItemEnabled
+	"reformat should be enabled even when methods aren't selected
+	else it's not always possible to reformat a new method"
+
+	| reformatMenuOption query |
+	self selectRowanSample1Test.
+	reformatMenuOption := self methodSourcePresenter view queryContextMenu items
+				detect: [:menu | '*Reformat Source*' match: menu text]
+				ifNone: [].
+	self denyIsNil: reformatMenuOption.
+	self assert: reformatMenuOption command equals: #reformatSource.
+	self assert: (self projectsPresenter class canUnderstand: #reformatSource).
+	query := CommandQuery commandDescription: reformatMenuOption source: self methodSourcePresenter view.
+	self methodListPresenter list do: 
+			[:methodService |
+			self selectMethodNamed: methodService selector.
+			self projectsPresenter queryCommand: query.
+			self assert: query isEnabled].
+	self methodListPresenter resetSelection.
+	self projectsPresenter queryCommand: query.
+	self assert: query isEnabled!
+
 test_reformatSource
 	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
 	self selectRowanSample1Test.
@@ -5737,6 +5759,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectMenuGitCommitMenuItem!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectRemoved!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_reformatIllegalSource!public!test source! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_reformatMenuItemEnabled!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_reformatSource!public!test source! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_reformatSourceAppliesOnlyToCurrentBrowser!public!test source! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodList!public!test projects!tests! !
