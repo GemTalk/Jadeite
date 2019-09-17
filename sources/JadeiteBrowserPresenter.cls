@@ -195,6 +195,11 @@ comparisonPresenter
 
 	^comparisonPresenter!
 
+contextObject
+	^self selectedClass
+		ifNil: [^nil]
+		ifNotNil: [:classService | gciSession oopTypeWithOop: classService oop]!
+
 createComponents
 	super createComponents.
 	dictionaryPresenter := self add: ListPresenter new name: 'dictionariesList'.
@@ -795,6 +800,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #buildProjectTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #classCommentChanged!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #comparisonPresenter!accessing!public! !
+!JadeiteBrowserPresenter categoriesFor: #contextObject!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
 !JadeiteBrowserPresenter categoriesFor: #createListViewFor:!private! !
 !JadeiteBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!public! !

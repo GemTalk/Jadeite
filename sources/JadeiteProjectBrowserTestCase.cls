@@ -530,6 +530,50 @@ test_addSubclass
 				replaceCrLfWithLf]
 			ensure: [self projectsPresenter classDefinitionPresenter view isModified: false]!
 
+test_adHocContextClassSide
+	| classService |
+	self testsIssue: #issue517 withTitle: 'Context of non-debugger source panes should be the class'.
+	self selectRowanSample1Test.
+	self selectClassTab.
+	classService := RowanClassService named: 'RowanSample1Test'.
+	classService meta: true.
+	classService
+		saveMethod: 'fnoodle  ^#fnoodle'
+		category: 'deleteMe'
+		session: session.
+	self selectMethodNamed: #fnoodle.
+	self assert: self methodListPresenter selection selector equals: #fnoodle.
+	self methodSourcePresenter value: 'self fnoodle'.
+	self methodSourcePresenter setFocus.
+	
+	[self methodSourcePresenter view selectAll.
+	self projectsPresenter jadeDisplay.
+	self assert: self methodSourcePresenter value equals: 'self fnoodle #''fnoodle''']
+			ensure: 
+				[self assert: self methodListPresenter selection selector equals: #fnoodle.
+				self methodSourcePresenter view isModified: false.
+				self projectsPresenter basicRemoveMethods]!
+
+test_adHocContextInstanceSide
+	self testsIssue: #issue517 withTitle: 'Context of non-debugger source panes should be the class'.
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'fnoodle  ^#fnoodle'
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	self selectMethodNamed: #fnoodle.
+	self assert: self methodListPresenter selection selector equals: #fnoodle.
+	self methodSourcePresenter value: 'self new fnoodle'.
+	self methodSourcePresenter setFocus.
+	
+	[self methodSourcePresenter view selectAll.
+	self projectsPresenter jadeDisplay.
+	self assert: self methodSourcePresenter value equals: 'self new fnoodle #''fnoodle''']
+			ensure: 
+				[self assert: self methodListPresenter selection selector equals: #fnoodle.
+				self methodSourcePresenter view isModified: false.
+				self projectsPresenter basicRemoveMethods]!
+
 test_adHocInspectComplexObjectInProjectBrowser
 	| inspector |
 	self testsIssue: #issue464 withTitle: '(3.0.67) String does not understand #format: ... during doit'.
@@ -5628,6 +5672,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveHierarchyCategory!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addSubclass!public!test class hierarchy!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_adHocContextClassSide!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_adHocContextInstanceSide!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_adHocInspectComplexObjectInProjectBrowser!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_adHocInspectComplexObjectInProjectBrowser2!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_allClassesAutoCommitOn!public!test class list!test find!tests! !

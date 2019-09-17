@@ -35,6 +35,7 @@ removeMethods: methodServices in: className
 
 	| classService |
 	classService := RowanClassService named: className.
+	classService meta: methodServices first meta.	" assume for now that methods all have save meta"
 	classService
 		command: #removeMethods:;
 		commandArgs: (Array
@@ -146,6 +147,52 @@ tearDown
 		ifNotNil: 
 			[projectsBrowser view close.
 			projectsBrowser := nil]!
+
+test_adHocContextClassSide
+	| classService |
+	self testsIssue: #issue517 withTitle: 'Context of non-debugger source panes should be the class'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self selectRowanSample1Test.
+	self selectClassTab.
+	classService := RowanClassService named: 'RowanSample1Test'.
+	classService meta: true.
+	classService
+		saveMethod: 'fnoodle  ^#fnoodle'
+		category: 'deleteMe'
+		session: session.
+	methodListBrowser := JadePresenter browseImplementorsOf: 'fnoodle' session: session.
+	self methodSourcePresenter value: 'self fnoodle'.
+	self methodSourcePresenter setFocus.
+	
+	[self methodSourcePresenter documentPresenter view selectAll.
+	self methodSourcePresenter jadeDisplay.
+	self assert: self methodSourcePresenter documentPresenter value equals: 'self fnoodle #''fnoodle''']
+			ensure: 
+				[self methodSourcePresenter documentPresenter view isModified: false.
+				self removeMethods: self methodListMethodListPresenter selections in: 'RowanSample1Test']!
+
+test_adHocContextInstanceSide
+	| classService |
+	self testsIssue: #issue517 withTitle: 'Context of non-debugger source panes should be the class'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self selectRowanSample1Test.
+	classService := RowanClassService named: 'RowanSample1Test'.
+	classService
+		saveMethod: 'fnoodle  ^#fnoodle'
+		category: 'deleteMe'
+		session: session.
+	methodListBrowser := JadePresenter browseImplementorsOf: 'fnoodle' session: session.
+	self methodSourcePresenter value: 'self new fnoodle'.
+	self methodSourcePresenter setFocus.
+	
+	[self methodSourcePresenter documentPresenter view selectAll.
+	self methodSourcePresenter jadeDisplay.
+	self assert: self methodSourcePresenter documentPresenter value equals: 'self new fnoodle #''fnoodle''']
+			ensure: 
+				[self methodSourcePresenter documentPresenter view isModified: false.
+				self removeMethods: self methodListMethodListPresenter selections in: 'RowanSample1Test']!
 
 test_browseBreakpoints
 	| methodService |
@@ -975,6 +1022,8 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #setupTestMethodInProjectBrowser!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #sourcePresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_adHocContextClassSide!public!test methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_adHocContextInstanceSide!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpoints!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpointsFromTranscript!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
