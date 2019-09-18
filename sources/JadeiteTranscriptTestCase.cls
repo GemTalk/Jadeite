@@ -22,6 +22,9 @@ allTranscriptPresenters
 	presenters add: transcript projectListPresenter.
 	^presenters!
 
+browseMenu
+	^transcript view menuBar items detect: [:menu | '*Browse*' match: menu text] ifNone: []!
+
 menuItemIsEnabledInAllPresenters: aSymbol
 	| commandQuery |
 	self allTranscriptPresenters do: 
@@ -31,6 +34,30 @@ menuItemIsEnabledInAllPresenters: aSymbol
 						inPresenter: presenter
 						view: presenter view.
 			self assert: commandQuery isEnabled]!
+
+restoreBackupPrefsFile: prefsExisted
+	| backupStream fileStream backupPath |
+	prefsExisted
+		ifFalse: 
+			[(File open: File workingDirectory , 'Jadeite.prefs')
+				close;
+				delete].
+	backupPath := File workingDirectory , 'Jadeite.prefs.testbkp'.
+	(File exists: backupPath) ifFalse: [^self].
+	backupStream := FileStream read: File workingDirectory , 'Jadeite.prefs.testbkp'.
+	fileStream := FileStream write: File workingDirectory , 'Jadeite.prefs'.
+	[fileStream nextPutAll: backupStream contents] ensure: 
+			[backupStream close.
+			(File open: backupPath) delete.
+			fileStream close]!
+
+savePrefsBackup
+	| backupStream fileStream |
+	backupStream := FileStream write: File workingDirectory , 'Jadeite.prefs.testbkp'.
+	fileStream := FileStream read: File workingDirectory , 'Jadeite.prefs'.
+	[backupStream nextPutAll: fileStream contents] ensure: 
+			[backupStream close.
+			fileStream close]!
 
 test_abortRemovesProjectsInAllBrowsers
 	| sunitBrowser |
@@ -408,6 +435,36 @@ test_openChangesBrowser
 	changesBrowser := changesItem commandDescription performAgainst: transcript projectListPresenter.
 	[self assert: (changesBrowser isKindOf: RowanPatchBrowser)] ensure: [self destroy: changesBrowser]!
 
+test_openPreferencesFile
+	| prefsWorkspace prefsItem |
+	self testsIssue: #issue522 withTitle: 'hook to open desired set of windows at startup'.
+	prefsItem := self browseMenu items detect: [:menuItem | menuItem command == #browseJadeitePrefs].
+	prefsWorkspace := prefsItem commandDescription performAgainst: transcript.
+	[self assert: (prefsWorkspace isKindOf: JadeWorkspace)] ensure: [prefsWorkspace view close]
+!
+
+test_openPreferencesFileCreatePrefsFile
+	| prefsWorkspace prefsItem path prefsExists |
+	self testsIssue: #issue522 withTitle: 'hook to open desired set of windows at startup'.
+	path := File workingDirectory , 'Jadeite.prefs'.
+	prefsExists := File exists: path.
+	prefsExists
+		ifTrue: 
+			[self savePrefsBackup.
+			(File open: path) delete].
+	self deny: (File exists: path).
+	
+	[prefsItem := self browseMenu items detect: [:menuItem | menuItem command == #browseJadeitePrefs].
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #yes.
+	prefsWorkspace := prefsItem commandDescription performAgainst: transcript.
+	self assert: (File exists: path)]
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				prefsWorkspace view close.
+				self restoreBackupPrefsFile: prefsExists.
+				self assert: (File exists: path) equals: prefsExists]!
+
 test_popupMenuHasBrowseClass
 	| browseClassItem |
 	self testsIssue: #issue429 withTitle: '(3.0.60) ''Browse Class'' on Transcript gets walkback'.
@@ -470,7 +527,10 @@ test_transcriptNamedConsole
 	self assert: transcript transcriptPresenter documentPresenter view displayValue isEmpty]
 			ensure: [wasInstalled ifFalse: [transcript flipTranscript	"turn back off"]]! !
 !JadeiteTranscriptTestCase categoriesFor: #allTranscriptPresenters!private!support! !
+!JadeiteTranscriptTestCase categoriesFor: #browseMenu!private!support!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #menuItemIsEnabledInAllPresenters:!private!support! !
+!JadeiteTranscriptTestCase categoriesFor: #restoreBackupPrefsFile:!private!support!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #savePrefsBackup!private!support!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_abortRemovesProjectsInAllBrowsers!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_abortTransaction!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_autoCommitOff!public!tests! !
@@ -495,6 +555,8 @@ test_transcriptNamedConsole
 !JadeiteTranscriptTestCase categoriesFor: #test_menuNames!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_multiSelectProject!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_openChangesBrowser!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_openPreferencesFile!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_openPreferencesFileCreatePrefsFile!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseClass!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseImplementors!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseSenders!public!tests! !

@@ -377,6 +377,9 @@ showText: aString
 undo
 	documentPresenter undo!
 
+updateCaption: string
+	self caption: (gciSession titleBarFor: string)!
+
 updateCodeFont
 
 	codePane updateCodeFont.
@@ -448,6 +451,7 @@ validateUserInterface
 !JadeTextDocument categoriesFor: #showSelection!menu handlers!private! !
 !JadeTextDocument categoriesFor: #showText:!private! !
 !JadeTextDocument categoriesFor: #undo!public! !
+!JadeTextDocument categoriesFor: #updateCaption:!displaying!public! !
 !JadeTextDocument categoriesFor: #updateCodeFont!private! !
 !JadeTextDocument categoriesFor: #updateStatusBar!private! !
 !JadeTextDocument categoriesFor: #updateStatusBarItem:with:!private! !
