@@ -582,6 +582,22 @@ selectNoneProject
 	projectListPresenter selection: (projectListPresenter list
 				detect: [:projectService | projectService name = RowanProjectService noneProject name])!
 
+selectPackageNamed: packageName
+	| packageService |
+	self halt.
+	packageService := RowanPackageService new name: packageName.
+	packageService command: #updateProject.
+	self issueCommand: (Array with: packageService).
+	packageService projectName ifNil: [^self].
+	self selectProjectNamed: packageService projectName.
+	projectListPresenter selections: (Array with: packageService)!
+
+selectProjectNamed: projectName
+	| projectService |
+	projectService := projectListPresenter list detect: [:service | service name = projectName]
+				ifNone: [^self].
+	projectListPresenter selections: (Array with: projectService)!
+
 setCompileErrorColor
 	statusBarText view backcolor: Color red faded!
 
@@ -845,6 +861,8 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #selectedPackageNames!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #selectedPackageServices!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #selectNoneProject!public!selection! !
+!JadeiteBrowserPresenter categoriesFor: #selectPackageNamed:!public!selection! !
+!JadeiteBrowserPresenter categoriesFor: #selectProjectNamed:!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #setCompileErrorColor!compile support!public! !
 !JadeiteBrowserPresenter categoriesFor: #setCompileWarningColor!compile support!public! !
 !JadeiteBrowserPresenter categoriesFor: #setStatusBarDefault!compile support!public! !

@@ -58,7 +58,7 @@ browseJadeiteLogs
 browseJadeitePrefs
 	"Open Jadeite.prefs in the working directory"
 
-	| path fileStream file |
+	| path file |
 	path := File workingDirectory , self preferencesFile.
 	(File exists: path)
 		ifFalse: 
@@ -69,13 +69,9 @@ browseJadeitePrefs
 				mode: #open
 				check: false.	"create it if it's not there"
 	file close.
-	fileStream := FileStream read: path.
-	
-	[^(JadeWorkspace showOnSession: gciSession)
-		model: fileStream contents;
+	^(JadeWorkspace open: path onSession: gciSession)
 		isModified: false;
-		updateCaption: path]
-			ensure: [fileStream close]!
+		updateCaption: path!
 
 browseLiteralReferences
 	^JadePresenter browseLiteralReferences: self gciSession!

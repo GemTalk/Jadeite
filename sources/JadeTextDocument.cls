@@ -477,6 +477,16 @@ icon
 	^Icon fromFile: 'icons\GS32.ico'.
 !
 
+open: filename onSession: aGciSession
+
+	| openFilename |
+	openFilename := filename.
+	openFilename isNil ifTrue: [^nil].
+	^(self showOnSession: aGciSession)
+		openOn: openFilename;
+		yourself.
+!
+
 openOnSession: aGciSession
 
 	| openFilename |
@@ -504,6 +514,7 @@ shutdownOnExit
 !JadeTextDocument class categoriesFor: #defaultFileExtension!public! !
 !JadeTextDocument class categoriesFor: #fileTypes!public! !
 !JadeTextDocument class categoriesFor: #icon!public! !
+!JadeTextDocument class categoriesFor: #open:onSession:!public! !
 !JadeTextDocument class categoriesFor: #openOnSession:!public! !
 !JadeTextDocument class categoriesFor: #showOnSession:!public! !
 !JadeTextDocument class categoriesFor: #shutdownOnExit!public! !

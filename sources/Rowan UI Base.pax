@@ -494,7 +494,7 @@ package!
 "Class Definitions"!
 
 Object subclass: #JadeitePreferences
-	instanceVariableNames: ''
+	instanceVariableNames: 'session'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1070,18 +1070,11 @@ postLoadClientPreferences
 	
 	[stream := file readWriteStream.
 	[stream atEnd] whileFalse: 
-			[| message |
-			nextLine := stream nextLine.
-			message := (nextLine subStrings first , ':session:') asSymbol.
-			(JadeitePreferences canUnderstand: message)
-				ifTrue: 
-					[JadeitePreferences new
-						perform: message
-						with: nextLine subStrings last
-						with: self]]]
+			[nextLine := stream nextLine.
+			JadeitePreferences new setPreference: nextLine session: self]]
 			ensure: [^file close].
 	"unreachable code"
-	[JadeitePreferences new transcriptEnabled: nil session: nil].  "to avoid getting stripped in runtime" !
+	[JadeitePreferences new transcriptEnabled: nil session: nil]	"to avoid getting stripped in runtime"!
 
 postLoadServerPreferences
 	self
@@ -1099,11 +1092,11 @@ postLoginAs: aString useSocket: aBoolean
 			[^MessageBox notify: 'Rowan not loaded or $ROWAN_PROJECTS_HOME not set. Logging out.'	"log out in RowinLoginShell>>postLogin:"].
 	server := self
 				executeString: '(Rowan jadeServerClassNamed: #JadeServer) theJadeiteServer installTranscript; yourself'.
-	self postLoadClientPreferences.
-	self postLoadServerPreferences.
 	aBoolean ifTrue: [self attemptSocket].
 	self setInitials: aString.	"This gets back the session and serial number"
-	GciSession current: self!
+	GciSession current: self.
+	self postLoadClientPreferences.
+	self postLoadServerPreferences.!
 
 preferencesFile
 
