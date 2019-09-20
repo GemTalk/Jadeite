@@ -894,7 +894,9 @@ test_removeMethodOutsideServices
 	session
 		executeString: 'Rowan projectTools browser removeMethod: #testAdHocExecutionWith: forClassNamed: ''RowanSample1Test'' isMeta: false'.
 	self
-		assert: (session executeString: '(RwPrjAuditTool new auditForProjectNamed: ''RowanSample1'') isEmpty').
+		assert: (session executeString: '| auditResults | 
+								auditResults := (RwPrjAuditTool new auditForProjectNamed: ''RowanSample1''). 
+								auditResults isEmpty').
 	self selectMethodNamed: #testAdHocExecutionWith:.
 	self deny: (self methodListMethodListPresenter list includes: selection)!
 
