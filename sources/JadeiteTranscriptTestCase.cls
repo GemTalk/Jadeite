@@ -525,7 +525,12 @@ test_transcriptNamedConsole
 	clearTranscriptMenuItem commandDescription performAgainst: transcript transcriptPresenter.
 	self assert: transcript transcriptPresenter documentPresenter value isEmpty.
 	self assert: transcript transcriptPresenter documentPresenter view displayValue isEmpty]
-			ensure: [wasInstalled ifFalse: [transcript flipTranscript	"turn back off"]]! !
+			ensure: [wasInstalled ifFalse: [transcript flipTranscript	"turn back off"]]!
+
+writeToPrefsFile: string
+	| fileStream |
+	fileStream := FileStream read: File workingDirectory , 'Jadeite.prefs'.
+	[fileStream nextPutAll: string] ensure: [fileStream close]! !
 !JadeiteTranscriptTestCase categoriesFor: #allTranscriptPresenters!private!support! !
 !JadeiteTranscriptTestCase categoriesFor: #browseMenu!private!support!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #menuItemIsEnabledInAllPresenters:!private!support! !
@@ -562,4 +567,5 @@ test_transcriptNamedConsole
 !JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseSenders!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_projectMenuGitCommitMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_transcriptNamedConsole!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #writeToPrefsFile:!private!support!tests! !
 

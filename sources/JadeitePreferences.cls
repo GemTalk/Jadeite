@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 Object subclass: #JadeitePreferences
-	instanceVariableNames: 'session'
+	instanceVariableNames: 'session lastWindowPosition'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -12,30 +12,57 @@ JadeitePreferences comment: ''!
 
 openBrowserOnClass: className
 	| projectBrowser classService |
-	projectBrowser := JadeiteBrowser showOnSession: session.
+	projectBrowser := self openProjectBrowser.
 	classService := RowanClassService new name: className.
 	projectBrowser currentCard updateAfterFindClass: classService.
+	lastWindowPosition := projectBrowser view position.
 	^projectBrowser!
 
 openBrowserOnPackage: packageName
 	| projectBrowser |
-	projectBrowser := JadeiteBrowser showOnSession: session.
+	projectBrowser := self openProjectBrowser.
 	projectBrowser currentCard selectPackageNamed: packageName.
+	lastWindowPosition := projectBrowser view position.
 	^projectBrowser!
 
 openBrowserOnProject: projectName
 	| projectBrowser |
-	projectBrowser := JadeiteBrowser showOnSession: session.
+	projectBrowser := self openProjectBrowser.
 	projectBrowser currentCard selectProjectNamed: projectName.
+	lastWindowPosition := projectBrowser view position.
 	^projectBrowser!
 
-setPreference: preferencesString session: gciSession
+openProjectBrowser
+	| projectBrowser |
+	projectBrowser := JadeiteBrowser showOnSession: session.
+	lastWindowPosition ifNotNil: [projectBrowser position: lastWindowPosition + 20].
+	^projectBrowser!
+
+openSUnitBrowser
+	| projectBrowser |
+	projectBrowser := JadeiteSUnitBrowser showOnSession: session.
+	lastWindowPosition ifNotNil: [projectBrowser position: lastWindowPosition + 20].
+	^projectBrowser!
+
+openSUnitBrowserOnPackage: packageName
+	| sunitBrowser packageSelection |
+	sunitBrowser := self openSUnitBrowser.
+	packageSelection := sunitBrowser primaryPresenter packageListPresenter list
+				detect: [:packageService | packageService name = packageName]
+				ifNone: [^self].
+	sunitBrowser primaryPresenter packageListPresenter selection: packageSelection.
+	lastWindowPosition := sunitBrowser view position.
+	^sunitBrowser!
+
+session: anObject
+	session := anObject!
+
+setPreference: preferencesString
 	"only perform messages which are defined by this class"
 
 	| message |
-	session := gciSession.
 	message := preferencesString subStrings first asSymbol.
-	message first = $# ifTrue:[^self]. 
+	message first = $# ifTrue: [^self].
 	(JadeitePreferences methodDictionary at: message ifAbsent: [])
 		ifNotNil: [self perform: message with: preferencesString subStrings second]!
 
@@ -47,9 +74,19 @@ transcriptEnabled: booleanString
 	answeringService := RowanAnsweringService new.
 	(answeringService isTranscriptInstalledIn: session) == boolean
 		ifFalse: [answeringService flipTranscriptIn: session]! !
-!JadeitePreferences categoriesFor: #openBrowserOnClass:!preferences!public! !
-!JadeitePreferences categoriesFor: #openBrowserOnPackage:!preferences!public! !
-!JadeitePreferences categoriesFor: #openBrowserOnProject:!preferences!public! !
-!JadeitePreferences categoriesFor: #setPreference:session:!accessing!public! !
-!JadeitePreferences categoriesFor: #transcriptEnabled:!preferences!public! !
+!JadeitePreferences categoriesFor: #openBrowserOnClass:!must not strip!preferences!public! !
+!JadeitePreferences categoriesFor: #openBrowserOnPackage:!must not strip!preferences!public! !
+!JadeitePreferences categoriesFor: #openBrowserOnProject:!must not strip!preferences!public! !
+!JadeitePreferences categoriesFor: #openProjectBrowser!preferences!private! !
+!JadeitePreferences categoriesFor: #openSUnitBrowser!preferences!private! !
+!JadeitePreferences categoriesFor: #openSUnitBrowserOnPackage:!must not strip!preferences!public! !
+!JadeitePreferences categoriesFor: #session:!accessing!private! !
+!JadeitePreferences categoriesFor: #setPreference:!accessing!must not strip!public! !
+!JadeitePreferences categoriesFor: #transcriptEnabled:!must not strip!preferences!public! !
+
+!JadeitePreferences class methodsFor!
+
+onSession: session
+	^self new session: session! !
+!JadeitePreferences class categoriesFor: #onSession:!instance creation!public! !
 

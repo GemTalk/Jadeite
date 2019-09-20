@@ -144,6 +144,9 @@ initialize
 isTranscriptInstalled
 	^isTranscriptInstalled value!
 
+isTranscriptInstalledValueHolder
+	^isTranscriptInstalled!
+
 onCloseRequested: boolValueHolder
 	| answer |
 	self onPromptToSaveChanges: boolValueHolder.
@@ -274,6 +277,7 @@ toolbarPresenter
 !JadeiteTranscript categoriesFor: #gciSession:!public! !
 !JadeiteTranscript categoriesFor: #initialize!initialization!public! !
 !JadeiteTranscript categoriesFor: #isTranscriptInstalled!public! !
+!JadeiteTranscript categoriesFor: #isTranscriptInstalledValueHolder!private! !
 !JadeiteTranscript categoriesFor: #onCloseRequested:!event handling!public! !
 !JadeiteTranscript categoriesFor: #onViewOpened!event handling!public! !
 !JadeiteTranscript categoriesFor: #openCommitInGitHub!menu handlers!public! !

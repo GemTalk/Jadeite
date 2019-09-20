@@ -583,14 +583,18 @@ selectNoneProject
 				detect: [:projectService | projectService name = RowanProjectService noneProject name])!
 
 selectPackageNamed: packageName
-	| packageService |
-	self halt.
-	packageService := RowanPackageService new name: packageName.
-	packageService command: #updateProject.
-	self issueCommand: (Array with: packageService).
-	packageService projectName ifNil: [^self].
+	| answeringService packageService selectedPackage |
+	answeringService := RowanAnsweringService new.
+	answeringService
+		command: #newPackageNamed:;
+		commandArgs: (Array with: packageName).
+	self issueCommand: (Array with: answeringService).
+	packageService := answeringService answer.
 	self selectProjectNamed: packageService projectName.
-	projectListPresenter selections: (Array with: packageService)!
+	selectedPackage := packageListPresenter list
+				detect: [:packageService | packageService name = packageName]
+				ifNone: [^self].
+	packageListPresenter selections: (Array with: selectedPackage)!
 
 selectProjectNamed: projectName
 	| projectService |

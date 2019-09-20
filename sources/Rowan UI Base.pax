@@ -494,7 +494,7 @@ package!
 "Class Definitions"!
 
 Object subclass: #JadeitePreferences
-	instanceVariableNames: 'session'
+	instanceVariableNames: 'session lastWindowPosition'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1063,18 +1063,17 @@ oopTypeFor: anObject
 !
 
 postLoadClientPreferences
-	| path file stream nextLine |
+	| path file stream nextLine prefs |
 	path := File workingDirectory , self preferencesFile.
 	(File exists: path) ifFalse: [^self].
+	prefs := JadeitePreferences onSession: self.
 	file := File open: path mode: #read.
 	
 	[stream := file readWriteStream.
 	[stream atEnd] whileFalse: 
 			[nextLine := stream nextLine.
-			JadeitePreferences new setPreference: nextLine session: self]]
-			ensure: [^file close].
-	"unreachable code"
-	[JadeitePreferences new transcriptEnabled: nil session: nil]	"to avoid getting stripped in runtime"!
+			prefs setPreference: nextLine]]
+			ensure: [^file close]!
 
 postLoadServerPreferences
 	self
