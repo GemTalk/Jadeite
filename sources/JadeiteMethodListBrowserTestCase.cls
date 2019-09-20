@@ -35,7 +35,7 @@ removeMethods: methodServices in: className
 
 	| classService |
 	classService := RowanClassService named: className.
-	classService meta: methodServices first meta.	" assume for now that methods all have save meta"
+	classService meta: methodServices anyOne meta.	" assume for now that methods all have save meta"
 	classService
 		command: #removeMethods:;
 		commandArgs: (Array
@@ -891,7 +891,10 @@ test_removeMethodOutsideServices
 	selection := self methodListMethodListPresenter selectionIfNone: [].
 	self denyIsNil: selection.
 	self assert: (self methodListMethodListPresenter list includes: selection).
-	session executeString: 'RowanSample1Test removeSelector: #testAdHocExecutionWith: ifAbsent:[]'.
+	session
+		executeString: 'Rowan projectTools browser removeMethod: #testAdHocExecutionWith: forClassNamed: ''RowanSample1Test'' isMeta: false'.
+	self
+		assert: (session executeString: '(RwPrjAuditTool new auditForProjectNamed: ''RowanSample1'') isEmpty').
 	self selectMethodNamed: #testAdHocExecutionWith:.
 	self deny: (self methodListMethodListPresenter list includes: selection)!
 

@@ -208,6 +208,10 @@ projectUrl
 remoteServiceName
 	^'Rowan projectServiceClass'!
 
+removed: presenter
+	self = RowanProjectService noneProject ifTrue: [^self].
+	^super removed: presenter!
+
 removedProject: presenter
 	| removedProject |
 	updateType == #removedProject: ifFalse:[^self].
@@ -253,6 +257,7 @@ sha: anObject
 !RowanProjectService categoriesFor: #projectsUpdate:!public!updating! !
 !RowanProjectService categoriesFor: #projectUrl!accessing!public! !
 !RowanProjectService categoriesFor: #remoteServiceName!must not strip!public! !
+!RowanProjectService categoriesFor: #removed:!public!updating! !
 !RowanProjectService categoriesFor: #removedProject:!public!updating! !
 !RowanProjectService categoriesFor: #replicateFrom:!public!replication! !
 !RowanProjectService categoriesFor: #rowanProjectsHome!accessing!public! !

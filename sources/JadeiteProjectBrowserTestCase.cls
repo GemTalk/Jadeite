@@ -3603,7 +3603,6 @@ test_projectRemoved
 	self denyIsNil: sampleProject.
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
 	session executeString: 'Rowan projectTools delete deleteProjectNamed: ''RowanSample1'''.	"delete project behind tool's back"
-	
 	[self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.	"expect project to disappear but not walkback"
 	sampleProject := self projectNamed: 'RowanSample1'.
 	self assertIsNil: sampleProject]
@@ -3977,7 +3976,10 @@ test_removeMethodOutsideServices
 	selection := self methodListPresenter selectionIfNone: [].
 	self denyIsNil: selection.
 	self assert: (self methodListPresenter list includes: selection).
-	session executeString: 'RowanSample1Test removeSelector: #testAdHocExecutionWith: ifAbsent:[]'.
+	session
+		executeString: 'Rowan projectTools browser removeMethod: #testAdHocExecutionWith: forClassNamed: ''RowanSample1Test'' isMeta: false'.
+	self assert: (session
+				executeString: '(RwPrjAuditTool new auditForProjectNamed: ''RowanSample1'') isEmpty').
 	self selectMethodNamed: #testAdHocExecutionWith:.
 	self deny: (self methodListPresenter list includes: selection)!
 

@@ -14,7 +14,7 @@ openLogBrowser
 	| browseItem loggerItem |
 	browseItem := transcript view menuBar items detect: [:menuItem | '*Browse*' match: menuItem text].
 	loggerItem := browseItem items
-				detect: [:item | (item class canUnderstand: #description) and: [item description = 'Browse Jadeite Logs']].
+				detect: [:item | (item class canUnderstand: #description) and: [item description = 'Browse Logs']].
 	^loggerItem commandDescription performAgainst: transcript!
 
 setUp
