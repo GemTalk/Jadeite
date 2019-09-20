@@ -441,7 +441,7 @@ reformatSource
 		commandArgs: Array new.
 	[self issueCommand: (Array with: methodService)] on: Error
 		do: 
-			[:ex | self halt. 
+			[:ex |
 			self setCompileErrorColor.
 			self statusBarText: 'Reformat failed. Illegal source'.
 			^false].

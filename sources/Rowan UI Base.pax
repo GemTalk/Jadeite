@@ -2025,6 +2025,7 @@ compilationWarningFrom: methodServices
 currentMethodSourceFrom: sourceString
 
 	| source fromStream writeStream |
+	sourceString isEmpty ifTrue:[^sourceString]. 
 	fromStream := ReadStream on: sourceString.
 	writeStream := WriteStream on: String new.
 	[

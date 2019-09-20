@@ -8,13 +8,6 @@ JadePreferencesPresenter subclass: #JadeitePreferencesPresenter
 JadeitePreferencesPresenter guid: (GUID fromString: '{54bf575e-7c21-4e78-b1f4-f07a969004d7}')!
 JadeitePreferencesPresenter comment: ''!
 !JadeitePreferencesPresenter categoriesForClass!Unclassified! !
-!JadeitePreferencesPresenter methodsFor!
-
-transcriptEnabled
-
-	self halt.! !
-!JadeitePreferencesPresenter categoriesFor: #transcriptEnabled!public! !
-
 !JadeitePreferencesPresenter class methodsFor!
 
 resource_Default_view

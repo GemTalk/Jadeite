@@ -1219,6 +1219,7 @@ pkgsMenuStrings
 
 populateFilterList
 	| listModel |
+	self selectedClass ifNil: [^self].	"can legitimately be nil during test run setUp"
 	listModel := ListModel new searchPolicy: SearchPolicy equality.
 	self isCategoryTabSelected
 		ifTrue: 
@@ -1963,9 +1964,9 @@ showMethodRecompilationError: ex
 				selector: #methodFailingRecompile
 				source: source.
 	failedMethodService category: 'other'.
-	(browser := JadeiteMethodListBrowser showOnSession: gciSession) primaryPresenter
-		methods: (Array with: failedMethodService)
-		selecting: nil.
+	browser := JadeiteMethodListBrowser showOnSession: gciSession.
+	browser updateMethodsWithoutTriggeringEvents: failedMethodService.
+	browser primaryPresenter updateSource. 
 	browser updateCaption: 'Methods Failing Recompilation'.
 	sourcePresenter := browser primaryPresenter methodSourcePresenter documentPresenter.
 	browser primaryPresenter setCompileErrorColor.

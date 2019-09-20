@@ -37,13 +37,18 @@ reformatSource
 shellName
 
 	^'Jadeite Method List Browser'.
-! !
+!
+
+updateMethodsWithoutTriggeringEvents: methodServices
+	self primaryPresenter methodListPresenter methodListPresenter
+		noEventsDo: [self primaryPresenter methods: (Array with: methodServices) selecting: nil]! !
 !JadeiteMethodListBrowser categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
 !JadeiteMethodListBrowser categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteMethodListBrowser categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteMethodListBrowser categoriesFor: #presenterClass!private! !
 !JadeiteMethodListBrowser categoriesFor: #reformatSource!menu handlers!public! !
 !JadeiteMethodListBrowser categoriesFor: #shellName!private! !
+!JadeiteMethodListBrowser categoriesFor: #updateMethodsWithoutTriggeringEvents:!event handlers!public! !
 
 !JadeiteMethodListBrowser class methodsFor!
 
