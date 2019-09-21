@@ -10,6 +10,9 @@ JadeMethodListPresenter comment: ''!
 !JadeMethodListPresenter categoriesForClass!Unclassified! !
 !JadeMethodListPresenter methodsFor!
 
+additionalAccelerators
+	^#(#(#insertIfFalse 'Ctrl+Shift+D') #(#insertIfTrue 'Ctrl+Shift+T'))!
+
 browse: performSelector gsMethod: aGsMethod
 
 	| string |
@@ -143,6 +146,12 @@ getSelectedMethodName
 
 	^self getSelectedMethod name!
 
+insertIfFalse
+	^self insertIfFalse: methodSourcePresenter documentPresenter!
+
+insertIfTrue
+	^self insertIfTrue: methodSourcePresenter documentPresenter!
+
 jadeMenuStrings
 
 	false ifTrue: [
@@ -263,6 +272,7 @@ updateSource
 	methodListPresenter selectedMethod ifNil: [^self].
 	self displayUncompilableSourceIn: methodSourcePresenter documentPresenter
 		! !
+!JadeMethodListPresenter categoriesFor: #additionalAccelerators!constants!public! !
 !JadeMethodListPresenter categoriesFor: #browse:gsMethod:!public! !
 !JadeMethodListPresenter categoriesFor: #browse:method:!public! !
 !JadeMethodListPresenter categoriesFor: #browse:methodSelector:!public! !
@@ -279,6 +289,8 @@ updateSource
 !JadeMethodListPresenter categoriesFor: #getOopToNewMethod!public! !
 !JadeMethodListPresenter categoriesFor: #getSelectedMethod!public! !
 !JadeMethodListPresenter categoriesFor: #getSelectedMethodName!public! !
+!JadeMethodListPresenter categoriesFor: #insertIfFalse!menu handlers!must not strip!public! !
+!JadeMethodListPresenter categoriesFor: #insertIfTrue!menu handlers!must not strip!public! !
 !JadeMethodListPresenter categoriesFor: #jadeMenuStrings!public! !
 !JadeMethodListPresenter categoriesFor: #methodListPresenter!public! !
 !JadeMethodListPresenter categoriesFor: #onLeftButtonPressed:!public! !

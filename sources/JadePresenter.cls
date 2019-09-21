@@ -35,6 +35,22 @@ gciSession: aGciSession
 	gciSession := aGciSession.
 !
 
+insertIfFalse: methodSourcePresenter
+	"Accelerator key - Ctrl-Shift-D"
+
+	| selectionRange |
+	selectionRange := methodSourcePresenter selectionRange.
+	methodSourcePresenter view replaceSelection: 'ifFalse:[]'.
+	methodSourcePresenter selectionRange: selectionRange + 9!
+
+insertIfTrue: methodSourcePresenter
+	"Accelerator key - Ctrl-Shift-T"
+
+	| selectionRange |
+	selectionRange := methodSourcePresenter selectionRange.
+	methodSourcePresenter view replaceSelection: 'ifTrue:[]'.
+	methodSourcePresenter selectionRange: selectionRange + 8!
+
 refreshFromServer
 	parentPresenter refreshFromServer!
 
@@ -110,6 +126,8 @@ updateService: service
 !JadePresenter categoriesFor: #commitTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #gciSession!public! !
 !JadePresenter categoriesFor: #gciSession:!public! !
+!JadePresenter categoriesFor: #insertIfFalse:!displaying!public! !
+!JadePresenter categoriesFor: #insertIfTrue:!displaying!public! !
 !JadePresenter categoriesFor: #refreshFromServer!public! !
 !JadePresenter categoriesFor: #resetCursor!public! !
 !JadePresenter categoriesFor: #setStatusBarDefault!displaying!public! !

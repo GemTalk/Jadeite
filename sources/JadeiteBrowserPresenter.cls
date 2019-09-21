@@ -20,6 +20,9 @@ addDictionary
 		confirm: 'Really add dictionary ' , newDictionaryName , '? This will commit the transaction')
 			ifTrue: [^self basicAddDictionaryNamed: newDictionaryName]!
 
+additionalAccelerators
+	^#(#(#insertIfFalse 'Ctrl+Shift+D') #(#insertIfTrue 'Ctrl+Shift+T'))!
+
 addNoneProject
 	(projectListPresenter list includes: RowanProjectService noneProject)
 		ifFalse: [projectListPresenter model add: RowanProjectService noneProject]!
@@ -339,6 +342,12 @@ insertCompileErrorText: string into: presenter
 	"parameters ignored in this presenter"
 
 	statusBarText value: string!
+
+insertIfFalse
+	^self insertIfFalse: methodSourcePresenter!
+
+insertIfTrue
+	^self insertIfTrue: methodSourcePresenter!
 
 inspectGlobal
 	| selection |
@@ -804,6 +813,7 @@ updateProjectTabFor: services
 			service == services last ifFalse: [array nextPut: (Array with: RowanProjectService new with: nil)]].
 	projectInfoTab list: array contents! !
 !JadeiteBrowserPresenter categoriesFor: #addDictionary!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #additionalAccelerators!constants!public! !
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #allSelectedProjectsDirty!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #basicAddDictionaryNamed:!menu handlers support!private! !
@@ -835,6 +845,8 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #globalsMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #globalsTab!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #insertCompileErrorText:into:!compile support!public! !
+!JadeiteBrowserPresenter categoriesFor: #insertIfFalse!menu handlers!must not strip!public! !
+!JadeiteBrowserPresenter categoriesFor: #insertIfTrue!menu handlers!must not strip!public! !
 !JadeiteBrowserPresenter categoriesFor: #inspectGlobal!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #isNoneProjectSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #isProjectItemEnabled:!menu handlers support!private! !

@@ -3148,6 +3148,26 @@ test_implementorsSendersCaption
 	[self assert: ('Senders of ''branch'' for *' match: methodListBrowser caption)]
 		ensure: [self destroy: methodListBrowser]!
 
+test_insertIfFalse
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self methodSourcePresenter selectionRange: (1 to: 0).
+	self projectsPresenter insertIfFalse.
+	self assert: (self methodSourcePresenter value copyFrom: 1 to: 10) equals: 'ifFalse:[]'.
+	self assert: self methodSourcePresenter selectionRange equals: (10 to: 9).
+	self assert: self projectsPresenter additionalAccelerators first
+		equals: #(#insertIfFalse 'Ctrl+Shift+D')!
+
+test_insertIfTrue
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self methodSourcePresenter selectionRange: (1 to: 0).
+	self projectsPresenter insertIfTrue.
+	self assert: (self methodSourcePresenter value copyFrom: 1 to: 9) equals: 'ifTrue:[]'.
+	self assert: self methodSourcePresenter selectionRange equals: (9 to: 8).
+	self assert: self projectsPresenter additionalAccelerators second
+		equals: #(#insertIfTrue 'Ctrl+Shift+T')!
+
 test_issue261
 	"create a loaded project and test the info display"
 	| view |
@@ -5793,6 +5813,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySendersFromMethodList!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyWithNonResolvableClass!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_insertIfFalse!public!test methods! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_insertIfTrue!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_issue261!public!test menus!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_loadProjectRemovingClass!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_makeDefault!public!tests! !

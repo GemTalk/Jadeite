@@ -775,6 +775,34 @@ test_firstReferenceRetained
 				[fooBrowser view close.
 				barBrowser view close]!
 
+test_insertIfFalse
+	methodListBrowser := JadePresenter browseImplementorsOf: #test1 session: session.
+	methodListBrowser primaryPresenter methodSourcePresenter documentPresenter selectionRange: (1 to: 0).
+	methodListBrowser primaryPresenter insertIfFalse.
+	self
+		assert: (methodListBrowser primaryPresenter methodSourcePresenter documentPresenter value copyFrom: 1
+				to: 10)
+		equals: 'ifFalse:[]'.
+	self
+		assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter selectionRange
+		equals: (10 to: 9).
+	self assert: methodListBrowser primaryPresenter additionalAccelerators first
+		equals: #(#insertIfFalse 'Ctrl+Shift+D')!
+
+test_insertIfTrue
+	methodListBrowser := JadePresenter browseImplementorsOf: #test1 session: session.
+	methodListBrowser primaryPresenter methodSourcePresenter documentPresenter selectionRange: (1 to: 0).
+	methodListBrowser primaryPresenter insertIfTrue.
+	self
+		assert: (methodListBrowser primaryPresenter methodSourcePresenter documentPresenter value copyFrom: 1
+				to: 9)
+		equals: 'ifTrue:[]'.
+	self
+		assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter selectionRange
+		equals: (9 to: 8).
+	self assert: methodListBrowser primaryPresenter additionalAccelerators second
+		equals: #(#insertIfTrue 'Ctrl+Shift+T')!
+
 test_methodBrowserSaveMethod
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
 	
@@ -1060,6 +1088,8 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionClassMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionInstanceMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_firstReferenceRetained!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_insertIfFalse!public!test methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_insertIfTrue!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_methodBrowserSaveMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatIllegalSource!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatSource!public!tests! !
