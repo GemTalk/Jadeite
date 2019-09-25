@@ -36,7 +36,11 @@ debug
 	self debugTests: methodListPresenter selection!
 
 debugTests: methodServices
-	^self debugTestMethodServices: methodServices className: classListPresenter selections first name!
+	| className |
+	className := classListPresenter selections size = 1
+				ifTrue: [classListPresenter selections first name]
+				ifFalse: [].
+	^self debugTestMethodServices: methodServices className: className!
 
 displayStringFor: methodService in: displayThing
 	| packageNames |

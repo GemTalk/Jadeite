@@ -57,7 +57,8 @@ editSaveMethod
 	self
 		editSaveMethod: classService
 		in: documentPresenter
-		category: methodService category.!
+		category: methodService category.
+	self parentPresenter postEditSaveMethod!
 
 fileSave
 	self editSaveMethod!

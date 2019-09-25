@@ -150,6 +150,9 @@ failedCompile
 firstReference
 	^firstReference!
 
+firstReference: integer
+	firstReference := integer!
+
 hash
 	^(selector hash bitXor: className hash) bitXor: meta hash!
 
@@ -480,6 +483,7 @@ user: anObject
 !RowanMethodService categoriesFor: #equalBeforeRename:!comparing!public! !
 !RowanMethodService categoriesFor: #failedCompile!accessing!public! !
 !RowanMethodService categoriesFor: #firstReference!accessing!private! !
+!RowanMethodService categoriesFor: #firstReference:!accessing!private! !
 !RowanMethodService categoriesFor: #hash!comparing!public! !
 !RowanMethodService categoriesFor: #hasSubs!accessing!private! !
 !RowanMethodService categoriesFor: #hasSubs:!accessing!private! !

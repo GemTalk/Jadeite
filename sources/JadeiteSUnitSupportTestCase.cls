@@ -292,6 +292,18 @@ test_commitWithSelections
 				self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_debugWithDifferentSelectedClasses
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'JadeServerTest' in: self sunitPresenter classListPresenter.
+	self selectMethodNamed: #test_jadeServerCanonicalLocation.
+	self sunitPresenter debug.
+	self assert: self methodListPresenter selections first testResult equals: 'passed'.
+	self selectServicesNamed: #('JadeServerTest' 'RowanAnsweringServiceTest')
+		in: self sunitPresenter classListPresenter.
+	self selectMethodNamed: #test_jadeServerCanonicalLocation.
+	self sunitPresenter debug.
+	self assert: self methodListPresenter selections first testResult equals: 'passed'!
+
 test_dontChangeTabs
 	| methodService |
 	self testsIssue: #issue405 withTitle: 'SUnit select class flips sunit pane in PB to the method'.
@@ -1121,6 +1133,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseSunitClass!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_commitNoSelections!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_commitWithSelections!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_debugWithDifferentSelectedClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_dontChangeTabs!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_dontClearResults!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_extensionOnlyTestClassVisible!public!tests! !

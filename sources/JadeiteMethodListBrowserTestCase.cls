@@ -752,6 +752,34 @@ test_doubleClickActionInstanceMethod
 	self assert: self methodListPresenter selection selector equals: #foo]
 			ensure: [self destroy: projectsBrowser]!
 
+test_firstReferenceRemovedAfterRecompile
+	"If we recompile a method in the method list browser
+	reset the firstReference to nil. Although we have the
+	string that was searched on, we don't know the type
+	of search so it's better to show no reference than the
+	wrong reference"
+
+	| classService |
+	classService := RowanClassService named: 'RowanSample1Test'.
+	classService
+		saveMethod: 'fnoodle  ^#fnoodle'
+		category: 'deleteMe'
+		session: session.
+	classService
+		saveMethod: 'callFnoodle ^self fnoodle'
+		category: 'deleteMe'
+		session: session.
+	
+	[methodListBrowser := JadePresenter browseSendersOf: #fnoodle session: session.
+	self methodSourcePresenter value: 'callFnoodle ^1 + self fnoodle'.
+	self methodSourcePresenter editSaveMethod.
+	self methodListMethodListPresenter view resetSelection.
+	self methodListMethodListPresenter view selectAll.
+	self assertIsNil: self methodListMethodListPresenter selection firstReference]
+			ensure: 
+				[self methodListMethodListPresenter view selectAll.
+				self removeMethods: self methodListMethodListPresenter selections in: 'RowanSample1Test']!
+
 test_firstReferenceRetained
 	| fooBrowser barBrowser |
 	self testsIssue: #issue508
@@ -1087,6 +1115,7 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doSearch!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionClassMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionInstanceMethod!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_firstReferenceRemovedAfterRecompile!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_firstReferenceRetained!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_insertIfFalse!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_insertIfTrue!public!test methods! !

@@ -51,6 +51,8 @@ insertIfTrue: methodSourcePresenter
 	methodSourcePresenter view replaceSelection: 'ifTrue:[]'.
 	methodSourcePresenter selectionRange: selectionRange + 8!
 
+postEditSaveMethod!
+
 refreshFromServer
 	parentPresenter refreshFromServer!
 
@@ -128,6 +130,7 @@ updateService: service
 !JadePresenter categoriesFor: #gciSession:!public! !
 !JadePresenter categoriesFor: #insertIfFalse:!displaying!public! !
 !JadePresenter categoriesFor: #insertIfTrue:!displaying!public! !
+!JadePresenter categoriesFor: #postEditSaveMethod!menu handlers support!public! !
 !JadePresenter categoriesFor: #refreshFromServer!public! !
 !JadePresenter categoriesFor: #resetCursor!public! !
 !JadePresenter categoriesFor: #setStatusBarDefault!displaying!public! !

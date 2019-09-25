@@ -819,7 +819,7 @@ JadeMethodListBrowser subclass: #RowanMethodListBrowser
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanMethodListBrowser subclass: #JadeiteMethodListBrowser
-	instanceVariableNames: ''
+	instanceVariableNames: 'firstReferenceString'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

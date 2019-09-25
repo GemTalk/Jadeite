@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanMethodListBrowser subclass: #JadeiteMethodListBrowser
-	instanceVariableNames: ''
+	instanceVariableNames: 'firstReferenceString'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -14,6 +14,15 @@ createSchematicWiring
 
 	super createSchematicWiring. 
 	self  	 when: #'closeRequested:'		send: #'onCloseRequested:'	to: self primaryPresenter.!
+
+editSaveMethod
+	self primaryPresenter methodSourcePresenter editSaveMethod!
+
+firstReferenceString
+	^firstReferenceString!
+
+firstReferenceString: anObject
+	firstReferenceString := anObject!
 
 onViewClosed
 	super onViewClosed.
@@ -43,6 +52,9 @@ updateMethodsWithoutTriggeringEvents: methodServices
 	self primaryPresenter methodListPresenter methodListPresenter
 		noEventsDo: [self primaryPresenter methods: (Array with: methodServices) selecting: nil]! !
 !JadeiteMethodListBrowser categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
+!JadeiteMethodListBrowser categoriesFor: #editSaveMethod!menu handlers!public! !
+!JadeiteMethodListBrowser categoriesFor: #firstReferenceString!accessing!private! !
+!JadeiteMethodListBrowser categoriesFor: #firstReferenceString:!accessing!private! !
 !JadeiteMethodListBrowser categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteMethodListBrowser categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteMethodListBrowser categoriesFor: #presenterClass!private! !
@@ -59,6 +71,7 @@ openOn: service selecting: string session: gciSession
 				ifFalse: [service queryResults first firstReference ifNil: [string]].
 	(shell := self showOnSession: gciSession) primaryPresenter methods: service queryResults
 		selecting: stringOrIndex.
+	shell firstReferenceString: string.
 	^shell!
 
 openOn: service selectingAnyMatch: string session: gciSession

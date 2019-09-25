@@ -103,6 +103,17 @@ onViewOpened
 	self registerPresentersForUpdates.
 	self updateAutoCommit.!
 
+postEditSaveMethod
+	| methodService |
+	methodService := self methodListPresenter methodListPresenter selectionIfNone: [^self].
+
+	"If we recompile a method in the method list browser
+	reset the firstReference to nil. Although we have the
+	string that was searched on, we don't know the type
+	of search so it's better to show no reference than the
+	wrong reference"
+	methodService firstReference: nil!
+
 queryCommand: aCommandQuery
 	| command |
 	command := aCommandQuery command.
@@ -212,6 +223,7 @@ updateSource
 !JadeiteMethodListPresenter categoriesFor: #methods:selectingAnyMatch:!public! !
 !JadeiteMethodListPresenter categoriesFor: #onCloseRequested:!event handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #onViewOpened!event handlers!public! !
+!JadeiteMethodListPresenter categoriesFor: #postEditSaveMethod!menu handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #queryCommand:!menu handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteMethodListPresenter categoriesFor: #removeComparisonTab!private!selection!text tabs! !
