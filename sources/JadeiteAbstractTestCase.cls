@@ -31,6 +31,12 @@ assertProjectInList: name
 				detect: [:projectService | projectService name = name]
 				ifNone: [])!
 
+auditAll
+	self assert: (session
+				executeString: '| auditResults | 
+								auditResults := RwPrjAuditTool new auditAll. 
+								auditResults isEmpty')!
+
 categoryListPresenter
 	^self projectsPresenter categoryListPresenter!
 
@@ -525,6 +531,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #assertMethodInList:!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #assertMethodInList:presenter:!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #assertProjectInList:!private!support! !
+!JadeiteAbstractTestCase categoriesFor: #auditAll!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #categoryListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #classHierarchyPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #classListPresenter!private!project browser support! !

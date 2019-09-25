@@ -101,6 +101,7 @@ issue261createTestProject
 proj := RwProjectDefinition newForGitBasedProjectNamed: ''Izmir''.
 proj repositoryRootPath: ''$ROWAN_PROJECTS_HOME/Izmir''.
 Rowan projectTools create createProjectFor: proj.'.
+	self auditAll.
 	self projectsPresenter refreshFromServer!
 
 issue284methodCreation
@@ -3623,6 +3624,8 @@ test_projectRemoved
 	self denyIsNil: sampleProject.
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
 	session executeString: 'Rowan projectTools delete deleteProjectNamed: ''RowanSample1'''.	"delete project behind tool's back"
+	self auditAll.
+	
 	[self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.	"expect project to disappear but not walkback"
 	sampleProject := self projectNamed: 'RowanSample1'.
 	self assertIsNil: sampleProject]

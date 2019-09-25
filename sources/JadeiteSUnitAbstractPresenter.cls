@@ -15,6 +15,19 @@ createComponents
 	methodListPresenter := self add: ListPresenter new name: 'testCases'.
 	textResultPresenter := self add: TextPresenter new name: 'textResult'!
 
+debugTestMethodServices: methodServices className: className
+	| jadeResult |
+	methodServices isEmpty ifTrue: [^self].
+	jadeResult := self
+				runTestCommand: #debugTest:inClassName:
+				methods: methodServices
+				className: className.
+	^jadeResult!
+
+debugTests: methodServices
+	self halt. 
+	^self debugTestMethodServices: methodServices className: nil!
+
 editSelectAll
 	methodListPresenter selections: methodListPresenter list. !
 
@@ -31,15 +44,14 @@ reset
 	methodListPresenter view invalidate.
 	textResultPresenter view backcolor: Color face3d!
 
-runTestMethodServices: methodServices className: className
+runTestCommand: command methods: methodServices className: className
 	| jadeResult |
-	methodServices isEmpty ifTrue: [^self].
 	jadeResult := JadeTestResult new.
 	methodServices do: 
 			[:methodService |
 			| index |
 			methodService
-				command: #runTest:inClassName:;
+				command: command;
 				commandArgs: (Array with: methodService selector with: (className ifNil: [methodService className])).
 			self issueCommand: (Array with: methodService).
 			methodService testResult = 'error' ifTrue: [jadeResult addError: methodService selector].
@@ -48,6 +60,15 @@ runTestMethodServices: methodServices className: className
 			index := methodServices indexOf: methodService.
 			methodListPresenter view ensureVisible: index].
 	self updateResult: jadeResult.
+	^jadeResult!
+
+runTestMethodServices: methodServices className: className
+	| jadeResult |
+	methodServices isEmpty ifTrue: [^self].
+	jadeResult := self
+				runTestCommand: #runTest:inClassName:
+				methods: methodServices
+				className: className.
 	^jadeResult!
 
 runTests: methodServices
@@ -83,10 +104,13 @@ updateResult: jadeResult
 	jadeResult setSummary.
 	self setColorFor: jadeResult! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #createComponents!public! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #debugTestMethodServices:className:!private! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #debugTests:!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #editSelectAll!menu handlers support!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #refresh!event handlers!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #refreshFromServerAfterAbort:!event handlers!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #reset!public! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #runTestCommand:methods:className:!private! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #runTestMethodServices:className:!private! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #runTests:!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #runTests:in:!public! !

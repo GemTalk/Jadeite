@@ -859,19 +859,43 @@ test_selectMethodFromProjectBrowser
 	self assert: self projectsPresenter methodListPresenter selections first selector equals: #test2.
 	self assert: self projectsPresenter methodListPresenter selections size equals: 1!
 
-test_statusBar
-	"sanity check that the status bar matches what's in the method list"
-
-	| classService |
+test_statusBarUpdatesAfterDebug
+	| testCount |
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'JadeServerTest' in: self sunitPresenter classListPresenter.
-	classService := self sunitPresenter classListPresenter selections first.
-	self assert: self sunitPresenter methodListPresenter list size
-		equals: classService visibleTests size.
-	self assert: self sunitPresenter testCasesSize
-		equals: 'Test Cases:' , self sunitPresenter methodListPresenter model size printString.
-	self assert: self sunitPresenter testClassesSize
-		equals: 'Test Classes:' , ((session executeString: 'RowanServicesTest allSubclasses size') + 1 + 1) printString  "RwRowanProjectIssuesTest extension now shows up. Hence the other +1" !
+	self selectMethodNamed: #test_jadeServerCanonicalLocation.
+	self assert: self sunitPresenter textResultPresenter value isEmpty.
+	self sunitPresenter debug.
+	self assert: self sunitPresenter textResultPresenter value
+		equals: '1 run, 1 passed, 0 failures, 0 errors'.
+	self selectMethodsNamed: #(#test_jadeServerCanonicalLocation #test_jadeServerExists).
+	self sunitPresenter debug.
+	self assert: self sunitPresenter textResultPresenter value
+		equals: '2 run, 2 passed, 0 failures, 0 errors'.
+	self methodListPresenter view selectAll.
+	self sunitPresenter debug.
+	testCount := self methodListPresenter list size.
+	self assert: self sunitPresenter textResultPresenter value
+		equals: testCount printString , ' run, ' , testCount printString , ' passed, 0 failures, 0 errors'!
+
+test_statusBarUpdatesAfterRunSelected
+	| testCount |
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'JadeServerTest' in: self sunitPresenter classListPresenter.
+	self selectMethodNamed: #test_jadeServerCanonicalLocation.
+	self assert: self sunitPresenter textResultPresenter value isEmpty.
+	self sunitPresenter runSelected.
+	self assert: self sunitPresenter textResultPresenter value
+		equals: '1 run, 1 passed, 0 failures, 0 errors'.
+	self selectMethodsNamed: #(#test_jadeServerCanonicalLocation #test_jadeServerExists).
+	self sunitPresenter runSelected.
+	self assert: self sunitPresenter textResultPresenter value
+		equals: '2 run, 2 passed, 0 failures, 0 errors'.
+	self methodListPresenter view selectAll.
+	self sunitPresenter runSelected.
+	testCount := self methodListPresenter list size.
+	self assert: self sunitPresenter textResultPresenter value
+		equals: testCount printString , ' run, ' , testCount printString , ' passed, 0 failures, 0 errors'!
 
 test_sunitBrowserHasRowanPackages
 	self assert: (self sunitPresenter isKindOf: JadeiteSUnitPresenter).	"a different presenter is used in the projects browser"
@@ -1022,6 +1046,21 @@ test_sunitTabUpdates
 		equals: #test2.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult equals: 'passed'!
 
+test_testCountBar
+	"sanity check that the status bar matches what's in the method list"
+
+	| classService |
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'JadeServerTest' in: self sunitPresenter classListPresenter.
+	classService := self sunitPresenter classListPresenter selections first.
+	self assert: self sunitPresenter methodListPresenter list size
+		equals: classService visibleTests size.
+	self assert: self sunitPresenter testCasesSize
+		equals: 'Test Cases:' , self sunitPresenter methodListPresenter model size printString.
+	self assert: self sunitPresenter testClassesSize
+		equals: 'Test Classes:'
+				, ((session executeString: 'RowanServicesTest allSubclasses size') + 1 + 1) printString	"RwRowanProjectIssuesTest extension now shows up. Hence the other +1"!
+
 test_testsRunInSelectedTestClass
 	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
 	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
@@ -1110,7 +1149,8 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_selectInProjectBrowserDoesNotUpdateSunitBrowser!public!test updates from other browsers!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_selectionRemainsVisible!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_selectMethodFromProjectBrowser!public!test updates from other browsers!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_statusBar!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_statusBarUpdatesAfterDebug!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_statusBarUpdatesAfterRunSelected!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanPackages!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestMethods!public!tests! !
@@ -1120,5 +1160,6 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserUpdates!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitTabPassingDebugTestShowsResult!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitTabUpdates!public!test updates from other browsers! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_testCountBar!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_testsRunInSelectedTestClass!public!tests! !
 

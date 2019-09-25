@@ -33,23 +33,10 @@ createSchematicWiring
 		to: self!
 
 debug
-	"in order to provide some visual feedback when a debugged
-	test passes, we assume that if the test wasn't curtailed that
-	it passed."
+	self debugTests: methodListPresenter selection!
 
-	methodListPresenter selections do: 
-			[:methodService |
-			| testClassName |
-			testClassName := classListPresenter selections size > 1
-						ifTrue: [methodService className]
-						ifFalse: [classListPresenter selections first name].
-			
-			[gciSession
-				serverPerform: #debugTestNamed:of:
-				with: methodService selector
-				with: testClassName]
-					ifCurtailed: [^self].
-			self updateResult: (JadeTestResult new addPassed: methodService selector)]!
+debugTests: methodServices
+	^self debugTestMethodServices: methodServices className: classListPresenter selections first name!
 
 displayStringFor: methodService in: displayThing
 	| packageNames |
@@ -140,6 +127,11 @@ selectMethodNamed: selector
 	methodService := methodListPresenter list detect: [:service | service selector = selector] ifNone: [^self].
 	methodListPresenter selections: (Array with: methodService)!
 
+selectMethodsNamed: selectors
+	| methodServices |
+	methodServices := methodListPresenter list select: [:service | selectors includes: service selector].
+	methodListPresenter selections: (Array with: methodServices)!
+
 selectPackageNamed: name
 	"for testing at the moment" 
 	| packageService |
@@ -170,6 +162,7 @@ testClassesSize
 !JadeiteSUnitPresenter categoriesFor: #createComponents!public! !
 !JadeiteSUnitPresenter categoriesFor: #createSchematicWiring!public! !
 !JadeiteSUnitPresenter categoriesFor: #debug!public! !
+!JadeiteSUnitPresenter categoriesFor: #debugTests:!public! !
 !JadeiteSUnitPresenter categoriesFor: #displayStringFor:in:!double dispatch!public! !
 !JadeiteSUnitPresenter categoriesFor: #editSelectAll!menu handlers support!public! !
 !JadeiteSUnitPresenter categoriesFor: #getTestCounter!public! !
@@ -187,6 +180,7 @@ testClassesSize
 !JadeiteSUnitPresenter categoriesFor: #selectedFilters!accessing!public! !
 !JadeiteSUnitPresenter categoriesFor: #selectedPackageServices!public!selection! !
 !JadeiteSUnitPresenter categoriesFor: #selectMethodNamed:!public!selection! !
+!JadeiteSUnitPresenter categoriesFor: #selectMethodsNamed:!public!selection! !
 !JadeiteSUnitPresenter categoriesFor: #selectPackageNamed:!public!selection! !
 !JadeiteSUnitPresenter categoriesFor: #selectPackageNamed:classNamed:!public! !
 !JadeiteSUnitPresenter categoriesFor: #status!accessing!private! !
