@@ -70,6 +70,7 @@ gitCommit
 		command: #commitWithMessage:;
 		commandArgs: (Array with: message value asString).
 	self issueCommand: (Array with: service).
+	self updateServices: self projectListPresenter list.
 	MessageBox notify: 'Project ' , projectName , ' committed to local repository!!'!
 
 list: list
