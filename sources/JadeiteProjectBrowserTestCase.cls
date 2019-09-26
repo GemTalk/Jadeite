@@ -2094,6 +2094,25 @@ test_dontChangeTabOnMethodSave
 	self assert: self currentTabView sameAs: secondTab.
 	self assert: self methodSourcePresenter value equals: source!
 
+test_dontDuplicateBreakpoints
+	| breakpointBrowser |
+	self testsIssue: #issue533
+		withTitle: 'Breakpoint browser seems muddled: method browser with duplicate methods'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
+	self projectsPresenter setBreakPointAt: 2 in: self projectsPresenter.
+	self assert: self methodListPresenter selection breakPoints size = 2.
+	self assert: self methodListPresenter selection breakPoints = #(1 2).
+	
+	[breakpointBrowser := self projectsPresenter browseBreakpoints.
+	self assert: breakpointBrowser primaryPresenter methodListPresenter methodListPresenter list size equals: 1.
+	self assert: breakpointBrowser primaryPresenter methodListPresenter selection selector = #test1.
+	self assert: breakpointBrowser primaryPresenter methodListPresenter selection breakPoints = #(1 2)]
+			ensure: 
+				[breakpointBrowser view close.
+				self projectsPresenter clearMethodBreakpoints]!
+
 test_dontOverrideExistingAccessorMethods
 	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
 	self selectRowanSample1Class.
@@ -5764,6 +5783,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_displayCompileWarningsNicely!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontChangeTabOnMethodSave!public!test two browsers!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dontDuplicateBreakpoints!public!test breakpoints! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontOverrideExistingAccessorMethods!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontUpdateWithDifferentMeta!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_doubleClickIncludesColon!public!test source! !

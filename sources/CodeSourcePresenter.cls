@@ -192,7 +192,6 @@ isModified
 	^documentPresenter isModified!
 
 jadeDebug
-
 	[
 		gciSession debugString: self currentSelectionOrLine fromContext: model environment: environment.
 	] on: GsCompileError do: [:ex | 

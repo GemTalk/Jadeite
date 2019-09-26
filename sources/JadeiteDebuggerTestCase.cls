@@ -561,6 +561,80 @@ testContextMenu - counter = ' , counter printString]
 				ex return].
 	self assert: error isNil!
 
+test_debugCodeWithLeadingLineReturns
+	| workspace |
+	self testsIssue: #issue531 withTitle: 'debug-it on ad hoc expression not working'.
+	
+	[workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test #531'.
+	workspace codePane documentPresenter
+		value: '
+
+| var i |
+	var := WriteStream on: String new.
+	i := 2.
+	[i > 0] whileTrue: [
+			i := i - 1. 
+			var nextPut: (Character withValue: 70 - i).
+			].
+    var contents'.
+	self debuggerDo: 
+			[process := 
+					[workspace codePane selectAll.
+					workspace codePane jadeDebug]
+							forkAt: Processor activePriority + 1].
+	self getDebugger.
+	self assert: debugger isKindOf: JadeiteDebugger	"just opening the debugger tests the bug fix"]
+			ensure: [workspace view close]!
+
+test_debugCodeWithLeadingLineReturnsLF
+	| workspace |
+	self testsIssue: #issue531 withTitle: 'debug-it on ad hoc expression not working'.
+	
+	[workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test #531'.
+	workspace codePane documentPresenter
+		value: '
+
+| var i |
+	var := WriteStream on: String new.
+	i := 2.
+	[i > 0] whileTrue: [
+			i := i - 1. 
+			var nextPut: (Character withValue: 70 - i).
+			].
+    var contents'
+				replaceCrLfWithLf.
+	self debuggerDo: 
+			[process := 
+					[workspace codePane selectAll.
+					workspace codePane jadeDebug]
+							forkAt: Processor activePriority + 1].
+	self getDebugger.
+	self assert: debugger isKindOf: JadeiteDebugger	"just opening the debugger tests the bug fix"]
+			ensure: [workspace view close]!
+
+test_debugCodeWithLeadingTab
+	| workspace |
+	self testsIssue: #issue531 withTitle: 'debug-it on ad hoc expression not working'.
+	
+	[workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test #531'.
+	workspace codePane documentPresenter
+		value: '	| var i |
+	var := WriteStream on: String new.
+	i := 2.
+	[i > 0] whileTrue: [
+			i := i - 1. 
+			var nextPut: (Character withValue: 70 - i).
+			].
+    var contents'.
+	self debuggerDo: 
+			[process := 
+					[workspace codePane selectAll.
+					workspace codePane jadeDebug]
+							forkAt: Processor activePriority + 1].
+	self getDebugger.
+	self assert: debugger isKindOf: JadeiteDebugger	"just opening the debugger tests the bug fix"]
+			ensure: [workspace view close]!
+
 test_debuggerModifiedSourcePaneChangeFrame
 	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
 	TestMessageBox enableJadeiteTestMessageBox.
@@ -1184,18 +1258,20 @@ abc'.
 	self assert: debugger documentPresenter view selection equals: 'to:'.!
 
 test_switchProcesses
+	| activeProcesses |
+	activeProcesses := session executeString: 'ProcessorScheduler scheduler allProcesses size'.
 	gsProcess := session executeString: '[(Delay forSeconds: 9999) wait] fork asOop.'.
 	session executeString: '(Delay forSeconds: 1) wait'.	"let forked process start"
 	self
 		openDebuggerOn: 'nil halt';
-		assert: debugger _processList size equals: 2;
-		assert: debugger processListPresenter list size equals: 2.
-	self debuggerDo: [debugger processListPresenter selectionByIndex: 2].
+		assert: debugger _processList size equals: activeProcesses + 1;
+		assert: debugger processListPresenter list size equals: activeProcesses + 1.
+	self debuggerDo: [debugger processListPresenter selectionByIndex: activeProcesses + 1].
 	self debuggerDo: [self selectFrameAt: 6].
 	self
 		assert: debugger methodSourcePresenter documentPresenter value
 			equals: '[(Delay forSeconds: 9999) wait] fork asOop.';
-		assert: (debugger _processList at: 2) oopType value equals: gsProcess!
+		assert: (debugger _processList at: activeProcesses + 1) oopType value equals: gsProcess!
 
 test_terminateDoesNotWalkback
 	"Terminate a process other than the primary one"
@@ -1653,6 +1729,9 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlockFailsWhenNoHomeMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlockSameSelectorOnStack!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_contextMenu!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_debugCodeWithLeadingLineReturns!public! !
+!JadeiteDebuggerTestCase categoriesFor: #test_debugCodeWithLeadingLineReturnsLF!public! !
+!JadeiteDebuggerTestCase categoriesFor: #test_debugCodeWithLeadingTab!public! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneChangeFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneStayOnFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_doubleClickIncludesColon!public!test source! !

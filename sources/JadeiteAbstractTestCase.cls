@@ -34,7 +34,7 @@ assertProjectInList: name
 auditAll
 	self assert: (session
 				executeString: '| auditResults | 
-								auditResults := RwPrjAuditTool new auditAll. 
+								auditResults := Rowan projectTools audit auditAll. 
 								auditResults isEmpty')!
 
 categoryListPresenter

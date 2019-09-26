@@ -613,23 +613,23 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_preferencesSUnitOpenBrowser!public!test preferences! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_symbolsFromSelector!public!test! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceConfirmInteraction!public!test!test menus! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceDoubleClickIncludesColon!public!test! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceInformInteraction!public!test!test menus! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceJadeiteMenuAdHocExecutionItems!public!test!test menus! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageImplementors!public!test browse! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageImplementorsWithEndingQuote!public!test browse! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageSenders!public!test browse! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageSendersWithEndingQuote!public!test browse! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspacePlainStringImplementors!public!test browse! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspacePlainStringSenders!public!test browse! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceStringWithQuotesImplementors!public!test browse! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceStringWithQuotesSenders!public!test browse! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolImplementors!public!test browse! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolSenders!public!test browse! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolWithQuotesImplementors!public!test browse! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolWithQuotesSenders!public!test browse! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceConfirmInteraction!public!test!test menus!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceDoubleClickIncludesColon!public!test!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceInformInteraction!public!test!test menus!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceJadeiteMenuAdHocExecutionItems!public!test!test menus!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageImplementors!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageImplementorsWithEndingQuote!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageSenders!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageSendersWithEndingQuote!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspacePlainStringImplementors!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspacePlainStringSenders!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceStringWithQuotesImplementors!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceStringWithQuotesSenders!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolImplementors!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolSenders!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolWithQuotesImplementors!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolWithQuotesSenders!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testClassServiceNameIsString!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testMethodServiceClassNameIsString!public! !
 
