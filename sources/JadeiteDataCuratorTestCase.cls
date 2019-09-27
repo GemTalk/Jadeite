@@ -22,8 +22,7 @@ logoutThenLoginAs: user
 	JadeiteLoginShell allInstances do: [:shell | shell view close].	"should save to the remote JadeDefaultConnection.gss file"
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteShell userIDPresenter value: user.
-	(Delay forMilliseconds: 100) wait. "spurious login problems" 
-	jadeiteShell login!
+	self loginWithRetry: jadeiteShell!
 
 setUp
 	self logoutThenLoginAs: 'DataCurator'.

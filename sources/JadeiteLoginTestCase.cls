@@ -23,6 +23,15 @@ login
 
 	^jadeiteLogin login!
 
+loginWithRetry: loginShell
+	| loginError |
+	loginError := true.
+	[loginError] whileTrue: 
+			[
+			[loginShell loginWithoutErrorHandling.
+			loginError := false] on: Error
+					do: [:ex | (Delay forMilliseconds: 100) wait]]!
+
 setUp
 	"get a new session for this test"
 
@@ -41,33 +50,6 @@ tearDown
 			session library: nil.
 			session := nil]!
 
-test_dataCuratorLogin
-	| jadeiteShell transcript |
-	TestMessageBox enableJadeiteTestMessageBox.
-	
-	[TestMessageBox plannedResult: #no.	"don't commit"
-	GciSession current logout.
-	JadeiteLoginShell allInstances first view close.	"should save to the remote JadeDefaultConnection.gss file"
-	jadeiteShell := JadeiteLoginShell show.
-	jadeiteLogin := jadeiteShell model.
-	jadeiteShell userIDPresenter value: 'DataCurator'.
-	jadeiteShell login.
-	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == GciSession current]
-				ifNone: [].
-	self assert: ('*DataCurator*' match: transcript view text).	"test that window header says DataCurator"
-	TestMessageBox plannedResult: #no.
-	GciSession current logout.
-	jadeiteShell userIDPresenter value: 'SystemUser'.
-	jadeiteShell login.
-	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == GciSession current]
-				ifNone: [].
-	self assert: ('*SystemUser*' match: transcript view text)	"test that window header says SystemUser again"]
-			ensure: 
-				[TestMessageBox disableJadeiteTestMessageBox.
-				JadeiteTestResource current
-					tearDown;
-					setUp]!
-
 test_gemTask
 	| formerGemTask jadeiteShell |
 	self testsIssue: #issue416 withTitle: 'NetLDI task in login is not displayed correctly'.
@@ -81,7 +63,7 @@ test_gemTask
 	self assert: formerGemTask equals: 'gemnetobject'.	"might need to change this assumption"
 	jadeiteLogin gemTask: 'gemnetdebug'.
 	jadeiteShell gemTaskPresenter: 'gemnetdebug'.	"update the gui"
-	jadeiteShell login.	"have to login so new task is accepted"
+	self loginWithRetry: jadeiteShell.	"have to login so new task is accepted"
 	"somehow test that we are using gemnetdebug"
 	TestMessageBox plannedResult: #no.
 	GciSession current logout.
@@ -91,7 +73,7 @@ test_gemTask
 	self assert: jadeiteLogin gemTask equals: 'gemnetdebug'.
 	jadeiteLogin gemTask: 'gemnetobject'.
 	jadeiteShell gemTaskPresenter: 'gemnetobject'.	"update the gui"
-	jadeiteShell login.
+	self loginWithRetry: jadeiteShell.
 	"somehow test that we are using gemnetobject"
 	TestMessageBox plannedResult: #no.
 	[GciSession current logout] ensure: [TestMessageBox disableJadeiteTestMessageBox].
@@ -99,7 +81,7 @@ test_gemTask
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteLogin := jadeiteShell model.
 	self assert: jadeiteLogin gemTask equals: 'gemnetobject'.
-	jadeiteShell login.
+	self loginWithRetry: jadeiteShell.
 	[self assert: GciSession current isKindOf: GciSession] ensure: 
 			[JadeiteTestResource current
 				tearDown;
@@ -117,9 +99,9 @@ testsIssue: aSymbol withTitle: anObject! !
 !JadeiteLoginTestCase categoriesFor: #fail:!public! !
 !JadeiteLoginTestCase categoriesFor: #jadeLoginShell!private!setup teardown! !
 !JadeiteLoginTestCase categoriesFor: #login!private!setup teardown! !
+!JadeiteLoginTestCase categoriesFor: #loginWithRetry:!private!support! !
 !JadeiteLoginTestCase categoriesFor: #setUp!public!setup teardown! !
 !JadeiteLoginTestCase categoriesFor: #tearDown!public!setup teardown! !
-!JadeiteLoginTestCase categoriesFor: #test_dataCuratorLogin!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #test_gemTask!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #test_simpleLogin!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #testsIssue:withTitle:!private! !

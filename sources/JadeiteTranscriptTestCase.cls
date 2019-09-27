@@ -314,7 +314,7 @@ test_closeConsoleNeedingCommit
 	[TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #yes.	"commit"
 	[[transcript view close] ensure: [TestMessageBox disableJadeiteTestMessageBox]] ensure: 
-			[JadeiteLoginShell allInstances first login.
+			[self loginWithRetry: JadeiteLoginShell allInstances first.
 			self resources do: 
 					[:resource |
 					resource current
@@ -336,7 +336,7 @@ test_closeConsoleNoCommitNeeded
 	self abortTransaction.
 	self deny: (session executeString: 'System needsCommit').
 	[transcript view close	"no dialog appears. test would hang otherwise"] ensure: 
-			[JadeiteLoginShell allInstances first login.
+			[self loginWithRetry: JadeiteLoginShell allInstances first.
 			self resources do: 
 					[:resource |
 					resource current

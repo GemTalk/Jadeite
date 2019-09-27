@@ -1778,7 +1778,7 @@ test_closeConsoleInvalidSession
 			ensure: 
 				[projectsBrowser := nil.
 				GciSession current: nil.
-				JadeiteLoginShell allInstances first login.
+				self loginWithRetry: JadeiteLoginShell allInstances first.
 				self resources do: 
 						[:resource |
 						resource current
@@ -1829,7 +1829,7 @@ test_closeConsoleValidSession
 			ensure: 
 				[projectsBrowser := nil.
 				GciSession current: nil.
-				JadeiteLoginShell allInstances first login.
+				self loginWithRetry: JadeiteLoginShell allInstances first.
 				self resources do: 
 						[:resource |
 						resource current
@@ -2431,7 +2431,7 @@ test_exitJadeiteInvalidSession
 				[projectsBrowser := nil.
 				GciSession current: nil.
 				(Delay forSeconds: 1) wait. "not sure if this is necessary"
-				JadeiteLoginShell allInstances first login.
+				self loginWithRetry: JadeiteLoginShell allInstances first.
 				self resources do: 
 						[:resource |
 						resource current
@@ -2485,7 +2485,7 @@ test_exitJadeiteValidSession
 				[projectsBrowser := nil.
 				GciSession current: nil.
 				(Delay forSeconds: 1) wait.	"not sure if this is necessary"
-				JadeiteLoginShell allInstances first login.
+				self loginWithRetry: JadeiteLoginShell allInstances first.
 				self resources do: 
 						[:resource |
 						resource current

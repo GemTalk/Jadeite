@@ -39,6 +39,7 @@ package methodNames
 	add: #JadeInspector -> #documentPresenter;
 	add: #JadeiteProjectsBrowserPresenter -> #definedClassPackageText;
 	add: #JadeiteProjectsBrowserPresenter -> #definedMethodPackageText;
+	add: #JadeLoginShell -> #loginWithoutErrorHandling;
 	add: #JadeLoginShell -> #userIDPresenter:;
 	add: #JadePresenter -> #browseClassReferences;
 	add: #RowanPatchBrowser -> #operationListPresenter;
@@ -258,10 +259,19 @@ definedMethodPackageText
 
 !JadeLoginShell methodsFor!
 
+loginWithoutErrorHandling
+	"for testing"
+
+	| session |
+	self updateModel.
+	session := self model login.
+	self postLogin: session!
+
 userIDPresenter: string
 	"for testing"
 
 	userIDPresenter := string! !
+!JadeLoginShell categoriesFor: #loginWithoutErrorHandling!public! !
 !JadeLoginShell categoriesFor: #userIDPresenter:!accessing!private! !
 
 !JadePresenter methodsFor!

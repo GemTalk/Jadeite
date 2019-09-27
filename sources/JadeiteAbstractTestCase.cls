@@ -175,6 +175,15 @@ loadRowanSample1InProjectList
 	RowanBrowserService new reloadProjects: selections presenter: self transcriptTab.
 	self transcriptTab refresh!
 
+loginWithRetry: loginShell
+	| loginError |
+	loginError := true.
+	[loginError] whileTrue: 
+			[
+			[loginShell loginWithoutErrorHandling.
+			loginError := false] on: Error
+					do: [:ex | (Delay forMilliseconds: 100) wait]]!
+
 methodListPresenter
 	^self projectsPresenter methodListPresenter!
 
@@ -573,6 +582,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #itemNamed:in:!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #loadProjectNamed:!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #loadRowanSample1InProjectList!private!project support! !
+!JadeiteAbstractTestCase categoriesFor: #loginWithRetry:!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #methodListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #methodSourceForTest!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #methodSourcePresenter!private!project browser support! !
