@@ -19,9 +19,10 @@ logoutThenLoginAs: user
 	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == GciSession current]
 				ifNone: [].
 	[transcript view close] ensure: [TestMessageBox disableJadeiteTestMessageBox].
-	JadeiteLoginShell allInstances first view close.	"should save to the remote JadeDefaultConnection.gss file"
+	JadeiteLoginShell allInstances do: [:shell | shell view close].	"should save to the remote JadeDefaultConnection.gss file"
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteShell userIDPresenter value: user.
+	(Delay forMilliseconds: 100) wait. "spurious login problems" 
 	jadeiteShell login!
 
 setUp
@@ -53,6 +54,33 @@ test_addAccessorsClassTab
 	self selectMethodNamed: #format:.
 	self assert: self methodListPresenter selections first selector equals: #format:]
 			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
+
+test_autoCommit
+	| methodListPresenter autoCommit methodListBrowser |
+	self testsIssue: #issue421 withTitle: 'Need a way to know if you are in autocommit'.
+	methodListBrowser := JadePresenter browseImplementorsOf: #size session: session.
+	
+	[methodListPresenter := methodListBrowser primaryPresenter.
+	autoCommit := self projectsPresenter remoteAutoCommit.
+	self assert: self projectsPresenter autoCommit equals: autoCommit.
+	self assert: methodListPresenter autoCommit equals: autoCommit.
+	self assert: transcript autoCommit equals: autoCommit.
+	self projectsPresenter flipAutoCommit.
+	self assert: self projectsPresenter remoteAutoCommit.
+	self assert: self projectsPresenter autoCommit.
+	self assert: methodListPresenter autoCommit.
+	self assert: transcript autoCommit.
+	methodListPresenter flipAutoCommit.
+	self deny: (autoCommit := self projectsPresenter remoteAutoCommit).
+	self deny: self projectsPresenter autoCommit.
+	self deny: methodListPresenter autoCommit.
+	self deny: transcript autoCommit.
+	transcript flipAutoCommit.
+	self assert: self projectsPresenter remoteAutoCommit.
+	self assert: self projectsPresenter autoCommit.
+	self assert: methodListPresenter autoCommit.
+	self assert: transcript autoCommit]
+			ensure: [methodListBrowser view close]!
 
 test_compileClass
 	self testsIssue: #issue390 withTitle: 'Rename instance variable with accessor method is... wonky'.
@@ -162,14 +190,14 @@ test_findClassNotInProject
 	self deny: self projectsPresenter isNoneProjectSelected!
 
 test_loginOk
-	self assert: JadeiteLoginShell allInstances first userIDPresenter value equals: 'DataCurator'.
+	self assert: jadeiteShell userIDPresenter value equals: 'DataCurator'.
 	self assert: GciSession current userID equals: 'DataCurator'.
-	self assert: (GciSession current executeString: '3+4') equals: 7
-! !
+	self assert: (GciSession current executeString: '3+4') equals: 7! !
 !JadeiteDataCuratorTestCase categoriesFor: #logoutThenLoginAs:!private!setup teardown!support! !
 !JadeiteDataCuratorTestCase categoriesFor: #setUp!public!setup teardown! !
 !JadeiteDataCuratorTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_addAccessorsClassTab!public!test variable tab!tests! !
+!JadeiteDataCuratorTestCase categoriesFor: #test_autoCommit!public!test auto commit!tests! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_compileClass!public!test compiing!tests! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_dictionaryNameIsString!public!test issue 217! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_dictionarySelectionChangesTab!public!test issue 217! !
