@@ -37,10 +37,6 @@ disableTranscriptWrites
 	(transcriptWritesWereEnabled := transcript isTranscriptInstalled)
 		ifTrue: [transcript flipTranscript]	"turn off gemstone transcript writes for performance"!
 
-ensureOneTab
-	projectsBrowser ifNil: [^self].
-	[projectsBrowser cardsPresenter view cards size = 1] whileFalse: [projectsBrowser closeCard]!
-
 isAbstract
 
 	^self == JadeiteProjectBrowserAbstractTestCase!
@@ -52,19 +48,10 @@ openSecondBrowser
 	secondPresenter selectClassListTab. 
 	^secondBrowser!
 
-selectClassListTab
-	self projectsPresenter selectClassListTab.!
-
 setUp
 	super setUp.
 	self disableTranscriptWrites.	"turn off gemstone transcript writes for performance"
-	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
-	self ensureOneTab. 
-	self selectClassListTab.
-	self selectInstanceTab.
-	self projectsPresenter selectCategoryTab.
-	self projectListPresenter resetSelection. 
-!
+	self setupProjectBrowser!
 
 tearDown
 	super tearDown.
@@ -81,10 +68,8 @@ tearDown
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #assertLinearAncestry:in:!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #closeExistingInspectors!private!support! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #disableTranscriptWrites!private! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #ensureOneTab!public!support! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #isAbstract!public!testing! !
+!JadeiteProjectBrowserAbstractTestCase categoriesFor: #isAbstract!private!testing! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #openSecondBrowser!private! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectClassListTab!private!selection! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #tearDown!private!setup teardown! !
 

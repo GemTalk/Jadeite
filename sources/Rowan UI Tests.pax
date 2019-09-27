@@ -7,6 +7,7 @@ package paxVersion: 1;
 package classNames
 	add: #JadeiteAbstractTestCase;
 	add: #JadeiteChangesBrowserTestCase;
+	add: #JadeiteDataCuratorTestCase;
 	add: #JadeiteDebuggerTestCase;
 	add: #JadeiteDevelopmentSUnitBrowser;
 	add: #JadeiteDevelopmentSUnitBrowserModel;
@@ -38,6 +39,7 @@ package methodNames
 	add: #JadeInspector -> #documentPresenter;
 	add: #JadeiteProjectsBrowserPresenter -> #definedClassPackageText;
 	add: #JadeiteProjectsBrowserPresenter -> #definedMethodPackageText;
+	add: #JadeLoginShell -> #userIDPresenter:;
 	add: #JadePresenter -> #browseClassReferences;
 	add: #RowanPatchBrowser -> #operationListPresenter;
 	add: #SUnitBrowserModel -> #debugIndividualTestsWithResources:;
@@ -127,6 +129,11 @@ TestCase subclass: #JadeiteLoginTestCase
 	classInstanceVariableNames: ''!
 JadeiteAbstractTestCase subclass: #JadeiteChangesBrowserTestCase
 	instanceVariableNames: 'changesBrowser'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteAbstractTestCase subclass: #JadeiteDataCuratorTestCase
+	instanceVariableNames: 'jadeiteShell'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -248,6 +255,14 @@ definedMethodPackageText
 	^definedMethodPackageText! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #definedClassPackageText!initialize/release!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #definedMethodPackageText!initialize/release!public! !
+
+!JadeLoginShell methodsFor!
+
+userIDPresenter: string
+	"for testing"
+
+	userIDPresenter := string! !
+!JadeLoginShell categoriesFor: #userIDPresenter:!accessing!private! !
 
 !JadePresenter methodsFor!
 

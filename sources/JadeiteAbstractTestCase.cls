@@ -110,6 +110,10 @@ dictionaryPresenter
 disableInteractionsWhile: block
 	^JadeiteTestResource current disableInteractionsWhile: block!
 
+ensureOneTab
+	projectsBrowser ifNil: [^self].
+	[projectsBrowser cardsPresenter view cards size = 1] whileFalse: [projectsBrowser closeCard]!
+
 ensureRowanSample1Loaded
 	JadeiteTestResource current ensureRowanSample1Loaded!
 
@@ -344,6 +348,9 @@ selectCategoryNamed: category
 selectClassInHierarchyNamed: className
 	self selectTreeServicesNamed: (Array with: className) in: self classHierarchyPresenter!
 
+selectClassListTab
+	self projectsPresenter selectClassListTab.!
+
 selectClassTab
 	self selectClassTabIn: self projectsPresenter!
 
@@ -466,6 +473,14 @@ setUp
 	self setAutoCommit: false.
 	self ensureRowanSample1Loaded!
 
+setupProjectBrowser
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self ensureOneTab.
+	self selectClassListTab.
+	self selectInstanceTab.
+	self projectsPresenter selectCategoryTab.
+	self projectListPresenter resetSelection!
+
 setupSupclassComparisonMethods
 	self selectRowanSample1Class.
 	self
@@ -548,6 +563,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #destroy:!public!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #dictionaryPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #disableInteractionsWhile:!private!setup teardown! !
+!JadeiteAbstractTestCase categoriesFor: #ensureOneTab!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Loaded!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #fail:!asserting!public! !
 !JadeiteAbstractTestCase categoriesFor: #interestingLoopMethodSource!constants!private! !
@@ -582,6 +598,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #selectCategoriesNamed:!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectCategoryNamed:!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectClassInHierarchyNamed:!private!selection! !
+!JadeiteAbstractTestCase categoriesFor: #selectClassListTab!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectClassTab!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectClassTabIn:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectHierarchyTab!private!selection! !
@@ -601,6 +618,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #serviceNamed:in:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #setAutoCommit:!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
+!JadeiteAbstractTestCase categoriesFor: #setupProjectBrowser!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #setupSupclassComparisonMethods!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #testsIssue:withTitle:!issue test support!public!support! !
