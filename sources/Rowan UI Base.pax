@@ -387,6 +387,7 @@ package methodNames
 	add: 'JadeInspector class' -> #resource_Special_view;
 	add: 'JadeNavigationInspector class' -> #resource_Default_view;
 	add: 'JadePresenter class' -> #allClassesIn:;
+	add: 'JadePresenter class' -> #allClassesStartingWith:;
 	add: 'JadePresenter class' -> #basicBrowseClassReferences:session:;
 	add: 'JadePresenter class' -> #basicBrowseMethod:presenter:;
 	add: 'JadePresenter class' -> #browseBreakpointsIn:;
@@ -706,7 +707,7 @@ RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
 	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton'
 	classVariableNames: ''
-	poolDictionaries: ''
+	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
 JadePreferencesPresenter subclass: #JadeitePreferencesPresenter
 	instanceVariableNames: ''
@@ -2255,6 +2256,13 @@ allClassesIn: session
 	self issueCommand: (Array with: browserService) session: session.
 	^browserService allClasses ifNil:[Array new].!
 
+allClassesStartingWith: string
+	| service |
+	service := RowanAnsweringService new command: #allClassesStartingWith:.
+	service commandArgs: (Array with: string).
+	JadePresenter issueCommand: (Array with: service) session: GciSession current.
+	^service answer!
+
 basicBrowseClassReferences: className session: session
 	| service |
 	service := RowanQueryService command: #browseClassReferences: withArgs: (Array with: className).
@@ -2513,6 +2521,7 @@ symbolsFrom: selector session: session
 				commandArgs: (Array with: list asArray).
 	^(self issueCommand: (Array with: service) session: session) first answer! !
 !JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
+!JadePresenter class categoriesFor: #allClassesStartingWith:!browsing!public! !
 !JadePresenter class categoriesFor: #basicBrowseClassReferences:session:!browsing!browsing support!public! !
 !JadePresenter class categoriesFor: #basicBrowseMethod:presenter:!browsing!public! !
 !JadePresenter class categoriesFor: #browseBreakpointsIn:!browsing!public! !
