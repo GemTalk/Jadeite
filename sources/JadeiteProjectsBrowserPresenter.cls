@@ -896,14 +896,6 @@ gotoClassDefinedPackage
 gotoClassDefinedPackageViaButton
 	^self gotoClassDefinedPackage!
 
-gotoDictionary
-	" find will go to the class in the dictionary it lives"
-
-	| selectedClass |
-	selectedClass := self selectedClass.
-	self selectNoneProject.
-	^self updateAfterFindClassInDictionary: selectedClass!
-
 gotoMethodDefinedPackage
 	"find will go to the defined package of the selected class"
 
@@ -2419,7 +2411,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoClassDefinedPackage!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoClassDefinedPackageViaButton!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #gotoDictionary!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoMethodDefinedPackage!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoMethodDefinedPackageViaButton!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoPackageNamed:!menu handlers!public! !

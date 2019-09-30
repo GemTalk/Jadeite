@@ -2616,6 +2616,29 @@ test_findClass
 	self assert: self packageListPresenter selection name equals: 'Cypress-Definitions'.
 	self assert: self projectListPresenter selection name equals: 'Cypress'!
 
+test_findClassDialog
+	| findClassDialog |
+	findClassDialog := (JadeiteFindClassDialog create: 'DefaultView'
+				on: (JadePresenter allClassesIn: session)) show.	"do not open modal"
+	
+	[self assert: findClassDialog classListPresenter selectionByIndex equals: 1.
+	findClassDialog selectNextClass.
+	self assert: findClassDialog classListPresenter selectionByIndex equals: 2.
+	findClassDialog classListPresenter selectionByIndex: findClassDialog classListPresenter list size.
+	self assert: findClassDialog classListPresenter selectionByIndex
+		equals: findClassDialog classListPresenter list size.
+	findClassDialog selectNextClass.
+	self assert: findClassDialog classListPresenter selectionByIndex
+		equals: findClassDialog classListPresenter list size.
+	findClassDialog selectPreviousClass.
+	self assert: findClassDialog classListPresenter selectionByIndex
+		equals: findClassDialog classListPresenter list size - 1.
+	findClassDialog classListPresenter selectionByIndex: 1.
+	self assert: findClassDialog classListPresenter selectionByIndex equals: 1.
+	findClassDialog selectPreviousClass.
+	self assert: findClassDialog classListPresenter selectionByIndex equals: 1]
+			ensure: [findClassDialog view close]!
+
 test_findDialogBasic
 	| methodSourceView findView |
 	self testsIssue: #issue468 withTitle: 'Find text dialog does not highlight correctly'.
@@ -5803,6 +5826,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_failMethodCompile!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_filtersUpdatedInHierarchyView!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findClass!public!test class list!test find!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_findClassDialog!public!test class list!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findDialogBasic!public!test find! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodChangesCategories!public!test categories!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodDisabled!public!test find!test menus!test sunit tab!tests! !

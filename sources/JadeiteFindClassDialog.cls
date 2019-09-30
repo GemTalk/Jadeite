@@ -10,16 +10,29 @@ JadeiteFindClassDialog comment: ''!
 !JadeiteFindClassDialog categoriesForClass!Unclassified! !
 !JadeiteFindClassDialog methodsFor!
 
+additionalAccelerators
+	^#(#(#selectNextClass 'DOWN') #(#selectPreviousClass 'UP'))!
+
 initializeAvailable
 	"sorted on server"
 	^self model value!
+
+selectNextClass
+	classListPresenter
+		selectionByIndex: (classListPresenter selectionByIndex + 1 min: classListPresenter list size)!
+
+selectPreviousClass
+	classListPresenter selectionByIndex: (classListPresenter selectionByIndex - 1 max: 1)!
 
 updateList
 	| list |
 	list := availableClasses select: [:each | nameEntryPresenter value , '*' match: each name].
 	classListPresenter list: list.
 	list size >= 1 ifTrue: [classListPresenter selectionByIndex: 1]! !
+!JadeiteFindClassDialog categoriesFor: #additionalAccelerators!accessing!public! !
 !JadeiteFindClassDialog categoriesFor: #initializeAvailable!private! !
+!JadeiteFindClassDialog categoriesFor: #selectNextClass!private! !
+!JadeiteFindClassDialog categoriesFor: #selectPreviousClass!private! !
 !JadeiteFindClassDialog categoriesFor: #updateList!private! !
 
 !JadeiteFindClassDialog class methodsFor!

@@ -2285,7 +2285,8 @@ browseClassIn: session
 	classService
 		ifNotNil: 
 			[browser := JadeiteBrowser showOnSession: session.
-			browser currentCard updateAfterFindClass: classService]!
+			browser currentCard updateAfterFindClass: classService.
+			^browser]!
 
 browseClassReferences: className session: session
 	| service browser |

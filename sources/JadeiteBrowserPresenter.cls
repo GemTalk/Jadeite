@@ -338,6 +338,14 @@ globalsMenuStrings
 globalsTab
 	^globalsTab!
 
+gotoDictionary
+	" find will go to the class in the dictionary it lives"
+
+	| selectedClass | 
+	selectedClass := self selectedClass.
+	self selectNoneProject.
+	^self updateAfterFindClassInDictionary: selectedClass!
+
 insertCompileErrorText: string into: presenter
 	"parameters ignored in this presenter"
 
@@ -844,6 +852,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #globalsMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #globalsMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #globalsTab!accessing!private! !
+!JadeiteBrowserPresenter categoriesFor: #gotoDictionary!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertCompileErrorText:into:!compile support!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertIfFalse!menu handlers!must not strip!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertIfTrue!menu handlers!must not strip!public! !
