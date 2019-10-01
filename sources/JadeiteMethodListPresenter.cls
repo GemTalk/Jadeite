@@ -67,13 +67,13 @@ createSchematicWiring
 	methodSourcePresenter documentPresenter
 		when: #autoComplete:startingAt:accept:
 			send: #onAutoComplete:startingAt:accept:
-			to: self;
+			to: self search;
 		when: #timerTick:
 			send: #onTimerTick:
-			to: self;
+			to: self search;
 		when: #charAdded:
 			send: #onCharAdded:
-			to: self!
+			to: self search!
 
 fileSave
 
@@ -85,17 +85,6 @@ gciSession: aGciSession
 
 getViews 
 	textAreaTabs := parentPresenter view viewNamed: 'textAreaTabs'.!
-
-insertCompletion: string at: anInteger
-	| stop start |
-	methodSourcePresenter documentPresenter view performUndoableAction: 
-			[stop := methodSourcePresenter documentPresenter view caretPosition - 1.
-			start := self tokenStartAt: stop.
-			methodSourcePresenter documentPresenter view selectionRange: (start to: stop).
-			methodSourcePresenter documentPresenter view replaceSelection: string]!
-
-killAutocompleteTimer
-	methodSourcePresenter documentPresenter view killTimer: SCI_AUTOCSHOW!
 
 methodListSelection
 	^methodListPresenter selectionOrNil!
@@ -116,19 +105,10 @@ methods: services selectingAnyMatch: string
 		selectFirstMethod.
 	self selectingAnyMatch: string!
 
-onAutoComplete: aString startingAt: anInteger accept: aValueHolder 
-	self search onAutoComplete: aString startingAt: anInteger accept: aValueHolder !
-
-onCharAdded: aCharacter
-	self search onCharAdded: aCharacter!
-
 onCloseRequested: aCloseEvent
 	aCloseEvent value: (methodSourcePresenter documentPresenter view isModified
 				ifTrue: [methodSourcePresenter isOkayToChange]
 				ifFalse: [true])!
-
-onTimerTick: anInteger
-	self search onTimerTick: anInteger!
 
 onViewOpened
 
@@ -182,28 +162,6 @@ showComparisonTab
 	self textTabs add: self comparisonTab.
 	comparisonPresenter ensureVisible!
 
-showCompletionList
-	| searchList last start prefix |
-	methodSourcePresenter documentPresenter view selectionRange isEmpty ifFalse: [^self].
-	last := methodSourcePresenter documentPresenter view caretPosition - 1.
-	start := self tokenStartAt: last.
-	start = 0 ifTrue: [^self].
-	prefix := methodSourcePresenter documentPresenter view plainTextFrom: start to: last.
-	searchList := prefix first isLowercase
-				ifTrue: [self class symbolsFrom: prefix , '*' session: self gciSession]
-				ifFalse: [self class allClassesStartingWith: prefix].
-	self showCompletionList: searchList prefixLength: prefix size!
-
-showCompletionList: aCollection prefixLength: anInteger
-	(aCollection size = 1 and: [aCollection anyOne size = anInteger])
-		ifTrue: 
-			["Don't display a list of one item that is the same as the prefix"
-			^self].
-	methodSourcePresenter documentPresenter view
-		showAutoCompletionList: aCollection
-		prefixLength: anInteger
-		withIcons: true!
-
 showSuperClassComparison
 	| methodService |
 	methodService := methodListPresenter selection.
@@ -219,16 +177,8 @@ showSuperClassComparison
 				afterTitle: 'No super implementation';
 				compare: methodService source with: String new]!
 
-startAutocompleteTimer
-	methodSourcePresenter documentPresenter view setTimer: SCI_AUTOCSHOW interval: 30!
-
 textTabs
 	^(textAreaTabs subViews detect: [:each | each class == TabViewXP]) model!
-
-tokenStartAt: anInteger
-	^(methodSourcePresenter documentPresenter view styleAt: anInteger) name == #specialCharacter
-		ifTrue: [anInteger]
-		ifFalse: [methodSourcePresenter documentPresenter view tokenStartAt: anInteger]!
 
 updateAutoCommit
 	| autoCommitButtonView |
@@ -286,15 +236,10 @@ updateSource
 !JadeiteMethodListPresenter categoriesFor: #fileSave!public! !
 !JadeiteMethodListPresenter categoriesFor: #gciSession:!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #getViews!public! !
-!JadeiteMethodListPresenter categoriesFor: #insertCompletion:at:!autocompletion!event handlers!private! !
-!JadeiteMethodListPresenter categoriesFor: #killAutocompleteTimer!autocompletion!private! !
 !JadeiteMethodListPresenter categoriesFor: #methodListSelection!public! !
 !JadeiteMethodListPresenter categoriesFor: #methods:selecting:!public! !
 !JadeiteMethodListPresenter categoriesFor: #methods:selectingAnyMatch:!public! !
-!JadeiteMethodListPresenter categoriesFor: #onAutoComplete:startingAt:accept:!autocompletion!event handlers!private! !
-!JadeiteMethodListPresenter categoriesFor: #onCharAdded:!autocompletion!event handlers!private! !
 !JadeiteMethodListPresenter categoriesFor: #onCloseRequested:!event handlers!public! !
-!JadeiteMethodListPresenter categoriesFor: #onTimerTick:!autocompletion!event handlers!private! !
 !JadeiteMethodListPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #postEditSaveMethod!menu handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #queryCommand:!menu handlers!public! !
@@ -305,12 +250,8 @@ updateSource
 !JadeiteMethodListPresenter categoriesFor: #selectedClassName!public!selection! !
 !JadeiteMethodListPresenter categoriesFor: #selectionChanging:!event handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #showComparisonTab!private!selection!text tabs! !
-!JadeiteMethodListPresenter categoriesFor: #showCompletionList!autocompletion!private! !
-!JadeiteMethodListPresenter categoriesFor: #showCompletionList:prefixLength:!autocompletion!private! !
 !JadeiteMethodListPresenter categoriesFor: #showSuperClassComparison!private!text tabs! !
-!JadeiteMethodListPresenter categoriesFor: #startAutocompleteTimer!autocompletion!event handlers!private! !
 !JadeiteMethodListPresenter categoriesFor: #textTabs!private!text tabs! !
-!JadeiteMethodListPresenter categoriesFor: #tokenStartAt:!autocompletion!event handlers!private! !
 !JadeiteMethodListPresenter categoriesFor: #updateAutoCommit!public!updating! !
 !JadeiteMethodListPresenter categoriesFor: #updateMethodSource!public!updating! !
 !JadeiteMethodListPresenter categoriesFor: #updateMultiMethodComparison!private!text tabs! !

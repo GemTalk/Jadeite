@@ -66,7 +66,15 @@ startAutocompleteTimer
 tokenStartAt: anInteger
 	^(view styleAt: anInteger) name == #specialCharacter
 		ifTrue: [anInteger]
-		ifFalse: [view tokenStartAt: anInteger]!
+		ifFalse: 
+			[| start1 tokenId styleId |
+			tokenId := view styleIdAt: anInteger.
+			start1 := anInteger.
+			
+			[styleId := view styleIdAt: start1 - 1.
+			start1 > 1 and: [styleId == tokenId or: [styleId == 21	"#keywordMessage"]]]
+					whileTrue: [start1 := start1 - 1].
+			start1]!
 
 view: aView
 

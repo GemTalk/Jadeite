@@ -258,13 +258,13 @@ createSchematicWiringForMethodSource
 			to: self;
 		when: #autoComplete:startingAt:accept:
 			send: #onAutoComplete:startingAt:accept:
-			to: self;
+			to: self search;
 		when: #timerTick:
 			send: #onTimerTick:
-			to: self;
+			to: self search;
 		when: #charAdded:
 			send: #onCharAdded:
-			to: self!
+			to: self search!
 
 dictionaryMenu
 	^Menu fromStrings: self dictionaryMenuStrings!
@@ -365,14 +365,6 @@ insertCompileErrorText: string into: presenter
 
 	statusBarText value: string!
 
-insertCompletion: string at: anInteger
-	| stop start |
-	methodSourcePresenter view performUndoableAction: 
-			[stop := methodSourcePresenter view caretPosition - 1.
-			start := self tokenStartAt: stop.
-			methodSourcePresenter view selectionRange: (start to: stop).
-			methodSourcePresenter view replaceSelection: string]!
-
 insertIfFalse
 	^self insertIfFalse: methodSourcePresenter!
 
@@ -395,9 +387,6 @@ isProjectItemEnabled: command
 isRowanProjectSelected
 	^(self isNoneProjectSelected or: [projectListPresenter selections isEmpty]) not!
 
-killAutocompleteTimer
-	methodSourcePresenter view killTimer: SCI_AUTOCSHOW!
-
 maxAutoCompleteListSize
 	^50!
 
@@ -407,18 +396,6 @@ methodToReformat
 noClassSelectedInEitherPresenter
 	classListPresenter selectionIfNone: [classHierarchyPresenter selectionIfNone: [^true]].
 	^false!
-
-onAutoComplete: aString startingAt: anInteger accept: aValueHolder
-	self search
-		onAutoComplete: aString
-		startingAt: anInteger
-		accept: aValueHolder!
-
-onCharAdded: aCharacter
-	self search onCharAdded: aCharacter!
-
-onTimerTick: anInteger
-	self search onTimerTick: anInteger!
 
 onViewOpened
 
@@ -675,28 +652,6 @@ shouldShowNoneTabLabel
 	^dictionaryPresenter list isEmpty
 		or: [dictionaryPresenter selections isEmpty or: [dictionaryPresenter selections size > 1]]!
 
-showCompletionList
-	| searchList last start prefix |
-	methodSourcePresenter view selectionRange isEmpty ifFalse: [^self].
-	last := methodSourcePresenter view caretPosition - 1.
-	start := self tokenStartAt: last.
-	start = 0 ifTrue: [^self].
-	prefix := methodSourcePresenter view plainTextFrom: start to: last.
-	searchList := prefix first isLowercase
-				ifTrue: [self class symbolsFrom: prefix , '*' session: self gciSession]
-				ifFalse: [self class allClassesStartingWith: prefix].
-	self showCompletionList: searchList prefixLength: prefix size!
-
-showCompletionList: aCollection prefixLength: anInteger
-	(aCollection size = 1 and: [aCollection anyOne size = anInteger])
-		ifTrue: 
-			["Don't display a list of one item that is the same as the prefix"
-			^self].
-	methodSourcePresenter view
-		showAutoCompletionList: aCollection
-		prefixLength: anInteger
-		withIcons: true!
-
 showDictionaryList
 	| newCard |
 	(packageDictionaryCards view cards includes: packageListPresenter view)
@@ -728,20 +683,12 @@ showPackageList
 			classListPresenter list: ListModel new.
 			classHierarchyPresenter model: TreeModel new]!
 
-startAutocompleteTimer
-	methodSourcePresenter view setTimer: SCI_AUTOCSHOW interval: 30!
-
 statusBarText
 	
 	^statusBarText !
 
 statusBarText: string
 	statusBarText value: string!
-
-tokenStartAt: anInteger
-	^(methodSourcePresenter view styleAt: anInteger) name == #specialCharacter
-		ifTrue: [anInteger]
-		ifFalse: [methodSourcePresenter view tokenStartAt: anInteger]!
 
 updateAfterFindClass: classService
 	| projectService |
@@ -927,20 +874,15 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #globalsTab!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #gotoDictionary!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertCompileErrorText:into:!compile support!public! !
-!JadeiteBrowserPresenter categoriesFor: #insertCompletion:at:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #insertIfFalse!menu handlers!must not strip!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertIfTrue!menu handlers!must not strip!public! !
 !JadeiteBrowserPresenter categoriesFor: #inspectGlobal!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #isNoneProjectSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #isProjectItemEnabled:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #isRowanProjectSelected!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #killAutocompleteTimer!menu handlers support!public! !
 !JadeiteBrowserPresenter categoriesFor: #maxAutoCompleteListSize!constants!public! !
 !JadeiteBrowserPresenter categoriesFor: #methodToReformat!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #noClassSelectedInEitherPresenter!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #onAutoComplete:startingAt:accept:!event handlers!private! !
-!JadeiteBrowserPresenter categoriesFor: #onCharAdded:!event handlers!private! !
-!JadeiteBrowserPresenter categoriesFor: #onTimerTick:!event handlers!private! !
 !JadeiteBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #openCommitInGitHub!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #packageDictionaryCards!accessing!private! !
@@ -972,14 +914,10 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #setCompileWarningColor!compile support!public! !
 !JadeiteBrowserPresenter categoriesFor: #setStatusBarDefault!compile support!public! !
 !JadeiteBrowserPresenter categoriesFor: #shouldShowNoneTabLabel!displaying!private!testing! !
-!JadeiteBrowserPresenter categoriesFor: #showCompletionList!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #showCompletionList:prefixLength:!menu handlers!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #showDictionaryList!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #showPackageList!event handlers!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #startAutocompleteTimer!menu handlers support!public! !
 !JadeiteBrowserPresenter categoriesFor: #statusBarText!accessing!public! !
 !JadeiteBrowserPresenter categoriesFor: #statusBarText:!accessing!public! !
-!JadeiteBrowserPresenter categoriesFor: #tokenStartAt:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #updateAfterFindClass:!menu handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateAfterFindClassInDictionary:!menu handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateAfterFindClassInPackage:!menu handlers!public!updating! !

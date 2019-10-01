@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 JadeDebugger subclass: #JadeiteDebugger
-	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore'
+	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore search'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggerClass semaphore'!
@@ -74,8 +74,23 @@ createComponents
 
 createSchematicWiring
 	super createSchematicWiring.
-	frameListPresenter when: #actionPerformed 	send: #browseFrameMethod	to: self.
-	documentPresenter when: #textChanged 		send: #methodValueChanged 	to: self!
+	frameListPresenter
+		when: #actionPerformed
+		send: #browseFrameMethod
+		to: self.
+	documentPresenter
+		when: #textChanged
+			send: #methodValueChanged
+			to: self;
+		when: #autoComplete:startingAt:accept:
+			send: #onAutoComplete:startingAt:accept:
+			to: self search;
+		when: #timerTick:
+			send: #onTimerTick:
+			to: self search;
+		when: #charAdded:
+			send: #onCharAdded:
+			to: self search!
 
 displayUncompilableSourceIn: sourcePresenter
 	sourcePresenter value size < 34 ifTrue: [^self].
@@ -345,6 +360,11 @@ saveMethod
 		trimStackToLevel: frameListPresenter selectionByIndex + frameListOffset.
 	self getProcessList!
 
+search
+	^search
+		ifNil: 
+			[search := JadeiteSearch on: documentPresenter view session: self gciSession]!
+
 selectedFrame
 	"Comment from RowanFrameService>>initializeProcess:level:organizer: ---- 
 		'In 3.2.15 the server does some whacky things with IP, stepPoint, and nested methods.
@@ -467,10 +487,10 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #createComponents!public! !
 !JadeiteDebugger categoriesFor: #createSchematicWiring!public! !
 !JadeiteDebugger categoriesFor: #displayUncompilableSourceIn:!private! !
-!JadeiteDebugger categoriesFor: #documentPresenter!Accessing!public! !
-!JadeiteDebugger categoriesFor: #errorMessagePresenter!Accessing!public! !
+!JadeiteDebugger categoriesFor: #documentPresenter!accessing!public! !
+!JadeiteDebugger categoriesFor: #errorMessagePresenter!accessing!public! !
 !JadeiteDebugger categoriesFor: #executeSelectionOrLine:!Jade!private! !
-!JadeiteDebugger categoriesFor: #frameListPresenter!Accessing!frames!public! !
+!JadeiteDebugger categoriesFor: #frameListPresenter!accessing!frames!public! !
 !JadeiteDebugger categoriesFor: #gciSession:!public! !
 !JadeiteDebugger categoriesFor: #getProcessList!public! !
 !JadeiteDebugger categoriesFor: #homeFrame!compiling!frames!menu handlers!private! !
@@ -478,7 +498,7 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #initializeIdleProcess!initialization!public! !
 !JadeiteDebugger categoriesFor: #initializeProcess:message:terminateOnClose:!initialization!public! !
 !JadeiteDebugger categoriesFor: #isOkayToChangeFrame!public!testing! !
-!JadeiteDebugger categoriesFor: #methodListSelection!Accessing!public! !
+!JadeiteDebugger categoriesFor: #methodListSelection!accessing!public! !
 !JadeiteDebugger categoriesFor: #methodSourcePresenter!public! !
 !JadeiteDebugger categoriesFor: #methodValueChanged!event handlers!public! !
 !JadeiteDebugger categoriesFor: #onCloseRequested:!event handlers!private! !
@@ -486,28 +506,29 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #onViewClosed!event handlers!private! !
 !JadeiteDebugger categoriesFor: #onViewDestroyed!event handlers!private! !
 !JadeiteDebugger categoriesFor: #onViewOpened!event handlers!private! !
-!JadeiteDebugger categoriesFor: #processListPresenter!Accessing!public! !
+!JadeiteDebugger categoriesFor: #processListPresenter!accessing!public! !
 !JadeiteDebugger categoriesFor: #queryCommand:!menu handlers!public! !
 !JadeiteDebugger categoriesFor: #reformatSource!menu handlers!public! !
 !JadeiteDebugger categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteDebugger categoriesFor: #restart!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #resumeProcess!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #saveMethod!compiling!menu handlers!private! !
+!JadeiteDebugger categoriesFor: #search!accessing!public! !
 !JadeiteDebugger categoriesFor: #selectedFrame!frames!public! !
 !JadeiteDebugger categoriesFor: #selectHomeMethod!compiling!frames!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #setCompileErrorColor!compiling!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #setCompileWarningColor!compiling!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #statusBarText!Accessing!public! !
-!JadeiteDebugger categoriesFor: #statusBarText:!Accessing!public! !
-!JadeiteDebugger categoriesFor: #statusTextPresenter!Accessing!private! !
+!JadeiteDebugger categoriesFor: #statusBarText!accessing!public! !
+!JadeiteDebugger categoriesFor: #statusBarText:!accessing!public! !
+!JadeiteDebugger categoriesFor: #statusTextPresenter!accessing!private! !
 !JadeiteDebugger categoriesFor: #stepInto!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #stepOut!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #stepOver!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #terminateIdleProcess!private! !
 !JadeiteDebugger categoriesFor: #terminateProcess!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #updateMethodSource!public! !
-!JadeiteDebugger categoriesFor: #variableDataPresenter!Accessing!public! !
-!JadeiteDebugger categoriesFor: #variableListPresenter!Accessing!public! !
+!JadeiteDebugger categoriesFor: #variableDataPresenter!accessing!public! !
+!JadeiteDebugger categoriesFor: #variableListPresenter!accessing!public! !
 
 !JadeiteDebugger class methodsFor!
 
