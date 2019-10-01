@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton'
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton searchPresenter'
 	classVariableNames: ''
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
@@ -21,7 +21,7 @@ addDictionary
 			ifTrue: [^self basicAddDictionaryNamed: newDictionaryName]!
 
 additionalAccelerators
-	^#(#(#insertIfFalse 'Ctrl+Shift+D') #(#insertIfTrue 'Ctrl+Shift+T') #(#showCompletionList 'F5'))!
+	^#(#(#insertIfFalse 'Ctrl+Shift+D') #(#insertIfTrue 'Ctrl+Shift+T'))!
 
 addNoneProject
 	(projectListPresenter list includes: RowanProjectService noneProject)
@@ -208,7 +208,12 @@ createComponents
 	super createComponents.
 	dictionaryPresenter := self add: ListPresenter new name: 'dictionariesList'.
 	packageDictionaryCards := self add: Presenter new name: 'packageDictionaryCards'.
-	autoCommitButton := self add: Presenter new name: 'autoCommitButton'. !
+	autoCommitButton := self add: Presenter new name: 'autoCommitButton'.
+	"searchPresenter := self
+				add: SmalltalkSearchPresenter new
+				name: 'search'
+				helpId: 10510.
+	searchPresenter view: methodSourcePresenter view. "!
 
 createListViewFor: newCard
 	"Editable because creating the desired ListView gave 
@@ -362,8 +367,6 @@ insertCompileErrorText: string into: presenter
 	statusBarText value: string!
 
 insertCompletion: string at: anInteger
-	"Private - Private-"
-
 	| stop start |
 	methodSourcePresenter view performUndoableAction: 
 			[stop := methodSourcePresenter view caretPosition - 1.

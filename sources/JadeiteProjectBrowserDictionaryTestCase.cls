@@ -509,10 +509,38 @@ test_gotoDictionary
 	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
 	self assert: self classListPresenter selection name equals: self sampleClassName!
 
+test_gotoDictionaryClassTab
+	self testsIssue: #issue530 withTitle: '(3.0.77) Go to containing dictionary ... doesn''t'.
+	self selectRowanSample1Class.
+	self selectClassTab. 
+	self selectClassTab.
+	self assert: self projectsPresenter selectedClass dictionaryName equals: 'UserGlobals'.
+	self projectsPresenter gotoDictionary.
+	self assert: self dictionaryPresenter selection name equals: 'UserGlobals'.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1'.
+	self projectsPresenter gotoClassDefinedPackage.
+	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
+	self assert: self classListPresenter selection name equals: self sampleClassName!
+
 test_gotoDictionaryHierarchyView
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self testsIssue: #issue491 withTitle: '(Oscar 3.0.73) need a way to find class in the dictionary '.
 	self selectRowanSample1Class.
+	self selectHierarchyTab.
+	self assert: self projectsPresenter selectedClass dictionaryName equals: 'UserGlobals'.
+	self projectsPresenter gotoDictionary.
+	self assert: self dictionaryPresenter selection name equals: 'UserGlobals'.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1'.
+	self projectsPresenter gotoClassDefinedPackage.
+	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
+	self assert: self classListPresenter selection name equals: self sampleClassName!
+
+test_gotoDictionaryHierarchyViewClassTab
+	self testsIssue: #issue530 withTitle: '(3.0.77) Go to containing dictionary ... doesn''t'.
+	self selectRowanSample1Class.
+	self selectClassTab. 
 	self selectHierarchyTab.
 	self assert: self projectsPresenter selectedClass dictionaryName equals: 'UserGlobals'.
 	self projectsPresenter gotoDictionary.
@@ -528,6 +556,27 @@ test_gotoDictionaryMenuItem
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self testsIssue: #issue491 withTitle: '(Oscar 3.0.73) need a way to find class in the dictionary '.
 	self selectRowanSample1Class.
+	commandQuery := self
+				queryCommand: #gotoDictionary
+				inPresenter: self projectsPresenter
+				view: self classListPresenter view.
+	self assert: commandQuery isEnabled.
+	self projectsPresenter updateClassMenu: self classListPresenter view queryContextMenu.
+	gotoItem := self classListPresenter view queryContextMenu items
+				detect: [:menuItem | menuItem command == #gotoDictionary].
+	self assert: gotoItem description equals: 'Go To Containing Dictionary (UserGlobals)'.
+	gotoItem commandDescription performAgainst: self projectsPresenter.
+	commandQuery := self
+				queryCommand: #gotoDictionary
+				inPresenter: self projectsPresenter
+				view: self classListPresenter view.
+	self deny: commandQuery isEnabled!
+
+test_gotoDictionaryMenuItemClassTab
+	| commandQuery gotoItem |
+	self testsIssue: #issue530 withTitle: '(3.0.77) Go to containing dictionary ... doesn''t'.
+	self selectRowanSample1Class.
+	self selectClassTab.
 	commandQuery := self
 				queryCommand: #gotoDictionary
 				inPresenter: self projectsPresenter
@@ -960,8 +1009,11 @@ test_textTabSelectedWithProjectChange
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_globalsTabHeaders!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_globalsTabValues!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_gotoDictionary!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_gotoDictionaryClassTab!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_gotoDictionaryHierarchyView!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_gotoDictionaryHierarchyViewClassTab!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_gotoDictionaryMenuItem!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_gotoDictionaryMenuItemClassTab!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_gotoPackageMenuItem!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_gotoPackageMenuItemHierarchyTab!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_insertDictionaryMenuItemEnablement!public!test issue 217! !

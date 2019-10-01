@@ -705,7 +705,7 @@ RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton'
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton searchPresenter'
 	classVariableNames: ''
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
