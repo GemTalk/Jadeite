@@ -502,7 +502,7 @@ Object subclass: #JadeitePreferences
 	classInstanceVariableNames: ''!
 Object subclass: #JadeiteSearch
 	instanceVariableNames: 'view session stop start'
-	classVariableNames: ''
+	classVariableNames: 'AutoCompleteEnabled'
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
 Object subclass: #Rowan
@@ -806,7 +806,7 @@ JadeWorkspace subclass: #JadeiteGitLog
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeTranscript subclass: #JadeiteTranscript
-	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsDisabled'
+	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsDisabled autoCompleteEnabled'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

@@ -161,6 +161,27 @@ test_autoCommitSet
 		equals: true]
 			ensure: [transcript autoCommit: false]!
 
+test_autoCompletionMenuItem
+	| autoCompletion jadeiteMenu autoCompleteMenuItem commandQuery |
+	self testsIssue: #issue524 withTitle: 'autocompletion'.
+	autoCompletion := JadeiteSearch autoCompleteEnabled.
+	
+	[jadeiteMenu := transcript view menuBar items detect: [:menu | '*Jadeite*' match: menu text]
+				ifNone: [].
+	self denyIsNil: jadeiteMenu.
+	autoCompleteMenuItem := jadeiteMenu items
+				detect: [:command | '*Autocomplete enabled*' match: command text]
+				ifNone: [].
+	commandQuery := CommandQuery commandDescription: autoCompleteMenuItem commandDescription
+				source: transcript projectListPresenter view.
+	transcript autoCompleteEnabled: true.
+	transcript queryCommand: commandQuery.
+	self assert: commandQuery isChecked.
+	transcript autoCompleteEnabled: false.
+	transcript queryCommand: commandQuery.
+	self deny: commandQuery isChecked]
+			ensure: [transcript autoCompleteEnabled: autoCompletion]!
+
 test_browseClassMenuItem
 	| browseMenu browseClassItem |
 	self testsIssue: #issue235 withTitle: 'Need Find Class/Method from console'.
@@ -541,6 +562,7 @@ writeToPrefsFile: string
 !JadeiteTranscriptTestCase categoriesFor: #test_autoCommitOff!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_autoCommitOn!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_autoCommitSet!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_autoCompletionMenuItem!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseClassMenuItem!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseClassReferencesMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseClassReferencesMenuItemIsEnabled!public!test menus! !

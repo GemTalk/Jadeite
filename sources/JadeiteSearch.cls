@@ -2,7 +2,7 @@
 
 Object subclass: #JadeiteSearch
 	instanceVariableNames: 'view session stop start'
-	classVariableNames: ''
+	classVariableNames: 'AutoCompleteEnabled'
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
 JadeiteSearch guid: (GUID fromString: '{76051fbb-0c1e-40b5-b560-8eef47e5711c}')!
@@ -23,17 +23,22 @@ insertCompletion: string at: anInteger
 killAutocompleteTimer
 	view killTimer: SCI_AUTOCSHOW!
 
-onAutoComplete: aString startingAt: anInteger accept: aValueHolder 
-	self insertCompletion: aString at: anInteger.
-	aValueHolder value: false!
+onAutoComplete: aString startingAt: anInteger accept: aValueHolder
+	self class autoCompleteEnabled
+		ifTrue: 
+			[self insertCompletion: aString at: anInteger.
+			aValueHolder value: false]!
 
 onCharAdded: aCharacter
-	aCharacter = Character cr ifFalse: [self startAutocompleteTimer]!
+	self class autoCompleteEnabled
+		ifTrue: [aCharacter = Character cr ifFalse: [self startAutocompleteTimer]]!
 
 onTimerTick: anInteger
-	anInteger == SCI_AUTOCSHOW ifFalse: [^self].
-	self killAutocompleteTimer.
-	self showCompletionList!
+	self class autoCompleteEnabled
+		ifTrue: 
+			[anInteger == SCI_AUTOCSHOW ifFalse: [^self].
+			self killAutocompleteTimer.
+			self showCompletionList]!
 
 session: aSession
 	session := aSession!
@@ -79,7 +84,7 @@ tokenStartAt: anInteger
 view: aView
 
 	view := aView! !
-!JadeiteSearch categoriesFor: #insertCompletion:at:!autocompletion!event handlers!private! !
+!JadeiteSearch categoriesFor: #insertCompletion:at:!autocompletion!private! !
 !JadeiteSearch categoriesFor: #killAutocompleteTimer!autocompletion!private! !
 !JadeiteSearch categoriesFor: #onAutoComplete:startingAt:accept:!autocompletion!event handlers!private! !
 !JadeiteSearch categoriesFor: #onCharAdded:!autocompletion!event handlers!private! !
@@ -87,15 +92,24 @@ view: aView
 !JadeiteSearch categoriesFor: #session:!accessing!public! !
 !JadeiteSearch categoriesFor: #showCompletionList!autocompletion!private! !
 !JadeiteSearch categoriesFor: #showCompletionList:prefixLength:!autocompletion!private! !
-!JadeiteSearch categoriesFor: #startAutocompleteTimer!autocompletion!event handlers!private! !
-!JadeiteSearch categoriesFor: #tokenStartAt:!autocompletion!event handlers!private! !
+!JadeiteSearch categoriesFor: #startAutocompleteTimer!autocompletion!private! !
+!JadeiteSearch categoriesFor: #tokenStartAt:!autocompletion!private! !
 !JadeiteSearch categoriesFor: #view:!accessing!public! !
 
 !JadeiteSearch class methodsFor!
+
+autoCompleteEnabled
+	AutoCompleteEnabled ifNil: [AutoCompleteEnabled := true].
+	^AutoCompleteEnabled!
+
+autoCompleteEnabled: boolean
+	AutoCompleteEnabled := boolean!
 
 on: view session: session
 	^self new
 		view: view;
 		session: session! !
+!JadeiteSearch class categoriesFor: #autoCompleteEnabled!accessing!public! !
+!JadeiteSearch class categoriesFor: #autoCompleteEnabled:!accessing!public! !
 !JadeiteSearch class categoriesFor: #on:session:!instance creation!public! !
 
