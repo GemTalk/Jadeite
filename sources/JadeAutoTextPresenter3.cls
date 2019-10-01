@@ -61,14 +61,11 @@ configuration
 	^JadeAutocompletationConfiguration default!
 
 createSchematicWiring
-
 	super createSchematicWiring.
-
-	self when: #autoComplete:startingAt:accept: send: #onAutoComplete:startingAt:accept: to: self;
-		when: #leftButtonPressed: send: #onLeftButtonPressed: to: self";
-		when: #painted send: #onPainted to: self".
-
-!
+	self
+		when: #leftButtonPressed:
+		send: #onLeftButtonPressed:
+		to: self!
 
 currentGsShape
 	^currentGsShape!

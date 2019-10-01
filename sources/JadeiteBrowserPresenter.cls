@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton searchPresenter'
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search'
 	classVariableNames: ''
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
@@ -208,12 +208,11 @@ createComponents
 	super createComponents.
 	dictionaryPresenter := self add: ListPresenter new name: 'dictionariesList'.
 	packageDictionaryCards := self add: Presenter new name: 'packageDictionaryCards'.
-	autoCommitButton := self add: Presenter new name: 'autoCommitButton'.
+	autoCommitButton := self add: Presenter new name: 'autoCommitButton'
 	"searchPresenter := self
 				add: SmalltalkSearchPresenter new
 				name: 'search'
-				helpId: 10510.
-	searchPresenter view: methodSourcePresenter view. "!
+				helpId: 10510."!
 
 createListViewFor: newCard
 	"Editable because creating the desired ListView gave 
@@ -409,18 +408,17 @@ noClassSelectedInEitherPresenter
 	classListPresenter selectionIfNone: [classHierarchyPresenter selectionIfNone: [^true]].
 	^false!
 
-onAutoComplete: aString startingAt: anInteger accept: aValueHolder 
-	"Private - "
-	self insertCompletion: aString at: anInteger.
-	aValueHolder value: false!
+onAutoComplete: aString startingAt: anInteger accept: aValueHolder
+	self search
+		onAutoComplete: aString
+		startingAt: anInteger
+		accept: aValueHolder!
 
 onCharAdded: aCharacter
-	aCharacter = Character cr ifFalse: [self startAutocompleteTimer]!
+	self search onCharAdded: aCharacter!
 
 onTimerTick: anInteger
-	anInteger == SCI_AUTOCSHOW ifFalse: [^self].
-	self killAutocompleteTimer.
-	self showCompletionList!
+	self search onTimerTick: anInteger!
 
 onViewOpened
 
@@ -620,6 +618,9 @@ runAll
 
 runSelected
 	^self runMethodTests. !
+
+search
+	^search ifNil: [search := JadeiteSearch on: methodSourcePresenter view session: self gciSession]!
 
 selectedDictionaryNames
 	^dictionaryPresenter selections collect: [:dictionaryService | dictionaryService name]!
@@ -938,8 +939,8 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #methodToReformat!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #noClassSelectedInEitherPresenter!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #onAutoComplete:startingAt:accept:!event handlers!private! !
-!JadeiteBrowserPresenter categoriesFor: #onCharAdded:!event handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #onTimerTick:!event handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #onCharAdded:!event handlers!private! !
+!JadeiteBrowserPresenter categoriesFor: #onTimerTick:!event handlers!private! !
 !JadeiteBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #openCommitInGitHub!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #packageDictionaryCards!accessing!private! !
@@ -959,6 +960,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #resetClassTemplate!private! !
 !JadeiteBrowserPresenter categoriesFor: #runAll!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #runSelected!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #search!accessing!public! !
 !JadeiteBrowserPresenter categoriesFor: #selectedDictionaryNames!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #selectedGlobalName:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #selectedPackageNames!public!selection! !

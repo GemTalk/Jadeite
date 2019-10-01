@@ -39,6 +39,7 @@ package classNames
 	add: #JadeiteRenameClassMethodListBrowser;
 	add: #JadeiteRenameClassMethodListPresenter;
 	add: #JadeiteScintillaView;
+	add: #JadeiteSearch;
 	add: #JadeiteSemaphore;
 	add: #JadeiteTranscript;
 	add: #PackageMethodListPresenter;
@@ -499,6 +500,11 @@ Object subclass: #JadeitePreferences
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+Object subclass: #JadeiteSearch
+	instanceVariableNames: 'view session stop start'
+	classVariableNames: ''
+	poolDictionaries: 'ScintillaConstants'
+	classInstanceVariableNames: ''!
 Object subclass: #Rowan
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -685,9 +691,9 @@ JadeMethodListPresenter subclass: #RowanMethodListPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanMethodListPresenter subclass: #JadeiteMethodListPresenter
-	instanceVariableNames: 'textAreaTabs comparisonTab comparisonPresenter autoCommit'
+	instanceVariableNames: 'textAreaTabs comparisonTab comparisonPresenter autoCommit search'
 	classVariableNames: ''
-	poolDictionaries: ''
+	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
 JadeiteMethodListPresenter subclass: #JadeiteRenameClassMethodListPresenter
 	instanceVariableNames: 'findString newClassName'
@@ -705,7 +711,7 @@ RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton searchPresenter'
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search'
 	classVariableNames: ''
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!

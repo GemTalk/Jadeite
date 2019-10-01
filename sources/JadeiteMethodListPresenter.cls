@@ -1,9 +1,9 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanMethodListPresenter subclass: #JadeiteMethodListPresenter
-	instanceVariableNames: 'textAreaTabs comparisonTab comparisonPresenter autoCommit'
+	instanceVariableNames: 'textAreaTabs comparisonTab comparisonPresenter autoCommit search'
 	classVariableNames: ''
-	poolDictionaries: ''
+	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
 JadeiteMethodListPresenter guid: (GUID fromString: '{c27cfd96-c166-40cb-83b6-6073a885a25f}')!
 JadeiteMethodListPresenter comment: ''!
@@ -56,11 +56,24 @@ createComponents
 createSchematicWiring
 	super createSchematicWiring.
 	self getViews.
-	methodListPresenter when: #methodSelectionChanged	send: #updateMethodSource 	to: self.
+	methodListPresenter
+		when: #methodSelectionChanged
+		send: #updateMethodSource
+		to: self.
 	autoCommit
 		when: #valueChanged
 		send: #updateAutoCommit
-		to: self!
+		to: self.
+	methodSourcePresenter documentPresenter
+		when: #autoComplete:startingAt:accept:
+			send: #onAutoComplete:startingAt:accept:
+			to: self;
+		when: #timerTick:
+			send: #onTimerTick:
+			to: self;
+		when: #charAdded:
+			send: #onCharAdded:
+			to: self!
 
 fileSave
 
@@ -71,7 +84,18 @@ gciSession: aGciSession
 	autoCommit := ValueHolder with: self remoteAutoCommit.!
 
 getViews 
-	textAreaTabs := parentPresenter view viewNamed: 'textAreaTabs'!
+	textAreaTabs := parentPresenter view viewNamed: 'textAreaTabs'.!
+
+insertCompletion: string at: anInteger
+	| stop start |
+	methodSourcePresenter documentPresenter view performUndoableAction: 
+			[stop := methodSourcePresenter documentPresenter view caretPosition - 1.
+			start := self tokenStartAt: stop.
+			methodSourcePresenter documentPresenter view selectionRange: (start to: stop).
+			methodSourcePresenter documentPresenter view replaceSelection: string]!
+
+killAutocompleteTimer
+	methodSourcePresenter documentPresenter view killTimer: SCI_AUTOCSHOW!
 
 methodListSelection
 	^methodListPresenter selectionOrNil!
@@ -92,10 +116,19 @@ methods: services selectingAnyMatch: string
 		selectFirstMethod.
 	self selectingAnyMatch: string!
 
+onAutoComplete: aString startingAt: anInteger accept: aValueHolder 
+	self search onAutoComplete: aString startingAt: anInteger accept: aValueHolder !
+
+onCharAdded: aCharacter
+	self search onCharAdded: aCharacter!
+
 onCloseRequested: aCloseEvent
 	aCloseEvent value: (methodSourcePresenter documentPresenter view isModified
 				ifTrue: [methodSourcePresenter isOkayToChange]
 				ifFalse: [true])!
+
+onTimerTick: anInteger
+	self search onTimerTick: anInteger!
 
 onViewOpened
 
@@ -129,6 +162,11 @@ registerPresentersForUpdates
 removeComparisonTab
 	self textTabs remove: self comparisonTab ifAbsent: []!
 
+search
+	^search
+		ifNil: 
+			[search := JadeiteSearch on: methodSourcePresenter documentPresenter view session: self gciSession]!
+
 selectComparisonTab
 	comparisonPresenter ensureVisible!
 
@@ -143,6 +181,28 @@ selectionChanging: aSelectionChangingEvent
 showComparisonTab
 	self textTabs add: self comparisonTab.
 	comparisonPresenter ensureVisible!
+
+showCompletionList
+	| searchList last start prefix |
+	methodSourcePresenter documentPresenter view selectionRange isEmpty ifFalse: [^self].
+	last := methodSourcePresenter documentPresenter view caretPosition - 1.
+	start := self tokenStartAt: last.
+	start = 0 ifTrue: [^self].
+	prefix := methodSourcePresenter documentPresenter view plainTextFrom: start to: last.
+	searchList := prefix first isLowercase
+				ifTrue: [self class symbolsFrom: prefix , '*' session: self gciSession]
+				ifFalse: [self class allClassesStartingWith: prefix].
+	self showCompletionList: searchList prefixLength: prefix size!
+
+showCompletionList: aCollection prefixLength: anInteger
+	(aCollection size = 1 and: [aCollection anyOne size = anInteger])
+		ifTrue: 
+			["Don't display a list of one item that is the same as the prefix"
+			^self].
+	methodSourcePresenter documentPresenter view
+		showAutoCompletionList: aCollection
+		prefixLength: anInteger
+		withIcons: true!
 
 showSuperClassComparison
 	| methodService |
@@ -159,8 +219,16 @@ showSuperClassComparison
 				afterTitle: 'No super implementation';
 				compare: methodService source with: String new]!
 
+startAutocompleteTimer
+	methodSourcePresenter documentPresenter view setTimer: SCI_AUTOCSHOW interval: 30!
+
 textTabs
 	^(textAreaTabs subViews detect: [:each | each class == TabViewXP]) model!
+
+tokenStartAt: anInteger
+	^(methodSourcePresenter documentPresenter view styleAt: anInteger) name == #specialCharacter
+		ifTrue: [anInteger]
+		ifFalse: [methodSourcePresenter documentPresenter view tokenStartAt: anInteger]!
 
 updateAutoCommit
 	| autoCommitButtonView |
@@ -213,26 +281,36 @@ updateSource
 !JadeiteMethodListPresenter categoriesFor: #comparisonPresenter!public! !
 !JadeiteMethodListPresenter categoriesFor: #comparisonTab!private!selection!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #contextObject!public! !
-!JadeiteMethodListPresenter categoriesFor: #createComponents!public! !
-!JadeiteMethodListPresenter categoriesFor: #createSchematicWiring!public! !
+!JadeiteMethodListPresenter categoriesFor: #createComponents!initialization!public! !
+!JadeiteMethodListPresenter categoriesFor: #createSchematicWiring!initialization!public! !
 !JadeiteMethodListPresenter categoriesFor: #fileSave!public! !
 !JadeiteMethodListPresenter categoriesFor: #gciSession:!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #getViews!public! !
+!JadeiteMethodListPresenter categoriesFor: #insertCompletion:at:!autocompletion!event handlers!private! !
+!JadeiteMethodListPresenter categoriesFor: #killAutocompleteTimer!autocompletion!private! !
 !JadeiteMethodListPresenter categoriesFor: #methodListSelection!public! !
 !JadeiteMethodListPresenter categoriesFor: #methods:selecting:!public! !
 !JadeiteMethodListPresenter categoriesFor: #methods:selectingAnyMatch:!public! !
+!JadeiteMethodListPresenter categoriesFor: #onAutoComplete:startingAt:accept:!autocompletion!event handlers!private! !
+!JadeiteMethodListPresenter categoriesFor: #onCharAdded:!autocompletion!event handlers!private! !
 !JadeiteMethodListPresenter categoriesFor: #onCloseRequested:!event handlers!public! !
+!JadeiteMethodListPresenter categoriesFor: #onTimerTick:!autocompletion!event handlers!private! !
 !JadeiteMethodListPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #postEditSaveMethod!menu handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #queryCommand:!menu handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteMethodListPresenter categoriesFor: #removeComparisonTab!private!selection!text tabs! !
+!JadeiteMethodListPresenter categoriesFor: #search!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #selectComparisonTab!private!selection!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #selectedClassName!public!selection! !
 !JadeiteMethodListPresenter categoriesFor: #selectionChanging:!event handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #showComparisonTab!private!selection!text tabs! !
+!JadeiteMethodListPresenter categoriesFor: #showCompletionList!autocompletion!private! !
+!JadeiteMethodListPresenter categoriesFor: #showCompletionList:prefixLength:!autocompletion!private! !
 !JadeiteMethodListPresenter categoriesFor: #showSuperClassComparison!private!text tabs! !
+!JadeiteMethodListPresenter categoriesFor: #startAutocompleteTimer!autocompletion!event handlers!private! !
 !JadeiteMethodListPresenter categoriesFor: #textTabs!private!text tabs! !
+!JadeiteMethodListPresenter categoriesFor: #tokenStartAt:!autocompletion!event handlers!private! !
 !JadeiteMethodListPresenter categoriesFor: #updateAutoCommit!public!updating! !
 !JadeiteMethodListPresenter categoriesFor: #updateMethodSource!public!updating! !
 !JadeiteMethodListPresenter categoriesFor: #updateMultiMethodComparison!private!text tabs! !
