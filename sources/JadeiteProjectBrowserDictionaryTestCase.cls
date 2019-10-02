@@ -40,7 +40,8 @@ test_abortInTranscriptRemovesDictionaryInBrowser
 				detect: [:dictionaryService | dictionaryService name = 'Test_Abort']
 				ifNone: [])]
 			ensure: 
-				[self cloneRowanSample1.
+				[self auditAll.
+				self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
 test_addDictionary
@@ -186,7 +187,8 @@ test_commitAfterDictionaryAddOrRemove
 	or removal"
 
 	| dictionaryName |
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
+	
+	[self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectNoneProject.
 	dictionaryName := 'Test_CommitAfterAdd'.
 	self projectsPresenter basicAddDictionaryNamed: dictionaryName.
@@ -196,7 +198,11 @@ test_commitAfterDictionaryAddOrRemove
 	self projectsPresenter basicRemoveDictionaries: (Array with: dictionaryName).
 	self assertDictionaryNotInList: dictionaryName.
 	transcript toolbarPresenter abort.
-	self assertDictionaryNotInList: dictionaryName!
+	self assertDictionaryNotInList: dictionaryName]
+			ensure: 
+				[self auditAll.
+				self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
 
 test_compileMethodInNonPackagedClass
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
