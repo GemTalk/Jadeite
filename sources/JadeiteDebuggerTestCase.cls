@@ -44,6 +44,37 @@ closeDebuggers
 				, JadeiteDebugger allInstances.
 	self assert: list isEmpty!
 
+createTestMethodWithBreakpoints
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'test_highlightBreaks
+	"self new test_highlightBreaks"
+	| var i log |
+
+	[
+		var := WriteStream on: String new.
+		log := String new.
+		i := 20.
+		var nextPutAll: ''123''.
+		log add: ''abc''.
+		
+	] ensure: 
+	[
+		log size < 5 ifTrue: [log add: ''def''].
+		var contents size < 5 ifTrue: [log add: ''456''].
+		i = 20 ifTrue: [ i := 3].
+	].
+
+	self assert: i = 3'
+		in: 'RowanSample1Test'
+		category: 'tests'.
+	self selectMethodNamed: #test_highlightBreaks.
+	self setBreakAt: 20.
+	self setBreakAt: 25.
+	self setBreakAt: 28.!
+
 debuggerDo: aBlock
 	self assert: JadeiteDebugger semaphore isNil.
 	JadeiteDebugger semaphore: Semaphore new.
@@ -163,6 +194,9 @@ selectFrameAt: integer
 	debugger frameListPresenter onSelectionChanging: event.
 	event value ifFalse:[^self]. 
 	debugger frameListPresenter selection: (debugger frameListPresenter list at: integer)!
+
+setBreakAt: anInteger
+	self projectsPresenter setBreakPointAt: anInteger in: self projectsPresenter!
 
 setUp
 	| list1 list2 |
@@ -342,6 +376,29 @@ test_badCompileInDebugger
 	self assert: debugger methodSourcePresenter documentPresenter view backcolor
 		equals: JadeTextStyles default colorForCompileError!
 
+test_breakpointHighlightingInBlocks
+	| sourcePresenter |
+	self createTestMethodWithBreakpoints.
+	self openDebuggerOn: 'RowanSample1Test new test_highlightBreaks'.
+	
+	[self assert: debugger frameListPresenter selection
+		equals: '[] in  ExecBlock0 (RowanSample1Test) >> test_highlightBreaks @5 line 14'.
+	sourcePresenter := debugger methodSourcePresenter documentPresenter.
+	self assert: sourcePresenter selectionRange equals: (245 to: 248).
+	self assert: sourcePresenter selection equals: 'add:'.
+	self assert: (sourcePresenter view styleIdAt: 244) equals: 0.	"no breakpoint indicator + blue text"
+	(245 to: 248)
+		do: [:idx | self assert: (sourcePresenter view styleIdAt: idx) equals: 21	"breakpoint indicator + blue text"].
+	self assert: (sourcePresenter view styleIdAt: 249) equals: 0.
+	self assert: (sourcePresenter view styleIdAt: 295) equals: 0.
+	(296 to: 299) do: [:idx | self assert: (sourcePresenter view styleIdAt: idx) equals: 21].
+	self assert: (sourcePresenter view styleIdAt: 300) equals: 0.
+	self assert: (sourcePresenter view styleIdAt: 330) equals: 0.
+	(331 to: 332) do: [:idx | self assert: (sourcePresenter view styleIdAt: idx) equals: 9].	"breakpoint indicator + black text"
+	self assert: (sourcePresenter view styleIdAt: 333) equals: 0.
+	self projectsPresenter clearMethodBreakpoints]
+			ensure: [projectsBrowser view close]!
+
 test_browseClass
 	| browser |
 	self testsIssue: #issue169 withTitle: 'Debugger menu option Browse Class broken'.
@@ -405,6 +462,16 @@ test_browseFrameMethod
 	self assert: browser currentCard classListPresenter selection name equals: 'Object'.
 	self assert: browser currentCard methodListPresenter selection selector equals: #halt]
 			ensure: [browser view close]!
+
+test_bug74
+	"Open debugger on method with breakpoint"
+
+	session executeString: '(Repository compiledMethodAt: #pageSize) setBreakAtStepPoint: 2'.
+	self
+		openDebuggerOn: 'SystemRepository pageSize';
+		assert: debugger documentPresenter view selection equals: 'zeroArgPrim:50';
+		debuggerDo: [debugger resumeProcess];
+		yourself!
 
 test_compileError
 	self testsIssue: #issue353
@@ -1520,17 +1587,6 @@ test8
 		yourself.
 	self debuggerDo: [debugger resumeProcess]!
 
-testBug74
-	"Open debugger on method with breakpoint"
-
-	session executeString: '(Repository compiledMethodAt: #pageSize) setBreakAtStepPoint: 2'.
-	self 
-		openDebuggerOn: 'SystemRepository pageSize';
-		assert: debugger documentPresenter view selection equals: 'zeroArgPrim:50';
-		debuggerDo: [debugger resumeProcess];
-		yourself.
-!
-
 testBug77
 
 	| string view |
@@ -1698,6 +1754,7 @@ testUnsavedChangesActionStepping
 	self assert: debugger methodSourcePresenter documentPresenter value equals:  'step into']
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]! !
 !JadeiteDebuggerTestCase categoriesFor: #closeDebuggers!private!support! !
+!JadeiteDebuggerTestCase categoriesFor: #createTestMethodWithBreakpoints!private!support!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #debuggerDo:!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #getClipboardContents!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #getDebugger!private!support! !
@@ -1710,6 +1767,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #removeMethodNamed:!private!test ad hoc execution! !
 !JadeiteDebuggerTestCase categoriesFor: #saveMethodWithHalt!private! !
 !JadeiteDebuggerTestCase categoriesFor: #selectFrameAt:!private!support! !
+!JadeiteDebuggerTestCase categoriesFor: #setBreakAt:!private!support!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteDebuggerTestCase categoriesFor: #statusBarValue!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #systemBrowser!private! !
@@ -1721,9 +1779,11 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionSelf!public!test ad hoc execution! !
 !JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionUpdatesVariablesList!public!test ad hoc execution! !
 !JadeiteDebuggerTestCase categoriesFor: #test_badCompileInDebugger!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_breakpointHighlightingInBlocks!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseFrameMethod!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_bug74!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileError!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlockFailsWhenNoHomeMethod!public!tests! !
@@ -1770,7 +1830,6 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test6!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test7!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test8!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #testBug74!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testBug77!public! !
 !JadeiteDebuggerTestCase categoriesFor: #testErrorInPrintString!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testSaveMethod!public!tests! !
