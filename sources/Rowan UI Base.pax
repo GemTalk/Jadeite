@@ -399,6 +399,8 @@ package methodNames
 	add: 'JadePresenter class' -> #browseHierarchySendersOf:className:session:;
 	add: 'JadePresenter class' -> #browseImplementorsIn:;
 	add: 'JadePresenter class' -> #browseImplementorsOf:session:;
+	add: 'JadePresenter class' -> #browseInstVarReaders:in:session:;
+	add: 'JadePresenter class' -> #browseInstVarWriters:in:session:;
 	add: 'JadePresenter class' -> #browseLiteralReferences:;
 	add: 'JadePresenter class' -> #browseLiteralReferences:initialSuggestion:;
 	add: 'JadePresenter class' -> #browseLiteralReferences:session:;
@@ -2360,6 +2362,33 @@ browseImplementorsOf: string session: session
 	shell updateCaptionFromSearchString: 'Implementors of ' , string asString printString.
 	^shell!
 
+browseInstVarReaders: instVarName in: className session: session
+	| service shell |
+	instVarName ifNil: [^nil].
+	service := RowanQueryService command: #instVarReaders:in: withArgs: (Array with: instVarName with: className).
+	self issueCommand: (Array with: service) session: session.
+	shell := self
+				openMethodListOn: service
+				selectingAnyMatch: instVarName
+				session: session.
+	shell
+		updateCaptionFromSearchString: 'Instance Variable Readers For ' , instVarName asString printString.
+	^shell!
+
+browseInstVarWriters: instVarName in: className session: session
+	| service shell |
+	instVarName ifNil: [^nil].
+	service := RowanQueryService command: #instVarWriters:in:
+				withArgs: (Array with: instVarName with: className).
+	self issueCommand: (Array with: service) session: session.
+	shell := self
+				openMethodListOn: service
+				selectingAnyMatch: instVarName
+				session: session.
+	shell
+		updateCaptionFromSearchString: 'Instance Variable Writers For ' , instVarName asString printString.
+	^shell!
+
 browseLiteralReferences: session
 	^self browseLiteralReferences: session initialSuggestion: String new!
 
@@ -2538,6 +2567,8 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #browseHierarchySendersOf:className:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseImplementorsIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseImplementorsOf:session:!browsing!public! !
+!JadePresenter class categoriesFor: #browseInstVarReaders:in:session:!browsing!public! !
+!JadePresenter class categoriesFor: #browseInstVarWriters:in:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseLiteralReferences:!browsing!public! !
 !JadePresenter class categoriesFor: #browseLiteralReferences:initialSuggestion:!browsing!public! !
 !JadePresenter class categoriesFor: #browseLiteralReferences:session:!browsing!public! !

@@ -150,6 +150,9 @@ getProcessList
 	BrowserUpdate current
 		logComment: 'debuggerService processes: ' , debuggerService processes printString.
 	debuggerService processes ifNil: [^self].
+	gsProcess := debuggerService processes
+				detect: [:processService | processService oop = gsProcess oop]
+				ifNone: [gsProcess	"it should be found though"].
 	debuggerService processes notEmpty
 		ifTrue: [processListPresenter selection: debuggerService processes first]!
 
@@ -372,7 +375,7 @@ selectedFrame
 	When the step point error is thrown, we do a step into instead. There may be better
 	solutions."
 
-	| index breaks source |
+	| index |
 	BrowserUpdate current logComment: '#selectedFrame'.
 	BrowserUpdate current
 		logComment: '(index := frameListPresenter selectionByIndex) = 0 ifTrue: [^self].'.
@@ -387,21 +390,11 @@ selectedFrame
 	(frame := gsProcess frameForLevel: index) isNil ifTrue: [^self].
 	BrowserUpdate current logComment: 'frame stepPoint: ' , frame stepPoint printString.
 	frame stepPoint ifNil: [RowanDebuggerStepPointError signal].	"see comment in  RowanFrameService>>initializeProcess:level:organizer:"
-	BrowserUpdate current logComment: 'did not get error. Setting source'.
-	source := frame source.
-	breaks := frame breaks collect: [:each | frame offsets at: each].
-	breaks := breaks
-				collect: [:each | ((source copyFrom: 1 to: each) select: [:char | char = Character lf]) size + 1].
-	breaks := breaks asSet asSortedCollection asArray.
-	BrowserUpdate current logComment: 'finished setting breaks'.
-	BrowserUpdate current logComment: 'variableListPresenter list: frame vars.'.
-	BrowserUpdate current logComment: frame vars printString.
 	variableListPresenter list: frame vars.
-	BrowserUpdate current logComment: 'documentPresenter value: frame gsMethod source.'.
-	BrowserUpdate current logComment: frame gsMethod source.
 	documentPresenter value: frame gsMethod source.
 	BrowserUpdate current logComment: 'udpdated source pane'.
 	documentPresenter view isModified: false.
+	codePane offsets: nil.
 	codePane gsMethod: frame gsMethod.
 	self displayUncompilableSourceIn: codePane documentPresenter.
 	frame stepPoint ifNotNil: [codePane showStepPoint: frame stepPoint].

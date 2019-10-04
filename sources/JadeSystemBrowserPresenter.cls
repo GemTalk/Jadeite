@@ -2669,17 +2669,6 @@ variableListPresenter
 
 	^variableListPresenter!
 
-variablesMenuStrings
-
-	false ifTrue: [
-		self addVariableAccessors.
-	].
-	^#(
-		'&Variables'
-		'&Add Accessors//addVariableAccessors'
-	).
-!
-
 viewActivated
 
 	Transcript cr; show: 'viewActivated'.
@@ -2907,7 +2896,6 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #updateSuperclassList!public!updating! !
 !JadeSystemBrowserPresenter categoriesFor: #updateTabLabel!public!updating! !
 !JadeSystemBrowserPresenter categoriesFor: #variableListPresenter!accessing!public! !
-!JadeSystemBrowserPresenter categoriesFor: #variablesMenuStrings!menus!public! !
 !JadeSystemBrowserPresenter categoriesFor: #viewActivated!event handlers!public! !
 
 !JadeSystemBrowserPresenter class methodsFor!

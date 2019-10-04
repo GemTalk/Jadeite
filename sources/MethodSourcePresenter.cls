@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 CodeSourcePresenter subclass: #MethodSourcePresenter
-	instanceVariableNames: 'currentSelector gsMethod originalSource'
+	instanceVariableNames: 'currentSelector gsMethod originalSource offsets'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -110,6 +110,17 @@ newSelector
 
 !
 
+offsetAt: index
+	"offsets are set by the debugger if we are in one"
+
+	^offsets ifNil: [0] ifNotNil: [offsets at: index]!
+
+offsets
+	^offsets!
+
+offsets: anObject
+	offsets := anObject!
+
 onViewOpened
 	super onViewOpened.
 	documentPresenter view contextMenu: (Menu fromStrings: self editMenuStrings).
@@ -149,7 +160,7 @@ showStepPoint: anInteger
 
 	| lineNumber range stepPoint |
 	stepPoint := gsMethod stepPoints at: anInteger.
-	documentPresenter view selectionRange: stepPoint key.
+	documentPresenter view selectionRange: stepPoint key. 
 	(range := documentPresenter view selectionRange) isEmpty ifTrue: [^self].
 	lineNumber := documentPresenter view lineFromPosition: range first.
 	lineNumber := lineNumber - 4 max: 1.
@@ -201,31 +212,36 @@ update
 	currentSelector := gsMethod selector!
 
 updateMethodStepPoints
-
-	| breakPoints indicators stepPoints unimplementedSelectors |
+	| breakPoints indicators stepPoints unimplementedSelectors updatedRange |
 	breakPoints := gsMethod breakPoints.
 	stepPoints := gsMethod stepPoints.
 	unimplementedSelectors := gsMethod unimplementedSelectors.
 	documentPresenter view clearContainerIndicators.
 	indicators := OrderedCollection new.
-	1 to: stepPoints size do: [:stepPoint |
-		| range string styleName |
-		range := (stepPoints at: stepPoint) key.
-		(unimplementedSelectors at: range start ifAbsent: [nil]) ifNotNil: [:value | 
-			styleName := 10.
-			string := 'No implementors of #' , value printString , ' (found at step point #' , stepPoint printString , ')'.
-		] ifNil: [
-			styleName := (breakPoints includes: stepPoint) ifTrue: [9] ifFalse: [8].
-			string := ((breakPoints includes: stepPoint) ifTrue: ['Break at '] ifFalse: ['']) , 'step point #' , stepPoint printString.
-		].
-		indicators add: (ScintillaIndicator
-			styleName: styleName 
-			range: range 
-			tag: string).
-	].
-	documentPresenter view indicators: indicators.
-
-! !
+	1 to: stepPoints size
+		do: 
+			[:stepPoint |
+			| range string styleName |
+			range := (stepPoints at: stepPoint) key.
+			(unimplementedSelectors at: range start ifAbsent: [nil])
+				ifNotNil: 
+					[:value |
+					styleName := 10.
+					string := 'No implementors of #' , value printString , ' (found at step point #'
+								, stepPoint printString , ')']
+				ifNil: 
+					[styleName := (breakPoints includes: stepPoint) ifTrue: [9] ifFalse: [8].
+					string := ((breakPoints includes: stepPoint) ifTrue: ['Break at '] ifFalse: ['']) , 'step point #'
+								, stepPoint printString].
+			"styleName = 9 ifTrue: [self halt]."
+			updatedRange := offsets isNil
+						ifTrue: [range]
+						ifFalse: [(self offsetAt: stepPoint) to: (self offsetAt: stepPoint) + range size].
+			indicators add: (ScintillaIndicator
+						styleName: styleName
+						range: updatedRange
+						tag: string)].
+	documentPresenter view indicators: indicators! !
 !MethodSourcePresenter categoriesFor: #canSetBreakpoints!Breakpoints!public! !
 !MethodSourcePresenter categoriesFor: #clearBreakAtStepPoint:!public! !
 !MethodSourcePresenter categoriesFor: #codePresenterIsMethod!public! !
@@ -237,6 +253,9 @@ updateMethodStepPoints
 !MethodSourcePresenter categoriesFor: #methodMenu:!menu handlers!public! !
 !MethodSourcePresenter categoriesFor: #methodSource!public! !
 !MethodSourcePresenter categoriesFor: #newSelector!public! !
+!MethodSourcePresenter categoriesFor: #offsetAt:!accessing!public! !
+!MethodSourcePresenter categoriesFor: #offsets!accessing!private! !
+!MethodSourcePresenter categoriesFor: #offsets:!accessing!private! !
 !MethodSourcePresenter categoriesFor: #onViewOpened!public! !
 !MethodSourcePresenter categoriesFor: #setBreakAtStepPoint:!public! !
 !MethodSourcePresenter categoriesFor: #setDefaultMethod!public! !

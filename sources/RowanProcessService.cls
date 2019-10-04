@@ -33,13 +33,11 @@ oopType
 	^OopType64 fromInteger: oop!
 
 printOn: aStream
-
 	aStream
-		nextPutAll: 'GsProcess(';
+		nextPutAll: 'RowanProcessService(';
 		print: oop;
 		nextPutAll: ')';
-		yourself.
-!
+		yourself!
 
 stack
 
@@ -50,6 +48,6 @@ stack
 !RowanProcessService categoriesFor: #isUpdatableService!public!testing! !
 !RowanProcessService categoriesFor: #oop!public! !
 !RowanProcessService categoriesFor: #oopType!public! !
-!RowanProcessService categoriesFor: #printOn:!public! !
+!RowanProcessService categoriesFor: #printOn:!printing!public! !
 !RowanProcessService categoriesFor: #stack!public! !
 

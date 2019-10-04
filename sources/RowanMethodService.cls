@@ -77,6 +77,9 @@ breakPoints
 
 	^breakPoints!
 
+breakPoints: anObject
+	breakPoints := anObject!
+
 category
 	^category ifNil: ['']!
 
@@ -464,6 +467,7 @@ user: anObject
 !RowanMethodService categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanMethodService categoriesFor: #basicSubSuperIcon!displaying!public! !
 !RowanMethodService categoriesFor: #breakPoints!public! !
+!RowanMethodService categoriesFor: #breakPoints:!accessing!public! !
 !RowanMethodService categoriesFor: #category!accessing!private! !
 !RowanMethodService categoriesFor: #category:!accessing!private! !
 !RowanMethodService categoriesFor: #classMethodDisplayString!displaying!public! !

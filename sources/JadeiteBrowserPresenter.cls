@@ -120,6 +120,18 @@ browseGlobalReferences
 	string := self selectedGlobalName: selection.
 	^JadePresenter browseSymbolReferencesTo: '#' , string session: gciSession!
 
+browseInstVarReaders
+	^JadePresenter
+		browseInstVarReaders: variableListPresenter selection
+		in: self selectedClassName
+		session: self gciSession!
+
+browseInstVarWriters
+	^JadePresenter
+		browseInstVarWriters: variableListPresenter selection
+		in: self selectedClassName
+		session: self gciSession!
+
 buildGlobalsTab
 	| globalsTabView |
 	globalsTab
@@ -465,6 +477,10 @@ queryCommand: aCommandQuery
 					^true].
 			aCommandQuery isEnabled: true.
 				^true].
+	(#(#browseInstVarReaders #browseInstVarWriters) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: self variableListPresenter selections size = 1.
+			^true].
 	^super queryCommand: aCommandQuery!
 
 reformatSource
@@ -839,7 +855,16 @@ updateProjectTabFor: services
 			array nextPut: (Array with: service with: 'isDirty').
 			array nextPut: (Array with: service with: 'projectUrl').
 			service == services last ifFalse: [array nextPut: (Array with: RowanProjectService new with: nil)]].
-	projectInfoTab list: array contents! !
+	projectInfoTab list: array contents!
+
+variablesMenuStrings
+	false
+		ifTrue: 
+			[self addVariableAccessors.
+			self
+				browseInstVarReaders;
+				browseInstVarWriters].
+	^#('&Variables' '&Add Accessors//addVariableAccessors' '&Browser Inst Var Readers//browseInstVarReaders' '&Browser Inst Var Writers//browseInstVarWriters')! !
 !JadeiteBrowserPresenter categoriesFor: #addDictionary!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #additionalAccelerators!constants!public! !
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
@@ -854,6 +879,8 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #browseClassReferences!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #browseGlobalClass!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #browseGlobalReferences!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #browseInstVarReaders!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #browseInstVarWriters!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #buildGlobalsTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #buildProjectTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #classCommentChanged!event handlers!public! !
@@ -931,6 +958,7 @@ updateProjectTabFor: services
 !JadeiteBrowserPresenter categoriesFor: #updateProject!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateProjectInfo!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #updateProjectTabFor:!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #variablesMenuStrings!menus!public! !
 
 !JadeiteBrowserPresenter class methodsFor!
 
