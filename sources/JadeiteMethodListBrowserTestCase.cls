@@ -397,6 +397,37 @@ test_browseImplementorsEnablement
 				view: methodListPresenter view.
 	self deny: commandQuery isEnabled!
 
+test_browseInstVarReaders
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self
+		saveClass: 'TestInstVarReaders'
+		superclass: 'Object'
+		instVars: #('foo')
+		package: 'RowanSample1-Core'.
+	self
+		saveMethod: 'foo  ^foo'
+		in: 'TestInstVarReaders'
+		category: 'accessing'.
+	self
+		saveMethod: 'foo: anObject  foo := anObject'
+		in: 'TestInstVarReaders'
+		category: 'accessing'.
+	methodListBrowser := JadePresenter
+				browseInstVarReaders: 'foo'
+				in: 'TestInstVarReaders'
+				session: session.
+	self assert: self methodListMethodListPresenter list size equals: 1.
+	self assert: self methodListMethodListPresenter list first selector = #foo!
+
+test_browseInstVarWriters
+	methodListBrowser := JadePresenter
+				browseInstVarWriters: 'autoCommit'
+				in: 'RowanAutoCommitService'
+				session: session.
+	self methodListMethodListPresenter list
+		do: [:methodService | self assert: ('*autoCommit :=*' match: methodService source)]!
+
 test_browseLiteralReferences
 	self testsIssue: #issue328
 		withTitle: '(3.0.50) I would have thought that the literal string ''filetree'' would have been found'.
@@ -1095,6 +1126,8 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchySenderHighlightingSameSelector!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchySendersEnablement!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseImplementorsEnablement!public!test menus! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseInstVarReaders!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseInstVarWriters!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseLiteralReferences!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseLiteralReferencesBlankSearch!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseMultiKeywordSendersHighlighting!public!test browse methods! !
