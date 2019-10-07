@@ -94,9 +94,11 @@ package methodNames
 	add: #CodeSourcePresenter -> #methodMenuBreak:;
 	add: #Collection -> #basicPrepareForReplication;
 	add: #Collection -> #prepareForReplication;
+	add: #GciSession -> #_executeString:fromContextOop:environment:;
 	add: #GciSession -> #computeGemHost;
 	add: #GciSession -> #computeStoneHost;
 	add: #GciSession -> #confirmMessageBox:;
+	add: #GciSession -> #executeString:;
 	add: #GciSession -> #executeString:fromContext:environment:;
 	add: #GciSession -> #gemNRS;
 	add: #GciSession -> #hasServer;
@@ -108,9 +110,12 @@ package methodNames
 	add: #GciSession -> #postLoadServerPreferences;
 	add: #GciSession -> #postLoginAs:useSocket:;
 	add: #GciSession -> #preferencesFile;
+	add: #GciSession -> #serverPerform:withArguments:;
 	add: #GciSession -> #terminate:;
 	add: #GciSession -> #titleBarFor:;
 	add: #GciSession -> #verifyRowanLoaded;
+	add: #GciSession -> #withExplanation:do:;
+	add: #GciSession -> #withExplanation:doA:;
 	add: #GsError -> #debugError;
 	add: #GsMethod -> #className;
 	add: #GsMethod -> #meta;
@@ -123,6 +128,7 @@ package methodNames
 	add: #JadeDebugger -> #gsProcess:;
 	add: #JadeDebugger -> #initializeProcess:message:terminateOnClose:;
 	add: #JadeDebugger -> #onViewClosed;
+	add: #JadeDebugger -> #resumeProcess;
 	add: #JadeDebugger -> #selectedFrameWithErrorHandling;
 	add: #JadeDebugger -> #selectedProcess;
 	add: #JadeDebugger -> #stack:;
@@ -970,6 +976,13 @@ prepareForReplication
 
 !GciSession methodsFor!
 
+_executeString: aString fromContextOop: anOopType environment: anInteger
+	^library
+		session: gciSessionId
+		execute: (aString copyWithout: Character cr)
+		context: anOopType
+		environment: anInteger!
+
 computeGemHost
 	| list |
 	list := gemNRS subStrings: $#.
@@ -990,19 +1003,22 @@ confirmMessageBox: prompt
 
 	^self oopForString: (MessageBox confirm: prompt caption: 'Rowan Confirmation') printString!
 
-executeString: aString fromContext: anObject environment: anInteger
-	| oopType | 
-	BrowserUpdate current logComment: 'GciSession executeString: ', aString. 
-	oopType := self oopTypeFor: anObject.
+executeString: aString
 	^self
-		withExplanation: aString 
-		do: [
-			self
+		executeString: aString
+		fromContext: nil
+		environment: 0!
+
+executeString: aString fromContext: anObject environment: anInteger
+	| oopType |
+	BrowserUpdate current logComment: 'GciSession executeString: ' , aString.
+	oopType := self oopTypeFor: anObject.
+	^self withExplanation: aString
+		do: 
+			[self
 				_executeString: aString
 				fromContextOop: oopType
-				environment: anInteger.
-		].
-!
+				environment: anInteger]!
 
 gemNRS
 
@@ -1110,6 +1126,18 @@ preferencesFile
 
 	^'Jadeite.prefs'!
 
+serverPerform: aSymbol withArguments: anArray
+	| answer |
+	server isNil
+		ifTrue: 
+			[MessageBox notify: 'Unable to perform action due to server initialization failure.'.
+			^self].
+	answer := self
+				send: aSymbol
+				to: server
+				withAll: anArray.
+	^answer!
+
 terminate: anOopType
 	[self serverPerform: #terminate: with: anOopType] on: Error
 		do: 
@@ -1145,10 +1173,47 @@ verifyRowanLoaded
 	The ROWAN_PROJECTS_HOME gem environment variable is also required"
 
 	^self
-		executeString: '(System myUserProfile objectNamed: ''Rowan'') notNil and:[(System gemEnvironmentVariable: ''ROWAN_PROJECTS_HOME'') notNil] '! !
+		executeString: '(System myUserProfile objectNamed: ''Rowan'') notNil and:[(System gemEnvironmentVariable: ''ROWAN_PROJECTS_HOME'') notNil] '!
+
+withExplanation: aString do: aBlock
+	"Here we make the call and handle any error."
+
+	| result error |
+	BrowserUpdate current inUpdateWhile: 
+			[
+			[(Delay forMilliseconds: 10) wait.
+			self isCallInProgress] whileTrue: [].
+			result := self withExplanation: aString doA: aBlock.
+			self incrementEventCount.
+			(result isKindOf: GsError) ifFalse: [^result].
+			error := result.
+			[result := error signal] ensure: [self releaseAllOops].
+			result = #resume ifFalse: [self error: 'Unrecognized response of ' , result printString]].
+	"other work may need to be done by, say, the debugger. Give those processes a chance to run 
+	before continuing"
+	
+	[(Delay forMilliseconds: 10) wait.
+	self isCallInProgress] whileTrue: [].
+	^self withExplanation: aString
+		do: [library session: gciSessionId continue: error errorReport contextOop]!
+
+withExplanation: aString doA: aBlock
+	"We've (temporarily) eliminated the complicated monitoring loop
+	to eventually bring something that is less intrusive. Another 
+	problem was that if server events got 'stacked up' the inputState
+	loopWhile: block would pick those up and run them in this thread
+	which is blocked. This caused many problems
+
+	See https://github.com/jgfoster/Jade/blob/master/sources/GciSession.cls
+	for the original implementation when we're ready to implement
+	an improved monitoring solution"
+
+	^self handlingClientForwarderSendDo: aBlock! !
+!GciSession categoriesFor: #_executeString:fromContextOop:environment:!private! !
 !GciSession categoriesFor: #computeGemHost!public!title bar! !
 !GciSession categoriesFor: #computeStoneHost!public!title bar! !
 !GciSession categoriesFor: #confirmMessageBox:!must not strip!public!server interactions! !
+!GciSession categoriesFor: #executeString:!Jade convenience!public! !
 !GciSession categoriesFor: #executeString:fromContext:environment:!long running!public! !
 !GciSession categoriesFor: #gemNRS!public!title bar! !
 !GciSession categoriesFor: #hasServer!public! !
@@ -1160,9 +1225,12 @@ verifyRowanLoaded
 !GciSession categoriesFor: #postLoadServerPreferences!private! !
 !GciSession categoriesFor: #postLoginAs:useSocket:!private! !
 !GciSession categoriesFor: #preferencesFile!constants!private! !
+!GciSession categoriesFor: #serverPerform:withArguments:!Jade convenience!public! !
 !GciSession categoriesFor: #terminate:!public! !
 !GciSession categoriesFor: #titleBarFor:!public!title bar! !
 !GciSession categoriesFor: #verifyRowanLoaded!private! !
+!GciSession categoriesFor: #withExplanation:do:!long running!private! !
+!GciSession categoriesFor: #withExplanation:doA:!long running!private! !
 
 !GsError methodsFor!
 
@@ -1268,6 +1336,10 @@ onViewClosed
 					[gsProcess terminate.
 					self error: 'We should never get here!!']]!
 
+resumeProcess
+	answer := #resume.
+	self view close!
+
 selectedFrameWithErrorHandling
 	BrowserUpdate current logComment: 'About to select frame with error handling'.
 	[self selectedFrame] on: RowanDebuggerStepPointError
@@ -1321,6 +1393,7 @@ updateCaption
 !JadeDebugger categoriesFor: #gsProcess:!accessing!private! !
 !JadeDebugger categoriesFor: #initializeProcess:message:terminateOnClose:!public! !
 !JadeDebugger categoriesFor: #onViewClosed!event handlers!public! !
+!JadeDebugger categoriesFor: #resumeProcess!menu handlers!private! !
 !JadeDebugger categoriesFor: #selectedFrameWithErrorHandling!public! !
 !JadeDebugger categoriesFor: #selectedProcess!public! !
 !JadeDebugger categoriesFor: #stack:!public! !

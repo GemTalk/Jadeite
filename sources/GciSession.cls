@@ -19,13 +19,6 @@ GciSoftBreak'!
 !GciSession categoriesForClass!Unclassified! !
 !GciSession methodsFor!
 
-_executeString: aString fromContextOop: anOopType environment: anInteger	^library 
-		session: gciSessionId
-		execute: (aString copyWithout: Character cr)
-		context: anOopType
-		environment: anInteger
-!
-
 _library
 
 	^library.
@@ -166,13 +159,6 @@ debugToFilePath: aString
 eventCount
 
 	^eventCount.
-!
-
-executeString: aString
-	^self
-		executeString: aString 
-		fromContext: nil
-		environment: 0.
 !
 
 fetchBytes: anOopType
@@ -588,18 +574,6 @@ serverPerform: aSymbol with: arg1 with: arg2 with: arg3 with: arg4
 			with: arg4).
 !
 
-serverPerform: aSymbol withArguments: anArray
-	| answer |
-	server isNil
-		ifTrue: 
-			[MessageBox notify: 'Unable to perform action due to server initialization failure.'.
-			^self].
-	answer := self
-				send: aSymbol
-				to: server
-				withAll: anArray.
-	^answer!
-
 serverPerformInterpreted: aSymbol with: arg1 with: arg2
 
 	^self
@@ -785,34 +759,7 @@ valueOfArrayOop: anOopType
 
 valueOfOop: anOopType
 
-	^library session: gciSessionId valueOfOop: anOopType.!
-
-withExplanation: aString do: aBlock
-	"Here we make the call and handle any error."
-
-	| result error |
-	result := self withExplanation: aString doA: aBlock.
-	self incrementEventCount.
-	(result isKindOf: GsError) ifFalse: [^result].
-	error := result.
-	[result := error signal] ensure: [self releaseAllOops].
-	result = #resume ifFalse: [self error: 'Unrecognized response of ' , result printString].
-	^self withExplanation: aString
-		do: [library session: gciSessionId continue: error errorReport contextOop]!
-
-withExplanation: aString doA: aBlock
-	"We've (temporarily) eliminated the complicated monitoring loop
-	to eventually bring something that is less intrusive. Another 
-	problem was that if server events got 'stacked up' the inputState
-	loopWhile: block would pick those up and run them in this thread
-	which is blocked. This caused many problems
-
-	See https://github.com/jgfoster/Jade/blob/master/sources/GciSession.cls
-	for the original implementation when we're ready to implement
-	an improved monitoring solution"
-
-	^self handlingClientForwarderSendDo: aBlock! !
-!GciSession categoriesFor: #_executeString:fromContextOop:environment:!private! !
+	^library session: gciSessionId valueOfOop: anOopType.! !
 !GciSession categoriesFor: #_library!accessing!private! !
 !GciSession categoriesFor: #_send:to:withAll:!private! !
 !GciSession categoriesFor: #_server!private! !
@@ -830,7 +777,6 @@ withExplanation: aString doA: aBlock
 !GciSession categoriesFor: #debugString:fromContext:environment:!long running!public! !
 !GciSession categoriesFor: #debugToFilePath:!Jade convenience!public! !
 !GciSession categoriesFor: #eventCount!public! !
-!GciSession categoriesFor: #executeString:!Jade convenience!public! !
 !GciSession categoriesFor: #fetchBytes:!private! !
 !GciSession categoriesFor: #forceLogout!Jade!public! !
 !GciSession categoriesFor: #gciSessionId!public! !
@@ -876,7 +822,6 @@ withExplanation: aString doA: aBlock
 !GciSession categoriesFor: #serverPerform:with:with:!Jade convenience!public! !
 !GciSession categoriesFor: #serverPerform:with:with:with:!Jade convenience!public! !
 !GciSession categoriesFor: #serverPerform:with:with:with:with:!Jade convenience!public! !
-!GciSession categoriesFor: #serverPerform:withArguments:!Jade convenience!public! !
 !GciSession categoriesFor: #serverPerformInterpreted:with:with:!Jade convenience!public! !
 !GciSession categoriesFor: #serverPerformInterpreted:withArguments:!Jade convenience!public! !
 !GciSession categoriesFor: #setInitials:!private! !
@@ -897,8 +842,6 @@ withExplanation: aString doA: aBlock
 !GciSession categoriesFor: #userID!public! !
 !GciSession categoriesFor: #valueOfArrayOop:!Jade convenience!public! !
 !GciSession categoriesFor: #valueOfOop:!Jade convenience!public! !
-!GciSession categoriesFor: #withExplanation:do:!long running!private! !
-!GciSession categoriesFor: #withExplanation:doA:!long running!private! !
 
 !GciSession class methodsFor!
 

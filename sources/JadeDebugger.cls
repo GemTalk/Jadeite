@@ -137,11 +137,6 @@ queryCommand: query
 	^super queryCommand: query.
 !
 
-resumeProcess
-	answer := #'resume'.
-	self view close.
-!
-
 runToCursor
 
 	MessageBox notify: 'Sorry, this feature is not yet implemented!!'.
@@ -295,7 +290,6 @@ updateSaveMethodOop: anInteger
 !JadeDebugger categoriesFor: #implement!public! !
 !JadeDebugger categoriesFor: #inspectVariable!menu handlers!private! !
 !JadeDebugger categoriesFor: #queryCommand:!public! !
-!JadeDebugger categoriesFor: #resumeProcess!menu handlers!private! !
 !JadeDebugger categoriesFor: #runToCursor!menu handlers!private! !
 !JadeDebugger categoriesFor: #saveMethod!menu handlers!private! !
 !JadeDebugger categoriesFor: #selectedFrame!public! !

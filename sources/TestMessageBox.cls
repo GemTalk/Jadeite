@@ -28,7 +28,8 @@ result
 !TestMessageBox class methodsFor!
 
 disableJadeiteTestMessageBox
-	Smalltalk removeKey: #JadeiteTestsActive ifAbsent:[]!
+	TestMessageBox plannedResult: nil.
+	Smalltalk removeKey: #JadeiteTestsActive ifAbsent: []!
 
 enableJadeiteTestMessageBox
 	Smalltalk at: #JadeiteTestsActive put: true!

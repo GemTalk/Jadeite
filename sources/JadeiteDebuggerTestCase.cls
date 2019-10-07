@@ -78,9 +78,9 @@ createTestMethodWithBreakpoints
 debuggerDo: aBlock
 	self assert: JadeiteDebugger semaphore isNil.
 	JadeiteDebugger semaphore: Semaphore new.
-	aBlock value.
-	JadeiteDebugger semaphore wait.
-	JadeiteDebugger semaphore: nil!
+	[aBlock value] ensure: 
+			[JadeiteDebugger semaphore wait.
+			JadeiteDebugger semaphore: nil]!
 
 getClipboardContents
 	"Private - `Clipboard current getText` occasionally gets an `Access is denied` error.
@@ -470,7 +470,6 @@ test_bug74
 	self
 		openDebuggerOn: 'SystemRepository pageSize';
 		assert: debugger documentPresenter view selection equals: 'zeroArgPrim:50';
-		debuggerDo: [debugger resumeProcess];
 		yourself!
 
 test_compileError
@@ -872,6 +871,25 @@ test_duplicateInstVarsInHierarchy
 				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
 				self destroy: projectsBrowser]!
 
+test_errorInPrintString
+	"https://github.com/ericwinger/Jade/issues/49"
+
+	self
+		openDebuggerOn: '(ScaledDecimal _basicNew instVarAt: 1 put: 1; instVarAt: 2 put: nil; printString)';
+		assert: debugger errorMessagePresenter value
+			equals: 'a MessageNotUnderstood occurred (error 2010), a UndefinedObject does not understand  #''_generality''';
+		assert: debugger frameListPresenter selection
+			equals: 'SmallInteger (Number) >> _retry:coercing: @4 line 15';
+		assert: (debugger frameListPresenter selectionByIndex: 6) notNil.
+	debugger frameListPresenter selectionByIndex: 8.	"select ScaledDecimal frame"
+	self
+		assert: debugger variableListPresenter list first value
+			equals: '(ScaledDecimal printString error: a MessageNotUnderstood occurred (error 2010), a UndefinedObject does not understand  #''_generality'')';
+		debuggerDo: [[debugger _terminateProcess] fork];
+		assert: (Delay forMilliseconds: 50) wait notNil;
+		assert: (debugger isNil or: [debugger view class == DeafObject]);
+		yourself!
+
 test_frameDoubleClick
 	| projectPresenter |
 	self testsIssue: #issue238
@@ -1061,6 +1079,7 @@ test_restartInBlock
 				self destroy: projectsBrowser]!
 
 test_runningTestDoesNotLoseStepPoint
+	| count |
 	self testsIssue: #issue226 withTitle: 'have to reset method in order to disable a break point'.
 	projectsBrowser
 		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
@@ -1080,12 +1099,81 @@ test_runningTestDoesNotLoseStepPoint
 		debuggerDo: [process := [self projectsPresenter runMethodTests] forkAt: Processor activePriority + 1];
 		getDebugger.
 	self debuggerDo: [debugger resumeProcess].
+	count := 0.
+	[self projectsPresenter isSunitTabSelected not and: [count < 5]] whileTrue: 
+			[(Delay forMilliseconds: 500) wait.
+			count := count + 1].
 	self assert: self projectsPresenter isSunitTabSelected.
 	self projectsPresenter selectMethodSourceTab.
 	self assert: self methodListPresenter selections first stepPoints notEmpty]
 			ensure: 
 				[session
 					executeString: '(RBGemStoneNumberParserTest compiledMethodAt: #testNumberParser) clearBreakAtStepPoint: 2']!
+
+test_saveMethod
+	"https://github.com/GemTalk/Jadeite/issues/62"
+
+	| number view |
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectRowanSample1Class.
+	self createDebuggerTestMethod.
+	number := Time millisecondClockValue.
+	session executeString: '(RowanSample1 compiledMethodAt: #testMethod) setBreakAtStepPoint: 1'.
+	self
+		openDebuggerOn: 'RowanSample1 new testMethod';
+		assert: (view := debugger documentPresenter view) notNil;
+		assert: view selection equals: 'testMethod';
+		assert: (view selectionRange: (14 to: 99)) selection first equals: $^;
+		assert: (view replaceSelection: '^' , number printString) notNil;
+		assert: debugger saveMethod notNil;
+		assert: view selection equals: 'testMethod';
+		debuggerDo: [debugger resumeProcess];
+		assert: (session executeString: 'RowanSample1 new testMethod') equals: number]
+			ensure: [self destroy: projectsBrowser]!
+
+test_saveMethodDuringTestRun
+	| commandQuery |
+	self testsIssue: #issue512
+		withTitle: '"run selected" can get disabled after save in debugger (3.0.76)'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	
+	[self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	commandQuery := self
+				queryCommand: #runSelected
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	commandQuery := self
+				queryCommand: #debug
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	session executeString: '(RowanSample1Test compiledMethodAt: #test1) setBreakAtStepPoint: 1'.
+	self
+		debuggerDo: [process := [self projectsPresenter runMethodTests] forkAt: Processor activePriority + 1];
+		getDebugger.
+	self debuggerDo: 
+			[debugger methodSourcePresenter documentPresenter
+				value: 'test1
+	"add comment. no-op change"
+	self assert: RowanSample1 new foo = ''foo''   '].
+	self debuggerDo: [debugger saveMethod].
+	self debuggerDo: [debugger resumeProcess].
+	commandQuery := self
+				queryCommand: #runSelected
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	commandQuery := self
+				queryCommand: #debug
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled]
+			ensure: [projectsBrowser view close]!
 
 test_selectAfterDiveNoStepPoint
 	self testsIssue: #issue166
@@ -1189,6 +1277,17 @@ OrderedCollection with:  bigStringStream contents zork'.
 	debugger copyStack.
 	stream := ReadStream on: Clipboard current getText.
 	self assert: ('*-receiver oop(*) == ''1234567891011121314*...*' match: stream contents)!
+
+test_stackMenuEnablement
+	| frameContextMenu |
+	self testsIssue: #issue103 withTitle: 'debugger, ''Executed Code'' stack frame, pop up menu items'.
+	self openDebuggerOn: 'nil halt'.
+	self assert: debugger _processList size equals: 1.
+	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
+	frameContextMenu := debugger frameListPresenter view contextMenu.
+	frameContextMenu itemsDo: [:item | self deny: (self menuItemIsEnabled: item)].
+	debugger frameListPresenter selection: (debugger frameListPresenter list at: 2).
+	frameContextMenu itemsDo: [:item | self assert: (self menuItemIsEnabled: item)]!
 
 test_stepOutMethod
 	"not in a block. Step out to higher level method context"
@@ -1381,6 +1480,56 @@ test_unicodeMethod
 	self assert: debugger frameListPresenter selection
 		equals: 'RowanServicesTest >> iAmAUnicodeMethod @3 line 5'.
 	self assert: debugger methodSourcePresenter documentPresenter view backcolor equals: JadeTextStyles default colorForUndisplayableSource .!
+
+test_unsavedChangesActionChangeFrame
+	self testsIssue: #issue176 withTitle: 'unsaved debugger frame method not handled well'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[self openDebuggerOn: 'nil halt'.
+	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
+	self assert: debugger frameListPresenter selectionByIndex equals: 4.
+	debugger methodSourcePresenter documentPresenter value: 'new text'.
+	debugger methodSourcePresenter documentPresenter view isModified: true.
+	TestMessageBox plannedResult: #no.	"ignore changes"
+	self debuggerDo: [[debugger stepOver] forkAt: Processor activePriority + 1].
+	(Delay forMilliseconds: 50) wait.
+	self assert: debugger frameListPresenter selectionByIndex equals: 1]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
+test_unsavedChangesActionChangeToHomeFrame
+	self testsIssue: #issue176 withTitle: 'unsaved debugger frame method not handled well'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[| originalSource |
+	originalSource := '(Array with: 1) do:[:obj | self halt. obj size]'.
+	self openDebuggerOn: originalSource.
+	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @2 line 1'.
+	debugger methodSourcePresenter documentPresenter value: 'new text'.
+	debugger methodSourcePresenter documentPresenter view isModified: true.
+	TestMessageBox plannedResult: #no.
+	debugger frameListPresenter selectionByIndex: 6.	"Executed Code home frame"
+	self assert: debugger methodSourcePresenter documentPresenter value equals: originalSource]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
+test_unsavedChangesActionStepping
+	| originalSource |
+	self testsIssue: #issue176 withTitle: 'unsaved debugger frame method not handled well'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	originalSource := 'nil halt. Array new. Array new. Array new.'.
+	
+	[self openDebuggerOn: originalSource.
+	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
+	debugger methodSourcePresenter documentPresenter value: 'step over'.
+	debugger methodSourcePresenter documentPresenter view isModified: true.
+	TestMessageBox plannedResult: #no.	"don't save changes"
+	self debuggerDo: [debugger stepOver].
+	self assert: debugger methodSourcePresenter documentPresenter value equals: originalSource.
+	debugger methodSourcePresenter documentPresenter value: 'step into'.
+	debugger methodSourcePresenter documentPresenter view isModified: true.
+	TestMessageBox plannedResult: #yes.	"keep changes"
+	self debuggerDo: [[debugger stepInto] fork].
+	self assert: debugger methodSourcePresenter documentPresenter value equals: 'step into']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test1
 	"Basics of opening a debugger, viewing the UI, and resuming."
@@ -1606,153 +1755,7 @@ x halt.
 		assert: view selection equals: ' 5';
 		halt;"
 		yourself.
-!
-
-testErrorInPrintString
-	"https://github.com/ericwinger/Jade/issues/49"
-
-	self 
-		openDebuggerOn: '(ScaledDecimal _basicNew instVarAt: 1 put: 1; instVarAt: 2 put: nil; printString)';
-		assert: debugger errorMessagePresenter value equals: 'a MessageNotUnderstood occurred (error 2010), a UndefinedObject does not understand  #''_generality''';
-		assert: (debugger frameListPresenter selection) equals: 'SmallInteger (Number) >> _retry:coercing: @4 line 15';
-		assert: (debugger frameListPresenter selectionByIndex: 6) notNil.	debugger frameListPresenter selectionByIndex: 8. "select ScaledDecimal frame"
-	self
-		assert: debugger variableListPresenter list first value equals: '(ScaledDecimal printString error: a MessageNotUnderstood occurred (error 2010), a UndefinedObject does not understand  #''_generality'')';
-		debuggerDo: [[debugger _terminateProcess] fork];
-		assert: (Delay forMilliseconds: 50) wait notNil;
-		assert: (debugger isNil or: [debugger view class == DeafObject]);
-		yourself.
-!
-
-testSaveMethod
-	"https://github.com/GemTalk/Jadeite/issues/62"
-
-	| number view |
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
-	
-	[self selectRowanSample1Class.
-	self createDebuggerTestMethod.
-	number := Time millisecondClockValue.
-	session executeString: '(RowanSample1 compiledMethodAt: #testMethod) setBreakAtStepPoint: 1'.
-	self
-		openDebuggerOn: 'RowanSample1 new testMethod';
-		assert: (view := debugger documentPresenter view) notNil;
-		assert: view selection equals: 'testMethod';
-		assert: (view selectionRange: (14 to: 99)) selection first equals: $^;
-		assert: (view replaceSelection: '^' , number printString) notNil;
-		assert: debugger saveMethod notNil;
-		assert: view selection equals: 'testMethod';
-		debuggerDo: [debugger resumeProcess];
-		assert: (session executeString: 'RowanSample1 new testMethod') equals: number]
-			ensure: [self destroy: projectsBrowser]!
-
-testSaveMethodDuringTestRun
-	| commandQuery |
-	self testsIssue: #issue512
-		withTitle: '"run selected" can get disabled after save in debugger (3.0.76)'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
-	
-	[self selectRowanSample1Test.
-	self selectMethodNamed: #test1.
-	commandQuery := self
-				queryCommand: #runSelected
-				inPresenter: self projectsPresenter
-				view: self methodListPresenter view.
-	self assert: commandQuery isEnabled.
-	commandQuery := self
-				queryCommand: #debug
-				inPresenter: self projectsPresenter
-				view: self methodListPresenter view.
-	self assert: commandQuery isEnabled.
-	session executeString: '(RowanSample1Test compiledMethodAt: #test1) setBreakAtStepPoint: 1'.
-	self
-		debuggerDo: [process := [self projectsPresenter runMethodTests] forkAt: Processor activePriority + 1];
-		getDebugger.
-	self debuggerDo: 
-			[debugger methodSourcePresenter documentPresenter
-				value: 'test1
-	"add comment. no-op change"
-	self assert: RowanSample1 new foo = ''foo''   '].
-	self debuggerDo: [debugger saveMethod].
-	self debuggerDo: [debugger resumeProcess].
-	commandQuery := self
-				queryCommand: #runSelected
-				inPresenter: self projectsPresenter
-				view: self methodListPresenter view.
-	self assert: commandQuery isEnabled.
-	commandQuery := self
-				queryCommand: #debug
-				inPresenter: self projectsPresenter
-				view: self methodListPresenter view.
-	self assert: commandQuery isEnabled]
-			ensure: [projectsBrowser view close]!
-
-testStackMenuEnablement
-	| frameContextMenu |
-	self testsIssue: #issue103 withTitle: 'debugger, ''Executed Code'' stack frame, pop up menu items'.
-	self openDebuggerOn: 'nil halt'.
-	self assert: debugger _processList size equals: 1.
-	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
-	frameContextMenu := debugger frameListPresenter view contextMenu.
-	frameContextMenu itemsDo: [:item | self deny: (self menuItemIsEnabled: item)].
-	debugger frameListPresenter selection: (debugger frameListPresenter list at: 2).
-	frameContextMenu itemsDo: [:item | self assert: (self menuItemIsEnabled: item)].
-!
-
-testUnsavedChangesActionChangeFrame
-
-	self testsIssue: #issue176 withTitle: 'unsaved debugger frame method not handled well'.
-	TestMessageBox enableJadeiteTestMessageBox.
-	
-	[self openDebuggerOn: 'nil halt'.
-	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
-	self assert: debugger frameListPresenter selectionByIndex equals: 4. 
-	debugger methodSourcePresenter documentPresenter value: 'new text'.
-	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #no. "ignore changes"
-	self debuggerDo: [[debugger stepOver] forkAt: Processor activePriority + 1].
-	(Delay forMilliseconds: 50) wait. 
-	self assert: debugger frameListPresenter selectionByIndex equals: 1. ]
-			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
-
-testUnsavedChangesActionChangeToHomeFrame
-
-	self testsIssue: #issue176 withTitle: 'unsaved debugger frame method not handled well'.
-	TestMessageBox enableJadeiteTestMessageBox.
-	
-	[| originalSource |
-	originalSource := '(Array with: 1) do:[:obj | self halt. obj size]'.
-	self openDebuggerOn: originalSource.
-	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @2 line 1'.
-	debugger methodSourcePresenter documentPresenter value: 'new text'.
-	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #no.	
-	debugger frameListPresenter selectionByIndex: 6. "Executed Code home frame"
-	self assert: debugger methodSourcePresenter documentPresenter value equals: originalSource]
-			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
-
-testUnsavedChangesActionStepping
-
-	| originalSource |
-	self testsIssue: #issue176 withTitle: 'unsaved debugger frame method not handled well'.
-	TestMessageBox enableJadeiteTestMessageBox.
-	originalSource := 'nil halt. Array new. Array new. Array new.'.
-	
-	[self openDebuggerOn: originalSource.
-	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
-	debugger methodSourcePresenter documentPresenter value: 'step over'.
-	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #no.	"don't save changes"
-	self debuggerDo: [debugger stepOver].
-	self assert: debugger methodSourcePresenter documentPresenter value equals: originalSource.
-	debugger methodSourcePresenter documentPresenter value: 'step into'.
-	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #yes.	"keep changes" 
-	self debuggerDo: [[debugger stepInto] fork].
-	self assert: debugger methodSourcePresenter documentPresenter value equals:  'step into']
-			ensure: [TestMessageBox disableJadeiteTestMessageBox]! !
+! !
 !JadeiteDebuggerTestCase categoriesFor: #closeDebuggers!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #createTestMethodWithBreakpoints!private!support!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #debuggerDo:!private!support! !
@@ -1798,6 +1801,7 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_duplicateInstVars!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_duplicateInstVarsHierarchy!public!test class hierarchy! !
 !JadeiteDebuggerTestCase categoriesFor: #test_duplicateInstVarsInHierarchy!public!test class hierarchy! !
+!JadeiteDebuggerTestCase categoriesFor: #test_errorInPrintString!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_frameDoubleClick!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_frameDoubleClickNoActionInBlockContext!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_implementersFromDebugger!public!tests! !
@@ -1809,12 +1813,15 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_reloadWithDebuggerOpen!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_restartInBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_runningTestDoesNotLoseStepPoint!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_saveMethod!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_saveMethodDuringTestRun!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_selectAfterDiveNoStepPoint!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_selectBlockContext!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_sendersFromDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_stackDumpDetailedFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_stackDumpHeader!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_stackDumpTooLongString!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_stackMenuEnablement!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_stepOutMethod!public!test step out! !
 !JadeiteDebuggerTestCase categoriesFor: #test_stepOutSelectedFrame1!public!test step out! !
 !JadeiteDebuggerTestCase categoriesFor: #test_stepOutSelectedFrame2!public!test step out! !
@@ -1822,6 +1829,9 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test_switchProcesses!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_terminateDoesNotWalkback!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_unicodeMethod!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_unsavedChangesActionChangeFrame!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_unsavedChangesActionChangeToHomeFrame!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_unsavedChangesActionStepping!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test1!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test2!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test3!public!tests! !
@@ -1831,11 +1841,4 @@ testUnsavedChangesActionStepping
 !JadeiteDebuggerTestCase categoriesFor: #test7!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test8!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testBug77!public! !
-!JadeiteDebuggerTestCase categoriesFor: #testErrorInPrintString!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #testSaveMethod!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #testSaveMethodDuringTestRun!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #testStackMenuEnablement!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #testUnsavedChangesActionChangeFrame!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #testUnsavedChangesActionChangeToHomeFrame!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #testUnsavedChangesActionStepping!public!tests! !
 

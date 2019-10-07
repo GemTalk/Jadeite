@@ -46,7 +46,8 @@ basicIssueCommand: services session: session
 	stonString := STON toString: loggedServices.
 	[stonResultString := session serverPerform: #updateFromSton: with: stonString]
 		ensure: [services do: [:service | service clearCommand]].
-	updateResult := self update: services afterStonReplication: stonResultString.
+	stonResultString = 'nil' ifFalse: [
+		updateResult := self update: services afterStonReplication: stonResultString].
 	session releaseAllOops.
 	^updateResult!
 
@@ -74,11 +75,11 @@ initializeUpdates
 	updates := OrderedCollection new.
 	!
 
-inUpdate
-	^inUpdate!
-
-inUpdate: anObject
-	^inUpdate := anObject!
+inUpdateWhile: block
+	| result |
+	BrowserUpdate current logComment: 'About to execute inUpdate block - ' , block printString.
+	result := inUpdate critical: [Cursor wait showWhile: block].
+	^result!
 
 isApplyingUpdates
 	"we've come back from the server and
@@ -96,13 +97,11 @@ isLogging: boolean
 	boolean ifTrue: [self startLogging] ifFalse: [self stopLogging]!
 
 issueCommand: services session: session
-	BrowserUpdate current logComment: 'About to get inUpdate semaphore for command'.
-	inUpdate critical: 
-			[Cursor wait showWhile: 
-					[| commandResult |
-					commandResult := self basicIssueCommand: services session: session.
-					BrowserUpdate current logComment: 'Released inUpdate semaphore'.
-					^commandResult]]!
+	self inUpdateWhile: 
+			[| commandResult |
+			commandResult := self basicIssueCommand: services session: session.
+			BrowserUpdate current logComment: 'Released inUpdate semaphore'.
+			^commandResult]!
 
 logComment: string
 	logger logComment: string!
@@ -254,14 +253,12 @@ updateService: service session: session
 	^self updateServices: (Array with: service) session: session!
 
 updateServices: services session: session
+	| commandResult |
 	services isEmpty ifTrue: [^self].
-	BrowserUpdate current logComment: 'About to get inUpdate semaphore for update'.
-	inUpdate critical: 
-			[Cursor wait showWhile: 
-					[| commandResult |
-					commandResult := self basicUpdateServices: services session: session.
-					BrowserUpdate current logComment: 'Released inUpdate semaphore'.
-					^commandResult]]!
+	self inUpdateWhile: 
+			[commandResult := self basicUpdateServices: services session: session.
+			BrowserUpdate current logComment: 'Released inUpdate semaphore'.
+			^commandResult]!
 
 updatesPerform: selector presenter: presenter
 	"the update may know which client updates 
@@ -298,8 +295,7 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #debug:!accessing!private! !
 !BrowserUpdate categoriesFor: #initialize!initialization!public! !
 !BrowserUpdate categoriesFor: #initializeUpdates!initialization!public! !
-!BrowserUpdate categoriesFor: #inUpdate!accessing!private! !
-!BrowserUpdate categoriesFor: #inUpdate:!accessing!private! !
+!BrowserUpdate categoriesFor: #inUpdateWhile:!commands!public! !
 !BrowserUpdate categoriesFor: #isApplyingUpdates!public!testing! !
 !BrowserUpdate categoriesFor: #isLogging!logging!public!testing! !
 !BrowserUpdate categoriesFor: #isLogging:!logging!public!testing! !
