@@ -325,12 +325,18 @@ test_adHocExecutionEvaluatesTemp
 			ensure: [self removeMethodNamed: #testAdHocExecutionWith:]!
 
 test_adHocExecutionSelf
+	| finished |
 	self openDebuggerOn: '''gloop'' halt'.
 	debugger frameListPresenter selectionByIndex: 3.
 	debugger methodSourcePresenter documentPresenter value: 'self'.
 	debugger methodSourcePresenter documentPresenter view setFocus.
-	self debuggerDo: [debugger jadeDisplay].
-	self assert: debugger methodSourcePresenter documentPresenter value equals: 'self ''gloop'''.
+	finished := false.
+	self
+		debuggerDo: [
+			[debugger jadeDisplay.
+			finished := true] forkAt: Processor activePriority + 1].
+	[finished] whileFalse: 
+			[self assert: debugger methodSourcePresenter documentPresenter value equals: 'self ''gloop'''].
 	debugger methodSourcePresenter documentPresenter view isModified: false!
 
 test_adHocExecutionUpdatesVariablesList
@@ -397,10 +403,10 @@ test_breakpointHighlightingInBlocks
 	self assert: sourcePresenter selection equals: 'add:'.
 	self assert: (sourcePresenter view styleIdAt: 244) equals: 0.	"no breakpoint indicator + blue text"
 	(245 to: 248)
-		do: [:idx | self assert: (sourcePresenter view styleIdAt: idx) equals: 21	"breakpoint indicator + blue text"].
+		do: [:idx | self assert: (sourcePresenter view styleIdAt: idx) equals: 15	"breakpoint indicator + blue text"].
 	self assert: (sourcePresenter view styleIdAt: 249) equals: 0.
 	self assert: (sourcePresenter view styleIdAt: 295) equals: 0.
-	(296 to: 299) do: [:idx | self assert: (sourcePresenter view styleIdAt: idx) equals: 21].
+	(296 to: 299) do: [:idx | self assert: (sourcePresenter view styleIdAt: idx) equals: 15].
 	self assert: (sourcePresenter view styleIdAt: 300) equals: 0.
 	self assert: (sourcePresenter view styleIdAt: 330) equals: 0.
 	(331 to: 332) do: [:idx | self assert: (sourcePresenter view styleIdAt: idx) equals: 9].	"breakpoint indicator + black text"
@@ -1291,7 +1297,6 @@ test_stackMenuEnablement
 	| frameContextMenu |
 	self testsIssue: #issue103 withTitle: 'debugger, ''Executed Code'' stack frame, pop up menu items'.
 	self openDebuggerOn: 'nil halt'.
-	self assert: debugger _processList size equals: 1.
 	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
 	frameContextMenu := debugger frameListPresenter view contextMenu.
 	frameContextMenu itemsDo: [:item | self deny: (self menuItemIsEnabled: item)].
