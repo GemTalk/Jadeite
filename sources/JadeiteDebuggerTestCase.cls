@@ -249,6 +249,15 @@ Processor allProcesses includes: gsProcess'.
 	self assert: false.
 !
 
+test_additionalAccelerators
+	"No way yet to adequately test accelerators function
+	but we can assert that we tell Dolphin to set them up"
+
+	self openDebuggerOn: 'self halt'.
+	self assert: debugger additionalAccelerators first first equals: #reformatSource.
+	self assert: debugger additionalAccelerators first last equals: 'Ctrl+Shift+O'.
+	self assert: debugger additionalAccelerators size equals: 1	"should fail if we add a new one"!
+
 test_adHocDebug
 	| workspace |
 	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
@@ -1776,6 +1785,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #systemBrowser!private! !
 !JadeiteDebuggerTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteDebuggerTestCase categoriesFor: #terminateGsProcess!private!running! !
+!JadeiteDebuggerTestCase categoriesFor: #test_additionalAccelerators!public!test menus! !
 !JadeiteDebuggerTestCase categoriesFor: #test_adHocDebug!public!test ad hoc execution! !
 !JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionEvaluatesArgs!public!test ad hoc execution! !
 !JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionEvaluatesTemp!public!test ad hoc execution! !

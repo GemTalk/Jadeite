@@ -34,6 +34,9 @@ aboutToChangeFrame: aSelectionChangingEvent
 	aSelectionChangingEvent
 		value: (codePane documentPresenter view isModified ifTrue: [self isOkayToChangeFrame] ifFalse: [true])!
 
+additionalAccelerators
+	^#(#(#reformatSource 'Ctrl+Shift+O'))!
+
 basicSelectedFrame
 	| index |
 	(index := frameListPresenter selectionByIndex) = 0 ifTrue: [^nil].
@@ -286,7 +289,7 @@ queryCommand: query
 !
 
 reformatSource
-	| methodService statusBarView |
+	| methodService |
 	methodService := self methodListSelection.
 	methodService
 		source: documentPresenter value;
@@ -471,6 +474,7 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #_processList!public! !
 !JadeiteDebugger categoriesFor: #_terminateProcess:!public! !
 !JadeiteDebugger categoriesFor: #aboutToChangeFrame:!event handlers!public! !
+!JadeiteDebugger categoriesFor: #additionalAccelerators!accessing!public! !
 !JadeiteDebugger categoriesFor: #basicSelectedFrame!public! !
 !JadeiteDebugger categoriesFor: #browseFrameMethod!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #browseImplementors!menu handlers!private! !
@@ -501,7 +505,7 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #onViewOpened!event handlers!private! !
 !JadeiteDebugger categoriesFor: #processListPresenter!accessing!public! !
 !JadeiteDebugger categoriesFor: #queryCommand:!menu handlers!public! !
-!JadeiteDebugger categoriesFor: #reformatSource!menu handlers!public! !
+!JadeiteDebugger categoriesFor: #reformatSource!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteDebugger categoriesFor: #restart!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #resumeProcess!menu handlers!private! !
