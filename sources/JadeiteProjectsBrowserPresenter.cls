@@ -1449,7 +1449,7 @@ queryCommand: aCommandQuery
 				ifTrue: 
 					[aCommandQuery isEnabled: false.
 					^true]].
-	(#(#browseClassReferences #fileOutClass #addSubclass #addMissingAccessors #renameClass #removeClass #removePriorVersions)
+	(#(#browseClassReferences #fileOutClass #addSubclass #addMissingAccessors #renameClass #removeClass #removePriorVersions #copyClass)
 		includes: command)
 			ifTrue: 
 				[aCommandQuery isEnabled: self selectedClasses size == 1.

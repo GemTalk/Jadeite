@@ -2024,6 +2024,21 @@ test_confirmOverrideExistingAccessorMethods
 	abc := object']
 			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
+test_copyClassEnablement
+	| commandQuery |
+	self selectRowanSample1Test.
+	commandQuery := self
+				queryCommand: #copyClass
+				inPresenter: self projectsPresenter
+				view: self classListPresenter view.
+	self assert: commandQuery isEnabled.
+	self deselectProjects.
+	commandQuery := self
+				queryCommand: #copyClass
+				inPresenter: self projectsPresenter
+				view: self classListPresenter view.
+	self deny: commandQuery isEnabled!
+
 test_definedClassMenuItem
 	| classMenuItem menuLabel |
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
@@ -5802,6 +5817,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_compileErrorDisplay!public!test compiing!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_confirmationDialogDuringCompileClassExistingInAnotherPackage!public!test compiing!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_confirmOverrideExistingAccessorMethods!public!test variable tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_copyClassEnablement!public!test menus!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_displayCompileWarningsNicely!public!test class list! !
