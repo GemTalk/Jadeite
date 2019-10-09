@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 JadeDebugger subclass: #JadeiteDebugger
-	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore search'
+	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore search debuggerService'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggerClass semaphore'!
@@ -95,6 +95,10 @@ createSchematicWiring
 			send: #onCharAdded:
 			to: self search!
 
+debuggerService
+	"for test usage" 
+	^debuggerService!
+
 displayUncompilableSourceIn: sourcePresenter
 	sourcePresenter value size < 34 ifTrue: [^self].
 	((sourcePresenter value copyFrom: 2 to: 34) equals: 'METHOD SOURCE CANNOT BE DISPLAYED')
@@ -145,7 +149,6 @@ gciSession: aGciSession
 getProcessList
 	"#getProcessList copied from RowanProjectsBrowserPresenter>>updatePresenters"
 
-	| debuggerService |
 	BrowserUpdate current logComment: 'Update debugger service'.
 	debuggerService := RowanDebuggerService onProcess: gsProcess.
 	self updateServices: (Array with: debuggerService).
@@ -232,15 +235,14 @@ onIdleEntered
 
 onViewClosed
 	"Private - copied from RowanSystemBrowserPresenter>>onViewClosed"
-
 	BrowserUpdate current logComment: 'Closing Debugger {' , self identityHash printString , '}'.
 	processList := processListPresenter list
 				collect: [:each | GsProcess session: gciSession oopType: each oopType].
-	super onViewClosed.
 	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter].
 	"Allow test to know when view is closed"
 	self class signalSemaphore.
-	self terminateIdleProcess!
+	self terminateIdleProcess.
+	super onViewClosed.!
 
 onViewDestroyed
 	"Private - copied from RowanSystemBrowserPresenter>>onViewClosed"
@@ -483,6 +485,7 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #codeSourcePresenterClass!private! !
 !JadeiteDebugger categoriesFor: #createComponents!public! !
 !JadeiteDebugger categoriesFor: #createSchematicWiring!public! !
+!JadeiteDebugger categoriesFor: #debuggerService!accessing!private! !
 !JadeiteDebugger categoriesFor: #displayUncompilableSourceIn:!private! !
 !JadeiteDebugger categoriesFor: #documentPresenter!accessing!public! !
 !JadeiteDebugger categoriesFor: #errorMessagePresenter!accessing!public! !

@@ -75,6 +75,11 @@ initializeUpdates
 	updates := OrderedCollection new.
 	!
 
+inUpdate
+	"Private -  for testing"
+
+	^inUpdate!
+
 inUpdateWhile: block
 	| result |
 	BrowserUpdate current logComment: 'About to execute inUpdate block - ' , block printString.
@@ -295,6 +300,7 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #debug:!accessing!private! !
 !BrowserUpdate categoriesFor: #initialize!initialization!public! !
 !BrowserUpdate categoriesFor: #initializeUpdates!initialization!public! !
+!BrowserUpdate categoriesFor: #inUpdate!private! !
 !BrowserUpdate categoriesFor: #inUpdateWhile:!commands!public! !
 !BrowserUpdate categoriesFor: #isApplyingUpdates!public!testing! !
 !BrowserUpdate categoriesFor: #isLogging!logging!public!testing! !

@@ -12,6 +12,14 @@ It''s recommended to run this set of tests with a fresh login to avoid counting 
 !JadeiteDebuggerTestCase categoriesForClass!SUnit! !
 !JadeiteDebuggerTestCase methodsFor!
 
+cleanupProcesses
+	debugger
+		ifNotNil: 
+			[debugger debuggerService processes do: 
+					[:processService |
+					session executeString: '[(Object _objectForOop: ' , processService oop printString
+								, ') terminate] on: Error do:[:ex | "ignore"]']]!
+
 closeDebuggers
 	| list semaphore |
 	list := JadeiteMethodListBrowser allInstances , RowanSystemBrowser allInstances
@@ -215,6 +223,7 @@ systemBrowser
 !
 
 tearDown
+	self cleanupProcesses. 
 	projectsBrowser
 		ifNotNil: 
 			[projectsBrowser view close.
@@ -234,20 +243,18 @@ tearDown
 	super tearDown!
 
 terminateGsProcess
-
 	| string |
 	gsProcess ifNil: [^self].
 	string := '
 | gsProcess |
-gsProcess := Object _objectForOop: ' ,gsProcess printString , '.
+gsProcess := Object _objectForOop: ' , gsProcess printString
+				, '.
 gsProcess ifNotNil: [gsProcess terminate. (Delay forMilliseconds: 10) wait].
 Processor allProcesses includes: gsProcess'.
 	gsProcess := nil.
-	5 timesRepeat: [
-		(debugger gciSession executeString: string) ifFalse: [^self].
-	].
-	self assert: false.
-!
+	5 timesRepeat: 
+			[(debugger gciSession executeString: string) == false ifTrue: [^self]	"might not be a boolean. process could be terminated"].
+	self assert: false!
 
 test_additionalAccelerators
 	"No way yet to adequately test accelerators function
@@ -403,13 +410,13 @@ test_breakpointHighlightingInBlocks
 	self assert: sourcePresenter selection equals: 'add:'.
 	self assert: (sourcePresenter view styleIdAt: 244) equals: 0.	"no breakpoint indicator + blue text"
 	(245 to: 248)
-		do: [:idx | self assert: (sourcePresenter view styleIdAt: idx) equals: 15	"breakpoint indicator + blue text"].
+		do: [:idx | self deny: (sourcePresenter view styleIdAt: idx) equals: 0	"breakpoint indicator + blue text"].
 	self assert: (sourcePresenter view styleIdAt: 249) equals: 0.
 	self assert: (sourcePresenter view styleIdAt: 295) equals: 0.
-	(296 to: 299) do: [:idx | self assert: (sourcePresenter view styleIdAt: idx) equals: 15].
+	(296 to: 299) do: [:idx | self deny: (sourcePresenter view styleIdAt: idx) equals: 0].
 	self assert: (sourcePresenter view styleIdAt: 300) equals: 0.
 	self assert: (sourcePresenter view styleIdAt: 330) equals: 0.
-	(331 to: 332) do: [:idx | self assert: (sourcePresenter view styleIdAt: idx) equals: 9].	"breakpoint indicator + black text"
+	(331 to: 332) do: [:idx | self deny: (sourcePresenter view styleIdAt: idx) equals: 0].	"breakpoint indicator + black text"
 	self assert: (sourcePresenter view styleIdAt: 333) equals: 0.
 	self projectsPresenter clearMethodBreakpoints]
 			ensure: [projectsBrowser view close]!
@@ -485,7 +492,8 @@ test_bug74
 	self
 		openDebuggerOn: 'SystemRepository pageSize';
 		assert: debugger documentPresenter view selection equals: 'zeroArgPrim:50';
-		yourself!
+		yourself.
+	self debuggerDo: [debugger resumeProcess]!
 
 test_compileError
 	self testsIssue: #issue353
@@ -887,8 +895,9 @@ test_duplicateInstVarsInHierarchy
 				self destroy: projectsBrowser]!
 
 test_errorInPrintString
-	"https://github.com/ericwinger/Jade/issues/49"
 
+	self testsIssue: #issue49
+		withTitle: 'Error during printString in debugger (inspector) makes debugger unusable'.
 	self
 		openDebuggerOn: '(ScaledDecimal _basicNew instVarAt: 1 put: 1; instVarAt: 2 put: nil; printString)';
 		assert: debugger errorMessagePresenter value
@@ -901,7 +910,7 @@ test_errorInPrintString
 		assert: debugger variableListPresenter list first value
 			equals: '(ScaledDecimal printString error: a MessageNotUnderstood occurred (error 2010), a UndefinedObject does not understand  #''_generality'')';
 		debuggerDo: [[debugger _terminateProcess] fork];
-		assert: (Delay forMilliseconds: 50) wait notNil;
+		assert: (Delay forMilliseconds: 250) wait notNil;
 		assert: (debugger isNil or: [debugger view class == DeafObject]);
 		yourself!
 
@@ -1435,10 +1444,11 @@ abc'.
 	self assert: debugger frameListPresenter selectionByIndex equals: 1.
 	self debuggerDo: [debugger stepOut].
 	self assert: debugger frameListPresenter selection equals: 'Array (Collection) >> do: @6 line 9'.	"on the top frame so should step one frame up"
-	self assert: debugger documentPresenter view selection equals: 'to:'.!
+	self assert: debugger documentPresenter view selection equals: 'to:'.
+	self debuggerDo: [debugger resumeProcess]!
 
 test_switchProcesses
-	| activeProcesses |
+	| activeProcesses longRunningProcess |
 	activeProcesses := session executeString: 'ProcessorScheduler scheduler allProcesses size'.
 	gsProcess := session executeString: '[(Delay forSeconds: 9999) wait] fork asOop.'.
 	session executeString: '(Delay forSeconds: 1) wait'.	"let forked process start"
@@ -1446,34 +1456,37 @@ test_switchProcesses
 		openDebuggerOn: 'nil halt';
 		assert: debugger _processList size equals: activeProcesses + 1;
 		assert: debugger processListPresenter list size equals: activeProcesses + 1.
-	self debuggerDo: [debugger processListPresenter selectionByIndex: activeProcesses + 1].
+	longRunningProcess := debugger processListPresenter list
+				detect: [:processService | processService oop = gsProcess].
+	self debuggerDo: [debugger processListPresenter selection: longRunningProcess].
 	self debuggerDo: [self selectFrameAt: 6].
 	self
 		assert: debugger methodSourcePresenter documentPresenter value
 			equals: '[(Delay forSeconds: 9999) wait] fork asOop.';
-		assert: (debugger _processList at: activeProcesses + 1) oopType value equals: gsProcess!
+		assert: longRunningProcess oop equals: gsProcess!
 
 test_terminateDoesNotWalkback
 	"Terminate a process other than the primary one"
 
-	| terminateProcess |
+	| terminateProcess allProcesses |
 	self testsIssue: #issue82 withTitle: 'Pressing Terminate button gives walkback'.
+	allProcesses := session executeString: 'ProcessorScheduler scheduler allProcesses size'.
 	TestMessageBox enableJadeiteTestMessageBox.
 	
 	[gsProcess := session executeString: '[(Delay forSeconds: 9999) wait] fork asOop'.
 	self
 		openDebuggerOn: 'nil halt';
-		assert: debugger _processList size equals: 2;
-		assert: debugger processListPresenter list size equals: 2;
-		assert: (debugger processListPresenter selectionByIndex: 2) notNil;
-		assert: (debugger _processList at: 2) oopType value equals: gsProcess.
+		assert: debugger _processList size equals: allProcesses + 1;
+		assert: debugger processListPresenter list size equals: allProcesses + 1;
+		assert: (debugger processListPresenter selectionByIndex: allProcesses + 1) notNil.
 	TestMessageBox plannedResult: #yes.	"confirm we want to terminate process"
 	terminateProcess := 
 			[self assert: debugger terminateProcess notNil.
 			self
-				assert: debugger _processList size = 1 description: '_processList size was not 1';
-				assert: debugger processListPresenter list size = 1
-					description: 'processListPresenter list size was not 1']
+				assert: debugger _processList size = allProcesses
+					description: '_processList size was not ' , allProcesses size printString;
+				assert: debugger processListPresenter list size = allProcesses
+					description: 'processListPresenter list size was not ' , allProcesses size printString]
 					fork.
 	self debuggerDo: [debugger resumeProcess]]
 			ensure: 
@@ -1496,6 +1509,7 @@ test_unicodeMethod
 	self assert: debugger methodSourcePresenter documentPresenter view backcolor equals: JadeTextStyles default colorForUndisplayableSource .!
 
 test_unsavedChangesActionChangeFrame
+	| finished |
 	self testsIssue: #issue176 withTitle: 'unsaved debugger frame method not handled well'.
 	TestMessageBox enableJadeiteTestMessageBox.
 	
@@ -1505,8 +1519,12 @@ test_unsavedChangesActionChangeFrame
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
 	TestMessageBox plannedResult: #no.	"ignore changes"
-	self debuggerDo: [[debugger stepOver] forkAt: Processor activePriority + 1].
-	(Delay forMilliseconds: 50) wait.
+	finished := false.
+	self
+		debuggerDo: [
+			[debugger stepOver.
+			finished := true] forkAt: Processor activePriority + 1].
+	[finished] whileFalse: [(Delay forMilliseconds: 50) wait].
 	self assert: debugger frameListPresenter selectionByIndex equals: 1]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
@@ -1770,6 +1788,7 @@ x halt.
 		halt;"
 		yourself.
 ! !
+!JadeiteDebuggerTestCase categoriesFor: #cleanupProcesses!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #closeDebuggers!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #createTestMethodWithBreakpoints!private!support!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #debuggerDo:!private!support! !

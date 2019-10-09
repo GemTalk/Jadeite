@@ -804,7 +804,7 @@ JadeLoginShell subclass: #JadeiteLoginShell
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeDebugger subclass: #JadeiteDebugger
-	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore search'
+	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore search debuggerService'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggerClass semaphore'!

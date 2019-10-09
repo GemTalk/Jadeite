@@ -12,6 +12,12 @@ JadeiteSemaphore comment: ''!
 
 critical: aBlock
 	lockingProcess := Processor activeProcess.
-	[aBlock value] ensure: [lockingProcess := nil]! !
+	[aBlock value] ensure: [lockingProcess := nil]!
+
+lockingProcess
+	"Private - for testing"
+
+	^lockingProcess! !
 !JadeiteSemaphore categoriesFor: #critical:!process synchronisation!public! !
+!JadeiteSemaphore categoriesFor: #lockingProcess!accessing!private! !
 
