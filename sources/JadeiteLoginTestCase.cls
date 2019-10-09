@@ -87,6 +87,26 @@ test_gemTask
 				tearDown;
 				setUp	"reset the tes resource's session, etc"]!
 
+test_loginButtonEnablement
+	| jadeiteShell query |
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.	"don't commit"
+	[GciSession current ifNotNil: [:sess | sess logout]]
+		ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	JadeiteLoginShell allInstances do: 
+			[:inst |
+			query := CommandQuery commandDescription: (CommandDescription command: #login)
+						source: inst loginButtonPresenter view.
+			inst queryCommand: query.
+			self assert: query isEnabled.	"any login shell should have a disabled login button"
+			inst view close].
+	jadeiteShell := JadeiteLoginShell show position: 80 @ 20.
+	jadeiteShell login.
+	query := CommandQuery commandDescription: (CommandDescription command: #login)
+				source: jadeiteShell view.
+	jadeiteShell view queryCommand: query.
+	self deny: query isEnabled!
+
 test_simpleLogin
 	self denyIsNil: session.
 	self assert: session isKindOf: GciSession. 
@@ -103,6 +123,7 @@ testsIssue: aSymbol withTitle: anObject! !
 !JadeiteLoginTestCase categoriesFor: #setUp!public!setup teardown! !
 !JadeiteLoginTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteLoginTestCase categoriesFor: #test_gemTask!public!tests! !
+!JadeiteLoginTestCase categoriesFor: #test_loginButtonEnablement!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #test_simpleLogin!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #testsIssue:withTitle:!private! !
 

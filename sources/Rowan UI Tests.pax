@@ -39,6 +39,7 @@ package methodNames
 	add: #JadeInspector -> #documentPresenter;
 	add: #JadeiteProjectsBrowserPresenter -> #definedClassPackageText;
 	add: #JadeiteProjectsBrowserPresenter -> #definedMethodPackageText;
+	add: #JadeLoginShell -> #loginButtonPresenter;
 	add: #JadeLoginShell -> #loginWithoutErrorHandling;
 	add: #JadeLoginShell -> #userIDPresenter:;
 	add: #JadePresenter -> #browseClassReferences;
@@ -259,6 +260,10 @@ definedMethodPackageText
 
 !JadeLoginShell methodsFor!
 
+loginButtonPresenter
+	"for testing" 
+	^loginButtonPresenter!
+
 loginWithoutErrorHandling
 	"for testing"
 
@@ -271,6 +276,7 @@ userIDPresenter: string
 	"for testing"
 
 	userIDPresenter := string! !
+!JadeLoginShell categoriesFor: #loginButtonPresenter!accessing!private! !
 !JadeLoginShell categoriesFor: #loginWithoutErrorHandling!public! !
 !JadeLoginShell categoriesFor: #userIDPresenter:!accessing!private! !
 

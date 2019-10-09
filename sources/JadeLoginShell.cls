@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 DocumentShell subclass: #JadeLoginShell
-	instanceVariableNames: 'debugPathPresenter gemHostPresenter gemServicePresenter gemTaskPresenter gemTypePresenter hostPasswordPresenter hostUserIDPresenter initialsPresenter isModified loginTypePresenter passwordPresenter stoneHostPresenter stoneNamePresenter userIDPresenter useSocketPresenter versionListPresenter'
+	instanceVariableNames: 'debugPathPresenter gemHostPresenter gemServicePresenter gemTaskPresenter gemTypePresenter hostPasswordPresenter hostUserIDPresenter initialsPresenter isModified loginTypePresenter passwordPresenter stoneHostPresenter stoneNamePresenter userIDPresenter useSocketPresenter versionListPresenter loginButtonPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -27,24 +27,23 @@ Please consider downloading the latest product package!!'
 !
 
 createComponents
-
 	super createComponents.
-	versionListPresenter		:= self add: ListPresenter			new name: 'versionList'.
-	stoneHostPresenter 		:= self add: TextPresenter 		new name: 'stoneHost'.
-	stoneNamePresenter 		:= self add: TextPresenter 		new name: 'stoneName'.
-	gemTypePresenter 		:= self add: RadioButtonSetPresenter 	new name: 'gemType'.
-	gemHostPresenter 		:= self add: TextPresenter 		new name: 'gemHost'.
-	gemServicePresenter 	:= self add: TextPresenter 		new name: 'gemService'.
-	gemTaskPresenter 		:= self add: TextPresenter 		new name: 'gemTask'.
-	userIDPresenter 		:= self add: TextPresenter 		new name: 'userID'.
-	passwordPresenter 		:= self add: TextPresenter 		new name: 'password'.
-	loginTypePresenter 		:= self add: RadioButtonSetPresenter 	new name: 'loginType'.
-	hostUserIDPresenter		:= self add: TextPresenter			new name: 'hostUserID'.
-	hostPasswordPresenter	:= self add: TextPresenter			new name: 'hostPassword'.
-	initialsPresenter		:= self add: TextPresenter			new name: 'initials'.
-	useSocketPresenter		:= self add: BooleanPresenter		new name: 'useSocket'.
-	debugPathPresenter		:= self add: TextPresenter			new name: 'debugPath'.
-!
+	versionListPresenter := self add: ListPresenter new name: 'versionList'.
+	stoneHostPresenter := self add: TextPresenter new name: 'stoneHost'.
+	stoneNamePresenter := self add: TextPresenter new name: 'stoneName'.
+	gemTypePresenter := self add: RadioButtonSetPresenter new name: 'gemType'.
+	gemHostPresenter := self add: TextPresenter new name: 'gemHost'.
+	gemServicePresenter := self add: TextPresenter new name: 'gemService'.
+	gemTaskPresenter := self add: TextPresenter new name: 'gemTask'.
+	userIDPresenter := self add: TextPresenter new name: 'userID'.
+	passwordPresenter := self add: TextPresenter new name: 'password'.
+	loginTypePresenter := self add: RadioButtonSetPresenter new name: 'loginType'.
+	hostUserIDPresenter := self add: TextPresenter new name: 'hostUserID'.
+	hostPasswordPresenter := self add: TextPresenter new name: 'hostPassword'.
+	initialsPresenter := self add: TextPresenter new name: 'initials'.
+	useSocketPresenter := self add: BooleanPresenter new name: 'useSocket'.
+	debugPathPresenter := self add: TextPresenter new name: 'debugPath'.
+	loginButtonPresenter := self add: Presenter new name: 'loginButton'!
 
 createSchematicWiring
 
@@ -272,33 +271,35 @@ postLogin: aGciSession
 	self setWorkingDirectory!
 
 queryCommand: query
-
-	(#(#editCopy #editCut #editDelete ) includes: query commandSymbol) ifTrue: [
-		query isEnabled: (View focus isKindOf: TextEdit).
-		^true.
-	].
-	(#(#editSelectAll) includes: query commandSymbol) ifTrue: [
-		query isEnabled: ((View focus isKindOf: TextEdit) and: [View focus value notEmpty]).
-		^true.
-	].
-	(#(#editPaste) includes: query commandSymbol) ifTrue: [
-		query isEnabled: ((View focus isKindOf: TextEdit) and: [View focus canPaste]).
-		^true.
-	].
-	(#(#editUndo) includes: query commandSymbol) ifTrue: [
-		query isEnabled: ((View focus isKindOf: TextEdit) and: [View focus canUndo]).
-		^true.
-	].
-	(#(#editRedo) includes: query commandSymbol) ifTrue: [
-		query isEnabled: ((View focus isKindOf: TextEdit) and: [View focus canRedo]).
-		^true.
-	].
-	(#(#fileSave) includes: query commandSymbol) ifTrue: [
-		query isEnabled: self isModified.
-		^true.
-	].
-	^super queryCommand: query.
-!
+	query commandSymbol = #login
+		ifTrue: 
+			[query isEnabled: self shouldEnableLoginButton.
+			^true].
+	(#(#editCopy #editCut #editDelete) includes: query commandSymbol)
+		ifTrue: 
+			[query isEnabled: (View focus isKindOf: TextEdit).
+			^true].
+	(#(#editSelectAll) includes: query commandSymbol)
+		ifTrue: 
+			[query isEnabled: ((View focus isKindOf: TextEdit) and: [View focus value notEmpty]).
+			^true].
+	(#(#editPaste) includes: query commandSymbol)
+		ifTrue: 
+			[query isEnabled: ((View focus isKindOf: TextEdit) and: [View focus canPaste]).
+			^true].
+	(#(#editUndo) includes: query commandSymbol)
+		ifTrue: 
+			[query isEnabled: ((View focus isKindOf: TextEdit) and: [View focus canUndo]).
+			^true].
+	(#(#editRedo) includes: query commandSymbol)
+		ifTrue: 
+			[query isEnabled: ((View focus isKindOf: TextEdit) and: [View focus canRedo]).
+			^true].
+	(#(#fileSave) includes: query commandSymbol)
+		ifTrue: 
+			[query isEnabled: self isModified.
+			^true].
+	^super queryCommand: query!
 
 rowanReadyLibraries
 	^GciLibrary allSubclasses select: [:library | library isRowanReady]
@@ -330,6 +331,9 @@ setWorkingDirectory
 
 	File workingDirectory: SessionManager current imageBase.
 !
+
+shouldEnableLoginButton
+	^GciSession current isNil or: [GciSession current isValidSession not]!
 
 updateCaption
 	"The receiver has changed in such a way that the caption may need to be refreshed.
@@ -425,12 +429,13 @@ userIDPresenter
 !JadeLoginShell categoriesFor: #onViewOpened!public! !
 !JadeLoginShell categoriesFor: #openHomePage!public! !
 !JadeLoginShell categoriesFor: #postLogin:!public! !
-!JadeLoginShell categoriesFor: #queryCommand:!public! !
+!JadeLoginShell categoriesFor: #queryCommand:!menu handlers support!private! !
 !JadeLoginShell categoriesFor: #rowanReadyLibraries!gci!private! !
 !JadeLoginShell categoriesFor: #saveDocument!public! !
 !JadeLoginShell categoriesFor: #sendRequiredMessages!public! !
 !JadeLoginShell categoriesFor: #setDocumentData:!accessing!public! !
 !JadeLoginShell categoriesFor: #setWorkingDirectory!public! !
+!JadeLoginShell categoriesFor: #shouldEnableLoginButton!private!testing! !
 !JadeLoginShell categoriesFor: #updateCaption!public! !
 !JadeLoginShell categoriesFor: #updateModel!public! !
 !JadeLoginShell categoriesFor: #updateView!public! !
