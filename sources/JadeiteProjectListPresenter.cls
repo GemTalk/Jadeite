@@ -51,6 +51,13 @@ createComponents
 	super createComponents.
 	projectListPresenter := self add: ListPresenter new name: 'projectList'!
 
+createSchematicWiring
+	super createSchematicWiring.
+	projectListPresenter
+		when: #actionPerformed
+		send: #browseProject
+		to: self!
+
 gitCommit
 	| projectName message service promptResult |
 	projectListPresenter hasSelection ifFalse: [MessageBox notify: 'No project selected'].
@@ -72,6 +79,9 @@ gitCommit
 	self issueCommand: (Array with: service).
 	self updateServices: self projectListPresenter list.
 	MessageBox notify: 'Project ' , projectName , ' committed to local repository!!'!
+
+hasSelection
+	^projectListPresenter selections isEmpty not!
 
 list: list
 	projectListPresenter list: (SortedCollection sortBlock: [:x :y | x sortAspect < y sortAspect]).
@@ -251,7 +261,9 @@ writeProject
 !JadeiteProjectListPresenter categoriesFor: #browseProject!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #checkout!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #createComponents!public! !
+!JadeiteProjectListPresenter categoriesFor: #createSchematicWiring!initialization!public! !
 !JadeiteProjectListPresenter categoriesFor: #gitCommit!menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #hasSelection!public!testing! !
 !JadeiteProjectListPresenter categoriesFor: #list:!public! !
 !JadeiteProjectListPresenter categoriesFor: #loadProjects!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #makeDefault!menu handlers!public! !

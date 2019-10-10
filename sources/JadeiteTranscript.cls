@@ -223,9 +223,12 @@ openGitHubRowanProject
 	^JadePresenter openGitHubRowanProject!
 
 openJadeiteProjectsBrowser
-	gciSession hasServer ifTrue: [^JadeiteBrowser showOnSession: gciSession].
-	MessageBox warning: 'Cannot open Jadeite Projects browser'
-		caption: 'Cannot open Jadeite Projects browser'!
+	projectListPresenter hasSelection
+		ifTrue: [projectListPresenter browseProject]
+		ifFalse: 
+			[gciSession hasServer ifTrue: [^JadeiteBrowser showOnSession: gciSession].
+			MessageBox warning: 'Cannot open Jadeite Projects browser'
+				caption: 'Cannot open Jadeite Projects browser']!
 
 preferencesFile
 
