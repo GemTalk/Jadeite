@@ -18,6 +18,7 @@ package classNames
 	add: #JadeiteMessageBoxTestCase;
 	add: #JadeiteMethodListBrowserTestCase;
 	add: #JadeiteMiscellaneousTestCase;
+	add: #JadeitePreferencesTestCase;
 	add: #JadeiteProjectBrowserAbstractTestCase;
 	add: #JadeiteProjectBrowserDictionaryTestCase;
 	add: #JadeiteProjectBrowserTestCase;
@@ -166,6 +167,11 @@ JadeiteAbstractTestCase subclass: #JadeiteMethodListBrowserTestCase
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteAbstractTestCase subclass: #JadeiteMiscellaneousTestCase
+	instanceVariableNames: 'workspace'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteAbstractTestCase subclass: #JadeitePreferencesTestCase
 	instanceVariableNames: 'workspace'
 	classVariableNames: ''
 	poolDictionaries: ''

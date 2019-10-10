@@ -61,6 +61,7 @@ setPreference: preferencesString
 	"only perform messages which are defined by this class"
 
 	| message |
+	preferencesString trimBlanks subStrings isEmpty ifTrue: [^self].
 	message := preferencesString subStrings first asSymbol.
 	message first = $# ifTrue: [^self].
 	(JadeitePreferences methodDictionary at: message ifAbsent: [])

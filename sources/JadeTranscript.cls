@@ -173,15 +173,6 @@ resetCursor
 	[Cursor current: nil] forkAt: Processor userBackgroundPriority.
 !
 
-sleepAndCommit
-
-	[
-		gciSession serverPerform: #'sleepAndCommit'.
-	] on: GsSoftBreak , GsHardBreak do: [:ex | 
-		ex terminateProcess.
-	].
-!
-
 stoneInfoPresenter
 	^stoneInfoPresenter!
 
@@ -222,7 +213,6 @@ turnAutoMigrateOn
 !JadeTranscript categoriesFor: #onViewOpened!public!updating! !
 !JadeTranscript categoriesFor: #queryCommand:!public!updating! !
 !JadeTranscript categoriesFor: #resetCursor!event handling!public! !
-!JadeTranscript categoriesFor: #sleepAndCommit!event handling!public! !
 !JadeTranscript categoriesFor: #stoneInfoPresenter!accessing!private! !
 !JadeTranscript categoriesFor: #stoneInfoPresenter:!accessing!private! !
 !JadeTranscript categoriesFor: #transcriptPresenter!private! !
