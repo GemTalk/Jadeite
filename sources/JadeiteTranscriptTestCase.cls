@@ -380,6 +380,15 @@ test_commitTransaction
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded.!
 
+test_doubleClickOpenProjectBrowser
+	| randomIndex projectPresenter projectName |
+	randomIndex := (Random new next * 4) ceiling.
+	transcript projectListPresenter projectListPresenter selectionByIndex: randomIndex.
+	projectName := transcript projectListPresenter projectListPresenter selection name.
+	projectPresenter := transcript projectListPresenter projectListPresenter trigger: #actionPerformed.	"simulates double click"
+	[self assert: projectPresenter projectListPresenter selection name equals: projectName]
+		ensure: [projectPresenter topShell view close]!
+
 test_flipBreakPointsDisabled
 	| breakPointsDisabled |
 	self testsIssue: #issue515 withTitle: '(3.0.77) clear all breakpoints menu item would be useful'.
@@ -421,6 +430,24 @@ test_jadeiteMenuAdHocExecutionItems
 	self assert: displayMenuItem command equals: #jadeDisplay.
 	self assert: (transcript class canUnderstand: #jadeDisplay).
 	self assert: displayMenuItem commandDescription acceleratorKey = 4676	"Ctrl-D"!
+
+test_menuBarBrowseProjectsHonorsSelection
+	| randomIndex projectPresenter projectName browseMenu browseProjectsMenuItem projectsPresenter |
+	randomIndex := (Random new next * 4) ceiling.
+	transcript projectListPresenter projectListPresenter selectionByIndex: randomIndex.
+	projectName := transcript projectListPresenter projectListPresenter selection name.
+	browseMenu := transcript view menuBar items detect: [:menu | '*Browse*' match: menu text] ifNone: [].
+	browseProjectsMenuItem := browseMenu items
+				detect: [:command | '*Browse*Projects*' match: command text]
+				ifNone: [].
+	self assert: browseProjectsMenuItem command equals: #openJadeiteProjectsBrowser.
+	projectsPresenter := transcript openJadeiteProjectsBrowser.
+	[self assert: projectsPresenter projectListPresenter selection name equals: projectName]
+		ensure: [projectsPresenter topShell view close].
+	transcript projectListPresenter projectListPresenter selectionByIndex: 0.
+	projectsPresenter := transcript openJadeiteProjectsBrowser.
+	[self assertIsNil: (projectsPresenter projectListPresenter selectionIfNone:[])]
+		ensure: [projectsPresenter topShell view close]!
 
 test_menuNames
 	| commitMenuItem checkoutMenuItem contextMenu |
@@ -577,8 +604,10 @@ writeToPrefsFile: string
 !JadeiteTranscriptTestCase categoriesFor: #test_closeConsoleNeedingCommit!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_closeConsoleNoCommitNeeded!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_commitTransaction!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_doubleClickOpenProjectBrowser!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_flipBreakPointsDisabled!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_jadeiteMenuAdHocExecutionItems!public!test menus! !
+!JadeiteTranscriptTestCase categoriesFor: #test_menuBarBrowseProjectsHonorsSelection!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_menuNames!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_multiSelectProject!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_openChangesBrowser!public!tests! !

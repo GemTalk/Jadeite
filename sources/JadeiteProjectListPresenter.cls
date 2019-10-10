@@ -42,7 +42,8 @@ browseProject
 	serviceNames := projectListPresenter selections collect: [:service | service name].
 	service := presenter list detect: [:projectService | serviceNames includes: projectService name]
 				ifNone: [^self].
-	presenter selection: service!
+	presenter selection: service.
+	^shell currentCard!
 
 checkout
 	projectListPresenter selection checkoutUsing: self.!
