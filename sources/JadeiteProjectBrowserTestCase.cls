@@ -4794,13 +4794,14 @@ test_switchToVariableWithUnsavedChanges
 test_symbolsWithoutImplementorsFound
 	"I think the only way for a symbol to get added to AllSymbols is to commit it"
 
-	| symbols |
+	| symbols search |
 	self testsIssue: #issue258
 		withTitle: 'wildcard senders and implentors don''t return proper selection list'.
+	search := JadeiteSearch new.
 	self selectRowanSample1Class.
 	self saveMethodWithUnimplementedSelector.
 	self commitTransaction.
-	symbols := JadePresenter symbolsFrom: 'fnoodley1' session: session.
+	symbols := search symbolsFrom: 'fnoodley1'.
 	self assert: symbols size equals: 1.
 	self assert: symbols first = #fnoodley1!
 

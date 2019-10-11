@@ -2,13 +2,19 @@
 
 Object subclass: #JadeiteSearch
 	instanceVariableNames: 'view session stop start'
-	classVariableNames: 'AutoCompleteEnabled'
+	classVariableNames: 'AllClassNames AllSymbols AutoCompleteEnabled'
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
 JadeiteSearch guid: (GUID fromString: '{76051fbb-0c1e-40b5-b560-8eef47e5711c}')!
 JadeiteSearch comment: 'Derived from SmalltalkSearchPresenter'!
 !JadeiteSearch categoriesForClass!MVP-Presenters! !
 !JadeiteSearch methodsFor!
+
+allClassesStartingWith: string
+	| displayNames |
+	AllClassNames ifNil: [self class initializeClassNamesIn: session].
+	displayNames := AllClassNames select: [:className | className beginsWith: string].
+	^displayNames!
 
 insertCompletion: string at: anInteger
 	| index |
@@ -49,10 +55,10 @@ showCompletionList
 	stop := view caretPosition - 1.
 	start := self tokenStartAt: stop.
 	start = 0 ifTrue: [^self].
-	prefix := view plainTextFrom: start to: stop. 
+	prefix := view plainTextFrom: start to: stop.
 	searchList := prefix first isLowercase
-				ifTrue: [JadePresenter symbolsFrom: prefix , '*' session: session]
-				ifFalse: [JadePresenter allClassesStartingWith: prefix].	
+				ifTrue: [self symbolsFrom: prefix]
+				ifFalse: [self allClassesStartingWith: prefix].
 	self showCompletionList: searchList prefixLength: prefix size!
 
 showCompletionList: aCollection prefixLength: anInteger
@@ -67,6 +73,10 @@ showCompletionList: aCollection prefixLength: anInteger
 
 startAutocompleteTimer
 	view setTimer: SCI_AUTOCSHOW interval: 30!
+
+symbolsFrom: selector
+	AllSymbols ifNil: [self class initializeSymbolsIn: session].
+	^AllSymbols select: [:symbol | symbol beginsWith: selector]!
 
 tokenStartAt: anInteger
 	^(view styleAt: anInteger) name == #specialCharacter
@@ -84,6 +94,7 @@ tokenStartAt: anInteger
 view: aView
 
 	view := aView! !
+!JadeiteSearch categoriesFor: #allClassesStartingWith:!accessing!public! !
 !JadeiteSearch categoriesFor: #insertCompletion:at:!autocompletion!private! !
 !JadeiteSearch categoriesFor: #killAutocompleteTimer!autocompletion!private! !
 !JadeiteSearch categoriesFor: #onAutoComplete:startingAt:accept:!autocompletion!event handlers!private! !
@@ -93,6 +104,7 @@ view: aView
 !JadeiteSearch categoriesFor: #showCompletionList!autocompletion!private! !
 !JadeiteSearch categoriesFor: #showCompletionList:prefixLength:!autocompletion!private! !
 !JadeiteSearch categoriesFor: #startAutocompleteTimer!autocompletion!private! !
+!JadeiteSearch categoriesFor: #symbolsFrom:!accessing!public! !
 !JadeiteSearch categoriesFor: #tokenStartAt:!autocompletion!private! !
 !JadeiteSearch categoriesFor: #view:!accessing!public! !
 
@@ -105,11 +117,33 @@ autoCompleteEnabled
 autoCompleteEnabled: boolean
 	AutoCompleteEnabled := boolean!
 
+initializeClassNamesIn: session
+	| service |
+	service := RowanAnsweringService new command: #allClassNames.
+	service commandArgs: Array new.
+	JadePresenter issueCommand: (Array with: service) session: session.
+	AllClassNames := service answer!
+
+initializeSymbolsIn: session
+	| service |
+	service := RowanAnsweringService new
+				command: #sortedSymbols;
+				commandArgs: Array new.
+	BrowserUpdate current issueCommand: (Array with: service) session: session.
+	AllSymbols := service answer!
+
 on: view session: session
 	^self new
 		view: view;
-		session: session! !
+		session: session!
+
+symbolsFrom: selector session: session
+	AllSymbols ifNil: [AllSymbols := self initializeSymbolsIn: session].
+	^AllSymbols select: [:symbol | symbol beginsWith: selector]! !
 !JadeiteSearch class categoriesFor: #autoCompleteEnabled!accessing!public! !
 !JadeiteSearch class categoriesFor: #autoCompleteEnabled:!accessing!public! !
+!JadeiteSearch class categoriesFor: #initializeClassNamesIn:!public!utilities! !
+!JadeiteSearch class categoriesFor: #initializeSymbolsIn:!public!utilities! !
 !JadeiteSearch class categoriesFor: #on:session:!instance creation!public! !
+!JadeiteSearch class categoriesFor: #symbolsFrom:session:!accessing!public! !
 

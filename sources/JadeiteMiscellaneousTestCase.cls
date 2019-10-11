@@ -219,22 +219,23 @@ test_releaseOops
 	self auditAll!
 
 test_symbolsFromSelector
-	| symbols wildAtFrontSymbols |
+	| symbols wildAtFrontSymbols search |
 	self testsIssue: #issue258
 		withTitle: 'wildcard senders and implentors don''t return proper selection list'.
-	wildAtFrontSymbols := JadePresenter symbolsFrom: '*symboldict*' session: session.
+	search := JadeiteSearch new session: session.
+	wildAtFrontSymbols := search symbolsFrom: '*symboldict*'.
 	self assert: wildAtFrontSymbols notEmpty.
 	wildAtFrontSymbols do: [:symbol | self assert: ('*symboldict*' match: symbol ignoreCase: true)].
-	symbols := JadePresenter symbolsFrom: 'symboldict*' session: session.
-	self assert: symbols size < wildAtFrontSymbols size. "should be a subset without the front asterix"
+	symbols := search symbolsFrom: 'symboldict*'.
+	self assert: symbols size < wildAtFrontSymbols size.	"should be a subset without the front asterix"
 	self assert: symbols notEmpty.
 	symbols do: [:symbol | self assert: ('symboldict*' match: symbol ignoreCase: true)].
 	"ignore case"
-	wildAtFrontSymbols := JadePresenter symbolsFrom: '*SymbolDict*' session: session.
+	wildAtFrontSymbols := search symbolsFrom: '*SymbolDict*'.
 	self assert: wildAtFrontSymbols notEmpty.
 	wildAtFrontSymbols do: [:symbol | self assert: ('*SymbolDict*' match: symbol ignoreCase: true)].
-	symbols := JadePresenter symbolsFrom: '*SymbolDict*:' session: session.
-	self assert: symbols size < wildAtFrontSymbols size. "should be a subset without the front asterix"
+	symbols := search symbolsFrom: '*SymbolDict*:'.
+	self assert: symbols size < wildAtFrontSymbols size.	"should be a subset without the front asterix"
 	self assert: symbols notEmpty.
 	symbols do: [:symbol | self assert: ('*SymbolDict*:' match: symbol ignoreCase: true)]!
 

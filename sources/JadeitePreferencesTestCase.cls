@@ -144,7 +144,7 @@ test_validPreferences
 	validPreferences := #(#transcriptEnabled: #openBrowserOnClass: #openBrowserOnPackage: #openSUnitBrowserOnPackage: #autocommitEnabled: #autocompleteEnabled: #breakpointsEnabled: #loggingEnabled:).
 	prefs := JadeitePreferences new session: session.
 	validPreferences do: [:symbol | self assert: (prefs class canUnderstand: symbol)]! !
-!JadeitePreferencesTestCase categoriesFor: #tearDown!public!setup teardown! !
+!JadeitePreferencesTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeitePreferencesTestCase categoriesFor: #test_autoCommitEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_autoCompleteEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_breakpointEnabled!public!tests! !

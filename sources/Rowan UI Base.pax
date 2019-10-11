@@ -395,7 +395,6 @@ package methodNames
 	add: 'JadeInspector class' -> #resource_Special_view;
 	add: 'JadeNavigationInspector class' -> #resource_Default_view;
 	add: 'JadePresenter class' -> #allClassesIn:;
-	add: 'JadePresenter class' -> #allClassesStartingWith:;
 	add: 'JadePresenter class' -> #basicBrowseClassReferences:session:;
 	add: 'JadePresenter class' -> #basicBrowseMethod:presenter:;
 	add: 'JadePresenter class' -> #browseBreakpointsIn:;
@@ -511,7 +510,7 @@ Object subclass: #JadeitePreferences
 	classInstanceVariableNames: ''!
 Object subclass: #JadeiteSearch
 	instanceVariableNames: 'view session stop start'
-	classVariableNames: 'AutoCompleteEnabled'
+	classVariableNames: 'AllClassNames AllSymbols AutoCompleteEnabled'
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
 Object subclass: #Rowan
@@ -2343,13 +2342,6 @@ allClassesIn: session
 	self issueCommand: (Array with: browserService) session: session.
 	^browserService allClasses ifNil:[Array new].!
 
-allClassesStartingWith: string
-	| service |
-	service := RowanAnsweringService new command: #allClassesStartingWith:.
-	service commandArgs: (Array with: string).
-	JadePresenter issueCommand: (Array with: service) session: GciSession current.
-	^service answer!
-
 basicBrowseClassReferences: className session: session
 	| service |
 	service := RowanQueryService command: #browseClassReferences: withArgs: (Array with: className).
@@ -2628,14 +2620,13 @@ runMethodTests: methodServices in: session
 	^answeringService answer!
 
 symbolsFrom: selector session: session
-	| service list |
-	list := self convertToPattern: selector.
+	| symbols service |
 	service := RowanAnsweringService new
-				command: #selectorsMatchingPattern:;
-				commandArgs: (Array with: list asArray).
-	^(self issueCommand: (Array with: service) session: session) first answer! !
+				command: #sortedSymbols;
+				commandArgs: Array new.
+	symbols := (self issueCommand: (Array with: service) session: session) first answer.
+	^symbols select: [:symbol | symbol beginsWith: selector]! !
 !JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
-!JadePresenter class categoriesFor: #allClassesStartingWith:!browsing!public! !
 !JadePresenter class categoriesFor: #basicBrowseClassReferences:session:!browsing!browsing support!public! !
 !JadePresenter class categoriesFor: #basicBrowseMethod:presenter:!browsing!public! !
 !JadePresenter class categoriesFor: #browseBreakpointsIn:!browsing!public! !
