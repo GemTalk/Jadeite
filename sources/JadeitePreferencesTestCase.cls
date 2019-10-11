@@ -10,6 +10,54 @@ JadeitePreferencesTestCase comment: ''!
 !JadeitePreferencesTestCase categoriesForClass!Unclassified! !
 !JadeitePreferencesTestCase methodsFor!
 
+test_autoCompleteEnabled
+	| prefs autoCompleteWasEnabled |
+	autoCompleteWasEnabled := JadeiteSearch autoCompleteEnabled.
+	
+	[prefs := JadeitePreferences new session: session.
+	prefs setPreference: 'autocompleteEnabled: true'.
+	self assert: JadeiteSearch autoCompleteEnabled.
+	prefs setPreference: 'autocompleteEnabled: false'.
+	self deny: JadeiteSearch autoCompleteEnabled]
+			ensure: [JadeiteSearch autoCompleteEnabled: autoCompleteWasEnabled]!
+
+test_handleMalformedPreference
+	| prefs result |
+	prefs := JadeitePreferences new session: session.
+	result := prefs setPreference: 'transcriptEnabled:'.	"no argument"
+	self assert: result equals: prefs.
+	result := prefs setPreference: 'transcriptEnabled: true false'.	"too many arguments"
+	self assert: result equals: prefs.
+	result := prefs setPreference: 'glooble: true'.	"invalid preference, but well-formed"
+	self assert: result equals: prefs.
+	result := prefs setPreference: '		transcriptEnabled: true'.	"indentation ok "
+	self assert: result equals: prefs!
+
+test_loggingEnabled
+	| prefs loggingWasEnabled |
+	loggingWasEnabled := BrowserUpdate current isLogging.
+	
+	[prefs := JadeitePreferences new session: session.
+	prefs setPreference: 'loggingEnabled: true'.
+	self assert: BrowserUpdate current isLogging.
+	prefs setPreference: 'loggingEnabled: false'.
+	self deny: BrowserUpdate current isLogging]
+			ensure: [BrowserUpdate current isLogging: loggingWasEnabled]!
+
+test_preferencesHandlesBlanks
+	| prefs result |
+	prefs := JadeitePreferences new session: session.
+	result := prefs setPreference: String new.
+	self assert: result equals: prefs.	"#setPreference: returns itself. Just test that it returned and didn't walkback"
+	result := prefs
+				setPreference: ((WriteStream on: String new)
+						cr;
+						lf;
+						tab;
+						space;
+						yourself) contents.	"prefs should trim blanks"
+	self assert: result equals: prefs!
+
 test_preferencesOpenBrowsers
 	| prefs browser |
 	prefs := JadeitePreferences new session: session.
@@ -48,8 +96,19 @@ test_preferencesSUnitOpenBrowser
 	[self assert: (browser isKindOf: JadeiteSUnitBrowser).
 	self assert: browser primaryPresenter packageListPresenter selection name
 		equals: 'Rowan-Services-Tests']
-			ensure: [browser view close]! !
+			ensure: [browser view close]!
+
+test_validPreferences
+	| prefs validPreferences |
+	validPreferences := #(#transcriptEnabled: #openBrowserOnClass: #openBrowserOnPackage: #openSUnitBrowserOnPackage: #autocommitEnabled: #autocompleteEnabled: #breakpointsEnabled: #loggingEnabled:).
+	prefs := JadeitePreferences new session: session.
+	validPreferences do: [:symbol | self assert: (prefs class canUnderstand: symbol)]! !
+!JadeitePreferencesTestCase categoriesFor: #test_autoCompleteEnabled!public!tests! !
+!JadeitePreferencesTestCase categoriesFor: #test_handleMalformedPreference!public!tests! !
+!JadeitePreferencesTestCase categoriesFor: #test_loggingEnabled!public!tests! !
+!JadeitePreferencesTestCase categoriesFor: #test_preferencesHandlesBlanks!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesOpenBrowsers!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesSettingTranscript!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesSUnitOpenBrowser!public!tests! !
+!JadeitePreferencesTestCase categoriesFor: #test_validPreferences!public!tests! !
 

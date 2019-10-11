@@ -69,18 +69,27 @@ browseJadeiteLogs
 browseJadeitePrefs
 	"Open Jadeite.prefs in the working directory"
 
-	| path file |
-	path := File workingDirectory , self preferencesFile.
+	| path file setDefaultPrefs fileStream |
+	path := File workingDirectory , JadeitePreferences preferencesFile.
+	setDefaultPrefs := false.
 	(File exists: path)
 		ifFalse: 
 			[(MessageBox confirm: 'Jadeite.prefs does not exist in ' , File workingDirectory , '. Create it?')
+				ifTrue: [setDefaultPrefs := true]
 				ifFalse: [^self]].
 	file := File
 				open: path
 				mode: #open
 				check: false.	"create it if it's not there"
-	file close.
-	^(JadeWorkspace open: path onSession: gciSession)
+	
+	[setDefaultPrefs
+		ifTrue: 
+			[fileStream := FileStream on: file.
+			fileStream
+				nextPutAll: JadeitePreferences preferencesFileDefaultContents;
+				flush]]
+			ensure: [file close].
+	^(JadeitePreferencesWorkspace open: path onSession: gciSession)
 		isModified: false;
 		updateCaption: path!
 
@@ -230,10 +239,6 @@ openJadeiteProjectsBrowser
 			MessageBox warning: 'Cannot open Jadeite Projects browser'
 				caption: 'Cannot open Jadeite Projects browser']!
 
-preferencesFile
-
-	^'Jadeite.prefs'!
-
 projectListPresenter
 	^projectListPresenter!
 
@@ -313,7 +318,6 @@ toolbarPresenter
 !JadeiteTranscript categoriesFor: #openGitHubJadeiteProject!event handling!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #openGitHubRowanProject!event handling!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #openJadeiteProjectsBrowser!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #preferencesFile!constants!private! !
 !JadeiteTranscript categoriesFor: #projectListPresenter!accessing!public! !
 !JadeiteTranscript categoriesFor: #queryCommand:!private! !
 !JadeiteTranscript categoriesFor: #registerPresentersForUpdates!public!register presenters! !

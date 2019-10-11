@@ -32,6 +32,7 @@ package classNames
 	add: #JadeitePreferences;
 	add: #JadeitePreferencesPresenter;
 	add: #JadeitePreferencesShell;
+	add: #JadeitePreferencesWorkspace;
 	add: #JadeiteProjectListBrowser;
 	add: #JadeiteProjectListPresenter;
 	add: #JadeiteProjectsBrowserPresenter;
@@ -810,6 +811,11 @@ JadeDebugger subclass: #JadeiteDebugger
 	classInstanceVariableNames: 'debuggerClass semaphore'!
 JadeWorkspace subclass: #JadeiteGitLog
 	instanceVariableNames: 'projectService'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeWorkspace subclass: #JadeitePreferencesWorkspace
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

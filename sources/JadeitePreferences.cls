@@ -10,6 +10,33 @@ JadeitePreferences comment: ''!
 !JadeitePreferences categoriesForClass!Unclassified! !
 !JadeitePreferences methodsFor!
 
+autocommitEnabled: booleanString
+	| autoCommitService boolean |
+	boolean := booleanString = 'true'.
+	autoCommitService := RowanAutoCommitService new
+				command: #autoCommit:;
+				commandArgs: (Array with: boolean).
+	BrowserUpdate current issueCommand: (Array with: autoCommitService) session: session!
+
+autocompleteEnabled: booleanString
+	| boolean |
+	"auto complete state held on the client"
+	boolean := booleanString = 'true'.
+	JadeiteSearch autoCompleteEnabled: boolean!
+
+breakpointsEnabled: booleanString
+	| answeringService boolean |
+	boolean := booleanString = 'true'.
+	answeringService := RowanAnsweringService new
+				command: #setBreakPointsAreDisabled:;
+				commandArgs: (Array with: boolean not).
+	BrowserUpdate current issueCommand: (Array with: answeringService) session: session!
+
+loggingEnabled: booleanString
+	| boolean |
+	boolean := booleanString = 'true'.
+	BrowserUpdate current isLogging: boolean!
+
 openBrowserOnClass: className
 	| projectBrowser classService |
 	projectBrowser := self openProjectBrowser.
@@ -60,9 +87,11 @@ session: anObject
 setPreference: preferencesString
 	"only perform messages which are defined by this class"
 
-	| message |
+	| message subStrings |
 	preferencesString trimBlanks subStrings isEmpty ifTrue: [^self].
-	message := preferencesString subStrings first asSymbol.
+	subStrings := preferencesString subStrings.
+	subStrings size = 2 ifFalse: [^self].	"single keyword argument format for now"
+	message := subStrings first asSymbol.
 	message first = $# ifTrue: [^self].
 	(JadeitePreferences methodDictionary at: message ifAbsent: [])
 		ifNotNil: [self perform: message with: preferencesString subStrings second]!
@@ -75,6 +104,10 @@ transcriptEnabled: booleanString
 	answeringService := RowanAnsweringService new.
 	(answeringService isTranscriptInstalledIn: session) == boolean
 		ifFalse: [answeringService flipTranscriptIn: session]! !
+!JadeitePreferences categoriesFor: #autocommitEnabled:!must not strip!preferences!public! !
+!JadeitePreferences categoriesFor: #autocompleteEnabled:!must not strip!preferences!public! !
+!JadeitePreferences categoriesFor: #breakpointsEnabled:!must not strip!preferences!public! !
+!JadeitePreferences categoriesFor: #loggingEnabled:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #openBrowserOnClass:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #openBrowserOnPackage:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #openBrowserOnProject:!must not strip!preferences!public! !
@@ -88,6 +121,26 @@ transcriptEnabled: booleanString
 !JadeitePreferences class methodsFor!
 
 onSession: session
-	^self new session: session! !
+	^self new session: session!
+
+preferencesFile
+
+	^'Jadeite.prefs'!
+
+preferencesFileDefaultContents
+	^'#Remove # to uncomment option. 
+#legal values are either a boolean or a name
+
+#autocommitEnabled: true
+#autocompleteEnabled: false
+#breakpointsEnabled: true
+#loggingEnabled: false
+#openBrowserOnClass: <class name>
+#openBrowserOnPackage: <package name>
+#openBrowserOnProject: <project name> 
+#openSUnitBrowserOnPackage: <package name>
+#transcriptEnabled: true'! !
 !JadeitePreferences class categoriesFor: #onSession:!instance creation!public! !
+!JadeitePreferences class categoriesFor: #preferencesFile!constants!public! !
+!JadeitePreferences class categoriesFor: #preferencesFileDefaultContents!constants!public! !
 
