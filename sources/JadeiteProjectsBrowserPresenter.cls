@@ -677,9 +677,10 @@ editSaveClass
 		commandArgs: #().
 	self issueCommand: (Array with: browserService)]
 			on: GsCompileError
-			do: [:ex | ^self showMethodRecompilationError: ex. ].
+			do: [:ex | ^self showMethodRecompilationError: ex].
 	self resetClassDefinitionPane.
-	self updateAfterFindClass: browserService selectedClass!
+	self updateAfterFindClass: browserService selectedClass.
+	JadeiteSearch initializeAutocompleteSymbols: self gciSession!
 
 editSaveClassComment
 	| classService |

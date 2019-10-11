@@ -116,7 +116,8 @@ loadProjectNamed: projectName
 	browserService
 		command: #reloadProjects:andUpdateServices:;
 		commandArgs: (Array with: (Array with: projectService) with: BrowserUpdate current selectedServices).
-	BrowserUpdate current issueCommand: (Array with: browserService) session: session!
+	BrowserUpdate current issueCommand: (Array with: browserService) session: session.
+	JadeiteSearch initializeAutocompleteSymbols: session!
 
 loginOtherSession
 	(Delay forSeconds: 1) wait.	"not sure if this is necessary"

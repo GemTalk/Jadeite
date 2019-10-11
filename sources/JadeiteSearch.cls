@@ -117,6 +117,10 @@ autoCompleteEnabled
 autoCompleteEnabled: boolean
 	AutoCompleteEnabled := boolean!
 
+initializeAutocompleteSymbols: session
+	self initializeSymbolsIn: session.
+	self initializeClassNamesIn: session!
+
 initializeClassNamesIn: session
 	| service |
 	service := RowanAnsweringService new command: #allClassNames.
@@ -142,6 +146,7 @@ symbolsFrom: selector session: session
 	^AllSymbols select: [:symbol | symbol beginsWith: selector]! !
 !JadeiteSearch class categoriesFor: #autoCompleteEnabled!accessing!public! !
 !JadeiteSearch class categoriesFor: #autoCompleteEnabled:!accessing!public! !
+!JadeiteSearch class categoriesFor: #initializeAutocompleteSymbols:!public!utilities! !
 !JadeiteSearch class categoriesFor: #initializeClassNamesIn:!public!utilities! !
 !JadeiteSearch class categoriesFor: #initializeSymbolsIn:!public!utilities! !
 !JadeiteSearch class categoriesFor: #on:session:!instance creation!public! !

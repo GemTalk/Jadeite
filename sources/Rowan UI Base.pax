@@ -1124,8 +1124,9 @@ postLoginAs: aString useSocket: aBoolean
 	aBoolean ifTrue: [self attemptSocket].
 	self setInitials: aString.	"This gets back the session and serial number"
 	GciSession current: self.
+	JadeiteSearch initializeAutocompleteSymbols: self.
 	self postLoadClientPreferences.
-	self postLoadServerPreferences.!
+	self postLoadServerPreferences!
 
 preferencesFile
 
@@ -2175,7 +2176,8 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 		ifNotNil: 
 			[:warning |
 			self setCompileWarningColor.
-			self statusBarText: warning]!
+			self statusBarText: warning].
+	JadeiteSearch initializeAutocompleteSymbols: self gciSession !
 
 executeSelectionOrLine: contextObject
 	| answeringService answer oop |
@@ -2719,7 +2721,8 @@ loadProjectsFrom: browser
 	selections := browser projectListPresenter selections.
 	(self confirmReloadProjects: selections)
 		ifTrue: [RowanBrowserService new reloadProjects: selections presenter: self].
-	BrowserUpdate current selectedServices do: [:service | service postReload]!
+	BrowserUpdate current selectedServices do: [:service | service postReload].
+	JadeiteSearch initializeAutocompleteSymbols: self gciSession!
 
 methodListSelection
 	
