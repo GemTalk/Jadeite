@@ -28,9 +28,9 @@ breakpointsEnabled: booleanString
 	| answeringService boolean |
 	boolean := booleanString = 'true'.
 	answeringService := RowanAnsweringService new
-				command: #setBreakPointsAreDisabled:;
-				commandArgs: (Array with: boolean not).
-	BrowserUpdate current issueCommand: (Array with: answeringService) session: session!
+				command: #setBreakPointsAreEnabled:;
+				commandArgs: (Array with: boolean).
+	BrowserUpdate current issueCommand: (Array with: answeringService) session: session.!
 
 loggingEnabled: booleanString
 	| boolean |

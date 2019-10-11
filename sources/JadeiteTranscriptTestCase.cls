@@ -394,11 +394,11 @@ test_flipBreakPointsDisabled
 	self testsIssue: #issue515 withTitle: '(3.0.77) clear all breakpoints menu item would be useful'.
 	
 	[breakPointsDisabled := transcript areBreakpointsDisabled value.
-	transcript flipBreakpointsDisabled.
+	transcript flipBreakpointsEnabled.
 	self assert: transcript areBreakpointsDisabled value equals: breakPointsDisabled not.
 	self assert: (session executeString: 'SessionTemps current at: #Jadeite_BreakPointsAreDisabled')
 		equals: breakPointsDisabled not.
-	transcript flipBreakpointsDisabled.
+	transcript flipBreakpointsEnabled.
 	self assert: transcript areBreakpointsDisabled value equals: breakPointsDisabled.
 	self assert: (session executeString: 'SessionTemps current at: #Jadeite_BreakPointsAreDisabled')
 		equals: breakPointsDisabled]

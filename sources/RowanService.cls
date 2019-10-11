@@ -36,6 +36,8 @@ basicReplicateFrom: newService
 			(self shouldReplicateInstVarAtIndex: index newService: newService)
 				ifTrue: [self instVarAt: index put: (newService instVarAt: index)]]!
 
+breakpointSettingChanged: transcript!
+
 classCategoryUpdate: presenter
 	!
 
@@ -439,6 +441,7 @@ wasRenamed
 !RowanService categoriesFor: #autoCommitUpdate:!public!updating! !
 !RowanService categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanService categoriesFor: #basicReplicateFrom:!public!replication! !
+!RowanService categoriesFor: #breakpointSettingChanged:!public!updating! !
 !RowanService categoriesFor: #classCategoryUpdate:!public!updating! !
 !RowanService categoriesFor: #classCommentUpdate:!public!updating! !
 !RowanService categoriesFor: #classDefinitionUpdate:!public!updating! !

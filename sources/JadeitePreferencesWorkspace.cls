@@ -10,6 +10,9 @@ JadeitePreferencesWorkspace comment: ''!
 !JadeitePreferencesWorkspace categoriesForClass!Unclassified! !
 !JadeitePreferencesWorkspace methodsFor!
 
+basicResetPreferences
+	model value: JadeitePreferences preferencesFileDefaultContents!
+
 openPreferencesOptionsWorkspace
 	| workspace |
 	workspace := JadeWorkspace showOnSession: self gciSession.
@@ -21,7 +24,8 @@ openPreferencesOptionsWorkspace
 
 resetPreferences
 	(MessageBox confirm: 'Really reset jadeite.prefs file to default settings?') ifFalse: [^self].
-	model value: JadeitePreferences preferencesFileDefaultContents.! !
+	self basicResetPreferences! !
+!JadeitePreferencesWorkspace categoriesFor: #basicResetPreferences!menu handlers!private! !
 !JadeitePreferencesWorkspace categoriesFor: #openPreferencesOptionsWorkspace!menu handlers!public! !
 !JadeitePreferencesWorkspace categoriesFor: #resetPreferences!menu handlers!public! !
 

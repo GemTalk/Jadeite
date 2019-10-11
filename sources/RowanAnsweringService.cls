@@ -17,10 +17,13 @@ answer
 answer: anObject
 	answer := anObject!
 
-breakPointsAreDisabled: session
-	command := #breakPointsAreDisabled.
+breakPointsAreEnabled: session
+	command := #breakPointsAreEnabled.
 	BrowserUpdate current issueCommand: (Array with: self) session: session.
 	^answer!
+
+breakpointSettingChanged: transcript
+	updateType ifNotNil: [transcript areBreakpointsEnabled value: answer]!
 
 expressionSelector: string session: session
 	command := #expressionSelector:.
@@ -32,11 +35,6 @@ flipAutoCommitFor: session
 	command := #flipAutoCommit.
 	BrowserUpdate current issueCommand: (Array with: self) session: session.
 	^answer!
-
-flipBreakpointsDisabledIn: session with: boolean
-	command := #setBreakPointsAreDisabled:. 
-	commandArgs := Array with: boolean. 
-	BrowserUpdate current issueCommand: (Array with: self) session: session!
 
 flipTranscriptIn: session
 	command := #flipTranscript.
@@ -61,16 +59,22 @@ setAutoCommit: boolean for: session
 	command := #setAutoCommit:. 
 	self commandArgs: (Array with: boolean). 
 	BrowserUpdate current issueCommand: (Array with: self) session: session.
-	^answer! !
+	^answer!
+
+setBreakpointsEnabled: boolean session: session
+	command := #setBreakPointsAreEnabled:.
+	commandArgs := Array with: boolean.
+	BrowserUpdate current issueCommand: (Array with: self) session: session! !
 !RowanAnsweringService categoriesFor: #answer!accessing!private! !
 !RowanAnsweringService categoriesFor: #answer:!accessing!private! !
-!RowanAnsweringService categoriesFor: #breakPointsAreDisabled:!commands!public! !
+!RowanAnsweringService categoriesFor: #breakPointsAreEnabled:!commands!public! !
+!RowanAnsweringService categoriesFor: #breakpointSettingChanged:!public!updating! !
 !RowanAnsweringService categoriesFor: #expressionSelector:session:!commands!public! !
 !RowanAnsweringService categoriesFor: #flipAutoCommitFor:!commands!public! !
-!RowanAnsweringService categoriesFor: #flipBreakpointsDisabledIn:with:!commands!public! !
 !RowanAnsweringService categoriesFor: #flipTranscriptIn:!commands!public! !
 !RowanAnsweringService categoriesFor: #isAnsweringService!public!testing! !
 !RowanAnsweringService categoriesFor: #isTranscriptInstalledIn:!commands!public! !
 !RowanAnsweringService categoriesFor: #needsCommit:!commands!public! !
 !RowanAnsweringService categoriesFor: #setAutoCommit:for:!commands!public! !
+!RowanAnsweringService categoriesFor: #setBreakpointsEnabled:session:!commands!public! !
 

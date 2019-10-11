@@ -820,7 +820,7 @@ JadeWorkspace subclass: #JadeitePreferencesWorkspace
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeTranscript subclass: #JadeiteTranscript
-	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsDisabled autoCompleteEnabled'
+	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsEnabled autoCompleteEnabled'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

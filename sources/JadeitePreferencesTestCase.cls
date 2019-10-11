@@ -10,8 +10,27 @@ JadeitePreferencesTestCase comment: ''!
 !JadeitePreferencesTestCase categoriesForClass!Unclassified! !
 !JadeitePreferencesTestCase methodsFor!
 
+tearDown
+	workspace
+		ifNotNil: 
+			[workspace isModified: false.
+			workspace view close]!
+
+test_autoCommitEnabled
+	| prefs autoCommitWasEnabled |
+	self testsIssue: #issue553 withTitle: 'Jadeite settings in preferences file (3.0.78)'.
+	autoCommitWasEnabled := transcript autoCommit.
+	
+	[prefs := JadeitePreferences new session: session.
+	prefs setPreference: 'autocommitEnabled: true'.
+	self assert: transcript autoCommit.
+	prefs setPreference: 'autocommitEnabled: false'.
+	self deny: transcript autoCommit]
+			ensure: [transcript autoCommit: autoCommitWasEnabled]!
+
 test_autoCompleteEnabled
 	| prefs autoCompleteWasEnabled |
+	self testsIssue: #issue553 withTitle: 'Jadeite settings in preferences file (3.0.78)'.
 	autoCompleteWasEnabled := JadeiteSearch autoCompleteEnabled.
 	
 	[prefs := JadeitePreferences new session: session.
@@ -21,8 +40,21 @@ test_autoCompleteEnabled
 	self deny: JadeiteSearch autoCompleteEnabled]
 			ensure: [JadeiteSearch autoCompleteEnabled: autoCompleteWasEnabled]!
 
+test_breakpointEnabled
+	| prefs breakpointWasEnabled |
+	self testsIssue: #issue553 withTitle: 'Jadeite settings in preferences file (3.0.78)'.
+	breakpointWasEnabled := transcript areBreakpointsEnabled value.
+	
+	[prefs := JadeitePreferences new session: session.
+	prefs setPreference: 'breakpointsEnabled: true'.
+	self assert: transcript areBreakpointsEnabled value.
+	prefs setPreference: 'breakpointsEnabled: false'.
+	self deny: transcript areBreakpointsEnabled value]
+			ensure: [transcript areBreakpointsEnabled value: breakpointWasEnabled]!
+
 test_handleMalformedPreference
 	| prefs result |
+	self testsIssue: #issue553 withTitle: 'Jadeite settings in preferences file (3.0.78)'.
 	prefs := JadeitePreferences new session: session.
 	result := prefs setPreference: 'transcriptEnabled:'.	"no argument"
 	self assert: result equals: prefs.
@@ -35,6 +67,7 @@ test_handleMalformedPreference
 
 test_loggingEnabled
 	| prefs loggingWasEnabled |
+	self testsIssue: #issue553 withTitle: 'Jadeite settings in preferences file (3.0.78)'.
 	loggingWasEnabled := BrowserUpdate current isLogging.
 	
 	[prefs := JadeitePreferences new session: session.
@@ -98,17 +131,29 @@ test_preferencesSUnitOpenBrowser
 		equals: 'Rowan-Services-Tests']
 			ensure: [browser view close]!
 
+test_resetPreferences
+	self testsIssue: #issue553 withTitle: 'Jadeite settings in preferences file (3.0.78)'.
+	workspace := JadeitePreferencesWorkspace showOnSession: session.
+	workspace model value: String new.
+	workspace basicResetPreferences.
+	self assert: (workspace model value equals: JadeitePreferences preferencesFileDefaultContents)!
+
 test_validPreferences
 	| prefs validPreferences |
+	self testsIssue: #issue553 withTitle: 'Jadeite settings in preferences file (3.0.78)'.
 	validPreferences := #(#transcriptEnabled: #openBrowserOnClass: #openBrowserOnPackage: #openSUnitBrowserOnPackage: #autocommitEnabled: #autocompleteEnabled: #breakpointsEnabled: #loggingEnabled:).
 	prefs := JadeitePreferences new session: session.
 	validPreferences do: [:symbol | self assert: (prefs class canUnderstand: symbol)]! !
+!JadeitePreferencesTestCase categoriesFor: #tearDown!public!setup teardown! !
+!JadeitePreferencesTestCase categoriesFor: #test_autoCommitEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_autoCompleteEnabled!public!tests! !
+!JadeitePreferencesTestCase categoriesFor: #test_breakpointEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_handleMalformedPreference!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_loggingEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesHandlesBlanks!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesOpenBrowsers!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesSettingTranscript!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesSUnitOpenBrowser!public!tests! !
+!JadeitePreferencesTestCase categoriesFor: #test_resetPreferences!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_validPreferences!public!tests! !
 
