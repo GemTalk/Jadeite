@@ -127,7 +127,7 @@ test_browseSenders
 	self testsIssue: #issue407
 		withTitle: '(3.0.56) would like option to browse class OR method from changes window'.
 	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+		ifNil: [projectsBrowser := self openWindow: [JadeiteBrowser showOnSession: session]].
 	
 	[self selectRowanSample1Class.
 	self

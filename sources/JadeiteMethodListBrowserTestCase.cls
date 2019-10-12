@@ -125,8 +125,7 @@ setupMultiKeywordSenderAndSendee
 
 setupTestMethodInProjectBrowser
 	| source |
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectRowanSample1Test.
 	source := 'literalRefTest ^#(''foot'' #foot 123 nil true false)'.
 	self projectsPresenter selectMethodSourceTab.
@@ -151,8 +150,7 @@ tearDown
 test_adHocContextClassSide
 	| classService |
 	self testsIssue: #issue517 withTitle: 'Context of non-debugger source panes should be the class'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectRowanSample1Test.
 	self selectClassTab.
 	classService := RowanClassService named: 'RowanSample1Test'.
@@ -175,8 +173,7 @@ test_adHocContextClassSide
 test_adHocContextInstanceSide
 	| classService |
 	self testsIssue: #issue517 withTitle: 'Context of non-debugger source panes should be the class'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectRowanSample1Test.
 	classService := RowanClassService named: 'RowanSample1Test'.
 	classService
@@ -189,7 +186,8 @@ test_adHocContextInstanceSide
 	
 	[self methodSourcePresenter documentPresenter view selectAll.
 	self methodSourcePresenter jadeDisplay.
-	self assert: self methodSourcePresenter documentPresenter value equals: 'self new fnoodle #''fnoodle''']
+	self assert: self methodSourcePresenter documentPresenter value
+		equals: 'self new fnoodle #''fnoodle''']
 			ensure: 
 				[self methodSourcePresenter documentPresenter view isModified: false.
 				self removeMethods: self methodListMethodListPresenter selections in: 'RowanSample1Test']!
@@ -200,8 +198,7 @@ test_browseBreakpoints
 	methodListBrowser := JadePresenter browseBreakpointsIn: session.
 	[self assert: self methodListMethodListPresenter list size equals: 0]
 		ensure: [methodListBrowser view close].
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	
 	[self selectRowanSample1Test.
 	methodService := self projectsPresenter methodListPresenter list
@@ -222,11 +219,10 @@ test_browseBreakpoints
 test_browseBreakpointsFromTranscript
 	| methodService |
 	self testsIssue: #issue225 withTitle: 'nice to have a breakpoint browser'.
-	methodListBrowser := transcript browseBreakpoints. 
+	methodListBrowser := transcript browseBreakpoints.
 	[self assert: self methodListMethodListPresenter list size equals: 0]
 		ensure: [methodListBrowser view close].
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	
 	[self selectRowanSample1Test.
 	methodService := self projectsPresenter methodListPresenter list
@@ -239,7 +235,7 @@ test_browseBreakpointsFromTranscript
 	self assert: self methodListPresenter selection selector equals: #test1]
 			ensure: [methodListBrowser view close].
 	JadePresenter clearAllBreaksIn: session.
-	methodListBrowser := transcript browseBreakpoints. 
+	methodListBrowser := transcript browseBreakpoints.
 	[self assert: self methodListMethodListPresenter list size equals: 0]
 		ensure: [methodListBrowser view close]]
 			ensure: [projectsBrowser view close]!
@@ -398,8 +394,7 @@ test_browseImplementorsEnablement
 	self deny: commandQuery isEnabled!
 
 test_browseInstVarReaders
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self
 		saveClass: 'TestInstVarReaders'
 		superclass: 'Object'
@@ -452,8 +447,7 @@ test_browseLiteralReferencesBlankSearch
 test_browseMultiKeywordSendersHighlighting
 	self testsIssue: #issue500
 		withTitle: '(Oscar-3.0.74) highlighting of multi-keyword selectors in senders/implementors browser is broken'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	
 	[self selectRowanSample1Test.
 	self setupMultiKeywordSenderAndSendee.
@@ -477,8 +471,7 @@ test_browseMultiKeywordSendersHighlighting
 test_browseMultiKeywordSendersOnEverySender
 	self testsIssue: #issue500
 		withTitle: '(Oscar-3.0.74) highlighting of multi-keyword selectors in senders/implementors browser is broken'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	
 	[self selectRowanSample1Test.
 	self setupMultiKeywordSenderAndSendee.
@@ -514,8 +507,7 @@ test_browseSenderHighlightedWithEveryMethod
 test_browseSenderHighlightingIgnoreComments
 	self testsIssue: #issue500
 		withTitle: '(Oscar-3.0.74) highlighting of multi-keyword selectors in senders/implementors browser is broken'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	
 	[self selectRowanSample1Test.
 	self setupMultiKeywordSenderAndSendee.
@@ -617,8 +609,7 @@ test_clearAllBreakpointsMenuItemOnMethodList
 test_comparisonTabMultimethod
 	self testsIssue: #issue264
 		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
 	self selectServiceNamed: 'RowanAnsweringService' in: self classListPresenter.
@@ -659,8 +650,7 @@ test_comparisonTabMultimethod2
 test_comparisonTabNoMethodSelected
 	self testsIssue: #issue264
 		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self setupSupclassComparisonMethods.
 	methodListBrowser := JadePresenter browseImplementorsOf: #comparisonMethod session: session.
 	self methodListMethodListPresenter resetSelection.
@@ -677,8 +667,7 @@ test_comparisonTabNoMethodSelected
 test_comparisonTabSuperclass
 	self testsIssue: #issue264
 		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self setupSupclassComparisonMethods.
 	methodListBrowser := JadePresenter browseImplementorsOf: #comparisonMethod session: session.
 	self methodListMethodListPresenter selectionByIndex: 2.
@@ -950,7 +939,7 @@ test_removeMethodInProjectBrowser
 		in: 'RowanSample1Test'
 		category: 'other'.
 	methodListBrowser := JadePresenter browseImplementorsOf: #deleteMe session: session.
-	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self openProjectBrowser.
 	
 	[self selectRowanSample1Class.
 	self selectMethodNamedInProjectBrowser: #deleteMe.

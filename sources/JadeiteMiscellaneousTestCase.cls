@@ -218,27 +218,6 @@ test_releaseOops
 	self assert: (session executeString: 'System hiddenSetSize: 39') equals: 0.
 	self auditAll!
 
-test_symbolsFromSelector
-	| symbols wildAtFrontSymbols search |
-	self testsIssue: #issue258
-		withTitle: 'wildcard senders and implentors don''t return proper selection list'.
-	search := JadeiteSearch new session: session.
-	wildAtFrontSymbols := search symbolsFrom: '*symboldict*'.
-	self assert: wildAtFrontSymbols notEmpty.
-	wildAtFrontSymbols do: [:symbol | self assert: ('*symboldict*' match: symbol ignoreCase: true)].
-	symbols := search symbolsFrom: 'symboldict*'.
-	self assert: symbols size < wildAtFrontSymbols size.	"should be a subset without the front asterix"
-	self assert: symbols notEmpty.
-	symbols do: [:symbol | self assert: ('symboldict*' match: symbol ignoreCase: true)].
-	"ignore case"
-	wildAtFrontSymbols := search symbolsFrom: '*SymbolDict*'.
-	self assert: wildAtFrontSymbols notEmpty.
-	wildAtFrontSymbols do: [:symbol | self assert: ('*SymbolDict*' match: symbol ignoreCase: true)].
-	symbols := search symbolsFrom: '*SymbolDict*:'.
-	self assert: symbols size < wildAtFrontSymbols size.	"should be a subset without the front asterix"
-	self assert: symbols notEmpty.
-	symbols do: [:symbol | self assert: ('*SymbolDict*:' match: symbol ignoreCase: true)]!
-
 test_workspaceBrowseProjects
 	| workspace jadeiteMenu browseProjectsItem |
 	self testsIssue: #issue265 withTitle: 'workspace could use a `browse projects` menu item ... '.
@@ -571,7 +550,6 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_findInWorkspace!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_symbolsFromSelector!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceConfirmInteraction!public!test!test menus!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceDoubleClickIncludesColon!public!test!test workspaces! !

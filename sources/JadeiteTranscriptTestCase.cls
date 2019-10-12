@@ -61,7 +61,7 @@ savePrefsBackup
 
 test_abortRemovesProjectsInAllBrowsers
 	| sunitBrowser |
-	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	projectsBrowser := self openWindow: [JadeiteBrowser showOnSession: session].
 	sunitBrowser := self openWindow: [transcript jadeBrowseTests].
 	
 	[self denyIsNil: (self projectListPresenter list
@@ -390,42 +390,41 @@ test_doubleClickOpenProjectBrowser
 		ensure: [projectPresenter topShell view close]!
 
 test_flipBreakPointsDisabled
-	| breakPointsDisabled |
+	| breakPointsEnabled |
 	self testsIssue: #issue515 withTitle: '(3.0.77) clear all breakpoints menu item would be useful'.
 	
-	[breakPointsDisabled := transcript areBreakpointsDisabled value.
+	[breakPointsEnabled := transcript areBreakpointsEnabled value.
 	transcript flipBreakpointsEnabled.
-	self assert: transcript areBreakpointsDisabled value equals: breakPointsDisabled not.
-	self assert: (session executeString: 'SessionTemps current at: #Jadeite_BreakPointsAreDisabled')
-		equals: breakPointsDisabled not.
+	self assert: transcript areBreakpointsEnabled value equals: breakPointsEnabled not.
+	self assert: (session executeString: 'SessionTemps current at: #Jadeite_BreakPointsAreEnabled')
+		equals: breakPointsEnabled not.
 	transcript flipBreakpointsEnabled.
-	self assert: transcript areBreakpointsDisabled value equals: breakPointsDisabled.
-	self assert: (session executeString: 'SessionTemps current at: #Jadeite_BreakPointsAreDisabled')
-		equals: breakPointsDisabled]
-			ensure: [transcript areBreakpointsDisabled value: breakPointsDisabled]!
+	self assert: transcript areBreakpointsEnabled value equals: breakPointsEnabled.
+	self assert: (session executeString: 'SessionTemps current at: #Jadeite_BreakPointsAreEnabled')
+		equals: breakPointsEnabled]
+			ensure: [transcript areBreakpointsEnabled value: breakPointsEnabled]!
 
 test_jadeiteMenuAdHocExecutionItems
-	| jadeiteMenu debugMenuItem executeMenuItem inspectMenuItem displayMenuItem |
+	| editMenu debugMenuItem executeMenuItem inspectMenuItem displayMenuItem |
 	self testsIssue: #issue474 withTitle: '(3.0.69) inconsistent debug menu on workspaces'.
-	jadeiteMenu := transcript view menuBar items detect: [:menu | '*Jadeite*' match: menu text]
-				ifNone: [].
-	self denyIsNil: jadeiteMenu.
-	debugMenuItem := jadeiteMenu items detect: [:command | '*Debug*' match: command text] ifNone: [].
+	editMenu := transcript view menuBar items detect: [:menu | '*Edit*' match: menu text] ifNone: [].
+	self denyIsNil: editMenu.
+	debugMenuItem := editMenu items detect: [:command | '*Debug*' match: command text] ifNone: [].
 	self denyIsNil: debugMenuItem.
 	self assert: debugMenuItem command equals: #jadeDebug.
 	self assert: (transcript class canUnderstand: #jadeDebug).
 	self assert: debugMenuItem commandDescription acceleratorKey = 4674.	"Ctrl-B"
-	executeMenuItem := jadeiteMenu items detect: [:command | '*Execute*' match: command text] ifNone: [].
+	executeMenuItem := editMenu items detect: [:command | '*Execute*' match: command text] ifNone: [].
 	self denyIsNil: executeMenuItem.
 	self assert: executeMenuItem command equals: #jadeExecute.
 	self assert: (transcript class canUnderstand: #jadeExecute).
 	self assert: executeMenuItem commandDescription acceleratorKey = 4677.	"Ctrl-E"
-	inspectMenuItem := jadeiteMenu items detect: [:command | '*Inspect*' match: command text] ifNone: [].
+	inspectMenuItem := editMenu items detect: [:command | '*Inspect*' match: command text] ifNone: [].
 	self denyIsNil: inspectMenuItem.
 	self assert: inspectMenuItem command equals: #jadeInspect.
 	self assert: (transcript class canUnderstand: #jadeInspect).
 	self assert: inspectMenuItem commandDescription acceleratorKey = 4689.	"Ctrl-Q"
-	displayMenuItem := jadeiteMenu items detect: [:command | '*Display*' match: command text] ifNone: [].
+	displayMenuItem := editMenu items detect: [:command | '*Display*' match: command text] ifNone: [].
 	self denyIsNil: displayMenuItem.
 	self assert: displayMenuItem command equals: #jadeDisplay.
 	self assert: (transcript class canUnderstand: #jadeDisplay).
@@ -445,8 +444,8 @@ test_menuBarBrowseProjectsHonorsSelection
 	[self assert: projectsPresenter projectListPresenter selection name equals: projectName]
 		ensure: [projectsPresenter topShell view close].
 	transcript projectListPresenter projectListPresenter selectionByIndex: 0.
-	projectsPresenter := transcript openJadeiteProjectsBrowser.
-	[self assertIsNil: (projectsPresenter projectListPresenter selectionIfNone:[])]
+	projectsPresenter := transcript openJadeiteProjectsBrowser currentCard.
+	[self assertIsNil: (projectsPresenter projectListPresenter selectionIfNone: [])]
 		ensure: [projectsPresenter topShell view close]!
 
 test_menuNames

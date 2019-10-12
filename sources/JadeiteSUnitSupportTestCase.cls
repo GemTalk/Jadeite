@@ -704,8 +704,7 @@ test_resetStatusBar
 test_runClassTests
 	self testsIssue: #issue341 withTitle: 'Run sunit tests from class pass when they should not'.
 	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
-	
+		ifNil: [projectsBrowser := self openWindow: [JadeiteBrowser showOnSession: session]].
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter.

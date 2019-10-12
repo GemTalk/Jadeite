@@ -708,7 +708,7 @@ test_minimumClassStateReturned
 	self assert: classService version equals: 1.
 	self assert: classService methods equals: Array new.
 	self assertIsNil: classService variables.
-	self assertIsNil: classService categories.
+	self assert: classService categories isEmpty. "initialized on server now" 
 	self assertIsNil: classService instVarNames.
 	self assertIsNil: classService template!
 

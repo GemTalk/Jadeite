@@ -203,6 +203,10 @@ noBreakIn: aMenu
 						and: [(command text = 'Browse Breakpoints') not and: [(command text = 'Clear Method Breakpoints') not]]]
 				ifNone: [])!
 
+openProjectBrowser
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [JadeiteBrowser showOnSession: session]]!
+
 openWindow: aBlock
 	"evaluate a block which is expected to return an object that responds to #view.
 	Wait until the view affirms it is open before continuing"
@@ -588,6 +592,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #methodSourceForTest!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #methodSourcePresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #noBreakIn:!issue test support!private! !
+!JadeiteAbstractTestCase categoriesFor: #openProjectBrowser!private!support!test methods! !
 !JadeiteAbstractTestCase categoriesFor: #openWindow:!browser test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #packageListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #projectListPresenter!private!project browser support! !

@@ -124,7 +124,7 @@ test_loggerMenuEnablement
 	
 	[jadeiteItem := transcript view menuBar items detect: [:menuItem | '*Jadeite*' match: menuItem text].
 	loggingItem := jadeiteItem items
-				detect: [:item | (item class canUnderstand: #description) and: [item description = 'Logging']].
+				detect: [:item | (item class canUnderstand: #description) and: [item description = 'Logging Enabled']].
 	loggingItem commandDescription performAgainst: transcript.	"this will reset the log file. That seems ok for now"
 	self assert: BrowserUpdate current isLogging equals: isLogging not]
 			ensure: [BrowserUpdate current isLogging: isLogging].

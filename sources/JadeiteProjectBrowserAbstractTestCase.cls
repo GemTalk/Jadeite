@@ -42,10 +42,10 @@ isAbstract
 	^self == JadeiteProjectBrowserAbstractTestCase!
 
 openSecondBrowser
-	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	secondBrowser := (self openWindow: [transcript openJadeiteProjectsBrowser]) topShell.
 	secondBrowser caption: 'second browser'.
 	secondPresenter := secondBrowser currentCard.
-	secondPresenter selectClassListTab. 
+	secondPresenter selectClassListTab.
 	^secondBrowser!
 
 setUp

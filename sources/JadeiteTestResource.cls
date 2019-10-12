@@ -66,6 +66,7 @@ loadProjectNamed: projectName
 openProjectsBrowser
 	(projectsBrowser isNil or: [projectsBrowser isOpen not])
 		ifTrue: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	projectsBrowser := projectsBrowser topShell.
 	^projectsBrowser!
 
 openWindow: aBlock

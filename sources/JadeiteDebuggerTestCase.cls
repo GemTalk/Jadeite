@@ -53,8 +53,7 @@ closeDebuggers
 	self assert: list isEmpty!
 
 createTestMethodWithBreakpoints
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectRowanSample1Test.
 	self
 		saveMethod: 'test_highlightBreaks
@@ -81,7 +80,7 @@ createTestMethodWithBreakpoints
 	self selectMethodNamed: #test_highlightBreaks.
 	self setBreakAt: 20.
 	self setBreakAt: 25.
-	self setBreakAt: 28.!
+	self setBreakAt: 28!
 
 debuggerDo: aBlock
 	self assert: JadeiteDebugger semaphore isNil.
@@ -424,8 +423,7 @@ test_breakpointHighlightingInBlocks
 test_browseClass
 	| browser |
 	self testsIssue: #issue169 withTitle: 'Debugger menu option Browse Class broken'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectRowanSample1Class.
 	self saveIssue169Method.
 	self openDebuggerOn: 'RowanSample1 new issue169'.
@@ -498,8 +496,7 @@ test_bug74
 test_compileError
 	self testsIssue: #issue353
 		withTitle: 'Debugger has inferior status bar, and opens dialog for unused temps (3.0.74)'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectRowanSample1Test.
 	self
 		saveMethod: 'testCompileError
@@ -515,7 +512,8 @@ test_compileError
 
 	self assert: '''.
 	self debuggerDo: [debugger saveMethod].
-	self assert: debugger methodSourcePresenter documentPresenter view selectionRange equals: (24 to: 34).
+	self assert: debugger methodSourcePresenter documentPresenter view selectionRange
+		equals: (24 to: 34).
 	self assert: debugger statusBarText
 		equals: 'missing end of literal mark (prime); expected a primary expression'.
 	self assert: debugger statusTextPresenter view backcolor equals: Color red faded.
@@ -530,8 +528,7 @@ test_compileError
 test_compileInExecutedBlock
 	self testsIssue: #issue498
 		withTitle: 'Would like to be able to compile method in debugger when block frame selected'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	
 	[self selectRowanSample1Test.
 	self
@@ -571,8 +568,7 @@ test_compileInExecutedBlockFailsWhenNoHomeMethod
 test_compileInExecutedBlockSameSelectorOnStack
 	self testsIssue: #issue498
 		withTitle: 'Would like to be able to compile method in debugger when block frame selected'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser. 
 	
 	[self selectRowanSample1Test.
 	self
@@ -772,8 +768,7 @@ test_doubleClickIncludesColon
 test_duplicateInstVars
 	self testsIssue: #issue228
 		withTitle: 'lose selected class in project browser when new version created'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	
 	[self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
 	self selectServicesNamed: #('RowanSample1-Tests') in: self packageListPresenter.
@@ -813,8 +808,7 @@ test_duplicateInstVars
 test_duplicateInstVarsHierarchy
 	self testsIssue: #issue228
 		withTitle: 'lose selected class in project browser when new version created'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	
 	[self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
 	self selectServicesNamed: #('RowanSample1-Tests') in: self packageListPresenter.
@@ -855,8 +849,7 @@ test_duplicateInstVarsHierarchy
 test_duplicateInstVarsInHierarchy
 	self testsIssue: #issue228
 		withTitle: 'lose selected class in project browser when new version created'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	
 	[self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
 	self selectServicesNamed: #('RowanSample1-Tests') in: self packageListPresenter.
@@ -942,8 +935,7 @@ test_frameDoubleClickNoActionInBlockContext
 test_implementersFromDebugger
 	| browser |
 	self testsIssue: #issue216 withTitle: 'method list in method browser reorders on accept'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectRowanSample1Class.
 	self saveIssue216Method.
 	self openDebuggerOn: 'RowanSample1 new issue216'.
@@ -991,17 +983,18 @@ test_inspectedDebuggerObjectHeld
 				fromContext: inspector model
 				environment: 0).
 	self assert: inspector documentPresenter value equals: 'anArray( anObject)'.
-	process terminate. 
-	self closeDebuggers. 
+	process terminate.
+	self closeDebuggers.
 
 	"do stuff while the debugger is closed to hopefully recycle the oop (if the bug was present)"
-	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self openProjectBrowser.
+	
 	[self assert: (session
 				executeString: '(self at: 1) class = Object'
 				fromContext: inspector model
 				environment: 0)]
 			ensure: [projectsBrowser view close].
-	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self openProjectBrowser.
 	
 	[self assert: (session
 				executeString: '(self at: 1) class = Object'
@@ -1060,8 +1053,7 @@ test_reloadWithDebuggerOpen
 
 	self testsIssue: #issue359
 		withTitle: '(3.0.52 & 3.0.62) `a UserDefinedError occurred (error 2318), reason:halt, Use on*Process: constructors` Error'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser. 
 	
 	[self selectRowanSample1Class.
 	self saveIssue169Method.
@@ -1083,8 +1075,7 @@ test_restartInBlock
 	| restartProcess |
 	self testsIssue: #issue126
 		withTitle: 'Debugger opens second debugger, loses stack in original debugger'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectRowanSample1Class.
 	self saveInterestingLoopMethod.
 	self projectsPresenter setBreakPointAt: 8 in: self projectsPresenter.	"inside the block"
@@ -1105,8 +1096,7 @@ test_restartInBlock
 test_runningTestDoesNotLoseStepPoint
 	| count |
 	self testsIssue: #issue226 withTitle: 'have to reset method in order to disable a break point'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'AST-Kernel-Tests-Core' in: self packageListPresenter.
 	self projectsPresenter isHierarchyTabSelected
@@ -1138,8 +1128,7 @@ test_saveMethod
 	"https://github.com/GemTalk/Jadeite/issues/62"
 
 	| number view |
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	
 	[self selectRowanSample1Class.
 	self createDebuggerTestMethod.
@@ -1161,8 +1150,7 @@ test_saveMethodDuringTestRun
 	| commandQuery |
 	self testsIssue: #issue512
 		withTitle: '"run selected" can get disabled after save in debugger (3.0.76)'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser. 
 	
 	[self selectRowanSample1Test.
 	self selectMethodNamed: #test1.
@@ -1202,8 +1190,7 @@ test_saveMethodDuringTestRun
 test_selectAfterDiveNoStepPoint
 	self testsIssue: #issue166
 		withTitle: 'Debugger step with unsaved edits results in empty source pane'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectRowanSample1Class.
 	self saveInterestingLoopMethod.
 	self projectsPresenter setBreakPointAt: 8 in: self projectsPresenter.	"inside the block"
@@ -1226,8 +1213,7 @@ test_selectAfterDiveNoStepPoint
 test_selectBlockContext
 	self testsIssue: #issue166
 		withTitle: 'Debugger step within block and then select block context has bad behavior'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	
 	[self selectRowanSample1Class.
 	self saveIssue166Method.
@@ -1240,8 +1226,7 @@ test_selectBlockContext
 test_sendersFromDebugger
 	| browser |
 	self testsIssue: #issue216 withTitle: 'method list in method browser reorders on accept'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectRowanSample1Class.
 	self saveIssue216Method.
 	self openDebuggerOn: 'RowanSample1 new issue216'.
