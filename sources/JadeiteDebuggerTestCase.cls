@@ -1040,6 +1040,35 @@ test_reformatSource
   ^ #''test''' replaceCrLfWithLf]
 			ensure: [debugger documentPresenter view isModified: false]!
 
+test_reformatSourceIsUndoable
+	self testsIssue: #issue550
+		withTitle: '"Reformat source" without save is not working right in method browsers (3.0.78)'.
+	self openProjectBrowser.
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'reformatSourceTemporaryMethod | abc | abc := #abc. ^abc'
+		in: 'RowanSample1Test'
+		category: 'other'.
+	
+	[self selectMethodNamed: #reformatSourceTemporaryMethod.
+	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
+	self openDebuggerOn: 'RowanSample1Test new reformatSourceTemporaryMethod'.
+	self assert: self methodSourcePresenter value
+		equals: 'reformatSourceTemporaryMethod | abc | abc := #abc. ^abc'.
+	debugger reformatSource.
+	self assert: debugger documentPresenter view isModified.
+	self assert: debugger documentPresenter view text
+		equals: 'reformatSourceTemporaryMethod
+  | abc |
+  abc := #''abc''.
+  ^ abc' replaceCrLfWithLf.
+	debugger documentPresenter view undo.
+	self assert: self methodSourcePresenter value
+		equals: 'reformatSourceTemporaryMethod | abc | abc := #abc. ^abc'.
+	debugger documentPresenter view isModified: false. 
+	self debuggerDo: [debugger resumeProcess]]
+			ensure: [self projectsPresenter removeMethods: self classListPresenter selections]!
+
 test_registeredPresentersInProjectBrowserCleanedUp
 	| registeredPresenters  |
 	registeredPresenters := BrowserUpdate current registeredPresenters size.
@@ -1828,6 +1857,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_inspectedDebuggerObjectHeld!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatIllegalSource!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatSource!public!test source! !
+!JadeiteDebuggerTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reloadWithDebuggerOpen!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_restartInBlock!public!tests! !

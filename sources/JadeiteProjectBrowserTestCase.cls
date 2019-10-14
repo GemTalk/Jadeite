@@ -3778,6 +3778,30 @@ test_reformatSourceAppliesOnlyToCurrentBrowser
 		equals: 'reformatSourceTemporaryMethod ^#test'.
 	self methodSourcePresenter isModified: false. !
 
+test_reformatSourceIsUndoable
+	self testsIssue: #issue550
+		withTitle: '"Reformat source" without save is not working right in method browsers (3.0.78)'.
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'reformatSourceTemporaryMethod | abc | abc := #abc. ^abc'
+		in: 'RowanSample1Test'
+		category: 'other'.
+	
+	[self selectMethodNamed: #reformatSourceTemporaryMethod.
+	self assert: self methodSourcePresenter value
+		equals: 'reformatSourceTemporaryMethod | abc | abc := #abc. ^abc'.
+	self projectsPresenter reformatSource.
+	self assert: self methodSourcePresenter view isModified.
+	self assert: self methodSourcePresenter value
+		equals: 'reformatSourceTemporaryMethod
+  | abc |
+  abc := #''abc''.
+  ^ abc' replaceCrLfWithLf.
+	self methodSourcePresenter view undo.
+	self assert: self methodSourcePresenter value
+		equals: 'reformatSourceTemporaryMethod | abc | abc := #abc. ^abc']
+			ensure: [self projectsPresenter removeMethods: self classListPresenter selections]!
+
 test_refreshAfterAbortMethodList
 	"method lists should remove deleted methods after an abort."
 
@@ -5928,6 +5952,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_reformatMenuItemEnabled!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_reformatSource!public!test source! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_reformatSourceAppliesOnlyToCurrentBrowser!public!test source! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodList!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodListLeaveCommitted!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterReloadInProjectsBrowserWithAddedMethod!public!test projects!tests! !

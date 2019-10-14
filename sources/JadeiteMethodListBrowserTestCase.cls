@@ -918,6 +918,32 @@ test_reformatSource
 		equals: 'reformatSourceTemporaryMethod
   ^ #''test''' replaceCrLfWithLf!
 
+test_reformatSourceIsUndoable
+	self testsIssue: #issue550
+		withTitle: '"Reformat source" without save is not working right in method browsers (3.0.78)'.
+	self openProjectBrowser.
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'reformatSourceTemporaryMethod | abc | abc := #abc. ^abc'
+		in: 'RowanSample1Test'
+		category: 'other'.
+	
+	[methodListBrowser := JadePresenter browseImplementorsOf: #reformatSourceTemporaryMethod
+				session: session.
+	self assert: self methodSourcePresenter documentPresenter value
+		equals: 'reformatSourceTemporaryMethod | abc | abc := #abc. ^abc'.
+	self methodSourcePresenter reformatSource.
+	self assert: self methodSourcePresenter documentPresenter view isModified.
+	self assert: self methodSourcePresenter documentPresenter value
+		equals: 'reformatSourceTemporaryMethod
+  | abc |
+  abc := #''abc''.
+  ^ abc' replaceCrLfWithLf.
+	self methodSourcePresenter documentPresenter view undo.
+	self assert: self methodSourcePresenter documentPresenter value
+		equals: 'reformatSourceTemporaryMethod | abc | abc := #abc. ^abc']
+			ensure: [self projectsPresenter removeMethods: self classListPresenter selections]!
+
 test_removeMethod
 	self saveMethod: 'deleteMe ^123'  in: 'RowanSample1' category: 'other'. 
 	self saveMethod: 'deleteMe ^#test'  in: 'RowanSample1Test' category: 'other'. 
@@ -1144,6 +1170,7 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_methodBrowserSaveMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatIllegalSource!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatSource!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodInProjectBrowser!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodOutsideServices!public!test methods! !

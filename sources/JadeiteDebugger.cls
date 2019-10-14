@@ -309,6 +309,8 @@ reformatSource
 			self setCompileErrorColor.
 			self statusBarText: 'Reformat failed. Illegal source'.
 			^false].
+	documentPresenter view performUndoableAction: 
+			[documentPresenter view modifyText: [documentPresenter view sciSetText: methodService source]].
 	documentPresenter value: methodService source.
 	documentPresenter view isModified: true.
 	documentPresenter view
