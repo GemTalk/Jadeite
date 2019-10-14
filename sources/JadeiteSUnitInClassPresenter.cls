@@ -98,10 +98,16 @@ queryCommand: aCommandQuery
 	^false!
 
 refresh
-	parentPresenter updateService: parentPresenter selectedClass.
-	self parentPresenter updateSUnitTab.
+	parentPresenter selectedClass
+		ifNil: [self resetTestList]
+		ifNotNil: 
+			[parentPresenter updateService: parentPresenter selectedClass.
+			self parentPresenter updateSUnitTab].
 	self ensureVisible.
 	self reset!
+
+resetTestList
+	^methodListPresenter list: ListModel new!
 
 runAll 
 	self runTests: methodListPresenter model in: testClassService name!
@@ -148,6 +154,7 @@ selectedClass
 !JadeiteSUnitInClassPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #queryCommand:!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #refresh!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #resetTestList!initialization!private! !
 !JadeiteSUnitInClassPresenter categoriesFor: #runAll!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #runAndMesureTime!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #runMethodTests!menu handlers support!public! !

@@ -4660,6 +4660,22 @@ test_sunitOnlyRunTestMethods
 			[self selectMethodNamed: #nonTestMethod.
 			self projectsPresenter removeMethods: self classListPresenter selections]!
 
+test_sunitPresenterResetAfterPackageSelection
+	self selectRowanSample1Test.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list size > 0.
+	self selectRowanSample1Class.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list size equals: 0.
+	self selectRowanSample1Test.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list size > 0!
+
+test_sunitPresenterResetAfterProjectSelection
+	self selectRowanSample1Test.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list size > 0.
+	self selectServiceNamed: 'STON' in: self projectListPresenter.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list size equals: 0.
+	self selectRowanSample1Test.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list size > 0!
+
 test_sunitRunAndMeasureTime
 	| runSelectedItem selection |
 	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
@@ -5960,6 +5976,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitCtrlB!public!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitInheritedTests!public!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitOnlyRunTestMethods!public!test sunit tab! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitPresenterResetAfterPackageSelection!public!test packages!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitPresenterResetAfterProjectSelection!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitRunAndMeasureTime!public!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitRunSelected!public!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitTabCanRefresh!public!test menus!test sunit tab!tests! !

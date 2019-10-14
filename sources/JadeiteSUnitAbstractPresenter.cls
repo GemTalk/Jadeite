@@ -39,6 +39,7 @@ refreshFromServerAfterAbort: browserService
 	self refresh!
 
 reset
+	
 	methodListPresenter model do: [:each | each testResult: nil].
 	textResultPresenter value: String new.
 	methodListPresenter view invalidate.

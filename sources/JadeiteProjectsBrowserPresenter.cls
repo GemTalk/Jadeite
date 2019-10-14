@@ -1714,6 +1714,9 @@ resetClassTemplate
 resetDefinedClassPackage
 	definedClassPackageText view text: String new.!
 
+resetSunitTestList
+	self selectedClass ifNil: [sunitPresenter resetTestList]!
+
 runAndMesureTime
 	| selections |
 	self selectSUnitTab.
@@ -1994,7 +1997,8 @@ showSuperClassComparison
 
 sundryCleanup
 	self statusBarText: String new.
-	methodListPresenter selections notEmpty ifFalse: [self cleanupComparisonBrowser]!
+	methodListPresenter selections notEmpty ifFalse: [self cleanupComparisonBrowser].
+	self resetSunitTestList!
 
 sunitPresenter
 	"for testing"
@@ -2220,8 +2224,9 @@ updatePackage
 	classListPresenter model: ListModel new.
 	classHierarchyPresenter model: TreeModel new.
 	self updateClasses.
-	self isClassListTabSelected ifFalse:[self updateHierarchy].
-	self updatePackageInfo!
+	self isClassListTabSelected ifFalse: [self updateHierarchy].
+	self updatePackageInfo.
+	self resetSunitTestList!
 
 updatePackageInfo
 	| service |
@@ -2486,6 +2491,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #resetClassDefinitionPane!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #resetClassTemplate!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #resetDefinedClassPackage!event handlers support!private! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #resetSunitTestList!initialize/release!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #runAndMesureTime!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #runClassTests!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #runMethodTests!menu handlers!public! !

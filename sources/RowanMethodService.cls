@@ -188,14 +188,14 @@ implementorsOf: aString
 	^methodDefinitions!
 
 initialize
-	super initialize. 
-	inSelectedPackage := true.  
-	failedCompile := false. 
-	meta := false. 
-	stepPoints := Array new. 
-	breakPoints := Array new. 
-	hasSupers := false. 
-	hasSubs := false. !
+	super initialize.
+	inSelectedPackage := true.
+	failedCompile := false.
+	meta := false.
+	stepPoints := Array new.
+	breakPoints := OrderedCollection new.
+	hasSupers := false.
+	hasSubs := false!
 
 inSelectedPackage
 
