@@ -480,15 +480,11 @@ stonOn: stonWriter
 !Interval class methodsFor!
 
 fromSton: stonReader
-	| result values intervalStream |
+	| result values |
 	values := OrderedCollection new.
-	result := self streamContents: 
-					[:stream |
-					intervalStream := stream.
-					stonReader parseListDo: [:each | values add: each]].
-	values size >= 1 ifTrue: [intervalStream collection start: values first].
-	values size >= 2 ifTrue: [intervalStream collection stop: values second].
-	values size >= 3 ifTrue: [intervalStream collection step: values third].
+	stonReader parseMapDo: [:key :value | values add: value].
+	values size = 2 ifTrue: [result := self from: values first to: values second].
+	values size = 3 ifTrue: [result := self from: values first to: values second by: values third].
 	^result!
 
 writeStream

@@ -11,7 +11,7 @@ RowanMethodService comment: ''!
 !RowanMethodService methodsFor!
 
 = methodService
-	methodService isMethodService ifFalse:[^false].
+	methodService isMethodService ifFalse: [^false].
 	^selector = methodService selector
 		and: [className = methodService className and: [meta = methodService meta]]!
 
@@ -29,7 +29,7 @@ addBreakPointMenuAt: stepPoint to: aMenu presenter: presenter
 			[command := #clearBreakPointAt:in:.
 			desc := 'Clear break at step point ' , stepPoint printString]
 		ifFalse: 
-			[command := #setBreakPointAt:in:.
+			[command := #setBreakPointAt:in:. 
 			desc := 'Break at step point ' , stepPoint printString].
 	menuCommand := MessageSend
 				receiver: presenter parentPresenter
@@ -74,7 +74,6 @@ basicSubSuperIcon
 	^Icon blank!
 
 breakPoints
-
 	^breakPoints!
 
 breakPoints: anObject
@@ -125,7 +124,10 @@ displayClassName
 	^className , (meta ifTrue: [' class'] ifFalse: [String new])!
 
 displayName
-	^className , '>>' , selector!
+	"protect against invalid entries"
+
+	^[className , '>>' , selector] on: Error
+		do: [:ex | className printString , '>>' , selector printString]!
 
 displayOn: aStream
 	aStream

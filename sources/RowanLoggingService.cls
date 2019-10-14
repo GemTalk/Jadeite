@@ -12,6 +12,7 @@ id is the numbering within that group for display sorting. '!
 !RowanLoggingService methodsFor!
 
 = methodService
+	(methodService isKindOf: RowanService) ifFalse: [^false].
 	^methodService isLoggingService and: [groupId = methodService groupId and: [id = methodService id]]!
 
 addServices: newServices

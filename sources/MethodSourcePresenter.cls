@@ -233,7 +233,6 @@ updateMethodStepPoints
 					[styleName := (breakPoints includes: stepPoint) ifTrue: [9] ifFalse: [8].
 					string := ((breakPoints includes: stepPoint) ifTrue: ['Break at '] ifFalse: ['']) , 'step point #'
 								, stepPoint printString].
-			"styleName = 9 ifTrue: [self halt]."
 			updatedRange := offsets isNil
 						ifTrue: [range]
 						ifFalse: [(self offsetAt: stepPoint) to: (self offsetAt: stepPoint) + range size].

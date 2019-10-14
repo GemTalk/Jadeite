@@ -163,27 +163,26 @@ saveMethod
 	MessageBox notify: result.
 !
 
-selectedFrame 
-
+selectedFrame
 	| index breaks source |
 	(index := frameListPresenter selectionByIndex) = 0 ifTrue: [^self].
 	index := index + frameListOffset.
 	(frame := gsProcess frameForLevel: index) isNil ifTrue: [^self].
 	source := frame source.
 	breaks := frame breaks collect: [:each | frame offsets at: each].
-	breaks := breaks collect: [:each | ((source copyFrom: 1 to: each) select: [:char | char = Character lf]) size + 1].
+	breaks := breaks
+				collect: [:each | ((source copyFrom: 1 to: each) select: [:char | char = Character lf]) size + 1].
 	breaks := breaks asSet asSortedCollection asArray.
 	variableListPresenter list: frame vars.
-	codePane 
+	codePane
 		gsMethod: frame gsMethod;
 		showStepPoint: frame stepPoint;
-		yourself.
+		yourself
 	"breaks do: [:each | 
 		documentPresenter view 
 			addMarkerType: #'breakpoint' 
 			at: each.
-	]."
-!
+	]."!
 
 selectedVariable
 
