@@ -32,7 +32,6 @@ category
 	^category!
 
 clearBreakAtStepPoint: anInteger
-
 	gciSession
 		serverPerform: #'clearBreakAtStepPoint:inMethod:'
 		with: anInteger

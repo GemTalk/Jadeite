@@ -16,7 +16,6 @@ canSetBreakpoints
 !
 
 clearBreakAtStepPoint: anInteger
-
 	gsMethod clearBreakAtStepPoint: anInteger session: gciSession.
 	self updateMethodStepPoints.
 !

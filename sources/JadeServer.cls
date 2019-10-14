@@ -775,7 +775,6 @@ classOrganizer
 !
 
 clearBreakAtStepPoint: anInteger inMethod: aGsMethod
-
 	aGsMethod clearBreakAtStepPoint: anInteger.
 !
 

@@ -10,7 +10,12 @@ JadeiteDebuggerMethodSourcePresenter comment: ''!
 !JadeiteDebuggerMethodSourcePresenter categoriesForClass!Unclassified! !
 !JadeiteDebuggerMethodSourcePresenter methodsFor!
 
+clearBreakPointAt: stepPoint in: browser
+	super clearBreakPointAt: stepPoint in: browser.
+	self parentPresenter clearBreakPointsAt: stepPoint!
+
 executeSelectionOrLine: contextObject
 	^self parentPresenter executeSelectionOrLine: contextObject! !
+!JadeiteDebuggerMethodSourcePresenter categoriesFor: #clearBreakPointAt:in:!menu handlers!public! !
 !JadeiteDebuggerMethodSourcePresenter categoriesFor: #executeSelectionOrLine:!menu handlers!public! !
 

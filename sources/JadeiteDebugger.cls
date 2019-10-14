@@ -68,6 +68,12 @@ browseObjectClass
 browseSenders
 	^JadePresenter browseSendersOf: frame gsMethod selector session: self gciSession!
 
+clearBreakPointsAt: stepPoint
+	gsProcess frames do: 
+			[:frameService |
+			frameService method homeMethodOop = frame method homeMethodOop
+				ifTrue: [frameService breaks remove: stepPoint ifAbsent: []]]!
+
 codeSourcePresenterClass
 	^JadeiteDebuggerMethodSourcePresenter!
 
@@ -482,6 +488,7 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #browseImplementors!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #browseObjectClass!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #browseSenders!menu handlers!private! !
+!JadeiteDebugger categoriesFor: #clearBreakPointsAt:!menu handlers support!public! !
 !JadeiteDebugger categoriesFor: #codeSourcePresenterClass!private! !
 !JadeiteDebugger categoriesFor: #createComponents!public! !
 !JadeiteDebugger categoriesFor: #createSchematicWiring!public! !

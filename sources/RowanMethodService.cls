@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName'
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName isMethodForBlock homeMethodOop'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -172,6 +172,9 @@ hasSupers
 
 hasSupers: anObject
 	hasSupers := anObject!
+
+homeMethodOop
+	^homeMethodOop!
 
 icon
 	testResult ifNil: [^self class icon].
@@ -495,6 +498,7 @@ user: anObject
 !RowanMethodService categoriesFor: #hasSubs:!accessing!private! !
 !RowanMethodService categoriesFor: #hasSupers!accessing!private! !
 !RowanMethodService categoriesFor: #hasSupers:!accessing!private! !
+!RowanMethodService categoriesFor: #homeMethodOop!accessing!private! !
 !RowanMethodService categoriesFor: #icon!public!sunit! !
 !RowanMethodService categoriesFor: #implementorsOf:!method accessing!public! !
 !RowanMethodService categoriesFor: #initialize!initialization!public! !
