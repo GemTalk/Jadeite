@@ -17,6 +17,9 @@ addSystemBrowser
 browseIt 
 	^self debug!
 
+closeCard
+	^parentPresenter topShell closeCard!
+
 debug  
 	testClassService ifNil: [^self].
 	methodListPresenter selections do: 
@@ -75,6 +78,13 @@ jadeInspect
 
 maximizeCode
 	^parentPresenter topShell maximizeCode!
+
+moveCardLeft
+	^parentPresenter topShell moveCardLeft!
+
+moveCardRight
+
+	^parentPresenter topShell moveCardRight!
 
 newBrowser
 
@@ -137,6 +147,7 @@ selectedClass
 	^self parentPresenter selectedClass! !
 !JadeiteSUnitInClassPresenter categoriesFor: #addSystemBrowser!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #browseIt!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #closeCard!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #debug!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #editFind!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #editReplace!menu handlers support!public! !
@@ -150,6 +161,8 @@ selectedClass
 !JadeiteSUnitInClassPresenter categoriesFor: #jadeExecute!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #jadeInspect!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #maximizeCode!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #moveCardLeft!menu handlers support!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #moveCardRight!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #newBrowser!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #queryCommand:!menu handlers support!public! !

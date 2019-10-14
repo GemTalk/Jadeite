@@ -3426,6 +3426,26 @@ test_modifiedSourceShouldNotChangeMethodList
 				[self methodSourcePresenter value: originalSource.
 				self methodSourcePresenter view isModified: false]!
 
+test_moveTabsWithSUnitTabselected
+	self testsIssue: #issue556 withTitle: 'Funny orange boxes enabled for Sunit tab, but error'.
+	projectsBrowser closeCard.
+	projectsBrowser addSystemBrowser.
+	self selectSUnitTab.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 Projects'.
+	projectsBrowser addSystemBrowser.
+	self assert: projectsBrowser cardsPresenter view cards size equals: 2.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '2 Projects'.
+	self selectRowanSample1Class.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '2 RowanSample1'.
+	projectsBrowser moveCardLeft.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '2 RowanSample1'.
+	self assert: projectsBrowser cardsPresenter view cards size equals: 2.
+	projectsBrowser moveCardRight.
+	self assert: projectsBrowser cardsPresenter view cards size equals: 2.
+	projectsBrowser closeCard.
+	self assert: projectsBrowser cardsPresenter view cards size equals: 1.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 Projects'!
+
 test_multipleCompileMethod
 	self testsIssue: #issue170
 		withTitle: 'Editing methods to create new method and updating created method gets errors'.
@@ -5932,6 +5952,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_methodTabSelected!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_modifiedSourceShouldNotChange!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_modifiedSourceShouldNotChangeMethodList!public!test two browsers!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_moveTabsWithSUnitTabselected!public!test system tabs! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multiplePackageSelection!public!test packages!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_newBrowserRetainsClassAndMethod!public!test class hierarchy!tests! !
@@ -6011,10 +6032,10 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitUpdatesProperly!public!test sunit tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_switchToVariableWithUnsavedChanges!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsWithoutImplementorsFound!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesDictionaryClass!public!test system tab names! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesDictionaryClassHierarchy!public!test system tab names! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesProjectClassHierarchy!public!test system tab names! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesProjectClassList!public!test system tab names! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesDictionaryClass!public!test system tabs! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesDictionaryClassHierarchy!public!test system tabs! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesProjectClassHierarchy!public!test system tabs! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesProjectClassList!public!test system tabs! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!tests! !
