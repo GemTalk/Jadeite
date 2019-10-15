@@ -202,9 +202,10 @@ onCloseRequested: boolValueHolder
 
 onViewClosed
 	super onViewClosed.
-	BrowserUpdate current logComment: 'Closing Transcript {' , self identityHash printString, '}'.
+	BrowserUpdate current logComment: 'Closing Transcript {' , self identityHash printString , '}'.
 	BrowserUpdate current removeEventsTriggeredFor: self.
-	BrowserUpdate current removeEventsTriggeredFor: projectListPresenter projectListPresenter.!
+	BrowserUpdate current removeEventsTriggeredFor: projectListPresenter projectListPresenter.
+	GciSession current: nil!
 
 onViewOpened
 	| answeringService installed |

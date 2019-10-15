@@ -101,6 +101,9 @@ session
 
 	^session!
 
+session: anObject
+	session := anObject!
+
 setUp
 	super setUp.
 	session := GciSession current.
@@ -128,6 +131,9 @@ transcript
 
 	^transcript!
 
+transcript: anObject
+	transcript := anObject!
+
 unloadSampleProject
 	transcript projectListPresenter primaryPresenter list
 		detect: [:projectService | projectService name = self sampleProjectName]
@@ -148,9 +154,11 @@ unloadSampleProject
 !JadeiteTestResource categoriesFor: #rowanSample1Path!constants!private! !
 !JadeiteTestResource categoriesFor: #sampleProjectName!constants!private! !
 !JadeiteTestResource categoriesFor: #session!accessing!public! !
+!JadeiteTestResource categoriesFor: #session:!accessing!public! !
 !JadeiteTestResource categoriesFor: #setUp!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #transcript!accessing!public! !
+!JadeiteTestResource categoriesFor: #transcript:!accessing!public! !
 !JadeiteTestResource categoriesFor: #unloadSampleProject!private!setup teardown! !
 
 !JadeiteTestResource class methodsFor!

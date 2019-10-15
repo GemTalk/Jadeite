@@ -89,6 +89,7 @@ test_gemTask
 
 test_loginButtonEnablement
 	| jadeiteShell query |
+	self testsIssue: #issue527 withTitle: 'Multiple sessions can''t keep console project list straight'.
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #no.	"don't commit"
 	[GciSession current ifNotNil: [:sess | sess logout]]

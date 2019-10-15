@@ -23,8 +23,7 @@ cleanupProcesses
 closeDebuggers
 	| list semaphore |
 	list := JadeiteMethodListBrowser allInstances , RowanSystemBrowser allInstances
-				, JadeiteDebugger allInstances.
-	JadeiteBrowser allInstances.
+				, JadeiteDebugger allInstances. 
 	semaphore := Semaphore new.
 	list do: 
 			[:each |
@@ -51,6 +50,17 @@ closeDebuggers
 	list := JadeiteMethodListBrowser allInstances , RowanSystemBrowser allInstances
 				, JadeiteDebugger allInstances.
 	self assert: list isEmpty!
+
+closeJadeiteLoginShells
+	| query |
+	JadeiteLoginShell allInstances do: 
+			[:inst |
+			query := CommandQuery commandDescription: (CommandDescription command: #login)
+						source: inst loginButtonPresenter view.
+			inst queryCommand: query.
+			self assert: query isEnabled.	"any login shell should have a disabled login button"
+			inst view close].
+	^query!
 
 createTestMethodWithBreakpoints
 	self openProjectBrowser.
@@ -222,7 +232,7 @@ systemBrowser
 !
 
 tearDown
-	self cleanupProcesses. 
+	self cleanupProcesses.
 	projectsBrowser
 		ifNotNil: 
 			[projectsBrowser view close.
@@ -1002,6 +1012,52 @@ test_inspectedDebuggerObjectHeld
 				environment: 0)]
 			ensure: [projectsBrowser view close]]
 			ensure: [inspector view close]!
+
+test_loginButtonEnablementAfterDebug
+	"transcript close wasn't setting GciSession current to nil"
+
+	| jadeiteShell query sunitPresenter |
+	self testsIssue: #issue527 withTitle: 'Multiple sessions can''t keep console project list straight'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.	"don't commit"
+	
+	[GciSession current ifNotNil: [:sess | sess logout].
+	query := self closeJadeiteLoginShells.
+	jadeiteShell := JadeiteLoginShell show position: 80 @ 20.
+	jadeiteShell login.
+	session := GciSession current.
+	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: [].
+	query := CommandQuery commandDescription: (CommandDescription command: #login)
+				source: jadeiteShell view.
+	jadeiteShell view queryCommand: query.
+	self deny: query isEnabled.
+	sunitPresenter := (JadeiteSUnitBrowser showOnSession: session) primaryPresenter.
+	"reproduce scenario in bug"
+	sunitPresenter selectPackageNamed: 'Rowan-Services-Tests'.
+	sunitPresenter selectClassNamed: 'RowanMethodServiceTest'.
+	sunitPresenter runAll.
+	self openDebuggerOn: 'RowanMethodServiceTest new test_noStepPoints'.
+	self debuggerDo: [debugger resumeProcess].
+	self rowanFixMe.	"without this, test somehow dies. Makes for a less useful test"
+	TestMessageBox plannedResult: #no.
+	transcript view close.	"closes all Jadeite windows"
+	jadeiteShell := JadeiteLoginShell allInstances first.
+	query := CommandQuery commandDescription: (CommandDescription command: #login)
+				source: jadeiteShell loginButtonPresenter view.
+	jadeiteShell queryCommand: query.
+	self assert: query isEnabled]
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				debugger := nil.
+				process terminate.
+				process := nil.
+				session := jadeiteShell login.
+				transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: [].
+				self class resources do: 
+						[:resource |
+						resource current
+							transcript: transcript;
+							session: session]]!
 
 test_reformatIllegalSource
 	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
@@ -1804,6 +1860,7 @@ x halt.
 ! !
 !JadeiteDebuggerTestCase categoriesFor: #cleanupProcesses!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #closeDebuggers!private!support! !
+!JadeiteDebuggerTestCase categoriesFor: #closeJadeiteLoginShells!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #createTestMethodWithBreakpoints!private!support!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #debuggerDo:!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #getClipboardContents!private!support! !
@@ -1855,6 +1912,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_implementersFromDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_inspectedDebuggerObjectHeld!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_loginButtonEnablementAfterDebug!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatIllegalSource!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatSource!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !
