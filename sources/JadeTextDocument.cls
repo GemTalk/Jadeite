@@ -56,10 +56,8 @@ createComponents
 !
 
 currentSelectionOrLine
-
 	self activeTextEdit hasSelection ifFalse: [self activeTextEdit selectCurrentLine].
-	^self activeTextEdit selection replaceCrLfWithLf.
-!
+	^self activeTextEdit selection replaceCrLfWithLf!
 
 editCopy
 	self activeTextEdit  
@@ -196,50 +194,50 @@ jadeExecute
 !
 
 jadeExecuteAndDisplay: showResult result: anAssociation
-
 	| textView result value selectionRange offset |
-	(result := anAssociation) key isNil ifTrue: [
-		MessageBox notify: result value.
-		^self.
-	].
+	anAssociation
+		ifNil: 
+			[MessageBox notify: 'nil result returned from execution. Terminated process?'.
+			^self].
+	(result := anAssociation) key isNil
+		ifTrue: 
+			[MessageBox notify: result value.
+			^self].
 	textView := self activeTextEdit.
-	result key ifTrue: [
-		value := result value.
-		result := ''.
-		showResult ifTrue: [
-			(gciSession isOopType: value) ifFalse: [
-				result := ' ' , value printString.
-			] ifTrue: [
-				result := ' ' , (gciSession printString: value).
-			].
-		].
-		selectionRange := textView selectionRange.
-		result := result "replaceLfWithCrLf".
-		textView
-			caretPosition: selectionRange stop + 1;
-			replaceSelection: result;
-			selectionStart: textView caretPosition - result size length: result size.
-	] ifFalse: [
-		| string count |
-		(result := result value first) isNil ifTrue: [^self].
-		offset := result at: 2.
-		result := result at: 3.
-		selectionRange := textView selectionRange.
-		(string := textView text) size < selectionRange stop ifTrue: [
-			self error: 'Selection range is beyond text size!!?'.
-			string := documentPresenter value.
-		].
-		string := string copyFrom: selectionRange start to: selectionRange stop.
-		string := string replaceCrLfWithLf copyFrom: 1 to: offset - 1.
-		count := (string select: [:each | each = Character lf]) size.
-		offset := offset + count.
-		textView
-			caretPosition: selectionRange start + offset - 1;
-			replaceSelection: result;
-			selectionStart: textView caretPosition - result size length: result size.
-	].
-	^value.
-!
+	result key
+		ifTrue: 
+			[value := result value.
+			result := ''.
+			showResult
+				ifTrue: 
+					[(gciSession isOopType: value)
+						ifFalse: [result := ' ' , value printString]
+						ifTrue: [result := ' ' , (gciSession printString: value)]].
+			selectionRange := textView selectionRange.
+			result := result.	"replaceLfWithCrLf"
+			textView
+				caretPosition: selectionRange stop + 1;
+				replaceSelection: result;
+				selectionStart: textView caretPosition - result size length: result size]
+		ifFalse: 
+			[| string count |
+			(result := result value first) isNil ifTrue: [^self].
+			offset := result at: 2.
+			result := result at: 3.
+			selectionRange := textView selectionRange.
+			(string := textView text) size < selectionRange stop
+				ifTrue: 
+					[self error: 'Selection range is beyond text size!!?'.
+					string := documentPresenter value].
+			string := string copyFrom: selectionRange start to: selectionRange stop.
+			string := string replaceCrLfWithLf copyFrom: 1 to: offset - 1.
+			count := (string select: [:each | each = Character lf]) size.
+			offset := offset + count.
+			textView
+				caretPosition: selectionRange start + offset - 1;
+				replaceSelection: result;
+				selectionStart: textView caretPosition - result size length: result size].
+	^value!
 
 logoutRequested: aValueHolder
 	"Opportunity to save changes."

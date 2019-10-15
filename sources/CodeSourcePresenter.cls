@@ -212,6 +212,7 @@ jadeExecuteAndDisplay: showResult
 
 	| result |
 	result := self executeSelectionOrLine.
+	result ifNil: [^self]. 
 	result key ifTrue: [
 		showResult ifTrue: [
 			self showResult: result value.
