@@ -1962,6 +1962,33 @@ test_compileClassExistingInAnotherPackage
 	self assert: (self classListPresenter selection instVarNames includes: #erbleldy)]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+test_compileClassWithMethodWarnings
+	self testsIssue: #issue569
+		withTitle: 'Method Compile on class update should not warn about unused temps (3.0.79)'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #yes.
+	self selectRowanSample1Class.
+	self assertIsNil: (self methodListPresenter list
+				detect: [:methodService | methodService selector = #methodWithUnusedTemp]
+				ifNone: []).
+	self
+		saveMethod: 'methodWithUnusedTemp  | unused | ^123'
+		in: 'RowanSample1'
+		category: 'other'.
+	self
+		saveClass: 'RowanSample1'
+		superclass: 'Object'
+		instVars: #('abc')
+		package: 'RowanSample1-Core'.
+	self assert: TestMessageBox plannedResult equals: #yes.	"no dialog was raised"
+	
+	[self denyIsNil: (self methodListPresenter list
+				detect: [:methodService | methodService selector = #methodWithUnusedTemp]
+				ifNone: [])]
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
+
 test_compileErrorDisplay
 	| source |
 	self testsIssue: #issue459 withTitle: 'CompileWarnings should be more noticable ... '.
@@ -5876,6 +5903,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_compileClassCompilerError!public!test compiing!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_compileClassDirtiesPackageAndProject!public!test compiing! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_compileClassExistingInAnotherPackage!public!test compiing!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_compileClassWithMethodWarnings!public!test compiing!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_compileErrorDisplay!public!test compiing!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_confirmationDialogDuringCompileClassExistingInAnotherPackage!public!test compiing!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_confirmOverrideExistingAccessorMethods!public!test variable tab!tests! !
