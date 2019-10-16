@@ -2119,12 +2119,12 @@ test_dontDuplicateBreakpoints
 	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
 	self projectsPresenter setBreakPointAt: 2 in: self projectsPresenter.
 	self assert: self methodListPresenter selection breakPoints size = 2.
-	self assert: self methodListPresenter selection breakPoints = #(1 2).
+	self assert: self methodListPresenter selection breakPoints = #(1 2) asOrderedCollection.
 	
 	[breakpointBrowser := self projectsPresenter browseBreakpoints.
 	self assert: breakpointBrowser primaryPresenter methodListPresenter methodListPresenter list size equals: 1.
 	self assert: breakpointBrowser primaryPresenter methodListPresenter selection selector = #test1.
-	self assert: breakpointBrowser primaryPresenter methodListPresenter selection breakPoints = #(1 2)]
+	self assert: breakpointBrowser primaryPresenter methodListPresenter selection breakPoints = #(1 2) asOrderedCollection]
 			ensure: 
 				[breakpointBrowser view close.
 				self projectsPresenter clearMethodBreakpoints]!

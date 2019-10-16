@@ -216,12 +216,12 @@ setBreakAt: anInteger
 	self projectsPresenter setBreakPointAt: anInteger in: self projectsPresenter!
 
 setUp
-	| list1 list2 |
 	super setUp.
 	self closeDebuggers.
 	JadeiteDebugger debuggerClass: JadeiteDebugger.
 	self assertIsNil: JadeiteDebugger semaphore.
-	self assert: session notNil!
+	self assert: session notNil.
+	session := GciSession current!
 
 statusBarValue
 	^(debugger view viewNamed: 'statusBarField') value!
@@ -341,18 +341,18 @@ test_adHocExecutionEvaluatesTemp
 			ensure: [self removeMethodNamed: #testAdHocExecutionWith:]!
 
 test_adHocExecutionSelf
-	| finished |
 	self openDebuggerOn: '''gloop'' halt'.
 	debugger frameListPresenter selectionByIndex: 3.
 	debugger methodSourcePresenter documentPresenter value: 'self'.
 	debugger methodSourcePresenter documentPresenter view setFocus.
-	finished := false.
-	self
-		debuggerDo: [
+	self debuggerDo: 
+			[
 			[debugger jadeDisplay.
-			finished := true] forkAt: Processor activePriority + 1].
-	[finished] whileFalse: 
-			[self assert: debugger methodSourcePresenter documentPresenter value equals: 'self ''gloop'''].
+			debugger methodSourcePresenter documentPresenter view invalidate]
+					forkAt: Processor activePriority + 1].
+	[debugger methodSourcePresenter documentPresenter value = 'self ''gloop''']
+		whileFalse: [(Delay forMilliseconds: 10) wait].
+	self assert: debugger methodSourcePresenter documentPresenter value equals: 'self ''gloop'''.
 	debugger methodSourcePresenter documentPresenter view isModified: false!
 
 test_adHocExecutionUpdatesVariablesList
@@ -379,6 +379,59 @@ test_adHocExecutionUpdatesVariablesList
 	self assert: debugger variableListPresenter selection _key equals: #temp1.
 	self assert: debugger variableListPresenter selection value equals: 5]
 			ensure: [self removeMethodNamed: #testAdHocExecutionWith:]!
+
+test_adHocVariablePaneDisplay
+	self openDebuggerOn: 'self halt'.
+	self assert: debugger variableDataPresenter value equals: String new.
+	debugger variableDataPresenter value: '#abc'.
+	self debuggerDo: 
+			[
+			[debugger jadeDisplay.
+			debugger methodSourcePresenter documentPresenter view invalidate]
+					forkAt: Processor activePriority + 1].
+	[debugger variableDataPresenter value = '#abc #''abc''']
+		whileFalse: [(Delay forMilliseconds: 10) wait].
+	self assert: debugger variableDataPresenter value equals: '#abc #''abc'''.
+	self debuggerDo: [debugger resumeProcess]!
+
+test_adHocVariablePaneExecute
+	self openDebuggerOn: '| abc | abc := 123. self halt. abc := 234'.
+	self assert: (debugger variableListPresenter list at: 2) _key equals: #abc.
+	self assert: (debugger variableListPresenter list at: 2) value equals: '123'.
+	self assert: debugger variableDataPresenter value equals: String new.
+	debugger variableDataPresenter value: 'abc := 567'.
+	self debuggerDo: [debugger jadeExecute].
+	self assert: (debugger variableListPresenter list at: 2) value equals: 567.
+	self debuggerDo: [debugger resumeProcess]!
+
+test_adHocVariablePaneInspect
+	| inspector inspectorOpen |
+	self openDebuggerOn: 'self halt'.
+	self assert: debugger variableDataPresenter value equals: String new.
+	debugger variableDataPresenter value: '#abc'.
+	inspectorOpen := false.
+	
+	[inspector := debugger jadeInspect.
+	inspectorOpen := true.
+	[self assert: inspector documentPresenter value equals: '#''abc'''] ensure: [inspector view close]]
+			fork.
+	[inspectorOpen] whileFalse: [(Delay forMilliseconds: 10) wait].
+	self debuggerDo: [debugger resumeProcess]!
+
+test_adHocVariablePaneInspect2
+	| inspector inspectorOpen |
+	self openDebuggerOn: 'self halt'.
+	self assert: debugger variableDataPresenter value equals: String new.
+	debugger variableDataPresenter value: 'OrderedCollection with: 1 with: 2'.
+	inspectorOpen := false.
+	
+	[inspector := debugger jadeInspect.
+	inspectorOpen := true.
+	[self assert: inspector documentPresenter value equals: 'anOrderedCollection( 1, 2)']
+		ensure: [inspector view close]]
+			fork.
+	[inspectorOpen] whileFalse: [(Delay forMilliseconds: 10) wait].
+	self debuggerDo: [debugger resumeProcess]!
 
 test_badCompileInDebugger
 	| source |
@@ -1886,6 +1939,10 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionEvaluatesTemp!public!test ad hoc execution! !
 !JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionSelf!public!test ad hoc execution! !
 !JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionUpdatesVariablesList!public!test ad hoc execution! !
+!JadeiteDebuggerTestCase categoriesFor: #test_adHocVariablePaneDisplay!public!test ad hoc execution! !
+!JadeiteDebuggerTestCase categoriesFor: #test_adHocVariablePaneExecute!public!test ad hoc execution! !
+!JadeiteDebuggerTestCase categoriesFor: #test_adHocVariablePaneInspect!public!test ad hoc execution! !
+!JadeiteDebuggerTestCase categoriesFor: #test_adHocVariablePaneInspect2!public!test ad hoc execution! !
 !JadeiteDebuggerTestCase categoriesFor: #test_badCompileInDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_breakpointHighlightingInBlocks!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
