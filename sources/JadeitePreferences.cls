@@ -131,8 +131,8 @@ preferencesFileDefaultContents
 	^'#Remove # to uncomment option. 
 #legal values are either a boolean or a name
 
-#autocommitEnabled: true
-#autocompleteEnabled: false
+#autocommitEnabled: false
+#autocompleteEnabled: true
 #breakpointsEnabled: true
 #loggingEnabled: false
 #openBrowserOnClass: <class name>
