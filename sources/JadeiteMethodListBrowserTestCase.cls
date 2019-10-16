@@ -216,6 +216,41 @@ test_browseBreakpoints
 		ensure: [methodListBrowser view close]]
 			ensure: [projectsBrowser view close]!
 
+test_browseBreakpointsClearAllMenuItemFromMethodList
+	| clearAllItem methodsMenu browseBreakpointsItem |
+	self testsIssue: #issue515 withTitle: '(3.0.77) clear all breakpoints menu item would be useful'.
+	self openProjectBrowser.
+	
+	[self selectRowanSample1Class.
+	browseBreakpointsItem := self methodListPresenter view contextMenu items
+				detect: [:command | '*Browse*Breakpoints*' match: command text]
+				ifNone: [].
+	self denyIsNil: browseBreakpointsItem.
+	methodListBrowser := self projectsPresenter perform: browseBreakpointsItem command asSymbol.
+	methodsMenu := methodListBrowser view menuBar items detect: [:menu | '*Methods*' match: menu text]
+				ifNone: [].
+	clearAllItem := methodsMenu items detect: [:command | '*Clear*All*Breakpoints*' match: command text]
+				ifNone: [].
+	self denyIsNil: clearAllItem.
+	self assert: clearAllItem command asSymbol equals: #clearAllBreakpoints]
+			ensure: [projectsBrowser view close]!
+
+test_browseBreakpointsClearAllMenuItemFromTranscript
+	| browseMenu clearAllItem methodsMenu browseBreakpointsItem |
+	self testsIssue: #issue515 withTitle: '(3.0.77) clear all breakpoints menu item would be useful'.
+	browseMenu := transcript view menuBar items detect: [:menu | '*Browse*' match: menu text] ifNone: [].
+	browseBreakpointsItem := browseMenu items
+				detect: [:command | '*Browse*Breakpoints*' match: command text]
+				ifNone: [].
+	self denyIsNil: browseBreakpointsItem.
+	methodListBrowser := transcript perform: browseBreakpointsItem command asSymbol.
+	methodsMenu := methodListBrowser view menuBar items detect: [:menu | '*Methods*' match: menu text]
+				ifNone: [].
+	clearAllItem := methodsMenu items detect: [:command | '*Clear*All*Breakpoints*' match: command text]
+				ifNone: [].
+	self denyIsNil: clearAllItem.
+	self assert: clearAllItem command asSymbol equals: #clearAllBreakpoints!
+
 test_browseBreakpointsFromTranscript
 	| methodService |
 	self testsIssue: #issue225 withTitle: 'nice to have a breakpoint browser'.
@@ -1132,6 +1167,8 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_adHocContextClassSide!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_adHocContextInstanceSide!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpoints!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpointsClearAllMenuItemFromMethodList!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpointsClearAllMenuItemFromTranscript!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpointsFromTranscript!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClassReferenceCaptionTitle!public!test browse methods! !

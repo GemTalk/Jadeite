@@ -2386,7 +2386,7 @@ basicBrowseMethod: methodService presenter: browser
 			browser methodListPresenter selection: methodService]!
 
 browseBreakpointsIn: session
-	| service shell |
+	| service shell menuCommand methodMenu |
 	service := RowanQueryService command: #breakPointMethods withArgs: Array new.
 	self issueCommand: (Array with: service) session: session.
 	shell := self
@@ -2394,6 +2394,11 @@ browseBreakpointsIn: session
 				selectingAnyMatch: String new
 				session: session.
 	shell updateCaptionFromSearchString: 'Methods Containing BreakPoints'.
+	menuCommand := MessageSend receiver: shell primaryPresenter selector: #clearAllBreakpoints.
+	methodMenu := shell view menuBar items detect: [:menu | '*Methods*' match: menu text]
+				ifNone: [^shell].
+	methodMenu addSeparator.
+	methodMenu addCommand: menuCommand description: 'Clear All Breakpoints'.
 	^shell!
 
 browseClassIn: session

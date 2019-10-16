@@ -41,15 +41,7 @@ autoCompleteEnabled: boolean
 	autoCompleteEnabled value: boolean!
 
 browseBreakpoints
-	| methodListBrowser menuCommand methodMenu |
-	methodListBrowser := JadePresenter browseBreakpointsIn: self gciSession.
-	menuCommand := MessageSend receiver: methodListBrowser primaryPresenter
-				selector: #clearAllBreakpoints.
-	methodMenu := methodListBrowser view menuBar items detect: [:menu | '*Methods*' match: menu text]
-				ifNone: [^methodListBrowser]. 
-	methodMenu addSeparator.
-	methodMenu addCommand: menuCommand description: 'Clear All Breakpoints'.
-	^methodListBrowser!
+	^JadePresenter browseBreakpointsIn: self gciSession!
 
 browseClass
 	^JadePresenter browseClassIn: self gciSession!
