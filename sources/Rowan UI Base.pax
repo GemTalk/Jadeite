@@ -93,6 +93,7 @@ package methodNames
 	add: #CodeSourcePresenter -> #executeSelectionOrLine;
 	add: #CodeSourcePresenter -> #jadeInspect;
 	add: #CodeSourcePresenter -> #methodMenuBreak:;
+	add: #CodeSourcePresenter -> #shortenSelection:;
 	add: #Collection -> #basicPrepareForReplication;
 	add: #Collection -> #prepareForReplication;
 	add: #GciSession -> #_executeString:fromContextOop:environment:;
@@ -923,8 +924,11 @@ jadeInspect
 	^JadeInspector showOn: result session: gciSession!
 
 methodMenuBreak: menu
-	| currentSelection implementorsCommand sendersCommand browseClassMenuItem menuPosition implementorsItem sendersItem |
+	| currentSelection implementorsCommand sendersCommand browseClassMenuItem menuPosition implementorsItem sendersItem currentSelectionMenuItemName |
 	currentSelection := self currentSelection.
+	currentSelectionMenuItemName := (currentSelection includes: Character space)
+				ifTrue: [self shortenSelection: currentSelection]
+				ifFalse: [currentSelection].
 	menu items copy do: 
 			[:item |
 			item isDivider
@@ -941,7 +945,7 @@ methodMenuBreak: menu
 				selector: #browseImplementorsOf:
 				argument: currentSelection.
 	implementorsItem := CommandMenuItem command: implementorsCommand
-				description: 'Browse Implementors of #' , currentSelection.
+				description: 'Browse Implementors of #' , currentSelectionMenuItemName.
 	menu insertItem: implementorsItem at: menuPosition + 1.
 	menuPosition := menu items indexOf: implementorsItem.
 	sendersCommand := MessageSend
@@ -949,13 +953,23 @@ methodMenuBreak: menu
 				selector: #browseSendersOf:
 				argument: currentSelection.
 	sendersItem := CommandMenuItem command: sendersCommand
-				description: 'Browse Senders of #' , currentSelection.
-	menu insertItem: sendersItem at: menuPosition + 1! !
+				description: 'Browse Senders of #' , currentSelectionMenuItemName.
+	menu insertItem: sendersItem at: menuPosition + 1!
+
+shortenSelection: currentSelection
+	| readStream |
+	readStream := ReadStream on: currentSelection.
+	^
+	[| string |
+	string := readStream upTo: Character space.
+	string := string , ' ...']
+			ensure: [readStream close]! !
 !CodeSourcePresenter categoriesFor: #browseSelectedClass!Jade!public! !
 !CodeSourcePresenter categoriesFor: #currentSelection!public! !
 !CodeSourcePresenter categoriesFor: #executeSelectionOrLine!Jade!private! !
 !CodeSourcePresenter categoriesFor: #jadeInspect!Jade!private! !
 !CodeSourcePresenter categoriesFor: #methodMenuBreak:!menus!public! !
+!CodeSourcePresenter categoriesFor: #shortenSelection:!menus!public! !
 
 !CodeSourcePresenter class methodsFor!
 

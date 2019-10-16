@@ -274,6 +274,24 @@ test_workspaceDoubleClickIncludesColon
 	self assert: workspace codePane documentPresenter selectionRange equals: (7 to: 11).
 	self assert: workspace codePane documentPresenter selection equals: 'with:'!
 
+test_workspaceImplementorsMenuNotTooLong
+	"The workspace allows you to pick arbitray code and search for implementors. 
+	If it encounters a space, truncate the menu item display while still searching
+	for the actual selection"
+
+	| item |
+	self testsIssue: #issue568
+		withTitle: 'Workspace popup menu gets ridiculously long menu items for Browse Senders/Implementors'.
+	workspace := (JadeWorkspace showOnSession: session)
+				caption: 'Jadeite Workspace - Test Menu Item Length'.
+	workspace codePane documentPresenter value: 'some random bunch of 123text'.
+	workspace codePane documentPresenter view selectAll.
+	self assert: workspace codePane documentPresenter selection equals: 'some random bunch of 123text'.
+	workspace codePane methodMenuBreak: workspace codePane documentPresenter view contextMenu.
+	item := self itemNamed: 'Browse Implementors of #some ...'
+				in: workspace codePane documentPresenter view contextMenu.
+	self assert: item command asSymbol equals: #browseImplementorsOf:!
+
 test_workspaceInformInteraction
 	| workspace result |
 	self testsIssue: #issue303 withTitle: 'Need to handle confirm:'.
@@ -419,6 +437,24 @@ test_workspacePlainStringSenders
 	[self assert: ('Senders of ''env:categorysDo:''*' match: methodListBrowser caption)]
 		ensure: [methodListBrowser view close]!
 
+test_workspaceSendersMenuNotTooLong
+	"The workspace allows you to pick arbitray code and search for Senders. 
+	If it encounters a space, truncate the menu item display while still searching
+	for the actual selection"
+
+	| item |
+	self testsIssue: #issue568
+		withTitle: 'Workspace popup menu gets ridiculously long menu items for Browse Senders/Senders'.
+	workspace := (JadeWorkspace showOnSession: session)
+				caption: 'Jadeite Workspace - Test Menu Item Length'.
+	workspace codePane documentPresenter value: 'some random bunch of 123text'.
+	workspace codePane documentPresenter view selectAll.
+	self assert: workspace codePane documentPresenter selection equals: 'some random bunch of 123text'.
+	workspace codePane methodMenuBreak: workspace codePane documentPresenter view contextMenu.
+	item := self itemNamed: 'Browse Senders of #some ...'
+				in: workspace codePane documentPresenter view contextMenu.
+	self assert: item command asSymbol equals: #browseSendersOf:!
+
 test_workspaceStringWithQuotesImplementors
 	| methodListBrowser browseImplementorsItem menu |
 	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
@@ -553,6 +589,7 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceConfirmInteraction!public!test!test menus!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceDoubleClickIncludesColon!public!test!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceImplementorsMenuNotTooLong!public!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceInformInteraction!public!test!test menus!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceJadeiteMenuAdHocExecutionItems!public!test!test menus!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageImplementors!public!test browse!test workspaces! !
@@ -561,6 +598,7 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageSendersWithEndingQuote!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspacePlainStringImplementors!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspacePlainStringSenders!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSendersMenuNotTooLong!public!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceStringWithQuotesImplementors!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceStringWithQuotesSenders!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolImplementors!public!test browse!test workspaces! !
