@@ -464,6 +464,7 @@ stepThrough
 	BrowserUpdate current logComment: '#stepThrough'.
 	gciSession stepThrough: (GsProcess session: gciSession oopType: gsProcess oopType)
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
+	(gciSession gciVersion beginsWith: '3.2') ifFalse: [self stepOver].
 	[self getProcessList] on: RowanDebuggerStepPointError do: [:ex | self stepInto]!
 
 terminateIdleProcess

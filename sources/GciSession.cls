@@ -725,7 +725,7 @@ stepThrough: aGsProcess inFrame: anInteger
 	self
 		serverPerformInterpreted: #'stepThrough:inFrame:'
 		with: aGsProcess
-		with: 0.
+		with: anInteger.
 !
 
 stoneHost
