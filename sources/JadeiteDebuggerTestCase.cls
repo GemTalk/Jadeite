@@ -1570,6 +1570,27 @@ abc'.
 	self assert: debugger documentPresenter view selection equals: 'to:'.
 	self debuggerDo: [debugger resumeProcess]!
 
+test_stepThrough
+	self
+		openDebuggerOn: '| array string |
+array := Array with: ''abc'' with: ''def'' with: ''ghi''. 
+string := String new. 
+self halt. 
+array do:[:theString |
+	string := string, theString]. 
+array'.
+	self assert: debugger documentPresenter view selection equals: 'halt'.
+	self debuggerDo: [debugger stepOver].
+	self assert: debugger documentPresenter view selection equals: 'do:'.
+	self debuggerDo: [debugger stepThrough].
+	self assert: debugger documentPresenter view selection equals: ', '. "inside block"
+	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @12 line 6'.
+	self debuggerDo: [debugger stepOver].
+	self assert: debugger documentPresenter view selection equals: ':='.
+	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @13 line 6'.
+	self debuggerDo: [debugger resumeProcess]. 
+!
+
 test_switchProcesses
 	| activeProcesses longRunningProcess |
 	activeProcesses := session executeString: 'ProcessorScheduler scheduler allProcesses size'.
@@ -1990,6 +2011,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_stepOutSelectedFrame1!public!test step out! !
 !JadeiteDebuggerTestCase categoriesFor: #test_stepOutSelectedFrame2!public!test step out! !
 !JadeiteDebuggerTestCase categoriesFor: #test_stepOutTopFrame!public!test step out! !
+!JadeiteDebuggerTestCase categoriesFor: #test_stepThrough!public!test step out! !
 !JadeiteDebuggerTestCase categoriesFor: #test_switchProcesses!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_terminateDoesNotWalkback!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_unicodeMethod!public!tests! !
