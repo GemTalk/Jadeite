@@ -720,6 +720,14 @@ stepOver: aGsProcess inFrame: anInteger
 		with: anInteger.
 !
 
+stepThrough: aGsProcess inFrame: anInteger
+
+	self
+		serverPerformInterpreted: #'stepThrough:inFrame:'
+		with: aGsProcess
+		with: 0.
+!
+
 stoneHost
 	^stoneHost!
 
@@ -834,6 +842,7 @@ valueOfOop: anOopType
 !GciSession categoriesFor: #stepInto:inFrame:!public! !
 !GciSession categoriesFor: #stepOut:inFrame:!public! !
 !GciSession categoriesFor: #stepOver:inFrame:!public! !
+!GciSession categoriesFor: #stepThrough:inFrame:!public! !
 !GciSession categoriesFor: #stoneHost!accessing!public! !
 !GciSession categoriesFor: #stoneName!accessing!public! !
 !GciSession categoriesFor: #stoneSerial!private! !
