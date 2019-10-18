@@ -223,6 +223,7 @@ login
 			[:ex |
 			MessageBox errorMsg: ex description caption: self loginFailureCaption.
 			SessionManager current pause.
+			GciSession current: nil.
 			^self].
 	self postLogin: session!
 
