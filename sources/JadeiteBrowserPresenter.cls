@@ -867,7 +867,7 @@ variablesMenuStrings
 			self
 				browseInstVarReaders;
 				browseInstVarWriters].
-	^#('&Variables' '&Add Accessors//addVariableAccessors' '&Browser Inst Var Readers//browseInstVarReaders' '&Browser Inst Var Writers//browseInstVarWriters')! !
+	^#('&Variables' '&Add Accessors//addVariableAccessors' '&Browse Inst Var Readers//browseInstVarReaders' '&Browse Inst Var Writers//browseInstVarWriters')! !
 !JadeiteBrowserPresenter categoriesFor: #addDictionary!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #additionalAccelerators!constants!public! !
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
