@@ -1217,10 +1217,10 @@ populateFilterList
 	self isCategoryTabSelected
 		ifTrue: 
 			[listModel addAll: self selectedClass categories.
-			categoryListPresenter model: listModel]
+			categoryListPresenter model: (ListModel on: listModel asSortedCollection)]
 		ifFalse: 
 			[listModel addAll: self selectedClass variables.
-			variableListPresenter model: listModel]!
+			variableListPresenter model: (ListModel on: listModel asSortedCollection)]!
 
 postOkToChangeEvent
 	| service |

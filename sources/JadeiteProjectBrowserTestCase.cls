@@ -5756,6 +5756,26 @@ test_variablesUpdatedOnClassSaveInHierarchy
 	self assert: self categoryListPresenter list size equals: 1.
 	self assert: (self categoryListPresenter list includes: 'aaa')!
 
+test_variableTabSortOrder
+	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
+	self selectRowanSample1Class.
+	self
+		saveClass: 'RowanSample2Test'
+		superclass: 'RowanSample1Test'
+		instVars: #('_var1' 'var2' 'var3')
+		package: 'RowanSample1-Tests'.
+	
+	[self projectsPresenter selectVariableTab.
+	self assert: self variableListPresenter list asArray equals: #('_var1' 'testSelector' 'var2' 'var3').
+	self selectHierarchyTab.
+	self selectClassInHierarchyNamed: 'RowanSample1Test'.
+	self selectClassInHierarchyNamed: 'RowanSample2Test'.
+	self assert: self variableListPresenter list asArray equals: #('_var1' 'testSelector' 'var2' 'var3').
+	self projectsPresenter selectCategoryTab.
+	self projectsPresenter selectVariableTab.
+	self assert: self variableListPresenter list asArray equals: #('_var1' 'testSelector' 'var2' 'var3')]
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
+
 test_verifyValidCategory
 	self testsIssue: #issue205 withTitle: 'misspelled extension category name causes trouble'.
 	self assert: (self projectsPresenter verifyValidCategory: '*Rowan-Kernel') .
@@ -6184,6 +6204,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_variablesTab!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_variablesUpdatedOnClassSaveInClassList!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_variablesUpdatedOnClassSaveInHierarchy!public!test class list!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_variableTabSortOrder!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_verifyValidCategory!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_zzznoStepPoints!public!test step points!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_zzzstepPoint1!public!test step points!tests! !
