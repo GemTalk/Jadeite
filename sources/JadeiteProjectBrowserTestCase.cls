@@ -3254,6 +3254,94 @@ test_insertIfTrue
 	self assert: self projectsPresenter additionalAccelerators second
 		equals: #(#insertIfTrue 'Ctrl+Shift+T')!
 
+test_instVarReaders
+	"should browse the whole hierarchy"
+
+	| list |
+	self selectRowanSample1Class.
+	self
+		saveClass: 'Foo'
+		superclass: 'Object'
+		instVars: (Array with: 'fooInstVar')
+		package: 'RowanSample1-Core'.
+	self selectServiceNamed: 'Foo' in: self classListPresenter.
+	self
+		saveClass: 'FooSub'
+		superclass: 'Foo'
+		instVars: Array new
+		package: 'RowanSample1-Core'.
+	self selectServiceNamed: 'Foo' in: self classListPresenter.
+	self
+		saveMethod: 'fooInstVar ^fooInstVar'
+		in: 'Foo'
+		category: 'other'.
+	self
+		saveMethod: 'fooInstVarSize ^fooInstVar size'
+		in: 'Foo'
+		category: 'other'.
+	self selectServiceNamed: 'FooSub' in: self classListPresenter.
+	self
+		saveMethod: 'fooInstVarSubSize ^fooInstVar size'
+		in: 'FooSub'
+		category: 'other'.
+	self
+		saveMethod: 'doesNotShowUpInList ^1'
+		in: 'FooSub'
+		category: 'other'.
+	self projectsPresenter selectVariableTab.
+	self projectsPresenter variableListPresenter selection: 'fooInstVar'.
+	methodListBrowser := self projectsPresenter browseInstVarReaders.
+	list := methodListBrowser primaryPresenter methodListPresenter methodListPresenter list.
+	self assert: list size equals: 3.
+	self assert: (list select: [:methodService | methodService className = 'Foo']) size equals: 2.
+	self assert: (list select: [:methodService | methodService className = 'FooSub']) size equals: 1.
+	self assert: (list collect: [:methodService | methodService selector]) asArray
+		equals: #(#fooInstVar #fooInstVarSize #fooInstVarSubSize)!
+
+test_instVarWriters
+	"should browse the whole hierarchy"
+
+	| list |
+	self selectRowanSample1Class.
+	self
+		saveClass: 'Foo'
+		superclass: 'Object'
+		instVars: (Array with: 'fooInstVar')
+		package: 'RowanSample1-Core'.
+	self selectServiceNamed: 'Foo' in: self classListPresenter.
+	self
+		saveClass: 'FooSub'
+		superclass: 'Foo'
+		instVars: Array new
+		package: 'RowanSample1-Core'.
+	self selectServiceNamed: 'Foo' in: self classListPresenter.
+	self
+		saveMethod: 'fooInstVar: anObject fooInstVar := anObject'
+		in: 'Foo'
+		category: 'other'.
+	self
+		saveMethod: 'fooInstVarSize fooInstVar := fooInstVar size'
+		in: 'Foo'
+		category: 'other'.
+	self selectServiceNamed: 'FooSub' in: self classListPresenter.
+	self
+		saveMethod: 'fooInstVarSubSize fooInstVar := fooInstVar size'
+		in: 'FooSub'
+		category: 'other'.
+	self
+		saveMethod: 'doesNotShowUpInList ^1'
+		in: 'FooSub'
+		category: 'other'.
+	self projectsPresenter selectVariableTab.
+	self projectsPresenter variableListPresenter selection: 'fooInstVar'.
+	methodListBrowser := self projectsPresenter browseInstVarWriters.
+	list := methodListBrowser primaryPresenter methodListPresenter methodListPresenter list.
+	self assert: list size equals: 3.
+	self assert: (list select: [:methodService | methodService className = 'Foo']) size equals: 2.
+	self assert: (list select: [:methodService | methodService className = 'FooSub']) size equals: 1.
+	self assert: (list collect: [:methodService | methodService selector]) asArray
+		equals: #(#fooInstVar: #fooInstVarSize #fooInstVarSubSize)!
+
 test_issue261
 	"create a loaded project and test the info display"
 	| view |
@@ -5968,6 +6056,8 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_insertIfFalse!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_insertIfTrue!public!test methods! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_instVarReaders!public!test variable tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_instVarWriters!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_issue261!public!test menus!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_loadProjectRemovingClass!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_makeDefault!public!tests! !
