@@ -404,6 +404,30 @@ test_flipBreakPointsDisabled
 		equals: breakPointsEnabled]
 			ensure: [transcript areBreakpointsEnabled value: breakPointsEnabled]!
 
+test_implementorsSendersSearchList
+	| selection |
+	self testsIssue: #issue581
+		withTitle: '(3.0.81) Implementors Of.../Senders Of... doesn''t show selection list'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestPrompter plannedResult: 'sub*'.
+	TestChoicePrompter plannedResult: #subclasses.
+	selection := JadePresenter
+				promptForMatchingSymbolsIn: session
+				actionBlock: [:sel | sel]
+				promptCaption: 'Test search selectors:'
+				searchType: 'prompt:'.
+	self assert: selection equals: #subclasses.
+	"the code above doesn't really test that our list is populated. Hence the assertions below.
+	JadeiteSearch is referenced from #promptFor*"
+	(JadeiteSearch symbolsFrom: ('sub*' copyWithout: $*) session: session)
+		do: [:string | self assert: (string beginsWith: 'sub')].
+	self
+		denyIsNil: ((JadeiteTranscriptTestCase methodDictionary at: #test_implementorsSendersSearchList)
+				literalsDetect: [:literal | (literal isKindOf: Association) and: [literal value = JadeiteSearch]]
+				ifNone: [])]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_jadeiteMenuAdHocExecutionItems
 	| editMenu debugMenuItem executeMenuItem inspectMenuItem displayMenuItem |
 	self testsIssue: #issue474 withTitle: '(3.0.69) inconsistent debug menu on workspaces'.
@@ -605,6 +629,7 @@ writeToPrefsFile: string
 !JadeiteTranscriptTestCase categoriesFor: #test_commitTransaction!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_doubleClickOpenProjectBrowser!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_flipBreakPointsDisabled!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_implementorsSendersSearchList!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_jadeiteMenuAdHocExecutionItems!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_menuBarBrowseProjectsHonorsSelection!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_menuNames!public!tests! !

@@ -85,6 +85,7 @@ package classNames
 	add: #RowanSystemBrowser;
 	add: #RowanSystemBrowserPresenter;
 	add: #RowanVariableService;
+	add: #TestChoicePrompter;
 	yourself.
 
 package methodNames
@@ -429,7 +430,6 @@ package methodNames
 	add: 'JadePresenter class' -> #promptFor:withCaption:;
 	add: 'JadePresenter class' -> #promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:;
 	add: 'JadePresenter class' -> #runMethodTests:in:;
-	add: 'JadePresenter class' -> #symbolsFrom:session:;
 	add: 'JadeServer class' -> #gsString;
 	add: 'JadeServer64bit32 class' -> #gsClassDefinitionStringFor:;
 	add: 'JadeSessionManager class' -> #getUrl;
@@ -773,6 +773,11 @@ KeyValuePrompter subclass: #RowanKeyValuePrompter
 MCVersionDialog subclass: #RowanSavePackageDialog
 	instanceVariableNames: ''
 	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+ChoicePrompter subclass: #TestChoicePrompter
+	instanceVariableNames: ''
+	classVariableNames: 'PlannedResult'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeValueDialog subclass: #JadeFindDialog
@@ -2636,12 +2641,12 @@ promptFor: aString withCaption: caption
 	string := string copyWithout: Character space.
 	^string!
 
-promptForMatchingSymbolsIn: session actionBlock: aBlock promptCaption: caption searchType: aString
+promptForMatchingSymbolsIn: session actionBlock: aBlock promptCaption: caption searchType: prompt
 	| selector symbols |
-	(selector := self promptFor: aString withCaption: caption) isNil ifTrue: [^self].
+	(selector := self promptFor: prompt withCaption: caption) isNil ifTrue: [^self].
 	selector := selector copyWithout: Character space.
 	(selector includes: $*) ifFalse: [^aBlock value: selector].
-	symbols := self symbolsFrom: selector session: session.
+	symbols := JadeiteSearch symbolsFrom: (selector copyWithout: $*) session: session.
 	(selector := ChoicePrompter choices: symbols) isNil ifTrue: [^self].
 	^aBlock value: selector!
 
@@ -2652,15 +2657,7 @@ runMethodTests: methodServices in: session
 		command: #runMethodTests:;
 		commandArgs: (Array with: methodServices).
 	answeringService := (self issueCommand: (Array with: answeringService) session: session) first.
-	^answeringService answer!
-
-symbolsFrom: selector session: session
-	| symbols service |
-	service := RowanAnsweringService new
-				command: #sortedSymbols;
-				commandArgs: Array new.
-	symbols := (self issueCommand: (Array with: service) session: session) first answer.
-	^symbols select: [:symbol | symbol beginsWith: selector]! !
+	^answeringService answer! !
 !JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
 !JadePresenter class categoriesFor: #basicBrowseClassReferences:session:!browsing!browsing support!public! !
 !JadePresenter class categoriesFor: #basicBrowseMethod:presenter:!browsing!public! !
@@ -2694,7 +2691,6 @@ symbolsFrom: selector session: session
 !JadePresenter class categoriesFor: #promptFor:withCaption:!browsing support!private! !
 !JadePresenter class categoriesFor: #promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:!browsing support!private! !
 !JadePresenter class categoriesFor: #runMethodTests:in:!public! !
-!JadePresenter class categoriesFor: #symbolsFrom:session:!browsing support!private! !
 
 !JadePresenterA methodsFor!
 

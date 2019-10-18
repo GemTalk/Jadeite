@@ -28,11 +28,12 @@ result
 !TestMessageBox class methodsFor!
 
 disableJadeiteTestMessageBox
-	TestMessageBox plannedResult: nil.
+	self plannedResult: OrderedCollection new.
 	Smalltalk removeKey: #JadeiteTestsActive ifAbsent: []!
 
 enableJadeiteTestMessageBox
-	Smalltalk at: #JadeiteTestsActive put: true!
+	Smalltalk at: #JadeiteTestsActive put: true.
+	self plannedResult: OrderedCollection new!
 
 lastMessageBox
 	"store a copy of the last message box for testing"
@@ -44,18 +45,18 @@ lastMessageBox: messageBox
 
 	LastMessageBox := messageBox!
 
-plannedResult
-	"test needs to setup expected result each time.
-	This helps ensure we don't leave a result hanging around
-	causing unknown chaos."
-	[^PlannedResult] ensure: [self plannedResult: nil]!
+plannedResult 
+	[^PlannedResult first] ensure: [PlannedResult removeFirstIfAbsent: []]!
 
 plannedResult: answer
 	"tests can insert the desired result to simulate various
 	MessageBox behaviors. Class variable is reset to nil after
-	each use."
+	each use.
+	answer can be a collection or an object"
 
-	PlannedResult := answer! !
+	(answer isKindOf: OrderedCollection)
+		ifTrue: [PlannedResult := answer]
+		ifFalse: [PlannedResult := OrderedCollection with: answer]! !
 !TestMessageBox class categoriesFor: #disableJadeiteTestMessageBox!actions!public! !
 !TestMessageBox class categoriesFor: #enableJadeiteTestMessageBox!actions!public! !
 !TestMessageBox class categoriesFor: #lastMessageBox!accessing!public! !

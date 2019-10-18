@@ -28,18 +28,16 @@ showModalView
 !TestPrompter class methodsFor!
 
 plannedResult
-	"test needs to setup expected result each time.
-	This helps ensure we don't leave a result hanging around
-	causing unknown chaos."
-
-	[^PlannedResult] ensure: [self plannedResult: nil]!
+	[^PlannedResult first] ensure: [PlannedResult removeFirstIfAbsent: []]!
 
 plannedResult: answer
 	"tests can insert the desired result to simulate various
 	MessageBox behaviors. Class variable is reset to nil after
-	each use."
+	each use. answer can be a collection or an object"
 
-	PlannedResult := answer! !
+	(answer isKindOf: OrderedCollection)
+		ifTrue: [PlannedResult := answer]
+		ifFalse: [PlannedResult := OrderedCollection with: answer]! !
 !TestPrompter class categoriesFor: #plannedResult!public! !
 !TestPrompter class categoriesFor: #plannedResult:!public! !
 
