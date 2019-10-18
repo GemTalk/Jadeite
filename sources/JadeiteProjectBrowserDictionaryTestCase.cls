@@ -742,11 +742,11 @@ test_mutliSelectDictionaryHierarchy
 	self selectNoneProject.
 	self selectServicesNamed: #('UserGlobals' 'Published') in: self dictionaryPresenter.
 	self assert: (self classListPresenter list collect: [:classService | classService name]) asArray
-		equals: #('JadeServer' 'JadeServer64bit' 'JadeServer64bit24' 'JadeServer64bit32' 'JadeServer64bit3x' 'Rowan' 'RowanSample1' 'RowanSample1Test' 'RowanSubClass').
+		equals: #('JadeServer' 'JadeServer64bit' 'JadeServer64bit24' 'JadeServer64bit32' 'JadeServer64bit35' 'JadeServer64bit3x' 'Rowan' 'RowanSample1' 'RowanSample1Test' 'RowanSubClass').
 	self selectHierarchyTab.
 	self
 		assert: (self classHierarchyPresenter model asArray collect: [:classService | classService name])
-		equals: #('Object' 'JadeServer' 'JadeServer64bit' 'JadeServer64bit24' 'JadeServer64bit3x' 'JadeServer64bit32' 'Rowan' 'RowanSample1' 'RowanSubClass' 'TestAsserter' 'TestCase' 'RowanSample1Test')!
+		equals: #('Object' 'JadeServer' 'JadeServer64bit' 'JadeServer64bit24' 'JadeServer64bit3x' 'JadeServer64bit32' 'JadeServer64bit35' 'Rowan' 'RowanSample1' 'RowanSubClass' 'TestAsserter' 'TestCase' 'RowanSample1Test')!
 
 test_mutliSelectPackageHierarchy
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
