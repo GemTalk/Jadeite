@@ -984,7 +984,39 @@ test_textTabSelectedWithProjectChange
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	self assert: self projectsPresenter textAreaTabs currentCard displayString equals: 'projectInfoTab'.
 	self selectNoneProject.
-	self assert: self projectsPresenter textAreaTabs currentCard displayString equals: 'globalsTab'! !
+	self assert: self projectsPresenter textAreaTabs currentCard displayString equals: 'globalsTab'!
+
+test_unicodeKeyInUserGlobals
+	| selection |
+	self testsIssue: #issue582
+		withTitle: 'SymbolDictionary browser completely broken by an unreadable value in a Global '.
+	session executeString: 'RowanServicesTest new addUnicodeSymbolKeyToUserGlobals'.
+	
+	[self selectNoneProject.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.	"bug occurred here"
+	selection := self projectsPresenter globalsTab list
+				detect: [:array | array first = 'UserGlobals.<<unprintable string. charSize > 1>>'].
+	self projectsPresenter globalsTab selection: selection.
+	self assert: (selection at: 2) equals: #String.
+	self assert: ((selection at: 3) isKindOf: Integer).
+	self assert: (selection at: 4) equals: '''fnoodle''']
+			ensure: [session executeString: 'RowanServicesTest new removeUnicodeSymbolsFromUserGlobals']!
+
+test_unicodeValueInUserGlobals
+	| selection |
+	self testsIssue: #issue582
+		withTitle: 'SymbolDictionary browser completely broken by an unreadable value in a Global '.
+	session executeString: 'RowanServicesTest new addUnicodeValueToUserGlobals'.
+	
+	[self selectNoneProject.
+	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.	"bug occurred here"
+	selection := self projectsPresenter globalsTab list
+				detect: [:array | array first = 'UserGlobals.bad'].
+	self projectsPresenter globalsTab selection: selection.
+	self assert: (selection at: 2) equals: #Symbol.
+	self assert: ((selection at: 3) isKindOf: Integer).
+	self assert: (selection at: 4) equals: '#''£¥š''']
+			ensure: [session executeString: 'RowanServicesTest new removeUnicodeSymbolsFromUserGlobals']! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #assertDictionaryInList:!private!support! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #assertDictionaryNotInList:!private!support! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_abortInTranscriptRemovesDictionaryInBrowser!public!test issue 217! !
@@ -1047,4 +1079,6 @@ test_textTabSelectedWithProjectChange
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_systemTabsShowDictionariesAndProjects!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_textTabsChange!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_textTabSelectedWithProjectChange!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_unicodeKeyInUserGlobals!public!test unreadable code! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_unicodeValueInUserGlobals!public!test unreadable code! !
 
