@@ -56,7 +56,7 @@ showCompletionList
 	start := self tokenStartAt: stop.
 	start = 0 ifTrue: [^self].
 	prefix := view plainTextFrom: start to: stop.
-	searchList := prefix first isLowercase
+	searchList := (prefix first isLowercase or: [prefix first = $_])
 				ifTrue: [self symbolsFrom: prefix]
 				ifFalse: [self allClassesStartingWith: prefix].
 	self showCompletionList: searchList prefixLength: prefix size!
