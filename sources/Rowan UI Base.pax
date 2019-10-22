@@ -1160,9 +1160,8 @@ postLoginAs: aString useSocket: aBoolean
 	answer := self clientServerVersionRelationship.
 	answer == true
 		ifFalse: 
-			[self logout.
-			BrowserUpdate current logComment: 'login failure. version mismatch'.
-			^Error signal: 'Login failure. Version mismatch. ' , answer].
+			[BrowserUpdate current logComment: 'login warning. version mismatch'.
+			MessageBox notify: 'Version mismatch. ' , answer caption: 'Login warning'].
 	GciSession current: self.
 	JadeiteSearch initializeAutocompleteSymbols: self.
 	self postLoadClientPreferences.
