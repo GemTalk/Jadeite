@@ -110,6 +110,12 @@ test_preferencesOpenBrowsers
 	self assert: browser currentCard classListPresenter selection name equals: 'RowanAnsweringService']
 			ensure: [browser view close]!
 
+test_preferencesOpenWorkspace
+	| prefs |
+	prefs := JadeitePreferences new session: session.
+	workspace := prefs openWorkspace: 'nil'.
+	[self assert: (workspace isKindOf: JadeWorkspace)] ensure: [workspace view close]!
+
 test_preferencesSettingTranscript
 	| prefs transcriptInstalled |
 	prefs := JadeitePreferences new session: session.
@@ -152,6 +158,7 @@ test_validPreferences
 !JadeitePreferencesTestCase categoriesFor: #test_loggingEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesHandlesBlanks!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesOpenBrowsers!public!tests! !
+!JadeitePreferencesTestCase categoriesFor: #test_preferencesOpenWorkspace!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesSettingTranscript!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesSUnitOpenBrowser!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_resetPreferences!public!tests! !

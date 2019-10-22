@@ -81,6 +81,12 @@ openSUnitBrowserOnPackage: packageName
 	lastWindowPosition := sunitBrowser view position.
 	^sunitBrowser!
 
+openWorkspace: pathOrNil
+	| workspace |
+	workspace := JadeWorkspace showOnSession: session.
+	pathOrNil = 'nil' ifFalse: [workspace openOn: pathOrNil].
+	^workspace!
+
 session: anObject
 	session := anObject!
 
@@ -114,6 +120,7 @@ transcriptEnabled: booleanString
 !JadeitePreferences categoriesFor: #openProjectBrowser!preferences!private! !
 !JadeitePreferences categoriesFor: #openSUnitBrowser!preferences!private! !
 !JadeitePreferences categoriesFor: #openSUnitBrowserOnPackage:!must not strip!preferences!public! !
+!JadeitePreferences categoriesFor: #openWorkspace:!preferences!private! !
 !JadeitePreferences categoriesFor: #session:!accessing!private! !
 !JadeitePreferences categoriesFor: #setPreference:!accessing!must not strip!public! !
 !JadeitePreferences categoriesFor: #transcriptEnabled:!must not strip!preferences!public! !
@@ -139,6 +146,7 @@ preferencesFileDefaultContents
 #openBrowserOnPackage: <package name>
 #openBrowserOnProject: <project name> 
 #openSUnitBrowserOnPackage: <package name>
+#openWorkspace: <file path without quotes or nil> 
 #transcriptEnabled: true'! !
 !JadeitePreferences class categoriesFor: #onSession:!instance creation!public! !
 !JadeitePreferences class categoriesFor: #preferencesFile!constants!public! !
