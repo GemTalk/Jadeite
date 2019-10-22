@@ -98,6 +98,7 @@ package methodNames
 	add: #Collection -> #basicPrepareForReplication;
 	add: #Collection -> #prepareForReplication;
 	add: #GciSession -> #_executeString:fromContextOop:environment:;
+	add: #GciSession -> #clientServerVersionRelationship;
 	add: #GciSession -> #computeGemHost;
 	add: #GciSession -> #computeStoneHost;
 	add: #GciSession -> #confirmMessageBox:;
@@ -1008,6 +1009,18 @@ _executeString: aString fromContextOop: anOopType environment: anInteger
 		context: anOopType
 		environment: anInteger!
 
+clientServerVersionRelationship
+	^self
+		executeString: ' | answeringServiceClass |
+	answeringServiceClass := Rowan image symbolList resolveSymbol: #RowanAnsweringService.
+	answeringServiceClass ifNil:[^''Client is more recent than server'']. 
+	(answeringServiceClass value canUnderstand: #doClientAndServerVersionsMatch:)
+	ifTrue:[
+		answeringServiceClass value new doClientAndServerVersionsMatch: '
+				, RowanService version printString , ']
+	ifFalse:[
+		^''Client is more recent than server'']'!
+
 computeGemHost
 	| list |
 	list := gemNRS subStrings: $#.
@@ -1136,6 +1149,7 @@ postLoadServerPreferences
 		do:[:ex | "do not break the login"]'!
 
 postLoginAs: aString useSocket: aBoolean
+	| answer |
 	self verifyRowanLoaded
 		ifFalse: 
 			[^MessageBox notify: 'Rowan not loaded or $ROWAN_PROJECTS_HOME not set. Logging out.'	"log out in RowinLoginShell>>postLogin:"].
@@ -1143,6 +1157,12 @@ postLoginAs: aString useSocket: aBoolean
 				executeString: '(Rowan jadeServerClassNamed: #JadeServer) theJadeiteServer installTranscript; yourself'.
 	aBoolean ifTrue: [self attemptSocket].
 	self setInitials: aString.	"This gets back the session and serial number"
+	answer := self clientServerVersionRelationship.
+	answer == true
+		ifFalse: 
+			[self logout.
+			BrowserUpdate current logComment: 'login failure. version mismatch'.
+			^Error signal: 'Login failure. Version mismatch. ' , answer].
 	GciSession current: self.
 	JadeiteSearch initializeAutocompleteSymbols: self.
 	self postLoadClientPreferences.
@@ -1236,6 +1256,7 @@ withExplanation: aString doA: aBlock
 
 	^self handlingClientForwarderSendDo: aBlock! !
 !GciSession categoriesFor: #_executeString:fromContextOop:environment:!private! !
+!GciSession categoriesFor: #clientServerVersionRelationship!private! !
 !GciSession categoriesFor: #computeGemHost!public!title bar! !
 !GciSession categoriesFor: #computeStoneHost!public!title bar! !
 !GciSession categoriesFor: #confirmMessageBox:!must not strip!public!server interactions! !

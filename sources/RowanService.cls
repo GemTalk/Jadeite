@@ -571,11 +571,18 @@ new
 	^super new initialize!
 
 notRowanizedPackageName
-	^'(NONE)'! !
+	^'(NONE)'!
+
+version
+	"change this method carefully and only at Jadeite release boundaries.
+	Failure to do so will prevent logins"
+
+	^3082! !
 !RowanService class categoriesFor: #command:withArgs:!instance creation!public! !
 !RowanService class categoriesFor: #defaultIcon!private! !
 !RowanService class categoriesFor: #defaultIconName!private! !
 !RowanService class categoriesFor: #icon!private! !
 !RowanService class categoriesFor: #new!initialization!public! !
 !RowanService class categoriesFor: #notRowanizedPackageName!constants!public! !
+!RowanService class categoriesFor: #version!public!version actions! !
 
