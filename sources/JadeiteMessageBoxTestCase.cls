@@ -21,10 +21,9 @@ tearDown
 	TestMessageBox disableJadeiteTestMessageBox!
 
 testClearResultAfterEachUse
-	self assertIsNil: TestMessageBox plannedResult.	"There should never be a value hanging around"
 	TestMessageBox plannedResult: #oneTime.
 	self assert: TestMessageBox plannedResult == #oneTime.
-	self assertIsNil: TestMessageBox plannedResult	"value should be cleared automatically"!
+	self assertIsNil: TestMessageBox plannedResult!
 
 testEnableTestMessageBox
 	TestMessageBox disableJadeiteTestMessageBox.

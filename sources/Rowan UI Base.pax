@@ -1011,12 +1011,10 @@ _executeString: aString fromContextOop: anOopType environment: anInteger
 
 clientServerVersionRelationship
 	^self
-		executeString: ' | answeringServiceClass |
-	answeringServiceClass := Rowan image symbolList resolveSymbol: #RowanAnsweringService.
-	answeringServiceClass ifNil:[^''Client is more recent than server'']. 
-	(answeringServiceClass value canUnderstand: #doClientAndServerVersionsMatch:)
+		executeString: ' 
+	(Rowan answeringServiceClass value canUnderstand: #doClientAndServerVersionsMatch:)
 	ifTrue:[
-		answeringServiceClass value new doClientAndServerVersionsMatch: '
+		Rowan answeringServiceClass value new doClientAndServerVersionsMatch: '
 				, RowanService version printString , ']
 	ifFalse:[
 		^''Client is more recent than server'']'!

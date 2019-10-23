@@ -45,7 +45,8 @@ lastMessageBox: messageBox
 
 	LastMessageBox := messageBox!
 
-plannedResult 
+plannedResult
+	PlannedResult isEmpty ifTrue: [^nil].
 	[^PlannedResult first] ensure: [PlannedResult removeFirstIfAbsent: []]!
 
 plannedResult: answer
