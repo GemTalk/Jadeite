@@ -2131,6 +2131,7 @@ browseMethodsContaining
 browseSelectedClassIn: documentPresenter newTab: openNewTab
 	| classService |
 	classService := self serviceFromSelection: documentPresenter.
+	classService ifNil: [^self].
 	^self openBrowserInNewTab: openNewTab on: classService!
 
 browseSendersOf
@@ -2334,7 +2335,11 @@ serviceFromSelection: sourcePresenter
 	| range className classService |
 	range := sourcePresenter view selectionRange.
 	className := sourcePresenter value copyFrom: range start to: range stop.
-	className := gciSession executeString: className , ' class thisClass name'.
+	className := [gciSession executeString: className , ' class thisClass name'] on: Error
+				do: 
+					[:ex |
+					MessageBox notify: className , ' is an invalid class to browse'.
+					^nil].
 	classService := RowanClassService named: className.
 	self updateService: classService.
 	^classService!
