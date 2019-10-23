@@ -1012,6 +1012,8 @@ _executeString: aString fromContextOop: anOopType environment: anInteger
 clientServerVersionRelationship
 	^self
 		executeString: ' 
+	(Rowan class canUnderstand: #answeringServiceClass) 
+		ifFalse:[^''Client is more recent than server''].
 	(Rowan answeringServiceClass value canUnderstand: #doClientAndServerVersionsMatch:)
 	ifTrue:[
 		Rowan answeringServiceClass value new doClientAndServerVersionsMatch: '
