@@ -146,7 +146,7 @@ registerTabPresentersForUpdates
 
 resetClassDefinitionPresenter
 	classDefinitionPresenter view
-		backcolor: JadeTextStyles default colorForNoEdits;
+		backcolor: JadeiteTextStyles default colorForNoEdits;
 		isModified: false;
 		yourself!
 
@@ -240,7 +240,7 @@ updateClassInfo
 										, (classDefinition copyFrom: index + 12 to: classDefinition size)]]].
 	classDefinitionPresenter value: classDefinition.
 	classDefinitionPresenter view
-		backcolor: JadeTextStyles default colorForNoEdits;
+		backcolor: JadeiteTextStyles default colorForNoEdits;
 		isModified: false;
 		yourself!
 
@@ -277,7 +277,7 @@ updateFromCommand: update
 										, (classDefinition copyFrom: index + 12 to: classDefinition size)]]].
 	classDefinitionPresenter value: classDefinition.
 	classDefinitionPresenter view
-		backcolor: JadeTextStyles default colorForNoEdits;
+		backcolor: JadeiteTextStyles default colorForNoEdits;
 		isModified: false;
 		yourself!
 
@@ -354,7 +354,7 @@ updateMethodFrom: update
 	breakPoints := gsMethod breakPoints.
 	self updateMethodStepPoints.
 	methodSourcePresenter view
-		backcolor: JadeTextStyles default colorForNoEdits;
+		backcolor: JadeiteTextStyles default colorForNoEdits;
 		isModified: false;
 		isReadOnly: isReadOnly;
 		yourself.

@@ -78,16 +78,16 @@ methodSourceEqual
 	!
 
 methodValueChanged
-	methodService ifNil:[^true].
+	methodService ifNil: [^true].
 	self methodSourceEqual
 		ifTrue: 
 			[documentPresenter view
-				backcolor: JadeTextStyles default colorForNoEdits;
+				backcolor: JadeiteTextStyles default colorForNoEdits;
 				isModified: false.
 			self statusBarText: String new]
 		ifFalse: 
 			[documentPresenter view
-				backcolor: JadeTextStyles default colorForUnsavedEdits;
+				backcolor: JadeiteTextStyles default colorForUnsavedEdits;
 				clearContainerIndicators]!
 
 onViewClosed
@@ -115,7 +115,7 @@ reformatSource
 	documentPresenter value: methodService source.
 	documentPresenter view isModified: true.
 	documentPresenter view
-		backcolor: JadeTextStyles default colorForUnsavedEdits;
+		backcolor: JadeiteTextStyles default colorForUnsavedEdits;
 		clearContainerIndicators.
 	self setStatusBarDefault.
 	self statusBarText: String new.
@@ -141,7 +141,7 @@ updateMethodSource
 		value: methodService source;
 		isModified: false.
 	documentPresenter view
-		backcolor: JadeTextStyles default colorForNoEdits;
+		backcolor: JadeiteTextStyles default colorForNoEdits;
 		isEnabled: true;
 		yourself.
 	self refreshBreakPointsIn: documentPresenter!

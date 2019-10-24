@@ -693,7 +693,7 @@ editSaveClassComment
 	self refreshFromServer.
 	classCommentPresenter view
 		isModified: false;
-		backcolor: JadeTextStyles default colorForNoEdits!
+		backcolor: JadeiteTextStyles default colorForNoEdits!
 
 editSaveMethod
 	| selection |
@@ -1699,8 +1699,8 @@ resetCategoryText
 resetClassDefinitionPane
 	classDefinitionPresenter view
 		isModified: false;
-		backcolor: JadeTextStyles default colorForNoEdits;
-		isReadOnly: false. !
+		backcolor: JadeiteTextStyles default colorForNoEdits;
+		isReadOnly: false!
 
 resetClassTemplate
 	self packageListPresenter list isEmpty
@@ -2237,7 +2237,7 @@ updatePackageInfo
 	classDefinitionPresenter value: service defaultTemplate.
 	self resetClassDefinitionPane.
 	classCommentPresenter view
-		backcolor: JadeTextStyles default colorForNoEdits;
+		backcolor: JadeiteTextStyles default colorForNoEdits;
 		isModified: false.
 	classDefinitionPresenter ensureVisible!
 

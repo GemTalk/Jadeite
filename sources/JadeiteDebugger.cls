@@ -108,7 +108,7 @@ debuggerService
 displayUncompilableSourceIn: sourcePresenter
 	sourcePresenter value size < 34 ifTrue: [^self].
 	((sourcePresenter value copyFrom: 2 to: 34) equals: 'METHOD SOURCE CANNOT BE DISPLAYED')
-		ifTrue: [sourcePresenter view backcolor: JadeTextStyles default colorForUndisplayableSource ]!
+		ifTrue: [sourcePresenter view backcolor: JadeiteTextStyles default colorForUndisplayableSource]!
 
 documentPresenter
 
@@ -227,7 +227,7 @@ methodSourcePresenter
 methodValueChanged
 	frameListPresenter selectionIfNone: [^true].
 	documentPresenter view
-		backcolor: JadeTextStyles default colorForUnsavedEdits;
+		backcolor: JadeiteTextStyles default colorForUnsavedEdits;
 		clearContainerIndicators.
 	self displayUncompilableSourceIn: codePane documentPresenter!
 
@@ -314,7 +314,7 @@ reformatSource
 	documentPresenter value: methodService source.
 	documentPresenter view isModified: true.
 	documentPresenter view
-		backcolor: JadeTextStyles default colorForUnsavedEdits;
+		backcolor: JadeiteTextStyles default colorForUnsavedEdits;
 		clearContainerIndicators.
 	statusTextPresenter view backcolor: statusTextPresenter view defaultBackcolor.
 	self statusBarText: String new.
@@ -365,7 +365,7 @@ saveMethod
 			^codePane reportCompileError: ex list in: documentPresenter].
 	(self methodSourcePresenter compilationWarningFrom: classService selectedMethods)
 		ifNil: 
-			[statusTextPresenter view backcolor: JadeTextStyles default colorForNoEdits.
+			[statusTextPresenter view backcolor: JadeiteTextStyles default colorForNoEdits.
 			self statusBarText: String new]
 		ifNotNil: 
 			[:warning |

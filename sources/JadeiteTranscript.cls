@@ -205,10 +205,10 @@ onViewOpened
 	projectListPresenter
 		gciSession: gciSession;
 		refreshProjects.
-	JadeTextStyles default resetColors.	"reset colors on login"
+	JadeiteTextStyles default resetColors.	"reset colors on login"
 	answeringService := RowanAnsweringService new.
 	installed := answeringService isTranscriptInstalledIn: self gciSession.
-	isTranscriptInstalled value: installed. 
+	isTranscriptInstalled value: installed.
 	areBreakpointsEnabled value: (answeringService breakPointsAreEnabled: self gciSession).
 	self registerPresentersForUpdates!
 

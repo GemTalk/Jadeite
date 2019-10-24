@@ -11,11 +11,10 @@ JadeTextPresenter comment: ''!
 !JadeTextPresenter methodsFor!
 
 onViewOpened
-
 	super onViewOpened.
 	(view isKindOf: ScintillaView) ifFalse: [^self].
-	view textStyles: JadeTextStyles default textStyles.
-!
+	view textStyles: JadeiteTextStyles default textStyles.
+	view indicatorStyles: JadeiteTextStyles default defaultIndicatorStyles!
 
 selection
 

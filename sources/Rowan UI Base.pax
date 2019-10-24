@@ -2195,7 +2195,7 @@ currentSelectionOrLine
 
 displayNoMods: sourcePresenter
 	sourcePresenter view
-		backcolor: JadeTextStyles default colorForNoEdits;
+		backcolor: JadeiteTextStyles default colorForNoEdits;
 		isModified: false;
 		isReadOnly: false.
 	self displayUncompilableSourceIn: sourcePresenter!
@@ -2203,7 +2203,7 @@ displayNoMods: sourcePresenter
 displayUncompilableSourceIn: sourcePresenter
 	sourcePresenter value size < 34 ifTrue: [^self].
 	((sourcePresenter value copyFrom: 2 to: 34) equals: 'METHOD SOURCE CANNOT BE DISPLAYED')
-		ifTrue: [sourcePresenter view backcolor: JadeTextStyles default colorForUndisplayableSource ]!
+		ifTrue: [sourcePresenter view backcolor: JadeiteTextStyles default colorForUndisplayableSource]!
 
 editSaveMethod: classService in: methodSourcePresenter category: category
 	| methodSource1 firstVisibleLine caretPosition |
@@ -2313,13 +2313,13 @@ reportCompileError: anArrayOfArray in: methodSourcePresenter
 			string := eachArray at: 3.
 			stream nextPutAll: string , '; '.
 			indicators add: (ScintillaIndicator
-						styleName: 1
+						styleName: #compileError
 						range: range
 						tag: string)].
 	"to help visibility, select first compile failure range"
 	methodSourcePresenter view
 		selectionRange: (self selectionRangeFrom: anArrayOfArray first source: source).
-	methodSourcePresenter view backcolor: JadeTextStyles default colorForCompileError.
+	methodSourcePresenter view backcolor: JadeiteTextStyles default colorForCompileError.
 	methodSourcePresenter view indicators: indicators.
 	string := stream contents.
 	self insertCompileErrorText: string into: methodSourcePresenter!
@@ -2794,17 +2794,22 @@ openMethodListOn: service selectingAnyMatch: string
 		session: self gciSession!
 
 refreshBreakPointsIn: methodSourcePresenter
-	| indicators selection |
+	| indicators selection breakPointSymbol |
 	selection := self methodListSelection.
-	selection ifNil:[^self]. 
+	selection ifNil: [^self].
 	methodSourcePresenter view clearContainerIndicators.
 	indicators := OrderedCollection new.
+	breakPointSymbol := (RowanAnsweringService new breakPointsAreEnabled: self gciSession)
+				ifTrue: [#breakPoint]
+				ifFalse: [#disabledBreakPoint].
 	1 to: selection stepPoints size
 		do: 
 			[:stepPoint |
 			| range string styleName |
 			range := (selection stepPoints at: stepPoint) key.
-			styleName := (selection breakPoints includes: stepPoint) ifTrue: [9] ifFalse: [8].
+			styleName := (selection breakPoints includes: stepPoint)
+						ifTrue: [breakPointSymbol]
+						ifFalse: [#stepPoint].
 			string := ((selection breakPoints includes: stepPoint) ifTrue: ['Break at '] ifFalse: [''])
 						, 'step point #' , stepPoint printString.
 			indicators add: (ScintillaIndicator
@@ -2812,7 +2817,7 @@ refreshBreakPointsIn: methodSourcePresenter
 						range: range
 						tag: string)].
 	methodSourcePresenter view indicators: indicators.
-	methodSourcePresenter view update. !
+	methodSourcePresenter view update!
 
 removeSelectorsStringUsing: methodListPresenter
 	| stream methodServices |
@@ -3877,7 +3882,7 @@ updateMethod
 	breakPoints := gsMethod breakPoints.
 	self updateMethodStepPoints.
 	methodSourcePresenter view
-		backcolor: JadeTextStyles default colorForNoEdits;
+		backcolor: JadeiteTextStyles default colorForNoEdits;
 		isModified: false;
 		isReadOnly: isReadOnly;
 		yourself.
@@ -3933,7 +3938,7 @@ updateSelector
 	breakPoints := gsMethod breakPoints.
 	self updateMethodStepPoints.
 	methodSourcePresenter view
-		backcolor: JadeTextStyles default colorForNoEdits;
+		backcolor: JadeiteTextStyles default colorForNoEdits;
 		isModified: false;
 		isReadOnly: isReadOnly;
 		yourself.

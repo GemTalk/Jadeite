@@ -292,12 +292,12 @@ classDefChanged
 	classDefinitionPresenter value = classDefinition
 		ifTrue: 
 			[classDefinitionPresenter view
-				backcolor: JadeTextStyles default colorForNoEdits;
+				backcolor: JadeiteTextStyles default colorForNoEdits;
 				isModified: false;
 				yourself]
 		ifFalse: 
 			[classDefinitionPresenter view
-				backcolor: JadeTextStyles default colorForUnsavedEdits;
+				backcolor: JadeiteTextStyles default colorForUnsavedEdits;
 				isModified: true;
 				yourself]!
 
@@ -1094,9 +1094,7 @@ isCategoryTabSelected
 	^methodFilterTabs currentCard name = 'categoryList'!
 
 isClassListTabSelected
-
-	^classHierarchyTabs currentCard name = 'classList'.
-!
+	^classHierarchyTabs currentCard name = 'classList'!
 
 isClassSelectedInEditor
 
@@ -1406,14 +1404,14 @@ methodValueChanged
 	self methodSourceEqual
 		ifTrue: 
 			[methodSourcePresenter view
-				backcolor: JadeTextStyles default colorForNoEdits;
+				backcolor: JadeiteTextStyles default colorForNoEdits;
 				isModified: false;
 				yourself.
 			self updateMethodStepPoints.
 			self statusBarText: '']
 		ifFalse: 
 			[methodSourcePresenter view
-				backcolor: JadeTextStyles default colorForUnsavedEdits;
+				backcolor: JadeiteTextStyles default colorForUnsavedEdits;
 				clearContainerIndicators;
 				yourself]!
 
@@ -1721,13 +1719,11 @@ onSetFocus: aView stack: aString
 !
 
 openSourceStyler
-
 	| textStyles |
 	textStyles := methodSourcePresenter view editStyles textStyles.
-	JadeTextStyles default textStyles: textStyles.
+	JadeiteTextStyles default textStyles: textStyles.
 	classDefinitionPresenter view textStyles: textStyles.
-	originalSourcePresenter view textStyles: textStyles.
-!
+	originalSourcePresenter view textStyles: textStyles!
 
 packageListPresenter
 
@@ -1895,8 +1891,7 @@ removeRepository
 	self updateCommand: stream contents , self requestString.
 !
 
-reportCompileError: anArrayOfArray 
-
+reportCompileError: anArrayOfArray
 	| source position stream string indicators |
 	indicators := OrderedCollection new.
 	methodSourcePresenter view clearContainerIndicators.
@@ -1905,21 +1900,20 @@ reportCompileError: anArrayOfArray
 	methodSourcePresenter value: source.
 	methodSourcePresenter view caretPosition: position.
 	stream := WriteStream on: String new.
-	anArrayOfArray do: [:eachArray | 
-		| start |
-		start := eachArray at: 2.
-		string := eachArray at: 3.
-		stream nextPutAll: string , '; '.
-		indicators add: (ScintillaIndicator
-			styleName: 10 
-			range: (start to: (start + 10 min: source size)) 
-			tag: string).
-	].
-	methodSourcePresenter view backcolor: JadeTextStyles default colorForCompileError.
+	anArrayOfArray do: 
+			[:eachArray |
+			| start |
+			start := eachArray at: 2.
+			string := eachArray at: 3.
+			stream nextPutAll: string , '; '.
+			indicators add: (ScintillaIndicator
+						styleName: #compileError
+						range: (start to: (start + 10 min: source size))
+						tag: string)].
+	methodSourcePresenter view backcolor: JadeiteTextStyles default colorForCompileError.
 	methodSourcePresenter view indicators: indicators.
 	string := stream contents.
-	self statusBarText: (string copyFrom: 1 to: string size - 2).
-!
+	self statusBarText: (string copyFrom: 1 to: string size - 2)!
 
 requestString
 
@@ -1939,9 +1933,7 @@ requestStringForUpdate
 !
 
 resetColors
-
-	JadeTextStyles default resetColors.
-!
+	JadeiteTextStyles default resetColors!
 
 revertNewClass
 
@@ -2044,18 +2036,18 @@ selectedMethodName
 
 setColorForCompileErrors
 	| newColor |
-	newColor := ColorDialog showModalOn: JadeTextStyles default colorForNoEdits.
-	newColor ifNotNil: [JadeTextStyles default colorForCompileError: newColor]!
+	newColor := ColorDialog showModalOn: JadeiteTextStyles default colorForNoEdits.
+	newColor ifNotNil: [JadeiteTextStyles default colorForCompileError: newColor]!
 
 setColorForNoEdits
 	| newColor |
-	newColor := ColorDialog showModalOn: JadeTextStyles default colorForNoEdits.
-	newColor ifNotNil: [JadeTextStyles default colorForNoEdits: newColor]!
+	newColor := ColorDialog showModalOn: JadeiteTextStyles default colorForNoEdits.
+	newColor ifNotNil: [JadeiteTextStyles default colorForNoEdits: newColor]!
 
 setColorForUnsavedEdits
 	| newColor |
-	newColor := ColorDialog showModalOn: JadeTextStyles default colorForUnsavedEdits.
-	newColor ifNotNil: [JadeTextStyles default colorForUnsavedEdits: newColor]!
+	newColor := ColorDialog showModalOn: JadeiteTextStyles default colorForUnsavedEdits.
+	newColor ifNotNil: [JadeiteTextStyles default colorForUnsavedEdits: newColor]!
 
 setEnvironment: anInteger
 
@@ -2327,40 +2319,36 @@ updateClassCategoryTree
 !
 
 updateClassInfo
-
 	| index newClassDefinition |
-
 	selectedClassOop := readStream nextLine asNumber.
 	newClassDefinition := readStream nextParagraph.
 	classCommentPresenter value: readStream nextParagraph.
-
-	classDefinitionPresenter view isModified ifTrue: [
-		newClassDefinition = classDefinition ifTrue: [^self].
-		(MessageBox confirm: 'Copy changes to clipboard?' caption: 'Class has unsaved changes!!') ifTrue: [
-			classDefinitionPresenter value copyToClipboard.
-		].
-	].
+	classDefinitionPresenter view isModified
+		ifTrue: 
+			[newClassDefinition = classDefinition ifTrue: [^self].
+			(MessageBox confirm: 'Copy changes to clipboard?' caption: 'Class has unsaved changes!!')
+				ifTrue: [classDefinitionPresenter value copyToClipboard]].
 	classDefinition := newClassDefinition.
-	0 < (classDefinition indexOfSubCollection: 'MyNewClass') ifTrue: [	"Template is based on Stream class, but we don't want to use 'Globals' in template"
-		index := classDefinition indexOfSubCollection: ': Globals'.		
-		(0 < index and: [(classDefinition copyFrom: index - 2 to: index + 1) ~= 'User']) ifTrue: [
-			classDefinition := (classDefinition copyFrom: 1 to: index + 1) , 
-				(dictionaryListPresenter selectionIfNone: ['UserGlobals' -> false]) key , 
-				(classDefinition copyFrom: index + 9 to: classDefinition size).
-			index := classDefinition indexOfSubCollection: 'User Classes'.
-			0 < index ifTrue: [
-				classDefinition := (classDefinition copyFrom: 1 to: index - 1) , 
-					(packageListPresenter selectionIfNone: ['User Classes' -> nil]) key , 
-					(classDefinition copyFrom: index + 12 to: classDefinition size).
-			].
-		].
-	].
+	0 < (classDefinition indexOfSubCollection: 'MyNewClass')
+		ifTrue: 
+			["Template is based on Stream class, but we don't want to use 'Globals' in template"
+			index := classDefinition indexOfSubCollection: ': Globals'.
+			(0 < index and: [(classDefinition copyFrom: index - 2 to: index + 1) ~= 'User'])
+				ifTrue: 
+					[classDefinition := (classDefinition copyFrom: 1 to: index + 1)
+								, (dictionaryListPresenter selectionIfNone: ['UserGlobals' -> false]) key
+									, (classDefinition copyFrom: index + 9 to: classDefinition size).
+					index := classDefinition indexOfSubCollection: 'User Classes'.
+					0 < index
+						ifTrue: 
+							[classDefinition := (classDefinition copyFrom: 1 to: index - 1)
+										, (packageListPresenter selectionIfNone: ['User Classes' -> nil]) key
+											, (classDefinition copyFrom: index + 12 to: classDefinition size)]]].
 	classDefinitionPresenter value: classDefinition.
-	classDefinitionPresenter view 
-		backcolor: JadeTextStyles default colorForNoEdits;
+	classDefinitionPresenter view
+		backcolor: JadeiteTextStyles default colorForNoEdits;
 		isModified: false;
-		yourself.
-!
+		yourself!
 
 updateClassListOrHierarchy
 
@@ -2504,27 +2492,29 @@ updateMethodList
 !
 
 updateMethodStepPoints
-
 	| indicators |
 	methodSourcePresenter view clearContainerIndicators.
 	indicators := OrderedCollection new.
-	1 to: stepPoints size do: [:stepPoint |
-		| range string styleName |
-		range := (stepPoints at: stepPoint) key.
-		(unimplementedSelectors at: range start ifAbsent: [nil]) ifNotNil: [:value | 
-			styleName := 10.
-			string := 'No implementors of #' , value printString , ' (found at step point #' , stepPoint printString , ')'.
-		] ifNil: [
-			styleName := (breakPoints includes: stepPoint) ifTrue: [9] ifFalse: [8].
-			string := ((breakPoints includes: stepPoint) ifTrue: ['Break at '] ifFalse: ['']) , 'step point #' , stepPoint printString.
-		].
-		indicators add: (ScintillaIndicator
-			styleName: styleName 
-			range: range 
-			tag: string).
-	].
-	methodSourcePresenter view indicators: indicators.
-!
+	1 to: stepPoints size
+		do: 
+			[:stepPoint |
+			| range string styleName |
+			range := (stepPoints at: stepPoint) key.
+			(unimplementedSelectors at: range start ifAbsent: [nil])
+				ifNotNil: 
+					[:value |
+					styleName := 10.
+					string := 'No implementors of #' , value printString , ' (found at step point #'
+								, stepPoint printString , ')']
+				ifNil: 
+					[styleName := (breakPoints includes: stepPoint) ifTrue: [#disabledBreakPoint] ifFalse: [#stepPoint].
+					string := ((breakPoints includes: stepPoint) ifTrue: ['Break at '] ifFalse: ['']) , 'step point #'
+								, stepPoint printString].
+			indicators add: (ScintillaIndicator
+						styleName: styleName
+						range: range
+						tag: string)].
+	methodSourcePresenter view indicators: indicators!
 
 updateOverrideList
 

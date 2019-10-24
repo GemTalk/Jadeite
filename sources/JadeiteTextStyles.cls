@@ -1,14 +1,14 @@
 "Filed out from Dolphin Smalltalk 7"!
 
-Object subclass: #JadeTextStyles
+Object subclass: #JadeiteTextStyles
 	instanceVariableNames: 'colorForCompileError colorForNoEdits colorForUnsavedEdits textStyles colorForUndisplayableSource'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'default'!
-JadeTextStyles guid: (GUID fromString: '{2dadb98c-2aaa-4ce2-8457-7737a2104ac4}')!
-JadeTextStyles comment: ''!
-!JadeTextStyles categoriesForClass!Kernel-Objects! !
-!JadeTextStyles methodsFor!
+JadeiteTextStyles guid: (GUID fromString: '{2dadb98c-2aaa-4ce2-8457-7737a2104ac4}')!
+JadeiteTextStyles comment: ''!
+!JadeiteTextStyles categoriesForClass!Kernel-Objects! !
+!JadeiteTextStyles methodsFor!
 
 colorForCompileError
 	^colorForCompileError!
@@ -209,25 +209,25 @@ textStyles
 
 textStyles: anObject
 	textStyles := anObject! !
-!JadeTextStyles categoriesFor: #colorForCompileError!accessing!public! !
-!JadeTextStyles categoriesFor: #colorForCompileError:!accessing!public! !
-!JadeTextStyles categoriesFor: #colorForNoEdits!accessing!public! !
-!JadeTextStyles categoriesFor: #colorForNoEdits:!accessing!public! !
-!JadeTextStyles categoriesFor: #colorForUndisplayableSource!accessing!private! !
-!JadeTextStyles categoriesFor: #colorForUndisplayableSource:!accessing!private! !
-!JadeTextStyles categoriesFor: #colorForUnsavedEdits!accessing!public! !
-!JadeTextStyles categoriesFor: #colorForUnsavedEdits:!accessing!public! !
-!JadeTextStyles categoriesFor: #defaultIndicatorStyles!public! !
-!JadeTextStyles categoriesFor: #defaultTextStyles!public! !
-!JadeTextStyles categoriesFor: #resetColors!public! !
-!JadeTextStyles categoriesFor: #textStyles!accessing!public! !
-!JadeTextStyles categoriesFor: #textStyles:!accessing!public! !
+!JadeiteTextStyles categoriesFor: #colorForCompileError!accessing!public! !
+!JadeiteTextStyles categoriesFor: #colorForCompileError:!accessing!public! !
+!JadeiteTextStyles categoriesFor: #colorForNoEdits!accessing!public! !
+!JadeiteTextStyles categoriesFor: #colorForNoEdits:!accessing!public! !
+!JadeiteTextStyles categoriesFor: #colorForUndisplayableSource!accessing!private! !
+!JadeiteTextStyles categoriesFor: #colorForUndisplayableSource:!accessing!private! !
+!JadeiteTextStyles categoriesFor: #colorForUnsavedEdits!accessing!public! !
+!JadeiteTextStyles categoriesFor: #colorForUnsavedEdits:!accessing!public! !
+!JadeiteTextStyles categoriesFor: #defaultIndicatorStyles!public! !
+!JadeiteTextStyles categoriesFor: #defaultTextStyles!public! !
+!JadeiteTextStyles categoriesFor: #resetColors!public! !
+!JadeiteTextStyles categoriesFor: #textStyles!accessing!public! !
+!JadeiteTextStyles categoriesFor: #textStyles:!accessing!public! !
 
-!JadeTextStyles class methodsFor!
+!JadeiteTextStyles class methodsFor!
 
 default
 
 	^default ifNil: [default := self new].
 ! !
-!JadeTextStyles class categoriesFor: #default!public! !
+!JadeiteTextStyles class categoriesFor: #default!public! !
 

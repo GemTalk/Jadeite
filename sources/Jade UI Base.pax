@@ -11,13 +11,13 @@ package classNames
 	add: #CodeSourcePresenter;
 	add: #JadeBrowserPresenter;
 	add: #JadeInspector;
+	add: #JadeiteTextStyles;
 	add: #JadeMigrateClassDialog;
 	add: #JadePresenter;
 	add: #JadePresenterA;
 	add: #JadeShell;
 	add: #JadeTextDocument;
 	add: #JadeTextPresenter;
-	add: #JadeTextStyles;
 	add: #JadeToolsToolBarPresenter;
 	add: #JadeValueDialog;
 	add: #JadeWorkspace;
@@ -54,7 +54,7 @@ package!
 
 "Class Definitions"!
 
-Object subclass: #JadeTextStyles
+Object subclass: #JadeiteTextStyles
 	instanceVariableNames: 'colorForCompileError colorForNoEdits colorForUnsavedEdits textStyles colorForUndisplayableSource'
 	classVariableNames: ''
 	poolDictionaries: ''

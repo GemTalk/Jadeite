@@ -204,7 +204,7 @@ update
 		isReadOnly: gsMethod isReadOnly;
 		yourself.
 	documentPresenter view
-		backcolor: JadeTextStyles default colorForNoEdits;
+		backcolor: JadeiteTextStyles default colorForNoEdits;
 		isEnabled: true;
 		yourself.
 	self updateMethodStepPoints.
@@ -229,7 +229,7 @@ updateMethodStepPoints
 					string := 'No implementors of #' , value printString , ' (found at step point #'
 								, stepPoint printString , ')']
 				ifNil: 
-					[styleName := (breakPoints includes: stepPoint) ifTrue: [9] ifFalse: [8].
+					[styleName := (breakPoints includes: stepPoint) ifTrue: [#disabledBreakPoint] ifFalse: [#stepPoint].
 					string := ((breakPoints includes: stepPoint) ifTrue: ['Break at '] ifFalse: ['']) , 'step point #'
 								, stepPoint printString].
 			updatedRange := offsets isNil

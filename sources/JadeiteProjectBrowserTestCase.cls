@@ -5518,7 +5518,8 @@ test_unicodeDisplayMethod
 	
 	[methodSource := secondMethodListBrowser primaryPresenter methodSourcePresenter documentPresenter.
 	self assert: ('*METHOD SOURCE CANNOT BE DISPLAYED*' match: methodSource value).
-	self assert: methodSource view backcolor equals: JadeTextStyles default colorForUndisplayableSource]
+	self assert: methodSource view backcolor
+		equals: JadeiteTextStyles default colorForUndisplayableSource]
 			ensure: 
 				[self projectsPresenter basicRemoveMethods.
 				secondMethodListBrowser view close]]
@@ -5541,7 +5542,7 @@ test_unicodeSpecialMethodNotRed
 	self selectClassTab.
 	self selectMethodNamed: #removeUnicode:.
 	self deny: self methodSourcePresenter view backcolor
-		equals: JadeTextStyles default colorForUndisplayableSource]
+		equals: JadeiteTextStyles default colorForUndisplayableSource]
 			ensure: 
 				[self selectInstanceTab.
 				self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.

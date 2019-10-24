@@ -143,7 +143,7 @@ buildGlobalsTab
 				to: self.
 			globalsTab parentPresenter: self textAreaTabs.
 			globalsTabView := globalsTab createView: 'Editable list view'.
-			globalsTabView backcolor: JadeTextStyles default colorForNoEdits.
+			globalsTabView backcolor: JadeiteTextStyles default colorForNoEdits.
 			globalsTabView hasColumnHeaders: false.
 			globalsTabView contextMenu: self globalsMenu.
 			3 timesRepeat: [globalsTabView addColumn].
@@ -169,9 +169,9 @@ buildProjectTab
 			[projectInfoTab := ListPresenter new.
 			projectInfoTab parentPresenter: self textAreaTabs.
 			projectInfoView := projectInfoTab createView: 'Editable list view'.
-			projectInfoView backcolor: JadeTextStyles default colorForNoEdits.
+			projectInfoView backcolor: JadeiteTextStyles default colorForNoEdits.
 			projectInfoView
-				contextMenu: self projectInfoMenu; 
+				contextMenu: self projectInfoMenu;
 				hasColumnHeaders: false;
 				hasGridLines: false;
 				isMultiSelect: true.
@@ -198,12 +198,12 @@ classCommentChanged
 	classCommentPresenter value = self selectedClass comment
 		ifTrue: 
 			[classCommentPresenter view
-				backcolor: JadeTextStyles default colorForNoEdits;
+				backcolor: JadeiteTextStyles default colorForNoEdits;
 				isModified: false;
 				yourself]
 		ifFalse: 
 			[classCommentPresenter view
-				backcolor: JadeTextStyles default colorForUnsavedEdits;
+				backcolor: JadeiteTextStyles default colorForUnsavedEdits;
 				isModified: true;
 				yourself]!
 

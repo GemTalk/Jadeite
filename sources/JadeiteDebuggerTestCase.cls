@@ -450,7 +450,7 @@ test_badCompileInDebugger
 	debugger saveMethod.
 	self assert: self statusBarValue equals: 'expected a primary expression'.
 	self assert: debugger methodSourcePresenter documentPresenter view backcolor
-		equals: JadeTextStyles default colorForCompileError.
+		equals: JadeiteTextStyles default colorForCompileError.
 	source := 'sampleMethodWithHalt
 		"this code will fail compile"
 		array := Array with: 1.'.
@@ -458,7 +458,7 @@ test_badCompileInDebugger
 	debugger saveMethod.
 	self assert: self statusBarValue equals: 'undefined symbol'.
 	self assert: debugger methodSourcePresenter documentPresenter view backcolor
-		equals: JadeTextStyles default colorForCompileError!
+		equals: JadeiteTextStyles default colorForCompileError!
 
 test_breakpointHighlightingInBlocks
 	| sourcePresenter |
@@ -1650,13 +1650,16 @@ test_unicodeMethod
 	self openDebuggerOn: 'RowanServicesTest new iAmAUnicodeMethod'.
 	self assert: debugger frameListPresenter selection
 		equals: 'RowanServicesTest >> iAmAUnicodeMethod @3 line 5'.
-	self assert: debugger methodSourcePresenter documentPresenter view backcolor equals: JadeTextStyles default colorForUndisplayableSource .
+	self assert: debugger methodSourcePresenter documentPresenter view backcolor
+		equals: JadeiteTextStyles default colorForUndisplayableSource.
 	self selectFrameAt: 1.
-	self deny: debugger methodSourcePresenter documentPresenter view backcolor equals: JadeTextStyles default colorForUndisplayableSource .
+	self deny: debugger methodSourcePresenter documentPresenter view backcolor
+		equals: JadeiteTextStyles default colorForUndisplayableSource.
 	self selectFrameAt: 4.
 	self assert: debugger frameListPresenter selection
 		equals: 'RowanServicesTest >> iAmAUnicodeMethod @3 line 5'.
-	self assert: debugger methodSourcePresenter documentPresenter view backcolor equals: JadeTextStyles default colorForUndisplayableSource .!
+	self assert: debugger methodSourcePresenter documentPresenter view backcolor
+		equals: JadeiteTextStyles default colorForUndisplayableSource!
 
 test_unsavedChangesActionChangeFrame
 	| finished |
