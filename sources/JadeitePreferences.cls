@@ -120,7 +120,7 @@ transcriptEnabled: booleanString
 !JadeitePreferences categoriesFor: #openProjectBrowser!preferences!private! !
 !JadeitePreferences categoriesFor: #openSUnitBrowser!preferences!private! !
 !JadeitePreferences categoriesFor: #openSUnitBrowserOnPackage:!must not strip!preferences!public! !
-!JadeitePreferences categoriesFor: #openWorkspace:!preferences!private! !
+!JadeitePreferences categoriesFor: #openWorkspace:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #session:!accessing!private! !
 !JadeitePreferences categoriesFor: #setPreference:!accessing!must not strip!public! !
 !JadeitePreferences categoriesFor: #transcriptEnabled:!must not strip!preferences!public! !

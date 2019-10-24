@@ -1626,11 +1626,17 @@ test_terminateDoesNotWalkback
 	TestMessageBox plannedResult: #yes.	"confirm we want to terminate process"
 	terminateProcess := 
 			[self assert: debugger terminateProcess notNil.
-			self
+			
+			[self
 				assert: debugger _processList size = allProcesses
 					description: '_processList size was not ' , allProcesses size printString;
 				assert: debugger processListPresenter list size = allProcesses
 					description: 'processListPresenter list size was not ' , allProcesses size printString]
+					on: Error
+					do: 
+						[:ex |
+						"the debugger may be gone already"
+						]]
 					fork.
 	self debuggerDo: [debugger resumeProcess]]
 			ensure: 
