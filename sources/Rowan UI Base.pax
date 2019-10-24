@@ -1433,8 +1433,7 @@ update
 			BrowserUpdate current logComment: '#update - finished #stack:']!
 
 updateCaption
-	self caption: (gciSession
-				titleBarFor: (self class == JadeiteDebugger ifTrue: ['Jadeite Debugger'] ifFalse: ['Rowan Debugger']))! !
+	self caption: (gciSession titleBarFor: 'Debugger')! !
 !JadeDebugger categoriesFor: #gsProcess!accessing!private! !
 !JadeDebugger categoriesFor: #gsProcess:!accessing!private! !
 !JadeDebugger categoriesFor: #initializeProcess:message:terminateOnClose:!public! !

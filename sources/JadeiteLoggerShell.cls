@@ -55,7 +55,7 @@ serverFilenameText: anObject
 	serverFilenameText := anObject!
 
 shellName
-	^'Jadeite Logger Browser'! !
+	^'Jadeite Log Browser'! !
 !JadeiteLoggerShell categoriesFor: #clientFilenameText!accessing!private! !
 !JadeiteLoggerShell categoriesFor: #clientFilenameText:!accessing!private! !
 !JadeiteLoggerShell categoriesFor: #createComponents!initialization!public! !
