@@ -1078,6 +1078,7 @@ test_loginButtonEnablementAfterDebug
 	query := self closeJadeiteLoginShells.
 	jadeiteShell := JadeiteLoginShell show position: 80 @ 20.
 	jadeiteShell login.
+	self denyIsNil: GciSession current. 
 	session := GciSession current.
 	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: [].
 	query := CommandQuery commandDescription: (CommandDescription command: #login)
@@ -1583,13 +1584,12 @@ array'.
 	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: 'do:'.
 	self debuggerDo: [debugger stepThrough].
-	self assert: debugger documentPresenter view selection equals: ', '. "inside block"
-	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @12 line 6'.
+	self assert: debugger documentPresenter view selection equals: ', '.	"inside block"
+	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @2 line 6'.
 	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: ':='.
-	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @13 line 6'.
-	self debuggerDo: [debugger resumeProcess]. 
-!
+	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @3 line 6'.
+	self debuggerDo: [debugger resumeProcess]!
 
 test_switchProcesses
 	| activeProcesses longRunningProcess |
