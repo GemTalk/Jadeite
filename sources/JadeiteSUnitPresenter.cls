@@ -10,6 +10,9 @@ JadeiteSUnitPresenter comment: ''!
 !JadeiteSUnitPresenter categoriesForClass!Unclassified! !
 !JadeiteSUnitPresenter methodsFor!
 
+additionalAccelerators
+	^#(#(#raiseConsole 'Ctrl+F7'))!
+
 commitTransaction
 	super commitTransaction!
 
@@ -162,6 +165,7 @@ testCasesSize
 
 testClassesSize
 	^'Test Classes:' , classListPresenter model size printString! !
+!JadeiteSUnitPresenter categoriesFor: #additionalAccelerators!accessing!public! !
 !JadeiteSUnitPresenter categoriesFor: #commitTransaction!public!transaction management! !
 !JadeiteSUnitPresenter categoriesFor: #createComponents!public! !
 !JadeiteSUnitPresenter categoriesFor: #createSchematicWiring!public! !

@@ -35,7 +35,7 @@ aboutToChangeFrame: aSelectionChangingEvent
 		value: (codePane documentPresenter view isModified ifTrue: [self isOkayToChangeFrame] ifFalse: [true])!
 
 additionalAccelerators
-	^#(#(#reformatSource 'Ctrl+Shift+O'))!
+	^#(#(#raiseConsole 'Ctrl+F7') #(#reformatSource 'Ctrl+Shift+O'))!
 
 basicSelectedFrame
 	| index |

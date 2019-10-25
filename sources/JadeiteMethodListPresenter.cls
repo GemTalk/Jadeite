@@ -10,6 +10,9 @@ JadeiteMethodListPresenter comment: ''!
 !JadeiteMethodListPresenter categoriesForClass!Unclassified! !
 !JadeiteMethodListPresenter methodsFor!
 
+additionalAccelerators
+	^#(#(#raiseConsole 'Ctrl+F7'))!
+
 autoCommit
 	"for testing"
 
@@ -223,6 +226,7 @@ updateSource
 	self doSearch. 
 	('*METHOD SOURCE CANNOT BE DISPLAYED*' match: methodSourcePresenter documentPresenter value)
 		ifTrue: [methodSourcePresenter documentPresenter view backcolor: Color red faded faded].! !
+!JadeiteMethodListPresenter categoriesFor: #additionalAccelerators!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #autoCommit!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #autoCommit:!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #cleanupComparisonBrowser!private!text tabs! !

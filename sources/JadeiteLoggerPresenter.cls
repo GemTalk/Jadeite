@@ -10,6 +10,9 @@ JadeiteLoggerPresenter comment: ''!
 !JadeiteLoggerPresenter categoriesForClass!MVP-Presenters! !
 !JadeiteLoggerPresenter methodsFor!
 
+additionalAccelerators
+	^#(#(#raiseConsole 'Ctrl+F7'))!
+
 clientFilename
 	^clientFilename!
 
@@ -62,11 +65,19 @@ onViewOpened
 	super onViewOpened.
 	self inputFiles!
 
+raiseConsole
+	| transcript |
+	transcript := JadeiteTranscript allInstances
+				detect: [:trans | trans gciSession = GciSession current]
+				ifNone: [^self].
+	transcript view setFocus!
+
 serverFilename
 	^serverFilename!
 
 serverFilename: anObject
 	serverFilename := anObject! !
+!JadeiteLoggerPresenter categoriesFor: #additionalAccelerators!accessing!public! !
 !JadeiteLoggerPresenter categoriesFor: #clientFilename!accessing!private! !
 !JadeiteLoggerPresenter categoriesFor: #clientFilename:!accessing!private! !
 !JadeiteLoggerPresenter categoriesFor: #createComponents!initialization!public! !
@@ -76,6 +87,7 @@ serverFilename: anObject
 !JadeiteLoggerPresenter categoriesFor: #inputServerFile:!private! !
 !JadeiteLoggerPresenter categoriesFor: #inspectService!operations!public! !
 !JadeiteLoggerPresenter categoriesFor: #onViewOpened!event handlers!public! !
+!JadeiteLoggerPresenter categoriesFor: #raiseConsole!menu handlers!public! !
 !JadeiteLoggerPresenter categoriesFor: #serverFilename!accessing!private! !
 !JadeiteLoggerPresenter categoriesFor: #serverFilename:!accessing!private! !
 

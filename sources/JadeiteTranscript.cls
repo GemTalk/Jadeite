@@ -14,6 +14,9 @@ abortTransaction
 	super abortTransaction.
 	projectListPresenter refresh!
 
+additionalAccelerators
+	^#(#(#raiseConsole 'Ctrl+F7'))!
+
 areBreakpointsEnabled
 	^areBreakpointsEnabled!
 
@@ -281,6 +284,7 @@ remoteAutoCommit
 toolbarPresenter
 	^toolbarPresenter! !
 !JadeiteTranscript categoriesFor: #abortTransaction!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #additionalAccelerators!public! !
 !JadeiteTranscript categoriesFor: #areBreakpointsEnabled!accessing!private! !
 !JadeiteTranscript categoriesFor: #autoCommit!accessing!private! !
 !JadeiteTranscript categoriesFor: #autoCommit:!accessing!private! !

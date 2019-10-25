@@ -18,6 +18,9 @@ activeTextEdit
 	^View focus.
 !
 
+additionalAccelerators
+	^#(#(#raiseConsole 'Ctrl+F7'))!
+
 addQuotesToSelection
 
 	self activeTextEdit replaceSelection: self activeTextEdit selection printString.
@@ -405,6 +408,7 @@ validateUserInterface
 	].! !
 !JadeTextDocument categoriesFor: #abortTransaction!Jade!private! !
 !JadeTextDocument categoriesFor: #activeTextEdit!private! !
+!JadeTextDocument categoriesFor: #additionalAccelerators!accessing!public! !
 !JadeTextDocument categoriesFor: #addQuotesToSelection!menu handlers!private! !
 !JadeTextDocument categoriesFor: #codePresenterIsMethod!private! !
 !JadeTextDocument categoriesFor: #codeSourcePresenterClass!private! !

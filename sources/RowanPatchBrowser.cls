@@ -10,6 +10,9 @@ RowanPatchBrowser comment: ''!
 !RowanPatchBrowser categoriesForClass!Unclassified! !
 !RowanPatchBrowser methodsFor!
 
+additionalAccelerators
+	^#(#(#raiseConsole 'Ctrl+F7'))!
+
 createComponents
 	super createComponents.
 	includeIdenticalPresenter value: true!
@@ -41,14 +44,23 @@ operationSelected
 	].
 !
 
+raiseConsole
+	| transcript |
+	transcript := JadeiteTranscript allInstances
+				detect: [:trans | trans gciSession = GciSession current]
+				ifNone: [^self].
+	transcript view setFocus!
+
 shellName
 
 	^name, ' Changes'
 ! !
+!RowanPatchBrowser categoriesFor: #additionalAccelerators!accessing!public! !
 !RowanPatchBrowser categoriesFor: #createComponents!public! !
 !RowanPatchBrowser categoriesFor: #name!accessing!public! !
 !RowanPatchBrowser categoriesFor: #name:!accessing!public! !
 !RowanPatchBrowser categoriesFor: #operationSelected!public! !
+!RowanPatchBrowser categoriesFor: #raiseConsole!menu handlers!public! !
 !RowanPatchBrowser categoriesFor: #shellName!overrides!private! !
 
 !RowanPatchBrowser class methodsFor!

@@ -10,6 +10,9 @@ JadeiteLoginShell comment: ''!
 !JadeiteLoginShell categoriesForClass!Unclassified! !
 !JadeiteLoginShell methodsFor!
 
+additionalAccelerators
+	^#(#(#raiseConsole 'Ctrl+F7'))!
+
 basicCaption
 	^'Jadeite Login Version: ' , self class jadeiteVersionString!
 
@@ -35,14 +38,23 @@ postLogin: aGciSession
 	JadeiteTranscript showOnSession: aGciSession.
 	^result!
 
+raiseConsole
+	| transcript |
+	transcript := JadeiteTranscript allInstances
+				detect: [:trans | trans gciSession = GciSession current]
+				ifNone: [^self].
+	transcript view setFocus!
+
 updateCaption
 	self caption: 'Jadeite Login Version: ', self class jadeiteVersionString! !
+!JadeiteLoginShell categoriesFor: #additionalAccelerators!accessing!public! !
 !JadeiteLoginShell categoriesFor: #basicCaption!accessing!public! !
 !JadeiteLoginShell categoriesFor: #fillVersionList!public! !
 !JadeiteLoginShell categoriesFor: #loginFailureCaption!private! !
 !JadeiteLoginShell categoriesFor: #openGitHubJadeiteProject!public! !
 !JadeiteLoginShell categoriesFor: #openGitHubRowanProject!public! !
 !JadeiteLoginShell categoriesFor: #postLogin:!public! !
+!JadeiteLoginShell categoriesFor: #raiseConsole!menu handlers!public! !
 !JadeiteLoginShell categoriesFor: #updateCaption!public! !
 
 !JadeiteLoginShell class methodsFor!
