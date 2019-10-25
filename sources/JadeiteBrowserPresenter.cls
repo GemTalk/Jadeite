@@ -609,7 +609,6 @@ resetClassTemplate
 
 runAll
 	self selectSUnitTab.
-	self sunitPresenter methodListPresenter view selectAll. 
 	self sunitPresenter runAll!
 
 runSelected
