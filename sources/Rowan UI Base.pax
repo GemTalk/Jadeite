@@ -327,6 +327,7 @@ package methodNames
 	add: #MethodSourcePresenter -> #isOkayToChange;
 	add: #MethodSourcePresenter -> #methodMenuBreak:;
 	add: #MethodSourcePresenter -> #updateMethodSource;
+	add: #MethodSourcePresenter -> #updateMethodStepPoints;
 	add: #Object -> #basicPrepareForReplication;
 	add: #Object -> #isClassService;
 	add: #Object -> #isMethodService;
@@ -4512,13 +4513,48 @@ methodMenuBreak: aMenu
 	selection appendToSourceMenu: aMenu presenter: documentPresenter view !
 
 updateMethodSource
-	parentPresenter updateMethodSource! !
+	parentPresenter updateMethodSource!
+
+updateMethodStepPoints
+	| breakPoints indicators stepPoints unimplementedSelectors updatedRange breakPointSymbol |
+	breakPoints := gsMethod breakPoints.
+	stepPoints := gsMethod stepPoints.
+	unimplementedSelectors := gsMethod unimplementedSelectors.
+	documentPresenter view clearContainerIndicators.
+	indicators := OrderedCollection new.
+	breakPointSymbol := BrowserUpdate current breakpointsEnabled
+				ifTrue: [#breakPoint]
+				ifFalse: [#disabledBreakPoint].
+	1 to: stepPoints size
+		do: 
+			[:stepPoint |
+			| range string styleName |
+			range := (stepPoints at: stepPoint) key.
+			(unimplementedSelectors at: range start ifAbsent: [nil])
+				ifNotNil: 
+					[:value |
+					styleName := 10.
+					string := 'No implementors of #' , value printString , ' (found at step point #'
+								, stepPoint printString , ')']
+				ifNil: 
+					[styleName := (breakPoints includes: stepPoint) ifTrue: [breakPointSymbol] ifFalse: [#stepPoint].
+					string := ((breakPoints includes: stepPoint) ifTrue: ['Break at '] ifFalse: ['']) , 'step point #'
+								, stepPoint printString].
+			updatedRange := offsets isNil
+						ifTrue: [range]
+						ifFalse: [(self offsetAt: stepPoint) to: (self offsetAt: stepPoint) + range size].
+			indicators add: (ScintillaIndicator
+						styleName: styleName
+						range: updatedRange
+						tag: string)].
+	documentPresenter view indicators: indicators! !
 !MethodSourcePresenter categoriesFor: #editMenuStrings!Jade!private! !
 !MethodSourcePresenter categoriesFor: #editSaveMethod!menu handlers!public! !
 !MethodSourcePresenter categoriesFor: #fileSave!public! !
 !MethodSourcePresenter categoriesFor: #isOkayToChange!Jade!public!testing! !
 !MethodSourcePresenter categoriesFor: #methodMenuBreak:!Jade!public! !
 !MethodSourcePresenter categoriesFor: #updateMethodSource!public! !
+!MethodSourcePresenter categoriesFor: #updateMethodStepPoints!public! !
 
 !Object methodsFor!
 

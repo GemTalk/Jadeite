@@ -208,38 +208,7 @@ update
 		isEnabled: true;
 		yourself.
 	self updateMethodStepPoints.
-	currentSelector := gsMethod selector!
-
-updateMethodStepPoints
-	| breakPoints indicators stepPoints unimplementedSelectors updatedRange |
-	breakPoints := gsMethod breakPoints.
-	stepPoints := gsMethod stepPoints.
-	unimplementedSelectors := gsMethod unimplementedSelectors.
-	documentPresenter view clearContainerIndicators.
-	indicators := OrderedCollection new.
-	1 to: stepPoints size
-		do: 
-			[:stepPoint |
-			| range string styleName |
-			range := (stepPoints at: stepPoint) key.
-			(unimplementedSelectors at: range start ifAbsent: [nil])
-				ifNotNil: 
-					[:value |
-					styleName := 10.
-					string := 'No implementors of #' , value printString , ' (found at step point #'
-								, stepPoint printString , ')']
-				ifNil: 
-					[styleName := (breakPoints includes: stepPoint) ifTrue: [#disabledBreakPoint] ifFalse: [#stepPoint].
-					string := ((breakPoints includes: stepPoint) ifTrue: ['Break at '] ifFalse: ['']) , 'step point #'
-								, stepPoint printString].
-			updatedRange := offsets isNil
-						ifTrue: [range]
-						ifFalse: [(self offsetAt: stepPoint) to: (self offsetAt: stepPoint) + range size].
-			indicators add: (ScintillaIndicator
-						styleName: styleName
-						range: updatedRange
-						tag: string)].
-	documentPresenter view indicators: indicators! !
+	currentSelector := gsMethod selector! !
 !MethodSourcePresenter categoriesFor: #canSetBreakpoints!Breakpoints!public! !
 !MethodSourcePresenter categoriesFor: #clearBreakAtStepPoint:!public! !
 !MethodSourcePresenter categoriesFor: #codePresenterIsMethod!public! !
@@ -261,7 +230,6 @@ updateMethodStepPoints
 !MethodSourcePresenter categoriesFor: #showStepPoint:!public! !
 !MethodSourcePresenter categoriesFor: #stepPointAt:!Jade!private! !
 !MethodSourcePresenter categoriesFor: #update!public! !
-!MethodSourcePresenter categoriesFor: #updateMethodStepPoints!public! !
 
 !MethodSourcePresenter class methodsFor!
 
