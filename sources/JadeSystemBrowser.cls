@@ -171,7 +171,6 @@ onViewOpened
 !
 
 queryCommand: aCommandQuery
-
 	(#(#'closeCard' #'moveCardLeft' #'moveCardRight') includes: aCommandQuery command)  ifTrue: [
 		aCommandQuery isEnabled: 1 < cardsPresenter view cards size. 
 		^true.

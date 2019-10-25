@@ -97,6 +97,7 @@ onViewOpened
 	!
 
 queryCommand: aCommandQuery
+	(self topShell queryCommand: aCommandQuery) ifTrue: [^true].	"make sure card actions are appropriately enabled"
 	(#(#runSelected #runMethodTests #runAndMesureTime #debug) includes: aCommandQuery command)
 		ifTrue: 
 			[aCommandQuery isEnabled: methodListPresenter selections notEmpty.
