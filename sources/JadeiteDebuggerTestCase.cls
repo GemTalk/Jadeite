@@ -270,9 +270,11 @@ test_additionalAccelerators
 	but we can assert that we tell Dolphin to set them up"
 
 	self openDebuggerOn: 'self halt'.
-	self assert: debugger additionalAccelerators first first equals: #reformatSource.
-	self assert: debugger additionalAccelerators first last equals: 'Ctrl+Shift+O'.
-	self assert: debugger additionalAccelerators size equals: 1	"should fail if we add a new one"!
+	self assert: debugger additionalAccelerators first first equals: #raiseConsole.
+	self assert: debugger additionalAccelerators last first equals: #reformatSource.
+	self assert: debugger additionalAccelerators first last equals: 'Ctrl+F7'.
+	self assert: debugger additionalAccelerators last last equals: 'Ctrl+Shift+O'.
+	self assert: debugger additionalAccelerators size equals: 2	"should fail if we add a new one"!
 
 test_adHocDebug
 	| workspace |
@@ -1886,19 +1888,19 @@ x := 1 -> 2.
 x yourself';
 		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
 		assert: indicator range = (12 to: 15);
-		assert: indicator styleName = 8;
+		assert: indicator styleName = #stepPoint;
 		assert: indicator tag = 'step point #2';
 
 		debuggerDo: [debugger methodSourcePresenter setBreakPointAt: 2 in: debugger];
 		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
 		assert: indicator range = (12 to: 15);
-		assert: indicator styleName = 9;
+		assert: indicator styleName = #disabledBreakPoint;
 		assert: indicator tag = 'Break at step point #2';
 
 		debuggerDo: [debugger methodSourcePresenter clearBreakPointAt: 2 in: debugger];
 		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
 		assert: indicator range = (12 to: 15);
-		assert: indicator styleName = 8;
+		assert: indicator styleName =  #stepPoint;
 		assert: indicator tag = 'step point #2';
 
 		debuggerDo: [debugger resumeProcess];
