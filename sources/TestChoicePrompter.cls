@@ -27,6 +27,8 @@ model: anObject
 newChoice
 	self value: self class plannedResult!
 
+newPrompt!
+
 prompt: ignore!
 
 showModalView
@@ -37,12 +39,14 @@ showModalView
 !TestChoicePrompter categoriesFor: #choices:!public! !
 !TestChoicePrompter categoriesFor: #model:!public! !
 !TestChoicePrompter categoriesFor: #newChoice!public! !
+!TestChoicePrompter categoriesFor: #newPrompt!public! !
 !TestChoicePrompter categoriesFor: #prompt:!public! !
 !TestChoicePrompter categoriesFor: #showModalView!public! !
 
 !TestChoicePrompter class methodsFor!
 
 plannedResult
+	PlannedResult isEmpty ifTrue: [^nil].
 	[^PlannedResult first] ensure: [PlannedResult removeFirstIfAbsent: []]!
 
 plannedResult: answer

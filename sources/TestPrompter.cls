@@ -28,6 +28,7 @@ showModalView
 !TestPrompter class methodsFor!
 
 plannedResult
+	PlannedResult isEmpty ifTrue: [^nil].
 	[^PlannedResult first] ensure: [PlannedResult removeFirstIfAbsent: []]!
 
 plannedResult: answer
