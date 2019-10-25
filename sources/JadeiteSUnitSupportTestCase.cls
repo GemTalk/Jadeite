@@ -424,8 +424,7 @@ test_inheritedTests
 test_menuEnablementDebugInClassPresenter
 	| debugItem query |
 	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectRowanSample1Test.
 	self projectsPresenter selectSUnitTab.
 	self methodListPresenter resetSelection.
@@ -453,8 +452,7 @@ test_menuEnablementDebugInClassPresenter
 test_menuEnablementRunAndMesureTimeInClassPresenter
 	| runAndMesureTimeItem query |
 	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectRowanSample1Test.
 	self projectsPresenter selectSUnitTab.
 	self methodListPresenter resetSelection.
@@ -483,8 +481,7 @@ test_menuEnablementRunAndMesureTimeInClassPresenter
 test_menuEnablementRunSelectedInClassPresenter
 	| runSelectedItem query |
 	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectRowanSample1Test.
 	self projectsPresenter selectSUnitTab.
 	self methodListPresenter resetSelection.
@@ -579,26 +576,22 @@ test_packageRemovedOnClassRemoval
 
 test_projectBrowserRunAllTests
 	"https://github.com/GemTalk/Jadeite/issues/218#issuecomment-445919980"
+
 	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
-	
+	self openProjectBrowser.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
 	self selectServiceNamed: 'JadeServerTest' in: self classListPresenter.
 	self projectsPresenter runAll.
 	self assert: self projectsPresenter isSunitTabSelected.
-	self assert: self projectsPresenter sunitPresenter methodListPresenter selections size
-		equals: self projectsPresenter sunitPresenter methodListPresenter list size.
 	self projectsPresenter sunitPresenter methodListPresenter selections
 		do: [:methodService | self assert: methodService testResult equals: 'passed']!
 
 test_projectBrowserRunSelectedTests
 	"https://github.com/GemTalk/Jadeite/issues/218#issuecomment-445919980"
+
 	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
-	
+	self openProjectBrowser.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
 	self selectServiceNamed: 'RowanClassServiceTest' in: self classListPresenter.
@@ -615,8 +608,7 @@ test_projectBrowserTestRunningMenuItemEnablement
 	"https://github.com/GemTalk/Jadeite/issues/218#issuecomment-445919980"
 
 	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
 	self selectServiceNamed: 'RowanClassServiceTest' in: self classListPresenter.
@@ -670,8 +662,7 @@ test_resetMenuItemsNamedProperly
 
 	| resetMenuItem |
 	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self projectsPresenter selectSUnitTab.
 	resetMenuItem := self projectsPresenter sunitPresenter methodListPresenter view contextMenu items
 				detect: [:menuItem | '*Reset*' match: menuItem text]
@@ -1025,8 +1016,7 @@ test_sunitBrowserUpdates
 test_sunitTabPassingDebugTestShowsResult
 	| methodService |
 	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self openProjectBrowser.
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter.
@@ -1074,7 +1064,7 @@ test_testCountBar
 
 test_testsRunInSelectedTestClass
 	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
-	projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	self openProjectBrowser.
 	self setupRunInSelectedTestClassTest.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
