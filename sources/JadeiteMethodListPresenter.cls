@@ -11,7 +11,7 @@ JadeiteMethodListPresenter comment: ''!
 !JadeiteMethodListPresenter methodsFor!
 
 additionalAccelerators
-	^#(#(#raiseConsole 'Ctrl+F7'))!
+	^#(#(#insertIfFalse 'Ctrl+Shift+D') #(#insertIfTrue 'Ctrl+Shift+T') #(#raiseConsole 'Ctrl+F7'))!
 
 autoCommit
 	"for testing"

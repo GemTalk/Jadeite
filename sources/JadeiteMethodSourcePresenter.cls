@@ -147,7 +147,6 @@ updateMethodSource
 	self refreshBreakPointsIn: documentPresenter!
 
 value: string
-
 	documentPresenter value: string! !
 !JadeiteMethodSourcePresenter categoriesFor: #createSchematicWiring!create schemantic wiring!private! !
 !JadeiteMethodSourcePresenter categoriesFor: #editMenuStrings!menu handlers!private! !

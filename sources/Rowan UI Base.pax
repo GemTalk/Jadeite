@@ -534,7 +534,7 @@ Error subclass: #RowanDebuggerStepPointError
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Model subclass: #BrowserUpdate
-	instanceVariableNames: 'updates debug inUpdate logger applyingUpdates'
+	instanceVariableNames: 'updates debug inUpdate logger applyingUpdates breakpointsEnabled'
 	classVariableNames: 'Current'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -2809,7 +2809,7 @@ refreshBreakPointsIn: methodSourcePresenter
 	selection ifNil: [^self].
 	methodSourcePresenter view clearContainerIndicators.
 	indicators := OrderedCollection new.
-	breakPointSymbol := (RowanAnsweringService new breakPointsAreEnabled: self gciSession)
+	breakPointSymbol := BrowserUpdate current breakpointsEnabled
 				ifTrue: [#breakPoint]
 				ifFalse: [#disabledBreakPoint].
 	1 to: selection stepPoints size

@@ -203,7 +203,7 @@ onViewClosed
 	GciSession current: nil!
 
 onViewOpened
-	| answeringService installed |
+	| answeringService installed breakPointsEnabled |
 	super onViewOpened.
 	projectListPresenter
 		gciSession: gciSession;
@@ -212,7 +212,9 @@ onViewOpened
 	answeringService := RowanAnsweringService new.
 	installed := answeringService isTranscriptInstalledIn: self gciSession.
 	isTranscriptInstalled value: installed.
-	areBreakpointsEnabled value: (answeringService breakPointsAreEnabled: self gciSession).
+	areBreakpointsEnabled
+		value: (breakPointsEnabled := answeringService breakPointsAreEnabled: self gciSession).
+	BrowserUpdate current breakpointsEnabled: breakPointsEnabled.
 	self registerPresentersForUpdates!
 
 openCommitInGitHub

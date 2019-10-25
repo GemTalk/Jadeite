@@ -23,7 +23,10 @@ breakPointsAreEnabled: session
 	^answer!
 
 breakpointSettingChanged: transcript
-	updateType ifNotNil: [transcript areBreakpointsEnabled value: answer]!
+	updateType
+		ifNotNil: 
+			[transcript areBreakpointsEnabled value: answer.
+			BrowserUpdate current breakpointsEnabled: answer]!
 
 expressionSelector: string session: session
 	command := #expressionSelector:.

@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 Model subclass: #BrowserUpdate
-	instanceVariableNames: 'updates debug inUpdate logger applyingUpdates'
+	instanceVariableNames: 'updates debug inUpdate logger applyingUpdates breakpointsEnabled'
 	classVariableNames: 'Current'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -54,6 +54,12 @@ basicIssueCommand: services session: session
 basicUpdateServices: services session: session
 	services do: [:service | service command: #update].
 	^self basicIssueCommand: services session: session!
+
+breakpointsEnabled
+	^breakpointsEnabled!
+
+breakpointsEnabled: anObject
+	breakpointsEnabled := anObject!
 
 debug
 	^debug!
@@ -296,6 +302,8 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #applyUpdateWhile:!public!updating! !
 !BrowserUpdate categoriesFor: #basicIssueCommand:session:!commands!private! !
 !BrowserUpdate categoriesFor: #basicUpdateServices:session:!private!updating! !
+!BrowserUpdate categoriesFor: #breakpointsEnabled!accessing!private! !
+!BrowserUpdate categoriesFor: #breakpointsEnabled:!accessing!private! !
 !BrowserUpdate categoriesFor: #debug!accessing!private! !
 !BrowserUpdate categoriesFor: #debug:!accessing!private! !
 !BrowserUpdate categoriesFor: #initialize!initialization!public! !
