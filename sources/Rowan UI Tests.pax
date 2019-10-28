@@ -21,6 +21,7 @@ package classNames
 	add: #JadeitePreferencesTestCase;
 	add: #JadeiteProjectBrowserAbstractTestCase;
 	add: #JadeiteProjectBrowserDictionaryTestCase;
+	add: #JadeiteProjectBrowserLowerTabsTestCase;
 	add: #JadeiteProjectBrowserTestCase;
 	add: #JadeiteSUnitSupportTestCase;
 	add: #JadeiteTestResource;
@@ -194,6 +195,11 @@ JadeiteAbstractTestCase subclass: #JadeiteTranscriptTestCase
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserDictionaryTestCase
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserLowerTabsTestCase
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

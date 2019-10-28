@@ -20,6 +20,9 @@ cleanupProcesses
 					session executeString: '[(Object _objectForOop: ' , processService oop printString
 								, ') terminate] on: Error do:[:ex | "ignore"]']]!
 
+clearBreakAt: anInteger
+	self projectsPresenter clearBreakPointAt: anInteger in: self projectsPresenter!
+
 closeDebuggers
 	| list semaphore |
 	list := JadeiteMethodListBrowser allInstances , RowanSystemBrowser allInstances
@@ -471,6 +474,48 @@ test_badCompileInDebugger
 	self assert: self statusBarValue equals: 'undefined symbol'.
 	self assert: debugger methodSourcePresenter documentPresenter view backcolor
 		equals: JadeiteTextStyles default colorForCompileError!
+
+test_breakpointDisabledHighlighting
+	| indicator |
+	self testsIssue: #issue607 withTitle: 'Debugger does not have correct breakpoint display (3.0.84)'.
+	self enableBreakpoints.
+	self openProjectBrowser.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self setBreakAt: 2.
+	
+	[self openDebuggerOn: 'RowanSample1Test new test1'.
+	self disableBreakpoints.
+	self selectFrameAt: 2.	"remove these two lines when debugger updates bp enabled state automagically"
+	self selectFrameAt: 1.
+	self
+		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
+		assert: indicator range = (35 to: 37);
+		assert: indicator styleName = #disabledBreakPoint;
+		assert: indicator tag = 'Break at step point #2']
+			ensure: 
+				[self clearBreakAt: 2.
+				self enableBreakpoints.
+				self debuggerDo: [debugger resumeProcess]]!
+
+test_breakpointHighlighting
+	| indicator |
+	self testsIssue: #issue607 withTitle: 'Debugger does not have correct breakpoint display (3.0.84)'.
+	self enableBreakpoints.
+	self openProjectBrowser.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self setBreakAt: 2.
+	
+	[self openDebuggerOn: 'RowanSample1Test new test1'.
+	self
+		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
+		assert: indicator range = (35 to: 37);
+		assert: indicator styleName = #breakPoint;
+		assert: indicator tag = 'Break at step point #2']
+			ensure: 
+				[self clearBreakAt: 2.
+				self debuggerDo: [debugger resumeProcess]]!
 
 test_breakpointHighlightingInBlocks
 	| sourcePresenter |
@@ -1933,41 +1978,6 @@ test8
 		yourself.
 	self debuggerDo: [debugger resumeProcess]!
 
-testBreakpointDisabledHighlighting
-	| indicator |
-	self testsIssue: #issue607 withTitle: 'Debugger does not have correct breakpoint display (3.0.84)'.
-	self enableBreakpoints.
-	self openProjectBrowser.
-	self selectRowanSample1Test.
-	self selectMethodNamed: #test1.
-	self setBreakAt: 2.
-	self openDebuggerOn: 'RowanSample1Test new test1'.
-	self disableBreakpoints.
-	self selectFrameAt: 2. "remove these two lines when debugger updates bp enabled state automagically"
-	self selectFrameAt: 1. 
-	self
-		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
-		assert: indicator range = (35 to: 37);
-		assert: indicator styleName = #disabledBreakPoint;
-		assert: indicator tag = 'Break at step point #2'.
-	self debuggerDo: [debugger resumeProcess]!
-
-testBreakpointHighlighting
-	| indicator |
-	self testsIssue: #issue607 withTitle: 'Debugger does not have correct breakpoint display (3.0.84)'.
-	self enableBreakpoints.
-	self openProjectBrowser.
-	self selectRowanSample1Test.
-	self selectMethodNamed: #test1.
-	self setBreakAt: 2.
-	self openDebuggerOn: 'RowanSample1Test new test1'.
-	self
-		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
-		assert: indicator range = (35 to: 37);
-		assert: indicator styleName = #breakPoint;
-		assert: indicator tag = 'Break at step point #2'.
-	self debuggerDo: [debugger resumeProcess]!
-
 testBug77
 
 	| string view |
@@ -1989,6 +1999,7 @@ x halt.
 		yourself.
 ! !
 !JadeiteDebuggerTestCase categoriesFor: #cleanupProcesses!private!support! !
+!JadeiteDebuggerTestCase categoriesFor: #clearBreakAt:!private!support!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #closeDebuggers!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #closeJadeiteLoginShells!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #createTestMethodWithBreakpoints!private!support!tests! !
@@ -2023,6 +2034,8 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_adHocVariablePaneInspect!public!test ad hoc execution! !
 !JadeiteDebuggerTestCase categoriesFor: #test_adHocVariablePaneInspect2!public!test ad hoc execution! !
 !JadeiteDebuggerTestCase categoriesFor: #test_badCompileInDebugger!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_breakpointDisabledHighlighting!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_breakpointHighlighting!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_breakpointHighlightingInBlocks!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !
@@ -2084,7 +2097,5 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test6!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test7!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test8!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #testBreakpointDisabledHighlighting!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #testBreakpointHighlighting!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testBug77!public! !
 
