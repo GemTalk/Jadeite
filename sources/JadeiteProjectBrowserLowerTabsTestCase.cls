@@ -206,12 +206,15 @@ test_compileErrorDisplay
 	source := 'test1 self assert: RowanSample1 new foo = ''abc'.	"won't compile"
 	self methodSourcePresenter value: source.
 	self assert: self methodSourcePresenter isModified.
-	self projectsPresenter editSaveMethod. 
+	self projectsPresenter editSaveMethod.
 	
 	[self assert: self methodSourcePresenter view selectionRange equals: (37 to: 47).
 	self assert: self projectsPresenter statusBarText view forecolor equals: Color black.
 	self assert: self projectsPresenter statusBarText view backcolor equals: Color red faded]
-			ensure: [self unloadSampleProject]!
+			ensure: 
+				[self methodSourcePresenter isModified: false.
+				self selectMethodNamed: #test2.
+				self selectMethodNamed: #test1	"reset the display"]!
 
 test_confirmationDialogDuringCompileClassExistingInAnotherPackage
 	self testsIssue: #issue516 withTitle: 'Rename instance variable with accessor method is... wonky'.
