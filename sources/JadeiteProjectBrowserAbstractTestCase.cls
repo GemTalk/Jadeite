@@ -48,6 +48,9 @@ openSecondBrowser
 	secondPresenter selectClassListTab.
 	^secondBrowser!
 
+selectSUnitTab
+	self projectsPresenter sunitPresenter ensureVisible!
+
 setUp
 	super setUp.
 	self disableTranscriptWrites.	"turn off gemstone transcript writes for performance"
@@ -70,6 +73,7 @@ tearDown
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #disableTranscriptWrites!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #isAbstract!private!testing! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #openSecondBrowser!private! !
+!JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectSUnitTab!private!selection! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #tearDown!private!setup teardown! !
 

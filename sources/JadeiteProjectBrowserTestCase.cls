@@ -203,9 +203,6 @@ saveTestClass
 selectCommentTab
 	self projectsPresenter classCommentPresenter ensureVisible!
 
-selectSUnitTab
-	self projectsPresenter sunitPresenter ensureVisible!
-
 selectVariableListEntryForcingEvent: variable
 	| event index |
 	index := self variableListPresenter list indexOf: variable.
@@ -5260,7 +5257,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUniqueString!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveTestClass!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectCommentTab!private!selection! !
-!JadeiteProjectBrowserTestCase categoriesFor: #selectSUnitTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectVariableListEntryForcingEvent:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abortOnVariablesTab!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_acceptDefinedMethodInExtensionClass!public!tests! !

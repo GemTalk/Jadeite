@@ -448,8 +448,10 @@ test_reformatSourceIsUndoable
 			ensure: [self projectsPresenter removeMethods: self classListPresenter selections]!
 
 test_reloadAfterClassCompile
+	| version |
 	self testsIssue: #issue516 withTitle: 'Rename instance variable with accessor method is... wonky'.
 	self selectRowanSample1Test.
+	version := self classListPresenter selection version.
 	TestMessageBox enableJadeiteTestMessageBox.
 	
 	[TestMessageBox plannedResult: #yes.
@@ -458,9 +460,9 @@ test_reloadAfterClassCompile
 		superclass: 'TestCase'
 		instVars: #('erbleldy')
 		package: 'RowanSample1-Tests'.
-	self assert: self classListPresenter selection version equals: 2.
+	self assert: self classListPresenter selection version equals: version + 1.
 	self projectsPresenter loadProjects.
-	self assert: self classListPresenter selection version equals: 3	"see https://github.com/GemTalk/Rowan/issues/506"]
+	self assert: self classListPresenter selection version equals: version + 2	"see https://github.com/GemTalk/Rowan/issues/506"]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_sunitBarEnabledOnEntry
@@ -660,6 +662,7 @@ test_sunitUpdatesProperly
 	self selectSUnitTab.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list size equals: 4.	"should be four after project load"
 	secondBrowser := self openWindow: [transcript openJadeiteProjectsBrowser].
+	secondBrowser := secondBrowser topShell. 
 	
 	[self selectServiceNamed: 'RowanSample1' in: secondBrowser currentCard projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Tests' in: secondBrowser currentCard packageListPresenter.
