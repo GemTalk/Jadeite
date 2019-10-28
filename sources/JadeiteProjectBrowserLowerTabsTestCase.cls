@@ -465,6 +465,48 @@ test_reloadAfterClassCompile
 	self assert: self classListPresenter selection version equals: version + 2	"see https://github.com/GemTalk/Rowan/issues/506"]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+test_stepPoint1
+	"Always a step point at the selector"
+
+	| classService methodService |
+	self selectRowanSample1Class.
+	classService := self projectsPresenter selectedClass.
+	classService
+		command: #saveMethodSource:category:;
+		commandArgs: (Array with: 'abc' with: 'test step points').
+	self issueCommand: classService.
+	methodService := (self selectMethodNamed: #abc) first.
+	self assert: methodService stepPoints size equals: 1.
+	self assert: methodService stepPoints first key equals: (1 to: 3)!
+
+test_stepPoint2
+	"see corresponding server test. Character ranges should be the same."
+
+	"test broken"
+
+	| sourceString classService methodService |
+	self selectRowanSample1Class.
+	sourceString := session executeString: 'RowanMethodServiceTest new stepPoint1Source'.
+	classService := self projectsPresenter selectedClass.
+	classService
+		command: #saveMethodSource:category:;
+		commandArgs: (Array with: sourceString with: 'test step points').
+	self issueCommand: classService.
+	methodService := (self selectMethodNamed: #simpleMethod) first.
+	self assert: methodService stepPoints size equals: 7.
+	self assert: (methodService stepPoints at: 2) key equals: (42 to: 44).
+	self assert: (methodService stepPoints at: 2) value equals: #new.
+	self assert: (methodService stepPoints at: 3) key equals: (33 to: 34).
+	self assert: (methodService stepPoints at: 3) value equals: String new.	"might be a server bug"
+	self assert: (methodService stepPoints at: 4) key equals: (92 to: 94).
+	self assert: (methodService stepPoints at: 4) value equals: #new.
+	self assert: (methodService stepPoints at: 5) key equals: (69 to: 72).
+	self assert: (methodService stepPoints at: 5) value equals: #add:.
+	self assert: (methodService stepPoints at: 6) key equals: (124 to: 127).
+	self assert: (methodService stepPoints at: 6) value equals: #size.
+	self assert: (methodService stepPoints at: 7) key equals: (139 to: 140).
+	self assert: (methodService stepPoints at: 7) value equals: String new	"might be a server bug"!
+
 test_sunitBarEnabledOnEntry
 	self testsIssue: #issue179 withTitle: 'SUnit tab issues'.
 	self selectRowanSample1Test.
@@ -715,6 +757,8 @@ test_sunitUpdatesProperly
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatSourceAppliesOnlyToCurrentBrowser!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reloadAfterClassCompile!public!test compiling!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_stepPoint1!public!test step points!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_stepPoint2!public!test step points!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitBarEnabledOnEntry!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitBarEnabledOnReEntry!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitBrowserForTestClass!public!test menus!test sunit tab!tests! !
