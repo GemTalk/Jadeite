@@ -99,6 +99,16 @@ debuggerDo: aBlock
 			[JadeiteDebugger semaphore wait.
 			JadeiteDebugger semaphore: nil]!
 
+disableBreakpoints
+	| answeringService |
+	answeringService := RowanAnsweringService new.
+	answeringService setBreakpointsEnabled: false session: session!
+
+enableBreakpoints
+	| answeringService |
+	answeringService := RowanAnsweringService new.
+	answeringService setBreakpointsEnabled: true session: session!
+
 getClipboardContents
 	"Private - `Clipboard current getText` occasionally gets an `Access is denied` error.
 	Retry several times, pausing in between each attempt, until the clipboard is retrieved."
@@ -1923,6 +1933,41 @@ test8
 		yourself.
 	self debuggerDo: [debugger resumeProcess]!
 
+testBreakpointDisabledHighlighting
+	| indicator |
+	self testsIssue: #issue607 withTitle: 'Debugger does not have correct breakpoint display (3.0.84)'.
+	self enableBreakpoints.
+	self openProjectBrowser.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self setBreakAt: 2.
+	self openDebuggerOn: 'RowanSample1Test new test1'.
+	self disableBreakpoints.
+	self selectFrameAt: 2. "remove these two lines when debugger updates bp enabled state automagically"
+	self selectFrameAt: 1. 
+	self
+		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
+		assert: indicator range = (35 to: 37);
+		assert: indicator styleName = #disabledBreakPoint;
+		assert: indicator tag = 'Break at step point #2'.
+	self debuggerDo: [debugger resumeProcess]!
+
+testBreakpointHighlighting
+	| indicator |
+	self testsIssue: #issue607 withTitle: 'Debugger does not have correct breakpoint display (3.0.84)'.
+	self enableBreakpoints.
+	self openProjectBrowser.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self setBreakAt: 2.
+	self openDebuggerOn: 'RowanSample1Test new test1'.
+	self
+		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
+		assert: indicator range = (35 to: 37);
+		assert: indicator styleName = #breakPoint;
+		assert: indicator tag = 'Break at step point #2'.
+	self debuggerDo: [debugger resumeProcess]!
+
 testBug77
 
 	| string view |
@@ -1948,6 +1993,8 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #closeJadeiteLoginShells!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #createTestMethodWithBreakpoints!private!support!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #debuggerDo:!private!support! !
+!JadeiteDebuggerTestCase categoriesFor: #disableBreakpoints!public!support! !
+!JadeiteDebuggerTestCase categoriesFor: #enableBreakpoints!public!support! !
 !JadeiteDebuggerTestCase categoriesFor: #getClipboardContents!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #getDebugger!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #getSecondDebugger!private!support! !
@@ -2037,5 +2084,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test6!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test7!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test8!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #testBreakpointDisabledHighlighting!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #testBreakpointHighlighting!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #testBug77!public! !
 
