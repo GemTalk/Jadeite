@@ -298,7 +298,7 @@ queryCommand: query
 
 reformatSource
 	| methodService |
-	methodService := self methodListSelection.
+	methodService := self methodListSelection copy.
 	methodService
 		source: documentPresenter value;
 		command: #reformatSource;

@@ -1207,6 +1207,38 @@ test_reformatSource
   ^ #''test''' replaceCrLfWithLf]
 			ensure: [debugger documentPresenter view isModified: false]!
 
+test_reformatSourceDoesNotStick
+	self testsIssue: #issue609
+		withTitle: 'Debugger problems with unsaved reformat and breakpoint in block'.
+	self
+		saveMethod: 'reformatSourceTemporaryMethod 
+
+
+self halt. ^#test'
+		in: 'RowanSample1Test'
+		category: 'other'.
+	self openDebuggerOn: 'RowanSample1Test new reformatSourceTemporaryMethod'.
+	self assert: debugger documentPresenter value
+		equals: 'reformatSourceTemporaryMethod 
+
+
+self halt. ^#test'.
+	debugger reformatSource.
+	self assert: debugger documentPresenter view isModified.
+	self assert: debugger documentPresenter value
+		equals: 'reformatSourceTemporaryMethod
+  self halt.
+  ^ #''test''' replaceCrLfWithLf.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.
+	self selectFrameAt: 6.
+	self selectFrameAt: 4.
+	self assert: debugger documentPresenter value
+		equals: 'reformatSourceTemporaryMethod 
+
+
+self halt. ^#test'!
+
 test_reformatSourceIsUndoable
 	self testsIssue: #issue550
 		withTitle: '"Reformat source" without save is not working right in method browsers (3.0.78)'.
@@ -2064,6 +2096,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_loginButtonEnablementAfterDebug!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatIllegalSource!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatSource!public!test source! !
+!JadeiteDebuggerTestCase categoriesFor: #test_reformatSourceDoesNotStick!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reloadWithDebuggerOpen!public!tests! !
