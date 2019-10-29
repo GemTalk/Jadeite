@@ -39,6 +39,34 @@ test_abstractTestsShown
 				view: self methodListPresenter view.
 	self deny: commandQuery isEnabled	"run test menu item disabled in the abstract class"!
 
+test_breakpointDisabledHighlighting
+	| indicator |
+	self testsIssue: #issue597
+		withTitle: 'Disabled Breakpoints only disables existing, doesn''t impact one set later; why in preferences?'.
+	self enableBreakpoints.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self setBreakAt: 2.
+	indicator := self projectsPresenter methodSourcePresenter view indicators at: 2.
+	self assert: indicator range = (35 to: 37).
+	self assert: indicator styleName = #breakPoint.
+	self assert: indicator tag = 'Break at step point #2'.
+	
+	[self disableBreakpoints.
+	indicator := self projectsPresenter methodSourcePresenter view indicators at: 2.
+	self assert: indicator range = (35 to: 37).
+	self assert: indicator styleName = #disabledBreakPoint.
+	self assert: indicator tag = 'Break at step point #2'.
+	self setBreakAt: 3.
+	indicator := self projectsPresenter methodSourcePresenter view indicators at: 3.
+	self assert: indicator range = (39 to: 41).
+	self assert: indicator styleName = #disabledBreakPoint.
+	self assert: indicator tag = 'Break at step point #3']
+			ensure: 
+				[self clearBreakAt: 2.
+				self clearBreakAt: 3.
+				self enableBreakpoints]!
+
 test_classCopy
 	self testsIssue: #issue506 withTitle: 'Usefful to be able to copy a class ...'.
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
@@ -782,6 +810,7 @@ test_sunitUpdatesProperly
 			ensure: [self destroy: secondBrowser]! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #cardMenuItemForCommand:in:!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_abstractTestsShown!public!test sunit tab!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_breakpointDisabledHighlighting!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_classCopy!public!test class list!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_comparisonTabMultimethod!public!test comparison tab! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_comparisonTabNoMethodSelected!public!test comparison tab! !

@@ -60,6 +60,9 @@ cleanupTextPaneForClose: ws
 			[ws codePane documentPresenter view isModified: false.
 			ws codePane documentPresenter value: nil]!
 
+clearBreakAt: anInteger
+	self projectsPresenter clearBreakPointAt: anInteger in: self projectsPresenter!
+
 cloneRowanSample1
 	JadeiteTestResource current cloneRowanSample1!
 
@@ -107,8 +110,18 @@ dictionaryPresenter
 
 	^self projectsPresenter dictionaryPresenter!
 
+disableBreakpoints
+	| answeringService |
+	answeringService := RowanAnsweringService new.
+	answeringService setBreakpointsEnabled: false session: session!
+
 disableInteractionsWhile: block
 	^JadeiteTestResource current disableInteractionsWhile: block!
+
+enableBreakpoints
+	| answeringService |
+	answeringService := RowanAnsweringService new.
+	answeringService setBreakpointsEnabled: true session: session!
 
 ensureOneTab
 	projectsBrowser ifNil: [^self].
@@ -480,6 +493,9 @@ setAutoCommit: aBoolean
 				commandArgs: (Array with: aBoolean).
 	self issueCommand: autoCommitService!
 
+setBreakAt: anInteger
+	self projectsPresenter setBreakPointAt: anInteger in: self projectsPresenter!
+
 setUp
 	super setUp.
 	session := JadeiteTestResource current session.
@@ -566,6 +582,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #classListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #cleanupExistingWindows!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #cleanupTextPaneForClose:!public!support! !
+!JadeiteAbstractTestCase categoriesFor: #clearBreakAt:!private!support!tests! !
 !JadeiteAbstractTestCase categoriesFor: #cloneRowanSample1!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #commitTransaction!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #createDebuggerTestMethod!issue test support!private! !
@@ -576,7 +593,9 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #deselectProjects!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #destroy:!public!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #dictionaryPresenter!private!project browser support! !
+!JadeiteAbstractTestCase categoriesFor: #disableBreakpoints!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #disableInteractionsWhile:!private!setup teardown! !
+!JadeiteAbstractTestCase categoriesFor: #enableBreakpoints!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #ensureOneTab!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Loaded!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #fail:!asserting!public! !
@@ -633,6 +652,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #selectWithChangeEventMethodNamed:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #serviceNamed:in:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #setAutoCommit:!private!setup teardown! !
+!JadeiteAbstractTestCase categoriesFor: #setBreakAt:!private!support!tests! !
 !JadeiteAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #setupProjectBrowser!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #setupSupclassComparisonMethods!public!support! !

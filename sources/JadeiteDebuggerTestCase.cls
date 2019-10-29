@@ -20,9 +20,6 @@ cleanupProcesses
 					session executeString: '[(Object _objectForOop: ' , processService oop printString
 								, ') terminate] on: Error do:[:ex | "ignore"]']]!
 
-clearBreakAt: anInteger
-	self projectsPresenter clearBreakPointAt: anInteger in: self projectsPresenter!
-
 closeDebuggers
 	| list semaphore |
 	list := JadeiteMethodListBrowser allInstances , RowanSystemBrowser allInstances
@@ -101,16 +98,6 @@ debuggerDo: aBlock
 	[aBlock value] ensure: 
 			[JadeiteDebugger semaphore wait.
 			JadeiteDebugger semaphore: nil]!
-
-disableBreakpoints
-	| answeringService |
-	answeringService := RowanAnsweringService new.
-	answeringService setBreakpointsEnabled: false session: session!
-
-enableBreakpoints
-	| answeringService |
-	answeringService := RowanAnsweringService new.
-	answeringService setBreakpointsEnabled: true session: session!
 
 getClipboardContents
 	"Private - `Clipboard current getText` occasionally gets an `Access is denied` error.
@@ -224,9 +211,6 @@ selectFrameAt: integer
 	debugger frameListPresenter onSelectionChanging: event.
 	event value ifFalse:[^self]. 
 	debugger frameListPresenter selection: (debugger frameListPresenter list at: integer)!
-
-setBreakAt: anInteger
-	self projectsPresenter setBreakPointAt: anInteger in: self projectsPresenter!
 
 setUp
 	super setUp.
@@ -2033,13 +2017,10 @@ x halt.
 		yourself.
 ! !
 !JadeiteDebuggerTestCase categoriesFor: #cleanupProcesses!private!support! !
-!JadeiteDebuggerTestCase categoriesFor: #clearBreakAt:!private!support!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #closeDebuggers!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #closeJadeiteLoginShells!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #createTestMethodWithBreakpoints!private!support!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #debuggerDo:!private!support! !
-!JadeiteDebuggerTestCase categoriesFor: #disableBreakpoints!public!support! !
-!JadeiteDebuggerTestCase categoriesFor: #enableBreakpoints!public!support! !
 !JadeiteDebuggerTestCase categoriesFor: #getClipboardContents!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #getDebugger!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #getSecondDebugger!private!support! !
@@ -2051,7 +2032,6 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #removeMethodNamed:!private!test ad hoc execution! !
 !JadeiteDebuggerTestCase categoriesFor: #saveMethodWithHalt!private! !
 !JadeiteDebuggerTestCase categoriesFor: #selectFrameAt:!private!support! !
-!JadeiteDebuggerTestCase categoriesFor: #setBreakAt:!private!support!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteDebuggerTestCase categoriesFor: #statusBarValue!private!support! !
 !JadeiteDebuggerTestCase categoriesFor: #systemBrowser!private! !
