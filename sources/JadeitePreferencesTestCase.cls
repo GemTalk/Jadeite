@@ -52,6 +52,30 @@ test_breakpointEnabled
 	self deny: transcript areBreakpointsEnabled value]
 			ensure: [transcript areBreakpointsEnabled value: breakpointWasEnabled]!
 
+test_everyPreferenceIsInMustNotStripCategory
+	"or else the preference will silently fail in runtime.
+	All preferences are assumed to be in default file and
+	preferences are in the format of ... # <method selector:> value"
+
+	| stream count |
+	stream := ReadStream on: JadeitePreferences preferencesFileDefaultContents.
+	count := 0.
+	
+	[[stream atEnd] whileFalse: 
+			[| line substrings selector method categories |
+			line := stream nextLine.
+			substrings := line subStrings.
+			(substrings notEmpty and: [substrings first first = $# and: [substrings first last = $:]])
+				ifTrue: 
+					[selector := (substrings first copyWithout: $#) asSymbol.
+					method := JadeitePreferences methodDictionary at: selector.
+					categories := (JadeitePreferences categoriesOfMethod: method) collect: [:category | category name].
+					self assert: (categories asArray includes: 'must not strip').
+					count := count + 1]]]
+			ensure: 
+				[self assert: count >= 10.	"sanity test that we checked every pref at the time test was written"
+				stream close]!
+
 test_handleMalformedPreference
 	| prefs result |
 	self testsIssue: #issue553 withTitle: 'Jadeite settings in preferences file (3.0.78)'.
@@ -154,6 +178,7 @@ test_validPreferences
 !JadeitePreferencesTestCase categoriesFor: #test_autoCommitEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_autoCompleteEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_breakpointEnabled!public!tests! !
+!JadeitePreferencesTestCase categoriesFor: #test_everyPreferenceIsInMustNotStripCategory!public! !
 !JadeitePreferencesTestCase categoriesFor: #test_handleMalformedPreference!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_loggingEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesHandlesBlanks!public!tests! !
