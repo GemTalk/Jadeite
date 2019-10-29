@@ -218,6 +218,13 @@ test_releaseOops
 	self assert: (session executeString: 'System hiddenSetSize: 39') equals: 0.
 	self auditAll!
 
+test_versionMatches
+	"to prevent invalid logins, make sure internal server
+	version matches internal client version"
+
+	self testsIssue: #issue521 withTitle: 'Jadeite version check'.
+	self assert: (session executeString: 'RowanService version') equals: RowanService version!
+
 test_workspaceBrowseProjects
 	| workspace jadeiteMenu browseProjectsItem |
 	self testsIssue: #issue265 withTitle: 'workspace could use a `browse projects` menu item ... '.
@@ -586,6 +593,7 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_findInWorkspace!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_versionMatches!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceConfirmInteraction!public!test!test menus!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceDoubleClickIncludesColon!public!test!test workspaces! !
