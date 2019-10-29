@@ -607,6 +607,32 @@ test_projectMenuGitCommitMenuItem
 			transcript projectListPresenter queryCommand: query.
 			projectService isDirty ifTrue: [self assert: query isEnabled] ifFalse: [self deny: query isEnabled]]!
 
+test_raiseConsole
+	| browser remoteObject |
+	self testsIssue: #issue603
+		withTitle: 'When opening multiple browsers on startup, keep console first (3.0.83)'.
+	transcript raiseConsole.
+	self assert: transcript view hasFocus.
+	browser := transcript browseJadeitePrefs.
+	browser raiseConsole.
+	[self assert: transcript view hasFocus] ensure: [browser view close].
+	browser := transcript openJadeiteProjectsBrowser.
+	browser raiseConsole.
+	[self assert: transcript view hasFocus] ensure: [browser topShell view close].
+	browser := JadePresenter browseImplementorsOf: #size session: session.
+	browser primaryPresenter raiseConsole.
+	[self assert: transcript view hasFocus] ensure: [browser topShell view close].
+	browser := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Raise Console'.
+	browser raiseConsole.
+	[self assert: transcript view hasFocus] ensure: [browser view close].
+	remoteObject := session
+				executeString: 'Array new'
+				fromContext: nil
+				environment: 0.
+	browser := JadeInspector showOn: remoteObject session: session.
+	browser raiseConsole.
+	[self assert: transcript view hasFocus] ensure: [browser view close].!
+
 test_transcriptNamedConsole
 	| clearTranscriptMenuItem wasInstalled |
 	(wasInstalled := transcript isTranscriptInstalled) ifFalse: [transcript flipTranscript].
@@ -667,6 +693,7 @@ writeToPrefsFile: string
 !JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseImplementors!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseSenders!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_projectMenuGitCommitMenuItem!public!test menus! !
+!JadeiteTranscriptTestCase categoriesFor: #test_raiseConsole!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_transcriptNamedConsole!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #writeToPrefsFile:!private!support!tests! !
 
