@@ -42,6 +42,10 @@ assertAncestry: family in: presenter
 			[:parent :children |
 			self assert: children asOrderedCollection equals: (presenter model childrenOf: parent)]!
 
+assertVariableTabSorted
+	^self assert: self projectsPresenter variableListPresenter list asOrderedCollection
+		equals: self projectsPresenter variableListPresenter list asSortedCollection asOrderedCollection!
+
 currentTabView
 	^self projectsPresenter topShell cardsPresenter view cardLayout currentCard!
 
@@ -5099,6 +5103,24 @@ test_variableTabSortOrder
 	self assert: self variableListPresenter list asArray equals: #('_var1' 'testSelector' 'var2' 'var3')]
 			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
+test_variableTabSortOrder2
+	self testsIssue: #issue575 withTitle: 'variables tab sort order inconsistency'.
+	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'Object').
+	self projectsPresenter selectVariableTab.
+	projectsBrowser ifNotNil: [self assertVariableTabSorted].
+	self projectsPresenter selectCategoryTab.
+	projectsBrowser ifNotNil: [self assertVariableTabSorted].
+	self projectsPresenter selectVariableTab.
+	projectsBrowser ifNotNil: [self assertVariableTabSorted].
+	self selectClassTab.
+	projectsBrowser ifNotNil: [self assertVariableTabSorted].
+	self selectInstanceTab.
+	projectsBrowser ifNotNil: [self assertVariableTabSorted].
+	self selectHierarchyTab.
+	projectsBrowser ifNotNil: [self assertVariableTabSorted].
+	self selectClassListTab.
+	projectsBrowser ifNotNil: [self assertVariableTabSorted]!
+
 test_verifyValidCategory
 	self testsIssue: #issue205 withTitle: 'misspelled extension category name causes trouble'.
 	self assert: (self projectsPresenter verifyValidCategory: '*Rowan-Kernel') .
@@ -5112,6 +5134,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodGoo!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodHoo!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #assertAncestry:in:!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #assertVariableTabSorted!private!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #currentTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #dirtyProjectForChangeBrowser!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #executeStringInOtherSession:!public!support! !
@@ -5367,6 +5390,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_variablesUpdatedOnClassSaveInClassList!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_variablesUpdatedOnClassSaveInHierarchy!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_variableTabSortOrder!public!test variable tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_variableTabSortOrder2!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_verifyValidCategory!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #waitForPresenter:!private!selection! !
 

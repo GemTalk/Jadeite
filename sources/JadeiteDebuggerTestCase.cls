@@ -1661,6 +1661,8 @@ abc'.
 	self debuggerDo: [debugger resumeProcess]!
 
 test_stepThrough
+	self testsIssue: #issue401
+		withTitle: 'Step Into A Block Without going thru the detail code? Is this possible.'.
 	self
 		openDebuggerOn: '| array string |
 array := Array with: ''abc'' with: ''def'' with: ''ghi''. 
