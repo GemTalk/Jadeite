@@ -48,6 +48,13 @@ openSecondBrowser
 	secondPresenter selectClassListTab.
 	^secondBrowser!
 
+selectLowerTabsThenDo: aBlock
+	#('sunit' 'classDefinition' 'classDocumentation' 'methodSource' 'comparisonTab') do: 
+			[:tabName |
+			| tab |
+			tab := self projectsPresenter selectSourceTabNamed: tabName.
+			aBlock value: tab]!
+
 selectSUnitTab
 	self projectsPresenter sunitPresenter ensureVisible!
 
@@ -73,6 +80,7 @@ tearDown
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #disableTranscriptWrites!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #isAbstract!private!testing! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #openSecondBrowser!private! !
+!JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectLowerTabsThenDo:!private!support! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectSUnitTab!private!selection! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #tearDown!private!setup teardown! !

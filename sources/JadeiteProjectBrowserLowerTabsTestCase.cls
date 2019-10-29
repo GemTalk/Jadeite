@@ -10,6 +10,14 @@ JadeiteProjectBrowserLowerTabsTestCase comment: ''!
 !JadeiteProjectBrowserLowerTabsTestCase categoriesForClass!Unclassified! !
 !JadeiteProjectBrowserLowerTabsTestCase methodsFor!
 
+cardMenuItemForCommand: command in: toolbar
+	| query item |
+	item := toolbar items
+				detect: [:theItem | theItem isDivider not and: [theItem commandDescription command = command]].
+	query := CommandQuery commandDescription: item commandDescription source: projectsBrowser view.
+	projectsBrowser queryCommand: query.
+	^query!
+
 test_abstractTestsShown
 	| commandQuery methodService |
 	self testsIssue: #issue336
@@ -270,6 +278,29 @@ test_doubleClickIncludesColon
 	self projectsPresenter methodDoubleClicked: nil.
 	self assert: self methodSourcePresenter selectionRange equals: (14 to: 20).
 	self assert: self methodSourcePresenter selection equals: 'assert:'!
+
+test_enablementOfCardTabsWithSUnitTabSelected
+	| toolbar |
+	self testsIssue: #issue556 withTitle: 'Funny orange boxes enabled for Sunit tab, but error'.
+	self selectRowanSample1Test.
+	[projectsBrowser cardsPresenter view cards size > 1] whileTrue: [projectsBrowser closeCard].
+	self assert: projectsBrowser cardsPresenter view cards size equals: 1.
+	toolbar := projectsBrowser view viewNamed: 'rightToolbar'.
+	self selectLowerTabsThenDo: 
+			[:tab |
+			#(#closeCard #moveCardLeft #moveCardRight) do: 
+					[:command |
+					| query |
+					query := self cardMenuItemForCommand: command in: toolbar.
+					self deny: query isEnabled]].
+	projectsBrowser addSystemBrowser.
+	self selectLowerTabsThenDo: 
+			[:tab |
+			#(#closeCard #moveCardLeft #moveCardRight) do: 
+					[:command |
+					| query |
+					query := self cardMenuItemForCommand: command in: toolbar.
+					self assert: query isEnabled]]!
 
 test_findMethodDisabled
 	| commandQuery |
@@ -619,6 +650,18 @@ test_sunitOnlyRunTestMethods
 			[self selectMethodNamed: #nonTestMethod.
 			self projectsPresenter removeMethods: self classListPresenter selections]!
 
+test_sunitRunAllDoesNotLoseSelections
+	self testsIssue: #issue591
+		withTitle: 'Project Brower run-all menu item leaves all tests selected (3.0.82)'.
+	self selectRowanSample1Test.
+	self selectSUnitTab.
+	self projectsPresenter sunitPresenter methodListPresenter selectionByIndex: #(1).	"test1 - select by index implicitly tests sorted order"
+	self projectsPresenter runAll.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selection first testResult
+		equals: 'passed'.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selectionByIndex equals: #(1).
+	!
+
 test_sunitRunAndMeasureTime
 	| runSelectedItem selection |
 	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
@@ -734,6 +777,7 @@ test_sunitUpdatesProperly
 				ifNone: [].
 	self denyIsNil: newMethodService]
 			ensure: [self destroy: secondBrowser]! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #cardMenuItemForCommand:in:!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_abstractTestsShown!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_classCopy!public!test class list!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_comparisonTabMultimethod!public!test comparison tab! !
@@ -748,6 +792,7 @@ test_sunitUpdatesProperly
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_confirmationDialogDuringCompileClassExistingInAnotherPackage!public!test compiling!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_dontDuplicateBreakpoints!public!test breakpoints! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_doubleClickIncludesColon!public!test source! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_enablementOfCardTabsWithSUnitTabSelected!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_findMethodDisabled!public!test find!test menus!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_modifiedSourceShouldNotChange!public!test two browsers!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_modifiedSourceShouldNotChangeMethodList!public!test two browsers!tests! !
@@ -767,6 +812,7 @@ test_sunitUpdatesProperly
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitCtrlB!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitInheritedTests!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitOnlyRunTestMethods!public!test sunit tab! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitRunAllDoesNotLoseSelections!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitRunAndMeasureTime!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitRunSelected!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitTabCanRefresh!public!test menus!test sunit tab!tests! !
