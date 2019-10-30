@@ -175,7 +175,7 @@ loadProjectNamed: projectName
 		command: #reloadProject;
 		commandArgs: nil.
 	JadePresenter issueCommand: (Array with: projectService) session: session.
-	JadeiteSearch initializeAutocompleteSymbols: session!
+	JadeiteSearch initializeAutocompleteSymbolsIn: session!
 
 loadRowanSample1InProjectList
 	| sample1Path root selections |

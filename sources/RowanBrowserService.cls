@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanBrowserService
-	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount dictionaries selectedClass'
+	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount dictionaries selectedClass newCachedSelectors newCachedClasses'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -15,6 +15,20 @@ RowanBrowserService comment: ''!
 
 aborted: presenter browser: browser
 	browser refreshFromServerAfterAbort: self!
+
+addCachedSymbols: unused
+	newCachedSelectors
+		ifNotNil: 
+			[newCachedSelectors do: 
+					[:selector |
+					(JadeiteSearch allSelectorSymbols includes: selector)
+						ifFalse: [JadeiteSearch allSelectorSymbols add: selector]]].
+	newCachedClasses
+		ifNotNil: 
+			[newCachedClasses do: 
+					[:className |
+					(JadeiteSearch allClassNames includes: className)
+						ifFalse: [JadeiteSearch allClassNames add: className]]]!
 
 allClasses
 	^allClasses!
@@ -173,6 +187,7 @@ testPackages: presenter
 		(testPackages includes: oldPackageService) ifFalse:[presenter model remove: oldPackageService]]. ! !
 !RowanBrowserService categoriesFor: #=!comparing!public! !
 !RowanBrowserService categoriesFor: #aborted:browser:!public!updating! !
+!RowanBrowserService categoriesFor: #addCachedSymbols:!public!updating! !
 !RowanBrowserService categoriesFor: #allClasses!accessing!private! !
 !RowanBrowserService categoriesFor: #allClasses:!accessing!private! !
 !RowanBrowserService categoriesFor: #basicPrepareForReplication!public!replication! !

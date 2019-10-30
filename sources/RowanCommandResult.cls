@@ -14,6 +14,10 @@ aborted: presenter browser: browser
 	
 !
 
+addCachedSymbols: unused
+	
+!
+
 doNothing: anObject
 
 	"as the name implies"!
@@ -30,6 +34,7 @@ testResultUpdate: presenter
 updateSelector
 	^#doNothing:! !
 !RowanCommandResult categoriesFor: #aborted:browser:!public!updating! !
+!RowanCommandResult categoriesFor: #addCachedSymbols:!public!updating! !
 !RowanCommandResult categoriesFor: #doNothing:!private! !
 !RowanCommandResult categoriesFor: #prepareForReplication!public!replication! !
 !RowanCommandResult categoriesFor: #testResultUpdate:!public!updating! !

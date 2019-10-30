@@ -562,7 +562,11 @@ registerPresentersForUpdates
 	BrowserUpdate current
 		register: classHierarchyPresenter
 		selector: #renamedClassInHierarchy:browser:
-		browser: self!
+		browser: self.
+	BrowserUpdate current
+		register: classListPresenter
+		selector: #addCachedSymbols:
+!
 
 removeAppropriateTab
 	self isNoneProjectSelected ifTrue: [self removeProjectTab] ifFalse: [self removeGlobalsTab]!

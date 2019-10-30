@@ -14,6 +14,9 @@ aborted: presenter browser: browser
 	
 	!
 
+addCachedSymbols: unused
+	!
+
 addHierarchyService: service to: treeModel withParent: parentService hierarchyServices: hierarchyServices
 	treeModel getNodeFor: service ifAbsent: [treeModel add: service asChildOf: parentService].
 	(hierarchyServices at: service ifAbsent: [^self]) do: 
@@ -437,6 +440,7 @@ wasRenamed
 
 	^false! !
 !RowanService categoriesFor: #aborted:browser:!public!updating! !
+!RowanService categoriesFor: #addCachedSymbols:!public!updating! !
 !RowanService categoriesFor: #addHierarchyService:to:withParent:hierarchyServices:!private! !
 !RowanService categoriesFor: #autoCommitUpdate:!public!updating! !
 !RowanService categoriesFor: #basicPrepareForReplication!public!replication! !

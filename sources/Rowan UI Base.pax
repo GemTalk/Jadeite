@@ -516,7 +516,7 @@ Object subclass: #JadeitePreferences
 	classInstanceVariableNames: ''!
 Object subclass: #JadeiteSearch
 	instanceVariableNames: 'view session stop start'
-	classVariableNames: 'AllClassNames AllSymbols AutoCompleteEnabled'
+	classVariableNames: 'AllClassNames AllSelectors AutoCompleteEnabled'
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
 Object subclass: #Rowan
@@ -615,7 +615,7 @@ RowanService subclass: #RowanAutoCommitService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanBrowserService
-	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount dictionaries selectedClass'
+	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount dictionaries selectedClass newCachedSelectors newCachedClasses'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1166,7 +1166,7 @@ postLoginAs: aString useSocket: aBoolean
 			[BrowserUpdate current logComment: 'login warning. version mismatch'.
 			MessageBox notify: 'Version mismatch. ' , answer caption: 'Login warning'].
 	GciSession current: self.
-	JadeiteSearch initializeAutocompleteSymbols: self.
+	JadeiteSearch initializeAutocompleteSymbolsIn: self.
 	self postLoadClientPreferences.
 	self postLoadServerPreferences!
 
@@ -2232,8 +2232,7 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 		ifNotNil: 
 			[:warning |
 			self setCompileWarningColor.
-			self statusBarText: warning].
-	JadeiteSearch initializeAutocompleteSymbols: self gciSession !
+			self statusBarText: warning].!
 
 executeSelectionOrLine: contextObject
 	| answeringService answer oop |
@@ -2681,7 +2680,7 @@ promptForMatchingSymbolsIn: session actionBlock: aBlock promptCaption: caption s
 	(selector := self promptFor: prompt withCaption: caption) isNil ifTrue: [^self].
 	selector := selector copyWithout: Character space.
 	(selector includes: $*) ifFalse: [^aBlock value: selector].
-	symbols := JadeiteSearch symbolsFrom: (selector copyWithout: $*) session: session.
+	symbols := JadeiteSearch selectorsFrom: (selector copyWithout: $*) session: session.
 	(selector := ChoicePrompter choices: symbols) isNil ifTrue: [^self].
 	^aBlock value: selector!
 
@@ -2786,7 +2785,7 @@ loadProjectsFrom: browser
 	(self confirmReloadProjects: selections)
 		ifTrue: [RowanBrowserService new reloadProjects: selections presenter: self].
 	BrowserUpdate current selectedServices do: [:service | service postReload].
-	JadeiteSearch initializeAutocompleteSymbols: self gciSession!
+	JadeiteSearch initializeAutocompleteSymbolsIn: self gciSession!
 
 methodListSelection
 	

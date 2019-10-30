@@ -2,7 +2,7 @@
 
 Object subclass: #JadeiteSearch
 	instanceVariableNames: 'view session stop start'
-	classVariableNames: 'AllClassNames AllSymbols AutoCompleteEnabled'
+	classVariableNames: 'AllClassNames AllSelectors AutoCompleteEnabled'
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
 JadeiteSearch guid: (GUID fromString: '{76051fbb-0c1e-40b5-b560-8eef47e5711c}')!
@@ -75,8 +75,8 @@ startAutocompleteTimer
 	view setTimer: SCI_AUTOCSHOW interval: 30!
 
 symbolsFrom: selector
-	AllSymbols ifNil: [self class initializeSymbolsIn: session].
-	^AllSymbols select: [:symbol | symbol beginsWith: selector]!
+	AllSelectors ifNil: [self class initializeSelectorsIn: session].
+	^AllSelectors select: [:symbol | symbol beginsWith: selector]!
 
 tokenStartAt: anInteger
 	^(view styleAt: anInteger) name == #specialCharacter
@@ -110,6 +110,14 @@ view: aView
 
 !JadeiteSearch class methodsFor!
 
+allClassNames
+
+	^AllClassNames!
+
+allSelectorSymbols
+
+	^AllSelectors!
+
 autoCompleteEnabled
 	AutoCompleteEnabled ifNil: [AutoCompleteEnabled := true].
 	^AutoCompleteEnabled!
@@ -117,38 +125,49 @@ autoCompleteEnabled
 autoCompleteEnabled: boolean
 	AutoCompleteEnabled := boolean!
 
-initializeAutocompleteSymbols: session
-	self initializeSymbolsIn: session.
-	self initializeClassNamesIn: session!
+initializeAutocompleteSymbolsIn: session
+	| service |
+	service := RowanAnsweringService new
+				command: #autocompleteSymbols;
+				commandArgs: Array new.
+	BrowserUpdate current issueCommand: (Array with: service) session: session.
+	AllClassNames := OrderedCollection new.
+	AllSelectors := OrderedCollection new.
+	service answer keysAndValuesDo: 
+			[:className :array |
+			AllClassNames add: className.
+			array do: [:selector | AllSelectors add: selector]]!
 
 initializeClassNamesIn: session
 	| service |
 	service := RowanAnsweringService new command: #allClassNames.
 	service commandArgs: Array new.
 	JadePresenter issueCommand: (Array with: service) session: session.
-	AllClassNames := service answer!
+	AllClassNames := service answer asOrderedCollection!
 
-initializeSymbolsIn: session
+initializeSelectorsIn: session
 	| service |
 	service := RowanAnsweringService new
 				command: #sortedSymbols;
 				commandArgs: Array new.
 	BrowserUpdate current issueCommand: (Array with: service) session: session.
-	AllSymbols := service answer!
+	AllSelectors := service answer asOrderedCollection!
 
 on: view session: session
 	^self new
 		view: view;
 		session: session!
 
-symbolsFrom: selector session: session
-	AllSymbols ifNil: [AllSymbols := self initializeSymbolsIn: session].
-	^AllSymbols select: [:symbol | symbol beginsWith: selector]! !
+selectorsFrom: partialSelector session: session
+	AllSelectors ifNil: [AllSelectors := self initializeSelectorsIn: session].
+	^AllSelectors select: [:selector | selector beginsWith: partialSelector]! !
+!JadeiteSearch class categoriesFor: #allClassNames!public! !
+!JadeiteSearch class categoriesFor: #allSelectorSymbols!public! !
 !JadeiteSearch class categoriesFor: #autoCompleteEnabled!accessing!public! !
 !JadeiteSearch class categoriesFor: #autoCompleteEnabled:!accessing!public! !
-!JadeiteSearch class categoriesFor: #initializeAutocompleteSymbols:!public!utilities! !
+!JadeiteSearch class categoriesFor: #initializeAutocompleteSymbolsIn:!public!utilities! !
 !JadeiteSearch class categoriesFor: #initializeClassNamesIn:!public!utilities! !
-!JadeiteSearch class categoriesFor: #initializeSymbolsIn:!public!utilities! !
+!JadeiteSearch class categoriesFor: #initializeSelectorsIn:!public!utilities! !
 !JadeiteSearch class categoriesFor: #on:session:!instance creation!public! !
-!JadeiteSearch class categoriesFor: #symbolsFrom:session:!accessing!public! !
+!JadeiteSearch class categoriesFor: #selectorsFrom:session:!accessing!public! !
 
