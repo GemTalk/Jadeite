@@ -2079,9 +2079,13 @@ resource_Default_view
 abortTransaction
 	"Even if it takes a windy path, try to make sure
 	all aborts in Jadeite pass through here"
-	| browserService |
-	browserService := RowanBrowserService new command: #abortTransaction. 
-	self issueCommand: (Array with: browserService). 
+
+	| browserService services |
+	services := BrowserUpdate current selectedServices asSet asArray.
+	browserService := RowanBrowserService new
+				command: #abortTransactionAndUpdateServices:;
+				commandArgs: (Array with: services).
+	self issueCommand: (Array with: browserService).
 	Sound informationBeep!
 
 autoCommitExecutionString
@@ -2292,7 +2296,7 @@ refreshGlobalSelections
 	| browserService |
 	browserService := RowanBrowserService new
 				command: #findRemovedServices:;
-				commandArgs: (Array with: BrowserUpdate current activeServices asArray).
+				commandArgs: (Array with: BrowserUpdate current activeServices asSet asArray).
 	BrowserUpdate current issueCommand: (Array with: browserService) session: self gciSession.
 	self updateServices: BrowserUpdate current selectedServices !
 
@@ -2780,12 +2784,11 @@ isOkayToChangeSource: methodSourcePresenter
 
 loadProjectsFrom: browser
 	| selections |
-	Cursor wait showWhile: 
-			[selections := browser projectListPresenter selections.
-			(self confirmReloadProjects: selections)
-				ifTrue: 
-					[RowanBrowserService new reloadProjects: selections presenter: self.
-					BrowserUpdate current selectedServices do: [:service | service postReload]]]!
+	selections := browser projectListPresenter selections.
+	(self confirmReloadProjects: selections)
+		ifTrue: 
+			[RowanBrowserService new reloadProjects: selections presenter: self.
+			BrowserUpdate current selectedServices do: [:service | service postReload]]!
 
 methodListSelection
 	
@@ -4089,7 +4092,7 @@ update: services afterStonReplication: stonResults
 	BrowserUpdate current update: services afterStonReplication: stonResults!
 
 updateServices: services
-	BrowserUpdate current updateServices: services session: gciSession! !
+	BrowserUpdate current updateServices: services asSet asArray session: gciSession! !
 !JadeTextDocument categoriesFor: #aboutJadeite!private! !
 !JadeTextDocument categoriesFor: #executeSelectionOrLine:!Jade!private! !
 !JadeTextDocument categoriesFor: #issueCommand:!public!services! !

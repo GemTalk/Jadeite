@@ -14,7 +14,7 @@ RowanBrowserService comment: ''!
 	^browserService isBrowserService and: [name = browserService name]!
 
 aborted: presenter browser: browser
-	browser refreshFromServerAfterAbort: self!
+	"browser refreshFromServerAfterAbort: self"!
 
 addCachedSymbols: unused
 	newCachedSelectors

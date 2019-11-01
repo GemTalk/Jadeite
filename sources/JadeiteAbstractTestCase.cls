@@ -449,11 +449,13 @@ selectServicesNamed: anArray in: presenter
 						yourself)]!
 
 selectTreeServicesNamed: anArray in: presenter
+	| bag |
+	bag := presenter model asBag.
 	presenter resetSelection.
 	anArray do: 
 			[:name |
 			| service |
-			service := presenter model asBag detect: [:svc | svc name = name]
+			service := bag detect: [:svc | svc name = name]
 						ifNone: [self error: 'Tree element ' , name , ' not found'].
 			presenter selections: (presenter selections asOrderedCollection
 						add: service;

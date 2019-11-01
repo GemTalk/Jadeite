@@ -12,10 +12,6 @@ In packages pane, show projects & packages. Remove class categories.
 !JadeiteProjectsBrowserPresenter categoriesForClass!Unclassified! !
 !JadeiteProjectsBrowserPresenter methodsFor!
 
-abortTransaction
-	super abortTransaction.
-	self refreshFromServerAfterAbort: nil!
-
 aboutToChange: aSelectionChangingEvent
 	aSelectionChangingEvent value ifTrue: [
 		aSelectionChangingEvent value: self isOkayToChange.
@@ -2341,7 +2337,6 @@ writeProject
 	self issueCommand: projectServices.
 	MessageBox notify: 'Projects ' ,  ws contents  , ' written to disk'.
 	self refreshFromServer. ! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #abortTransaction!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #aboutToChange:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addNoneProject!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addPackage!menu handlers!public! !

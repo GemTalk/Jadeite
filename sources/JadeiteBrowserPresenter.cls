@@ -10,6 +10,10 @@ JadeiteBrowserPresenter comment: ''!
 !JadeiteBrowserPresenter categoriesForClass!Unclassified! !
 !JadeiteBrowserPresenter methodsFor!
 
+abortTransaction
+	super abortTransaction.
+	self autoCommit: (autoCommit value == #failed ifTrue: [true] ifFalse: [autoCommit value])!
+
 addDictionary
 	| newDictionaryName |
 	(newDictionaryName := Prompter prompt: 'Enter new dictionary name:') isNil ifTrue: [^self].
@@ -541,11 +545,6 @@ refreshClass
 	self updateClassInfo!
 
 refreshFromServerAfterAbort: browserService
-	browserService
-		ifNil: [self refreshGlobalSelections]
-		ifNotNil: 
-			[browserService projectsUpdate: projectListPresenter browser: self.
-			browserService dictionaryListUpdate: dictionaryPresenter].
 	self autoCommit: (autoCommit value == #failed ifTrue: [true] ifFalse: [autoCommit value])!
 
 registerPresentersForUpdates
@@ -879,6 +878,7 @@ variablesMenuStrings
 				browseInstVarReaders;
 				browseInstVarWriters].
 	^#('&Variables' '&Add Accessors//addVariableAccessors' '&Browse Inst Var Readers//browseInstVarReaders' '&Browse Inst Var Writers//browseInstVarWriters')! !
+!JadeiteBrowserPresenter categoriesFor: #abortTransaction!public!transaction management! !
 !JadeiteBrowserPresenter categoriesFor: #addDictionary!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #additionalAccelerators!constants!public! !
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
