@@ -401,15 +401,14 @@ updateDictionarySelectionsFor: presenter
 	!
 
 updateList: presenter whilePreservingSelections: updates
-	| replicate |
+	| replicate bag |
+	bag := presenter list asBag.
 	presenter list copy do: 
 			[:service |
 			replicate := updates detect: [:update | update = service] ifNone: [nil].
 			replicate notNil ifTrue: [service replicateFrom: replicate]].
-	updates do: 
-			[:update |
-			((presenter list asBag includes: update) and: [update wasRenamed not])
-				ifFalse: [presenter model add: update]]!
+	updates
+		do: [:update | ((bag includes: update) and: [update wasRenamed not]) ifFalse: [presenter model add: update]]!
 
 updateMethodFilterSelectionFor: presenter!
 
