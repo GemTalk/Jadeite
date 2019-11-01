@@ -119,17 +119,27 @@ allSelectorSymbols
 	^AllSelectors!
 
 autoCompleteEnabled
-	AutoCompleteEnabled ifNil: [AutoCompleteEnabled := true].
+	AutoCompleteEnabled ifNil: [AutoCompleteEnabled := false].
 	^AutoCompleteEnabled!
 
 autoCompleteEnabled: boolean
 	AutoCompleteEnabled := boolean!
 
+confirmAutoCompleteEnabled: boolean in: session
+	"If the use chooses not to continue. Reset the value
+	return the former value to the sending method."
+
+	boolean
+		ifTrue: 
+			[(MessageBox
+				confirm: 'Enabling auto complete requires symbols to be cached in the client. This can be a lengthy operation. Continue?')
+					ifTrue: [Cursor wait showWhile: [self initializeAutocompleteSymbolsIn: session]]
+					ifFalse: [^boolean not]].
+	self autoCompleteEnabled: boolean.
+	^boolean!
+
 initializeAutocompleteSymbolsIn: session
 	| service |
-	"AllSelectors := OrderedCollection new. 
-	AllClassNames := OrderedCollection new. 
-	true ifTrue:[^self ]."
 	service := RowanAnsweringService new
 				command: #autocompleteSymbols;
 				commandArgs: Array new.
@@ -173,6 +183,7 @@ updateAutocompleteSymbolsIn: session
 !JadeiteSearch class categoriesFor: #allSelectorSymbols!accessing!public! !
 !JadeiteSearch class categoriesFor: #autoCompleteEnabled!accessing!public! !
 !JadeiteSearch class categoriesFor: #autoCompleteEnabled:!accessing!public! !
+!JadeiteSearch class categoriesFor: #confirmAutoCompleteEnabled:in:!accessing!public! !
 !JadeiteSearch class categoriesFor: #initializeAutocompleteSymbolsIn:!public!utilities! !
 !JadeiteSearch class categoriesFor: #initializeClassNamesIn:!public!utilities! !
 !JadeiteSearch class categoriesFor: #initializeSelectorsIn:!public!utilities! !

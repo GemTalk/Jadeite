@@ -110,10 +110,11 @@ flipAutoCommit
 	self issueCommand: (Array with: browserService)!
 
 flipAutocomplete
-	| newValue |
+	| newValue confirmedValue |
 	newValue := JadeiteSearch autoCompleteEnabled not.
-	JadeiteSearch autoCompleteEnabled: newValue.
-	autoCompleteEnabled value: newValue!
+	confirmedValue := JadeiteSearch confirmAutoCompleteEnabled: newValue in: self gciSession.
+	"confirmedValue results in no change if user declines to continue"
+	autoCompleteEnabled value: confirmedValue!
 
 flipBreakpointsEnabled
 	| answeringService | 

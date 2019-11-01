@@ -139,7 +139,7 @@ preferencesFileDefaultContents
 #legal values are either a boolean or a name
 
 #autocommitEnabled: false
-#autocompleteEnabled: true
+#autocompleteEnabled: false
 #breakpointsEnabled: true
 #loggingEnabled: false
 #openBrowserOnClass: <class name>

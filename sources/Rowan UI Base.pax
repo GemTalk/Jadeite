@@ -1166,7 +1166,7 @@ postLoginAs: aString useSocket: aBoolean
 			[BrowserUpdate current logComment: 'login warning. version mismatch'.
 			MessageBox notify: 'Version mismatch. ' , answer caption: 'Login warning'].
 	GciSession current: self.
-	JadeiteSearch initializeAutocompleteSymbolsIn: self.
+	JadeiteSearch autoCompleteEnabled ifTrue: [JadeiteSearch initializeAutocompleteSymbolsIn: self].
 	self postLoadClientPreferences.
 	self postLoadServerPreferences!
 
