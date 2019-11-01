@@ -2294,8 +2294,7 @@ refreshGlobalSelections
 				command: #findRemovedServices:;
 				commandArgs: (Array with: BrowserUpdate current activeServices asArray).
 	BrowserUpdate current issueCommand: (Array with: browserService) session: self gciSession.
-	BrowserUpdate current updateServices: BrowserUpdate current selectedServices
-		session: self gciSession!
+	self updateServices: BrowserUpdate current selectedServices !
 
 remoteAutoCommit
 	| answeringService |
@@ -2362,7 +2361,7 @@ update: services afterStonReplication: stonResults
 	^BrowserUpdate current update: services afterStonReplication: stonResults!
 
 updateServices: services
-	BrowserUpdate current updateServices: services session: gciSession! !
+	BrowserUpdate current updateServices: services asSet asArray session: gciSession! !
 !JadePresenter categoriesFor: #abortTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #autoCommitExecutionString!menu handlers support!public! !
 !JadePresenter categoriesFor: #basicCloneProject:root:!menu handlers!private! !
@@ -2781,11 +2780,12 @@ isOkayToChangeSource: methodSourcePresenter
 
 loadProjectsFrom: browser
 	| selections |
-	selections := browser projectListPresenter selections.
-	(self confirmReloadProjects: selections)
-		ifTrue: [RowanBrowserService new reloadProjects: selections presenter: self].
-	BrowserUpdate current selectedServices do: [:service | service postReload].
-	JadeiteSearch initializeAutocompleteSymbolsIn: self gciSession!
+	Cursor wait showWhile: 
+			[selections := browser projectListPresenter selections.
+			(self confirmReloadProjects: selections)
+				ifTrue: 
+					[RowanBrowserService new reloadProjects: selections presenter: self.
+					BrowserUpdate current selectedServices do: [:service | service postReload]]]!
 
 methodListSelection
 	

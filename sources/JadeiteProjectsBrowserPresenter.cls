@@ -834,6 +834,13 @@ findMethod: selector
 		ifFalse: [variableListPresenter selection: nil].
 	methodListPresenter selections: (Array with: methodService)!
 
+findRemovedServices
+	| browserService |
+	browserService := RowanBrowserService new
+				command: #findRemovedServices:;
+				commandArgs: (Array with: BrowserUpdate current activeServices asArray).
+	BrowserUpdate current issueCommand: (Array with: browserService) session: self gciSession!
+
 gciSession: aGciSession
 	super gciSession: aGciSession.
 	autoCommit := ValueHolder with: aGciSession autoCommit!
@@ -1041,7 +1048,7 @@ jadeMenuStrings
 
 loadProjects
 	self loadProjectsFrom: self.
-	self refreshGlobalSelections!
+	self findRemovedServices!
 
 makeDefault
 	"the server is the gold copy"
@@ -2411,6 +2418,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #findClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #findMethod!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #findMethod:!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #findRemovedServices!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gciSession:!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #getterMethodSourceFor:!menu handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #getViews!public! !

@@ -113,15 +113,9 @@ issue284methodCreation
 	self projectsPresenter editSaveMethod: self classListPresenter selection!
 
 loadProjectNamed: projectName
-	| browserService projectService |
-	browserService := RowanBrowserService new.
+	| projectService |
 	projectService := RowanProjectService new name: projectName.
-	projectService command: #update.
-	browserService
-		command: #reloadProjects:andUpdateServices:;
-		commandArgs: (Array with: (Array with: projectService) with: BrowserUpdate current selectedServices).
-	BrowserUpdate current issueCommand: (Array with: browserService) session: session.
-	JadeiteSearch initializeAutocompleteSymbolsIn: session!
+	RowanBrowserService new reloadProjects: (Array with: projectService) presenter: self!
 
 loginOtherSession
 	(Delay forSeconds: 1) wait.	"not sure if this is necessary"

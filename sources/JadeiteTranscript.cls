@@ -272,7 +272,8 @@ queryCommand: query
 registerPresentersForUpdates
 	BrowserUpdate current
 		register: self selector: #autoCommitUpdate:;
-		register: self selector: #breakpointSettingChanged:!
+		register: self selector: #breakpointSettingChanged:;
+		register: self selector: #updateSymbols:!
 
 remoteAutoCommit
 	| answeringService |

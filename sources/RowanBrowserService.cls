@@ -143,11 +143,15 @@ releaseWindow: handle session: session
 		commandArgs: (Array with: handle).
 	JadePresenter issueCommand: (Array with: self) session: session!
 
-reloadProjects: selections presenter: presenter
-	self
-		command: #reloadProjects:andUpdateServices:;
-		commandArgs: (Array with: selections with: BrowserUpdate current selectedServices).
-	presenter issueCommand: (Array with: self)!
+reloadProjects: selectedProjectServices presenter: presenter
+	| selectedServices |
+	selectedServices := BrowserUpdate current selectedServices asSet asOrderedCollection.
+	selectedServices removeAll: selectedProjectServices.
+	Cursor wait showWhile: 
+			[self
+				command: #reloadProjects:andUpdateServices:;
+				commandArgs: (Array with: selectedProjectServices asSet asArray with: selectedServices).
+			presenter issueCommand: (Array with: self)]!
 
 removedMethods
 	^removedMethods!

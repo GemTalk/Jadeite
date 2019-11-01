@@ -67,7 +67,12 @@ setAutoCommit: boolean for: session
 setBreakpointsEnabled: boolean session: session
 	command := #setBreakPointsAreEnabled:.
 	commandArgs := Array with: boolean.
-	BrowserUpdate current issueCommand: (Array with: self) session: session! !
+	BrowserUpdate current issueCommand: (Array with: self) session: session!
+
+updateSymbols: unused
+	updateType = #updateSymbols: ifFalse: [^self].
+	JadeiteSearch allClassNames addAll: answer first.
+	JadeiteSearch allSelectors addAll: answer last! !
 !RowanAnsweringService categoriesFor: #answer!accessing!private! !
 !RowanAnsweringService categoriesFor: #answer:!accessing!private! !
 !RowanAnsweringService categoriesFor: #breakPointsAreEnabled:!commands!public! !
@@ -80,4 +85,5 @@ setBreakpointsEnabled: boolean session: session
 !RowanAnsweringService categoriesFor: #needsCommit:!commands!public! !
 !RowanAnsweringService categoriesFor: #setAutoCommit:for:!commands!public! !
 !RowanAnsweringService categoriesFor: #setBreakpointsEnabled:session:!commands!public! !
+!RowanAnsweringService categoriesFor: #updateSymbols:!public!updating! !
 

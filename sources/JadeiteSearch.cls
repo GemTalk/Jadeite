@@ -127,16 +127,15 @@ autoCompleteEnabled: boolean
 
 initializeAutocompleteSymbolsIn: session
 	| service |
+	"AllSelectors := OrderedCollection new. 
+	AllClassNames := OrderedCollection new. 
+	true ifTrue:[^self ]."
 	service := RowanAnsweringService new
 				command: #autocompleteSymbols;
 				commandArgs: Array new.
 	BrowserUpdate current issueCommand: (Array with: service) session: session.
-	AllClassNames := OrderedCollection new.
-	AllSelectors := OrderedCollection new.
-	service answer keysAndValuesDo: 
-			[:className :array |
-			AllClassNames add: className.
-			array do: [:selector | AllSelectors add: selector]]!
+	AllClassNames := service answer first.
+	AllSelectors := service answer last!
 
 initializeClassNamesIn: session
 	| service |
@@ -160,9 +159,18 @@ on: view session: session
 
 selectorsFrom: partialSelector session: session
 	AllSelectors ifNil: [AllSelectors := self initializeSelectorsIn: session].
-	^AllSelectors select: [:selector | selector beginsWith: partialSelector]! !
-!JadeiteSearch class categoriesFor: #allClassNames!public! !
-!JadeiteSearch class categoriesFor: #allSelectorSymbols!public! !
+	^AllSelectors select: [:selector | selector beginsWith: partialSelector]!
+
+updateAutocompleteSymbolsIn: session
+	| service |
+	service := RowanAnsweringService new
+				command: #updateAutocompleteSymbols;
+				commandArgs: Array new.
+	BrowserUpdate current issueCommand: (Array with: service) session: session.
+	AllClassNames addAll: service answer first.
+	AllSelectors addAll: service answer last! !
+!JadeiteSearch class categoriesFor: #allClassNames!accessing!public! !
+!JadeiteSearch class categoriesFor: #allSelectorSymbols!accessing!public! !
 !JadeiteSearch class categoriesFor: #autoCompleteEnabled!accessing!public! !
 !JadeiteSearch class categoriesFor: #autoCompleteEnabled:!accessing!public! !
 !JadeiteSearch class categoriesFor: #initializeAutocompleteSymbolsIn:!public!utilities! !
@@ -170,4 +178,5 @@ selectorsFrom: partialSelector session: session
 !JadeiteSearch class categoriesFor: #initializeSelectorsIn:!public!utilities! !
 !JadeiteSearch class categoriesFor: #on:session:!instance creation!public! !
 !JadeiteSearch class categoriesFor: #selectorsFrom:session:!accessing!public! !
+!JadeiteSearch class categoriesFor: #updateAutocompleteSymbolsIn:!public!utilities! !
 

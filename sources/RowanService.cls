@@ -422,6 +422,8 @@ updateSelectorFor: presenter!
 
 updateSuperclassSelectionFor: presenter!
 
+updateSymbols: unused!
+
 updateType
 	^updateType!
 
@@ -536,6 +538,7 @@ wasRenamed
 !RowanService categoriesFor: #updatePackageSelectionsFor:!public!updating! !
 !RowanService categoriesFor: #updateSelectorFor:!public!updating! !
 !RowanService categoriesFor: #updateSuperclassSelectionFor:!public!updating! !
+!RowanService categoriesFor: #updateSymbols:!public!updating! !
 !RowanService categoriesFor: #updateType!accessing!public! !
 !RowanService categoriesFor: #updateType:!accessing!public! !
 !RowanService categoriesFor: #updateVariable:debugger:!public!updating! !
