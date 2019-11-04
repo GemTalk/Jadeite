@@ -128,7 +128,7 @@ sunitPresenter
 
 tearDown
 	super tearDown.
-	self assert: sunitBrowser view close.
+	sunitBrowser ifNotNil: [self assert: sunitBrowser view close].
 	projectsBrowser ifNotNil: [self destroy: projectsBrowser]!
 
 test_abortNoSelections
@@ -136,6 +136,9 @@ test_abortNoSelections
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
 	self unloadSampleProject.
 	self commitTransaction.	"ensure that the sample package wasn't committed"
+	self denyPackageInList: 'RowanSample1-Tests'.
+	self cloneRowanSample1.
+	self ensureRowanSample1Loaded.
 	self assertPackageInList: 'RowanSample1-Tests'.
 	abortCommand := ((sunitBrowser view viewNamed: 'toolbar') itemAtIndex: 1) command.
 	sunitBrowser primaryPresenter perform: abortCommand.

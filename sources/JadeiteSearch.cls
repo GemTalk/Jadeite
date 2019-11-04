@@ -111,12 +111,10 @@ view: aView
 !JadeiteSearch class methodsFor!
 
 allClassNames
-
-	^AllClassNames!
+	^AllClassNames ifNil: [AllClassNames := OrderedCollection new]!
 
 allSelectorSymbols
-
-	^AllSelectors!
+	^AllSelectors ifNil: [AllSelectors := OrderedCollection new]!
 
 autoCompleteEnabled
 	AutoCompleteEnabled ifNil: [AutoCompleteEnabled := false].
