@@ -14,8 +14,7 @@ RowanBrowserService comment: ''!
 	^browserService isBrowserService and: [name = browserService name]!
 
 aborted: presenter browser: browser
-	" make sure test packages are updated" 
-	self testPackages: presenter!
+!
 
 addCachedSymbols: unused
 	newCachedSelectors
@@ -125,12 +124,13 @@ projectsUpdate: presenter browser: browser
 	| removals |
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	removals := presenter list select: 
-					[:projectService |
+					[:projectService | 
 					(projects includes: projectService) not and: [projectService ~= RowanProjectService noneProject]].
 	presenter model removeAll: removals.
 	presenter selections isEmpty ifTrue: [browser updatePackages].
 	self updateList: presenter whilePreservingSelections: projects.
-	browser addNoneProject!
+	browser addNoneProject.
+!
 
 registerWindow: handle rootObject: oop session: session
 	self

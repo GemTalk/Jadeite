@@ -150,8 +150,10 @@ performUpdate: updateBlock with: selector
 			[:update |
 			update updateType
 				ifNil: [updateBlock value: update]
-				ifNotNil: [:type | type == selector ifTrue: [updateBlock value: update]].
-			]!
+				ifNotNil: 
+					[:type |
+					(type == selector or: [type isEmpty or: [type includes: selector]])
+						ifTrue: [updateBlock value: update]]]!
 
 postUpdate
 
@@ -221,6 +223,11 @@ selectedServices
 	services do:[:service | service command: #update]. 
 	^services!
 
+shouldApply: selector forSelector: update
+	^update updateType isNil or: 
+			[update updateType == selector
+				or: [update updateType isEmpty or: [update updateType includes: selector]]]!
+
 shouldGetNewLoggerGroup: boolean
 
 	logger shouldGetNewLoggerGroup: boolean!
@@ -274,10 +281,11 @@ updateServices: services session: session
 updatesPerform: selector presenter: presenter
 	"the update may know which client updates 
 	it wants us to care about. Respect that."
+
+	
 	[updates do: 
 			[:update |
-			(update updateType isNil or: [update updateType == selector])
-				ifTrue: [update perform: selector with: presenter]]]
+			(self shouldApply: selector forSelector: update) ifTrue: [update perform: selector with: presenter]]]
 			on: Error
 			do: [:ex | self halt]!
 
@@ -285,9 +293,11 @@ updatesPerform: selector presenter: presenter browser: browser
 	"the update may know which client updates 
 	it wants us to care about if updateType is set. 
 	Respect the server's wishes."
+
+	
 	[updates do: 
 			[:update |
-			(update updateType isNil or: [update updateType == selector])
+			(self shouldApply: selector forSelector: update)
 				ifTrue: 
 					[update
 						perform: selector
@@ -333,6 +343,7 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #removeEventsTriggeredFor:!public!registeringPresenters! !
 !BrowserUpdate categoriesFor: #resetLoggingService!initialization!public! !
 !BrowserUpdate categoriesFor: #selectedServices!accessing!public! !
+!BrowserUpdate categoriesFor: #shouldApply:forSelector:!private!testing! !
 !BrowserUpdate categoriesFor: #shouldGetNewLoggerGroup:!accessing!public! !
 !BrowserUpdate categoriesFor: #startLogging!logging!public! !
 !BrowserUpdate categoriesFor: #stopLogging!logging!public! !

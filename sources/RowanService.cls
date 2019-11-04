@@ -189,8 +189,7 @@ frameListUpdate: aPresenter!
 globalsUpdate: presenter!
 
 initialize
-
-	commandArgs := Array new. !
+	commandArgs := Array new!
 
 initializePresenterList: presenter
 	presenter sortBlock: [:x :y | x sortAspect < y sortAspect].
@@ -307,10 +306,10 @@ remoteServiceName
 
 removed: presenter
 	| service |
-	updateType == #removed: ifFalse: [^self	"server must tell us to remove service"].
+	(updateType = #removed:) ifFalse: [^self	"server must tell us to remove service"].
 	service := presenter model asBag detect: [:svc | svc = self] ifNone: [^self].
 	presenter model remove: service.
-	presenter resetSelection. !
+	presenter resetSelection!
 
 removedClass: aPresenter!
 

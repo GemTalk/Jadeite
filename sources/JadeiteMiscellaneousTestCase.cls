@@ -51,7 +51,7 @@ test_autoCommitDoesNotMakeRoundTripWhenOpeningBrowser
 		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	
 	[BrowserUpdate current loggingService services
-		do: [:service | self deny: service updateType = #updateAutoCommit]]
+		do: [:service | self deny: service updateType includes: #updateAutoCommit]]
 			ensure: [self destroy: projectsBrowser]!
 
 test_autoCommitInAdHocDisplay
