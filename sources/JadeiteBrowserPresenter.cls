@@ -551,10 +551,6 @@ registerPresentersForUpdates
 	super registerPresentersForUpdates.
 	BrowserUpdate current register: dictionaryPresenter selector: #dictionaryListUpdate:.
 	BrowserUpdate current
-		register: dictionaryPresenter
-		selector: #aborted:browser:
-		browser: self.
-	BrowserUpdate current
 		register: classListPresenter
 		selector: #renamedClass:browser:
 		browser: self.

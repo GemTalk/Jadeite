@@ -12,7 +12,8 @@ JadeiteTranscript comment: ''!
 
 abortTransaction
 	super abortTransaction.
-	projectListPresenter refresh!
+	projectListPresenter refresh.
+	self autoCommit: (autoCommit value == #failed ifTrue: [true] ifFalse: [autoCommit value])!
 
 additionalAccelerators
 	^#(#(#raiseConsole 'Ctrl+F7'))!
@@ -26,6 +27,7 @@ autoCommit
 
 autoCommit: boolean
 	autoCommit value: boolean.
+	gciSession autoCommit: boolean. 
 	gciSession
 		ifNotNil: 
 			[:session |

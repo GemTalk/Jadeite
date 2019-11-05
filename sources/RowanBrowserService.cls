@@ -13,9 +13,6 @@ RowanBrowserService comment: ''!
 = browserService
 	^browserService isBrowserService and: [name = browserService name]!
 
-aborted: presenter browser: browser
-!
-
 addCachedSymbols: unused
 	newCachedSelectors
 		ifNotNil: 
@@ -54,7 +51,7 @@ classHierarchyUpdate: presenter browser: browser
 
 dictionaryListUpdate: presenter
 	"no sort. dictionaries maintain their server order"
-	| removals replicate |
+	| removals replicate |	
 	presenter list isEmpty ifTrue: [presenter list: ListModel new].
 	removals := presenter list reject: [:dictionaryService | dictionaries includes: dictionaryService].
 	presenter model removeAll: removals.
@@ -152,7 +149,7 @@ reloadProjects: selectedProjectServices presenter: presenter
 			[self
 				command: #reloadProjects:andUpdateServices:;
 				commandArgs: (Array with: selectedProjectServices asSet asArray with: selectedServices).
-			presenter issueCommand: (Array with: self)]!
+			BrowserUpdate current issueCommand: (Array with: self) session: presenter gciSession]!
 
 removedMethods
 	^removedMethods!
@@ -191,7 +188,6 @@ testPackages: presenter
 	presenter model copy do:[:oldPackageService |
 		(testPackages includes: oldPackageService) ifFalse:[presenter model remove: oldPackageService]]. ! !
 !RowanBrowserService categoriesFor: #=!comparing!public! !
-!RowanBrowserService categoriesFor: #aborted:browser:!public!updating! !
 !RowanBrowserService categoriesFor: #addCachedSymbols:!public!updating! !
 !RowanBrowserService categoriesFor: #allClasses!accessing!private! !
 !RowanBrowserService categoriesFor: #allClasses:!accessing!private! !

@@ -1927,8 +1927,7 @@ registerPresentersForUpdates
 	BrowserUpdate current register: classListPresenter 	selector: #testClasses:.
 	BrowserUpdate current register: classListPresenter 	selector: #renamedClass:browser: browser: self.
 	BrowserUpdate current register: methodListPresenter selector: #sunitMethodsUpdate:browser: browser: self.
-	BrowserUpdate current register: methodListPresenter selector: #testResultUpdate:browser: browser: self.
-	BrowserUpdate current register: packageListPresenter selector: #aborted:browser: browser: self!
+	BrowserUpdate current register: methodListPresenter selector: #testResultUpdate:browser: browser: self.!
 
 update: newMethods orRemove: removals
 	| listModel |
@@ -2263,9 +2262,8 @@ flipAutoCommit
 insertCompileErrorText: string into: methodSourcePresenter
 	methodSourcePresenter view topShell statusBarText: (string copyFrom: 1 to: string size - 2)!
 
-issueCommand: services
-	^self class issueCommand: services session: self gciSession.
-	!
+issueCommand: service
+	^self class issueCommand: service session: self gciSession!
 
 openBrowserInNewTab: openNewTab on: classService
 	| shell |

@@ -10,10 +10,6 @@ RowanService comment: ''!
 !RowanService categoriesForClass!Kernel-Objects! !
 !RowanService methodsFor!
 
-aborted: presenter browser: browser
-	
-	!
-
 addCachedSymbols: unused
 	!
 
@@ -439,7 +435,6 @@ wasRenamed
 	"not all services can be renamed"
 
 	^false! !
-!RowanService categoriesFor: #aborted:browser:!public!updating! !
 !RowanService categoriesFor: #addCachedSymbols:!public!updating! !
 !RowanService categoriesFor: #addHierarchyService:to:withParent:hierarchyServices:!private! !
 !RowanService categoriesFor: #autoCommitUpdate:!public!updating! !

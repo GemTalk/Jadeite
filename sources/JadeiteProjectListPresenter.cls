@@ -217,8 +217,7 @@ refreshProjects
 registerPresentersForUpdates
 	BrowserUpdate current register: projectListPresenter selector: #projectsUpdate:browser: browser: self.
 	BrowserUpdate current register: projectListPresenter selector: #removedProject:.
-	BrowserUpdate current register: projectListPresenter 	selector: #projectsUpdate:.
-	BrowserUpdate current register: projectListPresenter selector: #aborted:browser: browser: self!
+	BrowserUpdate current register: projectListPresenter 	selector: #projectsUpdate:.!
 
 unloadProjects
 	| projectNames ws |

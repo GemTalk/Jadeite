@@ -25,7 +25,6 @@ debugTestMethodServices: methodServices className: className
 	^jadeResult!
 
 debugTests: methodServices
-	self halt. 
 	^self debugTestMethodServices: methodServices className: nil!
 
 editSelectAll
