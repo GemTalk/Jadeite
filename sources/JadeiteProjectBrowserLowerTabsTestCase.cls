@@ -807,7 +807,20 @@ test_sunitUpdatesProperly
 				detect: [:methodService | methodService selector == #testMethod2]
 				ifNone: [].
 	self denyIsNil: newMethodService]
-			ensure: [self destroy: secondBrowser]! !
+			ensure: [self destroy: secondBrowser]!
+
+test_unloadProjectClearsProjectTab
+	self cloneRowanSample1.
+	self ensureRowanSample1Loaded.
+	self selectRowanSample1Class.
+	self unloadSampleProject.
+	self projectsPresenter projectInfoTab model size >= 8.	"sanity test. presume that we won't remove info from this tab"
+	
+	[self assertIsNil: (self projectListPresenter selectionIfNone: []).
+	self assert: self projectsPresenter projectInfoTab model isEmpty]
+			ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded]! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #cardMenuItemForCommand:in:!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_abstractTestsShown!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_breakpointDisabledHighlighting!public!test source! !
@@ -851,4 +864,5 @@ test_sunitUpdatesProperly
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sUnitTabHandlesShortSelector!public!test class hierarchy!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sUnitTabRefresh!public!test menus!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitUpdatesProperly!public!test sunit tab!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_unloadProjectClearsProjectTab!public!test compiling!tests! !
 

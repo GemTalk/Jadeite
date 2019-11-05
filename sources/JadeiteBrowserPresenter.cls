@@ -828,9 +828,10 @@ updateHierarchyForPacktionaries
 updateProject
 	self projectListPresenter selectionIfNone: 
 			[packageListPresenter clear.
-			dictionaryPresenter clear. 
+			dictionaryPresenter clear.
+			self updateProjectInfo.	"clears tab"
 			^self].
-	classHierarchyPresenter model: TreeModel new. 
+	classHierarchyPresenter model: TreeModel new.
 	self projectListPresenter selection name = RowanService notRowanizedPackageName
 		ifTrue: 
 			[self showDictionaryList.

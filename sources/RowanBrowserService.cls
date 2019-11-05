@@ -127,6 +127,7 @@ projectsUpdate: presenter browser: browser
 	presenter selections isEmpty ifTrue: [browser updatePackages].
 	self updateList: presenter whilePreservingSelections: projects.
 	browser addNoneProject.
+	browser updateProject. 
 !
 
 registerWindow: handle rootObject: oop session: session

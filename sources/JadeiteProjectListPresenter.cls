@@ -239,6 +239,11 @@ updatePackages
 
 	!
 
+updateProject
+	"no project tab to update" 
+
+	!
+
 writeProject
 	| projectServices ws |
 	projectServices := projectListPresenter selections.
@@ -283,5 +288,6 @@ writeProject
 !JadeiteProjectListPresenter categoriesFor: #registerPresentersForUpdates!private!register presenters! !
 !JadeiteProjectListPresenter categoriesFor: #unloadProjects!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #updatePackages!public!updating! !
+!JadeiteProjectListPresenter categoriesFor: #updateProject!public!updating! !
 !JadeiteProjectListPresenter categoriesFor: #writeProject!menu handlers!public! !
 
