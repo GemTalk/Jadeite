@@ -1957,7 +1957,6 @@ setupPackageMenu
 showMethodRecompilationError: ex
 	| sourcePresenter browser source className errorText failedMethodService |
 	source := ex additionalArgs first.
-	source := source copyFrom: 2 to: source size - 1.	"copy without extra single quotes"
 	className := ex additionalArgs second.
 	failedMethodService := RowanMethodService
 				fakeMethodFor: className

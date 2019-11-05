@@ -36,7 +36,7 @@ gatherData
 				do: 
 					[:index |
 					additionalArgs add: (self gciSession
-								executeString: 'self printString'
+								executeString: 'self isString ifTrue:[self] ifFalse:[self printString]'
 								fromContext: (gciErrSType args at: index)
 								environment: 0)]]!
 
