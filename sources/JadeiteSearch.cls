@@ -166,8 +166,8 @@ on: view session: session
 		session: session!
 
 selectorsFrom: partialSelector session: session
-	AllSelectors ifNil: [AllSelectors := self initializeSelectorsIn: session].
-	^AllSelectors select: [:selector | selector beginsWith: partialSelector]!
+	AllSelectors ifNil: [self initializeSelectorsIn: session].
+	^AllSelectors select: [:selector | partialSelector match: selector]!
 
 updateAutocompleteSymbolsIn: session
 	| service |

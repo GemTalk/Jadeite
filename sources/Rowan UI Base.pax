@@ -2681,7 +2681,7 @@ promptForMatchingSymbolsIn: session actionBlock: aBlock promptCaption: caption s
 	(selector := self promptFor: prompt withCaption: caption) isNil ifTrue: [^self].
 	selector := selector copyWithout: Character space.
 	(selector includes: $*) ifFalse: [^aBlock value: selector].
-	symbols := JadeiteSearch selectorsFrom: (selector copyWithout: $*) session: session.
+	symbols := JadeiteSearch selectorsFrom: selector session: session.
 	(selector := ChoicePrompter choices: symbols) isNil ifTrue: [^self].
 	^aBlock value: selector!
 

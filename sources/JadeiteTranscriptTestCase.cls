@@ -635,6 +635,19 @@ test_raiseConsole
 	browser raiseConsole.
 	[self assert: transcript view hasFocus] ensure: [browser view close].!
 
+test_selectorsList
+	"selects list is shown during wildcard implementors/senders searches"
+
+	| list |
+	self testsIssue: #issue615
+		withTitle: 'Leading * in find implementors... worked in 3.0.65 but not in 3.0.85'.
+	list := JadeiteSearch selectorsFrom: '*ize' session: session.
+	list do: [:symbol | self assert: ('*ize' match: symbol)].
+	list := JadeiteSearch selectorsFrom: 'size' session: session.
+	list do: [:symbol | self assert: symbol equals: #size].
+	list := JadeiteSearch selectorsFrom: 'siz*' session: session.
+	list do: [:symbol | self assert: ('siz*' match: symbol)]!
+
 test_transcriptNamedConsole
 	| clearTranscriptMenuItem wasInstalled |
 	(wasInstalled := transcript isTranscriptInstalled) ifFalse: [transcript flipTranscript].
@@ -696,6 +709,7 @@ writeToPrefsFile: string
 !JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseSenders!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_projectMenuGitCommitMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_raiseConsole!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_selectorsList!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_transcriptNamedConsole!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #writeToPrefsFile:!private!support!tests! !
 
