@@ -115,7 +115,7 @@ issue284methodCreation
 loadProjectNamed: projectName
 	| projectService |
 	projectService := RowanProjectService new name: projectName.
-	RowanBrowserService new reloadProjects: (Array with: projectService) presenter: self!
+	RowanBrowserService new reloadProjects: (Array with: projectService) presenter: self projectsPresenter!
 
 loginOtherSession
 	(Delay forSeconds: 1) wait.	"not sure if this is necessary"

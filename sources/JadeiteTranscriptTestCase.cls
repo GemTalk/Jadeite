@@ -121,7 +121,8 @@ test_autoCommitOff
 	
 	[self assertIsNil: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]')	"autoCommit off. TestCommit was not committed"]
 			ensure: 
-				[self cloneRowanSample1.
+				[session executeString: 'UserGlobals removeKey: #TestCommit ifAbsent:[]'.
+				self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
 test_autoCommitOn
