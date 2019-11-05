@@ -141,6 +141,11 @@ openChangesShell: changesString
 	editor selectionRange: editor defaultSelectionRange.
 	editor invalidate!
 
+possiblyClearProjectInfoTab
+	"no project tab to update" 
+
+	!
+
 primaryPresenter
 	^projectListPresenter!
 
@@ -275,6 +280,7 @@ writeProject
 !JadeiteProjectListPresenter categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #openChangesShell:!menu handlers!private! !
+!JadeiteProjectListPresenter categoriesFor: #possiblyClearProjectInfoTab!public!updating! !
 !JadeiteProjectListPresenter categoriesFor: #primaryPresenter!public! !
 !JadeiteProjectListPresenter categoriesFor: #projectChanges!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #projectListPresenter!public! !

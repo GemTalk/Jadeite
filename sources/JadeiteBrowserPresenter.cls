@@ -436,6 +436,10 @@ packageDictionaryCards
 
 	^packageDictionaryCards!
 
+possiblyClearProjectInfoTab
+	self projectListPresenter
+		selectionIfNone: [projectInfoTab ifNotNil: [:tab | tab list: ListModel new]]!
+
 projectInfoMenu
 	^Menu fromStrings: self projectInfoMenuStrings!
 
@@ -829,7 +833,7 @@ updateProject
 	self projectListPresenter selectionIfNone: 
 			[packageListPresenter clear.
 			dictionaryPresenter clear.
-			self updateProjectInfo.	"clears tab"
+			self possiblyClearProjectInfoTab.
 			^self].
 	classHierarchyPresenter model: TreeModel new.
 	self projectListPresenter selection name = RowanService notRowanizedPackageName
@@ -925,6 +929,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #openCommitInGitHub!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #packageDictionaryCards!accessing!private! !
+!JadeiteBrowserPresenter categoriesFor: #possiblyClearProjectInfoTab!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #projectInfoMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #projectInfoMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #protectedDictionaries!constants!menu handlers!public! !
