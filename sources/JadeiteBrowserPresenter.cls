@@ -282,6 +282,9 @@ createSchematicWiringForMethodSource
 			send: #onCharAdded:
 			to: self search!
 
+debug
+	self jadeDebug!
+
 dictionaryMenu
 	^Menu fromStrings: self dictionaryMenuStrings!
 
@@ -905,6 +908,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #createListViewFor:!private! !
 !JadeiteBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
 !JadeiteBrowserPresenter categoriesFor: #createSchematicWiringForMethodSource!create schemantic wiring!public! !
+!JadeiteBrowserPresenter categoriesFor: #debug!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryPresenter!accessing!private! !
