@@ -448,7 +448,7 @@ test_implementorsSendersSearchList
 	"the code above doesn't really test that our list is populated. Hence the assertions below.
 	JadeiteSearch is referenced from #promptFor*"
 	(JadeiteSearch selectorsFrom: ('sub*' copyWithout: $*) session: session)
-		do: [:string | self assert: (string beginsWith: 'sub')].
+		do: [:string | self assert: ('sub*' match: string)].
 	self
 		denyIsNil: ((JadeiteTranscriptTestCase methodDictionary at: #test_implementorsSendersSearchList)
 				literalsDetect: [:literal | (literal isKindOf: Association) and: [literal value = JadeiteSearch]]
