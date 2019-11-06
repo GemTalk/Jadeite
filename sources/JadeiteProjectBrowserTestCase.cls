@@ -230,6 +230,30 @@ test_abortOnVariablesTab
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_abortRemovesClassAndMethod
+	self testsIssue: #issue617 withTitle: 'Abort walkback if removing method from removed class'.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'TestAbortRemovesClass'
+		superclass: 'Object'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	
+	[self
+		saveMethod: 'terrific ^''yippee'''
+		in: 'TestAbortRemovesClass'
+		category: 'deleteme'.
+	self denyIsNil: (self classListPresenter list
+				detect: [:classService | classService name = 'TestAbortRemovesClass']
+				ifNone: []).
+	self abortTransaction.
+	self assertIsNil: (self classListPresenter list
+				detect: [:classService | classService name = 'TestAbortRemovesClass']
+				ifNone: [])]
+			ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
+
 test_acceptDefinedMethodInExtensionClass
 	self testsIssue: #issue375
 		withTitle: '(3.0.53) accept non-extension method in an extension package .... lose selected class'.
@@ -5153,6 +5177,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #selectCommentTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectVariableListEntryForcingEvent:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abortOnVariablesTab!public!test variable tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_abortRemovesClassAndMethod!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_acceptDefinedMethodInExtensionClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessors!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsClassTab!public!test variable tab!tests! !
