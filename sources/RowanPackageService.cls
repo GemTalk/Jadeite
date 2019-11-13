@@ -41,10 +41,11 @@ classesUpdate: presenter browser: browser
 	| condensedList selections selectedPackageServices |
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	(self doesUpdateApply: browser) ifFalse: [^self].
+Smalltalk at: #Count put: (Smalltalk at: #Count) + 1. 
 	self removeDeletedClassesIn: presenter browser: browser.
 	condensedList := self condenseExtensions: presenter.
 	presenter selectionOrNil
-		ifNil: [presenter list: (ListModel withAll: condensedList asSet)]
+		ifNil: [presenter list: (ListModel withAll: condensedList keys)]
 		ifNotNil: [self updateList: presenter whilePreservingSelections: condensedList].
 	"#selections is very expensive in Dolphin. Don't send it in a loop"
 	selections := browser packageListPresenter selections.
@@ -64,15 +65,17 @@ classHierarchyUpdate: presenter browser: browser
 		hierarchyServices: hierarchyServices!
 
 condenseExtensions: presenter
-	| defined newList |
-	newList := OrderedCollection new.
-	newList
-		addAll: presenter list;
-		addAll: classes.
-	defined := newList select: [:svc | svc isDefined] thenCollect: [:svc | svc name].
-	newList := newList reject: [:svc | svc isExtension and: [defined includes: svc name]].
-	newList := newList reject:[:svc | svc wasRenamed]. 
-	^newList!
+	| defined dictionary rejections |
+	dictionary := Dictionary new.
+	dictionary
+		atAll: presenter list put: nil;
+		atAll: classes put: nil.
+	defined := dictionary keys select: [:svc | svc isDefined] thenCollect: [:svc | svc name].
+	rejections := dictionary keys select: [:svc | svc isExtension and: [defined includes: svc name]].
+	dictionary removeAllKeys: rejections. 
+	rejections := dictionary keys select: [:svc | svc wasRenamed].
+	dictionary removeAllKeys: rejections. 
+	^dictionary!
 
 defaultTemplate
 	^defaultTemplate!
@@ -159,14 +162,13 @@ testClasses: presenter
 	presenter model addAll: additions!
 
 updateList: presenter whilePreservingSelections: updates
-	| replicate bag |
-	bag := presenter list asBag.
-	bag do: 
+	| replicate |
+	presenter list do: 
 			[:service |
-			replicate := updates detect: [:update | update = service] ifNone: [nil].
+			replicate := updates at: service ifAbsent: [].
 			replicate notNil ifTrue: [service replicateFrom: replicate]].
 	updates
-		do: [:update | ((bag includes: update) and: [update wasRenamed not]) ifFalse: [presenter model add: update]]! !
+		keysDo: [:update | ((presenter model includes: update) and: [update wasRenamed not]) ifFalse: [presenter model add: update]]! !
 !RowanPackageService categoriesFor: #=!comparing!public! !
 !RowanPackageService categoriesFor: #addHierarchyService:to:withParent:!private!updating! !
 !RowanPackageService categoriesFor: #basicPrepareForReplication!public!replication! !
