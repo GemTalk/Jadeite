@@ -6,7 +6,12 @@ RowanService subclass: #RowanMethodService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanMethodService guid: (GUID fromString: '{f5550fdc-dbb4-4382-af82-88c561c0a9d1}')!
-RowanMethodService comment: ''!
+RowanMethodService comment: 'Don''t change the order of the inst vars without checking
+the index of the firstReference & testResults inst vars. These have
+constant methods for performance. 
+
+#indexOfTestResultInstVar
+#indexOfFirstReferenceInstVar'!
 !RowanMethodService categoriesForClass!Kernel-Objects! !
 !RowanMethodService methodsFor!
 
@@ -187,6 +192,14 @@ implementorsOf: aString
 
 	^methodDefinitions!
 
+indexOfFirstReferenceInstVar
+
+	^35!
+
+indexOfTestResultInstVar
+
+	^29!
+
 initialize
 	super initialize.
 	inSelectedPackage := true.
@@ -359,10 +372,11 @@ setPassed
 
 shouldReplicateInstVarAtIndex: index newService: newService
 	"first reference is only valid on the first return of a method service for a particular browser. 
-	It may be better to (someday) move firstReference to the browser state" 
+	It may be better to (someday) move firstReference to the browser state"
+
 	| isTestResultInstVar |
-	index = (self class indexOfInstVar: 'firstReference') ifTrue: [firstReference ifNotNil: [^false]].  
-	isTestResultInstVar := (self class indexOfInstVar: 'testResult') = index.
+	index = self indexOfFirstReferenceInstVar ifTrue: [firstReference ifNotNil: [^false]].
+	isTestResultInstVar := self indexOfTestResultInstVar = index.
 	^isTestResultInstVar not or: [isTestResultInstVar and: [(newService instVarAt: index) notNil]]!
 
 sortAspect
@@ -501,6 +515,8 @@ user: anObject
 !RowanMethodService categoriesFor: #homeMethodOop!accessing!private! !
 !RowanMethodService categoriesFor: #icon!public!sunit! !
 !RowanMethodService categoriesFor: #implementorsOf:!method accessing!public! !
+!RowanMethodService categoriesFor: #indexOfFirstReferenceInstVar!constants!public! !
+!RowanMethodService categoriesFor: #indexOfTestResultInstVar!constants!public! !
 !RowanMethodService categoriesFor: #initialize!initialization!public! !
 !RowanMethodService categoriesFor: #inSelectedPackage!public!testing! !
 !RowanMethodService categoriesFor: #inSelectedPackage:!accessing!public! !

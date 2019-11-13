@@ -313,12 +313,11 @@ removeDeletedClassesIn: presenter browser: browser classes: theClasses
 	| updatedClasses removedClasses renamedClassNames |
 	updatedClasses := theClasses select: [:classService | classService packageName = name]
 				thenCollect: [:classService | classService name asString].
-	removedClasses := presenter list select: 
-					[:classService |
-					classService packageName = name
-						and: [(updatedClasses includes: classService name) not ]].
-	renamedClassNames := theClasses collect:[:classService | classService renamedName].
-	removedClasses := removedClasses reject: [:classService | renamedClassNames includes: classService name]. 
+	removedClasses := presenter list
+				select: [:classService | classService packageName = name and: [(updatedClasses includes: classService name) not]].
+	renamedClassNames := theClasses collect: [:classService | classService renamedName].
+	removedClasses := removedClasses
+				reject: [:classService | renamedClassNames includes: classService name].
 	removedClasses
 		do: [:removedClassService | (presenter selections includes: removedClassService) ifTrue: [presenter view basicResetSelection]].
 	removedClasses isEmpty ifTrue: [^self].
@@ -398,7 +397,7 @@ updateDictionarySelectionsFor: presenter
 updateList: presenter whilePreservingSelections: updates
 	| replicate bag |
 	bag := presenter list asBag.
-	presenter list copy do: 
+	bag do: 
 			[:service |
 			replicate := updates detect: [:update | update = service] ifNone: [nil].
 			replicate notNil ifTrue: [service replicateFrom: replicate]].

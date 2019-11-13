@@ -254,6 +254,26 @@ test_abortRemovesClassAndMethod
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_abortRemovesProjectAndPackage
+	self selectRowanSample1Test.
+	
+	[self denyIsNil: (self projectListPresenter list
+				detect: [:projectService | projectService name = 'RowanSample1']
+				ifNone: []).
+	self denyIsNil: (self packageListPresenter list
+				detect: [:packageService | packageService name = 'RowanSample1-Tests']
+				ifNone: []).
+	self abortTransaction.
+	self assertIsNil: (self projectListPresenter list
+				detect: [:projectService | projectService name = 'RowanSample1']
+				ifNone: []).
+	self assertIsNil: (self packageListPresenter list
+				detect: [:packageService | packageService name = 'RowanSample1-Tests']
+				ifNone: [])]
+			ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
+
 test_acceptDefinedMethodInExtensionClass
 	self testsIssue: #issue375
 		withTitle: '(3.0.53) accept non-extension method in an extension package .... lose selected class'.
@@ -5178,6 +5198,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #selectVariableListEntryForcingEvent:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abortOnVariablesTab!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abortRemovesClassAndMethod!public!test class list! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_abortRemovesProjectAndPackage!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_acceptDefinedMethodInExtensionClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessors!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsClassTab!public!test variable tab!tests! !

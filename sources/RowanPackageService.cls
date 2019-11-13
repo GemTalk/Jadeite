@@ -38,7 +38,7 @@ classes: anArray
 classesUpdate: presenter browser: browser
 	"If the selected packages have the same class defined and extended, show the defined class"
 
-	| condensedList |
+	| condensedList selections selectedPackageServices |
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	(self doesUpdateApply: browser) ifFalse: [^self].
 	self removeDeletedClassesIn: presenter browser: browser.
@@ -46,8 +46,10 @@ classesUpdate: presenter browser: browser
 	presenter selectionOrNil
 		ifNil: [presenter list: (ListModel withAll: condensedList asSet)]
 		ifNotNil: [self updateList: presenter whilePreservingSelections: condensedList].
-	presenter list
-		do: [:classService | classService selectedPackageServices: browser packageListPresenter selections browser: browser].
+	"#selections is very expensive in Dolphin. Don't send it in a loop"
+	selections := browser packageListPresenter selections.
+	selectedPackageServices := browser isRowanProjectSelected ifTrue: [selections] ifFalse: [Array new].
+	presenter list do: [:classService | classService selectedPackageServices: selectedPackageServices].
 	presenter view invalidate.
 	browser isClassSelected ifFalse: [self emptyFilterListsIn: browser]!
 
@@ -88,9 +90,9 @@ displayStringFor: displayThing
 			displayThing forecolor: Color black]!
 
 doesUpdateApply: browser
-	^browser isNoneProjectSelected
-		ifTrue: [false]
-		ifFalse: [browser packageListPresenter selections includes: self]!
+	| selections |
+	selections := browser packageListPresenter selections.
+	^browser isNoneProjectSelected ifTrue: [false] ifFalse: [selections includes: self]!
 
 hash
 	^self name hash!
@@ -154,7 +156,17 @@ testClasses: presenter
 							[additions add: newClassService.
 							nil].
 			updatedClass ifNotNil: [updatedClass replicateFrom: newClassService]].
-	presenter model addAll: additions! !
+	presenter model addAll: additions!
+
+updateList: presenter whilePreservingSelections: updates
+	| replicate bag |
+	bag := presenter list asBag.
+	bag do: 
+			[:service |
+			replicate := updates detect: [:update | update = service] ifNone: [nil].
+			replicate notNil ifTrue: [service replicateFrom: replicate]].
+	updates
+		do: [:update | ((bag includes: update) and: [update wasRenamed not]) ifFalse: [presenter model add: update]]! !
 !RowanPackageService categoriesFor: #=!comparing!public! !
 !RowanPackageService categoriesFor: #addHierarchyService:to:withParent:!private!updating! !
 !RowanPackageService categoriesFor: #basicPrepareForReplication!public!replication! !
@@ -162,7 +174,7 @@ testClasses: presenter
 !RowanPackageService categoriesFor: #classes:!accessing!public! !
 !RowanPackageService categoriesFor: #classesUpdate:browser:!public!updating! !
 !RowanPackageService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
-!RowanPackageService categoriesFor: #condenseExtensions:!private! !
+!RowanPackageService categoriesFor: #condenseExtensions:!private!updating! !
 !RowanPackageService categoriesFor: #defaultTemplate!accessing!private! !
 !RowanPackageService categoriesFor: #defaultTemplate:!accessing!private! !
 !RowanPackageService categoriesFor: #displayStringFor:!displaying!public! !
@@ -181,6 +193,7 @@ testClasses: presenter
 !RowanPackageService categoriesFor: #selectedClass!accessing!public! !
 !RowanPackageService categoriesFor: #selectedClass:!accessing!public! !
 !RowanPackageService categoriesFor: #testClasses:!public!updating! !
+!RowanPackageService categoriesFor: #updateList:whilePreservingSelections:!private!updating! !
 
 !RowanPackageService class methodsFor!
 

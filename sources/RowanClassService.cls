@@ -6,7 +6,12 @@ RowanService subclass: #RowanClassService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanClassService guid: (GUID fromString: '{ab96bbd9-d725-4add-b635-94cec9f12a19}')!
-RowanClassService comment: ''!
+RowanClassService comment: 'Don''t change the order of the inst vars without checking
+the index of the meta & methods inst vars. These have
+constant methods for performance. 
+
+#indexOfMetaInstVar
+#indexOfMethodsInstVar'!
 !RowanClassService categoriesForClass!Kernel-Objects! !
 !RowanClassService methodsFor!
 
@@ -205,6 +210,15 @@ hierarchyClassServices
 			chain do: [:service | classes add: service]].
 	^classes reject:[:service | service == #nil]. !
 
+indexOfMetaInstVar
+	"performance enhancement"
+	^16 !
+
+indexOfMethodsInstVar
+	"performance enhancement"
+
+	^24!
+
 initialize
 	
 	super initialize. 
@@ -378,6 +392,9 @@ selectedPackageServiceNames
 selectedPackageServices
 	^selectedPackageServices!
 
+selectedPackageServices: collection
+	selectedPackageServices := collection!
+
 selectedPackageServices: anObject browser: browser
 	"selected packages don't apply when dictionaries are showing"
 
@@ -394,8 +411,8 @@ shouldColorAsExtension: browser
 						not]]!
 
 shouldReplicateInstVarAtIndex: index newService: newService
-	(self class indexOfInstVar: 'meta') = index ifTrue: [^false].
-	(self class indexOfInstVar: 'methods') = index ifTrue: [newService meta = meta ifFalse: [^false]].
+	self indexOfMetaInstVar = index ifTrue: [^false].
+	self indexOfMethodsInstVar = index ifTrue: [newService meta = meta ifFalse: [^false]].
 	^true!
 
 sunitMethodsUpdate: presenter browser: browser
@@ -554,6 +571,8 @@ wasRenamed
 !RowanClassService categoriesFor: #hash!comparing!public! !
 !RowanClassService categoriesFor: #hierarchyClassServiceNames!public! !
 !RowanClassService categoriesFor: #hierarchyClassServices!public! !
+!RowanClassService categoriesFor: #indexOfMetaInstVar!constants!public! !
+!RowanClassService categoriesFor: #indexOfMethodsInstVar!constants!public! !
 !RowanClassService categoriesFor: #initialize!Init / Release!public! !
 !RowanClassService categoriesFor: #instVarNames!accessing!public! !
 !RowanClassService categoriesFor: #isClassService!public!testing! !
@@ -588,6 +607,7 @@ wasRenamed
 !RowanClassService categoriesFor: #selectedPackageNames!private! !
 !RowanClassService categoriesFor: #selectedPackageServiceNames!private!updating support! !
 !RowanClassService categoriesFor: #selectedPackageServices!accessing!private! !
+!RowanClassService categoriesFor: #selectedPackageServices:!accessing!private! !
 !RowanClassService categoriesFor: #selectedPackageServices:browser:!accessing!private! !
 !RowanClassService categoriesFor: #shouldColorAsExtension:!public!testing! !
 !RowanClassService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
