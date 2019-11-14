@@ -47,8 +47,10 @@ displayCommand
 	services do: 
 			[:service |
 			service command
-				ifNil: [ws nextPutAll: (service updateType ifNil: [String new] ifNotNil: [:u | u , ';'])]
-				ifNotNil: [ws nextPutAll: (service command ifNil: [String new] ifNotNil: [:u | u , ';'])].
+				ifNil: 
+					[ws nextPutAll: (service updateType ifNil: [String new] ifNotNil: [:updates | updates printString])]
+				ifNotNil: 
+					[ws nextPutAll: (service command ifNil: [String new] ifNotNil: [:updates | updates printString])].
 			ws
 				space;
 				nextPutAll: (service displayName ifNil: [String new])].

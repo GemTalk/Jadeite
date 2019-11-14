@@ -41,7 +41,6 @@ classesUpdate: presenter browser: browser
 	| condensedList selections selectedPackageServices |
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	(self doesUpdateApply: browser) ifFalse: [^self].
-Smalltalk at: #Count put: (Smalltalk at: #Count) + 1. 
 	self removeDeletedClassesIn: presenter browser: browser.
 	condensedList := self condenseExtensions: presenter.
 	presenter selectionOrNil
