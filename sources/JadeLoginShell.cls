@@ -269,7 +269,11 @@ openHomePage
 
 postLogin: aGciSession
 	versionListPresenter view disable.
-	self setWorkingDirectory!
+	self setWorkingDirectory.
+	GciSession current 
+		when: #logout
+		send: #invalidate
+		to: loginButtonPresenter view!
 
 queryCommand: query
 	query commandSymbol = #login

@@ -90,6 +90,8 @@ test_gemTask
 test_loginButtonEnablement
 	| jadeiteShell query |
 	self testsIssue: #issue527 withTitle: 'Multiple sessions can''t keep console project list straight'.
+	self testsIssue: #issue635
+		withTitle: '(3.0.87) Extra click after logout to reenable the login button'.
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #no.	"don't commit"
 	[GciSession current ifNotNil: [:sess | sess logout]]
@@ -106,7 +108,14 @@ test_loginButtonEnablement
 	query := CommandQuery commandDescription: (CommandDescription command: #login)
 				source: jadeiteShell view.
 	jadeiteShell view queryCommand: query.
-	self deny: query isEnabled!
+	self deny: query isEnabled.
+	GciSession current logout.
+	
+	[query := CommandQuery commandDescription: (CommandDescription command: #login)
+				source: jadeiteShell loginButtonPresenter view.
+	jadeiteShell queryCommand: query.
+	self assert: query isEnabled]
+			ensure: [jadeiteShell login]!
 
 test_simpleLogin
 	self denyIsNil: session.
