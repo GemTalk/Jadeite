@@ -196,6 +196,16 @@ test_findInWorkspace
 				[workspace view close.
 				findView view close]!
 
+test_instVarConstants
+	self assert: (RowanClassService indexOfInstVar: 'meta')
+		equals: RowanClassService new indexOfMetaInstVar.
+	self assert: (RowanClassService indexOfInstVar: 'methods')
+		equals: RowanClassService new indexOfMethodsInstVar.
+	self assert: (RowanMethodService indexOfInstVar: 'testResult')
+		equals: RowanMethodService new indexOfTestResultInstVar.
+	self assert: (RowanMethodService indexOfInstVar: 'firstReference')
+		equals: RowanMethodService new indexOfFirstReferenceInstVar!
+
 test_releaseOops
 	| remoteObject service |
 	self testsIssue: #issue413 withTitle: '(3.0.56 & 3.0.62) running out vm memory quickly'.
@@ -592,6 +602,7 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_convertToPattern!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_findInWorkspace!public!test! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_instVarConstants!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_versionMatches!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus!test workspaces! !
