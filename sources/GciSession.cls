@@ -420,7 +420,6 @@ oopTypeWithOop: anInteger
 !
 
 printString: anOopType
-
 	^self
 		serverPerform: 'printStringOf:'
 		with: anOopType.

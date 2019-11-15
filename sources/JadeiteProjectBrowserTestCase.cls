@@ -4096,7 +4096,7 @@ test_saveMethodAndUpdateSUnitTab
 	| source methodService |
 	self selectServicesNamed: #('Rowan') in: self projectListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
-	self selectServicesNamed: #('RowanServicesTest') in: self classListPresenter.
+	self selectServicesNamed: #('RowanTestClassServiceTest') in: self classListPresenter.
 	self projectsPresenter basicAddMethodCategory: 'test_saveMethod'.
 	source := 'test_testMethod  
 		self assert: true'.

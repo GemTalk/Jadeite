@@ -4042,7 +4042,6 @@ executeSelectionOrLine: contextObject
 		commandArgs: (Array with: self currentSelectionOrLine with: oop).
 	self issueCommand: (Array with: answeringService).
 	answer := answeringService answer.
-	Transcript cr; show: 'answer: '; print: answer. 
 	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
 	^answer!
 
