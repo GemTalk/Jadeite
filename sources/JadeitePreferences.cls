@@ -10,6 +10,10 @@ JadeitePreferences comment: ''!
 !JadeitePreferences categoriesForClass!Unclassified! !
 !JadeitePreferences methodsFor!
 
+allowsSpacesInArgument: commandSymbol
+	"so far openWorkspace: is only command to allow spaces in it's arguments"
+	^commandSymbol = #openWorkspace:!
+
 autocommitEnabled: booleanString
 	| autoCommitService boolean |
 	boolean := booleanString = 'true'.
@@ -87,6 +91,13 @@ openWorkspace: pathOrNil
 	pathOrNil = 'nil' ifFalse: [workspace openOn: pathOrNil].
 	^workspace!
 
+performCommand: message allowSpacesInArgs: preferencesString
+	| argument readStream |
+	readStream := ReadStream on: preferencesString trimBlanks.
+	readStream upTo: Character space.
+	argument := readStream upToEnd.
+	^self perform: message with: argument!
+
 session: anObject
 	session := anObject!
 
@@ -96,6 +107,9 @@ setPreference: preferencesString
 	| message subStrings |
 	preferencesString trimBlanks subStrings isEmpty ifTrue: [^self].
 	subStrings := preferencesString subStrings.
+	message := subStrings first asSymbol.
+	(self allowsSpacesInArgument: message)
+		ifTrue: [^self performCommand: message allowSpacesInArgs: preferencesString].
 	subStrings size = 2 ifFalse: [^self].	"single keyword argument format for now"
 	message := subStrings first asSymbol.
 	message first = $# ifTrue: [^self].
@@ -110,6 +124,7 @@ transcriptEnabled: booleanString
 	answeringService := RowanAnsweringService new.
 	(answeringService isTranscriptInstalledIn: session) == boolean
 		ifFalse: [answeringService flipTranscriptIn: session]! !
+!JadeitePreferences categoriesFor: #allowsSpacesInArgument:!private!testing! !
 !JadeitePreferences categoriesFor: #autocommitEnabled:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #autocompleteEnabled:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #breakpointsEnabled:!must not strip!preferences!public! !
@@ -121,6 +136,7 @@ transcriptEnabled: booleanString
 !JadeitePreferences categoriesFor: #openSUnitBrowser!preferences!private! !
 !JadeitePreferences categoriesFor: #openSUnitBrowserOnPackage:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #openWorkspace:!must not strip!preferences!public! !
+!JadeitePreferences categoriesFor: #performCommand:allowSpacesInArgs:!accessing!must not strip!public! !
 !JadeitePreferences categoriesFor: #session:!accessing!private! !
 !JadeitePreferences categoriesFor: #setPreference:!accessing!must not strip!public! !
 !JadeitePreferences categoriesFor: #transcriptEnabled:!must not strip!preferences!public! !

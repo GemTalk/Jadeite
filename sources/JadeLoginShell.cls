@@ -270,7 +270,7 @@ openHomePage
 postLogin: aGciSession
 	versionListPresenter view disable.
 	self setWorkingDirectory.
-	GciSession current 
+	aGciSession
 		when: #logout
 		send: #invalidate
 		to: loginButtonPresenter view!

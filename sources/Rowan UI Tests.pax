@@ -48,6 +48,8 @@ package methodNames
 	add: #RowanPatchBrowser -> #operationListPresenter;
 	add: #SUnitBrowserModel -> #debugIndividualTestsWithResources:;
 	add: 'ChoicePrompter class' -> #create:;
+	add: 'JadeiteSearch class' -> #allClassNames:;
+	add: 'JadeiteSearch class' -> #allSelectorSymbols:;
 	add: 'MessageBox class' -> #new;
 	add: 'Prompter class' -> #createOn:;
 	add: 'TestResource class' -> #signalInitializationError;
@@ -282,6 +284,20 @@ definedMethodPackageText
 	^definedMethodPackageText! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #definedClassPackageText!initialize/release!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #definedMethodPackageText!initialize/release!public! !
+
+!JadeiteSearch class methodsFor!
+
+allClassNames: anObject
+	"for testing"
+
+	^AllClassNames := anObject!
+
+allSelectorSymbols: anObject
+	"for testing"
+
+	^AllSelectors := anObject! !
+!JadeiteSearch class categoriesFor: #allClassNames:!accessing!public! !
+!JadeiteSearch class categoriesFor: #allSelectorSymbols:!accessing!public! !
 
 !JadeLoginShell methodsFor!
 

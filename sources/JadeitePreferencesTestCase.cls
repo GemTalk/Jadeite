@@ -40,6 +40,18 @@ test_autoCompleteEnabled
 	self deny: JadeiteSearch autoCompleteEnabled]
 			ensure: [JadeiteSearch autoCompleteEnabled: autoCompleteWasEnabled]!
 
+test_blanksInOpenWorkspaceArguments
+	| prefs file fileName |
+	fileName := 'file with blanks in name.gs'.
+	file := File open: fileName mode: #create.
+	file close.
+	
+	[prefs := JadeitePreferences new session: session.
+	workspace := prefs openWorkspace: fileName.
+	self assert: ('file with blanks in name.gs*' match: workspace caption).
+	self assert: (workspace isKindOf: JadeWorkspace)]
+			ensure: [file delete]!
+
 test_breakpointEnabled
 	| prefs breakpointWasEnabled |
 	self testsIssue: #issue553 withTitle: 'Jadeite settings in preferences file (3.0.78)'.
@@ -138,7 +150,7 @@ test_preferencesOpenWorkspace
 	| prefs |
 	prefs := JadeitePreferences new session: session.
 	workspace := prefs openWorkspace: 'nil'.
-	[self assert: (workspace isKindOf: JadeWorkspace)] ensure: [workspace view close]!
+	self assert: (workspace isKindOf: JadeWorkspace)!
 
 test_preferencesSettingTranscript
 	| prefs transcriptInstalled |
@@ -177,6 +189,7 @@ test_validPreferences
 !JadeitePreferencesTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeitePreferencesTestCase categoriesFor: #test_autoCommitEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_autoCompleteEnabled!public!tests! !
+!JadeitePreferencesTestCase categoriesFor: #test_blanksInOpenWorkspaceArguments!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_breakpointEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_everyPreferenceIsInMustNotStripCategory!public! !
 !JadeitePreferencesTestCase categoriesFor: #test_handleMalformedPreference!public!tests! !

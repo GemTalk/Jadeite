@@ -12,8 +12,8 @@ JadeiteSearch comment: 'Derived from SmalltalkSearchPresenter'!
 
 allClassesStartingWith: string
 	| displayNames |
-	AllClassNames ifNil: [self class initializeClassNamesIn: session].
-	displayNames := AllClassNames select: [:className | className beginsWith: string].
+	self class allClassNames isEmpty ifTrue: [self class initializeClassNamesIn: session].
+	displayNames := self class allClassNames select: [:className | className beginsWith: string].
 	^displayNames!
 
 insertCompletion: string at: anInteger
@@ -74,9 +74,8 @@ showCompletionList: aCollection prefixLength: anInteger
 startAutocompleteTimer
 	view setTimer: SCI_AUTOCSHOW interval: 30!
 
-symbolsFrom: selector
-	AllSelectors ifNil: [self class initializeSelectorsIn: session].
-	^AllSelectors select: [:symbol | symbol beginsWith: selector]!
+symbolsFrom: partialSelector
+	^self class selectorsFrom: partialSelector session: session!
 
 tokenStartAt: anInteger
 	^(view styleAt: anInteger) name == #specialCharacter
@@ -111,9 +110,13 @@ view: aView
 !JadeiteSearch class methodsFor!
 
 allClassNames
+	" we don't have a session yet so only initialize as a collection for now."
+
 	^AllClassNames ifNil: [AllClassNames := OrderedCollection new]!
 
 allSelectorSymbols
+	" we don't have a session yet so only initialize as a collection for now."
+
 	^AllSelectors ifNil: [AllSelectors := OrderedCollection new]!
 
 autoCompleteEnabled
@@ -166,8 +169,10 @@ on: view session: session
 		session: session!
 
 selectorsFrom: partialSelector session: session
-	AllSelectors ifNil: [self initializeSelectorsIn: session].
-	^AllSelectors select: [:selector | partialSelector match: selector]!
+	| symbol |
+	self allSelectorSymbols isEmpty ifTrue: [self initializeSelectorsIn: session].
+	symbol := (partialSelector , '*') asSymbol.
+	^self allSelectorSymbols select: [:selector | symbol match: selector]!
 
 updateAutocompleteSymbolsIn: session
 	| service |

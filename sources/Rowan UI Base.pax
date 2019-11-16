@@ -2498,7 +2498,7 @@ browseImplementorsIn: session
 		searchType: 'selector'!
 
 browseImplementorsOf: string session: session
-	| service shell |
+	| service shell | 
 	service := RowanQueryService command: #implementorsOf: withArgs: (Array with: string asSymbol).
 	self issueCommand: (Array with: service) session: session.
 	shell := self

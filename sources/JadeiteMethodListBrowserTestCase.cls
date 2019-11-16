@@ -1037,6 +1037,20 @@ test_removeMethodOutsideServices
 	self selectMethodNamed: #testAdHocExecutionWith:.
 	self deny: (self methodListMethodListPresenter list includes: selection)!
 
+test_symbolsInitialized
+	"wildcard browse implementors and senders relies on these symbols. Make sure they
+	get lazy initialized"
+
+	| symbols |
+	self testsIssue: #issue631
+		withTitle: '(3.0.87) Implementors selection with wildcard displays blank window'.
+	JadeiteSearch allSelectorSymbols: nil.
+	symbols := JadeiteSearch selectorsFrom: 'siz*' session: session.	"sent in JadePresenter class>>promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:"
+	symbols do: [:symbol | self assert: (symbol beginsWith: 'siz')].
+	JadeiteSearch allClassNames: nil.
+	symbols := (JadeiteSearch on: View new session: session) allClassesStartingWith: 'Rowan*'.
+	symbols do: [:symbol | self assert: (symbol beginsWith: 'Rowan')]!
+
 test_UnsavedChangesActionChangeSelectionIgnoreChanges
 	| methodListPresenter |
 	self testsIssue: #issue386
@@ -1211,6 +1225,7 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodInProjectBrowser!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodOutsideServices!public!test methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_symbolsInitialized!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindow!public!tests! !
