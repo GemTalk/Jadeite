@@ -63,7 +63,6 @@ classesMenuStrings
 		'Add &Subclass//addSubclass'
 		'&Remove//removeClass'
 		'-'
-		'Set Compiler &Environment ...//setEnvironment'
 		'Run &Tests//runClassTests'
 	).
 !
