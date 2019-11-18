@@ -4331,6 +4331,21 @@ test_switchToVariableWithUnsavedChanges
 	self assert: self methodSourcePresenter view isModified.
 	self assert: self methodSourcePresenter value equals: 'test1 ^''aaaa'''!
 
+test_symbolsLowerCaseMatch
+	| symbols search |
+	self testsIssue: #issue636 withTitle: 'make autocomplete case insensitive'.
+	search := JadeiteSearch new.
+	symbols := search symbolsFrom: 'FOO'.
+	self assert: symbols size equals: 1.
+	self assert: symbols first = #foo.
+	symbols := search symbolsFrom: 'FO'.
+	self assert: (symbols includes: #foo).
+	symbols := search symbolsFrom: 'foo'.
+	self assert: symbols size equals: 1.
+	self assert: symbols first = #foo.
+	symbols := search symbolsFrom: 'fo'.
+	self assert: (symbols includes: #foo)!
+
 test_symbolsWithoutImplementorsFound
 	"I think the only way for a symbol to get added to AllSymbols is to commit it"
 
@@ -5394,6 +5409,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitPresenterResetAfterPackageSelection!public!test packages!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_sunitPresenterResetAfterProjectSelection!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_switchToVariableWithUnsavedChanges!public!test variable tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsLowerCaseMatch!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsWithoutImplementorsFound!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesDictionaryClass!public!test system tabs! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesDictionaryClassHierarchy!public!test system tabs! !

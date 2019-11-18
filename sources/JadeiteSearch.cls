@@ -16,6 +16,11 @@ allClassesStartingWith: string
 	displayNames := self class allClassNames select: [:className | className beginsWith: string].
 	^displayNames!
 
+completionListSortBlock
+	| crt |
+	crt := CRTLibrary default.
+	^[:a :b | (crt strcmp: a displayString string2: b displayString) <= 0]!
+
 insertCompletion: string at: anInteger
 	| index |
 	view performUndoableAction: 
@@ -67,7 +72,7 @@ showCompletionList: aCollection prefixLength: anInteger
 			["Don't display a list of one item that is the same as the prefix"
 			^self].
 	view
-		showAutoCompletionList: aCollection
+		showAutoCompletionList: (aCollection asSortedCollection: self completionListSortBlock)
 		prefixLength: anInteger
 		withIcons: false!
 
@@ -94,6 +99,7 @@ view: aView
 
 	view := aView! !
 !JadeiteSearch categoriesFor: #allClassesStartingWith:!accessing!public! !
+!JadeiteSearch categoriesFor: #completionListSortBlock!accessing!public! !
 !JadeiteSearch categoriesFor: #insertCompletion:at:!autocompletion!private! !
 !JadeiteSearch categoriesFor: #killAutocompleteTimer!autocompletion!private! !
 !JadeiteSearch categoriesFor: #onAutoComplete:startingAt:accept:!autocompletion!event handlers!private! !
@@ -171,8 +177,8 @@ on: view session: session
 selectorsFrom: partialSelector session: session
 	| symbol |
 	self allSelectorSymbols isEmpty ifTrue: [self initializeSelectorsIn: session].
-	symbol := (partialSelector , '*') asSymbol.
-	^self allSelectorSymbols select: [:selector | symbol match: selector]!
+	symbol := (partialSelector , '*') asSymbol asLowercase.
+	^self allSelectorSymbols select: [:selector | symbol match: selector asLowercase]!
 
 updateAutocompleteSymbolsIn: session
 	| service |
