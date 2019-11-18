@@ -22,9 +22,9 @@ test_autoCommitEnabled
 	autoCommitWasEnabled := transcript autoCommit.
 	
 	[prefs := JadeitePreferences new session: session.
-	prefs setPreference: 'autocommitEnabled: true'.
+	prefs applyPreference: 'autocommitEnabled: true'.
 	self assert: transcript autoCommit.
-	prefs setPreference: 'autocommitEnabled: false'.
+	prefs applyPreference: 'autocommitEnabled: false'.
 	self deny: transcript autoCommit]
 			ensure: [transcript autoCommit: autoCommitWasEnabled]!
 
@@ -34,9 +34,9 @@ test_autoCompleteEnabled
 	autoCompleteWasEnabled := JadeiteSearch autoCompleteEnabled.
 	
 	[prefs := JadeitePreferences new session: session.
-	prefs setPreference: 'autocompleteEnabled: true'.
+	prefs applyPreference: 'autocompleteEnabled: true'.
 	self assert: JadeiteSearch autoCompleteEnabled.
-	prefs setPreference: 'autocompleteEnabled: false'.
+	prefs applyPreference: 'autocompleteEnabled: false'.
 	self deny: JadeiteSearch autoCompleteEnabled]
 			ensure: [JadeiteSearch autoCompleteEnabled: autoCompleteWasEnabled]!
 
@@ -58,9 +58,9 @@ test_breakpointEnabled
 	breakpointWasEnabled := transcript areBreakpointsEnabled value.
 	
 	[prefs := JadeitePreferences new session: session.
-	prefs setPreference: 'breakpointsEnabled: true'.
+	prefs applyPreference: 'breakpointsEnabled: true'.
 	self assert: transcript areBreakpointsEnabled value.
-	prefs setPreference: 'breakpointsEnabled: false'.
+	prefs applyPreference: 'breakpointsEnabled: false'.
 	self deny: transcript areBreakpointsEnabled value]
 			ensure: [transcript areBreakpointsEnabled value: breakpointWasEnabled]!
 
@@ -92,13 +92,13 @@ test_handleMalformedPreference
 	| prefs result |
 	self testsIssue: #issue553 withTitle: 'Jadeite settings in preferences file (3.0.78)'.
 	prefs := JadeitePreferences new session: session.
-	result := prefs setPreference: 'transcriptEnabled:'.	"no argument"
+	result := prefs applyPreference: 'transcriptEnabled:'.	"no argument"
 	self assert: result equals: prefs.
-	result := prefs setPreference: 'transcriptEnabled: true false'.	"too many arguments"
+	result := prefs applyPreference: 'transcriptEnabled: true false'.	"too many arguments"
 	self assert: result equals: prefs.
-	result := prefs setPreference: 'glooble: true'.	"invalid preference, but well-formed"
+	result := prefs applyPreference: 'glooble: true'.	"invalid preference, but well-formed"
 	self assert: result equals: prefs.
-	result := prefs setPreference: '		transcriptEnabled: true'.	"indentation ok "
+	result := prefs applyPreference: '		transcriptEnabled: true'.	"indentation ok "
 	self assert: result equals: prefs!
 
 test_loggingEnabled
@@ -107,19 +107,19 @@ test_loggingEnabled
 	loggingWasEnabled := BrowserUpdate current isLogging.
 	
 	[prefs := JadeitePreferences new session: session.
-	prefs setPreference: 'loggingEnabled: true'.
+	prefs applyPreference: 'loggingEnabled: true'.
 	self assert: BrowserUpdate current isLogging.
-	prefs setPreference: 'loggingEnabled: false'.
+	prefs applyPreference: 'loggingEnabled: false'.
 	self deny: BrowserUpdate current isLogging]
 			ensure: [BrowserUpdate current isLogging: loggingWasEnabled]!
 
 test_preferencesHandlesBlanks
 	| prefs result |
 	prefs := JadeitePreferences new session: session.
-	result := prefs setPreference: String new.
+	result := prefs applyPreference: String new.
 	self assert: result equals: prefs.	"#setPreference: returns itself. Just test that it returned and didn't walkback"
 	result := prefs
-				setPreference: ((WriteStream on: String new)
+				applyPreference: ((WriteStream on: String new)
 						cr;
 						lf;
 						tab;

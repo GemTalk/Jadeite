@@ -14,6 +14,21 @@ allowsSpacesInArgument: commandSymbol
 	"so far openWorkspace: is only command to allow spaces in it's arguments"
 	^commandSymbol = #openWorkspace:!
 
+applyPreference: preferencesString
+	"only perform messages which are defined by this class"
+
+	| message subStrings |
+	preferencesString trimBlanks subStrings isEmpty ifTrue: [^self].
+	subStrings := preferencesString subStrings.
+	message := subStrings first asSymbol.
+	(self allowsSpacesInArgument: message)
+		ifTrue: [^self performCommand: message allowSpacesInArgs: preferencesString].
+	subStrings size = 2 ifFalse: [^self].	"single keyword argument format for now"
+	message := subStrings first asSymbol.
+	message first = $# ifTrue: [^self].
+	(JadeitePreferences methodDictionary at: message ifAbsent: [])
+		ifNotNil: [self perform: message with: preferencesString subStrings second]!
+
 autocommitEnabled: booleanString
 	| autoCommitService boolean |
 	boolean := booleanString = 'true'.
@@ -88,7 +103,19 @@ openSUnitBrowserOnPackage: packageName
 openWorkspace: pathOrNil
 	| workspace |
 	workspace := JadeWorkspace showOnSession: session.
-	pathOrNil = 'nil' ifFalse: [workspace openOn: pathOrNil].
+	pathOrNil = 'nil'
+		ifFalse: 
+			[(File exists: pathOrNil)
+				ifTrue: [workspace openOn: pathOrNil]
+				ifFalse: 
+					[| localPath |
+					"try the image directory"
+					localPath := SessionManager current imageBase , pathOrNil.
+					(File exists: localPath)
+						ifTrue: [workspace openOn: localPath]
+						ifFalse: 
+							[workspace view close.
+							^MessageBox notify: 'preferences workspace ' , pathOrNil , ' unable to be opened']]].
 	^workspace!
 
 performCommand: message allowSpacesInArgs: preferencesString
@@ -101,21 +128,6 @@ performCommand: message allowSpacesInArgs: preferencesString
 session: anObject
 	session := anObject!
 
-setPreference: preferencesString
-	"only perform messages which are defined by this class"
-
-	| message subStrings |
-	preferencesString trimBlanks subStrings isEmpty ifTrue: [^self].
-	subStrings := preferencesString subStrings.
-	message := subStrings first asSymbol.
-	(self allowsSpacesInArgument: message)
-		ifTrue: [^self performCommand: message allowSpacesInArgs: preferencesString].
-	subStrings size = 2 ifFalse: [^self].	"single keyword argument format for now"
-	message := subStrings first asSymbol.
-	message first = $# ifTrue: [^self].
-	(JadeitePreferences methodDictionary at: message ifAbsent: [])
-		ifNotNil: [self perform: message with: preferencesString subStrings second]!
-
 transcriptEnabled: booleanString
 	"file syntax - transcriptEnabled false"
 
@@ -125,6 +137,7 @@ transcriptEnabled: booleanString
 	(answeringService isTranscriptInstalledIn: session) == boolean
 		ifFalse: [answeringService flipTranscriptIn: session]! !
 !JadeitePreferences categoriesFor: #allowsSpacesInArgument:!private!testing! !
+!JadeitePreferences categoriesFor: #applyPreference:!accessing!must not strip!public! !
 !JadeitePreferences categoriesFor: #autocommitEnabled:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #autocompleteEnabled:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #breakpointsEnabled:!must not strip!preferences!public! !
@@ -138,7 +151,6 @@ transcriptEnabled: booleanString
 !JadeitePreferences categoriesFor: #openWorkspace:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #performCommand:allowSpacesInArgs:!accessing!must not strip!public! !
 !JadeitePreferences categoriesFor: #session:!accessing!private! !
-!JadeitePreferences categoriesFor: #setPreference:!accessing!must not strip!public! !
 !JadeitePreferences categoriesFor: #transcriptEnabled:!must not strip!preferences!public! !
 
 !JadeitePreferences class methodsFor!

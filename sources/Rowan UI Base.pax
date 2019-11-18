@@ -1130,7 +1130,7 @@ oopTypeFor: anObject
 
 postLoadClientPreferences
 	| path file stream nextLine prefs |
-	path := File workingDirectory , self preferencesFile.
+	path := SessionManager current imageBase , self preferencesFile.
 	(File exists: path) ifFalse: [^self].
 	prefs := JadeitePreferences onSession: self.
 	file := File open: path mode: #read.
@@ -1138,7 +1138,7 @@ postLoadClientPreferences
 	[stream := file readWriteStream.
 	[stream atEnd] whileFalse: 
 			[nextLine := stream nextLine.
-			prefs setPreference: nextLine]]
+			prefs applyPreference: nextLine]]
 			ensure: [^file close]!
 
 postLoadServerPreferences
