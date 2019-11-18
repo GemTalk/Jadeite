@@ -218,7 +218,8 @@ onViewOpened
 	areBreakpointsEnabled
 		value: (breakPointsEnabled := answeringService breakPointsAreEnabled: self gciSession).
 	BrowserUpdate current breakpointsEnabled: breakPointsEnabled.
-	self registerPresentersForUpdates!
+	self registerPresentersForUpdates.
+	self autoCommit: (RowanAnsweringService new autoCommitIn: self gciSession)!
 
 openCommitInGitHub
 	| projectService |

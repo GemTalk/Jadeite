@@ -11,8 +11,7 @@ JadePreferencesPresenter comment: ''!
 !JadePreferencesPresenter methodsFor!
 
 autoCommitChanged
-
-	self halt.!
+	!
 
 autoMigrateChanged
 

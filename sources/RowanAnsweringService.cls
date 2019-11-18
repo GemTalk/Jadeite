@@ -17,6 +17,11 @@ answer
 answer: anObject
 	answer := anObject!
 
+autoCommitIn: session
+	command := #autoCommit.
+	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	^answer!
+
 breakPointsAreEnabled: session
 	command := #breakPointsAreEnabled.
 	BrowserUpdate current issueCommand: (Array with: self) session: session.
@@ -75,6 +80,7 @@ updateSymbols: unused
 	JadeiteSearch allSelectors addAll: answer last! !
 !RowanAnsweringService categoriesFor: #answer!accessing!private! !
 !RowanAnsweringService categoriesFor: #answer:!accessing!private! !
+!RowanAnsweringService categoriesFor: #autoCommitIn:!commands!public! !
 !RowanAnsweringService categoriesFor: #breakPointsAreEnabled:!commands!public! !
 !RowanAnsweringService categoriesFor: #breakpointSettingChanged:!public!updating! !
 !RowanAnsweringService categoriesFor: #expressionSelector:session:!commands!public! !
