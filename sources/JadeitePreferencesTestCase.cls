@@ -152,6 +152,43 @@ test_preferencesOpenWorkspace
 	workspace := prefs openWorkspace: 'nil'.
 	self assert: (workspace isKindOf: JadeWorkspace)!
 
+test_preferencesOpenWorkspaceFiles
+	| prefs file |
+	prefs := JadeitePreferences new session: session.
+	file := File
+				open: 'testPrefWorkspace.gs'
+				mode: #create
+				check: false.
+	[file write: 'test1'] ensure: [file close].
+	
+	[workspace := prefs openWorkspace: 'testPrefWorkspace.gs'.
+	self assert: workspace codePane documentPresenter value equals: 'test1']
+			ensure: 
+				[workspace view close.
+				file delete].
+	file := File
+				open: 'test pref workspace.gs'
+				mode: #create
+				check: false.
+	[file write: 'test2'] ensure: [file close].
+	
+	[workspace := prefs openWorkspace: 'test pref workspace.gs'.	"spaces in name"
+	self assert: workspace codePane documentPresenter value equals: 'test2']
+			ensure: 
+				[workspace view close.
+				file delete].
+	file := File
+				open: SessionManager current imageBase , 'testPrefWorkspace.gs'
+				mode: #create
+				check: false.
+	[file write: 'test3'] ensure: [file close].
+	
+	[workspace := prefs openWorkspace: SessionManager current imageBase , 'testPrefWorkspace.gs'.
+	self assert: workspace codePane documentPresenter value equals: 'test3']
+			ensure: 
+				[workspace view close.
+				file delete]!
+
 test_preferencesSettingTranscript
 	| prefs transcriptInstalled |
 	prefs := JadeitePreferences new session: session.
@@ -197,6 +234,7 @@ test_validPreferences
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesHandlesBlanks!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesOpenBrowsers!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesOpenWorkspace!public!tests! !
+!JadeitePreferencesTestCase categoriesFor: #test_preferencesOpenWorkspaceFiles!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesSettingTranscript!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesSUnitOpenBrowser!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_resetPreferences!public!tests! !
