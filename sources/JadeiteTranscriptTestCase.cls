@@ -423,8 +423,10 @@ test_implementorsSenders_SearchList
 	self assert: selection equals: #subclasses.
 	"the code above doesn't really test that our list is populated. Hence the assertions below.
 	JadeiteSearch is referenced from #promptFor*"
-	(JadeiteSearch selectorsFrom: ('_*' copyWithout: $*) session: session)
-		do: [:string | self assert: (string beginsWith: '_')].
+	(JadeiteSearch
+		selectorsFrom: ('_*' copyWithout: $*)
+		session: session
+		trailingWildcard: true) do: [:string | self assert: (string beginsWith: '_')].
 	self
 		denyIsNil: ((JadeiteTranscriptTestCase methodDictionary at: #test_implementorsSendersSearchList)
 				literalsDetect: [:literal | (literal isKindOf: Association) and: [literal value = JadeiteSearch]]
@@ -447,8 +449,10 @@ test_implementorsSendersSearchList
 	self assert: selection equals: #subclasses.
 	"the code above doesn't really test that our list is populated. Hence the assertions below.
 	JadeiteSearch is referenced from #promptFor*"
-	(JadeiteSearch selectorsFrom: ('sub*' copyWithout: $*) session: session)
-		do: [:string | self assert: ('sub*' match: string)].
+	(JadeiteSearch
+		selectorsFrom: ('sub*' copyWithout: $*)
+		session: session
+		trailingWildcard: true) do: [:string | self assert: ('sub*' match: string)].
 	self
 		denyIsNil: ((JadeiteTranscriptTestCase methodDictionary at: #test_implementorsSendersSearchList)
 				literalsDetect: [:literal | (literal isKindOf: Association) and: [literal value = JadeiteSearch]]
@@ -641,11 +645,20 @@ test_selectorsList
 	| list |
 	self testsIssue: #issue615
 		withTitle: 'Leading * in find implementors... worked in 3.0.65 but not in 3.0.85'.
-	list := JadeiteSearch selectorsFrom: '*ize' session: session.
-	list do: [:symbol | self assert: ('*ize*' match: symbol)].
-	list := JadeiteSearch selectorsFrom: 'size' session: session.
-	list do: [:symbol | self assert: ('size*' match: symbol)].
-	list := JadeiteSearch selectorsFrom: 'siz*' session: session.
+	list := JadeiteSearch
+				selectorsFrom: '*ize'
+				session: session
+				trailingWildcard: false.
+	list do: [:symbol | self assert: ('*ize' match: symbol)].
+	list := JadeiteSearch
+				selectorsFrom: 'size'
+				session: session
+				trailingWildcard: false.
+	list do: [:symbol | self assert: ('size' match: symbol)].
+	list := JadeiteSearch
+				selectorsFrom: 'siz*'
+				session: session
+				trailingWildcard: false.
 	list do: [:symbol | self assert: ('siz*' match: symbol)]!
 
 test_transcriptNamedConsole

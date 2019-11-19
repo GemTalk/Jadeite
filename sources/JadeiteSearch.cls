@@ -16,6 +16,12 @@ allClassesStartingWith: string
 	displayNames := self class allClassNames select: [:className | className beginsWith: string].
 	^displayNames!
 
+autocompleteSymbolsFrom: partialSelector
+	^self class
+		selectorsFrom: partialSelector
+		session: session
+		trailingWildcard: true!
+
 completionListSortBlock
 	| crt |
 	crt := CRTLibrary default.
@@ -62,7 +68,7 @@ showCompletionList
 	start = 0 ifTrue: [^self].
 	prefix := view plainTextFrom: start to: stop.
 	searchList := (prefix first isLowercase or: [prefix first = $_])
-				ifTrue: [self symbolsFrom: prefix]
+				ifTrue: [self autocompleteSymbolsFrom: prefix]
 				ifFalse: [self allClassesStartingWith: prefix].
 	self showCompletionList: searchList prefixLength: prefix size!
 
@@ -84,9 +90,6 @@ sortForAutoCompletion: aCollection
 startAutocompleteTimer
 	view setTimer: SCI_AUTOCSHOW interval: 30!
 
-symbolsFrom: partialSelector
-	^self class selectorsFrom: partialSelector session: session!
-
 tokenStartAt: anInteger
 	^(view styleAt: anInteger) name == #specialCharacter
 		ifTrue: [anInteger]
@@ -104,6 +107,7 @@ view: aView
 
 	view := aView! !
 !JadeiteSearch categoriesFor: #allClassesStartingWith:!accessing!public! !
+!JadeiteSearch categoriesFor: #autocompleteSymbolsFrom:!accessing!public! !
 !JadeiteSearch categoriesFor: #completionListSortBlock!accessing!public! !
 !JadeiteSearch categoriesFor: #insertCompletion:at:!autocompletion!private! !
 !JadeiteSearch categoriesFor: #killAutocompleteTimer!autocompletion!private! !
@@ -115,7 +119,6 @@ view: aView
 !JadeiteSearch categoriesFor: #showCompletionList:prefixLength:!autocompletion!private! !
 !JadeiteSearch categoriesFor: #sortForAutoCompletion:!autocompletion!private! !
 !JadeiteSearch categoriesFor: #startAutocompleteTimer!autocompletion!private! !
-!JadeiteSearch categoriesFor: #symbolsFrom:!accessing!public! !
 !JadeiteSearch categoriesFor: #tokenStartAt:!autocompletion!private! !
 !JadeiteSearch categoriesFor: #view:!accessing!public! !
 
@@ -180,10 +183,11 @@ on: view session: session
 		view: view;
 		session: session!
 
-selectorsFrom: partialSelector session: session
+selectorsFrom: partialSelector session: session trailingWildcard: trailingWildCard
 	| symbol |
 	self allSelectorSymbols isEmpty ifTrue: [self initializeSelectorsIn: session].
-	symbol := (partialSelector , '*') asSymbol asLowercase.
+	symbol := partialSelector , (trailingWildCard ifTrue: ['*'] ifFalse: [String new]).
+	symbol := symbol asSymbol asLowercase.
 	^self allSelectorSymbols select: [:selector | symbol match: selector asLowercase]!
 
 updateAutocompleteSymbolsIn: session
@@ -203,6 +207,6 @@ updateAutocompleteSymbolsIn: session
 !JadeiteSearch class categoriesFor: #initializeClassNamesIn:!public!utilities! !
 !JadeiteSearch class categoriesFor: #initializeSelectorsIn:!public!utilities! !
 !JadeiteSearch class categoriesFor: #on:session:!instance creation!public! !
-!JadeiteSearch class categoriesFor: #selectorsFrom:session:!accessing!public! !
+!JadeiteSearch class categoriesFor: #selectorsFrom:session:trailingWildcard:!accessing!public! !
 !JadeiteSearch class categoriesFor: #updateAutocompleteSymbolsIn:!public!utilities! !
 

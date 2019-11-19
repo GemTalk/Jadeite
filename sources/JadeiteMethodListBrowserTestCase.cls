@@ -1045,7 +1045,10 @@ test_symbolsInitialized
 	self testsIssue: #issue631
 		withTitle: '(3.0.87) Implementors selection with wildcard displays blank window'.
 	JadeiteSearch allSelectorSymbols: nil.
-	symbols := JadeiteSearch selectorsFrom: 'siz*' session: session.	"sent in JadePresenter class>>promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:"
+	symbols := JadeiteSearch
+				selectorsFrom: 'siz*'
+				session: session
+				trailingWildcard: true.	"sent in JadePresenter class>>promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:"
 	symbols do: [:symbol | self assert: (symbol beginsWith: 'siz')].
 	JadeiteSearch allClassNames: nil.
 	symbols := (JadeiteSearch on: View new session: session) allClassesStartingWith: 'Rowan*'.

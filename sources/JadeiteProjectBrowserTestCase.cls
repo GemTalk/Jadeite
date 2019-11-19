@@ -4335,13 +4335,13 @@ test_symbolsLowerCaseMatch
 	| symbols search |
 	self testsIssue: #issue636 withTitle: 'make autocomplete case insensitive'.
 	search := JadeiteSearch new.
-	symbols := search symbolsFrom: 'FOO'.
+	symbols := search autocompleteSymbolsFrom: 'FOO'.
 	self assert: (symbols includes: #foo).
-	symbols := search symbolsFrom: 'FO'.
+	symbols := search autocompleteSymbolsFrom: 'FO'.
 	self assert: (symbols includes: #foo).
-	symbols := search symbolsFrom: 'foo'.
+	symbols := search autocompleteSymbolsFrom: 'foo'.
 	self assert: (symbols includes: #foo).
-	symbols := search symbolsFrom: 'fo'.
+	symbols := search autocompleteSymbolsFrom: 'fo'.
 	self assert: (symbols includes: #foo)!
 
 test_symbolsWithoutImplementorsFound
@@ -4354,7 +4354,7 @@ test_symbolsWithoutImplementorsFound
 	self selectRowanSample1Class.
 	self saveMethodWithUnimplementedSelector.
 	self commitTransaction.
-	symbols := search symbolsFrom: 'fnoodley1'.
+	symbols := search autocompleteSymbolsFrom: 'fnoodley1'.
 	self assert: symbols size equals: 1.
 	self assert: symbols first = #fnoodley1!
 
