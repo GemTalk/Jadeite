@@ -1961,19 +1961,19 @@ x := 1 -> 2.
 x yourself';
 		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
 		assert: indicator range = (12 to: 15);
-		assert: indicator styleName = #stepPoint;
+		assert: indicator styleName equals: #stepPoint;
 		assert: indicator tag = 'step point #2';
 
 		debuggerDo: [debugger methodSourcePresenter setBreakPointAt: 2 in: debugger];
 		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
 		assert: indicator range = (12 to: 15);
-		assert: indicator styleName = #disabledBreakPoint;
+		assert: indicator styleName equals:  #breakPoint;
 		assert: indicator tag = 'Break at step point #2';
 
 		debuggerDo: [debugger methodSourcePresenter clearBreakPointAt: 2 in: debugger];
 		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
 		assert: indicator range = (12 to: 15);
-		assert: indicator styleName =  #stepPoint;
+		assert: indicator styleName equals:  #stepPoint;
 		assert: indicator tag = 'step point #2';
 
 		debuggerDo: [debugger resumeProcess];
