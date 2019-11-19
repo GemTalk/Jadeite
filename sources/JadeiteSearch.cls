@@ -19,7 +19,7 @@ allClassesStartingWith: string
 completionListSortBlock
 	| crt |
 	crt := CRTLibrary default.
-	^[:a :b | (crt strcmp: a displayString string2: b displayString) <= 0]!
+	^[:a :b | a size <= b size]!
 
 insertCompletion: string at: anInteger
 	| index |
@@ -71,10 +71,15 @@ showCompletionList: aCollection prefixLength: anInteger
 		ifTrue: 
 			["Don't display a list of one item that is the same as the prefix"
 			^self].
+	view isAutoCompletionCaseInsensitive: 1.
+	view sciAutoCSetCaseInsensitiveBehaviour: 1.
 	view
-		showAutoCompletionList: (aCollection asSortedCollection: self completionListSortBlock)
+		showAutoCompletionList: (self sortForAutoCompletion: aCollection)
 		prefixLength: anInteger
 		withIcons: false!
+
+sortForAutoCompletion: aCollection
+	^aCollection asSortedCollection: self completionListSortBlock!
 
 startAutocompleteTimer
 	view setTimer: SCI_AUTOCSHOW interval: 30!
@@ -108,6 +113,7 @@ view: aView
 !JadeiteSearch categoriesFor: #session:!accessing!public! !
 !JadeiteSearch categoriesFor: #showCompletionList!autocompletion!private! !
 !JadeiteSearch categoriesFor: #showCompletionList:prefixLength:!autocompletion!private! !
+!JadeiteSearch categoriesFor: #sortForAutoCompletion:!autocompletion!private! !
 !JadeiteSearch categoriesFor: #startAutocompleteTimer!autocompletion!private! !
 !JadeiteSearch categoriesFor: #symbolsFrom:!accessing!public! !
 !JadeiteSearch categoriesFor: #tokenStartAt:!autocompletion!private! !

@@ -144,6 +144,14 @@ test_autoCommitUpdatedInSession
 	self deny: session autoCommit]
 			ensure: [self setAutoCommit: autoCommit]!
 
+test_autocompleteSort
+	"shortest first"
+
+	| search |
+	search := JadeiteSearch new.
+	self assert: (search sortForAutoCompletion: #('aaaaa' 'bbbb' 'ccc' 'dd')) asArray
+		equals: #('dd' 'ccc' 'bbbb' 'aaaaa')!
+
 test_convertToPattern
 	| pattern |
 	self testsIssue: #issue258
@@ -599,6 +607,7 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocDisplay!auto commit!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocExecution!auto commit!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitUpdatedInSession!auto commit!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSort!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_convertToPattern!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_findInWorkspace!public!test! !
