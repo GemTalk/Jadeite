@@ -51,7 +51,7 @@ defaultIndicatorStyles
 					name: #breakPoint;
 					yourself);
 		add: (ScintillaIndicatorStyle new
-					forecolor: Color darkGray;
+					forecolor: Color gray;
 					styleName: #underline;
 					name: #stepPoint;
 					yourself);
