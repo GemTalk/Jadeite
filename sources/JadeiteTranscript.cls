@@ -64,13 +64,14 @@ browseJadeitePrefs
 	"Open Jadeite.prefs in the working directory"
 
 	| path file setDefaultPrefs fileStream |
-	path := File workingDirectory , JadeitePreferences preferencesFile.
+	path := SessionManager current imageBase , JadeitePreferences preferencesFile.
 	setDefaultPrefs := false.
 	(File exists: path)
 		ifFalse: 
-			[(MessageBox confirm: 'Jadeite.prefs does not exist in ' , File workingDirectory , '. Create it?')
-				ifTrue: [setDefaultPrefs := true]
-				ifFalse: [^self]].
+			[(MessageBox
+				confirm: 'Jadeite.prefs does not exist in ' , SessionManager current imageBase , '. Create it?')
+					ifTrue: [setDefaultPrefs := true]
+					ifFalse: [^self]].
 	file := File
 				open: path
 				mode: #open

@@ -39,13 +39,13 @@ restoreBackupPrefsFile: prefsExisted
 	| backupStream fileStream backupPath |
 	prefsExisted
 		ifFalse: 
-			[(File open: File workingDirectory , 'Jadeite.prefs')
+			[(File open: SessionManager current imageBase , 'Jadeite.prefs')
 				close;
 				delete].
-	backupPath := File workingDirectory , 'Jadeite.prefs.testbkp'.
+	backupPath := SessionManager current imageBase , 'Jadeite.prefs.testbkp'.
 	(File exists: backupPath) ifFalse: [^self].
-	backupStream := FileStream read: File workingDirectory , 'Jadeite.prefs.testbkp'.
-	fileStream := FileStream write: File workingDirectory , 'Jadeite.prefs'.
+	backupStream := FileStream read: SessionManager current imageBase , 'Jadeite.prefs.testbkp'.
+	fileStream := FileStream write: SessionManager current imageBase , 'Jadeite.prefs'.
 	[fileStream nextPutAll: backupStream contents] ensure: 
 			[backupStream close.
 			(File open: backupPath) delete.
@@ -53,8 +53,8 @@ restoreBackupPrefsFile: prefsExisted
 
 savePrefsBackup
 	| backupStream fileStream |
-	backupStream := FileStream write: File workingDirectory , 'Jadeite.prefs.testbkp'.
-	fileStream := FileStream read: File workingDirectory , 'Jadeite.prefs'.
+	backupStream := FileStream write: SessionManager current imageBase , 'Jadeite.prefs.testbkp'.
+	fileStream := FileStream read: SessionManager current imageBase , 'Jadeite.prefs'.
 	[backupStream nextPutAll: fileStream contents] ensure: 
 			[backupStream close.
 			fileStream close]!
@@ -544,7 +544,7 @@ test_openPreferencesFile
 test_openPreferencesFileCreatePrefsFile
 	| prefsWorkspace prefsItem path prefsExists |
 	self testsIssue: #issue522 withTitle: 'hook to open desired set of windows at startup'.
-	path := File workingDirectory , 'Jadeite.prefs'.
+	path := SessionManager current imageBase , 'Jadeite.prefs'.
 	prefsExists := File exists: path.
 	prefsExists
 		ifTrue: 
@@ -642,9 +642,9 @@ test_selectorsList
 	self testsIssue: #issue615
 		withTitle: 'Leading * in find implementors... worked in 3.0.65 but not in 3.0.85'.
 	list := JadeiteSearch selectorsFrom: '*ize' session: session.
-	list do: [:symbol | self assert: ('*ize' match: symbol)].
+	list do: [:symbol | self assert: ('*ize*' match: symbol)].
 	list := JadeiteSearch selectorsFrom: 'size' session: session.
-	list do: [:symbol | self assert: symbol equals: #size].
+	list do: [:symbol | self assert: ('size*' match: symbol)].
 	list := JadeiteSearch selectorsFrom: 'siz*' session: session.
 	list do: [:symbol | self assert: ('siz*' match: symbol)]!
 
@@ -666,7 +666,7 @@ test_transcriptNamedConsole
 
 writeToPrefsFile: string
 	| fileStream |
-	fileStream := FileStream read: File workingDirectory , 'Jadeite.prefs'.
+	fileStream := FileStream read: SessionManager current imageBase , 'Jadeite.prefs'.
 	[fileStream nextPutAll: string] ensure: [fileStream close]! !
 !JadeiteTranscriptTestCase categoriesFor: #allTranscriptPresenters!private!support! !
 !JadeiteTranscriptTestCase categoriesFor: #browseMenu!private!support!tests! !

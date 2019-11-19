@@ -146,6 +146,35 @@ test_preferencesOpenBrowsers
 	self assert: browser currentCard classListPresenter selection name equals: 'RowanAnsweringService']
 			ensure: [browser view close]!
 
+test_preferencesOpenCorrectWorkspaceFiles
+	"make sure to open the correct file if two are present 
+	in subdirectories"
+
+	| prefs file1 file2 |
+	self testsIssue: #issue632
+		withTitle: '(3.0.87) Opening workspace from Jadeite.prefs doesn''t work on first login'.
+	prefs := JadeitePreferences new session: session.
+	File createDirectory: 'operations'.
+	file1 := File
+				open: 'testws1.gs'
+				mode: #create
+				check: false.
+	[file1 write: 'testws1.gs'] ensure: [file1 close].
+	file2 := File
+				open: 'operations\testws1.gs'
+				mode: #create
+				check: false.
+	[file2 write: 'operations\testws1.gs'] ensure: [file2 close].
+	workspace := prefs openWorkspace: 'testws1.gs'.
+	[self assert: workspace codePane documentPresenter value equals: 'testws1.gs']
+		ensure: [workspace view close].
+	workspace := prefs openWorkspace: 'operations\testws1.gs'.
+	[self assert: workspace codePane documentPresenter value equals: 'operations\testws1.gs'] ensure: 
+			[workspace view close.
+			file1 delete.
+			file2 delete.
+			File deleteDirectory: 'operations']!
+
 test_preferencesOpenWorkspace
 	| prefs |
 	prefs := JadeitePreferences new session: session.
@@ -154,6 +183,8 @@ test_preferencesOpenWorkspace
 
 test_preferencesOpenWorkspaceFiles
 	| prefs file |
+	self testsIssue: #issue632
+		withTitle: '(3.0.87) Opening workspace from Jadeite.prefs doesn''t work on first login'.
 	prefs := JadeitePreferences new session: session.
 	file := File
 				open: 'testPrefWorkspace.gs'
@@ -233,6 +264,7 @@ test_validPreferences
 !JadeitePreferencesTestCase categoriesFor: #test_loggingEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesHandlesBlanks!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesOpenBrowsers!public!tests! !
+!JadeitePreferencesTestCase categoriesFor: #test_preferencesOpenCorrectWorkspaceFiles!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesOpenWorkspace!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesOpenWorkspaceFiles!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesSettingTranscript!public!tests! !

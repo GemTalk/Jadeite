@@ -4336,13 +4336,11 @@ test_symbolsLowerCaseMatch
 	self testsIssue: #issue636 withTitle: 'make autocomplete case insensitive'.
 	search := JadeiteSearch new.
 	symbols := search symbolsFrom: 'FOO'.
-	self assert: symbols size equals: 1.
-	self assert: symbols first = #foo.
+	self assert: (symbols includes: #foo).
 	symbols := search symbolsFrom: 'FO'.
 	self assert: (symbols includes: #foo).
 	symbols := search symbolsFrom: 'foo'.
-	self assert: symbols size equals: 1.
-	self assert: symbols first = #foo.
+	self assert: (symbols includes: #foo).
 	symbols := search symbolsFrom: 'fo'.
 	self assert: (symbols includes: #foo)!
 
