@@ -759,6 +759,13 @@ test_compileErrorDisplayGoesAway
 	self deny: (methodListBrowser view viewNamed: 'statusBarField') backcolor equals: Color red faded.
 	self assert: (methodListBrowser view viewNamed: 'statusBarField') model value equals: String new!
 
+test_createUnicodeSymbolThenLoadSymbols
+	session executeString: 'RowanServicesTest new addUnicodeSymbolKeyToUserGlobals'.
+	JadeiteSearch initializeAutocompleteSymbolsIn: session.	"this likely would have errored"
+	methodListBrowser := JadePresenter browseImplementorsOf: #size session: session.
+	self methodListMethodListPresenter list
+		do: [:methodService | self assert: methodService selector equals: #size]!
+
 test_doSearch
 	"browse literal references on the server doesn't always work - 
 	perhaps because of optimized selectors? 
@@ -1214,6 +1221,7 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabSuperclass!public!test comparison tab! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_compileErrorDisplay!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_compileErrorDisplayGoesAway!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_createUnicodeSymbolThenLoadSymbols!public! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doSearch!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionClassMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionInstanceMethod!public!tests! !

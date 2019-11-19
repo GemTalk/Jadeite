@@ -179,6 +179,15 @@ getDocumentData
 	^self model asXML.
 !
 
+invalidateLoginButton
+	"fake up a query to ensure the button gets enabled without user action"
+
+	| buttonView query |
+	buttonView := loginButtonPresenter view.
+	query := buttonView commandSource queryCommandRouteFor: buttonView commandDescription.
+	self queryCommand: query.
+	buttonView invalidate!
+
 isModified
 
 	^isModified.
@@ -272,8 +281,8 @@ postLogin: aGciSession
 	self setWorkingDirectory.
 	aGciSession
 		when: #logout
-		send: #invalidate
-		to: loginButtonPresenter view!
+		send: #invalidateLoginButton
+		to: self!
 
 queryCommand: query
 	query commandSymbol = #login
@@ -422,6 +431,7 @@ userIDPresenter
 !JadeLoginShell categoriesFor: #fillVersionList!public! !
 !JadeLoginShell categoriesFor: #gemTaskPresenter:!public! !
 !JadeLoginShell categoriesFor: #getDocumentData!accessing!public! !
+!JadeLoginShell categoriesFor: #invalidateLoginButton!displaying!public! !
 !JadeLoginShell categoriesFor: #isModified!public! !
 !JadeLoginShell categoriesFor: #isModified:!public! !
 !JadeLoginShell categoriesFor: #isText!public!testing! !
