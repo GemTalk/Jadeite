@@ -33,6 +33,13 @@ debug
 			methodService setPassed].
 	methodListPresenter view invalidate!
 
+doesNotUnderstand: failedMessage
+	"a little dangerous but this is the sunit tab in the browser. The parentPresenter
+	performs most of the menu operations for the browser's toolbar. A true dnu
+	should get caught in the parent also"
+
+	^parentPresenter perform: failedMessage asSymbol!
+
 editFind
 
 	"do nothing"!
@@ -150,6 +157,7 @@ selectedClass
 !JadeiteSUnitInClassPresenter categoriesFor: #browseIt!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #closeCard!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #debug!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #doesNotUnderstand:!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #editFind!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #editReplace!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #editSave!menu handlers support!public! !
