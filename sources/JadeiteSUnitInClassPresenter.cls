@@ -14,6 +14,10 @@ addSystemBrowser
 
 	^parentPresenter addSystemBrowser!
 
+browseClassReferences
+
+	^parentPresenter browseClassReferences!
+
 browseIt 
 	^self debug!
 
@@ -38,7 +42,7 @@ doesNotUnderstand: failedMessage
 	performs most of the menu operations for the browser's toolbar. A true dnu
 	should get caught in the parent also"
 
-	^parentPresenter perform: failedMessage selector withArguments: failedMessage arguments!
+	^failedMessage forwardTo: parentPresenter!
 
 editFind
 
@@ -154,6 +158,7 @@ runSelected
 selectedClass
 	^self parentPresenter selectedClass! !
 !JadeiteSUnitInClassPresenter categoriesFor: #addSystemBrowser!menu handlers support!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #browseClassReferences!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #browseIt!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #closeCard!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #debug!public! !
