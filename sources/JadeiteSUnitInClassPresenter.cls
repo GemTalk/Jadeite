@@ -38,7 +38,7 @@ doesNotUnderstand: failedMessage
 	performs most of the menu operations for the browser's toolbar. A true dnu
 	should get caught in the parent also"
 
-	^parentPresenter perform: failedMessage asSymbol!
+	^parentPresenter perform: failedMessage selector withArguments: failedMessage arguments!
 
 editFind
 
