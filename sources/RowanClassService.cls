@@ -27,7 +27,7 @@ addHierarchyService: service to: treeModel withParent: parentService
 				to: treeModel
 				withParent: service].
 	service hierarchyServices ifNil:[^self].
-	(service hierarchyServices at: service ifAbsent: [^self]) do: 
+	(service hierarchyServices at: #expand ifAbsent: [^self]) do: 
 			[:classService |
 			self
 				addHierarchyService: classService
@@ -103,7 +103,7 @@ classHierarchyUpdate: presenter browser: browser
 	treeModel asBag
 		do: [:classService | classService selectedPackageServices: browser packageListPresenter selections browser: browser].
 	presenter model: treeModel.
-	presenter view updateMode: #lazy.	"faster for big tree building"
+	presenter view updateMode: #lazy.	"for big hierarchies, faster display" 
 	presenter view disableRedraw.
 	[presenter view expandAll] ensure: [presenter view enableRedraw].
 	presenter selectionIfNone: [^presenter view ensureItemVisible: treeModel roots first].
