@@ -301,11 +301,13 @@ classesMenuStrings
 				removePriorVersions;
 				showSUnitBrowserOnClass].
 	definedLabel := self definedClassMenuItemLabel.
-	containedDictionaryLabel := self containedDictionaryLabel. 
+	containedDictionaryLabel := self containedDictionaryLabel.
 	menuStrings := #('&Classes' '&Browse Class References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' '&File Out Class//fileOutClass' 'Add &Subclass//addSubclass' '&Rename ... //renameClass' 'Copy ...//copyClass' '&Remove//removeClass' '-')
 				asOrderedCollection.
+	menuStrings add: '&Expand Full Hierarchy//expandFullHierarchy'.
+	menuStrings add: '-'.
 	menuStrings addLast: definedLabel , '//gotoClassDefinedPackage'.
-	menuStrings addLast: containedDictionaryLabel, '//gotoDictionary'. 
+	menuStrings addLast: containedDictionaryLabel , '//gotoDictionary'.
 	^menuStrings!
 
 classHierarchyTabs
@@ -699,11 +701,8 @@ editSaveMethod
 	self updateSUnitTab.
 	self redrawAllViews!
 
-expandHierarchyAt: classService
-	Cursor wait showWhile: 
-			[classService command: #oneLevelClassHierarchy.
-			self issueCommand: (Array with: classService).
-			self selectClassNamed: classService name]!
+expandHierarchyOneLevelAt: classService
+	self expandFullAt: classService!
 
 fileOutCategories
 	| path suggestedFileName classSide |
@@ -942,8 +941,7 @@ hasExactlyOneCategorySelected
 	^categoryListPresenter selections size = 1!
 
 hierarchyClassDoubleClicked
-
-	self expandHierarchyAt: classHierarchyPresenter selection!
+	self expandHierarchyOneLevelAt: classHierarchyPresenter selection!
 
 initialize
 	super initialize.
@@ -2400,7 +2398,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #editSaveClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editSaveClassComment!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editSaveMethod!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #expandHierarchyAt:!event handlers!public!updating! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #expandHierarchyOneLevelAt:!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #fileOutCategories!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #fileOutCategoriesOnPath:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #fileOutClass!menu handlers!public! !

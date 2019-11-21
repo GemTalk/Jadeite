@@ -20,7 +20,14 @@ constant methods for performance.
 
 addHierarchyService: service to: treeModel withParent: parentService
 	treeModel getNodeFor: service ifAbsent: [treeModel add: service asChildOf: parentService].
-	(hierarchyServices at: service ifAbsent: [^self]) do: 
+	(hierarchyServices at: service ifAbsent: [Array new]) do: 
+			[:classService |
+			self
+				addHierarchyService: classService
+				to: treeModel
+				withParent: service].
+	service hierarchyServices ifNil:[^self].
+	(service hierarchyServices at: service ifAbsent: [^self]) do: 
 			[:classService |
 			self
 				addHierarchyService: classService
@@ -57,7 +64,12 @@ classHierarchyUpdate: presenter browser: browser
 	| treeModel subclasses parent |
 	hierarchyServices ifNil: [^self].
 	browser isClassListTabSelected ifTrue: [^self].
-	browser classListPresenter selectionOrNil = self ifFalse:[^self]. 
+	(browser isNoneProjectSelected not and: [browser packageListPresenter selections isEmpty])
+		ifTrue: [^self].
+	(browser isNoneProjectSelected and: [browser dictionaryPresenter selections isEmpty])
+		ifTrue: [^self].
+	(browser classHierarchyPresenter model notEmpty
+		and: [(browser classHierarchyPresenter model includes: self) not]) ifTrue: [^self].
 	presenter selections notEmpty ifTrue: [(presenter selections includes: self) ifFalse: [^self]].
 	treeModel := TreeModel new
 				searchPolicy: SearchPolicy equality;
@@ -78,8 +90,8 @@ classHierarchyUpdate: presenter browser: browser
 					node := treeModel getNodeFor: classService ifAbsent: [].
 					node
 						ifNotNil: 
-							[treeModel remove: classService ifAbsent: [].
-							subs at: index put: node object]].
+							[treeModel remove: node object ifAbsent: [].
+							subs at: index put: classService]].
 			subclasses := subs].
 	subclasses do: 
 			[:classService |
@@ -209,6 +221,12 @@ hierarchyClassServices
 			classes add: anchor.
 			chain do: [:service | classes add: service]].
 	^classes reject:[:service | service == #nil]. !
+
+hierarchyServices
+	^hierarchyServices!
+
+hierarchyServices: anObject
+	hierarchyServices := anObject!
 
 indexOfMetaInstVar
 	"performance enhancement"
@@ -571,6 +589,8 @@ wasRenamed
 !RowanClassService categoriesFor: #hash!comparing!public! !
 !RowanClassService categoriesFor: #hierarchyClassServiceNames!public! !
 !RowanClassService categoriesFor: #hierarchyClassServices!public! !
+!RowanClassService categoriesFor: #hierarchyServices!accessing!private! !
+!RowanClassService categoriesFor: #hierarchyServices:!accessing!private! !
 !RowanClassService categoriesFor: #indexOfMetaInstVar!constants!public! !
 !RowanClassService categoriesFor: #indexOfMethodsInstVar!constants!public! !
 !RowanClassService categoriesFor: #initialize!Init / Release!public! !

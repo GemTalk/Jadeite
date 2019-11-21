@@ -211,6 +211,29 @@ classCommentChanged
 				isModified: true;
 				yourself]!
 
+classesMenuStrings
+	| definedLabel containedDictionaryLabel menuStrings |
+	false
+		ifTrue: 
+			[self
+				browseClassReferences;
+				fileOutClass;
+				addSubclass;
+				copyClass;
+				renameClass;
+				removeClass;
+				removePriorVersions;
+				showSUnitBrowserOnClass].
+	definedLabel := self definedClassMenuItemLabel.
+	containedDictionaryLabel := self containedDictionaryLabel.
+	menuStrings := #('&Classes' '&Browse Class References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' '&File Out Class//fileOutClass' 'Add &Subclass//addSubclass' '&Rename ... //renameClass' 'Copy ...//copyClass' '&Remove//removeClass' '-')
+				asOrderedCollection.
+	menuStrings add: '&Expand Full Hierarchy//expandFullHierarchy'.
+	menuStrings add: '-'.
+	menuStrings addLast: definedLabel , '//gotoClassDefinedPackage'.
+	menuStrings addLast: containedDictionaryLabel , '//gotoDictionary'.
+	^menuStrings!
+
 comparisonPresenter
 
 	^comparisonPresenter!
@@ -362,6 +385,16 @@ editSaveMethod: classService
 					["there will be no method selected on a compiler error"
 					self selectMethodsFrom: classService]]!
 
+expandFullAt: classService
+	Cursor wait showWhile: 
+			[classService command: #fullHierarchy.
+			self issueCommand: (Array with: classService).
+			self selectClassNamed: classService name.
+			classHierarchyPresenter view expandAll]!
+
+expandFullHierarchy
+	self expandFullAt: self selectedClass!
+
 globalsMenu
 	^Menu fromStrings: self globalsMenuStrings!
 
@@ -485,7 +518,7 @@ queryCommand: aCommandQuery
 			^true].
 	#gotoDictionary = command
 		ifTrue: 
-			[self updateClassMenu: nil. 
+			[self updateClassMenu: nil.
 			self selectedClass
 				ifNil: 
 					[aCommandQuery isEnabled: false.
@@ -495,10 +528,14 @@ queryCommand: aCommandQuery
 					[aCommandQuery isEnabled: false.
 					^true].
 			aCommandQuery isEnabled: true.
-				^true].
+			^true].
 	(#(#browseInstVarReaders #browseInstVarWriters) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: self variableListPresenter selections size = 1.
+			^true].
+	#expandFullHierarchy = command
+		ifTrue: 
+			[aCommandQuery isEnabled: self isClassListTabSelected not.
 			^true].
 	^super queryCommand: aCommandQuery!
 
@@ -902,6 +939,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #buildGlobalsTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #buildProjectTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #classCommentChanged!event handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #classesMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #comparisonPresenter!accessing!public! !
 !JadeiteBrowserPresenter categoriesFor: #contextObject!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
@@ -916,6 +954,8 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #displayVariable:!displaying!private! !
 !JadeiteBrowserPresenter categoriesFor: #editSaveClass!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #editSaveMethod:!menu handlers support!private! !
+!JadeiteBrowserPresenter categoriesFor: #expandFullAt:!menu handlers support!private!updating! !
+!JadeiteBrowserPresenter categoriesFor: #expandFullHierarchy!menu handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #globalsMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #globalsMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #globalsTab!accessing!private! !

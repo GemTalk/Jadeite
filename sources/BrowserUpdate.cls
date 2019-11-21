@@ -243,7 +243,7 @@ update: services afterStonReplication: stonResults
 
 	| updatedServices |
 	self initializeUpdates.
-	updatedServices := STON fromString: stonResults.
+	updatedServices := STON fromString: stonResults. 
 	logger loggingService replicateFrom: updatedServices last.
 	updatedServices := updatedServices copyWithout: updatedServices last.
 	self logReceivedServices: updatedServices.
