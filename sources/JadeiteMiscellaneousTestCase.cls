@@ -144,6 +144,41 @@ test_autoCommitUpdatedInSession
 	self deny: session autoCommit]
 			ensure: [self setAutoCommit: autoCommit]!
 
+test_autocompleteSaveClassSymbolAdded
+	self testsIssue: #issue647 withTitle: 'Adding class doesn''t update autocomplete symbols'.
+	self openProjectBrowser.
+	JadeiteSearch initializeAutocompleteSymbolsIn: session.
+	JadeiteSearch autoCompleteEnabled: true.
+	self deny: (JadeiteSearch allClassNames includes: #TestCacheSaveClassName).
+	self selectRowanSample1Test.
+	self
+		saveClass: 'TestCacheSaveClassName'
+		superclass: 'Object'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	[self assert: (JadeiteSearch allClassNames includes: 'TestCacheSaveClassName')] ensure: 
+			[self assert: self projectsPresenter selectedClass name equals: 'TestCacheSaveClassName'.
+			self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
+			JadeiteSearch allClassNames remove: 'TestCacheSaveClassName'.	"for test reruns"
+			projectsBrowser view close.
+			projectsBrowser := nil]!
+
+test_autocompleteSaveMethodSymbolAdded
+	self openProjectBrowser.
+	JadeiteSearch initializeAutocompleteSymbolsIn: session.
+	JadeiteSearch autoCompleteEnabled: true.
+	self deny: (JadeiteSearch allSelectorSymbols includes: #test_autocompleteSaveMethodSymbolAdded).
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'test_autocompleteSaveMethodSymbolAdded  ^''temp method to delete'''
+		in: 'RowanSample1Test'
+		category: 'other'.
+	[self assert: (JadeiteSearch allSelectorSymbols includes: #test_autocompleteSaveMethodSymbolAdded)]
+		ensure: 
+			[JadeiteSearch allSelectorSymbols remove: #test_autocompleteSaveMethodSymbolAdded.	"for test reruns"
+			projectsBrowser view close.
+			projectsBrowser := nil]!
+
 test_autocompleteSort
 	"shortest first"
 
@@ -607,6 +642,8 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocDisplay!auto commit!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocExecution!auto commit!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitUpdatedInSession!auto commit!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSaveClassSymbolAdded!public!test methods! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSaveMethodSymbolAdded!public!test methods! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSort!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_convertToPattern!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
