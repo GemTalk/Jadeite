@@ -863,6 +863,29 @@ test_browseClass
 	[self assert: ('String*' match: dictionaryPresenter selectedClassName)]
 		ensure: [self destroy: dictionaryPresenter topShell]!
 
+test_browseClassReferencesFromClassesMenu
+	"run from classes menu per bug #640"
+
+	| classesMenu browseReferencesMenuItem |
+	self testsIssue: #issue640 withTitle: 'Error dialogs from PB menu items when on Sunit tab'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self projectsPresenter isHierarchyTabSelected
+		ifTrue: 
+			[self selectTreeServicesNamed: (Array with: 'RowanClassService') in: self classHierarchyPresenter]
+		ifFalse: [self selectServiceNamed: 'RowanClassService' in: self classListPresenter].
+	classesMenu := projectsBrowser topShell view menuBar items
+				detect: [:item | '*Classes*' match: item text].
+	browseReferencesMenuItem := classesMenu items
+				detect: [:item | '*Browse Class References*' match: item text].
+	self selectSUnitTab.	"must be selected for bug to occur"
+	methodListBrowser := browseReferencesMenuItem commandDescription
+				performAgainst: self projectsPresenter.
+	self
+		assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list notEmpty.
+	methodListBrowser primaryPresenter methodListPresenter methodListPresenter list
+		do: [:methodService | self assert: ('*RowanClassService*' match: methodService source)]!
+
 test_browseHierarchyImplementorsEnablement
 	| commandQuery |
 	self testsIssue: #issue399
@@ -3975,6 +3998,35 @@ test_renameClassMethodListUpdates
 				className
 		equals: 'TestClassWasRenamed'!
 
+test_renameClassMethodListUpdatesFromClassesMenu
+	"run from classes menu per bug #640"
+
+	| classesMenu renameMenuItem |
+	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
+	self testsIssue: #issue465 withTitle: '(3.067) error after rename class in hierarchy view'.
+	self testsIssue: #issue640 withTitle: 'Error dialogs from PB menu items when on Sunit tab'.
+	self selectRowanSample1Test.
+	methodListBrowser := JadePresenter browseImplementorsOf: 'test1' session: session.
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list size
+		equals: 1.
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list first
+				className
+		equals: 'RowanSample1Test'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestPrompter plannedResult: 'TestClassWasRenamed'.
+	classesMenu := projectsBrowser topShell view menuBar items
+				detect: [:item | '*Classes*' match: item text].
+	renameMenuItem := classesMenu items detect: [:item | '*Rename*' match: item text].
+	self selectSUnitTab.	"must be selected for bug to occur"
+	renameMenuItem commandDescription performAgainst: self projectsPresenter.
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list size
+		equals: 1.
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list first
+				className
+		equals: 'TestClassWasRenamed']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_renameClassShowsAsDefiniedInPackage
 	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
 	self testsIssue: #issue465 withTitle: '(3.067) error after rename class in hierarchy view'.
@@ -5341,6 +5393,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_blankCategoryRenameInvalid!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_browseClassReferencesFromClassesMenu!public!test rename class! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseHierarchyImplementorsEnablement!public!test menus!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseHierarchySendersEnablement!public!test menus!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseImplementorsEnablement!public!test menus!tests! !
@@ -5486,6 +5539,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameCategory!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameClassMethodListUpdates!public!test rename class! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_renameClassMethodListUpdatesFromClassesMenu!public!test rename class! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameClassShowsAsDefiniedInPackage!public!test rename class! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameClassSUnitBrowserUpdates!public!test rename class! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameClassSwitchToHierarchyOk!public!test rename class! !
