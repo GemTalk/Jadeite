@@ -335,6 +335,30 @@ test_firstClickDictionaries
 	self selectNoneProject.
 	self assert: self dictionaryPresenter list notEmpty!
 
+test_fullHierarchyExpansion
+	| hierarchyClassNames |
+	self selectNoneProject.
+	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
+	self selectClassListTab. 
+	self selectServiceNamed: 'AbstractException' in: self classListPresenter.
+	self selectHierarchyTab.
+	hierarchyClassNames := self classHierarchyPresenter model asArray
+				collect: [:classService | classService name].
+	self assert: hierarchyClassNames
+		equals: #('Object' 'AbstractException' 'Exception' 'RubyBreakException' 'RubyThrowException').
+	self selectClassInHierarchyNamed: 'AbstractException'.
+	self projectsPresenter expandFullHierarchy.
+	hierarchyClassNames := self classHierarchyPresenter model asArray do: 
+					[:classService |
+					self assert: (session
+								executeString: '
+							| hierarchy |
+							hierarchy := (AbstractException allSuperclasses collect: [:cls | cls name]) asArray. 
+							hierarchy add: #AbstractException. 
+							hierarchy addAll: (AbstractException allSubclasses collect: [:cls | cls name]) asArray. 
+							hierarchy includes: '
+										, classService name asSymbol printString)]!
+
 test_globalRemove
 	| removeGlobalItem selection |
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
@@ -1038,6 +1062,7 @@ test_unicodeValueInUserGlobals
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_dictionaryWithoutClassHasClassTemplate!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_findClassNotInProject!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_firstClickDictionaries!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_fullHierarchyExpansion!public!test class hierarchy! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_globalRemove!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_globalsBrowseClassMenuItem!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_globalsBrowseReferencesMenuItem!public!test issue 217! !
