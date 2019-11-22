@@ -337,6 +337,7 @@ test_firstClickDictionaries
 
 test_fullHierarchyExpansion
 	| hierarchyClassNames |
+	self testsIssue: #issue640 withTitle: 'Double click no longer expands hierarchy view'.
 	self selectNoneProject.
 	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
 	self selectClassListTab. 

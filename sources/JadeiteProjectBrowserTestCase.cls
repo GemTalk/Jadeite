@@ -2590,6 +2590,7 @@ test_findUsedEverywhere
 
 test_fullHierarchyExpansion
 	| hierarchyClassNames |
+	self testsIssue: #issue640 withTitle: 'Double click no longer expands hierarchy view'.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
 	self selectClassListTab. 
@@ -2611,10 +2612,35 @@ test_fullHierarchyExpansion
 							hierarchy includes: '
 										, classService name asSymbol printString)]!
 
+test_fullHierarchyExpansionDoubleClock
+	| hierarchyClassNames |
+	self testsIssue: #issue640 withTitle: 'Double click no longer expands hierarchy view'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectClassListTab. 
+	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
+	self selectHierarchyTab.
+	hierarchyClassNames := self classHierarchyPresenter model asArray
+				collect: [:classService | classService name].
+	self assert: hierarchyClassNames equals: #('Object' 'RowanService' 'RowanClassService').
+	self selectClassInHierarchyNamed: 'RowanService'.
+	self classHierarchyPresenter trigger: #actionPerformed. "double click" 
+	hierarchyClassNames := self classHierarchyPresenter model asArray do: 
+					[:classService |
+					self assert: (session
+								executeString: '
+							| hierarchy |
+							hierarchy := (RowanService allSuperclasses collect: [:cls | cls name]) asArray. 
+							hierarchy add: #RowanService. 
+							hierarchy addAll: (RowanService allSubclasses collect: [:cls | cls name]) asArray. 
+							hierarchy includes: '
+										, classService name asSymbol printString)]!
+
 test_fullHierarchyExpansionManyLevels
 	"JadeServer has a subclass that's many levels deep"
 
 	| hierarchyClassNames |
+	self testsIssue: #issue640 withTitle: 'Double click no longer expands hierarchy view'.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-JadeServer' in: self packageListPresenter.
 	self selectClassListTab. 
@@ -2626,6 +2652,33 @@ test_fullHierarchyExpansionManyLevels
 		equals: #('Object' 'JadeServer' 'JadeServer64bit' 'JadeServer64bit24').
 	self selectClassInHierarchyNamed: 'JadeServer'.
 	self projectsPresenter expandFullHierarchy.
+	hierarchyClassNames := self classHierarchyPresenter model asArray do: 
+					[:classService |
+					self assert: (session
+								executeString: '
+							| hierarchy |
+							hierarchy := (JadeServer allSuperclasses collect: [:cls | cls name]) asArray. 
+							hierarchy add: #JadeServer. 
+							hierarchy addAll: (JadeServer allSubclasses collect: [:cls | cls name]) asArray. 
+							hierarchy includes: '
+										, classService name asSymbol printString)]!
+
+test_fullHierarchyExpansionManyLevelsDoubleClick
+	"JadeServer has a subclass that's many levels deep"
+
+	| hierarchyClassNames |
+	self testsIssue: #issue640 withTitle: 'Double click no longer expands hierarchy view'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-JadeServer' in: self packageListPresenter.
+	self selectClassListTab.
+	self selectServiceNamed: 'JadeServer64bit' in: self classListPresenter.
+	self selectHierarchyTab.
+	hierarchyClassNames := self classHierarchyPresenter model asArray
+				collect: [:classService | classService name].
+	self assert: hierarchyClassNames
+		equals: #('Object' 'JadeServer' 'JadeServer64bit' 'JadeServer64bit24').
+	self selectClassInHierarchyNamed: 'JadeServer'.
+	self classHierarchyPresenter trigger: #actionPerformed.	"double click"
 	hierarchyClassNames := self classHierarchyPresenter model asArray do: 
 					[:classService |
 					self assert: (session
@@ -5360,7 +5413,9 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodSUnitBrowser!public!test find!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_findUsedEverywhere!public!test find! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_fullHierarchyExpansion!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_fullHierarchyExpansionDoubleClock!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_fullHierarchyExpansionManyLevels!public!test class hierarchy! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_fullHierarchyExpansionManyLevelsDoubleClick!public!test class hierarchy! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_getClassCommentWithDeprecationsOn!public!test class list!test deprecated!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gitBranchesDoesNotShowHead!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package!tests! !
