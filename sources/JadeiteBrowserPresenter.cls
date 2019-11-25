@@ -226,7 +226,7 @@ classesMenuStrings
 				showSUnitBrowserOnClass].
 	definedLabel := self definedClassMenuItemLabel.
 	containedDictionaryLabel := self containedDictionaryLabel.
-	menuStrings := #('&Classes' '&Browse Class References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' '&File Out Class//fileOutClass' 'Add &Subclass//addSubclass'  'Copy ...//copyClass' '&Remove//removeClass' '-')
+	menuStrings := #('&Classes' '&Browse Class References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' '&File Out Class//fileOutClass' 'Add &Subclass//addSubclass' '&Rename ... //renameClass' 'Copy ...//copyClass' '&Remove//removeClass' '-')
 				asOrderedCollection.
 	menuStrings add: '&Expand Full Hierarchy//expandFullHierarchy'.
 	menuStrings add: '-'.

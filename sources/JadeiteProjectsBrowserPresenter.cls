@@ -702,7 +702,11 @@ editSaveMethod
 	self redrawAllViews!
 
 expandHierarchyOneLevelAt: classService
-	self expandFullAt: classService!
+	Cursor wait showWhile: 
+			[classService command: #oneLevelClassHierarchy.
+			self issueCommand: (Array with: classService).
+			self selectClassNamed: classService name.
+			self classHierarchyPresenter view expandAll]!
 
 fileOutCategories
 	| path suggestedFileName classSide |
@@ -1673,6 +1677,9 @@ removeMethods: services
 renameClass
 	| oldClassService newClassName |
 	oldClassService := self selectedClass ifNil: [^MessageBox notify: 'Class must be selected'].
+	(MessageBox
+		confirm: 'Rename class does NOT create a new version of the renamed class and instances are not migrated. Continue?')
+			ifFalse: [^self].
 	(newClassName := Prompter
 				on: oldClassService name
 				prompt: 'Rename ' , oldClassService name , ' to:'
@@ -2138,18 +2145,6 @@ updateCommand: aString onSuccessDo: aBlock
 					ensure: [selectedClassChanged := false]].
 	^nil!
 
-updateHierarchy
-	| service |
-	classHierarchyPresenter model: TreeModel new.
-	packageListPresenter selectionOrNil ifNil: [^self].
-	Cursor wait showWhile: 
-			[service := classListPresenter selectionOrNil ifNil: [packageListPresenter selection].
-			service command: #classHierarchy.
-			self issueCommand: (Array with: service).
-			service isPackageService
-				ifTrue: [service hierarchyServices: Array new]
-				ifFalse: [service name = 'Object' ifFalse: [self selectClassNamed: service name]]]!
-
 updateMenuBar
 	| shellView menuBar methodFilterMenu textAreaMenu methodMenu |
 	methodFilterMenu := Menu fromStrings: (self isCategoryTabSelected
@@ -2550,7 +2545,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClassInfo!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClassMenu:!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateCommand:onSuccessDo:!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateHierarchy!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateMenuBar!menus!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateMethodMenu:!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateMethodReferences:!private!services! !
