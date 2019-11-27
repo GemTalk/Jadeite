@@ -122,6 +122,11 @@ copyBasicsFrom: oldService
 	className := oldService className asString.
 	meta 	:= oldService meta.!
 
+debuggerMethodSourceUpdate: presenter browser: browser
+	"don't replicate the method - debugger is debugging the old method"
+
+	^browser refreshBreakPointsIn: presenter!
+
 definedPackage
 	^definedPackage!
 
@@ -403,7 +408,6 @@ stepPointFromCursorIn: methodSourcePresenter
 	^nil!
 
 stepPoints
-
 	(stepPoints notEmpty and: [stepPoints first key isInteger]) ifTrue: [
 		stepPoints := stepPoints collect: [:each | 
 			| range start char length |
@@ -497,6 +501,7 @@ user: anObject
 !RowanMethodService categoriesFor: #comparisonSource:!accessing!private! !
 !RowanMethodService categoriesFor: #compilationWarnings!accessing!private! !
 !RowanMethodService categoriesFor: #copyBasicsFrom:!public!updating! !
+!RowanMethodService categoriesFor: #debuggerMethodSourceUpdate:browser:!public!updating! !
 !RowanMethodService categoriesFor: #definedPackage!accessing!private! !
 !RowanMethodService categoriesFor: #displayClassName!displaying!public! !
 !RowanMethodService categoriesFor: #displayName!displaying!public! !

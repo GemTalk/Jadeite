@@ -134,6 +134,8 @@ commandArgs
 commandArgs: anObject
 	commandArgs := anObject!
 
+debuggerMethodSourceUpdate: presenter browser: browser!
+
 debugPrintOn: aStream
 	self printOn: aStream.
 	self class instVarNames do: 
@@ -456,6 +458,7 @@ wasRenamed
 !RowanService categoriesFor: #command:!accessing!public! !
 !RowanService categoriesFor: #commandArgs!accessing!public! !
 !RowanService categoriesFor: #commandArgs:!accessing!public! !
+!RowanService categoriesFor: #debuggerMethodSourceUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #debugPrintOn:!printing!public! !
 !RowanService categoriesFor: #debugPrintString!printing!public! !
 !RowanService categoriesFor: #dictionaryListUpdate:!public!updating! !

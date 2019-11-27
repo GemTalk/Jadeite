@@ -320,6 +320,24 @@ reformatSource
 	self statusBarText: String new.
 	^documentPresenter value!
 
+refreshBreakPointsIn: methodSourcePresenter
+	| breakPointSymbol indicators |
+	breakPointSymbol := BrowserUpdate current breakpointsEnabled
+				ifTrue: [#breakPoint]
+				ifFalse: [#disabledBreakPoint].
+	indicators := OrderedCollection new.
+	methodSourcePresenter view indicators do: 
+			[:indicator |
+			(indicator styleName = #breakPoint or: [indicator styleName = #disabledBreakPoint])
+				ifTrue: 
+					[indicators add: (indicator copy
+								setStyleName: breakPointSymbol
+								range: indicator range
+								tag: indicator tag)]
+				ifFalse: [indicators add: indicator]].
+	methodSourcePresenter view indicators: indicators.
+	methodSourcePresenter view update!
+
 registerPresentersForUpdates
 	"copied from RowanProjectsBrowserPresenter>>registerPresentersForUpdates"
 
@@ -327,7 +345,11 @@ registerPresentersForUpdates
 		register: processListPresenter selector: #processListUpdate:;
 		register: variableListPresenter
 			selector: #updateVariable:debugger:
-			browser: self!
+			browser: self.
+	BrowserUpdate current
+		register: documentPresenter
+		selector: #debuggerMethodSourceUpdate:browser:
+		browser: self!
 
 restart
 	self isOkayToChangeFrame ifFalse: [^self].
@@ -526,6 +548,7 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #processListPresenter!accessing!public! !
 !JadeiteDebugger categoriesFor: #queryCommand:!menu handlers!public! !
 !JadeiteDebugger categoriesFor: #reformatSource!menu handlers!private! !
+!JadeiteDebugger categoriesFor: #refreshBreakPointsIn:!public!updating! !
 !JadeiteDebugger categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteDebugger categoriesFor: #restart!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #resumeProcess!menu handlers!private! !
