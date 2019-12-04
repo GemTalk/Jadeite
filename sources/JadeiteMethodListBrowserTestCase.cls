@@ -761,10 +761,12 @@ test_compileErrorDisplayGoesAway
 
 test_createUnicodeSymbolThenLoadSymbols
 	session executeString: 'RowanServicesTest new addUnicodeSymbolKeyToUserGlobals'.
-	JadeiteSearch initializeAutocompleteSymbolsIn: session.	"this likely would have errored"
+	
+	[JadeiteSearch initializeAutocompleteSymbolsIn: session.	"this likely would have errored"
 	methodListBrowser := JadePresenter browseImplementorsOf: #size session: session.
 	self methodListMethodListPresenter list
-		do: [:methodService | self assert: methodService selector equals: #size]!
+		do: [:methodService | self assert: methodService selector equals: #size]]
+			ensure: [session executeString: 'RowanServicesTest new removeUnicodeSymbolsFromUserGlobals']!
 
 test_doSearch
 	"browse literal references on the server doesn't always work - 

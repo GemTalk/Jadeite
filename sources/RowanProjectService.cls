@@ -59,14 +59,19 @@ branch: anObject
 	branch := anObject!
 
 changesUsing: session
-	| operations  |
+	| operations |
 	command := #changes.
 	BrowserUpdate current issueCommand: (Array with: self) session: session.
 	changes isEmpty ifTrue: [^MessageBox notify: 'No changes!!'].
 	operations := OrderedCollection new.
 	changes
 		do: [:changeString | operations addAll: (RowanPatch fromString: changeString session: session) operations].
-	^RowanPatchBrowser showOn: (RowanPatch new operations: operations; session: session) name: name!
+	
+	[^RowanPatchBrowser showOn: (RowanPatch new
+				operations: operations;
+				session: session)
+		name: name]
+			ensure: [ changes := nil	"clean this up. no longer needed and can be large"]!
 
 checkoutUsing: presenter
 	| branchName branches |
