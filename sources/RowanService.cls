@@ -576,7 +576,7 @@ version
 	"change this method carefully and only at Jadeite release boundaries.
 	Failure to do so will prevent logins"
 
-	^3090! !
+	^3091! !
 !RowanService class categoriesFor: #command:withArgs:!instance creation!public! !
 !RowanService class categoriesFor: #defaultIcon!private! !
 !RowanService class categoriesFor: #defaultIconName!private! !
