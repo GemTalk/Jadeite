@@ -916,11 +916,11 @@ currentSelection
 	selection isEmpty ifTrue: [^selection].
 	selection first = $# ifTrue: [selection := selection copyFrom: 2 to: selection size].
 	selection isEmpty ifTrue: [^selection].
-	selection first = $'
+	(selection first = $' and: [selection last = $'])
 		ifTrue: 
 			[selection := selection copyFrom: 2 to: selection size.
 			selection isEmpty ifTrue: [^selection].
-			selection last = $' ifTrue: [selection := selection copyFrom: 1 to: selection size - 1]].
+			selection := selection copyFrom: 1 to: selection size - 1].
 	^RowanAnsweringService new expressionSelector: selection session: self gciSession!
 
 executeSelectionOrLine
