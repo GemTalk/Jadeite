@@ -611,6 +611,17 @@ test_workspaceSymbolSendersRemoveSpaces
 	self assert: browseSendersItem text equals: 'Browse Senders of #perform:with:'.
 	methodListBrowser := browseSendersItem command value.
 	[self assert: ('Senders of ''perform:with:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close].
+	workspace codePane documentPresenter value: 'abc: def eft'.	"spaces within quotes"
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseSendersItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseSendersOf:]]
+				ifNone: [].
+	self assert: browseSendersItem text equals: 'Browse Senders of #abc:defeft'.
+	methodListBrowser := browseSendersItem command value.
+	[self assert: ('Senders of ''abc:defeft''*' match: methodListBrowser caption)]
 		ensure: [methodListBrowser view close]!
 
 test_workspaceSymbolSendersTruncateLongSelectors
