@@ -94,7 +94,6 @@ package methodNames
 	add: #CodeSourcePresenter -> #executeSelectionOrLine;
 	add: #CodeSourcePresenter -> #jadeInspect;
 	add: #CodeSourcePresenter -> #methodMenuBreak:;
-	add: #CodeSourcePresenter -> #shortenSelection:;
 	add: #Collection -> #basicPrepareForReplication;
 	add: #Collection -> #prepareForReplication;
 	add: #GciSession -> #_executeString:fromContextOop:environment:;
@@ -935,8 +934,9 @@ jadeInspect
 methodMenuBreak: menu
 	| currentSelection implementorsCommand sendersCommand browseClassMenuItem menuPosition implementorsItem sendersItem currentSelectionMenuItemName |
 	currentSelection := self currentSelection.
-	currentSelectionMenuItemName := (currentSelection includes: Character space)
-				ifTrue: [self shortenSelection: currentSelection]
+	currentSelection := currentSelection copyWithout: Character space.
+	currentSelectionMenuItemName := currentSelection size > 50
+				ifTrue: [(currentSelection copyFrom: 1 to: 50) , ' ...']
 				ifFalse: [currentSelection].
 	menu items copy do: 
 			[:item |
@@ -963,22 +963,12 @@ methodMenuBreak: menu
 				argument: currentSelection.
 	sendersItem := CommandMenuItem command: sendersCommand
 				description: 'Browse Senders of #' , currentSelectionMenuItemName.
-	menu insertItem: sendersItem at: menuPosition + 1!
-
-shortenSelection: currentSelection
-	| readStream |
-	readStream := ReadStream on: currentSelection.
-	^
-	[| string |
-	string := readStream upTo: Character space.
-	string := string , ' ...']
-			ensure: [readStream close]! !
+	menu insertItem: sendersItem at: menuPosition + 1! !
 !CodeSourcePresenter categoriesFor: #browseSelectedClass!Jade!public! !
 !CodeSourcePresenter categoriesFor: #currentSelection!public! !
 !CodeSourcePresenter categoriesFor: #executeSelectionOrLine!Jade!private! !
 !CodeSourcePresenter categoriesFor: #jadeInspect!Jade!private! !
 !CodeSourcePresenter categoriesFor: #methodMenuBreak:!menus!public! !
-!CodeSourcePresenter categoriesFor: #shortenSelection:!menus!public! !
 
 !CodeSourcePresenter class methodsFor!
 

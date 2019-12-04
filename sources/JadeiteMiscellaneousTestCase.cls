@@ -596,6 +596,42 @@ test_workspaceSymbolSendersLeadingQuote
 	[self assert: ('Senders of ''perform:with:with:''*' match: methodListBrowser caption)]
 		ensure: [methodListBrowser view close]!
 
+test_workspaceSymbolSendersRemoveSpaces
+	| methodListBrowser browseSendersItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session)
+				caption: 'Jade Workspace - test_workspaceSymbolSendersRemoveSpaces'.
+	workspace codePane documentPresenter value: 'perform: with:'.	"has a space between keywords"
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseSendersItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseSendersOf:]]
+				ifNone: [].
+	self assert: browseSendersItem text equals: 'Browse Senders of #perform:with:'.
+	methodListBrowser := browseSendersItem command value.
+	[self assert: ('Senders of ''perform:with:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
+test_workspaceSymbolSendersTruncateLongSelectors
+	| methodListBrowser browseSendersItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session)
+				caption: 'Jade Workspace - test_workspaceSymbolSendersRemoveSpaces'.
+	workspace codePane documentPresenter
+		value: 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz'.
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseSendersItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseSendersOf:]]
+				ifNone: [].
+	self assert: browseSendersItem text
+		equals: 'Browse Senders of #abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx ...'.
+	methodListBrowser := browseSendersItem command value.
+	[self assert: ('Senders of ''abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
 test_workspaceSymbolWithQuotesImplementors
 	| methodListBrowser browseImplementorsItem menu |
 	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
@@ -686,6 +722,8 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolImplementors!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolSenders!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolSendersLeadingQuote!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolSendersRemoveSpaces!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolSendersTruncateLongSelectors!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolWithQuotesImplementors!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolWithQuotesSenders!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testClassServiceNameIsString!public! !
