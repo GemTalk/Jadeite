@@ -25,6 +25,7 @@ package classNames
 	add: #JadeiteLoggerPresenter;
 	add: #JadeiteLoggerShell;
 	add: #JadeiteLoginShell;
+	add: #JadeiteMethodHistoryBrowser;
 	add: #JadeiteMethodListBrowser;
 	add: #JadeiteMethodListPresenter;
 	add: #JadeiteMethodSourcePresenter;
@@ -478,6 +479,7 @@ package setPrerequisites: (IdentitySet new
 	add: 'GemStone Objects';
 	add: 'GemStone Services';
 	add: 'GemStone Session';
+	add: '..\Core\Contributions\IDB\IDB Method History';
 	add: 'Jade Autocompletation';
 	add: 'Jade Deployment';
 	add: 'Jade Inspector';
@@ -890,6 +892,11 @@ RowanShell subclass: #JadeiteProjectListBrowser
 	classInstanceVariableNames: ''!
 RowanShell subclass: #RowanPackageShell
 	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+MethodHistoryBrowser subclass: #JadeiteMethodHistoryBrowser
+	instanceVariableNames: 'session'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

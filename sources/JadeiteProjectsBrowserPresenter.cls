@@ -239,10 +239,6 @@ browseHierarchySenders
 	^self browseHierarchySendersOf: self selectedMethodName
 		className: methodListPresenter selection className!
 
-browseMethodHistory
-
-	MessageBox warning: 'Method history is not available yet'. !
-
 browseSelectedClass
 	^self browseSelectedClassIn: methodSourcePresenter newTab: Keyboard default isCtrlDown!
 
@@ -1095,6 +1091,7 @@ methodsMenuStrings
 				browseMethodsContaining;
 				browseLiteralReferences;
 				browseSelectedMethods;
+				browseMethodHistory; 
 				clearMethodBreakpoints;
 				removeMethods;
 				runMethodTests;
@@ -1104,7 +1101,7 @@ methodsMenuStrings
 				gotoMethodDefinedPackage;
 				runAll;
 				runSelected].
-	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods' '-' 'Browse Breakpoints//browseBreakpoints' 'Clear Method Breakpoints//clearMethodBreakpoints' '-' 'Find Method .../Ctrl+Shift+M/findMethod' '-' '&Remove Method(s) ...//removeMethods' '-' 'Run All Tests/Ctrl+Shift+A/runAll' 'Run Selected Test(s)/Ctrl+Shift+S/runMethodTests' 'Debug Selected &Test(s)/Ctrl+B/runMethodTests' '-' 'Go To Defining Package//gotoMethodDefinedPackage')!
+	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods' 'Browse Method History//browseMethodHistory' '-' 'Browse Breakpoints//browseBreakpoints' 'Clear Method Breakpoints//clearMethodBreakpoints' '-' 'Find Method .../Ctrl+Shift+M/findMethod' '-' '&Remove Method(s) ...//removeMethods' '-' 'Run All Tests/Ctrl+Shift+A/runAll' 'Run Selected Test(s)/Ctrl+Shift+S/runMethodTests' 'Debug Selected &Test(s)/Ctrl+B/runMethodTests' '-' 'Go To Defining Package//gotoMethodDefinedPackage')!
 
 methodSourcePresenter: anObject
 	methodSourcePresenter := anObject!
@@ -2351,7 +2348,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #behaviorIdentifier!private!selection! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseHierarchyImplementors!menu handlers!public!queries! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseHierarchySenders!public!queries! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #browseMethodHistory!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseSelectedClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseSelectedMethods!menu handlers!public!queries! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !

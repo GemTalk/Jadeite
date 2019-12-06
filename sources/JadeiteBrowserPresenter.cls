@@ -136,6 +136,10 @@ browseInstVarWriters
 		in: self selectedClassName
 		session: self gciSession!
 
+browseMethodHistory
+	^JadeiteMethodHistoryBrowser showOnClass: self selectedClass
+		selector: methodListPresenter selections first!
+
 buildGlobalsTab
 	| globalsTabView |
 	globalsTab
@@ -238,7 +242,7 @@ comparisonPresenter
 
 	^comparisonPresenter!
 
-contextObject
+contextObject   
 	^self selectedClass
 		ifNil: [^nil]
 		ifNotNil: [:classService | gciSession oopTypeWithOop: classService oop]!
@@ -504,7 +508,7 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: self dictionaryPresenter selections notEmpty.
 			^true].
-	(#(#reformatSource) includes: command)
+	(#(#reformatSource #browseMethodHistory) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: self methodListPresenter selections size <= 1.
 			^true].
@@ -936,6 +940,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #browseGlobalReferences!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #browseInstVarReaders!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #browseInstVarWriters!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #browseMethodHistory!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #buildGlobalsTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #buildProjectTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #classCommentChanged!event handlers!public! !
