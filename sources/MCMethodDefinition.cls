@@ -13,6 +13,9 @@ MCMethodDefinition comment: ''!
 category
 	^category!
 
+category: anObject
+	category := anObject!
+
 classIsMeta
 	^classIsMeta!
 
@@ -53,9 +56,13 @@ selector
 source
 	^source!
 
+source: anObject
+	source := anObject!
+
 timeStamp
 	^timeStamp! !
 !MCMethodDefinition categoriesFor: #category!accessing!public! !
+!MCMethodDefinition categoriesFor: #category:!public! !
 !MCMethodDefinition categoriesFor: #classIsMeta!accessing!public! !
 !MCMethodDefinition categoriesFor: #className!accessing!public! !
 !MCMethodDefinition categoriesFor: #detailsString!public! !
@@ -64,5 +71,6 @@ timeStamp
 !MCMethodDefinition categoriesFor: #initialize:!private! !
 !MCMethodDefinition categoriesFor: #selector!accessing!public! !
 !MCMethodDefinition categoriesFor: #source!accessing!public! !
+!MCMethodDefinition categoriesFor: #source:!public! !
 !MCMethodDefinition categoriesFor: #timeStamp!accessing!public! !
 

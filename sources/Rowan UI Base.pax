@@ -315,10 +315,19 @@ package methodNames
 	add: #ListModel -> #removeAtIndexWithoutNotification:;
 	add: #ListPresenter -> #selectServiceStartingWith:;
 	add: #MCClassDefinition -> #initialize:;
+	add: #MCDefinition -> #isMethodModification;
+	add: #MCDefinition -> #revert:;
+	add: #MCMethodDefinition -> #isMethodModification;
+	add: #MCMethodDefinition -> #revert:;
+	add: #MCModification -> #clearObsoletionMemo;
+	add: #MCModification -> #isMethodModification;
+	add: #MCModification -> #revert:;
 	add: #MCPatchBrowser -> #browseChangedThing;
 	add: #MCPatchBrowser -> #browseImplementors;
 	add: #MCPatchBrowser -> #browseSenders;
 	add: #MCPatchBrowser -> #operationSelected;
+	add: #MCPatchOperation -> #isMethodModification;
+	add: #MCPatchOperation -> #revert:;
 	add: #MethodListPresenter -> #browseClass;
 	add: #MethodListPresenter -> #selectedMethodsAreTestCases;
 	add: #MethodSourcePresenter -> #editMenuStrings;
@@ -4285,6 +4294,49 @@ initialize: aStream
 					definition copyFrom: i + 1 to: j - 1]! !
 !MCClassDefinition categoriesFor: #initialize:!public! !
 
+!MCDefinition methodsFor!
+
+isMethodModification
+	^false!
+
+revert: session! !
+!MCDefinition categoriesFor: #isMethodModification!public!testing! !
+!MCDefinition categoriesFor: #revert:!public! !
+
+!MCMethodDefinition methodsFor!
+
+isMethodModification
+	^true!
+
+revert: session
+	| classService |
+	classService := RowanClassService named: className asString.
+	classService
+		command: #saveMethodSource:category:;
+		commandArgs: (Array with: source with: category).
+	BrowserUpdate current issueCommand: (Array with: classService) session: session! !
+!MCMethodDefinition categoriesFor: #isMethodModification!public!testing! !
+!MCMethodDefinition categoriesFor: #revert:!public! !
+
+!MCModification methodsFor!
+
+clearObsoletionMemo
+	obsoletionMemo := nil!
+
+isMethodModification
+	^modification isMethodModification!
+
+revert: session 
+	self isMethodModification
+		ifTrue: 
+			[obsoletion revert: session.
+			modification
+				source: obsoletion source;
+				category: obsoletion category]! !
+!MCModification categoriesFor: #clearObsoletionMemo!public! !
+!MCModification categoriesFor: #isMethodModification!public! !
+!MCModification categoriesFor: #revert:!public! !
+
 !MCPatchBrowser methodsFor!
 
 browseChangedThing
@@ -4361,6 +4413,15 @@ operationSelected
 !MCPatchBrowser categoriesFor: #browseImplementors!public! !
 !MCPatchBrowser categoriesFor: #browseSenders!public! !
 !MCPatchBrowser categoriesFor: #operationSelected!public! !
+
+!MCPatchOperation methodsFor!
+
+isMethodModification
+	^false!
+
+revert: session! !
+!MCPatchOperation categoriesFor: #isMethodModification!public! !
+!MCPatchOperation categoriesFor: #revert:!public! !
 
 !MethodListPresenter methodsFor!
 
