@@ -882,7 +882,7 @@ JadeiteProjectsSystemBrowser subclass: #JadeiteBrowser
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 MCPatchBrowser subclass: #RowanPatchBrowser
-	instanceVariableNames: 'name'
+	instanceVariableNames: 'name diffsPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
