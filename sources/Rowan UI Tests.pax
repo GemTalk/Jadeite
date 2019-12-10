@@ -39,13 +39,16 @@ package methodNames
 	add: #DifferencesPresenter -> #beforeTitlePresenter;
 	add: #EventMessageSequence -> #messages;
 	add: #JadeInspector -> #documentPresenter;
+	add: #JadeiteChangesBrowser -> #diffsPresenter;
+	add: #JadeiteChangesBrowser -> #operationListPresenter;
 	add: #JadeiteProjectsBrowserPresenter -> #definedClassPackageText;
 	add: #JadeiteProjectsBrowserPresenter -> #definedMethodPackageText;
 	add: #JadeLoginShell -> #loginButtonPresenter;
 	add: #JadeLoginShell -> #loginWithoutErrorHandling;
 	add: #JadeLoginShell -> #userIDPresenter:;
 	add: #JadePresenter -> #browseClassReferences;
-	add: #RowanPatchBrowser -> #operationListPresenter;
+	add: #MCModification -> #modification;
+	add: #MCModification -> #obsoletion;
 	add: #SUnitBrowserModel -> #debugIndividualTestsWithResources:;
 	add: 'ChoicePrompter class' -> #create:;
 	add: 'JadeiteSearch class' -> #allClassNames:;
@@ -274,6 +277,19 @@ documentPresenter
 	^documentPresenter! !
 !JadeInspector categoriesFor: #documentPresenter!public! !
 
+!JadeiteChangesBrowser methodsFor!
+
+diffsPresenter
+	"for testing" 
+	^diffsPresenter!
+
+operationListPresenter
+	"for tests"
+
+	^operationListPresenter! !
+!JadeiteChangesBrowser categoriesFor: #diffsPresenter!accessing!private! !
+!JadeiteChangesBrowser categoriesFor: #operationListPresenter!public! !
+
 !JadeiteProjectsBrowserPresenter methodsFor!
 
 definedClassPackageText
@@ -327,6 +343,20 @@ browseClassReferences
 	^JadePresenter browseClassReferencesInSession: self gciSession! !
 !JadePresenter categoriesFor: #browseClassReferences!menu handlers!public! !
 
+!MCModification methodsFor!
+
+modification
+	"for testing"
+
+	^modification!
+
+obsoletion
+	"for testing"
+
+	^obsoletion! !
+!MCModification categoriesFor: #modification!accessing!public! !
+!MCModification categoriesFor: #obsoletion!accessing!public! !
+
 !MessageBox class methodsFor!
 
 new
@@ -349,14 +379,6 @@ createOn: aValueModel
 		ifFalse: 
 			[super createOn: aValueModel]! !
 !Prompter class categoriesFor: #createOn:!instance creation!public! !
-
-!RowanPatchBrowser methodsFor!
-
-operationListPresenter
-	"for tests"
-
-	^operationListPresenter! !
-!RowanPatchBrowser categoriesFor: #operationListPresenter!public! !
 
 !SUnitBrowserModel methodsFor!
 

@@ -16,6 +16,7 @@ package classNames
 	add: #JadeiteBasicRenameClassMethodListPresenter;
 	add: #JadeiteBrowser;
 	add: #JadeiteBrowserPresenter;
+	add: #JadeiteChangesBrowser;
 	add: #JadeiteDebugger;
 	add: #JadeiteDebuggerMethodSourcePresenter;
 	add: #JadeiteFindClassDialog;
@@ -73,7 +74,6 @@ package classNames
 	add: #RowanPackageService;
 	add: #RowanPackageShell;
 	add: #RowanPackageUpdate;
-	add: #RowanPatchBrowser;
 	add: #RowanPresenter;
 	add: #RowanProcessService;
 	add: #RowanProjectService;
@@ -97,6 +97,7 @@ package methodNames
 	add: #CodeSourcePresenter -> #methodMenuBreak:;
 	add: #Collection -> #basicPrepareForReplication;
 	add: #Collection -> #prepareForReplication;
+	add: #DiffBrowser -> #diffsPresenter;
 	add: #GciSession -> #_executeString:fromContextOop:environment:;
 	add: #GciSession -> #clientServerVersionRelationship;
 	add: #GciSession -> #computeGemHost;
@@ -314,11 +315,18 @@ package methodNames
 	add: #JadeWorkspace -> #onViewOpened;
 	add: #ListModel -> #removeAtIndexWithoutNotification:;
 	add: #ListPresenter -> #selectServiceStartingWith:;
+	add: #MCAddition -> #revert:;
 	add: #MCClassDefinition -> #initialize:;
+	add: #MCDefinition -> #isMethodAddition;
 	add: #MCDefinition -> #isMethodModification;
+	add: #MCDefinition -> #isMethodRemoval;
 	add: #MCDefinition -> #revert:;
+	add: #MCMethodDefinition -> #basicClassName;
+	add: #MCMethodDefinition -> #isMethodAddition;
 	add: #MCMethodDefinition -> #isMethodModification;
+	add: #MCMethodDefinition -> #isMethodRemoval;
 	add: #MCMethodDefinition -> #revert:;
+	add: #MCMethodDefinition -> #selector:;
 	add: #MCModification -> #clearObsoletionMemo;
 	add: #MCModification -> #isMethodModification;
 	add: #MCModification -> #revert:;
@@ -326,8 +334,14 @@ package methodNames
 	add: #MCPatchBrowser -> #browseImplementors;
 	add: #MCPatchBrowser -> #browseSenders;
 	add: #MCPatchBrowser -> #operationSelected;
+	add: #MCPatchOperation -> #canBeReverted;
+	add: #MCPatchOperation -> #clearObsoletionMemo;
+	add: #MCPatchOperation -> #isMethodAddition;
 	add: #MCPatchOperation -> #isMethodModification;
+	add: #MCPatchOperation -> #isMethodRemoval;
 	add: #MCPatchOperation -> #revert:;
+	add: #MCRemoval -> #isMethodRemoval;
+	add: #MCRemoval -> #revert:;
 	add: #MethodListPresenter -> #browseClass;
 	add: #MethodListPresenter -> #selectedMethodsAreTestCases;
 	add: #MethodSourcePresenter -> #editMenuStrings;
@@ -890,8 +904,8 @@ JadeiteProjectsSystemBrowser subclass: #JadeiteBrowser
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-MCPatchBrowser subclass: #RowanPatchBrowser
-	instanceVariableNames: 'name diffsPresenter'
+MCPatchBrowser subclass: #JadeiteChangesBrowser
+	instanceVariableNames: 'name diffsPresenter session'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1009,6 +1023,13 @@ prepareForReplication
 	self do: [:element | element prepareForReplication]! !
 !Collection categoriesFor: #basicPrepareForReplication!Jadeite!public! !
 !Collection categoriesFor: #prepareForReplication!Jadeite!public! !
+
+!DiffBrowser methodsFor!
+
+diffsPresenter
+
+	^diffsPresenter! !
+!DiffBrowser categoriesFor: #diffsPresenter!public! !
 
 !GciSession methodsFor!
 
@@ -4280,6 +4301,26 @@ selectServiceStartingWith: aKeyPressEvent
 	nearestElement ifNotNil: [self selection: nearestElement]! !
 !ListPresenter categoriesFor: #selectServiceStartingWith:!Jadeite!public! !
 
+!MCAddition methodsFor!
+
+revert: session
+	| classService methodService |
+	self halt. 
+	classService := RowanClassService named: definition basicClassName.
+	classService meta: definition classIsMeta.
+	methodService := RowanMethodService new
+				selector: definition selector asSymbol;
+				className: definition basicClassName;
+				meta: definition classIsMeta;
+				yourself.
+	classService
+		command: #removeMethods:;
+		commandArgs: (Array with: (Array with: methodService)).
+	BrowserUpdate current issueCommand: (Array with: classService) session: self gciSession.
+	definition selector: definition selector , ' (removed)'.
+	! !
+!MCAddition categoriesFor: #revert:!public! !
+
 !MCClassDefinition methodsFor!
 
 initialize: aStream
@@ -4296,16 +4337,33 @@ initialize: aStream
 
 !MCDefinition methodsFor!
 
+isMethodAddition
+	^false!
+
 isMethodModification
 	^false!
 
+isMethodRemoval
+	^false!
+
 revert: session! !
+!MCDefinition categoriesFor: #isMethodAddition!public!testing! !
 !MCDefinition categoriesFor: #isMethodModification!public!testing! !
+!MCDefinition categoriesFor: #isMethodRemoval!public!testing! !
 !MCDefinition categoriesFor: #revert:!public! !
 
 !MCMethodDefinition methodsFor!
 
+basicClassName
+	^className!
+
+isMethodAddition
+	^true!
+
 isMethodModification
+	^true!
+
+isMethodRemoval
 	^true!
 
 revert: session
@@ -4314,9 +4372,16 @@ revert: session
 	classService
 		command: #saveMethodSource:category:;
 		commandArgs: (Array with: source with: category).
-	BrowserUpdate current issueCommand: (Array with: classService) session: session! !
+	BrowserUpdate current issueCommand: (Array with: classService) session: session!
+
+selector: anObject
+	selector := anObject! !
+!MCMethodDefinition categoriesFor: #basicClassName!accessing!public! !
+!MCMethodDefinition categoriesFor: #isMethodAddition!public!testing! !
 !MCMethodDefinition categoriesFor: #isMethodModification!public!testing! !
+!MCMethodDefinition categoriesFor: #isMethodRemoval!public!testing! !
 !MCMethodDefinition categoriesFor: #revert:!public! !
+!MCMethodDefinition categoriesFor: #selector:!accessing!public! !
 
 !MCModification methodsFor!
 
@@ -4326,15 +4391,13 @@ clearObsoletionMemo
 isMethodModification
 	^modification isMethodModification!
 
-revert: session 
-	self isMethodModification
-		ifTrue: 
-			[obsoletion revert: session.
-			modification
-				source: obsoletion source;
-				category: obsoletion category]! !
+revert: session
+	obsoletion revert: session.
+	modification
+		source: obsoletion source;
+		category: obsoletion category! !
 !MCModification categoriesFor: #clearObsoletionMemo!public! !
-!MCModification categoriesFor: #isMethodModification!public! !
+!MCModification categoriesFor: #isMethodModification!public!testing! !
 !MCModification categoriesFor: #revert:!public! !
 
 !MCPatchBrowser methodsFor!
@@ -4416,12 +4479,39 @@ operationSelected
 
 !MCPatchOperation methodsFor!
 
+canBeReverted
+	^self isMethodAddition or: [self isMethodModification or: [self isMethodRemoval]]!
+
+clearObsoletionMemo
+	!
+
+isMethodAddition
+	^false!
+
 isMethodModification
 	^false!
 
+isMethodRemoval
+	^false!
+
 revert: session! !
-!MCPatchOperation categoriesFor: #isMethodModification!public! !
+!MCPatchOperation categoriesFor: #canBeReverted!public!testing! !
+!MCPatchOperation categoriesFor: #clearObsoletionMemo!public! !
+!MCPatchOperation categoriesFor: #isMethodAddition!public!testing! !
+!MCPatchOperation categoriesFor: #isMethodModification!public!testing! !
+!MCPatchOperation categoriesFor: #isMethodRemoval!public!testing! !
 !MCPatchOperation categoriesFor: #revert:!public! !
+
+!MCRemoval methodsFor!
+
+isMethodRemoval
+	^definition isMethodRemoval!
+
+revert: session
+	definition revert: session.
+	definition selector: definition selector , ' (restored)'! !
+!MCRemoval categoriesFor: #isMethodRemoval!public!testing! !
+!MCRemoval categoriesFor: #revert:!public! !
 
 !MethodListPresenter methodsFor!
 

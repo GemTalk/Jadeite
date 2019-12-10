@@ -50,6 +50,7 @@ onViewOpened
 operationsList
 
 	| list |
+	self halt. 
 	list := patch operations.
 	includeIdenticalPresenter value ifFalse: [
 		list := list reject: [:each | each hasEquivalentText].

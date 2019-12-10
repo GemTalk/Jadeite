@@ -535,7 +535,8 @@ test_openChangesBrowser
 	changesItem := transcript projectListPresenter projectListPresenter view queryContextMenu items
 				detect: [:menuItem | menuItem command == #projectChanges].
 	changesBrowser := changesItem commandDescription performAgainst: transcript projectListPresenter.
-	[self assert: (changesBrowser isKindOf: RowanPatchBrowser)] ensure: [self destroy: changesBrowser]!
+	[self assert: (changesBrowser isKindOf: JadeiteChangesBrowser)]
+		ensure: [self destroy: changesBrowser]!
 
 test_openPreferencesFile
 	| prefsWorkspace prefsItem |

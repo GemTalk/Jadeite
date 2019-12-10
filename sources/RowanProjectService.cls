@@ -37,6 +37,15 @@ allClasses
 			packageService classes ifNotNil: [:classes | coll addAll: classes].
 			coll]!
 
+basicChangesUsing: session
+	| operations |
+	command := #changes.
+	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	operations := OrderedCollection new.
+	changes
+		do: [:changeString | operations addAll: (RowanPatch fromString: changeString session: session) operations].
+	^operations!
+
 basicCheckoutUsing: presenter
 	| branches query branchString |
 	query := RowanQueryService new
@@ -60,18 +69,14 @@ branch: anObject
 
 changesUsing: session
 	| operations |
-	command := #changes.
-	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	operations := self basicChangesUsing: session.
 	changes isEmpty ifTrue: [^MessageBox notify: 'No changes!!'].
-	operations := OrderedCollection new.
-	changes
-		do: [:changeString | operations addAll: (RowanPatch fromString: changeString session: session) operations].
 	
-	[^RowanPatchBrowser showOn: (RowanPatch new
+	[^JadeiteChangesBrowser showOn: (RowanPatch new
 				operations: operations;
 				session: session)
 		name: name]
-			ensure: [ changes := nil	"clean this up. no longer needed and can be large"]!
+			ensure: [changes := nil	"clean this up. no longer needed and can be large"]!
 
 checkoutUsing: presenter
 	| branchName branches |
@@ -237,6 +242,7 @@ sha: anObject
 !RowanProjectService categoriesFor: #=!comparing!public! !
 !RowanProjectService categoriesFor: #addPackageNamed:using:!presenter support!public! !
 !RowanProjectService categoriesFor: #allClasses!accessing!public! !
+!RowanProjectService categoriesFor: #basicChangesUsing:!presenter support!public! !
 !RowanProjectService categoriesFor: #basicCheckoutUsing:!presenter support!private! !
 !RowanProjectService categoriesFor: #basicName:!accessing!public! !
 !RowanProjectService categoriesFor: #branch!accessing!public! !

@@ -1,14 +1,14 @@
 "Filed out from Dolphin Smalltalk 7"!
 
-MCPatchBrowser subclass: #RowanPatchBrowser
+MCPatchBrowser subclass: #JadeiteChangesBrowser
 	instanceVariableNames: 'name diffsPresenter session'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-RowanPatchBrowser guid: (GUID fromString: '{5754d2bc-5a68-40d5-a2b0-36ac0383ab9f}')!
-RowanPatchBrowser comment: ''!
-!RowanPatchBrowser categoriesForClass!Unclassified! !
-!RowanPatchBrowser methodsFor!
+JadeiteChangesBrowser guid: (GUID fromString: '{5754d2bc-5a68-40d5-a2b0-36ac0383ab9f}')!
+JadeiteChangesBrowser comment: ''!
+!JadeiteChangesBrowser categoriesForClass!Unclassified! !
+!JadeiteChangesBrowser methodsFor!
 
 additionalAccelerators
 	^#(#(#raiseConsole 'Ctrl+F7'))!
@@ -20,7 +20,6 @@ afterTitle: operation
 
 createComponents
 	super createComponents.
-	includeIdenticalPresenter := ValueHolder with: false.
 	diffsPresenter := self add: DiffBrowser new diffsPresenter name: 'diffs'!
 
 createSchematicWiring
@@ -36,6 +35,10 @@ createSchematicWiring
 
 flipIdenticalSource
 	includeIdenticalPresenter value: includeIdenticalPresenter value not!
+
+initialize
+	super initialize.
+	includeIdenticalPresenter := ValueHolder with: true!
 
 name
 	^name!
@@ -54,10 +57,25 @@ operationSelected
 		afterTitle: afterTitle;
 		compare: operation obsoletionMemo with: operation modificationMemo!
 
+operationsList
+
+	| list |
+	list := operationListPresenter list. 
+	includeIdenticalPresenter value ifFalse: [
+		list := list reject: [:each | each hasEquivalentText].
+	].
+	^list asSortedCollection asArray.
+!
+
 queryCommand: aCommandQuery
 	| command |
 	command := aCommandQuery command.
-	(#(#refresh #refreshIdenticalSource) includes: command)
+	command = #flipIdenticalSource
+		ifTrue: 
+			[aCommandQuery isEnabled: true.
+			aCommandQuery isChecked: includeIdenticalPresenter value.
+			^true].
+	(#(#refresh) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: true.
 			^true].
@@ -69,7 +87,7 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[| selection |
 			selection := operationListPresenter selection.
-			aCommandQuery isEnabled: (selection isMethodModification or: [selection isMethodRemoval]).
+			aCommandQuery isEnabled: selection canBeReverted.
 			^true].
 	^super queryCommand: aCommandQuery!
 
@@ -82,7 +100,6 @@ raiseConsole
 
 refresh
 	| projectService operations |
-	self halt. 
 	projectService := RowanProjectService new name: name.
 	operations := projectService basicChangesUsing: gciSession.
 	operationListPresenter list: operations!
@@ -114,23 +131,25 @@ showNoComparison
 		beforeTitle: 'Disk';
 		afterTitle: 'Image';
 		compare: String new with: String new! !
-!RowanPatchBrowser categoriesFor: #additionalAccelerators!accessing!public! !
-!RowanPatchBrowser categoriesFor: #afterTitle:!public! !
-!RowanPatchBrowser categoriesFor: #createComponents!public! !
-!RowanPatchBrowser categoriesFor: #createSchematicWiring!initialization!public! !
-!RowanPatchBrowser categoriesFor: #flipIdenticalSource!initialization!public! !
-!RowanPatchBrowser categoriesFor: #name!accessing!public! !
-!RowanPatchBrowser categoriesFor: #name:!accessing!public! !
-!RowanPatchBrowser categoriesFor: #operationSelected!public! !
-!RowanPatchBrowser categoriesFor: #queryCommand:!menu handlers!public! !
-!RowanPatchBrowser categoriesFor: #raiseConsole!menu handlers!public! !
-!RowanPatchBrowser categoriesFor: #refresh!menu handlers!public! !
-!RowanPatchBrowser categoriesFor: #refreshIdenticalSource!menu handlers!public! !
-!RowanPatchBrowser categoriesFor: #revert!menu handlers!public! !
-!RowanPatchBrowser categoriesFor: #shellName!overrides!private! !
-!RowanPatchBrowser categoriesFor: #showNoComparison!public! !
+!JadeiteChangesBrowser categoriesFor: #additionalAccelerators!accessing!public! !
+!JadeiteChangesBrowser categoriesFor: #afterTitle:!public! !
+!JadeiteChangesBrowser categoriesFor: #createComponents!public! !
+!JadeiteChangesBrowser categoriesFor: #createSchematicWiring!initialization!public! !
+!JadeiteChangesBrowser categoriesFor: #flipIdenticalSource!initialization!public! !
+!JadeiteChangesBrowser categoriesFor: #initialize!initialization!public! !
+!JadeiteChangesBrowser categoriesFor: #name!accessing!public! !
+!JadeiteChangesBrowser categoriesFor: #name:!accessing!public! !
+!JadeiteChangesBrowser categoriesFor: #operationSelected!public! !
+!JadeiteChangesBrowser categoriesFor: #operationsList!public! !
+!JadeiteChangesBrowser categoriesFor: #queryCommand:!menu handlers!public! !
+!JadeiteChangesBrowser categoriesFor: #raiseConsole!menu handlers!public! !
+!JadeiteChangesBrowser categoriesFor: #refresh!menu handlers!public! !
+!JadeiteChangesBrowser categoriesFor: #refreshIdenticalSource!menu handlers!public! !
+!JadeiteChangesBrowser categoriesFor: #revert!menu handlers!public! !
+!JadeiteChangesBrowser categoriesFor: #shellName!overrides!private! !
+!JadeiteChangesBrowser categoriesFor: #showNoComparison!public! !
 
-!RowanPatchBrowser class methodsFor!
+!JadeiteChangesBrowser class methodsFor!
 
 resource_Default_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.
@@ -152,6 +171,6 @@ showOn: aModel name: aString
 		createView: self defaultView;
 		showShell;
 		yourself! !
-!RowanPatchBrowser class categoriesFor: #resource_Default_view!public!resources-views! !
-!RowanPatchBrowser class categoriesFor: #showOn:name:!public! !
+!JadeiteChangesBrowser class categoriesFor: #resource_Default_view!public!resources-views! !
+!JadeiteChangesBrowser class categoriesFor: #showOn:name:!public! !
 

@@ -3510,7 +3510,8 @@ test_openChangesBrowser
 	changesItem := self projectListPresenter view queryContextMenu items
 				detect: [:menuItem | menuItem command == #projectChanges].
 	changesBrowser := changesItem commandDescription performAgainst: self projectsPresenter.
-	[self assert: (changesBrowser isKindOf: RowanPatchBrowser)] ensure: [self destroy: changesBrowser]!
+	[self assert: (changesBrowser isKindOf: JadeiteChangesBrowser)]
+		ensure: [self destroy: changesBrowser]!
 
 test_openNewProjectBrowser
 	"make sure that we can open a new project browser from an existing browser"

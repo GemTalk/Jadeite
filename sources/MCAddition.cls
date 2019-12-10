@@ -20,6 +20,9 @@ detailsString
 	^definition detailsString.
 !
 
+isMethodAddition
+	^definition isMethodAddition!
+
 modificationMemo
 
 	^definition displayMemo.
@@ -36,6 +39,7 @@ selector
 ! !
 !MCAddition categoriesFor: #className!public! !
 !MCAddition categoriesFor: #detailsString!public! !
+!MCAddition categoriesFor: #isMethodAddition!public!testing! !
 !MCAddition categoriesFor: #modificationMemo!public! !
 !MCAddition categoriesFor: #modificationText!public! !
 !MCAddition categoriesFor: #selector!public! !

@@ -153,6 +153,36 @@ test_browseSenders
 	[self assert: methodListBrowser primaryPresenter methodListPresenter selection selector
 		equals: #sendsFnoodle]
 			ensure: [self destroy: methodListBrowser]]
+			ensure: [self destroy: projectsBrowser]!
+
+test_revertMethodModification
+	| change |
+	self testsIssue: #issue624
+		withTitle: '(3.0.85) A revert menu item in the changes browser would be useful'.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'test1  ^123'
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	change := changesBrowser operationListPresenter list first.
+	self assert: change isMethodModification.
+	self assert: change modification source trimBlanks equals: 'test1  ^123'.
+	self assert: change obsoletion source trimBlanks replaceLfWithCrLf
+		equals: 'test1
+
+	self assert: RowanSample1 new foo = ''foo'''.
+	changesBrowser operationListPresenter selection: change.
+	changesBrowser revert.
+	
+	[self assert: change modification source trimBlanks replaceLfWithCrLf
+		equals: 'test1
+
+	self assert: RowanSample1 new foo = ''foo'''.
+	self assert: changesBrowser diffsPresenter afterTitlePresenter value equals: 'Image (no change)']
 			ensure: [self destroy: projectsBrowser]! !
 !JadeiteChangesBrowserTestCase categoriesFor: #addNewClass!private! !
 !JadeiteChangesBrowserTestCase categoriesFor: #addNewMethod!private! !
@@ -162,4 +192,5 @@ test_browseSenders
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseMethodSelectsAddedClass!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseMethodSelectsAddedMethod!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseSenders!public!tests! !
+!JadeiteChangesBrowserTestCase categoriesFor: #test_revertMethodModification!public!tests! !
 
