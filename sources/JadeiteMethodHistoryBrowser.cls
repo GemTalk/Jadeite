@@ -52,8 +52,13 @@ restoreMethod
 session
 	^session!
 
-session: anObject
-	session := anObject!
+session: aGciSession
+	session := aGciSession.
+	session
+		when: #forceJadeiteWindowClose
+			send: #exit
+			to: self;
+		yourself!
 
 setCaption
 	self caption: (String writeStream

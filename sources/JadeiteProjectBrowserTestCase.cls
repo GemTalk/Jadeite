@@ -1813,8 +1813,8 @@ test_closeConsoleInvalidSession
 							setUp]]!
 
 test_closeConsoleValidSession
-	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector |
-	"poison session and exit Jadeite. Make sure all Jadeite windows close"
+	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector methodHistoryBrowser |
+	"Exit Jadeite. Make sure all Jadeite windows close"
 	self testsIssue: #issue267 withTitle: 'logout closes project browsers but not method list browsers'.
 	self cleanupExistingWindows.
 	self selectRowanSample1Class.
@@ -1834,6 +1834,9 @@ test_closeConsoleValidSession
 						fromContext: nil
 						environment: 0)
 				session: session.
+	methodHistoryBrowser := JadeiteMethodHistoryBrowser
+				showOnClass: self projectsPresenter selectedClass
+				selector: self methodListPresenter selections first.
 	self assert: sunitPresenter isOpen.
 	self assert: projectsBrowser isOpen.
 	self assert: methodListBrowser isOpen.
@@ -1841,6 +1844,7 @@ test_closeConsoleValidSession
 	self assert: dictionaryBrowser isOpen.
 	self assert: simpleInspector isOpen.
 	self assert: complexInspector isOpen.
+	self assert: methodHistoryBrowser isOpen.
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #yes.
 	
@@ -1852,7 +1856,8 @@ test_closeConsoleValidSession
 	self deny: workspace isOpen.
 	self deny: dictionaryBrowser isOpen.
 	self deny: simpleInspector isOpen.
-	self deny: complexInspector isOpen]
+	self deny: complexInspector isOpen.
+	self deny: methodHistoryBrowser isOpen]
 			ensure: 
 				[projectsBrowser := nil.
 				GciSession current: nil.
