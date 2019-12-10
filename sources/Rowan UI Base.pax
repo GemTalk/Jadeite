@@ -25,6 +25,7 @@ package classNames
 	add: #JadeiteLoggerPresenter;
 	add: #JadeiteLoggerShell;
 	add: #JadeiteLoginShell;
+	add: #JadeiteMethodHistoryBrowser;
 	add: #JadeiteMethodListBrowser;
 	add: #JadeiteMethodListPresenter;
 	add: #JadeiteMethodSourcePresenter;
@@ -94,7 +95,6 @@ package methodNames
 	add: #CodeSourcePresenter -> #executeSelectionOrLine;
 	add: #CodeSourcePresenter -> #jadeInspect;
 	add: #CodeSourcePresenter -> #methodMenuBreak:;
-	add: #CodeSourcePresenter -> #shortenSelection:;
 	add: #Collection -> #basicPrepareForReplication;
 	add: #Collection -> #prepareForReplication;
 	add: #GciSession -> #_executeString:fromContextOop:environment:;
@@ -315,10 +315,19 @@ package methodNames
 	add: #ListModel -> #removeAtIndexWithoutNotification:;
 	add: #ListPresenter -> #selectServiceStartingWith:;
 	add: #MCClassDefinition -> #initialize:;
+	add: #MCDefinition -> #isMethodModification;
+	add: #MCDefinition -> #revert:;
+	add: #MCMethodDefinition -> #isMethodModification;
+	add: #MCMethodDefinition -> #revert:;
+	add: #MCModification -> #clearObsoletionMemo;
+	add: #MCModification -> #isMethodModification;
+	add: #MCModification -> #revert:;
 	add: #MCPatchBrowser -> #browseChangedThing;
 	add: #MCPatchBrowser -> #browseImplementors;
 	add: #MCPatchBrowser -> #browseSenders;
 	add: #MCPatchBrowser -> #operationSelected;
+	add: #MCPatchOperation -> #isMethodModification;
+	add: #MCPatchOperation -> #revert:;
 	add: #MethodListPresenter -> #browseClass;
 	add: #MethodListPresenter -> #selectedMethodsAreTestCases;
 	add: #MethodSourcePresenter -> #editMenuStrings;
@@ -468,6 +477,7 @@ package setPrerequisites: (IdentitySet new
 	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Radio\Dolphin Radio Buttons';
 	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Text\Dolphin Rich Text Presenter';
 	add: '..\Core\Object Arts\Dolphin\MVP\Views\Scintilla\Dolphin Scintilla View';
+	add: '..\Core\Object Arts\Dolphin\MVP\Views\Slider\Dolphin Slider Control';
 	add: '..\Core\Object Arts\Dolphin\MVP\Views\Sliding Tray\Dolphin Slidey-Inney-Outey Thing';
 	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Text\Dolphin Text Presenter';
 	add: '..\Core\Object Arts\Dolphin\MVP\Models\Tree\Dolphin Tree Models';
@@ -479,6 +489,7 @@ package setPrerequisites: (IdentitySet new
 	add: 'GemStone Objects';
 	add: 'GemStone Services';
 	add: 'GemStone Session';
+	add: '..\Core\Contributions\IDB\IDB Method History';
 	add: 'Jade Autocompletation';
 	add: 'Jade Deployment';
 	add: 'Jade Inspector';
@@ -880,7 +891,7 @@ JadeiteProjectsSystemBrowser subclass: #JadeiteBrowser
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 MCPatchBrowser subclass: #RowanPatchBrowser
-	instanceVariableNames: 'name'
+	instanceVariableNames: 'name diffsPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -891,6 +902,11 @@ RowanShell subclass: #JadeiteProjectListBrowser
 	classInstanceVariableNames: ''!
 RowanShell subclass: #RowanPackageShell
 	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+MethodHistoryBrowser subclass: #JadeiteMethodHistoryBrowser
+	instanceVariableNames: 'session'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -916,11 +932,11 @@ currentSelection
 	selection isEmpty ifTrue: [^selection].
 	selection first = $# ifTrue: [selection := selection copyFrom: 2 to: selection size].
 	selection isEmpty ifTrue: [^selection].
-	selection first = $'
+	(selection first = $' and: [selection last = $'])
 		ifTrue: 
 			[selection := selection copyFrom: 2 to: selection size.
 			selection isEmpty ifTrue: [^selection].
-			selection last = $' ifTrue: [selection := selection copyFrom: 1 to: selection size - 1]].
+			selection := selection copyFrom: 1 to: selection size - 1].
 	^RowanAnsweringService new expressionSelector: selection session: self gciSession!
 
 executeSelectionOrLine
@@ -935,8 +951,9 @@ jadeInspect
 methodMenuBreak: menu
 	| currentSelection implementorsCommand sendersCommand browseClassMenuItem menuPosition implementorsItem sendersItem currentSelectionMenuItemName |
 	currentSelection := self currentSelection.
-	currentSelectionMenuItemName := (currentSelection includes: Character space)
-				ifTrue: [self shortenSelection: currentSelection]
+	currentSelection := currentSelection copyWithout: Character space.
+	currentSelectionMenuItemName := currentSelection size > 50
+				ifTrue: [(currentSelection copyFrom: 1 to: 50) , ' ...']
 				ifFalse: [currentSelection].
 	menu items copy do: 
 			[:item |
@@ -963,22 +980,12 @@ methodMenuBreak: menu
 				argument: currentSelection.
 	sendersItem := CommandMenuItem command: sendersCommand
 				description: 'Browse Senders of #' , currentSelectionMenuItemName.
-	menu insertItem: sendersItem at: menuPosition + 1!
-
-shortenSelection: currentSelection
-	| readStream |
-	readStream := ReadStream on: currentSelection.
-	^
-	[| string |
-	string := readStream upTo: Character space.
-	string := string , ' ...']
-			ensure: [readStream close]! !
+	menu insertItem: sendersItem at: menuPosition + 1! !
 !CodeSourcePresenter categoriesFor: #browseSelectedClass!Jade!public! !
 !CodeSourcePresenter categoriesFor: #currentSelection!public! !
 !CodeSourcePresenter categoriesFor: #executeSelectionOrLine!Jade!private! !
 !CodeSourcePresenter categoriesFor: #jadeInspect!Jade!private! !
 !CodeSourcePresenter categoriesFor: #methodMenuBreak:!menus!public! !
-!CodeSourcePresenter categoriesFor: #shortenSelection:!menus!public! !
 
 !CodeSourcePresenter class methodsFor!
 
@@ -4287,6 +4294,49 @@ initialize: aStream
 					definition copyFrom: i + 1 to: j - 1]! !
 !MCClassDefinition categoriesFor: #initialize:!public! !
 
+!MCDefinition methodsFor!
+
+isMethodModification
+	^false!
+
+revert: session! !
+!MCDefinition categoriesFor: #isMethodModification!public!testing! !
+!MCDefinition categoriesFor: #revert:!public! !
+
+!MCMethodDefinition methodsFor!
+
+isMethodModification
+	^true!
+
+revert: session
+	| classService |
+	classService := RowanClassService named: className asString.
+	classService
+		command: #saveMethodSource:category:;
+		commandArgs: (Array with: source with: category).
+	BrowserUpdate current issueCommand: (Array with: classService) session: session! !
+!MCMethodDefinition categoriesFor: #isMethodModification!public!testing! !
+!MCMethodDefinition categoriesFor: #revert:!public! !
+
+!MCModification methodsFor!
+
+clearObsoletionMemo
+	obsoletionMemo := nil!
+
+isMethodModification
+	^modification isMethodModification!
+
+revert: session 
+	self isMethodModification
+		ifTrue: 
+			[obsoletion revert: session.
+			modification
+				source: obsoletion source;
+				category: obsoletion category]! !
+!MCModification categoriesFor: #clearObsoletionMemo!public! !
+!MCModification categoriesFor: #isMethodModification!public! !
+!MCModification categoriesFor: #revert:!public! !
+
 !MCPatchBrowser methodsFor!
 
 browseChangedThing
@@ -4363,6 +4413,15 @@ operationSelected
 !MCPatchBrowser categoriesFor: #browseImplementors!public! !
 !MCPatchBrowser categoriesFor: #browseSenders!public! !
 !MCPatchBrowser categoriesFor: #operationSelected!public! !
+
+!MCPatchOperation methodsFor!
+
+isMethodModification
+	^false!
+
+revert: session! !
+!MCPatchOperation categoriesFor: #isMethodModification!public! !
+!MCPatchOperation categoriesFor: #revert:!public! !
 
 !MethodListPresenter methodsFor!
 

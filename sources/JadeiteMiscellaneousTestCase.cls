@@ -566,7 +566,7 @@ test_workspaceSymbolImplementors
 test_workspaceSymbolSenders
 	| methodListBrowser browseSendersItem menu |
 	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
-	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Implementors'.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Senders'.
 	workspace codePane documentPresenter value: '#env:categorysDo:'.
 	workspace codePane selectAll.
 	menu := workspace codePane documentPresenter view contextMenu.
@@ -577,6 +577,70 @@ test_workspaceSymbolSenders
 	self assert: browseSendersItem text equals: 'Browse Senders of #env:categorysDo:'.
 	methodListBrowser := workspace codePane browseSenders.
 	[self assert: ('Senders of ''env:categorysDo:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
+test_workspaceSymbolSendersLeadingQuote
+	| methodListBrowser browseSendersItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session)
+				caption: 'Jade Workspace - test_workspaceSymbolSendersLeadingQuote'.
+	workspace codePane documentPresenter value: '''abcde'' perform: #copyFrom:to: with: 2 with: 3'.
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseSendersItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseSendersOf:]]
+				ifNone: [].
+	self assert: browseSendersItem text equals: 'Browse Senders of #perform:with:with:'.
+	methodListBrowser := workspace codePane browseSenders.
+	[self assert: ('Senders of ''perform:with:with:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
+test_workspaceSymbolSendersRemoveSpaces
+	| methodListBrowser browseSendersItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session)
+				caption: 'Jade Workspace - test_workspaceSymbolSendersRemoveSpaces'.
+	workspace codePane documentPresenter value: 'perform: with:'.	"has a space between keywords"
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseSendersItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseSendersOf:]]
+				ifNone: [].
+	self assert: browseSendersItem text equals: 'Browse Senders of #perform:with:'.
+	methodListBrowser := browseSendersItem command value.
+	[self assert: ('Senders of ''perform:with:''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close].
+	workspace codePane documentPresenter value: 'abc: def eft'.	"spaces within quotes"
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseSendersItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseSendersOf:]]
+				ifNone: [].
+	self assert: browseSendersItem text equals: 'Browse Senders of #abc:defeft'.
+	methodListBrowser := browseSendersItem command value.
+	[self assert: ('Senders of ''abc:defeft''*' match: methodListBrowser caption)]
+		ensure: [methodListBrowser view close]!
+
+test_workspaceSymbolSendersTruncateLongSelectors
+	| methodListBrowser browseSendersItem menu |
+	self testsIssue: #issue520 withTitle: '(3.0.77) `browse senders`has inconsistent behavior'.
+	workspace := (JadeWorkspace showOnSession: session)
+				caption: 'Jade Workspace - test_workspaceSymbolSendersRemoveSpaces'.
+	workspace codePane documentPresenter
+		value: 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz'.
+	workspace codePane selectAll.
+	menu := workspace codePane documentPresenter view contextMenu.
+	workspace codePane methodMenu: menu.
+	browseSendersItem := menu items
+				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseSendersOf:]]
+				ifNone: [].
+	self assert: browseSendersItem text
+		equals: 'Browse Senders of #abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx ...'.
+	methodListBrowser := browseSendersItem command value.
+	[self assert: ('Senders of ''abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz''*' match: methodListBrowser caption)]
 		ensure: [methodListBrowser view close]!
 
 test_workspaceSymbolWithQuotesImplementors
@@ -668,6 +732,9 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceStringWithQuotesSenders!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolImplementors!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolSenders!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolSendersLeadingQuote!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolSendersRemoveSpaces!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolSendersTruncateLongSelectors!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolWithQuotesImplementors!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolWithQuotesSenders!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testClassServiceNameIsString!public! !

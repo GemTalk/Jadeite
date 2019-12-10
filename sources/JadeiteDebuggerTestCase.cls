@@ -852,6 +852,38 @@ test_debuggerModifiedSourcePaneStayOnFrame
 	self assert: debugger frameListPresenter selectionByIndex equals: 4. "did not change frames"]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+test_disablebreakpointHighlighting
+	| indicator |
+	self testsIssue: #issue606
+		withTitle: 'On breakpoint enable/disable, breakpoint/method list browsers not updated (3.0.84)'.
+	self enableBreakpoints.
+	self openProjectBrowser.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self setBreakAt: 2.
+	
+	[self openDebuggerOn: 'RowanSample1Test new test1'.
+	self
+		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
+		assert: indicator range = (35 to: 37);
+		assert: indicator styleName = #breakPoint;
+		assert: indicator tag = 'Break at step point #2'.
+	self disableBreakpoints.
+	self
+		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
+		assert: indicator range = (35 to: 37);
+		assert: indicator styleName = #disabledBreakPoint;
+		assert: indicator tag = 'Break at step point #2'.
+	self enableBreakpoints.
+	self
+		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
+		assert: indicator range = (35 to: 37);
+		assert: indicator styleName = #breakPoint;
+		assert: indicator tag = 'Break at step point #2']
+			ensure: 
+				[self clearBreakAt: 2.
+				self debuggerDo: [debugger resumeProcess]]!
+
 test_doubleClickIncludesColon
 	"It's difficult to fake up a mouse event so ensure the method that grabs the colon
 	is setup as an event and includes the colon after being called"
@@ -2065,6 +2097,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_debugCodeWithLeadingTab!public! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneChangeFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneStayOnFrame!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_disablebreakpointHighlighting!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_doubleClickIncludesColon!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_duplicateInstVars!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_duplicateInstVarsHierarchy!public!test class hierarchy! !
