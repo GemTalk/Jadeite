@@ -4305,7 +4305,6 @@ selectServiceStartingWith: aKeyPressEvent
 
 revert: session
 	| classService methodService |
-	self halt. 
 	classService := RowanClassService named: definition basicClassName.
 	classService meta: definition classIsMeta.
 	methodService := RowanMethodService new

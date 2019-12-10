@@ -26,6 +26,11 @@ addNewMethod
 		in: 'RowanSample1Test'
 		category: 'addition'!
 
+setUp
+	super setUp.
+	projectsBrowser
+		ifNil: [projectsBrowser := self openWindow: [JadeiteBrowser showOnSession: session]]!
+
 tearDown
 	super tearDown.
 	changesBrowser ifNotNil: [self destroy: changesBrowser].
@@ -35,8 +40,6 @@ test_browseImplementors
 	| methodListBrowser |
 	self testsIssue: #issue407
 		withTitle: '(3.0.56) would like option to browse class OR method from changes window'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	self selectRowanSample1Class.
 	self
 		saveMethod: 'fnoodle  ^123'
@@ -60,8 +63,6 @@ test_browseImplementorsSelectsChangedMethod
 	| methodListBrowser |
 	self testsIssue: #issue407
 		withTitle: '(3.0.56) would like option to browse class OR method from changes window'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	self selectRowanSample1Class.
 	self
 		saveMethod: 'size  ^super size'
@@ -82,8 +83,6 @@ test_browseImplementorsSelectsChangedMethod
 test_browseMethodSelectsAddedClass
 	| projectService secondProjectBrowser |
 	self testsIssue: #issue415 withTitle: 'Browse changes on a class definition change handled poorly'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	self selectRowanSample1Class.
 	self addNewClass.
 	projectService := transcript projectListPresenter projectListPresenter list
@@ -126,10 +125,7 @@ test_browseSenders
 	| methodListBrowser |
 	self testsIssue: #issue407
 		withTitle: '(3.0.56) would like option to browse class OR method from changes window'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [JadeiteBrowser showOnSession: session]].
-	
-	[self selectRowanSample1Class.
+	self selectRowanSample1Class.
 	self
 		saveMethod: 'fnoodle  ^123'
 		in: 'RowanSample1'
@@ -152,15 +148,30 @@ test_browseSenders
 	
 	[self assert: methodListBrowser primaryPresenter methodListPresenter selection selector
 		equals: #sendsFnoodle]
-			ensure: [self destroy: methodListBrowser]]
-			ensure: [self destroy: projectsBrowser]!
+			ensure: [self destroy: methodListBrowser]!
+
+test_revertMethodAddition
+	| change |
+	self testsIssue: #issue624
+		withTitle: '(3.0.85) A revert menu item in the changes browser would be useful'.
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'ooble  ^123'
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	change := changesBrowser operationListPresenter list first.
+	self assert: change isMethodAddition.
+	self assert: change definition source trimBlanks equals: 'ooble  ^123'.
+	changesBrowser operationListPresenter selection: change.
+	changesBrowser revert.
+	self assert: change definition selector equals: 'ooble (removed)'!
 
 test_revertMethodModification
 	| change |
 	self testsIssue: #issue624
 		withTitle: '(3.0.85) A revert menu item in the changes browser would be useful'.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	self selectRowanSample1Test.
 	self
 		saveMethod: 'test1  ^123'
@@ -177,20 +188,47 @@ test_revertMethodModification
 	self assert: RowanSample1 new foo = ''foo'''.
 	changesBrowser operationListPresenter selection: change.
 	changesBrowser revert.
-	
-	[self assert: change modification source trimBlanks replaceLfWithCrLf
+	self assert: change modification source trimBlanks replaceLfWithCrLf
 		equals: 'test1
 
 	self assert: RowanSample1 new foo = ''foo'''.
-	self assert: changesBrowser diffsPresenter afterTitlePresenter value equals: 'Image (no change)']
-			ensure: [self destroy: projectsBrowser]! !
+	self assert: changesBrowser diffsPresenter afterTitlePresenter value equals: 'Image (no change)'!
+
+test_revertMethodRemoval
+	| change |
+	self testsIssue: #issue624
+		withTitle: '(3.0.85) A revert menu item in the changes browser would be useful'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self projectsPresenter removeMethods: self classListPresenter selections.
+	self assertIsNil: (self methodListPresenter list
+				detect: [:methodService | methodService selector = #test1]
+				ifNone: []).
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	change := changesBrowser operationListPresenter list first.
+	self assert: change isMethodRemoval.
+	changesBrowser operationListPresenter selection: change.
+	self assert: change definition source trimBlanks replaceLfWithCrLf
+		equals: 'test1
+
+	self assert: RowanSample1 new foo = ''foo'''.
+	changesBrowser revert.
+	self selectRowanSample1Test.
+	self
+		denyIsNil: (self methodListPresenter list detect: [:methodService | methodService selector = #test1]
+				ifNone: []).
+	self assert: change definition selector equals: 'test1 (restored)'! !
 !JadeiteChangesBrowserTestCase categoriesFor: #addNewClass!private! !
 !JadeiteChangesBrowserTestCase categoriesFor: #addNewMethod!private! !
+!JadeiteChangesBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteChangesBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementors!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementorsSelectsChangedMethod!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseMethodSelectsAddedClass!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseMethodSelectsAddedMethod!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseSenders!public!tests! !
+!JadeiteChangesBrowserTestCase categoriesFor: #test_revertMethodAddition!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_revertMethodModification!public!tests! !
+!JadeiteChangesBrowserTestCase categoriesFor: #test_revertMethodRemoval!public!tests! !
 

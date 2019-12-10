@@ -47,8 +47,10 @@ package methodNames
 	add: #JadeLoginShell -> #loginWithoutErrorHandling;
 	add: #JadeLoginShell -> #userIDPresenter:;
 	add: #JadePresenter -> #browseClassReferences;
+	add: #MCAddition -> #definition;
 	add: #MCModification -> #modification;
 	add: #MCModification -> #obsoletion;
+	add: #MCRemoval -> #definition;
 	add: #SUnitBrowserModel -> #debugIndividualTestsWithResources:;
 	add: 'ChoicePrompter class' -> #create:;
 	add: 'JadeiteSearch class' -> #allClassNames:;
@@ -343,6 +345,14 @@ browseClassReferences
 	^JadePresenter browseClassReferencesInSession: self gciSession! !
 !JadePresenter categoriesFor: #browseClassReferences!menu handlers!public! !
 
+!MCAddition methodsFor!
+
+definition
+	"for testing"
+
+	^definition! !
+!MCAddition categoriesFor: #definition!accessing!public! !
+
 !MCModification methodsFor!
 
 modification
@@ -356,6 +366,14 @@ obsoletion
 	^obsoletion! !
 !MCModification categoriesFor: #modification!accessing!public! !
 !MCModification categoriesFor: #obsoletion!accessing!public! !
+
+!MCRemoval methodsFor!
+
+definition
+	"for testing"
+
+	^definition! !
+!MCRemoval categoriesFor: #definition!accessing!public! !
 
 !MessageBox class methodsFor!
 
