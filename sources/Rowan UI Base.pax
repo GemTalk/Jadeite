@@ -843,7 +843,7 @@ JadeDebugger subclass: #JadeiteDebugger
 	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore search debuggerService'
 	classVariableNames: ''
 	poolDictionaries: ''
-	classInstanceVariableNames: 'debuggerClass semaphore'!
+	classInstanceVariableNames: 'debuggerClass semaphore lastPosition'!
 JadeWorkspace subclass: #JadeiteGitLog
 	instanceVariableNames: 'projectService'
 	classVariableNames: ''

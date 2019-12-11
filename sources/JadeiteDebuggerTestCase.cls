@@ -1315,6 +1315,26 @@ test_reloadWithDebuggerOpen
 				ifNone: [])]
 			ensure: [self assert: projectsBrowser topShell view close]!
 
+test_reopenInLastPosition
+	| newPosition |
+	self testsIssue: #issue665
+		withTitle: '(3.0.91) Would like debugger to remember it''s last location after resume'.
+	self openDebuggerOn: '| abc |
+abc := Array new. 
+self halt. 
+abc add: 1.
+^abc'.
+	debugger view position: (newPosition := debugger view position + (20 @ 20)).
+	self debuggerDo: [debugger resumeProcess].
+	self closeDebuggers.
+	self openDebuggerOn: '| abc |
+abc := Array new. 
+self halt. 
+abc add: 1.
+^abc'.
+	self assert: debugger view position equals: newPosition.
+	self debuggerDo: [debugger resumeProcess]!
+
 test_restartInBlock
 	| restartProcess |
 	self testsIssue: #issue126
@@ -2115,6 +2135,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reloadWithDebuggerOpen!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_reopenInLastPosition!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_restartInBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_runningTestDoesNotLoseStepPoint!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_saveMethod!public!tests! !

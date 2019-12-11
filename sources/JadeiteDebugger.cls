@@ -4,7 +4,7 @@ JadeDebugger subclass: #JadeiteDebugger
 	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore search debuggerService'
 	classVariableNames: ''
 	poolDictionaries: ''
-	classInstanceVariableNames: 'debuggerClass semaphore'!
+	classInstanceVariableNames: 'debuggerClass semaphore lastPosition'!
 JadeiteDebugger guid: (GUID fromString: '{cae790de-8a45-49eb-813a-6cb32999cd4d}')!
 JadeiteDebugger comment: ''!
 !JadeiteDebugger categoriesForClass!Unclassified! !
@@ -241,6 +241,7 @@ onIdleEntered
 
 onViewClosed
 	"Private - copied from RowanSystemBrowserPresenter>>onViewClosed"
+
 	BrowserUpdate current logComment: 'Closing Debugger {' , self identityHash printString , '}'.
 	processList := processListPresenter list
 				collect: [:each | GsProcess session: gciSession oopType: each oopType].
@@ -248,7 +249,8 @@ onViewClosed
 	"Allow test to know when view is closed"
 	self class signalSemaphore.
 	self terminateIdleProcess.
-	super onViewClosed.!
+	super onViewClosed.
+	self class lastPosition: self view position!
 
 onViewDestroyed
 	"Private - copied from RowanSystemBrowserPresenter>>onViewClosed"
@@ -261,7 +263,8 @@ onViewOpened
 
 	super onViewOpened.
 	self registerPresentersForUpdates.
-	BrowserUpdate current logComment: 'Opening Debugger {' , self identityHash printString , '}'!
+	BrowserUpdate current logComment: 'Opening Debugger {' , self identityHash printString , '}'.
+	self class lastPosition ifNotNil: [self view position: self class lastPosition. ]!
 
 processListPresenter
 	^processListPresenter!
@@ -359,8 +362,7 @@ restart
 
 resumeProcess
 	self isOkayToChangeFrame ifFalse: [^self].
-	^super resumeProcess
-!
+	^super resumeProcess!
 
 saveMethod
 	| classService string changedSource |
@@ -595,6 +597,12 @@ debuggerClass: aDebugger
 	debuggerClass := aDebugger.
 !
 
+lastPosition
+	^lastPosition!
+
+lastPosition: anObject
+	lastPosition := anObject!
+
 resource_Default_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.
 	DO NOT EDIT OR RECATEGORIZE THIS METHOD.
@@ -627,6 +635,8 @@ signalSemaphore
 !JadeiteDebugger class categoriesFor: #aboutToShowErrorShellOn:!public! !
 !JadeiteDebugger class categoriesFor: #debuggerClass!public! !
 !JadeiteDebugger class categoriesFor: #debuggerClass:!public! !
+!JadeiteDebugger class categoriesFor: #lastPosition!accessing!private! !
+!JadeiteDebugger class categoriesFor: #lastPosition:!accessing!private! !
 !JadeiteDebugger class categoriesFor: #resource_Default_view!public!resources-views! !
 !JadeiteDebugger class categoriesFor: #semaphore!public! !
 !JadeiteDebugger class categoriesFor: #semaphore:!public! !
