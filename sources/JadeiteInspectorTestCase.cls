@@ -708,7 +708,35 @@ def'''
 	self assert: inspector model = 'abc
 def'.
 	self assert: inspector documentPresenter model value = '''abc
-def'''! !
+def'''!
+
+test_unicodeInspect1
+	| remoteObject |
+	self testsIssue: #issue651 withTitle: 'Inspecting dictionary with double byte string fails'.
+	session
+		executeString: '| dbs d|
+dbs := ''a'', (String with: (Character withValue: 353)), ''b''.
+d := Dictionary new.
+d at: #key put: (''a'', dbs) asString.
+UserGlobals at: #aDict1 put: d.'.
+	remoteObject := session executeString: 'UserGlobals at: #aDict1'.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: (inspector instVarListPresenter list at: 3) key equals: '-#''key''->''aa?b'''!
+
+test_unicodeInspect2
+	| remoteObject |
+	self testsIssue: #issue651 withTitle: 'Inspecting dictionary with double byte string fails'.
+	session
+		executeString: '
+| dbs d|
+dbs := ''a'', (String with: (Character withValue: 353)), ''b''.
+d := Dictionary new.
+d at: (''d'', dbs) asString put: 23.
+UserGlobals at: #aDict4 put: d.'.
+	remoteObject := session executeString: 'UserGlobals at: #aDict4'.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: (inspector instVarListPresenter list at: 3) key
+		equals: '-<<unprintable key. charSize > 1>>->23'! !
 !JadeiteInspectorTestCase categoriesFor: #commandQueryOn:!private! !
 !JadeiteInspectorTestCase categoriesFor: #enableForward:andBack:!private! !
 !JadeiteInspectorTestCase categoriesFor: #inspectInstVarAt:!private! !
@@ -749,4 +777,6 @@ def'''! !
 !JadeiteInspectorTestCase categoriesFor: #test_registeredPresentersInInspectorCleanedUp!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_showReturnsNavigationInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_showReturnsStringInspector!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_unicodeInspect1!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_unicodeInspect2!public!tests! !
 
