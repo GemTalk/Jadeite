@@ -13,7 +13,8 @@ JadeiteSearch comment: 'Derived from SmalltalkSearchPresenter'!
 allClassesStartingWith: string
 	| displayNames |
 	self class allClassNames isEmpty ifTrue: [self class initializeClassNamesIn: session].
-	displayNames := self class allClassNames select: [:className | className beginsWith: string].
+	displayNames := self class allClassNames
+				select: [:className | (string asLowercase, '*') match: className asLowercase].
 	^displayNames!
 
 autocompleteSymbolsFrom: partialSelector

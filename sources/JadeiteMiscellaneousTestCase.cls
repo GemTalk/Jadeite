@@ -144,6 +144,16 @@ test_autoCommitUpdatedInSession
 	self deny: session autoCommit]
 			ensure: [self setAutoCommit: autoCommit]!
 
+test_autocompleteCaseInsensitiveSearch
+	self testsIssue: #issue660
+		withTitle: 'Class autocomplete is not case insensitive (fix #636 not complete in 3.0.91)'.
+	JadeiteSearch initializeAutocompleteSymbolsIn: session.
+	JadeiteSearch autoCompleteEnabled: true.
+	self assert: ((JadeiteSearch new allClassesStartingWith: 'cp') includes: 'CPointer').
+	self assert: ((JadeiteSearch new allClassesStartingWith: 'cp') includes: 'CPreprocessor').
+	self assert: ((JadeiteSearch new allClassesStartingWith: 'e') includes: 'Error').
+	self assert: ((JadeiteSearch new allClassesStartingWith: 'euc') includes: 'EUCString')!
+
 test_autocompleteSaveClassSymbolAdded
 	self testsIssue: #issue647 withTitle: 'Adding class doesn''t update autocomplete symbols'.
 	self openProjectBrowser.
@@ -706,6 +716,7 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocDisplay!auto commit!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocExecution!auto commit!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitUpdatedInSession!auto commit!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteCaseInsensitiveSearch!public!test methods! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSaveClassSymbolAdded!public!test methods! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSaveMethodSymbolAdded!public!test methods! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSort!public!test! !
