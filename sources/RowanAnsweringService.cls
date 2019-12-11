@@ -74,6 +74,12 @@ setBreakpointsEnabled: boolean session: session
 	commandArgs := Array with: boolean.
 	BrowserUpdate current issueCommand: (Array with: self) session: session!
 
+symbolExists: aSymbol session: session
+	command := #symbolExists:.
+	commandArgs := Array with: aSymbol.
+	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	^answer!
+
 updateSymbols: unused
 	updateType = #updateSymbols: ifFalse: [^self].
 	JadeiteSearch allClassNames addAll: answer first.
@@ -91,5 +97,6 @@ updateSymbols: unused
 !RowanAnsweringService categoriesFor: #needsCommit:!commands!public! !
 !RowanAnsweringService categoriesFor: #setAutoCommit:for:!commands!public! !
 !RowanAnsweringService categoriesFor: #setBreakpointsEnabled:session:!commands!public! !
+!RowanAnsweringService categoriesFor: #symbolExists:session:!commands!public!testing! !
 !RowanAnsweringService categoriesFor: #updateSymbols:!public!updating! !
 

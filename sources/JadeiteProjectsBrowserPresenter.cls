@@ -371,15 +371,18 @@ containedDictionaryLabel
 	^containedDictionary!
 
 copyClass
-	| oldClassService newClassName |
+	| oldClassService newClassName validClassNameSelected |
 	oldClassService := self selectedClass ifNil: [^MessageBox notify: 'Class must be selected'].
-	(newClassName := Prompter
-				on: oldClassService name
-				prompt: 'Copy ' , oldClassService name , ' to:'
-				caption: 'Copy class') isNil
-		ifTrue: [^self].
-	self basicCopyClass: oldClassService to: newClassName.
-!
+	validClassNameSelected := false.
+	[validClassNameSelected] whileFalse: 
+			[(newClassName := Prompter
+						on: oldClassService name
+						prompt: 'Copy ' , oldClassService name , ' to:'
+						caption: 'Copy class') isNil
+				ifTrue: [^self].
+			validClassNameSelected := self symbolExists: newClassName.
+			validClassNameSelected ifFalse: [MessageBox notify: 'Symbol exists. Please retry.']].
+	self basicCopyClass: oldClassService to: newClassName!
 
 copyProjectInfo
 	projectInfoTab selection last ifNil:[^self]. 
@@ -2009,6 +2012,9 @@ sunitPresenter
 
 	^sunitPresenter!
 
+symbolExists: newClassName
+	^(RowanAnsweringService new symbolExists: newClassName asSymbol session: self gciSession) not!
+
 targetCategory
 	self isVariablesTabSelected ifTrue: [^self selectedMethodCategory].
 	categoryListPresenter hasSelection ifFalse: [^self selectedMethodCategory].
@@ -2527,6 +2533,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #showSuperClassComparison!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #sundryCleanup!initialize/release!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #sunitPresenter!menu handlers!public! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #symbolExists:!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #targetCategory!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #textAreaTabs!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #textTabChanged!event handlers!public! !
