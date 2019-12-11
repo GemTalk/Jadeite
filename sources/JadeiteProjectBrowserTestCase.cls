@@ -1913,6 +1913,20 @@ test_copyClassEnablement
 				view: self classListPresenter view.
 	self deny: commandQuery isEnabled!
 
+test_copyClassExistingClassRetry
+	self testsIssue: #issue650
+		withTitle: '(3.0.89) `Jadeite>>Auto Commit enabled` menu out of sync with auto commit state'.
+	self selectRowanSample1Test.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestPrompter plannedResult: (OrderedCollection with: 'RowanSample1Test' with: 'RowanSample1Test2').	"first dialog - enter existing class name. second - enter non-existing name"
+	TestMessageBox plannedResult: #ok.	"got retry option"
+	self projectsPresenter copyClass.
+	self assertIsNil: TestPrompter plannedResult.
+	self assertIsNil: TestMessageBox plannedResult.
+	self assert: self classListPresenter selection name equals: 'RowanSample1Test2']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_definedClassMenuItem
 	| classMenuItem menuLabel |
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
@@ -4008,10 +4022,6 @@ test_renameClassMethodListUpdatesFromClassesMenu
 	"run from classes menu per bug #640"
 
 	| classesMenu renameMenuItem |
-	true
-		ifTrue: 
-			[self rowanFixMe.
-			^self	"restore when rowan support is fixed in #644"].
 	self testsIssue: #issue439 withTitle: '`rename` class menu item would be useful'.
 	self testsIssue: #issue465 withTitle: '(3.067) error after rename class in hierarchy view'.
 	self testsIssue: #issue640 withTitle: 'Error dialogs from PB menu items when on Sunit tab'.
@@ -5444,6 +5454,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleValidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_confirmOverrideExistingAccessorMethods!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_copyClassEnablement!public!test menus!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_copyClassExistingClassRetry!public!test rename class! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_displayCompileWarningsNicely!public!test class list! !
