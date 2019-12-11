@@ -351,6 +351,25 @@ test_forwardBack
 	self assert: forwardQuery isEnabled.
 !
 
+test_fullInspectArray
+	| remoteObject list |
+	self testsIssue: #issue657
+		withTitle: 'Cannot inspect all of an array with more than 200 items (3.0.91)'.
+	remoteObject := session
+				executeString: '| coll |
+coll := Array new.
+1 to: 500 do: [:i |
+	coll add: ''entry'', i asString].
+coll
+'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	list := inspector instVarListPresenter list.
+	self assert: list size equals: 502.	"500 elements + self + asOop"
+	3 to: list size
+		do: [:index | self assert: ('''entry*' match: (session printString: (list at: index) value))]!
+
 test_inspectorHandlesError
 	| remoteObject |
 	self testsIssue: #issue433 withTitle: 'Walkback on new inspector in presence of #size method'.
@@ -708,6 +727,7 @@ def'''! !
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusInstVars!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_dive!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_fullInspectArray!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorHandlesError!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorRootObjectRegistered!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorRootSpecialObjectNotRegistered!public!tests! !
