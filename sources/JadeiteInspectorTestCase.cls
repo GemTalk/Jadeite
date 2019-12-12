@@ -453,7 +453,7 @@ test_interactionInspect
 	list do: [:insp | insp view close].
 	self assert: JadeNavigationInspector allInstances size equals: 0.
 	answeringService := RowanAnsweringService new.
-	answeringService command: #exec:; commandArgs: (Array with:  'UserGlobals inspect').
+	answeringService command: #exec:; commandArgs: (Array with:  'UserGlobals inspect. nil').
 	self issueCommand: answeringService. 
 	self assert: JadeNavigationInspector allInstances size equals: 1.
 	inspector := JadeNavigationInspector allInstances first.
