@@ -267,7 +267,8 @@ onViewOpened
 		updateView;
 		sendRequiredMessages;
 		yourself.
-	[self checkScintillaVersion] postToMessageQueue.!
+	[self checkScintillaVersion] postToMessageQueue.
+	self setWorkingDirectory.!
 
 openHomePage
 
@@ -278,7 +279,6 @@ openHomePage
 
 postLogin: aGciSession
 	versionListPresenter view disable.
-	self setWorkingDirectory.
 	aGciSession
 		when: #logout
 		send: #invalidateLoginButton
