@@ -288,6 +288,11 @@ test_versionMatches
 	self testsIssue: #issue521 withTitle: 'Jadeite version check'.
 	self assert: (session executeString: 'RowanService version') equals: RowanService version!
 
+test_workingDirectoryEqualsImageDirectory
+	"should be set after login window first opens"
+
+	self assert: File workingDirectory equals: SessionManager current imageBase!
+
 test_workspaceBrowseProjects
 	| workspace jadeiteMenu browseProjectsItem |
 	self testsIssue: #issue265 withTitle: 'workspace could use a `browse projects` menu item ... '.
@@ -726,6 +731,7 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_instVarConstants!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_versionMatches!public!test! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workingDirectoryEqualsImageDirectory!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceConfirmInteraction!public!test!test menus!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceDoubleClickIncludesColon!public!test!test workspaces! !
