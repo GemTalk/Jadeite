@@ -99,6 +99,35 @@ test_abortTransaction
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded!
 
+test_autoCommitMenuItem
+	| autoCommit jadeiteMenu autoCompleteMenuItem commandQuery |
+	self testsIssue: #issue650
+		withTitle: '(3.0.89) `Jadeite>>Auto Commit enabled` menu out of sync with auto commit state'.
+	autoCommit := transcript autoCommit.
+	
+	[jadeiteMenu := transcript view menuBar items detect: [:menu | '*Jadeite*' match: menu text]
+				ifNone: [].
+	self denyIsNil: jadeiteMenu.
+	autoCompleteMenuItem := jadeiteMenu items
+				detect: [:command | '*AutoCommit enabled*' match: command text]
+				ifNone: [].
+	commandQuery := CommandQuery commandDescription: autoCompleteMenuItem commandDescription
+				source: transcript projectListPresenter view.
+	transcript autoCommit: true.
+	transcript queryCommand: commandQuery.
+	self assert: commandQuery isChecked.
+	transcript autoCommit: false.
+	transcript queryCommand: commandQuery.
+	self deny: commandQuery isChecked.
+	transcript codePane ensureVisible.	"selecting the code pane was the immediate cause of the bug"
+	transcript autoCommit: true.
+	transcript queryCommand: commandQuery.
+	self assert: commandQuery isChecked.
+	transcript autoCommit: false.
+	transcript queryCommand: commandQuery.
+	self deny: commandQuery isChecked]
+			ensure: [transcript autoCommit: autoCommit]!
+
 test_autoCommitOff
 	| answeringService |
 	self testsIssue: #issue396 withTitle: 'Ability to turn on autocommit would be nice'.
@@ -689,6 +718,7 @@ writeToPrefsFile: string
 !JadeiteTranscriptTestCase categoriesFor: #savePrefsBackup!private!support!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_abortRemovesProjectsInAllBrowsers!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_abortTransaction!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_autoCommitMenuItem!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_autoCommitOff!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_autoCommitOn!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_autoCommitSet!public!tests! !

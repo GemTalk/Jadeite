@@ -32,7 +32,7 @@ autoCommit: boolean
 		ifNotNil: 
 			[:session |
 			"not inconceivable there are dead transcripts around from test runs"
-			session autoCommit: boolean]!
+			session autoCommit: boolean].!
 
 autoCompleteEnabled
 	"for testing"
