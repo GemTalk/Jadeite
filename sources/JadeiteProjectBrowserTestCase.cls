@@ -4039,6 +4039,7 @@ test_renameClassMethodListUpdatesFromClassesMenu
 				detect: [:item | '*Classes*' match: item text].
 	renameMenuItem := classesMenu items detect: [:item | '*Rename*' match: item text].
 	self selectSUnitTab.	"must be selected for bug to occur"
+	TestMessageBox plannedResult: #yes.
 	renameMenuItem commandDescription performAgainst: self projectsPresenter.
 	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list size
 		equals: 1.
