@@ -358,7 +358,7 @@ test_workspaceImplementorsMenuNotTooLong
 	workspace codePane documentPresenter view selectAll.
 	self assert: workspace codePane documentPresenter selection equals: 'some random bunch of 123text'.
 	workspace codePane methodMenuBreak: workspace codePane documentPresenter view contextMenu.
-	item := self itemNamed: 'Browse Implementors of #some ...'
+	item := self itemNamed: 'Browse Implementors of #somerandombunchof123text'
 				in: workspace codePane documentPresenter view contextMenu.
 	self assert: item command asSymbol equals: #browseImplementorsOf:!
 
@@ -521,7 +521,7 @@ test_workspaceSendersMenuNotTooLong
 	workspace codePane documentPresenter view selectAll.
 	self assert: workspace codePane documentPresenter selection equals: 'some random bunch of 123text'.
 	workspace codePane methodMenuBreak: workspace codePane documentPresenter view contextMenu.
-	item := self itemNamed: 'Browse Senders of #some ...'
+	item := self itemNamed: 'Browse Senders of #somerandombunchof123text'
 				in: workspace codePane documentPresenter view contextMenu.
 	self assert: item command asSymbol equals: #browseSendersOf:!
 
