@@ -233,6 +233,7 @@ package methodNames
 	add: #JadePresenterA -> #methodListSelection;
 	add: #JadePresenterA -> #openMethodListOn:selecting:;
 	add: #JadePresenterA -> #openMethodListOn:selectingAnyMatch:;
+	add: #JadePresenterA -> #queryCommand:;
 	add: #JadePresenterA -> #refreshBreakPointsIn:;
 	add: #JadePresenterA -> #removeSelectorsStringUsing:;
 	add: #JadePresenterA -> #setBreakPointAt:in:;
@@ -2835,6 +2836,13 @@ openMethodListOn: service selectingAnyMatch: string
 		selectingAnyMatch: string
 		session: self gciSession!
 
+queryCommand: query
+	query commandSymbol = #flipAutoCommit
+		ifTrue: 
+			[query isChecked: GciSession current autoCommit == true.
+			^true].
+	^super queryCommand: query!
+
 refreshBreakPointsIn: methodSourcePresenter
 	| indicators selection breakPointSymbol |
 	selection := self methodListSelection.
@@ -2901,6 +2909,7 @@ updateMethodReferences: services
 !JadePresenterA categoriesFor: #methodListSelection!Jadeite!public! !
 !JadePresenterA categoriesFor: #openMethodListOn:selecting:!menu handlers support!private!queries! !
 !JadePresenterA categoriesFor: #openMethodListOn:selectingAnyMatch:!menu handlers support!private!queries! !
+!JadePresenterA categoriesFor: #queryCommand:!public! !
 !JadePresenterA categoriesFor: #refreshBreakPointsIn:!Jadeite!public! !
 !JadePresenterA categoriesFor: #removeSelectorsStringUsing:!Jadeite!public! !
 !JadePresenterA categoriesFor: #setBreakPointAt:in:!Jadeite!public! !

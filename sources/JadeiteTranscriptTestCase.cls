@@ -25,6 +25,14 @@ allTranscriptPresenters
 browseMenu
 	^transcript view menuBar items detect: [:menu | '*Browse*' match: menu text] ifNone: []!
 
+checkAutoCommitMenuItemCheckmark: commandQuery
+	transcript autoCommit: true.
+	transcript queryCommand: commandQuery.
+	self assert: commandQuery isChecked.
+	transcript autoCommit: false.
+	transcript queryCommand: commandQuery.
+	self deny: commandQuery isChecked!
+
 menuItemIsEnabledInAllPresenters: aSymbol
 	| commandQuery |
 	self allTranscriptPresenters do: 
@@ -113,19 +121,20 @@ test_autoCommitMenuItem
 				ifNone: [].
 	commandQuery := CommandQuery commandDescription: autoCompleteMenuItem commandDescription
 				source: transcript projectListPresenter view.
-	transcript autoCommit: true.
-	transcript queryCommand: commandQuery.
-	self assert: commandQuery isChecked.
-	transcript autoCommit: false.
-	transcript queryCommand: commandQuery.
-	self deny: commandQuery isChecked.
+	transcript transcriptPresenter ensureVisible.
+	self checkAutoCommitMenuItemCheckmark: commandQuery.
+	transcript historyPresenter ensureVisible.
+	self checkAutoCommitMenuItemCheckmark: commandQuery.
+	transcript stoneInfoPresenter ensureVisible.
+	self checkAutoCommitMenuItemCheckmark: commandQuery.
+	transcript mySessionPresenter ensureVisible.
+	self checkAutoCommitMenuItemCheckmark: commandQuery.
+	transcript allSessionsPresenter ensureVisible.
+	self checkAutoCommitMenuItemCheckmark: commandQuery.
 	transcript codePane ensureVisible.	"selecting the code pane was the immediate cause of the bug"
-	transcript autoCommit: true.
-	transcript queryCommand: commandQuery.
-	self assert: commandQuery isChecked.
-	transcript autoCommit: false.
-	transcript queryCommand: commandQuery.
-	self deny: commandQuery isChecked]
+	self checkAutoCommitMenuItemCheckmark: commandQuery.
+	transcript  projectListPresenter ensureVisible. self rowanFixMe. "doesn't actually change view yet. View is DeafObject" 
+	self checkAutoCommitMenuItemCheckmark: commandQuery]
 			ensure: [transcript autoCommit: autoCommit]!
 
 test_autoCommitOff
@@ -713,6 +722,7 @@ writeToPrefsFile: string
 	[fileStream nextPutAll: string] ensure: [fileStream close]! !
 !JadeiteTranscriptTestCase categoriesFor: #allTranscriptPresenters!private!support! !
 !JadeiteTranscriptTestCase categoriesFor: #browseMenu!private!support!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #checkAutoCommitMenuItemCheckmark:!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #menuItemIsEnabledInAllPresenters:!private!support! !
 !JadeiteTranscriptTestCase categoriesFor: #restoreBackupPrefsFile:!private!support!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #savePrefsBackup!private!support!tests! !

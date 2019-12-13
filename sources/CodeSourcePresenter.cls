@@ -252,10 +252,6 @@ pasteClipboard
 	^self editPaste!
 
 queryCommand: query
-	query commandSymbol = #flipAutoCommit
-		ifTrue: 
-			[query isChecked: GciSession current autoCommit == true.
-			^true].
 	(#(#'fileSave' #editSaveMethod) includes: query commandSymbol) ifTrue: [
 		query isEnabled: documentPresenter view isModified.
 		^true.
