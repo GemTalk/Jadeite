@@ -50,9 +50,7 @@ appendToSourceMenu: aMenu presenter: methodSourcePresenter
 	self rowanFixMe. "when we can replace the dictionary browser, only send menu appends to the right menus" 
 	stepPoint := self stepPointFromCursorIn: methodSourcePresenter.
 	stepPoint isNil ifTrue: [^self].
-	('*Methods*' match: aMenu text) ifTrue: [^self].	"Don't add breakpoints to the Methods menu. Let's keep it in the context menu for consistency."
-	('*Debug*' match: aMenu text) ifTrue: [^self].	"Don't add breakpoints to the Debug menu. Let's keep it in the context menu for consistency."
-	('*Jade*' match: aMenu text) ifTrue: [^self].	"Don't add breakpoints to the Jadeite menu. Let's keep it in the context menu for consistency."
+	('*Edit*' match: aMenu text) ifFalse: [^self].	"popup or edit menu only" 
 	menuCommand := self
 				addBreakPointMenuAt: stepPoint
 				to: aMenu
