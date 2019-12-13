@@ -389,7 +389,7 @@ saveMethod
 			^codePane reportCompileError: ex list in: documentPresenter].
 	(self methodSourcePresenter compilationWarningFrom: classService selectedMethods)
 		ifNil: 
-			[statusTextPresenter view backcolor: JadeiteTextStyles default colorForNoEdits.
+			[statusTextPresenter view backcolor: Color default.
 			self statusBarText: String new]
 		ifNotNil: 
 			[:warning |
