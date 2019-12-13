@@ -719,9 +719,11 @@ dbs := ''a'', (String with: (Character withValue: 353)), ''b''.
 d := Dictionary new.
 d at: #key put: (''a'', dbs) asString.
 UserGlobals at: #aDict1 put: d.'.
-	remoteObject := session executeString: 'UserGlobals at: #aDict1'.
+	
+	[remoteObject := session executeString: 'UserGlobals at: #aDict1'.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self assert: (inspector instVarListPresenter list at: 3) key equals: '-#''key''->''aa?b'''!
+	self assert: (inspector instVarListPresenter list at: 3) key equals: '-#''key''->''aa?b''']
+			ensure: [session executeString: 'UserGlobals removeKey: #aDict1']!
 
 test_unicodeInspect2
 	| remoteObject |
@@ -733,10 +735,12 @@ dbs := ''a'', (String with: (Character withValue: 353)), ''b''.
 d := Dictionary new.
 d at: (''d'', dbs) asString put: 23.
 UserGlobals at: #aDict4 put: d.'.
-	remoteObject := session executeString: 'UserGlobals at: #aDict4'.
+	
+	[remoteObject := session executeString: 'UserGlobals at: #aDict4'.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	self assert: (inspector instVarListPresenter list at: 3) key
-		equals: '-<<unprintable key. charSize > 1>>->23'! !
+		equals: '-<<unprintable key. charSize > 1>>->23']
+			ensure: [session executeString: 'UserGlobals removeKey: #aDict4']! !
 !JadeiteInspectorTestCase categoriesFor: #commandQueryOn:!private! !
 !JadeiteInspectorTestCase categoriesFor: #enableForward:andBack:!private! !
 !JadeiteInspectorTestCase categoriesFor: #inspectInstVarAt:!private! !

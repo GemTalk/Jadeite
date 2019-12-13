@@ -1059,7 +1059,6 @@ test_removeMethodWarningString
 	self projectsPresenter methodSourcePresenter value: source.
 	self projectsPresenter editSaveMethod: self classListPresenter selection.	"#new will be selected"
 	methodListBrowser := self projectsPresenter browseSelectedMethods.	"#new will be selected"
-	self halt.
 	removalWarningString := methodListBrowser primaryPresenter
 				removeSelectorsString: self methodListPresenter selections.
 	self assert: ('RowanSample1>>new (referenced by #### methods)*' match: removalWarningString)	"assume it will always be at least 1000 senders"!
