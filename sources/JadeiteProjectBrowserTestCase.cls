@@ -3961,6 +3961,22 @@ test_removeMethodOutsideServices
 	self selectMethodNamed: #testAdHocExecutionWith:.
 	self deny: (self methodListPresenter list includes: selection)!
 
+test_removeMethodWarningString
+	| source removalWarningString |
+	self testsIssue: #issue663
+		withTitle: '(3.0.91) OOM when attempting to remove method with #new selector ...'.
+	self selectRowanSample1Class.
+	self selectClassTab.
+	self projectsPresenter basicAddMethodCategory: 'instance creation'.
+	source := 'new
+		^super new initialize'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self selectMethodNamed: #new.
+	removalWarningString := self projectsPresenter
+				removeSelectorsString: self methodListPresenter selections.
+	self assert: ('RowanSample1>>new (referenced by #### methods)*' match: removalWarningString)	"assume it will always be at least 1000 senders"!
+
 test_removeProject
 	| targetProject |
 	self testsIssue: #issue129 withTitle: 'Expose unload project.'.
@@ -5558,6 +5574,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassFromList!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeInstVarVariablesStaySorted!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeMethodOutsideServices!public!test methods! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_removeMethodWarningString!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameCategory!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameClassMethodListUpdates!public!test rename class! !

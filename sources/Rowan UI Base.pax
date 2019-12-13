@@ -235,7 +235,7 @@ package methodNames
 	add: #JadePresenterA -> #openMethodListOn:selectingAnyMatch:;
 	add: #JadePresenterA -> #queryCommand:;
 	add: #JadePresenterA -> #refreshBreakPointsIn:;
-	add: #JadePresenterA -> #removeSelectorsStringUsing:;
+	add: #JadePresenterA -> #removeSelectorsString:;
 	add: #JadePresenterA -> #setBreakPointAt:in:;
 	add: #JadePresenterA -> #updateMethodReferences:;
 	add: #JadeProcessBrowser -> #debugProcess;
@@ -2869,23 +2869,27 @@ refreshBreakPointsIn: methodSourcePresenter
 	methodSourcePresenter view indicators: indicators.
 	methodSourcePresenter view update!
 
-removeSelectorsStringUsing: methodListPresenter
-	| stream methodServices |
-	methodServices := self updateMethodReferences: methodListPresenter selections.
+removeSelectorsString: selections
+	| stream answeringService |
+	answeringService := RowanAnsweringService new
+				command: #methodReferenceCounts:;
+				commandArgs: (Array with: selections).
+	BrowserUpdate current issueCommand: (Array with: answeringService) session: gciSession.
 	stream := String new writeStream.
-	methodServices do: 
-			[:service |
+	1 to: answeringService answer size
+		do: 
+			[:index |
+			| service referenceCount |
+			service := selections at: index.
+			referenceCount := answeringService answer at: index.
 			stream nextPutAll: service selectorsDisplayString.
-			service references
-				ifNotNil: 
-					[:refs |
-					refs notEmpty
-						ifTrue: 
-							[stream
-								nextPutAll: ' (referenced by ';
-								nextPutAll: service references size printString;
-								nextPutAll: ' methods)']].
-			stream cr].
+			referenceCount > 0
+				ifTrue: 
+					[stream
+						nextPutAll: ' (referenced by ';
+						nextPutAll: referenceCount printString;
+						nextPutAll: ' methods)';
+						cr]].
 	^stream contents!
 
 setBreakPointAt: stepPoint in: browser
@@ -2911,7 +2915,7 @@ updateMethodReferences: services
 !JadePresenterA categoriesFor: #openMethodListOn:selectingAnyMatch:!menu handlers support!private!queries! !
 !JadePresenterA categoriesFor: #queryCommand:!public! !
 !JadePresenterA categoriesFor: #refreshBreakPointsIn:!Jadeite!public! !
-!JadePresenterA categoriesFor: #removeSelectorsStringUsing:!Jadeite!public! !
+!JadePresenterA categoriesFor: #removeSelectorsString:!Jadeite!public! !
 !JadePresenterA categoriesFor: #setBreakPointAt:in:!Jadeite!public! !
 !JadePresenterA categoriesFor: #updateMethodReferences:!Jadeite!public! !
 
@@ -3757,7 +3761,7 @@ queryCommand: aCommandQuery
 
 removeMethods
 	| result confirmationString |
-	confirmationString := self removeSelectorsStringUsing: self methodListPresenter.
+	confirmationString := self removeSelectorsString: self methodListPresenter selections.
 	result := MessageBox confirm: confirmationString caption: 'Remove the following method(s)?'.
 	result ifFalse: [^self].
 	self basicRemoveMethods!

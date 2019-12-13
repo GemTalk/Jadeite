@@ -1046,6 +1046,24 @@ test_removeMethodOutsideServices
 	self selectMethodNamed: #testAdHocExecutionWith:.
 	self deny: (self methodListMethodListPresenter list includes: selection)!
 
+test_removeMethodWarningString
+	| source removalWarningString |
+	self testsIssue: #issue663
+		withTitle: '(3.0.91) OOM when attempting to remove method with #new selector ...'.
+	self openProjectBrowser.
+	self selectRowanSample1Class.
+	self selectClassTab.
+	self projectsPresenter basicAddMethodCategory: 'instance creation'.
+	source := 'new
+		^super new initialize'.
+	self projectsPresenter methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.	"#new will be selected"
+	methodListBrowser := self projectsPresenter browseSelectedMethods.	"#new will be selected"
+	self halt.
+	removalWarningString := methodListBrowser primaryPresenter
+				removeSelectorsString: self methodListPresenter selections.
+	self assert: ('RowanSample1>>new (referenced by #### methods)*' match: removalWarningString)	"assume it will always be at least 1000 senders"!
+
 test_symbolsInitialized
 	"wildcard browse implementors and senders relies on these symbols. Make sure they
 	get lazy initialized"
@@ -1238,6 +1256,7 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodInProjectBrowser!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodOutsideServices!public!test methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodWarningString!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_symbolsInitialized!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !

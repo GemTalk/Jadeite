@@ -53,6 +53,13 @@ onViewOpened
 	super onViewOpened.
 	self registerPresentersForUpdates!
 
+queryCommand: query
+	query command = #removeMethods
+		ifTrue: 
+			[query isEnabled: methodListPresenter selections notEmpty.
+			^true].
+	^super queryCommand: query!
+
 registerPresentersForUpdates
 	BrowserUpdate current register: methodListPresenter selector: #removed:.
 	BrowserUpdate current register: methodListPresenter selector: #methodUpdate:!
@@ -62,7 +69,7 @@ removeFromList
 
 removeMethods
 	| result confirmationString |
-	confirmationString := self removeSelectorsStringUsing: self methodListPresenter.
+	confirmationString := self removeSelectorsString: self methodListPresenter selections.
 	result := MessageBox confirm: confirmationString caption: 'Remove the following method(s)?'.
 	result ifFalse: [^self].
 	self basicRemoveMethods!
@@ -101,6 +108,7 @@ selections
 !JadeiteBasicMethodListPresenter categoriesFor: #methodSelectionChanged!drag & drop!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #onViewOpened!event handlers!public! !
+!JadeiteBasicMethodListPresenter categoriesFor: #queryCommand:!menu handlers!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteBasicMethodListPresenter categoriesFor: #removeFromList!menu handlers!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #removeMethods!menu handlers!public! !
