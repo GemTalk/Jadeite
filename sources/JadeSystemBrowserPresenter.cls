@@ -1373,17 +1373,6 @@ methodListPresenter
 
 	^methodListPresenter!
 
-methodMenu: aMenu
-
-	| properSize |
-	properSize := self editMenuStrings size - 1.
-	[
-		properSize < aMenu items size.
-	] whileTrue: [
-		aMenu removeItemAt: aMenu items size.
-	].
-	self methodMenuBreak: aMenu.!
-
 methodsIdentifier
 
 	| stream |
@@ -2786,7 +2775,6 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #methodHoverEnd:!event handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #methodHoverStart:!event handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #methodListPresenter!accessing!public! !
-!JadeSystemBrowserPresenter categoriesFor: #methodMenu:!event handlers!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #methodsIdentifier!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #methodSourcePresenter!public!updating! !
 !JadeSystemBrowserPresenter categoriesFor: #methodValueChanged!event handlers!public! !

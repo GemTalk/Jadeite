@@ -39,6 +39,30 @@ test_abstractTestsShown
 				view: self methodListPresenter view.
 	self deny: commandQuery isEnabled	"run test menu item disabled in the abstract class"!
 
+test_breakAtDisplaysOneTime
+	"make sure to properly remove menu item before adding a new one based on caret position"
+
+	| breakAtMenuOptions |
+	self testsIssue: #issue599
+		withTitle: 'PB Method drop-down menu intermittently loses "Go to defining package" (3.0.82)'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self methodSourcePresenter view goto: 0.
+	breakAtMenuOptions := self methodSourcePresenter view queryContextMenu items
+				select: [:menu | '*Break at*' match: menu text].
+	self assert: breakAtMenuOptions size equals: 0.
+	self methodSourcePresenter view goto: 40.	"put caret on #foo send"
+	10 timesRepeat: 
+			["should never find more than 1 menu item"
+			self methodListPresenter selection
+				appendToSourceMenu: self methodSourcePresenter view queryContextMenu
+				presenter: self methodSourcePresenter.
+			breakAtMenuOptions := self methodSourcePresenter view queryContextMenu items
+						select: [:menu | '*Break at*' match: menu text].
+			breakAtMenuOptions
+				do: [:messageSend | self assert: messageSend command selector equals: #setBreakPointAt:in:].
+			self assert: breakAtMenuOptions size equals: 1]!
+
 test_breakpointDisabledHighlighting
 	| indicator |
 	self testsIssue: #issue597
@@ -66,6 +90,152 @@ test_breakpointDisabledHighlighting
 				[self clearBreakAt: 2.
 				self clearBreakAt: 3.
 				self enableBreakpoints]!
+
+test_browseHierarchyImplementorsEnablement
+	| commandQuery |
+	self testsIssue: #issue399
+		withTitle: 'The "exactly one object" warning may also provide an unrelated debugger stack'.
+	self selectRowanSample1Test.
+	self selectCategoryNamed: 'tests'.
+	self selectMethodNamed: #test1.
+	commandQuery := self
+				queryCommand: #browseHierarchyImplementors
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	self selectMethodsNamed: #(#test1 #test2).
+	commandQuery := self
+				queryCommand: #browseHierarchyImplementors
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled.
+	self selectMethodsNamed: #().
+	commandQuery := self
+				queryCommand: #browseHierarchyImplementors
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled!
+
+test_browseHierarchySendersEnablement
+	| commandQuery |
+	self testsIssue: #issue399
+		withTitle: 'The "exactly one object" warning may also provide an unrelated debugger stack'.
+	self selectRowanSample1Test.
+	self selectCategoryNamed: 'tests'.
+	self selectMethodNamed: #test1.
+	commandQuery := self
+				queryCommand: #browseHierarchySenders
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	self selectMethodsNamed: #(#test1 #test2).
+	commandQuery := self
+				queryCommand: #browseHierarchySenders
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled.
+	self selectMethodsNamed: #().
+	commandQuery := self
+				queryCommand: #browseHierarchySenders
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled!
+
+test_browseImplementorsDisplaysOneTime
+	"make sure to properly remove menu item before adding a new one based on caret position"
+
+	| browseImplementorsMenuOptions |
+	self testsIssue: #issue599
+		withTitle: 'PB Method drop-down menu intermittently loses "Go to defining package" (3.0.82)'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	browseImplementorsMenuOptions := self methodSourcePresenter view queryContextMenu items
+				select: [:menu | '*Browser Implementors*' match: menu text].
+	self assert: browseImplementorsMenuOptions size equals: 0.	"caret not on a selector yet"
+	self methodSourcePresenter view goto: 40.	"put caret on #foo send"
+	10 timesRepeat: 
+			["should never find more than 1 menu item"
+			self methodListPresenter selection
+				appendToSourceMenu: self methodSourcePresenter view queryContextMenu
+				presenter: self methodSourcePresenter.
+			browseImplementorsMenuOptions := self methodSourcePresenter view queryContextMenu items
+						select: [:menu | '*Browse Implementors*' match: menu text].
+			browseImplementorsMenuOptions
+				do: [:messageSend | self assert: messageSend command selector equals: #browseImplementorsOf:].
+			self assert: browseImplementorsMenuOptions size equals: 1]!
+
+test_browseImplementorsEnablement
+	| commandQuery |
+	self testsIssue: #issue399
+		withTitle: 'The "exactly one object" warning may also provide an unrelated debugger stack'.
+	self selectRowanSample1Test.
+	self selectCategoryNamed: 'tests'.
+	self selectMethodNamed: #test1.
+	commandQuery := self
+				queryCommand: #browseImplementors
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	self selectMethodsNamed: #(#test1 #test2).
+	commandQuery := self
+				queryCommand: #browseImplementors
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled.
+	self selectMethodsNamed: #().
+	commandQuery := self
+				queryCommand: #browseImplementors
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled!
+
+test_browseSendersDisplaysOneTime
+	"make sure to properly remove menu item before adding a new one based on caret position"
+
+	| browseSendersMenuOptions |
+	self testsIssue: #issue599
+		withTitle: 'PB Method drop-down menu intermittently loses "Go to defining package" (3.0.82)'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	browseSendersMenuOptions := self methodSourcePresenter view queryContextMenu items
+				select: [:menu | '*Browser Senders*' match: menu text].
+	self assert: browseSendersMenuOptions size equals: 0.	"caret not on a selector yet"
+	self methodSourcePresenter view goto: 40.	"put caret on #foo send"
+	10 timesRepeat: 
+			["should never find more than 1 menu item"
+			self methodListPresenter selection
+				appendToSourceMenu: self methodSourcePresenter view queryContextMenu
+				presenter: self methodSourcePresenter.
+			browseSendersMenuOptions := self methodSourcePresenter view queryContextMenu items
+						select: [:menu | '*Browse Senders*' match: menu text].
+			browseSendersMenuOptions
+				do: [:messageSend | self assert: messageSend command selector equals: #browseSendersOf:].
+			self assert: browseSendersMenuOptions size equals: 1]!
+
+test_browseSendersEnablement
+	| commandQuery |
+	self testsIssue: #issue399
+		withTitle: 'The "exactly one object" warning may also provide an unrelated debugger stack'.
+	self selectRowanSample1Test.
+	self selectCategoryNamed: 'tests'.
+	self selectMethodNamed: #test1.
+	commandQuery := self
+				queryCommand: #browseSenders
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self assert: commandQuery isEnabled.
+	self selectMethodsNamed: #(#test1 #test2).
+	commandQuery := self
+				queryCommand: #browseSenders
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled.
+	self selectMethodsNamed: #().
+	commandQuery := self
+				queryCommand: #browseSenders
+				inPresenter: self projectsPresenter
+				view: self methodListPresenter view.
+	self deny: commandQuery isEnabled!
 
 test_classCopy
 	self testsIssue: #issue506 withTitle: 'Usefful to be able to copy a class ...'.
@@ -438,6 +608,28 @@ test_reformatIllegalSource
 	self assert: self methodSourcePresenter view isModified.
 	self assert: self methodSourcePresenter value equals: 'reformatSourceTemporaryMethod ^#'	"unchanged"]
 			ensure: [self methodSourcePresenter view isModified: false]!
+
+test_reformatMenuItemEnabled
+	"reformat should be enabled even when methods aren't selected
+	else it's not always possible to reformat a new method"
+
+	| reformatMenuOption query |
+	self selectRowanSample1Test.
+	reformatMenuOption := self methodSourcePresenter view queryContextMenu items
+				detect: [:menu | '*Reformat Source*' match: menu text]
+				ifNone: [].
+	self denyIsNil: reformatMenuOption.
+	self assert: reformatMenuOption command equals: #reformatSource.
+	self assert: (self projectsPresenter class canUnderstand: #reformatSource).
+	query := CommandQuery commandDescription: reformatMenuOption source: self methodSourcePresenter view.
+	self methodListPresenter list do: 
+			[:methodService |
+			self selectMethodNamed: methodService selector.
+			self projectsPresenter queryCommand: query.
+			self assert: query isEnabled].
+	self methodListPresenter resetSelection.
+	self projectsPresenter queryCommand: query.
+	self assert: query isEnabled!
 
 test_reformatSource
 	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
@@ -823,7 +1015,14 @@ test_unloadProjectClearsProjectTab
 				self ensureRowanSample1Loaded]! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #cardMenuItemForCommand:in:!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_abstractTestsShown!public!test sunit tab!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_breakAtDisplaysOneTime!public!test menus! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_breakpointDisabledHighlighting!public!test source! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseHierarchyImplementorsEnablement!public!test menus!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseHierarchySendersEnablement!public!test menus!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseImplementorsDisplaysOneTime!public!test menus! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseImplementorsEnablement!public!test menus!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseSendersDisplaysOneTime!public!test menus! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseSendersEnablement!public!test menus!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_classCopy!public!test class list!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_comparisonTabMultimethod!public!test comparison tab! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_comparisonTabNoMethodSelected!public!test comparison tab! !
@@ -843,6 +1042,7 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_modifiedSourceShouldNotChangeMethodList!public!test two browsers!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_openNewBrowserTabWhileSUnitTabSelected!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatIllegalSource!public!test source! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatMenuItemEnabled!public!test menus! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatSource!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatSourceAppliesOnlyToCurrentBrowser!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !

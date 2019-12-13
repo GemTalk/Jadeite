@@ -69,16 +69,7 @@ hoverStart: aPoint
 !
 
 methodMenu: aMenu
-
-	| properSize |
-	properSize := self editMenuStrings size - 1.
-	[
-		properSize < aMenu items size.
-	] whileTrue: [
-		aMenu removeItemAt: aMenu items size.
-	].
-	self methodMenuBreak: aMenu.
-!
+	self methodMenuBreak: aMenu!
 
 methodSource
 
@@ -217,7 +208,7 @@ update
 !MethodSourcePresenter categoriesFor: #gsMethod:!public! !
 !MethodSourcePresenter categoriesFor: #hoverEnd:!Jade!private! !
 !MethodSourcePresenter categoriesFor: #hoverStart:!Jade!private! !
-!MethodSourcePresenter categoriesFor: #methodMenu:!menu handlers!public! !
+!MethodSourcePresenter categoriesFor: #methodMenu:!menu handlers!private! !
 !MethodSourcePresenter categoriesFor: #methodSource!public! !
 !MethodSourcePresenter categoriesFor: #newSelector!public! !
 !MethodSourcePresenter categoriesFor: #offsetAt:!accessing!public! !

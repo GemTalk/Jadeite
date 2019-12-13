@@ -28,13 +28,25 @@ accessedInstVars: anObject
 
 addBreakPointMenuAt: stepPoint to: aMenu presenter: presenter
 	| desc args menuCommand |
+	aMenu items copy do: 
+			[:item |
+			item isDivider
+				ifFalse: 
+					[item command asSymbol == #clearBreakPointAt:in:
+						ifTrue: 
+							[self removePrecedingDividerFor: item in: aMenu.
+							aMenu removeItem: item].
+					item command asSymbol == #setBreakPointAt:in:
+						ifTrue: 
+							[self removePrecedingDividerFor: item in: aMenu.
+							aMenu removeItem: item]]].
 	args := Array with: stepPoint with: presenter parentPresenter.
 	(self breakPoints includes: stepPoint)
 		ifTrue: 
 			[command := #clearBreakPointAt:in:.
 			desc := 'Clear break at step point ' , stepPoint printString]
 		ifFalse: 
-			[command := #setBreakPointAt:in:. 
+			[command := #setBreakPointAt:in:.
 			desc := 'Break at step point ' , stepPoint printString].
 	menuCommand := MessageSend
 				receiver: presenter parentPresenter
@@ -47,7 +59,12 @@ addBreakPointMenuAt: stepPoint to: aMenu presenter: presenter
 
 appendToSourceMenu: aMenu presenter: methodSourcePresenter
 	| stepPoint menuCommand messageSelector |
-	self rowanFixMe. "when we can replace the dictionary browser, only send menu appends to the right menus" 
+	aMenu items copy do: 
+			[:item |
+			item isDivider
+				ifFalse: 
+					[item command asSymbol == #browseImplementorsOf: ifTrue: [aMenu removeItem: item].
+					item command asSymbol == #browseSendersOf: ifTrue: [aMenu removeItem: item]]].
 	stepPoint := self stepPointFromCursorIn: methodSourcePresenter.
 	stepPoint isNil ifTrue: [^self].
 	('*Edit*' match: aMenu text) ifFalse: [^self].	"popup or edit menu only" 
@@ -334,6 +351,11 @@ references: anObject
 remoteServiceName
 	^'Rowan methodServiceClass'!
 
+removePrecedingDividerFor: item in: aMenu
+	| index |
+	index := aMenu indexOfCommand: item command . 
+	(aMenu itemAt: index - 1) isDivider ifTrue: [aMenu removeItemAt: index - 1]!
+
 renamedName
 	^renamedName!
 
@@ -394,8 +416,10 @@ source: anObject
 
 stepPointFromCursorIn: methodSourcePresenter
 	| charIndex |
-	charIndex := methodSourcePresenter view
-				charNearestPosition: methodSourcePresenter view cursorPosition.
+	charIndex := methodSourcePresenter view caretPosition.
+	^self stepPointFromCursorIn: methodSourcePresenter charIndex: charIndex!
+
+stepPointFromCursorIn: methodSourcePresenter charIndex: charIndex
 	self stepPoints size to: 1
 		by: -1
 		do: 
@@ -548,6 +572,7 @@ user: anObject
 !RowanMethodService categoriesFor: #references!accessing!private! !
 !RowanMethodService categoriesFor: #references:!accessing!private! !
 !RowanMethodService categoriesFor: #remoteServiceName!must not strip!public! !
+!RowanMethodService categoriesFor: #removePrecedingDividerFor:in:!presenter support!private! !
 !RowanMethodService categoriesFor: #renamedName!accessing!private! !
 !RowanMethodService categoriesFor: #renamedName:!accessing!private! !
 !RowanMethodService categoriesFor: #replicateFrom:!public!replication! !
@@ -564,6 +589,7 @@ user: anObject
 !RowanMethodService categoriesFor: #source!accessing!private! !
 !RowanMethodService categoriesFor: #source:!accessing!private! !
 !RowanMethodService categoriesFor: #stepPointFromCursorIn:!presenter support!private! !
+!RowanMethodService categoriesFor: #stepPointFromCursorIn:charIndex:!presenter support!private! !
 !RowanMethodService categoriesFor: #stepPoints!public! !
 !RowanMethodService categoriesFor: #subSuperIcon!displaying!public! !
 !RowanMethodService categoriesFor: #superDisplayString!accessing!private! !

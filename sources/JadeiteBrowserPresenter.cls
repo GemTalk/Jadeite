@@ -454,6 +454,9 @@ isRowanProjectSelected
 maxAutoCompleteListSize
 	^50!
 
+methodMenu: aMenu
+	self methodMenuBreak: aMenu!
+
 methodToReformat
 	^methodListPresenter selectionIfNone: [RowanMethodService new]!
 
@@ -465,11 +468,6 @@ onViewOpened
 
 	super onViewOpened. 
 	self showPackageList!
-
-openCommitInGitHub
-	| projectService |
-	projectService := projectListPresenter selection.
-	^JadePresenter openCommit: projectService sha inGitHub: projectService!
 
 packageDictionaryCards
 	"for testing"
@@ -973,10 +971,10 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #isProjectItemEnabled:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #isRowanProjectSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #maxAutoCompleteListSize!constants!public! !
+!JadeiteBrowserPresenter categoriesFor: #methodMenu:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #methodToReformat!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #noClassSelectedInEitherPresenter!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #openCommitInGitHub!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #packageDictionaryCards!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #possiblyClearProjectInfoTab!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #projectInfoMenu!menus!public! !

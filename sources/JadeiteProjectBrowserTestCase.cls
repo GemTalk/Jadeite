@@ -886,81 +886,6 @@ test_browseClassReferencesFromClassesMenu
 	methodListBrowser primaryPresenter methodListPresenter methodListPresenter list
 		do: [:methodService | self assert: ('*RowanClassService*' match: methodService source)]!
 
-test_browseHierarchyImplementorsEnablement
-	| commandQuery |
-	self testsIssue: #issue399
-		withTitle: 'The "exactly one object" warning may also provide an unrelated debugger stack'.
-	self selectRowanSample1Test.
-	self selectCategoryNamed: 'tests'.
-	self selectMethodNamed: #test1.
-	commandQuery := self
-				queryCommand: #browseHierarchyImplementors
-				inPresenter: self projectsPresenter
-				view: self methodListPresenter view.
-	self assert: commandQuery isEnabled.
-	self selectMethodsNamed: #(#test1 #test2).
-	commandQuery := self
-				queryCommand: #browseHierarchyImplementors
-				inPresenter: self projectsPresenter
-				view: self methodListPresenter view.
-	self deny: commandQuery isEnabled.
-	self selectMethodsNamed: #().
-	commandQuery := self
-				queryCommand: #browseHierarchyImplementors
-				inPresenter: self projectsPresenter
-				view: self methodListPresenter view.
-	self deny: commandQuery isEnabled!
-
-test_browseHierarchySendersEnablement
-	| commandQuery |
-	self testsIssue: #issue399
-		withTitle: 'The "exactly one object" warning may also provide an unrelated debugger stack'.
-	self selectRowanSample1Test.
-	self selectCategoryNamed: 'tests'.
-	self selectMethodNamed: #test1.
-	commandQuery := self
-				queryCommand: #browseHierarchySenders
-				inPresenter: self projectsPresenter
-				view: self methodListPresenter view.
-	self assert: commandQuery isEnabled.
-	self selectMethodsNamed: #(#test1 #test2).
-	commandQuery := self
-				queryCommand: #browseHierarchySenders
-				inPresenter: self projectsPresenter
-				view: self methodListPresenter view.
-	self deny: commandQuery isEnabled.
-	self selectMethodsNamed: #().
-	commandQuery := self
-				queryCommand: #browseHierarchySenders
-				inPresenter: self projectsPresenter
-				view: self methodListPresenter view.
-	self deny: commandQuery isEnabled!
-
-test_browseImplementorsEnablement
-	| commandQuery |
-	self testsIssue: #issue399
-		withTitle: 'The "exactly one object" warning may also provide an unrelated debugger stack'.
-	self selectRowanSample1Test.
-	self selectCategoryNamed: 'tests'.
-	self selectMethodNamed: #test1.
-	commandQuery := self
-				queryCommand: #browseImplementors
-				inPresenter: self projectsPresenter
-				view: self methodListPresenter view.
-	self assert: commandQuery isEnabled.
-	self selectMethodsNamed: #(#test1 #test2).
-	commandQuery := self
-				queryCommand: #browseImplementors
-				inPresenter: self projectsPresenter
-				view: self methodListPresenter view.
-	self deny: commandQuery isEnabled.
-	self selectMethodsNamed: #().
-	commandQuery := self
-				queryCommand: #browseImplementors
-				inPresenter: self projectsPresenter
-				view: self methodListPresenter view.
-	self deny: commandQuery isEnabled!
-
 test_browseLiteralReferences
 	| methodListPresenter source |
 	self testsIssue: #issue256
@@ -1042,31 +967,6 @@ test_browseSelectedMethods
 				view: self methodListPresenter view.
 	self assert: commandQuery isEnabled.
 !
-
-test_browseSendersEnablement
-	| commandQuery |
-	self testsIssue: #issue399
-		withTitle: 'The "exactly one object" warning may also provide an unrelated debugger stack'.
-	self selectRowanSample1Test.
-	self selectCategoryNamed: 'tests'.
-	self selectMethodNamed: #test1.
-	commandQuery := self
-				queryCommand: #browseSenders
-				inPresenter: self projectsPresenter
-				view: self methodListPresenter view.
-	self assert: commandQuery isEnabled.
-	self selectMethodsNamed: #(#test1 #test2).
-	commandQuery := self
-				queryCommand: #browseSenders
-				inPresenter: self projectsPresenter
-				view: self methodListPresenter view.
-	self deny: commandQuery isEnabled.
-	self selectMethodsNamed: #().
-	commandQuery := self
-				queryCommand: #browseSenders
-				inPresenter: self projectsPresenter
-				view: self methodListPresenter view.
-	self deny: commandQuery isEnabled!
 
 test_cannotSelectMultipleProjects
 	self selectServicesNamed: #() in: self projectListPresenter.
@@ -3667,28 +3567,6 @@ test_projectRemoved
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
-test_reformatMenuItemEnabled
-	"reformat should be enabled even when methods aren't selected
-	else it's not always possible to reformat a new method"
-
-	| reformatMenuOption query |
-	self selectRowanSample1Test.
-	reformatMenuOption := self methodSourcePresenter view queryContextMenu items
-				detect: [:menu | '*Reformat Source*' match: menu text]
-				ifNone: [].
-	self denyIsNil: reformatMenuOption.
-	self assert: reformatMenuOption command equals: #reformatSource.
-	self assert: (self projectsPresenter class canUnderstand: #reformatSource).
-	query := CommandQuery commandDescription: reformatMenuOption source: self methodSourcePresenter view.
-	self methodListPresenter list do: 
-			[:methodService |
-			self selectMethodNamed: methodService selector.
-			self projectsPresenter queryCommand: query.
-			self assert: query isEnabled].
-	self methodListPresenter resetSelection.
-	self projectsPresenter queryCommand: query.
-	self assert: query isEnabled!
-
 test_refreshAfterAbortMethodList
 	"method lists should remove deleted methods after an abort."
 
@@ -5431,13 +5309,9 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_blankCategoryRenameInvalid!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseClassReferencesFromClassesMenu!public!test rename class! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_browseHierarchyImplementorsEnablement!public!test menus!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_browseHierarchySendersEnablement!public!test menus!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_browseImplementorsEnablement!public!test menus!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseLiteralReferences!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSameClassCategoriesCorrect!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseSelectedMethods!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_browseSendersEnablement!public!test menus!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_cannotSelectMultipleProjects!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeClassComment!public!test two browsers!tests! !
@@ -5561,7 +5435,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectInfoTab!public!test menus!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectMenuGitCommitMenuItem!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_projectRemoved!public!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_reformatMenuItemEnabled!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodList!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodListLeaveCommitted!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterReloadInProjectsBrowserWithAddedMethod!public!test projects!tests! !
