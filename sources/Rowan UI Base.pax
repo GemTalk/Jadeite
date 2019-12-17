@@ -44,6 +44,7 @@ package classNames
 	add: #JadeiteScintillaView;
 	add: #JadeiteSearch;
 	add: #JadeiteSemaphore;
+	add: #JadeiteServiceInspector;
 	add: #JadeiteTranscript;
 	add: #PackageMethodListPresenter;
 	add: #Rowan;
@@ -61,6 +62,7 @@ package classNames
 	add: #RowanDictionaryUpdate;
 	add: #RowanFrameService;
 	add: #RowanGlobalsUpdate;
+	add: #RowanInspectorService;
 	add: #RowanKeyValuePrompter;
 	add: #RowanLoggingService;
 	add: #RowanMethodListBrowser;
@@ -424,6 +426,7 @@ package methodNames
 	add: 'JadeDebugger class' -> #resource_Default_view;
 	add: 'JadeInspector class' -> #resource_Default_view;
 	add: 'JadeInspector class' -> #resource_Special_view;
+	add: 'JadeInspector class' -> #showOn:session:;
 	add: 'JadeNavigationInspector class' -> #resource_Default_view;
 	add: 'JadePresenter class' -> #allClassesIn:;
 	add: 'JadePresenter class' -> #basicBrowseClassReferences:session:;
@@ -450,7 +453,7 @@ package methodNames
 	add: 'JadePresenter class' -> #clearMethodBreakpoints:in:;
 	add: 'JadePresenter class' -> #convertToPattern:;
 	add: 'JadePresenter class' -> #findMethodIn:class:presenter:;
-	add: 'JadePresenter class' -> #issueCommand:session:;
+	add: 'JadePresenter class' -> #issueCommands:session:;
 	add: 'JadePresenter class' -> #openGitHubJadeiteProject;
 	add: 'JadePresenter class' -> #openGitHubRowanProject;
 	add: 'JadePresenter class' -> #openMethodListOn:selecting:session:;
@@ -665,6 +668,11 @@ RowanService subclass: #RowanFrameService
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+RowanService subclass: #RowanInspectorService
+	instanceVariableNames: 'oop objects myself className'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 RowanService subclass: #RowanLoggingService
 	instanceVariableNames: 'fileName id groupId date time comment services mode location isLogging'
 	classVariableNames: ''
@@ -845,6 +853,11 @@ JadeDebugger subclass: #JadeiteDebugger
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggerClass semaphore lastPosition'!
+JadeNavigationInspector subclass: #JadeiteServiceInspector
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 JadeWorkspace subclass: #JadeiteGitLog
 	instanceVariableNames: 'projectService'
 	classVariableNames: ''
@@ -958,10 +971,11 @@ executeSelectionOrLine
 	^self executeSelectionOrLine: self parentPresenter contextObject !
 
 jadeInspect
-	| result |
+	| result service |
 	result := self jadeExecuteAndDisplay: false.
 	result == self ifTrue: [^self].
-	^JadeInspector showOn: result session: gciSession!
+	service := RowanInspectorService new inspect: result session: gciSession.
+	^JadeiteServiceInspector showOn: service session: gciSession!
 
 methodMenuBreak: menu
 	| currentSelection implementorsCommand sendersCommand browseClassMenuItem menuPosition implementorsItem sendersItem currentSelectionMenuItemName |
@@ -1846,9 +1860,21 @@ resource_Special_view
 	ViewComposer openOn: (ResourceIdentifier class: self selector: #resource_Special_view)
 	"
 
-	^#(#'!!STL' 4 788558 10 ##(Smalltalk.STBViewProxy) ##(Smalltalk.ShellView) 34 27 nil nil 8 #(13565952 65536) 416 nil 524550 ##(Smalltalk.ColorRef) 8 4278190080 328198 ##(Smalltalk.Point) 1201 901 551 nil nil nil 416 1180166 ##(Smalltalk.ProportionalLayout) 170 176 8 #() false 170 192 34 2 410 ##(Smalltalk.MultilineTextEdit) 34 16 nil 416 34 2 8 1143017796 1025 640 nil 466 8 4278190080 nil 7 nil nil nil 640 nil 8 4294907415 852486 ##(Smalltalk.NullConverter) nil nil 11 983302 ##(Smalltalk.MessageSequence) 138 144 34 1 721670 ##(Smalltalk.MessageSend) #createAt:extent: 34 2 514 1 1 514 1169 783 640 983302 ##(Smalltalk.WINDOWPLACEMENT) 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 72 2 0 0 135 1 0 0] 8 #() 514 193 193 nil 27 8 'document' nil 461638 4 ##(Smalltalk.MenuBar) nil true 34 3 265030 4 ##(Smalltalk.Menu) nil true 34 1 984134 2 ##(Smalltalk.CommandMenuItem) 1 1180998 4 ##(Smalltalk.CommandDescription) #exit 8 'E&xit' 17639 1 nil nil nil 8 '&File' nil 1 nil nil 14955 nil nil 1074 nil true 34 15 1122 1 1154 #undo 8 '&Undo' 9397 1 nil nil nil 1122 1 1154 #redo 8 'R&edo' 9395 1 nil nil nil 983366 1 ##(Smalltalk.DividerMenuItem) 4097 1122 1 1154 #editCut 8 'Cu&t' 9393 1 nil nil nil 1122 1 1154 #editCopy 8 '&Copy' 9351 1 nil nil nil 1122 1 1154 #editPaste 8 '&Paste' 9389 1 nil nil nil 1122 1 1154 #editSelectAll 8 'Select &All' 9347 1 nil nil nil 1122 1 1154 #editDelete 8 '&Delete' 1629 1 nil nil nil 1346 4097 1122 1 1154 #editFind 8 '&Find...' 9357 1 nil nil nil 1122 1 1154 #editFindNext 8 'Find &Next' 9359 1 nil nil nil 1122 1 1154 #editReplace 8 '&Replace...' 9361 1 nil nil nil 1346 4097 1122 1 1154 #addQuotesToSelection 8 'Add &Quotes' 1 1 nil nil nil 1122 1 1154 #removeQuotesFromSelection 8 'Re&move Quotes' 1 1 nil nil nil 8 '&Edit' nil 1 nil nil 14981 nil nil 1074 nil true 34 9 1122 1 1154 #abortTransaction 8 '&Abort Transaction' 1 1 nil nil nil 1122 1 1154 #commitTransaction 8 '&Commit Transaction' 1 1 nil nil nil 1346 4097 1122 1 1154 #jadeInspect 8 '&Inspect' 9379 1 nil nil nil 1122 1 1154 #jadeDisplay 8 '&Display' 9353 1 nil nil nil 1122 1 1154 #jadeExecute 8 '&Execute' 9355 1 nil nil nil 1122 1 1154 #fileIn 8 'Fi&le In' 1 1 nil nil nil 1346 4097 1122 1 1154 #openDictionaryBrowser 8 '&Browse Classes' 9349 1 nil nil nil 8 '&Jadeite' nil 1 nil nil 14997 nil nil 8 '' nil 1 nil nil nil nil nil nil nil nil 1 nil nil nil nil 1 nil nil 786 138 144 34 3 850 #createAt:extent: 34 2 514 7679 21 514 1201 901 416 850 #text: 34 1 8 'Jade Object Inspector' 416 850 #updateMenuBar 592 416 930 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 14 0 0 10 0 0 0 87 17 0 0 204 1 0 0] 34 1 640 992 nil 27 )! !
+	^#(#'!!STL' 4 788558 10 ##(Smalltalk.STBViewProxy) ##(Smalltalk.ShellView) 34 27 nil nil 8 #(13565952 65536) 416 nil 524550 ##(Smalltalk.ColorRef) 8 4278190080 328198 ##(Smalltalk.Point) 1201 901 551 nil nil nil 416 1180166 ##(Smalltalk.ProportionalLayout) 170 176 8 #() false 170 192 34 2 410 ##(Smalltalk.MultilineTextEdit) 34 16 nil 416 34 2 8 1143017796 1025 640 nil 466 8 4278190080 nil 7 nil nil nil 640 nil 8 4294907415 852486 ##(Smalltalk.NullConverter) nil nil 11 983302 ##(Smalltalk.MessageSequence) 138 144 34 1 721670 ##(Smalltalk.MessageSend) #createAt:extent: 34 2 514 1 1 514 1169 783 640 983302 ##(Smalltalk.WINDOWPLACEMENT) 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 72 2 0 0 135 1 0 0] 8 #() 514 193 193 nil 27 8 'document' nil 461638 4 ##(Smalltalk.MenuBar) nil true 34 3 265030 4 ##(Smalltalk.Menu) nil true 34 1 984134 2 ##(Smalltalk.CommandMenuItem) 1 1180998 4 ##(Smalltalk.CommandDescription) #exit 8 'E&xit' 17639 1 nil nil nil 8 '&File' nil 1 nil nil 14955 nil nil 1074 nil true 34 15 1122 1 1154 #undo 8 '&Undo' 9397 1 nil nil nil 1122 1 1154 #redo 8 'R&edo' 9395 1 nil nil nil 983366 1 ##(Smalltalk.DividerMenuItem) 4097 1122 1 1154 #editCut 8 'Cu&t' 9393 1 nil nil nil 1122 1 1154 #editCopy 8 '&Copy' 9351 1 nil nil nil 1122 1 1154 #editPaste 8 '&Paste' 9389 1 nil nil nil 1122 1 1154 #editSelectAll 8 'Select &All' 9347 1 nil nil nil 1122 1 1154 #editDelete 8 '&Delete' 1629 1 nil nil nil 1346 4097 1122 1 1154 #editFind 8 '&Find...' 9357 1 nil nil nil 1122 1 1154 #editFindNext 8 'Find &Next' 9359 1 nil nil nil 1122 1 1154 #editReplace 8 '&Replace...' 9361 1 nil nil nil 1346 4097 1122 1 1154 #addQuotesToSelection 8 'Add &Quotes' 1 1 nil nil nil 1122 1 1154 #removeQuotesFromSelection 8 'Re&move Quotes' 1 1 nil nil nil 8 '&Edit' nil 1 nil nil 14981 nil nil 1074 nil true 34 9 1122 1 1154 #abortTransaction 8 '&Abort Transaction' 1 1 nil nil nil 1122 1 1154 #commitTransaction 8 '&Commit Transaction' 1 1 nil nil nil 1346 4097 1122 1 1154 #jadeInspect 8 '&Inspect' 9379 1 nil nil nil 1122 1 1154 #jadeDisplay 8 '&Display' 9353 1 nil nil nil 1122 1 1154 #jadeExecute 8 '&Execute' 9355 1 nil nil nil 1122 1 1154 #fileIn 8 'Fi&le In' 1 1 nil nil nil 1346 4097 1122 1 1154 #openDictionaryBrowser 8 '&Browse Classes' 9349 1 nil nil nil 8 '&Jadeite' nil 1 nil nil 14997 nil nil 8 '' nil 1 nil nil nil nil nil nil nil nil 1 nil nil nil nil 1 nil nil 786 138 144 34 3 850 #createAt:extent: 34 2 514 7679 21 514 1201 901 416 850 #text: 34 1 8 'Jade Object Inspector' 416 850 #updateMenuBar 592 416 930 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 14 0 0 10 0 0 0 87 17 0 0 204 1 0 0] 34 1 640 992 nil 27 )!
+
+showOn: anObject session: aGciSession
+	| class view |
+	class := self defaultInspectorClass.
+	view := self defaultView.
+	^class new
+		gciSession: aGciSession;
+		model: anObject;
+		createView: view;
+		showShell;
+		yourself! !
 !JadeInspector class categoriesFor: #resource_Default_view!public!resources-views! !
 !JadeInspector class categoriesFor: #resource_Special_view!public!resources-views! !
+!JadeInspector class categoriesFor: #showOn:session:!public! !
 
 !JadeiteSUnitAbstractPresenter methodsFor!
 
@@ -2292,7 +2318,7 @@ insertCompileErrorText: string into: methodSourcePresenter
 	methodSourcePresenter view topShell statusBarText: (string copyFrom: 1 to: string size - 2)!
 
 issueCommand: service
-	^self class issueCommand: service session: self gciSession!
+	^self class issueCommands: service session: self gciSession!
 
 openBrowserInNewTab: openNewTab on: classService
 	| shell |
@@ -2324,8 +2350,8 @@ refreshGlobalSelections
 	browserService := RowanBrowserService new
 				command: #findRemovedServices:;
 				commandArgs: (Array with: BrowserUpdate current activeServices asSet asArray).
-	BrowserUpdate current issueCommand: (Array with: browserService) session: self gciSession.
-	self updateServices: BrowserUpdate current selectedServices !
+	BrowserUpdate current issueCommands: (Array with: browserService) session: self gciSession.
+	self updateServices: BrowserUpdate current selectedServices!
 
 remoteAutoCommit
 	| answeringService |
@@ -2438,13 +2464,13 @@ allClassesIn: session
 	| browserService |
 	browserService := RowanBrowserService new.
 	browserService command: #allClasses.
-	self issueCommand: (Array with: browserService) session: session.
-	^browserService allClasses ifNil:[Array new].!
+	self issueCommands: (Array with: browserService) session: session.
+	^browserService allClasses ifNil: [Array new]!
 
 basicBrowseClassReferences: className session: session
 	| service |
 	service := RowanQueryService command: #browseClassReferences: withArgs: (Array with: className).
-	self issueCommand: (Array with: service) session: session.
+	self issueCommands: (Array with: service) session: session.
 	^service!
 
 basicBrowseMethod: methodService presenter: browser
@@ -2457,7 +2483,7 @@ basicBrowseMethod: methodService presenter: browser
 browseBreakpointsIn: session
 	| service shell menuCommand methodMenu |
 	service := RowanQueryService command: #breakPointMethods withArgs: Array new.
-	self issueCommand: (Array with: service) session: session.
+	self issueCommands: (Array with: service) session: session.
 	shell := self
 				openMethodListOn: service
 				selectingAnyMatch: String new
@@ -2499,7 +2525,7 @@ browseHierarchyImplementorsOf: string className: className session: session
 	| service shell |
 	service := RowanQueryService command: #hierarchyImplementorsOf:inClass:
 				withArgs: (Array with: string asSymbol with: className).
-	self issueCommand: (Array with: service) session: session.
+	self issueCommands: (Array with: service) session: session.
 	shell := self
 				openMethodListOn: service
 				selecting: string
@@ -2511,7 +2537,7 @@ browseHierarchySendersOf: string className: className session: session
 	| service shell |
 	service := RowanQueryService command: #hierarchySendersOf:inClass:
 				withArgs: (Array with: string asSymbol with: className).
-	self issueCommand: (Array with: service) session: session.
+	self issueCommands: (Array with: service) session: session.
 	shell := self
 				openMethodListOn: service
 				selecting: string
@@ -2527,9 +2553,9 @@ browseImplementorsIn: session
 		searchType: 'selector'!
 
 browseImplementorsOf: string session: session
-	| service shell | 
+	| service shell |
 	service := RowanQueryService command: #implementorsOf: withArgs: (Array with: string asSymbol).
-	self issueCommand: (Array with: service) session: session.
+	self issueCommands: (Array with: service) session: session.
 	shell := self
 				openMethodListOn: service
 				selecting: string
@@ -2540,8 +2566,9 @@ browseImplementorsOf: string session: session
 browseInstVarReaders: instVarName in: className session: session
 	| service shell |
 	instVarName ifNil: [^nil].
-	service := RowanQueryService command: #instVarReaders:in: withArgs: (Array with: instVarName with: className).
-	self issueCommand: (Array with: service) session: session.
+	service := RowanQueryService command: #instVarReaders:in:
+				withArgs: (Array with: instVarName with: className).
+	self issueCommands: (Array with: service) session: session.
 	shell := self
 				openMethodListOn: service
 				selectingAnyMatch: instVarName
@@ -2555,7 +2582,7 @@ browseInstVarWriters: instVarName in: className session: session
 	instVarName ifNil: [^nil].
 	service := RowanQueryService command: #instVarWriters:in:
 				withArgs: (Array with: instVarName with: className).
-	self issueCommand: (Array with: service) session: session.
+	self issueCommands: (Array with: service) session: session.
 	shell := self
 				openMethodListOn: service
 				selectingAnyMatch: instVarName
@@ -2585,7 +2612,7 @@ browseLiteralReferences: string session: session
 	| service shell |
 	(string isNil or: [string isEmpty]) ifTrue: [^nil].
 	service := RowanQueryService command: #literalReferences: withArgs: (Array with: string).
-	self issueCommand: (Array with: service) session: session.
+	self issueCommands: (Array with: service) session: session.
 	shell := self
 				openMethodListOn: service
 				selectingAnyMatch: string
@@ -2602,7 +2629,7 @@ browseMethodsContaining: session
 browseMethodsContaining: string session: session
 	| service shell |
 	service := RowanQueryService command: #methodsContaining: withArgs: (Array with: string).
-	self issueCommand: (Array with: service) session: session.
+	self issueCommands: (Array with: service) session: session.
 	shell := self
 				openMethodListOn: service
 				selectingAnyMatch: string
@@ -2620,7 +2647,7 @@ browseSendersIn: session
 browseSendersOf: string session: session
 	| service shell |
 	service := RowanQueryService command: #sendersOf: withArgs: (Array with: string asSymbol).
-	self issueCommand: (Array with: service) session: session.
+	self issueCommands: (Array with: service) session: session.
 	shell := self
 				openMethodListOn: service
 				selecting: string
@@ -2636,7 +2663,7 @@ browseSymbolReferencesTo: string session: session
 	queryService := RowanQueryService new
 				command: #literalReferences:;
 				commandArgs: (Array with: string asSymbol).
-	self issueCommand: (Array with: queryService) session: session.
+	self issueCommands: (Array with: queryService) session: session.
 	basicString := string copyWithout: $#.
 	shell := self
 				openMethodListOn: queryService
@@ -2648,12 +2675,12 @@ browseSymbolReferencesTo: string session: session
 clearAllBreaksIn: session
 	| service |
 	service := RowanAnsweringService command: #clearAllBreaks withArgs: Array new.
-	self issueCommand: (Array with: service) session: session!
+	self issueCommands: (Array with: service) session: session!
 
 clearMethodBreakpoints: methodServices in: session
 	| service |
 	service := RowanAnsweringService command: #clearMethodBreaks: withArgs: (Array with: methodServices).
-	self issueCommand: (Array with: service) session: session!
+	self issueCommands: (Array with: service) session: session!
 
 convertToPattern: wildcardString
 	| list |
@@ -2669,8 +2696,8 @@ findMethodIn: session class: classService presenter: browser
 	methodService := JadeiteFindMethodDialog showModal: 'DefaultView' on: classService.
 	^self basicBrowseMethod: methodService presenter: browser!
 
-issueCommand: services session: session
-	^BrowserUpdate current issueCommand: services session: session!
+issueCommands: services session: session
+	^BrowserUpdate current issueCommands: services session: session!
 
 openGitHubJadeiteProject
 	ShellLibrary default shellOpen: 'https://github.com/GemTalk/Jadeite' directory: ''!
@@ -2723,7 +2750,7 @@ runMethodTests: methodServices in: session
 	answeringService
 		command: #runMethodTests:;
 		commandArgs: (Array with: methodServices).
-	answeringService := (self issueCommand: (Array with: answeringService) session: session) first.
+	answeringService := (self issueCommands: (Array with: answeringService) session: session) first.
 	^answeringService answer! !
 !JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
 !JadePresenter class categoriesFor: #basicBrowseClassReferences:session:!browsing!browsing support!public! !
@@ -2750,7 +2777,7 @@ runMethodTests: methodServices in: session
 !JadePresenter class categoriesFor: #clearMethodBreakpoints:in:!browsing!public! !
 !JadePresenter class categoriesFor: #convertToPattern:!browsing support!private! !
 !JadePresenter class categoriesFor: #findMethodIn:class:presenter:!browsing!public! !
-!JadePresenter class categoriesFor: #issueCommand:session:!public! !
+!JadePresenter class categoriesFor: #issueCommands:session:!public! !
 !JadePresenter class categoriesFor: #openGitHubJadeiteProject!browsing!public! !
 !JadePresenter class categoriesFor: #openGitHubRowanProject!browsing!public! !
 !JadePresenter class categoriesFor: #openMethodListOn:selecting:session:!public! !
@@ -2874,7 +2901,7 @@ removeSelectorsString: selections
 	answeringService := RowanAnsweringService new
 				command: #methodReferenceCounts:;
 				commandArgs: (Array with: selections).
-	BrowserUpdate current issueCommand: (Array with: answeringService) session: gciSession.
+	BrowserUpdate current issueCommands: (Array with: answeringService) session: gciSession.
 	stream := String new writeStream.
 	1 to: answeringService answer size
 		do: 
@@ -4090,7 +4117,7 @@ executeSelectionOrLine: contextObject
 	^answer!
 
 issueCommand: services
-	^BrowserUpdate current issueCommand: services session: self gciSession!
+	^BrowserUpdate current issueCommands: services session: self gciSession!
 
 jadeExecuteAndDisplay: showResult
 	| result |
@@ -4328,9 +4355,8 @@ revert: session
 	classService
 		command: #removeMethods:;
 		commandArgs: (Array with: (Array with: methodService)).
-	BrowserUpdate current issueCommand: (Array with: classService) session: self gciSession.
-	definition selector: definition selector , ' (removed)'.
-	! !
+	BrowserUpdate current issueCommands: (Array with: classService) session: self gciSession.
+	definition selector: definition selector , ' (removed)'! !
 !MCAddition categoriesFor: #revert:!public! !
 
 !MCClassDefinition methodsFor!
@@ -4384,7 +4410,7 @@ revert: session
 	classService
 		command: #saveMethodSource:category:;
 		commandArgs: (Array with: source with: category).
-	BrowserUpdate current issueCommand: (Array with: classService) session: session!
+	BrowserUpdate current issueCommands: (Array with: classService) session: session!
 
 selector: anObject
 	selector := anObject! !

@@ -837,7 +837,7 @@ findRemovedServices
 	browserService := RowanBrowserService new
 				command: #findRemovedServices:;
 				commandArgs: (Array with: BrowserUpdate current activeServices asArray).
-	BrowserUpdate current issueCommand: (Array with: browserService) session: self gciSession!
+	BrowserUpdate current issueCommands: (Array with: browserService) session: self gciSession!
 
 gciSession: aGciSession
 	super gciSession: aGciSession.

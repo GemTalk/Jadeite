@@ -19,12 +19,12 @@ answer: anObject
 
 autoCommitIn: session
 	command := #autoCommit.
-	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	BrowserUpdate current issueCommands: (Array with: self) session: session.
 	^answer!
 
 breakPointsAreEnabled: session
 	command := #breakPointsAreEnabled.
-	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	BrowserUpdate current issueCommands: (Array with: self) session: session.
 	^answer!
 
 breakpointSettingChanged: transcript
@@ -36,17 +36,17 @@ breakpointSettingChanged: transcript
 expressionSelector: string session: session
 	command := #expressionSelector:.
 	commandArgs := Array with: string.
-	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	BrowserUpdate current issueCommands: (Array with: self) session: session.
 	^answer!
 
 flipAutoCommitFor: session
 	command := #flipAutoCommit.
-	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	BrowserUpdate current issueCommands: (Array with: self) session: session.
 	^answer!
 
 flipTranscriptIn: session
 	command := #flipTranscript.
-	BrowserUpdate current issueCommand: (Array with: self) session: session!
+	BrowserUpdate current issueCommands: (Array with: self) session: session!
 
 isAnsweringService
 
@@ -54,30 +54,30 @@ isAnsweringService
 
 isTranscriptInstalledIn: session
 	command := #transcriptInstalled.
-	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	BrowserUpdate current issueCommands: (Array with: self) session: session.
 	^answer!
 
 needsCommit: session
 	command := #needsCommit.
 	self commandArgs: Array new.
-	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	BrowserUpdate current issueCommands: (Array with: self) session: session.
 	^answer!
 
 setAutoCommit: boolean for: session
-	command := #setAutoCommit:. 
-	self commandArgs: (Array with: boolean). 
-	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	command := #setAutoCommit:.
+	self commandArgs: (Array with: boolean).
+	BrowserUpdate current issueCommands: (Array with: self) session: session.
 	^answer!
 
 setBreakpointsEnabled: boolean session: session
 	command := #setBreakPointsAreEnabled:.
 	commandArgs := Array with: boolean.
-	BrowserUpdate current issueCommand: (Array with: self) session: session!
+	BrowserUpdate current issueCommands: (Array with: self) session: session!
 
 symbolExists: aSymbol session: session
 	command := #symbolExists:.
 	commandArgs := Array with: aSymbol.
-	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	BrowserUpdate current issueCommands: (Array with: self) session: session.
 	^answer!
 
 updateSymbols: unused

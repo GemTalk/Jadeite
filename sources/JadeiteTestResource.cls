@@ -22,7 +22,7 @@ cloneRowanSample1
 							with: sample1Path
 							with: root
 							with: true).
-			JadePresenter issueCommand: (Array with: service) session: session]!
+			JadePresenter issueCommands: (Array with: service) session: session]!
 
 disableInteractionsWhile: block
 	"interactions like confirm: and notify: are enabled by 
@@ -53,7 +53,7 @@ isAvailable
 	^session notNil and: [transcript notNil]!
 
 issueCommand: service
-	^JadePresenter issueCommand: (Array with: service) session: session!
+	^JadePresenter issueCommands: (Array with: service) session: session!
 
 loadProjectNamed: projectName
 	| projectService |
@@ -61,7 +61,7 @@ loadProjectNamed: projectName
 	projectService
 		command: #reloadProject;
 		commandArgs: nil.
-	JadePresenter issueCommand: (Array with: projectService) session: session!
+	JadePresenter issueCommands: (Array with: projectService) session: session!
 
 openProjectsBrowser
 	(projectsBrowser isNil or: [projectsBrowser isOpen not])

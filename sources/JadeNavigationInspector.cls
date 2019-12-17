@@ -61,10 +61,8 @@ objectIndex: anObject
 	objectIndex := anObject!
 
 onViewOpened
-
 	super onViewOpened.
-
-	self addOop: self model.!
+	self addOop: self model!
 
 oopsCollection
 	^oopsCollection!
@@ -110,10 +108,8 @@ removeObject
 !
 
 selectedInstVar
-
 	instVarListPresenter hasSelection ifFalse: [^self].
-
-	super selectedInstVar.! !
+	super selectedInstVar! !
 !JadeNavigationInspector categoriesFor: #addOop:!public! !
 !JadeNavigationInspector categoriesFor: #getNextObject!public! !
 !JadeNavigationInspector categoriesFor: #getPreviousObject!public! !

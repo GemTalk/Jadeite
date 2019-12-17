@@ -40,7 +40,7 @@ allClasses
 basicChangesUsing: session
 	| operations |
 	command := #changes.
-	BrowserUpdate current issueCommand: (Array with: self) session: session.
+	BrowserUpdate current issueCommands: (Array with: self) session: session.
 	operations := OrderedCollection new.
 	changes
 		do: [:changeString | operations addAll: (RowanPatch fromString: changeString session: session) operations].

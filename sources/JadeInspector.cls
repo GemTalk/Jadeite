@@ -31,8 +31,14 @@ createSchematicWiring
 createView: string
 	| newView |
 	newView := super createView: string.
-	(model isKindOf: ExternalInteger) ifTrue: [self registerWindow: newView handle rootObject: model].
+	(model isKindOf: self expectedModelClass) ifTrue: [self registerWindow: newView handle rootObject: model oop].
 	^newView!
+
+expectedModelClass
+
+	^ExternalInteger
+
+	!
 
 inspectInstVar	
 	JadeInspector 
@@ -66,6 +72,7 @@ model: anObject
 !JadeInspector categoriesFor: #createComponents!accessing!private! !
 !JadeInspector categoriesFor: #createSchematicWiring!accessing!private! !
 !JadeInspector categoriesFor: #createView:!public! !
+!JadeInspector categoriesFor: #expectedModelClass!private! !
 !JadeInspector categoriesFor: #inspectInstVar!accessing!private! !
 !JadeInspector categoriesFor: #instVarListPresenter!accessing!private! !
 !JadeInspector categoriesFor: #instVarListPresenter:!accessing!private! !
@@ -88,20 +95,8 @@ setDefaultInspectorClass: aJadeInspectorClass
 
 setNormalInspector
 
-	self setDefaultInspectorClass: JadeInspector!
-
-showOn: anObject session: aGciSession
-	| class view |
-	class := self defaultInspectorClass.
-	view := self defaultView.
-	^class new
-		gciSession: aGciSession;
-		model: anObject;
-		createView: view;
-		showShell;
-		yourself! !
+	self setDefaultInspectorClass: JadeInspector! !
 !JadeInspector class categoriesFor: #defaultInspectorClass!public! !
 !JadeInspector class categoriesFor: #setDefaultInspectorClass:!public! !
 !JadeInspector class categoriesFor: #setNormalInspector!public! !
-!JadeInspector class categoriesFor: #showOn:session:!public! !
 

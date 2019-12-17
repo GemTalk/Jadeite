@@ -35,7 +35,7 @@ autocommitEnabled: booleanString
 	autoCommitService := RowanAutoCommitService new
 				command: #autoCommit:;
 				commandArgs: (Array with: boolean).
-	BrowserUpdate current issueCommand: (Array with: autoCommitService) session: session!
+	BrowserUpdate current issueCommands: (Array with: autoCommitService) session: session!
 
 autocompleteEnabled: booleanString
 	| boolean |
@@ -49,7 +49,7 @@ breakpointsEnabled: booleanString
 	answeringService := RowanAnsweringService new
 				command: #setBreakPointsAreEnabled:;
 				commandArgs: (Array with: boolean).
-	BrowserUpdate current issueCommand: (Array with: answeringService) session: session.!
+	BrowserUpdate current issueCommands: (Array with: answeringService) session: session!
 
 loggingEnabled: booleanString
 	| boolean |

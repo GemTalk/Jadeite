@@ -392,7 +392,7 @@ saveMethod: source category: category session: session
 	self
 		command: #saveMethodSource:category:;
 		commandArgs: (Array with: source with: category).
-	BrowserUpdate current issueCommand: (Array with: self) session: session!
+	BrowserUpdate current issueCommands: (Array with: self) session: session!
 
 selectedMethods
 

@@ -82,7 +82,7 @@ updateHistory
 						command: #methodHistoryFor:;
 						commandArgs: (Array with: self methodService);
 						yourself.
-			JadePresenter issueCommand: (Array with: answeringService) session: session].
+			JadePresenter issueCommands: (Array with: answeringService) session: session].
 	history := OrderedCollection new.
 	methodServiceHistory := answeringService answer.
 	methodServiceHistory do: 

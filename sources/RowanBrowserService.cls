@@ -134,13 +134,13 @@ registerWindow: handle rootObject: oop session: session
 	self
 		command: #saveRootObject:windowHandle:;
 		commandArgs: (Array with: oop with: handle).
-	JadePresenter issueCommand: (Array with: self) session: session!
+	JadePresenter issueCommands: (Array with: self) session: session!
 
 releaseWindow: handle session: session
 	self
 		command: #releaseWindowHandle:;
 		commandArgs: (Array with: handle).
-	JadePresenter issueCommand: (Array with: self) session: session!
+	JadePresenter issueCommands: (Array with: self) session: session!
 
 reloadProjects: selectedProjectServices presenter: presenter
 	| selectedServices |
@@ -150,7 +150,7 @@ reloadProjects: selectedProjectServices presenter: presenter
 			[self
 				command: #reloadProjects:andUpdateServices:;
 				commandArgs: (Array with: selectedProjectServices asSet asArray with: selectedServices).
-			BrowserUpdate current issueCommand: (Array with: self) session: presenter gciSession]!
+			BrowserUpdate current issueCommands: (Array with: self) session: presenter gciSession]!
 
 removedMethods
 	^removedMethods!

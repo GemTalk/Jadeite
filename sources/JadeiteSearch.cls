@@ -160,7 +160,7 @@ initializeAutocompleteSymbolsIn: session
 	service := RowanAnsweringService new
 				command: #autocompleteSymbols;
 				commandArgs: Array new.
-	BrowserUpdate current issueCommand: (Array with: service) session: session.
+	BrowserUpdate current issueCommands: (Array with: service) session: session.
 	AllClassNames := service answer first.
 	AllSelectors := service answer last!
 
@@ -168,7 +168,7 @@ initializeClassNamesIn: session
 	| service |
 	service := RowanAnsweringService new command: #allClassNames.
 	service commandArgs: Array new.
-	JadePresenter issueCommand: (Array with: service) session: session.
+	JadePresenter issueCommands: (Array with: service) session: session.
 	AllClassNames := service answer asOrderedCollection!
 
 initializeSelectorsIn: session
@@ -176,7 +176,7 @@ initializeSelectorsIn: session
 	service := RowanAnsweringService new
 				command: #sortedSymbols;
 				commandArgs: Array new.
-	BrowserUpdate current issueCommand: (Array with: service) session: session.
+	BrowserUpdate current issueCommands: (Array with: service) session: session.
 	AllSelectors := service answer asOrderedCollection!
 
 on: view session: session
@@ -196,7 +196,7 @@ updateAutocompleteSymbolsIn: session
 	service := RowanAnsweringService new
 				command: #updateAutocompleteSymbols;
 				commandArgs: Array new.
-	BrowserUpdate current issueCommand: (Array with: service) session: session.
+	BrowserUpdate current issueCommands: (Array with: service) session: session.
 	AllClassNames addAll: service answer first.
 	AllSelectors addAll: service answer last! !
 !JadeiteSearch class categoriesFor: #allClassNames!accessing!public! !

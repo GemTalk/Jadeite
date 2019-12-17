@@ -215,6 +215,10 @@ isDirty
 isDirty: anObject
 	isDirty := anObject!
 
+isInspectorService
+
+	^false!
+
 isLoggingService
 
 	^false!
@@ -478,6 +482,7 @@ wasRenamed
 !RowanService categoriesFor: #isDictionaryService!public!testing! !
 !RowanService categoriesFor: #isDirty!accessing!public! !
 !RowanService categoriesFor: #isDirty:!accessing!public! !
+!RowanService categoriesFor: #isInspectorService!public!testing! !
 !RowanService categoriesFor: #isLoggingService!public!testing! !
 !RowanService categoriesFor: #isMethodService!public!testing! !
 !RowanService categoriesFor: #isPackageService!public!testing! !

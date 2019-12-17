@@ -162,8 +162,7 @@ issueCommand: service
 	^self issueCommands: (Array with: service)!
 
 issueCommands: services
-
-	^JadePresenter issueCommand: services session: session!
+	^JadePresenter issueCommands: services session: session!
 
 itemNamed: menuName in: menuBar
 	^menuBar items detect: [:item | '*' , menuName , '*' match: item text]!
@@ -174,7 +173,7 @@ loadProjectNamed: projectName
 	projectService
 		command: #reloadProject;
 		commandArgs: nil.
-	JadePresenter issueCommand: (Array with: projectService) session: session!
+	JadePresenter issueCommands: (Array with: projectService) session: session!
 
 loadRowanSample1InProjectList
 	| sample1Path root selections |

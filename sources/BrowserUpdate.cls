@@ -107,7 +107,7 @@ isLogging
 isLogging: boolean
 	boolean ifTrue: [self startLogging] ifFalse: [self stopLogging]!
 
-issueCommand: services session: session
+issueCommands: services session: session
 	self inUpdateWhile: 
 			[| commandResult |
 			commandResult := self basicIssueCommand: services session: session.
@@ -323,7 +323,7 @@ updatesPerform: selector presenter: presenter browser: browser
 !BrowserUpdate categoriesFor: #isApplyingUpdates!public!testing! !
 !BrowserUpdate categoriesFor: #isLogging!logging!public!testing! !
 !BrowserUpdate categoriesFor: #isLogging:!logging!public!testing! !
-!BrowserUpdate categoriesFor: #issueCommand:session:!commands!public! !
+!BrowserUpdate categoriesFor: #issueCommands:session:!commands!public! !
 !BrowserUpdate categoriesFor: #logComment:!logging!public! !
 !BrowserUpdate categoriesFor: #logFileName!accessing!public! !
 !BrowserUpdate categoriesFor: #logFileName:!accessing!public! !
