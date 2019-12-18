@@ -37,6 +37,17 @@ executeThenInspect: string context: anOop session: session windowHandle: handle
 					with: handle).
 	BrowserUpdate current issueCommands: (Array with: self) session: session!
 
+executeThenInspect: string context: anOop session: session windowHandle: handle debugger: debugger
+	self
+		command: #executeThenInspect:inFrame:process:context:inWindow:;
+		commandArgs: (Array
+					with: string
+					with: debugger frameListPresenter selectionByIndex
+					with: debugger gsProcess oop
+					with: anOop
+					with: handle).
+	BrowserUpdate current issueCommands: (Array with: self) session: session!
+
 hash
 	^oop hash!
 
@@ -112,6 +123,7 @@ visibleIndices: anObject
 !RowanInspectorService categoriesFor: #compileErrorArray:!accessing!private! !
 !RowanInspectorService categoriesFor: #defaultIndexedSize!constants!public! !
 !RowanInspectorService categoriesFor: #executeThenInspect:context:session:windowHandle:!inspecting!public! !
+!RowanInspectorService categoriesFor: #executeThenInspect:context:session:windowHandle:debugger:!inspecting!public! !
 !RowanInspectorService categoriesFor: #hash!comparison!private! !
 !RowanInspectorService categoriesFor: #indexedSize!accessing!private! !
 !RowanInspectorService categoriesFor: #indexedSize:!accessing!private! !

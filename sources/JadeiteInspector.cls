@@ -47,7 +47,7 @@ displayObject
 	contents := OrderedCollection with: model myself with: '-.asOop' -> model oop.
 	contents addAll: model objects.
 	instVarListPresenter list: contents.
-	model objects isEmpty ifFalse: [instVarListPresenter selection: model myself].
+	contents isEmpty ifFalse: [instVarListPresenter selection: model myself].
 	model indexedSize > 0
 		ifTrue: 
 			[statusTextPresenter

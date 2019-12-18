@@ -121,11 +121,9 @@ implement
 !
 
 inspectVariable
-
 	| object |
 	object := gciSession oopTypeWithOop: variableListPresenter selection key key asNumber.
-	^JadeInspector showOn: object session: gciSession.
-!
+	^JadeInspector showOn: object session: gciSession!
 
 queryCommand: query
 
