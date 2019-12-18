@@ -15,7 +15,12 @@ clearBreakPointAt: stepPoint in: browser
 	self parentPresenter clearBreakPointsAt: stepPoint!
 
 executeSelectionOrLine: contextObject
-	^self parentPresenter executeSelectionOrLine: contextObject! !
+	^self parentPresenter executeSelectionOrLine: contextObject!
+
+inspectorContextObject
+
+	^self parentPresenter contextObject value! !
 !JadeiteDebuggerMethodSourcePresenter categoriesFor: #clearBreakPointAt:in:!menu handlers!public! !
 !JadeiteDebuggerMethodSourcePresenter categoriesFor: #executeSelectionOrLine:!menu handlers!public! !
+!JadeiteDebuggerMethodSourcePresenter categoriesFor: #inspectorContextObject!private! !
 

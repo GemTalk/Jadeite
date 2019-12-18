@@ -1,14 +1,14 @@
 "Filed out from Dolphin Smalltalk 7"!
 
-JadeNavigationInspector subclass: #JadeiteServiceInspector
+JadeNavigationInspector subclass: #JadeiteInspector
 	instanceVariableNames: 'statusTextPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeiteServiceInspector guid: (GUID fromString: '{e2a72e04-9d21-4c3c-8464-3f402c07b537}')!
-JadeiteServiceInspector comment: ''!
-!JadeiteServiceInspector categoriesForClass!Unclassified! !
-!JadeiteServiceInspector methodsFor!
+JadeiteInspector guid: (GUID fromString: '{e2a72e04-9d21-4c3c-8464-3f402c07b537}')!
+JadeiteInspector comment: ''!
+!JadeiteInspector categoriesForClass!Unclassified! !
+!JadeiteInspector methodsFor!
 
 createComponents
 
@@ -110,19 +110,26 @@ selectedInstVar
 							["Forward reference error"
 							ex return: 'an invalid or hidden object (perhaps a LargeObjectNode)'].
 					ex pass].
-	documentPresenter value: string! !
-!JadeiteServiceInspector categoriesFor: #createComponents!initialize!public! !
-!JadeiteServiceInspector categoriesFor: #displayAll!displaying!public! !
-!JadeiteServiceInspector categoriesFor: #displayMore!displaying!public! !
-!JadeiteServiceInspector categoriesFor: #displayObject!displaying!public! !
-!JadeiteServiceInspector categoriesFor: #expectedModelClass!private! !
-!JadeiteServiceInspector categoriesFor: #initialize!initialize!public! !
-!JadeiteServiceInspector categoriesFor: #inspectInstVar!public! !
-!JadeiteServiceInspector categoriesFor: #printInstVar!displaying!public! !
-!JadeiteServiceInspector categoriesFor: #registerWindow:rootObject:!private! !
-!JadeiteServiceInspector categoriesFor: #selectedInstVar!accessing!private! !
+	documentPresenter value: string!
 
-!JadeiteServiceInspector class methodsFor!
+showOn: service
+	model := service.
+	self showShell.
+	self displayObject.
+	self updateCaption! !
+!JadeiteInspector categoriesFor: #createComponents!initialize!public! !
+!JadeiteInspector categoriesFor: #displayAll!displaying!public! !
+!JadeiteInspector categoriesFor: #displayMore!displaying!public! !
+!JadeiteInspector categoriesFor: #displayObject!displaying!public! !
+!JadeiteInspector categoriesFor: #expectedModelClass!private! !
+!JadeiteInspector categoriesFor: #initialize!initialize!public! !
+!JadeiteInspector categoriesFor: #inspectInstVar!public! !
+!JadeiteInspector categoriesFor: #printInstVar!displaying!public! !
+!JadeiteInspector categoriesFor: #registerWindow:rootObject:!private! !
+!JadeiteInspector categoriesFor: #selectedInstVar!accessing!private! !
+!JadeiteInspector categoriesFor: #showOn:!displaying!public! !
+
+!JadeiteInspector class methodsFor!
 
 resource_Default_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.
@@ -146,6 +153,6 @@ showOn: oop session: aGciSession
 		displayObject;
 		updateCaption;
 		yourself! !
-!JadeiteServiceInspector class categoriesFor: #resource_Default_view!public!resources-views! !
-!JadeiteServiceInspector class categoriesFor: #showOn:session:!public! !
+!JadeiteInspector class categoriesFor: #resource_Default_view!public!resources-views! !
+!JadeiteInspector class categoriesFor: #showOn:session:!public! !
 

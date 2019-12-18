@@ -22,6 +22,7 @@ package classNames
 	add: #JadeiteFindClassDialog;
 	add: #JadeiteFindMethodDialog;
 	add: #JadeiteGitLog;
+	add: #JadeiteInspector;
 	add: #JadeiteLogger;
 	add: #JadeiteLoggerPresenter;
 	add: #JadeiteLoggerShell;
@@ -44,7 +45,6 @@ package classNames
 	add: #JadeiteScintillaView;
 	add: #JadeiteSearch;
 	add: #JadeiteSemaphore;
-	add: #JadeiteServiceInspector;
 	add: #JadeiteTranscript;
 	add: #PackageMethodListPresenter;
 	add: #Rowan;
@@ -95,6 +95,7 @@ package methodNames
 	add: #CodeSourcePresenter -> #browseSelectedClass;
 	add: #CodeSourcePresenter -> #currentSelection;
 	add: #CodeSourcePresenter -> #executeSelectionOrLine;
+	add: #CodeSourcePresenter -> #inspectorContextObject;
 	add: #CodeSourcePresenter -> #jadeInspect;
 	add: #CodeSourcePresenter -> #methodMenuBreak:;
 	add: #Collection -> #basicPrepareForReplication;
@@ -670,7 +671,7 @@ RowanService subclass: #RowanFrameService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanInspectorService
-	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars'
+	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -854,7 +855,7 @@ JadeDebugger subclass: #JadeiteDebugger
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggerClass semaphore lastPosition'!
-JadeNavigationInspector subclass: #JadeiteServiceInspector
+JadeNavigationInspector subclass: #JadeiteInspector
 	instanceVariableNames: 'statusTextPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -971,6 +972,9 @@ currentSelection
 executeSelectionOrLine
 	^self executeSelectionOrLine: self parentPresenter contextObject !
 
+inspectorContextObject
+	^gciSession oopNil value!
+
 jadeInspect
 	"build the window first, then pass the window handle to the inspector.
 	This allows the inspector service to hold on to the resulting object 
@@ -978,18 +982,18 @@ jadeInspect
 	RowanInspectorService>>executeThenInspect: context: inWindow:"
 
 	| service inspector |
-	inspector := JadeiteServiceInspector new gciSession: gciSession.
-	inspector createView: JadeiteServiceInspector defaultView.
+	inspector := JadeiteInspector new gciSession: gciSession.
+	inspector createView: JadeiteInspector defaultView.
 	service := RowanInspectorService new
 				executeThenInspect: self currentSelectionOrLine
-				context: gciSession oopNil value
+				context: self inspectorContextObject
 				session: gciSession
 				windowHandle: inspector view handle value.
-	inspector model: service.
-	inspector showShell.
-	inspector displayObject.
-	inspector updateCaption.
-	^inspector!
+	service compileErrorArray
+		ifNotNil: 
+			[[^self showCompileError: service compileErrorArray first]
+				ensure: [service compileErrorArray: nil]].
+	^inspector showOn: service!
 
 methodMenuBreak: menu
 	| currentSelection implementorsCommand sendersCommand browseClassMenuItem menuPosition implementorsItem sendersItem currentSelectionMenuItemName |
@@ -1027,6 +1031,7 @@ methodMenuBreak: menu
 !CodeSourcePresenter categoriesFor: #browseSelectedClass!Jade!public! !
 !CodeSourcePresenter categoriesFor: #currentSelection!public! !
 !CodeSourcePresenter categoriesFor: #executeSelectionOrLine!Jade!private! !
+!CodeSourcePresenter categoriesFor: #inspectorContextObject!Jade!private! !
 !CodeSourcePresenter categoriesFor: #jadeInspect!Jade!private! !
 !CodeSourcePresenter categoriesFor: #methodMenuBreak:!menus!public! !
 
@@ -1856,7 +1861,7 @@ updateCaption
 !JadeInspector class methodsFor!
 
 defaultInspectorClass
-	^JadeiteServiceInspector!
+	^JadeiteInspector!
 
 resource_Default_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.
@@ -1879,15 +1884,7 @@ resource_Special_view
 	^#(#'!!STL' 4 788558 10 ##(Smalltalk.STBViewProxy) ##(Smalltalk.ShellView) 34 27 nil nil 8 #(13565952 65536) 416 nil 524550 ##(Smalltalk.ColorRef) 8 4278190080 328198 ##(Smalltalk.Point) 1201 901 551 nil nil nil 416 1180166 ##(Smalltalk.ProportionalLayout) 170 176 8 #() false 170 192 34 2 410 ##(Smalltalk.MultilineTextEdit) 34 16 nil 416 34 2 8 1143017796 1025 640 nil 466 8 4278190080 nil 7 nil nil nil 640 nil 8 4294907415 852486 ##(Smalltalk.NullConverter) nil nil 11 983302 ##(Smalltalk.MessageSequence) 138 144 34 1 721670 ##(Smalltalk.MessageSend) #createAt:extent: 34 2 514 1 1 514 1169 783 640 983302 ##(Smalltalk.WINDOWPLACEMENT) 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 72 2 0 0 135 1 0 0] 8 #() 514 193 193 nil 27 8 'document' nil 461638 4 ##(Smalltalk.MenuBar) nil true 34 3 265030 4 ##(Smalltalk.Menu) nil true 34 1 984134 2 ##(Smalltalk.CommandMenuItem) 1 1180998 4 ##(Smalltalk.CommandDescription) #exit 8 'E&xit' 17639 1 nil nil nil 8 '&File' nil 1 nil nil 14955 nil nil 1074 nil true 34 15 1122 1 1154 #undo 8 '&Undo' 9397 1 nil nil nil 1122 1 1154 #redo 8 'R&edo' 9395 1 nil nil nil 983366 1 ##(Smalltalk.DividerMenuItem) 4097 1122 1 1154 #editCut 8 'Cu&t' 9393 1 nil nil nil 1122 1 1154 #editCopy 8 '&Copy' 9351 1 nil nil nil 1122 1 1154 #editPaste 8 '&Paste' 9389 1 nil nil nil 1122 1 1154 #editSelectAll 8 'Select &All' 9347 1 nil nil nil 1122 1 1154 #editDelete 8 '&Delete' 1629 1 nil nil nil 1346 4097 1122 1 1154 #editFind 8 '&Find...' 9357 1 nil nil nil 1122 1 1154 #editFindNext 8 'Find &Next' 9359 1 nil nil nil 1122 1 1154 #editReplace 8 '&Replace...' 9361 1 nil nil nil 1346 4097 1122 1 1154 #addQuotesToSelection 8 'Add &Quotes' 1 1 nil nil nil 1122 1 1154 #removeQuotesFromSelection 8 'Re&move Quotes' 1 1 nil nil nil 8 '&Edit' nil 1 nil nil 14981 nil nil 1074 nil true 34 9 1122 1 1154 #abortTransaction 8 '&Abort Transaction' 1 1 nil nil nil 1122 1 1154 #commitTransaction 8 '&Commit Transaction' 1 1 nil nil nil 1346 4097 1122 1 1154 #jadeInspect 8 '&Inspect' 9379 1 nil nil nil 1122 1 1154 #jadeDisplay 8 '&Display' 9353 1 nil nil nil 1122 1 1154 #jadeExecute 8 '&Execute' 9355 1 nil nil nil 1122 1 1154 #fileIn 8 'Fi&le In' 1 1 nil nil nil 1346 4097 1122 1 1154 #openDictionaryBrowser 8 '&Browse Classes' 9349 1 nil nil nil 8 '&Jadeite' nil 1 nil nil 14997 nil nil 8 '' nil 1 nil nil nil nil nil nil nil nil 1 nil nil nil nil 1 nil nil 786 138 144 34 3 850 #createAt:extent: 34 2 514 7679 21 514 1201 901 416 850 #text: 34 1 8 'Jade Object Inspector' 416 850 #updateMenuBar 592 416 930 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 14 0 0 10 0 0 0 87 17 0 0 204 1 0 0] 34 1 640 992 nil 27 )!
 
 showOn: anObject session: aGciSession
-	| class view |
-	class := self defaultInspectorClass.
-	view := self defaultView.
-	^class new
-		gciSession: aGciSession;
-		model: anObject;
-		createView: view;
-		showShell;
-		yourself! !
+	^JadeiteInspector showOn: anObject session: aGciSession! !
 !JadeInspector class categoriesFor: #defaultInspectorClass!public! !
 !JadeInspector class categoriesFor: #resource_Default_view!public!resources-views! !
 !JadeInspector class categoriesFor: #resource_Special_view!public!resources-views! !

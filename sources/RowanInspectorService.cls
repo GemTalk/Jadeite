@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanInspectorService
-	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars'
+	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -18,6 +18,12 @@ className
 
 className: anObject
 	className := anObject!
+
+compileErrorArray
+	^compileErrorArray!
+
+compileErrorArray: anObject
+	compileErrorArray := anObject!
 
 defaultIndexedSize
 	^1000!
@@ -43,7 +49,8 @@ indexedSize: anObject
 initialize
 	super initialize. 
 	objects := Array new. 
-	maxIndexedVars := self defaultIndexedSize!
+	maxIndexedVars := self defaultIndexedSize.
+	indexedSize := 0.!
 
 inspect: anOop session: session
 	oop := anOop value.
@@ -101,6 +108,8 @@ visibleIndices: anObject
 !RowanInspectorService categoriesFor: #=!comparison!public! !
 !RowanInspectorService categoriesFor: #className!accessing!private! !
 !RowanInspectorService categoriesFor: #className:!accessing!private! !
+!RowanInspectorService categoriesFor: #compileErrorArray!accessing!private! !
+!RowanInspectorService categoriesFor: #compileErrorArray:!accessing!private! !
 !RowanInspectorService categoriesFor: #defaultIndexedSize!constants!public! !
 !RowanInspectorService categoriesFor: #executeThenInspect:context:session:windowHandle:!inspecting!public! !
 !RowanInspectorService categoriesFor: #hash!comparison!private! !
