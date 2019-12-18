@@ -424,6 +424,7 @@ package methodNames
 	add: #TreeModel -> #removeWithoutNotification:ifAbsent:;
 	add: 'CodeSourcePresenter class' -> #resource_Default_view;
 	add: 'JadeDebugger class' -> #resource_Default_view;
+	add: 'JadeInspector class' -> #defaultInspectorClass;
 	add: 'JadeInspector class' -> #resource_Default_view;
 	add: 'JadeInspector class' -> #resource_Special_view;
 	add: 'JadeInspector class' -> #showOn:session:;
@@ -1854,6 +1855,9 @@ updateCaption
 
 !JadeInspector class methodsFor!
 
+defaultInspectorClass
+	^JadeiteServiceInspector!
+
 resource_Default_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.
 	DO NOT EDIT OR RECATEGORIZE THIS METHOD.
@@ -1884,6 +1888,7 @@ showOn: anObject session: aGciSession
 		createView: view;
 		showShell;
 		yourself! !
+!JadeInspector class categoriesFor: #defaultInspectorClass!public! !
 !JadeInspector class categoriesFor: #resource_Default_view!public!resources-views! !
 !JadeInspector class categoriesFor: #resource_Special_view!public!resources-views! !
 !JadeInspector class categoriesFor: #showOn:session:!public! !

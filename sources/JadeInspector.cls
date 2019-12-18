@@ -83,12 +83,6 @@ model: anObject
 
 !JadeInspector class methodsFor!
 
-defaultInspectorClass
-
-	DefaultInspectorClass isNil ifTrue: [DefaultInspectorClass := JadeInspector].
-
-	^DefaultInspectorClass!
-
 setDefaultInspectorClass: aJadeInspectorClass
 
 	DefaultInspectorClass := aJadeInspectorClass
@@ -97,7 +91,6 @@ setDefaultInspectorClass: aJadeInspectorClass
 setNormalInspector
 
 	self setDefaultInspectorClass: JadeInspector! !
-!JadeInspector class categoriesFor: #defaultInspectorClass!public! !
 !JadeInspector class categoriesFor: #setDefaultInspectorClass:!public! !
 !JadeInspector class categoriesFor: #setNormalInspector!public! !
 
