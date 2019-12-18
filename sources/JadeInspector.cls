@@ -31,7 +31,8 @@ createSchematicWiring
 createView: string
 	| newView |
 	newView := super createView: string.
-	(model isKindOf: self expectedModelClass) ifTrue: [self registerWindow: newView handle rootObject: model oop].
+	(model isKindOf: self expectedModelClass)
+		ifTrue: [self registerWindow: newView handle rootObject: model oop].
 	^newView!
 
 expectedModelClass

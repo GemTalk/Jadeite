@@ -414,6 +414,10 @@ oopIllegal
 	^library oopIllegal.
 !
 
+oopNil
+
+	^library oopNil!
+
 oopTypeWithOop: anInteger
 
 	^library oopTypeWithOop: anInteger.
@@ -813,6 +817,7 @@ valueOfOop: anOopType
 !GciSession categoriesFor: #oopForString:!public! !
 !GciSession categoriesFor: #oopGemStoneError!public! !
 !GciSession categoriesFor: #oopIllegal!public! !
+!GciSession categoriesFor: #oopNil!accessing!public! !
 !GciSession categoriesFor: #oopTypeWithOop:!public! !
 !GciSession categoriesFor: #printString:!Jade convenience!public! !
 !GciSession categoriesFor: #privateLogout!Jade!private! !

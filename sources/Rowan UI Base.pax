@@ -669,7 +669,7 @@ RowanService subclass: #RowanFrameService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanInspectorService
-	instanceVariableNames: 'oop objects myself className'
+	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -854,7 +854,7 @@ JadeDebugger subclass: #JadeiteDebugger
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggerClass semaphore lastPosition'!
 JadeNavigationInspector subclass: #JadeiteServiceInspector
-	instanceVariableNames: ''
+	instanceVariableNames: 'statusTextPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -971,11 +971,24 @@ executeSelectionOrLine
 	^self executeSelectionOrLine: self parentPresenter contextObject !
 
 jadeInspect
-	| result service |
-	result := self jadeExecuteAndDisplay: false.
-	result == self ifTrue: [^self].
-	service := RowanInspectorService new inspect: result session: gciSession.
-	^JadeiteServiceInspector showOn: service session: gciSession!
+	"build the window first, then pass the window handle to the inspector.
+	This allows the inspector service to hold on to the resulting object 
+	after the service is released. See 
+	RowanInspectorService>>executeThenInspect: context: inWindow:"
+
+	| service inspector |
+	inspector := JadeiteServiceInspector new gciSession: gciSession.
+	inspector createView: JadeiteServiceInspector defaultView.
+	service := RowanInspectorService new
+				executeThenInspect: self currentSelectionOrLine
+				context: gciSession oopNil value
+				session: gciSession
+				windowHandle: inspector view handle value.
+	inspector model: service.
+	inspector showShell.
+	inspector displayObject.
+	inspector updateCaption.
+	^inspector!
 
 methodMenuBreak: menu
 	| currentSelection implementorsCommand sendersCommand browseClassMenuItem menuPosition implementorsItem sendersItem currentSelectionMenuItemName |
@@ -1725,7 +1738,6 @@ onViewClosed
 
 onViewOpened
 	super onViewOpened.
-	self displayObject.
 	self updateCaption.
 	BrowserUpdate current logComment: 'Opening Inspector {' , self identityHash printString , '}'!
 
