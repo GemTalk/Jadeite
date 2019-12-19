@@ -185,7 +185,10 @@ test_basicInspectorDisplayedSizeLimit
 	self assert: inspectorService indexedSize equals: 100000.
 	self assert: inspectorService visibleIndices equals: 1000.
 	inspector displayAll.
-	self assert: inspector instVarListPresenter list last = $X.
+	self assert: inspector instVarListPresenter list last key equals: '100000'. 
+	self assert: inspector instVarListPresenter list last value equals:( session
+				executeString: '$X asOop'). 
+	self assert: inspector instVarListPresenter list last key equals: '100000'. 
 	self assert: inspectorService indexedSize equals: 100000!
 
 test_caption
@@ -300,17 +303,17 @@ test_dive
 	[workspace setDocumentData: 'ClassOrganizer new'.
 	workspace setFocus.
 	inspector := workspace codePane jadeInspect.
-	self assert: (inspector model value isKindOf: Integer).	"the oop"
+	self assert: (inspector model isKindOf: RowanInspectorService).
 	self assert: inspector instVarListPresenter selection key equals: 'self'.
 	self assert: inspector instVarListPresenter selection value equals: 'aClassOrganizer'.
 	inspector instVarListPresenter selectionByIndex: 8.
-	self assert: inspector instVarListPresenter selection key equals: '-rootClass'. 
-	inspector instVarListPresenter view onActionPerformed.  "event for double click"
+	self assert: inspector instVarListPresenter selection key equals: '-rootClass'.
+	inspector instVarListPresenter view onActionPerformed.	"event for double click"
 	self assert: inspector instVarListPresenter selection key equals: 'self'.
 	self assert: inspector documentPresenter value equals: 'Object'.
-	index := (inspector instVarListPresenter list collect:[:assoc | assoc key]) indexOf: '-name'. 
+	index := (inspector instVarListPresenter list collect: [:assoc | assoc key]) indexOf: '-name'.
 	inspector instVarListPresenter selectionByIndex: index.
-	self assert: inspector documentPresenter value equals: '#''Object'''. ]
+	self assert: inspector documentPresenter value equals: '#''Object''']
 			ensure: 
 				[workspace isModified: false.
 				workspace view close]!
@@ -371,7 +374,11 @@ coll
 	list := inspector instVarListPresenter list.
 	self assert: list size equals: 502.	"500 elements + self + asOop"
 	3 to: list size
-		do: [:index | self assert: ('''entry*' match: (session printString: (list at: index) value))]!
+		do: 
+			[:index |
+			inspector instVarListPresenter selectionByIndex: index.
+			self
+				assert: (inspector documentPresenter model value equals: '''entry' , (index - 2) printString , '''')]!
 
 test_inspectorHandlesError
 	| remoteObject |
@@ -393,9 +400,9 @@ test_inspectorHandlesError
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	
-	[self assert: ('Inspector on Oop(*)*' match: inspector caption).
-	self assert: ('*Oop*' match: inspector documentPresenter value).	"should show the oop"
-	self assert: ('*throw an error*' match: inspector documentPresenter value).	"must show underlying error"
+	[self
+		assert: ('Error printing object with oop *. Error text: a UserDefinedError occurred (error 2318), reason:halt, throw an error'
+				match: inspector documentPresenter value).	"must show underlying error"
 	inspector instVarListPresenter selectionByIndex: 2.
 	self assert: inspector documentPresenter value isKindOf: Integer]
 			ensure: [self destroy: inspector].

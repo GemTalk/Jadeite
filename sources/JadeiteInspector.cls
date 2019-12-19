@@ -126,7 +126,6 @@ inspectOop: oop
 
 printInstVar
 	| answeringService |
-
 	^
 	[answeringService := RowanAnsweringService new.
 	answeringService
@@ -191,7 +190,7 @@ showOn: service
 !JadeiteInspector categoriesFor: #initialize!initialize!public! !
 !JadeiteInspector categoriesFor: #inspect:inContext:!inspecting!public! !
 !JadeiteInspector categoriesFor: #inspectInstVar!inspecting!public! !
-!JadeiteInspector categoriesFor: #inspectOop:!public! !
+!JadeiteInspector categoriesFor: #inspectOop:!inspecting!public! !
 !JadeiteInspector categoriesFor: #printInstVar!displaying!public! !
 !JadeiteInspector categoriesFor: #queryCommand:!menu handlers!private! !
 !JadeiteInspector categoriesFor: #registerWindow:rootObject:!private! !
