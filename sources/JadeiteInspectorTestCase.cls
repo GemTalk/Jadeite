@@ -168,7 +168,7 @@ test_autoCommitOffInAdHocInspect
 			ensure: [self commitTransaction]!
 
 test_basicInspectorDisplayedSizeLimit
-	| remoteObject |
+	| remoteObject inspectorService |
 	self testsIssue: #issue361 withTitle: 'Inspectors should hold more than 5000 characters'.
 	remoteObject := session
 				executeString: '
@@ -181,9 +181,12 @@ test_basicInspectorDisplayedSizeLimit
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self assert: inspector model last = $X.
-	self assert: inspector model size = 100000
-!
+	inspectorService := inspector model.
+	self assert: inspectorService indexedSize equals: 100000.
+	self assert: inspectorService visibleIndices equals: 1000.
+	inspector displayAll.
+	self assert: inspector instVarListPresenter list last = $X.
+	self assert: inspectorService indexedSize equals: 100000!
 
 test_caption
 	| remoteObject |

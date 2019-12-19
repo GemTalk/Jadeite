@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanInspectorService
-	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray'
+	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray isOop'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -59,20 +59,40 @@ indexedSize: anObject
 
 initialize
 	super initialize. 
-	objects := Array new. 
+	objects := OrderedCollection new. 
 	maxIndexedVars := self defaultIndexedSize.
-	indexedSize := 0.!
+	indexedSize := 0.
+	isOop := true. !
 
-inspect: anOop session: session
-	oop := (anOop isKindOf: ExternalInteger) ifTrue: [anOop value] ifFalse: [anOop].
+inspect: oopOrObject session: session
+	oop := (oopOrObject isKindOf: ExternalInteger)
+				ifTrue: [oopOrObject value]
+				ifFalse: 
+					[isOop := false.
+					oopOrObject].
 	self
 		command: #inspect:;
 		commandArgs: (Array with: oop).
 	BrowserUpdate current issueCommands: (Array with: self) session: session!
 
+inspect: oopOrObject session: session inWindow: handle
+	oop := (oopOrObject isKindOf: ExternalInteger)
+				ifTrue: [oopOrObject value]
+				ifFalse: 
+					[isOop := false.
+					oopOrObject].
+	self
+		command: #inspect:inWindow:;
+		commandArgs: (Array with: oop with: handle).
+	BrowserUpdate current issueCommands: (Array with: self) session: session!
+
 isInspectorService
 
 	^true!
+
+isShowingAllIndexedVars
+
+	^visibleIndices = indexedSize!
 
 maxIndexedVars
 	^maxIndexedVars!
@@ -129,7 +149,9 @@ visibleIndices: anObject
 !RowanInspectorService categoriesFor: #indexedSize:!accessing!private! !
 !RowanInspectorService categoriesFor: #initialize!initialization!public! !
 !RowanInspectorService categoriesFor: #inspect:session:!inspecting!public! !
+!RowanInspectorService categoriesFor: #inspect:session:inWindow:!inspecting!public! !
 !RowanInspectorService categoriesFor: #isInspectorService!public!testing! !
+!RowanInspectorService categoriesFor: #isShowingAllIndexedVars!public!testing! !
 !RowanInspectorService categoriesFor: #maxIndexedVars!accessing!private! !
 !RowanInspectorService categoriesFor: #maxIndexedVars:!accessing!private! !
 !RowanInspectorService categoriesFor: #myself!accessing!private! !
