@@ -10,6 +10,13 @@ JadeiteInspector comment: ''!
 !JadeiteInspector categoriesForClass!Unclassified! !
 !JadeiteInspector methodsFor!
 
+addOop: oop
+	oop isNil ifTrue: [^self].
+	(oopsCollection includes: oop) ifTrue: [^self].
+	oopsCollection resize: objectIndex + 1.
+	oopsCollection at: objectIndex + 1 put: oop.
+	objectIndex := objectIndex + 1!
+
 createComponents
 
 	super createComponents. 
@@ -64,13 +71,16 @@ initialize
 	statusTextPresenter value: nil!
 
 inspectInstVar
-	| oop | 
-	self rowanFixMe.  "not working. Needs an inspector model" 
+	| oop |
 	oop := instVarListPresenter selection value.	"instVarListPresenter selection is <anAssociation>"
 	objectIndex = oopsCollection size
-		ifFalse: [(oopsCollection at: objectIndex + 1) = oop value ifTrue: [^self getNextObject]].
-	(oop isKindOf: String) ifTrue: [^self].
-	self model: oop.
+		ifFalse: [(oopsCollection at: objectIndex + 1) = oop ifTrue: [^self getNextObject]].
+	self inspectOop: oop!
+
+inspectOop: oop
+	| service |
+	service := RowanInspectorService new inspect: oop session: gciSession.
+	self model: service.
 	self addOop: oop.
 	self setDocumentPresenterLabel.
 	self displayObject.
@@ -112,11 +122,18 @@ selectedInstVar
 					ex pass].
 	documentPresenter value: string!
 
+setNewInspectedObject
+	| oop |
+	oop := oopsCollection at: objectIndex.
+	self inspectOop: oop!
+
 showOn: service
 	model := service.
 	self showShell.
 	self displayObject.
-	self updateCaption! !
+	self updateCaption.
+	self addOop: self model oop! !
+!JadeiteInspector categoriesFor: #addOop:!public! !
 !JadeiteInspector categoriesFor: #createComponents!initialize!public! !
 !JadeiteInspector categoriesFor: #displayAll!displaying!public! !
 !JadeiteInspector categoriesFor: #displayMore!displaying!public! !
@@ -124,9 +141,11 @@ showOn: service
 !JadeiteInspector categoriesFor: #expectedModelClass!private! !
 !JadeiteInspector categoriesFor: #initialize!initialize!public! !
 !JadeiteInspector categoriesFor: #inspectInstVar!public! !
+!JadeiteInspector categoriesFor: #inspectOop:!public! !
 !JadeiteInspector categoriesFor: #printInstVar!displaying!public! !
 !JadeiteInspector categoriesFor: #registerWindow:rootObject:!private! !
 !JadeiteInspector categoriesFor: #selectedInstVar!accessing!private! !
+!JadeiteInspector categoriesFor: #setNewInspectedObject!public! !
 !JadeiteInspector categoriesFor: #showOn:!displaying!public! !
 
 !JadeiteInspector class methodsFor!

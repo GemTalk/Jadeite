@@ -64,7 +64,7 @@ initialize
 	indexedSize := 0.!
 
 inspect: anOop session: session
-	oop := anOop value.
+	oop := (anOop isKindOf: ExternalInteger) ifTrue: [anOop value] ifFalse: [anOop].
 	self
 		command: #inspect:;
 		commandArgs: (Array with: oop).

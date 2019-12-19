@@ -60,10 +60,6 @@ objectIndex
 objectIndex: anObject
 	objectIndex := anObject!
 
-onViewOpened
-	super onViewOpened.
-	self addOop: self model!
-
 oopsCollection
 	^oopsCollection!
 
@@ -117,7 +113,6 @@ selectedInstVar
 !JadeNavigationInspector categoriesFor: #inspectInstVar!public! !
 !JadeNavigationInspector categoriesFor: #objectIndex!accessing!private! !
 !JadeNavigationInspector categoriesFor: #objectIndex:!accessing!private! !
-!JadeNavigationInspector categoriesFor: #onViewOpened!public! !
 !JadeNavigationInspector categoriesFor: #oopsCollection!accessing!private! !
 !JadeNavigationInspector categoriesFor: #oopsCollection:!accessing!private! !
 !JadeNavigationInspector categoriesFor: #openNormalInspector!public! !
