@@ -66,6 +66,12 @@ clearBreakAt: anInteger
 cloneRowanSample1
 	JadeiteTestResource current cloneRowanSample1!
 
+closeExistingInspectors
+	"not so elegant way of making sure the test gets the right inspector. Close others first"
+
+	JadeNavigationInspector allInstances do: [:oldInspector | oldInspector view close].
+	JadeInspector allInstances do: [:oldInspector | oldInspector view close]!
+
 commitTransaction
 	^transcript commitTransaction!
 
@@ -584,6 +590,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #cleanupTextPaneForClose:!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #clearBreakAt:!private!support!tests! !
 !JadeiteAbstractTestCase categoriesFor: #cloneRowanSample1!private!project support! !
+!JadeiteAbstractTestCase categoriesFor: #closeExistingInspectors!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #commitTransaction!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #createDebuggerTestMethod!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #createNewTestProjectNamed:!public!support! !

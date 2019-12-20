@@ -30,7 +30,7 @@ inspectInstVarAt: index
 
 tearDown
 	super tearDown.
-	inspector ifNotNil: [self destroy: inspector view]!
+	inspector ifNotNil: [self destroy: inspector view].!
 
 test_abortTransactionInBasicInspector
 	"foolishly or wisely, Dolphin runs different code paths
@@ -450,7 +450,7 @@ test_inspectString
 				executeString: '''abc'''
 				fromContext: nil
 				environment: 0.
-	inspector := JadeNavigationInspector showOn: remoteObject session: session.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
 	self assert: (inspector isKindOf: JadeInspector).
 	self
 		assert: (session executeString: 'Object _objectForOop: ' , inspector model oop printString) = 'abc'!
@@ -459,16 +459,17 @@ test_interactionInspect
 	"user can send #inspect to any object in server code and Jadeite should 
 	open an inspector properly."
 
-	| list answeringService |
+	| answeringService |
 	self testsIssue: #issue303 withTitle: 'Need to handle confirm:'.
-	list := JadeInspector allInstances , JadeNavigationInspector allInstances.
-	list do: [:insp | insp view close].
-	self assert: JadeNavigationInspector allInstances size equals: 0.
+	self closeExistingInspectors.
+	self assert: JadeiteInspector allInstances size equals: 0.
 	answeringService := RowanAnsweringService new.
-	answeringService command: #exec:; commandArgs: (Array with:  'UserGlobals inspect. nil').
-	self issueCommand: answeringService. 
-	self assert: JadeiteInspector allInstances size equals: 1.
+	answeringService
+		command: #exec:;
+		commandArgs: (Array with: 'UserGlobals inspect. nil').
+	self issueCommand: answeringService.
 	inspector := JadeiteInspector allInstances first.
+	self assert: JadeiteInspector allInstances size equals: 1.
 	self assert: ('Inspector on SymbolDictionary for*' match: inspector caption)!
 
 test_menuBarItemNames
@@ -575,7 +576,7 @@ test_openNavigationInspectorOnBoolean
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	
-	[self assert: (inspector isKindOf: JadeNavigationInspector).
+	[self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: 'true'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
 	self assert: inspector documentPresenter model value equals: 268]
@@ -585,7 +586,7 @@ test_openNavigationInspectorOnBoolean
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self assert: (inspector isKindOf: JadeNavigationInspector).
+	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: 'false'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
 	self assert: inspector documentPresenter model value equals: 12!
@@ -598,7 +599,7 @@ test_openNavigationInspectorOnCharacter
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self assert: (inspector isKindOf: JadeNavigationInspector).
+	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: '$c'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
 	self assert: inspector documentPresenter model value equals: 25372!
@@ -611,7 +612,7 @@ test_openNavigationInspectorOnFloat
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self assert: (inspector isKindOf: JadeNavigationInspector).
+	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: '1.2334500000000000E02'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
 	self assert: inspector documentPresenter model value equals: 9650476537015991014!
@@ -624,7 +625,7 @@ test_openNavigationInspectorOnNil
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self assert: (inspector isKindOf: JadeNavigationInspector).
+	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: 'nil'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
 	self assert: inspector documentPresenter model value equals: 20!
@@ -637,7 +638,7 @@ test_openNavigationInspectorOnSmallInteger
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self assert: (inspector isKindOf: JadeNavigationInspector).
+	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: '123'.
 	inspector instVarListPresenter selectionByIndex: 2. "asOop"
 	self assert: inspector documentPresenter model value equals: 986.!
@@ -650,7 +651,7 @@ test_openNavigationInspectorOnSymbol
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self assert: (inspector isKindOf: JadeNavigationInspector).
+	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: '#''abc'''.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
 	self assert: inspector documentPresenter model value equals: 14351873!
@@ -691,6 +692,134 @@ test_registeredPresentersInInspectorCleanedUp
 	inspector := nil.
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
 
+test_removeFromDictionary
+	| remoteObject |
+	remoteObject := session
+				executeString: '| dictionary |
+dictionary := Dictionary new.
+UserGlobals at: #dictionary put: Dictionary new. 
+1 to: 12 do: [:i |
+dictionary at: i printString put: ''value'', i printString]. 
+dictionary'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector documentPresenter value equals: '''value11'''.
+	inspector basicRemoveFromDictionary.
+	self assert: inspector instVarListPresenter selectionByIndex equals: 3.
+	self assert: inspector documentPresenter value equals: '''value1'''!
+
+test_removeFromSymbolDictionary
+	| remoteObject selection selectionIndex before after |
+	remoteObject := session
+				executeString: 'UserGlobals at: #ffoo put: ''bbarr''.  UserGlobals '
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	selection := inspector instVarListPresenter list detect: [:assoc | assoc key = '#''ffoo'''].
+	inspector instVarListPresenter selection: selection.
+	selectionIndex := inspector instVarListPresenter selectionByIndex.
+	self assert: inspector documentPresenter value equals: '''bbarr'''.
+	selectionIndex = inspector instVarListPresenter list size
+		ifTrue: 
+			[before := inspector instVarListPresenter list at: selectionIndex - 1.
+			self deny: before equals: selection.
+			inspector basicRemoveFromDictionary.
+			self assertIsNil: (inspector instVarListPresenter list detect: [:assoc | assoc key = '#''ffoo''']
+						ifNone: []).
+			self assert: inspector instVarListPresenter selection equals: before.
+			^self].
+	before := inspector instVarListPresenter list at: selectionIndex - 1.
+	after := inspector instVarListPresenter list at: selectionIndex + 1.
+	self deny: before equals: after.
+	self deny: before equals: selection.
+	self deny: after equals: selection.
+	inspector basicRemoveFromDictionary.
+	self assertIsNil: (inspector instVarListPresenter list detect: [:assoc | assoc key = '#''ffoo''']
+				ifNone: []).
+	self assert: inspector instVarListPresenter selection equals: after.
+	selectionIndex := inspector instVarListPresenter selectionByIndex.
+	self assert: (inspector instVarListPresenter list at: selectionIndex - 1) equals: before!
+
+test_removeIndexedInstVar
+	| remoteObject |
+	remoteObject := session
+				executeString: '| coll oop inspectorService |
+coll := Array new.
+1 to: 50 do: [:i |
+coll add: ''entry'', i asString].
+oop := coll asOop.
+coll'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector documentPresenter value equals: '''entry1'''.
+	self assert: inspector statusText equals: 'Displaying 50 of 50 indexed inst vars'.
+	inspector basicRemoveObjectAt: 3.
+	self assert: inspector instVarListPresenter selectionByIndex equals: 3.
+	self assert: inspector documentPresenter value equals: '''entry2'''.
+	self assert: inspector statusText equals: 'Displaying 49 of 49 indexed inst vars'!
+
+test_removeItemEnabled
+	| remoteObject removeObjectItem query |
+	self testsIssue: #issue212 withTitle: '`Copy` menu item grayed out in inspector when text selected'.
+	remoteObject := session
+				executeString: '''abc'' copy'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 1.	"self"
+	removeObjectItem := inspector instVarListPresenter view contextMenu items
+				detect: [:item | item command = #removeObject].
+	query := CommandQuery commandDescription: removeObjectItem commandDescription source: inspector view.
+	inspector queryCommand: query.
+	self deny: query isEnabled.
+	inspector instVarListPresenter selectionByIndex: 2.	"-.asOop"
+	inspector queryCommand: query.
+	self deny: query isEnabled.
+	3 to: 5
+		do: 
+			[:index |
+			inspector instVarListPresenter selectionByIndex: index.
+			inspector queryCommand: query.
+			self assert: query isEnabled]!
+
+test_removeLastElementFromDictionary
+	| remoteObject |
+	remoteObject := session
+				executeString: '| dictionary |
+dictionary := Dictionary new.
+UserGlobals at: #dictionary put: Dictionary new. 
+1 to: 12 do: [:i |
+dictionary at: i printString put: ''value'', i printString]. 
+dictionary'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 14.
+	self assert: inspector documentPresenter value equals: '''value12'''.
+	inspector basicRemoveFromDictionary.
+	self assert: inspector instVarListPresenter selectionByIndex equals: 13.
+	self assert: inspector documentPresenter value equals: '''value10'''!
+
+test_removeLastIndexedInstVar
+	| remoteObject |
+	remoteObject := session
+				executeString: '
+''abc'' copy '
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 5.
+	self assert: inspector documentPresenter value equals: '$c'.
+	self assert: inspector statusText equals: 'Displaying 3 of 3 indexed inst vars'.
+	inspector basicRemoveObjectAt: 5.
+	self assert: inspector instVarListPresenter selectionByIndex equals: 4.
+	self assert: inspector documentPresenter value equals: '$b'.
+	self assert: inspector statusText equals: 'Displaying 2 of 2 indexed inst vars'!
+
 test_showReturnsNavigationInspector
 	| remoteObject |
 	self testsIssue: #issue398 withTitle: 'String Inspectors don''t display lfs'.
@@ -700,7 +829,7 @@ def'''
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self assert: (inspector isKindOf: JadeNavigationInspector).
+	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: 'anArray( ''abc
 def'')'  replaceCrLfWithLf.
 	inspector instVarListPresenter selectionByIndex: 3.	"first element of array"
@@ -775,9 +904,9 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorRootSpecialObjectNotRegistered!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectString!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_interactionInspect!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_menuBarItemNames!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_menuItemsEnabled!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_navigationInspectorDisplayedSizeLimit!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_menuBarItemNames!public!tests!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_menuItemsEnabled!public!tests!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_navigationInspectorDisplayedSizeLimit!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowser!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowserOnClass!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnBoolean!public!tests! !
@@ -789,6 +918,12 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowser!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowserOnClass!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_registeredPresentersInInspectorCleanedUp!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeFromDictionary!public!tests!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeFromSymbolDictionary!public!tests!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeIndexedInstVar!public!tests!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeItemEnabled!public!tests!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeLastElementFromDictionary!public!tests!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeLastIndexedInstVar!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_showReturnsNavigationInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_showReturnsStringInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_unicodeInspect1!public!tests! !

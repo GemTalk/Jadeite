@@ -51,7 +51,7 @@ inspectInstVar
 	self model: oop.
 	self addOop: oop.
 	self setDocumentPresenterLabel.
-	self displayObject.
+	self displayObjectSelecting: nil.
 	self updateCaption!
 
 objectIndex

@@ -27,12 +27,6 @@ assertLinearAncestry: family in: presenter
 			self assert: (presenter model childrenOf: parentNode) size equals: 1. 
 			self assert: (presenter model childrenOf: parentNode) first equals: childNode]!
 
-closeExistingInspectors
-	"not so elegant way of making sure the test gets the right inspector. Close others first"
-
-	JadeNavigationInspector allInstances do: [:oldInspector | oldInspector view close].
-	JadeInspector allInstances do: [:oldInspector | oldInspector view close]!
-
 disableTranscriptWrites
 	(transcriptWritesWereEnabled := transcript isTranscriptInstalled)
 		ifTrue: [transcript flipTranscript]	"turn off gemstone transcript writes for performance"!
@@ -76,7 +70,6 @@ tearDown
 			[self destroy: secondBrowser.
 			secondBrowser := nil]! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #assertLinearAncestry:in:!private! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #closeExistingInspectors!private!support! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #disableTranscriptWrites!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #isAbstract!private!testing! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #openSecondBrowser!private! !

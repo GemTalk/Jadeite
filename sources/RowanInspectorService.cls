@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanInspectorService
-	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray isOop'
+	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray isOop instVarNames instVarsAreRemovable'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -86,6 +86,18 @@ inspect: oopOrObject session: session inWindow: handle
 		commandArgs: (Array with: oop with: handle).
 	BrowserUpdate current issueCommands: (Array with: self) session: session!
 
+instVarNames
+	^instVarNames!
+
+instVarNames: anObject
+	instVarNames := anObject!
+
+instVarsAreRemovable
+	^instVarsAreRemovable!
+
+instVarsAreRemovable: anObject
+	instVarsAreRemovable := anObject!
+
 isInspectorService
 
 	^true!
@@ -131,6 +143,18 @@ oop
 oop: anObject
 	oop := anObject!
 
+removeIndexedInstVarAt: index session: session
+	self
+		command: #removeIndexedInstVarAt:;
+		commandArgs: (Array with: index).
+	BrowserUpdate current issueCommands: (Array with: self) session: session!
+
+removeKey: keyOop session: session
+	self
+		command: #removeKey:;
+		commandArgs: (Array with: keyOop).
+	BrowserUpdate current issueCommands: (Array with: self) session: session!
+
 visibleIndices
 	^visibleIndices!
 
@@ -150,6 +174,10 @@ visibleIndices: anObject
 !RowanInspectorService categoriesFor: #initialize!initialization!public! !
 !RowanInspectorService categoriesFor: #inspect:session:!inspecting!public! !
 !RowanInspectorService categoriesFor: #inspect:session:inWindow:!inspecting!public! !
+!RowanInspectorService categoriesFor: #instVarNames!accessing!private! !
+!RowanInspectorService categoriesFor: #instVarNames:!accessing!private! !
+!RowanInspectorService categoriesFor: #instVarsAreRemovable!accessing!private! !
+!RowanInspectorService categoriesFor: #instVarsAreRemovable:!accessing!private! !
 !RowanInspectorService categoriesFor: #isInspectorService!public!testing! !
 !RowanInspectorService categoriesFor: #isShowingAllIndexedVars!public!testing! !
 !RowanInspectorService categoriesFor: #maxIndexedVars!accessing!private! !
@@ -163,6 +191,8 @@ visibleIndices: anObject
 !RowanInspectorService categoriesFor: #objects:!accessing!private! !
 !RowanInspectorService categoriesFor: #oop!accessing!private! !
 !RowanInspectorService categoriesFor: #oop:!accessing!private! !
+!RowanInspectorService categoriesFor: #removeIndexedInstVarAt:session:!operations!public! !
+!RowanInspectorService categoriesFor: #removeKey:session:!operations!public! !
 !RowanInspectorService categoriesFor: #visibleIndices!accessing!private! !
 !RowanInspectorService categoriesFor: #visibleIndices:!accessing!private! !
 

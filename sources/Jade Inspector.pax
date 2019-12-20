@@ -20,7 +20,6 @@ package methodNames
 	add: #JadeServer64bit3x -> #inspect:;
 	add: #JadeServer64bit3x -> #inspectNamedInstanceVariablesOf:on:;
 	add: #JadeServer64bit3x -> #keysForDictionary:;
-	add: 'JadeInspector class' -> #setNavigationInspector;
 	yourself.
 
 package binaryGlobalNames: (Set new
@@ -59,13 +58,6 @@ openNavigationInspector
 		ifTrue: [JadeNavigationInspector showOn: self model session: gciSession] 
 		ifFalse: [JadeNavigationInspector showOn: instVarListPresenter selection value session: gciSession]! !
 !JadeInspector categoriesFor: #openNavigationInspector!accessing!private! !
-
-!JadeInspector class methodsFor!
-
-setNavigationInspector
-
-	self setDefaultInspectorClass: JadeNavigationInspector! !
-!JadeInspector class categoriesFor: #setNavigationInspector!public! !
 
 !JadeServer64bit24 methodsFor!
 
