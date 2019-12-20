@@ -439,9 +439,10 @@ test_inspectorRootSpecialObjectNotRegistered
 	remoteObject := session executeString: '$a'.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	inspectorHandle := inspector view handle value.
-	self assertIsNil: (session
+	self assert: (session
 				executeString: 'RowanBrowserService new openWindows at: ' , inspectorHandle printString
-						, ' ifAbsent:[]')!
+						, ' ifAbsent:[]')
+		equals: $a!
 
 test_inspectString
 	| remoteObject |
@@ -449,9 +450,10 @@ test_inspectString
 				executeString: '''abc'''
 				fromContext: nil
 				environment: 0.
-	inspector := JadeNavigationInspector  showOn: remoteObject session: session.
+	inspector := JadeNavigationInspector showOn: remoteObject session: session.
 	self assert: (inspector isKindOf: JadeInspector).
-	self assert: inspector model = 'abc' !
+	self
+		assert: (session executeString: 'Object _objectForOop: ' , inspector model oop printString) = 'abc'!
 
 test_interactionInspect
 	"user can send #inspect to any object in server code and Jadeite should 
@@ -465,8 +467,8 @@ test_interactionInspect
 	answeringService := RowanAnsweringService new.
 	answeringService command: #exec:; commandArgs: (Array with:  'UserGlobals inspect. nil').
 	self issueCommand: answeringService. 
-	self assert: JadeNavigationInspector allInstances size equals: 1.
-	inspector := JadeNavigationInspector allInstances first.
+	self assert: JadeiteInspector allInstances size equals: 1.
+	inspector := JadeiteInspector allInstances first.
 	self assert: ('Inspector on SymbolDictionary for*' match: inspector caption)!
 
 test_menuBarItemNames
@@ -576,7 +578,7 @@ test_openNavigationInspectorOnBoolean
 	[self assert: (inspector isKindOf: JadeNavigationInspector).
 	self assert: inspector documentPresenter model value equals: 'true'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
-	self assert: inspector documentPresenter model value equals: '268']
+	self assert: inspector documentPresenter model value equals: 268]
 			ensure: [self destroy: inspector].
 	remoteObject := session
 				executeString: 'false'
@@ -586,7 +588,7 @@ test_openNavigationInspectorOnBoolean
 	self assert: (inspector isKindOf: JadeNavigationInspector).
 	self assert: inspector documentPresenter model value equals: 'false'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
-	self assert: inspector documentPresenter model value equals: '12'!
+	self assert: inspector documentPresenter model value equals: 12!
 
 test_openNavigationInspectorOnCharacter
 	| remoteObject |
@@ -599,7 +601,7 @@ test_openNavigationInspectorOnCharacter
 	self assert: (inspector isKindOf: JadeNavigationInspector).
 	self assert: inspector documentPresenter model value equals: '$c'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
-	self assert: inspector documentPresenter model value equals: '25372'!
+	self assert: inspector documentPresenter model value equals: 25372!
 
 test_openNavigationInspectorOnFloat
 	| remoteObject |
@@ -610,9 +612,9 @@ test_openNavigationInspectorOnFloat
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	self assert: (inspector isKindOf: JadeNavigationInspector).
-	self assert: inspector documentPresenter model value equals: '123.345'.
+	self assert: inspector documentPresenter model value equals: '1.2334500000000000E02'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
-	self assert: inspector documentPresenter model value equals: '9650476537015991014'!
+	self assert: inspector documentPresenter model value equals: 9650476537015991014!
 
 test_openNavigationInspectorOnNil
 	| remoteObject |
@@ -625,7 +627,7 @@ test_openNavigationInspectorOnNil
 	self assert: (inspector isKindOf: JadeNavigationInspector).
 	self assert: inspector documentPresenter model value equals: 'nil'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
-	self assert: inspector documentPresenter model value equals: '20'!
+	self assert: inspector documentPresenter model value equals: 20!
 
 test_openNavigationInspectorOnSmallInteger
 	| remoteObject |
@@ -638,7 +640,7 @@ test_openNavigationInspectorOnSmallInteger
 	self assert: (inspector isKindOf: JadeNavigationInspector).
 	self assert: inspector documentPresenter model value equals: '123'.
 	inspector instVarListPresenter selectionByIndex: 2. "asOop"
-	self assert: inspector documentPresenter model value equals: '986'.!
+	self assert: inspector documentPresenter model value equals: 986.!
 
 test_openNavigationInspectorOnSymbol
 	| remoteObject |
@@ -649,9 +651,9 @@ test_openNavigationInspectorOnSymbol
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	self assert: (inspector isKindOf: JadeNavigationInspector).
-	self assert: inspector documentPresenter model value equals: '#abc'.
+	self assert: inspector documentPresenter model value equals: '#''abc'''.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
-	self assert: inspector documentPresenter model value equals: '14351873'!
+	self assert: inspector documentPresenter model value equals: 14351873!
 
 test_openProjectsBrowser
 	| remoteObject shell |
@@ -715,9 +717,7 @@ def'''
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	self assert: (inspector isKindOf: JadeInspector).
-	self assert: inspector model = 'abc
-def'.
-	self assert: inspector documentPresenter model value = '''abc
+	self assert: inspector documentPresenter value equals: '''abc
 def'''!
 
 test_unicodeInspect1
@@ -732,7 +732,8 @@ UserGlobals at: #aDict1 put: d.'.
 	
 	[remoteObject := session executeString: 'UserGlobals at: #aDict1'.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self assert: (inspector instVarListPresenter list at: 3) key equals: '-#''key''->''aa?b''']
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector documentPresenter value equals: '''aa?b''']
 			ensure: [session executeString: 'UserGlobals removeKey: #aDict1']!
 
 test_unicodeInspect2
@@ -748,8 +749,7 @@ UserGlobals at: #aDict4 put: d.'.
 	
 	[remoteObject := session executeString: 'UserGlobals at: #aDict4'.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self assert: (inspector instVarListPresenter list at: 3) key
-		equals: '-<<unprintable key. charSize > 1>>->23']
+	self assert: (inspector instVarListPresenter list at: 3) key equals: '''da?b''']
 			ensure: [session executeString: 'UserGlobals removeKey: #aDict4']! !
 !JadeiteInspectorTestCase categoriesFor: #commandQueryOn:!private! !
 !JadeiteInspectorTestCase categoriesFor: #enableForward:andBack:!private! !

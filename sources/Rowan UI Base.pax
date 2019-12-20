@@ -101,6 +101,7 @@ package methodNames
 	add: #Collection -> #basicPrepareForReplication;
 	add: #Collection -> #prepareForReplication;
 	add: #DiffBrowser -> #diffsPresenter;
+	add: #Float -> #asString;
 	add: #GciSession -> #_executeString:fromContextOop:environment:;
 	add: #GciSession -> #clientServerVersionRelationship;
 	add: #GciSession -> #computeGemHost;
@@ -1049,6 +1050,13 @@ diffsPresenter
 
 	^diffsPresenter! !
 !DiffBrowser categoriesFor: #diffsPresenter!public! !
+
+!Float methodsFor!
+
+asString
+
+	^self printString! !
+!Float categoriesFor: #asString!converting!public! !
 
 !GciSession methodsFor!
 
