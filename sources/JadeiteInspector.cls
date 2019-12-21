@@ -52,7 +52,7 @@ displayAll
 				session: gciSession.
 	model objects addAll: nextIndexedVars.
 	model visibleIndices: model indexedSize.
-	self displayObjectSelecting: nil!
+	self displayObjectSelecting:  instVarListPresenter selectionByIndex!
 
 displayMore
 	| service nextIndexedVars |
@@ -69,12 +69,12 @@ displayMore
 
 displayObjectSelecting: selectionIndex
 	| contents |
-	contents := model objects.
+	contents := model objects copy.	"otherwise the presenter list will notice it's the same object and not update the view"
 	contents first = model myself
 		ifFalse: 
 			[contents addFirst: '-.asOop' -> model oop.
 			contents addFirst: model myself].
-	instVarListPresenter list: contents.
+	instVarListPresenter list: contents. 
 	instVarListPresenter selectionByIndex: (selectionIndex ifNil: [1] ifNotNil: [selectionIndex]).
 	model indexedSize > 0
 		ifTrue: 

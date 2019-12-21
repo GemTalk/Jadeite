@@ -342,32 +342,6 @@ coll
 	self assert: inspector statusText equals: 'Displaying 20000 of 20000 indexed inst vars'.
 	self assert: inspector instVarListPresenter list size equals: 20002!
 
-test_displayMoreBigCollection
-	| remoteObject |
-	self testsIssue: #issue668 withTitle: 'More efficient handling of large collections. #668'.
-	remoteObject := session
-				executeString: '| coll oop inspectorService |
-coll := Array new.
-1 to: 200000 do: [:i |
-coll add: ''entry'', i asString].
-oop := coll asOop.
-coll
- '
-				fromContext: nil
-				environment: 0.
-	inspector := JadeInspector showOn: remoteObject session: session.
-	1 to: 200
-		do: 
-			[:index |
-			| thousand |
-			thousand := index * 1000.
-			self assert: inspector statusText
-				equals: 'Displaying ' , thousand printString , ' of 200000 indexed inst vars'.
-			self assert: inspector instVarListPresenter list size equals: thousand + 2.
-			inspector displayMore].
-	self assert: inspector statusText equals: 'Displaying 200000 of 200000 indexed inst vars'.
-	self assert: inspector instVarListPresenter list size equals: 200002!
-
 test_dive
 	| workspace index |
 	workspace := JadeWorkspace showOnSession: session.
@@ -970,7 +944,6 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusInstVars!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_displayAll!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_displayMore!public!tests!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_displayMoreBigCollection!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_dive!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_fullInspectArray!public!tests! !
