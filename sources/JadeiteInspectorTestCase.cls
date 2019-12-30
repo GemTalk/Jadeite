@@ -364,6 +364,28 @@ test_dive
 				[workspace isModified: false.
 				workspace view close]!
 
+test_diveIntoDoubleByteString
+	| service |
+	inspector := JadeiteInspector new gciSession: session.
+	inspector createView: inspector class defaultView.
+	service := RowanInspectorService new
+				executeThenInspect: 'Array with: (''aa'', (String with: (Character withValue: 353)), ''b'')'
+				context: session oopNil value
+				session: session
+				windowHandle: inspector view handle value.
+	inspector showOn: service.
+	inspector instVarListPresenter selectionByIndex: 3.
+	inspector inspectInstVar.
+	self assert: inspector documentPresenter value equals: '''aa?b'''.
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector documentPresenter value equals: '$a'.
+	inspector instVarListPresenter selectionByIndex: 4.
+	self assert: inspector documentPresenter value equals: '$a'.
+	inspector instVarListPresenter selectionByIndex: 5.
+	self assert: inspector documentPresenter value equals: '$?'.
+	inspector instVarListPresenter selectionByIndex: 6.
+	self assert: inspector documentPresenter value equals: '$b'!
+
 test_forwardBack
 	| remoteObject backQuery forwardQuery |
 	self testsIssue: #issue153 withTitle: 'Inspector Back goes too far'.
@@ -425,6 +447,46 @@ coll
 			inspector instVarListPresenter selectionByIndex: index.
 			self
 				assert: (inspector documentPresenter model value equals: '''entry' , (index - 2) printString , '''')]!
+
+test_inspectAsOopField
+	"if a non-string object is put into the inspectors text pane, 
+	accessing the pane may break. Make a reasonable (valiant) 
+	effort to make sure the example that was breaking no longer
+	does so"
+
+	| remoteObject |
+	remoteObject := session
+				executeString: '$X'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 2.
+	self assert: inspector instVarListPresenter selection key equals: '-.asOop'.
+	self assert: inspector instVarListPresenter selection value equals: '22556'.
+	self assert: (session executeString: '$X asOop') equals: 22556.
+	inspector documentPresenter selectionRange: (1 to: 5).
+	inspector documentPresenter selection copyToClipboard.
+	self assert: Clipboard current getText equals: '22556'!
+
+test_inspectDoubleByteString
+	| service |
+	inspector := JadeiteInspector new gciSession: session.
+	inspector createView: inspector class defaultView.
+	service := RowanInspectorService new
+				executeThenInspect: '''aa'', (String with: (Character withValue: 353)), ''b'''
+				context: session oopNil value
+				session: session
+				windowHandle: inspector view handle value.
+	inspector showOn: service.
+	self assert: inspector documentPresenter value equals: '''aa?b'''.
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector documentPresenter value equals: '$a'.
+	inspector instVarListPresenter selectionByIndex: 4.
+	self assert: inspector documentPresenter value equals: '$a'.
+	inspector instVarListPresenter selectionByIndex: 5.
+	self assert: inspector documentPresenter value equals: '$?'.
+	inspector instVarListPresenter selectionByIndex: 6.
+	self assert: inspector documentPresenter value equals: '$b'!
 
 test_inspectorHandlesError
 	| remoteObject |
@@ -489,6 +551,38 @@ test_inspectorRootSpecialObjectNotRegistered
 				executeString: 'RowanBrowserService new openWindows at: ' , inspectorHandle printString
 						, ' ifAbsent:[]')
 		equals: $a!
+
+test_inspectRcIdentityBag
+	| remoteObject |
+	remoteObject := session
+				executeString: 'RcIdentityBag with: 1 with: ''abc'' with: $k'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	self assert: (inspector isKindOf: JadeiteInspector).
+	self assert: inspector documentPresenter value equals: 'aRcIdentityBag( 1, $k, ''abc'')'.
+	self assert: (inspector instVarListPresenter list collect: [:ea | ea key]) asArray
+		equals: #('self' '-.asOop' '-_varyingSize' '-_numEntries' '-_indexedPaths' '-_levels' '-components' '1' '2' '3').
+	"not sure about order in an identity bag. Might need to test differently"
+	inspector instVarListPresenter selectionByIndex: 8.
+	self assert: inspector documentPresenter value equals: '1'.
+	inspector instVarListPresenter selectionByIndex: 9.
+	self assert: inspector documentPresenter value equals: '$k'.
+	inspector instVarListPresenter selectionByIndex: 10.
+	self assert: inspector documentPresenter value equals: '''abc'''!
+
+test_inspectRcIdentityBagWithUnicodeKey
+	| remoteObject |
+	remoteObject := session
+				executeString: '| dbs bag |
+dbs := ''a'', (String with: (Character withValue: 353)), ''b''.
+bag := RcIdentityBag new. 
+bag add: (''a'', dbs) asString.
+bag'.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: inspector documentPresenter value equals: 'aRcIdentityBag( ''aa?b'')'.
+	inspector instVarListPresenter selectionByIndex: 8.
+	self assert: inspector documentPresenter value equals: '''aa?b'''!
 
 test_inspectString
 	| remoteObject |
@@ -751,10 +845,10 @@ dictionary'
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	inspector instVarListPresenter selectionByIndex: 3.
-	self assert: inspector documentPresenter value equals: '''value11'''.
+	self assert: inspector documentPresenter value equals: '''value1'''.
 	inspector basicRemoveFromDictionary.
 	self assert: inspector instVarListPresenter selectionByIndex equals: 3.
-	self assert: inspector documentPresenter value equals: '''value1'''!
+	self assert: inspector documentPresenter value equals: '''value10'''!
 
 test_removeFromSymbolDictionary
 	| remoteObject selection selectionIndex before after |
@@ -845,10 +939,10 @@ dictionary'
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	inspector instVarListPresenter selectionByIndex: 14.
-	self assert: inspector documentPresenter value equals: '''value12'''.
+	self assert: inspector documentPresenter value equals: '''value9'''.
 	inspector basicRemoveFromDictionary.
 	self assert: inspector instVarListPresenter selectionByIndex equals: 13.
-	self assert: inspector documentPresenter value equals: '''value10'''!
+	self assert: inspector documentPresenter value equals: '''value8'''!
 
 test_removeLastIndexedInstVar
 	| remoteObject |
@@ -945,11 +1039,16 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_displayAll!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_displayMore!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_dive!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_diveIntoDoubleByteString!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_fullInspectArray!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectAsOopField!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectDoubleByteString!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorHandlesError!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorRootObjectRegistered!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorRootSpecialObjectNotRegistered!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectRcIdentityBag!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectRcIdentityBagWithUnicodeKey!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectString!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_interactionInspect!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_menuBarItemNames!public!tests!tests menu bar! !

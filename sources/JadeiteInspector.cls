@@ -70,11 +70,11 @@ displayMore
 displayObjectSelecting: selectionIndex
 	| contents |
 	contents := model objects copy.	"otherwise the presenter list will notice it's the same object and not update the view"
-	contents first = model myself
-		ifFalse: 
-			[contents addFirst: '-.asOop' -> model oop.
+	(contents isEmpty or: [contents first ~= model myself])
+		ifTrue: 
+			[contents addFirst: '-.asOop' -> model oop printString.
 			contents addFirst: model myself].
-	instVarListPresenter list: contents. 
+	instVarListPresenter list: contents.
 	instVarListPresenter selectionByIndex: (selectionIndex ifNil: [1] ifNotNil: [selectionIndex]).
 	model indexedSize > 0
 		ifTrue: 
@@ -131,7 +131,9 @@ inspect: oop inContext: context
 
 inspectInstVar
 	| oop |
-	oop := instVarListPresenter selection value.	"instVarListPresenter selection is <anAssociation>"
+	"instVarListPresenter selection is <anAssociation>"
+	oop := instVarListPresenter selection value.
+	(oop isKindOf: Array) ifTrue: [oop := oop last].	"a dictionary entry will hold oop of key and oop of value"
 	objectIndex = oopsCollection size
 		ifFalse: [(oopsCollection at: objectIndex + 1) = oop ifTrue: [^self getNextObject]].
 	self inspectOop: oop!

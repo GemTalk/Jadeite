@@ -11,9 +11,7 @@ JadeInspector comment: ''!
 !JadeInspector methodsFor!
 
 contextObject
-
-	^model.
-!
+	^model!
 
 createComponents
 
