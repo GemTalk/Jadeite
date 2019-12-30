@@ -108,6 +108,13 @@ canUseIdeaSpace
 
 	^false!
 
+defaultModel
+	"in runtime environment, the superclass
+	implementation of #defaultModel tries to 
+	initialize a system which is not present"
+
+	^nil!
+
 resource_Default_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.
 	DO NOT EDIT OR RECATEGORIZE THIS METHOD.
@@ -137,6 +144,7 @@ showOnClass: aClass selector: aSymbol debugger: aDebuggerOrNil
 	inst session: GciSession current.
 	^inst! !
 !JadeiteMethodHistoryBrowser class categoriesFor: #canUseIdeaSpace!public!testing! !
+!JadeiteMethodHistoryBrowser class categoriesFor: #defaultModel!public! !
 !JadeiteMethodHistoryBrowser class categoriesFor: #resource_Default_view!public!resources-views! !
 !JadeiteMethodHistoryBrowser class categoriesFor: #reuseIfOpen!public!testing! !
 !JadeiteMethodHistoryBrowser class categoriesFor: #showOnClass:selector:!instance creation!public! !
