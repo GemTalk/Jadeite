@@ -31,6 +31,12 @@ addNoneProject
 	(projectListPresenter list includes: RowanProjectService noneProject)
 		ifFalse: [projectListPresenter model add: RowanProjectService noneProject]!
 
+addSystemBrowser
+	| browser |
+	browser := self topShell addSystemBrowser.
+	self makeSameSelectionsIn: browser currentCard as: self.
+	^browser!
+
 allSelectedProjectsDirty
 	projectListPresenter selections isEmpty ifTrue:[^false]. 
 	projectListPresenter selections detect: [:projectService | projectService isDirty not]
@@ -424,6 +430,12 @@ gotoDictionary
 	self selectNoneProject.
 	^self updateAfterFindClassInDictionary: selectedClass!
 
+gotoDictionaryNamed: dictionaryName
+	| dictionaryService |
+	dictionaryService := dictionaryPresenter list detect: [:service | service name = dictionaryName]
+				ifNone: [^self].
+	dictionaryPresenter selections: (Array with: dictionaryService)!
+
 insertCompileErrorText: string into: presenter
 	"parameters ignored in this presenter"
 
@@ -450,6 +462,30 @@ isProjectItemEnabled: command
 
 isRowanProjectSelected
 	^(self isNoneProjectSelected or: [projectListPresenter selections isEmpty]) not!
+
+makeSameSelectionsIn: newPresenter as: previousPresenter
+	| projectService packageService dictionaryService classService isMeta methodService |
+	projectService := previousPresenter projectListPresenter selectionIfNone: [].
+	packageService := previousPresenter packageListPresenter selectionIfNone: [].
+	dictionaryService := previousPresenter dictionaryPresenter selectionIfNone: [].
+	classService := previousPresenter classListPresenter selectionIfNone: [].
+	classService
+		ifNotNil: 
+			[isMeta := classService meta.
+			methodService := previousPresenter methodListPresenter selectionIfNone: []].
+	projectService ifNil: [^self].
+	newPresenter gotoProjectNamed: projectService name.
+	packageService
+		ifNil: 
+			[dictionaryService
+				ifNil: [^self]
+				ifNotNil: [newPresenter gotoDictionaryNamed: dictionaryService name]]
+		ifNotNil: [newPresenter gotoPackageNamed: packageService name].
+	classService ifNil: [^self].
+	newPresenter updateAfterFindClass: classService.
+	isMeta ifTrue: [newPresenter selectClassTab].
+	methodService ifNil: [^self].
+	newPresenter findMethod: methodService selector!
 
 maxAutoCompleteListSize
 	^50!
@@ -876,6 +912,7 @@ updateProject
 			[packageListPresenter clear.
 			dictionaryPresenter clear.
 			self possiblyClearProjectInfoTab.
+			self updateTabLabel.
 			^self].
 	classHierarchyPresenter model: TreeModel new.
 	self projectListPresenter selection name = RowanService notRowanizedPackageName
@@ -885,6 +922,7 @@ updateProject
 			self updateProjectInfo]
 		ifFalse: 
 			[self showPackageList.
+			self updateTabLabel.
 			super updateProject]!
 
 updateProjectInfo
@@ -925,6 +963,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #addDictionary!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #additionalAccelerators!constants!public! !
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #addSystemBrowser!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #allSelectedProjectsDirty!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #basicAddDictionaryNamed:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicDictionaryTabLabel!displaying!private! !
@@ -963,6 +1002,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #globalsMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #globalsTab!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #gotoDictionary!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #gotoDictionaryNamed:!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertCompileErrorText:into:!compile support!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertIfFalse!menu handlers!must not strip!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertIfTrue!menu handlers!must not strip!public! !
@@ -970,6 +1010,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #isNoneProjectSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #isProjectItemEnabled:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #isRowanProjectSelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #makeSameSelectionsIn:as:!menu handlers!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #maxAutoCompleteListSize!constants!public! !
 !JadeiteBrowserPresenter categoriesFor: #methodMenu:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #methodToReformat!menu handlers support!private! !

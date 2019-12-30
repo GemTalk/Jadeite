@@ -45,9 +45,6 @@ addSubclass
 		ensureVisible;
 		value: answerService answer!
 
-addSystemBrowser
-	^self topShell addSystemBrowser!
-
 addVariableAccessors
 	| cachedSelections |
 	self confirmOverwriteAccessor ifFalse: [^self].
@@ -2334,7 +2331,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #addPackage!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addPackageDictionaryInfoTo:!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addSubclass!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #addSystemBrowser!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addVariableAccessors!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #allClasses!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #autoCommit!accessing!private! !

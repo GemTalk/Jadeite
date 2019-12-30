@@ -550,6 +550,99 @@ test_addSubclass
 				replaceCrLfWithLf]
 			ensure: [self projectsPresenter classDefinitionPresenter view isModified: false]!
 
+test_addSystemTab
+	self deselectProjects.
+	self selectRowanSample1Class.
+	self selectCategoryNamed: 'accessing'. 
+	self selectMethodNamed: #foo.
+	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
+	self assert: self classListPresenter selection name equals: 'RowanSample1'.
+	self assert: self categoryListPresenter selection equals: 'accessing'.
+	self assert: self methodListPresenter selection selector equals: #foo.
+	self projectsPresenter addSystemBrowser.
+	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
+	self assert: self classListPresenter selection name equals: 'RowanSample1'.
+	self assert: self categoryListPresenter selection equals: 'accessing'.
+	self assert: self methodListPresenter selection selector equals: #foo.
+	projectsBrowser closeCard.
+	"make sure previous card selections didn't change"
+	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
+	self assert: self classListPresenter selection name equals: 'RowanSample1'.
+	self assert: self categoryListPresenter selection equals: 'accessing'.
+	self assert: self methodListPresenter selection selector equals: #foo!
+
+test_addSystemTabClassSelection
+	self deselectProjects.
+	self selectRowanSample1Class.
+	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
+	self assert: self classListPresenter selection name equals: 'RowanSample1'.
+	self deny: self classListPresenter selection meta.
+	self projectsPresenter addSystemBrowser.
+	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
+	self assert: self classListPresenter selection name equals: 'RowanSample1'.
+	self deny: self classListPresenter selection meta.
+	projectsBrowser closeCard.
+	"make sure previous card selections didn't change"
+	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
+	self assert: self classListPresenter selection name equals: 'RowanSample1'.
+	self deny: self classListPresenter selection meta!
+
+test_addSystemTabClassSelectionClassSide
+	self deselectProjects.
+	self selectRowanSample1Class.
+	self selectClassTab.
+	self selectCategoriesNamed: (Array with: '*rowansample1-extensions').
+	self selectMethodNamed: #bar.
+	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
+	self assert: self classListPresenter selection name equals: 'RowanSample1'.
+	self assert: self classListPresenter selection meta.
+	self assert: self categoryListPresenter selection equals: '*rowansample1-extensions'.
+	self assert: self methodListPresenter selection selector equals: #bar.
+	self projectsPresenter addSystemBrowser.
+	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
+	self assert: self classListPresenter selection name equals: 'RowanSample1'.
+	self assert: self classListPresenter selection meta.
+	self assert: self categoryListPresenter selection equals: '*rowansample1-extensions'.
+	self assert: self methodListPresenter selection selector equals: #bar.
+	projectsBrowser closeCard.
+
+	"make sure previous card selections didn't change"
+	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
+	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
+	self assert: self classListPresenter selection name equals: 'RowanSample1'.
+	self assert: self classListPresenter selection meta.
+	self assert: self categoryListPresenter selection equals: '*rowansample1-extensions'.
+	self assert: self methodListPresenter selection selector equals: #bar!
+
+test_addSystemTabNoSelections
+	self deselectProjects.
+	self assertIsNil: (self projectListPresenter selectionIfNone:[]).
+	self assertIsNil: (self packageListPresenter selectionIfNone:[]).
+	self assertIsNil: (self classListPresenter selectionIfNone:[]).
+	self assertIsNil: (self categoryListPresenter selectionIfNone:[]).
+	self assertIsNil: (self methodListPresenter selectionIfNone:[]).
+	self projectsPresenter addSystemBrowser.
+	self assertIsNil: (self projectListPresenter selectionIfNone:[]).
+	self assertIsNil: (self packageListPresenter selectionIfNone:[]).
+	self assertIsNil: (self classListPresenter selectionIfNone:[]).
+	self assertIsNil: (self categoryListPresenter selectionIfNone:[]).
+	self assertIsNil: (self methodListPresenter selectionIfNone:[]).
+	projectsBrowser closeCard.
+	"make sure previous card selections didn't change"
+	self assertIsNil: (self projectListPresenter selectionIfNone:[]).
+	self assertIsNil: (self packageListPresenter selectionIfNone:[]).
+	self assertIsNil: (self classListPresenter selectionIfNone:[]).
+	self assertIsNil: (self categoryListPresenter selectionIfNone:[]).
+	self assertIsNil: (self methodListPresenter selectionIfNone:[]).!
+
 test_adHocContextClassSide
 	| classService |
 	self testsIssue: #issue517 withTitle: 'Context of non-debugger source panes should be the class'.
@@ -1859,6 +1952,16 @@ test_deselectAllVariables
 	self projectsPresenter variableListPresenter selectionByIndex: 0.
 	self assert: self methodListPresenter list size
 		equals: self projectsPresenter selectedClass methods size!
+
+test_deselectProjectOnly
+	"make sure it updates the tab label"
+
+	self deselectProjects.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 Projects'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 Rowan'.
+	self deselectProjects.
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 Projects'!
 
 test_displayCompileWarningsNicely
 	self testsIssue: #issue509 withTitle: 'Warning for unused temps should be grouped better (3.0.75)'.
@@ -5295,6 +5398,10 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveHierarchyCategory!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addSubclass!public!test class hierarchy!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_addSystemTab!public!test system tabs! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_addSystemTabClassSelection!public!test system tabs! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_addSystemTabClassSelectionClassSide!public!test system tabs! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_addSystemTabNoSelections!public!test system tabs! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_adHocContextClassSide!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_adHocContextInstanceSide!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_adHocInspectComplexObjectInProjectBrowser!public!tests! !
@@ -5348,6 +5455,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_copyClassExistingClassRetry!public!test rename class! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_deselectProjectOnly!public!test system tabs! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_displayCompileWarningsNicely!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontChangeTabOnMethodSave!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontOverrideExistingAccessorMethods!public!test variable tab!tests! !
