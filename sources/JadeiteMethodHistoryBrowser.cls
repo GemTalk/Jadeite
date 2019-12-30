@@ -12,7 +12,6 @@ JadeiteMethodHistoryBrowser comment: ''!
 
 about
 	"Display the about view"
-
 	self 
 		about: '
 Jadeite Method History Browser subclassed from original 

@@ -5,7 +5,6 @@ package paxVersion: 1;
 
 package basicPackageVersion: '0.026'.
 
-package basicScriptAt: #postinstall put: 'JadeInspector setNavigationInspector'.
 
 package classNames
 	add: #JadeNavigationInspector;

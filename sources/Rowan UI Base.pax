@@ -424,6 +424,7 @@ package methodNames
 	add: #TranscriptPresenter -> #clearTranscript;
 	add: #TreeModel -> #removeWithoutNotification:ifAbsent:;
 	add: 'CodeSourcePresenter class' -> #resource_Default_view;
+	add: 'DiffBrowser class' -> #defaultModel;
 	add: 'JadeDebugger class' -> #resource_Default_view;
 	add: 'JadeInspector class' -> #defaultInspectorClass;
 	add: 'JadeInspector class' -> #resource_Default_view;
@@ -1050,6 +1051,16 @@ diffsPresenter
 
 	^diffsPresenter! !
 !DiffBrowser categoriesFor: #diffsPresenter!public! !
+
+!DiffBrowser class methodsFor!
+
+defaultModel
+	"in runtime environment, the superclass
+	implementation of #defaultModel tries to 
+	initialize a system which is not present"
+
+	^nil! !
+!DiffBrowser class categoriesFor: #defaultModel!public! !
 
 !Float methodsFor!
 
