@@ -20,7 +20,7 @@ afterTitle: operation
 
 createComponents
 	super createComponents.
-	diffsPresenter := self add: DiffBrowser new diffsPresenter name: 'diffs'!
+	diffsPresenter := self add: JadeiteDiffBrowser new diffsPresenter name: 'diffs'!
 
 createSchematicWiring
 	super createSchematicWiring.

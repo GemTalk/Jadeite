@@ -50,7 +50,7 @@ createSchematicWiring
 
 diff
 	| diffBrowser |
-	diffBrowser := DiffBrowser create: 'Vertical view'.
+	diffBrowser := JadeiteDiffBrowser create: 'Vertical view'.
 	diffBrowser showShell.
 	diffBrowser
 		caption: class name , '>>' , self methodService selector;

@@ -19,6 +19,7 @@ package classNames
 	add: #JadeiteChangesBrowser;
 	add: #JadeiteDebugger;
 	add: #JadeiteDebuggerMethodSourcePresenter;
+	add: #JadeiteDiffBrowser;
 	add: #JadeiteFindClassDialog;
 	add: #JadeiteFindMethodDialog;
 	add: #JadeiteGitLog;
@@ -936,6 +937,11 @@ RowanShell subclass: #JadeiteProjectListBrowser
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanShell subclass: #RowanPackageShell
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+DiffBrowser subclass: #JadeiteDiffBrowser
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
