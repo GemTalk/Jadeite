@@ -64,6 +64,10 @@ methodService
 
 	^selector!
 
+onViewOpened
+	selection := history size.
+	fontSizePresenter model: (ValueAspectAdaptor subject: self aspect: #fontSize)!
+
 restoreMethod
 	Cursor wait showWhile: 
 			[self classService
@@ -126,6 +130,7 @@ updateHistory
 !JadeiteMethodHistoryBrowser categoriesFor: #createSchematicWiring!initialization!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #diff!commands!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #methodService!accessing!public! !
+!JadeiteMethodHistoryBrowser categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #restoreMethod!commands!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #session!accessing!private! !
 !JadeiteMethodHistoryBrowser categoriesFor: #session:!accessing!private! !
