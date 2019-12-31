@@ -42,6 +42,12 @@ createComponents
 	"Font size adjust by slider (if supported by view)"
 	fontSizePresenter := self add: NumberPresenter new name: 'fontSize'!
 
+createSchematicWiring
+	slider 
+		when: #valueChanged
+		send: #onSliderValueChanged
+		to: self.!
+
 diff
 	| diffBrowser |
 	diffBrowser := DiffBrowser create: 'Vertical view'.
@@ -117,6 +123,7 @@ updateHistory
 !JadeiteMethodHistoryBrowser categoriesFor: #applyOptions!initialization!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #classService!accessing!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #createComponents!initialization!public! !
+!JadeiteMethodHistoryBrowser categoriesFor: #createSchematicWiring!initialization!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #diff!commands!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #methodService!accessing!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #restoreMethod!commands!public! !
