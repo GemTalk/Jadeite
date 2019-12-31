@@ -16,6 +16,7 @@ package classNames
 	add: #JadeiteLoggerTestCase;
 	add: #JadeiteLoginTestCase;
 	add: #JadeiteMessageBoxTestCase;
+	add: #JadeiteMethodHistoryTestCase;
 	add: #JadeiteMethodListBrowserTestCase;
 	add: #JadeiteMiscellaneousTestCase;
 	add: #JadeitePreferencesTestCase;
@@ -51,6 +52,12 @@ package methodNames
 	add: #MCModification -> #modification;
 	add: #MCModification -> #obsoletion;
 	add: #MCRemoval -> #definition;
+	add: #MethodHistoryBrowser -> #history;
+	add: #MethodHistoryBrowser -> #history:;
+	add: #MethodHistoryBrowser -> #slider;
+	add: #MethodHistoryBrowser -> #slider:;
+	add: #MethodHistoryBrowser -> #source;
+	add: #MethodHistoryBrowser -> #source:;
 	add: #SUnitBrowserModel -> #debugIndividualTestsWithResources:;
 	add: 'ChoicePrompter class' -> #create:;
 	add: 'JadeiteSearch class' -> #allClassNames:;
@@ -83,6 +90,7 @@ package setPrerequisites: (IdentitySet new
 	add: '..\Core\Object Arts\Dolphin\MVP\Type Converters\Dolphin Type Converters';
 	add: 'GemStone C Interface';
 	add: 'GemStone Session';
+	add: '..\Core\Contributions\IDB\IDB Method History';
 	add: 'Jade Deployment';
 	add: 'Jade Inspector';
 	add: 'Jade Login';
@@ -168,6 +176,11 @@ JadeiteAbstractTestCase subclass: #JadeiteLoggerTestCase
 	classInstanceVariableNames: ''!
 JadeiteAbstractTestCase subclass: #JadeiteMessageBoxTestCase
 	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteAbstractTestCase subclass: #JadeiteMethodHistoryTestCase
+	instanceVariableNames: 'methodHistoryBrowser'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -386,6 +399,32 @@ new
 		ifTrue: [(Smalltalk at: #TestMessageBox) basicNew initialize]
 		ifFalse: [self basicNew initialize] ! !
 !MessageBox class categoriesFor: #new!instance creation!public! !
+
+!MethodHistoryBrowser methodsFor!
+
+history
+	^history!
+
+history: anObject
+	history := anObject!
+
+slider
+	^slider!
+
+slider: anObject
+	slider := anObject!
+
+source
+	^source!
+
+source: anObject
+	source := anObject! !
+!MethodHistoryBrowser categoriesFor: #history!accessing!private! !
+!MethodHistoryBrowser categoriesFor: #history:!accessing!private! !
+!MethodHistoryBrowser categoriesFor: #slider!accessing!private! !
+!MethodHistoryBrowser categoriesFor: #slider:!accessing!private! !
+!MethodHistoryBrowser categoriesFor: #source!accessing!private! !
+!MethodHistoryBrowser categoriesFor: #source:!accessing!private! !
 
 !Prompter class methodsFor!
 

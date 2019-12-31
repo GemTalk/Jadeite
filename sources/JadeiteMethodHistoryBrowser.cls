@@ -68,6 +68,10 @@ onViewClosed
 	self view onViewClosed!
 
 onViewOpened
+	"avoid the superclass implementation which tries to 
+	initialize systems not present in a runtime image"
+
+	self basicOnViewOpened.
 	selection := history size.
 	fontSizePresenter model: (ValueAspectAdaptor subject: self aspect: #fontSize)!
 
