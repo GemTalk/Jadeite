@@ -46,6 +46,7 @@ package classNames
 	add: #JadeiteSearch;
 	add: #JadeiteSemaphore;
 	add: #JadeiteSmalltalkSearchPresenter;
+	add: #JadeiteSmalltalkWorkspace;
 	add: #JadeiteTranscript;
 	add: #PackageMethodListPresenter;
 	add: #Rowan;
@@ -945,6 +946,11 @@ MethodHistoryBrowser subclass: #JadeiteMethodHistoryBrowser
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 SmalltalkSearchPresenter subclass: #JadeiteSmalltalkSearchPresenter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+SmalltalkWorkspace subclass: #JadeiteSmalltalkWorkspace
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

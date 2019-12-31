@@ -33,7 +33,7 @@ createComponents
 	"avoid sending super. Dependencies fail in a runtime environment"
 
 	slider := self add: NumberPresenter new name: 'slider'.
-	source := self add: SmalltalkWorkspace new name: 'source'.
+	source := self add: JadeiteSmalltalkWorkspace new name: 'source'.
 	searchPresenter := self
 				add: JadeiteSmalltalkSearchPresenter new
 				name: 'search'
