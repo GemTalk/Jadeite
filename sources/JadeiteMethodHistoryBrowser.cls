@@ -90,6 +90,9 @@ setCaption
 				nextPut: $);
 				contents)!
 
+systemModel
+	^nil!
+
 updateHistory
 	"Get the historic information for the method. Purge consecutive duplicates from the list"
 
@@ -120,6 +123,7 @@ updateHistory
 !JadeiteMethodHistoryBrowser categoriesFor: #session!accessing!private! !
 !JadeiteMethodHistoryBrowser categoriesFor: #session:!accessing!private! !
 !JadeiteMethodHistoryBrowser categoriesFor: #setCaption!operations!public! !
+!JadeiteMethodHistoryBrowser categoriesFor: #systemModel!accessing!private! !
 !JadeiteMethodHistoryBrowser categoriesFor: #updateHistory!operations!public! !
 
 !JadeiteMethodHistoryBrowser class methodsFor!
