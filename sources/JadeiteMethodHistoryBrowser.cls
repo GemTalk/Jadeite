@@ -19,10 +19,28 @@ MethodHistoryBrowser built in Dolphin Smalltalk 6.x
 Version 6b
 © 2005 by Ian Bartholomew'!
 
+applyOptions
+	view maxCompletionListHeight: 10.
+	view maxCompletionListWidth: 40.
+	view autoCompletionSeparator: $\x7F.!
+
 classService
 	"we're repurposing class inst var"
 
 	^class!
+
+createComponents
+	"avoid sending super. Dependencies fail in a runtime environment"
+
+	slider := self add: NumberPresenter new name: 'slider'.
+	source := self add: SmalltalkWorkspace new name: 'source'.
+	searchPresenter := self
+				add: JadeiteSmalltalkSearchPresenter new
+				name: 'search'
+				helpId: 10510.
+
+	"Font size adjust by slider (if supported by view)"
+	fontSizePresenter := self add: NumberPresenter new name: 'fontSize'!
 
 diff
 	| diffBrowser |
@@ -93,7 +111,9 @@ updateHistory
 	self setCaption.
 	self moveToLast! !
 !JadeiteMethodHistoryBrowser categoriesFor: #about!commands!public! !
+!JadeiteMethodHistoryBrowser categoriesFor: #applyOptions!initialization!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #classService!accessing!public! !
+!JadeiteMethodHistoryBrowser categoriesFor: #createComponents!initialization!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #diff!commands!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #methodService!accessing!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #restoreMethod!commands!public! !

@@ -45,6 +45,7 @@ package classNames
 	add: #JadeiteScintillaView;
 	add: #JadeiteSearch;
 	add: #JadeiteSemaphore;
+	add: #JadeiteSmalltalkSearchPresenter;
 	add: #JadeiteTranscript;
 	add: #PackageMethodListPresenter;
 	add: #Rowan;
@@ -495,6 +496,7 @@ package setPrerequisites: (IdentitySet new
 	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\List\Dolphin List Presenter';
 	add: '..\Core\Object Arts\Dolphin\MVP\Deprecated\Dolphin MVP (Deprecated)';
 	add: '..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base';
+	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Number\Dolphin Number Presenter';
 	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Prompter';
 	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Radio\Dolphin Radio Buttons';
 	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Text\Dolphin Rich Text Presenter';
@@ -939,6 +941,11 @@ RowanShell subclass: #RowanPackageShell
 	classInstanceVariableNames: ''!
 MethodHistoryBrowser subclass: #JadeiteMethodHistoryBrowser
 	instanceVariableNames: 'session'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+SmalltalkSearchPresenter subclass: #JadeiteSmalltalkSearchPresenter
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
