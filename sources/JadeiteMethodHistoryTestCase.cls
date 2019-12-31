@@ -18,7 +18,8 @@ removeMethodHistoryFor: methodService
 				command: #removeMethodHistoryFor:;
 				commandArgs: (Array with: self methodListPresenter selections first);
 				yourself.
-	JadePresenter issueCommands: (Array with: answeringService) session: session!
+	JadePresenter issueCommands: (Array with: answeringService) session: session.
+	self projectsPresenter removeMethods: (Array with: self projectsPresenter selectedClass)!
 
 tearDown
 	super tearDown.
@@ -81,10 +82,36 @@ test_sliderClick
 	methodHistoryBrowser slider view displayValue: 1.
 	methodHistoryBrowser slider model value: 1.	"trigger a #valueChanged event"
 	self assert: methodHistoryBrowser source view text equals: 'test_sliderClick  ^1']
+			ensure: [self removeMethodHistoryFor: self methodListPresenter selections first]!
+
+test_updateAfterMethodCompile
+	self setupProjectBrowser.
+	self selectRowanSample1Class.
+	self
+		saveMethod: 'test_sliderClick  ^1'
+		in: 'RowanSample1'
+		category: 'other'.
+	self
+		saveMethod: 'test_sliderClick  ^2'
+		in: 'RowanSample1'
+		category: 'other'.
+	
+	[self selectMethodNamed: #test_sliderClick.
+	methodHistoryBrowser := self projectsPresenter browseMethodHistory.
+	methodHistoryBrowser moveTo: 1.
+	self assert: methodHistoryBrowser source view text equals: 'test_sliderClick  ^1'.
+	self assert: methodHistoryBrowser history size equals: 3.
+	self
+		saveMethod: 'test_sliderClick  ^3'
+		in: 'RowanSample1'
+		category: 'other'.
+	self assert: methodHistoryBrowser history size equals: 4.
+	self assert: methodHistoryBrowser selection equals: 1	"stay on selection but update the view with the new method"]
 			ensure: [self removeMethodHistoryFor: self methodListPresenter selections first]! !
 !JadeiteMethodHistoryTestCase categoriesFor: #removeMethodHistoryFor:!public!support! !
 !JadeiteMethodHistoryTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteMethodHistoryTestCase categoriesFor: #test_openMethodHistory!public!tests! !
 !JadeiteMethodHistoryTestCase categoriesFor: #test_openMethodHistoryWithHistory!public!tests! !
 !JadeiteMethodHistoryTestCase categoriesFor: #test_sliderClick!public!tests! !
+!JadeiteMethodHistoryTestCase categoriesFor: #test_updateAfterMethodCompile!public!tests! !
 

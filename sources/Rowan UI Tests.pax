@@ -42,6 +42,7 @@ package methodNames
 	add: #JadeInspector -> #documentPresenter;
 	add: #JadeiteChangesBrowser -> #diffsPresenter;
 	add: #JadeiteChangesBrowser -> #operationListPresenter;
+	add: #JadeiteMethodHistoryBrowser -> #selection;
 	add: #JadeiteProjectsBrowserPresenter -> #definedClassPackageText;
 	add: #JadeiteProjectsBrowserPresenter -> #definedMethodPackageText;
 	add: #JadeLoginShell -> #loginButtonPresenter;
@@ -304,6 +305,13 @@ operationListPresenter
 	^operationListPresenter! !
 !JadeiteChangesBrowser categoriesFor: #diffsPresenter!accessing!private! !
 !JadeiteChangesBrowser categoriesFor: #operationListPresenter!public! !
+
+!JadeiteMethodHistoryBrowser methodsFor!
+
+selection 
+	"for testing" 
+	^selection! !
+!JadeiteMethodHistoryBrowser categoriesFor: #selection!accessing!public! !
 
 !JadeiteProjectsBrowserPresenter methodsFor!
 

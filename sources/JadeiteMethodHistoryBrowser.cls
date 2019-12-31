@@ -59,6 +59,15 @@ diff
 			and: ((history at: history size) at: 3)
 			id: 'Current'!
 
+methodHistoryUpdated: newMethodService
+	self methodService = newMethodService
+		ifTrue: 
+			[history add: (Array
+						with: #sources
+						with: newMethodService selector
+						with: newMethodService source)].
+	self updateSelection!
+
 methodService
 	"we're repurposing selector inst var"
 
@@ -73,7 +82,11 @@ onViewOpened
 
 	self basicOnViewOpened.
 	selection := history size.
-	fontSizePresenter model: (ValueAspectAdaptor subject: self aspect: #fontSize)!
+	fontSizePresenter model: (ValueAspectAdaptor subject: self aspect: #fontSize).
+	self registerPresentersForUpdates!
+
+registerPresentersForUpdates
+	BrowserUpdate current register: self selector: #methodHistoryUpdated:!
 
 restoreMethod
 	Cursor wait showWhile: 
@@ -136,15 +149,17 @@ updateHistory
 !JadeiteMethodHistoryBrowser categoriesFor: #createComponents!initialization!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #createSchematicWiring!initialization!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #diff!commands!public! !
+!JadeiteMethodHistoryBrowser categoriesFor: #methodHistoryUpdated:!public!updating! !
 !JadeiteMethodHistoryBrowser categoriesFor: #methodService!accessing!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #onViewOpened!event handlers!public! !
+!JadeiteMethodHistoryBrowser categoriesFor: #registerPresentersForUpdates!initialization!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #restoreMethod!commands!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #session!accessing!private! !
 !JadeiteMethodHistoryBrowser categoriesFor: #session:!accessing!private! !
 !JadeiteMethodHistoryBrowser categoriesFor: #setCaption!operations!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #systemModel!accessing!private! !
-!JadeiteMethodHistoryBrowser categoriesFor: #updateHistory!operations!public! !
+!JadeiteMethodHistoryBrowser categoriesFor: #updateHistory!public!updating! !
 
 !JadeiteMethodHistoryBrowser class methodsFor!
 

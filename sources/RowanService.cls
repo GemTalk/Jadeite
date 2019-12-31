@@ -245,6 +245,9 @@ isUpdatableService
 methodFilterUpdate: presenter
 	!
 
+methodHistoryUpdated: historyBrowser
+	!
+
 methodSourceUpdate: presenter browser: anObject
 	!
 
@@ -490,6 +493,7 @@ wasRenamed
 !RowanService categoriesFor: #isTestCase!public!testing! !
 !RowanService categoriesFor: #isUpdatableService!public!testing! !
 !RowanService categoriesFor: #methodFilterUpdate:!public!updating! !
+!RowanService categoriesFor: #methodHistoryUpdated:!public!updating! !
 !RowanService categoriesFor: #methodSourceUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #methodsUpdate:!public!updating! !
 !RowanService categoriesFor: #methodUpdate:!public!updating! !

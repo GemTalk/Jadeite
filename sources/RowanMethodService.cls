@@ -268,6 +268,10 @@ methodDefinitions: anObject
 	methodDefinitions := anObject.
 	self trigger: #changed!
 
+methodHistoryUpdated: historyBrowser
+	
+	^historyBrowser methodHistoryUpdated: self!
+
 methodName
 	"for the old sunit in class browser tab"
 	^selector!
@@ -556,6 +560,7 @@ user: anObject
 !RowanMethodService categoriesFor: #meta:!accessing!private! !
 !RowanMethodService categoriesFor: #methodDefinitions!accessing!private! !
 !RowanMethodService categoriesFor: #methodDefinitions:!accessing!private! !
+!RowanMethodService categoriesFor: #methodHistoryUpdated:!public!updating! !
 !RowanMethodService categoriesFor: #methodName!accessing!private! !
 !RowanMethodService categoriesFor: #methodSourceUpdate:browser:!public!updating! !
 !RowanMethodService categoriesFor: #methodUpdate:!public!updating! !
