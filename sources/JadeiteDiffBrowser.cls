@@ -18,6 +18,21 @@ createComponents
 
 	"Font size adjust by slider (if supported by view)"
 	fontSizePresenter := self add: NumberPresenter new name: 'fontSize'.
-	diffsPresenter := self add: DifferencesPresenter new name: 'diffs'! !
+	diffsPresenter := self add: DifferencesPresenter new name: 'diffs'!
+
+onViewOpened
+	self basicOnViewOpened.
+	caption := self view caption.
+	self
+		updateIcon;
+		invalidateUserInterface;
+		updateCaption.
+	self class trigger: #viewOpened: with: self.
+	fontSizePresenter model: (ValueAspectAdaptor subject: self aspect: #fontSize)!
+
+systemModel
+	^nil! !
 !JadeiteDiffBrowser categoriesFor: #createComponents!initializing!public! !
+!JadeiteDiffBrowser categoriesFor: #onViewOpened!event handlers!public! !
+!JadeiteDiffBrowser categoriesFor: #systemModel!accessing!private! !
 
