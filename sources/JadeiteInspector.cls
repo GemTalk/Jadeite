@@ -194,7 +194,7 @@ removeObject
 	(MessageBox confirm: 'Really remove selection?') ifFalse: [^self].
 	model instVarsAreRemovable ifFalse: [^self].
 	index := instVarListPresenter selectionByIndex.
-	model indexedSize = 0 ifTrue: [^self basicRemoveFromDictionary].
+	model isDictionary ifTrue: [^self basicRemoveFromDictionary].
 	index - model instVarNames size <= 0 ifTrue: [^self].
 	self basicRemoveObjectAt: index!
 
