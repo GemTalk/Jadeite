@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanInspectorService
-	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray isOop instVarNames instVarsAreRemovable'
+	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray isOop instVarNames instVarsAreRemovable isDictionary'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -62,7 +62,8 @@ initialize
 	objects := OrderedCollection new. 
 	maxIndexedVars := self defaultIndexedSize.
 	indexedSize := 0.
-	isOop := true. !
+	isOop := true. 
+	isDictionary := false.!
 
 inspect: oopOrObject session: session
 	oop := (oopOrObject isKindOf: ExternalInteger)
@@ -97,6 +98,9 @@ instVarsAreRemovable
 
 instVarsAreRemovable: anObject
 	instVarsAreRemovable := anObject!
+
+isDictionary
+	^isDictionary!
 
 isInspectorService
 
@@ -178,6 +182,7 @@ visibleIndices: anObject
 !RowanInspectorService categoriesFor: #instVarNames:!accessing!private! !
 !RowanInspectorService categoriesFor: #instVarsAreRemovable!accessing!private! !
 !RowanInspectorService categoriesFor: #instVarsAreRemovable:!accessing!private! !
+!RowanInspectorService categoriesFor: #isDictionary!accessing!public! !
 !RowanInspectorService categoriesFor: #isInspectorService!public!testing! !
 !RowanInspectorService categoriesFor: #isShowingAllIndexedVars!public!testing! !
 !RowanInspectorService categoriesFor: #maxIndexedVars!accessing!private! !

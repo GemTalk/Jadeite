@@ -80,7 +80,7 @@ displayObjectSelecting: selectionIndex
 		ifTrue: 
 			[statusTextPresenter
 				value: 'Displaying ' , model visibleIndices printString , ' of ' , model indexedSize printString
-						, ' indexed inst vars']
+						, (model isDictionary ifTrue: [' keys'] ifFalse: [' indexed inst vars'])]
 		ifFalse: [statusTextPresenter value: nil].
 	className := model className!
 

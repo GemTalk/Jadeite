@@ -316,6 +316,29 @@ coll
 	self assert: inspector statusText equals: 'Displaying 20000 of 20000 indexed inst vars'.
 	self assert: inspector instVarListPresenter list size equals: 20002!
 
+test_displayAllMenuEnablement
+	| remoteObject jadeiteMenu displayAlltem query |
+	self testsIssue: #issue668 withTitle: 'More efficient handling of large collections. #668'.
+	remoteObject := session
+				executeString: '| coll oop inspectorService |
+coll := Array new.
+1 to: 20000 do: [:i |
+coll add: ''entry'', i asString].
+oop := coll asOop.
+coll
+ '
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	jadeiteMenu := inspector view menuBar items detect: [:menu | '*Jadeite*' match: menu text].
+	displayAlltem := jadeiteMenu items detect: [:item | '*Display All*' match: item text].
+	query := CommandQuery commandDescription: displayAlltem commandDescription source: inspector view.
+	inspector queryCommand: query.
+	self assert: query isEnabled.
+	inspector displayAll.
+	inspector queryCommand: query.
+	self deny: query isEnabled!
+
 test_displayMore
 	| remoteObject |
 	self testsIssue: #issue668 withTitle: 'More efficient handling of large collections. #668'.
@@ -341,6 +364,29 @@ coll
 			inspector displayMore].
 	self assert: inspector statusText equals: 'Displaying 20000 of 20000 indexed inst vars'.
 	self assert: inspector instVarListPresenter list size equals: 20002!
+
+test_displayMoreMenuEnablement
+	| remoteObject jadeiteMenu displayMoreItem query |
+	self testsIssue: #issue668 withTitle: 'More efficient handling of large collections. #668'.
+	remoteObject := session
+				executeString: '| coll oop inspectorService |
+coll := Array new.
+1 to: 20000 do: [:i |
+coll add: ''entry'', i asString].
+oop := coll asOop.
+coll
+ '
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	jadeiteMenu := inspector view menuBar items detect: [:menu | '*Jadeite*' match: menu text].
+	displayMoreItem := jadeiteMenu items detect: [:item | '*Display More*' match: item text].
+	query := CommandQuery commandDescription: displayMoreItem commandDescription source: inspector view.
+	inspector queryCommand: query.
+	self assert: query isEnabled.
+	inspector displayAll.
+	inspector queryCommand: query.
+	self deny: query isEnabled!
 
 test_dive
 	| workspace index |
@@ -1037,7 +1083,9 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusCodePane!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusInstVars!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_displayAll!public!tests!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_displayAllMenuEnablement!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_displayMore!public!tests!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_displayMoreMenuEnablement!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_dive!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_diveIntoDoubleByteString!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!tests! !
