@@ -201,7 +201,7 @@ test_caption
 	self assert: ('Inspector on SmallInteger for*' match: inspector caption).!
 
 test_captionChange
-	| remoteObject |
+	| remoteObject ocIndex |
 	self testsIssue: #issue154 withTitle: 'Change inspector title on dive #154'.
 	remoteObject := session
 				executeString: 'Array with: (Dictionary new at: #oc put: (OrderedCollection with: #leaf); yourself)'
@@ -211,7 +211,9 @@ test_captionChange
 	self assert: ('Inspector on Array for*' match: inspector caption).
 	self inspectInstVarAt: 3.
 	self assert: ('Inspector on Dictionary for*' match: inspector caption).
-	self inspectInstVarAt: 3.
+	ocIndex := inspector instVarListPresenter list
+				indexOf: (inspector instVarListPresenter list detect: [:item | item key = '#''oc''']).
+	self inspectInstVarAt: ocIndex.
 	self assert: ('Inspector on OrderedCollection for*' match: inspector caption).
 	self inspectInstVarAt: 3.
 	self assert: ('Inspector on Symbol for*' match: inspector caption).
@@ -472,7 +474,7 @@ test_dynamicInstVarsInDictionary
 				workspace view close]!
 
 test_forwardBack
-	| remoteObject backQuery forwardQuery |
+	| remoteObject backQuery forwardQuery ocIndex |
 	self testsIssue: #issue153 withTitle: 'Inspector Back goes too far'.
 	remoteObject := session
 				executeString: 'Array with: (Dictionary new at: #oc put: (OrderedCollection with: #leaf); yourself)'
@@ -488,7 +490,9 @@ test_forwardBack
 	self enableForward: forwardQuery andBack: backQuery.
 	self assert: backQuery isEnabled.
 	self deny: forwardQuery isEnabled.
-	self inspectInstVarAt: 3.	"ordered collection"
+	ocIndex := inspector instVarListPresenter list
+				indexOf: (inspector instVarListPresenter list detect: [:item | item key = '#''oc''']).
+	self inspectInstVarAt: ocIndex."ordered collection"
 	self enableForward: forwardQuery andBack: backQuery.
 	self assert: backQuery isEnabled.
 	self deny: forwardQuery isEnabled.
@@ -496,19 +500,18 @@ test_forwardBack
 	self enableForward: forwardQuery andBack: backQuery.
 	self assert: backQuery isEnabled.
 	self deny: forwardQuery isEnabled.
-	inspector getPreviousObject. "ordered collection"
+	inspector getPreviousObject.	"ordered collection"
 	self enableForward: forwardQuery andBack: backQuery.
 	self assert: backQuery isEnabled.
 	self assert: forwardQuery isEnabled.
-	inspector getPreviousObject. "dictionary"
+	inspector getPreviousObject.	"dictionary"
 	self enableForward: forwardQuery andBack: backQuery.
 	self assert: backQuery isEnabled.
 	self assert: forwardQuery isEnabled.
-	inspector getPreviousObject. "array - root" 
+	inspector getPreviousObject.	"array - root"
 	self enableForward: forwardQuery andBack: backQuery.
 	self deny: backQuery isEnabled.
-	self assert: forwardQuery isEnabled.
-!
+	self assert: forwardQuery isEnabled!
 
 test_fullInspectArray
 	| remoteObject list |
@@ -552,6 +555,30 @@ test_inspectAsOopField
 	inspector documentPresenter selectionRange: (1 to: 5).
 	inspector documentPresenter selection copyToClipboard.
 	self assert: Clipboard current getText equals: '22556'!
+
+test_inspectBag
+	| remoteObject |
+	remoteObject := session
+				executeString: 'Bag new add: ''abc''; yourself'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	self assert: inspector documentPresenter value equals: 'aBag( ''abc'')'.
+	inspector instVarListPresenter selectionByIndex: 2.
+	self assert: inspector instVarListPresenter selection key equals: '-.asOop'.
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector instVarListPresenter selection key equals: '-_varyingSize'.
+	inspector instVarListPresenter selectionByIndex: 4.
+	self assert: inspector instVarListPresenter selection key equals: '-_numEntries'.
+	inspector instVarListPresenter selectionByIndex: 5.
+	self assert: inspector instVarListPresenter selection key equals: '-_indexedPaths'.
+	inspector instVarListPresenter selectionByIndex: 6.
+	self assert: inspector instVarListPresenter selection key equals: '-_levels'.
+	inspector instVarListPresenter selectionByIndex: 7.
+	self assert: inspector instVarListPresenter selection key equals: '-dict'.
+	inspector instVarListPresenter selectionByIndex: 8.
+	self assert: inspector instVarListPresenter selection key equals: '-size'.
+	self assert: inspector instVarListPresenter list size equals: 8!
 
 test_inspectDoubleByteString
 	| service |
@@ -668,6 +695,38 @@ bag'.
 	self assert: inspector documentPresenter value equals: 'aRcIdentityBag( ''aa?b'')'.
 	inspector instVarListPresenter selectionByIndex: 8.
 	self assert: inspector documentPresenter value equals: '''aa?b'''!
+
+test_inspectRcQueue
+	| remoteObject |
+	remoteObject := session
+				executeString: 'RcQueue new add: 1; yourself'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	self assert: inspector documentPresenter value equals: 'aRcQueue( 1)'.
+	self assert: inspector instVarListPresenter list size equals: 23	"self + asOop + 1 inst var + default new size 20"!
+
+test_inspectSet
+	| remoteObject |
+	remoteObject := session
+				executeString: 'Set new add: ''abc''; yourself'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	self assert: inspector documentPresenter value equals: 'aSet( ''abc'')'.
+	inspector instVarListPresenter selectionByIndex: 2.
+	self assert: inspector instVarListPresenter selection key equals: '-.asOop'.
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector instVarListPresenter selection key equals: '-_varyingSize'.
+	inspector instVarListPresenter selectionByIndex: 4.
+	self assert: inspector instVarListPresenter selection key equals: '-_numEntries'.
+	inspector instVarListPresenter selectionByIndex: 5.
+	self assert: inspector instVarListPresenter selection key equals: '-_indexedPaths'.
+	inspector instVarListPresenter selectionByIndex: 6.
+	self assert: inspector instVarListPresenter selection key equals: '-_levels'.
+	inspector instVarListPresenter selectionByIndex: 7.
+	self assert: inspector instVarListPresenter selection key equals: '-dict'.
+	self assert: inspector instVarListPresenter list size equals: 7!
 
 test_inspectString
 	| remoteObject |
@@ -918,7 +977,7 @@ test_registeredPresentersInInspectorCleanedUp
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
 
 test_removeFromDictionary
-	| remoteObject |
+	| remoteObject firstKeyIndex |
 	remoteObject := session
 				executeString: '| dictionary |
 dictionary := Dictionary new.
@@ -927,12 +986,14 @@ UserGlobals at: #dictionary put: Dictionary new.
 dictionary at: i printString put: ''value'', i printString]. 
 dictionary'
 				fromContext: nil
-				environment: 0. 
+				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	inspector instVarListPresenter selectionByIndex: 3.
+	firstKeyIndex := inspector instVarListPresenter list
+				indexOf: (inspector instVarListPresenter list detect: [:item | item key = '''1''']).
+	inspector instVarListPresenter selectionByIndex: firstKeyIndex.	
 	self assert: inspector documentPresenter value equals: '''value1'''.
 	inspector basicRemoveFromDictionary.
-	self assert: inspector instVarListPresenter selectionByIndex equals: 3.
+	self assert: inspector instVarListPresenter selectionByIndex equals: firstKeyIndex.
 	self assert: inspector documentPresenter value equals: '''value10'''!
 
 test_removeFromSymbolDictionary
@@ -1023,10 +1084,10 @@ dictionary'
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	inspector instVarListPresenter selectionByIndex: 14.
+	inspector instVarListPresenter selectionByIndex: inspector instVarListPresenter list size.
 	self assert: inspector documentPresenter value equals: '''value9'''.
 	inspector basicRemoveFromDictionary.
-	self assert: inspector instVarListPresenter selectionByIndex equals: 13.
+	self assert: inspector instVarListPresenter selectionByIndex equals: inspector instVarListPresenter list size.
 	self assert: inspector documentPresenter value equals: '''value8'''!
 
 test_removeLastIndexedInstVar
@@ -1086,7 +1147,7 @@ UserGlobals at: #aDict1 put: d.'.
 	
 	[remoteObject := session executeString: 'UserGlobals at: #aDict1'.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	inspector instVarListPresenter selectionByIndex: 3.
+	inspector instVarListPresenter selectionByIndex: inspector instVarListPresenter list size.
 	self assert: inspector documentPresenter value equals: '''aa?b''']
 			ensure: [session executeString: 'UserGlobals removeKey: #aDict1']!
 
@@ -1103,7 +1164,8 @@ UserGlobals at: #aDict4 put: d.'.
 	
 	[remoteObject := session executeString: 'UserGlobals at: #aDict4'.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self assert: (inspector instVarListPresenter list at: 3) key equals: '''da?b''']
+	self assert: (inspector instVarListPresenter list at: inspector instVarListPresenter list size) key
+		equals: '''da?b''']
 			ensure: [session executeString: 'UserGlobals removeKey: #aDict4']! !
 !JadeiteInspectorTestCase categoriesFor: #commandQueryOn:!private! !
 !JadeiteInspectorTestCase categoriesFor: #enableForward:andBack:!private! !
@@ -1132,12 +1194,15 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_fullInspectArray!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectAsOopField!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectBag!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectDoubleByteString!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorHandlesError!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorRootObjectRegistered!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorRootSpecialObjectNotRegistered!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectRcIdentityBag!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectRcIdentityBagWithUnicodeKey!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectRcQueue!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectSet!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectString!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_interactionInspect!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_menuBarItemNames!public!tests!tests menu bar! !
