@@ -432,6 +432,45 @@ test_diveIntoDoubleByteString
 	inspector instVarListPresenter selectionByIndex: 6.
 	self assert: inspector documentPresenter value equals: '$b'!
 
+test_dynamicInstVars
+	| workspace |
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	workspace setDocumentData: 'Array new dynamicInstVarAt: #foo put: ''bar''; yourself'.
+	workspace setFocus.
+	inspector := workspace codePane jadeInspect.
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector instVarListPresenter selection key equals: 'foo'.
+	self assert: inspector documentPresenter model value equals: '''bar''']
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
+test_dynamicInstVarsInDictionary
+	| workspace |
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	workspace setDocumentData: '| dictionary |
+	dictionary := Dictionary new.
+	dictionary at: #key put: ''value''. 
+	dictionary dynamicInstVarAt: #foo put: ''bar''.
+	dictionary'.
+	workspace setFocus.
+	workspace codePane selectAll. 
+	inspector := workspace codePane jadeInspect. 
+	inspector instVarListPresenter selectionByIndex: 8.
+	self assert: inspector instVarListPresenter selection key equals: 'foo'.
+	self assert: inspector documentPresenter model value equals: '''bar'''.
+	inspector instVarListPresenter selectionByIndex: 9.
+	self assert: inspector instVarListPresenter selection key equals: '#''key'''.
+	self assert: inspector documentPresenter model value equals: '''value'''.
+	]
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
 test_forwardBack
 	| remoteObject backQuery forwardQuery |
 	self testsIssue: #issue153 withTitle: 'Inspector Back goes too far'.
@@ -558,7 +597,7 @@ test_inspectorHandlesError
 		assert: ('Error printing object with oop *. Error text: a UserDefinedError occurred (error 2318), reason:halt, throw an error'
 				match: inspector documentPresenter value).	"must show underlying error"
 	inspector instVarListPresenter selectionByIndex: 2.
-	self assert: inspector documentPresenter value isKindOf: Integer]
+	self assert: inspector documentPresenter value isKindOf: String]
 			ensure: [self destroy: inspector].
 	remoteObject := session
 				executeString: 'Array with: RowanSample1 new'
@@ -765,7 +804,7 @@ test_openNavigationInspectorOnBoolean
 	[self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: 'true'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
-	self assert: inspector documentPresenter model value equals: 268]
+	self assert: inspector documentPresenter model value equals: '268']
 			ensure: [self destroy: inspector].
 	remoteObject := session
 				executeString: 'false'
@@ -775,7 +814,7 @@ test_openNavigationInspectorOnBoolean
 	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: 'false'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
-	self assert: inspector documentPresenter model value equals: 12!
+	self assert: inspector documentPresenter model value equals: '12'!
 
 test_openNavigationInspectorOnCharacter
 	| remoteObject |
@@ -788,7 +827,7 @@ test_openNavigationInspectorOnCharacter
 	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: '$c'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
-	self assert: inspector documentPresenter model value equals: 25372!
+	self assert: inspector documentPresenter model value equals: '25372'!
 
 test_openNavigationInspectorOnFloat
 	| remoteObject |
@@ -801,7 +840,7 @@ test_openNavigationInspectorOnFloat
 	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: '1.2334500000000000E02'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
-	self assert: inspector documentPresenter model value equals: 9650476537015991014!
+	self assert: inspector documentPresenter model value equals: '9650476537015991014'!
 
 test_openNavigationInspectorOnNil
 	| remoteObject |
@@ -814,7 +853,7 @@ test_openNavigationInspectorOnNil
 	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: 'nil'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
-	self assert: inspector documentPresenter model value equals: 20!
+	self assert: inspector documentPresenter model value equals: '20'!
 
 test_openNavigationInspectorOnSmallInteger
 	| remoteObject |
@@ -827,7 +866,7 @@ test_openNavigationInspectorOnSmallInteger
 	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: '123'.
 	inspector instVarListPresenter selectionByIndex: 2. "asOop"
-	self assert: inspector documentPresenter model value equals: 986.!
+	self assert: inspector documentPresenter model value equals: '986'.!
 
 test_openNavigationInspectorOnSymbol
 	| remoteObject |
@@ -840,7 +879,7 @@ test_openNavigationInspectorOnSymbol
 	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: '#''abc'''.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
-	self assert: inspector documentPresenter model value equals: 14351873!
+	self assert: inspector documentPresenter model value equals: '14351873'!
 
 test_openProjectsBrowser
 	| remoteObject shell |
@@ -888,7 +927,7 @@ UserGlobals at: #dictionary put: Dictionary new.
 dictionary at: i printString put: ''value'', i printString]. 
 dictionary'
 				fromContext: nil
-				environment: 0.
+				environment: 0. 
 	inspector := JadeInspector showOn: remoteObject session: session.
 	inspector instVarListPresenter selectionByIndex: 3.
 	self assert: inspector documentPresenter value equals: '''value1'''.
@@ -1088,6 +1127,8 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_displayMoreMenuEnablement!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_dive!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_diveIntoDoubleByteString!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_dynamicInstVars!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_dynamicInstVarsInDictionary!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_fullInspectArray!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectAsOopField!public!tests! !
