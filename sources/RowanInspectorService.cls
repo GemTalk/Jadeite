@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanInspectorService
-	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray isOop instVarNames instVarsAreRemovable isDictionary'
+	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray isOop instVarNames instVarsAreRemovable isDictionary isVariable selectionOop'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -63,7 +63,8 @@ initialize
 	maxIndexedVars := self defaultIndexedSize.
 	indexedSize := 0.
 	isOop := true. 
-	isDictionary := false.!
+	isDictionary := false.
+	isVariable := false. !
 
 inspect: oopOrObject session: session
 	oop := (oopOrObject isKindOf: ExternalInteger)
@@ -109,6 +110,9 @@ isInspectorService
 isShowingAllIndexedVars
 
 	^visibleIndices = indexedSize!
+
+isVariable
+	^isVariable!
 
 maxIndexedVars
 	^maxIndexedVars!
@@ -159,6 +163,9 @@ removeKey: keyOop session: session
 		commandArgs: (Array with: keyOop).
 	BrowserUpdate current issueCommands: (Array with: self) session: session!
 
+selectionOop
+	^selectionOop!
+
 visibleIndices
 	^visibleIndices!
 
@@ -185,6 +192,7 @@ visibleIndices: anObject
 !RowanInspectorService categoriesFor: #isDictionary!accessing!public! !
 !RowanInspectorService categoriesFor: #isInspectorService!public!testing! !
 !RowanInspectorService categoriesFor: #isShowingAllIndexedVars!public!testing! !
+!RowanInspectorService categoriesFor: #isVariable!accessing!private! !
 !RowanInspectorService categoriesFor: #maxIndexedVars!accessing!private! !
 !RowanInspectorService categoriesFor: #maxIndexedVars:!accessing!private! !
 !RowanInspectorService categoriesFor: #myself!accessing!private! !
@@ -198,6 +206,7 @@ visibleIndices: anObject
 !RowanInspectorService categoriesFor: #oop:!accessing!private! !
 !RowanInspectorService categoriesFor: #removeIndexedInstVarAt:session:!operations!public! !
 !RowanInspectorService categoriesFor: #removeKey:session:!operations!public! !
+!RowanInspectorService categoriesFor: #selectionOop!accessing!private! !
 !RowanInspectorService categoriesFor: #visibleIndices!accessing!private! !
 !RowanInspectorService categoriesFor: #visibleIndices:!accessing!private! !
 
