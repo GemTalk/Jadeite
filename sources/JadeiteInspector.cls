@@ -11,21 +11,15 @@ JadeiteInspector comment: ''!
 !JadeiteInspector methodsFor!
 
 addObject
-	| additionIndex string newSelectionIndex addedObject |
+	| string |
+	"might have inserted a string into another string so it won't find the object"
 	model isVariable ifFalse: [^MessageBox notify: 'Cannot add elements to this object'].
 	string := Prompter
 				on: String new asValue
 				prompt: 'Entry will be compiled and added to the object'
 				caption: 'Add Object ...'.
-	additionIndex := self selectedindexedVarOffset: instVarListPresenter selectionByIndex.
-	model
-		command: #addObject:after:;
-		commandArgs: (Array with: string with: additionIndex).
-	self issueCommand: (Array with: model).
-	addedObject := model objects detect: [:assoc | assoc value = model selectionOop]
-				ifNone: [].
-	newSelectionIndex := model objects indexOf: addedObject.
-	self displayObjectSelecting: newSelectionIndex + 2!
+	string ifNil: [^self].
+	self basicAddObject: string!
 
 addOop: oop
 	oop isNil ifTrue: [^self].
@@ -33,6 +27,21 @@ addOop: oop
 	oopsCollection resize: objectIndex + 1.
 	oopsCollection at: objectIndex + 1 put: oop.
 	objectIndex := objectIndex + 1!
+
+basicAddObject: string
+	| addedObject newSelectionIndex additionIndex |
+	additionIndex := self selectedindexedVarOffset: instVarListPresenter selectionByIndex.
+	model
+		command: #addObject:after:;
+		commandArgs: (Array with: string with: additionIndex).
+	self issueCommand: (Array with: model).
+	addedObject := model objects detect: [:assoc | assoc value = model selectionOop] ifNone: [].
+	newSelectionIndex := model objects indexOf: addedObject.
+	newSelectionIndex = 0
+		ifTrue: 
+			[newSelectionIndex := 1	"might have inserted a string into another string so it won't find the object"]
+		ifFalse: [newSelectionIndex := newSelectionIndex + 2].
+	self displayObjectSelecting: newSelectionIndex!
 
 basicRemoveFromDictionary
 	| selection newSelectionIndex |
@@ -226,10 +235,7 @@ removeObject
 	self basicRemoveObjectAt: index!
 
 selectedindexedVarOffset: index
-	^index - model instVarNames size - 2	"self + asOop"!
-
-selectedIndexOffset: index
-	^index min: model indexedSize + model instVarNames size + 2!
+	^index - model instVarNames size - 2 max: 0	"self + asOop"!
 
 selectedInstVar
 	| string |
@@ -264,6 +270,7 @@ statusText
 	^statusTextPresenter value! !
 !JadeiteInspector categoriesFor: #addObject!menu handlers!operations!public! !
 !JadeiteInspector categoriesFor: #addOop:!public! !
+!JadeiteInspector categoriesFor: #basicAddObject:!menu handlers!operations!public! !
 !JadeiteInspector categoriesFor: #basicRemoveFromDictionary!operations!private! !
 !JadeiteInspector categoriesFor: #basicRemoveObjectAt:!operations!private! !
 !JadeiteInspector categoriesFor: #createComponents!initialize!public! !
@@ -284,7 +291,6 @@ statusText
 !JadeiteInspector categoriesFor: #registerWindow:rootObject:!private! !
 !JadeiteInspector categoriesFor: #removeObject!menu handlers!operations!public! !
 !JadeiteInspector categoriesFor: #selectedindexedVarOffset:!operations!private! !
-!JadeiteInspector categoriesFor: #selectedIndexOffset:!operations!private! !
 !JadeiteInspector categoriesFor: #selectedInstVar!accessing!private! !
 !JadeiteInspector categoriesFor: #setNewInspectedObject!public! !
 !JadeiteInspector categoriesFor: #showOn:!displaying!public! !

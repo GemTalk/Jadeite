@@ -90,6 +90,81 @@ test_abortTransactionInNavigationInspector
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
 
+test_addCharacterToString
+	"add a character to a string and expect to have it highlighted"
+
+	| remoteObject |
+	remoteObject := session
+				executeString: '''abc'' copy'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 1.
+	inspector basicAddObject: '$-'.
+	self assert: inspector instVarListPresenter selection key equals: '1'.	"self was seleted. add char at 1. select first index afterwards"
+	self assert: inspector documentPresenter value equals: '$-'.
+	inspector instVarListPresenter selectionByIndex: 1.
+	self assert: inspector documentPresenter value equals: '''-abc'''.
+	inspector instVarListPresenter selectionByIndex: 6.
+	inspector basicAddObject: '$d'.
+	self assert: inspector instVarListPresenter selection key equals: '5'.	"last index was seleted. add char at end. select added char afterwards"
+	inspector instVarListPresenter selectionByIndex: 1.
+	self assert: inspector documentPresenter value equals: '''-abcd'''.
+	inspector instVarListPresenter selectionByIndex: 4.
+	self assert: inspector instVarListPresenter selection key equals: '2'.
+	inspector basicAddObject: '$<'.
+	self assert: inspector instVarListPresenter selection key equals: '3'.	"last index was seleted. add char after this slot. select added char afterwards"
+	inspector instVarListPresenter selectionByIndex: 1.
+	self assert: inspector documentPresenter value equals: '''-a<bcd'''!
+
+test_addObjectToArray
+	| remoteObject |
+	remoteObject := session
+				executeString: 'Array with: 1 with: ''abc'' with: $a'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 1.
+	inspector basicAddObject: '$b'.
+	self assert: inspector instVarListPresenter selection key equals: '1'.
+	self assert: inspector documentPresenter value equals: '$b'.
+	inspector instVarListPresenter selectionByIndex: 1.
+	self assert: inspector documentPresenter value equals: 'anArray( $b, 1, ''abc'', $a)'.
+	inspector instVarListPresenter selectionByIndex: 4.
+	inspector basicAddObject: '99'.
+	self assert: inspector instVarListPresenter selection key equals: '3'.
+	self assert: inspector documentPresenter value equals: '99'.
+	inspector instVarListPresenter selectionByIndex: 1.
+	self assert: inspector documentPresenter value equals: 'anArray( $b, 1, 99, ''abc'', $a)'.
+	inspector instVarListPresenter selectionByIndex: 7.
+	inspector basicAddObject: '#t'.
+	self assert: inspector instVarListPresenter selection key equals: '6'.
+	self assert: inspector documentPresenter value equals: '#''t'''.
+	inspector instVarListPresenter selectionByIndex: 1.
+	self assert: inspector documentPresenter value equals: 'anArray( $b, 1, 99, ''abc'', $a, #''t'')'!
+
+test_addStringToString
+	"add a string to a string. Select self afterwards. "
+
+	| remoteObject |
+	remoteObject := session
+				executeString: '''abc'' copy'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 1.
+	inspector basicAddObject: '''abd'''.
+	self assert: inspector instVarListPresenter selection key equals: 'self'.	"self was seleted. add string at: 1"
+	self assert: inspector documentPresenter value equals: '''abdabc'''.
+	inspector instVarListPresenter selectionByIndex: 4.
+	inspector basicAddObject: '''m'''.
+	self assert: inspector instVarListPresenter selection key equals: 'self'.	"first b was seleted. add string after b"
+	self assert: inspector documentPresenter value equals: '''abmdabc'''.
+	inspector instVarListPresenter selectionByIndex: 9.
+	inspector basicAddObject: '''zzz'''.
+	self assert: inspector instVarListPresenter selection key equals: 'self'.	"last char selected. add string to end"
+	self assert: inspector documentPresenter value equals: '''abmdabczzz'''!
+
 test_adHocInspect
 	| workspace |
 	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
@@ -578,7 +653,9 @@ test_inspectBag
 	self assert: inspector instVarListPresenter selection key equals: '-dict'.
 	inspector instVarListPresenter selectionByIndex: 8.
 	self assert: inspector instVarListPresenter selection key equals: '-size'.
-	self assert: inspector instVarListPresenter list size equals: 8!
+	inspector instVarListPresenter selectionByIndex: 9.
+	self assert: inspector instVarListPresenter selection key equals: '''abc'''.
+	self assert: inspector instVarListPresenter list size equals: 9!
 
 test_inspectDoubleByteString
 	| service |
@@ -599,6 +676,32 @@ test_inspectDoubleByteString
 	self assert: inspector documentPresenter value equals: '$?'.
 	inspector instVarListPresenter selectionByIndex: 6.
 	self assert: inspector documentPresenter value equals: '$b'!
+
+test_inspectIdentityBag
+	| remoteObject |
+	remoteObject := session
+				executeString: '| abc | 
+				abc := ''abc''. 
+				IdentityBag new add: abc; add: abc; yourself'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	self assert: inspector documentPresenter value equals: 'anIdentityBag( ''abc'', ''abc'')'.
+	inspector instVarListPresenter selectionByIndex: 2.
+	self assert: inspector instVarListPresenter selection key equals: '-.asOop'.
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector instVarListPresenter selection key equals: '-_varyingSize'.
+	inspector instVarListPresenter selectionByIndex: 4.
+	self assert: inspector instVarListPresenter selection key equals: '-_numEntries'.
+	inspector instVarListPresenter selectionByIndex: 5.
+	self assert: inspector instVarListPresenter selection key equals: '-_indexedPaths'.
+	inspector instVarListPresenter selectionByIndex: 6.
+	self assert: inspector instVarListPresenter selection key equals: '-_levels'.
+	inspector instVarListPresenter selectionByIndex: 7.
+	self assert: inspector instVarListPresenter selection key equals: '''abc'''.
+	inspector instVarListPresenter selectionByIndex: 8.
+	self assert: inspector instVarListPresenter selection key equals: '''abc'''.
+	self assert: inspector instVarListPresenter list size equals: 8!
 
 test_inspectorHandlesError
 	| remoteObject |
@@ -674,14 +777,14 @@ test_inspectRcIdentityBag
 	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter value equals: 'aRcIdentityBag( 1, $k, ''abc'')'.
 	self assert: (inspector instVarListPresenter list collect: [:ea | ea key]) asArray
-		equals: #('self' '-.asOop' '-_varyingSize' '-_numEntries' '-_indexedPaths' '-_levels' '-components' '1' '2' '3').
+		equals: #('self' '-.asOop' '-_varyingSize' '-_numEntries' '-_indexedPaths' '-_levels' '-components' '$k' '''abc''' '1').
 	"not sure about order in an identity bag. Might need to test differently"
-	inspector instVarListPresenter selectionByIndex: 8.
+	inspector instVarListPresenter selectionByIndex: 10.
 	self assert: inspector documentPresenter value equals: '1'.
 	inspector instVarListPresenter selectionByIndex: 9.
-	self assert: inspector documentPresenter value equals: '$k'.
-	inspector instVarListPresenter selectionByIndex: 10.
-	self assert: inspector documentPresenter value equals: '''abc'''!
+	self assert: inspector documentPresenter value equals: '''abc'''.
+	inspector instVarListPresenter selectionByIndex: 8.
+	self assert: inspector documentPresenter value equals: '$k'!
 
 test_inspectRcIdentityBagWithUnicodeKey
 	| remoteObject |
@@ -726,7 +829,9 @@ test_inspectSet
 	self assert: inspector instVarListPresenter selection key equals: '-_levels'.
 	inspector instVarListPresenter selectionByIndex: 7.
 	self assert: inspector instVarListPresenter selection key equals: '-dict'.
-	self assert: inspector instVarListPresenter list size equals: 7!
+	inspector instVarListPresenter selectionByIndex: 8.
+	self assert: inspector instVarListPresenter selection key equals: '''abc'''.
+	self assert: inspector instVarListPresenter list size equals: 8!
 
 test_inspectString
 	| remoteObject |
@@ -1173,6 +1278,9 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #tearDown!private! !
 !JadeiteInspectorTestCase categoriesFor: #test_abortTransactionInBasicInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_abortTransactionInNavigationInspector!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_addCharacterToString!public!tests add! !
+!JadeiteInspectorTestCase categoriesFor: #test_addObjectToArray!public!tests add! !
+!JadeiteInspectorTestCase categoriesFor: #test_addStringToString!public!tests add! !
 !JadeiteInspectorTestCase categoriesFor: #test_adHocInspect!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_adHocInspectComplexObject!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_autoCommitInAdHocInspect!public!tests! !
@@ -1196,6 +1304,7 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_inspectAsOopField!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectBag!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectDoubleByteString!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectIdentityBag!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorHandlesError!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorRootObjectRegistered!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectorRootSpecialObjectNotRegistered!public!tests! !
