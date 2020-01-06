@@ -1195,6 +1195,21 @@ dictionary'
 	self assert: inspector instVarListPresenter selectionByIndex equals: inspector instVarListPresenter list size.
 	self assert: inspector documentPresenter value equals: '''value8'''!
 
+test_removeLastElementOfSet
+	| remoteObject  previousSize |
+	remoteObject := session
+				executeString: 'Set with: 1'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: inspector instVarListPresenter list size.
+	previousSize := inspector instVarListPresenter list size. 
+	inspector basicRemoveOop: inspector instVarListPresenter selection value.
+	self assert: inspector instVarListPresenter list size equals: previousSize - 1. 
+	self assert: inspector model visibleIndices equals: 0. 
+	self assert: inspector instVarListPresenter selection key equals: '-dict'. 
+	!
+
 test_removeLastIndexedInstVar
 	| remoteObject |
 	remoteObject := session
@@ -1278,9 +1293,9 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #tearDown!private! !
 !JadeiteInspectorTestCase categoriesFor: #test_abortTransactionInBasicInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_abortTransactionInNavigationInspector!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_addCharacterToString!public!tests add! !
-!JadeiteInspectorTestCase categoriesFor: #test_addObjectToArray!public!tests add! !
-!JadeiteInspectorTestCase categoriesFor: #test_addStringToString!public!tests add! !
+!JadeiteInspectorTestCase categoriesFor: #test_addCharacterToString!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_addObjectToArray!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_addStringToString!public!tests add remove! !
 !JadeiteInspectorTestCase categoriesFor: #test_adHocInspect!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_adHocInspectComplexObject!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_autoCommitInAdHocInspect!public!tests! !
@@ -1328,12 +1343,13 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowser!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowserOnClass!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_registeredPresentersInInspectorCleanedUp!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_removeFromDictionary!public!tests!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_removeFromSymbolDictionary!public!tests!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_removeIndexedInstVar!public!tests!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_removeItemEnabled!public!tests!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_removeLastElementFromDictionary!public!tests!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_removeLastIndexedInstVar!public!tests!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeFromDictionary!public!tests!tests add remove!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeFromSymbolDictionary!public!tests!tests add remove!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeIndexedInstVar!public!tests!tests add remove!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeItemEnabled!public!tests!tests add remove!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeLastElementFromDictionary!public!tests!tests add remove!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeLastElementOfSet!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeLastIndexedInstVar!public!tests!tests add remove!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_showReturnsNavigationInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_showReturnsStringInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_unicodeInspect1!public!tests! !

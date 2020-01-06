@@ -61,6 +61,15 @@ basicRemoveObjectAt: index
 	oopsCollection remove: selection value ifAbsent: [^self].
 	objectIndex := objectIndex - 1!
 
+basicRemoveOop: oop
+	| selection selectionIndex |
+	selection := instVarListPresenter selection.
+	self model removeOop: oop session: gciSession.
+	selectionIndex := instVarListPresenter selectionByIndex min: model objects size + 2.
+	self displayObjectSelecting: selectionIndex.
+	oopsCollection remove: selection value ifAbsent: [^self].
+	objectIndex := objectIndex - 1!
+
 createComponents
 
 	super createComponents. 
@@ -231,6 +240,7 @@ removeObject
 	model instVarsAreRemovable ifFalse: [^self].
 	index := instVarListPresenter selectionByIndex.
 	model isDictionary ifTrue: [^self basicRemoveFromDictionary].
+	model isUnordered ifTrue: [^self basicRemoveOop: instVarListPresenter selection value].
 	index - model instVarNames size <= 0 ifTrue: [^self].
 	self basicRemoveObjectAt: index!
 
@@ -273,6 +283,7 @@ statusText
 !JadeiteInspector categoriesFor: #basicAddObject:!menu handlers!operations!public! !
 !JadeiteInspector categoriesFor: #basicRemoveFromDictionary!operations!private! !
 !JadeiteInspector categoriesFor: #basicRemoveObjectAt:!operations!private! !
+!JadeiteInspector categoriesFor: #basicRemoveOop:!operations!private! !
 !JadeiteInspector categoriesFor: #createComponents!initialize!public! !
 !JadeiteInspector categoriesFor: #displayAll!displaying!menu handlers!public! !
 !JadeiteInspector categoriesFor: #displayMore!displaying!menu handlers!public! !
