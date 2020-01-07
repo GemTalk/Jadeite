@@ -1153,6 +1153,32 @@ coll'
 	self assert: inspector documentPresenter value equals: '''entry2'''.
 	self assert: inspector statusText equals: 'Displaying 49 of 49 indexed inst vars'!
 
+test_removeItemDisabledForInstVars
+	| remoteObject removeObjectItem query |
+	remoteObject := session
+				executeString: 'Set with: $a'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 1.	"self"
+	removeObjectItem := inspector instVarListPresenter view contextMenu items
+				detect: [:item | item command = #removeObject].
+	query := CommandQuery commandDescription: removeObjectItem commandDescription source: inspector view.
+	inspector queryCommand: query.
+	self deny: query isEnabled.
+	inspector instVarListPresenter selectionByIndex: 2.	"-.asOop"
+	inspector queryCommand: query.
+	self deny: query isEnabled.
+	3 to: 7
+		do: 
+			[:index |
+			inspector instVarListPresenter selectionByIndex: index.
+			inspector queryCommand: query.
+			self deny: query isEnabled].	"inst vars"
+	inspector instVarListPresenter selectionByIndex: 8.
+	inspector queryCommand: query.
+	self assert: query isEnabled!
+
 test_removeItemEnabled
 	| remoteObject removeObjectItem query |
 	self testsIssue: #issue212 withTitle: '`Copy` menu item grayed out in inspector when text selected'.
@@ -1346,6 +1372,7 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_removeFromDictionary!public!tests!tests add remove!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_removeFromSymbolDictionary!public!tests!tests add remove!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_removeIndexedInstVar!public!tests!tests add remove!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeItemDisabledForInstVars!public!tests!tests add remove!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_removeItemEnabled!public!tests!tests add remove!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_removeLastElementFromDictionary!public!tests!tests add remove!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_removeLastElementOfSet!public!tests add remove! !

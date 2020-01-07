@@ -183,9 +183,11 @@ inspectOop: oop
 	self updateCaption!
 
 isProtectedItemSelected
-	| index |
+	| index selection |
 	index := instVarListPresenter selectionByIndex.
-	^index = 1 or: [index = 2]	"self and -.asOop"!
+	index = 1 ifTrue: [^true].
+	selection := instVarListPresenter selectionIfNone: [^true].
+	^'-*' match: selection key!
 
 objectIsVariable
 	| answeringService |
@@ -240,6 +242,7 @@ removeObject
 	model instVarsAreRemovable ifFalse: [^self].
 	index := instVarListPresenter selectionByIndex.
 	model isDictionary ifTrue: [^self basicRemoveFromDictionary].
+	('-*' match: instVarListPresenter selection key) ifTrue: [^MessageBox notify: 'Cannot remove inst var'].	"inst var"
 	model isUnordered ifTrue: [^self basicRemoveOop: instVarListPresenter selection value].
 	index - model instVarNames size <= 0 ifTrue: [^self].
 	self basicRemoveObjectAt: index!
