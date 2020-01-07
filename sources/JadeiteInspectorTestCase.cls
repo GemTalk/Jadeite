@@ -117,6 +117,21 @@ test_addCharacterToString
 	inspector instVarListPresenter selectionByIndex: 1.
 	self assert: inspector documentPresenter value equals: '''-a<bcd'''!
 
+test_addObjectDontOverwriteExistingKey
+	| remoteObject |
+	remoteObject := session
+				executeString: 'Dictionary new at: $e put: #you; at: #a put: #me; yourself'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 1.
+	inspector basicAddKey: '$e'.
+	self assert: inspector instVarListPresenter selection key equals: '$e'.
+	self assert: inspector documentPresenter value equals: '#''you'''.
+	inspector basicAddKey: '#oogle'.
+	self assert: inspector instVarListPresenter selection key equals: '#''oogle'''.
+	self assert: inspector documentPresenter value equals: 'nil'!
+
 test_addObjectToArray
 	| remoteObject |
 	remoteObject := session
@@ -142,6 +157,50 @@ test_addObjectToArray
 	self assert: inspector documentPresenter value equals: '#''t'''.
 	inspector instVarListPresenter selectionByIndex: 1.
 	self assert: inspector documentPresenter value equals: 'anArray( $b, 1, 99, ''abc'', $a, #''t'')'!
+
+test_addObjectToArrayWithDynamic
+	| remoteObject |
+	remoteObject := session
+				executeString: '| array | 
+						array := Array with: 1 with: ''abc'' with: $a.
+						array dynamicInstVarAt: #foo put: ''bar''. 
+						array'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 1.
+	inspector basicAddObject: '$b'.
+	self assert: inspector instVarListPresenter selection key equals: '1'.
+	self assert: inspector documentPresenter value equals: '$b'.
+	inspector instVarListPresenter selectionByIndex: 1.
+	self assert: inspector documentPresenter value equals: 'anArray( $b, 1, ''abc'', $a)'.
+	inspector instVarListPresenter selectionByIndex: 4.
+	inspector basicAddObject: '99'.
+	self assert: inspector instVarListPresenter selection key equals: '3'.
+	self assert: inspector documentPresenter value equals: '99'.
+	inspector instVarListPresenter selectionByIndex: 1.
+	self assert: inspector documentPresenter value equals: 'anArray( $b, 1, 99, ''abc'', $a)'.
+	inspector instVarListPresenter selectionByIndex: 7.
+	inspector basicAddObject: '#t'.
+	self assert: inspector instVarListPresenter selection key equals: '6'.
+	self assert: inspector documentPresenter value equals: '#''t'''.
+	inspector instVarListPresenter selectionByIndex: 1.
+	self assert: inspector documentPresenter value equals: 'anArray( $b, 1, 99, ''abc'', $a, #''t'')'!
+
+test_addObjectToDictionary
+	| remoteObject |
+	remoteObject := session
+				executeString: 'Dictionary new at: $e put: #you; at: #a put: #me; yourself'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 1.
+	inspector basicAddKey: '''abc'''.
+	self assert: inspector instVarListPresenter selection key equals: '''abc'''.
+	self assert: inspector documentPresenter value equals: 'nil'.
+	inspector instVarListPresenter selectionByIndex: 1.
+	self assert: inspector documentPresenter value
+		equals: 'aDictionary( ''abc''->nil, $e->#''you'', #''a''->#''me'')'!
 
 test_addStringToString
 	"add a string to a string. Select self afterwards. "
@@ -518,7 +577,7 @@ test_dynamicInstVars
 	workspace setFocus.
 	inspector := workspace codePane jadeInspect.
 	inspector instVarListPresenter selectionByIndex: 3.
-	self assert: inspector instVarListPresenter selection key equals: 'foo'.
+	self assert: inspector instVarListPresenter selection key equals: '--foo'.
 	self assert: inspector documentPresenter model value equals: '''bar''']
 			ensure: 
 				[workspace isModified: false.
@@ -538,7 +597,7 @@ test_dynamicInstVarsInDictionary
 	workspace codePane selectAll. 
 	inspector := workspace codePane jadeInspect. 
 	inspector instVarListPresenter selectionByIndex: 8.
-	self assert: inspector instVarListPresenter selection key equals: 'foo'.
+	self assert: inspector instVarListPresenter selection key equals: '--foo'.
 	self assert: inspector documentPresenter model value equals: '''bar'''.
 	inspector instVarListPresenter selectionByIndex: 9.
 	self assert: inspector instVarListPresenter selection key equals: '#''key'''.
@@ -1153,6 +1212,28 @@ coll'
 	self assert: inspector documentPresenter value equals: '''entry2'''.
 	self assert: inspector statusText equals: 'Displaying 49 of 49 indexed inst vars'!
 
+test_removeIndexedInstVarWithDynamic
+	| remoteObject |
+	remoteObject := session
+				executeString: '| coll oop inspectorService |
+coll := Array new.
+coll dynamicInstVarAt: #foo put: ''bar''. 
+1 to: 50 do: [:i |
+coll add: ''entry'', i asString].
+oop := coll asOop.
+coll'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self halt. 
+	inspector instVarListPresenter selectionByIndex: 4.
+	self assert: inspector documentPresenter value equals: '''entry1'''.
+	self assert: inspector statusText equals: 'Displaying 50 of 50 indexed inst vars'.
+	inspector basicRemoveObjectAt: 5.
+	self assert: inspector instVarListPresenter selectionByIndex equals: 5.
+	self assert: inspector documentPresenter value equals: '''entry2'''.
+	self assert: inspector statusText equals: 'Displaying 49 of 49 indexed inst vars'!
+
 test_removeItemDisabledForInstVars
 	| remoteObject removeObjectItem query |
 	remoteObject := session
@@ -1320,7 +1401,10 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_abortTransactionInBasicInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_abortTransactionInNavigationInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_addCharacterToString!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_addObjectDontOverwriteExistingKey!public!tests add remove! !
 !JadeiteInspectorTestCase categoriesFor: #test_addObjectToArray!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_addObjectToArrayWithDynamic!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_addObjectToDictionary!public!tests add remove! !
 !JadeiteInspectorTestCase categoriesFor: #test_addStringToString!public!tests add remove! !
 !JadeiteInspectorTestCase categoriesFor: #test_adHocInspect!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_adHocInspectComplexObject!public!tests! !
@@ -1372,6 +1456,7 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_removeFromDictionary!public!tests!tests add remove!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_removeFromSymbolDictionary!public!tests!tests add remove!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_removeIndexedInstVar!public!tests!tests add remove!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeIndexedInstVarWithDynamic!public!tests!tests add remove!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_removeItemDisabledForInstVars!public!tests!tests add remove!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_removeItemEnabled!public!tests!tests add remove!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_removeLastElementFromDictionary!public!tests!tests add remove!tests menu bar! !

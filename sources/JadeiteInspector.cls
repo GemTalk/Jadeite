@@ -19,6 +19,7 @@ addObject
 				prompt: 'Entry will be compiled and added to the object'
 				caption: 'Add Object ...'.
 	string ifNil: [^self].
+	model isDictionary ifTrue: [^self basicAddKey: string].
 	self basicAddObject: string!
 
 addOop: oop
@@ -27,6 +28,22 @@ addOop: oop
 	oopsCollection resize: objectIndex + 1.
 	oopsCollection at: objectIndex + 1 put: oop.
 	objectIndex := objectIndex + 1!
+
+basicAddKey: string
+	| addedObject newSelectionIndex |
+	model
+		command: #addKey:;
+		commandArgs: (Array with: string).
+	self issueCommand: (Array with: model).
+	addedObject := model objects
+				detect: [:assoc | (assoc value isKindOf: Array) and: [assoc value first = model selectionOop]]
+				ifNone: [].
+	newSelectionIndex := model objects indexOf: addedObject.
+	newSelectionIndex = 0
+		ifTrue: 
+			[newSelectionIndex := 1	"might have inserted a string into another string so it won't find the object"]
+		ifFalse: [newSelectionIndex := newSelectionIndex + 2].
+	self displayObjectSelecting: newSelectionIndex!
 
 basicAddObject: string
 	| addedObject newSelectionIndex additionIndex |
@@ -56,7 +73,8 @@ basicRemoveObjectAt: index
 	| selection newSelectionIndex |
 	selection := instVarListPresenter selection.
 	self model removeIndexedInstVarAt: (self selectedindexedVarOffset: index) session: gciSession.
-	newSelectionIndex := index min: model indexedSize + model instVarNames size + 2.
+	newSelectionIndex := index
+				min: model indexedSize + model instVarNames size + self dynamicInstVars size + 2.
 	self displayObjectSelecting: newSelectionIndex.
 	oopsCollection remove: selection value ifAbsent: [^self].
 	objectIndex := objectIndex - 1!
@@ -118,6 +136,9 @@ displayObjectSelecting: selectionIndex
 						, (model isDictionary ifTrue: [' keys'] ifFalse: [' indexed inst vars'])]
 		ifFalse: [statusTextPresenter value: nil].
 	className := model className!
+
+dynamicInstVars
+	^instVarListPresenter list select: [:instVar | '--*' match: instVar]!
 
 evaluateSelectedTextIn: textPresenter thenInspectInContext: context
 	| service |
@@ -283,6 +304,7 @@ statusText
 	^statusTextPresenter value! !
 !JadeiteInspector categoriesFor: #addObject!menu handlers!operations!public! !
 !JadeiteInspector categoriesFor: #addOop:!public! !
+!JadeiteInspector categoriesFor: #basicAddKey:!menu handlers!operations!public! !
 !JadeiteInspector categoriesFor: #basicAddObject:!menu handlers!operations!public! !
 !JadeiteInspector categoriesFor: #basicRemoveFromDictionary!operations!private! !
 !JadeiteInspector categoriesFor: #basicRemoveObjectAt:!operations!private! !
@@ -291,6 +313,7 @@ statusText
 !JadeiteInspector categoriesFor: #displayAll!displaying!menu handlers!public! !
 !JadeiteInspector categoriesFor: #displayMore!displaying!menu handlers!public! !
 !JadeiteInspector categoriesFor: #displayObjectSelecting:!displaying!private! !
+!JadeiteInspector categoriesFor: #dynamicInstVars!accessing!public! !
 !JadeiteInspector categoriesFor: #evaluateSelectedTextIn:thenInspectInContext:!inspecting!public! !
 !JadeiteInspector categoriesFor: #evaluateSelectedTextIn:thenInspectInContext:debugger:!inspecting!public! !
 !JadeiteInspector categoriesFor: #expectedModelClass!private! !
