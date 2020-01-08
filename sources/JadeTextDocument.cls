@@ -26,6 +26,12 @@ addQuotesToSelection
 	self activeTextEdit replaceSelection: self activeTextEdit selection printString.
 !
 
+codePane
+	^codePane!
+
+codePane: anObject
+	codePane := anObject!
+
 codePresenterIsMethod
 
 	^false!
@@ -410,6 +416,8 @@ validateUserInterface
 !JadeTextDocument categoriesFor: #activeTextEdit!private! !
 !JadeTextDocument categoriesFor: #additionalAccelerators!accessing!public! !
 !JadeTextDocument categoriesFor: #addQuotesToSelection!menu handlers!private! !
+!JadeTextDocument categoriesFor: #codePane!accessing!private! !
+!JadeTextDocument categoriesFor: #codePane:!accessing!private! !
 !JadeTextDocument categoriesFor: #codePresenterIsMethod!private! !
 !JadeTextDocument categoriesFor: #codeSourcePresenterClass!private! !
 !JadeTextDocument categoriesFor: #commitTransaction!Jade!private! !

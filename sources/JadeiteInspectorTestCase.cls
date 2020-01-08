@@ -607,6 +607,27 @@ test_dynamicInstVarsInDictionary
 				[workspace isModified: false.
 				workspace view close]!
 
+test_fileSaveEnabled
+	| remoteObject toolbarButton query |
+	self testsIssue: #issue104 withTitle: 'Inspector: be nice to be able to apply changes to the object'.
+	remoteObject := session
+				executeString: 'Array with: #a'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	toolbarButton := inspector codePane view subViews first items
+				detect: [:item | item isDivider not and: [item command = #fileSave]].
+	query := CommandQuery commandDescription: toolbarButton commandDescription source: inspector view.
+	inspector instVarListPresenter selectionByIndex: 1.
+	inspector queryCommand: query.
+	self deny: query isEnabled.
+	inspector instVarListPresenter selectionByIndex: 2.
+	inspector queryCommand: query.
+	self deny: query isEnabled.
+	inspector instVarListPresenter selectionByIndex: 3.
+	inspector queryCommand: query.
+	self assert: query isEnabled!
+
 test_forwardBack
 	| remoteObject backQuery forwardQuery ocIndex |
 	self testsIssue: #issue153 withTitle: 'Inspector Back goes too far'.
@@ -989,6 +1010,45 @@ test_modifyArrayElement
 	self assert: inspector documentPresenter value equals: '''abc'''.
 	inspector instVarListPresenter selectionByIndex: 3.
 	self assert: inspector documentPresenter value equals: '2'!
+
+test_modifyDictionaryValue
+	| remoteObject |
+	self testsIssue: #issue104 withTitle: 'Inspector: be nice to be able to apply changes to the object'.
+	remoteObject := session
+				executeString: 'Dictionary new at: #foo put: #bar; yourself'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 8.	"select key #foo"
+	self assert: inspector documentPresenter value equals: '#''bar'''.
+	inspector documentPresenter value: '#''blah'''.
+	inspector saveDocument.
+	self assert: inspector documentPresenter value equals: '#''blah'''.
+	self assert: inspector instVarListPresenter selectionByIndex equals: 8.
+	inspector instVarListPresenter selectionByIndex: 7.
+	inspector instVarListPresenter selectionByIndex: 8.
+	self assert: inspector documentPresenter value equals: '#''blah'''!
+
+test_modifyDynamicInstVar
+	| remoteObject |
+	self testsIssue: #issue104 withTitle: 'Inspector: be nice to be able to apply changes to the object'.
+	remoteObject := session
+				executeString: 'Array new dynamicInstVarAt: #foo put: ''bar''; yourself'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 3.	"select dynamic inst var #foo"
+	self assert: inspector documentPresenter value equals: '''bar'''.
+	inspector documentPresenter value: '''ooo'''.
+	inspector saveDocument.
+	self assert: inspector documentPresenter value equals: '''ooo'''.
+	inspector instVarListPresenter selectionByIndex: 2.
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector documentPresenter value equals: '''ooo'''.
+	self assert: (session
+				executeString: '(self dynamicInstVarAt: #foo) = ''ooo'''
+				fromContext: remoteObject
+				environment: 0)!
 
 test_modifyNamedInstVar
 	| remoteObject |
@@ -1511,6 +1571,7 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_diveIntoDoubleByteString!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_dynamicInstVars!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_dynamicInstVarsInDictionary!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_fileSaveEnabled!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_fullInspectArray!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_inspectAsOopField!public!tests! !
@@ -1529,6 +1590,8 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_menuBarItemNames!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_menuItemsEnabled!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_modifyArrayElement!public!tests modify object! !
+!JadeiteInspectorTestCase categoriesFor: #test_modifyDictionaryValue!public!tests modify object! !
+!JadeiteInspectorTestCase categoriesFor: #test_modifyDynamicInstVar!public!tests modify object! !
 !JadeiteInspectorTestCase categoriesFor: #test_modifyNamedInstVar!public!tests modify object! !
 !JadeiteInspectorTestCase categoriesFor: #test_modifyOrderedCollectionElement!public!tests modify object! !
 !JadeiteInspectorTestCase categoriesFor: #test_navigationInspectorDisplayedSizeLimit!public!tests!tests menu bar! !
