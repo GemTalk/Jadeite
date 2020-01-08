@@ -990,6 +990,41 @@ test_modifyArrayElement
 	inspector instVarListPresenter selectionByIndex: 3.
 	self assert: inspector documentPresenter value equals: '2'!
 
+test_modifyNamedInstVar
+	| remoteObject |
+	self testsIssue: #issue104 withTitle: 'Inspector: be nice to be able to apply changes to the object'.
+	remoteObject := session
+				executeString: 'Interval from: 1 to: 10'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 5.	"select 'by' inst var"
+	self assert: inspector documentPresenter value equals: '1'.
+	inspector documentPresenter value: '2'.
+	inspector saveDocument.
+	self assert: inspector documentPresenter value equals: '2'.
+	inspector instVarListPresenter selectionByIndex: 4.  "select 'to' inst var" 
+	self assert: inspector documentPresenter value equals: '10'.
+	inspector instVarListPresenter selectionByIndex: 5.
+	self assert: inspector documentPresenter value equals: '2'!
+
+test_modifyOrderedCollectionElement
+	| remoteObject |
+	self testsIssue: #issue104 withTitle: 'Inspector: be nice to be able to apply changes to the object'.
+	remoteObject := session
+				executeString: 'OrderedCollection with: 1 with: ''abc'' with: $a'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 3.	"select the 1st indexed element"
+	inspector documentPresenter value: '2'.
+	inspector saveDocument.
+	self assert: inspector documentPresenter value equals: '2'.
+	inspector instVarListPresenter selectionByIndex: 4.
+	self assert: inspector documentPresenter value equals: '''abc'''.
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector documentPresenter value equals: '2'!
+
 test_navigationInspectorDisplayedSizeLimit
 	"CharacterCollection>>printStringWithMaxSize: truncates at 100,000 characters
 	including quotes. Hence, we allow for that in the building of the string. "
@@ -1349,6 +1384,42 @@ test_removeLastIndexedInstVar
 	self assert: inspector documentPresenter value equals: '$b'.
 	self assert: inspector statusText equals: 'Displaying 2 of 2 indexed inst vars'!
 
+test_replaceSetElement
+	| remoteObject |
+	self testsIssue: #issue104 withTitle: 'Inspector: be nice to be able to apply changes to the object'.
+	remoteObject := session
+				executeString: 'Set with: 1 with: ''abc'' with: $a'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 8.	"select the 1st indexed element"
+	inspector documentPresenter value: '$z'.
+	inspector saveDocument.
+	self assert: inspector documentPresenter value equals: '$z'.	"element didn't move in sorted list"
+	inspector instVarListPresenter selectionByIndex: 9.
+	self assert: inspector documentPresenter value equals: '''abc'''.
+	inspector instVarListPresenter selectionByIndex: 8.
+	self assert: inspector documentPresenter value equals: '$z'!
+
+test_replaceSetElementWhichMovesAfterSave
+	"ctrl-s will replace an element in a set" 
+	| remoteObject |
+	self testsIssue: #issue104 withTitle: 'Inspector: be nice to be able to apply changes to the object'.
+	remoteObject := session
+				executeString: 'Set with: 1 with: ''abc'' with: $a'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 8.	"select the variable element" 
+	inspector documentPresenter value: '26'.
+	inspector saveDocument.
+	self assert: inspector documentPresenter value equals: '26'. 
+	self assert: inspector instVarListPresenter selectionByIndex equals: 10.
+	inspector instVarListPresenter selectionByIndex: 8.	"abc is now first in sorted list" 
+	self assert: inspector documentPresenter value equals: '''abc'''.
+	inspector instVarListPresenter selectionByIndex: 10.
+	self assert: inspector documentPresenter value equals: '26'!
+
 test_showReturnsNavigationInspector
 	| remoteObject |
 	self testsIssue: #issue398 withTitle: 'String Inspectors don''t display lfs'.
@@ -1458,6 +1529,8 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_menuBarItemNames!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_menuItemsEnabled!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_modifyArrayElement!public!tests modify object! !
+!JadeiteInspectorTestCase categoriesFor: #test_modifyNamedInstVar!public!tests modify object! !
+!JadeiteInspectorTestCase categoriesFor: #test_modifyOrderedCollectionElement!public!tests modify object! !
 !JadeiteInspectorTestCase categoriesFor: #test_navigationInspectorDisplayedSizeLimit!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowser!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowserOnClass!public!tests! !
@@ -1479,6 +1552,8 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_removeLastElementFromDictionary!public!tests!tests add remove!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_removeLastElementOfSet!public!tests add remove! !
 !JadeiteInspectorTestCase categoriesFor: #test_removeLastIndexedInstVar!public!tests!tests add remove!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_replaceSetElement!public!tests modify object! !
+!JadeiteInspectorTestCase categoriesFor: #test_replaceSetElementWhichMovesAfterSave!public!tests modify object! !
 !JadeiteInspectorTestCase categoriesFor: #test_showReturnsNavigationInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_showReturnsStringInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_unicodeInspect1!public!tests! !

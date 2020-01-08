@@ -209,12 +209,21 @@ inspectOop: oop
 instVarListIndexFromIndexedOffset: index
 	^index + model instVarNames size + self dynamicInstVars size + 2	"2 = self + asOop"!
 
+isAsOopSelected
+	^instVarListPresenter selection key = '-.asOop'!
+
+isNamedInstVarSelected
+	^model instVarNames includes: self selectedNamedInstVar!
+
 isProtectedItemSelected
 	| index selection |
 	index := instVarListPresenter selectionByIndex.
 	index = 1 ifTrue: [^true].
 	selection := instVarListPresenter selectionIfNone: [^true].
 	^'-*' match: selection key!
+
+isSelfSelected
+	^instVarListPresenter selection key = 'self'!
 
 objectIsVariable
 	| answeringService |
@@ -275,6 +284,13 @@ removeObject
 	self basicRemoveObjectAt: index!
 
 saveDocument
+	(self isSelfSelected or: [self isAsOopSelected])
+		ifTrue: [^MessageBox notify: 'Cannot modify Self or the oop'].
+	self isNamedInstVarSelected ifTrue: [^self saveNamedInstVar].
+	model isUnordered ifTrue: [^self saveUnorderedElement].
+	self saveIndexedElement!
+
+saveIndexedElement
 	| index |
 	index := self indexedOffsetFromInstVarList: instVarListPresenter selectionByIndex.
 	model
@@ -282,6 +298,27 @@ saveDocument
 		commandArgs: (Array with: documentPresenter value with: index).
 	self issueCommand: (Array with: model).
 	self displayObjectSelecting: (self instVarListIndexFromIndexedOffset: index)!
+
+saveNamedInstVar
+	| index instVarName |
+	instVarName := self selectedNamedInstVar. 
+	model
+		command: #save:namedInstVar:;
+		commandArgs: (Array with: documentPresenter value with: instVarName).
+	self issueCommand: (Array with: model).
+	index := model instVarNames indexOf: instVarName.
+	self displayObjectSelecting: index + 2!
+
+saveUnorderedElement
+	| oop addedObject newSelectionIndex |
+	oop := instVarListPresenter selection value.
+	model
+		command: #replaceElement:with:;
+		commandArgs: (Array with: oop with: documentPresenter value).
+	self issueCommand: (Array with: model).
+	addedObject := model objects detect: [:assoc | assoc value = model selectionOop] ifNone: [].
+	newSelectionIndex := model objects indexOf: addedObject.
+	self displayObjectSelecting: newSelectionIndex + 2!
 
 selectedInstVar
 	| string |
@@ -299,6 +336,11 @@ selectedInstVar
 							ex return: 'an invalid or hidden object (perhaps a LargeObjectNode)'].
 					ex pass].
 	documentPresenter value: string!
+
+selectedNamedInstVar
+	"if a named inst var is selected, return it's name as a symbol"
+
+	^(instVarListPresenter selection key copyWithout: $-) asSymbol!
 
 setNewInspectedObject
 	| oop |
@@ -336,14 +378,21 @@ statusText
 !JadeiteInspector categoriesFor: #inspectInstVar!inspecting!public! !
 !JadeiteInspector categoriesFor: #inspectOop:!inspecting!public! !
 !JadeiteInspector categoriesFor: #instVarListIndexFromIndexedOffset:!operations!private! !
-!JadeiteInspector categoriesFor: #isProtectedItemSelected!public!testing! !
-!JadeiteInspector categoriesFor: #objectIsVariable!public!testing! !
+!JadeiteInspector categoriesFor: #isAsOopSelected!private!testing! !
+!JadeiteInspector categoriesFor: #isNamedInstVarSelected!private!testing! !
+!JadeiteInspector categoriesFor: #isProtectedItemSelected!private!testing! !
+!JadeiteInspector categoriesFor: #isSelfSelected!private!testing! !
+!JadeiteInspector categoriesFor: #objectIsVariable!private!testing! !
 !JadeiteInspector categoriesFor: #printInstVar!displaying!public! !
 !JadeiteInspector categoriesFor: #queryCommand:!menu handlers!private! !
 !JadeiteInspector categoriesFor: #registerWindow:rootObject:!private! !
 !JadeiteInspector categoriesFor: #removeObject!menu handlers!operations!public! !
 !JadeiteInspector categoriesFor: #saveDocument!menu handlers!public! !
+!JadeiteInspector categoriesFor: #saveIndexedElement!menu handlers support!private! !
+!JadeiteInspector categoriesFor: #saveNamedInstVar!menu handlers support!private! !
+!JadeiteInspector categoriesFor: #saveUnorderedElement!menu handlers support!private! !
 !JadeiteInspector categoriesFor: #selectedInstVar!accessing!private! !
+!JadeiteInspector categoriesFor: #selectedNamedInstVar!private! !
 !JadeiteInspector categoriesFor: #setNewInspectedObject!public! !
 !JadeiteInspector categoriesFor: #showOn:!displaying!public! !
 !JadeiteInspector categoriesFor: #statusText!accessing!public! !
