@@ -10,6 +10,9 @@ JadeiteInspector comment: ''!
 !JadeiteInspector categoriesForClass!Unclassified! !
 !JadeiteInspector methodsFor!
 
+additionalAccelerators
+	^#(#(#saveDocument 'Ctrl+S'))!
+
 addObject
 	| string |
 	"might have inserted a string into another string so it won't find the object"
@@ -30,7 +33,8 @@ addOop: oop
 	objectIndex := objectIndex + 1!
 
 basicAddKey: string
-	| addedObject newSelectionIndex |
+	| addedObject |
+	"might have inserted a string into another string so it won't find the object"
 	model
 		command: #addKey:;
 		commandArgs: (Array with: string).
@@ -38,27 +42,17 @@ basicAddKey: string
 	addedObject := model objects
 				detect: [:assoc | (assoc value isKindOf: Array) and: [assoc value first = model selectionOop]]
 				ifNone: [].
-	newSelectionIndex := model objects indexOf: addedObject.
-	newSelectionIndex = 0
-		ifTrue: 
-			[newSelectionIndex := 1	"might have inserted a string into another string so it won't find the object"]
-		ifFalse: [newSelectionIndex := newSelectionIndex + 2].
-	self displayObjectSelecting: newSelectionIndex!
+	self redisplayFindingNewObject: addedObject!
 
 basicAddObject: string
-	| addedObject newSelectionIndex additionIndex |
-	additionIndex := self selectedindexedVarOffset: instVarListPresenter selectionByIndex.
+	| addedObject additionIndex |
+	additionIndex := self indexedOffsetFromInstVarList: instVarListPresenter selectionByIndex.
 	model
 		command: #addObject:after:;
 		commandArgs: (Array with: string with: additionIndex).
 	self issueCommand: (Array with: model).
 	addedObject := model objects detect: [:assoc | assoc value = model selectionOop] ifNone: [].
-	newSelectionIndex := model objects indexOf: addedObject.
-	newSelectionIndex = 0
-		ifTrue: 
-			[newSelectionIndex := 1	"might have inserted a string into another string so it won't find the object"]
-		ifFalse: [newSelectionIndex := newSelectionIndex + 2].
-	self displayObjectSelecting: newSelectionIndex!
+	self redisplayFindingNewObject: addedObject!
 
 basicRemoveFromDictionary
 	| selection newSelectionIndex |
@@ -72,7 +66,7 @@ basicRemoveFromDictionary
 basicRemoveObjectAt: index
 	| selection newSelectionIndex |
 	selection := instVarListPresenter selection.
-	self model removeIndexedInstVarAt: (self selectedindexedVarOffset: index) session: gciSession.
+	self model removeIndexedInstVarAt: (self indexedOffsetFromInstVarList: index) session: gciSession.
 	newSelectionIndex := index
 				min: model indexedSize + model instVarNames size + self dynamicInstVars size + 2.
 	self displayObjectSelecting: newSelectionIndex.
@@ -138,7 +132,7 @@ displayObjectSelecting: selectionIndex
 	className := model className!
 
 dynamicInstVars
-	^instVarListPresenter list select: [:instVar | '--*' match: instVar]!
+	^instVarListPresenter list select: [:instVar | '--*' match: instVar key]!
 
 evaluateSelectedTextIn: textPresenter thenInspectInContext: context
 	| service |
@@ -172,6 +166,9 @@ evaluateSelectedTextIn: textPresenter thenInspectInContext: context debugger: de
 expectedModelClass
 	^RowanInspectorService!
 
+indexedOffsetFromInstVarList: index
+	^index - model instVarNames size - self dynamicInstVars size - 2 max: 0	"2 = self + asOop"!
+
 initialize
 	super initialize. 
 	statusTextPresenter value: nil!
@@ -202,6 +199,9 @@ inspectOop: oop
 	self setDocumentPresenterLabel.
 	self displayObjectSelecting: nil.
 	self updateCaption!
+
+instVarListIndexFromIndexedOffset: index
+	^index + model instVarNames size + self dynamicInstVars size + 2 min: instVarListPresenter list size	"2 = self + asOop"!
 
 isProtectedItemSelected
 	| index selection |
@@ -251,6 +251,14 @@ queryCommand: query
 					^true]].
 	^super queryCommand: query!
 
+redisplayFindingNewObject: addedObject
+	| newSelectionIndex |
+	newSelectionIndex := model objects indexOf: addedObject.
+	newSelectionIndex := newSelectionIndex = 0
+				ifTrue: [1	"might have inserted a string into another string so it won't find the object"]
+				ifFalse: [self instVarListIndexFromIndexedOffset: newSelectionIndex].
+	self displayObjectSelecting: newSelectionIndex!
+
 registerWindow: handle rootObject: oop
 	^RowanBrowserService new
 		registerWindow: handle value
@@ -268,8 +276,14 @@ removeObject
 	index - model instVarNames size <= 0 ifTrue: [^self].
 	self basicRemoveObjectAt: index!
 
-selectedindexedVarOffset: index
-	^index - model instVarNames size - 2 max: 0	"self + asOop"!
+saveDocument
+	| index |
+	index := self indexedOffsetFromInstVarList: instVarListPresenter selectionByIndex.
+	model
+		command: #save:indexedVarAt:;
+		commandArgs: (Array with: documentPresenter value with: index).
+	self issueCommand: (Array with: model).
+	self displayObjectSelecting: (self instVarListIndexFromIndexedOffset: index)!
 
 selectedInstVar
 	| string |
@@ -302,10 +316,11 @@ showOn: service
 
 statusText
 	^statusTextPresenter value! !
+!JadeiteInspector categoriesFor: #additionalAccelerators!constants!public! !
 !JadeiteInspector categoriesFor: #addObject!menu handlers!operations!public! !
 !JadeiteInspector categoriesFor: #addOop:!public! !
-!JadeiteInspector categoriesFor: #basicAddKey:!menu handlers!operations!public! !
-!JadeiteInspector categoriesFor: #basicAddObject:!menu handlers!operations!public! !
+!JadeiteInspector categoriesFor: #basicAddKey:!menu handlers!operations!private! !
+!JadeiteInspector categoriesFor: #basicAddObject:!menu handlers!operations!private! !
 !JadeiteInspector categoriesFor: #basicRemoveFromDictionary!operations!private! !
 !JadeiteInspector categoriesFor: #basicRemoveObjectAt:!operations!private! !
 !JadeiteInspector categoriesFor: #basicRemoveOop:!operations!private! !
@@ -317,17 +332,20 @@ statusText
 !JadeiteInspector categoriesFor: #evaluateSelectedTextIn:thenInspectInContext:!inspecting!public! !
 !JadeiteInspector categoriesFor: #evaluateSelectedTextIn:thenInspectInContext:debugger:!inspecting!public! !
 !JadeiteInspector categoriesFor: #expectedModelClass!private! !
+!JadeiteInspector categoriesFor: #indexedOffsetFromInstVarList:!operations!private! !
 !JadeiteInspector categoriesFor: #initialize!initialize!public! !
 !JadeiteInspector categoriesFor: #inspect:inContext:!inspecting!public! !
 !JadeiteInspector categoriesFor: #inspectInstVar!inspecting!public! !
 !JadeiteInspector categoriesFor: #inspectOop:!inspecting!public! !
+!JadeiteInspector categoriesFor: #instVarListIndexFromIndexedOffset:!operations!private! !
 !JadeiteInspector categoriesFor: #isProtectedItemSelected!public!testing! !
 !JadeiteInspector categoriesFor: #objectIsVariable!public!testing! !
 !JadeiteInspector categoriesFor: #printInstVar!displaying!public! !
 !JadeiteInspector categoriesFor: #queryCommand:!menu handlers!private! !
+!JadeiteInspector categoriesFor: #redisplayFindingNewObject:!menu handlers!operations!private! !
 !JadeiteInspector categoriesFor: #registerWindow:rootObject:!private! !
 !JadeiteInspector categoriesFor: #removeObject!menu handlers!operations!public! !
-!JadeiteInspector categoriesFor: #selectedindexedVarOffset:!operations!private! !
+!JadeiteInspector categoriesFor: #saveDocument!menu handlers!public! !
 !JadeiteInspector categoriesFor: #selectedInstVar!accessing!private! !
 !JadeiteInspector categoriesFor: #setNewInspectedObject!public! !
 !JadeiteInspector categoriesFor: #showOn:!displaying!public! !
