@@ -973,6 +973,23 @@ test_menuItemsEnabled
 							["*do doesn't require a selection for enablement"
 							self assert: query isEnabled]]]!
 
+test_modifyArrayElement
+	| remoteObject |
+	self testsIssue: #issue104 withTitle: 'Inspector: be nice to be able to apply changes to the object'.
+	remoteObject := session
+				executeString: 'Array with: 1 with: ''abc'' with: $a'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 3.	"select the 1st indexed element"
+	inspector documentPresenter value: '2'.
+	inspector saveDocument.
+	self assert: inspector documentPresenter value equals: '2'.
+	inspector instVarListPresenter selectionByIndex: 4.
+	self assert: inspector documentPresenter value equals: '''abc'''.
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector documentPresenter value equals: '2'!
+
 test_navigationInspectorDisplayedSizeLimit
 	"CharacterCollection>>printStringWithMaxSize: truncates at 100,000 characters
 	including quotes. Hence, we allow for that in the building of the string. "
@@ -1440,6 +1457,7 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_interactionInspect!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_menuBarItemNames!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_menuItemsEnabled!public!tests!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_modifyArrayElement!public!tests modify object! !
 !JadeiteInspectorTestCase categoriesFor: #test_navigationInspectorDisplayedSizeLimit!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowser!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowserOnClass!public!tests! !

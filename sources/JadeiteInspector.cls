@@ -33,7 +33,7 @@ addOop: oop
 	objectIndex := objectIndex + 1!
 
 basicAddKey: string
-	| addedObject |
+	| addedObject newSelectionIndex |
 	"might have inserted a string into another string so it won't find the object"
 	model
 		command: #addKey:;
@@ -42,17 +42,23 @@ basicAddKey: string
 	addedObject := model objects
 				detect: [:assoc | (assoc value isKindOf: Array) and: [assoc value first = model selectionOop]]
 				ifNone: [].
-	self redisplayFindingNewObject: addedObject!
+	newSelectionIndex := model objects indexOf: addedObject.
+	newSelectionIndex := newSelectionIndex + 2. "inst vars & dynamic inst vars already included in objects" 
+	self displayObjectSelecting: newSelectionIndex!
 
 basicAddObject: string
-	| addedObject additionIndex |
+	| addedObject additionIndex newSelectionIndex |
 	additionIndex := self indexedOffsetFromInstVarList: instVarListPresenter selectionByIndex.
 	model
 		command: #addObject:after:;
 		commandArgs: (Array with: string with: additionIndex).
 	self issueCommand: (Array with: model).
 	addedObject := model objects detect: [:assoc | assoc value = model selectionOop] ifNone: [].
-	self redisplayFindingNewObject: addedObject!
+	newSelectionIndex := model objects indexOf: addedObject.
+	newSelectionIndex := newSelectionIndex = 0
+				ifTrue: [1	"might have inserted a string into another string so it won't find the object"]
+				ifFalse: [newSelectionIndex + 2].
+	self displayObjectSelecting: newSelectionIndex!
 
 basicRemoveFromDictionary
 	| selection newSelectionIndex |
@@ -201,7 +207,7 @@ inspectOop: oop
 	self updateCaption!
 
 instVarListIndexFromIndexedOffset: index
-	^index + model instVarNames size + self dynamicInstVars size + 2 min: instVarListPresenter list size	"2 = self + asOop"!
+	^index + model instVarNames size + self dynamicInstVars size + 2	"2 = self + asOop"!
 
 isProtectedItemSelected
 	| index selection |
@@ -250,14 +256,6 @@ queryCommand: query
 					[query isEnabled: false.
 					^true]].
 	^super queryCommand: query!
-
-redisplayFindingNewObject: addedObject
-	| newSelectionIndex |
-	newSelectionIndex := model objects indexOf: addedObject.
-	newSelectionIndex := newSelectionIndex = 0
-				ifTrue: [1	"might have inserted a string into another string so it won't find the object"]
-				ifFalse: [self instVarListIndexFromIndexedOffset: newSelectionIndex].
-	self displayObjectSelecting: newSelectionIndex!
 
 registerWindow: handle rootObject: oop
 	^RowanBrowserService new
@@ -342,7 +340,6 @@ statusText
 !JadeiteInspector categoriesFor: #objectIsVariable!public!testing! !
 !JadeiteInspector categoriesFor: #printInstVar!displaying!public! !
 !JadeiteInspector categoriesFor: #queryCommand:!menu handlers!private! !
-!JadeiteInspector categoriesFor: #redisplayFindingNewObject:!menu handlers!operations!private! !
 !JadeiteInspector categoriesFor: #registerWindow:rootObject:!private! !
 !JadeiteInspector categoriesFor: #removeObject!menu handlers!operations!public! !
 !JadeiteInspector categoriesFor: #saveDocument!menu handlers!public! !
