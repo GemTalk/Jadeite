@@ -418,7 +418,7 @@ showOn: service
 
 statusText
 	^statusTextPresenter value! !
-!JadeiteInspector categoriesFor: #aboutToChange:!event handlers!public! !
+!JadeiteInspector categoriesFor: #aboutToChange:!event handlers!private! !
 !JadeiteInspector categoriesFor: #additionalAccelerators!constants!public! !
 !JadeiteInspector categoriesFor: #addObject!menu handlers!operations!public! !
 !JadeiteInspector categoriesFor: #addOop:!public! !
@@ -450,7 +450,7 @@ statusText
 !JadeiteInspector categoriesFor: #isProtectedItemSelected!private!testing! !
 !JadeiteInspector categoriesFor: #isSelfSelected!private!testing! !
 !JadeiteInspector categoriesFor: #objectIsVariable!private!testing! !
-!JadeiteInspector categoriesFor: #printInstVar!displaying!public! !
+!JadeiteInspector categoriesFor: #printInstVar!displaying!private! !
 !JadeiteInspector categoriesFor: #queryCommand:!menu handlers support!private! !
 !JadeiteInspector categoriesFor: #registerWindow:rootObject:!private! !
 !JadeiteInspector categoriesFor: #removeObject!menu handlers!operations!public! !
@@ -461,7 +461,7 @@ statusText
 !JadeiteInspector categoriesFor: #saveNamedInstVar!menu handlers support!private! !
 !JadeiteInspector categoriesFor: #saveUnorderedElement!menu handlers support!private! !
 !JadeiteInspector categoriesFor: #selectedDynamicInstVar!private! !
-!JadeiteInspector categoriesFor: #selectedInstVar!accessing!private! !
+!JadeiteInspector categoriesFor: #selectedInstVar!accessing!event handlers!private! !
 !JadeiteInspector categoriesFor: #selectedNamedInstVar!private! !
 !JadeiteInspector categoriesFor: #setNewInspectedObject!public! !
 !JadeiteInspector categoriesFor: #shouldEnableFileSave:!menu handlers support!private!testing! !

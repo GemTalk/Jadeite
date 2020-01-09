@@ -950,31 +950,28 @@ test_menuBarItemNames
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	
-	[self assert: inspector view menuBar items size equals: 3.
-	self assert: (inspector view menuBar items at: 1) text equals: '&File'.
-	(inspector view menuBar items at: 1) items last text equals: 'E&xit Jadeite	Alt+F4'.
-	self assert: (inspector view menuBar items at: 2) text equals: '&Edit'.
-	self assert: (inspector view menuBar items at: 3) text equals: '&Jadeite']
+	[self assert: inspector view menuBar items size equals: 2.
+	self assert: (inspector view menuBar items at: 1) text equals: '&Edit'.
+	self assert: (inspector view menuBar items at: 2) text equals: '&Jadeite']
 			ensure: [inspector view close].
 	remoteObject := session
 				executeString: 'Array new'
 				fromContext: nil
 				environment: 0.	"navigation inspector"
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self assert: inspector view menuBar items size equals: 3.
-	self assert: (inspector view menuBar items at: 1) text equals: '&File'.
-	(inspector view menuBar items at: 1) items last text equals: 'E&xit Jadeite	Alt+F4'.
-	self assert: (inspector view menuBar items at: 2) text equals: '&Edit'.
-	self assert: (inspector view menuBar items at: 3) text equals: '&Jadeite'!
+	self assert: inspector view menuBar items size equals: 2.
+	self assert: (inspector view menuBar items at: 1) text equals: '&Edit'.
+	self assert: (inspector view menuBar items at: 2) text equals: '&Jadeite'!
 
 test_menuItemsEnabled
 	| remoteObject |
 	self testsIssue: #issue212 withTitle: '`Copy` menu item grayed out in inspector when text selected'.
 	remoteObject := session
-				executeString: 'Array new'
+				executeString: 'Array with: 1'
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 3. "menu items disabled if 'self' or 'asOop' selected"
 	inspector documentPresenter view contextMenu itemsDo: 
 			[:item |
 			| query |
