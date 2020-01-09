@@ -446,10 +446,10 @@ coll
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self assert: inspector statusText equals: 'Displaying 1000 of 20000 indexed inst vars'.
+	self assert: inspector statusText equals: 'Displaying 1000 of 20000 variable inst vars'.
 	self assert: inspector instVarListPresenter list size equals: 1002.
 	inspector displayAll.
-	self assert: inspector statusText equals: 'Displaying 20000 of 20000 indexed inst vars'.
+	self assert: inspector statusText equals: 'Displaying 20000 of 20000 variable inst vars'.
 	self assert: inspector instVarListPresenter list size equals: 20002!
 
 test_displayAllMenuEnablement
@@ -495,10 +495,10 @@ coll
 			| thousand |
 			thousand := index * 1000.
 			self assert: inspector statusText
-				equals: 'Displaying ' , thousand printString , ' of 20000 indexed inst vars'.
+				equals: 'Displaying ' , thousand printString , ' of 20000 variable inst vars'.
 			self assert: inspector instVarListPresenter list size equals: thousand + 2.
 			inspector displayMore].
-	self assert: inspector statusText equals: 'Displaying 20000 of 20000 indexed inst vars'.
+	self assert: inspector statusText equals: 'Displaying 20000 of 20000 variable inst vars'.
 	self assert: inspector instVarListPresenter list size equals: 20002!
 
 test_displayMoreMenuEnablement
@@ -1315,11 +1315,11 @@ coll'
 	inspector := JadeInspector showOn: remoteObject session: session.
 	inspector instVarListPresenter selectionByIndex: 3.
 	self assert: inspector documentPresenter value equals: '''entry1'''.
-	self assert: inspector statusText equals: 'Displaying 50 of 50 indexed inst vars'.
+	self assert: inspector statusText equals: 'Displaying 50 of 50 variable inst vars'.
 	inspector basicRemoveObjectAt: 3.
 	self assert: inspector instVarListPresenter selectionByIndex equals: 3.
 	self assert: inspector documentPresenter value equals: '''entry2'''.
-	self assert: inspector statusText equals: 'Displaying 49 of 49 indexed inst vars'!
+	self assert: inspector statusText equals: 'Displaying 49 of 49 variable inst vars'!
 
 test_removeIndexedInstVarWithDynamic
 	| remoteObject |
@@ -1336,11 +1336,11 @@ coll'
 	inspector := JadeInspector showOn: remoteObject session: session.
 	inspector instVarListPresenter selectionByIndex: 4.
 	self assert: inspector documentPresenter value equals: '''entry1'''.
-	self assert: inspector statusText equals: 'Displaying 50 of 50 indexed inst vars'.
+	self assert: inspector statusText equals: 'Displaying 50 of 50 variable inst vars'.
 	inspector basicRemoveObjectAt: 5.
 	self assert: inspector instVarListPresenter selectionByIndex equals: 5.
 	self assert: inspector documentPresenter value equals: '''entry3'''.
-	self assert: inspector statusText equals: 'Displaying 49 of 49 indexed inst vars'!
+	self assert: inspector statusText equals: 'Displaying 49 of 49 variable inst vars'!
 
 test_removeItemDisabledForInstVars
 	| remoteObject removeObjectItem query |
@@ -1435,11 +1435,11 @@ test_removeLastIndexedInstVar
 	inspector := JadeInspector showOn: remoteObject session: session.
 	inspector instVarListPresenter selectionByIndex: 5.
 	self assert: inspector documentPresenter value equals: '$c'.
-	self assert: inspector statusText equals: 'Displaying 3 of 3 indexed inst vars'.
+	self assert: inspector statusText equals: 'Displaying 3 of 3 variable inst vars'.
 	inspector basicRemoveObjectAt: 5.
 	self assert: inspector instVarListPresenter selectionByIndex equals: 4.
 	self assert: inspector documentPresenter value equals: '$b'.
-	self assert: inspector statusText equals: 'Displaying 2 of 2 indexed inst vars'!
+	self assert: inspector statusText equals: 'Displaying 2 of 2 variable inst vars'!
 
 test_replaceSetElement
 	| remoteObject |
