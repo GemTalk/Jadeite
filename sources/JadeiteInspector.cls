@@ -54,7 +54,7 @@ basicAddKey: string
 
 basicAddObject: string
 	| addedObject additionIndex newSelectionIndex |
-	additionIndex := self indexedOffsetFromInstVarList: instVarListPresenter selectionByIndex.
+	additionIndex := (self indexedOffsetFromInstVarList: instVarListPresenter selectionByIndex) first.
 	model
 		command: #addObject:after:;
 		commandArgs: (Array with: string with: additionIndex).
@@ -69,10 +69,10 @@ basicAddObject: string
 basicRemoveFromDictionary
 	| selection newSelectionIndex |
 	selection := instVarListPresenter selection.
-	self model removeKey: (selection value at: 1) session: gciSession.
-	newSelectionIndex := instVarListPresenter selectionByIndex min: model objects size + 2.
+	self model removeKey: (selection first value at: 1) session: gciSession.
+	newSelectionIndex := instVarListPresenter selectionByIndex first min: model objects size + 2.
 	self displayObjectSelecting: newSelectionIndex.
-	oopsCollection remove: selection value ifAbsent: [^self].
+	oopsCollection remove: selection first value ifAbsent: [^self].
 	objectIndex := objectIndex - 1!
 
 basicRemoveObjectsAt: indices
@@ -93,9 +93,9 @@ basicRemoveOop: oop
 	| selection selectionIndex |
 	selection := instVarListPresenter selection.
 	self model removeOop: oop session: gciSession.
-	selectionIndex := instVarListPresenter selectionByIndex min: model objects size + 2.
+	selectionIndex := instVarListPresenter selectionByIndex first min: model objects size + 2.
 	self displayObjectSelecting: selectionIndex.
-	oopsCollection remove: selection value ifAbsent: [^self].
+	oopsCollection remove: selection first value ifAbsent: [^self].
 	objectIndex := objectIndex - 1!
 
 canSave
@@ -152,7 +152,9 @@ displayObjectSelecting: selectionIndex
 			[contents addFirst: '-.asOop' -> model oop printString.
 			contents addFirst: model myself].
 	instVarListPresenter list: contents.
-	instVarListPresenter selectionByIndex: (selectionIndex ifNil: [#(1)] ifNotNil: [Array with: selectionIndex]).
+	instVarListPresenter selectionByIndex: (selectionIndex
+				ifNil: [#(1)]
+				ifNotNil: [selectionIndex isNumber ifTrue: [Array with: selectionIndex] ifFalse: [selectionIndex]]).
 	model indexedSize > 0
 		ifTrue: 
 			[statusTextPresenter
@@ -160,7 +162,7 @@ displayObjectSelecting: selectionIndex
 						, (model isDictionary ifTrue: [' keys'] ifFalse: [' variable inst vars'])]
 		ifFalse: [statusTextPresenter value: nil].
 	className := model className.
-	documentPresenter view isModified: false. !
+	documentPresenter view isModified: false!
 
 dynamicInstVars
 	^instVarListPresenter list select: [:instVar | '--*' match: instVar key]!
@@ -218,7 +220,7 @@ inspectInstVar
 	| oop |
 	"instVarListPresenter selection is <anAssociation>"
 	(self isSelfSelected or:[self isAsOopSelected]) ifTrue:[^self]. 
-	oop := instVarListPresenter selection value.
+	oop := instVarListPresenter selections first value.
 	(oop isKindOf: Array) ifTrue: [oop := oop last].	"a dictionary entry will hold oop of key and oop of value"
 	objectIndex = oopsCollection size
 		ifFalse: [(oopsCollection at: objectIndex + 1) = oop ifTrue: [^self getNextObject]].
@@ -355,7 +357,7 @@ queryCommand: query
 		ifTrue: 
 			[view isWindowVisible ifTrue: [query isEnabled: model isVariable].
 			^true].
-	command = #removeObject
+	command = #removeObjects
 		ifTrue: 
 			[self isProtectedItemSelected
 				ifTrue: 
@@ -390,7 +392,7 @@ reportCompileError: ex
 
 saveDictionaryElement
 	| keyOop |
-	keyOop := instVarListPresenter selection value first.
+	keyOop := instVarListPresenter selection first value first.
 	model
 		command: #saveKey:value:;
 		commandArgs: (Array with: keyOop with: documentPresenter value).
@@ -419,17 +421,17 @@ saveDynamicInstVar
 	self displayObjectSelecting: instVarListPresenter selectionByIndex!
 
 saveIndexedElement
-	| index |
-	index := self indexedOffsetFromInstVarList: instVarListPresenter selectionsByIndex first. "should always be one if we get here"
+	| indices |
+	indices := self indexedOffsetFromInstVarList: instVarListPresenter selectionsByIndex.	"should always be one if we get here"
 	model
 		command: #save:indexedVarAt:;
-		commandArgs: (Array with: documentPresenter value with: index).
+		commandArgs: (Array with: documentPresenter value with: indices first).
 	self issueCommand: (Array with: model).
-	self displayObjectSelecting: (self instVarListIndexFromIndexedOffset: index)!
+	self displayObjectSelecting: (self instVarListIndexFromIndexedOffset: indices first)!
 
 saveNamedInstVar
 	| index instVarName |
-	instVarName := self selectedNamedInstVars.
+	instVarName := self selectedNamedInstVars first.
 	model
 		command: #save:namedInstVar:;
 		commandArgs: (Array with: documentPresenter value with: instVarName).
@@ -439,7 +441,7 @@ saveNamedInstVar
 
 saveUnorderedElement
 	| oop addedObject newSelectionIndex |
-	oop := instVarListPresenter selection value.
+	oop := instVarListPresenter selection first value.
 	model
 		command: #replaceElement:with:;
 		commandArgs: (Array with: oop with: documentPresenter value).
@@ -452,8 +454,8 @@ selectedDynamicInstVar
 	"if a named inst var is selected, return it's name as a symbol"
 
 	| key |
-	key := instVarListPresenter selection key.
-	^(instVarListPresenter selection key copyFrom: 3 to: key size) asSymbol!
+	key := instVarListPresenter selection first key.
+	^(key copyFrom: 3 to: key size) asSymbol!
 
 selectedInstVar
 	| string key |
@@ -506,11 +508,11 @@ statusText
 !JadeiteInspector categoriesFor: #additionalAccelerators!constants!public! !
 !JadeiteInspector categoriesFor: #addObject!menu handlers!operations!public! !
 !JadeiteInspector categoriesFor: #addOop:!public! !
-!JadeiteInspector categoriesFor: #basicAddKey:!menu handlers!operations!private! !
-!JadeiteInspector categoriesFor: #basicAddObject:!menu handlers!operations!private! !
-!JadeiteInspector categoriesFor: #basicRemoveFromDictionary!operations!private! !
-!JadeiteInspector categoriesFor: #basicRemoveObjectsAt:!operations!private! !
-!JadeiteInspector categoriesFor: #basicRemoveOop:!operations!private! !
+!JadeiteInspector categoriesFor: #basicAddKey:!menu handlers!menu handlers support!operations!private! !
+!JadeiteInspector categoriesFor: #basicAddObject:!menu handlers support!private! !
+!JadeiteInspector categoriesFor: #basicRemoveFromDictionary!menu handlers support!operations!private! !
+!JadeiteInspector categoriesFor: #basicRemoveObjectsAt:!menu handlers support!operations!private! !
+!JadeiteInspector categoriesFor: #basicRemoveOop:!menu handlers support!operations!private! !
 !JadeiteInspector categoriesFor: #canSave!private!testing! !
 !JadeiteInspector categoriesFor: #computedListSelections!event handlers support!private! !
 !JadeiteInspector categoriesFor: #createComponents!initialize!public! !
