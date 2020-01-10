@@ -1346,7 +1346,7 @@ coll'
 	inspector instVarListPresenter selectionByIndex: 3.
 	self assert: inspector documentPresenter value equals: '''entry1'''.
 	self assert: inspector statusText equals: 'Displaying 50 of 50 variable inst vars'.
-	inspector basicRemoveObjectAt: 3.
+	inspector basicRemoveObjectsAt: 3.
 	self assert: inspector instVarListPresenter selectionByIndex equals: 3.
 	self assert: inspector documentPresenter value equals: '''entry2'''.
 	self assert: inspector statusText equals: 'Displaying 49 of 49 variable inst vars'!
@@ -1367,7 +1367,7 @@ coll'
 	inspector instVarListPresenter selectionByIndex: 4.
 	self assert: inspector documentPresenter value equals: '''entry1'''.
 	self assert: inspector statusText equals: 'Displaying 50 of 50 variable inst vars'.
-	inspector basicRemoveObjectAt: 5.
+	inspector basicRemoveObjectsAt: 5.
 	self assert: inspector instVarListPresenter selectionByIndex equals: 5.
 	self assert: inspector documentPresenter value equals: '''entry3'''.
 	self assert: inspector statusText equals: 'Displaying 49 of 49 variable inst vars'!
@@ -1466,7 +1466,7 @@ test_removeLastIndexedInstVar
 	inspector instVarListPresenter selectionByIndex: 5.
 	self assert: inspector documentPresenter value equals: '$c'.
 	self assert: inspector statusText equals: 'Displaying 3 of 3 variable inst vars'.
-	inspector basicRemoveObjectAt: 5.
+	inspector basicRemoveObjectsAt: 5.
 	self assert: inspector instVarListPresenter selectionByIndex equals: 4.
 	self assert: inspector documentPresenter value equals: '$b'.
 	self assert: inspector statusText equals: 'Displaying 2 of 2 variable inst vars'!

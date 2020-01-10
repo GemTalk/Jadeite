@@ -157,10 +157,10 @@ oop
 oop: anObject
 	oop := anObject!
 
-removeIndexedInstVarAt: index session: session
+removeIndexedInstVarsAt: indices session: session
 	self
-		command: #removeIndexedInstVarAt:;
-		commandArgs: (Array with: index).
+		command: #removeIndexedInstVarsAt:;
+		commandArgs: (Array with: indices).
 	BrowserUpdate current issueCommands: (Array with: self) session: session!
 
 removeKey: keyOop session: session
@@ -218,7 +218,7 @@ visibleIndices: anObject
 !RowanInspectorService categoriesFor: #objects:!accessing!private! !
 !RowanInspectorService categoriesFor: #oop!accessing!private! !
 !RowanInspectorService categoriesFor: #oop:!accessing!private! !
-!RowanInspectorService categoriesFor: #removeIndexedInstVarAt:session:!operations!public! !
+!RowanInspectorService categoriesFor: #removeIndexedInstVarsAt:session:!operations!public! !
 !RowanInspectorService categoriesFor: #removeKey:session:!operations!public! !
 !RowanInspectorService categoriesFor: #removeOop:session:!operations!public! !
 !RowanInspectorService categoriesFor: #selectionOop!accessing!private! !

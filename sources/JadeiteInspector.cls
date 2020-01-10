@@ -75,15 +75,19 @@ basicRemoveFromDictionary
 	oopsCollection remove: selection value ifAbsent: [^self].
 	objectIndex := objectIndex - 1!
 
-basicRemoveObjectAt: index
-	| selection newSelectionIndex |
-	selection := instVarListPresenter selection.
-	self model removeIndexedInstVarAt: (self indexedOffsetFromInstVarList: index) session: gciSession.
-	newSelectionIndex := index
+basicRemoveObjectsAt: indices
+	| selections newSelectionIndex |
+	selections := instVarListPresenter selections.
+	model removeIndexedInstVarsAt: (self indexedOffsetFromInstVarList: indices) session: gciSession.
+	newSelectionIndex := indices first
 				min: model indexedSize + model instVarNames size + self dynamicInstVars size + 2.
 	self displayObjectSelecting: newSelectionIndex.
-	oopsCollection remove: selection value ifAbsent: [^self].
-	objectIndex := objectIndex - 1!
+	(selections collect: [:sel | sel value]) do: 
+			[:oop |
+			(oopsCollection includes: oop)
+				ifTrue: 
+					[oopsCollection remove: oop.
+					objectIndex := objectIndex - 1]]!
 
 basicRemoveOop: oop
 	| selection selectionIndex |
@@ -148,7 +152,7 @@ displayObjectSelecting: selectionIndex
 			[contents addFirst: '-.asOop' -> model oop printString.
 			contents addFirst: model myself].
 	instVarListPresenter list: contents.
-	instVarListPresenter selectionByIndex: (selectionIndex ifNil: [1] ifNotNil: [selectionIndex]).
+	instVarListPresenter selectionByIndex: (selectionIndex ifNil: [#(1)] ifNotNil: [Array with: selectionIndex]).
 	model indexedSize > 0
 		ifTrue: 
 			[statusTextPresenter
@@ -193,8 +197,9 @@ evaluateSelectedTextIn: textPresenter thenInspectInContext: context debugger: de
 expectedModelClass
 	^RowanInspectorService!
 
-indexedOffsetFromInstVarList: index
-	^index - model instVarNames size - self dynamicInstVars size - 2 max: 0	"2 = self + asOop"!
+indexedOffsetFromInstVarList: indices
+	^indices
+		collect: [:index | index - model instVarNames size - self dynamicInstVars size - 2 max: 0	"2 = self + asOop"]!
 
 initialize
 	super initialize. 
@@ -232,13 +237,14 @@ instVarListIndexFromIndexedOffset: index
 	^index + model instVarNames size + self dynamicInstVars size + 2	"2 = self + asOop"!
 
 isAsOopSelected
-	^instVarListPresenter selection key = '-.asOop'!
+	^(instVarListPresenter selections detect: [:assoc | assoc key = '-.asOop'] ifNone: []) notNil!
 
 isDynamicInstVarSelected
-	^'--*' match: (instVarListPresenter selectionIfNone: [^false]) key!
+	instVarListPresenter selections isEmpty ifTrue: [^false].
+	^'--*' match: instVarListPresenter selections first key!
 
 isNamedInstVarSelected
-	^model instVarNames includes: self selectedNamedInstVar!
+	^model instVarNames includesAnyOf: self selectedNamedInstVars!
 
 isOkayToChange
 	documentPresenter view isModified
@@ -251,176 +257,15 @@ isProtectedItemSelected
 	index := instVarListPresenter selectionByIndex.
 	index = 1 ifTrue: [^true].
 	selection := instVarListPresenter selectionIfNone: [^true].
-	^'-*' match: selection key!
+	^('-*' match: selection first key ) or: [selection first key = 'self']!
 
 isSelectionComputed: assoc
 	^assoc key = 'self' or: [assoc key = '-.asOop']!
 
 isSelfSelected
-	^instVarListPresenter selection key = 'self'!
+	^instVarListPresenter selections first key = 'self'!
 
-nonComputedListSelections
-	| computedSelections |
-	computedSelections := instVarListPresenter selections
-				reject: [:assoc | self isSelectionComputed: assoc].
-	^computedSelections!
-
-objectIsVariable
-	| answeringService |
-	model command: #isVariable.
-	answeringService := BrowserUpdate current issueCommands: (Array with: self) session: gciSession.
-	^answeringService answer!
-
-printInstVar
-	| answeringService printString value |
-	^
-	[answeringService := RowanAnsweringService new.
-	value := instVarListPresenter selection value. "oop or Array" 
-	printString := (value isKindOf: Array) ifTrue: [value at: 2] ifFalse: [value].
-	answeringService
-		command: #printStringOf:toMaxSize:;
-		commandArgs: (Array with: printString with: self maxPrintStringSize).
-	self issueCommand: (Array with: answeringService).
-	answeringService answer]
-			on: Error
-			do: [:ex | self displayInstVarError: ex instVar: instVarListPresenter selection value]!
-
-queryCommand: query
-	| command |
-	command := query command.
-	command = #fileSave
-		ifTrue: 
-			[self shouldEnableFileSave: query.
-			^true].
-	(command = #displayMore or: [command = #displayAll])
-		ifTrue: 
-			[model isShowingAllIndexedVars
-				ifTrue: 
-					[query isEnabled: false.
-					^true]].
-	command = #addObject
-		ifTrue: 
-			[view isWindowVisible ifTrue: [query isEnabled: model isVariable].
-			^true].
-	command = #removeObject
-		ifTrue: 
-			[self isProtectedItemSelected
-				ifTrue: 
-					[query isEnabled: false.
-					^true]].
-	^super queryCommand: query!
-
-registerWindow: handle rootObject: oop
-	^RowanBrowserService new
-		registerWindow: handle value
-		rootObject: oop
-		session: self gciSession!
-
-removeObject
-	| index |
-	(MessageBox confirm: 'Really remove selection?') ifFalse: [^self].
-	model instVarsAreRemovable ifFalse: [^self].
-	index := instVarListPresenter selectionByIndex.
-	model isDictionary ifTrue: [^self basicRemoveFromDictionary].
-	('-*' match: instVarListPresenter selection key) ifTrue: [^MessageBox notify: 'Cannot remove inst var'].	"inst var"
-	model isUnordered ifTrue: [^self basicRemoveOop: instVarListPresenter selection value].
-	index - model instVarNames size <= 0 ifTrue: [^self].
-	self basicRemoveObjectAt: index!
-
-reportCompileError: ex
-	| position text |
-	text := (ex list first at: 3) , '>>>>>'.
-	position := ex list first at: 2.
-	documentPresenter view caretPosition: position.
-	documentPresenter view insertText: text size from: text.
-	^documentPresenter view selectionRange: (position to: position + text size - 1)!
-
-saveDictionaryElement
-	| keyOop |
-	keyOop := instVarListPresenter selection value first.
-	model
-		command: #saveKey:value:;
-		commandArgs: (Array with: keyOop with: documentPresenter value).
-	self issueCommand: (Array with: model).
-	self displayObjectSelecting: instVarListPresenter selectionByIndex!
-
-saveDocument
-	(self isSelfSelected or: [self isAsOopSelected])
-		ifTrue: [^MessageBox notify: 'Cannot modify Self or the oop'].
-	
-	[self isDynamicInstVarSelected ifTrue: [^self saveDynamicInstVar].
-	self isNamedInstVarSelected ifTrue: [^self saveNamedInstVar].
-	model isDictionary ifTrue: [^self saveDictionaryElement].
-	model isUnordered ifTrue: [^self saveUnorderedElement].
-	self saveIndexedElement]
-			on: GsCompileError
-			do: [:ex | self reportCompileError: ex]!
-
-saveDynamicInstVar
-	| instVarName |
-	instVarName := self selectedDynamicInstVar.
-	model
-		command: #save:dynamicInstVar:;
-		commandArgs: (Array with: documentPresenter value with: instVarName).
-	self issueCommand: (Array with: model).
-	self displayObjectSelecting: instVarListPresenter selectionByIndex!
-
-saveIndexedElement
-	| index |
-	index := self indexedOffsetFromInstVarList: instVarListPresenter selectionByIndex.
-	model
-		command: #save:indexedVarAt:;
-		commandArgs: (Array with: documentPresenter value with: index).
-	self issueCommand: (Array with: model).
-	self displayObjectSelecting: (self instVarListIndexFromIndexedOffset: index)!
-
-saveNamedInstVar
-	| index instVarName |
-	instVarName := self selectedNamedInstVar. 
-	model
-		command: #save:namedInstVar:;
-		commandArgs: (Array with: documentPresenter value with: instVarName).
-	self issueCommand: (Array with: model).
-	index := model instVarNames indexOf: instVarName.
-	self displayObjectSelecting: index + 2!
-
-saveUnorderedElement
-	| oop addedObject newSelectionIndex |
-	oop := instVarListPresenter selection value.
-	model
-		command: #replaceElement:with:;
-		commandArgs: (Array with: oop with: documentPresenter value).
-	self issueCommand: (Array with: model).
-	addedObject := model objects detect: [:assoc | assoc value = model selectionOop] ifNone: [].
-	newSelectionIndex := model objects indexOf: addedObject.
-	self displayObjectSelecting: newSelectionIndex + 2!
-
-selectedDynamicInstVar
-	"if a named inst var is selected, return it's name as a symbol"
-
-	| key |
-	key := instVarListPresenter selection key.
-	^(instVarListPresenter selection key copyFrom: 3 to: key size) asSymbol!
-
-selectedInstVar
-	| string |
-	instVarListPresenter selectionIfNone: [^self selectedMultipleInstVarsOrNone].
-	documentPresenter view stylerClass: SmalltalkExpressionStyler.
-	(instVarListPresenter selection key = 'self' or: [instVarListPresenter selection key = '-.asOop'])
-		ifTrue: 
-			[documentPresenter value: instVarListPresenter selection value.
-			^self].
-	string := [self printInstVar] on: GsRuntimeError
-				do: 
-					[:ex |
-					ex errorReport number == 2106
-						ifTrue: 
-							["Forward reference error"
-							ex return: 'an invalid or hidden object (perhaps a LargeObjectNode)'].
-					ex pass].
-	documentPresenter value: string!
-
-selectedMultipleInstVarsOrNone
+multipleInstVarsSelected
 	| writeStream oops answeringService computedSelections contents boldNeeded |
 	instVarListPresenter selections isEmpty
 		ifTrue: 
@@ -467,10 +312,176 @@ selectedMultipleInstVarsOrNone
 			documentPresenter view startStylingFrom: interval start.
 			documentPresenter view applyStyle: #literalArray toNext: interval size	"serves as a cheap way to get bold text"]!
 
-selectedNamedInstVar
+nonComputedListSelections
+	| computedSelections |
+	computedSelections := instVarListPresenter selections
+				reject: [:assoc | self isSelectionComputed: assoc].
+	^computedSelections!
+
+objectIsVariable
+	| answeringService |
+	model command: #isVariable.
+	answeringService := BrowserUpdate current issueCommands: (Array with: self) session: gciSession.
+	^answeringService answer!
+
+printInstVar
+	| answeringService printString value |
+	^
+	[answeringService := RowanAnsweringService new.
+	value := instVarListPresenter selections first value. "oop or Array" 
+	printString := (value isKindOf: Array) ifTrue: [value at: 2] ifFalse: [value].
+	answeringService
+		command: #printStringOf:toMaxSize:;
+		commandArgs: (Array with: printString with: self maxPrintStringSize).
+	self issueCommand: (Array with: answeringService).
+	answeringService answer]
+			on: Error
+			do: [:ex | self displayInstVarError: ex instVar: instVarListPresenter selections first value]!
+
+queryCommand: query
+	| command |
+	command := query command.
+	command = #fileSave
+		ifTrue: 
+			[self shouldEnableFileSave: query.
+			^true].
+	(command = #displayMore or: [command = #displayAll])
+		ifTrue: 
+			[model isShowingAllIndexedVars
+				ifTrue: 
+					[query isEnabled: false.
+					^true]].
+	command = #addObject
+		ifTrue: 
+			[view isWindowVisible ifTrue: [query isEnabled: model isVariable].
+			^true].
+	command = #removeObject
+		ifTrue: 
+			[self isProtectedItemSelected
+				ifTrue: 
+					[query isEnabled: false.
+					^true]].
+	^super queryCommand: query!
+
+registerWindow: handle rootObject: oop
+	^RowanBrowserService new
+		registerWindow: handle value
+		rootObject: oop
+		session: self gciSession!
+
+removeObjects
+	| indices |
+	(MessageBox confirm: 'Really remove selection(s)?') ifFalse: [^self].
+	model instVarsAreRemovable ifFalse: [^self].
+	indices := instVarListPresenter selectionByIndex.
+	model isDictionary ifTrue: [^self basicRemoveFromDictionary].
+	self isNamedInstVarSelected ifTrue: [^MessageBox notify: 'Cannot remove inst var'].	"inst var"
+	model isUnordered ifTrue: [^self basicRemoveOop: instVarListPresenter selection value].
+	indices first - model instVarNames size <= 0 ifTrue: [^self].
+	self basicRemoveObjectsAt: indices!
+
+reportCompileError: ex
+	| position text |
+	text := (ex list first at: 3) , '>>>>>'.
+	position := ex list first at: 2.
+	documentPresenter view caretPosition: position.
+	documentPresenter view insertText: text size from: text.
+	^documentPresenter view selectionRange: (position to: position + text size - 1)!
+
+saveDictionaryElement
+	| keyOop |
+	keyOop := instVarListPresenter selection value first.
+	model
+		command: #saveKey:value:;
+		commandArgs: (Array with: keyOop with: documentPresenter value).
+	self issueCommand: (Array with: model).
+	self displayObjectSelecting: instVarListPresenter selectionByIndex!
+
+saveDocument
+	(self isSelfSelected or: [self isAsOopSelected])
+		ifTrue: [^MessageBox notify: 'Cannot modify Self or the oop'].
+	
+	[self isDynamicInstVarSelected ifTrue: [^self saveDynamicInstVar].
+	self isNamedInstVarSelected ifTrue: [^self saveNamedInstVar].
+	model isDictionary ifTrue: [^self saveDictionaryElement].
+	model isUnordered ifTrue: [^self saveUnorderedElement].
+	self saveIndexedElement]
+			on: GsCompileError
+			do: [:ex | self reportCompileError: ex]!
+
+saveDynamicInstVar
+	| instVarName |
+	instVarName := self selectedDynamicInstVar.
+	model
+		command: #save:dynamicInstVar:;
+		commandArgs: (Array with: documentPresenter value with: instVarName).
+	self issueCommand: (Array with: model).
+	self displayObjectSelecting: instVarListPresenter selectionByIndex!
+
+saveIndexedElement
+	| index |
+	index := self indexedOffsetFromInstVarList: instVarListPresenter selectionsByIndex first. "should always be one if we get here"
+	model
+		command: #save:indexedVarAt:;
+		commandArgs: (Array with: documentPresenter value with: index).
+	self issueCommand: (Array with: model).
+	self displayObjectSelecting: (self instVarListIndexFromIndexedOffset: index)!
+
+saveNamedInstVar
+	| index instVarName |
+	instVarName := self selectedNamedInstVars.
+	model
+		command: #save:namedInstVar:;
+		commandArgs: (Array with: documentPresenter value with: instVarName).
+	self issueCommand: (Array with: model).
+	index := model instVarNames indexOf: instVarName.
+	self displayObjectSelecting: index + 2!
+
+saveUnorderedElement
+	| oop addedObject newSelectionIndex |
+	oop := instVarListPresenter selection value.
+	model
+		command: #replaceElement:with:;
+		commandArgs: (Array with: oop with: documentPresenter value).
+	self issueCommand: (Array with: model).
+	addedObject := model objects detect: [:assoc | assoc value = model selectionOop] ifNone: [].
+	newSelectionIndex := model objects indexOf: addedObject.
+	self displayObjectSelecting: newSelectionIndex + 2!
+
+selectedDynamicInstVar
 	"if a named inst var is selected, return it's name as a symbol"
 
-	^(instVarListPresenter selection key copyWithout: $-) asSymbol!
+	| key |
+	key := instVarListPresenter selection key.
+	^(instVarListPresenter selection key copyFrom: 3 to: key size) asSymbol!
+
+selectedInstVar
+	| string key |
+	instVarListPresenter selections isEmpty
+		ifTrue: 
+			[documentPresenter value: String new.
+			^self].
+	instVarListPresenter selections size > 1 ifTrue: [^self multipleInstVarsSelected].
+	documentPresenter view stylerClass: SmalltalkExpressionStyler.
+	key := instVarListPresenter selections first key.
+	(key = 'self' or: [key = '-.asOop'])
+		ifTrue: 
+			[documentPresenter value: instVarListPresenter selections first value.
+			^self].
+	string := [self printInstVar] on: GsRuntimeError
+				do: 
+					[:ex |
+					ex errorReport number == 2106
+						ifTrue: 
+							["Forward reference error"
+							ex return: 'an invalid or hidden object (perhaps a LargeObjectNode)'].
+					ex pass].
+	documentPresenter value: string!
+
+selectedNamedInstVars
+	"if a named inst var is selected, return it's name as a symbol"
+
+	^instVarListPresenter selections collect: [:assoc | (assoc key copyWithout: $-) asSymbol]!
 
 setNewInspectedObject
 	| oop |
@@ -498,7 +509,7 @@ statusText
 !JadeiteInspector categoriesFor: #basicAddKey:!menu handlers!operations!private! !
 !JadeiteInspector categoriesFor: #basicAddObject:!menu handlers!operations!private! !
 !JadeiteInspector categoriesFor: #basicRemoveFromDictionary!operations!private! !
-!JadeiteInspector categoriesFor: #basicRemoveObjectAt:!operations!private! !
+!JadeiteInspector categoriesFor: #basicRemoveObjectsAt:!operations!private! !
 !JadeiteInspector categoriesFor: #basicRemoveOop:!operations!private! !
 !JadeiteInspector categoriesFor: #canSave!private!testing! !
 !JadeiteInspector categoriesFor: #computedListSelections!event handlers support!private! !
@@ -524,12 +535,13 @@ statusText
 !JadeiteInspector categoriesFor: #isProtectedItemSelected!private!testing! !
 !JadeiteInspector categoriesFor: #isSelectionComputed:!event handlers support!private! !
 !JadeiteInspector categoriesFor: #isSelfSelected!private!testing! !
+!JadeiteInspector categoriesFor: #multipleInstVarsSelected!event handlers support!private! !
 !JadeiteInspector categoriesFor: #nonComputedListSelections!event handlers support!private! !
 !JadeiteInspector categoriesFor: #objectIsVariable!private!testing! !
 !JadeiteInspector categoriesFor: #printInstVar!displaying!event handlers support!private! !
 !JadeiteInspector categoriesFor: #queryCommand:!menu handlers support!private! !
 !JadeiteInspector categoriesFor: #registerWindow:rootObject:!private! !
-!JadeiteInspector categoriesFor: #removeObject!menu handlers!operations!public! !
+!JadeiteInspector categoriesFor: #removeObjects!menu handlers!operations!public! !
 !JadeiteInspector categoriesFor: #reportCompileError:!menu handlers support!private! !
 !JadeiteInspector categoriesFor: #saveDictionaryElement!menu handlers support!private! !
 !JadeiteInspector categoriesFor: #saveDocument!menu handlers!public! !
@@ -539,8 +551,7 @@ statusText
 !JadeiteInspector categoriesFor: #saveUnorderedElement!menu handlers support!private! !
 !JadeiteInspector categoriesFor: #selectedDynamicInstVar!private! !
 !JadeiteInspector categoriesFor: #selectedInstVar!accessing!event handlers!private! !
-!JadeiteInspector categoriesFor: #selectedMultipleInstVarsOrNone!event handlers support!private! !
-!JadeiteInspector categoriesFor: #selectedNamedInstVar!private! !
+!JadeiteInspector categoriesFor: #selectedNamedInstVars!private! !
 !JadeiteInspector categoriesFor: #setNewInspectedObject!public! !
 !JadeiteInspector categoriesFor: #shouldEnableFileSave:!private!testing! !
 !JadeiteInspector categoriesFor: #showOn:!displaying!public! !
@@ -556,7 +567,7 @@ resource_Default_view
 	ViewComposer openOn: (ResourceIdentifier class: self selector: #resource_Default_view)
 	"
 
-	^#(#'!!STL' 4 788558 10 ##(Smalltalk.STBViewProxy) ##(Smalltalk.ShellView) 34 27 nil nil 8 #(13565952 65536) 416 nil 524550 ##(Smalltalk.ColorRef) 8 4278190080 328198 ##(Smalltalk.Point) 1201 901 551 nil nil nil 416 788230 ##(Smalltalk.BorderLayout) 1 1 410 ##(Smalltalk.ContainerView) 34 15 nil 416 34 2 8 1140850688 131073 576 nil 721158 ##(Smalltalk.SystemColor) 31 nil 7 nil nil nil 576 1180166 ##(Smalltalk.ProportionalLayout) 170 176 8 #() false 170 192 720 nil 983302 ##(Smalltalk.MessageSequence) 138 144 34 1 721670 ##(Smalltalk.MessageSend) #createAt:extent: 34 2 514 1 1 514 1169 49 576 983302 ##(Smalltalk.WINDOWPLACEMENT) 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 72 2 0 0 24 0 0 0] 34 1 410 ##(Smalltalk.Toolbar) 34 25 nil 576 34 2 8 1409288972 131137 960 nil 466 8 4278190080 nil 519 nil 263174 ##(Smalltalk.Font) nil true 459014 ##(Smalltalk.LOGFONT) 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 65 114 105 97 108 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 514 193 193 nil 960 466 1040 8 4294904911 170 192 720 170 192 34 10 40877 1115910 ##(Smalltalk.ToolbarIconButton) 40877 nil 960 1 1180998 4 ##(Smalltalk.CommandDescription) #getPreviousObject 8 'Previous Object' 1 1 263494 3 ##(Smalltalk.Icon) nil true 1572870 ##(Smalltalk.ImageRelativeFileLocator) 8 'HistoryBack.ico' 2032142 ##(Smalltalk.STBExternalResourceLibraryProxy) 8 'dolphindr7.dll' nil 395334 3 ##(Smalltalk.Bitmap) nil true nil nil nil nil 3 514 33 33 1 40879 1234 40879 nil 960 1 1266 #getNextObject 8 'Next Object' 1 1 1314 nil true 1360 8 'HistoryForward.ico' 1408 1442 nil true nil nil nil nil 3 514 33 33 1 40881 1234 40881 nil 960 1 1266 #removeObject 8 'Remove Object' 1 1 1314 nil true 1360 8 'False.ico' 1408 1442 nil true nil nil nil nil 3 514 33 33 1 40883 1234 40883 nil 960 1 1266 #addObject 8 'Add Object' 1 1 1314 nil true 1360 8 'C:\Users\ewinger\source\repos\Dolphin\Core\DolphinVM\Res\CompiledMethodPublic.ico' nil 1442 nil true nil nil nil nil 3 514 33 33 1 40885 1234 40885 nil 960 1 1266 #openNavigationInspector 8 'Open Navigation Inspector' 1 1 1314 nil true 1360 8 'BasicInspector.ico' 1408 1442 nil true nil nil nil nil 3 514 33 33 1 34 7 1248 1488 1050118 ##(Smalltalk.ToolbarSeparator) nil nil 960 3 nil 1 1600 1712 1954 nil nil 960 3 nil 1 1824 170 176 34 10 1568 3 1680 5 1792 7 1456 1 1904 9 nil 1 nil 514 33 33 514 45 45 nil 656198 1 ##(Smalltalk.FlowLayout) 1 1 1 754 138 144 34 2 818 #createAt:extent: 34 2 514 1 1 514 1169 49 960 818 #updateSizePosted 720 960 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 72 2 0 0 24 0 0 0] 8 #() 514 193 193 nil 27 2272 nil 27 410 ##(Smalltalk.ContainerView) 34 15 nil 416 34 2 8 1140850688 131073 2288 nil nil nil 7 nil nil nil 2288 nil 170 192 34 2 410 ##(Smalltalk.StaticText) 34 16 nil 2288 34 2 8 1140850944 65 2384 nil nil nil 7 nil nil nil 2384 nil 8 1687849632 852486 ##(Smalltalk.NullConverter) nil nil nil 754 138 144 34 2 818 #createAt:extent: 34 2 514 1 1 514 1169 47 2384 818 #text: 34 1 8 'Static Text' 2384 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 72 2 0 0 23 0 0 0] 8 #() 2272 nil 27 8 'statusText' nil 754 138 144 34 1 818 #createAt:extent: 34 2 514 1 733 514 1169 51 2288 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 110 1 0 0 72 2 0 0 135 1 0 0] 34 1 2384 2272 nil 27 nil nil 410 ##(Smalltalk.ContainerView) 34 15 nil 416 34 2 8 1140850688 131073 2880 nil 642 31 nil 7 nil nil nil 2880 674 170 176 34 2 410 ##(Smalltalk.ReferenceView) 34 14 nil 2880 34 2 8 1140850688 131073 3008 nil 466 8 4278190080 nil 7 nil nil nil 3008 1180166 ##(Smalltalk.ResourceIdentifier) ##(Smalltalk.CodeSourcePresenter) #resource_Default_view nil 754 138 144 34 1 818 #createAt:extent: 34 2 514 397 1 514 773 685 3008 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 198 0 0 0 0 0 0 0 72 2 0 0 86 1 0 0] 720 2272 nil 27 5 false 170 192 34 4 3008 8 'codePane' 410 ##(Smalltalk.ListBox) 34 17 nil 2880 34 2 8 1144064257 1025 3328 590662 2 ##(Smalltalk.ListModel) 138 144 720 nil 1310726 ##(Smalltalk.IdentitySearchPolicy) 466 8 4278190080 nil 7 265030 4 ##(Smalltalk.Menu) nil true 34 5 984134 2 ##(Smalltalk.CommandMenuItem) 1 1266 #removeObject 8 'Remove Object' 1 1 nil nil nil 3554 1 1266 #addObject 8 'Add Object' 1 1 nil nil nil 983366 1 ##(Smalltalk.DividerMenuItem) 4097 3554 1 1266 #displayMore 8 'Display More' 1025 1 nil nil nil 3554 1 1266 #displayAll 8 'Display All' 1 1 nil nil nil 8 '' nil 134217729 nil nil nil nil nil nil nil 3328 nil 8 4294903819 459270 ##(Smalltalk.Message) #key 8 #() 720 false 754 138 144 34 4 818 #createAt:extent: 34 2 514 1 1 514 387 685 3328 818 #contextMenu: 34 1 3520 3328 818 #caretIndex: 8 #(1) 3328 818 #horizontalExtent: 8 #(0) 3328 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 193 0 0 0 86 1 0 0] 8 #() 2272 nil 27 8 'instVarList' nil 754 138 144 34 1 818 #createAt:extent: 34 2 514 1 49 514 1169 685 2880 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 24 0 0 0 72 2 0 0 110 1 0 0] 34 3 3328 410 ##(Smalltalk.Splitter) 34 12 nil 2880 34 2 8 1140850688 1 4304 nil 466 8 4278190080 nil 519 nil nil nil 4304 754 138 144 34 1 818 #createAt:extent: 34 2 514 387 1 514 11 685 4304 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 193 0 0 0 0 0 0 0 198 0 0 0 86 1 0 0] 8 #() 2272 nil 27 3008 2272 nil 27 170 192 720 nil 461638 4 ##(Smalltalk.MenuBar) nil true 34 2 3506 nil true 34 15 3554 1 1266 #undo 8 '&Undo' 9397 1 nil nil nil 3554 1 1266 #redo 8 'R&edo' 9395 1 nil nil nil 3666 4097 3554 1 1266 #editCut 8 'Cu&t' 9393 1 nil nil nil 3554 1 1266 #editCopy 8 '&Copy' 9351 1 nil nil nil 3554 1 1266 #editPaste 8 '&Paste' 9389 1 nil nil nil 3554 1 1266 #editSelectAll 8 'Select &All' 9347 1 nil nil nil 3554 1 1266 #editDelete 8 '&Delete' 1629 1 nil nil nil 3666 4097 3554 1 1266 #editFind 8 '&Find...' 9357 1 nil nil nil 3554 1 1266 #editFindNext 8 'Find &Next' 9359 1 nil nil nil 3554 1 1266 #editReplace 8 '&Replace...' 9361 1 nil nil nil 3666 4097 3554 1 1266 #addQuotesToSelection 8 'Add &Quotes' 1 1 nil nil nil 3554 1 1266 #removeQuotesFromSelection 8 'Re&move Quotes' 1 1 nil nil nil 8 '&Edit' nil 1 nil nil 40855 nil nil 3506 nil true 34 12 3554 1 1266 #abortTransaction 8 '&Abort Transaction' 1 1 nil nil nil 3554 1 1266 #commitTransaction 8 '&Commit Transaction' 1 1 nil nil nil 3666 4097 3554 1 1266 #jadeInspect 8 '&Inspect' 9379 1 nil nil nil 3554 1 1266 #jadeDisplay 8 '&Display' 9353 1 nil nil nil 3554 1 1266 #jadeExecute 8 '&Execute' 9355 1 nil nil nil 3554 1 1266 #fileIn 8 'Fi&le In' 1 1 nil nil nil 3666 4097 3554 1 1266 #browseClass 8 '&Browse Class' 9377 1 nil nil nil 3666 4097 3554 1 1266 #displayMore nil 1025 1 nil nil nil 3554 1 1266 #displayAll nil 1 1 nil nil nil 8 '&Jadeite' nil 1 nil nil 40875 nil nil 8 '' nil 1 nil nil nil nil nil nil nil nil 1 nil nil nil nil 1 nil nil 754 138 144 34 3 818 #createAt:extent: 34 2 514 7679 21 514 1201 901 416 818 #text: 34 1 8 'Jade Object Navigation Inspector' 416 818 #updateMenuBar 720 416 898 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 14 0 0 10 0 0 0 87 17 0 0 204 1 0 0] 34 3 576 2880 2288 2272 nil 27 )!
+	^#(#'!!STL' 4 788558 10 ##(Smalltalk.STBViewProxy) ##(Smalltalk.ShellView) 34 27 nil nil 8 #(13565952 65536) 416 nil 524550 ##(Smalltalk.ColorRef) 8 4278190080 328198 ##(Smalltalk.Point) 1201 901 551 nil nil nil 416 788230 ##(Smalltalk.BorderLayout) 1 1 410 ##(Smalltalk.ContainerView) 34 15 nil 416 34 2 8 1140850688 131073 576 nil 721158 ##(Smalltalk.SystemColor) 31 nil 7 nil nil nil 576 1180166 ##(Smalltalk.ProportionalLayout) 170 176 8 #() false 170 192 720 nil 983302 ##(Smalltalk.MessageSequence) 138 144 34 1 721670 ##(Smalltalk.MessageSend) #createAt:extent: 34 2 514 1 1 514 1169 49 576 983302 ##(Smalltalk.WINDOWPLACEMENT) 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 72 2 0 0 24 0 0 0] 34 1 410 ##(Smalltalk.Toolbar) 34 25 nil 576 34 2 8 1409288972 131137 960 nil 466 8 4278190080 nil 519 nil 263174 ##(Smalltalk.Font) nil true 459014 ##(Smalltalk.LOGFONT) 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 65 114 105 97 108 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 514 193 193 nil 960 466 1040 8 4294904911 170 192 720 170 192 34 10 42727 1115910 ##(Smalltalk.ToolbarIconButton) 42727 nil 960 1 1180998 4 ##(Smalltalk.CommandDescription) #getPreviousObject 8 'Previous Object' 1 1 263494 3 ##(Smalltalk.Icon) nil true 1572870 ##(Smalltalk.ImageRelativeFileLocator) 8 'HistoryBack.ico' 2032142 ##(Smalltalk.STBExternalResourceLibraryProxy) 8 'dolphindr7.dll' nil 395334 3 ##(Smalltalk.Bitmap) nil true nil nil nil nil 3 514 33 33 1 42729 1234 42729 nil 960 1 1266 #getNextObject 8 'Next Object' 1 1 1314 nil true 1360 8 'HistoryForward.ico' 1408 1442 nil true nil nil nil nil 3 514 33 33 1 42731 1234 42731 nil 960 1 1266 #removeObjects 8 'Remove Objects' 1 1 1314 nil true 1360 8 'False.ico' 1408 1442 nil true nil nil nil nil 3 514 33 33 1 42733 1234 42733 nil 960 1 1266 #addObject 8 'Add Object' 1 1 1314 nil true 1360 8 'C:\Users\ewinger\source\repos\Dolphin\Core\DolphinVM\Res\CompiledMethodPublic.ico' nil 1442 nil true nil nil nil nil 3 514 33 33 1 42735 1234 42735 nil 960 1 1266 #openNavigationInspector 8 'Open Navigation Inspector' 1 1 1314 nil true 1360 8 'BasicInspector.ico' 1408 1442 nil true nil nil nil nil 3 514 33 33 1 34 7 1248 1488 1050118 ##(Smalltalk.ToolbarSeparator) nil nil 960 3 nil 1 1600 1712 1954 nil nil 960 3 nil 1 1824 170 176 34 10 1568 3 1680 5 1792 7 1456 1 1904 9 nil 1 nil 514 33 33 514 45 45 nil 656198 1 ##(Smalltalk.FlowLayout) 1 1 1 754 138 144 34 2 818 #createAt:extent: 34 2 514 1 1 514 1169 49 960 818 #updateSizePosted 720 960 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 72 2 0 0 24 0 0 0] 8 #() 514 193 193 nil 27 2272 nil 27 410 ##(Smalltalk.ContainerView) 34 15 nil 416 34 2 8 1140850688 131073 2288 nil nil nil 7 nil nil nil 2288 nil 170 192 34 2 410 ##(Smalltalk.StaticText) 34 16 nil 2288 34 2 8 1140850944 65 2384 nil nil nil 7 nil nil nil 2384 nil 8 1687849632 852486 ##(Smalltalk.NullConverter) nil nil nil 754 138 144 34 2 818 #createAt:extent: 34 2 514 1 1 514 1169 47 2384 818 #text: 34 1 8 'Static Text' 2384 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 72 2 0 0 23 0 0 0] 8 #() 2272 nil 27 8 'statusText' nil 754 138 144 34 1 818 #createAt:extent: 34 2 514 1 733 514 1169 51 2288 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 110 1 0 0 72 2 0 0 135 1 0 0] 34 1 2384 2272 nil 27 nil nil 410 ##(Smalltalk.ContainerView) 34 15 nil 416 34 2 8 1140850688 131073 2880 nil 642 31 nil 7 nil nil nil 2880 674 170 176 34 4 410 ##(Smalltalk.ReferenceView) 34 14 nil 2880 34 2 8 1140850688 131073 3008 nil 466 8 4278190080 nil 7 nil nil nil 3008 1180166 ##(Smalltalk.ResourceIdentifier) ##(Smalltalk.CodeSourcePresenter) #resource_Default_view nil 754 138 144 34 1 818 #createAt:extent: 34 2 514 397 1 514 773 685 3008 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 198 0 0 0 0 0 0 0 72 2 0 0 86 1 0 0] 720 2272 nil 27 5 410 ##(Smalltalk.MultipleSelectionListBox) 34 17 nil 2880 34 2 8 1144064257 1025 3280 590662 2 ##(Smalltalk.ListModel) 138 144 720 nil 1310726 ##(Smalltalk.IdentitySearchPolicy) 466 8 4278190080 nil 7 265030 4 ##(Smalltalk.Menu) nil true 34 5 984134 2 ##(Smalltalk.CommandMenuItem) 1 1266 #removeObjects 8 'Remove Objects' 1 1 nil nil nil 3506 1 1266 #addObject 8 'Add Object' 1 1 nil nil nil 983366 1 ##(Smalltalk.DividerMenuItem) 4097 3506 1 1266 #displayMore 8 'Display More' 1025 1 nil nil nil 3506 1 1266 #displayAll 8 'Display All' 1 1 nil nil nil 8 '' nil 134217729 nil nil nil nil nil nil nil 3280 nil 8 4294903819 459270 ##(Smalltalk.Message) #key 8 #() 720 nil 754 138 144 34 4 818 #createAt:extent: 34 2 514 1 1 514 387 685 3280 818 #contextMenu: 34 1 3472 3280 818 #caretIndex: 8 #(1) 3280 818 #horizontalExtent: 8 #(0) 3280 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 193 0 0 0 86 1 0 0] 8 #() 2272 nil 27 3 false 170 192 34 4 3008 8 'codePane' 3280 8 'instVarList' nil 754 138 144 34 1 818 #createAt:extent: 34 2 514 1 49 514 1169 685 2880 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 24 0 0 0 72 2 0 0 110 1 0 0] 34 3 3280 410 ##(Smalltalk.Splitter) 34 12 nil 2880 34 2 8 1140850688 1 4304 nil 466 8 4278190080 nil 519 nil nil nil 4304 754 138 144 34 1 818 #createAt:extent: 34 2 514 387 1 514 11 685 4304 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 193 0 0 0 0 0 0 0 198 0 0 0 86 1 0 0] 8 #() 2272 nil 27 3008 2272 nil 27 170 192 720 nil 461638 4 ##(Smalltalk.MenuBar) nil true 34 2 3458 nil true 34 15 3506 1 1266 #undo 8 '&Undo' 9397 1 nil nil nil 3506 1 1266 #redo 8 'R&edo' 9395 1 nil nil nil 3618 4097 3506 1 1266 #editCut 8 'Cu&t' 9393 1 nil nil nil 3506 1 1266 #editCopy 8 '&Copy' 9351 1 nil nil nil 3506 1 1266 #editPaste 8 '&Paste' 9389 1 nil nil nil 3506 1 1266 #editSelectAll 8 'Select &All' 9347 1 nil nil nil 3506 1 1266 #editDelete 8 '&Delete' 1629 1 nil nil nil 3618 4097 3506 1 1266 #editFind 8 '&Find...' 9357 1 nil nil nil 3506 1 1266 #editFindNext 8 'Find &Next' 9359 1 nil nil nil 3506 1 1266 #editReplace 8 '&Replace...' 9361 1 nil nil nil 3618 4097 3506 1 1266 #addQuotesToSelection 8 'Add &Quotes' 1 1 nil nil nil 3506 1 1266 #removeQuotesFromSelection 8 'Re&move Quotes' 1 1 nil nil nil 8 '&Edit' nil 1 nil nil 42705 nil nil 3458 nil true 34 12 3506 1 1266 #abortTransaction 8 '&Abort Transaction' 1 1 nil nil nil 3506 1 1266 #commitTransaction 8 '&Commit Transaction' 1 1 nil nil nil 3618 4097 3506 1 1266 #jadeInspect 8 '&Inspect' 9379 1 nil nil nil 3506 1 1266 #jadeDisplay 8 '&Display' 9353 1 nil nil nil 3506 1 1266 #jadeExecute 8 '&Execute' 9355 1 nil nil nil 3506 1 1266 #fileIn 8 'Fi&le In' 1 1 nil nil nil 3618 4097 3506 1 1266 #browseClass 8 '&Browse Class' 9377 1 nil nil nil 3618 4097 3506 1 1266 #displayMore nil 1025 1 nil nil nil 3506 1 1266 #displayAll nil 1 1 nil nil nil 8 '&Jadeite' nil 1 nil nil 42725 nil nil 8 '' nil 1 nil nil nil nil nil nil nil nil 1 nil nil nil nil 1 nil nil 754 138 144 34 3 818 #createAt:extent: 34 2 514 7679 21 514 1201 901 416 818 #text: 34 1 8 'Jade Object Navigation Inspector' 416 818 #updateMenuBar 720 416 898 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 14 0 0 10 0 0 0 87 17 0 0 204 1 0 0] 34 3 576 2880 2288 2272 nil 27 )!
 
 showOn: oop session: aGciSession
 	| inspector |

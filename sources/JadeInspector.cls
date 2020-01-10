@@ -48,9 +48,6 @@ inspectInstVar
 instVarListPresenter
 	^instVarListPresenter!
 
-instVarListPresenter: anObject
-	instVarListPresenter := anObject!
-
 isModified
 
 	^false.
@@ -74,7 +71,6 @@ model: anObject
 !JadeInspector categoriesFor: #expectedModelClass!private! !
 !JadeInspector categoriesFor: #inspectInstVar!accessing!private! !
 !JadeInspector categoriesFor: #instVarListPresenter!accessing!private! !
-!JadeInspector categoriesFor: #instVarListPresenter:!accessing!private! !
 !JadeInspector categoriesFor: #isModified!private! !
 !JadeInspector categoriesFor: #maxPrintStringSize!private! !
 !JadeInspector categoriesFor: #model:!private! !
