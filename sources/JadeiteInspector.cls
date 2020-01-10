@@ -66,14 +66,43 @@ basicAddObject: string
 				ifFalse: [newSelectionIndex + 2].
 	self displayObjectSelecting: newSelectionIndex!
 
+basicRemoveDynamicInstVars
+	"remove dynamics, but let sender remove non-dynamics"
+
+	| dynamicInstVarNames firstSelectionIndex nonDynamicsWereSelected selectionIndicesOfDynamics |
+	firstSelectionIndex := instVarListPresenter selectionsByIndex first.
+	selectionIndicesOfDynamics := instVarListPresenter selectionsByIndex
+				select: [:index | '--*' match: (instVarListPresenter list at: index) key].
+	dynamicInstVarNames := self selectedDynamicInstVars.
+	nonDynamicsWereSelected := instVarListPresenter selections size - dynamicInstVarNames size > 0.
+	model removeDynamicInstVarsNamed: dynamicInstVarNames session: gciSession.
+	instVarListPresenter
+		selectionByIndex: (instVarListPresenter selectionsByIndex difference: selectionIndicesOfDynamics).
+	nonDynamicsWereSelected ifFalse: [self displayObjectSelecting: firstSelectionIndex - 1].
+	^nonDynamicsWereSelected!
+
 basicRemoveFromDictionary
-	| selection newSelectionIndex |
-	selection := instVarListPresenter selection.
-	self model removeKey: (selection first value at: 1) session: gciSession.
+	| selections newSelectionIndex |
+	selections := instVarListPresenter selections collect: [:sel | sel value at: 1].
+	self model removeKeys: selections session: gciSession.
 	newSelectionIndex := instVarListPresenter selectionByIndex first min: model objects size + 2.
 	self displayObjectSelecting: newSelectionIndex.
-	oopsCollection remove: selection first value ifAbsent: [^self].
-	objectIndex := objectIndex - 1!
+	(oopsCollection intersection: selections) do: 
+			[:removedOop |
+			oopsCollection remove: removedOop.
+			objectIndex := objectIndex - selections size]!
+
+basicRemoveObjects
+	| indices |
+	model instVarsAreRemovable ifFalse: [^self].
+	self isDynamicInstVarSelected
+		ifTrue: [self basicRemoveDynamicInstVars ifFalse: [^self]	"might need to remove other elements"].
+	indices := instVarListPresenter selectionByIndex.
+	model isDictionary ifTrue: [^self basicRemoveFromDictionary].
+	self isNamedInstVarSelected ifTrue: [^MessageBox notify: 'Cannot remove inst var'].	"inst var"
+	model isUnordered ifTrue: [^self basicRemoveOop: instVarListPresenter selection value].
+	indices first - model instVarNames size <= 0 ifTrue: [^self].
+	self basicRemoveObjectsAt: indices!
 
 basicRemoveObjectsAt: indices
 	| selections newSelectionIndex |
@@ -255,11 +284,9 @@ isOkayToChange
 	^true!
 
 isProtectedItemSelected
-	| index selection |
-	index := instVarListPresenter selectionByIndex.
-	index = 1 ifTrue: [^true].
-	selection := instVarListPresenter selectionIfNone: [^true].
-	^('-*' match: selection first key ) or: [selection first key = 'self']!
+	instVarListPresenter selections isEmpty ifTrue: [^false].
+	(instVarListPresenter selectionsByIndex includesAnyOf: #(1 2)) ifTrue: [^true].
+	^false!
 
 isSelectionComputed: assoc
 	^assoc key = 'self' or: [assoc key = '-.asOop']!
@@ -368,15 +395,8 @@ registerWindow: handle rootObject: oop
 		session: self gciSession!
 
 removeObjects
-	| indices |
 	(MessageBox confirm: 'Really remove selection(s)?') ifFalse: [^self].
-	model instVarsAreRemovable ifFalse: [^self].
-	indices := instVarListPresenter selectionByIndex.
-	model isDictionary ifTrue: [^self basicRemoveFromDictionary].
-	self isNamedInstVarSelected ifTrue: [^MessageBox notify: 'Cannot remove inst var'].	"inst var"
-	model isUnordered ifTrue: [^self basicRemoveOop: instVarListPresenter selection value].
-	indices first - model instVarNames size <= 0 ifTrue: [^self].
-	self basicRemoveObjectsAt: indices!
+	^self basicRemoveObjects!
 
 reportCompileError: ex
 	| position text |
@@ -409,7 +429,7 @@ saveDocument
 
 saveDynamicInstVar
 	| instVarName |
-	instVarName := self selectedDynamicInstVar.
+	instVarName := self selectedDynamicInstVars.
 	model
 		command: #save:dynamicInstVar:;
 		commandArgs: (Array with: documentPresenter value with: instVarName).
@@ -446,12 +466,11 @@ saveUnorderedElement
 	newSelectionIndex := model objects indexOf: addedObject.
 	self displayObjectSelecting: newSelectionIndex + 2!
 
-selectedDynamicInstVar
+selectedDynamicInstVars
 	"if a named inst var is selected, return it's name as a symbol"
 
-	| key |
-	key := instVarListPresenter selection first key.
-	^(key copyFrom: 3 to: key size) asSymbol!
+	^instVarListPresenter selections select: [:sel | '--*' match: sel key]
+		thenCollect: [:sel | (sel key copyFrom: 3 to: sel key size) asSymbol]!
 
 selectedInstVar
 	| string key | 
@@ -514,7 +533,9 @@ valueOops
 !JadeiteInspector categoriesFor: #addOop:!public! !
 !JadeiteInspector categoriesFor: #basicAddKey:!menu handlers!menu handlers support!operations!private! !
 !JadeiteInspector categoriesFor: #basicAddObject:!menu handlers support!private! !
+!JadeiteInspector categoriesFor: #basicRemoveDynamicInstVars!menu handlers support!operations!private! !
 !JadeiteInspector categoriesFor: #basicRemoveFromDictionary!menu handlers support!operations!private! !
+!JadeiteInspector categoriesFor: #basicRemoveObjects!menu handlers support!operations!private! !
 !JadeiteInspector categoriesFor: #basicRemoveObjectsAt:!menu handlers support!operations!private! !
 !JadeiteInspector categoriesFor: #basicRemoveOop:!menu handlers support!operations!private! !
 !JadeiteInspector categoriesFor: #canSave!private!testing! !
@@ -555,7 +576,7 @@ valueOops
 !JadeiteInspector categoriesFor: #saveIndexedElement!menu handlers support!private! !
 !JadeiteInspector categoriesFor: #saveNamedInstVar!menu handlers support!private! !
 !JadeiteInspector categoriesFor: #saveUnorderedElement!menu handlers support!private! !
-!JadeiteInspector categoriesFor: #selectedDynamicInstVar!private! !
+!JadeiteInspector categoriesFor: #selectedDynamicInstVars!private! !
 !JadeiteInspector categoriesFor: #selectedInstVar!accessing!event handlers!private! !
 !JadeiteInspector categoriesFor: #selectedNamedInstVars!private! !
 !JadeiteInspector categoriesFor: #setNewInspectedObject!public! !

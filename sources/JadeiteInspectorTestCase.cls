@@ -1306,6 +1306,45 @@ test_registeredPresentersInInspectorCleanedUp
 	inspector := nil.
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
 
+test_removeDynamicInstVar
+	| remoteObject |
+	remoteObject := session
+				executeString: '| coll oop inspectorService |
+coll := Array new.
+coll dynamicInstVarAt: #foo put: ''bar''. 
+1 to: 50 do: [:i |
+coll add: ''entry'', i asString].
+oop := coll asOop.
+coll'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: #(3).
+	self assert: inspector documentPresenter value equals: '''bar'''.
+	inspector basicRemoveDynamicInstVars.
+	self assert: inspector instVarListPresenter selectionByIndex equals: #(2).
+	self assert: inspector instVarListPresenter selection first key equals: '-.asOop'!
+
+test_removeDynamicInstVarAndIndexedVar
+	| remoteObject |
+	remoteObject := session
+				executeString: '| coll oop inspectorService |
+coll := Array new.
+coll dynamicInstVarAt: #foo put: ''bar''. 
+1 to: 50 do: [:i |
+coll add: ''entry'', i asString].
+oop := coll asOop.
+coll'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: #(3 4).
+	self assert: inspector documentPresenter value equals: '--foo: ''bar''
+1: ''entry1'''.
+	inspector basicRemoveObjects.
+	self assert: inspector instVarListPresenter selectionByIndex equals: #(4).
+	self assert: inspector statusText equals: 'Displaying 49 of 49 variable inst vars'!
+
 test_removeFromDictionary
 	| remoteObject firstKeyIndex |
 	remoteObject := session
@@ -1538,6 +1577,27 @@ test_removeLastIndexedInstVars
 	self assert: inspector documentPresenter value equals: '$a'.
 	self assert: inspector statusText equals: 'Displaying 1 of 1 variable inst vars'!
 
+test_removeMultipleFromDictionary
+	| remoteObject firstKeyIndex |
+	remoteObject := session
+				executeString: '| dictionary |
+dictionary := Dictionary new.
+UserGlobals at: #dictionary put: Dictionary new. 
+1 to: 12 do: [:i |
+dictionary at: i printString put: ''value'', i printString]. 
+dictionary'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	firstKeyIndex := inspector instVarListPresenter list
+				indexOf: (inspector instVarListPresenter list detect: [:item | item key = '''1''']).
+	inspector instVarListPresenter selectionByIndex: (Array with: firstKeyIndex with: firstKeyIndex + 1).
+	self assert: inspector documentPresenter value equals: '''1'': ''value1''
+''10'': ''value10'''.
+	inspector basicRemoveFromDictionary.
+	self assert: inspector instVarListPresenter selectionByIndex equals: (Array with: firstKeyIndex).
+	self assert: inspector documentPresenter value equals: '''value11'''!
+
 test_replaceSetElement
 	| remoteObject |
 	self testsIssue: #issue104 withTitle: 'Inspector: be nice to be able to apply changes to the object'.
@@ -1679,68 +1739,71 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_adHocInspectComplexObject!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_autoCommitInAdHocInspect!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_autoCommitOffInAdHocInspect!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_basicInspectorDisplayedSizeLimit!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_caption!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_captionChange!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInBasicInspector!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusCodePane!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusInstVars!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_basicInspectorDisplayedSizeLimit!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_caption!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_captionChange!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInBasicInspector!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusCodePane!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusInstVars!public! !
 !JadeiteInspectorTestCase categoriesFor: #test_compileErrorHandling!public!tests modify object! !
-!JadeiteInspectorTestCase categoriesFor: #test_deselectClearsPane!public!tests!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_displayAll!public!tests!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_displayAllMenuEnablement!public!tests!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_displayMore!public!tests!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_displayMoreMenuEnablement!public!tests!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_dive!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_diveIntoDoubleByteString!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_dynamicInstVars!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_dynamicInstVarsInDictionary!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_fileSaveEnabled!public!tests!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_fullInspectArray!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_inspectAsOopField!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_inspectBag!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_inspectDoubleByteString!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_inspectIdentityBag!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_inspectorHandlesError!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_inspectorRootObjectRegistered!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_inspectorRootSpecialObjectNotRegistered!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_inspectRcIdentityBag!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_inspectRcIdentityBagWithUnicodeKey!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_inspectRcQueue!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_inspectSet!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_inspectString!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_interactionInspect!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_menuBarItemNames!public!tests!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_menuItemsEnabled!public!tests!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_deselectClearsPane!public!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_displayAll!public!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_displayAllMenuEnablement!public!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_displayMore!public!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_displayMoreMenuEnablement!public!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_dive!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_diveIntoDoubleByteString!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_dynamicInstVars!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_dynamicInstVarsInDictionary!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_fileSaveEnabled!public!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_forwardBack!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_fullInspectArray!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectAsOopField!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectBag!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectDoubleByteString!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectIdentityBag!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectorHandlesError!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectorRootObjectRegistered!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectorRootSpecialObjectNotRegistered!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectRcIdentityBag!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectRcIdentityBagWithUnicodeKey!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectRcQueue!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectSet!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_inspectString!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_interactionInspect!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_menuBarItemNames!public!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_menuItemsEnabled!public!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_modifyArrayElement!public!tests modify object! !
 !JadeiteInspectorTestCase categoriesFor: #test_modifyDictionaryValue!public!tests modify object! !
 !JadeiteInspectorTestCase categoriesFor: #test_modifyDynamicInstVar!public!tests modify object! !
 !JadeiteInspectorTestCase categoriesFor: #test_modifyNamedInstVar!public!tests modify object! !
 !JadeiteInspectorTestCase categoriesFor: #test_modifyOrderedCollectionElement!public!tests modify object! !
-!JadeiteInspectorTestCase categoriesFor: #test_navigationInspectorDisplayedSizeLimit!public!tests!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowser!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowserOnClass!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnBoolean!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnCharacter!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnFloat!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnNil!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnSmallInteger!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnSymbol!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowser!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowserOnClass!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_registeredPresentersInInspectorCleanedUp!public!tests! !
-!JadeiteInspectorTestCase categoriesFor: #test_removeFromDictionary!public!tests!tests add remove!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_removeFromSymbolDictionary!public!tests!tests add remove!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_removeIndexedInstVar!public!tests!tests add remove!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_removeIndexedInstVars!public!tests!tests add remove!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_removeIndexedInstVarWithDynamic!public!tests!tests add remove!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_removeItemDisabledForInstVars!public!tests!tests add remove!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_removeItemEnabled!public!tests!tests add remove!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_removeLastElementFromDictionary!public!tests!tests add remove!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_navigationInspectorDisplayedSizeLimit!public!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowser!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_openDictionaryBrowserOnClass!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnBoolean!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnCharacter!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnFloat!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnNil!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnSmallInteger!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_openNavigationInspectorOnSymbol!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowser!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowserOnClass!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_registeredPresentersInInspectorCleanedUp!public! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeDynamicInstVar!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeDynamicInstVarAndIndexedVar!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeFromDictionary!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeFromSymbolDictionary!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeIndexedInstVar!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeIndexedInstVars!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeIndexedInstVarWithDynamic!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeItemDisabledForInstVars!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeItemEnabled!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeLastElementFromDictionary!public!tests add remove! !
 !JadeiteInspectorTestCase categoriesFor: #test_removeLastElementOfSet!public!tests add remove! !
-!JadeiteInspectorTestCase categoriesFor: #test_removeLastIndexedInstVar!public!tests!tests add remove!tests menu bar! !
-!JadeiteInspectorTestCase categoriesFor: #test_removeLastIndexedInstVars!public!tests!tests add remove!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeLastIndexedInstVar!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeLastIndexedInstVars!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_removeMultipleFromDictionary!public!tests add remove! !
 !JadeiteInspectorTestCase categoriesFor: #test_replaceSetElement!public!tests modify object! !
 !JadeiteInspectorTestCase categoriesFor: #test_replaceSetElementWhichMovesAfterSave!public!tests modify object! !
 !JadeiteInspectorTestCase categoriesFor: #test_selectAll!public!tests!tests menu bar! !

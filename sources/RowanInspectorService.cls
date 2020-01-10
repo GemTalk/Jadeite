@@ -157,16 +157,22 @@ oop
 oop: anObject
 	oop := anObject!
 
+removeDynamicInstVarsNamed: dynamicInstVarNames session: session
+	self
+		command: #removeDynamicInstVars:;
+		commandArgs: (Array with: dynamicInstVarNames).
+	BrowserUpdate current issueCommands: (Array with: self) session: session!
+
 removeIndexedInstVarsAt: indices session: session
 	self
 		command: #removeIndexedInstVarsAt:;
 		commandArgs: (Array with: indices).
 	BrowserUpdate current issueCommands: (Array with: self) session: session!
 
-removeKey: keyOop session: session
+removeKeys: keyOops session: session
 	self
-		command: #removeKey:;
-		commandArgs: (Array with: keyOop).
+		command: #removeKeys:;
+		commandArgs: (Array with: keyOops).
 	BrowserUpdate current issueCommands: (Array with: self) session: session!
 
 removeOop: theOop session: session
@@ -218,8 +224,9 @@ visibleIndices: anObject
 !RowanInspectorService categoriesFor: #objects:!accessing!private! !
 !RowanInspectorService categoriesFor: #oop!accessing!private! !
 !RowanInspectorService categoriesFor: #oop:!accessing!private! !
+!RowanInspectorService categoriesFor: #removeDynamicInstVarsNamed:session:!operations!public! !
 !RowanInspectorService categoriesFor: #removeIndexedInstVarsAt:session:!operations!public! !
-!RowanInspectorService categoriesFor: #removeKey:session:!operations!public! !
+!RowanInspectorService categoriesFor: #removeKeys:session:!operations!public! !
 !RowanInspectorService categoriesFor: #removeOop:session:!operations!public! !
 !RowanInspectorService categoriesFor: #selectionOop!accessing!private! !
 !RowanInspectorService categoriesFor: #visibleIndices!accessing!private! !
