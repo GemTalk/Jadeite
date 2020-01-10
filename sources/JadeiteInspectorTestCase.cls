@@ -673,7 +673,10 @@ test_fileSaveEnabled
 	self deny: query isEnabled.
 	inspector instVarListPresenter selectionByIndex: #(3).
 	inspector queryCommand: query.
-	self assert: query isEnabled!
+	self deny: query isEnabled. 
+	inspector documentPresenter view isModified: true. 
+	[inspector queryCommand: query.
+	self assert: query isEnabled.  ] ensure: [inspector documentPresenter view isModified: false].!
 
 test_forwardBack
 	| remoteObject backQuery forwardQuery ocIndex |
@@ -1043,7 +1046,7 @@ test_menuItemsEnabled
 			query commandSymbol
 				ifNotNil: 
 					[inspector queryCommand: query.
-					(#(#undo #redo #browseImplementors #browseSenders) includes: query commandSymbol)
+					(#(#undo #redo #browseImplementors #browseSenders #fileSave) includes: query commandSymbol)
 						ifFalse: 
 							["*do doesn't require a selection for enablement"
 							self assert: query isEnabled]]]!

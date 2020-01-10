@@ -286,6 +286,8 @@ isOkayToChange
 isProtectedItemSelected
 	instVarListPresenter selections isEmpty ifTrue: [^false].
 	(instVarListPresenter selectionsByIndex includesAnyOf: #(1 2)) ifTrue: [^true].
+	instVarListPresenter selections
+		do: [:selection | (('-*' match: selection key) and: [('--*' match: selection key) not]) ifTrue: [^true]].
 	^false!
 
 isSelectionComputed: assoc
@@ -429,7 +431,7 @@ saveDocument
 
 saveDynamicInstVar
 	| instVarName |
-	instVarName := self selectedDynamicInstVars.
+	instVarName := self selectedDynamicInstVars first. "only save when one object selected"
 	model
 		command: #save:dynamicInstVar:;
 		commandArgs: (Array with: documentPresenter value with: instVarName).
