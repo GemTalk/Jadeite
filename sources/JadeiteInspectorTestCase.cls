@@ -432,6 +432,36 @@ test_commitTransactionInNavigationInspectorFocusInstVars
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded!
 
+test_compileErrorHandling
+	| remoteObject |
+	self testsIssue: #issue104 withTitle: 'Inspector: be nice to be able to apply changes to the object'.
+	remoteObject := session
+				executeString: 'Array with: 1 with: ''abc'' with: $a'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: 3.	"select the 1st indexed element"
+	inspector documentPresenter value: '2 + '.
+	inspector saveDocument.
+	self assert: inspector documentPresenter value equals: '2 + expected a primary expression>>>>>'.
+	inspector documentPresenter value: 'a'.
+	inspector saveDocument.
+	self assert: inspector documentPresenter value equals: 'undefined symbol>>>>>a'.
+	inspector documentPresenter value: '''abc'.
+	inspector saveDocument.
+	self assert: inspector documentPresenter value
+		equals: '''abcmissing end of literal mark (prime)>>>>>'.
+	inspector documentPresenter value: '| a 
+
+a := 2.
+a'.
+	inspector saveDocument.
+	self assert: inspector documentPresenter value
+		equals:'| a 
+
+variable has already been declared>>>>>a := 2.
+a'!
+
 test_displayAll
 	| remoteObject |
 	self testsIssue: #issue668 withTitle: 'More efficient handling of large collections. #668'.
@@ -1477,6 +1507,34 @@ test_replaceSetElementWhichMovesAfterSave
 	inspector instVarListPresenter selectionByIndex: 10.
 	self assert: inspector documentPresenter value equals: '26'!
 
+test_selectAll
+	| remoteObject |
+	remoteObject := session
+				executeString: '97'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter view selectAll.
+	self assert: inspector instVarListPresenter selections size equals: 2.
+	self assert: inspector documentPresenter value equals: 'self: 97
+-.asOop: 778'!
+
+test_selectAllString
+	| remoteObject |
+	remoteObject := session
+				executeString: '''abc'' copy'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter view selectAll.
+	self assert: inspector instVarListPresenter selections size equals: 5.
+	self
+		assert: ('self: ''abc''
+-.asOop: *
+1: $a
+2: $b
+3: $c' match: inspector documentPresenter value)!
+
 test_showReturnsNavigationInspector
 	| remoteObject |
 	self testsIssue: #issue398 withTitle: 'String Inspectors don''t display lfs'.
@@ -1560,6 +1618,7 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInBasicInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusCodePane!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusInstVars!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_compileErrorHandling!public!tests modify object! !
 !JadeiteInspectorTestCase categoriesFor: #test_displayAll!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_displayAllMenuEnablement!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_displayMore!public!tests!tests menu bar! !
@@ -1614,6 +1673,8 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_removeLastIndexedInstVar!public!tests!tests add remove!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_replaceSetElement!public!tests modify object! !
 !JadeiteInspectorTestCase categoriesFor: #test_replaceSetElementWhichMovesAfterSave!public!tests modify object! !
+!JadeiteInspectorTestCase categoriesFor: #test_selectAll!public!tests!tests menu bar! !
+!JadeiteInspectorTestCase categoriesFor: #test_selectAllString!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_showReturnsNavigationInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_showReturnsStringInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_unicodeInspect1!public!tests! !

@@ -17,7 +17,7 @@ aboutToChange: aSelectionChangingEvent
 !
 
 additionalAccelerators
-	^#(#(#fileSave 'Ctrl+S'))!
+	^#(#(#fileSave 'Ctrl+S') #(#selectAll 'Ctrl+A'))!
 
 addObject
 	| string |
