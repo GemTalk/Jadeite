@@ -462,6 +462,23 @@ a'.
 variable has already been declared>>>>>a := 2.
 a'!
 
+test_deselectClearsPane
+	| remoteObject |
+	remoteObject := session
+				executeString: '97'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	self assert: inspector instVarListPresenter selectionByIndex equals: #(1).
+	self assert: inspector documentPresenter value equals: '97'.
+	inspector instVarListPresenter view selectAll.
+	self assert: inspector instVarListPresenter selections size equals: 2.
+	self assert: inspector documentPresenter value equals: 'self: 97
+-.asOop: 778'.
+	inspector instVarListPresenter view selections: #().
+	self assert: inspector documentPresenter value equals: String new. 
+	!
+
 test_displayAll
 	| remoteObject |
 	self testsIssue: #issue668 withTitle: 'More efficient handling of large collections. #668'.
@@ -1669,6 +1686,7 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusCodePane!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusInstVars!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_compileErrorHandling!public!tests modify object! !
+!JadeiteInspectorTestCase categoriesFor: #test_deselectClearsPane!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_displayAll!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_displayAllMenuEnablement!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_displayMore!public!tests!tests menu bar! !

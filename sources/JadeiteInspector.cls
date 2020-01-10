@@ -269,13 +269,9 @@ isSelfSelected
 
 multipleInstVarsSelected
 	| writeStream oops answeringService computedSelections contents boldNeeded |
-	instVarListPresenter selections isEmpty
-		ifTrue: 
-			[documentPresenter value: String new.
-			^self].
 	documentPresenter view stylerClass: NullScintillaStyler.
 	writeStream := WriteStream on: String new.
-	oops := self nonComputedListSelections collect: [:assoc | assoc value].
+	oops := self valueOops.	"dictionary"
 	answeringService := RowanAnsweringService new.
 	answeringService
 		command: #printStringOfOops:toMaxSize:;
@@ -493,7 +489,11 @@ setNewInspectedObject
 shouldEnableFileSave: query
 	(instVarListPresenter selectionIfNone: [])
 		ifNil: [query isEnabled: false]
-		ifNotNil: [query isEnabled: (self isSelfSelected not and: [self isAsOopSelected not])]!
+		ifNotNil: 
+			[query
+				isEnabled: (documentPresenter view isModified and: 
+							[self isSelfSelected not
+								and: [self isAsOopSelected not and: [instVarListPresenter selections size = 1]]])]!
 
 showOn: service
 	model := service.
@@ -503,7 +503,11 @@ showOn: service
 	self addOop: self model oop!
 
 statusText
-	^statusTextPresenter value! !
+	^statusTextPresenter value!
+
+valueOops
+	^self nonComputedListSelections
+		collect: [:assoc | assoc value isNumber ifTrue: [assoc value] ifFalse: [assoc value last	"dictionary"]]! !
 !JadeiteInspector categoriesFor: #aboutToChange:!event handlers!private! !
 !JadeiteInspector categoriesFor: #additionalAccelerators!constants!public! !
 !JadeiteInspector categoriesFor: #addObject!menu handlers!operations!public! !
@@ -558,6 +562,7 @@ statusText
 !JadeiteInspector categoriesFor: #shouldEnableFileSave:!private!testing! !
 !JadeiteInspector categoriesFor: #showOn:!displaying!public! !
 !JadeiteInspector categoriesFor: #statusText!accessing!public! !
+!JadeiteInspector categoriesFor: #valueOops!event handlers support!private! !
 
 !JadeiteInspector class methodsFor!
 
