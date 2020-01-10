@@ -454,12 +454,12 @@ selectedDynamicInstVar
 	^(key copyFrom: 3 to: key size) asSymbol!
 
 selectedInstVar
-	| string key |
+	| string key | 
 	instVarListPresenter selections isEmpty
 		ifTrue: 
 			[documentPresenter value: String new.
 			^self].
-	instVarListPresenter selections size > 1 ifTrue: [^self multipleInstVarsSelected].
+	instVarListPresenter selections size > 1 ifTrue: [ ^self multipleInstVarsSelected].
 	documentPresenter view stylerClass: SmalltalkExpressionStyler.
 	key := instVarListPresenter selections first key.
 	(key = 'self' or: [key = '-.asOop'])

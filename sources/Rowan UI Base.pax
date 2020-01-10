@@ -358,6 +358,7 @@ package methodNames
 	add: #MethodSourcePresenter -> #methodMenuBreak:;
 	add: #MethodSourcePresenter -> #updateMethodSource;
 	add: #MethodSourcePresenter -> #updateMethodStepPoints;
+	add: #MultipleSelectionListBox -> #wmRButtonDown:wParam:lParam:;
 	add: #Object -> #basicPrepareForReplication;
 	add: #Object -> #isClassService;
 	add: #Object -> #isMethodService;
@@ -4753,6 +4754,25 @@ updateMethodStepPoints
 !MethodSourcePresenter categoriesFor: #methodMenuBreak:!Jade!public! !
 !MethodSourcePresenter categoriesFor: #updateMethodSource!public! !
 !MethodSourcePresenter categoriesFor: #updateMethodStepPoints!public! !
+
+!MultipleSelectionListBox methodsFor!
+
+wmRButtonDown: message wParam: wParam lParam: lParam
+	"Handle a WM_RBUTTONDOWN. We select the item under the mouse before
+	passing control on."
+
+	"Overridden by Jadeite to avoid losing multiple selections" 
+
+	| sel |
+	sel := self selectionFromPoint: lParam lowPartSigned @ lParam highPartSigned.
+	sel := (self selectionByIndex , sel) asSet asSortedCollection asArray.
+	sel notNil ifTrue: [self selectionsByIndex: sel].
+	^self interactor onRightButtonPressed: (MouseEvent
+				window: self
+				message: message
+				wParam: wParam
+				lParam: lParam)! !
+!MultipleSelectionListBox categoriesFor: #wmRButtonDown:wParam:lParam:!event handlers!public! !
 
 !Object methodsFor!
 
