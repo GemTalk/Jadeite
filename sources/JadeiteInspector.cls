@@ -95,7 +95,11 @@ basicRemoveOop: oop
 	objectIndex := objectIndex - 1!
 
 canSave
-	^self isSelfSelected not and: [self isAsOopSelected not]!
+	^instVarListPresenter selections size = 1
+		and: [self isSelfSelected not and: [self isAsOopSelected not]]!
+
+computedListSelections
+	^instVarListPresenter selections difference: self nonComputedListSelections!
 
 createComponents
 
@@ -151,7 +155,8 @@ displayObjectSelecting: selectionIndex
 				value: 'Displaying ' , model visibleIndices printString , ' of ' , model indexedSize printString
 						, (model isDictionary ifTrue: [' keys'] ifFalse: [' variable inst vars'])]
 		ifFalse: [statusTextPresenter value: nil].
-	className := model className!
+	className := model className.
+	documentPresenter view isModified: false. !
 
 dynamicInstVars
 	^instVarListPresenter list select: [:instVar | '--*' match: instVar key]!
@@ -248,8 +253,17 @@ isProtectedItemSelected
 	selection := instVarListPresenter selectionIfNone: [^true].
 	^'-*' match: selection key!
 
+isSelectionComputed: assoc
+	^assoc key = 'self' or: [assoc key = '-.asOop']!
+
 isSelfSelected
 	^instVarListPresenter selection key = 'self'!
+
+nonComputedListSelections
+	| computedSelections |
+	computedSelections := instVarListPresenter selections
+				reject: [:assoc | self isSelectionComputed: assoc].
+	^computedSelections!
 
 objectIsVariable
 	| answeringService |
@@ -313,6 +327,14 @@ removeObject
 	index - model instVarNames size <= 0 ifTrue: [^self].
 	self basicRemoveObjectAt: index!
 
+reportCompileError: ex
+	| position text |
+	text := (ex list first at: 3) , '>>>>>'.
+	position := ex list first at: 2.
+	documentPresenter view caretPosition: position.
+	documentPresenter view insertText: text size from: text.
+	^documentPresenter view selectionRange: (position to: position + text size - 1)!
+
 saveDictionaryElement
 	| keyOop |
 	keyOop := instVarListPresenter selection value first.
@@ -325,11 +347,14 @@ saveDictionaryElement
 saveDocument
 	(self isSelfSelected or: [self isAsOopSelected])
 		ifTrue: [^MessageBox notify: 'Cannot modify Self or the oop'].
-	self isDynamicInstVarSelected ifTrue: [^self saveDynamicInstVar].
+	
+	[self isDynamicInstVarSelected ifTrue: [^self saveDynamicInstVar].
 	self isNamedInstVarSelected ifTrue: [^self saveNamedInstVar].
 	model isDictionary ifTrue: [^self saveDictionaryElement].
 	model isUnordered ifTrue: [^self saveUnorderedElement].
-	self saveIndexedElement!
+	self saveIndexedElement]
+			on: GsCompileError
+			do: [:ex | self reportCompileError: ex]!
 
 saveDynamicInstVar
 	| instVarName |
@@ -380,6 +405,7 @@ selectedDynamicInstVar
 selectedInstVar
 	| string |
 	instVarListPresenter selectionIfNone: [^self selectedMultipleInstVarsOrNone].
+	documentPresenter view stylerClass: SmalltalkExpressionStyler.
 	(instVarListPresenter selection key = 'self' or: [instVarListPresenter selection key = '-.asOop'])
 		ifTrue: 
 			[documentPresenter value: instVarListPresenter selection value.
@@ -395,25 +421,51 @@ selectedInstVar
 	documentPresenter value: string!
 
 selectedMultipleInstVarsOrNone
-	| writeStream oops answeringService |
-	instVarListPresenter selections isEmpty ifTrue: [^self].
+	| writeStream oops answeringService computedSelections contents boldNeeded |
+	instVarListPresenter selections isEmpty
+		ifTrue: 
+			[documentPresenter value: String new.
+			^self].
+	documentPresenter view stylerClass: NullScintillaStyler.
 	writeStream := WriteStream on: String new.
-	oops := instVarListPresenter selections collect: [:assoc | assoc value].
+	oops := self nonComputedListSelections collect: [:assoc | assoc value].
 	answeringService := RowanAnsweringService new.
 	answeringService
 		command: #printStringOfOops:toMaxSize:;
 		commandArgs: (Array with: oops with: self maxPrintStringSize).
 	self issueCommand: (Array with: answeringService).
-	1 to: instVarListPresenter selections size
-		do: 
-			[:index |
+	computedSelections := self computedListSelections.
+	boldNeeded := OrderedCollection new.
+	computedSelections do: 
+			[:assoc |
+			boldNeeded add: (writeStream position to: writeStream position + assoc key size).
 			writeStream
-				nextPutAll: (instVarListPresenter selections at: index) key;
+				nextPutAll: assoc key;
 				nextPut: $:;
 				space;
-				nextPutAll: (answeringService answer at: index).
-			index = (instVarListPresenter selections size) ifFalse: [writeStream cr]].
-	documentPresenter value: writeStream contents!
+				nextPutAll: assoc value;
+				cr].
+	1 to: oops size
+		do: 
+			[:index |
+			| key |
+			key := (instVarListPresenter selections at: index + computedSelections size) key.
+			boldNeeded add: (writeStream position to: writeStream position + key size).
+			writeStream
+				nextPutAll: key;
+				nextPut: $:;
+				space;
+				nextPutAll: (answeringService answer at: index);
+				cr].
+	contents := writeStream contents.
+	contents last = Character lf
+		ifTrue: [contents := contents copyFrom: 1 to: contents size - 2	"crlf"].
+	documentPresenter value: contents.
+	documentPresenter view removeAllStyling.
+	boldNeeded do: 
+			[:interval |
+			documentPresenter view startStylingFrom: interval start.
+			documentPresenter view applyStyle: #literalArray toNext: interval size	"serves as a cheap way to get bold text"]!
 
 selectedNamedInstVar
 	"if a named inst var is selected, return it's name as a symbol"
@@ -449,6 +501,7 @@ statusText
 !JadeiteInspector categoriesFor: #basicRemoveObjectAt:!operations!private! !
 !JadeiteInspector categoriesFor: #basicRemoveOop:!operations!private! !
 !JadeiteInspector categoriesFor: #canSave!private!testing! !
+!JadeiteInspector categoriesFor: #computedListSelections!event handlers support!private! !
 !JadeiteInspector categoriesFor: #createComponents!initialize!public! !
 !JadeiteInspector categoriesFor: #createSchematicWiring!initialize!private! !
 !JadeiteInspector categoriesFor: #displayAll!displaying!menu handlers!public! !
@@ -469,12 +522,15 @@ statusText
 !JadeiteInspector categoriesFor: #isNamedInstVarSelected!private!testing! !
 !JadeiteInspector categoriesFor: #isOkayToChange!private!testing! !
 !JadeiteInspector categoriesFor: #isProtectedItemSelected!private!testing! !
+!JadeiteInspector categoriesFor: #isSelectionComputed:!event handlers support!private! !
 !JadeiteInspector categoriesFor: #isSelfSelected!private!testing! !
+!JadeiteInspector categoriesFor: #nonComputedListSelections!event handlers support!private! !
 !JadeiteInspector categoriesFor: #objectIsVariable!private!testing! !
 !JadeiteInspector categoriesFor: #printInstVar!displaying!event handlers support!private! !
 !JadeiteInspector categoriesFor: #queryCommand:!menu handlers support!private! !
 !JadeiteInspector categoriesFor: #registerWindow:rootObject:!private! !
 !JadeiteInspector categoriesFor: #removeObject!menu handlers!operations!public! !
+!JadeiteInspector categoriesFor: #reportCompileError:!menu handlers support!private! !
 !JadeiteInspector categoriesFor: #saveDictionaryElement!menu handlers support!private! !
 !JadeiteInspector categoriesFor: #saveDocument!menu handlers!public! !
 !JadeiteInspector categoriesFor: #saveDynamicInstVar!menu handlers support!private! !
@@ -486,7 +542,7 @@ statusText
 !JadeiteInspector categoriesFor: #selectedMultipleInstVarsOrNone!event handlers support!private! !
 !JadeiteInspector categoriesFor: #selectedNamedInstVar!private! !
 !JadeiteInspector categoriesFor: #setNewInspectedObject!public! !
-!JadeiteInspector categoriesFor: #shouldEnableFileSave:!menu handlers support!private!testing! !
+!JadeiteInspector categoriesFor: #shouldEnableFileSave:!private!testing! !
 !JadeiteInspector categoriesFor: #showOn:!displaying!public! !
 !JadeiteInspector categoriesFor: #statusText!accessing!public! !
 
