@@ -44,3 +44,11 @@ selector
 !MCAddition categoriesFor: #modificationText!public! !
 !MCAddition categoriesFor: #selector!public! !
 
+!MCAddition class methodsFor!
+
+icon
+	"Answers an Icon that can be used to represent this class"
+
+	^(self environment at: #Icon) fromId: (File composeStem: 'CompiledMethod' extension: 'ico')! !
+!MCAddition class categoriesFor: #icon!public! !
+

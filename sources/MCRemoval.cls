@@ -45,3 +45,10 @@ selector
 !MCRemoval categoriesFor: #obsoletionText!public! !
 !MCRemoval categoriesFor: #selector!public! !
 
+!MCRemoval class methodsFor!
+
+icon
+	"Answers an Icon that can be used to represent this class"
+	^False icon! !
+!MCRemoval class categoriesFor: #icon!public! !
+

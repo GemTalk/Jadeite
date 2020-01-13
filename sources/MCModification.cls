@@ -195,3 +195,11 @@ selector
 !MCModification categoriesFor: #obsoletionText!public! !
 !MCModification categoriesFor: #selector!public! !
 
+!MCModification class methodsFor!
+
+icon
+	"Answers an Icon that can be used to represent this class"
+	^Icon fromFile: 'Changed.ico'
+! !
+!MCModification class categoriesFor: #icon!public! !
+

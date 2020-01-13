@@ -101,7 +101,7 @@ raiseConsole
 refresh
 	| projectService operations |
 	projectService := RowanProjectService new name: name.
-	operations := projectService basicChangesUsing: gciSession.
+	operations := projectService basicChangesUsing: gciSession. 
 	operationListPresenter list: operations!
 
 refreshIdenticalSource
