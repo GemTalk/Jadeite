@@ -233,6 +233,7 @@ methodValueChanged
 
 onCloseRequested: boolValueHolder
 	self isOkayToChangeFrame ifFalse: [^self].
+	self class lastPosition: self view position.
 	super onCloseRequested: boolValueHolder!
 
 onIdleEntered
