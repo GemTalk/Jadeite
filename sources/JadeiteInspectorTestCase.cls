@@ -224,6 +224,23 @@ test_addStringToString
 	self assert: inspector instVarListPresenter selection first key equals: 'self'.	"last char selected. add string to end"
 	self assert: inspector documentPresenter value equals: '''abmdabczzz'''!
 
+test_adHocExecution
+	"sanity test that ad-hoc executions in the pane work"
+
+	| workspace |
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	workspace setDocumentData: 'Array with: 1 with: 2'.
+	workspace setFocus.
+	inspector := workspace codePane jadeInspect.
+	inspector documentPresenter value: 'self size'.
+	inspector documentPresenter parentPresenter jadeDisplay.
+	self assert: inspector documentPresenter value equals: 'self size 2']
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
 test_adHocInspect
 	| workspace |
 	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
@@ -1738,6 +1755,7 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_addObjectToArrayWithDynamic!public!tests add remove! !
 !JadeiteInspectorTestCase categoriesFor: #test_addObjectToDictionary!public!tests add remove! !
 !JadeiteInspectorTestCase categoriesFor: #test_addStringToString!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_adHocExecution!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_adHocInspect!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_adHocInspectComplexObject!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_autoCommitInAdHocInspect!public!tests! !
