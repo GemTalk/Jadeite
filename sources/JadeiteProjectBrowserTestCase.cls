@@ -1963,6 +1963,33 @@ test_deselectProjectOnly
 	self deselectProjects.
 	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 Projects'!
 
+test_dirtyPackages
+	self testsIssue: #issue539 withTitle: '(3.077) package not shown as dirty until it is reselected'.
+	self selectRowanSample1Test.
+	self assert: self projectListPresenter selections first name equals: 'RowanSample1'.
+	self deny: self projectListPresenter selections first isDirty.
+	self assert: self packageListPresenter selections first name equals: 'RowanSample1-Tests'.
+	self deny: self packageListPresenter selections first isDirty.
+	self selectMethodNamed: #test1.
+	self
+		saveMethod: 'test1 self assert: true'
+		in: 'RowanSample1Test'
+		category: 'tests'.
+	self assert: self projectListPresenter selections first name equals: 'RowanSample1'.
+	self assert: self projectListPresenter selections first isDirty.
+	self assert: self packageListPresenter selections first name equals: 'RowanSample1-Tests'.
+	self assert: self packageListPresenter selections first isDirty.
+	self selectRowanSample1Class.
+	self assert: self packageListPresenter selections first name equals: 'RowanSample1-Core'.
+	self deny: self packageListPresenter selections first isDirty.
+	self selectMethodNamed: #foo.
+	self
+		saveMethod: 'foo ^1'
+		in: 'RowanSample1'
+		category: 'accessing'.
+	self assert: self packageListPresenter selections first name equals: 'RowanSample1-Core'.
+	self assert: self packageListPresenter selections first isDirty!
+
 test_displayCompileWarningsNicely
 	self testsIssue: #issue509 withTitle: 'Warning for unused temps should be grouped better (3.0.75)'.
 	self selectRowanSample1Test.
@@ -5457,6 +5484,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectProjectOnly!public!test system tabs! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dirtyPackages!public!test packages! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_displayCompileWarningsNicely!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontChangeTabOnMethodSave!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontOverrideExistingAccessorMethods!public!test variable tab!tests! !
