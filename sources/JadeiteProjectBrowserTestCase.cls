@@ -694,16 +694,16 @@ test_adHocInspectComplexObjectInProjectBrowser
 	self methodSourcePresenter setFocus.
 	
 	[inspector := self projectsPresenter jadeInspect.
-	self assert: (inspector model value isKindOf: Integer).	"the oop"
-	self assert: inspector instVarListPresenter selection key equals: 'self'.
-	self assert: inspector instVarListPresenter selection value equals: 'RowanSample1Test>>#test1'.
-	inspector instVarListPresenter selectionByIndex: 2.
-	self assert: inspector instVarListPresenter selection key equals: '-.asOop'.
-	self assert: inspector instVarListPresenter selection value
-		equals: inspector model value printString.
-	inspector instVarListPresenter selectionByIndex: 3.
-	self assert: inspector instVarListPresenter selection key equals: '-testSelector'.
-	self assert: (inspector instVarListPresenter selection value isKindOf: OopType64)]
+	self assert: (inspector model oop isKindOf: Integer).	"the oop"
+	self assert: inspector instVarListPresenter selections first key equals: 'self'.
+	self assert: inspector instVarListPresenter  selections first  value equals: 'RowanSample1Test>>#test1'.
+	inspector instVarListPresenter selectionByIndex: #(2).
+	self assert: inspector instVarListPresenter  selections first  key equals: '-.asOop'.
+	self assert: inspector instVarListPresenter  selections first  value
+		equals: inspector model oop printString.
+	inspector instVarListPresenter selectionByIndex: #(3).
+	self assert: inspector instVarListPresenter  selections first  key equals: '-testSelector'.
+	self assert: (inspector instVarListPresenter  selections first  value isKindOf: Integer)]
 			ensure: 
 				[inspector view close.
 				self methodSourcePresenter view isModified: false]!
@@ -715,28 +715,28 @@ test_adHocInspectComplexObjectInProjectBrowser2
 	self methodSourcePresenter setFocus.
 	
 	[inspector := self projectsPresenter jadeInspect.
-	self assert: (inspector model value isKindOf: Integer).	"the oop"
-	self assert: inspector instVarListPresenter selection key equals: 'self'.
-	self assert: inspector instVarListPresenter selection value equals: 'aClassOrganizer'.
-	inspector instVarListPresenter selectionByIndex: 2.
-	self assert: inspector instVarListPresenter selection key equals: '-.asOop'.
-	self assert: inspector instVarListPresenter selection value
-		equals: inspector model value printString.
-	inspector instVarListPresenter selectionByIndex: 3.
-	self assert: inspector instVarListPresenter selection key equals: '-classes'. 
-	self assert: (inspector instVarListPresenter selection value isKindOf: OopType64).
+	self assert: (inspector model oop isKindOf: Integer).	"the oop"
+	self assert: inspector instVarListPresenter  selections first  key equals: 'self'.
+	self assert: inspector instVarListPresenter  selections first  value equals: 'aClassOrganizer'.
+	inspector instVarListPresenter selectionByIndex: #(2).
+	self assert: inspector instVarListPresenter  selections first  key equals: '-.asOop'.
+	self assert: inspector instVarListPresenter  selections first  value
+		equals: inspector model oop printString.
+	inspector instVarListPresenter selectionByIndex: #(3).
+	self assert: inspector instVarListPresenter  selections first  key equals: '-classes'. 
+	self assert: (inspector instVarListPresenter  selections first  value isKindOf: Integer).
 	self assert: ('aClassSet(*' match: inspector documentPresenter value).
-	inspector instVarListPresenter selectionByIndex: 4.
-	self assert: inspector instVarListPresenter selection key equals: '-classNames'. 
-	self assert: inspector instVarListPresenter selection value equals: (OopType64 fromInteger: 20).
+	inspector instVarListPresenter selectionByIndex: #(4).
+	self assert: inspector instVarListPresenter  selections first  key equals: '-classNames'. 
+	self assert: inspector instVarListPresenter  selections first  value equals: 20.
 	self assert: inspector documentPresenter value equals: 'nil'.
-	inspector instVarListPresenter selectionByIndex: 5.
-	self assert: inspector instVarListPresenter selection key equals: '-user'.
-	self assert: (inspector instVarListPresenter selection value isKindOf: OopType64).
+	inspector instVarListPresenter selectionByIndex: #(5).
+	self assert: inspector instVarListPresenter  selections first  key equals: '-user'.
+	self assert: (inspector instVarListPresenter  selections first  value isKindOf: Integer).
 	self assert: ('aSymbolList( aSymbolDictionary(*' match: inspector documentPresenter value).
-	inspector instVarListPresenter selectionByIndex: 8.
-	self assert: inspector instVarListPresenter selection key equals: '-rootClass'. 
-	self assert: (inspector instVarListPresenter selection value isKindOf: OopType64).
+	inspector instVarListPresenter selectionByIndex: #(8).
+	self assert: inspector instVarListPresenter  selections first  key equals: '-rootClass'. 
+	self assert: (inspector instVarListPresenter  selections first  value isKindOf: Integer).
 	self assert: inspector documentPresenter value equals: 'Object'
 	]
 			ensure: 
@@ -3499,7 +3499,7 @@ test_noSelectionHierarchy
 	self assert: (childrensNames includes: 'RowanService').
 	self deny: (childrensNames includes: 'RowanClassService').
 	grandchildren := self classHierarchyPresenter model getChildrenOf: (children detect: [:classService | classService name = 'RowanService']).
-	self assert: grandchildren size equals: 15. "this will probably change but it's a nice test to ensure all the expected services are present"
+	self assert: grandchildren size equals: 16. "this will probably change but it's a nice test to ensure all the expected services are present"
 	grandchildrensNames := grandchildren collect: [:classService | classService name].
 	self assert: (grandchildrensNames at: 1) equals: 'RowanAnsweringService'.
 	self assert: (grandchildrensNames at: 2) equals: 'RowanAutoCommitService'.
@@ -3508,14 +3508,15 @@ test_noSelectionHierarchy
 	self assert: (grandchildrensNames at: 5) equals: 'RowanDebuggerService'.
 	self assert: (grandchildrensNames at: 6) equals: 'RowanDictionaryService'.
 	self assert: (grandchildrensNames at: 7) equals: 'RowanFrameService'.
-	self assert: (grandchildrensNames at: 8) equals: 'RowanLoggingService'.
-	self assert: (grandchildrensNames at: 9) equals: 'RowanMethodService'.
-	self assert: (grandchildrensNames at: 10) equals: 'RowanPackageService'.
-	self assert: (grandchildrensNames at: 11) equals: 'RowanProcessService'.
-	self assert: (grandchildrensNames at: 12) equals: 'RowanProjectService'.
-	self assert: (grandchildrensNames at: 13) equals: 'RowanQueryService'.
-	self assert: (grandchildrensNames at: 14) equals: 'RowanTestService'.
-	self assert: (grandchildrensNames at: 15) equals: 'RowanVariableService'.
+	self assert: (grandchildrensNames at: 8) equals: 'RowanInspectorService'.
+	self assert: (grandchildrensNames at: 9) equals: 'RowanLoggingService'.
+	self assert: (grandchildrensNames at: 10) equals: 'RowanMethodService'.
+	self assert: (grandchildrensNames at: 11) equals: 'RowanPackageService'.
+	self assert: (grandchildrensNames at: 12) equals: 'RowanProcessService'.
+	self assert: (grandchildrensNames at: 13) equals: 'RowanProjectService'.
+	self assert: (grandchildrensNames at: 14) equals: 'RowanQueryService'.
+	self assert: (grandchildrensNames at: 15) equals: 'RowanTestService'.
+	self assert: (grandchildrensNames at: 16) equals: 'RowanVariableService'.
 
 !
 

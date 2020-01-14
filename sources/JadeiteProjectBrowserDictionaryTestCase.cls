@@ -429,9 +429,9 @@ test_globalsDoubleClick
 	self projectsPresenter globalsTab onActionPerformed. "double click"
 	inspector := JadeiteInspector allInstances first.
 	self assert: inspector documentPresenter value equals: 'false'.
-	inspector instVarListPresenter selectionByIndex: 2.
-	self assert: inspector documentPresenter value equals: 12.
-	self assert: inspector instVarListPresenter selection key equals: '-.asOop']
+	inspector instVarListPresenter selectionByIndex: #(2).
+	self assert: inspector documentPresenter value equals: '12'.
+	self assert: inspector instVarListPresenter selections first key equals: '-.asOop']
 			ensure: 
 				[session executeString: 'UserGlobals removeKey: #test_globalsDoubleClick'.
 				inspector view close]!
@@ -451,9 +451,9 @@ test_globalsInspectMenuItem
 	self projectsPresenter globalsTab selection: selection.
 	inspector := self projectsPresenter inspectGlobal.
 	self assert: inspector documentPresenter value equals: 'true'.
-	inspector instVarListPresenter selectionByIndex: 2.
-	self assert: inspector documentPresenter value equals: 268.
-	self assert: inspector instVarListPresenter selection key equals: '-.asOop']
+	inspector instVarListPresenter selectionByIndex: #(2).
+	self assert: inspector documentPresenter value equals: '268'.
+	self assert: inspector instVarListPresenter selections first key equals: '-.asOop']
 			ensure: 
 				[session executeString: 'UserGlobals removeKey: #test_globalsContextMenu'.
 				inspector view close]!

@@ -634,9 +634,9 @@ test_workspaceSymbolSendersRemoveSpaces
 	browseSendersItem := menu items
 				detect: [:menuItem | menuItem isDivider not and: [menuItem command asSymbol = #browseSendersOf:]]
 				ifNone: [].
-	self assert: browseSendersItem text equals: 'Browse Senders of #abc:defeft'.
+	self assert: browseSendersItem text equals: 'Browse Senders of #abc:'.
 	methodListBrowser := browseSendersItem command value.
-	[self assert: ('Senders of ''abc:defeft''*' match: methodListBrowser caption)]
+	[self assert: ('Senders of ''abc:''*' match: methodListBrowser caption)]
 		ensure: [methodListBrowser view close]!
 
 test_workspaceSymbolSendersTruncateLongSelectors

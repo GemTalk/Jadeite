@@ -106,7 +106,7 @@ denyProjectInList: name
 
 deselectProjects
 
-	self projectListPresenter selectionByIndex: #(0)!
+	self projectListPresenter selectionByIndex: 0!
 
 destroy: visualThing
 	(Delay forMilliseconds: 2) wait.

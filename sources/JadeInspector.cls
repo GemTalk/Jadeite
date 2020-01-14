@@ -11,7 +11,7 @@ JadeInspector comment: ''!
 !JadeInspector methodsFor!
 
 contextObject
-	^model oop!
+	^model!
 
 createComponents
 

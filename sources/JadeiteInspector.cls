@@ -134,6 +134,9 @@ canSave
 computedListSelections
 	^instVarListPresenter selections difference: self nonComputedListSelections!
 
+contextObject
+	^model oop!
+
 createComponents
 
 	super createComponents. 
@@ -542,6 +545,7 @@ valueOops
 !JadeiteInspector categoriesFor: #basicRemoveOop:!menu handlers support!operations!private! !
 !JadeiteInspector categoriesFor: #canSave!private!testing! !
 !JadeiteInspector categoriesFor: #computedListSelections!event handlers support!private! !
+!JadeiteInspector categoriesFor: #contextObject!private! !
 !JadeiteInspector categoriesFor: #createComponents!initialize!public! !
 !JadeiteInspector categoriesFor: #createSchematicWiring!initialize!private! !
 !JadeiteInspector categoriesFor: #displayAll!displaying!menu handlers!public! !

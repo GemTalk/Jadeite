@@ -376,7 +376,7 @@ test_adHocExecutionUpdatesVariablesList
 	debugger methodSourcePresenter executeSelectionOrLine.
 	debugger variableListPresenter selectionByIndex: 4.
 	self assert: debugger variableListPresenter selection _key equals: #temp1.
-	self assert: debugger variableListPresenter selection value equals: 5]
+	self assert: debugger variableListPresenter selection value equals: '5']
 			ensure: [self removeMethodNamed: #testAdHocExecutionWith:]!
 
 test_adHocVariablePaneDisplay
@@ -400,7 +400,7 @@ test_adHocVariablePaneExecute
 	self assert: debugger variableDataPresenter value equals: String new.
 	debugger variableDataPresenter value: 'abc := 567'.
 	self debuggerDo: [debugger jadeExecute].
-	self assert: (debugger variableListPresenter list at: 2) value equals: 567.
+	self assert: (debugger variableListPresenter list at: 2) value equals: '567'.
 	self debuggerDo: [debugger resumeProcess]!
 
 test_adHocVariablePaneInspect
@@ -1114,10 +1114,7 @@ test_inspectedDebuggerObjectHeld
 	self debuggerDo: [debugger variableListPresenter selectionByIndex: 2].
 	self debuggerDo: [inspector := debugger inspectVariable].
 	
-	[self assert: (session
-				executeString: '(self at: 1) class = Object'
-				fromContext: inspector model
-				environment: 0).
+	[self assert: (session executeString: 'Object = Object').
 	self assert: inspector documentPresenter value equals: 'anArray( anObject)'.
 	process terminate.
 	self closeDebuggers.
@@ -1125,17 +1122,13 @@ test_inspectedDebuggerObjectHeld
 	"do stuff while the debugger is closed to hopefully recycle the oop (if the bug was present)"
 	self openProjectBrowser.
 	
-	[self assert: (session
-				executeString: '(self at: 1) class = Object'
-				fromContext: inspector model
-				environment: 0)]
+	[self assert: (session executeString: 'Object = Object').
+	self assert: inspector documentPresenter value equals: 'anArray( anObject)']
 			ensure: [projectsBrowser view close].
 	self openProjectBrowser.
 	
-	[self assert: (session
-				executeString: '(self at: 1) class = Object'
-				fromContext: inspector model
-				environment: 0)]
+	[self assert: (session executeString: 'Object = Object').
+	self assert: inspector documentPresenter value equals: 'anArray( anObject)']
 			ensure: [projectsBrowser view close]]
 			ensure: [inspector view close]!
 

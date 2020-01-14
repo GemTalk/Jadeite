@@ -301,7 +301,6 @@ selectAll
 
 selectedClassName
 	"assume the selection is the class name" 
-	self halt. 
 	^documentPresenter selection
 	!
 
