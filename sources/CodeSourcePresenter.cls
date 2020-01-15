@@ -192,12 +192,13 @@ isModified
 	^documentPresenter isModified!
 
 jadeDebug
-	[
-		gciSession debugString: self currentSelectionOrLine fromContext: model environment: environment.
-	] on: GsCompileError do: [:ex | 
-		self jadeExecute.
-	].
-!
+	
+	[gciSession
+		debugString: self currentSelectionOrLine
+		fromContext: (OopType64 fromInteger: self inspectorContextObject)
+		environment: environment]
+			on: GsCompileError
+			do: [:ex | self jadeExecute]!
 
 jadeDisplay
 	self jadeExecuteAndDisplay: true.

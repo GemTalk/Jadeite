@@ -824,6 +824,25 @@ test_debugCodeWithLeadingTab
 	self assert: debugger isKindOf: JadeiteDebugger	"just opening the debugger tests the bug fix"]
 			ensure: [workspace view close]!
 
+test_debugFromWithinInspector
+	| remoteObject inspector |
+	remoteObject := session
+				executeString: '''abc'''
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	
+	[inspector documentPresenter value: 'self size'.
+	inspector documentPresenter view selectAll.
+	inspector documentPresenter view setFocus.
+	self
+		assert: JadeiteDebugger allInstances isEmpty;
+		debuggerDo: [process := [inspector codePane jadeDebug] forkAt: Processor activePriority + 1];
+		getDebugger.
+	self assert: debugger model value equals: 'nil halt. self size'
+		]
+			ensure: [inspector view close]!
+
 test_debuggerModifiedSourcePaneChangeFrame
 	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
 	TestMessageBox enableJadeiteTestMessageBox.
@@ -2108,6 +2127,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_debugCodeWithLeadingLineReturns!public! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debugCodeWithLeadingLineReturnsLF!public! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debugCodeWithLeadingTab!public! !
+!JadeiteDebuggerTestCase categoriesFor: #test_debugFromWithinInspector!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneChangeFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneStayOnFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_disablebreakpointHighlighting!public!tests! !
