@@ -164,18 +164,20 @@ preferencesFile
 
 preferencesFileDefaultContents
 	^'#Remove # to uncomment option. 
-#legal values are either a boolean or a name
 
+#legal values are a boolean
 #autocommitEnabled: false
 #autocompleteEnabled: false
 #breakpointsEnabled: true
 #loggingEnabled: false
+#transcriptEnabled: false
+
+#legal values are a name (without quotes) or nil
 #openBrowserOnClass: <class name>
 #openBrowserOnPackage: <package name>
 #openBrowserOnProject: <project name> 
 #openSUnitBrowserOnPackage: <package name>
-#openWorkspace: <file path without quotes or nil> 
-#transcriptEnabled: true'! !
+#openWorkspace: <file path without quotes or nil> '! !
 !JadeitePreferences class categoriesFor: #onSession:!instance creation!public! !
 !JadeitePreferences class categoriesFor: #preferencesFile!constants!public! !
 !JadeitePreferences class categoriesFor: #preferencesFileDefaultContents!constants!public! !
