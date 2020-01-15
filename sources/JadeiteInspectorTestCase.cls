@@ -271,6 +271,23 @@ test_adHocInspectComplexObject
 				[workspace isModified: false.
 				workspace view close]!
 
+test_adHocInspectFromWithinInspector
+	| remoteObject secondInspector |
+	"context of inspector should be itself. Test that this basically works"
+	remoteObject := session
+				executeString: '''abc'''
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector documentPresenter value: 'self size'.
+	inspector documentPresenter view selectAll.
+	inspector documentPresenter view setFocus.
+	secondInspector := inspector codePane jadeInspect.
+	
+	[self assert: secondInspector instVarListPresenter list size equals: 2.
+	self assert: secondInspector documentPresenter value equals: '3']
+			ensure: [secondInspector view close]!
+
 test_autoCommitInAdHocInspect
 	| workspace |
 	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
@@ -1758,6 +1775,7 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_adHocExecution!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_adHocInspect!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_adHocInspectComplexObject!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_adHocInspectFromWithinInspector!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_autoCommitInAdHocInspect!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_autoCommitOffInAdHocInspect!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_basicInspectorDisplayedSizeLimit!public! !

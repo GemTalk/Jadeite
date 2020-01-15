@@ -85,13 +85,12 @@ debugGCI
 dumpLoginInfoToFile
 	| stream |
 	stream := FileStream write: 'jadeiteLoginParameters.log'.
-	
-	[self model class instVarNames do: 
+	[self model class allInstVarNames do: 
 			[:instVarName |
 			stream
 				nextPutAll: instVarName;
 				tab;
-				nextPutAll: (self model instVarAt: (self model class instVarNames indexOf: instVarName)) printString;
+				nextPutAll: (self model instVarAt: (self model class allInstVarNames indexOf: instVarName)) printString;
 				cr]]
 			ensure: [stream close]!
 

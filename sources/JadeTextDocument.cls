@@ -45,9 +45,7 @@ commitTransaction
 	self parentPresenter commitTransaction!
 
 contextObject
-
-	^nil.
-!
+	^gciSession oopNil value!
 
 continueTransaction
 

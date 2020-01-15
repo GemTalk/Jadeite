@@ -995,7 +995,7 @@ executeSelectionOrLine
 	^self executeSelectionOrLine: self parentPresenter contextObject !
 
 inspectorContextObject
-	^gciSession oopNil value!
+	^parentPresenter contextObject!
 
 jadeInspect
 	| inspector |
