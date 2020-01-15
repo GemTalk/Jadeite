@@ -82,6 +82,19 @@ debugGCI
 	debugPathPresenter value: (path ifNil: ['']).
 !
 
+dumpLoginInfoToFile
+	| stream |
+	stream := FileStream write: 'jadeiteLoginParameters.log'.
+	
+	[self model class instVarNames do: 
+			[:instVarName |
+			stream
+				nextPutAll: instVarName;
+				tab;
+				nextPutAll: (self model instVarAt: (self model class instVarNames indexOf: instVarName)) printString;
+				cr]]
+			ensure: [stream close]!
+
 editCopy
 
 	| textView |
@@ -368,25 +381,24 @@ updateCaption
 	self caption: stream contents!
 
 updateModel
-
 	self model
-		gemVersion:	versionListPresenter 		selection;
-		stoneHost: 	stoneHostPresenter 		value trimBlanks;
-		stoneName: 	stoneNamePresenter 		value trimBlanks;
-		gemType: 	gemTypePresenter 		value;
-		gemHost: 		gemHostPresenter 		value trimBlanks;
-		gemService: 	gemServicePresenter 	value trimBlanks;
-		gemTask: 	gemTaskPresenter 		value trimBlanks;
-		gsUserID: 		userIDPresenter 		value trimBlanks;
-		gsPassword: 	passwordPresenter 		value trimBlanks;
-		loginType: 	loginTypePresenter 		value;
-		hostUserID:	hostUserIDPresenter		value trimBlanks;
-		hostPassword:	hostPasswordPresenter	value trimBlanks;
-		initials:		initialsPresenter		value trimBlanks;
-		useSocket: 	useSocketPresenter		value;
-		debugPath: 	debugPathPresenter		value trimBlanks;
+		gemVersion: versionListPresenter selection;
+		stoneHost: stoneHostPresenter value trimBlanks;
+		stoneName: stoneNamePresenter value trimBlanks;
+		gemType: gemTypePresenter value;
+		gemHost: gemHostPresenter value trimBlanks;
+		gemService: gemServicePresenter value trimBlanks;
+		gemTask: gemTaskPresenter value trimBlanks;
+		gsUserID: userIDPresenter value trimBlanks;
+		gsPassword: passwordPresenter value trimBlanks;
+		loginType: loginTypePresenter value;
+		hostUserID: hostUserIDPresenter value trimBlanks;
+		hostPassword: hostPasswordPresenter value trimBlanks;
+		initials: initialsPresenter value trimBlanks;
+		useSocket: useSocketPresenter value;
+		debugPath: debugPathPresenter value trimBlanks;
 		yourself.
-!
+	self dumpLoginInfoToFile!
 
 updateView
 
@@ -419,6 +431,7 @@ userIDPresenter
 !JadeLoginShell categoriesFor: #createComponents!public! !
 !JadeLoginShell categoriesFor: #createSchematicWiring!public! !
 !JadeLoginShell categoriesFor: #debugGCI!commands!public! !
+!JadeLoginShell categoriesFor: #dumpLoginInfoToFile!menu handlers support!private! !
 !JadeLoginShell categoriesFor: #editCopy!public! !
 !JadeLoginShell categoriesFor: #editCut!public! !
 !JadeLoginShell categoriesFor: #editDelete!public! !

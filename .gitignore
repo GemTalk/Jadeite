@@ -33,3 +33,5 @@ runtime.zip
 
 TheBigOneTestCase.gs
 perfNumbers.gs
+gciDebug.log
+jadeiteLoginParameters.log
