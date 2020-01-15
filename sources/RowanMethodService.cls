@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName isMethodForBlock homeMethodOop'
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName isMethodForBlock homeMethodOop hasMethodHistory'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -186,6 +186,10 @@ firstReference: integer
 hash
 	^(selector hash bitXor: className hash) bitXor: meta hash!
 
+hasMethodHistory
+
+	^hasMethodHistory!
+
 hasSubs
 	^hasSubs!
 
@@ -228,7 +232,8 @@ initialize
 	stepPoints := Array new.
 	breakPoints := OrderedCollection new.
 	hasSupers := false.
-	hasSubs := false!
+	hasSubs := false.
+	hasMethodHistory := true. !
 
 inSelectedPackage
 
@@ -539,6 +544,7 @@ user: anObject
 !RowanMethodService categoriesFor: #firstReference!accessing!private! !
 !RowanMethodService categoriesFor: #firstReference:!accessing!private! !
 !RowanMethodService categoriesFor: #hash!comparing!public! !
+!RowanMethodService categoriesFor: #hasMethodHistory!accessing!private! !
 !RowanMethodService categoriesFor: #hasSubs!accessing!private! !
 !RowanMethodService categoriesFor: #hasSubs:!accessing!private! !
 !RowanMethodService categoriesFor: #hasSupers!accessing!private! !

@@ -542,7 +542,13 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: self dictionaryPresenter selections notEmpty.
 			^true].
-	(#(#reformatSource #browseMethodHistory) includes: command)
+	#browseMethodHistory = command
+		ifTrue: 
+			[| selections |
+			selections := self methodListPresenter selections.
+			aCommandQuery isEnabled: (selections size = 1 and: [selections first hasMethodHistory]).
+			^true].
+	(#(#reformatSource) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: self methodListPresenter selections size <= 1.
 			^true].
