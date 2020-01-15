@@ -187,11 +187,13 @@ test_revertMethodModification
 
 	self assert: RowanSample1 new foo = ''foo'''.
 	changesBrowser operationListPresenter selection: change.
+	self assert: changesBrowser operationListPresenter selection modification selector equals: 'test1'.
 	changesBrowser revert.
 	self assert: change modification source trimBlanks replaceLfWithCrLf
 		equals: 'test1
 
 	self assert: RowanSample1 new foo = ''foo'''.
+	self assert: changesBrowser operationListPresenter selection modification selector equals: 'test1 (reverted)'.
 	self assert: changesBrowser diffsPresenter afterTitlePresenter value equals: 'Image (no change)'!
 
 test_revertMethodRemoval

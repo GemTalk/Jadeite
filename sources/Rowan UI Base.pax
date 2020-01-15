@@ -4443,7 +4443,8 @@ revert: session
 	obsoletion revert: session.
 	modification
 		source: obsoletion source;
-		category: obsoletion category! !
+		category: obsoletion category.
+	modification selector: modification selector , ' (reverted)'! !
 !MCModification categoriesFor: #clearObsoletionMemo!public! !
 !MCModification categoriesFor: #isMethodModification!public!testing! !
 !MCModification categoriesFor: #revert:!public! !

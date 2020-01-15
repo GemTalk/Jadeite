@@ -112,14 +112,17 @@ refreshIdenticalSource
 
 revert
 	| operation afterTitle |
-	operation := operationListPresenter selection.
+	
+	[operation := operationListPresenter selection.
 	operation revert: gciSession.
 	operation clearObsoletionMemo.
 	afterTitle := self afterTitle: operation.
 	diffsPresenter
 		afterTitle: afterTitle;
 		compare: operation obsoletionMemo with: operation modificationMemo.
-	operationListPresenter view invalidate!
+	operationListPresenter view invalidate]
+			on: Error
+			do: [:ex | MessageBox notify: 'Not able to revert this item yet']!
 
 shellName
 
