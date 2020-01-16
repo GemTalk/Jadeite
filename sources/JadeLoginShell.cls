@@ -82,6 +82,14 @@ debugGCI
 	debugPathPresenter value: (path ifNil: ['']).
 !
 
+debugPathPresenter
+	"for testing" 
+	^debugPathPresenter!
+
+debugPathPresenter: anObject
+	"for testing" 
+	debugPathPresenter value: anObject!
+
 dumpLoginInfoToFile
 	| stream |
 	stream := FileStream write: 'jadeiteLoginParameters.log'.
@@ -397,7 +405,7 @@ updateModel
 		useSocket: useSocketPresenter value;
 		debugPath: debugPathPresenter value trimBlanks;
 		yourself.
-	self dumpLoginInfoToFile!
+	debugPathPresenter value isEmpty ifFalse: [self dumpLoginInfoToFile]!
 
 updateView
 
@@ -430,6 +438,8 @@ userIDPresenter
 !JadeLoginShell categoriesFor: #createComponents!public! !
 !JadeLoginShell categoriesFor: #createSchematicWiring!public! !
 !JadeLoginShell categoriesFor: #debugGCI!commands!public! !
+!JadeLoginShell categoriesFor: #debugPathPresenter!accessing!private! !
+!JadeLoginShell categoriesFor: #debugPathPresenter:!accessing!private! !
 !JadeLoginShell categoriesFor: #dumpLoginInfoToFile!menu handlers support!private! !
 !JadeLoginShell categoriesFor: #editCopy!public! !
 !JadeLoginShell categoriesFor: #editCut!public! !

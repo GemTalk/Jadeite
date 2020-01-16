@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 TestCase subclass: #JadeiteLoginTestCase
-	instanceVariableNames: 'session jadeiteLogin'
+	instanceVariableNames: 'session jadeiteLogin parmFileName jadeiteShell'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -41,6 +41,15 @@ setUp
 	session := self login.
 	GciSession current: currentSession!
 
+setupToLogin
+	GciSession current ifNotNil: [:sess | sess logout].
+	JadeiteLoginShell allInstances do: [:inst | inst view close].
+	jadeiteShell := JadeiteLoginShell show position: 80 @ 20.
+	parmFileName := 'jadeiteLoginParameters.log'.
+	(File exists: parmFileName) ifTrue: [File delete: parmFileName].
+	jadeiteLogin := jadeiteShell model.
+	self assert: jadeiteShell debugPathPresenter value isEmpty!
+
 tearDown
 	super tearDown. 
 	session
@@ -49,6 +58,23 @@ tearDown
 			session gciSessionId: nil.
 			session library: nil.
 			session := nil]!
+
+test_debugLoginDumpsParameters
+	self testsIssue: #issue681 withTitle: 'Write out login values if "Debug GCI" is enabled'.
+	"logging out. If we need to commit, too bad"
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.
+	[self setupToLogin] ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self loginWithRetry: jadeiteShell.
+	self deny: (File exists: parmFileName).
+	self setupToLogin.
+	jadeiteShell debugPathPresenter: SessionManager current imagePath.
+	self loginWithRetry: jadeiteShell.
+	self assert: (File exists: parmFileName).
+	[self assert: GciSession current isKindOf: GciSession] ensure: 
+			[JadeiteTestResource current
+				tearDown;
+				setUp	"reset the tes resource's session, etc"]!
 
 test_gemTask
 	| formerGemTask jadeiteShell |
@@ -131,7 +157,9 @@ testsIssue: aSymbol withTitle: anObject! !
 !JadeiteLoginTestCase categoriesFor: #login!private!setup teardown! !
 !JadeiteLoginTestCase categoriesFor: #loginWithRetry:!private!support! !
 !JadeiteLoginTestCase categoriesFor: #setUp!public!setup teardown! !
+!JadeiteLoginTestCase categoriesFor: #setupToLogin!private!support! !
 !JadeiteLoginTestCase categoriesFor: #tearDown!public!setup teardown! !
+!JadeiteLoginTestCase categoriesFor: #test_debugLoginDumpsParameters!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #test_gemTask!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #test_loginButtonEnablement!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #test_simpleLogin!public!tests! !
