@@ -130,8 +130,9 @@ test_addContextSensitiveObjectToDictionary
 	self assert: inspector instVarListPresenter selection first key equals: '#''you'''.
 	self assert: inspector documentPresenter value equals: 'nil'.
 	inspector instVarListPresenter selectionByIndex: #(1).
-	self assert: inspector documentPresenter value
-		equals: 'aDictionary( $e->#''you'', #''a''->#''me'', #''you''->nil)'!
+	self assert: ('*$e->#''you''*' match: inspector documentPresenter value).
+	self assert: ('*#''a''->#''me''*' match: inspector documentPresenter value).
+	self assert: ('*#''you''->nil*' match: inspector documentPresenter value)!
 
 test_addObjectDontOverwriteExistingKey
 	| remoteObject |
@@ -251,7 +252,7 @@ test_adHocExecution
 	workspace setFocus.
 	inspector := workspace codePane jadeInspect.
 	inspector documentPresenter value: 'self size'.
-	inspector documentPresenter parentPresenter jadeDisplay.
+	inspector codePane jadeDisplay.
 	self assert: inspector documentPresenter value equals: 'self size 2']
 			ensure: 
 				[workspace isModified: false.
@@ -369,10 +370,10 @@ test_basicInspectorDisplayedSizeLimit
 	self assert: inspectorService indexedSize equals: 100000.
 	self assert: inspectorService visibleIndices equals: 1000.
 	inspector displayAll.
-	self assert: inspector instVarListPresenter list last key equals: '100000'. 
-	self assert: inspector instVarListPresenter list last value equals:( session
-				executeString: '$X asOop'). 
-	self assert: inspector instVarListPresenter list last key equals: '100000'. 
+	self assert: inspector instVarListPresenter list last key equals: '65000'.
+	self assert: inspector instVarListPresenter list last value
+		equals: (session executeString: '$a asOop').
+	self assert: inspector instVarListPresenter list last key equals: '65000'.
 	self assert: inspectorService indexedSize equals: 100000!
 
 test_caption

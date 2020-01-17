@@ -2321,15 +2321,21 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 			self statusBarText: warning].!
 
 executeSelectionOrLine: contextObject
-	| answeringService answer oop |
+	| answeringService answer oop window |
 	oop := (contextObject isKindOf: ExternalInteger)
 				ifTrue: [contextObject value]
 				ifFalse: [contextObject].	"services wants a local special as a context"
 	oop ifNil: [oop := 20].
 	answeringService := RowanAnsweringService new.
+	window := (self topShell isKindOf: DeafObject)
+				ifTrue: [self parentPresenter view]
+				ifFalse: [self topShell].	"must be a better way"
 	answeringService
 		command: #exec:context:inWindow:;
-		commandArgs: (Array with: self currentSelectionOrLine with: oop with: self topShell view handle value).
+		commandArgs: (Array
+					with: self currentSelectionOrLine
+					with: oop
+					with: window view handle value).
 	self issueCommand: (Array with: answeringService).
 	answer := answeringService answer.
 	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
