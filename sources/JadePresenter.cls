@@ -143,7 +143,11 @@ updateService: service
 
 !JadePresenter class methodsFor!
 
+maxPrintStringSize
+	^100000!
+
 openCommit: sha inGitHub: projectService
 	^ShellLibrary default shellOpen: projectService projectUrl , '/commit/' , sha directory: ''! !
+!JadePresenter class categoriesFor: #maxPrintStringSize!constants!public! !
 !JadePresenter class categoriesFor: #openCommit:inGitHub:!browsing!public! !
 

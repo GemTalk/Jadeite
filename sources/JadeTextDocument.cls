@@ -252,6 +252,9 @@ logoutRequested: aValueHolder
 	aValueHolder value: true.
 !
 
+maxPrintStringSize
+	^JadePresenter maxPrintStringSize!
+
 onViewClosed
 
 	gciSession notNil ifTrue: [
@@ -446,6 +449,7 @@ validateUserInterface
 !JadeTextDocument categoriesFor: #jadeExecute!menu handlers!private! !
 !JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:result:!Jade!private! !
 !JadeTextDocument categoriesFor: #logoutRequested:!private! !
+!JadeTextDocument categoriesFor: #maxPrintStringSize!private! !
 !JadeTextDocument categoriesFor: #onViewClosed!private! !
 !JadeTextDocument categoriesFor: #onViewOpened!private! !
 !JadeTextDocument categoriesFor: #parentPresenter!public! !

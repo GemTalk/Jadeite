@@ -101,6 +101,7 @@ package methodNames
 	add: #CodeSourcePresenter -> #inspectorContextObject;
 	add: #CodeSourcePresenter -> #jadeInspect;
 	add: #CodeSourcePresenter -> #methodMenuBreak:;
+	add: #CodeSourcePresenter -> #showResult:;
 	add: #Collection -> #basicPrepareForReplication;
 	add: #Collection -> #prepareForReplication;
 	add: #DiffBrowser -> #diffsPresenter;
@@ -1034,13 +1035,30 @@ methodMenuBreak: menu
 				argument: currentSelection.
 	sendersItem := CommandMenuItem command: sendersCommand
 				description: 'Browse Senders of #' , currentSelectionMenuItemName.
-	menu insertItem: sendersItem at: menuPosition + 1! !
+	menu insertItem: sendersItem at: menuPosition + 1!
+
+showResult: anObject
+	| result textView answeringService |
+	(gciSession isOopType: anObject)
+		ifFalse: [result := ' ' , anObject printString]
+		ifTrue: 
+			[answeringService := RowanAnsweringService new.
+			answeringService
+				command: #printStringOf:toMaxSize:;
+				commandArgs: (Array with: anObject value with: JadePresenter maxPrintStringSize).
+			BrowserUpdate current issueCommands: (Array with: answeringService) session: gciSession.
+			result := ' ' , answeringService answer].
+	self setCaretToEndOfSelection.
+	(textView := documentPresenter view)
+		replaceSelection: result;
+		selectionStart: textView caretPosition - result size length: result size! !
 !CodeSourcePresenter categoriesFor: #browseSelectedClass!Jade!public! !
 !CodeSourcePresenter categoriesFor: #currentSelection!public! !
 !CodeSourcePresenter categoriesFor: #executeSelectionOrLine!Jade!private! !
 !CodeSourcePresenter categoriesFor: #inspectorContextObject!Jade!private! !
 !CodeSourcePresenter categoriesFor: #jadeInspect!Jade!private! !
 !CodeSourcePresenter categoriesFor: #methodMenuBreak:!menus!public! !
+!CodeSourcePresenter categoriesFor: #showResult:!Jade!private! !
 
 !CodeSourcePresenter class methodsFor!
 
@@ -2310,8 +2328,8 @@ executeSelectionOrLine: contextObject
 	oop ifNil: [oop := 20].
 	answeringService := RowanAnsweringService new.
 	answeringService
-		command: #exec:context:;
-		commandArgs: (Array with: self currentSelectionOrLine with: oop).
+		command: #exec:context:inWindow:;
+		commandArgs: (Array with: self currentSelectionOrLine with: oop with: self parentPresenter view handle value).
 	self issueCommand: (Array with: answeringService).
 	answer := answeringService answer.
 	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].

@@ -386,21 +386,6 @@ showCompileError: anArray
 		selectionStart: textView caretPosition - result size length: result size.
 !
 
-showResult: anObject
-
-	| result textView |
-	(gciSession isOopType: anObject) ifFalse: [
-		result := ' ' , anObject printString.
-	] ifTrue: [
-		result := ' ' , (gciSession printString: anObject).
-	].
-	"result := result replaceLfWithCrLf."
-	self setCaretToEndOfSelection.
-	(textView := documentPresenter view)
-		replaceSelection: result;
-		selectionStart: textView caretPosition - result size length: result size.
-!
-
 showSelection
 
 	| range lineNumber |
@@ -489,7 +474,6 @@ updateCodeFont
 !CodeSourcePresenter categoriesFor: #setDocumentPresenterWith:!public! !
 !CodeSourcePresenter categoriesFor: #setFont!private! !
 !CodeSourcePresenter categoriesFor: #showCompileError:!Jade!private! !
-!CodeSourcePresenter categoriesFor: #showResult:!Jade!private! !
 !CodeSourcePresenter categoriesFor: #showSelection!edit!private! !
 !CodeSourcePresenter categoriesFor: #subMenuName!menus!public! !
 !CodeSourcePresenter categoriesFor: #subMenuPresenter!menus!public! !

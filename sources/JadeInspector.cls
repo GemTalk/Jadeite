@@ -53,9 +53,6 @@ isModified
 	^false.
 !
 
-maxPrintStringSize
-	^100000!
-
 model: anObject
 	"often a GsObject, but could be an Integer, String, etc."
 
@@ -72,7 +69,6 @@ model: anObject
 !JadeInspector categoriesFor: #inspectInstVar!accessing!private! !
 !JadeInspector categoriesFor: #instVarListPresenter!accessing!private! !
 !JadeInspector categoriesFor: #isModified!private! !
-!JadeInspector categoriesFor: #maxPrintStringSize!private! !
 !JadeInspector categoriesFor: #model:!private! !
 
 !JadeInspector class methodsFor!
