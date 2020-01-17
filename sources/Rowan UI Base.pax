@@ -2329,7 +2329,7 @@ executeSelectionOrLine: contextObject
 	answeringService := RowanAnsweringService new.
 	answeringService
 		command: #exec:context:inWindow:;
-		commandArgs: (Array with: self currentSelectionOrLine with: oop with: self parentPresenter view handle value).
+		commandArgs: (Array with: self currentSelectionOrLine with: oop with: self topShell view handle value).
 	self issueCommand: (Array with: answeringService).
 	answer := answeringService answer.
 	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
