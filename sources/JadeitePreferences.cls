@@ -170,7 +170,7 @@ preferencesFileDefaultContents
 #autocompleteEnabled: false
 #breakpointsEnabled: true
 #loggingEnabled: false
-#transcriptEnabled: false
+#transcriptEnabled: true
 
 #legal values are a name (without quotes) or nil
 #openBrowserOnClass: <class name>
