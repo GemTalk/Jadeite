@@ -117,6 +117,22 @@ test_addCharacterToString
 	inspector instVarListPresenter selectionByIndex: #(1).
 	self assert: inspector documentPresenter value equals: '''-a<bcd'''!
 
+test_addContextSensitiveObjectToDictionary
+	| remoteObject |
+	self testsIssue: #issue104 withTitle: 'Inspector: be nice to be able to apply changes to the object'.
+	remoteObject := session
+				executeString: 'Dictionary new at: $e put: #you; at: #a put: #me; yourself'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: #(1).
+	inspector basicAddKey: 'self at: $e'.
+	self assert: inspector instVarListPresenter selection first key equals: '#''you'''.
+	self assert: inspector documentPresenter value equals: 'nil'.
+	inspector instVarListPresenter selectionByIndex: #(1).
+	self assert: inspector documentPresenter value
+		equals: 'aDictionary( $e->#''you'', #''a''->#''me'', #''you''->nil)'!
+
 test_addObjectDontOverwriteExistingKey
 	| remoteObject |
 	remoteObject := session
@@ -1767,6 +1783,7 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_abortTransactionInBasicInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_abortTransactionInNavigationInspector!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_addCharacterToString!public!tests add remove! !
+!JadeiteInspectorTestCase categoriesFor: #test_addContextSensitiveObjectToDictionary!public!tests add remove! !
 !JadeiteInspectorTestCase categoriesFor: #test_addObjectDontOverwriteExistingKey!public!tests add remove! !
 !JadeiteInspectorTestCase categoriesFor: #test_addObjectToArray!public!tests add remove! !
 !JadeiteInspectorTestCase categoriesFor: #test_addObjectToArrayWithDynamic!public!tests add remove! !

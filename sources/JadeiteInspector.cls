@@ -151,33 +151,26 @@ createSchematicWiring
 		to: self!
 
 displayAll
-	| service nextIndexedVars |
-	service := RowanInspectorService new
-				oop: model oop;
-				indexedSize: model indexedSize.
-	nextIndexedVars := service
-				nextIndexedVarsFrom: model visibleIndices + 1
-				to: model indexedSize
-				session: gciSession.
-	model objects addAll: nextIndexedVars.
-	model visibleIndices: model indexedSize.
-	self displayObjectSelecting:  instVarListPresenter selectionByIndex!
+	^self displayMore: model indexedSize!
 
 displayMore
-	| service nextIndexedVars |
+	^self displayMore: model maxIndexedVars + model visibleIndices!
+
+displayMore: stop
+	| service |
 	service := RowanInspectorService new
 				oop: model oop;
 				indexedSize: model indexedSize.
-	nextIndexedVars := service
-				nextIndexedVarsFrom: model visibleIndices + 1
-				to: model maxIndexedVars + model visibleIndices
-				session: gciSession.
-	model objects addAll: nextIndexedVars.
-	model visibleIndices: model visibleIndices + nextIndexedVars size.
+	service
+		nextIndexedVarsFrom: model visibleIndices + 1
+		to: stop
+		session: gciSession.
+	model objects addAll: service nextIndices.
+	model visibleIndices: service visibleIndices.
 	self displayObjectSelecting: instVarListPresenter selectionByIndex!
 
 displayObjectSelecting: selectionIndex
-	| contents |
+	| contents reachedMax |
 	contents := model objects copy.	"otherwise the presenter list will notice it's the same object and not update the view"
 	(contents isEmpty or: [contents first ~= model myself])
 		ifTrue: 
@@ -187,11 +180,13 @@ displayObjectSelecting: selectionIndex
 	instVarListPresenter selectionByIndex: (selectionIndex
 				ifNil: [#(1)]
 				ifNotNil: [selectionIndex isNumber ifTrue: [Array with: selectionIndex] ifFalse: [selectionIndex]]).
+	reachedMax := model visibleIndices = self maxVariables ifTrue: [' (max displayable)'] ifFalse: [String new].
 	model indexedSize > 0
 		ifTrue: 
 			[statusTextPresenter
-				value: 'Displaying ' , model visibleIndices printString , ' of ' , model indexedSize printString
-						, (model isDictionary ifTrue: [' keys'] ifFalse: [' variable inst vars'])]
+				value: 'Displaying ' , model visibleIndices printString , reachedMax , ' of '
+						, model indexedSize printString
+							, (model isDictionary ifTrue: [' keys'] ifFalse: [' variable inst vars'])]
 		ifFalse: [statusTextPresenter value: nil].
 	className := model className.
 	documentPresenter view isModified: false!
@@ -298,6 +293,11 @@ isSelectionComputed: assoc
 
 isSelfSelected
 	^instVarListPresenter selections first key = 'self'!
+
+maxVariables
+	"sync with server method RowanInspectorService>>maxVariables"
+
+	^65000!
 
 multipleInstVarsSelected
 	| writeStream oops answeringService computedSelections contents boldNeeded |
@@ -550,6 +550,7 @@ valueOops
 !JadeiteInspector categoriesFor: #createSchematicWiring!initialize!private! !
 !JadeiteInspector categoriesFor: #displayAll!displaying!menu handlers!public! !
 !JadeiteInspector categoriesFor: #displayMore!displaying!menu handlers!public! !
+!JadeiteInspector categoriesFor: #displayMore:!displaying!menu handlers!public! !
 !JadeiteInspector categoriesFor: #displayObjectSelecting:!displaying!private! !
 !JadeiteInspector categoriesFor: #dynamicInstVars!accessing!public! !
 !JadeiteInspector categoriesFor: #evaluateSelectedTextIn:thenInspectInContext:!inspecting!public! !
@@ -568,6 +569,7 @@ valueOops
 !JadeiteInspector categoriesFor: #isProtectedItemSelected!private!testing! !
 !JadeiteInspector categoriesFor: #isSelectionComputed:!event handlers support!private! !
 !JadeiteInspector categoriesFor: #isSelfSelected!private!testing! !
+!JadeiteInspector categoriesFor: #maxVariables!constants!public! !
 !JadeiteInspector categoriesFor: #multipleInstVarsSelected!event handlers support!private! !
 !JadeiteInspector categoriesFor: #nonComputedListSelections!event handlers support!private! !
 !JadeiteInspector categoriesFor: #objectIsVariable!private!testing! !
