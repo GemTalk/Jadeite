@@ -12,7 +12,10 @@ JadeiteMiscellaneousTestCase comment: ''!
 
 tearDown
 	super tearDown.
-	workspace ifNotNil: [workspace view close]!
+	workspace
+		ifNotNil: 
+			[workspace codePane documentPresenter view isModified: false.
+			workspace view close]!
 
 test_adHocDisplay
 	| workspace |
@@ -292,6 +295,20 @@ test_workingDirectoryEqualsImageDirectory
 	"should be set after login window first opens"
 
 	self assert: File workingDirectory equals: SessionManager current imageBase!
+
+test_workspaceAdHocDisplayUnicodeCharacters
+	self testsIssue: #issue678
+		withTitle: 'Print-it for out of range characters is... peculiar (3.0.92.3)'.
+	workspace := (JadeWorkspace showOnSession: session)
+				caption: 'Jade Workspace - Test Unicode Characters'.
+	workspace codePane documentPresenter
+		value: '''aa'', (String with: (Character withValue: 353)), ''bb''  '.
+	workspace codePane selectAll.
+	workspace activeTextEdit setFocus.
+	workspace codePane jadeDisplay.
+	self assert: workspace codePane documentPresenter selection equals: ' ''aa?bb'''.
+	self assert: workspace codePane documentPresenter value
+		equals: '''aa'', (String with: (Character withValue: 353)), ''bb''   ''aa?bb'''.!
 
 test_workspaceBrowseProjects
 	| workspace jadeiteMenu browseProjectsItem |
@@ -732,6 +749,7 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_versionMatches!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workingDirectoryEqualsImageDirectory!public!test! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceAdHocDisplayUnicodeCharacters!public!test!test menus!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceConfirmInteraction!public!test!test menus!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceDoubleClickIncludesColon!public!test!test workspaces! !
