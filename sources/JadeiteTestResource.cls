@@ -47,7 +47,11 @@ disableInteractionsWhile: block
 			self issueCommand: answeringService]!
 
 ensureRowanSample1Loaded
-	self disableInteractionsWhile: [self loadProjectNamed: self sampleProjectName]!
+	self disableInteractionsWhile: 
+			[self unloadSampleProject.
+			session commit.
+			self cloneRowanSample1.
+			self loadProjectNamed: self sampleProjectName]!
 
 isAvailable
 	^session notNil and: [transcript notNil]!
