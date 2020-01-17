@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanInspectorService
-	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray isOop instVarNames instVarsAreRemovable isDictionary isVariable selectionOop isUnordered'
+	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray isOop instVarNames instVarsAreRemovable isDictionary isVariable selectionOop isUnordered statusText'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -184,6 +184,12 @@ removeOop: theOop session: session
 selectionOop
 	^selectionOop!
 
+statusText
+	^statusText!
+
+statusText: anObject
+	statusText := anObject!
+
 visibleIndices
 	^visibleIndices!
 
@@ -229,6 +235,8 @@ visibleIndices: anObject
 !RowanInspectorService categoriesFor: #removeKeys:session:!operations!public! !
 !RowanInspectorService categoriesFor: #removeOop:session:!operations!public! !
 !RowanInspectorService categoriesFor: #selectionOop!accessing!private! !
+!RowanInspectorService categoriesFor: #statusText!accessing!private! !
+!RowanInspectorService categoriesFor: #statusText:!accessing!private! !
 !RowanInspectorService categoriesFor: #visibleIndices!accessing!private! !
 !RowanInspectorService categoriesFor: #visibleIndices:!accessing!private! !
 
