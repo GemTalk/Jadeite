@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 MCPatchBrowser subclass: #JadeiteChangesBrowser
 	instanceVariableNames: 'name diffsPresenter session'
@@ -174,6 +174,6 @@ showOn: aModel name: aString
 		createView: self defaultView;
 		showShell;
 		yourself! !
-!JadeiteChangesBrowser class categoriesFor: #resource_Default_view!public!resources-views! !
+!JadeiteChangesBrowser class categoriesFor: #doIt!public! !
 !JadeiteChangesBrowser class categoriesFor: #showOn:name:!public! !
 

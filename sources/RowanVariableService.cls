@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanVariableService
 	instanceVariableNames: 'oop key value className'

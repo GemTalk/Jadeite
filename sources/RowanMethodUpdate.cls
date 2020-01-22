@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanCommandResult subclass: #RowanMethodUpdate
 	instanceVariableNames: 'classOop className methodOop selector category editable source firstSendOffsets stepPoints breakPoints originalMethodSource compilationWarnings isTestClass isOverride gsMethod selected'

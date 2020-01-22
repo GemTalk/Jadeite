@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 MethodHistoryBrowser subclass: #JadeiteMethodHistoryBrowser
 	instanceVariableNames: 'session'
@@ -17,7 +17,7 @@ about
 Jadeite Method History Browser subclassed from original 
 MethodHistoryBrowser built in Dolphin Smalltalk 6.x
 Version 6b
-� 2005 by Ian Bartholomew'!
+© 2005 by Ian Bartholomew'!
 
 applyOptions
 	view maxCompletionListHeight: 10.

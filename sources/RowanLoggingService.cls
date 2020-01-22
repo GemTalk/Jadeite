@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanLoggingService
 	instanceVariableNames: 'fileName id groupId date time comment services mode location isLogging'

@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanDictionaryService
 	instanceVariableNames: 'classes hierarchyServices globals defaultTemplate'

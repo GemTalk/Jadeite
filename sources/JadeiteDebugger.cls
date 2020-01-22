@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 JadeDebugger subclass: #JadeiteDebugger
 	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore search debuggerService'

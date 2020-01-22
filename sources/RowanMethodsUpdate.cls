@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanClassesUpdate subclass: #RowanMethodsUpdate
 	instanceVariableNames: 'methods methodFilters selectors selectedClass selectedSelectors inheritedClasses inheritedClass type'
