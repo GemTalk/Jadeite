@@ -1258,7 +1258,6 @@ postLoadServerPreferences
 
 postLoginAs: aString useSocket: aBoolean
 	| answer |
-	self halt. 
 	self verifyRowanLoaded
 		ifFalse: 
 			[^MessageBox notify: 'Rowan not loaded or $ROWAN_PROJECTS_HOME not set. Logging out.'	"log out in RowinLoginShell>>postLogin:"].
