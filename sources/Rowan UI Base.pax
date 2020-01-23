@@ -9,6 +9,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=').
 
 package classNames
 	add: #BrowserUpdate;
+	add: #DiffsScintillaStyler;
 	add: #JadeFindClassDialog;
 	add: #JadeFindDialog;
 	add: #JadeiteAdvancedFindDialog;
@@ -427,6 +428,7 @@ package methodNames
 	add: #SequencedGrowableCollection -> #removeAtIndexWithoutNotification:;
 	add: #SequencedGrowableCollection -> #removeWithoutNotification:ifAbsent:;
 	add: #TranscriptPresenter -> #clearTranscript;
+	add: #TreeModel -> #getNodeFor:ifAbsent:;
 	add: #TreeModel -> #removeWithoutNotification:ifAbsent:;
 	add: 'CodeSourcePresenter class' -> #resource_Default_view;
 	add: 'DiffBrowser class' -> #defaultModel;
@@ -961,6 +963,11 @@ SmalltalkSearchPresenter subclass: #JadeiteSmalltalkSearchPresenter
 	classInstanceVariableNames: ''!
 SmalltalkWorkspace subclass: #JadeiteSmalltalkWorkspace
 	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+ScintillaStyler subclass: #DiffsScintillaStyler
+	instanceVariableNames: 'diffs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -5144,6 +5151,13 @@ resource_Default_view
 
 !TreeModel methodsFor!
 
+getNodeFor: anObject ifAbsent: aNiladicValuable 
+	"Private - Answers the <TreeNode> in the receiver that corresponds to anObject. If anObject
+	does not exist in the tree answer the result of evaluating the <niladicValuable> argument.
+	If anObject is nil it is treated as being the anchorNode"
+
+	^objectNodeMap at: anObject ifAbsent: aNiladicValuable!
+
 removeWithoutNotification: anObject ifAbsent: aNiladicValuable
 	"Jadeite - remove but don't trigger events to avoid trips to the server"
 
@@ -5154,6 +5168,7 @@ removeWithoutNotification: anObject ifAbsent: aNiladicValuable
 	parentNode removeChildNode: node.
 	self forgetNode: node.
 	^anObject! !
+!TreeModel categoriesFor: #getNodeFor:ifAbsent:!hierarchy!private! !
 !TreeModel categoriesFor: #removeWithoutNotification:ifAbsent:!public!removing! !
 
 "End of package definition"!

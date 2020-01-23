@@ -174,6 +174,6 @@ showOn: aModel name: aString
 		createView: self defaultView;
 		showShell;
 		yourself! !
-!JadeiteChangesBrowser class categoriesFor: #doIt!public! !
+!JadeiteChangesBrowser class categoriesFor: #resource_Default_view!public! !
 !JadeiteChangesBrowser class categoriesFor: #showOn:name:!public! !
 
