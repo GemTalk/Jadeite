@@ -90,7 +90,7 @@ fatal: anObject
 message
 	"Answer the receiver's message field as a Smalltalk object."
 
-	^String fromAddress: (bytes yourAddress + 113)!
+	^Utf8String fromAddress: (bytes yourAddress + 113)!
 
 message: anObject
 	"Set the receiver's message field to the value of anObject."
