@@ -85,14 +85,22 @@ test_basicInspection
 	| remoteObject inspector |
 	self testsIssue: #issue687 withTitle: 'inspection as DataCurator broken'.
 	remoteObject := session
-				executeString: '
-		''fnoodle'''
+				executeString: '''fnoodle'''
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	
 	[self assert: inspector model isKindOf: RowanInspectorService.
 	self assert: inspector documentPresenter value equals: '''fnoodle''']
+			ensure: [inspector view close].
+	remoteObject := session
+				executeString: 'UserGlobals'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	
+	[self assert: inspector model isKindOf: RowanInspectorService.
+	self assert: ('*SymbolDictionary*' match: inspector documentPresenter value)]
 			ensure: [inspector view close]!
 
 test_compileClass
