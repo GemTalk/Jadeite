@@ -81,6 +81,20 @@ test_autoCommit
 	self assert: transcript autoCommit]
 			ensure: [methodListBrowser view close]!
 
+test_basicInspection
+	| remoteObject inspector |
+	self testsIssue: #issue687 withTitle: 'inspection as DataCurator broken'.
+	remoteObject := session
+				executeString: '
+		''fnoodle'''
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	
+	[self assert: inspector model isKindOf: RowanInspectorService.
+	self assert: inspector documentPresenter value equals: '''fnoodle''']
+			ensure: [inspector view close]!
+
 test_compileClass
 	self testsIssue: #issue390 withTitle: 'Rename instance variable with accessor method is... wonky'.
 	self selectRowanSample1Class.
@@ -197,6 +211,7 @@ test_loginOk
 !JadeiteDataCuratorTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_addAccessorsClassTab!public!test variable tab!tests! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_autoCommit!public!test auto commit!tests! !
+!JadeiteDataCuratorTestCase categoriesFor: #test_basicInspection!public!test variable tab!tests! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_compileClass!public!test compiing!tests! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_dictionaryNameIsString!public!test issue 217! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_dictionarySelectionChangesTab!public!test issue 217! !
