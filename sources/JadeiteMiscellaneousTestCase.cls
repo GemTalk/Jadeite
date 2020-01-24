@@ -291,6 +291,7 @@ test_serviceClassBookkeeping
 	bookkeeping"
 
 	| testService remoteOop block |
+	self testsIssue: #issue687 withTitle: 'inspection as DataCurator broken'.
 	"check all client service classes exist on server"
 	RowanService subclasses do: 
 			[:subclass |
