@@ -284,6 +284,38 @@ test_releaseOops
 	self assert: (session executeString: 'System hiddenSetSize: 39') equals: 0.
 	self auditAll!
 
+test_serviceClassBookkeeping
+	"All service classes should have an entry in`Rowan platform serviceClasses`. 
+	Only SystemUser can reference rowan services classes directly so other users
+	must use indirection to look up the class. Hence the necessity of this extra
+	bookkeeping"
+
+	| testService remoteOop block |
+	"check all client service classes exist on server"
+	RowanService subclasses do: 
+			[:subclass |
+			| remoteClassExists clientClassName |
+			clientClassName := subclass name.
+			remoteClassExists := session
+						executeString: '| serviceClass | 
+								serviceClass := Rowan platform serviceClasses detect:[:ea | ea name = '
+								, clientClassName printString , '] ifNone:[].
+								serviceClass notNil'.
+			self assert: remoteClassExists].
+
+	"check all remote service classes exist on client"
+	testService := RowanTestService new.
+	remoteOop := testService remoteServiceClassNamesOop: session.
+	block := 
+			[:remoteName |
+			| hasClientClass |
+			hasClientClass := RowanService withAllSubclasses detect: [:cls | cls name = remoteName] ifNone: [].
+			self denyIsNil: hasClientClass].
+	testService
+		execute: block
+		overArrayOop: remoteOop
+		session: session!
+
 test_versionMatches
 	"to prevent invalid logins, make sure internal server
 	version matches internal client version"
@@ -747,6 +779,7 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_findInWorkspace!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_instVarConstants!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_serviceClassBookkeeping!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_versionMatches!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workingDirectoryEqualsImageDirectory!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceAdHocDisplayUnicodeCharacters!public!test!test menus!test workspaces! !
