@@ -96,6 +96,7 @@ package classNames
 	yourself.
 
 package methodNames
+	add: #Association -> #stonOn:;
 	add: #CodeSourcePresenter -> #browseSelectedClass;
 	add: #CodeSourcePresenter -> #currentSelection;
 	add: #CodeSourcePresenter -> #executeSelectionOrLine;
@@ -981,6 +982,13 @@ ScintillaView subclass: #JadeiteScintillaView
 
 
 "Loose Methods"!
+
+!Association methodsFor!
+
+stonOn: stonWriter
+	"overriden by Jadeite. Need key value format for gemstone" 
+	^super stonOn: stonWriter! !
+!Association categoriesFor: #stonOn:!public!writing! !
 
 !CodeSourcePresenter methodsFor!
 

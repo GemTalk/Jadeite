@@ -2566,7 +2566,7 @@ writeProject
 
 downArrowIcon
 
-	^Icon fromId: 'DownArrow.ico'.
+	^Icon fromFile: 'icons\DownArrow.ico'
 !
 
 resource_Default_view
