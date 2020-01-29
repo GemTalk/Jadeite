@@ -246,6 +246,7 @@ tearDown
 		yourself.
 	JadeiteDebugger debuggerClass: nil.
 	JadeiteDebugger semaphore: nil.
+	TestMessageBox disableJadeiteTestMessageBox.	"in case the test has gotten stuck while enabled"
 	super tearDown!
 
 terminateGsProcess

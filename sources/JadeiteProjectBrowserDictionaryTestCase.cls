@@ -167,6 +167,7 @@ test_changeMethodInDictionaryViewShowsDirtyInProject
 	self selectRowanSample1Test.
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded.	"make sure project is not dirty"
+	self selectRowanSample1Test.
 	self deny: self projectListPresenter selection isDirty.
 	
 	[self

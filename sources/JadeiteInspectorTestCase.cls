@@ -273,6 +273,23 @@ test_adHocInspect
 				[workspace isModified: false.
 				workspace view close]!
 
+test_adHocInspectCompileError
+	| workspace |
+	self testsIssue: #issue688 withTitle: '(3.0.92) Compile Errors in Workspace broken'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	workspace setDocumentData: '123'.
+	workspace setFocus.
+	inspector := workspace codePane jadeInspect.
+	inspector documentPresenter model value: '#(1 2'.
+	inspector codePane view setFocus.
+	inspector codePane jadeExecute.
+	self assert: inspector documentPresenter view text equals: '#(1 2expected a right parenthesis']
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
 test_adHocInspectComplexObject
 	| workspace |
 	self testsIssue: #issue464 withTitle: '(3.0.67) String does not understand #format: ... during doit'.
@@ -1792,6 +1809,7 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorTestCase categoriesFor: #test_addStringToString!public!tests add remove! !
 !JadeiteInspectorTestCase categoriesFor: #test_adHocExecution!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_adHocInspect!public!tests! !
+!JadeiteInspectorTestCase categoriesFor: #test_adHocInspectCompileError!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_adHocInspectComplexObject!public!tests! !
 !JadeiteInspectorTestCase categoriesFor: #test_adHocInspectFromWithinInspector!public!tests!tests menu bar! !
 !JadeiteInspectorTestCase categoriesFor: #test_autoCommitInAdHocInspect!public!tests! !

@@ -17,35 +17,33 @@ tearDown
 			[workspace codePane documentPresenter view isModified: false.
 			workspace view close]!
 
+test_adHocCompileError
+	self testsIssue: #issue688 withTitle: '(3.0.92) Compile Errors in Workspace broken'.
+	workspace := JadeWorkspace showOnSession: session.
+	workspace setDocumentData: '#(1 2'.
+	workspace codePane documentPresenter setFocus.
+	workspace codePane jadeExecute.
+	self assert: workspace codePane documentPresenter value equals: '#(1 2expected a right parenthesis'!
+
 test_adHocDisplay
-	| workspace |
 	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
 	workspace := JadeWorkspace showOnSession: session.
-	
-	[self assert: (workspace isKindOf: JadeWorkspace).
+	self assert: (workspace isKindOf: JadeWorkspace).
 	workspace setDocumentData: '123'.
 	workspace codePane documentPresenter setFocus.
 	workspace codePane jadeDisplay.
-	self assert: workspace codePane documentPresenter value equals: '123 123']
-			ensure: 
-				[workspace isModified: false.
-				workspace view close]!
+	self assert: workspace codePane documentPresenter value equals: '123 123'!
 
 test_adHocExecute
-	| workspace |
 	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
 	workspace := JadeWorkspace showOnSession: session.
-	
-	[self assert: (workspace isKindOf: JadeWorkspace).
+	self assert: (workspace isKindOf: JadeWorkspace).
 	session executeString: 'UserGlobals removeKey: #foo ifAbsent:[]'.
 	workspace setDocumentData: 'UserGlobals at: #foo put: ''bar'''.
 	workspace codePane documentPresenter setFocus.
 	workspace codePane jadeExecute.
 	self assert: workspace codePane documentPresenter value equals: 'UserGlobals at: #foo put: ''bar'''.
-	self assert: (session executeString: 'UserGlobals at: #foo') equals: 'bar']
-			ensure: 
-				[workspace isModified: false.
-				workspace view close]!
+	self assert: (session executeString: 'UserGlobals at: #foo') equals: 'bar'!
 
 test_autoCommitDoesNotMakeRoundTripWhenOpeningBrowser
 	"Not a very good test but the last service logged should not be an #updateAutoCommit command which was the bug"
@@ -763,6 +761,7 @@ testMethodServiceClassNameIsString
 				meta: false.
 	self assert: methodService className isKindOf: String! !
 !JadeiteMiscellaneousTestCase categoriesFor: #tearDown!private!support! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_adHocCompileError!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_adHocDisplay!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_adHocExecute!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitDoesNotMakeRoundTripWhenOpeningBrowser!auto commit!public! !
