@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 TestCase subclass: #JadeiteAbstractTestCase
-	instanceVariableNames: 'session transcript projectsBrowser'
+	instanceVariableNames: 'session transcript projectsBrowser jadeiteShell user'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -202,6 +202,17 @@ loginWithRetry: loginShell
 			[loginShell loginWithoutErrorHandling.
 			loginError := false] on: Error
 					do: [:ex | (Delay forMilliseconds: 100) wait]]!
+
+logoutThenLoginAs: userName
+	userName ifNil: [^self].
+	userName = GciSession current userID ifTrue: [^self].
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.	"closing the transcript will logout the session. don't commit"
+	[transcript view close] ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	JadeiteLoginShell allInstances do: [:shell | shell view close].	"should save to the remote JadeDefaultConnection.gss file"
+	jadeiteShell := JadeiteLoginShell show.
+	jadeiteShell userIDPresenter value: userName.
+	self loginWithRetry: jadeiteShell!
 
 methodListPresenter
 	^self projectsPresenter methodListPresenter!
@@ -505,6 +516,8 @@ setBreakAt: anInteger
 
 setUp
 	super setUp.
+	transcript := JadeiteTestResource current transcript.
+	self logoutThenLoginAs: user.
 	session := JadeiteTestResource current session.
 	transcript := JadeiteTestResource current transcript.
 	self setAutoCommit: false.
@@ -532,7 +545,7 @@ setupSupclassComparisonMethods
 
 tearDown
 	super tearDown.
-	SessionManager inputState pumpMessages.!
+	SessionManager inputState pumpMessages!
 
 testsIssue: aSymbol withTitle: anObject
 	"send this to help identify which tests test which issues"
@@ -556,6 +569,9 @@ testsRowanIssue: aSymbol withTitle: anObject
 
 transcript
 	^transcript!
+
+transcriptForCurrentSession
+	^JadeiteTranscript allInstances detect: [:tran | tran gciSession == GciSession current] ifNone: []!
 
 transcriptProjectList
 	^self transcriptTab projectListPresenter!
@@ -615,6 +631,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #loadProjectNamed:!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #loadRowanSample1InProjectList!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #loginWithRetry:!private!support! !
+!JadeiteAbstractTestCase categoriesFor: #logoutThenLoginAs:!private!setup teardown!support! !
 !JadeiteAbstractTestCase categoriesFor: #methodListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #methodSourceForTest!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #methodSourcePresenter!private!project browser support! !
@@ -668,6 +685,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #testsIssue:withTitle:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #testsRowanIssue:withTitle:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #transcript!public!transcript support! !
+!JadeiteAbstractTestCase categoriesFor: #transcriptForCurrentSession!private!setup teardown!support! !
 !JadeiteAbstractTestCase categoriesFor: #transcriptProjectList!public!transcript support! !
 !JadeiteAbstractTestCase categoriesFor: #transcriptProjectNamed:!public!transcript support! !
 !JadeiteAbstractTestCase categoriesFor: #transcriptTab!public!transcript support! !

@@ -1155,21 +1155,20 @@ test_inspectedDebuggerObjectHeld
 test_loginButtonEnablementAfterDebug
 	"transcript close wasn't setting GciSession current to nil"
 
-	| jadeiteShell query sunitPresenter |
+	| shell query sunitPresenter |
 	self testsIssue: #issue527 withTitle: 'Multiple sessions can''t keep console project list straight'.
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #no.	"don't commit"
 	
 	[GciSession current ifNotNil: [:sess | sess logout].
 	query := self closeJadeiteLoginShells.
-	jadeiteShell := JadeiteLoginShell show position: 80 @ 20.
-	jadeiteShell login.
-	self denyIsNil: GciSession current. 
+	shell := JadeiteLoginShell show position: 80 @ 20.
+	shell login.
+	self denyIsNil: GciSession current.
 	session := GciSession current.
 	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: [].
-	query := CommandQuery commandDescription: (CommandDescription command: #login)
-				source: jadeiteShell view.
-	jadeiteShell view queryCommand: query.
+	query := CommandQuery commandDescription: (CommandDescription command: #login) source: shell view.
+	shell view queryCommand: query.
 	self deny: query isEnabled.
 	sunitPresenter := (JadeiteSUnitBrowser showOnSession: session) primaryPresenter.
 	"reproduce scenario in bug"
@@ -1181,17 +1180,17 @@ test_loginButtonEnablementAfterDebug
 	self rowanFixMe.	"without this, test somehow dies. Makes for a less useful test"
 	TestMessageBox plannedResult: #no.
 	transcript view close.	"closes all Jadeite windows"
-	jadeiteShell := JadeiteLoginShell allInstances first.
+	shell := JadeiteLoginShell allInstances first.
 	query := CommandQuery commandDescription: (CommandDescription command: #login)
-				source: jadeiteShell loginButtonPresenter view.
-	jadeiteShell queryCommand: query.
+				source: shell loginButtonPresenter view.
+	shell queryCommand: query.
 	self assert: query isEnabled]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
 				debugger := nil.
 				process terminate.
 				process := nil.
-				session := jadeiteShell login.
+				session := shell login.
 				transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: [].
 				self class resources do: 
 						[:resource |

@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 JadeiteAbstractTestCase subclass: #JadeiteDataCuratorTestCase
-	instanceVariableNames: 'jadeiteShell'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -12,17 +12,6 @@ Test tests are mostly copies of other test class tests just run
 under the DataCurator login. '!
 !JadeiteDataCuratorTestCase categoriesForClass!Unclassified! !
 !JadeiteDataCuratorTestCase methodsFor!
-
-logoutThenLoginAs: user
-	TestMessageBox enableJadeiteTestMessageBox.
-	TestMessageBox plannedResult: #no.	"closing the transcript will logout the session. don't commit"
-	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == GciSession current]
-				ifNone: [].
-	[transcript view close] ensure: [TestMessageBox disableJadeiteTestMessageBox].
-	JadeiteLoginShell allInstances do: [:shell | shell view close].	"should save to the remote JadeDefaultConnection.gss file"
-	jadeiteShell := JadeiteLoginShell show.
-	jadeiteShell userIDPresenter value: user.
-	self loginWithRetry: jadeiteShell!
 
 setUp
 	self logoutThenLoginAs: 'DataCurator'.
@@ -214,7 +203,6 @@ test_loginOk
 	self assert: jadeiteShell userIDPresenter value equals: 'DataCurator'.
 	self assert: GciSession current userID equals: 'DataCurator'.
 	self assert: (GciSession current executeString: '3+4') equals: 7! !
-!JadeiteDataCuratorTestCase categoriesFor: #logoutThenLoginAs:!private!setup teardown!support! !
 !JadeiteDataCuratorTestCase categoriesFor: #setUp!public!setup teardown! !
 !JadeiteDataCuratorTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_addAccessorsClassTab!public!test variable tab!tests! !
