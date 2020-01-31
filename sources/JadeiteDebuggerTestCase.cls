@@ -1191,12 +1191,7 @@ test_loginButtonEnablementAfterDebug
 				process terminate.
 				process := nil.
 				session := shell login.
-				transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: [].
-				self class resources do: 
-						[:resource |
-						resource current
-							transcript: transcript;
-							session: session]]!
+				transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: []]!
 
 test_reformatIllegalSource
 	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
