@@ -14,7 +14,7 @@ under the DataCurator login. '!
 !JadeiteDataCuratorTestCase methodsFor!
 
 setUp
-	self logoutThenLoginAs: 'DataCurator'.
+	user := 'DataCurator'.
 	super setUp.
 	self setupProjectBrowser!
 
