@@ -298,7 +298,7 @@ methodUpdate: presenter
 	presenter list do: 
 			[:methodService |
 			methodService replicateFrom: self	"#replicateFrom: will ensure we only replicate the proper methods"].
-	presenter view invalidate!
+	presenter view invalidate.!
 
 name
 	selector isNil ifTrue:[^String new].

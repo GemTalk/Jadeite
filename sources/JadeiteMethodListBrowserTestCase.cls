@@ -48,6 +48,13 @@ removeMultiKeywordSenderAndSendee
 			self selectServiceNamed: selector in: self projectsPresenter methodListPresenter.
 			self removeMethods: self methodListPresenter selections in: self projectsPresenter selectedClassName]!
 
+removeMultipleReferencesToStringMethods
+	self projectsPresenter categoryListPresenter selections: #('other' 'tests').
+	#('flub1' 'flub2' 'flub3') do: 
+			[:selector |
+			self selectServiceNamed: selector in: self projectsPresenter methodListPresenter.
+			self removeMethods: self methodListPresenter selections in: self projectsPresenter selectedClassName]!
+
 removeTestMethodAndCloseProjectBrowser
 	self removeMethods: (Array with: self projectsPresenter methodListPresenter selection)
 		in: self projectsPresenter selectedClassName.
@@ -534,7 +541,7 @@ test_browseMethodsContaining
 	self assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter view
 				selectionRange
 		equals: (50 to: 54)]
-			ensure: [self removeTestMethodAndCloseProjectBrowser]!
+			ensure: [self removeMultipleReferencesToStringMethods]!
 
 test_browseMultiKeywordSendersHighlighting
 	self testsIssue: #issue500
@@ -670,6 +677,34 @@ test_browseSendersIsDirty
 			[:methodService |
 			self methodListMethodListPresenter selection: methodService.
 			self assert: ('isDirty*' match: self methodSourcePresenter documentPresenter selection)	"use match because we might pickup a '.'"]!
+
+test_categoryUpdates
+	| flub1MethodInMethodList |
+	self testsIssue: #issue693
+		withTitle: 'Would like to be able to open method browser on all methods in selected categories'.
+	self setupMultipleReferencesToString.
+	
+	[self openProjectBrowser.
+	self projectsPresenter categoryListPresenter selection: 'other'.
+	self
+		assert: (self projectsPresenter methodListPresenter list
+				collect: [:methodService | methodService selector]) asArray
+		equals: #(#flub1 #flub2 #flub3).
+	self projectsPresenter categoryListPresenter selections: #('other' 'tests').
+	methodListBrowser := self projectsPresenter browseSelectedCategoryMethods.
+	self
+		assert: (self methodListMethodListPresenter list collect: [:methodService | methodService selector])
+				asArray
+		equals: #(#flub1 #flub2 #flub3 #test1 #test2 #testError #testFailure).
+	flub1MethodInMethodList := self methodListMethodListPresenter list
+				detect: [:methodService | methodService selector = #flub1]
+				ifNone: [].
+	self assert: flub1MethodInMethodList category equals: 'other'.
+	self projectsPresenter
+		moveMethods: (Array with: self projectsPresenter methodListPresenter list first)
+		toCategory: 'tests'.	"#flub1"
+	self assert: flub1MethodInMethodList category equals: 'tests']
+			ensure: [self removeMultipleReferencesToStringMethods]!
 
 test_clearAllBreakpointsMenuItemOnMethodList
 	"the clear breakpoints menu item should only show up when you've
@@ -1252,6 +1287,7 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodSourcePresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #removeMethods:in:!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #removeMultiKeywordSenderAndSendee!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #removeMultipleReferencesToStringMethods!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #removeTestMethodAndCloseProjectBrowser!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #sampleMethodSource!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #saveMethod:in:category:!private!support! !
@@ -1292,6 +1328,7 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersEnablement!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersFoo!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersIsDirty!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_categoryUpdates!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_clearAllBreakpointsMenuItemOnMethodList!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabMultimethod!public!test comparison tab! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabMultimethod2!public!test comparison tab! !

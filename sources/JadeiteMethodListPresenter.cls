@@ -140,7 +140,9 @@ queryCommand: aCommandQuery
 	^super queryCommand: aCommandQuery!
 
 registerPresentersForUpdates
-	BrowserUpdate current register: self selector: #autoCommitUpdate:!
+	BrowserUpdate current
+		register: self selector: #autoCommitUpdate:;
+		register: methodListPresenter methodListPresenter selector: #methodUpdate:!
 
 removeComparisonTab
 	self textTabs remove: self comparisonTab ifAbsent: []!
