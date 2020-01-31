@@ -47,6 +47,7 @@ disableInteractionsWhile: block
 			self issueCommand: answeringService]!
 
 ensureRowanSample1Loaded
+	self rowanSample1Project ifNotNil: [:projectService | projectService isDirty ifFalse:[^self]]. 
 	self disableInteractionsWhile: 
 			[self unloadSampleProject.
 			self session commit.
@@ -118,6 +119,11 @@ rowanProjectsHome
 rowanSample1Path
 	^'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1.ston'!
 
+rowanSample1Project
+	^self transcript projectListPresenter projectListPresenter list
+		detect: [:projectService | projectService name = 'RowanSample1']
+		ifNone: []!
+
 sampleProjectName
 	^'RowanSample1'!
 
@@ -174,6 +180,7 @@ unloadSampleProject
 !JadeiteTestResource categoriesFor: #projectsBrowser:!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #rowanProjectsHome!constants!private! !
 !JadeiteTestResource categoriesFor: #rowanSample1Path!constants!private! !
+!JadeiteTestResource categoriesFor: #rowanSample1Project!constants!private! !
 !JadeiteTestResource categoriesFor: #sampleProjectName!constants!private! !
 !JadeiteTestResource categoriesFor: #session!accessing!public! !
 !JadeiteTestResource categoriesFor: #setUp!private!setup teardown! !
