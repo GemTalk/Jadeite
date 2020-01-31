@@ -102,7 +102,7 @@ selectionChanged
 	sourceView := self methodSourcePresenter documentPresenter view.
 	selectionRanges := OrderedCollection new.
 	offset := 1.
-	[(offset := sourceView findString: findString startingAt: offset + 1) = 0]
+	[(offset := sourceView model value findString: findString startingAt: offset + 1) = 0]
 		whileFalse: [selectionRanges add: (offset to: offset + findString size - 1)].
 	sourceView selectionRanges: selectionRanges.
 	self showComparison!
