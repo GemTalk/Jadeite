@@ -173,8 +173,8 @@ methodListPresenter
 	^methodListPresenter!
 
 onLeftButtonPressed: aMouseEvent
-
-	[self doSearch] forkAt: Processor userBackgroundPriority.
+	"don't think we want to do this anymore. Leave hooks in just in case" 
+	"[self doSearch] forkAt: Processor userBackgroundPriority."
 !
 
 searchFor: aString

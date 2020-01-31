@@ -31,7 +31,7 @@ methodSourcePresenter
 	^methodListBrowser primaryPresenter methodSourcePresenter!
 
 removeMethods: methodServices in: className
-	"remove method outside the browsers for performance"
+	"Private - remove method outside the browsers for performance"
 
 	| classService |
 	classService := RowanClassService named: className.
@@ -60,7 +60,7 @@ sampleMethodSource
 		^aaa'. !
 
 saveMethod: source in: className category: category
-	"add method outside the browsers for performance" 
+	"Private - add method outside the browsers for performance" 
 	| classService |
 	classService := RowanClassService named: className.
 	classService command: #saveMethodSource:category:; 
@@ -69,7 +69,7 @@ saveMethod: source in: className category: category
 	!
 
 selectListAt: integer
-	"foolishly, the selection changing event which needs testing
+	"Private - foolishly, the selection changing event which needs testing
 	is only sent through a button click in Dolphin. We need to 
 	fake it out for the test. frustrating.
 
@@ -119,6 +119,41 @@ setupMultiKeywordSenderAndSendee
 	self projectsPresenter methodSourcePresenter value: source.
 	self projectsPresenter editSaveMethod: self classListPresenter selection.
 	source := 'jadeiteSendeeWith: multiple keyword: arguments	^multiple+arguments'.
+	self projectsPresenter selectMethodSourceTab.
+	self projectsPresenter methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection!
+
+setupMultipleReferencesToString
+	| source |
+	self openProjectBrowser.
+	self selectRowanSample1Test.
+	source := 'flub1
+| array |
+array := Array new. 
+array add: ''blerf''.
+array add: ''blerf''. 
+array add: ''blerf''. 
+^array'.
+	self projectsPresenter selectMethodSourceTab.
+	self projectsPresenter methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	source := 'flub2
+| array |
+array := Array new. 
+array add: ''blerf''.
+array add: ''blerf''. 
+array add: ''blerf''. 
+^array'.
+	self projectsPresenter selectMethodSourceTab.
+	self projectsPresenter methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	source := 'flub3
+| array |
+array := Array new. 
+array add: ''blerf''.
+array add: ''blerf''. 
+array add: ''blerf''. 
+^array'.
 	self projectsPresenter selectMethodSourceTab.
 	self projectsPresenter methodSourcePresenter value: source.
 	self projectsPresenter editSaveMethod: self classListPresenter selection!
@@ -478,6 +513,28 @@ test_browseLiteralReferencesBlankSearch
 	self assertIsNil: methodListBrowser.
 	methodListBrowser := JadePresenter browseLiteralReferences: nil session: session.
 	self assertIsNil: methodListBrowser!
+
+test_browseMethodsContaining
+	self testsIssue: #issue695
+		withTitle: '(3.0.91) finf methods containing `allusers` selects second occurrence in method'.
+	self setupMultipleReferencesToString.
+	methodListBrowser := JadePresenter browseMethodsContaining: 'blerf' session: session.
+	
+	[self assert: self methodListMethodListPresenter selection selector equals: #flub1.
+	self assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter view
+				selectionRange
+		equals: (50 to: 54).
+	self methodListMethodListPresenter selectionByIndex: 2.
+	self assert: self methodListMethodListPresenter selection selector equals: #flub2.
+	self assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter view
+				selectionRange
+		equals: (50 to: 54).
+	self methodListMethodListPresenter selectionByIndex: 3.
+	self assert: self methodListMethodListPresenter selection selector equals: #flub3.
+	self assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter view
+				selectionRange
+		equals: (50 to: 54)]
+			ensure: [self removeTestMethodAndCloseProjectBrowser]!
 
 test_browseMultiKeywordSendersHighlighting
 	self testsIssue: #issue500
@@ -1193,17 +1250,18 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListSelector!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListSourcePresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodSourcePresenter!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #removeMethods:in:!public!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #removeMethods:in:!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #removeMultiKeywordSenderAndSendee!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #removeTestMethodAndCloseProjectBrowser!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #sampleMethodSource!public!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #saveMethod:in:category:!public!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #selectListAt:!public!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodNamed:!public!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodNamed:in:!public!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsNamed:!public!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsNamed:in:!public!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #sampleMethodSource!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #saveMethod:in:category:!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #selectListAt:!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodNamed:!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodNamed:in:!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsNamed:!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsNamed:in:!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #setupMultiKeywordSenderAndSendee!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #setupMultipleReferencesToString!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #setupTestMethodInProjectBrowser!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #sourcePresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
@@ -1225,6 +1283,7 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseInstVarWriters!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseLiteralReferences!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseLiteralReferencesBlankSearch!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseMethodsContaining!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseMultiKeywordSendersHighlighting!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseMultiKeywordSendersOnEverySender!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSenderHighlightedWithEveryMethod!public!test browse methods! !

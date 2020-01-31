@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName isMethodForBlock homeMethodOop hasMethodHistory'
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName isMethodForBlock homeMethodOop hasMethodHistory searchString'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -379,6 +379,12 @@ replicateFrom: newService
 					[super replicateFrom: newService.
 					renamedName := nil]]!
 
+searchString
+	^searchString!
+
+searchString: anObject
+	searchString := anObject!
+
 selectedPackageServices
 	^selectedPackageServices!
 
@@ -587,6 +593,8 @@ user: anObject
 !RowanMethodService categoriesFor: #renamedName!accessing!private! !
 !RowanMethodService categoriesFor: #renamedName:!accessing!private! !
 !RowanMethodService categoriesFor: #replicateFrom:!public!replication! !
+!RowanMethodService categoriesFor: #searchString!accessing!private! !
+!RowanMethodService categoriesFor: #searchString:!accessing!private! !
 !RowanMethodService categoriesFor: #selectedPackageServices!accessing!private! !
 !RowanMethodService categoriesFor: #selectedPackageServices:browser:!accessing!private! !
 !RowanMethodService categoriesFor: #selector!accessing!private! !
