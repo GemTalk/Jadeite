@@ -33,6 +33,12 @@ breakpointSettingChanged: transcript
 			[transcript areBreakpointsEnabled value: answer.
 			BrowserUpdate current breakpointsEnabled: answer]!
 
+canAccessServiceClasses: session
+	command := #canAccessServiceClasses.
+	self commandArgs: Array new.
+	BrowserUpdate current issueCommands: (Array with: self) session: session.
+	^answer!
+
 expressionSelector: string session: session
 	command := #expressionSelector:.
 	commandArgs := Array with: string.
@@ -89,6 +95,7 @@ updateSymbols: unused
 !RowanAnsweringService categoriesFor: #autoCommitIn:!commands!public! !
 !RowanAnsweringService categoriesFor: #breakPointsAreEnabled:!commands!public! !
 !RowanAnsweringService categoriesFor: #breakpointSettingChanged:!public!updating! !
+!RowanAnsweringService categoriesFor: #canAccessServiceClasses:!commands!public! !
 !RowanAnsweringService categoriesFor: #expressionSelector:session:!commands!public! !
 !RowanAnsweringService categoriesFor: #flipAutoCommitFor:!commands!public! !
 !RowanAnsweringService categoriesFor: #flipTranscriptIn:!commands!public! !
