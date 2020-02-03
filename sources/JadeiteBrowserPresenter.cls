@@ -239,7 +239,7 @@ categoriesMenuStrings
 		'&Rename//renameMethodCategory'
 		'&Remove//removeMethodCategories'
 		'-'
-		'&Browse methods in selected categories//browseSelectedCategoryMethods'
+		'&Browse category methods//browseSelectedCategoryMethods'
 		'-'
 		'&File out categories//fileOutCategories'
 	)

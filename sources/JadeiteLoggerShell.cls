@@ -86,7 +86,7 @@ showOnSession: session
 		ifTrue: [super showOnSession: session]
 		ifFalse: 
 			[MessageBox
-				notify: 'Unable to view logs. Need access to Rowan services. Try logging in as SystemUser']! !
+				notify: 'Unable to view logs. Need access to Rowan service classes. Try logging in as SystemUser']! !
 !JadeiteLoggerShell class categoriesFor: #resource_Default_view!public!resources-views! !
 !JadeiteLoggerShell class categoriesFor: #showOnSession:!instance creation!public! !
 
