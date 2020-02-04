@@ -13,7 +13,7 @@ JadeiteMethodSourcePresenter comment: ''!
 createSchematicWiring
 	super createSchematicWiring.
 	documentPresenter
-		when: #textChanged
+		when: #valueChanged
 		send: #methodValueChanged
 		to: self.!
 

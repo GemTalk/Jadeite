@@ -1095,9 +1095,6 @@ methodsMenuStrings
 methodSourcePresenter: anObject
 	methodSourcePresenter := anObject!
 
-methodSourcePresenter1
-	^methodSourcePresenter!
-
 moveMethods: methodServices toCategory: targetCategory
 	| classService |
 	classService := self selectedClass.
@@ -1156,10 +1153,6 @@ onDropOnMethodCategory: aSession
 	methodServices := aSession dragObjects collect: [:each | each format: #method].
 	targetCategory := aSession suggestedTarget trimBlanks.
 	self moveMethods: methodServices toCategory: targetCategory!
-
-onSetFocus
-	"updateProcess was hanging around on test runs. Don't think 
-	it was needed in Jadeite anyway"!
 
 onSetFocus: aView stack: aString
 
@@ -2425,7 +2418,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodSelectionChanged!event handlers!public!text tabs!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodsMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodSourcePresenter:!accessing!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #methodSourcePresenter1!accessing!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #moveMethods:toCategory:!drag & drop!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #newBrowser!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDragClass:!drag & drop!public! !
@@ -2434,7 +2426,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropMethodsOnClassHierarchy:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropOnClassList:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropOnMethodCategory:!drag & drop!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #onSetFocus!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onSetFocus:stack:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !

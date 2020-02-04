@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 JadeBrowserPresenter subclass: #JadeSystemBrowserPresenter
 	instanceVariableNames: 'ancestorListPresenter breakPoints categoryListPresenter classCategoryPresenter classCommentPresenter classDefinition classDefinitionPresenter classHierarchyPresenter classHierarchyTabs classListPresenter dictionaryListPresenter environment eventCount globalsPresenter globalsLabel historyList historyIndex ignoreNextSetFocusEvent instanceClassTabs inUpdate keystrokeTime methodCategory methodFilterTabs methodListPresenter methodSource methodSourcePresenter originalSourceLabel originalSourcePresenter overrideListPresenter packageDictionaryTabs packageInfoTab packageLabel packageListPresenter pragmaListPresenter readStream repositoryListPresenter selectedClassChanged selectedClassesAreTestCases selectedClassName selectedClassOop stepPoints sunitPresenter superclassListPresenter textAreaTabs unimplementedSelectors updateCount updateProcess variableListPresenter'
@@ -498,7 +498,6 @@ createSchematicWiringForMethodSource
 		when: #'hoverEnd:'				send: #'methodHoverEnd:'		to: self;
 		when: #'aboutToDisplayMenu:'		send: #'methodMenu:'		to: self;
 		when: #'leftButtonDoubleClicked:'	send: #'methodDoubleClicked:'	to: self;
-		when: #'valueChanged'			send: #'methodValueChanged'	to: self;
 		when: #'focusLost'				send: #'cancelCallTip'			to: methodSourcePresenter view;
 		yourself.
 	!
@@ -1388,22 +1387,6 @@ methodSourcePresenter
 	^methodSourcePresenter.
 !
 
-methodValueChanged
-	inUpdate ifTrue: [^self].
-	self methodSourceEqual
-		ifTrue: 
-			[methodSourcePresenter view
-				backcolor: JadeiteTextStyles default colorForNoEdits;
-				isModified: false;
-				yourself.
-			self updateMethodStepPoints.
-			self statusBarText: '']
-		ifFalse: 
-			[methodSourcePresenter view
-				backcolor: JadeiteTextStyles default colorForUnsavedEdits;
-				clearContainerIndicators;
-				yourself]!
-
 onDragClassesOverDictionary: aSession 
 
 	(dictionaryListPresenter selections includes: aSession suggestedTarget) ifTrue: [^self].
@@ -1663,19 +1646,6 @@ onDropOnPackageList: aSession
 	(aSession isFormatAvailable: #'class') 	ifTrue: [^self onDropClassesOnPackageList: aSession].
 	MessageBox notify: 'Sorry, we are not yet prepared to handle ' , aSession printString , '!!'.
 	SessionManager current pause.!
-
-onSetFocus
-
-	| activeView stack |
-	ignoreNextSetFocusEvent ifTrue: [	"We have just returned from a Find Class dialog or error and don't need to update just yet"
-		ignoreNextSetFocusEvent := false.
-		^self.
-	].
-	updateProcess ifNotNil: [updateProcess terminate].
-	activeView := View active.
-	stack := Processor activeProcess stackTrace: 40.
-	updateProcess := [self onSetFocus: activeView stack: stack] forkAt: Processor userBackgroundPriority.
-!
 
 onSetFocus: aView stack: aString
 
@@ -2777,7 +2747,6 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #methodListPresenter!accessing!public! !
 !JadeSystemBrowserPresenter categoriesFor: #methodsIdentifier!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #methodSourcePresenter!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #methodValueChanged!event handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDragClassesOverDictionary:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDragClassesOverPackageList:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDragClassHierarchy:!drag & drop!public! !
@@ -2806,7 +2775,6 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #onDropOnDictionary:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDropOnMethodCategory:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDropOnPackageList:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onSetFocus!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onSetFocus:stack:!public! !
 !JadeSystemBrowserPresenter categoriesFor: #openSourceStyler!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #packageListPresenter!accessing!public! !

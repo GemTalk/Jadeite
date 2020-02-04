@@ -341,7 +341,7 @@ createSchematicWiring
 createSchematicWiringForMethodSource
 	super createSchematicWiringForMethodSource.
 	methodSourcePresenter
-		when: #textChanged
+		when: #valueChanged
 			send: #methodValueChanged
 			to: self;
 		when: #autoComplete:startingAt:accept:
@@ -534,6 +534,22 @@ methodMenu: aMenu
 
 methodToReformat
 	^methodListPresenter selectionIfNone: [RowanMethodService new]!
+
+methodValueChanged
+	inUpdate ifTrue: [^self].
+	self methodSourceEqual
+		ifTrue: 
+			[methodSourcePresenter view
+				backcolor: JadeiteTextStyles default colorForNoEdits;
+				isModified: false;
+				yourself.
+			self updateMethodStepPoints.
+			self statusBarText: '']
+		ifFalse: 
+			[methodSourcePresenter view
+				backcolor: JadeiteTextStyles default colorForUnsavedEdits;
+				clearContainerIndicators;
+				yourself]!
 
 noClassSelectedInEitherPresenter
 	classListPresenter selectionIfNone: [classHierarchyPresenter selectionIfNone: [^true]].
@@ -1061,6 +1077,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #maxAutoCompleteListSize!constants!public! !
 !JadeiteBrowserPresenter categoriesFor: #methodMenu:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #methodToReformat!menu handlers support!private! !
+!JadeiteBrowserPresenter categoriesFor: #methodValueChanged!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #noClassSelectedInEitherPresenter!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #packageDictionaryCards!accessing!private! !

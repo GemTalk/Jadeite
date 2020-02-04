@@ -88,7 +88,7 @@ createSchematicWiring
 		send: #browseFrameMethod
 		to: self.
 	documentPresenter
-		when: #textChanged
+		when: #valueChanged
 			send: #methodValueChanged
 			to: self;
 		when: #autoComplete:startingAt:accept:
