@@ -146,6 +146,28 @@ browseMethodHistory
 	^JadeiteMethodHistoryBrowser showOnClass: self selectedClass
 		selector: methodListPresenter selections first!
 
+browseSelectedCategoryMethods
+	"convenience menu item to display random methods in selected categories in a browser"
+
+	| browser |
+	self updateServices: methodListPresenter list.	"If categories are selected, only the methods in those categories will be visible"
+	(browser := JadeiteMethodListBrowser showOnSession: gciSession) primaryPresenter
+		methods: methodListPresenter list
+		selecting: nil.
+	browser updateCaption: 'Selected Methods in Categories - ' , categoryListPresenter list printString.
+	^browser!
+
+browseSelectedMethods
+	"convenience menu item to display randomly grouped methods in a browser"
+
+	| browser |
+	self updateServices: methodListPresenter selections. 
+	(browser := JadeiteMethodListBrowser showOnSession: gciSession) primaryPresenter
+		methods: methodListPresenter selections
+		selecting: nil.
+	browser updateCaption: 'Selected Methods'.
+	^browser!
+
 buildGlobalsTab
 	| globalsTabView |
 	globalsTab
@@ -205,6 +227,23 @@ buildProjectTab
 		arrangement: 'Project';
 		name: 'projectInfoTab'.
 	^projectInfoView!
+
+categoriesMenuStrings
+
+	false ifTrue: [
+		self addMethodCategory; renameMethodCategory; removeMethodCategories; fileOutCategories.
+	].
+	^#(
+		'&Categories'
+		'&Add//addMethodCategory'
+		'&Rename//renameMethodCategory'
+		'&Remove//removeMethodCategories'
+		'-'
+		'&Browse category methods//browseSelectedCategoryMethods'
+		'-'
+		'&File out categories//fileOutCategories'
+	)
+!
 
 classCommentChanged
 	inUpdate ifTrue: [^self].
@@ -983,8 +1022,11 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #browseInstVarReaders!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #browseInstVarWriters!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #browseMethodHistory!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #browseSelectedCategoryMethods!menu handlers!public!queries! !
+!JadeiteBrowserPresenter categoriesFor: #browseSelectedMethods!menu handlers!public!queries! !
 !JadeiteBrowserPresenter categoriesFor: #buildGlobalsTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #buildProjectTab!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #classCommentChanged!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #classesMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #comparisonPresenter!accessing!public! !

@@ -239,17 +239,6 @@ browseHierarchySenders
 browseSelectedClass
 	^self browseSelectedClassIn: methodSourcePresenter newTab: Keyboard default isCtrlDown!
 
-browseSelectedMethods
-	"convenience menu item to display randomly grouped methods in a browser"
-
-	| browser |
-	self updateServices: methodListPresenter selections. 
-	(browser := JadeiteMethodListBrowser showOnSession: gciSession) primaryPresenter
-		methods: methodListPresenter selections
-		selecting: nil.
-	browser updateCaption: 'Selected Methods'.
-	^browser!
-
 categoriesMenuStrings
 
 	false ifTrue: [
@@ -2349,7 +2338,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseHierarchyImplementors!menu handlers!public!queries! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseHierarchySenders!public!queries! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseSelectedClass!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #browseSelectedMethods!menu handlers!public!queries! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #categoryListPresenter!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #checkout!project menu handlers!public! !

@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 JadeiteAbstractTestCase subclass: #JadeiteDataCuratorTestCase
-	instanceVariableNames: 'jadeiteShell'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -13,19 +13,8 @@ under the DataCurator login. '!
 !JadeiteDataCuratorTestCase categoriesForClass!Unclassified! !
 !JadeiteDataCuratorTestCase methodsFor!
 
-logoutThenLoginAs: user
-	TestMessageBox enableJadeiteTestMessageBox.
-	TestMessageBox plannedResult: #no.	"closing the transcript will logout the session. don't commit"
-	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == GciSession current]
-				ifNone: [].
-	[transcript view close] ensure: [TestMessageBox disableJadeiteTestMessageBox].
-	JadeiteLoginShell allInstances do: [:shell | shell view close].	"should save to the remote JadeDefaultConnection.gss file"
-	jadeiteShell := JadeiteLoginShell show.
-	jadeiteShell userIDPresenter value: user.
-	self loginWithRetry: jadeiteShell!
-
 setUp
-	self logoutThenLoginAs: 'DataCurator'.
+	user := 'DataCurator'.
 	super setUp.
 	self setupProjectBrowser!
 
@@ -80,6 +69,28 @@ test_autoCommit
 	self assert: methodListPresenter autoCommit.
 	self assert: transcript autoCommit]
 			ensure: [methodListBrowser view close]!
+
+test_basicInspection
+	| remoteObject inspector |
+	self testsIssue: #issue687 withTitle: 'inspection as DataCurator broken'.
+	remoteObject := session
+				executeString: '''fnoodle'''
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	
+	[self assert: inspector model isKindOf: RowanInspectorService.
+	self assert: inspector documentPresenter value equals: '''fnoodle''']
+			ensure: [inspector view close].
+	remoteObject := session
+				executeString: 'UserGlobals'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	
+	[self assert: inspector model isKindOf: RowanInspectorService.
+	self assert: ('*SymbolDictionary*' match: inspector documentPresenter value)]
+			ensure: [inspector view close]!
 
 test_compileClass
 	self testsIssue: #issue390 withTitle: 'Rename instance variable with accessor method is... wonky'.
@@ -192,11 +203,11 @@ test_loginOk
 	self assert: jadeiteShell userIDPresenter value equals: 'DataCurator'.
 	self assert: GciSession current userID equals: 'DataCurator'.
 	self assert: (GciSession current executeString: '3+4') equals: 7! !
-!JadeiteDataCuratorTestCase categoriesFor: #logoutThenLoginAs:!private!setup teardown!support! !
 !JadeiteDataCuratorTestCase categoriesFor: #setUp!public!setup teardown! !
 !JadeiteDataCuratorTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_addAccessorsClassTab!public!test variable tab!tests! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_autoCommit!public!test auto commit!tests! !
+!JadeiteDataCuratorTestCase categoriesFor: #test_basicInspection!public!test variable tab!tests! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_compileClass!public!test compiing!tests! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_dictionaryNameIsString!public!test issue 217! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_dictionarySelectionChangesTab!public!test issue 217! !

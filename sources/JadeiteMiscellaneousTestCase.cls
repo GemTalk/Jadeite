@@ -17,35 +17,33 @@ tearDown
 			[workspace codePane documentPresenter view isModified: false.
 			workspace view close]!
 
+test_adHocCompileError
+	self testsIssue: #issue688 withTitle: '(3.0.92) Compile Errors in Workspace broken'.
+	workspace := JadeWorkspace showOnSession: session.
+	workspace setDocumentData: '#(1 2'.
+	workspace codePane documentPresenter setFocus.
+	workspace codePane jadeExecute.
+	self assert: workspace codePane documentPresenter value equals: '#(1 2expected a right parenthesis'!
+
 test_adHocDisplay
-	| workspace |
 	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
 	workspace := JadeWorkspace showOnSession: session.
-	
-	[self assert: (workspace isKindOf: JadeWorkspace).
+	self assert: (workspace isKindOf: JadeWorkspace).
 	workspace setDocumentData: '123'.
 	workspace codePane documentPresenter setFocus.
 	workspace codePane jadeDisplay.
-	self assert: workspace codePane documentPresenter value equals: '123 123']
-			ensure: 
-				[workspace isModified: false.
-				workspace view close]!
+	self assert: workspace codePane documentPresenter value equals: '123 123'!
 
 test_adHocExecute
-	| workspace |
 	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
 	workspace := JadeWorkspace showOnSession: session.
-	
-	[self assert: (workspace isKindOf: JadeWorkspace).
+	self assert: (workspace isKindOf: JadeWorkspace).
 	session executeString: 'UserGlobals removeKey: #foo ifAbsent:[]'.
 	workspace setDocumentData: 'UserGlobals at: #foo put: ''bar'''.
 	workspace codePane documentPresenter setFocus.
 	workspace codePane jadeExecute.
 	self assert: workspace codePane documentPresenter value equals: 'UserGlobals at: #foo put: ''bar'''.
-	self assert: (session executeString: 'UserGlobals at: #foo') equals: 'bar']
-			ensure: 
-				[workspace isModified: false.
-				workspace view close]!
+	self assert: (session executeString: 'UserGlobals at: #foo') equals: 'bar'!
 
 test_autoCommitDoesNotMakeRoundTripWhenOpeningBrowser
 	"Not a very good test but the last service logged should not be an #updateAutoCommit command which was the bug"
@@ -283,6 +281,39 @@ test_releaseOops
 	BrowserUpdate current updateServices: (Array with: service) session: session.
 	self assert: (session executeString: 'System hiddenSetSize: 39') equals: 0.
 	self auditAll!
+
+test_serviceClassBookkeeping
+	"All service classes should have an entry in`Rowan platform serviceClasses`. 
+	Only SystemUser can reference rowan services classes directly so other users
+	must use indirection to look up the class. Hence the necessity of this extra
+	bookkeeping"
+
+	| testService remoteOop block |
+	self testsIssue: #issue687 withTitle: 'inspection as DataCurator broken'.
+	"check all client service classes exist on server"
+	RowanService subclasses do: 
+			[:subclass |
+			| remoteClassExists clientClassName |
+			clientClassName := subclass name.
+			remoteClassExists := session
+						executeString: '| serviceClass | 
+								serviceClass := Rowan platform serviceClasses detect:[:ea | ea name = '
+								, clientClassName printString , '] ifNone:[].
+								serviceClass notNil'.
+			self assert: remoteClassExists].
+
+	"check all remote service classes exist on client"
+	testService := RowanTestService new.
+	remoteOop := testService remoteServiceClassNamesOop: session.
+	block := 
+			[:remoteName |
+			| hasClientClass |
+			hasClientClass := RowanService withAllSubclasses detect: [:cls | cls name = remoteName] ifNone: [].
+			self denyIsNil: hasClientClass].
+	testService
+		execute: block
+		overArrayOop: remoteOop
+		session: session!
 
 test_versionMatches
 	"to prevent invalid logins, make sure internal server
@@ -730,6 +761,7 @@ testMethodServiceClassNameIsString
 				meta: false.
 	self assert: methodService className isKindOf: String! !
 !JadeiteMiscellaneousTestCase categoriesFor: #tearDown!private!support! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_adHocCompileError!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_adHocDisplay!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_adHocExecute!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitDoesNotMakeRoundTripWhenOpeningBrowser!auto commit!public! !
@@ -747,6 +779,7 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_findInWorkspace!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_instVarConstants!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_serviceClassBookkeeping!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_versionMatches!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workingDirectoryEqualsImageDirectory!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceAdHocDisplayUnicodeCharacters!public!test!test menus!test workspaces! !

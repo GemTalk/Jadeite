@@ -12,6 +12,7 @@ package classNames
 	add: #JadeiteDevelopmentSUnitBrowser;
 	add: #JadeiteDevelopmentSUnitBrowserModel;
 	add: #JadeiteDictionaryBrowserTestCase;
+	add: #JadeiteInspectorDataCuratorTestCase;
 	add: #JadeiteInspectorTestCase;
 	add: #JadeiteLoggerTestCase;
 	add: #JadeiteLoginTestCase;
@@ -21,6 +22,7 @@ package classNames
 	add: #JadeiteMiscellaneousTestCase;
 	add: #JadeitePreferencesTestCase;
 	add: #JadeiteProjectBrowserAbstractTestCase;
+	add: #JadeiteProjectBrowserDictionaryDataCuratorTestCase;
 	add: #JadeiteProjectBrowserDictionaryTestCase;
 	add: #JadeiteProjectBrowserLowerTabsTestCase;
 	add: #JadeiteProjectBrowserTestCase;
@@ -141,7 +143,7 @@ SUnitBrowserModel subclass: #JadeiteDevelopmentSUnitBrowserModel
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 TestCase subclass: #JadeiteAbstractTestCase
-	instanceVariableNames: 'session transcript projectsBrowser'
+	instanceVariableNames: 'session transcript projectsBrowser jadeiteShell user'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -156,7 +158,7 @@ JadeiteAbstractTestCase subclass: #JadeiteChangesBrowserTestCase
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteAbstractTestCase subclass: #JadeiteDataCuratorTestCase
-	instanceVariableNames: 'jadeiteShell'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -165,7 +167,7 @@ JadeiteAbstractTestCase subclass: #JadeiteDebuggerTestCase
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeiteAbstractTestCase subclass: #JadeiteInspectorTestCase
+JadeiteAbstractTestCase subclass: #JadeiteInspectorDataCuratorTestCase
 	instanceVariableNames: 'inspector'
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -215,7 +217,12 @@ JadeiteAbstractTestCase subclass: #JadeiteTranscriptTestCase
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserDictionaryTestCase
+JadeiteInspectorDataCuratorTestCase subclass: #JadeiteInspectorTestCase
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserDictionaryDataCuratorTestCase
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -230,13 +237,18 @@ JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserTestCase
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+JadeiteProjectBrowserDictionaryDataCuratorTestCase subclass: #JadeiteProjectBrowserDictionaryTestCase
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 TestCase2 subclass: #JadeiteDictionaryBrowserTestCase
 	instanceVariableNames: 'dictionaryBrowser'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 TestResource subclass: #JadeiteTestResource
-	instanceVariableNames: 'session transcript projectsBrowser'
+	instanceVariableNames: 'projectsBrowser jadeiteShell'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

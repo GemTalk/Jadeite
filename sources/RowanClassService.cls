@@ -285,6 +285,18 @@ methods
 methods: anObject
 	methods := anObject!
 
+methodUpdate: presenter
+	presenter list do: 
+			[:methodService |
+			| updatedMethodService |
+			updatedMethodService := methods detect: [:newMethodService | newMethodService = methodService]
+						ifNone: [].
+			updatedMethodService
+				ifNotNil: 
+					[:service |
+					methodService replicateFrom: updatedMethodService	"#replicateFrom: will ensure we only replicate the proper methods"]].
+	presenter view invalidate!
+
 moveNodeToBeChildOf: superclassService in: classHierarchyPresenter
 	| superclassNode myNode |
 	superclassNode := classHierarchyPresenter model getNodeFor: superclassService.
@@ -606,6 +618,7 @@ wasRenamed
 !RowanClassService categoriesFor: #meta:!accessing!private! !
 !RowanClassService categoriesFor: #methods!accessing!private! !
 !RowanClassService categoriesFor: #methods:!accessing!private! !
+!RowanClassService categoriesFor: #methodUpdate:!public!updating! !
 !RowanClassService categoriesFor: #moveNodeToBeChildOf:in:!private!updating support! !
 !RowanClassService categoriesFor: #oop!accessing!private! !
 !RowanClassService categoriesFor: #oop:!accessing!private! !

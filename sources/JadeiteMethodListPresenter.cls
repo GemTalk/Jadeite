@@ -106,7 +106,7 @@ methods: services selectingAnyMatch: string
 	methodListPresenter
 		list: (ListModel withAll: services);
 		selectFirstMethod.
-	self selectingAnyMatch: string!
+!
 
 onCloseRequested: aCloseEvent
 	aCloseEvent value: (methodSourcePresenter documentPresenter view isModified
@@ -140,7 +140,9 @@ queryCommand: aCommandQuery
 	^super queryCommand: aCommandQuery!
 
 registerPresentersForUpdates
-	BrowserUpdate current register: self selector: #autoCommitUpdate:!
+	BrowserUpdate current
+		register: self selector: #autoCommitUpdate:;
+		register: methodListPresenter methodListPresenter selector: #methodUpdate:!
 
 removeComparisonTab
 	self textTabs remove: self comparisonTab ifAbsent: []!
@@ -155,6 +157,23 @@ selectComparisonTab
 
 selectedClassName
 	^methodListPresenter methodListPresenter list first className!
+
+selecting: stringOrIndex string: searchString
+	stringOrIndex isNumber
+		ifTrue: 
+			[| range stream selectionStop |
+			stream := ReadStream on: methodSourcePresenter documentPresenter value.
+			stream position: stringOrIndex.
+			stream nextWord.
+			selectionStop := searchString
+						ifNil: [stream position]
+						ifNotNil: [searchString size + stringOrIndex].
+			range := Interval from: stringOrIndex to: selectionStop - 1.
+			methodSourcePresenter documentPresenter selectionRange: range]
+		ifFalse: 
+			[searchBlock := [self searchFor: stringOrIndex].
+			self doSearch].
+	methodSourcePresenter documentPresenter view ensureCaretVisible!
 
 selectionChanging: aSelectionChangingEvent
 	aSelectionChangingEvent value: (methodSourcePresenter documentPresenter view isModified
@@ -215,7 +234,7 @@ updateSingleMethodSource
 	| selection |
 	selection := methodListPresenter selection.
 	methodSourcePresenter value: selection source.
-	selection firstReference ifNotNil: [:index | self selecting: index].
+	selection firstReference ifNotNil: [:index | self selecting: index string: selection searchString].
 	methodSourcePresenter ensureVisible!
 
 updateSource
@@ -252,6 +271,7 @@ updateSource
 !JadeiteMethodListPresenter categoriesFor: #search!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #selectComparisonTab!private!selection!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #selectedClassName!public!selection! !
+!JadeiteMethodListPresenter categoriesFor: #selecting:string:!public! !
 !JadeiteMethodListPresenter categoriesFor: #selectionChanging:!event handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #showComparisonTab!private!selection!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #showSuperClassComparison!private!text tabs! !

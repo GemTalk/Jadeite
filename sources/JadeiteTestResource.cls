@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 TestResource subclass: #JadeiteTestResource
-	instanceVariableNames: 'session transcript projectsBrowser'
+	instanceVariableNames: 'projectsBrowser jadeiteShell'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -22,7 +22,7 @@ cloneRowanSample1
 							with: sample1Path
 							with: root
 							with: true).
-			JadePresenter issueCommands: (Array with: service) session: session]!
+			JadePresenter issueCommands: (Array with: service) session: GciSession current]!
 
 disableInteractionsWhile: block
 	"interactions like confirm: and notify: are enabled by 
@@ -47,17 +47,21 @@ disableInteractionsWhile: block
 			self issueCommand: answeringService]!
 
 ensureRowanSample1Loaded
+	self rowanSample1Project ifNotNil: [:projectService | projectService isDirty ifFalse:[^self]]. 
 	self disableInteractionsWhile: 
 			[self unloadSampleProject.
-			session commit.
+			self session commit.
 			self cloneRowanSample1.
 			self loadProjectNamed: self sampleProjectName]!
 
+hasValidSession
+	^GciSession current isValidSession!
+
 isAvailable
-	^session notNil and: [transcript notNil]!
+	^self session notNil and: [self transcript notNil]!
 
 issueCommand: service
-	^JadePresenter issueCommands: (Array with: service) session: session!
+	^JadePresenter issueCommands: (Array with: service) session: self session!
 
 loadProjectNamed: projectName
 	| projectService |
@@ -65,11 +69,31 @@ loadProjectNamed: projectName
 	projectService
 		command: #reloadProject;
 		commandArgs: nil.
-	JadePresenter issueCommands: (Array with: projectService) session: session!
+	JadePresenter issueCommands: (Array with: projectService) session: self session!
+
+loginWithRetry: loginShell
+	| loginError |
+	loginError := true.
+	[loginError] whileTrue: 
+			[
+			[loginShell loginWithoutErrorHandling.
+			loginError := false] on: Error
+					do: [:ex | (Delay forMilliseconds: 100) wait]]!
+
+logoutThenLoginAs: userName
+	userName ifNil: [^self].
+	userName = GciSession current userID ifTrue: [^self].
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.	"closing the transcript will logout the session. don't commit"
+	[self transcript view close] ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	JadeiteLoginShell allInstances do: [:shell | shell view close].	"should save to the remote JadeDefaultConnection.gss file"
+	jadeiteShell := JadeiteLoginShell show.
+	jadeiteShell userIDPresenter value: userName.
+	self loginWithRetry: jadeiteShell!
 
 openProjectsBrowser
 	(projectsBrowser isNil or: [projectsBrowser isOpen not])
-		ifTrue: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
+		ifTrue: [projectsBrowser := self openWindow: [self transcript openJadeiteProjectsBrowser]].
 	projectsBrowser := projectsBrowser topShell.
 	^projectsBrowser!
 
@@ -89,39 +113,38 @@ openWindow: aBlock
 projectsBrowser: anObject
 	projectsBrowser := anObject!
 
-resourceHasValidSession
-	^(GciSession allInstances includes: session) and: [session isValidSession]!
-
 rowanProjectsHome
 	^'$ROWAN_PROJECTS_HOME'!
 
 rowanSample1Path
 	^'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1.ston'!
 
+rowanSample1Project
+	^self transcript projectListPresenter projectListPresenter list
+		detect: [:projectService | projectService name = 'RowanSample1']
+		ifNone: []!
+
 sampleProjectName
 	^'RowanSample1'!
 
 session
 
-	^session!
-
-session: anObject
-	session := anObject!
+	^GciSession current!
 
 setUp
 	super setUp.
-	session := GciSession current.
-	session
+	self logoutThenLoginAs: 'SystemUser'.
+	GciSession current
 		ifNil: 
 			[MessageBox notify: 'GciSession current is nil. Login again.'.
 			Processor activeProcess terminate	"There's not a good way to safely return without many subsequent errors. Just kill the test process."].
-	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: [].
 	self unloadSampleProject.
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded!
 
 tearDown
 	super tearDown.
+	self logoutThenLoginAs: 'SystemUser'.
 	projectsBrowser
 		ifNotNil: 
 			[(projectsBrowser currentCard projectListPresenter list
@@ -132,37 +155,38 @@ tearDown
 			projectsBrowser := nil]!
 
 transcript
+	^self transcriptForCurrentSession!
 
-	^transcript!
-
-transcript: anObject
-	transcript := anObject!
+transcriptForCurrentSession
+	^JadeiteTranscript allInstances detect: [:tran | tran gciSession == GciSession current] ifNone: []!
 
 unloadSampleProject
-	transcript projectListPresenter primaryPresenter list
+	self transcript projectListPresenter primaryPresenter list
 		detect: [:projectService | projectService name = self sampleProjectName]
 		ifNone: [^self].
-	transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName).
-	session commit! !
+	self transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName).
+	self session commit! !
 !JadeiteTestResource categoriesFor: #cloneRowanSample1!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #disableInteractionsWhile:!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #ensureRowanSample1Loaded!private!setup teardown! !
+!JadeiteTestResource categoriesFor: #hasValidSession!public!testing! !
 !JadeiteTestResource categoriesFor: #isAvailable!public!testing! !
 !JadeiteTestResource categoriesFor: #issueCommand:!public!setup teardown! !
 !JadeiteTestResource categoriesFor: #loadProjectNamed:!private!setup teardown! !
+!JadeiteTestResource categoriesFor: #loginWithRetry:!private!support! !
+!JadeiteTestResource categoriesFor: #logoutThenLoginAs:!private!setup teardown!support! !
 !JadeiteTestResource categoriesFor: #openProjectsBrowser!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #openWindow:!private! !
 !JadeiteTestResource categoriesFor: #projectsBrowser:!private!setup teardown! !
-!JadeiteTestResource categoriesFor: #resourceHasValidSession!public!testing! !
 !JadeiteTestResource categoriesFor: #rowanProjectsHome!constants!private! !
 !JadeiteTestResource categoriesFor: #rowanSample1Path!constants!private! !
+!JadeiteTestResource categoriesFor: #rowanSample1Project!constants!private! !
 !JadeiteTestResource categoriesFor: #sampleProjectName!constants!private! !
 !JadeiteTestResource categoriesFor: #session!accessing!public! !
-!JadeiteTestResource categoriesFor: #session:!accessing!public! !
 !JadeiteTestResource categoriesFor: #setUp!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #transcript!accessing!public! !
-!JadeiteTestResource categoriesFor: #transcript:!accessing!public! !
+!JadeiteTestResource categoriesFor: #transcriptForCurrentSession!private!setup teardown!support! !
 !JadeiteTestResource categoriesFor: #unloadSampleProject!private!setup teardown! !
 
 !JadeiteTestResource class methodsFor!
@@ -172,7 +196,7 @@ current
 		ifNil: 
 			[current := self new.
 			current session ifNil: [^nil	"notified earlier"]].
-	current resourceHasValidSession ifFalse: [current := self new].
+	current hasValidSession ifFalse: [current := self new].
 	^current!
 
 isAvailable
