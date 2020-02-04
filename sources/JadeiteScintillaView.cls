@@ -20,6 +20,7 @@ find: aFindDetails range: anInterval
 	empty interval if not found)."
 
 	| text matchString matchLen start stop textLen |
+
 	aFindDetails isRegularExpression
 		ifTrue: [^self findRegularExpression: aFindDetails inRange: anInterval].
 	textLen := self textLength.

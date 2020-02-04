@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 JadeTextPresenter subclass: #JadeAutoTextPresenter3
 	instanceVariableNames: 'currentGsShape currentText previousText currentStyleName previousStyleName lastTimeKey wordRightSideIsEmpty lastParsedResult lastTextSelection'
@@ -141,7 +141,7 @@ getClassName
 getCurrentWord
 	""
 	| breakCharacters leftPosition rightPosition leftStream rightStream currentCharacter |
-	(view class == ScintillaView) ifFalse: [^self].
+	(view isKindOf: ScintillaView) ifFalse: [^self].
 	wordRightSideIsEmpty := true.
 	(view value size <= 1) ifTrue: [^self].
 	currentText := ''.
