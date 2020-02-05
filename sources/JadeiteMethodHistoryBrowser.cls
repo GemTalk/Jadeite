@@ -85,6 +85,13 @@ onViewOpened
 	fontSizePresenter model: (ValueAspectAdaptor subject: self aspect: #fontSize).
 	self registerPresentersForUpdates!
 
+queryCommand: aCommandQuery
+	#restoreMethod == aCommandQuery command
+		ifTrue: 
+			[aCommandQuery isEnabled: (selector isNil or: [selector source ~= self source]).
+			^true].
+	^super queryCommand: aCommandQuery!
+
 registerPresentersForUpdates
 	BrowserUpdate current register: self selector: #methodHistoryUpdated:!
 
@@ -153,6 +160,7 @@ updateHistory
 !JadeiteMethodHistoryBrowser categoriesFor: #methodService!accessing!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #onViewOpened!event handlers!public! !
+!JadeiteMethodHistoryBrowser categoriesFor: #queryCommand:!commands!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #registerPresentersForUpdates!initialization!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #restoreMethod!commands!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #session!accessing!private! !
