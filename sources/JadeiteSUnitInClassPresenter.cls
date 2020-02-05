@@ -14,6 +14,12 @@ addSystemBrowser
 
 	^parentPresenter addSystemBrowser!
 
+basicDelete
+	testClassService
+		command: #removeMethods:;
+		commandArgs: (Array with: methodListPresenter selections).
+	self issueCommand: (Array with: testClassService)!
+
 browseClassReferences
 
 	^parentPresenter browseClassReferences!
@@ -158,6 +164,7 @@ runSelected
 selectedClass
 	^self parentPresenter selectedClass! !
 !JadeiteSUnitInClassPresenter categoriesFor: #addSystemBrowser!menu handlers support!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #basicDelete!menu handlers!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #browseClassReferences!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #browseIt!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #closeCard!menu handlers support!public! !

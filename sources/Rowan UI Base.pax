@@ -171,6 +171,8 @@ package methodNames
 	add: #JadeInspector -> #shellName;
 	add: #JadeInspector -> #shellNameExtraInfo;
 	add: #JadeInspector -> #updateCaption;
+	add: #JadeiteSUnitAbstractPresenter -> #delete;
+	add: #JadeiteSUnitAbstractPresenter -> #inspectSelected;
 	add: #JadeiteSUnitAbstractPresenter -> #methodListPresenter;
 	add: #JadeiteSUnitAbstractPresenter -> #methodListPresenter:;
 	add: #JadeiteSUnitInClassPresenter -> #registerPresentersForUpdates;
@@ -1929,11 +1931,32 @@ showOn: anObject session: aGciSession
 
 !JadeiteSUnitAbstractPresenter methodsFor!
 
+delete
+	| selectors writeStream |
+	selectors := methodListPresenter selections collect: [:methodService | methodService selector].
+	selectors isEmpty ifTrue: [^self].
+	writeStream := WriteStream on: String new.
+	writeStream nextPutAll: 'Really delete these test methods?'.
+	selectors do: 
+			[:symbol |
+			writeStream
+				cr;
+				nextPutAll: symbol].
+	(MessageBox confirm: writeStream contents) ifTrue: [self basicDelete]!
+
+inspectSelected
+	methodListPresenter selections notEmpty
+		ifTrue: 
+			[^JadeiteInspector showOn: (OopType64 fromInteger: methodListPresenter selections first oop)
+				session: gciSession]!
+
 methodListPresenter
 	^methodListPresenter!
 
 methodListPresenter: anObject
 	methodListPresenter := anObject! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #delete!menu handlers!public! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #inspectSelected!menu handlers support!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #methodListPresenter!accessing!private! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #methodListPresenter:!accessing!private! !
 
