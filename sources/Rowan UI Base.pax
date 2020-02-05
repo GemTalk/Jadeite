@@ -92,6 +92,7 @@ package classNames
 	add: #RowanSystemBrowser;
 	add: #RowanSystemBrowserPresenter;
 	add: #RowanVariableService;
+	add: #SUnitToolbar;
 	add: #TestChoicePrompter;
 	yourself.
 
@@ -969,6 +970,11 @@ SmalltalkWorkspace subclass: #JadeiteSmalltalkWorkspace
 	classInstanceVariableNames: ''!
 ScintillaStyler subclass: #DiffsScintillaStyler
 	instanceVariableNames: 'diffs'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+Toolbar subclass: #SUnitToolbar
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
