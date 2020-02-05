@@ -620,6 +620,10 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: self isClassListTabSelected not.
 			^true].
+	#browseSelectedCategoryMethods = command
+		ifTrue: 
+			[aCommandQuery isEnabled: categoryListPresenter selections notEmpty.
+			^true].
 	^super queryCommand: aCommandQuery!
 
 reformatSource

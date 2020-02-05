@@ -925,6 +925,47 @@ test_blankCategoryRenameInvalid
 	self assert: self categoryListPresenter selection equals: 'accessing']
 		ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+test_browseCategoryMethodsMenuEnablement
+	| commandQuery source |
+	self testsIssue: #issue693
+		withTitle: 'Would like to be able to open method browser on all methods in selected categories'.
+	self selectRowanSample1Test.
+	source := 'flub1
+| array |
+array := Array new. 
+array add: ''blerf''.
+array add: ''blerf''. 
+array add: ''blerf''. 
+^array'.
+	self projectsPresenter selectMethodSourceTab.
+	self projectsPresenter methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self projectsPresenter categoryListPresenter selections: #().
+	commandQuery := self
+				queryCommand: #browseSelectedCategoryMethods
+				inPresenter: self projectsPresenter
+				view: self categoryListPresenter view.
+	self deny: commandQuery isEnabled.
+	self projectsPresenter categoryListPresenter selection: 'other'.
+	commandQuery := self
+				queryCommand: #browseSelectedCategoryMethods
+				inPresenter: self projectsPresenter
+				view: self categoryListPresenter view.
+	self assert: commandQuery isEnabled.
+	self projectsPresenter categoryListPresenter selections: #('tests' 'other').
+	commandQuery := self
+				queryCommand: #browseSelectedCategoryMethods
+				inPresenter: self projectsPresenter
+				view: self categoryListPresenter view.
+	self assert: commandQuery isEnabled.
+	self assert: self methodListPresenter selections size equals: 1.
+	self assert: self methodListPresenter selections first selector equals: #flub1.
+	self projectsPresenter removeMethods: self classListPresenter selections.
+	self assert: self methodListPresenter selections size equals: 0.
+	self assertIsNil: (self methodListPresenter list
+				detect: [:methodService | methodService selector = #flub1]
+				ifNone: [])!
+
 test_browseClass
 	| dictionaryPresenter |
 	self testsIssue: #issue429 withTitle: '(3.0.60) ''Browse Class'' on Transcript gets walkback'.
@@ -5442,6 +5483,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_blankCategoryRenameInvalid!public!test categories!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_browseCategoryMethodsMenuEnablement!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseClassReferencesFromClassesMenu!public!test rename class! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseLiteralReferences!public!tests! !
