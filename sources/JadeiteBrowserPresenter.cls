@@ -153,7 +153,7 @@ browseSelectedCategoryMethods
 	self updateServices: methodListPresenter list.	"If categories are selected, only the methods in those categories will be visible"
 	(browser := JadeiteMethodListBrowser showOnSession: gciSession) primaryPresenter
 		methods: methodListPresenter list
-		selecting: nil.
+		selecting: String new.
 	browser updateCaption: 'Selected Methods in Categories - ' , categoryListPresenter list printString.
 	^browser!
 
