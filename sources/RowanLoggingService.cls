@@ -133,10 +133,7 @@ logComment: aString
 	location := #client.
 	mode := nil.
 	stonString := STON toString: self.
-	ws := FileStream
-				open: fileName
-				mode: #append
-				text: true.
+	ws := FileStream write: fileName mode: #append.
 	[ws nextPutAll: stonString] ensure: [ws close].
 	comment := nil	"service may be reused. Clear comment"!
 
@@ -155,10 +152,7 @@ logServices: theServices
 	time := Time now.
 	location := #client.
 	stonString := STON toString: self.
-	ws := FileStream
-				open: fileName
-				mode: #append
-				text: true.
+	ws := FileStream write: fileName mode: #append.
 	[ws nextPutAll: stonString] ensure: [ws close]!
 
 mode

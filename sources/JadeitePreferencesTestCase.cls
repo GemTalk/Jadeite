@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 JadeiteAbstractTestCase subclass: #JadeitePreferencesTestCase
 	instanceVariableNames: 'workspace'
@@ -10,11 +10,14 @@ JadeitePreferencesTestCase comment: ''!
 !JadeitePreferencesTestCase categoriesForClass!Unclassified! !
 !JadeitePreferencesTestCase methodsFor!
 
-tearDown
+closeWorkspace
 	workspace
 		ifNotNil: 
-			[workspace isModified: false.
+			[workspace codePane documentPresenter view isModified: false.
 			workspace view close]!
+
+tearDown
+	workspace ifNotNil: [self closeWorkspace]!
 
 test_autoCommitEnabled
 	| prefs autoCommitWasEnabled |
@@ -167,10 +170,10 @@ test_preferencesOpenCorrectWorkspaceFiles
 	[file2 write: 'operations\testws1.gs'] ensure: [file2 close].
 	workspace := prefs openWorkspace: 'testws1.gs'.
 	[self assert: workspace codePane documentPresenter value equals: 'testws1.gs']
-		ensure: [workspace view close].
+		ensure: [self closeWorkspace].
 	workspace := prefs openWorkspace: 'operations\testws1.gs'.
 	[self assert: workspace codePane documentPresenter value equals: 'operations\testws1.gs'] ensure: 
-			[workspace view close.
+			[self closeWorkspace.
 			file1 delete.
 			file2 delete.
 			File deleteDirectory: 'operations']!
@@ -195,7 +198,7 @@ test_preferencesOpenWorkspaceFiles
 	[workspace := prefs openWorkspace: 'testPrefWorkspace.gs'.
 	self assert: workspace codePane documentPresenter value equals: 'test1']
 			ensure: 
-				[workspace view close.
+				[self closeWorkspace.
 				file delete].
 	file := File
 				open: 'test pref workspace.gs'
@@ -206,7 +209,7 @@ test_preferencesOpenWorkspaceFiles
 	[workspace := prefs openWorkspace: 'test pref workspace.gs'.	"spaces in name"
 	self assert: workspace codePane documentPresenter value equals: 'test2']
 			ensure: 
-				[workspace view close.
+				[self closeWorkspace.
 				file delete].
 	file := File
 				open: SessionManager current imageBase , 'testPrefWorkspace.gs'
@@ -217,7 +220,7 @@ test_preferencesOpenWorkspaceFiles
 	[workspace := prefs openWorkspace: SessionManager current imageBase , 'testPrefWorkspace.gs'.
 	self assert: workspace codePane documentPresenter value equals: 'test3']
 			ensure: 
-				[workspace view close.
+				[self closeWorkspace.
 				file delete]!
 
 test_preferencesSettingTranscript
@@ -254,6 +257,7 @@ test_validPreferences
 	validPreferences := #(#transcriptEnabled: #openBrowserOnClass: #openBrowserOnPackage: #openSUnitBrowserOnPackage: #autocommitEnabled: #autocompleteEnabled: #breakpointsEnabled: #loggingEnabled:).
 	prefs := JadeitePreferences new session: session.
 	validPreferences do: [:symbol | self assert: (prefs class canUnderstand: symbol)]! !
+!JadeitePreferencesTestCase categoriesFor: #closeWorkspace!public!support! !
 !JadeitePreferencesTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeitePreferencesTestCase categoriesFor: #test_autoCommitEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_autoCompleteEnabled!public!tests! !
