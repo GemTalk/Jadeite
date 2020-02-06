@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserLowerTabsTestCase
 	instanceVariableNames: ''
@@ -605,7 +605,6 @@ test_reformatIllegalSource
 	self assert: self projectsPresenter statusBarText value
 		equals: 'Reformat failed. Illegal source' replaceCrLfWithLf.
 	self assert: self projectsPresenter statusBarText view backcolor equals: Color red faded.
-	self assert: self methodSourcePresenter view isModified.
 	self assert: self methodSourcePresenter value equals: 'reformatSourceTemporaryMethod ^#'	"unchanged"]
 			ensure: [self methodSourcePresenter view isModified: false]!
 
