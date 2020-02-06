@@ -139,6 +139,7 @@ package methodNames
 	add: #JadeAutoSystemBrowserPresenter -> #methodMenuBreak:;
 	add: #JadeAutoTextPresenter3 -> #defaultMethod;
 	add: #JadeAutoTextPresenter3 -> #setDefaultMethod;
+	add: #JadeAutoTextPresenter3 -> #value:;
 	add: #JadeDebugger -> #gsProcess;
 	add: #JadeDebugger -> #gsProcess:;
 	add: #JadeDebugger -> #initializeProcess:message:terminateOnClose:;
@@ -1466,9 +1467,18 @@ setDefaultMethod
 		value: self defaultMethod;
 		isModified: false;
 		isReadOnly: false;
-		yourself.! !
+		yourself.!
+
+value: anObject
+	"Set the model value of the receiver to be anObject"
+
+	| oldValue |
+	oldValue := self model value.
+	super value: anObject. 
+	oldValue = anObject ifFalse: [view isModified: true]	"necessary?"! !
 !JadeAutoTextPresenter3 categoriesFor: #defaultMethod!public! !
 !JadeAutoTextPresenter3 categoriesFor: #setDefaultMethod!public! !
+!JadeAutoTextPresenter3 categoriesFor: #value:!public! !
 
 !JadeDebugger methodsFor!
 
