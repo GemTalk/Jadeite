@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+ï»¿"Filed out from Dolphin Smalltalk 7"!
 
 JadeiteProjectBrowserDictionaryDataCuratorTestCase subclass: #JadeiteProjectBrowserDictionaryTestCase
 	instanceVariableNames: ''
@@ -232,7 +232,7 @@ test_unicodeValueInUserGlobals
 	self projectsPresenter globalsTab selection: selection.
 	self assert: (selection at: 2) equals: #Symbol.
 	self assert: ((selection at: 3) isKindOf: Integer).
-	self assert: (selection at: 4) equals: '#''£¥š''']
+	self assert: (#'*Â£Â¥*' match: (selection at: 4)) ]
 			ensure: [session executeString: 'RowanServicesTest new removeUnicodeSymbolsFromUserGlobals']! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #setUp!public!setup teardown! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_compileMethodInNonPackagedClass!public!test issue 217! !

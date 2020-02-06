@@ -207,7 +207,7 @@ basicRenameClass: classService to: newName
 		findString: newName;
 		newClassName: newName.
 	answeringService := serviceArray detect: [:service | service isAnsweringService].
-	browser primaryPresenter methods: answeringService answer selecting: answeringService answer first.
+	browser primaryPresenter methods: answeringService answer selecting: classService name.
 	browser updateCaption: 'Methods updated after renaming ' , oldName , ' to ' , newName.
 	^browser!
 

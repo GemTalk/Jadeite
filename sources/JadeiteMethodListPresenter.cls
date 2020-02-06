@@ -95,10 +95,12 @@ methodListSelection
 methods: services selecting: stringOrIndex
 	"services can legitimately be nil if call was blocked because it
 	was already inUpdate"
+
 	(services isNil or: [services isEmpty]) ifTrue: [^self].
 	methodListPresenter
 		list: (ListModel withAll: services);
 		selectFirstMethod.
+	stringOrIndex ifNil: [^self].
 	self selecting: stringOrIndex!
 
 methods: services selectingAnyMatch: string
@@ -240,6 +242,7 @@ updateSingleMethodSource
 updateSource
 	| selection |
 	selection := methodListPresenter selectionOrNil.
+	selection ifNil: [^self]. 
 	methodSourcePresenter methodService: selection.
 	methodSourcePresenter update.
 	self doSearch. 
