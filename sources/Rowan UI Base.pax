@@ -480,6 +480,7 @@ package methodNames
 	add: 'JadeSessionManager class' -> #getUrl;
 	add: 'JadeSessionManager class' -> #mainShellClass;
 	add: 'JadeSessionManager class' -> #setVersion;
+	add: 'Prompter class' -> #createOn:;
 	add: 'TranscriptPresenter class' -> #resource_Default_view;
 	yourself.
 
@@ -4939,6 +4940,17 @@ requirements."
 	[SessionManager current onUserBreak]
 		ensure: [[GciSession current ifNotNil: [:session | session executeString: '3+4']] fork]	"do something to trigger the softBreak handling"! !
 !ProcessorScheduler categoriesFor: #userBreak:!private! !
+
+!Prompter class methodsFor!
+
+createOn: aValueModel
+	| testsActive |
+	testsActive := Smalltalk at: #JadeiteTestsActive ifAbsent: [^super createOn: aValueModel].
+	^testsActive
+		ifTrue: [(Smalltalk at: #TestPrompter) basicNew]
+		ifFalse: 
+			[super createOn: aValueModel]! !
+!Prompter class categoriesFor: #createOn:!instance creation!public! !
 
 !RowanCommandResult methodsFor!
 
