@@ -411,7 +411,6 @@ test_compileErrorDisplay
 	self selectMethodNamed: #test1.
 	source := 'test1 self assert: RowanSample1 new foo = ''abc'.	"won't compile"
 	self methodSourcePresenter value: source.
-	self assert: self methodSourcePresenter isModified.
 	self projectsPresenter editSaveMethod.
 	
 	[self assert: self methodSourcePresenter view selectionRange equals: (37 to: 47).
@@ -581,7 +580,7 @@ test_openNewBrowserTabWhileSUnitTabSelected
 	jadeMenu := projectsBrowser view menuBar items detect: [:menu | '*Jadeite*' match: menu text]
 				ifNone: [].
 	addBrowserButton := jadeMenu items
-				detect: [:item | #addSystemBrowser match: item commandDescription command]
+				detect: [:item | #addSystemBrowser == item commandDescription command]
 				ifNone: [].
 	addBrowserButton commandDescription performAgainst: self projectsPresenter.
 	cards := self projectsPresenter parentPresenter view cards.
