@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 TestCase subclass: #JadeiteAbstractTestCase
 	instanceVariableNames: 'session transcript projectsBrowser jadeiteShell user'

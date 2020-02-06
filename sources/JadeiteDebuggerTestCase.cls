@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 JadeiteAbstractTestCase subclass: #JadeiteDebuggerTestCase
 	instanceVariableNames: 'debugger gsProcess process secondDebugger'

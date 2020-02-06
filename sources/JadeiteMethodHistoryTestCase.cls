@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 JadeiteAbstractTestCase subclass: #JadeiteMethodHistoryTestCase
 	instanceVariableNames: 'methodHistoryBrowser'
@@ -35,7 +35,7 @@ test_openMethodHistory
 	
 	[self selectMethodNamed: #test_openMethodHistory.
 	methodHistoryBrowser := self projectsPresenter browseMethodHistory.
-	self assert: methodHistoryBrowser source view text equals: 'test_openMethodHistory  ^1'.
+	self assert: methodHistoryBrowser source equals: 'test_openMethodHistory  ^1'.
 	self assert: methodHistoryBrowser slider value equals: 2.
 	self assert: methodHistoryBrowser slider view isEnabled]
 			ensure: [self removeMethodHistoryFor: self methodListPresenter selections first]!
@@ -55,11 +55,11 @@ test_openMethodHistoryWithHistory
 		in: 'RowanSample1'
 		category: 'other'.
 	methodHistoryBrowser := self projectsPresenter browseMethodHistory.
-	self assert: methodHistoryBrowser source view text equals: newSource.
+	self assert: methodHistoryBrowser source equals: newSource.
 	self assert: methodHistoryBrowser slider value equals: methodHistoryBrowser history size.
 	self assert: methodHistoryBrowser slider view isEnabled.
-	methodHistoryBrowser moveTo: 1. 
-	self assert: methodHistoryBrowser source view text equals: 'foo ^''foo'''!
+	methodHistoryBrowser moveTo: 1.
+	self assert: methodHistoryBrowser source equals: 'foo ^''foo'''!
 
 test_sliderClick
 	self setupProjectBrowser.
@@ -75,13 +75,13 @@ test_sliderClick
 	
 	[self selectMethodNamed: #test_sliderClick.
 	methodHistoryBrowser := self projectsPresenter browseMethodHistory.
-	self assert: methodHistoryBrowser source view text equals: 'test_sliderClick  ^2'.
+	self assert: methodHistoryBrowser source equals: 'test_sliderClick  ^2'.
 	self assert: methodHistoryBrowser slider view isEnabled.
 	"pretend the user has clicked on the slider directly"
 	methodHistoryBrowser slider view selectionRange: (1 to: 1).	"for visual coorination with model"
 	methodHistoryBrowser slider view displayValue: 1.
 	methodHistoryBrowser slider model value: 1.	"trigger a #valueChanged event"
-	self assert: methodHistoryBrowser source view text equals: 'test_sliderClick  ^1']
+	self assert: methodHistoryBrowser source equals: 'test_sliderClick  ^1']
 			ensure: [self removeMethodHistoryFor: self methodListPresenter selections first]!
 
 test_updateAfterMethodCompile
@@ -99,7 +99,7 @@ test_updateAfterMethodCompile
 	[self selectMethodNamed: #test_sliderClick.
 	methodHistoryBrowser := self projectsPresenter browseMethodHistory.
 	methodHistoryBrowser moveTo: 1.
-	self assert: methodHistoryBrowser source view text equals: 'test_sliderClick  ^1'.
+	self assert: methodHistoryBrowser source equals: 'test_sliderClick  ^1'.
 	self assert: methodHistoryBrowser history size equals: 3.
 	self
 		saveMethod: 'test_sliderClick  ^3'
