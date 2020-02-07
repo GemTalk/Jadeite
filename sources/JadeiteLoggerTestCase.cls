@@ -133,8 +133,12 @@ test_loggerMenuEnablement
 				inPresenter: transcript
 				view: transcript view.
 	self assert: commandQuery isEnabled.
-	logger := self openLogBrowser.
-	[self assert: (logger isKindOf: JadeiteLoggerShell)] ensure: [logger view close]!
+	
+	[isLogging
+		ifTrue: 
+			[logger := self openLogBrowser.
+			self assert: (logger isKindOf: JadeiteLoggerShell)]]
+			ensure: [logger ifNotNil: [logger view close]]!
 
 test_loggingIds
 	"sent & received logging services should have the same groupId because it's a service call.
