@@ -816,6 +816,7 @@ test_compileErrorDisplay
 		equals: #test1.
 	source := 'test1 self assert: RowanSample1 new foo = ''abc'.	"won't compile"
 	self methodListSourcePresenter documentPresenter value: source.
+	self methodListSourcePresenter documentPresenter isModified: true. "needed for tests" 
 	self assert: self methodListSourcePresenter documentPresenter isModified.
 	self methodListSourcePresenter editSaveMethod.
 	self assert: (methodListBrowser view viewNamed: 'statusBarField') forecolor equals: Color black.
@@ -836,6 +837,7 @@ test_compileErrorDisplayGoesAway
 	self assert: methodListBrowser primaryPresenter methodListPresenter selection selector equals: #abc1.
 	source := 'abc1  self foo #'.	"won't compile"
 	self methodListSourcePresenter documentPresenter value: source.
+	self methodListSourcePresenter documentPresenter isModified: true. "needed for tests" 
 	self assert: self methodListSourcePresenter documentPresenter isModified.
 	self methodListSourcePresenter editSaveMethod.
 	self
@@ -1002,6 +1004,7 @@ test_methodBrowserSaveMethod
 	selection := self methodListMethodListPresenter selection.
 	source := 'test1 self assert: RowanSample1 new foo = ''foo2'''.
 	self methodListSourcePresenter documentPresenter value: source.
+	self methodListSourcePresenter documentPresenter isModified: true.	"needed for tests"
 	self assert: self methodListSourcePresenter documentPresenter isModified.
 	self methodListSourcePresenter editSaveMethod.
 	self assert: self methodListSourcePresenter documentPresenter value equals: source.
@@ -1012,6 +1015,7 @@ test_methodBrowserSaveMethod
 	self assert: self methodListSourcePresenter documentPresenter value equals: source.
 	source2 := 'test1 self assert: RowanSample1 new foo = ''changedAgain'''.
 	self methodSourcePresenter value: source2.
+	self methodListSourcePresenter documentPresenter isModified: true. "needed for tests" 
 	self projectsPresenter editSaveMethod: self classListPresenter selection.
 	self assert: self methodSourcePresenter documentPresenter value equals: source2.
 	self assert: self methodListSourcePresenter documentPresenter value equals: source2]
@@ -1033,6 +1037,7 @@ test_reformatIllegalSource
 	self assert: methodListBrowser statusBarText value
 		equals: 'Reformat failed. Illegal source' replaceCrLfWithLf.
 	self assert: methodListBrowser statusBarText view backcolor equals: Color red faded.
+	self methodListSourcePresenter documentPresenter isModified: true.	"needed for tests"
 	self assert: self methodSourcePresenter documentPresenter view isModified.
 	self assert: self methodSourcePresenter documentPresenter value
 		equals: 'reformatSourceTemporaryMethod ^#'	"unchanged"]
@@ -1218,6 +1223,7 @@ test_UnsavedChangesActionChangeSelectionStayOnMethod
 	self assert: methodListPresenter selectionByIndex equals: 1.
 	self assert: methodListPresenter list size equals: 2.
 	methodListBrowser primaryPresenter methodSourcePresenter documentPresenter value: 'new text'.
+	self methodListSourcePresenter documentPresenter isModified: true. "needed for tests" 
 	TestMessageBox plannedResult: #yes.	"answer that we want to stay on frame"
 	self selectListAt: 2.
 	self assert: methodListPresenter selectionByIndex equals: 1]
@@ -1272,6 +1278,7 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 	self assert: methodListPresenter selectionByIndex equals: 1.
 	self assert: methodListPresenter list size equals: 2.
 	methodListBrowser primaryPresenter methodSourcePresenter documentPresenter value: 'new text'.
+	self methodListSourcePresenter documentPresenter isModified: true.	"needed for tests"
 	TestMessageBox plannedResult: #yes.	"answer that we want to stay on frame"
 	methodListBrowser view close.
 	self assert: methodListBrowser isOpen.
