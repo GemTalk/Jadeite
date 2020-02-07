@@ -75,6 +75,7 @@ initialize
 	debug := false.
 	inUpdate := JadeiteSemaphore forMutualExclusion.
 	logger := JadeiteLogger new. 
+	breakpointsEnabled := false. 
 !
 
 initializeUpdates

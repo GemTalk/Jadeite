@@ -75,7 +75,7 @@ test_logComment
 	[BrowserUpdate current logComment: 'Test comment'.
 	filename := BrowserUpdate current logFileName.
 	objects := OrderedCollection new.
-	rs := FileStream open: filename mode: #read.
+	rs := FileStream read:  filename.
 	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close].
 	self assert: objects size equals: 1.
 	loggingService := objects first.

@@ -31,8 +31,8 @@ createSchematicWiring
 inputClientFile: objects
 	| rs filename |
 	filename := clientFilename ifNil: [BrowserUpdate current logFileName].
-	filename isNil ifTrue:[^self].
-	rs := FileStream open: filename mode: #read.
+	filename isNil ifTrue: [^self].
+	rs := FileStream read: filename.
 	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close]!
 
 inputFiles

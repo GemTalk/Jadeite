@@ -15,7 +15,7 @@ defaultLogFileName
 	ws := WriteStream on: String new.
 	ws nextPutAll: 'jadeiteCallTraceLog_'.
 	Date today printOn: ws format: 'yyyy_MM_dd_'.
-	Time now printOn: ws format: 'hh.mm.ss.MMM'.
+	Time now printOn: ws format: 'hh.mm.ss'.
 	ws nextPutAll: '.txt'.
 	^ws contents!
 

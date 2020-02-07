@@ -128,7 +128,7 @@ logComment: aString
 	| stonString ws |
 	id := id + 1.
 	comment := aString.
-	date := Date today.
+	date := Date today. 
 	time := Time now.
 	location := #client.
 	mode := nil.

@@ -431,6 +431,8 @@ package methodNames
 	add: #RowanPatch -> #session:;
 	add: #SequencedGrowableCollection -> #removeAtIndexWithoutNotification:;
 	add: #SequencedGrowableCollection -> #removeWithoutNotification:ifAbsent:;
+	add: #SmallInteger -> #_digitsAsString;
+	add: #Time -> #asStringUsingFormat:;
 	add: #TranscriptPresenter -> #clearTranscript;
 	add: #TreeModel -> #getNodeFor:ifAbsent:;
 	add: #TreeModel -> #removeWithoutNotification:ifAbsent:;
@@ -5179,6 +5181,54 @@ removeWithoutNotification: oldElement ifAbsent: exceptionHandler
 		ifFalse: [self removeAtIndexWithoutNotification: index]! !
 !SequencedGrowableCollection categoriesFor: #removeAtIndexWithoutNotification:!public!removing! !
 !SequencedGrowableCollection categoriesFor: #removeWithoutNotification:ifAbsent:!public!removing! !
+
+!SmallInteger methodsFor!
+
+_digitsAsString
+	"adapted from GemStone for ston"
+
+	"Returns self as a String of at least two digits."
+
+	| aString |
+	self < 10 ifTrue: [aString := '0' , self printString] ifFalse: [aString := self printString].
+	^aString! !
+!SmallInteger categoriesFor: #_digitsAsString!Jadeite!public! !
+
+!Time methodsFor!
+
+asStringUsingFormat: anArray
+	"adapted from GemStone"
+
+	"Returns a String that expresses the receiver in Greenwich Mean Time
+ in the format defined by anArray.  Generates an error if anArray
+ contains an incorrect formatting specification.
+
+ See the class documentation of Time for a complete description of the
+ String-formatting specification Array."
+
+	| timeSeparator hourInt hour min sec aString |
+	timeSeparator := anArray at: 1.
+	hourInt := self milliseconds // 3600000.
+	hour := hourInt _digitsAsString.
+	min := (self milliseconds \\ 3600000 // 60000) _digitsAsString.
+	sec := (self milliseconds // 1000 \\ 60) _digitsAsString.
+	aString := String new.
+	(anArray at: 3)
+		ifTrue: 
+			["12-hour format"
+			hourInt > 12
+				ifTrue: 
+					[aString := aString , (hourInt - 12) _digitsAsString , timeSeparator asString , min.
+					(anArray at: 2) ifTrue: [aString := aString , timeSeparator asString , sec]]
+				ifFalse: 
+					[aString := aString , (hourInt == 0 ifTrue: ['12'] ifFalse: [hour]) , timeSeparator asString , min.
+					(anArray at: 2) ifTrue: [aString := aString , timeSeparator asString , sec]].
+			aString := aString , (hourInt >= 12 ifTrue: [' PM'] ifFalse: [' AM'])]
+		ifFalse: 
+			[aString := aString , hour , timeSeparator asString , min.
+			(anArray at: 2) ifTrue: [aString := aString , timeSeparator asString , sec]].
+	^aString! !
+!Time categoriesFor: #asStringUsingFormat:!converting!public! !
 
 !TranscriptPresenter methodsFor!
 
