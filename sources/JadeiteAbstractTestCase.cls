@@ -69,9 +69,21 @@ cloneRowanSample1
 closeExistingInspectors
 	"not so elegant way of making sure the test gets the right inspector. Close others first"
 
-	JadeNavigationInspector allInstances do: [:oldInspector | oldInspector view close].
-	JadeInspector allInstances do: [:oldInspector | oldInspector view close].
-	JadeiteInspector allInstances do: [:oldInspector | oldInspector view close]!
+	JadeNavigationInspector allInstances do: 
+			[:oldInspector |
+			oldInspector view class = DeafObject
+				ifTrue: [oldInspector become: String new]
+				ifFalse: [oldInspector view close]].
+	JadeInspector allInstances do: 
+			[:oldInspector |
+			oldInspector view class = DeafObject
+				ifTrue: [oldInspector become: String new]
+				ifFalse: [oldInspector view close]].
+	JadeiteInspector allInstances do: 
+			[:oldInspector |
+			oldInspector view class = DeafObject
+				ifTrue: [oldInspector become: String new]
+				ifFalse: [oldInspector view close]]!
 
 commitTransaction
 	^transcript commitTransaction!

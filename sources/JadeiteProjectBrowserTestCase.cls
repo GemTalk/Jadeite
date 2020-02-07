@@ -4562,15 +4562,19 @@ test_switchToVariableWithUnsavedChanges
 		withTitle: '(oddity) change from category tab to variables tab should not give "method has unsaved changes" prompt'.
 	self selectRowanSample1Test.
 	self selectMethodNamed: #test1.
-	self deny: self methodSourcePresenter view isModified.
+	self methodSourcePresenter view isModified: false.	"in case a test was left hanging around"
+	
+	[self deny: self methodSourcePresenter view isModified.
 	self methodSourcePresenter value: 'test1 ^''aaaa'''.
+	self methodSourcePresenter view isModified: true.
 	self assert: self methodSourcePresenter view isModified.
 	self projectsPresenter selectVariableTab.
 	self assert: self methodSourcePresenter view isModified.
 	self assert: self methodSourcePresenter value equals: 'test1 ^''aaaa'''.
 	self projectsPresenter selectCategoryTab.
 	self assert: self methodSourcePresenter view isModified.
-	self assert: self methodSourcePresenter value equals: 'test1 ^''aaaa'''!
+	self assert: self methodSourcePresenter value equals: 'test1 ^''aaaa''']
+			ensure: [self methodSourcePresenter view isModified: false]!
 
 test_symbolsLowerCaseMatch
 	| symbols search |
