@@ -157,7 +157,7 @@ test_loggingIds
 	self issueCommand: service.
 	filename := BrowserUpdate current logFileName.
 	objects := OrderedCollection new.
-	rs := FileStream open: filename mode: #read.
+	rs := FileStream read: filename.
 	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close].
 	sentService := objects detect: [:loggingService | loggingService mode = #sent].
 	receivedService := objects detect: [:loggingService | loggingService mode = #sent].
@@ -183,7 +183,7 @@ test_logReceivedServices
 	self issueCommand: service.
 	filename := BrowserUpdate current logFileName.
 	objects := OrderedCollection new.
-	rs := FileStream open: filename mode: #read.
+	rs := FileStream read: filename.
 	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close].
 	receivedServices := objects select: [:loggingService | loggingService mode = #received].
 	self assert: receivedServices size equals: 1.
@@ -212,7 +212,7 @@ test_logSentServices
 	self issueCommand: service.
 	filename := BrowserUpdate current logFileName.
 	objects := OrderedCollection new.
-	rs := FileStream open: filename mode: #read.
+	rs := FileStream read: filename.
 	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close].
 	sentServices := objects select: [:loggingService | loggingService mode = #sent].
 	self assert: sentServices size equals: 1.
@@ -252,7 +252,7 @@ test_noFileWrittenWhenNotLogging
 	[BrowserUpdate current logComment: 'Test comment'.
 	filename := BrowserUpdate current logFileName.
 	objects := OrderedCollection new.
-	rs := FileStream open: filename mode: #read.
+	rs := FileStream read: filename.
 	[[rs atEnd] whileFalse: [objects add: (STON fromStream: rs)]] ensure: [rs close].
 	self assert: objects size equals: 0]
 			ensure: 
