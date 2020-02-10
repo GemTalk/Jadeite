@@ -48,7 +48,7 @@ contextObject
 	methodService := methodListPresenter methodListPresenter selectionIfNone: [^nil].
 	classService := RowanClassService named: methodService className.
 	self updateService: classService.
-	^gciSession oopTypeWithOop: classService oop!
+	^classService oop!
 
 createComponents
 	methodListPresenter := self add: JadeiteBasicMethodListPresenter new name: 'methodList'.

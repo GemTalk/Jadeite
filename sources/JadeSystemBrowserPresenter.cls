@@ -371,9 +371,7 @@ compareAncestor
 !
 
 contextObject
-
-	^nil.
-!
+	^gciSession oopNil value!
 
 createComponents
 	ancestorListPresenter := self add: ListPresenter new name: 'ancestorList'.
@@ -1221,13 +1219,6 @@ jadeExecuteAndDisplay: aBoolean
 			selectionStart: textView caretPosition - result size length: result size.
 		^self
 	].
-!
-
-jadeInspect
-
-	| result |
-	result := self jadeExecuteAndDisplay: false.	result == self ifTrue: [^self].	"flag for compile error"
-	^JadeInspector showOn: result session: gciSession.
 !
 
 jadeMenuStrings
@@ -2762,7 +2753,6 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #jadeDisplay!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #jadeExecute!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #jadeExecuteAndDisplay:!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #jadeInspect!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #jadeMenuStrings!menus!public! !
 !JadeSystemBrowserPresenter categoriesFor: #jumpToHistoryIndex:!history!public! !
 !JadeSystemBrowserPresenter categoriesFor: #labelOfClass:changedTo:!event handlers!public! !

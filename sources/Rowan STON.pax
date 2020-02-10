@@ -183,7 +183,7 @@ stonContainSubObjects
 stonOn: stonWriter
 	"Use a hex representation"
 
-	stonWriter writeObject: self listSingleton: self asHexString! !
+	stonWriter writeObject: self listSingleton: self asHexString ! !
 !ByteArray categoriesFor: #readHexFrom:!must not strip!public! !
 !ByteArray categoriesFor: #stonContainSubObjects!must not strip!public! !
 !ByteArray categoriesFor: #stonOn:!must not strip!public! !

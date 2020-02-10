@@ -302,6 +302,7 @@ package methodNames
 	add: #JadeTextDocument -> #executeSelectionOrLine:;
 	add: #JadeTextDocument -> #issueCommand:;
 	add: #JadeTextDocument -> #jadeExecuteAndDisplay:;
+	add: #JadeTextDocument -> #jadeInspect;
 	add: #JadeTextDocument -> #onPromptToSaveChanges:;
 	add: #JadeTextDocument -> #openDictionaryBrowser;
 	add: #JadeTextDocument -> #openProjectsBrowser;
@@ -999,7 +1000,7 @@ inspectorContextObject
 	^parentPresenter contextObject!
 
 jadeInspect
-	| inspector |
+	| inspector | 
 	inspector := JadeiteInspector new gciSession: gciSession.
 	^inspector evaluateSelectedTextIn: self thenInspectInContext: self inspectorContextObject!
 
@@ -4165,6 +4166,11 @@ jadeExecuteAndDisplay: showResult
 	[result isNil] whileTrue: [(Delay forMilliseconds: 10) wait].
 	^result!
 
+jadeInspect
+	| inspector |
+	inspector := JadeiteInspector new gciSession: gciSession.
+	^inspector evaluateSelectedTextIn: self thenInspectInContext: nil!
+
 onPromptToSaveChanges: aBooleanValue
 	"we were calling #getDocumentData essentially to test for nil. 
 	That uses #asString which some objects don't understand - like booleans."
@@ -4199,6 +4205,7 @@ updateServices: services
 !JadeTextDocument categoriesFor: #executeSelectionOrLine:!Jade!private! !
 !JadeTextDocument categoriesFor: #issueCommand:!public!services! !
 !JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:!Jade!private! !
+!JadeTextDocument categoriesFor: #jadeInspect!menu handlers!private! !
 !JadeTextDocument categoriesFor: #onPromptToSaveChanges:!private! !
 !JadeTextDocument categoriesFor: #openDictionaryBrowser!Jade!private! !
 !JadeTextDocument categoriesFor: #openProjectsBrowser!Jade!private! !

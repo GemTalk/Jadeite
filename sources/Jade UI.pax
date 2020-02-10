@@ -36,7 +36,6 @@ package methodNames
 	add: #JadeServer64bit34 -> #step:inFrame:;
 	add: #JadeServer64bit3x -> #_stepPointsForBreaksInMethod:;
 	add: #JadeTextDocument -> #fileIn;
-	add: #JadeTextDocument -> #jadeInspect;
 	yourself.
 
 package binaryGlobalNames: (Set new
@@ -314,14 +313,8 @@ fileIn
 		MessageBox notify: ex description.
 		SessionManager current pause.
 	].
-!
-
-jadeInspect
-	| result |
-	result := self jadeExecuteAndDisplay: false.
-	^JadeInspector showOn: result value session: gciSession! !
+! !
 !JadeTextDocument categoriesFor: #fileIn!private! !
-!JadeTextDocument categoriesFor: #jadeInspect!menu handlers!private! !
 
 "End of package definition"!
 
