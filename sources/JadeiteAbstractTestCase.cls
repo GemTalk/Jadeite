@@ -121,8 +121,9 @@ deselectProjects
 	self projectListPresenter selectionByIndex: 0!
 
 destroy: visualThing
-	(Delay forMilliseconds: 2) wait.
-	(self class canUnderstand: #close) ifTrue: [visualThing close] ifFalse: [visualThing view close]!
+	(Delay forMilliseconds: 200) wait.
+	(self class canUnderstand: #close) ifTrue: [visualThing close] ifFalse: [visualThing view close].
+	(Delay forMilliseconds: 20) wait.!
 
 dictionaryPresenter
 	"dictionary list in projects browser"

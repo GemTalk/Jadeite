@@ -413,7 +413,7 @@ reportCompileError: ex
 	text := (ex list first at: 3) , '>>>>>'.
 	position := ex list first at: 2.
 	documentPresenter view caretPosition: position.
-	documentPresenter view insertText: text size from: text.
+	documentPresenter view insertText: text at: position.
 	^documentPresenter view selectionRange: (position to: position + text size - 1)!
 
 saveDictionaryElement

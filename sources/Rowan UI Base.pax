@@ -136,6 +136,7 @@ package methodNames
 	add: #GsMethod -> #meta;
 	add: #GsMethod -> #methodService;
 	add: #GsProcess -> #oop;
+	add: #Integer -> #printStringRadix:showRadix:;
 	add: #JadeAutoSystemBrowserPresenter -> #methodMenuBreak:;
 	add: #JadeAutoTextPresenter3 -> #defaultMethod;
 	add: #JadeAutoTextPresenter3 -> #setDefaultMethod;
@@ -1434,6 +1435,21 @@ oop
 	^oopType value
 	! !
 !GsProcess categoriesFor: #oop!accessing!public! !
+
+!Integer methodsFor!
+
+printStringRadix: base showRadix: flag
+	"Answer a String which represents the receiver in the radix, base (an Integer).
+	The radix prefix is included if the boolean flag is true."
+
+	"ported forward for Jadeite" 
+
+	| aStream |
+	aStream := String writeStream: 16.
+	self printOn: aStream base: base showRadix: flag.
+	^aStream contents
+! !
+!Integer categoriesFor: #printStringRadix:showRadix:!Jadeite!public! !
 
 !JadeAutoSystemBrowserPresenter methodsFor!
 
