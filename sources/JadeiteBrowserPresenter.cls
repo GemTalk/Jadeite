@@ -287,10 +287,8 @@ comparisonPresenter
 
 	^comparisonPresenter!
 
-contextObject   
-	^self selectedClass
-		ifNil: [^nil]
-		ifNotNil: [:classService | classService oop]!
+contextObject
+	^self selectedClass ifNil: [^gciSession oopNil value] ifNotNil: [:classService | classService oop]!
 
 createComponents
 	super createComponents.

@@ -696,16 +696,18 @@ test_adHocInspectComplexObjectInProjectBrowser
 	[inspector := self projectsPresenter jadeInspect.
 	self assert: (inspector model oop isKindOf: Integer).	"the oop"
 	self assert: inspector instVarListPresenter selections first key equals: 'self'.
-	self assert: inspector instVarListPresenter  selections first  value equals: 'RowanSample1Test>>#test1'.
+	self assert: inspector instVarListPresenter selections first value
+		equals: 'RowanSample1Test>>#test1'.
 	inspector instVarListPresenter selectionByIndex: #(2).
-	self assert: inspector instVarListPresenter  selections first  key equals: '-.asOop'.
-	self assert: inspector instVarListPresenter  selections first  value
+	self assert: inspector instVarListPresenter selections first key equals: '-.asOop'.
+	self assert: inspector instVarListPresenter selections first value
 		equals: inspector model oop printString.
 	inspector instVarListPresenter selectionByIndex: #(3).
-	self assert: inspector instVarListPresenter  selections first  key equals: '-testSelector'.
-	self assert: (inspector instVarListPresenter  selections first  value isKindOf: Integer)]
+	self assert: inspector instVarListPresenter selections first key equals: '-testSelector'.
+	self assert: (inspector instVarListPresenter selections first value isKindOf: Integer)]
 			ensure: 
 				[inspector view close.
+				self methodSourcePresenter value: String new.
 				self methodSourcePresenter view isModified: false]!
 
 test_adHocInspectComplexObjectInProjectBrowser2
@@ -716,31 +718,31 @@ test_adHocInspectComplexObjectInProjectBrowser2
 	
 	[inspector := self projectsPresenter jadeInspect.
 	self assert: (inspector model oop isKindOf: Integer).	"the oop"
-	self assert: inspector instVarListPresenter  selections first  key equals: 'self'.
-	self assert: inspector instVarListPresenter  selections first  value equals: 'aClassOrganizer'.
+	self assert: inspector instVarListPresenter selections first key equals: 'self'.
+	self assert: inspector instVarListPresenter selections first value equals: 'aClassOrganizer'.
 	inspector instVarListPresenter selectionByIndex: #(2).
-	self assert: inspector instVarListPresenter  selections first  key equals: '-.asOop'.
-	self assert: inspector instVarListPresenter  selections first  value
+	self assert: inspector instVarListPresenter selections first key equals: '-.asOop'.
+	self assert: inspector instVarListPresenter selections first value
 		equals: inspector model oop printString.
 	inspector instVarListPresenter selectionByIndex: #(3).
-	self assert: inspector instVarListPresenter  selections first  key equals: '-classes'. 
-	self assert: (inspector instVarListPresenter  selections first  value isKindOf: Integer).
+	self assert: inspector instVarListPresenter selections first key equals: '-classes'.
+	self assert: (inspector instVarListPresenter selections first value isKindOf: Integer).
 	self assert: ('aClassSet(*' match: inspector documentPresenter value).
 	inspector instVarListPresenter selectionByIndex: #(4).
-	self assert: inspector instVarListPresenter  selections first  key equals: '-classNames'. 
-	self assert: inspector instVarListPresenter  selections first  value equals: 20.
+	self assert: inspector instVarListPresenter selections first key equals: '-classNames'.
+	self assert: inspector instVarListPresenter selections first value equals: 20.
 	self assert: inspector documentPresenter value equals: 'nil'.
 	inspector instVarListPresenter selectionByIndex: #(5).
-	self assert: inspector instVarListPresenter  selections first  key equals: '-user'.
-	self assert: (inspector instVarListPresenter  selections first  value isKindOf: Integer).
+	self assert: inspector instVarListPresenter selections first key equals: '-user'.
+	self assert: (inspector instVarListPresenter selections first value isKindOf: Integer).
 	self assert: ('aSymbolList( aSymbolDictionary(*' match: inspector documentPresenter value).
 	inspector instVarListPresenter selectionByIndex: #(8).
-	self assert: inspector instVarListPresenter  selections first  key equals: '-rootClass'. 
-	self assert: (inspector instVarListPresenter  selections first  value isKindOf: Integer).
-	self assert: inspector documentPresenter value equals: 'Object'
-	]
+	self assert: inspector instVarListPresenter selections first key equals: '-rootClass'.
+	self assert: (inspector instVarListPresenter selections first value isKindOf: Integer).
+	self assert: inspector documentPresenter value equals: 'Object']
 			ensure: 
 				[inspector view close.
+				self methodSourcePresenter value: String new.
 				self methodSourcePresenter view isModified: false]!
 
 test_allClassesAutoCommitOn
