@@ -916,6 +916,22 @@ test_autoDirtyDisplayRemoveMethod
 	self assert: self packageListPresenter selection name = 'RowanSample1-Core'.
 	self assert: self packageListPresenter selection isDirty!
 
+test_blankCategory
+	self testsIssue: #issue715 withTitle: 'Add category without text gets error'.
+	self selectRowanSample1Class.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestPrompter plannedResult: String new.
+	TestMessageBox plannedResult: #ok.
+	self projectsPresenter addMethodCategory.
+	self assertIsNil: TestMessageBox plannedResult.
+	self assertIsNil: TestPrompter plannedResult.	"used all the planned results, therefore 2 dialogs arose"
+	TestPrompter plannedResult: 'grubnik'.
+	self projectsPresenter addMethodCategory.
+	self assertIsNil: TestPrompter plannedResult.
+	self assert: self categoryListPresenter selection equals: 'grubnik']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_blankCategoryRenameInvalid
 	self testsIssue: #issue380
 		withTitle: '(3.0.53) rename protocol is broken: `UndefinedObject does not understand #''select:''`'.
@@ -5498,6 +5514,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitFailure!public!test auto commit!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_blankCategory!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_blankCategoryRenameInvalid!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseCategoryMethodsMenuEnablement!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
