@@ -2,7 +2,7 @@
 
 Prompter subclass: #TestPrompter
 	instanceVariableNames: ''
-	classVariableNames: 'PlannedResult'
+	classVariableNames: 'LastPrompt PlannedResult'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 TestPrompter guid: (GUID fromString: '{b5c4525d-f1b1-422f-97b5-4896d8d2ecf7}')!
@@ -15,7 +15,9 @@ answer
 
 caption: ignore!
 
-prompt: ignore!
+prompt: thePrompt
+	"save for testing" 
+	LastPrompt := thePrompt !
 
 showModalView
 
@@ -26,6 +28,11 @@ showModalView
 !TestPrompter categoriesFor: #showModalView!public! !
 
 !TestPrompter class methodsFor!
+
+lastPrompt
+	"for testing"
+
+	^LastPrompt!
 
 plannedResult
 	PlannedResult isEmpty ifTrue: [^nil].
@@ -39,6 +46,7 @@ plannedResult: answer
 	(answer isKindOf: OrderedCollection)
 		ifTrue: [PlannedResult := answer]
 		ifFalse: [PlannedResult := OrderedCollection with: answer]! !
+!TestPrompter class categoriesFor: #lastPrompt!accessing!public! !
 !TestPrompter class categoriesFor: #plannedResult!public! !
 !TestPrompter class categoriesFor: #plannedResult:!public! !
 

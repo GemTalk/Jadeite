@@ -925,10 +925,10 @@ test_blankCategory
 	TestMessageBox plannedResult: #ok.
 	self projectsPresenter addMethodCategory.
 	self assertIsNil: TestMessageBox plannedResult.
-	self assertIsNil: TestPrompter plannedResult.	"used all the planned results, therefore 2 dialogs arose"
+	self assert: TestMessageBox lastMessageBox text equals: 'Category name must not be blank'. 
+	self assert: TestPrompter lastPrompt equals: 'New method category?'.
 	TestPrompter plannedResult: 'grubnik'.
 	self projectsPresenter addMethodCategory.
-	self assertIsNil: TestPrompter plannedResult.
 	self assert: self categoryListPresenter selection equals: 'grubnik']
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
