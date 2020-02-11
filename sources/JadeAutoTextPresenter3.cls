@@ -73,6 +73,12 @@ currentGsShape
 currentGsShape: anObject
 	currentGsShape := anObject!
 
+currentSelectionOrLine
+	| range |
+	self hasSelection ifFalse: [self view selectCurrentLine].
+	range := self view selectionRange.
+	^(self value copyFrom: range start to: range stop) replaceCrLfWithLf!
+
 currentStyleName
 	^currentStyleName!
 
@@ -505,6 +511,7 @@ wordRightSideIsEmpty: anObject
 !JadeAutoTextPresenter3 categoriesFor: #createSchematicWiring!key event!public! !
 !JadeAutoTextPresenter3 categoriesFor: #currentGsShape!accessing!private! !
 !JadeAutoTextPresenter3 categoriesFor: #currentGsShape:!accessing!private! !
+!JadeAutoTextPresenter3 categoriesFor: #currentSelectionOrLine!accessing!public! !
 !JadeAutoTextPresenter3 categoriesFor: #currentStyleName!accessing!private! !
 !JadeAutoTextPresenter3 categoriesFor: #currentStyleName:!accessing!private! !
 !JadeAutoTextPresenter3 categoriesFor: #currentText!accessing!private! !

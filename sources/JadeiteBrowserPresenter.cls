@@ -287,10 +287,8 @@ comparisonPresenter
 
 	^comparisonPresenter!
 
-contextObject   
-	^self selectedClass
-		ifNil: [^nil]
-		ifNotNil: [:classService | gciSession oopTypeWithOop: classService oop]!
+contextObject
+	^self selectedClass ifNil: [^gciSession oopNil value] ifNotNil: [:classService | classService oop]!
 
 createComponents
 	super createComponents.
@@ -491,6 +489,10 @@ inspectGlobal
 	selection := globalsTab selectionIfNone: [^self].
 	^JadeInspector showOn: (OopType32 fromInteger: (selection at: 3)) session: gciSession!
 
+inspectorContextObject
+
+	^self contextObject!
+
 isNoneProjectSelected
 	^projectListPresenter selections includes: RowanProjectService noneProject!
 
@@ -501,6 +503,12 @@ isProjectItemEnabled: command
 
 isRowanProjectSelected
 	^(self isNoneProjectSelected or: [projectListPresenter selections isEmpty]) not!
+
+jadeInspect
+	| inspector |
+	inspector := JadeiteInspector new gciSession: gciSession.
+	^inspector evaluateSelectedTextIn: methodSourcePresenter
+		thenInspectInContext: self inspectorContextObject!
 
 makeSameSelectionsIn: newPresenter as: previousPresenter
 	| projectService packageService dictionaryService classService isMeta methodService |
@@ -1074,9 +1082,11 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #insertIfFalse!menu handlers!must not strip!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertIfTrue!menu handlers!must not strip!public! !
 !JadeiteBrowserPresenter categoriesFor: #inspectGlobal!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #inspectorContextObject!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #isNoneProjectSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #isProjectItemEnabled:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #isRowanProjectSelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #jadeInspect!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #makeSameSelectionsIn:as:!menu handlers!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #maxAutoCompleteListSize!constants!public! !
 !JadeiteBrowserPresenter categoriesFor: #methodMenu:!menu handlers support!private! !

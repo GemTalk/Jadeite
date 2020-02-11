@@ -696,16 +696,18 @@ test_adHocInspectComplexObjectInProjectBrowser
 	[inspector := self projectsPresenter jadeInspect.
 	self assert: (inspector model oop isKindOf: Integer).	"the oop"
 	self assert: inspector instVarListPresenter selections first key equals: 'self'.
-	self assert: inspector instVarListPresenter  selections first  value equals: 'RowanSample1Test>>#test1'.
+	self assert: inspector instVarListPresenter selections first value
+		equals: 'RowanSample1Test>>#test1'.
 	inspector instVarListPresenter selectionByIndex: #(2).
-	self assert: inspector instVarListPresenter  selections first  key equals: '-.asOop'.
-	self assert: inspector instVarListPresenter  selections first  value
+	self assert: inspector instVarListPresenter selections first key equals: '-.asOop'.
+	self assert: inspector instVarListPresenter selections first value
 		equals: inspector model oop printString.
 	inspector instVarListPresenter selectionByIndex: #(3).
-	self assert: inspector instVarListPresenter  selections first  key equals: '-testSelector'.
-	self assert: (inspector instVarListPresenter  selections first  value isKindOf: Integer)]
+	self assert: inspector instVarListPresenter selections first key equals: '-testSelector'.
+	self assert: (inspector instVarListPresenter selections first value isKindOf: Integer)]
 			ensure: 
 				[inspector view close.
+				self methodSourcePresenter value: String new.
 				self methodSourcePresenter view isModified: false]!
 
 test_adHocInspectComplexObjectInProjectBrowser2
@@ -716,31 +718,31 @@ test_adHocInspectComplexObjectInProjectBrowser2
 	
 	[inspector := self projectsPresenter jadeInspect.
 	self assert: (inspector model oop isKindOf: Integer).	"the oop"
-	self assert: inspector instVarListPresenter  selections first  key equals: 'self'.
-	self assert: inspector instVarListPresenter  selections first  value equals: 'aClassOrganizer'.
+	self assert: inspector instVarListPresenter selections first key equals: 'self'.
+	self assert: inspector instVarListPresenter selections first value equals: 'aClassOrganizer'.
 	inspector instVarListPresenter selectionByIndex: #(2).
-	self assert: inspector instVarListPresenter  selections first  key equals: '-.asOop'.
-	self assert: inspector instVarListPresenter  selections first  value
+	self assert: inspector instVarListPresenter selections first key equals: '-.asOop'.
+	self assert: inspector instVarListPresenter selections first value
 		equals: inspector model oop printString.
 	inspector instVarListPresenter selectionByIndex: #(3).
-	self assert: inspector instVarListPresenter  selections first  key equals: '-classes'. 
-	self assert: (inspector instVarListPresenter  selections first  value isKindOf: Integer).
+	self assert: inspector instVarListPresenter selections first key equals: '-classes'.
+	self assert: (inspector instVarListPresenter selections first value isKindOf: Integer).
 	self assert: ('aClassSet(*' match: inspector documentPresenter value).
 	inspector instVarListPresenter selectionByIndex: #(4).
-	self assert: inspector instVarListPresenter  selections first  key equals: '-classNames'. 
-	self assert: inspector instVarListPresenter  selections first  value equals: 20.
+	self assert: inspector instVarListPresenter selections first key equals: '-classNames'.
+	self assert: inspector instVarListPresenter selections first value equals: 20.
 	self assert: inspector documentPresenter value equals: 'nil'.
 	inspector instVarListPresenter selectionByIndex: #(5).
-	self assert: inspector instVarListPresenter  selections first  key equals: '-user'.
-	self assert: (inspector instVarListPresenter  selections first  value isKindOf: Integer).
+	self assert: inspector instVarListPresenter selections first key equals: '-user'.
+	self assert: (inspector instVarListPresenter selections first value isKindOf: Integer).
 	self assert: ('aSymbolList( aSymbolDictionary(*' match: inspector documentPresenter value).
 	inspector instVarListPresenter selectionByIndex: #(8).
-	self assert: inspector instVarListPresenter  selections first  key equals: '-rootClass'. 
-	self assert: (inspector instVarListPresenter  selections first  value isKindOf: Integer).
-	self assert: inspector documentPresenter value equals: 'Object'
-	]
+	self assert: inspector instVarListPresenter selections first key equals: '-rootClass'.
+	self assert: (inspector instVarListPresenter selections first value isKindOf: Integer).
+	self assert: inspector documentPresenter value equals: 'Object']
 			ensure: 
 				[inspector view close.
+				self methodSourcePresenter value: String new.
 				self methodSourcePresenter view isModified: false]!
 
 test_allClassesAutoCommitOn
@@ -913,6 +915,22 @@ test_autoDirtyDisplayRemoveMethod
 	self assert: self projectListPresenter selection isDirty.
 	self assert: self packageListPresenter selection name = 'RowanSample1-Core'.
 	self assert: self packageListPresenter selection isDirty!
+
+test_blankCategory
+	self testsIssue: #issue715 withTitle: 'Add category without text gets error'.
+	self selectRowanSample1Class.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestPrompter plannedResult: String new.
+	TestMessageBox plannedResult: #ok.
+	self projectsPresenter addMethodCategory.
+	self assertIsNil: TestMessageBox plannedResult.
+	self assert: TestMessageBox lastMessageBox text equals: 'Category name must not be blank'. 
+	self assert: TestPrompter lastPrompt equals: 'New method category?'.
+	TestPrompter plannedResult: 'grubnik'.
+	self projectsPresenter addMethodCategory.
+	self assert: self categoryListPresenter selection equals: 'grubnik']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_blankCategoryRenameInvalid
 	self testsIssue: #issue380
@@ -4326,6 +4344,20 @@ test_saveClassMethodHierarchy
 	self assert: self methodListPresenter selection selector = #classSideMethod.
 	self assert: (session executeString: 'RowanSample1 classSideMethod') = 'on the class side'!
 
+test_saveClassMethodSameName
+	self testsIssue: #issue713 withTitle: 'Copy instance method to class, get walkback (3.0.93-3)'.
+	self selectRowanSample1Class.
+	self projectsPresenter basicAddMethodCategory: 'test_saveMethod'.
+	self saveSampleMethod.
+	self selectServicesNamed: (Array with: 'sampleMethod') in: self methodListPresenter.
+	self assert: (session executeString: 'RowanSample1 new sampleMethod') = 123.
+	self selectClassTab.
+	self projectsPresenter basicAddMethodCategory: 'test_saveMethod'.
+	self saveSampleMethod.
+	self selectServicesNamed: (Array with: 'sampleMethod') in: self methodListPresenter.
+	self assert: (session executeString: 'RowanSample1 sampleMethod') = 123.
+	self assert: (session executeString: 'RowanSample1 new sampleMethod') = 123!
+
 test_saveMethod
 	self selectRowanSample1Class.
 	self projectsPresenter basicAddMethodCategory: 'test_saveMethod'.
@@ -5486,6 +5518,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitFailure!public!test auto commit!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_blankCategory!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_blankCategoryRenameInvalid!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseCategoryMethodsMenuEnablement!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
@@ -5648,6 +5681,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassCommentInHierarchy!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethod!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethodHierarchy!public!test class hierarchy!test methods! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethodSameName!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethod!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodAndUpdateSUnitTab!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodHierarchy!public!test class hierarchy!test methods! !

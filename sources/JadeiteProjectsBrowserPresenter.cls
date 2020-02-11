@@ -1004,10 +1004,6 @@ jadeExecute
 	View focus == methodSourcePresenter view ifFalse: [^self].
 	^super jadeExecute!
 
-jadeInspect
-	View focus == methodSourcePresenter view ifFalse: [^self].
-	^super jadeInspect!
-
 jadeMenuStrings
 	false ifTrue: [
 		self abortTransaction; commitTransaction; newBrowser; addSystemBrowser; maximizeCode; findClass; gotoClass; refreshFromServer; exit.
@@ -2407,7 +2403,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeDebug!menu handlers!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeDisplay!menu handlers!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeExecute!menu handlers!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #jadeInspect!menu handlers!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #loadProjects!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #makeDefault!project menu handlers!public! !

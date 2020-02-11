@@ -263,8 +263,10 @@ test_adHocExecution
 				workspace view close]!
 
 test_adHocInspect
-	| workspace |
+	| workspace methodListBrowser |
 	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
+	self testsIssue: #issue712
+		withTitle: 'Inspect UserGlobals from Method list, get ByteArray DNE asHexString'.
 	workspace := JadeWorkspace showOnSession: session.
 	
 	[self assert: (workspace isKindOf: JadeWorkspace).
@@ -275,7 +277,31 @@ test_adHocInspect
 	self assert: inspector instVarListPresenter selection first key equals: 'self']
 			ensure: 
 				[workspace isModified: false.
-				workspace view close]!
+				workspace view close.
+				inspector view close].
+	self openProjectBrowser.
+	
+	[self selectRowanSample1Test.
+	self
+		saveMethod: 'bartooee  ^UserGlobals size'
+		in: 'RowanSample1Test'
+		category: 'deleteme'.
+	self selectMethodNamed: #bartooee.
+	self projectsPresenter methodSourcePresenter view selectionRanges: (Array with: (12 to: 22)).
+	self projectsPresenter methodSourcePresenter view setFocus.
+	inspector := self projectsPresenter jadeInspect.
+	[self assert: inspector instVarListPresenter selection first key equals: 'self']
+		ensure: [inspector view close].
+	methodListBrowser := self projectsPresenter browseImplementors.
+	methodListBrowser primaryPresenter methodSourcePresenter documentPresenter view
+		selectionRange: (12 to: 22).
+	methodListBrowser primaryPresenter methodSourcePresenter view setFocus.
+	inspector := self projectsPresenter jadeInspect.
+	self assert: inspector instVarListPresenter selection first key equals: 'self']
+			ensure: 
+				[projectsBrowser view close.
+				inspector view close.
+				methodListBrowser view close]!
 
 test_adHocInspectCompileError
 	| workspace |

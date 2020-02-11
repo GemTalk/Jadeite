@@ -127,7 +127,7 @@ RowanLoggingService subclass: #TestLoggingService
 	classInstanceVariableNames: ''!
 Prompter subclass: #TestPrompter
 	instanceVariableNames: ''
-	classVariableNames: 'PlannedResult'
+	classVariableNames: 'LastPrompt PlannedResult'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 SUnitBrowser subclass: #JadeiteDevelopmentSUnitBrowser
