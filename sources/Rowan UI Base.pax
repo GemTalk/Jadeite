@@ -4167,9 +4167,9 @@ jadeExecuteAndDisplay: showResult
 	^result!
 
 jadeInspect
-	| inspector |
+	| inspector | 
 	inspector := JadeiteInspector new gciSession: gciSession.
-	^inspector evaluateSelectedTextIn: self thenInspectInContext: nil!
+	^inspector evaluateSelectedTextIn: self thenInspectInContext: gciSession oopNil value!
 
 onPromptToSaveChanges: aBooleanValue
 	"we were calling #getDocumentData essentially to test for nil. 

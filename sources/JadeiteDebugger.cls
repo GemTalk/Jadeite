@@ -77,6 +77,9 @@ clearBreakPointsAt: stepPoint
 codeSourcePresenterClass
 	^JadeiteDebuggerMethodSourcePresenter!
 
+contextObject
+	^frame oop!
+
 createComponents
 	super createComponents.
 	statusTextPresenter := self add: TextPresenter new name: 'statusBarField'!
@@ -210,6 +213,11 @@ initializeProcess: aProcess message: aString terminateOnClose: aBoolean
 
 isOkayToChangeFrame
 	^codePane isOkayToChange!
+
+jadeInspect
+	| inspector | 
+	inspector := JadeiteInspector new gciSession: gciSession.
+	^inspector evaluateSelectedTextIn: self thenInspectInContext: self contextObject!
 
 methodListSelection
 	"really a selection from the frame list"
@@ -525,6 +533,7 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #browseSenders!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #clearBreakPointsAt:!menu handlers support!public! !
 !JadeiteDebugger categoriesFor: #codeSourcePresenterClass!private! !
+!JadeiteDebugger categoriesFor: #contextObject!public! !
 !JadeiteDebugger categoriesFor: #createComponents!public! !
 !JadeiteDebugger categoriesFor: #createSchematicWiring!public! !
 !JadeiteDebugger categoriesFor: #debuggerService!accessing!private! !
@@ -540,6 +549,7 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #initializeIdleProcess!initialization!public! !
 !JadeiteDebugger categoriesFor: #initializeProcess:message:terminateOnClose:!initialization!public! !
 !JadeiteDebugger categoriesFor: #isOkayToChangeFrame!public!testing! !
+!JadeiteDebugger categoriesFor: #jadeInspect!menu handlers!public! !
 !JadeiteDebugger categoriesFor: #methodListSelection!accessing!public! !
 !JadeiteDebugger categoriesFor: #methodSourcePresenter!public! !
 !JadeiteDebugger categoriesFor: #methodValueChanged!event handlers!public! !

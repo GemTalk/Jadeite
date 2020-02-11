@@ -64,7 +64,7 @@ codeSourcePresenterClass
 !
 
 contextObject
-	^gciSession oopTypeWithOop: frame oop!
+	^frame oop!
 
 copyStack
 	| stream |
