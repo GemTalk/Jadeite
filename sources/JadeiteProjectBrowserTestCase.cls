@@ -4328,6 +4328,20 @@ test_saveClassMethodHierarchy
 	self assert: self methodListPresenter selection selector = #classSideMethod.
 	self assert: (session executeString: 'RowanSample1 classSideMethod') = 'on the class side'!
 
+test_saveClassMethodSameName
+	self testsIssue: #issue713 withTitle: 'Copy instance method to class, get walkback (3.0.93-3)'.
+	self selectRowanSample1Class.
+	self projectsPresenter basicAddMethodCategory: 'test_saveMethod'.
+	self saveSampleMethod.
+	self selectServicesNamed: (Array with: 'sampleMethod') in: self methodListPresenter.
+	self assert: (session executeString: 'RowanSample1 new sampleMethod') = 123.
+	self selectClassTab.
+	self projectsPresenter basicAddMethodCategory: 'test_saveMethod'.
+	self saveSampleMethod.
+	self selectServicesNamed: (Array with: 'sampleMethod') in: self methodListPresenter.
+	self assert: (session executeString: 'RowanSample1 sampleMethod') = 123.
+	self assert: (session executeString: 'RowanSample1 new sampleMethod') = 123!
+
 test_saveMethod
 	self selectRowanSample1Class.
 	self projectsPresenter basicAddMethodCategory: 'test_saveMethod'.
@@ -5646,6 +5660,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassCommentInHierarchy!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethod!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethodHierarchy!public!test class hierarchy!test methods! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethodSameName!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethod!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodAndUpdateSUnitTab!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodHierarchy!public!test class hierarchy!test methods! !
