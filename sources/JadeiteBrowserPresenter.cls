@@ -205,6 +205,7 @@ buildProjectTab
 			[projectInfoTab := ListPresenter new.
 			projectInfoTab parentPresenter: self textAreaTabs.
 			projectInfoView := projectInfoTab createView: 'Editable list view'.
+			projectInfoView getImageBlock: nil. 
 			projectInfoView backcolor: JadeiteTextStyles default colorForNoEdits.
 			projectInfoView
 				contextMenu: self projectInfoMenu;
@@ -214,12 +215,10 @@ buildProjectTab
 			(projectInfoView allColumns at: 1)
 				isEditable: false;
 				width: 175;
-				getImageBlock: IconicListAbstract;
 				getContentsBlock: [:each | each at: 2].
 			projectInfoView addColumn.
 			(projectInfoView allColumns at: 2)
 				isEditable: false;
-				getImageBlock: IconicListAbstract;
 				isAutoResize: true;
 				getContentsBlock: [:each | (each at: 2) ifNil: [String new] ifNotNil: [:iv | (each at: 1) instVarNamed: iv]]]
 		ifNotNil: [projectInfoView := projectInfoTab view].
