@@ -1689,6 +1689,36 @@ test_replaceSetElementWhichMovesAfterSave
 	inspector instVarListPresenter selectionByIndex: #(10).
 	self assert: inspector documentPresenter value equals: '26'!
 
+test_rootObjectNotOverwritten
+	| remoteObject oop savedOop handle secondInspector lastOop firstOop |
+	remoteObject := session
+				executeString: 'Array new'
+				fromContext: nil
+				environment: 0.
+	oop := remoteObject value.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	handle := inspector view handle value.
+	savedOop := session
+				executeString: '((SessionTemps current at: #rowanServicesWindowRegistry) at: self) first asOop '
+				fromContext: handle
+				environment: 0.
+	self assert: oop equals: savedOop.
+	inspector documentPresenter value: 'OrderedCollection with: 1'.
+	inspector codePane view setFocus.
+	secondInspector := inspector codePane jadeInspect.
+	
+	[lastOop := session
+				executeString: '((SessionTemps current at: #rowanServicesWindowRegistry) at: self) last asOop '
+				fromContext: handle
+				environment: 0.
+	self assert: lastOop equals: inspector contextObject.
+	firstOop := session
+				executeString: '((SessionTemps current at: #rowanServicesWindowRegistry) at: self) last asOop '
+				fromContext: handle
+				environment: 0.
+	self assert: firstOop equals: oop	"origin root object still held"]
+			ensure: [secondInspector view close]!
+
 test_selectAll
 	| remoteObject |
 	remoteObject := session
@@ -1862,6 +1892,7 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_removeMultipleFromDictionary!public!tests add remove! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_replaceSetElement!public!tests modify object! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_replaceSetElementWhichMovesAfterSave!public!tests modify object! !
+!JadeiteInspectorDataCuratorTestCase categoriesFor: #test_rootObjectNotOverwritten!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_selectAll!public!tests!tests menu bar! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_selectAllString!public!tests!tests menu bar! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_showReturnsNavigationInspector!public!tests! !
