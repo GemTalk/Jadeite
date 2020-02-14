@@ -359,6 +359,9 @@ objectIsVariable
 	answeringService := BrowserUpdate current issueCommands: (Array with: self) session: gciSession.
 	^answeringService answer!
 
+onCloseRequested: boolValueHolder
+	self isOkayToChange ifFalse:[boolValueHolder value: false]. !
+
 printInstVar
 	| answeringService printString value |
 	^
@@ -578,6 +581,7 @@ valueOops
 !JadeiteInspector categoriesFor: #multipleInstVarsSelected!event handlers support!private! !
 !JadeiteInspector categoriesFor: #nonComputedListSelections!event handlers support!private! !
 !JadeiteInspector categoriesFor: #objectIsVariable!private!testing! !
+!JadeiteInspector categoriesFor: #onCloseRequested:!event handlers!public! !
 !JadeiteInspector categoriesFor: #printInstVar!displaying!event handlers support!private! !
 !JadeiteInspector categoriesFor: #queryCommand:!menu handlers support!private! !
 !JadeiteInspector categoriesFor: #registerWindow:rootObject:!private! !

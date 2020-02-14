@@ -456,6 +456,36 @@ test_captionChange
 	inspector getPreviousObject.
 	self assert: ('Inspector on Array for*' match: inspector caption)!
 
+test_closeWithUnsavedChanges
+	| remoteObject |
+	self testsIssue: #issue722
+		withTitle: 'Unsaved inspector code pane changes get lost on inspector window close'.
+	remoteObject := session
+				executeString: 'Bag new add: ''abc''; yourself'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector documentPresenter value: 'nil'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestMessageBox plannedResult: #yes.
+	inspector view close.
+	self assert: inspector view isOpen.
+	TestMessageBox plannedResult: #no.
+	inspector view close.
+	self deny: inspector view isOpen.
+	remoteObject := session
+				executeString: 'Bag new add: ''abc''; yourself'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector view close.
+	self assert: inspector view isOpen]
+			ensure: 
+				[inspector codePane view isModified: false.
+				inspector view close. "in case test fails before inspector is closed" 
+				TestMessageBox disableJadeiteTestMessageBox]!
+
 test_commitTransactionInBasicInspector
 	| remoteObject jadeiteMenu commitItem abortItem |
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
@@ -1832,6 +1862,7 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_basicInspectorDisplayedSizeLimit!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_caption!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_captionChange!public! !
+!JadeiteInspectorDataCuratorTestCase categoriesFor: #test_closeWithUnsavedChanges!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_commitTransactionInBasicInspector!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusCodePane!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_commitTransactionInNavigationInspectorFocusInstVars!public! !
