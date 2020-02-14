@@ -148,7 +148,9 @@ package methodNames
 	add: #JadeDebugger -> #update;
 	add: #JadeDebugger -> #updateCaption;
 	add: #JadeErrorShell -> #doCopy;
+	add: #JadeErrorShell -> #onViewClosed;
 	add: #JadeErrorShell -> #onViewOpened;
+	add: #JadeErrorShell -> #registerWindow:rootObject:session:;
 	add: #JadeFileIn -> #defineMethod:inClassNamed:inPackageNamed:inCategory:;
 	add: #JadeImageStripper -> #closeLoginShells;
 	add: #JadeImageStripper -> #createVersionResource;
@@ -1578,12 +1580,23 @@ doCopy
 				on: stream.
 			stream contents copyToClipboard]!
 
+onViewClosed
+	BrowserUpdate current
+		logComment: 'Releasing notifier window (JadeErrorShell) {' , self identityHash printString , '}'.
+	gsError gciSession isValidSession
+		ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: gsError gciSession].
+	super onViewClosed!
+
 onViewOpened
 	| gsProcess message detail stack stream |
 	gsError := self model value.
 	super onViewOpened.
 	Sound warningBeep.
 	gsProcess := gsError gsProcess.
+	self
+		registerWindow: self view handle 
+		rootObject: gsProcess oopType
+		session: gsError gciSession.
 	message := gsError errorReport message.
 	isResumable := gsError isResumableInGem.
 	detail := message.
@@ -1599,9 +1612,17 @@ onViewOpened
 				nextPutAll: each;
 				cr].
 	stackPresenter value: stream contents.
-	self model: #terminate	"If window is closed without any buttons pressed!!"! !
+	self model: #terminate	"If window is closed without any buttons pressed!!"!
+
+registerWindow: handle rootObject: oop session: session
+	^RowanBrowserService new
+		registerWindow: handle value
+		rootObject: oop value
+		session: session! !
 !JadeErrorShell categoriesFor: #doCopy!public! !
-!JadeErrorShell categoriesFor: #onViewOpened!public! !
+!JadeErrorShell categoriesFor: #onViewClosed!event handlers!public! !
+!JadeErrorShell categoriesFor: #onViewOpened!event handlers!public! !
+!JadeErrorShell categoriesFor: #registerWindow:rootObject:session:!private! !
 
 !JadeFileIn methodsFor!
 
@@ -1749,9 +1770,9 @@ displayUndisplayableCharacter
 	^instVarNames!
 
 onViewClosed
+	BrowserUpdate current logComment: 'Closing Inspector {' , self identityHash printString , '}'.
 	self gciSession isValidSession
 		ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: self gciSession].
-	BrowserUpdate current logComment: 'Closing Inspector {' , self identityHash printString , '}'.
 	super onViewClosed!
 
 onViewOpened
