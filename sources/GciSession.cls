@@ -382,7 +382,8 @@ logout
 	self trigger: #logout.
 	gciSessionId := nil.
 	library := nil.
-	GciSession current: nil!
+	GciSession current: nil.
+	self trigger: #postLogout. !
 
 logoutRequested
 

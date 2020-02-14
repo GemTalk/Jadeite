@@ -73,6 +73,11 @@ closeExistingInspectors
 	JadeInspector allInstances do: [:oldInspector | oldInspector view close].
 	JadeiteInspector allInstances do: [:oldInspector | oldInspector view close]!
 
+closeTranscriptAndLogout
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.	"closing the transcript will logout the session. don't commit"
+	[transcript view close] ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 commitTransaction
 	^transcript commitTransaction!
 
@@ -204,11 +209,10 @@ loginWithRetry: loginShell
 					do: [:ex | (Delay forMilliseconds: 100) wait]]!
 
 logoutThenLoginAs: userName
+	"closing the transcript will logout the session. don't commit"
 	userName ifNil: [^self].
 	userName = GciSession current userID ifTrue: [^self].
-	TestMessageBox enableJadeiteTestMessageBox.
-	TestMessageBox plannedResult: #no.	"closing the transcript will logout the session. don't commit"
-	[transcript view close] ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self closeTranscriptAndLogout.
 	JadeiteLoginShell allInstances do: [:shell | shell view close].	"should save to the remote JadeDefaultConnection.gss file"
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteShell userIDPresenter value: userName.
@@ -608,6 +612,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #clearBreakAt:!private!support!tests! !
 !JadeiteAbstractTestCase categoriesFor: #cloneRowanSample1!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #closeExistingInspectors!private!support! !
+!JadeiteAbstractTestCase categoriesFor: #closeTranscriptAndLogout!private!setup teardown!support! !
 !JadeiteAbstractTestCase categoriesFor: #commitTransaction!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #createDebuggerTestMethod!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #createNewTestProjectNamed:!public!support! !

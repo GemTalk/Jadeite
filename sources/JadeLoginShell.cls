@@ -204,8 +204,9 @@ invalidateLoginButton
 
 	| buttonView query |
 	buttonView := loginButtonPresenter view.
-	query := buttonView commandSource queryCommandRouteFor: buttonView commandDescription.
+	query := CommandQuery commandDescription: buttonView commandDescription source: buttonView.
 	self queryCommand: query.
+	self view setFocus. 
 	buttonView invalidate!
 
 isModified
@@ -300,7 +301,7 @@ openHomePage
 postLogin: aGciSession
 	versionListPresenter view disable.
 	aGciSession
-		when: #logout
+		when: #postLogout
 		send: #invalidateLoginButton
 		to: self!
 
