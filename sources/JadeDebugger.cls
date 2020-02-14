@@ -406,15 +406,15 @@ printVar: var on: stream
 	stream
 		cr;
 		tab;
-		nextPutAll: var key value asString asUTF8String;
+		nextPutAll: var key value asString;
 		space;
 		nextPutAll: 'oop(';
-		print: var key key asString asUTF8String asNumber;
+		print: var key key asString asNumber;
 		nextPut: $);
 		space;
 		nextPutAll: '==';
 		space.
-	valueString := var value asString asUTF8String.
+	valueString := var value asString.
 	maxPrintSize := valueString size min: self maxPrint.
 	stream nextPutAll: (valueString copyFrom: 1 to: maxPrintSize).
 	valueString size > self maxPrint ifTrue: [stream nextPutAll: '...']!
