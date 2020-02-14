@@ -15,6 +15,15 @@ createComponents
 	methodListPresenter := self add: ListPresenter new name: 'testCases'.
 	textResultPresenter := self add: TextPresenter new name: 'textResult'!
 
+debugTestAsFailureMethodServices: methodServices className: className
+	| jadeResult |
+	methodServices isEmpty ifTrue: [^self].
+	jadeResult := self
+				runTestCommand: #debugTestAsFailure:inClassName:
+				methods: methodServices
+				className: className.
+	^jadeResult!
+
 debugTestMethodServices: methodServices className: className
 	| jadeResult |
 	methodServices isEmpty ifTrue: [^self].
@@ -77,6 +86,9 @@ runTests: methodServices
 runTests: methodServices in: className
 	^self runTestMethodServices: methodServices className: className!
 
+selectedClass
+	^self subclassResponsibility!
+
 setColorFor: aJadeTestResult
 	textResultPresenter value: aJadeTestResult summary.
 	aJadeTestResult failures do: 
@@ -104,6 +116,7 @@ updateResult: jadeResult
 	jadeResult setSummary.
 	self setColorFor: jadeResult! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #createComponents!public! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #debugTestAsFailureMethodServices:className:!private! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #debugTestMethodServices:className:!private! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #debugTests:!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #editSelectAll!menu handlers support!public! !
@@ -114,6 +127,7 @@ updateResult: jadeResult
 !JadeiteSUnitAbstractPresenter categoriesFor: #runTestMethodServices:className:!private! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #runTests:!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #runTests:in:!public! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #selectedClass!accessing!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #setColorFor:!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #textResultPresenter!accessing!private! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #textResultPresenter:!accessing!private! !

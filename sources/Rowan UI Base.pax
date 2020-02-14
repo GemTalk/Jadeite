@@ -175,6 +175,7 @@ package methodNames
 	add: #JadeiteSUnitAbstractPresenter -> #inspectSelected;
 	add: #JadeiteSUnitAbstractPresenter -> #methodListPresenter;
 	add: #JadeiteSUnitAbstractPresenter -> #methodListPresenter:;
+	add: #JadeiteSUnitAbstractPresenter -> #step;
 	add: #JadeiteSUnitInClassPresenter -> #registerPresentersForUpdates;
 	add: #JadeiteSUnitInClassPresenter -> #testClassService;
 	add: #JadeiteSUnitInClassPresenter -> #testClassService:;
@@ -1966,11 +1967,16 @@ methodListPresenter
 	^methodListPresenter!
 
 methodListPresenter: anObject
-	methodListPresenter := anObject! !
+	methodListPresenter := anObject!
+
+step
+
+	^self debugTestAsFailureMethodServices: methodListPresenter selections className: self selectedClass name! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #delete!menu handlers!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #inspectSelected!menu handlers support!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #methodListPresenter!accessing!private! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #methodListPresenter:!accessing!private! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #step!menu handlers!private! !
 
 !JadeiteSUnitInClassPresenter methodsFor!
 
