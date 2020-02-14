@@ -114,7 +114,7 @@ test_gemTask
 				setUp	"reset the tes resource's session, etc"]!
 
 test_loginButtonEnablement
-	| jadeiteShell query |
+	| query buttonView transcript |
 	self testsIssue: #issue527 withTitle: 'Multiple sessions can''t keep console project list straight'.
 	self testsIssue: #issue635
 		withTitle: '(3.0.87) Extra click after logout to reenable the login button'.
@@ -135,10 +135,13 @@ test_loginButtonEnablement
 				source: jadeiteShell view.
 	jadeiteShell view queryCommand: query.
 	self deny: query isEnabled.
-	GciSession current logout.
+	transcript := JadeiteTranscript allInstances
+				detect: [:theTranscript | theTranscript gciSession == GciSession current].
+	transcript view setFocus.
+	transcript view close.
 	
-	[query := CommandQuery commandDescription: (CommandDescription command: #login)
-				source: jadeiteShell loginButtonPresenter view.
+	[buttonView := jadeiteShell loginButtonPresenter view.
+	query := CommandQuery commandDescription: buttonView commandDescription source: buttonView.
 	jadeiteShell queryCommand: query.
 	self assert: query isEnabled]
 			ensure: [jadeiteShell login]!

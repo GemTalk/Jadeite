@@ -431,7 +431,7 @@ reportError: gsError
 			self error: 'We should never get here!!'].
 	(#(2709 6005) includes: gsError errorReport number)
 		ifTrue: [^self openDebuggerOnException: gsError].
-	self aboutToShowErrorShellOn: gsError.	"allow RowanDebuggerTestCase to override and skip error dialog and go straight to debugger"
+	self aboutToShowErrorShellOn: gsError.	"allow JadeiteDebuggerTestCase to override and skip error dialog and go straight to debugger"
 	answer := (JadeErrorShell showModalOn: gsError)
 				ifNil: [#terminate	"Window was closed without pressing any button!!"].
 	answer = #terminate
