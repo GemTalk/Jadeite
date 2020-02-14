@@ -22,7 +22,7 @@ test_inspectorRootObjectRegistered
 	inspectorHandle := inspector view handle value.
 	self assert: (session
 				executeString: '(RowanBrowserService new openWindows at: ' , inspectorHandle printString
-						, ' ifAbsent:[]) asOop')
+						, ' ifAbsent:[]) first asOop')
 		equals: remoteObject value.
 	inspector view close.
 	self assertIsNil: (session
@@ -36,8 +36,8 @@ test_inspectorRootSpecialObjectNotRegistered
 	inspector := JadeInspector showOn: remoteObject session: session.
 	inspectorHandle := inspector view handle value.
 	self assert: (session
-				executeString: 'RowanBrowserService new openWindows at: ' , inspectorHandle printString
-						, ' ifAbsent:[]')
+				executeString: '(RowanBrowserService new openWindows at: ' , inspectorHandle printString
+						, ' ifAbsent:[]) first')
 		equals: $a!
 
 test_openProjectsBrowser
