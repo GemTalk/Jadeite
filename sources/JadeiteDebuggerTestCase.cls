@@ -1205,6 +1205,7 @@ test_reformatIllegalSource
 		equals: 'reformatSourceTemporaryMethod self halt. ^#test'.
 	debugger documentPresenter value: 'reformatSourceTemporaryMethod self halt. ^#'.
 	debugger reformatSource.
+	debugger documentPresenter view isModified: true. 
 	self assert: debugger statusTextPresenter view backcolor equals: Color red faded.
 	self assert: debugger documentPresenter view isModified.
 	self assert: debugger statusBarText equals: 'Reformat failed. Illegal source' replaceCrLfWithLf.
