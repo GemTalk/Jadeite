@@ -2539,7 +2539,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter class methodsFor!
 
 downArrowIcon
-
 	^Icon fromFile: 'icons\DownArrow.ico'
 !
 

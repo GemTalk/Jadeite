@@ -2839,7 +2839,7 @@ viewActivated
 
 overriddenIcon
 
-	^Icon fromId: 'OVERRIDDEN.ICO'.
+	^Icon fromId: 'icons\OVERRIDDEN.ICO'.
 !
 
 resource_Default_view
