@@ -4701,7 +4701,6 @@ test_tabNames
 
 test_tabNames_projectsBrowser
 	| textTabs |
-	self rowanFixMe.	"fix the oddity that one tab is created differently"
 	self testsIssue: #issue186 withTitle: 'icon in console menu'.
 	self selectRowanSample1Class.
 	self saveHooMethod.
@@ -4711,8 +4710,8 @@ test_tabNames_projectsBrowser
 	self assert: (textTabs at: 2) text equals: 'Class Documentation'.
 	self assert: (textTabs at: 3) text equals: 'Method Source'.
 	self assert: (textTabs at: 4) text equals: 'SUnit'.
-	self assert: (textTabs at: 5) equals: 'Comparison'.	"for some as yet unknown reason, this is created differently"
-	self assert: (textTabs at: 6) equals: 'Project'!
+	self assert: (textTabs at: 5) text equals: 'Comparison'.	"for some as yet unknown reason, this is created differently"
+	self assert: (textTabs at: 6) text equals: 'Project'!
 
 test_tabNames_projectsBrowserNotLost
 	"why we have to put the text in the arrangement field is beyond me"

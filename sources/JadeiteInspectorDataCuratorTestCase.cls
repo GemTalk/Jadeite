@@ -34,7 +34,10 @@ setUp
 
 tearDown
 	super tearDown.
-	inspector ifNotNil: [self destroy: inspector view].!
+	inspector
+		ifNotNil: 
+			[inspector documentPresenter view isModified: false.
+			self destroy: inspector view]!
 
 test_abortTransactionInBasicInspector
 	"foolishly or wisely, Dolphin runs different code paths
