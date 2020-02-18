@@ -571,7 +571,7 @@ defaultIcon
 defaultIconName
 	"Answer a filename to use for an icon of this class."
 
-	^File composeStem: 'Magic' extension: 'ico'.!
+	^File composeStem: 'Model' extension: 'ico'.!
 
 icon
 	"Answers an Icon that can be used to represent this class"

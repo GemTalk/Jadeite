@@ -964,6 +964,43 @@ test_inspectIdentityBag
 	self assert: inspector instVarListPresenter selection first key equals: '''abc'''.
 	self assert: inspector instVarListPresenter list size equals: 8!
 
+test_inspectInstVarInNewWindow
+	| remoteObject secondInspector |
+	self testsIssue: #issue720 withTitle: 'Would like inspect button in inspector'.
+	remoteObject := session
+				executeString: '(Array with: 123) dynamicInstVarAt: #foo put: ''abc''; yourself'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: #(4).
+	self assert: inspector documentPresenter value equals: '123'.
+	secondInspector := inspector inspectInNewWindow.
+	
+	[self assert: secondInspector instVarListPresenter selectionByIndex equals: #(1).
+	self assert: secondInspector documentPresenter value equals: '123']
+			ensure: [secondInspector view close].
+	inspector instVarListPresenter selectionByIndex: #(3).
+	self assert: inspector documentPresenter value equals: '''abc'''.
+	secondInspector := inspector inspectInNewWindow.
+	
+	[self assert: secondInspector instVarListPresenter selectionByIndex equals: #(1).
+	self assert: secondInspector documentPresenter value equals: '''abc''']
+			ensure: [secondInspector view close].
+	inspector instVarListPresenter selectionByIndex: #(2).
+	self assert: inspector instVarListPresenter selections first key equals: '-.asOop'.
+	secondInspector := inspector inspectInNewWindow.
+	
+	[self assert: secondInspector instVarListPresenter selectionByIndex equals: #(1).
+	self assert: secondInspector documentPresenter value equals: 'anArray( 123)']
+			ensure: [secondInspector view close].
+	inspector instVarListPresenter selectionByIndex: #(1).
+	self assert: inspector instVarListPresenter selections first key equals: 'self'.
+	secondInspector := inspector inspectInNewWindow.
+	
+	[self assert: secondInspector instVarListPresenter selectionByIndex equals: #(1).
+	self assert: secondInspector documentPresenter value equals: 'anArray( 123)']
+			ensure: [secondInspector view close]!
+
 test_inspectorHandlesError
 	| remoteObject |
 	self testsIssue: #issue433 withTitle: 'Walkback on new inspector in presence of #size method'.
@@ -1886,6 +1923,7 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectBag!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectDoubleByteString!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectIdentityBag!public! !
+!JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectInstVarInNewWindow!public!tests add remove! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectorHandlesError!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectRcIdentityBag!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectRcIdentityBagWithUnicodeKey!public! !
