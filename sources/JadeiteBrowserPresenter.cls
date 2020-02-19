@@ -169,7 +169,7 @@ browseSelectedMethods
 	^browser!
 
 buildGlobalsTab
-	| globalsTabView |
+	| globalsTabView cardLabel |
 	globalsTab
 		ifNil: 
 			[globalsTab := ListPresenter new.
@@ -192,8 +192,11 @@ buildGlobalsTab
 						getImageBlock: IconicListAbstract;
 						getContentsBlock: [:each | each at: index]]]
 		ifNotNil: [globalsTabView := globalsPresenter view].
+	cardLabel := CardLabel text: 'Globals'.
+	cardLabel iconBlock: [Icon fromId: (File composeStem: 'Dictionary' extension: 'ico')].
 	globalsTabView
-		arrangement: 'Globals';
+		arrangement: cardLabel;
+		getImageBlock: nil;
 		name: 'globalsTab'.
 	classListPresenter list: ListModel new.
 	self updateGlobalsTab!
