@@ -493,6 +493,13 @@ inspectGlobal
 	selection := globalsTab selectionIfNone: [^self].
 	^JadeInspector showOn: (OopType32 fromInteger: (selection at: 3)) session: gciSession!
 
+inspectMethod
+	| inspector |
+	methodListPresenter selections isEmpty ifTrue: [^self].
+	inspector := JadeiteInspector new gciSession: gciSession.
+	^inspector inspect: (OopType64 fromInteger: methodListPresenter selections first oop)
+		inContext: gciSession oopNil value!
+
 inspectorContextObject
 
 	^self contextObject!
@@ -543,6 +550,34 @@ maxAutoCompleteListSize
 
 methodMenu: aMenu
 	self methodMenuBreak: aMenu!
+
+methodsMenuStrings
+	false
+		ifTrue: 
+			["This helps us find senders"
+			self
+				browseBreakpoints;
+				browseImplementors;
+				browseImplementorsOf;
+				browseSenders;
+				browseSendersOf;
+				browseHierarchyImplementors;
+				browseHierarchySenders;
+				browseMethodsContaining;
+				browseLiteralReferences;
+				browseSelectedMethods;
+				browseMethodHistory; 
+				inspectMethod;
+				clearMethodBreakpoints;
+				removeMethods;
+				runMethodTests;
+				fileOutMethods;
+				findMethod;
+				runMethodTests;
+				gotoMethodDefinedPackage;
+				runAll;
+				runSelected].
+	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods' 'Browse Method History//browseMethodHistory' 'Inspect//inspectMethod' '-' 'Browse Breakpoints//browseBreakpoints' 'Clear Method Breakpoints//clearMethodBreakpoints' '-' 'Find Method .../Ctrl+Shift+M/findMethod' '-' '&Remove Method(s) ...//removeMethods' '-' 'Run All Tests/Ctrl+Shift+A/runAll' 'Run Selected Test(s)/Ctrl+Shift+S/runMethodTests' 'Debug Selected &Test(s)/Ctrl+B/runMethodTests' '-' 'Go To Defining Package//gotoMethodDefinedPackage')!
 
 methodToReformat
 	^methodListPresenter selectionIfNone: [RowanMethodService new]!
@@ -650,6 +685,10 @@ queryCommand: aCommandQuery
 	#browseSelectedCategoryMethods = command
 		ifTrue: 
 			[aCommandQuery isEnabled: categoryListPresenter selections notEmpty.
+			^true].
+	#inspectMethod = command
+		ifTrue: 
+			[aCommandQuery isEnabled: methodListPresenter selections size = 1.
 			^true].
 	^super queryCommand: aCommandQuery!
 
@@ -1086,6 +1125,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #insertIfFalse!menu handlers!must not strip!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertIfTrue!menu handlers!must not strip!public! !
 !JadeiteBrowserPresenter categoriesFor: #inspectGlobal!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #inspectMethod!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #inspectorContextObject!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #isNoneProjectSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #isProjectItemEnabled:!menu handlers support!private! !
@@ -1094,6 +1134,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #makeSameSelectionsIn:as:!menu handlers!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #maxAutoCompleteListSize!constants!public! !
 !JadeiteBrowserPresenter categoriesFor: #methodMenu:!menu handlers support!private! !
+!JadeiteBrowserPresenter categoriesFor: #methodsMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #methodToReformat!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #methodValueChanged!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #noClassSelectedInEitherPresenter!public!testing! !
