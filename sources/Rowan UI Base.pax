@@ -4303,9 +4303,7 @@ browseClasses
 	JadeiteBrowser showOnSession: gciSession!
 
 jadePreferences
-
-	JadeitePreferencesShell showOnSession: gciSession.
-! !
+	^JadeitePreferencesWorkspace browseJadeitePrefs: gciSession! !
 !JadeToolsToolBarPresenter categoriesFor: #browseClasses!public! !
 !JadeToolsToolBarPresenter categoriesFor: #jadePreferences!public! !
 

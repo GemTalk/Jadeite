@@ -61,32 +61,7 @@ browseJadeiteLogs
 	^JadeiteLoggerShell showOnSession: self gciSession!
 
 browseJadeitePrefs
-	"Open Jadeite.prefs in the working directory"
-
-	| path file setDefaultPrefs fileStream |
-	path := SessionManager current imageBase , JadeitePreferences preferencesFile.
-	setDefaultPrefs := false.
-	(File exists: path)
-		ifFalse: 
-			[(MessageBox
-				confirm: 'Jadeite.prefs does not exist in ' , SessionManager current imageBase , '. Create it?')
-					ifTrue: [setDefaultPrefs := true]
-					ifFalse: [^self]].
-	file := File
-				open: path
-				mode: #open
-				check: false.	"create it if it's not there"
-	
-	[setDefaultPrefs
-		ifTrue: 
-			[fileStream := FileStream on: file.
-			fileStream
-				nextPutAll: JadeitePreferences preferencesFileDefaultContents;
-				flush]]
-			ensure: [file close].
-	^(JadeitePreferencesWorkspace open: path onSession: gciSession)
-		isModified: false;
-		caption: 'Preferences File: ', path!
+	^JadeitePreferencesWorkspace browseJadeitePrefs: gciSession!
 
 browseLiteralReferences
 	^JadePresenter browseLiteralReferences: self gciSession!
