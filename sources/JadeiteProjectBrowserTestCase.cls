@@ -3969,6 +3969,7 @@ test_removeAbortedClass
 				self ensureRowanSample1Loaded]!
 
 test_removeClassFromHierarchy
+	| classReferences |
 	self testsIssue: #issue377 withTitle: '(3.0.53) remove class in hierarchy class view does not work'.
 	self selectRowanSample1Test.
 	self selectHierarchyTab.
@@ -3976,25 +3977,33 @@ test_removeClassFromHierarchy
 		in: self classHierarchyPresenter.
 	TestMessageBox enableJadeiteTestMessageBox.
 	
-	[TestMessageBox plannedResult: #yes.
-	self projectsPresenter removeClass.
+	[TestMessageBox plannedResult: #(#yes #ok) asOrderedCollection.
+	classReferences := self projectsPresenter removeClass.
 	self assertLinearAncestry: #('Object' 'TestAsserter' 'TestCase') in: self classHierarchyPresenter]
-			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+			ensure: 
+				[classReferences view close.
+				TestMessageBox disableJadeiteTestMessageBox]!
 
 test_removeClassFromList
+	| classReferences |
 	self testsIssue: #issue377 withTitle: '(3.0.53) remove class in hierarchy class view does not work'.
+	self testsIssue: #issue725 withTitle: 'Handle removed class references better'.
 	self selectRowanSample1Test.
 	self denyIsNil: (self classListPresenter list
 				detect: [:classService | classService name = 'RowanSample1Test']
 				ifNone: []).
 	TestMessageBox enableJadeiteTestMessageBox.
 	
-	[TestMessageBox plannedResult: #yes.
-	self projectsPresenter removeClass.
+	[TestMessageBox plannedResult: #(#yes #ok) asOrderedCollection.
+	classReferences := self projectsPresenter removeClass.
+	self assert: ('Class References of*' match: classReferences topShell caption).
 	self assertIsNil: (self classListPresenter list
 				detect: [:classService | classService name = 'RowanSample1Test']
 				ifNone: [])]
-			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+			ensure: 
+				[
+				classReferences view close.
+				TestMessageBox disableJadeiteTestMessageBox]!
 
 test_removeClassWithSubclasses
 	self testsIssue: #issue727 withTitle: 'Prevent class removal if subclasses present'.
@@ -4006,7 +4015,7 @@ test_removeClassWithSubclasses
 	
 	[TestMessageBox plannedResult: #ok.
 	self projectsPresenter removeClass.
-	self assertIsNil: TestMessageBox plannedResult. "shows the dialog was raised" 
+	self assertIsNil: TestMessageBox plannedResult.	"shows dialog was raised"
 	self
 		denyIsNil: (self classListPresenter list detect: [:classService | classService name = 'RowanSample1']
 				ifNone: [])]
