@@ -3996,6 +3996,22 @@ test_removeClassFromList
 				ifNone: [])]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+test_removeClassWithSubclasses
+	self testsIssue: #issue727 withTitle: 'Prevent class removal if subclasses present'.
+	self selectRowanSample1Class.
+	TestMessageBox enableJadeiteTestMessageBox.
+	self
+		denyIsNil: (self classListPresenter list detect: [:classService | classService name = 'RowanSample1']
+				ifNone: []).
+	
+	[TestMessageBox plannedResult: #ok.
+	self projectsPresenter removeClass.
+	self assertIsNil: TestMessageBox plannedResult. "shows the dialog was raised" 
+	self
+		denyIsNil: (self classListPresenter list detect: [:classService | classService name = 'RowanSample1']
+				ifNone: [])]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_removeInstVarVariablesStaySorted
 	self selectRowanSample1Test.
 	self projectsPresenter selectVariableTab.
@@ -5674,6 +5690,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeAbortedClass!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassFromHierarchy!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassFromList!public!test class hierarchy!test class list!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassWithSubclasses!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeInstVarVariablesStaySorted!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeMethodOutsideServices!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeMethodWarningString!public!test methods! !

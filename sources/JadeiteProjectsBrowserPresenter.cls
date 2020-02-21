@@ -1634,8 +1634,14 @@ releasedReferencedServices: selectionChangingEvent
 	selectionChangingEvent window presenter selectionOrNil ifNotNil: [:service | service postUpdate]!
 
 removeClass
-	| selection |
+	| selection answeringService |
 	selection := self selectedClass ifNil: [^self].
+	answeringService := RowanAnsweringService new.
+	answeringService
+		command: #classHasSubclasses:;
+		commandArgs: (Array with: selection oop).
+	self issueCommand: (Array with: answeringService).
+	answeringService answer ifTrue: [^MessageBox notify: 'Cannot remove class with subclasses'].
 	(MessageBox confirm: 'Really delete class ' , selection name , '?') ifFalse: [^self].
 	self basicRemoveClass: selection!
 
