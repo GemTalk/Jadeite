@@ -762,6 +762,22 @@ test_allClassesAutoCommitOn
 	self assert: self projectsPresenter allClasses size equals: classCount]
 			ensure: [self setAutoCommit: false]!
 
+test_allSpacesCategory
+	self testsIssue: #issue724 withTitle: 'Add a method category with a name of only spaces, get errors (3.0.93-5)'.
+	self selectRowanSample1Class.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestPrompter plannedResult: '     '.
+	TestMessageBox plannedResult: #ok.
+	self projectsPresenter addMethodCategory.
+	self assertIsNil: TestMessageBox plannedResult.
+	self assert: TestMessageBox lastMessageBox text equals: 'Category name must not be blank'. 
+	self assert: TestPrompter lastPrompt equals: 'New method category?'.
+	TestPrompter plannedResult: 'grubnik'.
+	self projectsPresenter addMethodCategory.
+	self assert: self categoryListPresenter selection equals: 'grubnik']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_autoCommit
 	| methodListPresenter autoCommit |
 	self testsIssue: #issue421 withTitle: 'Need a way to know if you are in autocommit'.
@@ -915,22 +931,6 @@ test_autoDirtyDisplayRemoveMethod
 	self assert: self projectListPresenter selection isDirty.
 	self assert: self packageListPresenter selection name = 'RowanSample1-Core'.
 	self assert: self packageListPresenter selection isDirty!
-
-test_blankCategory
-	self testsIssue: #issue715 withTitle: 'Add category without text gets error'.
-	self selectRowanSample1Class.
-	TestMessageBox enableJadeiteTestMessageBox.
-	
-	[TestPrompter plannedResult: String new.
-	TestMessageBox plannedResult: #ok.
-	self projectsPresenter addMethodCategory.
-	self assertIsNil: TestMessageBox plannedResult.
-	self assert: TestMessageBox lastMessageBox text equals: 'Category name must not be blank'. 
-	self assert: TestPrompter lastPrompt equals: 'New method category?'.
-	TestPrompter plannedResult: 'grubnik'.
-	self projectsPresenter addMethodCategory.
-	self assert: self categoryListPresenter selection equals: 'grubnik']
-			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_blankCategoryRenameInvalid
 	self testsIssue: #issue380
@@ -2341,6 +2341,22 @@ test_dropNonSelectedMethod
 	newMethodService := self methodListPresenter selections first.
 	self assert: newMethodService selector equals: #foo.
 	self deny: newMethodService meta!
+
+test_emptyStringCategory
+	self testsIssue: #issue715 withTitle: 'Add category without text gets error'.
+	self selectRowanSample1Class.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestPrompter plannedResult: String new.
+	TestMessageBox plannedResult: #ok.
+	self projectsPresenter addMethodCategory.
+	self assertIsNil: TestMessageBox plannedResult.
+	self assert: TestMessageBox lastMessageBox text equals: 'Category name must not be blank'.
+	self assert: TestPrompter lastPrompt equals: 'New method category?'.
+	TestPrompter plannedResult: 'grubnik'.
+	self projectsPresenter addMethodCategory.
+	self assert: self categoryListPresenter selection equals: 'grubnik']
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_exitJadeiteInvalidSession
 	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector log |
@@ -5508,13 +5524,13 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_adHocInspectComplexObjectInProjectBrowser!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_adHocInspectComplexObjectInProjectBrowser2!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_allClassesAutoCommitOn!public!test class list!test find!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_allSpacesCategory!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommit!public!test auto commit!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitButtonFailureResetOnAbort!public!test auto commit!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitClickButtonAfterFailure!public!test auto commit!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitFailure!public!test auto commit!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_blankCategory!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_blankCategoryRenameInvalid!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseCategoryMethodsMenuEnablement!public!test categories! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
@@ -5572,6 +5588,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassHierarchy!public!test class hierarchy!test drag drop!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dropMethodOnClassList!public!test class list!test drag drop!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dropNonSelectedMethod!public!test class list!test drag drop!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_emptyStringCategory!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_exitJadeiteInvalidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_exitJadeiteValidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_expansion!public!test class hierarchy!tests! !
