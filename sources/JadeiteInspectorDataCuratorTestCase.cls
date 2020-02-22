@@ -1774,7 +1774,7 @@ def'''
 	inspector := JadeInspector showOn: remoteObject session: session.
 	self assert: (inspector isKindOf: JadeInspector).
 	self assert: inspector documentPresenter value equals: '''abc
-def'''!
+def''' replaceCrLfWithLf!
 
 test_unicodeInspect1
 	| remoteObject |
