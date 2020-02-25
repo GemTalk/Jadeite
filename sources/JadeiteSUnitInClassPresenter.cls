@@ -24,17 +24,9 @@ browseIt
 closeCard
 	^parentPresenter topShell closeCard!
 
-debug  
+debug
 	testClassService ifNil: [^self].
-	methodListPresenter selections do: 
-			[:methodService |
-			
-			[gciSession
-				serverPerform: #debugTestNamed:of:
-				with: methodService selector
-				with: testClassService name]
-					ifCurtailed: [^self].
-			methodService setPassed].
+	self debugTests: methodListPresenter selections.
 	methodListPresenter view invalidate!
 
 doesNotUnderstand: failedMessage

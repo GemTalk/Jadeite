@@ -58,6 +58,12 @@ isAnsweringService
 
 	^true!
 
+isProcess: oop session: session
+	command := #exec:.
+	commandArgs := Array with: '(Object _objectForOop: ' , oop printString , ') isKindOf: GsProcess'.
+	BrowserUpdate current issueCommands: (Array with: self) session: session.
+	^answer = 'true'!
+
 isTranscriptInstalledIn: session
 	command := #transcriptInstalled.
 	BrowserUpdate current issueCommands: (Array with: self) session: session.
@@ -100,6 +106,7 @@ updateSymbols: unused
 !RowanAnsweringService categoriesFor: #flipAutoCommitFor:!commands!public! !
 !RowanAnsweringService categoriesFor: #flipTranscriptIn:!commands!public! !
 !RowanAnsweringService categoriesFor: #isAnsweringService!public!testing! !
+!RowanAnsweringService categoriesFor: #isProcess:session:!commands!public! !
 !RowanAnsweringService categoriesFor: #isTranscriptInstalledIn:!commands!public! !
 !RowanAnsweringService categoriesFor: #needsCommit:!commands!public! !
 !RowanAnsweringService categoriesFor: #setAutoCommit:for:!commands!public! !
