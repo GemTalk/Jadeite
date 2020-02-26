@@ -1471,9 +1471,6 @@ gsProcess: anObject
 	gsProcess := anObject.!
 
 initializeProcess: aProcess message: aString terminateOnClose: aBoolean
-	| answeringService |
-	answeringService := RowanAnsweringService new.
-	(answeringService isProcess: aProcess oop session: gciSession) ifFalse: [^self].
 	self registerWindow: self view handle rootObject: aProcess oopType.
 	gsProcess := aProcess.
 	errorMessagePresenter value: aString.
