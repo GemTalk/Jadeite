@@ -59,6 +59,18 @@ tearDown
 			session library: nil.
 			session := nil]!
 
+test_351Libraries
+	self testsIssue: #issue723 withTitle: 'need 3.5.1 gci libraries included in builds'.
+	self assert: LibGciRpc64_3_5_1 superclass equals: LibGciRpc64_3_5.
+	self assert: LibGciRpc64_3_5_1 displayName equals: '64-bit 3.5.1'.
+	self assert: (File exists: File workingDirectory , 'bin\' , LibGciRpc64_3_5_1 fileNameSearch)!
+
+test_360Libraries
+	self testsIssue: #issue728 withTitle: 'Add 3.6.0 client libs to Jadeite'.
+	self assert: LibGciRpc64_3_6 superclass equals: LibGciRpc64.
+	self assert: LibGciRpc64_3_6 displayName equals: '64-bit 3.6.0 unreleased'.
+	self assert: (File exists: File workingDirectory , 'bin\' , LibGciRpc64_3_6 fileNameSearch)!
+
 test_debugLoginDumpsParameters
 	self testsIssue: #issue681 withTitle: 'Write out login values if "Debug GCI" is enabled'.
 	"logging out. If we need to commit, too bad"
@@ -162,6 +174,8 @@ testsIssue: aSymbol withTitle: anObject! !
 !JadeiteLoginTestCase categoriesFor: #setUp!public!setup teardown! !
 !JadeiteLoginTestCase categoriesFor: #setupToLogin!private!support! !
 !JadeiteLoginTestCase categoriesFor: #tearDown!public!setup teardown! !
+!JadeiteLoginTestCase categoriesFor: #test_351Libraries!public!tests! !
+!JadeiteLoginTestCase categoriesFor: #test_360Libraries!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #test_debugLoginDumpsParameters!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #test_gemTask!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #test_loginButtonEnablement!public!tests! !

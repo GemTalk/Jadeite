@@ -634,36 +634,6 @@ editFind
 editReplace
 	View focus == methodSourcePresenter view ifTrue: [View focus findReplace]!
 
-editSaveClass
-	"a two stage class compilation is used. First stage compiles
-	the class and stores an anonymous method to be used in 
-	stage  two. If a compile error occurs, it is handled nicely. 
-	If a compile error happens during the method recompilation
-	a debugger is raised as not much information is available 
-	without a stack."
-
-	| browserService |
-	browserService := RowanBrowserService new.
-	browserService
-		command: #compileClass:;
-		commandArgs: (Array with: classDefinitionPresenter value).
-	[self issueCommand: (Array with: browserService)] on: Error
-		do: 
-			[:ex |
-			(ex isKindOf: GsCompileError)
-				ifTrue: [self handleClassCompileError: ex]
-				ifFalse: [self statusBarText: 'ERROR: ' , ex messageText].
-			^self].
-	
-	[browserService
-		command: #recompileMethodsAfterClassCompilation;
-		commandArgs: #().
-	self issueCommand: (Array with: browserService)]
-			on: GsCompileError
-			do: [:ex | ^self showMethodRecompilationError: ex].
-	self resetClassDefinitionPane.
-	self updateAfterFindClass: browserService selectedClass.!
-
 editSaveClassComment
 	| classService |
 	classService := self selectedClass ifNil: [^self].
@@ -1948,8 +1918,9 @@ showMethodRecompilationError: ex
 	className := ex additionalArgs second.
 	failedMethodService := RowanMethodService
 				fakeMethodFor: className
-				selector: #methodFailingRecompile
+				selector: (SmalltalkParser parseMethod: source) buildSelector asSymbol
 				source: source.
+	self updateService: failedMethodService. 
 	failedMethodService category: 'other'.
 	browser := JadeiteMethodListBrowser showOnSession: gciSession.
 	browser updateMethodsWithoutTriggeringEvents: failedMethodService.
@@ -2373,7 +2344,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #displayMultipleCategories!displaying!private!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editFind!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editReplace!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #editSaveClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editSaveClassComment!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editSaveMethod!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #expandHierarchyOneLevelAt:!event handlers!public!updating! !
