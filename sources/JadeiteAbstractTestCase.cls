@@ -304,7 +304,7 @@ saveClass: className superclass: superName instVars: instVars package: aString
 	poolDictionaries: #()
 	category: ', aString printString, '
 	options: #()'.
-	self projectsPresenter editSaveClass!
+	^self projectsPresenter editSaveClass!
 
 saveClass: className withInstVars: instVars package: aString
 	self saveClass: className superclass: 'Object' instVars: instVars package: aString!

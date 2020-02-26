@@ -377,6 +377,34 @@ test_compileClassExistingInAnotherPackage
 	self assert: (self classListPresenter selection instVarNames includes: #erbleldy)]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+test_compileClassWithFailingMethods
+	| failedMethodService |
+	self testsIssue: #issue692 withTitle: 'removing instance variables from class definition (3.0.92)'.
+	self selectRowanSample1Class.
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #('abc')
+		package: 'RowanSample1-Core'.
+	
+	[self projectsPresenter selectVariableTab.
+	self assert: (self variableListPresenter list includes: 'abc').
+	self variableListPresenter selections: #('abc').
+	self projectsPresenter addVariableAccessors.
+	methodListBrowser := self
+				saveClass: 'TestClass'
+				superclass: 'Object'
+				instVars: #()
+				package: 'RowanSample1-Core'.
+	failedMethodService := methodListBrowser primaryPresenter methodListPresenter methodListPresenter
+				list first.
+	self assert: ('abc*' match: failedMethodService selector). 
+	self assert: failedMethodService projectName equals: 'RowanSample1'.
+	self assert: failedMethodService packageName equals: 'RowanSample1-Core'.
+	self assert: failedMethodService className equals: 'TestClass'.
+	self assert: self projectsPresenter selectedClass name = 'TestClass']
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
+
 test_compileClassWithMethodWarnings
 	self testsIssue: #issue569
 		withTitle: 'Method Compile on class update should not warn about unused temps (3.0.79)'.
@@ -1038,6 +1066,7 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_compileClassCompilerError!public!test compiling!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_compileClassDirtiesPackageAndProject!public!test compiling! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_compileClassExistingInAnotherPackage!public!test compiling!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_compileClassWithFailingMethods!public!test compiling!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_compileClassWithMethodWarnings!public!test compiling!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_compileErrorDisplay!public!test compiling!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_confirmationDialogDuringCompileClassExistingInAnotherPackage!public!test compiling!tests! !
