@@ -45,6 +45,7 @@ package classNames
 	add: #JadeServer64bit34;
 	add: #JadeServer64bit3x;
 	add: #JadeServerTestCase;
+	add: #LibGciRpc64_3_6;
 	add: #MCAddition;
 	add: #MCDictionaryRepository;
 	add: #MCDirectoryRepository;
@@ -200,6 +201,11 @@ GsApplicationError subclass: #GsHaltError
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Notification subclass: #TerminateProcess
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+LibGciRpc64 subclass: #LibGciRpc64_3_6
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

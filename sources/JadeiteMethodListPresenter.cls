@@ -21,6 +21,11 @@ autoCommit
 autoCommit: boolean
 	autoCommit value: boolean!
 
+browseMethodHistory
+	| methodService |
+	methodService := methodListPresenter selections first.
+	^JadeiteMethodHistoryBrowser showOnClass: methodService classService selector: methodService!
+
 cleanupComparisonBrowser
 	comparisonPresenter
 		beforeTitle: String new;
@@ -139,6 +144,12 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: methodListPresenter selections notEmpty.
 			^true].
+	#browseMethodHistory = command
+		ifTrue: 
+			[| selections | 
+			selections := self methodListPresenter selections.
+			aCommandQuery isEnabled: (selections size = 1 and: [selections first hasMethodHistory]).
+			^true].
 	^super queryCommand: aCommandQuery!
 
 registerPresentersForUpdates
@@ -251,6 +262,7 @@ updateSource
 !JadeiteMethodListPresenter categoriesFor: #additionalAccelerators!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #autoCommit!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #autoCommit:!accessing!public! !
+!JadeiteMethodListPresenter categoriesFor: #browseMethodHistory!menu handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #cleanupComparisonBrowser!private!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #clearAllBreakpoints!menu handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #clearMethodBreakpoints!menu handlers!public! !
@@ -268,7 +280,7 @@ updateSource
 !JadeiteMethodListPresenter categoriesFor: #onCloseRequested:!event handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #postEditSaveMethod!menu handlers!public! !
-!JadeiteMethodListPresenter categoriesFor: #queryCommand:!menu handlers!public! !
+!JadeiteMethodListPresenter categoriesFor: #queryCommand:!menu handlers support!public! !
 !JadeiteMethodListPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteMethodListPresenter categoriesFor: #removeComparisonTab!private!selection!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #search!accessing!public! !

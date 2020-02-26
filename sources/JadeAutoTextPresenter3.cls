@@ -481,6 +481,23 @@ showAutoCompletionList: anOrdedCollection prefixLength: anInteger
 
 	^view showAutoCompletionList: anOrdedCollection prefixLength: anInteger!
 
+showCompileError: anArray
+
+	| result string count textView selectionRange offset |
+	textView := self view.
+	offset := anArray at: 2.
+	result := anArray at: 3.
+	selectionRange := textView selectionRange.
+	string := textView value.
+	string := string copyFrom: selectionRange start to: selectionRange stop.
+	string := string replaceCrLfWithLf copyFrom: 1 to: offset - 1.
+	count := (string select: [:each | each = Character lf]) size.
+	offset := offset + count.
+	textView
+		caretPosition: selectionRange start + offset - 1;
+		replaceSelection: result;
+		selectionStart: textView caretPosition - result size length: result size.!
+
 updateLastParsedResult
    "The receiver get the temporaries of the current method being edited"
 
@@ -550,6 +567,7 @@ wordRightSideIsEmpty: anObject
 !JadeAutoTextPresenter3 categoriesFor: #registry!autocompletion!public! !
 !JadeAutoTextPresenter3 categoriesFor: #replaceKeyboardShortcut!keyboard shortcut!public! !
 !JadeAutoTextPresenter3 categoriesFor: #showAutoCompletionList:prefixLength:!public! !
+!JadeAutoTextPresenter3 categoriesFor: #showCompileError:!private! !
 !JadeAutoTextPresenter3 categoriesFor: #updateLastParsedResult!autocompletion list!public! !
 !JadeAutoTextPresenter3 categoriesFor: #wordRightSideIsEmpty!accessing!private! !
 !JadeAutoTextPresenter3 categoriesFor: #wordRightSideIsEmpty:!accessing!private! !

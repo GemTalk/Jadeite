@@ -1315,11 +1315,17 @@ serverPerform: aSymbol withArguments: anArray
 	^answer!
 
 terminate: anOopType
-	[self serverPerform: #terminate: with: anOopType] on: Error
-		do: 
-			[:ex |
-			"ignore termination errors"
-			].
+	
+	[| processService |
+	processService := RowanDebuggerService new
+				command: #terminateProcess:;
+				commandArgs: (Array with: anOopType value).
+	BrowserUpdate current issueCommand: processService session: self]
+			on: Error
+			do: 
+				[:ex |
+				"ignore termination errors"
+				].
 	TerminateProcess signal!
 
 titleBarFor: windowName
@@ -1507,7 +1513,7 @@ initializeProcess: aProcess message: aString terminateOnClose: aBoolean
 	terminateOnClose := aBoolean.
 	[self getProcessList] on: GsError
 		do: 
-			[:ex | 
+			[:ex |
 			ex debugger: self.
 			ex pass].
 	self class debuggers at: gsProcess oopType asInteger put: self.
@@ -1619,8 +1625,11 @@ doCopy
 onViewClosed
 	BrowserUpdate current
 		logComment: 'Releasing notifier window (JadeErrorShell) {' , self identityHash printString , '}'.
-	gsError gciSession isValidSession
-		ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: gsError gciSession].
+	gsError
+		ifNotNil: 
+			[:err |
+			err gciSession isValidSession
+				ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: gsError gciSession]].
 	super onViewClosed!
 
 onViewOpened

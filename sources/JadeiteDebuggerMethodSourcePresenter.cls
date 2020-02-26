@@ -18,7 +18,7 @@ executeSelectionOrLine: contextObject
 	^self parentPresenter executeSelectionOrLine: contextObject!
 
 inspectorContextObject
-	^self parentPresenter contextObject value!
+	^self parentPresenter contextObject!
 
 jadeInspect
 	| inspector |
