@@ -520,6 +520,15 @@ test_findMethodDisabled
 				view: self classListPresenter view.
 	self assert: commandQuery isEnabled.!
 
+test_inspectShowsCompileError
+	self testsIssue: #issue730 withTitle: 'Inspect uncompilable code in project browser - get walkback'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self methodSourcePresenter value: '''abc'.
+	self methodSourcePresenter view selectAll.
+	self projectsPresenter jadeInspect.
+	self assert: self methodSourcePresenter value equals: '''abcmissing end of literal mark (prime)'!
+
 test_modifiedSourceShouldNotChange
 	| source originalSource |
 	self testsIssue: #issue400
@@ -1038,6 +1047,7 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_doubleClickIncludesColon!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_enablementOfCardTabsWithSUnitTabSelected!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_findMethodDisabled!public!test find!test menus!test sunit tab!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_inspectShowsCompileError!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_modifiedSourceShouldNotChange!public!test two browsers!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_modifiedSourceShouldNotChangeMethodList!public!test two browsers!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_openNewBrowserTabWhileSUnitTabSelected!public!test sunit tab!tests! !
