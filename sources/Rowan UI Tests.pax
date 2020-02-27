@@ -98,6 +98,7 @@ package setPrerequisites: (IdentitySet new
 	add: 'Jade Inspector';
 	add: 'Jade Login';
 	add: 'Jade Test Browser';
+	add: 'Jade UI';
 	add: 'Jade UI Base';
 	add: 'Rowan STON';
 	add: 'Rowan UI Base';

@@ -751,6 +751,14 @@ testContextMenu - counter = ' , counter printString]
 				ex return].
 	self assert: error isNil!
 
+test_copyNotifierStack
+	| notifierShell copiedStack |
+	[session executeString: '1 zork'] on: Error
+		do: [:ex | notifierShell := JadeErrorShell new gsError: ex].
+	copiedStack := notifierShell doCopy.
+	self assert: ('a MessageNotUnderstood*' match: copiedStack).
+	self assert: Clipboard current getText equals: copiedStack!
+
 test_debugCodeWithLeadingLineReturns
 	| workspace |
 	self testsIssue: #issue531 withTitle: 'debug-it on ad hoc expression not working'.
@@ -2119,6 +2127,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlockFailsWhenNoHomeMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlockSameSelectorOnStack!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_contextMenu!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_copyNotifierStack!public!test notifier! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debugCodeWithLeadingLineReturns!public! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debugCodeWithLeadingLineReturnsLF!public! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debugCodeWithLeadingTab!public! !

@@ -1577,14 +1577,17 @@ resource_Default_view
 !JadeErrorShell methodsFor!
 
 doCopy
-	| stream |
+	| stream processService  |
 	Cursor wait showWhile: 
 			[stream := WriteStream on: String new.
+			processService := RowanProcessService new oop: gsError gsProcess oop.
+			BrowserUpdate current updateService: processService session: gsError gciSession. 
 			JadeiteDebugger
-				dumpStackFor: gsError gsProcess
+				dumpStackFor: processService
 				errorMessage: gsError messageText
 				on: stream.
-			stream contents copyToClipboard]!
+			stream contents copyToClipboard].
+	^stream contents "for testing" !
 
 onViewClosed
 	BrowserUpdate current
