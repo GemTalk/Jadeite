@@ -885,6 +885,27 @@ test_sunitOnlyRunTestMethods
 			[self selectMethodNamed: #nonTestMethod.
 			self projectsPresenter removeMethods: self classListPresenter selections]!
 
+test_sunitResetTestResultOnClassChange
+	"reset test results when classes changed"
+
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self projectsPresenter selectClassNamed: 'RowanDictionaryServiceTest'.
+	self projectsPresenter selectSUnitTab.
+	self projectsPresenter sunitPresenter methodListPresenter list
+		do: [:methodService | self assert: methodService testResult isNil].
+	self projectsPresenter runAll.
+	self projectsPresenter sunitPresenter methodListPresenter list
+		do: [:methodService | self assert: methodService testResult equals: 'passed'].
+	self projectsPresenter selectClassNamed: 'RowanMethodServiceTest'.
+	self projectsPresenter selectSUnitTab.
+	self projectsPresenter sunitPresenter methodListPresenter list
+		do: [:methodService | self assert: methodService testResult isNil].
+	self projectsPresenter selectClassNamed: 'RowanDictionaryServiceTest'.
+	self projectsPresenter selectSUnitTab.
+	self projectsPresenter sunitPresenter methodListPresenter list
+		do: [:methodService | self assert: methodService testResult isNil]!
+
 test_sunitRunAllDoesNotLoseSelections
 	self testsIssue: #issue591
 		withTitle: 'Project Brower run-all menu item leaves all tests selected (3.0.82)'.
@@ -1128,6 +1149,7 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitCtrlB!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitInheritedTests!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitOnlyRunTestMethods!public!test sunit tab! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitResetTestResultOnClassChange!public!test sunit tab! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitRunAllDoesNotLoseSelections!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitRunAndMeasureTime!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitRunSelected!public!test sunit tab!tests! !
