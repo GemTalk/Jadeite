@@ -527,7 +527,10 @@ test_inspectShowsCompileError
 	self methodSourcePresenter value: '''abc'.
 	self methodSourcePresenter view selectAll.
 	self projectsPresenter jadeInspect.
-	self assert: self methodSourcePresenter value equals: '''abcmissing end of literal mark (prime)'!
+	self assert: self methodSourcePresenter value equals: '''abcmissing end of literal mark (prime)'.
+	self methodSourcePresenter view isModified: false. 
+	self projectsPresenter updateMethodSource
+	!
 
 test_modifiedSourceShouldNotChange
 	| source originalSource |
