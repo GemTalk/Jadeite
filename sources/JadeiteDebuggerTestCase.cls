@@ -753,7 +753,7 @@ testContextMenu - counter = ' , counter printString]
 
 test_copyNotifierStack
 	| notifierShell copiedStack |
-	[session executeString: '1 zork'] on: Error
+	[RowanAnsweringService new exec: '1 zork' in: session] on: Error
 		do: [:ex | notifierShell := JadeErrorShell new gsError: ex].
 	copiedStack := notifierShell doCopy.
 	self assert: ('a MessageNotUnderstood*' match: copiedStack).
