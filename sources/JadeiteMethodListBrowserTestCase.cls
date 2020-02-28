@@ -1286,7 +1286,21 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
 				self removeMethods: methodListPresenter model asBag in: 'RowanSample1'.
-				self removeMethods: methodListPresenter model asBag in: 'RowanSample1Test']! !
+				self removeMethods: methodListPresenter model asBag in: 'RowanSample1Test']!
+
+test_wildCardSearch
+	"a little faked up to avoid messy dialogs and returns within the method. 
+	See JadePresenter class>>promptForMatchingSymbolsIn: session actionBlock: aBlock promptCaption: caption searchType: prompt"
+
+	| symbols cachedSymbols |
+	self testsIssue: #issue732 withTitle: 'Wildcard method search broken if autcomplete off (3.0.93-6)'.
+	cachedSymbols := JadeiteSearch allSelectorSymbols.
+	
+	[JadeiteSearch allSelectorSymbols: OrderedCollection new.	"forces code down the 'fix' path"
+	symbols := JadePresenter selectorsFrom: 'siz*' session: session.
+	symbols do: [:symbol | self assert: (symbol match: symbol)].
+	self assert: JadeiteSearch allSelectorSymbols equals: OrderedCollection new]
+			ensure: [JadeiteSearch allSelectorSymbols: cachedSymbols]! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #browseLiteralTest:!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListMethodListPresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListSelector!private!support! !
@@ -1364,4 +1378,5 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindow!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindowStayOnMethod!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_wildCardSearch!public!test browse methods! !
 

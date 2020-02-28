@@ -186,10 +186,12 @@ on: view session: session
 
 selectorsFrom: partialSelector session: session trailingWildcard: trailingWildCard
 	| symbol |
-	self allSelectorSymbols isEmpty ifTrue: [self initializeSelectorsIn: session].
-	symbol := partialSelector , (trailingWildCard ifTrue: ['*'] ifFalse: [String new]).
-	symbol := symbol asSymbol asLowercase.
-	^self allSelectorSymbols select: [:selector | symbol match: selector asLowercase]!
+	self allSelectorSymbols isEmpty
+		ifTrue: [^RowanAnsweringService new symbolsMatching: partialSelector session: session]
+		ifFalse: 
+			[symbol := partialSelector , (trailingWildCard ifTrue: ['*'] ifFalse: [String new]).
+			symbol := symbol asSymbol asLowercase.
+			^self allSelectorSymbols select: [:selector | symbol match: selector asLowercase]]!
 
 updateAutocompleteSymbolsIn: session
 	| service |

@@ -482,6 +482,7 @@ package methodNames
 	add: 'JadePresenter class' -> #promptFor:withCaption:;
 	add: 'JadePresenter class' -> #promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:;
 	add: 'JadePresenter class' -> #runMethodTests:in:;
+	add: 'JadePresenter class' -> #selectorsFrom:session:;
 	add: 'JadeServer class' -> #gsString;
 	add: 'JadeServer64bit32 class' -> #gsClassDefinitionStringFor:;
 	add: 'JadeSessionManager class' -> #getUrl;
@@ -2872,10 +2873,7 @@ promptForMatchingSymbolsIn: session actionBlock: aBlock promptCaption: caption s
 	(selector := self promptFor: prompt withCaption: caption) isNil ifTrue: [^self].
 	selector := selector copyWithout: Character space.
 	(selector includes: $*) ifFalse: [^aBlock value: selector].
-	symbols := JadeiteSearch
-				selectorsFrom: selector
-				session: session
-				trailingWildcard: false.
+	symbols := self selectorsFrom: selector session: session.
 	(selector := ChoicePrompter choices: symbols) isNil ifTrue: [^self].
 	^aBlock value: selector!
 
@@ -2886,7 +2884,13 @@ runMethodTests: methodServices in: session
 		command: #runMethodTests:;
 		commandArgs: (Array with: methodServices).
 	answeringService := (self issueCommands: (Array with: answeringService) session: session) first.
-	^answeringService answer! !
+	^answeringService answer!
+
+selectorsFrom: selector session: session
+	^JadeiteSearch
+		selectorsFrom: selector
+		session: session
+		trailingWildcard: false! !
 !JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
 !JadePresenter class categoriesFor: #basicBrowseClassReferences:session:!browsing!browsing support!public! !
 !JadePresenter class categoriesFor: #basicBrowseMethod:presenter:!browsing!public! !
@@ -2920,6 +2924,7 @@ runMethodTests: methodServices in: session
 !JadePresenter class categoriesFor: #promptFor:withCaption:!browsing support!private! !
 !JadePresenter class categoriesFor: #promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:!browsing support!private! !
 !JadePresenter class categoriesFor: #runMethodTests:in:!public! !
+!JadePresenter class categoriesFor: #selectorsFrom:session:!browsing support!private! !
 
 !JadePresenterA methodsFor!
 

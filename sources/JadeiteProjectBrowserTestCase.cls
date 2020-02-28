@@ -4589,7 +4589,7 @@ test_showMethodsFailingClassRecompilation
 	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list size
 		equals: 1.
 	self assert: failService className = 'FailCompile'.
-	self assert: failService selector = #methodFailingRecompile.
+	self assert: ('aaa*' match: failService selector).
 	self assert: failService category = 'other'.
 	self assert: ('*aaa*aaa*' match: failService source)]
 			ensure: 

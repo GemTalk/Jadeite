@@ -97,6 +97,7 @@ package setPrerequisites: #(
 	'Jade Inspector'
 	'Jade Login'
 	'Jade Test Browser'
+	'Jade UI'
 	'Jade UI Base'
 	'Rowan UI Base'
 	'..\Core\Contributions\Solutions Software\SSW EditableListView'

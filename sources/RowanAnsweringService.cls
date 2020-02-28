@@ -91,6 +91,12 @@ symbolExists: aSymbol session: session
 	BrowserUpdate current issueCommands: (Array with: self) session: session.
 	^answer!
 
+symbolsMatching: string session: session
+	command := #symbolsMatching:.
+	commandArgs := Array with: string.
+	BrowserUpdate current issueCommands: (Array with: self) session: session.
+	^answer!
+
 updateSymbols: unused
 	updateType = #updateSymbols: ifFalse: [^self].
 	JadeiteSearch allClassNames addAll: answer first.
@@ -111,5 +117,6 @@ updateSymbols: unused
 !RowanAnsweringService categoriesFor: #setAutoCommit:for:!commands!public! !
 !RowanAnsweringService categoriesFor: #setBreakpointsEnabled:session:!commands!public! !
 !RowanAnsweringService categoriesFor: #symbolExists:session:!commands!public!testing! !
+!RowanAnsweringService categoriesFor: #symbolsMatching:session:!commands!public!testing! !
 !RowanAnsweringService categoriesFor: #updateSymbols:!public!updating! !
 
