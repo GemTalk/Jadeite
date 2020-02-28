@@ -1016,6 +1016,23 @@ test_sunitBrowserUpdates
 		equals: #test2.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult equals: 'passed'!
 
+test_sunitResetTestResultOnClassChange
+	"reset test results when classes changed"
+
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanDictionaryServiceTest' in: self sunitPresenter classListPresenter.
+	self sunitPresenter methodListPresenter list
+		do: [:methodService | self assert: methodService testResult isNil].
+	self sunitPresenter runAll.
+	self sunitPresenter methodListPresenter list
+		do: [:methodService | self assert: methodService testResult = 'passed'].
+	self selectServiceNamed: 'RowanMethodServiceTest' in: self sunitPresenter classListPresenter.
+	self sunitPresenter methodListPresenter list
+		do: [:methodService | self assert: methodService testResult isNil].
+	self selectServiceNamed: 'RowanDictionaryServiceTest' in: self sunitPresenter classListPresenter.
+	self sunitPresenter methodListPresenter list
+		do: [:methodService | self assert: methodService testResult isNil]!
+
 test_sunitTabPassingDebugTestShowsResult
 	| methodService |
 	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
@@ -1163,6 +1180,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserUpdateRightClassInHierarchy!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserUpdateRightClassInHierarchy2!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserUpdates!public!test updates from other browsers! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitResetTestResultOnClassChange!public!test sunit tab! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitTabPassingDebugTestShowsResult!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitTabUpdates!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_testCountBar!public!tests! !

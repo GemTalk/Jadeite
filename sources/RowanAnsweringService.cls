@@ -39,6 +39,11 @@ canAccessServiceClasses: session
 	BrowserUpdate current issueCommands: (Array with: self) session: session.
 	^answer!
 
+exec: string in: session
+	command := #exec:.
+	commandArgs := Array with: string.
+	BrowserUpdate current issueCommands: (Array with: self) session: session!
+
 expressionSelector: string session: session
 	command := #expressionSelector:.
 	commandArgs := Array with: string.
@@ -96,6 +101,7 @@ updateSymbols: unused
 !RowanAnsweringService categoriesFor: #breakPointsAreEnabled:!commands!public! !
 !RowanAnsweringService categoriesFor: #breakpointSettingChanged:!public!updating! !
 !RowanAnsweringService categoriesFor: #canAccessServiceClasses:!commands!public! !
+!RowanAnsweringService categoriesFor: #exec:in:!commands!public! !
 !RowanAnsweringService categoriesFor: #expressionSelector:session:!commands!public! !
 !RowanAnsweringService categoriesFor: #flipAutoCommitFor:!commands!public! !
 !RowanAnsweringService categoriesFor: #flipTranscriptIn:!commands!public! !

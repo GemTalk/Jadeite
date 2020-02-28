@@ -554,7 +554,10 @@ test_inspectShowsCompileError
 	self methodSourcePresenter value: '''abc'.
 	self methodSourcePresenter view selectAll.
 	self projectsPresenter jadeInspect.
-	self assert: self methodSourcePresenter value equals: '''abcmissing end of literal mark (prime)'!
+	self assert: self methodSourcePresenter value equals: '''abcmissing end of literal mark (prime)'.
+	self methodSourcePresenter view isModified: false. 
+	self projectsPresenter updateMethodSource
+	!
 
 test_modifiedSourceShouldNotChange
 	| source originalSource |
@@ -908,6 +911,27 @@ test_sunitOnlyRunTestMethods
 			[self selectMethodNamed: #nonTestMethod.
 			self projectsPresenter removeMethods: self classListPresenter selections]!
 
+test_sunitResetTestResultOnClassChange
+	"reset test results when classes changed"
+
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self projectsPresenter selectClassNamed: 'RowanDictionaryServiceTest'.
+	self projectsPresenter selectSUnitTab.
+	self projectsPresenter sunitPresenter methodListPresenter list
+		do: [:methodService | self assert: methodService testResult isNil].
+	self projectsPresenter runAll.
+	self projectsPresenter sunitPresenter methodListPresenter list
+		do: [:methodService | self assert: methodService testResult equals: 'passed'].
+	self projectsPresenter selectClassNamed: 'RowanMethodServiceTest'.
+	self projectsPresenter selectSUnitTab.
+	self projectsPresenter sunitPresenter methodListPresenter list
+		do: [:methodService | self assert: methodService testResult isNil].
+	self projectsPresenter selectClassNamed: 'RowanDictionaryServiceTest'.
+	self projectsPresenter selectSUnitTab.
+	self projectsPresenter sunitPresenter methodListPresenter list
+		do: [:methodService | self assert: methodService testResult isNil]!
+
 test_sunitRunAllDoesNotLoseSelections
 	self testsIssue: #issue591
 		withTitle: 'Project Brower run-all menu item leaves all tests selected (3.0.82)'.
@@ -962,6 +986,64 @@ test_sunitRunSelected
 	runSelectedItem commandDescription performAgainst: self projectsPresenter.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first testResult equals: 'passed'.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first selector equals: #test2. !
+
+test_sunitRunTestAsSelectedSubclass
+	| runSelectedItem selection errorOccurred |
+	self testsIssue: #issue731
+		withTitle: 'On error when Sunit debug of inherited test, walkback displays class confusion (new in 3.0.93-6)'.
+	self selectRowanSample1Test.
+	
+	[self
+		saveClass: 'LisaTest'
+		superclass: 'TestCase'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	self
+		saveMethod: 'test_error
+	self zork.
+	self assert: false'
+		in: 'LisaTest'
+		category: 'tests'.
+	self
+		saveMethod: 'test_okay
+	self zork.
+	self assert: true'
+		in: 'LisaTest'
+		category: 'tests'.
+	self
+		saveMethod: 'zork
+	^self subclassResponsibility: ''not supposed to run this kind of zork'''
+		in: 'LisaTest'
+		category: 'other'.
+	self
+		saveClass: 'LisaSubTest'
+		superclass: 'LisaTest'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	self
+		saveMethod: 'zork
+	^true'
+		in: 'LisaTest'
+		category: 'other'.
+	self selectSUnitTab.
+	runSelectedItem := self projectsPresenter sunitPresenter methodListPresenter view queryContextMenu
+				items detect: [:menuItem | menuItem command == #debug].
+	selection := self projectsPresenter sunitPresenter methodListPresenter list
+				detect: [:methodService | methodService selector = #test_error].
+	self projectsPresenter sunitPresenter methodListPresenter selections: (Array with: selection).
+	self projectsPresenter sunitPresenter reset.
+	errorOccurred := false.
+	[runSelectedItem commandDescription performAgainst: self projectsPresenter sunitPresenter] on: Error
+		do: 
+			[:ex |
+			errorOccurred := true.
+			self assert: ex description equals: 'a TestFailure occurred (error 2702), Assertion failed'].
+	self assert: errorOccurred]
+			ensure: 
+				[self selectServiceNamed: 'LisaSubTest' in: self classListPresenter.
+				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
+				self selectServiceNamed: 'LisaTest' in: self classListPresenter.
+				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_sunitTabCanRefresh
 	self testsIssue: #issue279 withTitle: 'Sunit browser refresh, auto or manual'.
@@ -1094,9 +1176,11 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitCtrlB!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitInheritedTests!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitOnlyRunTestMethods!public!test sunit tab! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitResetTestResultOnClassChange!public!test sunit tab! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitRunAllDoesNotLoseSelections!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitRunAndMeasureTime!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitRunSelected!public!test sunit tab!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitRunTestAsSelectedSubclass!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitTabCanRefresh!public!test menus!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sUnitTabHandlesShortSelector!public!test class hierarchy!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sUnitTabRefresh!public!test menus!test sunit tab!tests! !

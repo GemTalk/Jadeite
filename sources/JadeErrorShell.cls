@@ -39,6 +39,12 @@ doTerminate
 	self return: #terminate.
 !
 
+gsError
+	^gsError!
+
+gsError: anObject
+	gsError := anObject!
+
 queryCommand: query
 
 	(query commandSymbol = #'doResume') ifTrue: [
@@ -64,6 +70,8 @@ textEntry
 !JadeErrorShell categoriesFor: #doDebug!public! !
 !JadeErrorShell categoriesFor: #doResume!public! !
 !JadeErrorShell categoriesFor: #doTerminate!public! !
+!JadeErrorShell categoriesFor: #gsError!accessing!private! !
+!JadeErrorShell categoriesFor: #gsError:!accessing!private! !
 !JadeErrorShell categoriesFor: #queryCommand:!public! !
 !JadeErrorShell categoriesFor: #return:!public! !
 !JadeErrorShell categoriesFor: #textEntry!public! !

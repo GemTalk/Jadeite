@@ -28,6 +28,10 @@ oop
 
 	^oop!
 
+oop: oopInteger
+
+	oop := oopInteger!
+
 oopType
 
 	^OopType64 fromInteger: oop!
@@ -47,6 +51,7 @@ stack
 !RowanProcessService categoriesFor: #gsProcessForSession:!public! !
 !RowanProcessService categoriesFor: #isUpdatableService!public!testing! !
 !RowanProcessService categoriesFor: #oop!public! !
+!RowanProcessService categoriesFor: #oop:!public! !
 !RowanProcessService categoriesFor: #oopType!public! !
 !RowanProcessService categoriesFor: #printOn:!printing!public! !
 !RowanProcessService categoriesFor: #stack!public! !

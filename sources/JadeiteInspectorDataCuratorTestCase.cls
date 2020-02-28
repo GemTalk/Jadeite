@@ -1123,11 +1123,7 @@ test_interactionInspect
 	| answeringService inspectorCount |
 	self testsIssue: #issue303 withTitle: 'Need to handle confirm:'.
 	inspectorCount := JadeiteInspector allInstances size.
-	answeringService := RowanAnsweringService new.
-	answeringService
-		command: #exec:;
-		commandArgs: (Array with: 'UserGlobals inspect. nil').
-	self issueCommand: answeringService.
+	answeringService := RowanAnsweringService new exec: 'UserGlobals inspect. nil' in: session.
 	self assert: inspectorCount + 1 equals: JadeiteInspector allInstances size.
 	"test that at least one is inspecting UserGlobals.
 	Note - Opening a browser on a Test case will create an instance of JadeiteInspector
