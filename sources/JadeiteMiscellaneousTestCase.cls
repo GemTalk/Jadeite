@@ -48,12 +48,17 @@ test_adHocExecute
 test_autoCommitDoesNotMakeRoundTripWhenOpeningBrowser
 	"Not a very good test but the last service logged should not be an #updateAutoCommit command which was the bug"
 
-	projectsBrowser
+	| loggingState |
+	loggingState := BrowserUpdate current isLogging.
+	BrowserUpdate current isLogging: true.
+	
+	[projectsBrowser
 		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	
 	[BrowserUpdate current loggingService services
-		do: [:service | self deny: service updateType includes: #updateAutoCommit]]
-			ensure: [self destroy: projectsBrowser]!
+		do: [:service | self deny: (service updateType includes: #updateAutoCommit)]]
+			ensure: [self destroy: projectsBrowser]]
+			ensure: [BrowserUpdate current isLogging: loggingState]!
 
 test_autoCommitInAdHocDisplay
 	| workspace |

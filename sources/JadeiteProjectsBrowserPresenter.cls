@@ -2036,14 +2036,6 @@ updateAndSelectA: aView
 	aView notNil ifTrue: [aView ensureVisible].
 !
 
-updateAutoCommit
-	| autoCommitButtonView |
-	autoCommitButtonView := self topShell view viewNamed: 'autoCommitButton'.
-	autoCommit value == #failed ifTrue: [^autoCommitButtonView backcolor: Color red].
-	autoCommit value
-		ifTrue: [autoCommitButtonView backcolor: Color green]
-		ifFalse: [autoCommitButtonView backcolor: Color default]!
-
 updateClasses
 	self updateServices: packageListPresenter selections.!
 
@@ -2491,7 +2483,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #update:afterStonReplication:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateAfterFindClass:!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateAndSelectA:!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateAutoCommit!public!register presenters!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClasses!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClassInfo!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClassMenu:!event handlers!public!updating! !
