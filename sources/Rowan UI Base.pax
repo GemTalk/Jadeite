@@ -1959,18 +1959,13 @@ testClassService
 	^testClassService!
 
 testClassService: classService
-	| visibleTests |
 	classService ifNil: [^self].
 	testClassService := classService.
 	textResultPresenter value: String new.
 	methodListPresenter view invalidate.
 	textResultPresenter view backcolor: Color face3d.
-	visibleTests := classService visibleTests collect: 
-					[:methodService |
-					methodService copy
-						className: classService name;
-						testResult: nil].
-	classService updateListIn: methodListPresenter from: visibleTests! !
+	classService updateListIn: methodListPresenter from: classService visibleTests.
+	methodListPresenter list do:[:methodService | methodService testResult: nil]! !
 !JadeiteSUnitInClassPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteSUnitInClassPresenter categoriesFor: #testClassService!accessing!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #testClassService:!accessing!public! !

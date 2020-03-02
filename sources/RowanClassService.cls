@@ -324,6 +324,7 @@ postReload
 	oop := nil!
 
 postUpdate
+	super postUpdate.
 	hierarchyServices := nil.
 	methods := Array new.
 	renamedName := nil!

@@ -2091,11 +2091,12 @@ updateClassInfo
 	classDefinitionPresenter value: service template.
 	self resetClassDefinitionPane.
 	self setTestClass: service.
-	classDefinitionPresenter ensureVisible.
+	self isSunitTabSelected ifFalse: [classDefinitionPresenter ensureVisible].
 	self sundryCleanup.
 	definedClassPackageText view text: 'Defined Package: ' , self selectedClass definedPackageName.
 	self updateClassMenu: nil.
-	self updateSUnitTab.!
+	self updateSUnitTab.
+!
 
 updateClassMenu: menu
 	| gotoPackageItem gotoDictionaryItem |

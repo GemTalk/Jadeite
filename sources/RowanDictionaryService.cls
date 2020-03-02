@@ -79,6 +79,7 @@ isDictionaryService
 	^true!
 
 postUpdate
+	super postUpdate.
 	hierarchyServices
 		ifNotNil: 
 			[hierarchyServices keysAndValuesDo: 
