@@ -794,10 +794,12 @@ test_selectClassDoesNotLoseTestResults
 	self selectServiceNamed: 'RowanSample1' in: secondBrowser currentCard projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Tests' in: secondBrowser currentCard packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: secondBrowser currentCard classListPresenter.
+	self testsIssue: #issue736 withTitle: 'Test status icons retained on focus change (3.0.93-8) #736'.
+	"behavior changed to clear results when sunit tab changed"
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult
-		equals: 'passed'.
+		equals: nil.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list second testResult
-		equals: 'passed'!
+		equals: nil!
 
 test_selectInProjectBrowserDoesNotUpdateSunitBrowser
 	| sunitDisplayedMethodCount sunitDisplaySelectors |
