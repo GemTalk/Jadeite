@@ -1967,8 +1967,9 @@ testClassService: classService
 	textResultPresenter view backcolor: Color face3d.
 	visibleTests := classService visibleTests collect: 
 					[:methodService |
-					methodService copy className: classService name.
-					methodService testResult: nil].
+					methodService copy
+						className: classService name;
+						testResult: nil].
 	classService updateListIn: methodListPresenter from: visibleTests! !
 !JadeiteSUnitInClassPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteSUnitInClassPresenter categoriesFor: #testClassService!accessing!public! !

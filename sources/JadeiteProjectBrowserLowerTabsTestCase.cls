@@ -997,7 +997,7 @@ test_sunitRunTestAsSelectedSubclass
 	self
 		saveMethod: 'zork
 	^true'
-		in: 'LisaTest'
+		in: 'LisaSubTest'
 		category: 'other'.
 	self selectSUnitTab.
 	runSelectedItem := self projectsPresenter sunitPresenter methodListPresenter view queryContextMenu
@@ -1005,7 +1005,7 @@ test_sunitRunTestAsSelectedSubclass
 	selection := self projectsPresenter sunitPresenter methodListPresenter list
 				detect: [:methodService | methodService selector = #test_error].
 	self projectsPresenter sunitPresenter methodListPresenter selections: (Array with: selection).
-	self projectsPresenter sunitPresenter reset.
+	self projectsPresenter sunitPresenter reset.	
 	errorOccurred := false.
 	[runSelectedItem commandDescription performAgainst: self projectsPresenter sunitPresenter] on: Error
 		do: 
