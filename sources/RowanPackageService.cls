@@ -114,6 +114,7 @@ packageUpdate: presenter
 	presenter view invalidate!
 
 postUpdate
+	super postUpdate.
 	classes ifNotNil: [classes do: [:service | service postUpdate]].
 	classes := Array new!
 

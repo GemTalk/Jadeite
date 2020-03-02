@@ -34,7 +34,7 @@ debugTestMethodServices: methodServices className: className
 	^jadeResult!
 
 debugTests: methodServices
-	^self debugTestMethodServices: methodServices className: nil!
+	^self subclassResponsibility!
 
 editSelectAll
 	methodListPresenter selections: methodListPresenter list. !

@@ -169,6 +169,7 @@ packages
 	^packages!
 
 postUpdate
+	super postUpdate.
 	packages ifNotNil: [packages do: [:service | service postUpdate]].
 	packages := Array new!
 

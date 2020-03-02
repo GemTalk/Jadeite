@@ -85,6 +85,7 @@ name
 	^nil!
 
 postUpdate
+	super postUpdate.
 	projects ifNotNil: [projects do: [:service | service postUpdate]].
 	dictionaries ifNotNil: [dictionaries do: [:service | service postUpdate]].
 	projects := Array new.

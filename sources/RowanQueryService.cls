@@ -13,18 +13,12 @@ RowanQueryService comment: ''!
 answer
 	^queryResults	!
 
-postUpdate
-	"don't release the services until the gui has used them"
-
-	!
-
 queryResults
 	^queryResults!
 
 queryResults: anObject
 	queryResults := anObject! !
 !RowanQueryService categoriesFor: #answer!accessing!private! !
-!RowanQueryService categoriesFor: #postUpdate!Init / Release!public! !
 !RowanQueryService categoriesFor: #queryResults!accessing!private! !
 !RowanQueryService categoriesFor: #queryResults:!accessing!private! !
 

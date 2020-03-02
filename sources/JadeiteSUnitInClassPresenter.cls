@@ -35,6 +35,9 @@ debug
 	self debugTests: methodListPresenter selections.
 	methodListPresenter view invalidate!
 
+debugTests: methodServices
+	^self debugTestMethodServices: methodServices className: self selectedClass name!
+
 doesNotUnderstand: failedMessage
 	"a little dangerous but this is the sunit tab in the browser. The parentPresenter
 	performs most of the menu operations for the browser's toolbar. A true dnu
@@ -153,6 +156,9 @@ runMethodTests
 runSelected
 	self runTests: methodListPresenter selections in: testClassService name!
 
+runTests: methodServices
+	^self runTestMethodServices: methodServices className: self selectedClass name!
+
 selectedClass
 	^self parentPresenter selectedClass! !
 !JadeiteSUnitInClassPresenter categoriesFor: #addSystemBrowser!menu handlers support!public! !
@@ -161,6 +167,7 @@ selectedClass
 !JadeiteSUnitInClassPresenter categoriesFor: #browseIt!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #closeCard!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #debug!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #debugTests:!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #doesNotUnderstand:!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #editFind!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #editReplace!menu handlers support!public! !
@@ -185,6 +192,7 @@ selectedClass
 !JadeiteSUnitInClassPresenter categoriesFor: #runAndMesureTime!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #runMethodTests!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #runSelected!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #runTests:!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #selectedClass!accessing!public! !
 
 !JadeiteSUnitInClassPresenter class methodsFor!
