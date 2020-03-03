@@ -869,6 +869,7 @@ test_autoCommitClickButtonAfterFailure
 				self commitTransaction]!
 
 test_autoCommitFailure
+	| transactionConflictInspector |
 	self testsIssue: #issue462
 		withTitle: '(3.0.66) silent commit conflict/failure when auto commit is enabled'.
 	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color default.
@@ -882,14 +883,50 @@ test_autoCommitFailure
 			executeString: ''(UserGlobals at: #autoCommitTest) value: #newValue'';
 			commit'.
 	session executeString: '(UserGlobals at: #autoCommitTest) value: #stillAnotherNewValue'.
-	self selectRowanSample1Test.
-	self selectMethodNamed: #test1.
-	self
-		saveMethod: 'test1 ^123'
-		in: 'RowanSample1Test'
-		category: 'tests'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.	"will raise an inspector on System>transactionConflicts"
+	[RowanAnsweringService new exec: '3+4' in: session	"forces a round trip & auto commit failure"]
+		ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	
+	[(transactionConflictInspector := JadeiteInspector allInstances
+				detect: [:inspector | 'Transaction Conflicts*' match: inspector view caption]
+				ifNone: []) isNil]
+			whileTrue: [(Delay forMilliseconds: 2) wait].
+	
+	[self denyIsNil: (transactionConflictInspector instVarListPresenter list
+				detect: [:assoc | assoc key equals: '#''Write-Write''']
+				ifNone: [])]
+			ensure: [transactionConflictInspector view close].
 	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color red.
 	self assert: self projectsPresenter autoCommit equals: #failed]
+			ensure: 
+				[self logoutOtherSession.
+				self abortTransaction.
+				session executeString: 'UserGlobals removeKey: #autoCommitTest'.
+				RowanAnsweringService new setAutoCommit: false for: session.
+				self commitTransaction]!
+
+test_autoCommitFailureAndAbort
+	self testsIssue: #issue462
+		withTitle: '(3.0.66) silent commit conflict/failure when auto commit is enabled'.
+	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color default.
+	session executeString: 'UserGlobals at: #autoCommitTest put: (#key -> #value)'.
+	self commitTransaction.
+	self loginOtherSession.
+	
+	[RowanAnsweringService new setAutoCommit: true for: session.
+	self
+		executeStringInOtherSession: 'abort;
+			executeString: ''(UserGlobals at: #autoCommitTest) value: #newValue'';
+			commit'.
+	session executeString: '(UserGlobals at: #autoCommitTest) value: #stillAnotherNewValue'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #yes.	"will do an abort"
+	[RowanAnsweringService new exec: '3+4' in: session	"forces a round trip & auto commit failure"]
+		ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self assert: (session executeString: '(UserGlobals at: #autoCommitTest) value') equals: #newValue. "abort should have restored value" 
+	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color green. "abort should restore auto commit's state from #failed"
+	self assert: self projectsPresenter autoCommit equals: true]
 			ensure: 
 				[self logoutOtherSession.
 				self abortTransaction.
@@ -5557,6 +5594,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitButtonFailureResetOnAbort!public!test auto commit!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitClickButtonAfterFailure!public!test auto commit!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitFailure!public!test auto commit!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitFailureAndAbort!public!test auto commit!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_blankCategoryRenameInvalid!public!test categories!tests! !

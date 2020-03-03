@@ -201,12 +201,7 @@ dynamicInstVars
 
 evaluateSelectedTextIn: textPresenter thenInspectInContext: context
 	| service |
-	self createView: self class defaultView.
-	service := RowanInspectorService new
-				executeThenInspect: textPresenter currentSelectionOrLine
-				context: context
-				session: gciSession
-				windowHandle: self view handle value.
+	service := self evaluateText: textPresenter currentSelectionOrLine thenInspectInContext: context.
 	service compileErrorArray
 		ifNotNil: 
 			[[^textPresenter showCompileError: service compileErrorArray first]
@@ -227,6 +222,16 @@ evaluateSelectedTextIn: textPresenter thenInspectInContext: context debugger: de
 			[[^textPresenter showCompileError: service compileErrorArray first]
 				ensure: [service compileErrorArray: nil]].
 	^self showOn: service!
+
+evaluateText: string thenInspectInContext: context
+	| service |
+	self createView: self class defaultView.
+	service := RowanInspectorService new
+				executeThenInspect: string
+				context: context
+				session: gciSession
+				windowHandle: self view handle value.
+	^service!
 
 expectedModelClass
 	^RowanInspectorService!
@@ -576,6 +581,7 @@ valueOops
 !JadeiteInspector categoriesFor: #dynamicInstVars!accessing!public! !
 !JadeiteInspector categoriesFor: #evaluateSelectedTextIn:thenInspectInContext:!inspecting!public! !
 !JadeiteInspector categoriesFor: #evaluateSelectedTextIn:thenInspectInContext:debugger:!inspecting!public! !
+!JadeiteInspector categoriesFor: #evaluateText:thenInspectInContext:!inspecting!public! !
 !JadeiteInspector categoriesFor: #expectedModelClass!private! !
 !JadeiteInspector categoriesFor: #indexedOffsetFromInstVarList:!operations!private! !
 !JadeiteInspector categoriesFor: #initialize!initialize!public! !

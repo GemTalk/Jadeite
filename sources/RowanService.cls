@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 Model subclass: #RowanService
-	instanceVariableNames: 'remoteService name isDirty command commandArgs updateType'
+	instanceVariableNames: 'remoteService name isDirty command commandArgs updateType postUpdateBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -280,6 +280,12 @@ postUpdate
 
 	!
 
+postUpdateBlock
+	^postUpdateBlock!
+
+postUpdateBlock: anObject
+	postUpdateBlock := anObject!
+
 prepareForReplication
 	"only replicate what is absolutely necessary. Each service knows how to do that. 
 	This method prepares each command arg as well"
@@ -504,6 +510,8 @@ wasRenamed
 !RowanService categoriesFor: #packageUpdate:!public!updating! !
 !RowanService categoriesFor: #postReload!public!replication! !
 !RowanService categoriesFor: #postUpdate!Init / Release!public! !
+!RowanService categoriesFor: #postUpdateBlock!accessing!private! !
+!RowanService categoriesFor: #postUpdateBlock:!accessing!private! !
 !RowanService categoriesFor: #prepareForReplication!public!replication! !
 !RowanService categoriesFor: #printOn:!printing!public! !
 !RowanService categoriesFor: #processListUpdate:!Debugger!public!updating! !

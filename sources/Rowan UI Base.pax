@@ -449,6 +449,7 @@ package methodNames
 	add: 'JadeInspector class' -> #setNavigationInspector;
 	add: 'JadeInspector class' -> #showOn:session:;
 	add: 'JadeNavigationInspector class' -> #resource_Default_view;
+	add: 'JadePresenter class' -> #abortTransaction:;
 	add: 'JadePresenter class' -> #allClassesIn:;
 	add: 'JadePresenter class' -> #basicBrowseClassReferences:session:;
 	add: 'JadePresenter class' -> #basicBrowseMethod:presenter:;
@@ -599,7 +600,7 @@ Model subclass: #JadeiteLogger
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Model subclass: #RowanService
-	instanceVariableNames: 'remoteService name isDirty command commandArgs updateType'
+	instanceVariableNames: 'remoteService name isDirty command commandArgs updateType postUpdateBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -2257,16 +2258,7 @@ resource_Default_view
 !JadePresenter methodsFor!
 
 abortTransaction
-	"Even if it takes a windy path, try to make sure
-	all aborts in Jadeite pass through here"
-
-	| browserService services |
-	services := BrowserUpdate current selectedServices asSet asArray.
-	browserService := RowanBrowserService new
-				command: #abortTransactionAndUpdateServices:;
-				commandArgs: (Array with: services).
-	self issueCommand: (Array with: browserService).
-	Sound informationBeep!
+	^self class abortTransaction: self gciSession!
 
 autoCommitExecutionString
 	^'RowanService autoCommit ifTrue:[System commitTransaction].'!
@@ -2592,6 +2584,18 @@ updateServices: services
 
 !JadePresenter class methodsFor!
 
+abortTransaction: session
+	"Even if it takes a windy path, try to make sure
+	all aborts in Jadeite pass through here"
+
+	| browserService services |
+	services := BrowserUpdate current selectedServices asSet asArray.
+	browserService := RowanBrowserService new
+				command: #abortTransactionAndUpdateServices:;
+				commandArgs: (Array with: services).
+	self issueCommands: (Array with: browserService) session: session.
+	Sound informationBeep!
+
 allClassesIn: session
 	| browserService |
 	browserService := RowanBrowserService new.
@@ -2887,6 +2891,7 @@ selectorsFrom: selector session: session
 		selectorsFrom: selector
 		session: session
 		trailingWildcard: false! !
+!JadePresenter class categoriesFor: #abortTransaction:!browsing support!public! !
 !JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
 !JadePresenter class categoriesFor: #basicBrowseClassReferences:session:!browsing!browsing support!public! !
 !JadePresenter class categoriesFor: #basicBrowseMethod:presenter:!browsing!public! !

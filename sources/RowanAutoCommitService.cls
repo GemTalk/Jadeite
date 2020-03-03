@@ -11,6 +11,28 @@ RowanAutoCommitService comment: ''!
 !RowanAutoCommitService methodsFor!
 
 autoCommitUpdate: browser
-	browser autoCommit: autoCommit! !
+	| shouldAbort |
+	autoCommit == #failed
+		ifTrue: 
+			[postUpdateBlock := 
+					[shouldAbort := MessageBox
+								confirm: 'Autocommit has failed to commit. Your changes will not be commited in the repository until you abort. Abort now?
+
+(If you choose ''No'' you will be prompted with a list of transaction conflicts)'.
+					shouldAbort
+						ifTrue: [JadePresenter abortTransaction: browser gciSession]
+						ifFalse: [self displayTransactionConflicts: browser]]].
+	browser autoCommit: autoCommit.
+	^postUpdateBlock!
+
+displayTransactionConflicts: browser
+	| inspector session service |
+	session := browser gciSession.
+	inspector := JadeiteInspector new gciSession: session.
+	service := inspector evaluateText: 'System transactionConflicts'
+				thenInspectInContext: session oopNil value.
+	inspector showOn: service.
+	inspector updateCaption: 'Transaction Conflicts'. ! !
 !RowanAutoCommitService categoriesFor: #autoCommitUpdate:!public!updating! !
+!RowanAutoCommitService categoriesFor: #displayTransactionConflicts:!private!transaction management! !
 

@@ -74,9 +74,8 @@ initialize
 	self initializeUpdates.
 	debug := false.
 	inUpdate := JadeiteSemaphore forMutualExclusion.
-	logger := JadeiteLogger new. 
-	breakpointsEnabled := false. 
-!
+	logger := JadeiteLogger new.
+	breakpointsEnabled := false!
 
 initializeUpdates
 	updates := OrderedCollection new.
@@ -160,8 +159,7 @@ performUpdate: updateBlock with: selector
 						ifTrue: [updateBlock value: update]]]!
 
 postUpdate
-
-	!
+	updates do: [:service | service postUpdateBlock ifNotNil: [:block | block value]]!
 
 register: presenter selector: selector
 	"send the update to the presenter so that when the presenter gets
