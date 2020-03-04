@@ -609,6 +609,10 @@ unloadSampleProject
 				commandArgs: (Array with: (Array with: self sampleProjectName)).
 			self issueCommand: browserService]!
 
+updateService: service
+	service command: #update. 
+	^self issueCommand: service	!
+
 variableListPresenter
 	^self projectsPresenter variableListPresenter.! !
 !JadeiteAbstractTestCase categoriesFor: #abortTransaction!private!setup teardown! !
@@ -708,6 +712,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #transcriptProjectNamed:!public!transcript support! !
 !JadeiteAbstractTestCase categoriesFor: #transcriptTab!public!transcript support! !
 !JadeiteAbstractTestCase categoriesFor: #unloadSampleProject!private!project support! !
+!JadeiteAbstractTestCase categoriesFor: #updateService:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #variableListPresenter!private!project browser support! !
 
 !JadeiteAbstractTestCase class methodsFor!

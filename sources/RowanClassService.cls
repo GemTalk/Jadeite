@@ -17,7 +17,7 @@ constant methods for performance.
 
 = classService
 	^classService isClassService
-		ifTrue: [name asString = classService name asString and: [classService meta = meta]]
+		ifTrue: [name asString = classService name asString and: [meta isNil or: [classService meta = meta]]]
 		ifFalse: [^false]!
 
 addHierarchyService: service to: treeModel withParent: parentService

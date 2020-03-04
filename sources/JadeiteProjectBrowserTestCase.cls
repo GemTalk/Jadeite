@@ -5021,6 +5021,7 @@ test_twoBrowsersNoUpdateWithoutPackageSelection
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
 	self selectRowanSample1Class.
+	transcript projectListPresenter projectListPresenter selections: #().	"to ensure project list has no selection"
 	self openSecondBrowser.
 	self assert: secondPresenter projectListPresenter selections isEmpty.
 	self assert: secondPresenter packageListPresenter model isEmpty.
