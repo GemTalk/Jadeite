@@ -16,7 +16,9 @@ constant methods for performance.
 !RowanClassService methodsFor!
 
 = classService
-	^classService isClassService ifTrue: [name asString = classService name asString] ifFalse: [^false]!
+	^classService isClassService
+		ifTrue: [name asString = classService name asString and: [classService meta = meta]]
+		ifFalse: [^false]!
 
 addHierarchyService: service to: treeModel withParent: parentService
 	treeModel getNodeFor: service ifAbsent: [treeModel add: service asChildOf: parentService].

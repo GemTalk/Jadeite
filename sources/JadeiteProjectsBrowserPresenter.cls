@@ -1775,8 +1775,7 @@ selectClassNamed: className
 		ifFalse: [self selectClassInClassHierarchyNamed: className]!
 
 selectClassTab
-
-	instanceClassTabs lastCard!
+	instanceClassTabs lastCard.!
 
 selectCommentTab
 	self selectSourceTabNamed: 'classDocumentation'!
@@ -2012,23 +2011,6 @@ update: services afterStonReplication: stonResults
 	result := super update: services afterStonReplication: stonResults.
 	self redrawAllViews.
 	^result!
-
-updateAfterFindClass: classService
-	| projectService packageService |
-	self updateService: classService.
-	projectService := projectListPresenter list
-				detect: [:service | service name = classService projectName]
-				ifNone: [^self].
-	projectListPresenter selections: (Array with: projectService).
-	packageService := packageListPresenter list
-				detect: [:service | service name = classService definedPackageName]
-				ifNone: [^self].
-	packageListPresenter selections: (Array with: packageService).
-	self isClassListTabSelected
-		ifTrue: [self selectClassNamed: classService name asString]
-		ifFalse: 
-			[self selectClassInClassListNamed: classService name.
-			self updateHierarchy]!
 
 updateAndSelectA: aView
 	"is this override still needed?"
@@ -2482,7 +2464,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #unloadPackage!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #unloadProjects!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #update:afterStonReplication:!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateAfterFindClass:!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateAndSelectA:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClasses!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClassInfo!event handlers!public!updating! !

@@ -4543,10 +4543,8 @@ test_separationOfClassAndInstance
 	self selectHierarchyTab.	"on instance/hierarchy"
 	self assertLinearAncestry: #('Object' 'TestAsserter' 'TestCase' 'RowanSample1Test')
 		in: self classHierarchyPresenter.
-	self openSecondBrowser.
-	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
-	self selectServiceNamed: 'RowanSample1-Tests' in: secondPresenter packageListPresenter.
-	self selectServiceNamed: 'RowanSample1Test' in: secondPresenter classListPresenter.
+	secondBrowser := self projectsPresenter newBrowser. 
+	secondPresenter := secondBrowser currentCard.
 	self selectHierarchyTabIn: secondPresenter.
 	self assertLinearAncestry: #('Object' 'TestAsserter' 'TestCase' 'RowanSample1Test')
 		in: secondPresenter classHierarchyPresenter.

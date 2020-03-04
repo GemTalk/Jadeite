@@ -942,6 +942,7 @@ updateAfterFindClassInPackage: classService
 				detect: [:service | service name = classService definedPackageName]
 				ifNone: [^self].
 	packageListPresenter selections: (Array with: packageService).
+	classService meta ifTrue: [self selectClassTab].
 	self isClassListTabSelected
 		ifTrue: [self selectClassNamed: classService name asString]
 		ifFalse: 
