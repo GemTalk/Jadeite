@@ -146,6 +146,9 @@ updateMethodSource
 		yourself.
 	self refreshBreakPointsIn: documentPresenter!
 
+value
+	^documentPresenter value!
+
 value: string
 	documentPresenter value: string! !
 !JadeiteMethodSourcePresenter categoriesFor: #createSchematicWiring!create schemantic wiring!private! !
@@ -164,6 +167,7 @@ value: string
 !JadeiteMethodSourcePresenter categoriesFor: #statusBarText:!public! !
 !JadeiteMethodSourcePresenter categoriesFor: #update!public!updating! !
 !JadeiteMethodSourcePresenter categoriesFor: #updateMethodSource!public!updating! !
+!JadeiteMethodSourcePresenter categoriesFor: #value!public! !
 !JadeiteMethodSourcePresenter categoriesFor: #value:!public! !
 
 !JadeiteMethodSourcePresenter class methodsFor!
