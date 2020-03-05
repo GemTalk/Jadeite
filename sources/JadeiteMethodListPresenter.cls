@@ -247,7 +247,10 @@ updateSingleMethodSource
 	| selection |
 	selection := methodListPresenter selection.
 	methodSourcePresenter value: selection source.
-	selection firstReference ifNotNil: [:index | self selecting: index string: selection searchString].
+	selection firstReference
+		ifNotNil: 
+			[:index |
+			methodSourcePresenter value ifNotNil: [self selecting: index string: selection searchString]].
 	methodSourcePresenter ensureVisible!
 
 updateSource
