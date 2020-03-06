@@ -170,6 +170,12 @@ displayStringFor: displayThing browser: browser
 	browser displayStringFor: self in:  displayThing
 	!
 
+displayStringWithBreakpointCount
+	| count |
+	breakPoints ifNil: [^self displayString].
+	count := breakPoints size.
+	^self displayString , ' (' , count printString , ')'!
+
 equalBeforeRename: aMethodService
 	^renamedName = aMethodService className
 		and: [selector = aMethodService selector and: [meta = aMethodService meta]]!
@@ -276,6 +282,9 @@ methodDefinitions: anObject
 methodHistoryUpdated: historyBrowser
 	
 	^historyBrowser methodHistoryUpdated: self!
+
+methodListUpdate: presenter browser: browser
+	browser updateMethodList: self!
 
 methodName
 	"for the old sunit in class browser tab"
@@ -504,6 +513,9 @@ unimplementedSelectors
 	self rowanFixMe.
 	^#()!
 
+updateBreakPoints: presenter browser: browser
+	presenter view invalidate!
+
 updateSelectorFromCompiledMethod: aString
 
 	| stream | 
@@ -545,6 +557,7 @@ user: anObject
 !RowanMethodService categoriesFor: #displayOn:!displaying!public! !
 !RowanMethodService categoriesFor: #displayStringFor:!displaying!public! !
 !RowanMethodService categoriesFor: #displayStringFor:browser:!displaying!public! !
+!RowanMethodService categoriesFor: #displayStringWithBreakpointCount!displaying!public! !
 !RowanMethodService categoriesFor: #equalBeforeRename:!comparing!public! !
 !RowanMethodService categoriesFor: #failedCompile!accessing!public! !
 !RowanMethodService categoriesFor: #firstReference!accessing!private! !
@@ -573,6 +586,7 @@ user: anObject
 !RowanMethodService categoriesFor: #methodDefinitions!accessing!private! !
 !RowanMethodService categoriesFor: #methodDefinitions:!accessing!private! !
 !RowanMethodService categoriesFor: #methodHistoryUpdated:!public!updating! !
+!RowanMethodService categoriesFor: #methodListUpdate:browser:!public!updating! !
 !RowanMethodService categoriesFor: #methodName!accessing!private! !
 !RowanMethodService categoriesFor: #methodSourceUpdate:browser:!public!updating! !
 !RowanMethodService categoriesFor: #methodUpdate:!public!updating! !
@@ -618,6 +632,7 @@ user: anObject
 !RowanMethodService categoriesFor: #testResultUpdate:browser:!public!updating! !
 !RowanMethodService categoriesFor: #toolTip!accessing!displaying!private! !
 !RowanMethodService categoriesFor: #unimplementedSelectors!public! !
+!RowanMethodService categoriesFor: #updateBreakPoints:browser:!public!updating! !
 !RowanMethodService categoriesFor: #updateSelectorFromCompiledMethod:!private! !
 !RowanMethodService categoriesFor: #user!accessing!private! !
 !RowanMethodService categoriesFor: #user:!accessing!private! !

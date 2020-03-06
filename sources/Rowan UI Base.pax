@@ -396,7 +396,6 @@ package methodNames
 	add: #RowanCommandResult -> #classesUpdate:browser:;
 	add: #RowanCommandResult -> #classHierarchyUpdate:;
 	add: #RowanCommandResult -> #classHierarchyUpdate:browser:;
-	add: #RowanCommandResult -> #classMethodsUpdate:browser:;
 	add: #RowanCommandResult -> #classUpdate:;
 	add: #RowanCommandResult -> #dictionaryListUpdate:;
 	add: #RowanCommandResult -> #dictionaryUpdate:;
@@ -421,7 +420,6 @@ package methodNames
 	add: #RowanCommandResult -> #updateClassCategorySelectionsFor:;
 	add: #RowanCommandResult -> #updateClassHierarchySelectionFor:;
 	add: #RowanCommandResult -> #updateClassSelectionFor:;
-	add: #RowanCommandResult -> #updatedClass:browser:;
 	add: #RowanCommandResult -> #updatedClassDefinition:browser:;
 	add: #RowanCommandResult -> #updatedClassInHierarchy:browser:;
 	add: #RowanCommandResult -> #updateDictionarySelectionsFor:;
@@ -517,6 +515,7 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\Base\Dolphin Legacy Date & Time'
 	'..\Core\Object Arts\Dolphin\MVP\Models\List\Dolphin List Models'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\List\Dolphin List Presenter'
+	'..\Core\Object Arts\Dolphin\MVP\Presenters\ListTree\Dolphin List Tree Presenter'
 	'..\Core\Object Arts\Dolphin\Base\Dolphin Message Box'
 	'..\Core\Object Arts\Dolphin\MVP\Deprecated\Dolphin MVP (Deprecated)'
 	'..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base'
@@ -5066,9 +5065,6 @@ classHierarchyUpdate: presenter
 classHierarchyUpdate: presenter browser: browser
 !
 
-classMethodsUpdate: presenter browser: anObject
-	!
-
 classUpdate: presenter
 	!
 
@@ -5133,9 +5129,6 @@ updateClassHierarchySelectionFor: presenter!
 
 updateClassSelectionFor: presenter!
 
-updatedClass: aPresenter browser: anObject
-	!
-
 updatedClassDefinition: classDefinitionPresenter browser: browser
 
 	
@@ -5171,7 +5164,6 @@ updateType
 !RowanCommandResult categoriesFor: #classesUpdate:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #classHierarchyUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
-!RowanCommandResult categoriesFor: #classMethodsUpdate:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #classUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #dictionaryListUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #dictionaryUpdate:!public!updating! !
@@ -5196,7 +5188,6 @@ updateType
 !RowanCommandResult categoriesFor: #updateClassCategorySelectionsFor:!public!updating! !
 !RowanCommandResult categoriesFor: #updateClassHierarchySelectionFor:!public!updating! !
 !RowanCommandResult categoriesFor: #updateClassSelectionFor:!public!updating! !
-!RowanCommandResult categoriesFor: #updatedClass:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #updatedClassDefinition:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #updateDictionarySelectionsFor:!public!updating! !

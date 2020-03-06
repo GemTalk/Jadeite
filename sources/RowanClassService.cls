@@ -113,10 +113,7 @@ classHierarchyUpdate: presenter browser: browser
 	presenter view updateMode: #dynamic!
 
 classMethodsUpdate: presenter browser: browser
-	browser selectedClass = self ifFalse: [^self].
-	meta = browser isClassSideSelected ifFalse:[^self].
-	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
-	self displayMethodsOn: presenter browser: browser!
+	browser methodsUpdate: self!
 
 classOrHierarchyPresenter: browser
 	^browser isClassListTabSelected
@@ -286,6 +283,9 @@ methods
 
 methods: anObject
 	methods := anObject!
+
+methodsWithBreakpoints
+	^methods detect: [:methodService | methodService breakPoints notEmpty]!
 
 methodUpdate: presenter
 	presenter list do: 
@@ -484,14 +484,8 @@ updateCategories: presenter browser: browser
 	categories do: [:category | (presenter list includes: category) ifFalse: [theModel add: category]].
 	presenter hasSelection ifFalse: [presenter model: theModel]!
 
-updatedClass: presenter browser: browser
-	"only project browser should use this"
-
-	| update |
-	self selectedPackageServices: browser packageListPresenter selections browser: browser.
-	update := presenter model asBag detect: [:classService | classService name = name] ifNone: [^self].
-	update replicateFrom: self.
-	presenter view invalidate!
+updatedClass: aPresenter browser: browser
+	browser updateClass: self!
 
 updatedClassDefinition: classDefinitionPresenter browser: browser
 	(browser selectedClass = self or: [self equalBeforeRename: browser selectedClass])
@@ -621,6 +615,7 @@ wasRenamed
 !RowanClassService categoriesFor: #meta:!accessing!private! !
 !RowanClassService categoriesFor: #methods!accessing!private! !
 !RowanClassService categoriesFor: #methods:!accessing!private! !
+!RowanClassService categoriesFor: #methodsWithBreakpoints!public!testing! !
 !RowanClassService categoriesFor: #methodUpdate:!public!updating! !
 !RowanClassService categoriesFor: #moveNodeToBeChildOf:in:!private!updating support! !
 !RowanClassService categoriesFor: #oop!accessing!private! !

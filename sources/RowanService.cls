@@ -107,7 +107,7 @@ classHierarchyUpdate: presenter browser: browser hierarchyServices: hierarchySer
 	presenter view ensureSelectionVisible.
 	presenter view updateMode: #dynamic. !
 
-classMethodsUpdate: presenter browser: anObject
+classMethodsUpdate: presenter browser: browser
 	!
 
 classUpdate: presenter
@@ -247,6 +247,8 @@ methodFilterUpdate: presenter
 
 methodHistoryUpdated: historyBrowser
 	!
+
+methodListUpdate: presenter browser: browser!
 
 methodSourceUpdate: presenter browser: anObject
 	!
@@ -390,13 +392,15 @@ toolTip
 	^self displayString
 !
 
+updateBreakPoints: presenter browser: browser!
+
 updateClassCategorySelectionsFor: presenter!
 
 updateClassHierarchySelectionFor: presenter!
 
 updateClassSelectionFor: presenter!
 
-updatedClass: aPresenter browser: anObject
+updatedClass: aPresenter browser: browser
 	!
 
 updatedClassDefinition: classDefinitionPresenter browser: browser
@@ -500,6 +504,7 @@ wasRenamed
 !RowanService categoriesFor: #isUpdatableService!public!testing! !
 !RowanService categoriesFor: #methodFilterUpdate:!public!updating! !
 !RowanService categoriesFor: #methodHistoryUpdated:!must not strip!public!updating! !
+!RowanService categoriesFor: #methodListUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #methodSourceUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #methodsUpdate:!public!updating! !
 !RowanService categoriesFor: #methodUpdate:!public!updating! !
@@ -537,6 +542,7 @@ wasRenamed
 !RowanService categoriesFor: #testPackages:!public!updating! !
 !RowanService categoriesFor: #testResultUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #toolTip!printing!public! !
+!RowanService categoriesFor: #updateBreakPoints:browser:!public!updating! !
 !RowanService categoriesFor: #updateClassCategorySelectionsFor:!public!updating! !
 !RowanService categoriesFor: #updateClassHierarchySelectionFor:!public!updating! !
 !RowanService categoriesFor: #updateClassSelectionFor:!public!updating! !
