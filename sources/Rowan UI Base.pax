@@ -15,6 +15,7 @@ package classNames
 	add: #JadeiteAdvancedFindDialog;
 	add: #JadeiteBasicMethodListPresenter;
 	add: #JadeiteBasicRenameClassMethodListPresenter;
+	add: #JadeiteBreakpointBrowser;
 	add: #JadeiteBrowser;
 	add: #JadeiteBrowserPresenter;
 	add: #JadeiteChangesBrowser;
@@ -240,6 +241,7 @@ package methodNames
 	add: #JadePresenter -> #setCompileWarningColor;
 	add: #JadePresenter -> #update:afterStonReplication:;
 	add: #JadePresenter -> #updateServices:;
+	add: #JadePresenterA -> #basicRefreshBreakpointsIn:selection:;
 	add: #JadePresenterA -> #clearBreakPointAt:in:;
 	add: #JadePresenterA -> #cloneProject;
 	add: #JadePresenterA -> #confirmReloadProjects:;
@@ -896,6 +898,11 @@ JadeFindClassDialog subclass: #JadeiteFindClassDialog
 	classInstanceVariableNames: ''!
 Prompter subclass: #JadeiteMultilinePrompter
 	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeShell subclass: #JadeiteBreakpointBrowser
+	instanceVariableNames: 'breakpointListPresenter methodSourcePresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -2929,6 +2936,30 @@ selectorsFrom: selector session: session
 
 !JadePresenterA methodsFor!
 
+basicRefreshBreakpointsIn: methodSourcePresenter selection: selection
+	| breakPointSymbol indicators |
+	methodSourcePresenter view clearContainerIndicators.
+	indicators := OrderedCollection new.
+	breakPointSymbol := BrowserUpdate current breakpointsEnabled
+				ifTrue: [#breakPoint]
+				ifFalse: [#disabledBreakPoint].
+	1 to: selection stepPoints size
+		do: 
+			[:stepPoint |
+			| range string styleName |
+			range := (selection stepPoints at: stepPoint) key.
+			styleName := (selection breakPoints includes: stepPoint)
+						ifTrue: [breakPointSymbol]
+						ifFalse: [#stepPoint].
+			string := ((selection breakPoints includes: stepPoint) ifTrue: ['Break at '] ifFalse: [''])
+						, 'step point #' , stepPoint printString.
+			indicators add: (ScintillaIndicator
+						styleName: styleName
+						range: range
+						tag: string)].
+	methodSourcePresenter view indicators: indicators.
+	methodSourcePresenter view update!
+
 clearBreakPointAt: stepPoint in: browser
 	| selection |
 	selection := self methodListSelection.
@@ -3012,30 +3043,10 @@ queryCommand: query
 	^super queryCommand: query!
 
 refreshBreakPointsIn: methodSourcePresenter
-	| indicators selection breakPointSymbol |
+	| selection |
 	selection := self methodListSelection.
 	selection ifNil: [^self].
-	methodSourcePresenter view clearContainerIndicators.
-	indicators := OrderedCollection new.
-	breakPointSymbol := BrowserUpdate current breakpointsEnabled
-				ifTrue: [#breakPoint]
-				ifFalse: [#disabledBreakPoint].
-	1 to: selection stepPoints size
-		do: 
-			[:stepPoint |
-			| range string styleName |
-			range := (selection stepPoints at: stepPoint) key.
-			styleName := (selection breakPoints includes: stepPoint)
-						ifTrue: [breakPointSymbol]
-						ifFalse: [#stepPoint].
-			string := ((selection breakPoints includes: stepPoint) ifTrue: ['Break at '] ifFalse: [''])
-						, 'step point #' , stepPoint printString.
-			indicators add: (ScintillaIndicator
-						styleName: styleName
-						range: range
-						tag: string)].
-	methodSourcePresenter view indicators: indicators.
-	methodSourcePresenter view update!
+	self basicRefreshBreakpointsIn: methodSourcePresenter selection: selection!
 
 removeSelectorsString: selections
 	| stream answeringService |
@@ -3073,6 +3084,7 @@ updateMethodReferences: services
 	services do: [:service | service command: #allReferences].
 	self issueCommand: services.
 	^services! !
+!JadePresenterA categoriesFor: #basicRefreshBreakpointsIn:selection:!Jadeite!public! !
 !JadePresenterA categoriesFor: #clearBreakPointAt:in:!Jadeite!public! !
 !JadePresenterA categoriesFor: #cloneProject!Jadeite!public! !
 !JadePresenterA categoriesFor: #confirmReloadProjects:!Jadeite!public! !
