@@ -1489,28 +1489,6 @@ redrawAllViews
 	packageListPresenter view invalidate.
 	classListPresenter view invalidate.!
 
-refreshClass
-	| selection presenter |
-	presenter := self isClassListTabSelected
-				ifTrue: [classListPresenter]
-				ifFalse: [classHierarchyPresenter].
-	self setMethodFilterFor: presenter.
-	selection := presenter selectionIfNone: 
-					[self resetClassTemplate.
-					self resetDefinedClassPackage.
-					categoryListPresenter clear.
-					variableListPresenter clear.
-					^methodListPresenter clear].
-	selection wasRemoved ifTrue: [^self].
-	selection meta: self isClassSideSelected.
-	selection selectedPackageServices: packageListPresenter selections browser: self.
-	selection
-		updateAfterCommand: false;
-		command: #fastRefresh.
-	self issueCommand: (Array with: selection).
-	selection updateAfterCommand: true.
-	self updateClassInfo!
-
 refreshClassListOrHierarchy
 	| newSelection listSelection hierarchySelection |
 	(textAreaTabs currentCard name = 'classDefinition' and: [self selectedClass isNil])
@@ -2395,7 +2373,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #pushToGit!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #redrawAllViews!displaying!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #refreshClass!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshClassListOrHierarchy!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshFromServer!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshMethodsOn:!event handlers!public! !

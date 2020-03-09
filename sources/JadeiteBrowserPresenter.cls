@@ -580,10 +580,9 @@ methodsMenuStrings
 	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods' 'Browse Method History//browseMethodHistory' 'Inspect//inspectMethod' '-' 'Browse Breakpoints//browseBreakpoints' 'Clear Method Breakpoints//clearMethodBreakpoints' '-' 'Find Method .../Ctrl+Shift+M/findMethod' '-' '&Remove Method(s) ...//removeMethods' '-' 'Run All Tests/Ctrl+Shift+A/runAll' 'Run Selected Test(s)/Ctrl+Shift+S/runMethodTests' 'Debug Selected &Test(s)/Ctrl+B/runMethodTests' '-' 'Go To Defining Package//gotoMethodDefinedPackage')!
 
 methodsUpdate: classService
-	self selectedClass = self ifFalse: [^self].
 	classService meta = self isClassSideSelected ifFalse: [^self].
-	classListPresenter list isEmpty ifTrue: [classService initializePresenterList: classListPresenter].
-	classService displayMethodsOn: classListPresenter browser: self!
+	classListPresenter list isEmpty ifTrue: [classService initializePresenterList: methodListPresenter].
+	classService displayMethodsOn: methodListPresenter browser: self!
 
 methodToReformat
 	^methodListPresenter selectionIfNone: [RowanMethodService new]!

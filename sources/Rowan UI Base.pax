@@ -474,6 +474,8 @@ package methodNames
 	add: 'JadePresenter class' -> #clearAllBreaksIn:;
 	add: 'JadePresenter class' -> #clearMethodBreakpoints:in:;
 	add: 'JadePresenter class' -> #convertToPattern:;
+	add: 'JadePresenter class' -> #disableMethodBreakpoints:in:;
+	add: 'JadePresenter class' -> #enableMethodBreakpoints:in:;
 	add: 'JadePresenter class' -> #findMethodIn:class:presenter:;
 	add: 'JadePresenter class' -> #issueCommands:session:;
 	add: 'JadePresenter class' -> #openGitHubJadeiteProject;
@@ -901,7 +903,7 @@ Prompter subclass: #JadeiteMultilinePrompter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeShell subclass: #JadeiteBreakpointBrowser
-	instanceVariableNames: 'breakpointListPresenter methodSourcePresenter'
+	instanceVariableNames: 'breakpointListPresenter methodSourcePresenter search'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -2833,6 +2835,16 @@ convertToPattern: wildcardString
 	wildcardString last = $* ifTrue: [list addLast: $*].
 	^list asArray!
 
+disableMethodBreakpoints: methodServices in: session
+	| service |
+	service := RowanAnsweringService command: #disableMethodBreaks: withArgs: (Array with: methodServices).
+	self issueCommands: (Array with: service) session: session!
+
+enableMethodBreakpoints: methodServices in: session
+	| service |
+	service := RowanAnsweringService command: #enableMethodBreaks: withArgs: (Array with: methodServices).
+	self issueCommands: (Array with: service) session: session!
+
 findMethodIn: session class: classService presenter: browser
 	| methodService |
 	methodService := JadeiteFindMethodDialog showModal: 'DefaultView' on: classService.
@@ -2922,6 +2934,8 @@ selectorsFrom: selector session: session
 !JadePresenter class categoriesFor: #clearAllBreaksIn:!browsing!public! !
 !JadePresenter class categoriesFor: #clearMethodBreakpoints:in:!browsing!public! !
 !JadePresenter class categoriesFor: #convertToPattern:!browsing support!private! !
+!JadePresenter class categoriesFor: #disableMethodBreakpoints:in:!browsing!public! !
+!JadePresenter class categoriesFor: #enableMethodBreakpoints:in:!browsing!public! !
 !JadePresenter class categoriesFor: #findMethodIn:class:presenter:!browsing!public! !
 !JadePresenter class categoriesFor: #issueCommands:session:!public! !
 !JadePresenter class categoriesFor: #openGitHubJadeiteProject!browsing!public! !
@@ -2936,7 +2950,7 @@ selectorsFrom: selector session: session
 !JadePresenterA methodsFor!
 
 basicRefreshBreakpointsIn: methodSourcePresenter selection: selection
-	| breakPointSymbol indicators |
+	| breakPointSymbol indicators includesBreakPoint individualBreakPointSymbol |
 	methodSourcePresenter view clearContainerIndicators.
 	indicators := OrderedCollection new.
 	breakPointSymbol := BrowserUpdate current breakpointsEnabled
@@ -2947,9 +2961,13 @@ basicRefreshBreakpointsIn: methodSourcePresenter selection: selection
 			[:stepPoint |
 			| range string styleName |
 			range := (selection stepPoints at: stepPoint) key.
-			styleName := (selection breakPoints includes: stepPoint)
-						ifTrue: [breakPointSymbol]
-						ifFalse: [#stepPoint].
+			individualBreakPointSymbol := breakPointSymbol.
+			includesBreakPoint := selection breakPoints includes: stepPoint.
+			includesBreakPoint
+				ifFalse: 
+					[includesBreakPoint := selection breakPoints includes: stepPoint negated.
+					includesBreakPoint ifTrue: [individualBreakPointSymbol := #disabledBreakPoint]].
+			styleName := includesBreakPoint ifTrue: [individualBreakPointSymbol] ifFalse: [#stepPoint].
 			string := ((selection breakPoints includes: stepPoint) ifTrue: ['Break at '] ifFalse: [''])
 						, 'step point #' , stepPoint printString.
 			indicators add: (ScintillaIndicator
@@ -4883,8 +4901,15 @@ updateMethodStepPoints
 					string := 'No implementors of #' , value printString , ' (found at step point #'
 								, stepPoint printString , ')']
 				ifNil: 
-					[styleName := (breakPoints includes: stepPoint) ifTrue: [breakPointSymbol] ifFalse: [#stepPoint].
-					string := ((breakPoints includes: stepPoint) ifTrue: ['Break at '] ifFalse: ['']) , 'step point #'
+					[| includesBreakPoint individualBreakPointSymbol |
+					individualBreakPointSymbol := breakPointSymbol.
+					includesBreakPoint := breakPoints includes: stepPoint.
+					includesBreakPoint
+						ifFalse: 
+							[includesBreakPoint := breakPoints includes: stepPoint negated.
+							includesBreakPoint ifTrue: [individualBreakPointSymbol := #disabledBreakPoint]].
+					styleName := includesBreakPoint ifTrue: [individualBreakPointSymbol] ifFalse: [#stepPoint].
+					string := (includesBreakPoint ifTrue: ['Break at '] ifFalse: ['']) , 'step point #'
 								, stepPoint printString].
 			updatedRange := offsets isNil
 						ifTrue: [range]

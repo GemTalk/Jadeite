@@ -171,10 +171,19 @@ displayStringFor: displayThing browser: browser
 	!
 
 displayStringWithBreakpointCount
-	| count |
+	| count writeStream |
 	breakPoints ifNil: [^self displayString].
 	count := breakPoints size.
-	^self displayString , ' (' , count printString , ')'!
+	writeStream := WriteStream on: String new.
+	meta ifTrue: [writeStream nextPutAll: 'class>>'].
+	writeStream
+		nextPutAll: self displayString;
+		space.
+	writeStream
+		nextPut: $(;
+		nextPutAll: count printString;
+		nextPut: $).
+	^writeStream contents!
 
 equalBeforeRename: aMethodService
 	^renamedName = aMethodService className
