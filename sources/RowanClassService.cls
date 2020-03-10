@@ -287,7 +287,7 @@ methods: anObject
 methodsWithBreakpoints
 	^methods detect: [:methodService | methodService breakPoints notEmpty]!
 
-methodUpdate: presenter
+methodUpdate: presenter browser: anObject
 	presenter list do: 
 			[:methodService |
 			| updatedMethodService |
@@ -616,7 +616,7 @@ wasRenamed
 !RowanClassService categoriesFor: #methods!accessing!private! !
 !RowanClassService categoriesFor: #methods:!accessing!private! !
 !RowanClassService categoriesFor: #methodsWithBreakpoints!public!testing! !
-!RowanClassService categoriesFor: #methodUpdate:!public!updating! !
+!RowanClassService categoriesFor: #methodUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #moveNodeToBeChildOf:in:!private!updating support! !
 !RowanClassService categoriesFor: #oop!accessing!private! !
 !RowanClassService categoriesFor: #oop:!accessing!private! !

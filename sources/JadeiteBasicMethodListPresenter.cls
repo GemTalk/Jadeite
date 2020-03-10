@@ -61,8 +61,11 @@ queryCommand: query
 	^super queryCommand: query!
 
 registerPresentersForUpdates
-	BrowserUpdate current register: methodListPresenter selector: #removed:.
-	BrowserUpdate current register: methodListPresenter selector: #methodUpdate:!
+	BrowserUpdate current
+		register: methodListPresenter selector: #removed:;
+		register: methodListPresenter
+			selector: #methodUpdate:browser:
+			browser: self!
 
 removeFromList
 	methodListPresenter list: (methodListPresenter list copyWithoutAll: methodListPresenter selections)!
@@ -98,7 +101,11 @@ selection
 
 selections
 
-	^methodListPresenter selections! !
+	^methodListPresenter selections!
+
+updateMethodSource
+
+	self parentPresenter updateMethodSource! !
 !JadeiteBasicMethodListPresenter categoriesFor: #basicRemoveMethods!private! !
 !JadeiteBasicMethodListPresenter categoriesFor: #browseClass!menu handlers!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #browseClassReferences!menu handlers!public! !
@@ -117,6 +124,7 @@ selections
 !JadeiteBasicMethodListPresenter categoriesFor: #selectedClassName!public!selection! !
 !JadeiteBasicMethodListPresenter categoriesFor: #selection!public! !
 !JadeiteBasicMethodListPresenter categoriesFor: #selections!public! !
+!JadeiteBasicMethodListPresenter categoriesFor: #updateMethodSource!public!updating! !
 
 !JadeiteBasicMethodListPresenter class methodsFor!
 

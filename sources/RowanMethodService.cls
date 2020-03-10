@@ -314,24 +314,24 @@ methodName
 	"for the old sunit in class browser tab"
 	^selector!
 
-methodSourceUpdate: presenter browser: browser
+methodSourceUpdate: presenter browser: methodSourcePresenter
 	| selection |
-	selection := browser methodListSelection.
+	selection := methodSourcePresenter methodListSelection.
 	selection ifNil: [^self].
 	selection = self
 		ifTrue: 
 			[selection replicateFrom: self.
-			browser refreshBreakPointsIn: presenter.
 			presenter view isModified
 				ifFalse: 
 					[presenter value: source.
-					browser displayNoMods: presenter]]!
+					methodSourcePresenter refreshBreakPointsIn: presenter.
+					methodSourcePresenter displayNoMods: presenter]]!
 
-methodUpdate: presenter
+methodUpdate: presenter browser: browser
 	presenter list do: 
 			[:methodService |
 			methodService replicateFrom: self	"#replicateFrom: will ensure we only replicate the proper methods"].
-	presenter view invalidate.!
+	browser updateMethodSource!
 
 name
 	selector isNil ifTrue:[^String new].
@@ -628,7 +628,7 @@ user: anObject
 !RowanMethodService categoriesFor: #methodListUpdate:browser:!public!updating! !
 !RowanMethodService categoriesFor: #methodName!accessing!private! !
 !RowanMethodService categoriesFor: #methodSourceUpdate:browser:!public!updating! !
-!RowanMethodService categoriesFor: #methodUpdate:!public!updating! !
+!RowanMethodService categoriesFor: #methodUpdate:browser:!public!updating! !
 !RowanMethodService categoriesFor: #name!accessing!public! !
 !RowanMethodService categoriesFor: #oop!public! !
 !RowanMethodService categoriesFor: #oopType!public! !

@@ -406,7 +406,6 @@ package methodNames
 	add: #RowanCommandResult -> #methodFilterUpdate:;
 	add: #RowanCommandResult -> #methodSourceUpdate:browser:;
 	add: #RowanCommandResult -> #methodsUpdate:;
-	add: #RowanCommandResult -> #methodUpdate:;
 	add: #RowanCommandResult -> #packagesUpdate:;
 	add: #RowanCommandResult -> #packageUpdate:;
 	add: #RowanCommandResult -> #projectPackagesUpdate:browser:;
@@ -5157,9 +5156,6 @@ methodSourceUpdate: presenter browser: anObject
 methodsUpdate: presenter
 	!
 
-methodUpdate: presenter
-	!
-
 packagesUpdate: presenter!
 
 packageUpdate: presenter!
@@ -5240,7 +5236,6 @@ updateType
 !RowanCommandResult categoriesFor: #methodFilterUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #methodSourceUpdate:browser:!public!updating! !
 !RowanCommandResult categoriesFor: #methodsUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #methodUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #packagesUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #packageUpdate:!public!updating! !
 !RowanCommandResult categoriesFor: #projectPackagesUpdate:browser:!public!updating! !

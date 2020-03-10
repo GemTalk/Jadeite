@@ -256,7 +256,7 @@ methodSourceUpdate: presenter browser: anObject
 methodsUpdate: presenter
 	!
 
-methodUpdate: presenter
+methodUpdate: presenter browser: anObject
 	!
 
 name
@@ -507,7 +507,7 @@ wasRenamed
 !RowanService categoriesFor: #methodListUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #methodSourceUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #methodsUpdate:!public!updating! !
-!RowanService categoriesFor: #methodUpdate:!public!updating! !
+!RowanService categoriesFor: #methodUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #name!accessing!public! !
 !RowanService categoriesFor: #name:!accessing!public! !
 !RowanService categoriesFor: #notRowanizedPackageName!displaying!public! !

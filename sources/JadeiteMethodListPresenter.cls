@@ -155,7 +155,9 @@ queryCommand: aCommandQuery
 registerPresentersForUpdates
 	BrowserUpdate current
 		register: self selector: #autoCommitUpdate:;
-		register: methodListPresenter methodListPresenter selector: #methodUpdate:!
+		register: methodListPresenter methodListPresenter
+			selector: #methodUpdate:browser:
+			browser: self!
 
 removeComparisonTab
 	self textTabs remove: self comparisonTab ifAbsent: []!
