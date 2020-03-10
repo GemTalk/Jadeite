@@ -117,7 +117,11 @@ basicUnloadProjects: projectNames
 	dictionaryPresenter model: ListModel new!
 
 browseBreakpoints
-	^JadeiteBreakpointBrowser showOnSession: self gciSession!
+	| browser |
+	browser := JadeiteBreakpointBrowser showOnSession: self gciSession.
+	browser breakpointListPresenter
+		selections: (browser methodServicesWithBreakpoints intersection: methodListPresenter selections).
+	^browser!
 
 browseClassReferences
 	^JadePresenter browseClassReferences: self selectedClassName session: self gciSession!

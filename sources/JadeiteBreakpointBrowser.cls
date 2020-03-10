@@ -43,6 +43,9 @@ basicBrowseMethod: selectedMethodService
 	shell currentCard findMethod: selectedMethodService selector.
 	^shell!
 
+breakpointListPresenter
+	^breakpointListPresenter!
+
 browseBreakpointMethods
 	^JadePresenter browseBreakpointsIn: self gciSession!
 
@@ -302,6 +305,7 @@ updateSelection: selection
 !JadeiteBreakpointBrowser categoriesFor: #addMethodServicesToTree:!event handlers support!initialization!private!updating support! !
 !JadeiteBreakpointBrowser categoriesFor: #areBreakpointsEnabled!accessing!public! !
 !JadeiteBreakpointBrowser categoriesFor: #basicBrowseMethod:!menu handlers support!private! !
+!JadeiteBreakpointBrowser categoriesFor: #breakpointListPresenter!accessing!private! !
 !JadeiteBreakpointBrowser categoriesFor: #browseBreakpointMethods!menu handlers!public! !
 !JadeiteBreakpointBrowser categoriesFor: #browseClass!menu handlers support!private! !
 !JadeiteBreakpointBrowser categoriesFor: #browseClassOrMethod!menu handlers!public! !
