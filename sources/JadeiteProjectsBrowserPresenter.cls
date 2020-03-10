@@ -1036,7 +1036,7 @@ methodsMenuStrings
 		ifTrue: 
 			["This helps us find senders"
 			self
-				browseBreakpoints;
+				browseBreakpointList;
 				browseImplementors;
 				browseImplementorsOf;
 				browseSenders;
@@ -1046,7 +1046,7 @@ methodsMenuStrings
 				browseMethodsContaining;
 				browseLiteralReferences;
 				browseSelectedMethods;
-				browseMethodHistory; 
+				browseMethodHistory;
 				clearMethodBreakpoints;
 				removeMethods;
 				runMethodTests;

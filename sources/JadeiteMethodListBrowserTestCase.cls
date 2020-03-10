@@ -296,7 +296,7 @@ test_browseBreakpointsClearAllMenuItemFromTranscript
 test_browseBreakpointsFromTranscript
 	| methodService |
 	self testsIssue: #issue225 withTitle: 'nice to have a breakpoint browser'.
-	methodListBrowser := transcript browseBreakpoints.
+	methodListBrowser := transcript browseBreakpointList.
 	[self assert: self methodListMethodListPresenter list size equals: 0]
 		ensure: [methodListBrowser view close].
 	self openProjectBrowser.
@@ -312,7 +312,7 @@ test_browseBreakpointsFromTranscript
 	self assert: self methodListPresenter selection selector equals: #test1]
 			ensure: [methodListBrowser view close].
 	JadePresenter clearAllBreaksIn: session.
-	methodListBrowser := transcript browseBreakpoints.
+	methodListBrowser := transcript browseBreakpointList.
 	[self assert: self methodListMethodListPresenter list size equals: 0]
 		ensure: [methodListBrowser view close]]
 			ensure: [projectsBrowser view close]!
@@ -712,7 +712,7 @@ test_clearAllBreakpointsMenuItemOnMethodList
 
 	| methodListPresenter commandQuery menuItem methodsMenu |
 	self testsIssue: #issue515 withTitle: '(3.0.77) clear all breakpoints menu item would be useful'.
-	methodListBrowser := transcript browseBreakpoints.
+	methodListBrowser := transcript browseBreakpointList.
 	methodsMenu := methodListBrowser view menuBar items detect: [:menu | '*Methods*' match: menu text]
 				ifNone: [].
 	menuItem := methodsMenu items detect: [:command | 'Clear All Breakpoints' match: command text]

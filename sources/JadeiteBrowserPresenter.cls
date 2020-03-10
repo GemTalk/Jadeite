@@ -116,6 +116,9 @@ basicUnloadProjects: projectNames
 	super basicUnloadProjects: projectNames.
 	dictionaryPresenter model: ListModel new!
 
+browseBreakpoints
+	^JadeiteBreakpointBrowser showOnSession: self gciSession!
+
 browseClassReferences
 	^JadePresenter browseClassReferences: self selectedClassName session: self gciSession!
 
@@ -556,7 +559,7 @@ methodsMenuStrings
 		ifTrue: 
 			["This helps us find senders"
 			self
-				browseBreakpoints;
+				browseBreakpointList;
 				browseImplementors;
 				browseImplementorsOf;
 				browseSenders;
@@ -566,7 +569,7 @@ methodsMenuStrings
 				browseMethodsContaining;
 				browseLiteralReferences;
 				browseSelectedMethods;
-				browseMethodHistory; 
+				browseMethodHistory;
 				inspectMethod;
 				clearMethodBreakpoints;
 				removeMethods;
@@ -1104,6 +1107,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #basicRemoveDictionaries:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicRemoveGlobal:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicUnloadProjects:!menu handlers support!private! !
+!JadeiteBrowserPresenter categoriesFor: #browseBreakpoints!public! !
 !JadeiteBrowserPresenter categoriesFor: #browseClassReferences!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #browseGlobalClass!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #browseGlobalReferences!menu handlers!public! !

@@ -480,7 +480,7 @@ test_dontDuplicateBreakpoints
 	self assert: self methodListPresenter selection breakPoints size = 2.
 	self assert: self methodListPresenter selection breakPoints = #(1 2) asOrderedCollection.
 	
-	[breakpointBrowser := self projectsPresenter browseBreakpoints.
+	[breakpointBrowser := self projectsPresenter browseBreakpointList.
 	self assert: breakpointBrowser primaryPresenter methodListPresenter methodListPresenter list size
 		equals: 1.
 	breakpointBrowser primaryPresenter methodListPresenter methodListPresenter selectionByIndex: 1.

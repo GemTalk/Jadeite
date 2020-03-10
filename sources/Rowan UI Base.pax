@@ -206,7 +206,7 @@ package methodNames
 	add: #JadePresenter -> #abortTransaction;
 	add: #JadePresenter -> #autoCommitExecutionString;
 	add: #JadePresenter -> #basicCloneProject:root:;
-	add: #JadePresenter -> #browseBreakpoints;
+	add: #JadePresenter -> #browseBreakpointList;
 	add: #JadePresenter -> #browseClassReferences:;
 	add: #JadePresenter -> #browseHierarchyImplementorsOf:className:;
 	add: #JadePresenter -> #browseHierarchySendersOf:className:;
@@ -2287,7 +2287,7 @@ basicCloneProject: path root: root
 					with: true).
 	self issueCommand: (Array with: service)!
 
-browseBreakpoints
+browseBreakpointList
 	^self class browseBreakpointsIn: self gciSession!
 
 browseClassReferences: className
@@ -2559,7 +2559,7 @@ updateServices: services
 !JadePresenter categoriesFor: #abortTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #autoCommitExecutionString!menu handlers support!public! !
 !JadePresenter categoriesFor: #basicCloneProject:root:!menu handlers!private! !
-!JadePresenter categoriesFor: #browseBreakpoints!menu handlers!public! !
+!JadePresenter categoriesFor: #browseBreakpointList!menu handlers!public! !
 !JadePresenter categoriesFor: #browseClassReferences:!menu handlers!public! !
 !JadePresenter categoriesFor: #browseHierarchyImplementorsOf:className:!browsing!public! !
 !JadePresenter categoriesFor: #browseHierarchySendersOf:className:!browsing!public! !
