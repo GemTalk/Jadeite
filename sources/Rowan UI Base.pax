@@ -908,7 +908,7 @@ Prompter subclass: #JadeiteMultilinePrompter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeShell subclass: #JadeiteBreakpointBrowser
-	instanceVariableNames: 'breakpointListPresenter methodSourcePresenter search'
+	instanceVariableNames: 'breakpointListPresenter methodSourcePresenter search areBreakpointsEnabled'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
