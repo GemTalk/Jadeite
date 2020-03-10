@@ -97,7 +97,7 @@ onViewClosed
 
 onViewOpened
 	super onViewOpened.
-	self registerPresentersForUpdates. !
+	self registerPresentersForUpdates!
 
 reformatSource
 	methodService

@@ -28,33 +28,41 @@ accessedInstVars: anObject
 
 addBreakPointMenuAt: stepPoint to: aMenu presenter: presenter
 	| desc args menuCommand |
-	aMenu items copy do: 
-			[:item |
-			item isDivider
-				ifFalse: 
-					[item command asSymbol == #clearBreakPointAt:in:
-						ifTrue: 
-							[self removePrecedingDividerFor: item in: aMenu.
-							aMenu removeItem: item].
-					item command asSymbol == #setBreakPointAt:in:
-						ifTrue: 
-							[self removePrecedingDividerFor: item in: aMenu.
-							aMenu removeItem: item]]].
+	self removeBreakPointItemsIn: aMenu.
 	args := Array with: stepPoint with: presenter parentPresenter.
-	(self breakPoints includes: stepPoint)
+	(self positiveBreakpoints includes: stepPoint)
 		ifTrue: 
 			[command := #clearBreakPointAt:in:.
-			desc := 'Clear break at step point ' , stepPoint printString]
+			desc := 'Clear break at step point ' , stepPoint printString.
+			(aMenu items select: [:menuItem | menuItem notNil]) do: [:item | item text = desc ifTrue: [^self]].
+			aMenu addSeparator.
+			menuCommand := MessageSend
+						receiver: presenter parentPresenter
+						selector: command
+						arguments: args.
+			aMenu addCommand: menuCommand description: desc.
+			(breakPoints includes: stepPoint)
+				ifTrue: 
+					[command := #disableBreakPointAt:in:.
+					desc := 'Disable break at step point ' , stepPoint printString]
+				ifFalse: 
+					[command := #enableBreakPointAt:in:.
+					desc := 'Enable break at step point ' , stepPoint printString].
+			menuCommand := MessageSend
+						receiver: presenter parentPresenter
+						selector: command
+						arguments: args.
+			aMenu addCommand: menuCommand description: desc]
 		ifFalse: 
 			[command := #setBreakPointAt:in:.
-			desc := 'Break at step point ' , stepPoint printString].
-	menuCommand := MessageSend
-				receiver: presenter parentPresenter
-				selector: command
-				arguments: args.
-	(aMenu items select: [:menuItem | menuItem notNil]) do: [:item | item text = desc ifTrue: [^self]].
-	aMenu addSeparator.
-	aMenu addCommand: menuCommand description: desc.
+			desc := 'Break at step point ' , stepPoint printString.
+			menuCommand := MessageSend
+						receiver: presenter parentPresenter
+						selector: command
+						arguments: args.
+			(aMenu items select: [:menuItem | menuItem notNil]) do: [:item | item text = desc ifTrue: [^self]].
+			aMenu addSeparator.
+			aMenu addCommand: menuCommand description: desc].
 	^menuCommand!
 
 appendToSourceMenu: aMenu presenter: methodSourcePresenter
@@ -92,6 +100,28 @@ basicSubSuperIcon
 	hasSupers ifTrue: [^JadeSystemBrowserPresenter overriddenIcon].
 	hasSubs ifTrue: [^JadeiteBrowserPresenter downArrowIcon].
 	^Icon blank!
+
+breakpointDisplayString
+	| count writeStream disabledCount |
+	breakPoints ifNil: [^self displayString].
+	count := breakPoints size.
+	disabledCount := (breakPoints select: [:bp | bp < 0]) size.
+	writeStream := WriteStream on: String new.
+	meta ifTrue: [writeStream nextPutAll: 'class>>'].
+	writeStream
+		nextPutAll: self displayString;
+		space.
+	writeStream
+		nextPut: $(;
+		nextPutAll: count printString.
+	disabledCount > 0
+		ifTrue: 
+			[writeStream
+				nextPut: $,; space;
+				nextPutAll: 'disabled=';
+				nextPutAll: disabledCount printString].
+	writeStream nextPut: $).
+	^writeStream contents!
 
 breakPoints
 	^breakPoints!
@@ -169,21 +199,6 @@ displayStringFor: displayThing
 displayStringFor: displayThing browser: browser 
 	browser displayStringFor: self in:  displayThing
 	!
-
-displayStringWithBreakpointCount
-	| count writeStream |
-	breakPoints ifNil: [^self displayString].
-	count := breakPoints size.
-	writeStream := WriteStream on: String new.
-	meta ifTrue: [writeStream nextPutAll: 'class>>'].
-	writeStream
-		nextPutAll: self displayString;
-		space.
-	writeStream
-		nextPut: $(;
-		nextPutAll: count printString;
-		nextPut: $).
-	^writeStream contents!
 
 equalBeforeRename: aMethodService
 	^renamedName = aMethodService className
@@ -336,6 +351,9 @@ packageName
 packageName: anObject
 	packageName := anObject!
 
+positiveBreakpoints
+	^breakPoints collect: [:bp | bp abs]!
+
 postUpdate
 	super postUpdate.
 	renamedName := nil!
@@ -377,6 +395,18 @@ references: anObject
 
 remoteServiceName
 	^'Rowan methodServiceClass'!
+
+removeBreakPointItemsIn: aMenu
+	| commandSymbols |
+	commandSymbols := #(#clearBreakPointAt:in: #setBreakPointAt:in: #enableBreakPointAt:in: #disableBreakPointAt:in:).
+	aMenu items copy do: 
+			[:item |
+			item isDivider
+				ifFalse: 
+					[(commandSymbols includes: item command asSymbol)
+						ifTrue: 
+							[self removePrecedingDividerFor: item in: aMenu.
+							aMenu removeItem: item]]]!
 
 removePrecedingDividerFor: item in: aMenu
 	| index |
@@ -547,6 +577,7 @@ user: anObject
 !RowanMethodService categoriesFor: #appendToSourceMenu:presenter:!presenter support!public! !
 !RowanMethodService categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanMethodService categoriesFor: #basicSubSuperIcon!displaying!public! !
+!RowanMethodService categoriesFor: #breakpointDisplayString!displaying!public! !
 !RowanMethodService categoriesFor: #breakPoints!public! !
 !RowanMethodService categoriesFor: #breakPoints:!accessing!public! !
 !RowanMethodService categoriesFor: #category!accessing!private! !
@@ -566,7 +597,6 @@ user: anObject
 !RowanMethodService categoriesFor: #displayOn:!displaying!public! !
 !RowanMethodService categoriesFor: #displayStringFor:!displaying!public! !
 !RowanMethodService categoriesFor: #displayStringFor:browser:!displaying!public! !
-!RowanMethodService categoriesFor: #displayStringWithBreakpointCount!displaying!public! !
 !RowanMethodService categoriesFor: #equalBeforeRename:!comparing!public! !
 !RowanMethodService categoriesFor: #failedCompile!accessing!public! !
 !RowanMethodService categoriesFor: #firstReference!accessing!private! !
@@ -604,6 +634,7 @@ user: anObject
 !RowanMethodService categoriesFor: #oopType!public! !
 !RowanMethodService categoriesFor: #packageName!accessing!private! !
 !RowanMethodService categoriesFor: #packageName:!accessing!private! !
+!RowanMethodService categoriesFor: #positiveBreakpoints!accessing!public! !
 !RowanMethodService categoriesFor: #postUpdate!public!updating! !
 !RowanMethodService categoriesFor: #prepareForReplication!public!replication! !
 !RowanMethodService categoriesFor: #printOn:!printing!public! !
@@ -612,6 +643,7 @@ user: anObject
 !RowanMethodService categoriesFor: #references!accessing!private! !
 !RowanMethodService categoriesFor: #references:!accessing!private! !
 !RowanMethodService categoriesFor: #remoteServiceName!must not strip!public! !
+!RowanMethodService categoriesFor: #removeBreakPointItemsIn:!presenter support!private! !
 !RowanMethodService categoriesFor: #removePrecedingDividerFor:in:!presenter support!private! !
 !RowanMethodService categoriesFor: #renamedName!accessing!private! !
 !RowanMethodService categoriesFor: #renamedName:!accessing!private! !

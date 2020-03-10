@@ -245,6 +245,8 @@ package methodNames
 	add: #JadePresenterA -> #clearBreakPointAt:in:;
 	add: #JadePresenterA -> #cloneProject;
 	add: #JadePresenterA -> #confirmReloadProjects:;
+	add: #JadePresenterA -> #disableBreakPointAt:in:;
+	add: #JadePresenterA -> #enableBreakPointAt:in:;
 	add: #JadePresenterA -> #isOkayToChangeSource:;
 	add: #JadePresenterA -> #loadProjectsFrom:;
 	add: #JadePresenterA -> #methodListSelection;
@@ -471,10 +473,13 @@ package methodNames
 	add: 'JadePresenter class' -> #browseSendersIn:;
 	add: 'JadePresenter class' -> #browseSendersOf:session:;
 	add: 'JadePresenter class' -> #browseSymbolReferencesTo:session:;
+	add: 'JadePresenter class' -> #clearAllBreakpointsIn:;
 	add: 'JadePresenter class' -> #clearAllBreaksIn:;
 	add: 'JadePresenter class' -> #clearMethodBreakpoints:in:;
 	add: 'JadePresenter class' -> #convertToPattern:;
+	add: 'JadePresenter class' -> #disableAllBreakpointsIn:;
 	add: 'JadePresenter class' -> #disableMethodBreakpoints:in:;
+	add: 'JadePresenter class' -> #enableAllBreakpointsIn:;
 	add: 'JadePresenter class' -> #enableMethodBreakpoints:in:;
 	add: 'JadePresenter class' -> #findMethodIn:class:presenter:;
 	add: 'JadePresenter class' -> #issueCommands:session:;
@@ -2816,6 +2821,11 @@ browseSymbolReferencesTo: string session: session
 	shell updateCaptionFromSearchString: 'References to ' , basicString.
 	^shell!
 
+clearAllBreakpointsIn: session
+	| service |
+	service := RowanAnsweringService command: #clearAllBreaks withArgs: Array new.
+	self issueCommands: (Array with: service) session: session!
+
 clearAllBreaksIn: session
 	| service |
 	service := RowanAnsweringService command: #clearAllBreaks withArgs: Array new.
@@ -2835,9 +2845,19 @@ convertToPattern: wildcardString
 	wildcardString last = $* ifTrue: [list addLast: $*].
 	^list asArray!
 
+disableAllBreakpointsIn: session
+	| service |
+	service := RowanAnsweringService command: #disableAllBreaks withArgs: Array new. 
+	self issueCommands: (Array with: service) session: session!
+
 disableMethodBreakpoints: methodServices in: session
 	| service |
 	service := RowanAnsweringService command: #disableMethodBreaks: withArgs: (Array with: methodServices).
+	self issueCommands: (Array with: service) session: session!
+
+enableAllBreakpointsIn: session
+	| service |
+	service := RowanAnsweringService command: #enableAllBreaks withArgs: Array new. 
 	self issueCommands: (Array with: service) session: session!
 
 enableMethodBreakpoints: methodServices in: session
@@ -2931,10 +2951,13 @@ selectorsFrom: selector session: session
 !JadePresenter class categoriesFor: #browseSendersIn:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSendersOf:session:!browsing!public! !
 !JadePresenter class categoriesFor: #browseSymbolReferencesTo:session:!browsing!public! !
+!JadePresenter class categoriesFor: #clearAllBreakpointsIn:!browsing!public! !
 !JadePresenter class categoriesFor: #clearAllBreaksIn:!browsing!public! !
 !JadePresenter class categoriesFor: #clearMethodBreakpoints:in:!browsing!public! !
 !JadePresenter class categoriesFor: #convertToPattern:!browsing support!private! !
+!JadePresenter class categoriesFor: #disableAllBreakpointsIn:!browsing!public! !
 !JadePresenter class categoriesFor: #disableMethodBreakpoints:in:!browsing!public! !
+!JadePresenter class categoriesFor: #enableAllBreakpointsIn:!browsing!public! !
 !JadePresenter class categoriesFor: #enableMethodBreakpoints:in:!browsing!public! !
 !JadePresenter class categoriesFor: #findMethodIn:class:presenter:!browsing!public! !
 !JadePresenter class categoriesFor: #issueCommands:session:!public! !
@@ -2974,7 +2997,7 @@ basicRefreshBreakpointsIn: methodSourcePresenter selection: selection
 						styleName: styleName
 						range: range
 						tag: string)].
-	methodSourcePresenter view indicators: indicators.
+	methodSourcePresenter view indicators: indicators. 
 	methodSourcePresenter view update!
 
 clearBreakPointAt: stepPoint in: browser
@@ -3012,6 +3035,24 @@ confirmReloadProjects: selections
 		confirm: 'Really load project(s) ' , ws contents , 'This will destroy any changes you may have.')
 			ifFalse: [^false].
 	^true!
+
+disableBreakPointAt: stepPoint in: browser
+	| selection |
+	selection := self methodListSelection.
+	selection
+		command: #disableBreakAt:;
+		commandArgs: (Array with: stepPoint).
+	self issueCommand: (Array with: selection).
+	browser updateMethodSource. !
+
+enableBreakPointAt: stepPoint in: browser
+	| selection |
+	selection := self methodListSelection.
+	selection
+		command: #enableBreakAt:;
+		commandArgs: (Array with: stepPoint).
+	self issueCommand: (Array with: selection).
+	browser updateMethodSource!
 
 isOkayToChangeSource: methodSourcePresenter
 	methodSourcePresenter ensureVisible.
@@ -3105,6 +3146,8 @@ updateMethodReferences: services
 !JadePresenterA categoriesFor: #clearBreakPointAt:in:!Jadeite!public! !
 !JadePresenterA categoriesFor: #cloneProject!Jadeite!public! !
 !JadePresenterA categoriesFor: #confirmReloadProjects:!Jadeite!public! !
+!JadePresenterA categoriesFor: #disableBreakPointAt:in:!Jadeite!public! !
+!JadePresenterA categoriesFor: #enableBreakPointAt:in:!Jadeite!public! !
 !JadePresenterA categoriesFor: #isOkayToChangeSource:!Jadeite!public! !
 !JadePresenterA categoriesFor: #loadProjectsFrom:!Jadeite!public! !
 !JadePresenterA categoriesFor: #methodListSelection!Jadeite!public! !

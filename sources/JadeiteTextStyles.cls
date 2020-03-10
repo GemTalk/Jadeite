@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+ï»¿"Filed out from Dolphin Smalltalk 7"!
 
 Object subclass: #JadeiteTextStyles
 	instanceVariableNames: 'colorForCompileError colorForNoEdits colorForUnsavedEdits textStyles colorForUndisplayableSource'
@@ -44,21 +44,25 @@ defaultIndicatorStyles
 					forecolor: Color darkGray;
 					styleName: #box;
 					name: #disabledBreakPoint;
+					hoverStyle: #fullBox;
 					yourself);
 		add: (ScintillaIndicatorStyle new
 					forecolor: Color red;
 					styleName: #box;
 					name: #breakPoint;
+					hoverStyle: #fullBox;
 					yourself);
 		add: (ScintillaIndicatorStyle new
 					forecolor: Color gray;
 					styleName: #underline;
 					name: #stepPoint;
+					hoverStyle: #fullBox;
 					yourself);
 		add: (ScintillaIndicatorStyle new
 					forecolor: Color red;
 					styleName: #squiggle;
 					name: #compileError;
+					hoverStyle: #fullBox;
 					yourself);
 		yourself!
 
@@ -69,7 +73,7 @@ defaultTextStyles
 	answer := Set new.
 	answer
 		add: ((ScintillaTextStyle name: #illegal)
-					description: 'Illegal characters, e.g. £';
+					description: 'Illegal characters, e.g. ï¿½';
 					forecolor: Color red;
 					isBold: true;
 					yourself);
