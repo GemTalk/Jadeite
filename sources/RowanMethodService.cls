@@ -28,14 +28,11 @@ accessedInstVars: anObject
 
 addBreakPointMenuAt: stepPoint to: aMenu presenter: presenter
 	| desc args menuCommand |
-	self removeBreakPointItemsIn: aMenu.
 	args := Array with: stepPoint with: presenter parentPresenter.
 	(self positiveBreakpoints includes: stepPoint)
 		ifTrue: 
 			[command := #clearBreakPointAt:in:.
 			desc := 'Clear break at step point ' , stepPoint printString.
-			(aMenu items select: [:menuItem | menuItem notNil]) do: [:item | item text = desc ifTrue: [^self]].
-			aMenu addSeparator.
 			menuCommand := MessageSend
 						receiver: presenter parentPresenter
 						selector: command
@@ -60,28 +57,22 @@ addBreakPointMenuAt: stepPoint to: aMenu presenter: presenter
 						receiver: presenter parentPresenter
 						selector: command
 						arguments: args.
-			(aMenu items select: [:menuItem | menuItem notNil]) do: [:item | item text = desc ifTrue: [^self]].
-			aMenu addSeparator.
 			aMenu addCommand: menuCommand description: desc].
 	^menuCommand!
 
 appendToSourceMenu: aMenu presenter: methodSourcePresenter
 	| stepPoint menuCommand messageSelector |
-	aMenu items copy do: 
-			[:item |
-			item isDivider
-				ifFalse: 
-					[item command asSymbol == #browseImplementorsOf: ifTrue: [aMenu removeItem: item].
-					item command asSymbol == #browseSendersOf: ifTrue: [aMenu removeItem: item]]].
+	self removeTrailingMenuItemsFrom: aMenu.
 	stepPoint := self stepPointFromCursorIn: methodSourcePresenter.
-	stepPoint isNil ifTrue: [^self].
-	('*Edit*' match: aMenu text) ifFalse: [^self].	"popup or edit menu only" 
+	stepPoint isNil ifTrue: [^self removeJadeiteSeparatorFrom: aMenu].
+	('*Edit*' match: aMenu text) ifFalse: [^self removeJadeiteSeparatorFrom: aMenu].	"popup or edit menu only"	
 	menuCommand := self
 				addBreakPointMenuAt: stepPoint
 				to: aMenu
 				presenter: methodSourcePresenter.
 	messageSelector := (stepPoints at: stepPoint) value.
-	messageSelector isEmpty ifTrue: [^self].
+	messageSelector isEmpty ifTrue: [^self removeJadeiteSeparatorFrom: aMenu].
+	aMenu addSeparator.
 	menuCommand := MessageSend
 				receiver: methodSourcePresenter parentPresenter
 				selector: #browseImplementorsOf:
@@ -396,22 +387,17 @@ references: anObject
 remoteServiceName
 	^'Rowan methodServiceClass'!
 
-removeBreakPointItemsIn: aMenu
-	| commandSymbols |
-	commandSymbols := #(#clearBreakPointAt:in: #setBreakPointAt:in: #enableBreakPointAt:in: #disableBreakPointAt:in:).
-	aMenu items copy do: 
-			[:item |
-			item isDivider
-				ifFalse: 
-					[(commandSymbols includes: item command asSymbol)
-						ifTrue: 
-							[self removePrecedingDividerFor: item in: aMenu.
-							aMenu removeItem: item]]]!
+removeJadeiteSeparatorFrom: aMenu
+	| last |
+	last := aMenu items last.
+	last id = #jadeiteDivider ifTrue: [aMenu removeItem: last]!
 
-removePrecedingDividerFor: item in: aMenu
-	| index |
-	index := aMenu indexOfCommand: item command . 
-	(aMenu itemAt: index - 1) isDivider ifTrue: [aMenu removeItemAt: index - 1]!
+removeTrailingMenuItemsFrom: aMenu
+	| jadeiteSeparator |
+	jadeiteSeparator := aMenu items detect: [:menuItem | menuItem id = #jadeiteDivider]
+				ifNone: [aMenu addItem: JadeiteDividerMenuItem separator].
+	[aMenu items size > (aMenu items indexOf: jadeiteSeparator)]
+		whileTrue: [aMenu removeItemAt: (aMenu items indexOf: jadeiteSeparator) + 1]!
 
 renamedName
 	^renamedName!
@@ -573,8 +559,8 @@ user: anObject
 !RowanMethodService categoriesFor: #=!comparing!public! !
 !RowanMethodService categoriesFor: #accessedInstVars!accessing!private! !
 !RowanMethodService categoriesFor: #accessedInstVars:!accessing!private! !
-!RowanMethodService categoriesFor: #addBreakPointMenuAt:to:presenter:!presenter support!private! !
-!RowanMethodService categoriesFor: #appendToSourceMenu:presenter:!presenter support!public! !
+!RowanMethodService categoriesFor: #addBreakPointMenuAt:to:presenter:!method menu support!private! !
+!RowanMethodService categoriesFor: #appendToSourceMenu:presenter:!method menu support!public! !
 !RowanMethodService categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanMethodService categoriesFor: #basicSubSuperIcon!displaying!public! !
 !RowanMethodService categoriesFor: #breakpointDisplayString!displaying!public! !
@@ -643,8 +629,8 @@ user: anObject
 !RowanMethodService categoriesFor: #references!accessing!private! !
 !RowanMethodService categoriesFor: #references:!accessing!private! !
 !RowanMethodService categoriesFor: #remoteServiceName!must not strip!public! !
-!RowanMethodService categoriesFor: #removeBreakPointItemsIn:!presenter support!private! !
-!RowanMethodService categoriesFor: #removePrecedingDividerFor:in:!presenter support!private! !
+!RowanMethodService categoriesFor: #removeJadeiteSeparatorFrom:!method menu support!private! !
+!RowanMethodService categoriesFor: #removeTrailingMenuItemsFrom:!method menu support!private! !
 !RowanMethodService categoriesFor: #renamedName!accessing!private! !
 !RowanMethodService categoriesFor: #renamedName:!accessing!private! !
 !RowanMethodService categoriesFor: #replicateFrom:!public!replication! !

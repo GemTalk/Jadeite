@@ -22,6 +22,7 @@ package classNames
 	add: #JadeiteDebugger;
 	add: #JadeiteDebuggerMethodSourcePresenter;
 	add: #JadeiteDiffBrowser;
+	add: #JadeiteDividerMenuItem;
 	add: #JadeiteFindClassDialog;
 	add: #JadeiteFindMethodDialog;
 	add: #JadeiteGitLog;
@@ -363,6 +364,7 @@ package methodNames
 	add: #MCPatchOperation -> #revert:;
 	add: #MCRemoval -> #isMethodRemoval;
 	add: #MCRemoval -> #revert:;
+	add: #Menu -> #addJadeiteSeparator;
 	add: #MethodListPresenter -> #browseClass;
 	add: #MethodListPresenter -> #selectedMethodsAreTestCases;
 	add: #MethodSourcePresenter -> #editMenuStrings;
@@ -592,6 +594,11 @@ Semaphore subclass: #JadeiteSemaphore
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Error subclass: #RowanDebuggerStepPointError
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+DividerMenuItem subclass: #JadeiteDividerMenuItem
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -4767,6 +4774,15 @@ revert: session
 	definition selector: definition selector , ' (restored)'! !
 !MCRemoval categoriesFor: #isMethodRemoval!public!testing! !
 !MCRemoval categoriesFor: #revert:!public! !
+
+!Menu methodsFor!
+
+addJadeiteSeparator
+	"Add jadeite-specific standard separator as the last item of the receiver.
+	Answer that separator."
+
+	^self addItem: JadeiteDividerMenuItem separator! !
+!Menu categoriesFor: #addJadeiteSeparator!adding!public! !
 
 !MethodListPresenter methodsFor!
 
