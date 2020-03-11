@@ -2400,7 +2400,7 @@ displayNoMods: sourcePresenter
 
 displayUncompilableSourceIn: sourcePresenter
 	sourcePresenter value size < 34 ifTrue: [^self].
-	((sourcePresenter value copyFrom: 2 to: 34) equals: 'METHOD SOURCE CANNOT BE DISPLAYED')
+	((sourcePresenter value copyFrom: 2 to: 34) = 'METHOD SOURCE CANNOT BE DISPLAYED')
 		ifTrue: [sourcePresenter view backcolor: JadeiteTextStyles default colorForUndisplayableSource]!
 
 editSaveMethod: classService in: methodSourcePresenter category: category

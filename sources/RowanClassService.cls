@@ -113,6 +113,7 @@ classHierarchyUpdate: presenter browser: browser
 	presenter view updateMode: #dynamic!
 
 classMethodsUpdate: presenter browser: browser
+	self = browser selectedClass ifFalse: [^self].
 	browser methodsUpdate: self!
 
 classOrHierarchyPresenter: browser
