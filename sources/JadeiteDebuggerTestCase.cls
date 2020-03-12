@@ -1201,6 +1201,47 @@ test_loginButtonEnablementAfterDebug
 				session := shell login.
 				transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: []]!
 
+test_openDebuggerWthBreakpointInDebuggerService
+	"Basics of opening a debugger, viewing the UI, and resuming."
+
+	| x methodService answeringService wereBreakpointsEnabled |
+	self testsIssue: #issue748 withTitle: 'Debugger should ignore breakpoints'.
+	answeringService := RowanAnsweringService new.
+	wereBreakpointsEnabled := answeringService breakPointsAreEnabled: session.
+	
+	["set breakpoint in critical debugger path, expect debugger to open"
+	methodService := RowanMethodService new
+				className: 'RowanDebuggerService';
+				selector: #update;
+				meta: false.
+	methodService
+		command: #setBreakAt:;
+		commandArgs: (Array with: 3).
+	self issueCommand: methodService.
+	JadePresenter enableAllBreakpointsIn: session.
+	self
+		openDebuggerOn: 'nil halt';
+		assert: (x := debugger errorMessagePresenter value) = 'a Halt occurred (error 2709)';
+		assert: (x := debugger processListPresenter list size) == 1;
+		assert: (x := debugger frameListPresenter list size) == 5;
+		assert: (x := debugger frameListPresenter selection) = 'Executed Code  @2 line 1';
+		assert: (x := debugger variableListPresenter list size) == 1;
+		assert: (x := debugger variableListPresenter list first) class == RowanVariableService;
+		assert: x oop == 20;
+		assert: x _key == #receiver;
+		assert: x value = 'nil';
+		debuggerDo: [debugger resumeProcess];
+		assert: (x := debugger view) class == DeafObject;
+		yourself]
+			ensure: 
+				[methodService
+					ifNotNil: 
+						[methodService
+							command: #clearBreakAt:;
+							commandArgs: (Array with: 3)].
+				self issueCommand: methodService.
+				answeringService setBreakpointsEnabled: wereBreakpointsEnabled session: session]!
+
 test_reformatIllegalSource
 	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
 	self
@@ -2147,6 +2188,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_inspectedDebuggerObjectHeld!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_loginButtonEnablementAfterDebug!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_openDebuggerWthBreakpointInDebuggerService!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatIllegalSource!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatSource!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatSourceDoesNotStick!public!test source! !

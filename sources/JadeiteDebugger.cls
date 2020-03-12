@@ -108,9 +108,18 @@ debuggerService
 	"for test usage" 
 	^debuggerService!
 
+disableBreakpointsWhile: block
+	| wereBreakpointsEnabled answeringService result |
+	answeringService := RowanAnsweringService new.
+	wereBreakpointsEnabled := answeringService breakPointsAreEnabled: self gciSession.
+	answeringService setBreakpointsEnabled: false session: self gciSession.
+	[result := block value]
+		ensure: [answeringService setBreakpointsEnabled: wereBreakpointsEnabled session: self gciSession].
+	^result!
+
 displayUncompilableSourceIn: sourcePresenter
 	sourcePresenter value size < 34 ifTrue: [^self].
-	((sourcePresenter value copyFrom: 2 to: 34) equals: 'METHOD SOURCE CANNOT BE DISPLAYED')
+	((sourcePresenter value copyFrom: 2 to: 34) = 'METHOD SOURCE CANNOT BE DISPLAYED')
 		ifTrue: [sourcePresenter view backcolor: JadeiteTextStyles default colorForUndisplayableSource]!
 
 documentPresenter
@@ -204,12 +213,14 @@ initializeIdleProcess
 	idleProcess resume!
 
 initializeProcess: aProcess message: aString terminateOnClose: aBoolean
-	
-	[super
-		initializeProcess: aProcess
-		message: aString
-		terminateOnClose: aBoolean]
-			ensure: [self initializeIdleProcess]!
+	self registerWindow: self view handle rootObject: aProcess oopType.
+	self disableBreakpointsWhile: 
+			[
+			[super
+				initializeProcess: aProcess
+				message: aString
+				terminateOnClose: aBoolean]
+					ensure: [self initializeIdleProcess]]!
 
 isOkayToChangeFrame
 	^codePane isOkayToChange!
@@ -537,6 +548,7 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #createComponents!public! !
 !JadeiteDebugger categoriesFor: #createSchematicWiring!public! !
 !JadeiteDebugger categoriesFor: #debuggerService!accessing!private! !
+!JadeiteDebugger categoriesFor: #disableBreakpointsWhile:!private! !
 !JadeiteDebugger categoriesFor: #displayUncompilableSourceIn:!private! !
 !JadeiteDebugger categoriesFor: #documentPresenter!accessing!public! !
 !JadeiteDebugger categoriesFor: #errorMessagePresenter!accessing!public! !
@@ -608,11 +620,27 @@ debuggerClass: aDebugger
 	debuggerClass := aDebugger.
 !
 
+disableBreakpointsWhile: block session: session
+	| wereBreakpointsEnabled answeringService result |
+	answeringService := RowanAnsweringService new.
+	wereBreakpointsEnabled := answeringService breakPointsAreEnabled: session.
+	answeringService setBreakpointsEnabled: false session: session.
+	[result := block value]
+		ensure: [answeringService setBreakpointsEnabled: wereBreakpointsEnabled session: session].
+	^result!
+
 lastPosition
 	^lastPosition!
 
 lastPosition: anObject
 	lastPosition := anObject!
+
+openOn: gsProcess message: aString terminateOnClose: aBoolean
+	^(self showOnSession: gsProcess gciSession)
+		initializeProcess: gsProcess
+			message: aString
+			terminateOnClose: aBoolean;
+		answer!
 
 resource_Default_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.
@@ -646,8 +674,10 @@ signalSemaphore
 !JadeiteDebugger class categoriesFor: #aboutToShowErrorShellOn:!public! !
 !JadeiteDebugger class categoriesFor: #debuggerClass!public! !
 !JadeiteDebugger class categoriesFor: #debuggerClass:!public! !
+!JadeiteDebugger class categoriesFor: #disableBreakpointsWhile:session:!private! !
 !JadeiteDebugger class categoriesFor: #lastPosition!accessing!private! !
 !JadeiteDebugger class categoriesFor: #lastPosition:!accessing!private! !
+!JadeiteDebugger class categoriesFor: #openOn:message:terminateOnClose:!public! !
 !JadeiteDebugger class categoriesFor: #resource_Default_view!public!resources-views! !
 !JadeiteDebugger class categoriesFor: #semaphore!public! !
 !JadeiteDebugger class categoriesFor: #semaphore:!public! !

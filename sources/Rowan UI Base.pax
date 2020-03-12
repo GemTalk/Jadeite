@@ -1534,7 +1534,7 @@ initializeProcess: aProcess message: aString terminateOnClose: aBoolean
 	terminateOnClose := aBoolean.
 	[self getProcessList] on: GsError
 		do: 
-			[:ex |
+			[:ex | 
 			ex debugger: self.
 			ex pass].
 	self class debuggers at: gsProcess oopType asInteger put: self.
@@ -5351,10 +5351,10 @@ asStringUsingFormat: anArray
 
 	| timeSeparator hourInt hour min sec aString |
 	timeSeparator := anArray at: 1.
-	hourInt := self milliseconds // 3600000.
+	hourInt := self millisecond // 3600000.
 	hour := hourInt _digitsAsString.
-	min := (self milliseconds \\ 3600000 // 60000) _digitsAsString.
-	sec := (self milliseconds // 1000 \\ 60) _digitsAsString.
+	min := (self millisecond \\ 3600000 // 60000) _digitsAsString.
+	sec := (self millisecond // 1000 \\ 60) _digitsAsString.
 	aString := String new.
 	(anArray at: 3)
 		ifTrue: 

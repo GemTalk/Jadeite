@@ -74,6 +74,16 @@ needsCommit: session
 	BrowserUpdate current issueCommands: (Array with: self) session: session.
 	^answer!
 
+printOn: stream
+	stream
+		nextPutAll: self class name;
+		space;
+		nextPut: $(;
+		nextPutAll: command printString;
+		nextPutAll: '->';
+		nextPutAll: commandArgs printString;
+		nextPut: $)!
+
 setAutoCommit: boolean for: session
 	command := #setAutoCommit:.
 	self commandArgs: (Array with: boolean).
@@ -114,6 +124,7 @@ updateSymbols: unused
 !RowanAnsweringService categoriesFor: #isAnsweringService!public!testing! !
 !RowanAnsweringService categoriesFor: #isTranscriptInstalledIn:!commands!public! !
 !RowanAnsweringService categoriesFor: #needsCommit:!commands!public! !
+!RowanAnsweringService categoriesFor: #printOn:!printing!public! !
 !RowanAnsweringService categoriesFor: #setAutoCommit:for:!commands!public! !
 !RowanAnsweringService categoriesFor: #setBreakpointsEnabled:session:!commands!public! !
 !RowanAnsweringService categoriesFor: #symbolExists:session:!commands!public!testing! !

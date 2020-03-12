@@ -384,11 +384,11 @@ openDebuggerOnException: gciError
 !
 
 openOn: gsProcess message: aString terminateOnClose: aBoolean
-
 	^(self showOnSession: gsProcess gciSession)
-		initializeProcess: gsProcess message: aString terminateOnClose: aBoolean;
-		answer.
-!
+				initializeProcess: gsProcess
+					message: aString
+					terminateOnClose: aBoolean;
+				answer!
 
 printShortFrameAt: index process: gsProcess on: stream
 	| frameString  |

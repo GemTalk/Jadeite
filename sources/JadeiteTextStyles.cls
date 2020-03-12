@@ -42,25 +42,25 @@ defaultIndicatorStyles
 	^OrderedCollection new
 		add: (ScintillaIndicatorStyle new
 					forecolor: Color darkGray;
-					styleName: #box;
+					style: #box;
 					name: #disabledBreakPoint;
 					hoverStyle: #fullBox;
 					yourself);
 		add: (ScintillaIndicatorStyle new
 					forecolor: Color red;
-					styleName: #box;
+					style: #box;
 					name: #breakPoint;
 					hoverStyle: #fullBox;
 					yourself);
 		add: (ScintillaIndicatorStyle new
 					forecolor: Color gray;
-					styleName: #underline;
+					style: #underline;
 					name: #stepPoint;
 					hoverStyle: #fullBox;
 					yourself);
 		add: (ScintillaIndicatorStyle new
 					forecolor: Color red;
-					styleName: #squiggle;
+					style: #squiggle;
 					name: #compileError;
 					hoverStyle: #fullBox;
 					yourself);
