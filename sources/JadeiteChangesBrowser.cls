@@ -102,7 +102,7 @@ refresh
 	| projectService operations |
 	projectService := RowanProjectService new name: name.
 	operations := projectService basicChangesUsing: gciSession. 
-	operationListPresenter list: operations!
+	operationListPresenter list: operations asSortedCollection!
 
 refreshIdenticalSource
 	operationListPresenter

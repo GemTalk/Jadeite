@@ -26,6 +26,38 @@ addNewMethod
 		in: 'RowanSample1Test'
 		category: 'addition'!
 
+makeLotsOfChanges
+	self
+		saveMethod: 'aaa  ^123'
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	self
+		saveMethod: 'zzz  ^123'
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	self
+		saveMethod: 'mmm  ^123'
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	self
+		saveMethod: 'test1 ^$f'
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	self
+		saveMethod: 'test2 ^$f'
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	self selectMethodNamed: #testFailure.
+	self projectsPresenter removeMethods: (Array with: self projectsPresenter selectedClass).
+	self
+		saveMethod: 'notAnotherMethod  ^123'
+		in: 'RowanSample1'
+		category: 'ulp'.
+	self
+		saveMethod: 'yesIndeed  ^123'
+		in: 'RowanSample1'
+		category: 'ulp'!
+
 setUp
 	super setUp.
 	projectsBrowser
@@ -150,6 +182,17 @@ test_browseSenders
 		equals: #sendsFnoodle]
 			ensure: [self destroy: methodListBrowser]!
 
+test_changesAlphabetized
+	"alphabetize by class then method"
+
+	self selectRowanSample1Test.
+	self makeLotsOfChanges.
+	
+	[changesBrowser := self projectListPresenter selection changesUsing: session.
+	self assert: (changesBrowser operationListPresenter list collect: [:patch | patch selector]) asArray
+		equals: #('notAnotherMethod' 'yesIndeed' 'aaa' 'mmm' 'test1' 'test2' 'testFailure' 'zzz')	"first two are in RowanSample1"	"last few are in RowanSample1Test"]
+			ensure: [self destroy: projectsBrowser]!
+
 test_noExtraLF
 	| change |
 	self testsIssue: #issue742 withTitle: '(3.0.93) Incomple revert in changes browser'.
@@ -254,6 +297,7 @@ test_revertMethodRemoval
 	self assert: change definition selector equals: 'test1 (restored)'! !
 !JadeiteChangesBrowserTestCase categoriesFor: #addNewClass!private! !
 !JadeiteChangesBrowserTestCase categoriesFor: #addNewMethod!private! !
+!JadeiteChangesBrowserTestCase categoriesFor: #makeLotsOfChanges!public!support!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteChangesBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementors!public!tests! !
@@ -261,6 +305,7 @@ test_revertMethodRemoval
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseMethodSelectsAddedClass!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseMethodSelectsAddedMethod!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseSenders!public!tests! !
+!JadeiteChangesBrowserTestCase categoriesFor: #test_changesAlphabetized!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_noExtraLF!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_revertMethodAddition!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_revertMethodModification!public!tests! !
