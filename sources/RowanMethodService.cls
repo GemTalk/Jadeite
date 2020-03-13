@@ -239,11 +239,10 @@ implementorsOf: aString
 
 indexOfFirstReferenceInstVar
 
-	^35!
+	^36!
 
 indexOfTestResultInstVar
-
-	^29!
+	^30!
 
 initialize
 	super initialize.
