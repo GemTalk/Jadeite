@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 MCPatchOperation subclass: #MCModification
 	instanceVariableNames: 'obsoletion obsoletionMemo obsoletionMemoMarkers obsoletionLines modification modificationMemo modificationMemoMarkers modificationLines'
@@ -72,11 +72,11 @@ computeDifferences
 		start := firstMatchedLine.
 	].
 	stream := WriteStream on: String new.
-	obsoletionLines do: [:each | stream nextPutAll: each; nextPut: Character lf].
+	obsoletionLines do: [:each | stream nextPutAll: each. obsoletionLines last = each ifFalse:[stream nextPut: Character lf]].
 	obsoletionMemo := stream contents.
 	obsoletionMemoMarkers := obsoletionMemoMarkers asArray.
 	stream := WriteStream on: String new.
-	modificationLines do: [:each | stream nextPutAll: each; nextPut: Character lf].
+	modificationLines do: [:each | stream nextPutAll: each. modificationLines last = each ifFalse:[stream nextPut: Character lf]].
 	modificationMemo := stream contents.
 	modificationMemoMarkers := modificationMemoMarkers asArray.
 !

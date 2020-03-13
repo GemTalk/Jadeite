@@ -150,6 +150,37 @@ test_browseSenders
 		equals: #sendsFnoodle]
 			ensure: [self destroy: methodListBrowser]!
 
+test_noExtraLF
+	| change |
+	self testsIssue: #issue742 withTitle: '(3.0.93) Incomple revert in changes browser'.
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'test1  ^123'
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	change := changesBrowser operationListPresenter list first.
+	changesBrowser operationListPresenter selectionByIndex: 1.
+	self assert: change isMethodModification.
+	self assert: change modification source equals: 'test1  ^123'.
+	self deny: change modification source last equals: Character lf.
+	self deny: change obsoletion source last equals: Character lf.
+	self assert: change obsoletion source replaceLfWithCrLf
+		equals: 'test1
+
+	self assert: RowanSample1 new foo = ''foo'''.
+	changesBrowser operationListPresenter selection: change.
+	self assert: changesBrowser operationListPresenter selection modification selector equals: 'test1'.
+	changesBrowser revert.
+	self assert: change modification source replaceLfWithCrLf
+		equals: 'test1
+
+	self assert: RowanSample1 new foo = ''foo'''.
+	self assert: changesBrowser operationListPresenter selection modification selector
+		equals: 'test1 (reverted)'.
+	self assert: changesBrowser diffsPresenter afterTitlePresenter value equals: 'Image (no change)'!
+
 test_revertMethodAddition
 	| change |
 	self testsIssue: #issue624
@@ -230,6 +261,7 @@ test_revertMethodRemoval
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseMethodSelectsAddedClass!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseMethodSelectsAddedMethod!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseSenders!public!tests! !
+!JadeiteChangesBrowserTestCase categoriesFor: #test_noExtraLF!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_revertMethodAddition!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_revertMethodModification!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_revertMethodRemoval!public!tests! !

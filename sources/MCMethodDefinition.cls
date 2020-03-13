@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 MCDefinition subclass: #MCMethodDefinition
 	instanceVariableNames: 'classIsMeta source category selector className timeStamp'
@@ -39,16 +39,15 @@ displayText
 !
 
 initialize: aStream
-
 	| size |
-	timeStamp:= aStream upTo: Character tab.
+	timeStamp := aStream upTo: Character tab.
 	className := aStream upTo: Character tab.
 	classIsMeta := (aStream upTo: Character tab) = 'true'.
 	category := aStream upTo: Character tab.
 	selector := aStream upTo: Character tab.
 	size := (aStream upTo: Character tab) asNumber + 1.
 	source := (aStream next: size) copyReplacing: Character cr withObject: Character lf.
-!
+	source := source copyFrom: 1 to: (source size - 1 max: 1).	"remove trailing lf"!
 
 selector
 	^selector!

@@ -71,7 +71,6 @@ changesUsing: session
 	| operations |
 	operations := self basicChangesUsing: session.
 	changes isEmpty ifTrue: [^MessageBox notify: 'No changes!!'].
-	
 	[^JadeiteChangesBrowser showOn: (RowanPatch new
 				operations: operations;
 				session: session)
