@@ -1117,25 +1117,6 @@ isGlobalsTabSelected
 	^textAreaTabs currentCard name = 'globals'.
 !
 
-isOkayToChange
-	methodSourcePresenter view isModified ifTrue: [
-		methodSourcePresenter ensureVisible.
-		gciSession isValidSession
-			ifTrue: [(MessageBox confirm: 'Stay on unsaved method?' caption: 'Method has unsaved changes!!') ifTrue: [^false]]
-			ifFalse: [(MessageBox confirm: 'Copy changes to Clipboard?' caption: 'Method has unsaved changes!!') ifTrue: [methodSourcePresenter selectAll; copySelection]].
-		methodSourcePresenter view isModified: false.
-	].
-	classDefinitionPresenter view isModified ifTrue: [
-		classDefinitionPresenter ensureVisible.
-		gciSession isValidSession
-			ifTrue: [ (MessageBox confirm: 'Stay on unsaved class definition?' caption: 'Class has unsaved changes!!') ifTrue: [^false]]
-			ifFalse: [(MessageBox confirm: 'Copy changes to Clipboard?' caption: 'Class has unsaved changes!!') ifTrue: [classDefinitionPresenter selectAll; copySelection]].
-		classDefinitionPresenter view isModified: false.
-	].
-	self postOkToChangeEvent. 
-	^true.
-!
-
 isPackageListTabSelected
 
 	^packageDictionaryTabs currentCard name = 'packageList'.
@@ -2715,7 +2696,6 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #isClassSideSelected!accessing!public!request string! !
 !JadeSystemBrowserPresenter categoriesFor: #isDictionariesTabSelected!public!testing! !
 !JadeSystemBrowserPresenter categoriesFor: #isGlobalsTabSelected!public!testing! !
-!JadeSystemBrowserPresenter categoriesFor: #isOkayToChange!public!testing! !
 !JadeSystemBrowserPresenter categoriesFor: #isPackageListTabSelected!public!testing! !
 !JadeSystemBrowserPresenter categoriesFor: #isPragmasTabSelected!public!testing! !
 !JadeSystemBrowserPresenter categoriesFor: #isTreeModel:equivalentTo:!public! !

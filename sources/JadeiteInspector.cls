@@ -296,8 +296,8 @@ isNamedInstVarSelected
 
 isOkayToChange
 	documentPresenter view isModified
-		ifTrue: [(MessageBox confirm: 'Keep unsaved changes?' caption: 'Unsaved Changes') ifTrue: [^false]].
-	documentPresenter view isModified: false. 
+		ifTrue: [(JadePresenter unsavedChangesValidSessionDialogIn: documentPresenter) ifTrue: [^false]].
+	documentPresenter view isModified: false.
 	^true!
 
 isProtectedItemSelected

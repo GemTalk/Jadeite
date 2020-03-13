@@ -478,6 +478,8 @@ package methodNames
 	add: 'JadePresenter class' -> #clearAllBreaksIn:;
 	add: 'JadePresenter class' -> #clearMethodBreakpoints:in:;
 	add: 'JadePresenter class' -> #convertToPattern:;
+	add: 'JadePresenter class' -> #defaultCaptionText:;
+	add: 'JadePresenter class' -> #defaultUnsavedChangesText;
 	add: 'JadePresenter class' -> #disableAllBreakpointsIn:;
 	add: 'JadePresenter class' -> #disableMethodBreakpoints:in:;
 	add: 'JadePresenter class' -> #enableAllBreakpointsIn:;
@@ -492,6 +494,10 @@ package methodNames
 	add: 'JadePresenter class' -> #promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:;
 	add: 'JadePresenter class' -> #runMethodTests:in:;
 	add: 'JadePresenter class' -> #selectorsFrom:session:;
+	add: 'JadePresenter class' -> #unsavedChangesInvalidSessionDialogIn:;
+	add: 'JadePresenter class' -> #unsavedChangesInvalidSessionDialogIn:text:;
+	add: 'JadePresenter class' -> #unsavedChangesValidSessionDialogIn:;
+	add: 'JadePresenter class' -> #unsavedChangesValidSessionDialogIn:text:;
 	add: 'JadeServer class' -> #gsString;
 	add: 'JadeServer64bit32 class' -> #gsClassDefinitionStringFor:;
 	add: 'JadeSessionManager class' -> #getUrl;
@@ -2851,6 +2857,12 @@ convertToPattern: wildcardString
 	wildcardString last = $* ifTrue: [list addLast: $*].
 	^list asArray!
 
+defaultCaptionText: presenter
+	^'Unsaved changes warning in ' , presenter view topShell caption , '!!'!
+
+defaultUnsavedChangesText
+	^'Stay on window with unsaved changes?'!
+
 disableAllBreakpointsIn: session
 	| service |
 	service := RowanAnsweringService command: #disableAllBreaks withArgs: Array new. 
@@ -2934,7 +2946,20 @@ selectorsFrom: selector session: session
 	^JadeiteSearch
 		selectorsFrom: selector
 		session: session
-		trailingWildcard: false! !
+		trailingWildcard: false!
+
+unsavedChangesInvalidSessionDialogIn: presenter
+	^self unsavedChangesInvalidSessionDialogIn: presenter text: 'Copy changes to Clipboard?'!
+
+unsavedChangesInvalidSessionDialogIn: presenter text: text
+	^MessageBox confirm: text caption: (self defaultCaptionText: presenter)!
+
+unsavedChangesValidSessionDialogIn: presenter
+	^self unsavedChangesValidSessionDialogIn: presenter text: self defaultUnsavedChangesText!
+
+unsavedChangesValidSessionDialogIn: presenter text: text
+	^MessageBox confirm: text
+		caption: 'Unsaved changes warning in ' , presenter view topShell caption , '!!'! !
 !JadePresenter class categoriesFor: #abortTransaction:!browsing support!public! !
 !JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
 !JadePresenter class categoriesFor: #basicBrowseClassReferences:session:!browsing!browsing support!public! !
@@ -2961,6 +2986,8 @@ selectorsFrom: selector session: session
 !JadePresenter class categoriesFor: #clearAllBreaksIn:!browsing!public! !
 !JadePresenter class categoriesFor: #clearMethodBreakpoints:in:!browsing!public! !
 !JadePresenter class categoriesFor: #convertToPattern:!browsing support!private! !
+!JadePresenter class categoriesFor: #defaultCaptionText:!public!unsaved changes support! !
+!JadePresenter class categoriesFor: #defaultUnsavedChangesText!public!unsaved changes support! !
 !JadePresenter class categoriesFor: #disableAllBreakpointsIn:!browsing!public! !
 !JadePresenter class categoriesFor: #disableMethodBreakpoints:in:!browsing!public! !
 !JadePresenter class categoriesFor: #enableAllBreakpointsIn:!browsing!public! !
@@ -2975,6 +3002,10 @@ selectorsFrom: selector session: session
 !JadePresenter class categoriesFor: #promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:!browsing support!private! !
 !JadePresenter class categoriesFor: #runMethodTests:in:!public! !
 !JadePresenter class categoriesFor: #selectorsFrom:session:!browsing support!private! !
+!JadePresenter class categoriesFor: #unsavedChangesInvalidSessionDialogIn:!public!unsaved changes support! !
+!JadePresenter class categoriesFor: #unsavedChangesInvalidSessionDialogIn:text:!public!unsaved changes support! !
+!JadePresenter class categoriesFor: #unsavedChangesValidSessionDialogIn:!public!unsaved changes support! !
+!JadePresenter class categoriesFor: #unsavedChangesValidSessionDialogIn:text:!public!unsaved changes support! !
 
 !JadePresenterA methodsFor!
 
@@ -3063,11 +3094,9 @@ enableBreakPointAt: stepPoint in: browser
 isOkayToChangeSource: methodSourcePresenter
 	methodSourcePresenter ensureVisible.
 	gciSession isValidSession
-		ifTrue: 
-			[(MessageBox confirm: 'Stay on unsaved method?' caption: 'Method has unsaved changes!!')
-				ifTrue: [^false]]
+		ifTrue: [(self class unsavedChangesValidSessionDialogIn: self) ifTrue: [^false]]
 		ifFalse: 
-			[(MessageBox confirm: 'Copy changes to Clipboard?' caption: 'Method has unsaved changes!!')
+			[(self class unsavedChangesInvalidSessionDialogIn: self)
 				ifTrue: 
 					[methodSourcePresenter
 						selectAll;
@@ -4358,8 +4387,18 @@ jadeInspect
 onPromptToSaveChanges: aBooleanValue
 	"we were calling #getDocumentData essentially to test for nil. 
 	That uses #asString which some objects don't understand - like booleans."
+
 	documentPresenter value ifNil: [self isModified: false].
-	^super onPromptToSaveChanges: aBooleanValue!
+	self isModified
+		ifTrue: 
+			[MessageBox new
+				owner: self view;
+				caption: (JadePresenter defaultCaptionText: self);
+				confirm: JadePresenter defaultUnsavedChangesText
+					onYes: [aBooleanValue value: self fileSave]
+					onNo: [self isModified: false]
+					onCancel: [aBooleanValue value: false]].
+	^aBooleanValue value!
 
 openDictionaryBrowser
 	gciSession hasServer ifTrue: [^JadeiteBrowser showOnSession: gciSession]!

@@ -927,11 +927,9 @@ isOkayToChange
 		ifTrue: 
 			[classDefinitionPresenter ensureVisible.
 			gciSession isValidSession
-				ifTrue: 
-					[(MessageBox confirm: 'Stay on unsaved class definition?' caption: 'Class has unsaved changes!!')
-						ifTrue: [^false]]
+				ifTrue: [(JadePresenter unsavedChangesValidSessionDialogIn: self) ifTrue: [^false]]
 				ifFalse: 
-					[(MessageBox confirm: 'Copy changes to Clipboard?' caption: 'Class has unsaved changes!!')
+					[(JadePresenter unsavedChangesInvalidSessionDialogIn: self)
 						ifTrue: 
 							[classDefinitionPresenter
 								selectAll;
@@ -942,14 +940,15 @@ isOkayToChange
 			[classCommentPresenter ensureVisible.
 			gciSession isValidSession
 				ifTrue: 
-					[(MessageBox confirm: 'Stay on unsaved class comment?' caption: 'Class commen has unsaved changes!!')
-						ifTrue: [^false]]
+					[(JadePresenter unsavedChangesValidSessionDialogIn: self
+						text: 'Stay on window with unsaved changes? Class comment has unsaved changes.') ifTrue: [^false]]
 				ifFalse: 
-					[(MessageBox confirm: 'Copy changes to Clipboard?' caption: 'Class has unsaved changes!!')
-						ifTrue: 
-							[classCommentPresenter
-								selectAll;
-								copySelection]].
+					[(JadePresenter unsavedChangesInvalidSessionDialogIn: self
+						text: 'Copy changes to Clipboard? Class comment has unsaved changes')
+							ifTrue: 
+								[classCommentPresenter
+									selectAll;
+									copySelection]].
 			classCommentPresenter view isModified: false].
 	self postOkToChangeEvent.
 	^true!

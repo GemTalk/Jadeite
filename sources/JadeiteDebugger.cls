@@ -212,7 +212,7 @@ initializeIdleProcess
 	idleProcess priority: Processor userBackgroundPriority.
 	idleProcess resume!
 
-initializeProcess: aProcess message: aString terminateOnClose: aBoolean
+initializeProcess: aProcess message: aString terminateOnClose: aBoolean	
 	self registerWindow: self view handle rootObject: aProcess oopType.
 	self disableBreakpointsWhile: 
 			[
