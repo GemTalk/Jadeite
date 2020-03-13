@@ -36,6 +36,17 @@ addHierarchyService: service to: treeModel withParent: parentService
 				to: treeModel
 				withParent: service]!
 
+addSorted: sortedAdditions to: theModel
+	| stream next |
+	sortedAdditions isEmpty ifTrue: [^self].
+	theModel isEmpty ifTrue: [^theModel addAll: sortedAdditions].
+	stream := ReadStream on: sortedAdditions.
+	[stream atEnd] whileFalse: 
+			[| insertion |
+			next := stream next.
+			insertion := theModel detect: [:modelService | modelService >= next] ifNone: [].
+			insertion ifNil: [theModel addLast: next] ifNotNil: [theModel add: next before: insertion]]!
+
 basicPrepareForReplication
 	"don't call anything potentially recursive here.
 	method & package services don't iterate over subcollections"
@@ -534,12 +545,12 @@ updateListIn: presenter from: visibleMethods
 			updated := visibleMethods detect: [:new | new = old] ifNone: [].
 			updated ifNil: [toRemove add: old] ifNotNil: [old replicateFrom: updated]].
 	theModel removeAll: toRemove.
-	toAdd := OrderedCollection new.
+	toAdd := SortedCollection new.
 	visibleMethods do: 
 			[:new |
 			updated := theModel detect: [:old | new = old] ifNone: [].
 			updated ifNil: [toAdd add: new]].
-	theModel addAll: toAdd.
+	self addSorted: toAdd to: theModel.
 	(presenter parentPresenter class canUnderstand: #updateSUnitTab)
 		ifTrue: [presenter parentPresenter updateSUnitTab].
 	theModel == presenter model ifFalse: [presenter model: theModel]!
@@ -573,6 +584,7 @@ wasRenamed
 	^renamedName notNil! !
 !RowanClassService categoriesFor: #=!comparing!public! !
 !RowanClassService categoriesFor: #addHierarchyService:to:withParent:!private!updating support! !
+!RowanClassService categoriesFor: #addSorted:to:!private!updating support! !
 !RowanClassService categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanClassService categoriesFor: #behaviorIdentifier!accessing!public! !
 !RowanClassService categoriesFor: #categories!accessing!private! !

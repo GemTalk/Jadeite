@@ -15,10 +15,22 @@ constant methods for performance.
 !RowanMethodService categoriesForClass!Kernel-Objects! !
 !RowanMethodService methodsFor!
 
+<= methodService
+	(methodService isKindOf: RowanMethodService) ifFalse: [^false].
+	^className = methodService className
+		ifTrue: [selector <= methodService selector]
+		ifFalse: [className <= methodService className]!
+
 = methodService
 	methodService isMethodService ifFalse: [^false].
 	^selector = methodService selector
 		and: [className = methodService className and: [meta = methodService meta]]!
+
+>= methodService
+	(methodService isKindOf: RowanMethodService) ifFalse: [^false].
+	^className = methodService className
+		ifTrue: [selector >= methodService selector]
+		ifFalse: [className >= methodService className]!
 
 accessedInstVars
 	^accessedInstVars!
@@ -555,7 +567,9 @@ user
 
 user: anObject
 	user := anObject! !
+!RowanMethodService categoriesFor: #<=!comparing!public! !
 !RowanMethodService categoriesFor: #=!comparing!public! !
+!RowanMethodService categoriesFor: #>=!comparing!public! !
 !RowanMethodService categoriesFor: #accessedInstVars!accessing!private! !
 !RowanMethodService categoriesFor: #accessedInstVars:!accessing!private! !
 !RowanMethodService categoriesFor: #addBreakPointMenuAt:to:presenter:!method menu support!private! !

@@ -588,7 +588,7 @@ methodsMenuStrings
 
 methodsUpdate: classService
 	classService meta = self isClassSideSelected ifFalse: [^self].
-	classListPresenter list isEmpty ifTrue: [classService initializePresenterList: methodListPresenter].
+	classListPresenter list isEmpty ifTrue: [classService initializePresenterList: methodListPresenter].	
 	classService displayMethodsOn: methodListPresenter browser: self!
 
 methodToReformat
