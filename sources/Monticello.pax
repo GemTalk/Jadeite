@@ -60,6 +60,7 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Models\Value\Dolphin Value Models'
 	'GemStone C Interface'
 	'GemStone Session'
+	'Jade Autocompletation'
 	'Jade UI Base'
 	'..\Core\Object Arts\Dolphin\ActiveX\Shell\Windows Shell Namespace').
 
