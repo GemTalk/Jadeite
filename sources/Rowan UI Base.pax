@@ -3028,13 +3028,13 @@ basicRefreshBreakpointsIn: methodSourcePresenter selection: selection
 					[includesBreakPoint := selection breakPoints includes: stepPoint negated.
 					includesBreakPoint ifTrue: [individualBreakPointSymbol := #disabledBreakPoint]].
 			styleName := includesBreakPoint ifTrue: [individualBreakPointSymbol] ifFalse: [#stepPoint].
-			string := ((selection breakPoints includes: stepPoint) ifTrue: ['Break at '] ifFalse: [''])
-						, 'step point #' , stepPoint printString.
+			string := (includesBreakPoint ifTrue: ['Break at '] ifFalse: ['']) , 'step point #'
+						, stepPoint printString.
 			indicators add: (ScintillaIndicator
 						styleName: styleName
 						range: range
 						tag: string)].
-	methodSourcePresenter view indicators: indicators. 
+	methodSourcePresenter view indicators: indicators.
 	methodSourcePresenter view update!
 
 clearBreakPointAt: stepPoint in: browser
@@ -5004,7 +5004,7 @@ updateMethodStepPoints
 					includesBreakPoint
 						ifFalse: 
 							[includesBreakPoint := breakPoints includes: stepPoint negated.
-							includesBreakPoint ifTrue: [individualBreakPointSymbol := #disabledBreakPoint]].
+							includesBreakPoint ifTrue: [individualBreakPointSymbol := #disabledBreakPoint. ]].
 					styleName := includesBreakPoint ifTrue: [individualBreakPointSymbol] ifFalse: [#stepPoint].
 					string := (includesBreakPoint ifTrue: ['Break at '] ifFalse: ['']) , 'step point #'
 								, stepPoint printString].
