@@ -104,7 +104,6 @@ test_autoCommitInAdHocExecution
 				workspace view close]!
 
 test_autoCommitOffInAdHocDisplay
-	| workspace |
 	self testsIssue: #issue427 withTitle: '(3.0.60) autocommit not done after successful doits'.
 	
 	[self setAutoCommit: false.
@@ -347,7 +346,7 @@ test_workspaceAdHocDisplayUnicodeCharacters
 		equals: '''aa'', (String with: (Character withValue: 353)), ''bb''   ''aa?bb'''.!
 
 test_workspaceBrowseProjects
-	| workspace jadeiteMenu browseProjectsItem |
+	| jadeiteMenu browseProjectsItem |
 	self testsIssue: #issue265 withTitle: 'workspace could use a `browse projects` menu item ... '.
 	projectsBrowser
 		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
@@ -361,7 +360,7 @@ test_workspaceBrowseProjects
 				self destroy: projectsBrowser]!
 
 test_workspaceConfirmInteraction
-	| workspace result |
+	| result |
 	self testsIssue: #issue303 withTitle: 'Need to handle confirm:'.
 	TestMessageBox enableJadeiteTestMessageBox.
 	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Interactions'.
@@ -743,6 +742,22 @@ test_workspaceSymbolWithQuotesSenders
 	[self assert: ('Senders of ''env:categorysDo:''*' match: methodListBrowser caption)]
 		ensure: [methodListBrowser view close]!
 
+test_workspaceUnsavedChanges
+	| caption |
+	self testsIssue: #issue747
+		withTitle: 'would be nice if "unsaved changes" dialog would include the window title in the message'.
+	workspace := (JadeWorkspace showOnSession: session) caption: 'Jade Workspace - Test Unsaved Changes'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.
+	
+	[workspace setDocumentData: 'stuff'.
+	workspace codePane documentPresenter view isModified: true.
+	caption := JadePresenter defaultCaptionText: workspace view.
+	workspace view close.
+	self assert: TestMessageBox lastMessageBox caption equals: caption.
+	self assert: TestMessageBox lastMessageBox text equals: JadePresenter defaultUnsavedChangesText]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 testClassServiceNameIsString
 	| classService |
 	self testsIssue: #issue441 withTitle: '(3.0.62) suspicious code in RowanClassService>>hierarchyClassServiceFor:'.
@@ -810,6 +825,7 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolSendersTruncateLongSelectors!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolWithQuotesImplementors!public!test browse!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolWithQuotesSenders!public!test browse!test workspaces! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceUnsavedChanges!public!test!test workspaces! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testClassServiceNameIsString!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #testMethodServiceClassNameIsString!public! !
 

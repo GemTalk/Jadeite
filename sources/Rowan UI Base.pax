@@ -2861,7 +2861,7 @@ defaultCaptionText: presenter
 	^'Unsaved changes warning in ' , presenter view topShell caption , '!!'!
 
 defaultUnsavedChangesText
-	^'Stay on window with unsaved changes?'!
+	^'Keep unsaved changes?'!
 
 disableAllBreakpointsIn: session
 	| service |
