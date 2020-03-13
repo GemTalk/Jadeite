@@ -977,7 +977,7 @@ updateClass: classService
 	update := classListPresenter model asBag
 				detect: [:listClassService | listClassService name = classService name]
 				ifNone: [^self].
-	update replicateFrom: self.
+	update replicateFrom: classService.
 	classListPresenter view invalidate!
 
 updateClasses
