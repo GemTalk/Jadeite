@@ -85,17 +85,6 @@ family: family ofNodesIn: presenter
 			nodeFamily at: parentNode put: childrenNodeArray].
 	^nodeFamily!
 
-issue170methodCreation
-	| source |
-	self methodSourcePresenter value: (source := 'another  ^5').
-	self projectsPresenter editSaveMethod: self classListPresenter selection.
-	self methodSourcePresenter value: (source := 'interesting  ^5').
-	self projectsPresenter editSaveMethod: self classListPresenter selection.
-	self methodSourcePresenter value: (source := 'test  ^5').
-	self projectsPresenter editSaveMethod: self classListPresenter selection.
-	self methodSourcePresenter value: (source := 'try  ^5').
-	self projectsPresenter editSaveMethod: self classListPresenter selection!
-
 issue261createTestProject
 	"Private - support method for issue 261"
 
@@ -179,17 +168,6 @@ saveMethodWithUnimplementedSelector
 	| source |
 	source := 'theTestMethod
 		^self fnoodley1'.
-	self methodSourcePresenter value: source. 
-	self projectsPresenter editSaveMethod: self classListPresenter selection. 
-
-	!
-
-saveMethodWithUniqueString
-
-	| source |
-	source := 'gloop
-	"I be unique"
-	^self gloop'. 
 	self methodSourcePresenter value: source. 
 	self projectsPresenter editSaveMethod: self classListPresenter selection. 
 
@@ -1808,47 +1786,6 @@ test_classVersionIncrementedInHierarchy
 	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Tests'.
 	self assert: self classListPresenter selection displayString equals: 'TestClass (5/5)'!
 
-test_clearAllBreakpoints
-	self testsIssue: #issue515 withTitle: '(3.0.77) clear all breakpoints menu item would be useful'.
-	self projectsPresenter clearAllBreaks.
-	self selectRowanSample1Test.
-	self selectMethodNamed: #test1.
-	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
-	self selectMethodNamed: #test2.
-	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
-	self selectMethodNamed: #testError.
-	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
-	self selectMethodNamed: #testFailure.
-	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
-	methodListBrowser := JadePresenter browseBreakpointsIn: session.
-	
-	[self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list size
-		equals: 4]
-			ensure: [methodListBrowser view close].
-	self projectsPresenter clearAllBreaks.
-	methodListBrowser := JadePresenter browseBreakpointsIn: session.
-	
-	[self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list size
-		equals: 0]
-			ensure: [methodListBrowser view close]!
-
-test_clearMethodBreakpoints
-	self testsIssue: #issue515 withTitle: '(3.0.77) clear all breakpoints menu item would be useful'.
-	self projectsPresenter clearAllBreaks.
-	
-	[self selectRowanSample1Test.
-	self selectMethodNamed: #test1.
-	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
-	self selectMethodNamed: #test2.
-	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
-	self assert: self methodListPresenter selection selector equals: #test2.
-	self assert: self methodListPresenter selection breakPoints size equals: 1.
-	self projectsPresenter clearMethodBreakpoints.
-	self assert: self methodListPresenter selection breakPoints isEmpty.
-	self selectMethodNamed: #test1.
-	self assert: self methodListPresenter selection breakPoints size equals: 1]
-			ensure: [self projectsPresenter clearAllBreaks]!
-
 test_closeConsoleInvalidSession
 	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector |
 	"poison session and exit Jadeite. Make sure all Jadeite windows close"
@@ -3286,26 +3223,6 @@ test_implementorsSendersCaption
 	[self assert: ('Senders of ''branch'' for *' match: methodListBrowser caption)]
 		ensure: [self destroy: methodListBrowser]!
 
-test_insertIfFalse
-	self selectRowanSample1Test.
-	self selectMethodNamed: #test1.
-	self methodSourcePresenter selectionRange: (1 to: 0).
-	self projectsPresenter insertIfFalse.
-	self assert: (self methodSourcePresenter value copyFrom: 1 to: 10) equals: 'ifFalse:[]'.
-	self assert: self methodSourcePresenter selectionRange equals: (10 to: 9).
-	self assert: self projectsPresenter additionalAccelerators first
-		equals: #(#insertIfFalse 'Ctrl+Shift+D')!
-
-test_insertIfTrue
-	self selectRowanSample1Test.
-	self selectMethodNamed: #test1.
-	self methodSourcePresenter selectionRange: (1 to: 0).
-	self projectsPresenter insertIfTrue.
-	self assert: (self methodSourcePresenter value copyFrom: 1 to: 9) equals: 'ifTrue:[]'.
-	self assert: self methodSourcePresenter selectionRange equals: (9 to: 8).
-	self assert: self projectsPresenter additionalAccelerators second
-		equals: #(#insertIfTrue 'Ctrl+Shift+T')!
-
 test_instVarReaders
 	"should browse the whole hierarchy"
 
@@ -3493,54 +3410,6 @@ test_menusDontAddBreaks
 		presenter: self methodSourcePresenter view.
 	self noBreakIn: methodsMenu!
 
-test_methodsContaining
-	| methodListPresenter sourcePresenter |
-	self testsIssue: #issue220
-		withTitle: 'Verify using Jadeite method list browser for senders of "methods containing"'.
-	self selectRowanSample1Class.
-	self saveMethodWithUniqueString.
-	methodListBrowser := JadePresenter browseMethodsContaining: 'I be unique' session: session. 
-	"the method list browser contains the BasicMethodListPresenter which is of questionable value now. 
-	That's why there are two methodListPresenter message sends"
-	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
-	sourcePresenter := methodListBrowser primaryPresenter  methodSourcePresenter documentPresenter.
-	self assert: methodListPresenter list size equals: 1.
-	self assert: sourcePresenter view selection = 'I be unique'. !
-
-test_methodsContainingCaption
-	self testsIssue: #issue209 withTitle: 'MethodListBrowser needs the token in the title bar'.
-	methodListBrowser := JadePresenter browseMethodsContaining: 'updateFromSton:' session: session.
-	[self assert: ('Methods containing ''updateFromSton:'' for *' match: methodListBrowser caption)]
-		ensure: [self destroy: methodListBrowser]!
-
-test_methodTabSelected
-	"when a method is changed the method source tab should be selected"
-
-	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
-	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
-	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter.
-	self assert: self projectsPresenter textAreaTabs currentCard name = 'classDefinition'.
-	self selectMethodNamed: #test1.
-	self assert: self projectsPresenter textAreaTabs currentCard name = 'methodSource'.
-	self selectHierarchyTab.
-	self assert: self projectsPresenter textAreaTabs currentCard name = 'classDefinition'. "presume user is thinking classes so show class def"
-	self selectMethodNamed: #test2.
-	self assert: self projectsPresenter textAreaTabs currentCard name = 'methodSource'.
-	self selectSUnitTab. 
-	self assert: self projectsPresenter textAreaTabs currentCard name = 'sunit'.
-	self selectMethodNamed: #test1.
-	self assert: self projectsPresenter textAreaTabs currentCard name = 'methodSource'.
-	self selectClassTab. "effectively deselect method go back to class def" 
-	self assert: self projectsPresenter textAreaTabs currentCard name = 'classDefinition'. 
-	self selectInstanceTab. 
-	self assert: self projectsPresenter textAreaTabs currentCard name = 'classDefinition'.
-	self selectMethodNamed: #test1.
-	self assert: self projectsPresenter textAreaTabs currentCard name = 'methodSource'.
-
-
-	
-	!
-
 test_moveTabsWithSUnitTabselected
 	self testsIssue: #issue556 withTitle: 'Funny orange boxes enabled for Sunit tab, but error'.
 	projectsBrowser closeCard.
@@ -3560,36 +3429,6 @@ test_moveTabsWithSUnitTabselected
 	projectsBrowser closeCard.
 	self assert: projectsBrowser cardsPresenter view cards size equals: 1.
 	self assert: projectsBrowser cardsPresenter view currentCard arrangement equals: '1 Projects'!
-
-test_multipleCompileMethod
-	self testsIssue: #issue170
-		withTitle: 'Editing methods to create new method and updating created method gets errors'.
-	self selectRowanSample1Class.
-	self issue170methodCreation.
-	self selectMethodNamed: #test.
-	self methodSourcePresenter value: 'pest  ^55'.
-	self projectsPresenter editSaveMethod: self classListPresenter selection.
-	"run through the list of methods"
-	self selectMethodNamed: #another.
-	self selectMethodNamed: #interesting.
-	self selectMethodNamed: #test.
-	self selectMethodNamed: #try.
-	self selectMethodNamed: #test.
-	self selectMethodNamed: #interesting.
-	self selectMethodNamed: #another.
-	self selectMethodNamed: #pest.
-	self assert: self methodSourcePresenter value equals: 'pest  ^55'.
-	self methodSourcePresenter value: 'pest  ^55 + 1'.
-	self projectsPresenter editSaveMethod: self classListPresenter selection.
-	self selectMethodNamed: #another.
-	self selectMethodNamed: #interesting.
-	self selectMethodNamed: #test.
-	self selectMethodNamed: #try.
-	self selectMethodNamed: #test.
-	self selectMethodNamed: #interesting.
-	self selectMethodNamed: #another.
-	self selectMethodNamed: #pest.	"<< bug occurred here"
-	self assert: self methodSourcePresenter value equals: 'pest  ^55 + 1'!
 
 test_multiplePackageSelection
 	"verify package selection shows packages in both packages and alphabetizes them"
@@ -4081,48 +3920,6 @@ test_removeInstVarVariablesStaySorted
 	self assert: self projectsPresenter methodFilterListPresenter list asArray
 		equals: (Array with: 'foo' with: 'testSelector')!
 
-test_removeMethodOutsideServices
-	"does Jadeite handle a removed selector ok?"
-
-	| selection |
-	self
-		saveMethod: 'testAdHocExecutionWith: arg1
-	| temp1 |
-	temp1 := arg1. 
-	self halt.
-	^temp1'
-		in: 'RowanSample1Test'
-		category: 'tests'.
-	self selectRowanSample1Test.
-	self selectMethodNamed: #testAdHocExecutionWith:.
-	selection := self methodListPresenter selectionIfNone: [].
-	self denyIsNil: selection.
-	self assert: (self methodListPresenter list includes: selection).
-	session
-		executeString: 'Rowan projectTools browser removeMethod: #testAdHocExecutionWith: forClassNamed: ''RowanSample1Test'' isMeta: false'.
-	self
-		assert: (session executeString: '| auditResults | 
-								auditResults := (RwPrjAuditTool new auditForProjectNamed: ''RowanSample1''). 
-								auditResults isEmpty').
-	self selectMethodNamed: #testAdHocExecutionWith:.
-	self deny: (self methodListPresenter list includes: selection)!
-
-test_removeMethodWarningString
-	| source removalWarningString |
-	self testsIssue: #issue663
-		withTitle: '(3.0.91) OOM when attempting to remove method with #new selector ...'.
-	self selectRowanSample1Class.
-	self selectClassTab.
-	self projectsPresenter basicAddMethodCategory: 'instance creation'.
-	source := 'new
-		^super new initialize'.
-	self methodSourcePresenter value: source.
-	self projectsPresenter editSaveMethod: self classListPresenter selection.
-	self selectMethodNamed: #new.
-	removalWarningString := self projectsPresenter
-				removeSelectorsString: self methodListPresenter selections.
-	self assert: ('RowanSample1>>new (referenced by #### methods)*' match: removalWarningString)	"assume it will always be at least 1000 senders"!
-
 test_removeProject
 	| targetProject |
 	self testsIssue: #issue129 withTitle: 'Expose unload project.'.
@@ -4391,85 +4188,6 @@ test_saveClassCommentInHierarchy
 	self selectClassTab.
 	self projectsPresenter selectCommentTab.
 	self projectsPresenter classCommentPresenter value equals: 'this is a test'!
-
-test_saveClassMethod
-	| source |
-	self selectRowanSample1Class.
-	self selectClassTab.
-	self projectsPresenter basicAddMethodCategory: 'class side category'.
-	self assert: self categoryListPresenter selection = 'class side category'.
-	source := 'classSideMethod  ^#classSide'.
-	self methodSourcePresenter value: source.
-	self projectsPresenter editSaveMethod: self classListPresenter selection.
-	self selectServicesNamed: (Array with: 'classSideMethod') in: self methodListPresenter.
-	self assert: self methodListPresenter selection selector = #classSideMethod.
-	self assert: (session executeString: 'RowanSample1 classSideMethod') = #classSide!
-
-test_saveClassMethodHierarchy
-	| source |
-	self testsIssue: #issue121
-		withTitle: 'Package Browser (3.0.20): hierarchy class view and classes defined in different pacakge oddity'.
-	self selectRowanSample1Class.
-	self assert: self classListPresenter selection name = 'RowanSample1'.
-	self selectHierarchyTab.
-	self selectClassTab.
-	self projectsPresenter basicAddMethodCategory: 'class side category'.
-	self assert: self categoryListPresenter selection = 'class side category'.
-	source := 'classSideMethod  ^''on the class side'''.
-	self methodSourcePresenter value: source.
-	self projectsPresenter editSaveMethod: self projectsPresenter classHierarchyPresenter selection.
-	self selectServicesNamed: (Array with: 'classSideMethod') in: self methodListPresenter.
-	self assert: self methodListPresenter selection selector = #classSideMethod.
-	self assert: (session executeString: 'RowanSample1 classSideMethod') = 'on the class side'!
-
-test_saveClassMethodSameName
-	self testsIssue: #issue713 withTitle: 'Copy instance method to class, get walkback (3.0.93-3)'.
-	self selectRowanSample1Class.
-	self projectsPresenter basicAddMethodCategory: 'test_saveMethod'.
-	self saveSampleMethod.
-	self selectServicesNamed: (Array with: 'sampleMethod') in: self methodListPresenter.
-	self assert: (session executeString: 'RowanSample1 new sampleMethod') = 123.
-	self selectClassTab.
-	self projectsPresenter basicAddMethodCategory: 'test_saveMethod'.
-	self saveSampleMethod.
-	self selectServicesNamed: (Array with: 'sampleMethod') in: self methodListPresenter.
-	self assert: (session executeString: 'RowanSample1 sampleMethod') = 123.
-	self assert: (session executeString: 'RowanSample1 new sampleMethod') = 123!
-
-test_saveMethod
-	self selectRowanSample1Class.
-	self projectsPresenter basicAddMethodCategory: 'test_saveMethod'.
-	self saveSampleMethod.
-	self selectServicesNamed: (Array with: 'sampleMethod') in: self methodListPresenter.
-	self assert: (session executeString: 'RowanSample1 new sampleMethod') = 123!
-
-test_saveMethodAndUpdateSUnitTab
-	| source methodService |
-	self selectServicesNamed: #('Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
-	self selectServicesNamed: #('RowanTestClassServiceTest') in: self classListPresenter.
-	self projectsPresenter basicAddMethodCategory: 'test_saveMethod'.
-	source := 'test_testMethod  
-		self assert: true'.
-	self methodSourcePresenter value: source.
-	self projectsPresenter editSaveMethod.
-	
-	[self projectsPresenter selectSUnitTab.
-	methodService := self projectsPresenter sunitPresenter methodListPresenter list
-				detect: [:service | service selector = #test_testMethod]
-				ifNone: [].
-	self assert: methodService selector equals: #test_testMethod]
-			ensure: [self projectsPresenter basicRemoveMethods]!
-
-test_saveMethodHierarchy
-	self testsIssue: #issue121 withTitle: 'Package Browser (3.0.20): hierarchy class view and classes defined in different pacakge oddity'.
-	self selectRowanSample1Class.
-	self selectHierarchyTab.
-	self selectCategoriesNamed: #('accessing').
-	self saveSampleMethod.
-	self selectServicesNamed: (Array with: 'sampleMethod') in: self methodListPresenter.
-	self assert: self methodListPresenter selection selector = #sampleMethod.
-	self assert: (session executeString: 'RowanSample1 new sampleMethod') = 123!
 
 test_selectionsRetainedFromClassListToHierarchy
 	self testsIssue: #issue448 withTitle: 'Class selection not retained from Hierarchy->Class view'.
@@ -5543,7 +5261,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #dirtyProjectForChangeBrowser!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #executeStringInOtherSession:!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #family:ofNodesIn:!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue261createTestProject!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue284methodCreation!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #loadProjectNamed:!private!project support! !
@@ -5558,7 +5275,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #rowanProjectNames!constants!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveHooMethod!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUnimplementedSelector!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUniqueString!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveTestClass!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectCommentTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectVariableListEntryForcingEvent:!private! !
@@ -5630,8 +5346,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classTemplateWhenNoPackagesSelected!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInClassList!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classVersionIncrementedInHierarchy!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_clearAllBreakpoints!public!test class hierarchy!test methods! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_clearMethodBreakpoints!public!test class hierarchy!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleInvalidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleValidSession!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_confirmOverrideExistingAccessorMethods!public!test variable tab!tests! !
@@ -5699,8 +5413,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySendersFromMethodList!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyWithNonResolvableClass!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_insertIfFalse!public!test methods! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_insertIfTrue!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_instVarReaders!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_instVarWriters!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_issue261!public!test menus!test projects!tests! !
@@ -5710,11 +5422,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuAddPackageOnProjectMenu!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuEnablementDoesNotBreak!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menusDontAddBreaks!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_methodsContaining!public!test methods! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_methodsContainingCaption!public!test methods! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_methodTabSelected!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_moveTabsWithSUnitTabselected!public!test system tabs! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_multipleCompileMethod!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multiplePackageSelection!public!test packages!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_newBrowserRetainsClassAndMethod!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_newBrowserRetainsClassAndMethodClassSide!public!test class hierarchy!tests! !
@@ -5741,8 +5449,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassFromList!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeClassWithSubclasses!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeInstVarVariablesStaySorted!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_removeMethodOutsideServices!public!test methods! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_removeMethodWarningString!public!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameCategory!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_renameClassMethodListUpdates!public!test rename class! !
@@ -5758,12 +5464,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_rowanTestsHierarchy!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassCommentInClassList!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassCommentInHierarchy!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethod!public!test methods! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethodHierarchy!public!test class hierarchy!test methods! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_saveClassMethodSameName!public!test methods! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethod!public!test methods! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodAndUpdateSUnitTab!public!test methods! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_saveMethodHierarchy!public!test class hierarchy!test methods! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectionsRetainedFromClassListToHierarchy!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectionsRetainedFromHierarchyToClassList!public!test class list!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultiplePackages!public!tests! !

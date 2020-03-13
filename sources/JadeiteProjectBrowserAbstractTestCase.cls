@@ -35,12 +35,34 @@ isAbstract
 
 	^self == JadeiteProjectBrowserAbstractTestCase!
 
+issue170methodCreation
+	| source |
+	self methodSourcePresenter value: (source := 'another  ^5').
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self methodSourcePresenter value: (source := 'interesting  ^5').
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self methodSourcePresenter value: (source := 'test  ^5').
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self methodSourcePresenter value: (source := 'try  ^5').
+	self projectsPresenter editSaveMethod: self classListPresenter selection!
+
 openSecondBrowser
 	secondBrowser := (self openWindow: [transcript openJadeiteProjectsBrowser]) topShell.
 	secondBrowser caption: 'second browser'.
 	secondPresenter := secondBrowser currentCard.
 	secondPresenter selectClassListTab.
 	^secondBrowser!
+
+saveMethodWithUniqueString
+
+	| source |
+	source := 'gloop
+	"I be unique"
+	^self gloop'. 
+	self methodSourcePresenter value: source. 
+	self projectsPresenter editSaveMethod: self classListPresenter selection. 
+
+	!
 
 selectLowerTabsThenDo: aBlock
 	#('sunit' 'classDefinition' 'classDocumentation' 'methodSource' 'comparisonTab') do: 
@@ -72,7 +94,9 @@ tearDown
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #assertLinearAncestry:in:!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #disableTranscriptWrites!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #isAbstract!private!testing! !
+!JadeiteProjectBrowserAbstractTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #openSecondBrowser!private! !
+!JadeiteProjectBrowserAbstractTestCase categoriesFor: #saveMethodWithUniqueString!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectLowerTabsThenDo:!private!support! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectSUnitTab!private!selection! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
