@@ -221,6 +221,17 @@ test_autoCompletionMenuItem
 	self deny: commandQuery isChecked]
 			ensure: [transcript autoCompleteEnabled: autoCompletion]!
 
+test_breakpointBrowserMenuItem
+	| browseMenu browseClassReferencesItem |
+	browseMenu := transcript view menuBar items detect: [:menu | '*Browse*' match: menu text] ifNone: [].
+	self denyIsNil: browseMenu.
+	browseClassReferencesItem := browseMenu items
+				detect: [:command | 'Browse Breakpoints' match: command text]
+				ifNone: [].
+	self denyIsNil: browseClassReferencesItem.
+	self assert: browseClassReferencesItem command equals: #browseBreakpoints.
+	self assert: (transcript class canUnderstand: #browseBreakpoints)!
+
 test_browseClassMenuItem
 	| browseMenu browseClassItem |
 	self testsIssue: #issue235 withTitle: 'Need Find Class/Method from console'.
@@ -733,6 +744,7 @@ writeToPrefsFile: string
 !JadeiteTranscriptTestCase categoriesFor: #test_autoCommitOn!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_autoCommitSet!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_autoCompletionMenuItem!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_breakpointBrowserMenuItem!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseClassMenuItem!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseClassReferencesMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseClassReferencesMenuItemIsEnabled!public!test menus! !

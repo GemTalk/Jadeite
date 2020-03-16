@@ -173,6 +173,10 @@ methodServicesWithoutBreakpoints
 	^breakpointListPresenter model asBag
 		select: [:object | object isMethodService and: [object breakPoints isEmpty]]!
 
+methodSourcePresenter
+
+	^methodSourcePresenter!
+
 onCloseRequested: valueHolder
 	valueHolder value: (methodSourcePresenter documentPresenter view isModified
 				ifTrue: [methodSourcePresenter isOkayToChange]
@@ -326,6 +330,7 @@ updateSelection: selection
 !JadeiteBreakpointBrowser categoriesFor: #methodSelected!event handlers!public! !
 !JadeiteBreakpointBrowser categoriesFor: #methodServicesWithBreakpoints!accessing!private! !
 !JadeiteBreakpointBrowser categoriesFor: #methodServicesWithoutBreakpoints!accessing!private! !
+!JadeiteBreakpointBrowser categoriesFor: #methodSourcePresenter!public! !
 !JadeiteBreakpointBrowser categoriesFor: #onCloseRequested:!event handlers!public! !
 !JadeiteBreakpointBrowser categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteBreakpointBrowser categoriesFor: #onViewOpened!event handlers!public! !
