@@ -352,9 +352,6 @@ package methodNames
 	add: #MCModification -> #clearObsoletionMemo;
 	add: #MCModification -> #isMethodModification;
 	add: #MCModification -> #revert:;
-	add: #MCPatchBrowser -> #browseChangedThing;
-	add: #MCPatchBrowser -> #browseImplementors;
-	add: #MCPatchBrowser -> #browseSenders;
 	add: #MCPatchBrowser -> #operationSelected;
 	add: #MCPatchOperation -> #canBeReverted;
 	add: #MCPatchOperation -> #clearObsoletionMemo;
@@ -4618,7 +4615,8 @@ revert: session
 		command: #removeMethods:;
 		commandArgs: (Array with: (Array with: methodService)).
 	BrowserUpdate current issueCommands: (Array with: classService) session: self gciSession.
-	definition selector: definition selector , ' (removed)'! !
+	('*(removed)*' match: definition selector)
+		ifFalse: [definition selector: definition selector , ' (removed)']! !
 !MCAddition categoriesFor: #revert:!public! !
 
 !MCClassDefinition methodsFor!
@@ -4696,62 +4694,13 @@ revert: session
 	modification
 		source: obsoletion source;
 		category: obsoletion category.
-	modification selector: modification selector , ' (reverted)'! !
+	('*(reverted)*' match: modification selector)
+		ifFalse: [modification selector: modification selector , ' (reverted)']! !
 !MCModification categoriesFor: #clearObsoletionMemo!public! !
 !MCModification categoriesFor: #isMethodModification!public!testing! !
 !MCModification categoriesFor: #revert:!public! !
 
 !MCPatchBrowser methodsFor!
-
-browseChangedThing
-	| selection shell classService |
-	selection := operationListPresenter selectionOrNil.
-	selection isNil ifTrue: [^MessageBox notify: 'Nothing to browse'].
-	selection isRemoval ifTrue: [^MessageBox notify: 'Cannot browse a removed item'].
-	
-	[classService := RowanClassService named: selection className.
-	shell := JadeiteBrowser showOnSession: gciSession.
-	shell currentCard updateServices: (Array with: classService)]
-			on: Error
-			do: 
-				[:ex |
-				shell destroy.
-				MessageBox notify: 'The change you have selected cannot be browsed'].
-	shell currentCard
-		updateAfterFindClass: classService;
-		findMethod: selection selector asSymbol.
-	^shell!
-
-browseImplementors
-	| selection shell methodListPresenter changedMethod |
-	selection := operationListPresenter selectionOrNil.
-	selection isNil ifTrue: [^MessageBox notify: 'Nothing to browse'].
-	selection isRemoval ifTrue: [^MessageBox notify: 'Cannot browse a removed item'].
-	
-	[shell := JadePresenter browseImplementorsOf: selection selector session: self gciSession.
-	methodListPresenter := shell primaryPresenter methodListPresenter methodListPresenter.
-	changedMethod := methodListPresenter  list
-				detect: [:methodService | methodService className = selection className]
-				ifNone: [^self].
-	methodListPresenter selection: changedMethod]
-			on: Error
-			do: 
-				[:ex |
-				shell destroy.
-				MessageBox notify: 'The change you have selected cannot be browsed'].
-	^shell!
-
-browseSenders
-	| selection shell |
-	selection := operationListPresenter selectionOrNil.
-	selection isNil ifTrue: [^MessageBox notify: 'Nothing to browse'].
-	selection isRemoval ifTrue: [^MessageBox notify: 'Cannot browse a removed item'].
-	[shell := JadePresenter browseSendersOf: selection selector session: self gciSession] on: Error
-		do: 
-			[:ex |
-			shell destroy.
-			MessageBox notify: 'The change you have selected cannot be browsed'].
-	^shell!
 
 operationSelected
 
@@ -4773,9 +4722,6 @@ operationSelected
 		rightMemoPresenter view addMarkerType: each key at: each value.
 	].
 ! !
-!MCPatchBrowser categoriesFor: #browseChangedThing!public! !
-!MCPatchBrowser categoriesFor: #browseImplementors!public! !
-!MCPatchBrowser categoriesFor: #browseSenders!public! !
 !MCPatchBrowser categoriesFor: #operationSelected!public! !
 
 !MCPatchOperation methodsFor!
@@ -4810,7 +4756,8 @@ isMethodRemoval
 
 revert: session
 	definition revert: session.
-	definition selector: definition selector , ' (restored)'! !
+	('*(restored)*' match: definition selector)
+		ifFalse: [definition selector: definition selector , ' (restored)']! !
 !MCRemoval categoriesFor: #isMethodRemoval!public!testing! !
 !MCRemoval categoriesFor: #revert:!public! !
 

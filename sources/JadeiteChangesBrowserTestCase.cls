@@ -91,6 +91,31 @@ test_browseImplementors
 				[self destroy: methodListBrowser.
 				self destroy: projectsBrowser]!
 
+test_browseImplementorsOfRevertedChange
+	| methodListBrowser |
+	self testsIssue: #issue686
+		withTitle: 'Changes Browser Browse senders/implementors doesn''t work after reverting changes (3.0.92)'.
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'test2  ^123'
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	self assert: changesBrowser operationListPresenter list first isKindOf: MCModification.
+	changesBrowser operationListPresenter selection: changesBrowser operationListPresenter list first.
+	self assert: changesBrowser operationListPresenter selection className equals: 'RowanSample1Test'.
+	self assert: changesBrowser operationListPresenter selection selector equals: 'test2'.
+	changesBrowser revert.
+	self assert: changesBrowser operationListPresenter selection selector equals: 'test2 (reverted)'.
+	methodListBrowser := changesBrowser browseImplementors.
+	
+	[self assert: methodListBrowser primaryPresenter methodListPresenter selection selector
+		equals: #test2]
+			ensure: 
+				[self destroy: methodListBrowser.
+				self destroy: projectsBrowser]!
+
 test_browseImplementorsSelectsChangedMethod
 	| methodListBrowser |
 	self testsIssue: #issue407
@@ -153,6 +178,28 @@ test_browseMethodSelectsAddedMethod
 				[secondProjectBrowser currentCard basicRemoveMethods.
 				self destroy: secondProjectBrowser]!
 
+test_browseOfRevertedChange
+	| secondProjectBrowser |
+	self testsIssue: #issue686
+		withTitle: 'Changes Browser Browse senders/implementors doesn''t work after reverting changes (3.0.92)'.
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'test2  ^123'
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	self assert: changesBrowser operationListPresenter list first isKindOf: MCModification.
+	changesBrowser operationListPresenter selection: changesBrowser operationListPresenter list first.
+	self assert: changesBrowser operationListPresenter selection className equals: 'RowanSample1Test'.
+	self assert: changesBrowser operationListPresenter selection selector equals: 'test2'.
+	changesBrowser revert.
+	self assert: changesBrowser operationListPresenter selection selector equals: 'test2 (reverted)'.
+	secondProjectBrowser := changesBrowser browseChangedThing.
+	[self assert: secondProjectBrowser currentCard methodListPresenter selection selector equals: #test2] ensure: 
+			[self destroy: secondProjectBrowser.
+			self destroy: projectsBrowser]!
+
 test_browseSenders
 	| methodListBrowser |
 	self testsIssue: #issue407
@@ -181,6 +228,35 @@ test_browseSenders
 	[self assert: methodListBrowser primaryPresenter methodListPresenter selection selector
 		equals: #sendsFnoodle]
 			ensure: [self destroy: methodListBrowser]!
+
+test_browseSendersOfRevertedChange
+	| methodListBrowser |
+	self testsIssue: #issue686
+		withTitle: 'Changes Browser Browse senders/implementors doesn''t work after reverting changes (3.0.92)'.
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'test2  ^123'
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	self
+		saveMethod: 'zzzSendTest2  ^self test2'
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	self assert: changesBrowser operationListPresenter list first isKindOf: MCModification.
+	changesBrowser operationListPresenter selection: changesBrowser operationListPresenter list first.
+	self assert: changesBrowser operationListPresenter selection className equals: 'RowanSample1Test'.
+	self assert: changesBrowser operationListPresenter selection selector equals: 'test2'.
+	changesBrowser revert.
+	self assert: changesBrowser operationListPresenter selection selector equals: 'test2 (reverted)'.
+	methodListBrowser := changesBrowser browseSenders.
+	
+	[self assert: methodListBrowser primaryPresenter methodListPresenter selection selector
+		equals: #zzzSendTest2]
+			ensure: 
+				[self destroy: methodListBrowser.
+				self destroy: projectsBrowser]!
 
 test_changesAlphabetized
 	"alphabetize by class then method"
@@ -301,10 +377,13 @@ test_revertMethodRemoval
 !JadeiteChangesBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteChangesBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementors!public!tests! !
+!JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementorsOfRevertedChange!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementorsSelectsChangedMethod!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseMethodSelectsAddedClass!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseMethodSelectsAddedMethod!public!tests! !
+!JadeiteChangesBrowserTestCase categoriesFor: #test_browseOfRevertedChange!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseSenders!public!tests! !
+!JadeiteChangesBrowserTestCase categoriesFor: #test_browseSendersOfRevertedChange!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_changesAlphabetized!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_noExtraLF!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_revertMethodAddition!public!tests! !
