@@ -627,7 +627,7 @@ test_openNewBrowserTabWhileSUnitTabSelected
 	self assert: cards size equals: 2.
 	index := cards indexOf: self projectsPresenter view.
 	self assert: index equals: 2.
-	self assert: self projectsPresenter view arrangement equals: '2 RowanSample1' "retain the selections from tab 1" !
+	self assert: self projectsPresenter view arrangement text equals: '2 RowanSample1' "retain the selections from tab 1" !
 
 test_reformatIllegalSource
 	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.

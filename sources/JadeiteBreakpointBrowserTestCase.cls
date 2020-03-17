@@ -13,6 +13,10 @@ JadeiteBreakpointBrowserTestCase comment: ''!
 openBreakpointBrowser
 	^breakpointBrowser := transcript browseBreakpoints!
 
+setUp
+	super setUp.
+	JadePresenter clearAllBreakpointsIn: session!
+
 tearDown
 	breakpointBrowser ifNotNil: [breakpointBrowser view close]!
 
@@ -164,6 +168,7 @@ test_showsBreakpoints
 ]
 			ensure: [self destroy: projectsBrowser]! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #openBreakpointBrowser!private!support! !
+!JadeiteBreakpointBrowserTestCase categoriesFor: #setUp!public!support! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #tearDown!public!support! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_addedBreakpointAddsMethod!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_breakpointAdditionsUpdateAutomatically!public!tests! !

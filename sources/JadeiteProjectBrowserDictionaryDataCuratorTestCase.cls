@@ -221,11 +221,11 @@ test_dictionarySelectionChangesTab
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	browserTabs := projectsBrowser cardsPresenter view.
 	self selectNoneProject.
-	self assert: browserTabs currentCard arrangement equals: '1 ' , RowanProjectService noneProject name.
+	self assert: browserTabs currentCard arrangement text equals: '1 ' , RowanProjectService noneProject name.
 	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
-	self assert: browserTabs currentCard arrangement equals: '1 UserGlobals'.
+	self assert: browserTabs currentCard arrangement text equals: '1 UserGlobals'.
 	self projectListPresenter resetSelection.
-	self assert: browserTabs currentCard arrangement equals: '1 Projects'!
+	self assert: browserTabs currentCard arrangement text equals: '1 Projects'!
 
 test_dictionarySelectionIndependentInTab
 	| userGlobalsCard |
@@ -794,13 +794,13 @@ test_systemTabsShowDictionariesAndProjects
 	self ensureOneTab. 
 	browserTabs := projectsBrowser cardsPresenter view.
 	self selectNoneProject.
-	self assert: browserTabs currentCard arrangement equals: '1 ' , RowanProjectService noneProject name.
+	self assert: browserTabs currentCard arrangement text equals: '1 ' , RowanProjectService noneProject name.
 	projectsBrowser addSystemBrowser.
 	
 	[self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self assert: browserTabs currentCard arrangement equals: '2 Rowan'.
+	self assert: browserTabs currentCard arrangement text equals: '2 Rowan'.
 	projectsBrowser cardsPresenter view previousCard.
-	self assert: browserTabs currentCard arrangement equals: '1 ' , RowanProjectService noneProject name.
+	self assert: browserTabs currentCard arrangement text equals: '1 ' , RowanProjectService noneProject name.
 	projectsBrowser cardsPresenter view nextCard]
 			ensure: [projectsBrowser closeCard]!
 

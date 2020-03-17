@@ -259,7 +259,7 @@ test_browseBreakpoints
 			ensure: [projectsBrowser view close]!
 
 test_browseBreakpointsClearAllMenuItemFromMethodList
-	| clearAllItem methodsMenu browseBreakpointsItem |
+	| clearAllItem methodsMenu browseBreakpointsItem breakpointBrowser |
 	self testsIssue: #issue515 withTitle: '(3.0.77) clear all breakpoints menu item would be useful'.
 	self openProjectBrowser.
 	
@@ -268,30 +268,17 @@ test_browseBreakpointsClearAllMenuItemFromMethodList
 				detect: [:command | '*Browse*Breakpoints*' match: command text]
 				ifNone: [].
 	self denyIsNil: browseBreakpointsItem.
-	methodListBrowser := self projectsPresenter perform: browseBreakpointsItem command asSymbol.
+	breakpointBrowser := self projectsPresenter perform: browseBreakpointsItem command asSymbol.
+	
+	[methodListBrowser := JadePresenter browseBreakpointsIn: session.
 	methodsMenu := methodListBrowser view menuBar items detect: [:menu | '*Methods*' match: menu text]
 				ifNone: [].
 	clearAllItem := methodsMenu items detect: [:command | '*Clear*All*Breakpoints*' match: command text]
 				ifNone: [].
 	self denyIsNil: clearAllItem.
 	self assert: clearAllItem command asSymbol equals: #clearAllBreakpoints]
+			ensure: [breakpointBrowser view close]]
 			ensure: [projectsBrowser view close]!
-
-test_browseBreakpointsClearAllMenuItemFromTranscript
-	| browseMenu clearAllItem methodsMenu browseBreakpointsItem |
-	self testsIssue: #issue515 withTitle: '(3.0.77) clear all breakpoints menu item would be useful'.
-	browseMenu := transcript view menuBar items detect: [:menu | '*Browse*' match: menu text] ifNone: [].
-	browseBreakpointsItem := browseMenu items
-				detect: [:command | '*Browse*Breakpoints*' match: command text]
-				ifNone: [].
-	self denyIsNil: browseBreakpointsItem.
-	methodListBrowser := transcript perform: browseBreakpointsItem command asSymbol.
-	methodsMenu := methodListBrowser view menuBar items detect: [:menu | '*Methods*' match: menu text]
-				ifNone: [].
-	clearAllItem := methodsMenu items detect: [:command | '*Clear*All*Breakpoints*' match: command text]
-				ifNone: [].
-	self denyIsNil: clearAllItem.
-	self assert: clearAllItem command asSymbol equals: #clearAllBreakpoints!
 
 test_browseBreakpointsFromTranscript
 	| methodService |
@@ -316,6 +303,18 @@ test_browseBreakpointsFromTranscript
 	[self assert: self methodListMethodListPresenter list size equals: 0]
 		ensure: [methodListBrowser view close]]
 			ensure: [projectsBrowser view close]!
+
+test_browseBreakpointsMenuItemFromTranscript
+	| browseMenu breakpointBrowser browseBreakpointsItem |
+	self testsIssue: #issue515 withTitle: '(3.0.77) clear all breakpoints menu item would be useful'.
+	browseMenu := transcript view menuBar items detect: [:menu | '*Browse*' match: menu text] ifNone: [].
+	browseBreakpointsItem := browseMenu items
+				detect: [:command | '*Browse*Breakpoints*' match: command text]
+				ifNone: [].
+	self denyIsNil: browseBreakpointsItem.
+	breakpointBrowser := transcript perform: browseBreakpointsItem command asSymbol.
+	[self assert: (breakpointBrowser isKindOf: JadeiteBreakpointBrowser)]
+		ensure: [breakpointBrowser view close]!
 
 test_browseClass
 	| dictionaryPresenter |
@@ -1014,7 +1013,7 @@ test_methodBrowserSaveMethod
 	self methodListMethodListPresenter selection: selection.
 	self assert: self methodListSourcePresenter documentPresenter value equals: source.
 	source2 := 'test1 self assert: RowanSample1 new foo = ''changedAgain'''.
-	self methodSourcePresenter value: source2.
+	self projectsPresenter methodSourcePresenter value: source2.
 	self methodListSourcePresenter documentPresenter isModified: true. "needed for tests" 
 	self projectsPresenter editSaveMethod: self classListPresenter selection.
 	self assert: self methodSourcePresenter documentPresenter value equals: source2.
@@ -1326,8 +1325,8 @@ test_wildCardSearch
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_adHocContextInstanceSide!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpoints!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpointsClearAllMenuItemFromMethodList!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpointsClearAllMenuItemFromTranscript!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpointsFromTranscript!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpointsMenuItemFromTranscript!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClassReferenceCaptionTitle!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClassReferences!public!test browse methods! !

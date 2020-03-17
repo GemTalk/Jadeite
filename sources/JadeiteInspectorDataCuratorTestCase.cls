@@ -1001,6 +1001,68 @@ test_inspectInstVarInNewWindow
 	self assert: secondInspector documentPresenter value equals: 'anArray( 123)']
 			ensure: [secondInspector view close]!
 
+test_inspectInstVarKeyInNewWindow
+	| remoteObject secondInspector |
+	self testsIssue: #issue745
+		withTitle: '(3.0.93) would be nice to be able to inspect the keys of a dictionary'.
+	remoteObject := session
+				executeString: 'Dictionary new at: #foo put: ''bar''; yourself'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter selectionByIndex: #(8).
+	secondInspector := inspector inspectKeyInNewWindow.
+	
+	[self assert: secondInspector instVarListPresenter selectionByIndex equals: #(1).
+	self assert: secondInspector documentPresenter value equals: '#''foo''']
+			ensure: [secondInspector view close]!
+
+test_inspectKeyMenuItemEnablementArray
+	| remoteObject inspectKeyMenuItem query |
+	self testsIssue: #issue745
+		withTitle: '(3.0.93) would be nice to be able to inspect the keys of a dictionary'.
+	remoteObject := session
+				executeString: 'Array with: 1'
+				fromContext: nil
+				environment: 0.	"inspect key should never be enabled for an Array"
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter setFocus.
+	inspectKeyMenuItem := inspector instVarListPresenter view contextMenu items
+				detect: [:menuItem | menuItem command = #inspectKeyInNewWindow].
+	query := CommandQuery commandDescription: inspectKeyMenuItem source: inspector view.
+	self deny: query isEnabled.
+	inspector instVarListPresenter selectionByIndex: #(3).
+	query := CommandQuery commandDescription: inspectKeyMenuItem source: inspector view.
+	self deny: query isEnabled.
+	inspector instVarListPresenter selectionByIndex: #(1).
+	query := CommandQuery commandDescription: inspectKeyMenuItem source: inspector view.
+	self deny: query isEnabled!
+
+test_inspectKeyMenuItemEnablementDictionary
+	| remoteObject inspectKeyMenuItem query |
+	self testsIssue: #issue745
+		withTitle: '(3.0.93) would be nice to be able to inspect the keys of a dictionary'.
+	remoteObject := session
+				executeString: 'Dictionary new at: #foo put: ''bar''; yourself'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	inspector instVarListPresenter setFocus.
+	inspectKeyMenuItem := inspector instVarListPresenter view contextMenu items
+				detect: [:menuItem | menuItem command = #inspectKeyInNewWindow].
+	query := CommandQuery commandDescription: inspectKeyMenuItem source: inspector view.
+	inspector queryCommand: query.
+	self deny: query isEnabled.
+	inspector instVarListPresenter selectionByIndex: #(8).	"association"
+	inspector queryCommand: query.
+	self assert: query isEnabled.
+	inspector instVarListPresenter selectionByIndex: #(1).	"self"
+	inspector queryCommand: query.
+	self deny: query isEnabled.
+	inspector instVarListPresenter selectionByIndex: #(1 2 3 4 5 6 7 8).	"self"
+	inspector queryCommand: query.
+	self deny: query isEnabled!
+
 test_inspectorHandlesError
 	| remoteObject |
 	self testsIssue: #issue433 withTitle: 'Walkback on new inspector in presence of #size method'.
@@ -1174,6 +1236,7 @@ test_menuItemsEnabled
 			[:item |
 			| query |
 			query := CommandQuery commandDescription: item source: inspector view.
+			inspector queryCommand: query.
 			self deny: query isEnabled].
 	inspector documentPresenter setFocus.
 	inspector documentPresenter view contextMenu itemsDo: 
@@ -1184,9 +1247,9 @@ test_menuItemsEnabled
 			query commandSymbol
 				ifNotNil: 
 					[inspector queryCommand: query.
-					(#(#undo #redo #browseImplementors #browseSenders #fileSave) includes: query commandSymbol)
+					(#(#undo #redo #browseImplementors #browseSenders #fileSave #editRevert) includes: query commandSymbol)
 						ifFalse: 
-							["*do doesn't require a selection for enablement"
+							["*doesn't require a selection for enablement"
 							self assert: query isEnabled]]]!
 
 test_modifyArrayElement
@@ -1920,6 +1983,9 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectDoubleByteString!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectIdentityBag!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectInstVarInNewWindow!public!tests add remove! !
+!JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectInstVarKeyInNewWindow!public!tests add remove! !
+!JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectKeyMenuItemEnablementArray!public!tests menu bar! !
+!JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectKeyMenuItemEnablementDictionary!public!tests menu bar! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectorHandlesError!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectRcIdentityBag!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectRcIdentityBagWithUnicodeKey!public! !
