@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 JadePresenterA subclass: #CodeSourcePresenter
 	instanceVariableNames: 'documentPresenter menuTitle environment'
@@ -131,6 +131,9 @@ editReplace
 		yourself.
 !
 
+editRevert
+	self isOkayToChange ifTrue: [self parentPresenter editRevert]!
+
 editSelectAll
 
 	documentPresenter view selectAll.
@@ -190,6 +193,12 @@ isClassSelectedInEditor
 isModified
 
 	^documentPresenter isModified!
+
+isOkayToChange
+	documentPresenter view isModified
+		ifTrue: [(JadePresenter unsavedChangesValidSessionDialogIn: documentPresenter) ifTrue: [^false]].
+	documentPresenter view isModified: false.
+	^true!
 
 jadeDebug
 	
@@ -253,24 +262,27 @@ pasteClipboard
 	^self editPaste!
 
 queryCommand: query
-	(#(#'fileSave' #editSaveMethod) includes: query commandSymbol) ifTrue: [
-		query isEnabled: documentPresenter view isModified.
-		^true.
-	].
-	(#(#cutSelection #copySelection) includes: query commandSymbol) ifTrue: [
-		query isEnabled: documentPresenter hasSelection.
-		^true.
-	].
-	(query commandSymbol = #pasteClipboard) ifTrue: [
-		query isEnabled: documentPresenter view canPaste.
-		^true.
-	].
-	(query commandSymbol == #'browseSelectedClass') ifTrue: [
-		query isEnabled: self isClassSelectedInEditor.
-		^true
-	].
-	^super queryCommand: query.
-!
+	(#(#fileSave #editSaveMethod) includes: query commandSymbol)
+		ifTrue: 
+			[query isEnabled: documentPresenter view isModified.
+			^true].
+	(#(#cutSelection #copySelection) includes: query commandSymbol)
+		ifTrue: 
+			[query isEnabled: documentPresenter hasSelection.
+			^true].
+	query commandSymbol = #pasteClipboard
+		ifTrue: 
+			[query isEnabled: documentPresenter view canPaste.
+			^true].
+	query commandSymbol == #browseSelectedClass
+		ifTrue: 
+			[query isEnabled: self isClassSelectedInEditor.
+			^true].
+	(#(#editUndo #editRedo #editRevert) includes: query commandSymbol)
+		ifTrue: 
+			[query isEnabled: ((View focus isKindOf: TextEdit) and: [View focus canUndo]).
+			^true].
+	^super queryCommand: query!
 
 removeMenu
 
@@ -444,6 +456,7 @@ updateCodeFont
 !CodeSourcePresenter categoriesFor: #editFindNext!edit!private! !
 !CodeSourcePresenter categoriesFor: #editPaste!edit!private! !
 !CodeSourcePresenter categoriesFor: #editReplace!edit!private! !
+!CodeSourcePresenter categoriesFor: #editRevert!edit!private! !
 !CodeSourcePresenter categoriesFor: #editSelectAll!edit!private! !
 !CodeSourcePresenter categoriesFor: #environment:!public! !
 !CodeSourcePresenter categoriesFor: #fileSave!private! !
@@ -452,6 +465,7 @@ updateCodeFont
 !CodeSourcePresenter categoriesFor: #initialize!public! !
 !CodeSourcePresenter categoriesFor: #isClassSelectedInEditor!public! !
 !CodeSourcePresenter categoriesFor: #isModified!public! !
+!CodeSourcePresenter categoriesFor: #isOkayToChange!public!testing! !
 !CodeSourcePresenter categoriesFor: #jadeDebug!Jade!private! !
 !CodeSourcePresenter categoriesFor: #jadeDisplay!Jade!private! !
 !CodeSourcePresenter categoriesFor: #jadeExecute!Jade!private! !

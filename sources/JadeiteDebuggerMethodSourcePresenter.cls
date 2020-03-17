@@ -14,6 +14,12 @@ clearBreakPointAt: stepPoint in: browser
 	super clearBreakPointAt: stepPoint in: browser.
 	self parentPresenter clearBreakPointsAt: stepPoint!
 
+editRevert
+	self isOkayToChange
+		ifTrue: 
+			[documentPresenter value: originalSource.
+			self displayNoMods: self documentPresenter]!
+
 executeSelectionOrLine: contextObject
 	^self parentPresenter executeSelectionOrLine: contextObject!
 
@@ -28,6 +34,7 @@ jadeInspect
 		thenInspectInContext: self inspectorContextObject
 		debugger: self parentPresenter! !
 !JadeiteDebuggerMethodSourcePresenter categoriesFor: #clearBreakPointAt:in:!menu handlers!public! !
+!JadeiteDebuggerMethodSourcePresenter categoriesFor: #editRevert!edit!private! !
 !JadeiteDebuggerMethodSourcePresenter categoriesFor: #executeSelectionOrLine:!menu handlers!public! !
 !JadeiteDebuggerMethodSourcePresenter categoriesFor: #inspectorContextObject!private! !
 !JadeiteDebuggerMethodSourcePresenter categoriesFor: #jadeInspect!Jade!private! !

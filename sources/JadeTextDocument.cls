@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 TextDocument subclass: #JadeTextDocument
 	instanceVariableNames: 'gciSession codePane environment'
@@ -294,19 +294,24 @@ parentPresenter
 print!
 
 queryCommand: query
-
-	| textEdit |
+	| textEdit focusView isTextEdit |
 	textEdit := self activeTextEdit.
-	(#(#addQuotesToSelection #removeQuotesFromSelection #editCut #editCopy #editDelete #editReplace #editFind #editFindNext #editSelectAll #fileIn #jadeDebug #jadeDisplay #jadeExecute #jadeInspect) includes: query commandSymbol) ifTrue: [
-		query isEnabled: (textEdit notNil and: [(textEdit isKindOf: TextEdit) ]).
-		^true.
-	].
-	(query commandSymbol = #editPaste) ifTrue: [
-		query isEnabled: (textEdit notNil and: [(textEdit isKindOf: TextEdit) and: [textEdit canPaste]]).
-		^true.
-	].
-	^super queryCommand: query.
-!
+	focusView := View focus.
+	isTextEdit := focusView isKindOf: TextEdit.
+	(#(#addQuotesToSelection #removeQuotesFromSelection #editCut #editCopy #editDelete #editReplace #editFind #editFindNext #editSelectAll #fileIn #jadeDebug #jadeDisplay #jadeExecute #jadeInspect)
+		includes: query commandSymbol)
+			ifTrue: 
+				[query isEnabled: (textEdit notNil and: [textEdit isKindOf: TextEdit]).
+				^true].
+	query commandSymbol = #editPaste
+		ifTrue: 
+			[query isEnabled: (textEdit notNil and: [(textEdit isKindOf: TextEdit) and: [textEdit canPaste]]).
+			^true].
+	(#(#editUndo #editRedo #editRevert) includes: query commandSymbol)
+		ifTrue: 
+			[query isEnabled: (isTextEdit and: [focusView canUndo]).
+			^true].
+	^super queryCommand: query!
 
 removeQuotesFromSelection
 

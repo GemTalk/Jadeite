@@ -395,6 +395,12 @@ displayVariable: displayThing
 				ifTrue: [displayThing font beBold]].
 	^displayThing!
 
+editRevert
+	self isOkayToChange
+		ifTrue: 
+			[methodSourcePresenter value: methodListPresenter selection source.
+			self displayNoMods: methodSourcePresenter]!
+
 editSaveClass
 	"a two stage class compilation is used. First stage compiles
 	the class and stores an anonymous method to be used in 
@@ -608,7 +614,8 @@ methodValueChanged
 			[methodSourcePresenter view
 				backcolor: JadeiteTextStyles default colorForUnsavedEdits;
 				clearContainerIndicators;
-				yourself]!
+				yourself].
+	self updateSystemTab.!
 
 noClassSelectedInEitherPresenter
 	classListPresenter selectionIfNone: [classHierarchyPresenter selectionIfNone: [^true]].
@@ -1137,6 +1144,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #dictionaryPresenter!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #displayStringFor:in:!double dispatch!public! !
 !JadeiteBrowserPresenter categoriesFor: #displayVariable:!displaying!private! !
+!JadeiteBrowserPresenter categoriesFor: #editRevert!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #editSaveClass!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #editSaveMethod:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #expandFullAt:!menu handlers support!private!updating! !

@@ -1254,10 +1254,15 @@ projectTabLabel
 	"Selections get mixed up switching between system presenters unless the tabs
 	have a unique label. Rather silly, but we'll give the tab a unique number"
 
-	| cardNumber label |
-	label := self basicProjectTabLabel.
+	| cardNumber labelString numberedLabelString label |
+	labelString := self basicProjectTabLabel.
 	cardNumber := self parentPresenter view cards indexOf: self view.
-	^cardNumber printString , ' ' , label!
+	numberedLabelString := cardNumber printString , ' ' , labelString.
+	label := CardLabel text: numberedLabelString iconBlock: nil. 
+	methodSourcePresenter view isModified
+		ifTrue: 
+			[label := CardLabel text: numberedLabelString iconBlock: [Icon fromId: 'Changed.ico']].
+	^label!
 
 pullFromGit
 	| projectServices ws |
@@ -1303,7 +1308,7 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: (isTextEdit and: [focusView isModified]).
 			^true].
-	(#(#editUndo) includes: aCommandQuery command)
+	(#(#editUndo #editRevert) includes: aCommandQuery command)
 		ifTrue: 
 			[aCommandQuery isEnabled: (isTextEdit and: [focusView canUndo]).
 			^true].
@@ -1596,13 +1601,13 @@ removeMethodCategories
 	(self confirmCategoryRemoval: selections) ifFalse: [^self].
 	self basicRemoveMethodCategories!
 
-removeMethods: services
-	services do: 
+removeMethods: classServices
+	classServices do: 
 			[:classService |
 			classService
 				command: #removeMethods:;
 				commandArgs: (Array with: methodListPresenter selections)].
-	self issueCommand: services!
+	self issueCommand: classServices!
 
 renameClass
 	| oldClassService newClassName |

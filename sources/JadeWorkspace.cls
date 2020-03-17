@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 JadeTextDocument subclass: #JadeWorkspace
 	instanceVariableNames: ''
@@ -15,9 +15,13 @@ codePane
 
 	^codePane!
 
+editRevert
+	documentPresenter value: String new!
+
 queryCommand: aCommandQuery
 
 	| cmd |
+	
 	cmd := aCommandQuery commandSymbol.
 	(cmd == #'setEnvironment0' and: [environment == 0]) ifTrue: [aCommandQuery isChecked: true; isEnabled: false. ^true].
 	(cmd == #'setEnvironment1' and: [environment == 1]) ifTrue: [aCommandQuery isChecked: true; isEnabled: false. ^true].
@@ -54,6 +58,7 @@ updateCaption
 	self caption: string.
 ! !
 !JadeWorkspace categoriesFor: #codePane!private! !
+!JadeWorkspace categoriesFor: #editRevert!menu handlers!public! !
 !JadeWorkspace categoriesFor: #queryCommand:!public! !
 !JadeWorkspace categoriesFor: #setEnvironment:!public! !
 !JadeWorkspace categoriesFor: #setEnvironment0!public! !

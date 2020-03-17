@@ -713,7 +713,8 @@ test_reformatSourceAppliesOnlyToCurrentBrowser
   ^ #''test''' replaceCrLfWithLf.
 	self assert: secondPresenter methodSourcePresenter value
 		equals: 'reformatSourceTemporaryMethod ^#test'.
-	self methodSourcePresenter isModified: false. !
+	self methodSourcePresenter isModified: false. 
+	self projectsPresenter removeMethods: self classListPresenter selections. !
 
 test_reformatSourceIsUndoable
 	self testsIssue: #issue550
@@ -756,6 +757,29 @@ test_reloadAfterClassCompile
 	self projectsPresenter loadProjects.
 	self assert: self classListPresenter selection version equals: version + 2	"see https://github.com/GemTalk/Rowan/issues/506"]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
+test_revertSource
+	| source originalSource |
+	self methodSourcePresenter view isModified: false. 
+	self selectRowanSample1Class.
+	self selectMethodNamed: #foo.
+	originalSource := 'foo ^''foo'''.
+	self saveMethod: originalSource in: 'RowanSample1' category: 'other'. 
+	self assert: self methodSourcePresenter value equals: originalSource.
+	source := 'foo  ^''I am changed'''.
+	self methodSourcePresenter value: source.
+	self methodSourcePresenter view isModified: true.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #yes.
+	
+	[self projectsPresenter editRevert.
+	self assert: self methodSourcePresenter value equals: source.
+	self assert: self methodSourcePresenter view isModified.
+	TestMessageBox plannedResult: #no.
+	self projectsPresenter editRevert]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self assert: self methodSourcePresenter value equals: originalSource.
+	self deny: self methodSourcePresenter view isModified!
 
 test_stepPoint1
 	"Always a step point at the selector"
@@ -1166,6 +1190,7 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatSourceAppliesOnlyToCurrentBrowser!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reloadAfterClassCompile!public!test compiling!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_revertSource!public!test two browsers!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_stepPoint1!public!test step points!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_stepPoint2!public!test step points!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitBarEnabledOnEntry!public!test sunit tab!tests! !

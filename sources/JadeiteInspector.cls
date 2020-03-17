@@ -199,6 +199,9 @@ displayObjectSelecting: selectionIndex
 dynamicInstVars
 	^instVarListPresenter list select: [:instVar | '--*' match: instVar key]!
 
+editRevert
+	self selectedInstVar!
+
 evaluateSelectedTextIn: textPresenter thenInspectInContext: context
 	| service |
 	service := self evaluateText: textPresenter currentSelectionOrLine thenInspectInContext: context.
@@ -579,6 +582,7 @@ valueOops
 !JadeiteInspector categoriesFor: #displayMore:!displaying!menu handlers!public! !
 !JadeiteInspector categoriesFor: #displayObjectSelecting:!displaying!private! !
 !JadeiteInspector categoriesFor: #dynamicInstVars!accessing!public! !
+!JadeiteInspector categoriesFor: #editRevert!menu handlers!public! !
 !JadeiteInspector categoriesFor: #evaluateSelectedTextIn:thenInspectInContext:!inspecting!public! !
 !JadeiteInspector categoriesFor: #evaluateSelectedTextIn:thenInspectInContext:debugger:!inspecting!public! !
 !JadeiteInspector categoriesFor: #evaluateText:thenInspectInContext:!inspecting!public! !
