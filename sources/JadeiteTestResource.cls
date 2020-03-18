@@ -82,6 +82,7 @@ loginWithRetry: loginShell
 
 logoutThenLoginAs: userName
 	userName ifNil: [^self].
+	GciSession current ifNil: [^self].
 	userName = GciSession current userID ifTrue: [^self].
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #no.	"closing the transcript will logout the session. don't commit"

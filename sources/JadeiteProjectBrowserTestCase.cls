@@ -117,6 +117,18 @@ logoutOtherSession
 	^session executeString: '
 				(UserGlobals at: #otherSession) logout.'!
 
+logoutOtherSystemUsersSessions
+	^session
+		executeString: '
+				| profiles |
+				profiles := System _currentSessionProfiles.
+				1 to: profiles size by: 2 do:[:index | 
+					| sessionNumber profile |
+					sessionNumber := profiles at: index. 
+					profile := profiles at: index + 1. 
+					(GsCurrentSession currentSession userProfile ~~ profile 
+						and:[profile userId = ''SystemUser'']) ifTrue:[System stopSession: sessionNumber]]'!
+
 modifySampleMethodFoo
 
 	| source |
@@ -785,25 +797,35 @@ test_autoCommit
 test_autoCommitButtonFailureResetOnAbort
 	self testsIssue: #issue462
 		withTitle: '(3.0.66) silent commit conflict/failure when auto commit is enabled'.
+	self logoutOtherSystemUsersSessions.
 	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color default.
 	session executeString: 'UserGlobals at: #autoCommitTest put: (#key -> #value)'.
 	self commitTransaction.
 	self loginOtherSession.
 	
-	[RowanAnsweringService new setAutoCommit: true for: session.
+	[self selectRowanSample1Test.
+	self selectMethodNamed: #test1.	"must select method prior to setting up commit failure"
+	RowanAnsweringService new setAutoCommit: true for: session.
 	self
 		executeStringInOtherSession: 'abort;
 			executeString: ''(UserGlobals at: #autoCommitTest) value: #newValue'';
 			commit'.
 	session executeString: '(UserGlobals at: #autoCommitTest) value: #stillAnotherNewValue'.
-	self selectRowanSample1Test.
-	self selectMethodNamed: #test1.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestMessageBox plannedResult: #no.	"don't abort so we can test that the autoCommitButton is red"
 	self
 		saveMethod: 'test1 ^123'
 		in: 'RowanSample1Test'
 		category: 'tests'.
 	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color red.
-	self assert: self projectsPresenter autoCommit equals: #failed.
+	self assert: self projectsPresenter autoCommit equals: #failed]
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				JadeiteInspector allInstances do: 
+						[:inspector |
+						('Transaction Conflicts*' match: inspector view caption)
+							ifTrue: [inspector view close	"transaction conflics inspector opens because we pressed 'no' earlier"]]].
 	self abortTransaction.
 	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color green]
 			ensure: 
@@ -821,20 +843,29 @@ test_autoCommitClickButtonAfterFailure
 	self commitTransaction.
 	self loginOtherSession.
 	
-	[RowanAnsweringService new setAutoCommit: true for: session.
+	[self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	RowanAnsweringService new setAutoCommit: true for: session.
 	self
 		executeStringInOtherSession: 'abort;
 			executeString: ''(UserGlobals at: #autoCommitTest) value: #newValue'';
 			commit'.
 	session executeString: '(UserGlobals at: #autoCommitTest) value: #stillAnotherNewValue'.
-	self selectRowanSample1Test.
-	self selectMethodNamed: #test1.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestMessageBox plannedResult: #no.	"don't abort so we can test that the autoCommitButton is red"
 	self
 		saveMethod: 'test1 ^123'
 		in: 'RowanSample1Test'
 		category: 'tests'.
 	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color red.
-	self assert: self projectsPresenter autoCommit equals: #failed.
+	self assert: self projectsPresenter autoCommit equals: #failed]
+			ensure: 
+				[TestMessageBox disableJadeiteTestMessageBox.
+				JadeiteInspector allInstances do: 
+						[:inspector |
+						('Transaction Conflicts*' match: inspector view caption)
+							ifTrue: [inspector view close	"transaction conflics inspector opens because we pressed 'no' earlier"]]].
 	"flipAutoCommit is sent from the menu or button"
 	self projectsPresenter flipAutoCommit.
 	self deny: self projectsPresenter autoCommit.
@@ -5266,6 +5297,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #loadProjectNamed:!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #loginOtherSession!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #logoutOtherSession!public!support! !
+!JadeiteProjectBrowserTestCase categoriesFor: #logoutOtherSystemUsersSessions!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #modifySampleMethodFoo!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #nextTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #packageNamed:!private!project support! !
