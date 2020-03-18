@@ -998,15 +998,6 @@ loadProjects
 	self loadProjectsFrom: self.
 	self findRemovedServices!
 
-makeDefault
-	"the server is the gold copy"
-	| projectService |
-	projectService := projectListPresenter selection.
-	projectService command: #setDefaultProject.
-	self issueCommand: (Array with: projectService).
-	RowanProjectService defaultProjectName: projectService name.
-	projectListPresenter view invalidate. !
-
 methodCategoryText
 	^methodCategoryText!
 
@@ -1220,7 +1211,6 @@ projectMenuStrings
 		ifTrue: 
 			[self
 				addPackage;
-				makeDefault;
 				cloneProject;
 				loadProjects;
 				unloadProjects;
@@ -1232,8 +1222,7 @@ projectMenuStrings
 				checkout;
 				projectLog;
 				refresh].
-	^#('Projects' '&Make Default//makeDefault' 
-		'-' 
+	^#('Projects' 
 		'Clone Git Project ...//cloneProject' 
 		'Load//loadProjects' 'Unload//unloadProjects' 
 		'-'
@@ -2342,7 +2331,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeExecute!menu handlers!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #loadProjects!project menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #makeDefault!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodCategoryText!accessing!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodListPresenter!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodListSelection!accessing!public! !

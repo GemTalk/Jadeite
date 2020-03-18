@@ -1,8 +1,8 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanProjectService
-	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome'
-	classVariableNames: 'DefaultProjectName'
+	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty'
+	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanProjectService guid: (GUID fromString: '{d65732a3-f4fb-489b-ae7e-d104cddbf3d8}')!
@@ -90,17 +90,12 @@ checkoutUsing: presenter
 		commandArgs: (Array with: (branchName copyWithout: $*)).
 	presenter issueCommand: (Array with: self)!
 
-defaultProjectName
-	^self class defaultProjectName!
-
 displayName
-	"display with dirty indication * and/or default indication (default)"
-
 	| displayName |
 	name ifNil: [^String new].
 	displayName := name.
 	existsOnDisk == false ifTrue: [displayName := '(' , displayName , ')'].
-	name = self class defaultProjectName ifTrue: [displayName := displayName , '*'].
+	isDiskDirty ifTrue: [displayName := displayName , '*'].
 	^displayName!
 
 displayStringFor: displayThing
@@ -126,7 +121,11 @@ initialize
 	isDirty := false.
 	isLoaded := false.
 	isSkew := false.
-	sha := 'not a project'!
+	sha := 'not a project'.
+	isDiskDirty := false. !
+
+isDiskDirty
+	^isDiskDirty!
 
 isLoaded
 
@@ -249,11 +248,11 @@ sha: anObject
 !RowanProjectService categoriesFor: #branch:!accessing!public! !
 !RowanProjectService categoriesFor: #changesUsing:!presenter support!public! !
 !RowanProjectService categoriesFor: #checkoutUsing:!presenter support!public! !
-!RowanProjectService categoriesFor: #defaultProjectName!accessing!public! !
 !RowanProjectService categoriesFor: #displayName!accessing!displaying!public! !
 !RowanProjectService categoriesFor: #displayStringFor:!displaying!public! !
 !RowanProjectService categoriesFor: #hash!comparing!public! !
 !RowanProjectService categoriesFor: #initialize!Init / Release!public! !
+!RowanProjectService categoriesFor: #isDiskDirty!accessing!public! !
 !RowanProjectService categoriesFor: #isLoaded!public!testing! !
 !RowanProjectService categoriesFor: #isProjectService!public!testing! !
 !RowanProjectService categoriesFor: #isSkew!accessing!private! !
@@ -282,15 +281,6 @@ defaultIconName
 
 	^File composeStem: 'Collection' extension: 'ico'.!
 
-defaultProjectName
-	"cached from the server class var"
-
-	^DefaultProjectName!
-
-defaultProjectName: aString
-
-	DefaultProjectName := aString!
-
 icon
 	"Answers an Icon that can be used to represent this class"
 
@@ -309,8 +299,6 @@ noneProject
 		sha: 'not a project'.
 	^inst! !
 !RowanProjectService class categoriesFor: #defaultIconName!private! !
-!RowanProjectService class categoriesFor: #defaultProjectName!public! !
-!RowanProjectService class categoriesFor: #defaultProjectName:!public! !
 !RowanProjectService class categoriesFor: #icon!private! !
 !RowanProjectService class categoriesFor: #initialize!public! !
 !RowanProjectService class categoriesFor: #noneProject!instance creation!public! !

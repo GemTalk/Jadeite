@@ -206,6 +206,7 @@ package methodNames
 	add: #JadeNavigationInspector -> #setNewInspectedObject;
 	add: #JadePresenter -> #abortTransaction;
 	add: #JadePresenter -> #autoCommitExecutionString;
+	add: #JadePresenter -> #basicAllSelectedProjectsDirty:;
 	add: #JadePresenter -> #basicCloneProject:root:;
 	add: #JadePresenter -> #browseBreakpointList;
 	add: #JadePresenter -> #browseClassReferences:;
@@ -737,8 +738,8 @@ RowanService subclass: #RowanProcessService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanProjectService
-	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome'
-	classVariableNames: 'DefaultProjectName'
+	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty'
+	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanQueryService
@@ -2285,6 +2286,13 @@ abortTransaction
 autoCommitExecutionString
 	^'RowanService autoCommit ifTrue:[System commitTransaction].'!
 
+basicAllSelectedProjectsDirty: aProjectListPresenter
+	aProjectListPresenter selections isEmpty ifTrue: [^false].
+	aProjectListPresenter selections
+		detect: [:projectService | projectService isDirty not and: [projectService isDiskDirty not]]
+		ifNone: [^true].
+	^false!
+
 basicCloneProject: path root: root
 	| service |
 	service := RowanProjectService new.
@@ -2567,6 +2575,7 @@ updateServices: services
 	BrowserUpdate current updateServices: services asSet asArray session: gciSession! !
 !JadePresenter categoriesFor: #abortTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #autoCommitExecutionString!menu handlers support!public! !
+!JadePresenter categoriesFor: #basicAllSelectedProjectsDirty:!private!testing! !
 !JadePresenter categoriesFor: #basicCloneProject:root:!menu handlers!private! !
 !JadePresenter categoriesFor: #browseBreakpointList!menu handlers!public! !
 !JadePresenter categoriesFor: #browseClassReferences:!menu handlers!public! !

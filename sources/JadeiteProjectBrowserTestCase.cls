@@ -2071,21 +2071,6 @@ test_loadProjectRemovingClass
 	self assert: self classListPresenter selections isEmpty.
 	self assert: self classListPresenter list size equals: 1!
 
-test_makeDefault
-	| nonDefaultService |
-	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
-	self projectsPresenter makeDefault.
-	self assert: self projectListPresenter selection displayName = 'RowanSample1*'.
-	nonDefaultService := self projectListPresenter list
-				detect: [:projectService | projectService name = 'Rowan'].
-	self assert: nonDefaultService displayName = 'Rowan'.
-	self assert: self projectListPresenter selection displayName = 'RowanSample1*'.
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self projectsPresenter makeDefault.
-	nonDefaultService := self projectListPresenter list
-				detect: [:projectService | projectService name = 'RowanSample1'].
-	self assert: self projectListPresenter selection displayName = 'Rowan*'!
-
 test_maximizeCode
 	self testsIssue: #issue495 withTitle: 'minor error dialogs (3.0.73)'.
 	projectsBrowser maximizeCode.
@@ -3561,7 +3546,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_instVarWriters!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_issue261!public!test menus!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_loadProjectRemovingClass!public!test projects! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_makeDefault!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_maximizeCode!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuAddPackageOnProjectMenu!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuEnablementDoesNotBreak!public!tests! !

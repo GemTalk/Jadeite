@@ -21,10 +21,7 @@ addNoneProject
 	!
 
 allSelectedProjectsDirty
-	projectListPresenter selections isEmpty ifTrue: [^false].
-	projectListPresenter selections detect: [:projectService | projectService isDirty not]
-		ifNone: [^true].
-	^false!
+	^self basicAllSelectedProjectsDirty: projectListPresenter!
 
 basicUnloadProjects: projectNames
 	| browserService |
@@ -91,14 +88,6 @@ list: list
 loadProjects
 	self loadProjectsFrom: self.
 	self refreshGlobalSelections.!
-
-makeDefault
-	"the server is the gold copy"
-	| projectService |
-	projectService := projectListPresenter selection.
-	projectService command: #setDefaultProject.
-	self issueCommand: (Array with: projectService).
-	RowanProjectService defaultProjectName: projectService name!
 
 onViewClosed
 	super onViewClosed.
@@ -196,7 +185,7 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: self allSelectedProjectsDirty.
 			^true].
-	(#(#unloadProjects #loadProjects #pullFromGit #pushToGit #writeProject #projectChanges #browseProject #makeDefault #projectLog #checkout)
+	(#(#unloadProjects #loadProjects #pullFromGit #pushToGit #writeProject #projectChanges #browseProject #projectLog #checkout)
 		includes: aCommandQuery command)
 			ifTrue: 
 				[aCommandQuery isEnabled: projectListPresenter selections notEmpty.
@@ -276,7 +265,6 @@ writeProject
 !JadeiteProjectListPresenter categoriesFor: #hasSelection!public!testing! !
 !JadeiteProjectListPresenter categoriesFor: #list:!public! !
 !JadeiteProjectListPresenter categoriesFor: #loadProjects!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #makeDefault!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #openChangesShell:!menu handlers!private! !
