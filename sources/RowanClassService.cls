@@ -37,15 +37,8 @@ addHierarchyService: service to: treeModel withParent: parentService
 				withParent: service]!
 
 addSorted: sortedAdditions to: theModel
-	| stream next |
-	sortedAdditions isEmpty ifTrue: [^self].
-	theModel isEmpty ifTrue: [^theModel addAll: sortedAdditions].
-	stream := ReadStream on: sortedAdditions.
-	[stream atEnd] whileFalse: 
-			[| insertion |
-			next := stream next.
-			insertion := theModel detect: [:modelService | modelService >= next] ifNone: [].
-			insertion ifNil: [theModel addLast: next] ifNotNil: [theModel add: next before: insertion]]!
+	theModel addAll: sortedAdditions
+!
 
 basicPrepareForReplication
 	"don't call anything potentially recursive here.
