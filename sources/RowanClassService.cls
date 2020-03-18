@@ -265,6 +265,9 @@ isExtension
 
 	^isExtension!
 
+isExtension: anObject
+	isExtension := anObject!
+
 isInSymbolList
 	^isInSymbolList!
 
@@ -613,6 +616,7 @@ wasRenamed
 !RowanClassService categoriesFor: #isClassService!public!testing! !
 !RowanClassService categoriesFor: #isDefined!public!testing! !
 !RowanClassService categoriesFor: #isExtension!public!testing! !
+!RowanClassService categoriesFor: #isExtension:!accessing!public! !
 !RowanClassService categoriesFor: #isInSymbolList!accessing!private! !
 !RowanClassService categoriesFor: #isNewClass!accessing!private! !
 !RowanClassService categoriesFor: #isNewClass:!accessing!private! !
