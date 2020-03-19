@@ -1391,6 +1391,43 @@ test_dirtyPackages
 	self assert: self packageListPresenter selections first name equals: 'RowanSample1-Core'.
 	self assert: self packageListPresenter selections first isDirty!
 
+test_dirtyProjectOnDisk
+	| rowanSample1Project |
+	self testsIssue: #issue323 withTitle: 'would like git status supported in Rowan'.
+	self selectRowanSample1Test.
+	rowanSample1Project := transcript projectListPresenter projectListPresenter list
+				detect: [:projectService | projectService name = 'RowanSample1'].
+	transcript projectListPresenter projectListPresenter selection: rowanSample1Project.
+	self projectListPresenter selection
+		performGitCommand: 'reset'
+		with: '--hard'
+		in: session.
+	
+	[self assert: self projectListPresenter selection displayName equals: 'RowanSample1'.
+	self assert: transcript projectListPresenter projectListPresenter selections first displayName
+		equals: 'RowanSample1'.
+	self
+		saveMethod: 'deleteThisMethod
+
+	self assert: RowanSample1 new foo = ''foo''
+	Transcript cr; show: ''fnoodle''. 
+	^String new.'
+		in: self projectsPresenter selectedClass name
+		category: 'deleteMe'.
+	self answerYesToDialogDuring: [self projectsPresenter writeProject].
+	self assert: self projectListPresenter selection displayName equals: 'RowanSample1*'.
+	self assert: transcript projectListPresenter projectListPresenter selections first displayName
+		equals: 'RowanSample1*']
+			ensure: 
+				[self projectsPresenter removeMethodSelector: #deleteThisMethod.
+				self projectListPresenter selection
+					performGitCommand: 'reset'
+					with: '--hard'
+					in: session.
+				self assert: self projectListPresenter selection displayName equals: 'RowanSample1'.
+				self assert: transcript projectListPresenter projectListPresenter selections first displayName
+					equals: 'RowanSample1']!
+
 test_dontChangeTabOnMethodSave
 	| source firstTab secondTab |
 	self testsIssue: #issue412 withTitle: '(3.0.56) incorrect project browser update on method accept '.
@@ -3513,6 +3550,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectProjectOnly!public!test system tabs! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dirtyPackages!public!test packages! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_dirtyProjectOnDisk!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontChangeTabOnMethodSave!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontOverrideExistingAccessorMethods!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontUpdateWithDifferentMeta!public!test two browsers!tests! !

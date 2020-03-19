@@ -16,6 +16,20 @@ addSystemBrowser
 
 	self subclassResponsibility!
 
+basicWriteProject: projectServices
+	| ws |
+	ws := WriteStream on: String new.
+	projectServices do: 
+			[:service |
+			ws
+				nextPutAll: service name;
+				space].
+	(MessageBox confirm: 'Write projects - ' , ws contents , '- to disk without committing?')
+		ifFalse: [^false].
+	projectServices do: [:service | service command: #write].
+	self issueCommand: projectServices.
+	MessageBox notify: 'Projects ' , ws contents , ' written to disk'!
+
 commitTransaction
 	"Even if it takes a windy path, try to make sure
 	all commits in Jadeite pass through here"
@@ -125,6 +139,7 @@ updateService: service
 
 	^self updateServices: (Array with: service) ! !
 !JadePresenter categoriesFor: #addSystemBrowser!private! !
+!JadePresenter categoriesFor: #basicWriteProject:!menu handlers!public! !
 !JadePresenter categoriesFor: #commitTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #gciSession!public! !
 !JadePresenter categoriesFor: #gciSession:!public! !

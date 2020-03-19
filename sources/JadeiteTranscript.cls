@@ -251,7 +251,8 @@ registerPresentersForUpdates
 	BrowserUpdate current
 		register: self selector: #autoCommitUpdate:;
 		register: self selector: #breakpointSettingChanged:;
-		register: self selector: #updateSymbols:!
+		register: self selector: #updateSymbols:;
+		register: projectListPresenter projectListPresenter selector: #projectsUpdate:!
 
 remoteAutoCommit
 	| answeringService |

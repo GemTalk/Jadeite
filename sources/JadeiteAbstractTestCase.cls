@@ -18,6 +18,11 @@ anotherNumberMethodSource
 
 		^3'!
 
+answerYesToDialogDuring: block
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #yes.
+	block ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 assertMethodInList: selector
 	self assertMethodInList: selector presenter: self methodListPresenter!
 
@@ -617,6 +622,7 @@ variableListPresenter
 	^self projectsPresenter variableListPresenter.! !
 !JadeiteAbstractTestCase categoriesFor: #abortTransaction!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #anotherNumberMethodSource!constants!private! !
+!JadeiteAbstractTestCase categoriesFor: #answerYesToDialogDuring:!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #assertMethodInList:!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #assertMethodInList:presenter:!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #assertProjectInList:!private!support! !

@@ -1591,12 +1591,24 @@ removeMethodCategories
 	self basicRemoveMethodCategories!
 
 removeMethods: classServices
+	"This is hokey but used everywhere. Replace 
+	it with #removeMethodSelector(s): sometime soon"
+
 	classServices do: 
 			[:classService |
 			classService
 				command: #removeMethods:;
 				commandArgs: (Array with: methodListPresenter selections)].
 	self issueCommand: classServices!
+
+removeMethodSelector: selector
+	self removeMethodSelectors: (Array with: selector)!
+
+removeMethodSelectors: selectors
+	self selectedClass
+		command: #removeMethods:;
+		commandArgs: (Array with: methodListPresenter selections).
+	self issueCommand: (Array with: self selectedClass)!
 
 renameClass
 	| oldClassService newClassName |
@@ -2217,20 +2229,10 @@ updateTabLabel
 	self updateSystemTab!
 
 writeProject
-	| projectServices ws |
+	| projectServices |
 	projectServices := projectListPresenter selections.
-	ws := WriteStream on: String new.
-	projectServices do: 
-			[:service |
-			ws
-				nextPutAll: service name;
-				space].
-	(MessageBox confirm: 'Write projects - ' , ws contents , '- to disk without committing?')
-		ifFalse: [^false].
-	projectServices do: [:service | service command: #write].
-	self issueCommand: projectServices.
-	MessageBox notify: 'Projects ' ,  ws contents  , ' written to disk'.
-	self refreshFromServer. ! !
+	projectServices isEmpty ifTrue: [^MessageBox notify: 'No project selected'].
+	^self basicWriteProject: projectServices! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #aboutToChange:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addNoneProject!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addPackage!menu handlers!public! !
@@ -2374,6 +2376,8 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #removeClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #removeMethodCategories!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #removeMethods:!private!services! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #removeMethodSelector:!private!services! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #removeMethodSelectors:!private!services! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #renameClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #renameMethodCategory!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #resetCategoryText!event handlers support!public! !

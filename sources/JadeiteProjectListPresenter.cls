@@ -211,7 +211,7 @@ refreshProjects
 registerPresentersForUpdates
 	BrowserUpdate current register: projectListPresenter selector: #projectsUpdate:browser: browser: self.
 	BrowserUpdate current register: projectListPresenter selector: #removedProject:.
-	BrowserUpdate current register: projectListPresenter 	selector: #projectsUpdate:.!
+	BrowserUpdate current register: projectListPresenter selector: #projectsUpdate:.!
 
 unloadProjects
 	| projectNames ws |
@@ -239,20 +239,10 @@ updateProject
 	!
 
 writeProject
-	| projectServices ws |
+	| projectServices |
 	projectServices := projectListPresenter selections.
 	projectServices isEmpty ifTrue: [^MessageBox notify: 'No project selected'].
-	ws := WriteStream on: String new.
-	projectServices do: 
-			[:service |
-			ws
-				nextPutAll: service name;
-				space].
-	(MessageBox confirm: 'Write projects - ' , ws contents , '- to disk without committing?')
-		ifFalse: [^false].
-	projectServices do: [:service | service command: #write].
-	self issueCommand: projectServices.
-	MessageBox notify: 'Projects ' ,  ws contents  , ' written to disk'! !
+	^self basicWriteProject: projectServices! !
 !JadeiteProjectListPresenter categoriesFor: #abortTransaction!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #addNoneProject!public!updating! !
 !JadeiteProjectListPresenter categoriesFor: #allSelectedProjectsDirty!public!testing! !

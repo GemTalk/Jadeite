@@ -166,6 +166,12 @@ packages
 
 	^packages!
 
+performGitCommand: gitCommand with: argsString in: session
+	self
+		command: #performGitCommand:with:;
+		commandArgs: (Array with: gitCommand with: argsString).
+	BrowserUpdate current issueCommand: self session: session!
+
 postUpdate
 	super postUpdate.
 	packages ifNotNil: [packages do: [:service | service postUpdate]].
@@ -201,15 +207,9 @@ projectSelectionUpdate: presenter
 
 projectsUpdate: presenter
 	| listProject |
-	listProject := presenter list detect: [:listProj | listProj name = name] ifNone: [].
-	listProject
-		ifNotNil: 
-			[:proj |
-			proj sha: sha.
-			proj isDirty: isDirty.
-			proj isSkew: isSkew].
-	presenter view invalidate. 
-	!
+	listProject := presenter list detect: [:listProj | listProj name = name] ifNone: [^self].
+	listProject replicateFrom: self.
+	presenter view invalidate!
 
 projectUrl
 	^projectUrl!
@@ -259,6 +259,7 @@ sha: anObject
 !RowanProjectService categoriesFor: #isSkew:!accessing!private! !
 !RowanProjectService categoriesFor: #newTextView:using:!displaying!private! !
 !RowanProjectService categoriesFor: #packages!accessing!public! !
+!RowanProjectService categoriesFor: #performGitCommand:with:in:!presenter support!public! !
 !RowanProjectService categoriesFor: #postUpdate!Init / Release!public! !
 !RowanProjectService categoriesFor: #prepareForReplication!public!replication! !
 !RowanProjectService categoriesFor: #projectLogUsing:session:!presenter support!public! !
