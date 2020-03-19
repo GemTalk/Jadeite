@@ -122,6 +122,16 @@ displayUncompilableSourceIn: sourcePresenter
 	((sourcePresenter value copyFrom: 2 to: 34) = 'METHOD SOURCE CANNOT BE DISPLAYED')
 		ifTrue: [sourcePresenter view backcolor: JadeiteTextStyles default colorForUndisplayableSource]!
 
+displayVariables
+	| variables sortedVariables receiver |
+	variables := frame vars.
+	sortedVariables := (variables reject: [:variableService | variableService _key = 'receiver'])
+				asSortedCollection: [:x :y | (x _key asString _cmp: y _key asString) < 1].
+	sortedVariables := sortedVariables asOrderedCollection.
+	receiver := variables detect: [:variableService | variableService _key = 'receiver'] ifNone: [].
+	receiver ifNotNil: [sortedVariables addFirst: receiver].
+	variableListPresenter list: sortedVariables asArray!
+
 documentPresenter
 
 	^documentPresenter!
@@ -447,7 +457,7 @@ selectedFrame
 	(frame := gsProcess frameForLevel: index) isNil ifTrue: [^self].
 	BrowserUpdate current logComment: 'frame stepPoint: ' , frame stepPoint printString.
 	frame stepPoint ifNil: [RowanDebuggerStepPointError signal].	"see comment in  RowanFrameService>>initializeProcess:level:organizer:"
-	variableListPresenter list: frame vars.
+	self displayVariables.
 	documentPresenter value: frame gsMethod source.
 	BrowserUpdate current logComment: 'udpdated source pane'.
 	documentPresenter view isModified: false.
@@ -550,6 +560,7 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #debuggerService!accessing!private! !
 !JadeiteDebugger categoriesFor: #disableBreakpointsWhile:!private! !
 !JadeiteDebugger categoriesFor: #displayUncompilableSourceIn:!private! !
+!JadeiteDebugger categoriesFor: #displayVariables!frames!private! !
 !JadeiteDebugger categoriesFor: #documentPresenter!accessing!public! !
 !JadeiteDebugger categoriesFor: #errorMessagePresenter!accessing!public! !
 !JadeiteDebugger categoriesFor: #executeSelectionOrLine:!Jade!private! !

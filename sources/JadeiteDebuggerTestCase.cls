@@ -2009,6 +2009,53 @@ test_unsavedChangesActionStepping
 	self assert: debugger methodSourcePresenter documentPresenter value equals: 'step into']
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+test_variablesSorted
+	| source |
+	self testsIssue: #issue314 withTitle: 'Jadeite debugger - Alphabetical variables'.
+	self openProjectBrowser.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'RowanSample1Test'
+		superclass: 'TestCase'
+		instVars: #(#achoo #ulp #vooey #wahoo)
+		package: 'RowanSample1-Tests'.
+	source := 'testBlockMenuItems
+	| xyz uvw |
+	uvw := Array new. 
+  self
+    testBlockMenuItems: [ 
+      | ghi abc def |
+      def := uvw.
+      def
+        add: #abc;
+        add: 2.
+		ghi := def. 
+		abc := ghi. 
+      xyz
+        size;
+        halt ]'.
+	self selectCategoriesNamed: (Array with: 'tests').
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	source := 'testBlockMenuItems: block
+	block value.'.
+	self selectCategoriesNamed: (Array with: 'tests').
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self openDebuggerOn: 'RowanSample1Test new testBlockMenuItems'.
+	"on ExecBlock frame"
+	self
+		assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
+		equals: #(#receiver #abc #def #ghi #uvw #xyz).
+	self selectFrameAt: 5.
+	self
+		assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
+		equals: #(#receiver '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' #block).
+	self selectFrameAt: 6.
+	self
+		assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
+		equals: #(#receiver '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' #uvw)!
+
 test1
 	"Basics of opening a debugger, viewing the UI, and resuming."
 
@@ -2330,6 +2377,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_unsavedChangesActionChangeFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_unsavedChangesActionChangeToHomeFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_unsavedChangesActionStepping!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_variablesSorted!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test1!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test2!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test3!public!tests! !
