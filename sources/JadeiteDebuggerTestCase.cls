@@ -588,6 +588,115 @@ test_browseFrameMethod
 	self assert: browser currentCard methodListPresenter selection selector equals: #halt]
 			ensure: [browser view close]!
 
+test_browseFrameMethodInBlock
+	| browser source |
+	self testsIssue: #issue287
+		withTitle: '(3.0.50) debugger "browse" menu disabled when on frame on nested block ...'.
+	source := 'testBlockMenuItems
+
+	[ | def |
+	def := Array new.
+	def add: #abc; add: 2. 
+	def size; halt. 
+	] value.'.
+	self
+		saveMethod: source
+		in: 'RowanSample1Test'
+		category: 'other'.
+	self openDebuggerOn: 'RowanSample1Test new testBlockMenuItems'.
+	self assert: ('[] in  ExecBlock0 *' match: debugger frameListPresenter selection).
+	browser := debugger browseFrameMethod.
+	
+	[self assert: browser isKindOf: JadeiteBrowser.
+	self assert: browser currentCard classListPresenter selection name equals: 'RowanSample1Test'.
+	self assert: browser currentCard methodListPresenter selection selector equals: #testBlockMenuItems]
+			ensure: [browser view close].
+	self selectFrameAt: 5.
+self assert: ('RowanSample1Test >> testBlockMenuItems*' match: debugger frameListPresenter selection).
+	browser := debugger browseFrameMethod.
+	
+	[self assert: browser isKindOf: JadeiteBrowser.
+	self assert: browser currentCard classListPresenter selection name equals: 'RowanSample1Test'.
+	self assert: browser currentCard methodListPresenter selection selector equals: #testBlockMenuItems]
+			ensure: [browser view close].
+!
+
+test_browseImplementorsInBlock
+	| browser source |
+	self testsIssue: #issue287
+		withTitle: '(3.0.50) debugger "browse" menu disabled when on frame on nested block ...'.
+	source := 'testBlockMenuItems
+
+	[ | def |
+	def := Array new.
+	def add: #abc; add: 2. 
+	def size; halt. 
+	] value.'.
+	self
+		saveMethod: source
+		in: 'RowanSample1Test'
+		category: 'other'.
+	self openDebuggerOn: 'RowanSample1Test new testBlockMenuItems'.
+	self assert: ('[] in  ExecBlock0 *' match: debugger frameListPresenter selection).
+	browser := debugger browseImplementors.
+	
+	[self assert: browser isKindOf: JadeiteMethodListBrowser.
+	self assert: browser primaryPresenter methodListPresenter methodListPresenter selection selector
+		equals: #testBlockMenuItems.
+	self assert: ('Implementors *' match: browser topShell view caption)]
+			ensure: [browser view close].
+	self selectFrameAt: 5.
+	self
+		assert: ('RowanSample1Test >> testBlockMenuItems*' match: debugger frameListPresenter selection).
+	browser := debugger browseImplementors.
+	
+	[self assert: browser isKindOf: JadeiteMethodListBrowser.
+	self assert: browser primaryPresenter methodListPresenter methodListPresenter selection selector
+		equals: #testBlockMenuItems.
+	self assert: ('Implementors *' match: browser topShell view caption)]
+			ensure: [browser view close]!
+
+test_browseSendersInBlock
+	| browser source |
+	self testsIssue: #issue287
+		withTitle: '(3.0.50) debugger "browse" menu disabled when on frame on nested block ...'.
+	source := 'test1
+	self testBlockMenuItems'.
+	self
+		saveMethod: source
+		in: 'RowanSample1Test'
+		category: 'tests'.
+	source := 'testBlockMenuItems
+
+	[ | def |
+	def := Array new.
+	def add: #abc; add: 2. 
+	def size; halt. 
+	] value.'.
+	self
+		saveMethod: source
+		in: 'RowanSample1Test'
+		category: 'other'.
+	self openDebuggerOn: 'RowanSample1Test new testBlockMenuItems'.
+	self assert: ('[] in  ExecBlock0 *' match: debugger frameListPresenter selection).
+	browser := debugger browseSenders.
+	
+	[self assert: browser isKindOf: JadeiteMethodListBrowser.
+	self assert: browser primaryPresenter methodListPresenter methodListPresenter selection selector
+		equals: #test1.
+	self assert: ('Senders *' match: browser topShell view caption)]
+			ensure: [browser view close].
+	self selectFrameAt: 5.
+	self
+		assert: ('RowanSample1Test >> testBlockMenuItems*' match: debugger frameListPresenter selection).
+	browser := debugger browseSenders.
+	
+	[self assert: browser isKindOf: JadeiteMethodListBrowser.
+	self assert: browser primaryPresenter methodListPresenter methodListPresenter selection selector
+		equals: #test1.
+	self assert: ('Senders *' match: browser topShell view caption)]
+			ensure: [browser view close]!
+
 test_bug74
 	"Open debugger on method with breakpoint"
 
@@ -2163,6 +2272,9 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseFrameMethod!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_browseFrameMethodInBlock!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_browseImplementorsInBlock!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_browseSendersInBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_bug74!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileError!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlock!public!tests! !

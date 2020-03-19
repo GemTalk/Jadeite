@@ -287,9 +287,6 @@ icon
 
 	^##(self) defaultIcon!
 
-initialize
-	DefaultProjectName := nil!
-
 noneProject
 	| inst |
 	inst := self new.
@@ -301,6 +298,5 @@ noneProject
 	^inst! !
 !RowanProjectService class categoriesFor: #defaultIconName!private! !
 !RowanProjectService class categoriesFor: #icon!private! !
-!RowanProjectService class categoriesFor: #initialize!public! !
 !RowanProjectService class categoriesFor: #noneProject!instance creation!public! !
 

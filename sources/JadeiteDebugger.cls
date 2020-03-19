@@ -45,16 +45,16 @@ basicSelectedFrame
 
 browseFrameMethod
 	| classService shell |
-	frame gsMethod selector ifNil: [^self	"block context"].
-	classService := RowanClassService new name: frame gsMethod className.
+	frame homeMethodSelector ifNil: [^self	"block context"].
+	classService := RowanClassService new name: frame homeMethodClassName.
 	BrowserUpdate current updateService: classService session: gciSession.
 	shell := JadeiteBrowser showOnSession: gciSession.
 	shell currentCard updateAfterFindClass: classService.
-	shell currentCard findMethod: frame gsMethod selector.
+	shell currentCard findMethod: frame homeMethodSelector.
 	^shell!
 
 browseImplementors
-	^JadePresenter browseImplementorsOf: frame gsMethod selector session: self gciSession!
+	^JadePresenter browseImplementorsOf: frame homeMethodSelector session: self gciSession!
 
 browseObjectClass
 	| shell classService |
@@ -66,7 +66,7 @@ browseObjectClass
 	^shell!
 
 browseSenders
-	^JadePresenter browseSendersOf: frame gsMethod selector session: self gciSession!
+	^JadePresenter browseSendersOf: frame homeMethodSelector session: self gciSession!
 
 clearBreakPointsAt: stepPoint
 	gsProcess frames do: 
@@ -293,7 +293,7 @@ queryCommand: query
 
 	processList := processListPresenter list collect: [:each | GsProcess session: gciSession oopType: each oopType].
 	(#(#browseFrameMethod #browseImplementors #browseSenders) includes: query commandSymbol) ifTrue: [
-		query isEnabled: frame method selector notNil.
+		query isEnabled: frame homeMethodSelector notNil.
 		^true
 	].
 	(#(#'resumeProcess' #'runToCursor' #'stepInto' #'stepOut' #'stepOver') includes: query commandSymbol) ifTrue: [
@@ -571,7 +571,7 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #onViewDestroyed!event handlers!private! !
 !JadeiteDebugger categoriesFor: #onViewOpened!event handlers!private! !
 !JadeiteDebugger categoriesFor: #processListPresenter!accessing!public! !
-!JadeiteDebugger categoriesFor: #queryCommand:!menu handlers!public! !
+!JadeiteDebugger categoriesFor: #queryCommand:!menu handlers support!public! !
 !JadeiteDebugger categoriesFor: #reformatSource!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #refreshBreakPointsIn:!public!updating! !
 !JadeiteDebugger categoriesFor: #registerPresentersForUpdates!public!register presenters! !
