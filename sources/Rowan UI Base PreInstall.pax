@@ -1,9 +1,11 @@
-| package |
+﻿| package |
 package := Package name: 'Rowan UI Base PreInstall'.
 package paxVersion: 1;
 	basicComment: ''.
 
-package basicScriptAt: #preinstall put: 'ProcessorScheduler removeSelector: #userBreak:  "custom method will be readded in Rowan UI Base package"'.
+package basicScriptAt: #preinstall put: 'ProcessorScheduler removeSelector: #userBreak:.  "custom methods will be readded in Rowan UI Base package"
+Association removeSelector: #stonOn:.
+Time removeSelector: #stonOn: '.
 
 package binaryGlobalNames: (Set new
 	yourself).
@@ -11,8 +13,8 @@ package binaryGlobalNames: (Set new
 package globalAliases: (Set new
 	yourself).
 
-package setPrerequisites: (IdentitySet new
-	yourself).
+package setPrerequisites: #(
+).
 
 package!
 

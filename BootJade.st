@@ -42,15 +42,6 @@ ProgressDialog showModalWhile: [:progress |
 	].
 ].
 
-Association compile: 'stonOn: stonWriter
-	"overriden by Jadeite. Need key value format for gemstone.
-	Code loaded from BootJade.st" 
-	^super stonOn: stonWriter'.
-
-Time compile: 'stonOn: stonWriter
-	"Use an ISO style HH:MM:SS representation
-	Code loaded from BootJade.st"
-	stonWriter writeObject: self listSingleton: (self asStringUsingFormat: #($: true false))'. 
 
 SessionManager current splashShowAtStartup: false.
 SmalltalkSystemShell allInstances first position: 20@50.

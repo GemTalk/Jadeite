@@ -99,6 +99,7 @@ package classNames
 	yourself.
 
 package methodNames
+	add: #Association -> #stonOn:;
 	add: #CodeSourcePresenter -> #browseSelectedClass;
 	add: #CodeSourcePresenter -> #currentSelection;
 	add: #CodeSourcePresenter -> #executeSelectionOrLine;
@@ -438,6 +439,7 @@ package methodNames
 	add: #SequencedGrowableCollection -> #removeWithoutNotification:ifAbsent:;
 	add: #SmallInteger -> #_digitsAsString;
 	add: #Time -> #asStringUsingFormat:;
+	add: #Time -> #stonOn:;
 	add: #TranscriptPresenter -> #clearTranscript;
 	add: #TreeModel -> #getNodeFor:ifAbsent:;
 	add: #TreeModel -> #removeWithoutNotification:ifAbsent:;
@@ -1022,6 +1024,14 @@ ScintillaView subclass: #JadeiteScintillaView
 
 
 "Loose Methods"!
+
+!Association methodsFor!
+
+stonOn: stonWriter
+	"overriden by Jadeite. Need key value format for gemstone.
+	Code loaded from BootJade.st" 
+	^super stonOn: stonWriter! !
+!Association categoriesFor: #stonOn:!public!writing! !
 
 !CodeSourcePresenter methodsFor!
 
@@ -5366,8 +5376,14 @@ asStringUsingFormat: anArray
 		ifFalse: 
 			[aString := aString , hour , timeSeparator asString , min.
 			(anArray at: 2) ifTrue: [aString := aString , timeSeparator asString , sec]].
-	^aString! !
+	^aString!
+
+stonOn: stonWriter
+	"Use an ISO style HH:MM:SS representation
+	Code loaded from BootJade.st"
+	stonWriter writeObject: self listSingleton: (self asStringUsingFormat: #($: true false))! !
 !Time categoriesFor: #asStringUsingFormat:!converting!public! !
+!Time categoriesFor: #stonOn:!public!ston! !
 
 !TranscriptPresenter methodsFor!
 
