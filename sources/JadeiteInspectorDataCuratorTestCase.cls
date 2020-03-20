@@ -1231,13 +1231,6 @@ test_menuItemsEnabled
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	inspector instVarListPresenter selectionByIndex: #(3). "menu items disabled if 'self' or 'asOop' selected"
-	inspector documentPresenter view contextMenu itemsDo: 
-			[:item |
-			| query |
-			query := CommandQuery commandDescription: item source: inspector view.
-			inspector queryCommand: query.
-			self deny: query isEnabled].
 	inspector documentPresenter setFocus.
 	inspector documentPresenter view contextMenu itemsDo: 
 			[:item |
