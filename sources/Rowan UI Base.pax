@@ -1790,11 +1790,11 @@ requiredPackageNames
 		add: 'Jade Transcript';
 		add: 'Jade User Browser';
 		add: 'JGF Dolphin';
-		add: 'JGF Dolphin MVP Base';
+		"add: 'JGF Dolphin MVP Base';"
 		add: 'JGF Fading Dialog';
 		add: 'Jade UI';
 		add: 'Object Log Browser';
-		add: 'Jade from Dolphin';
+		add: 'Jade in Dolphin';
 		add: 'Jade Process Browser';
 		add: 'Rowan UI Base';
 		"add: 'Rowan STON';"
