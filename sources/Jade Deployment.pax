@@ -1,23 +1,24 @@
-| package |
+﻿| package |
 package := Package name: 'Jade Deployment'.
 package paxVersion: 1;
 	basicComment: ''.
 
 package basicPackageVersion: '0.045'.
 
-package imageStripperBytes: (ByteArray fromBase64String: 'IVNUQiA0IEYPEQAEAAAASmFkZUltYWdlU3RyaXBwZXIAAAAAUgAAAA8AAABKYWRlIERlcGxveW1l
-bnRSAAAAEwAAAHJ1bnRpbWVcSmFkZWl0ZS5leGWaAAAAUgAAAA8AAABKYWRlIERlcGxveW1lbnRS
-AAAAEgAAAEphZGVTZXNzaW9uTWFuYWdlcv+3JQAAAAAABgMPAFZlcnNpb25SZXNvdXJjZQYBEABW
+package imageStripperBytes: (ByteArray fromBase64String: 'IVNUQiA0IEYWEQAGAAAASmFkZUltYWdlU3RyaXBwZXIAAAAAUgAAAA8AAABKYWRlIERlcGxveW1l
+bnRSAAAAEwAAAHJ1bnRpbWVcSmFkZWl0ZS5leGWaAAAAEgEAAA8AAABKYWRlIERlcGxveW1lbnQS
+AQAAEgAAAEphZGVTZXNzaW9uTWFuYWdlcv+3JQAAAAAABgMPAFZlcnNpb25SZXNvdXJjZQYBEABW
 U19GSVhFREZJTEVJTkZPcgAAADQAAAC9BO/+AAABAAAAAQABAAAAAAABAAEAAAA/AAAAAAAAAAQA
 AAACAAAAAAAAAAAAAAAAAAAA6gAAAPAAAABiAAAAAgAAAFIAAAAIAAAAMDQwOTA0YjDqAAAA8AAA
-AGIAAAAOAAAAUgAAAA4AAABQcm9kdWN0VmVyc2lvblIAAAAKAAAAMSwgMCwgMCwgMVIAAAAQAAAA
-T3JpZ2luYWxGaWxlbmFtZVIAAAAIAAAASmFkZS5leGVSAAAACwAAAFByb2R1Y3ROYW1lUgAAAB8A
-AABBIERvbHBoaW4gWDYuMSBUb0dvIEFwcGxpY2F0aW9uUgAAAA4AAABMZWdhbENvcHlyaWdodFIA
-AAArAAAAUG9ydGlvbnMgQ29weXJpZ2h0IKkgT2JqZWN0IEFydHMgMTk5Ny0yMDA4LlIAAAAPAAAA
-RmlsZURlc2NyaXB0aW9uUgAAAB0AAABEb2xwaGluIFg2LjEgVG9HbyBBcHBsaWNhdGlvblIAAAAL
-AAAARmlsZVZlcnNpb25SAAAACgAAADEsIDAsIDAsIDFSAAAACAAAAENvbW1lbnRzUgAAABwAAABQ
-b3dlcmVkIGJ5IERvbHBoaW4gU21hbGx0YWxrygAAANAAAABiAAAAAQAAAAYCCgBEV09SREFycmF5
-cgAAAAQAAAAJBLAEAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA').
+AGIAAAAOAAAAUgAAAA4AAABMZWdhbENvcHlyaWdodFIAAAArAAAAUG9ydGlvbnMgQ29weXJpZ2h0
+IKkgT2JqZWN0IEFydHMgMTk5Ny0yMDA4LlIAAAAIAAAAQ29tbWVudHNSAAAAHAAAAFBvd2VyZWQg
+YnkgRG9scGhpbiBTbWFsbHRhbGtSAAAADwAAAEZpbGVEZXNjcmlwdGlvblIAAAAdAAAARG9scGhp
+biBYNi4xIFRvR28gQXBwbGljYXRpb25SAAAACwAAAFByb2R1Y3ROYW1lUgAAAB8AAABBIERvbHBo
+aW4gWDYuMSBUb0dvIEFwcGxpY2F0aW9uUgAAAAsAAABGaWxlVmVyc2lvblIAAAAKAAAAMSwgMCwg
+MCwgMVIAAAAQAAAAT3JpZ2luYWxGaWxlbmFtZVIAAAAIAAAASmFkZS5leGVSAAAADgAAAFByb2R1
+Y3RWZXJzaW9uUgAAAAoAAAAxLCAwLCAwLCAxygAAANAAAABiAAAAAQAAAAYCCgBEV09SREFycmF5
+cgAAAAQAAAAJBLAEAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAA==').
 package basicScriptAt: #postinstall put: 'SessionManager current 
 	when: #''sessionStarted'' 
 	send: #''sessionStarted'' 
@@ -35,15 +36,15 @@ package binaryGlobalNames: (Set new
 package globalAliases: (Set new
 	yourself).
 
-package setPrerequisites: (IdentitySet new
-	add: '..\Core\Object Arts\Dolphin\Base\Dolphin';
-	add: '..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base';
-	add: '..\Core\Object Arts\Dolphin\MVP\Views\Scintilla\Dolphin Scintilla View';
-	add: '..\Core\Contributions\Burning River\ExternalProcess\ExternalProcess';
-	add: 'GemStone C Interface';
-	add: 'GemStone Session';
-	add: '..\Core\Object Arts\Dolphin\Lagoon\Lagoon Image Stripper';
-	yourself).
+package setPrerequisites: #(
+	'..\Core\Object Arts\Dolphin\Base\Dolphin'
+	'..\Core\Object Arts\Dolphin\Base\Dolphin Legacy Date & Time'
+	'..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base'
+	'..\Core\Object Arts\Dolphin\MVP\Views\Scintilla\Dolphin Scintilla View'
+	'..\Core\Contributions\Burning River\ExternalProcess\ExternalProcess'
+	'GemStone C Interface'
+	'GemStone Session'
+	'..\Core\Object Arts\Dolphin\Lagoon\Lagoon Image Stripper').
 
 package!
 
