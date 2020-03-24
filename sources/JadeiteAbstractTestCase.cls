@@ -454,6 +454,14 @@ selectMethodsNamed: selectors
 	self methodListPresenter selections: methodServices.
 	^methodServices!
 
+selectMethodsNamed: selectors in: presenter
+	| methodServices |
+	presenter resetSelection.
+	methodServices := selectors
+				collect: [:selector | presenter list detect: [:svc | svc selector = selector]].
+	presenter selections: methodServices.
+	^methodServices!
+
 selectNoneProject
 	self selectServiceNamed: RowanProjectService noneProject name in: self projectListPresenter!
 
@@ -696,6 +704,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #selectMethodNamed:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectMethodNamedInProjectBrowser:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectMethodsNamed:!private!selection! !
+!JadeiteAbstractTestCase categoriesFor: #selectMethodsNamed:in:!private!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectNoneProject!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #selectRowanSample1Class!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectRowanSample1Test!private!selection! !
