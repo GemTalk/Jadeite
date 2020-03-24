@@ -1020,6 +1020,19 @@ test_methodBrowserSaveMethod
 	self assert: self methodListSourcePresenter documentPresenter value equals: source2]
 			ensure: [self destroy: projectsBrowser]!
 
+test_openComparisonTabWhenTwoMethodsSelected
+	self testsIssue: #issue752 withTitle: '(3.0.93) nice if I could compare two arbitrary methods'.
+	self openProjectBrowser.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanAnsweringService' in: self classListPresenter.
+	super selectMethodsNamed: #(#answer #answer:).
+	methodListBrowser := self projectsPresenter browseSelectedMethods.
+	self assert: self methodListMethodListPresenter view selectionsByIndex equals: #(1). 
+	self assert: methodListBrowser primaryPresenter textAreaTabs currentCard name equals: 'methodSource'.
+	self methodListMethodListPresenter view selectionsByIndex: #(1 2).
+	self assert: methodListBrowser primaryPresenter textAreaTabs currentCard name equals: 'comparisonTab'!
+
 test_reformatIllegalSource
 	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
 	self
@@ -1365,6 +1378,7 @@ test_wildCardSearch
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_insertIfFalse!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_insertIfTrue!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_methodBrowserSaveMethod!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_openComparisonTabWhenTwoMethodsSelected!public!test comparison tab! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatIllegalSource!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatSource!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !

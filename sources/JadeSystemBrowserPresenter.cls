@@ -1408,21 +1408,6 @@ onDragCutMethod: aSession
 
 	"self halt."!
 
-onDragMethod: aSession 
-
-	| list |
-	list := methodListPresenter selections collect: [:each | 
-		(aSession newDragObject: each first)
-			format: #method data: each first;
-			yourself.
-	].
-	aSession 
-		dragObjects: list;
-		supportedOperations: #(#move #copy);
-		defaultOperation: #copy;
-		yourself.
-!
-
 onDragMethodsOverClassHierarchy: aSession
 
 	aSession
@@ -1483,10 +1468,10 @@ onDragOverDictionary: aSession
 !
 
 onDragOverMethodCategory: aSession 
-
 	aSession operation: nil.
 	aSession dragObjects isEmpty ifTrue: [^self].
 	aSession suggestedTarget isNil ifTrue: [^self].
+
 	(aSession isFormatAvailable: #'method') ifFalse: [^self].
 	aSession
 		supportedOperations: #(#'move');
@@ -2726,7 +2711,6 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #onDragCutClassHierarchy:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDragCutClassList:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDragCutMethod:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragMethod:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDragMethodsOverClassHierarchy:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDragMethodsOverClassList:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDragOverClassCategory:!drag & drop!public! !

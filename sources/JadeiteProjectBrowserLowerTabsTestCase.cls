@@ -611,6 +611,21 @@ test_modifiedSourceShouldNotChangeMethodList
 				[self methodSourcePresenter value: originalSource.
 				self methodSourcePresenter view isModified: false]!
 
+test_openComparisonTabWhenTwoMethodsSelected
+	self testsIssue: #issue752 withTitle: '(3.0.93) nice if I could compare two arbitrary methods'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanAnsweringService' in: self classListPresenter.
+	self selectMethodsNamed: #().
+	self projectsPresenter selectMethodSourceTab.
+	self selectMethodsNamed: #(#answer).
+	self assert: self methodListPresenter view selections first selector equals: #answer.
+	self assert: self projectsPresenter isMethodSourceTabSelected.
+	self deny: self projectsPresenter isComparisonTabSelected.
+	self selectMethodsNamed: #(#answer #answer:).
+	self assert: self projectsPresenter isComparisonTabSelected.
+	self deny: self projectsPresenter isMethodSourceTabSelected!
+
 test_openNewBrowserTabWhileSUnitTabSelected
 	| addBrowserButton jadeMenu cards index |
 	self testsIssue: #issue389 withTitle: 'Add Browser Panel (Tab) when in Sunit Subpanel fails'.
@@ -1183,6 +1198,7 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_inspectShowsCompileError!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_modifiedSourceShouldNotChange!public!test two browsers!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_modifiedSourceShouldNotChangeMethodList!public!test two browsers!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_openComparisonTabWhenTwoMethodsSelected!public!test comparison tab! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_openNewBrowserTabWhileSUnitTabSelected!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatIllegalSource!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatMenuItemEnabled!public!test menus! !
