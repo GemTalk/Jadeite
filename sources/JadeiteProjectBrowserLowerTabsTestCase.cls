@@ -252,6 +252,19 @@ test_classCopy
 	self assert: self categoryListPresenter list first equals: '*rowansample1-extensions'.
 	self assert: self methodListPresenter list first selector equals: #bar!
 
+test_comparisonPresenterEvents
+	"don't remove the events by mistake"
+
+	self testsIssue: #issue752 withTitle: '(3.0.93) nice if I could compare two arbitrary methods'.
+	(self projectsPresenter comparisonPresenter afterPresenter getEvents at: #dragOver:)
+		messagesDo: [:message | self assert: message asSymbol equals: #onDragOverSource:].
+	(self projectsPresenter comparisonPresenter beforePresenter getEvents at: #dragOver:)
+		messagesDo: [:message | self assert: message asSymbol equals: #onDragOverSource:].
+	(self projectsPresenter comparisonPresenter afterPresenter getEvents at: #drop:)
+		messagesDo: [:message | self assert: message asSymbol equals: #onDropOnAfter:].
+	(self projectsPresenter comparisonPresenter beforePresenter getEvents at: #drop:)
+		messagesDo: [:message | self assert: message asSymbol equals: #onDropOnBefore:]!
+
 test_comparisonTabMultimethod
 	self testsIssue: #issue264
 		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
@@ -506,6 +519,30 @@ test_doubleClickIncludesColon
 	self projectsPresenter methodDoubleClicked: nil.
 	self assert: self methodSourcePresenter selectionRange equals: (14 to: 20).
 	self assert: self methodSourcePresenter selection equals: 'assert:'!
+
+test_dragMethodOntoComparisonTextPanes
+	| dragDropSession draggedService source methodListPresenter |
+	self testsIssue: #issue752 withTitle: '(3.0.93) nice if I could compare two arbitrary methods'.
+	self selectRowanSample1Test.
+	self selectMethodsNamed: #(#test1 #test2).
+	methodListBrowser := JadePresenter browseImplementorsOf: 'size' session: session.
+	
+	[methodListPresenter := methodListBrowser listPresenter.
+	dragDropSession := InternalDragDropSession dragSource: methodListPresenter view
+				item: methodListPresenter selections first.
+	methodListBrowser primaryPresenter onDragMethod: dragDropSession.
+	self assert: dragDropSession dragObjects size equals: 1.
+	draggedService := dragDropSession dragObjects first object.
+	self assert: draggedService isKindOf: RowanMethodService.
+	self assert: draggedService selector equals: #size.
+	self projectsPresenter selectComparisonTab.
+	self projectsPresenter onDragOverSource: dragDropSession.
+	source := draggedService source.
+	self projectsPresenter onDropOnAfter: dragDropSession.
+	self assert: self projectsPresenter comparisonPresenter afterPresenter value equals: source.
+	self projectsPresenter onDropOnBefore: dragDropSession.
+	self assert: self projectsPresenter comparisonPresenter beforePresenter value equals: source]
+			ensure: [methodListBrowser view close]!
 
 test_enablementOfCardTabsWithSUnitTabSelected
 	| toolbar |
@@ -1180,6 +1217,7 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseSendersDisplaysOneTime!public!test menus! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseSendersEnablement!public!test menus!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_classCopy!public!test class list!test sunit tab!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_comparisonPresenterEvents!public!test comparison tab!test drag drop! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_comparisonTabMultimethod!public!test comparison tab! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_comparisonTabNoMethodSelected!public!test comparison tab! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_comparisonTabSuperclass!public!test comparison tab! !
@@ -1193,6 +1231,7 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_confirmationDialogDuringCompileClassExistingInAnotherPackage!public!test compiling!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_dontDuplicateBreakpoints!public!test breakpoints! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_doubleClickIncludesColon!public!test source! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_dragMethodOntoComparisonTextPanes!public!test drag drop! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_enablementOfCardTabsWithSUnitTabSelected!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_findMethodDisabled!public!test find!test menus!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_inspectShowsCompileError!public!test source! !

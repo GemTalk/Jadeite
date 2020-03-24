@@ -47,6 +47,8 @@ package methodNames
 	add: #JadeiteChangesBrowser -> #diffsPresenter;
 	add: #JadeiteChangesBrowser -> #operationListPresenter;
 	add: #JadeiteMethodHistoryBrowser -> #selection;
+	add: #JadeiteMethodListBrowser -> #listPresenter;
+	add: #JadeiteMethodListPresenter -> #listPresenter;
 	add: #JadeiteProjectsBrowserPresenter -> #definedClassPackageText;
 	add: #JadeiteProjectsBrowserPresenter -> #definedMethodPackageText;
 	add: #JadeLoginShell -> #loginButtonPresenter;
@@ -335,6 +337,21 @@ selection
 	"for testing" 
 	^selection! !
 !JadeiteMethodHistoryBrowser categoriesFor: #selection!accessing!public! !
+
+!JadeiteMethodListBrowser methodsFor!
+
+listPresenter
+	"return the basic ListPresenter"
+
+	^self primaryPresenter listPresenter! !
+!JadeiteMethodListBrowser categoriesFor: #listPresenter!public!testing support! !
+
+!JadeiteMethodListPresenter methodsFor!
+
+listPresenter
+	"return the basic ListPresenter"
+	^methodListPresenter methodListPresenter! !
+!JadeiteMethodListPresenter categoriesFor: #listPresenter!public!testing support! !
 
 !JadeiteProjectsBrowserPresenter methodsFor!
 

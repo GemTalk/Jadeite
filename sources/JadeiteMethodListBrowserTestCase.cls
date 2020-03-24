@@ -18,6 +18,9 @@ browseLiteralTest: literal
 	self assert: self sourcePresenter selection equals: literal printString]
 			ensure: [methodListBrowser view close]!
 
+methodListBrowserPresenter
+	^methodListBrowser primaryPresenter!
+
 methodListMethodListPresenter
 	^methodListBrowser primaryPresenter methodListPresenter methodListPresenter!
 
@@ -732,6 +735,20 @@ test_clearAllBreakpointsMenuItemOnMethodList
 				ifNone: [].
 	self assertIsNil: menuItem!
 
+test_comparisonPresenterEvents
+	"don't remove the events by mistake"
+
+	self testsIssue: #issue752 withTitle: '(3.0.93) nice if I could compare two arbitrary methods'.
+	methodListBrowser := JadePresenter browseImplementorsOf: #size session: session.
+	(self methodListBrowserPresenter comparisonPresenter afterPresenter getEvents at: #dragOver:)
+		messagesDo: [:message | self assert: message asSymbol equals: #onDragOverSource:].
+	(self methodListBrowserPresenter comparisonPresenter beforePresenter getEvents at: #dragOver:)
+		messagesDo: [:message | self assert: message asSymbol equals: #onDragOverSource:].
+	(self methodListBrowserPresenter comparisonPresenter afterPresenter getEvents at: #drop:)
+		messagesDo: [:message | self assert: message asSymbol equals: #onDropOnAfter:].
+	(self methodListBrowserPresenter comparisonPresenter beforePresenter getEvents at: #drop:)
+		messagesDo: [:message | self assert: message asSymbol equals: #onDropOnBefore:]!
+
 test_comparisonTabMultimethod
 	self testsIssue: #issue264
 		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
@@ -908,6 +925,31 @@ test_doubleClickActionInstanceMethod
 	self deny: self projectsPresenter isClassSideSelected.
 	self assert: self methodListPresenter selection selector equals: #foo]
 			ensure: [self destroy: projectsBrowser]!
+
+test_dragMethodOntoComparisonTextPanes
+	| dragDropSession draggedService source |
+	self testsIssue: #issue752 withTitle: '(3.0.93) nice if I could compare two arbitrary methods'.
+	self openProjectBrowser.
+	self projectsPresenter.
+	self selectRowanSample1Test.
+	self projectsPresenter methodListPresenter view selectionsByIndex: #(1).
+	methodListBrowser := JadePresenter browseImplementorsOf: 'size' session: session.
+	dragDropSession := InternalDragDropSession
+				dragSource: self projectsPresenter methodListPresenter view
+				item: self projectsPresenter methodListPresenter view selections first.
+	self projectsPresenter onDragMethod: dragDropSession.
+	self assert: dragDropSession dragObjects size equals: 1.
+	draggedService := dragDropSession dragObjects first object.
+	self assert: draggedService isKindOf: RowanMethodService.
+	self assert: draggedService selector equals: #test1.
+	self methodListBrowserPresenter selectComparisonTab.
+	self methodListBrowserPresenter onDragOverSource: dragDropSession.
+	source := draggedService source.
+	self methodListBrowserPresenter onDropOnAfter: dragDropSession.
+	self assert: self methodListBrowserPresenter comparisonPresenter afterPresenter value equals: source.
+	self methodListBrowserPresenter onDropOnBefore: dragDropSession.
+	self assert: self methodListBrowserPresenter comparisonPresenter beforePresenter value
+		equals: source!
 
 test_firstReferenceRemovedAfterRecompile
 	"If we recompile a method in the method list browser
@@ -1314,6 +1356,7 @@ test_wildCardSearch
 	self assert: JadeiteSearch allSelectorSymbols equals: OrderedCollection new]
 			ensure: [JadeiteSearch allSelectorSymbols: cachedSymbols]! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #browseLiteralTest:!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #methodListBrowserPresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListMethodListPresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListSelector!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListSourcePresenter!private!support! !
@@ -1363,6 +1406,7 @@ test_wildCardSearch
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersIsDirty!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_categoryUpdates!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_clearAllBreakpointsMenuItemOnMethodList!public!test menus! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonPresenterEvents!public!test comparison tab! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabMultimethod!public!test comparison tab! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabMultimethod2!public!test comparison tab! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabNoMethodSelected!public!test comparison tab! !
@@ -1373,6 +1417,7 @@ test_wildCardSearch
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doSearch!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionClassMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionInstanceMethod!public!tests! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_dragMethodOntoComparisonTextPanes!public!test comparison tab! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_firstReferenceRemovedAfterRecompile!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_firstReferenceRetained!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_insertIfFalse!public!test methods! !
