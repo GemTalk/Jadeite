@@ -378,7 +378,7 @@ createComponents
 	super createComponents.
 	projectListPresenter := self add: ListPresenter new name: 'projectList'.
 	packageListPresenter := self add: ListPresenter new name: 'packagesList'.
-	comparisonPresenter := self add: DifferencesPresenter new name: 'comparisonTab'.
+	comparisonPresenter := self add: JadeiteDifferencesPresenter new name: 'comparisonTab'.
 	definedClassPackageText := self add: Presenter new name: 'definedPackageClassText'.
 	definedMethodPackageText := self add: Presenter new name: 'definedPackageMethodText'.
 	methodCategoryText := self add: TextPresenter new name: 'categoryMethodText'.

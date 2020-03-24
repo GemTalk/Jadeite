@@ -22,6 +22,7 @@ package classNames
 	add: #JadeiteDebugger;
 	add: #JadeiteDebuggerMethodSourcePresenter;
 	add: #JadeiteDiffBrowser;
+	add: #JadeiteDifferencesPresenter;
 	add: #JadeiteDividerMenuItem;
 	add: #JadeiteFindClassDialog;
 	add: #JadeiteFindMethodDialog;
@@ -751,6 +752,11 @@ RowanService subclass: #RowanQueryService
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanVariableService
 	instanceVariableNames: 'oop key value className'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+DifferencesPresenter subclass: #JadeiteDifferencesPresenter
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

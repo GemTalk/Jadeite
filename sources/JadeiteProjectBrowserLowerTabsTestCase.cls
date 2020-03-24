@@ -536,11 +536,11 @@ test_dragMethodOntoComparisonTextPanes
 	self assert: draggedService isKindOf: RowanMethodService.
 	self assert: draggedService selector equals: #size.
 	self projectsPresenter selectComparisonTab.
-	self projectsPresenter onDragOverSource: dragDropSession.
+	self projectsPresenter comparisonPresenter onDragOverSource: dragDropSession.
 	source := draggedService source.
-	self projectsPresenter onDropOnAfter: dragDropSession.
+	self projectsPresenter comparisonPresenter onDropOnAfter: dragDropSession.
 	self assert: self projectsPresenter comparisonPresenter afterPresenter value equals: source.
-	self projectsPresenter onDropOnBefore: dragDropSession.
+	self projectsPresenter comparisonPresenter onDropOnBefore: dragDropSession.
 	self assert: self projectsPresenter comparisonPresenter beforePresenter value equals: source]
 			ensure: [methodListBrowser view close]!
 

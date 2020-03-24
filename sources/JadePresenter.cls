@@ -76,15 +76,6 @@ resetCursor
 	[Cursor current: nil] forkAt: Processor userBackgroundPriority.
 !
 
-setDragOperationsFor: aDragDropSession
-	aDragDropSession dragSource topShell == self topShell
-		ifTrue: [aDragDropSession operation: nil]
-		ifFalse: 
-			[aDragDropSession
-				supportedOperations: #(#copy #move);
-				operation: #copy;
-				yourself]!
-
 setStatusBarDefault
 	| statusBarView |
 	statusBarView := self topShell view viewNamed: 'statusBarField'.
@@ -157,7 +148,6 @@ updateService: service
 !JadePresenter categoriesFor: #postEditSaveMethod!menu handlers support!public! !
 !JadePresenter categoriesFor: #refreshFromServer!public! !
 !JadePresenter categoriesFor: #resetCursor!public! !
-!JadePresenter categoriesFor: #setDragOperationsFor:!drag & drop!public! !
 !JadePresenter categoriesFor: #setStatusBarDefault!displaying!public! !
 !JadePresenter categoriesFor: #statusBarText:!public! !
 !JadePresenter categoriesFor: #subMenuName!menus!public! !
