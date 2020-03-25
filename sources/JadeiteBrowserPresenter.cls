@@ -392,6 +392,12 @@ displayVariable: displayThing
 				ifTrue: [displayThing font beBold]].
 	^displayThing!
 
+editDelete
+
+	View focus clearSelection.
+	self methodValueChanged.
+!
+
 editRevert
 	self isOkayToChange
 		ifTrue: 
@@ -744,6 +750,8 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: methodListPresenter selections size = 1.
 			^true].
+	command == #editDelete ifTrue:
+		[aCommandQuery isEnabled: methodSourcePresenter hasSelection. ^true]. 
 	^super queryCommand: aCommandQuery!
 
 reformatSource
@@ -1179,6 +1187,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #dictionaryPresenter!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #displayStringFor:in:!double dispatch!public! !
 !JadeiteBrowserPresenter categoriesFor: #displayVariable:!displaying!private! !
+!JadeiteBrowserPresenter categoriesFor: #editDelete!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #editRevert!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #editSaveClass!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #editSaveMethod:!menu handlers support!private! !

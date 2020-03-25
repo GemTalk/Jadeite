@@ -4012,49 +4012,117 @@ preRemoveMethods
 	^stream contents!
 
 queryCommand: aCommandQuery
-
 	| command focusView isTextEdit |
 	command := aCommandQuery command.
 	focusView := View focus.
 	isTextEdit := focusView isKindOf: TextEdit.
-	(#(#'browseMethodPragmas') includes: command) ifTrue: [aCommandQuery isEnabled: gciSession gsHasPragmas. ^true].
-	(#(#'editSave') includes: command) ifTrue: [aCommandQuery isEnabled: (isTextEdit and: [focusView isModified]). ^true].
-	(#(#'editUndo') includes: aCommandQuery command) ifTrue: [aCommandQuery isEnabled: (isTextEdit and: [focusView canUndo]). ^true].
-	(#(#'editRedo') includes: aCommandQuery command) ifTrue: [aCommandQuery isEnabled: (isTextEdit and: [focusView canRedo]). ^true].
-	(#(#'editCut' #'editCopy' "#'editDelete'" ) includes: aCommandQuery command) ifTrue: [aCommandQuery isEnabled: (isTextEdit and: [focusView hasSelection]). ^true].
-	(#(#'editPaste') includes: aCommandQuery command) ifTrue: [aCommandQuery isEnabled: (isTextEdit and: [Clipboard current isTextAvailable]). ^true].
-	(#(#'addRepository') includes: command) ifTrue: [aCommandQuery isEnabled: packageListPresenter selections notEmpty. ^true].
-	(#(#'showPackageChanges') includes: command) ifTrue: [
-		aCommandQuery isEnabled: true . ^true].
-	(#(#'savePackage') includes: command) ifTrue: [aCommandQuery isEnabled: packageListPresenter selections size = 1. ^true].
-	(#(#'removeRepository') includes: command) ifTrue: [
-		aCommandQuery isEnabled: (repositoryListPresenter hasSelection and: [packageListPresenter selections size = 1]). ^true].
-	(#(#'compareAncestor') includes: command) ifTrue: [
-		aCommandQuery isEnabled: (packageListPresenter selections size = 1 and: [ancestorListPresenter hasSelection]). ^true].
-	(#(#'browseMethodHistory' #'browseImplementors' #'browseSenders' #'fileOutMethod') includes: command) ifTrue: [
-		aCommandQuery isEnabled: methodListPresenter selections size = 1. ^true].
-	(#(#'inspectGlobal' #'browseGlobalReferences') includes: command) ifTrue: [aCommandQuery isEnabled: globalsPresenter selections size = 1. ^true].
-	(#(#'removeGlobals') includes: command) ifTrue: [aCommandQuery isEnabled: globalsPresenter selections notEmpty. ^true].
-	(#(#'fileOutDictionary' ) includes: command) ifTrue: [aCommandQuery isEnabled: dictionaryListPresenter selections size = 1. ^true].
-	(#(#'setHomeDictionary') includes: command) ifTrue: [aCommandQuery isEnabled: (dictionaryListPresenter selections size = 1 and: [dictionaryListPresenter selection value not]). ^true].
+	(#(#browseMethodPragmas) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: gciSession gsHasPragmas.
+			^true].
+	(#(#editSave) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: (isTextEdit and: [focusView isModified]).
+			^true].
+	(#(#editUndo) includes: aCommandQuery command)
+		ifTrue: 
+			[aCommandQuery isEnabled: (isTextEdit and: [focusView canUndo]).
+			^true].
+	(#(#editRedo) includes: aCommandQuery command)
+		ifTrue: 
+			[aCommandQuery isEnabled: (isTextEdit and: [focusView canRedo]).
+			^true].
+	(#(#editCut #editCopy #editDelete) includes: aCommandQuery command)
+		ifTrue: 
+			[ aCommandQuery isEnabled: (isTextEdit and: [focusView hasSelection]).
+			^true].
+	(#(#editPaste) includes: aCommandQuery command)
+		ifTrue: 
+			[aCommandQuery isEnabled: (isTextEdit and: [Clipboard current isTextAvailable]).
+			^true].
+	(#(#addRepository) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: packageListPresenter selections notEmpty.
+			^true].
+	(#(#showPackageChanges) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: true.
+			^true].
+	(#(#savePackage) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: packageListPresenter selections size = 1.
+			^true].
+	(#(#removeRepository) includes: command)
+		ifTrue: 
+			[aCommandQuery
+				isEnabled: (repositoryListPresenter hasSelection and: [packageListPresenter selections size = 1]).
+			^true].
+	(#(#compareAncestor) includes: command)
+		ifTrue: 
+			[aCommandQuery
+				isEnabled: (packageListPresenter selections size = 1 and: [ancestorListPresenter hasSelection]).
+			^true].
+	(#(#browseMethodHistory #browseImplementors #browseSenders #fileOutMethod) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: methodListPresenter selections size = 1.
+			^true].
+	(#(#inspectGlobal #browseGlobalReferences) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: globalsPresenter selections size = 1.
+			^true].
+	(#(#removeGlobals) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: globalsPresenter selections notEmpty.
+			^true].
+	(#(#fileOutDictionary) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: dictionaryListPresenter selections size = 1.
+			^true].
+	(#(#setHomeDictionary) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: (dictionaryListPresenter selections size = 1
+						and: [dictionaryListPresenter selection value not]).
+			^true].
 	"(#(#'runMethodTests') includes: command) ifTrue: [aCommandQuery isEnabled: (methodListPresenter selections notEmpty and: [methodListPresenter selections first isTestMethod]). ^true]."
-	(#(#'loadLatestVersion') includes: command) ifTrue: [
-		aCommandQuery isEnabled: (packageListPresenter selections notEmpty and: [packageListPresenter selections allSatisfy: [:each | each key beginsWith: 'ConfigurationOf']]). ^true].
-	(#(#'browseClassReferences' #'fileOutClass' #'addSubclass' #'addMissingAccessors' #'removeClass' #'removePriorVersions') includes: command) ifTrue: [
-		aCommandQuery isEnabled: self selectedClasses size == 1. ^true.
-	].
-	(#(#'runClassTests') includes: command) ifTrue: [aCommandQuery isEnabled: selectedClassesAreTestCases. ^true].
-	(#(#'browseSelectedClass') includes: command) ifTrue: [aCommandQuery isEnabled: self isClassSelectedInEditor. ^true].
-
-	(command == #historyBack) ifTrue: [aCommandQuery isEnabled: self hasCommandHistoryBack. ^true].
-	(command == #historyForward) ifTrue: [aCommandQuery isEnabled: self hasCommandHistoryForward. ^true].
-
-	(command == #'setEnvironment0' and: [environment == 0]) ifTrue: [aCommandQuery isChecked: true. ^true].
-	(command == #'setEnvironment1' and: [environment == 1]) ifTrue: [aCommandQuery isChecked: true. ^true].
-	(command == #'setEnvironment2' and: [environment == 2]) ifTrue: [aCommandQuery isChecked: true. ^true].
-
-	^super queryCommand: aCommandQuery.
-!
+	(#(#loadLatestVersion) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: (packageListPresenter selections notEmpty
+						and: [packageListPresenter selections allSatisfy: [:each | each key beginsWith: 'ConfigurationOf']]).
+			^true].
+	(#(#browseClassReferences #fileOutClass #addSubclass #addMissingAccessors #removeClass #removePriorVersions)
+		includes: command)
+			ifTrue: 
+				[aCommandQuery isEnabled: self selectedClasses size == 1.
+				^true].
+	(#(#runClassTests) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: selectedClassesAreTestCases.
+			^true].
+	(#(#browseSelectedClass) includes: command)
+		ifTrue: 
+			[aCommandQuery isEnabled: self isClassSelectedInEditor.
+			^true].
+	command == #historyBack
+		ifTrue: 
+			[aCommandQuery isEnabled: self hasCommandHistoryBack.
+			^true].
+	command == #historyForward
+		ifTrue: 
+			[aCommandQuery isEnabled: self hasCommandHistoryForward.
+			^true].
+	(command == #setEnvironment0 and: [environment == 0])
+		ifTrue: 
+			[aCommandQuery isChecked: true.
+			^true].
+	(command == #setEnvironment1 and: [environment == 1])
+		ifTrue: 
+			[aCommandQuery isChecked: true.
+			^true].
+	(command == #setEnvironment2 and: [environment == 2])
+		ifTrue: 
+			[aCommandQuery isChecked: true.
+			^true].
+	^super queryCommand: aCommandQuery!
 
 removeMethods
 	| result confirmationString |

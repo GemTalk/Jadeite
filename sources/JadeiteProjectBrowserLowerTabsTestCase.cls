@@ -544,6 +544,30 @@ test_dragMethodOntoComparisonTextPanes
 	self assert: self projectsPresenter comparisonPresenter beforePresenter value equals: source]
 			ensure: [methodListBrowser view close]!
 
+test_editDeleteEnablement
+	| commandQuery methodSourcePresenter menuItem |
+	self testsIssue: #issue583 withTitle: 'Undo/Redo in method list browser (3.0.81) '.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	methodSourcePresenter := self projectsPresenter methodSourcePresenter.
+	self deny: methodSourcePresenter view hasSelection.
+	menuItem := methodSourcePresenter view contextMenu items
+				detect: [:item | item command == #editDelete]
+				ifNone: [].
+	self denyIsNil: menuItem.
+	commandQuery := self
+				queryCommand: #editDelete
+				inPresenter: methodSourcePresenter
+				view: methodSourcePresenter view.
+	self deny: commandQuery isEnabled.
+	methodSourcePresenter view selectAll.
+	self assert: methodSourcePresenter view hasSelection.
+	commandQuery := self
+				queryCommand: #editDelete
+				inPresenter: self projectsPresenter
+				view: methodSourcePresenter view.
+	self assert: commandQuery isEnabled!
+
 test_enablementOfCardTabsWithSUnitTabSelected
 	| toolbar |
 	self testsIssue: #issue556 withTitle: 'Funny orange boxes enabled for Sunit tab, but error'.
@@ -698,6 +722,36 @@ test_openNewBrowserTabWhileSUnitTabSelected
 	index := cards indexOf: self projectsPresenter view.
 	self assert: index equals: 2.
 	self assert: self projectsPresenter view arrangement text equals: '2 RowanSample1' "retain the selections from tab 1" !
+
+test_redoUndoEnablement
+	| commandQuery methodSourcePresenter menuItem |
+	self testsIssue: #issue583 withTitle: 'Undo/Redo in method list browser (3.0.81) '.
+	methodSourcePresenter := self projectsPresenter methodSourcePresenter.
+	menuItem := methodSourcePresenter view contextMenu items detect: [:item | item command == #editUndo]
+				ifNone: [].
+	self denyIsNil: menuItem.
+	commandQuery := self
+				queryCommand: #editUndo
+				inPresenter: methodSourcePresenter
+				view: methodSourcePresenter view.
+	self deny: commandQuery isEnabled.
+	menuItem := methodSourcePresenter view contextMenu items detect: [:item | item command == #editRedo]
+				ifNone: [].
+	self denyIsNil: menuItem.
+	commandQuery := self
+				queryCommand: #editRedo
+				inPresenter: methodSourcePresenter
+				view: methodSourcePresenter view.
+	self deny: commandQuery isEnabled.
+	menuItem := methodSourcePresenter view contextMenu items
+				detect: [:item | item command == #editRevert]
+				ifNone: [].
+	self denyIsNil: menuItem.
+	commandQuery := self
+				queryCommand: #editRevert
+				inPresenter: methodSourcePresenter
+				view: methodSourcePresenter view.
+	self deny: commandQuery isEnabled!
 
 test_reformatIllegalSource
 	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
@@ -1250,6 +1304,7 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_dontDuplicateBreakpoints!public!test breakpoints! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_doubleClickIncludesColon!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_dragMethodOntoComparisonTextPanes!public!test comparison tab! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_editDeleteEnablement!public!test menus! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_enablementOfCardTabsWithSUnitTabSelected!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_findMethodDisabled!public!test find!test menus!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_inspectShowsCompileError!public!test source! !
@@ -1258,6 +1313,7 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_openComparisonTabWhenTwoMethodsSelected!public!test comparison tab! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_openMethodTabWhenOneMethodsSelected!public!test comparison tab! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_openNewBrowserTabWhileSUnitTabSelected!public!test sunit tab!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_redoUndoEnablement!public!test menus! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatIllegalSource!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatMenuItemEnabled!public!test menus! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatSource!public!test source! !

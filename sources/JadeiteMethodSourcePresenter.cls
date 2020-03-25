@@ -19,7 +19,7 @@ createSchematicWiring
 
 editMenuStrings
 	false ifTrue: [
-		self editSaveMethod; undo; redo; reformatSource; cutSelection; copySelection; pasteClipboard; clearSelection; selectAll; editFind; editFindNext; editReplace; 
+		self editSaveMethod; undo; redo; editRevert; reformatSource; cutSelection; copySelection; pasteClipboard; clearSelection; selectAll; editFind; editFindNext; editReplace; 
 			jadeDisplay; jadeExecute; jadeInspect; browseSelectedClass.
 	].
 	^#(

@@ -278,11 +278,18 @@ queryCommand: query
 		ifTrue: 
 			[query isEnabled: self isClassSelectedInEditor.
 			^true].
-	(#(#editUndo #editRedo #editRevert) includes: query commandSymbol)
+	(#(#undo #editRevert) includes: query commandSymbol)
 		ifTrue: 
-			[query isEnabled: ((View focus isKindOf: TextEdit) and: [View focus canUndo]).
+			[query isEnabled: ((View focus isKindOf: TextEdit) and: [View focus canUndo]). 
+			^true].
+	(#(#redo) includes: query commandSymbol)
+		ifTrue: 
+			[ query isEnabled: ((View focus isKindOf: TextEdit) and: [ View focus canRedo]).
 			^true].
 	^super queryCommand: query!
+
+redo
+	documentPresenter view redo!
 
 removeMenu
 
@@ -476,6 +483,7 @@ updateCodeFont
 !CodeSourcePresenter categoriesFor: #mySave!private! !
 !CodeSourcePresenter categoriesFor: #pasteClipboard!public! !
 !CodeSourcePresenter categoriesFor: #queryCommand:!public! !
+!CodeSourcePresenter categoriesFor: #redo!edit!private! !
 !CodeSourcePresenter categoriesFor: #removeMenu!menus!public! !
 !CodeSourcePresenter categoriesFor: #removeQuotesFromSelection!edit!private! !
 !CodeSourcePresenter categoriesFor: #selectAll!public! !
@@ -492,7 +500,7 @@ updateCodeFont
 !CodeSourcePresenter categoriesFor: #subMenuName!menus!public! !
 !CodeSourcePresenter categoriesFor: #subMenuPresenter!menus!public! !
 !CodeSourcePresenter categoriesFor: #textStyles!public! !
-!CodeSourcePresenter categoriesFor: #undo!Jade!private! !
+!CodeSourcePresenter categoriesFor: #undo!edit!private! !
 !CodeSourcePresenter categoriesFor: #update!public! !
 !CodeSourcePresenter categoriesFor: #updateCodeFont!public! !
 

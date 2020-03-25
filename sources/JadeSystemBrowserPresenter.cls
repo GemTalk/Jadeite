@@ -620,12 +620,6 @@ editCut
 	View focus cutSelection.
 !
 
-editDelete
-
-	View focus clearSelection.
-	self methodValueChanged.
-!
-
 editFind
 	textAreaTabs currentCard setFocus; editFind.!
 
@@ -2639,7 +2633,6 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #dictsMenuStrings!menus!public! !
 !JadeSystemBrowserPresenter categoriesFor: #editCopy!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #editCut!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #editDelete!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #editFind!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #editFindNext!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #editMenuStrings!menus!public! !

@@ -64,6 +64,19 @@ find: aFindDetails range: anInterval
 findDialogClass
 	^Smalltalk at: #JadeiteAdvancedFindDialog ifAbsent: [FindDialog]!
 
+queryCommand: query
+	"for some reason, TextEdit does not query #redo"
+
+	(#(#redo) includes: query command)
+		ifTrue: 
+			[query isEnabled: self canRedo.
+			^true].
+	(#(#editCut #editCopy #editDelete) includes: query command)
+		ifTrue: 
+			[query isEnabled: self hasSelection.
+			^true].
+	^super queryCommand: query!
+
 searchFor: matchString in: text from: pos length: matchLen details: findDetails
 	^findDetails isWildcard
 		ifTrue: [matchString match: (text midString: matchLen from: pos) ignoreCase: findDetails isCaseSensitive not]
@@ -71,5 +84,6 @@ searchFor: matchString in: text from: pos length: matchLen details: findDetails
 !JadeiteScintillaView categoriesFor: #editFind!constants!private! !
 !JadeiteScintillaView categoriesFor: #find:range:!private!searching & replacing! !
 !JadeiteScintillaView categoriesFor: #findDialogClass!constants!private! !
+!JadeiteScintillaView categoriesFor: #queryCommand:!menu handlers support!public! !
 !JadeiteScintillaView categoriesFor: #searchFor:in:from:length:details:!private!searching & replacing! !
 

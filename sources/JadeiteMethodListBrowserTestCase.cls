@@ -1073,6 +1073,33 @@ test_openComparisonTabWhenTwoMethodsSelected
 	self selectMethodsNamed: #(#answer).
 	self assert: methodListBrowser primaryPresenter textAreaTabs currentCard name equals: 'methodSource'.!
 
+test_redoUndoEnablement
+	| commandQuery methodSourcePresenter menuItem |
+	self testsIssue: #issue583 withTitle: 'Undo/Redo in method list browser (3.0.81) '.
+	methodListBrowser := JadePresenter browseSendersOf: #foo session: session.
+	methodSourcePresenter := methodListBrowser primaryPresenter methodSourcePresenter.
+	menuItem := methodSourcePresenter documentPresenter view contextMenu items detect:[:item | item command == #undo] ifNone:[].
+	self denyIsNil: menuItem. 
+	commandQuery := self
+				queryCommand: #undo
+				inPresenter: methodSourcePresenter
+				view: methodSourcePresenter view.
+	self deny: commandQuery isEnabled.
+	menuItem := methodSourcePresenter documentPresenter view contextMenu items detect:[:item | item command == #redo] ifNone:[].
+	self denyIsNil: menuItem. 
+	commandQuery := self
+				queryCommand: #redo
+				inPresenter: methodSourcePresenter
+				view: methodSourcePresenter view.
+	self deny: commandQuery isEnabled.
+	menuItem := methodSourcePresenter documentPresenter view contextMenu items detect:[:item | item command == #editRevert] ifNone:[].
+	self denyIsNil: menuItem. 
+	commandQuery := self
+				queryCommand: #editRevert
+				inPresenter: methodSourcePresenter
+				view: methodSourcePresenter view.
+	self deny: commandQuery isEnabled!
+
 test_reformatIllegalSource
 	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
 	self
@@ -1422,6 +1449,7 @@ test_wildCardSearch
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_insertIfTrue!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_methodBrowserSaveMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_openComparisonTabWhenTwoMethodsSelected!public!test comparison tab! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_redoUndoEnablement!public!test menus! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatIllegalSource!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatSource!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !

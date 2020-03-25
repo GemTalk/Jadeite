@@ -307,9 +307,13 @@ queryCommand: query
 		ifTrue: 
 			[query isEnabled: (textEdit notNil and: [(textEdit isKindOf: TextEdit) and: [textEdit canPaste]]).
 			^true].
-	(#(#editUndo #editRedo #editRevert) includes: query commandSymbol)
+	(#(#editUndo #editRevert) includes: query commandSymbol)
 		ifTrue: 
-			[query isEnabled: (isTextEdit and: [focusView canUndo]).
+			[query isEnabled: (isTextEdit and: [focusView canUndo]). 
+			^true].
+	(#( #editRedo ) includes: query commandSymbol)
+		ifTrue: 
+			[query isEnabled: (isTextEdit and: [focusView canRedo]).
 			^true].
 	^super queryCommand: query!
 
