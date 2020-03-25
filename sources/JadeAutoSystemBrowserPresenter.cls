@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 JadeSystemBrowserPresenter subclass: #JadeAutoSystemBrowserPresenter
-	instanceVariableNames: 'lastGsShape bottomArrangement'
+	instanceVariableNames: 'lastGsShape'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -12,12 +12,6 @@ see:
 #registerClassData'!
 !JadeAutoSystemBrowserPresenter categoriesForClass!Unclassified! !
 !JadeAutoSystemBrowserPresenter methodsFor!
-
-bottomArrangement
-	^bottomArrangement!
-
-bottomArrangement: anObject
-	bottomArrangement := anObject!
 
 codePresenterIsMethod
 
@@ -212,8 +206,6 @@ updateMethodList
 	self hasClassSideSelected ifTrue: [^lastGsShape gsClassMethods: self gsClassMethods].
 
 	^lastGsShape gsMethods: self gsMethods.! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #bottomArrangement!accessing!private! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #bottomArrangement:!accessing!private! !
 !JadeAutoSystemBrowserPresenter categoriesFor: #codePresenterIsMethod!public! !
 !JadeAutoSystemBrowserPresenter categoriesFor: #createArrayFromString:!public!updating! !
 !JadeAutoSystemBrowserPresenter categoriesFor: #createSchematicWiringForMethodSource!create schemantic wiring!public! !

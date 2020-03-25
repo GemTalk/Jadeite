@@ -83,5 +83,5 @@ setDragOperationsFor: aDragDropSession
 !JadeiteDifferencesPresenter categoriesFor: #onDropOnAfter:!event handlers!public! !
 !JadeiteDifferencesPresenter categoriesFor: #onDropOnBefore:!event handlers!public! !
 !JadeiteDifferencesPresenter categoriesFor: #set:to:andReset:!public! !
-!JadeiteDifferencesPresenter categoriesFor: #setDragOperationsFor:!private! !
+!JadeiteDifferencesPresenter categoriesFor: #setDragOperationsFor:!event handlers support!private! !
 

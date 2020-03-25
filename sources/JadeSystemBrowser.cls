@@ -121,20 +121,6 @@ logoutRequested: aValueHolder
 	self closeRequested: aValueHolder.
 !
 
-maximizeCode
-
-	(self currentCard class == self systemBrowserPresenter ) ifFalse: [^self].
-
-	self currentCard bottomArrangement 
-	ifNil: [
-		self currentCard bottomArrangement: (self currentCard view viewNamed: 'textAreaTabs') arrangement.
-		(self currentCard view viewNamed: 'textAreaTabs') arrangement: 100]
-	ifNotNil: [:value | 
-		(self currentCard view viewNamed: 'textAreaTabs') arrangement: self currentCard bottomArrangement.
-		self currentCard bottomArrangement: nil].
-
-	self currentCard view invalidate.!
-
 moveCardLeft
 
 	| cardView nextSibling |
@@ -281,7 +267,6 @@ update
 !JadeSystemBrowser categoriesFor: #jadeBrowseTests!public! !
 !JadeSystemBrowser categoriesFor: #layoutFilePath!public! !
 !JadeSystemBrowser categoriesFor: #logoutRequested:!public! !
-!JadeSystemBrowser categoriesFor: #maximizeCode!public! !
 !JadeSystemBrowser categoriesFor: #moveCardLeft!public! !
 !JadeSystemBrowser categoriesFor: #moveCardRight!public! !
 !JadeSystemBrowser categoriesFor: #onDropDown:!history!public! !

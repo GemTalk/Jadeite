@@ -10,7 +10,27 @@ JadeiteBrowser comment: ''!
 !JadeiteBrowser categoriesForClass!Unclassified! !
 !JadeiteBrowser methodsFor!
 
+maximizeCode
+	| tabView topView |
+	self currentCard class == self systemBrowserPresenter ifFalse: [^self].
+	tabView := self currentCard view viewNamed: 'textAreaTabs'.
+	topView := (self currentCard view viewNamed: 'projectList') parentView parentView.
+	self currentCard previousTabViewArrangement
+		ifNil: 
+			[self currentCard previousTabViewArrangement: tabView arrangement.
+			self currentCard previousTopViewArrangement: topView arrangement.
+			tabView arrangement: 24.
+			topView arrangement: 0.1	"small but non zero. See class comment in ProportionalLayout."]
+		ifNotNil: 
+			[:value |
+			tabView arrangement: self currentCard previousTabViewArrangement.
+			topView arrangement: self currentCard previousTopViewArrangement.
+			self currentCard previousTabViewArrangement: nil.
+			self currentCard previousTopViewArrangement: nil].
+	self currentCard view invalidate!
+
 systemBrowserPresenter
 	^JadeiteBrowserPresenter! !
+!JadeiteBrowser categoriesFor: #maximizeCode!public! !
 !JadeiteBrowser categoriesFor: #systemBrowserPresenter!public! !
 
