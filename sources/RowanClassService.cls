@@ -541,7 +541,7 @@ updateListIn: presenter from: visibleMethods
 			updated := visibleMethods detect: [:new | new = old] ifNone: [].
 			updated ifNil: [toRemove add: old] ifNotNil: [old replicateFrom: updated]].
 	theModel removeAll: toRemove.
-	toAdd := SortedCollection new.
+	toAdd := SortedCollection new sortBlock: [:x :y | x selector < y selector].
 	visibleMethods do: 
 			[:new |
 			updated := theModel detect: [:old | new = old] ifNone: [].

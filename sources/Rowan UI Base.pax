@@ -182,6 +182,7 @@ package methodNames
 	add: #JadeiteSUnitAbstractPresenter -> #methodListPresenter;
 	add: #JadeiteSUnitAbstractPresenter -> #methodListPresenter:;
 	add: #JadeiteSUnitAbstractPresenter -> #step;
+	add: #JadeiteSUnitInClassPresenter -> #browseSelectedMethods;
 	add: #JadeiteSUnitInClassPresenter -> #registerPresentersForUpdates;
 	add: #JadeiteSUnitInClassPresenter -> #testClassService;
 	add: #JadeiteSUnitInClassPresenter -> #testClassService:;
@@ -2054,6 +2055,17 @@ step
 
 !JadeiteSUnitInClassPresenter methodsFor!
 
+browseSelectedMethods
+	"convenience menu item to display randomly grouped methods in a browser"
+
+	| browser |
+	self updateServices: methodListPresenter selections.
+	(browser := JadeiteMethodListBrowser showOnSession: gciSession) primaryPresenter
+		methods: methodListPresenter selections
+		selecting: nil.
+	browser updateCaption: 'Selected Tests'.
+	^browser!
+
 registerPresentersForUpdates
 	BrowserUpdate current register: methodListPresenter selector: #testResultUpdate:browser: browser: self.!
 
@@ -2069,6 +2081,7 @@ testClassService: classService
 	textResultPresenter view backcolor: Color face3d.
 	classService updateListIn: methodListPresenter from: classService visibleTests.
 	methodListPresenter list do:[:methodService | methodService testResult: nil]! !
+!JadeiteSUnitInClassPresenter categoriesFor: #browseSelectedMethods!menu handlers!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteSUnitInClassPresenter categoriesFor: #testClassService!accessing!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #testClassService:!accessing!public! !

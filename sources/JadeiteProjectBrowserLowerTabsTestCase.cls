@@ -237,6 +237,18 @@ test_browseSendersEnablement
 				view: self methodListPresenter view.
 	self deny: commandQuery isEnabled!
 
+test_browseTestSelectorsInSUnitTab
+	self testsIssue: #issue565
+		withTitle: 'Would like "browse selected" in the SUnit tab of the Project Browser (3.0.79)'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanTestClassServiceTest' in: self classListPresenter.
+	self selectSUnitTab.
+	self projectsPresenter sunitPresenter editSelectAll.
+	methodListBrowser := self projectsPresenter sunitPresenter browseSelectedMethods.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list
+		equals: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list!
+
 test_classCopy
 	self testsIssue: #issue506 withTitle: 'Usefful to be able to copy a class ...'.
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
@@ -905,6 +917,18 @@ test_revertSource
 	self assert: self methodSourcePresenter value equals: originalSource.
 	self deny: self methodSourcePresenter view isModified!
 
+test_sortedTestSelectorsInSUnitTab
+	| sortedSelectors selectors |
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanTestClassServiceTest' in: self classListPresenter.
+	self selectSUnitTab. 
+	selectors := self projectsPresenter sunitPresenter methodListPresenter list collect:[:methodService | methodService selector]. 
+	sortedSelectors := SortedCollection sortBlock: [:x :y | x < y ]. 
+	sortedSelectors addAll: selectors. 
+	self assert: selectors asArray equals: sortedSelectors asArray. 
+!
+
 test_stepPoint1
 	"Always a step point at the selector"
 
@@ -1288,6 +1312,7 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseImplementorsEnablement!public!test menus!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseSendersDisplaysOneTime!public!test menus! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseSendersEnablement!public!test menus!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseTestSelectorsInSUnitTab!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_classCopy!public!test class list!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_comparisonPresenterEvents!public!test comparison tab! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_comparisonTabMultimethod!public!test comparison tab! !
@@ -1321,6 +1346,7 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reloadAfterClassCompile!public!test compiling!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_revertSource!public!test two browsers!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sortedTestSelectorsInSUnitTab!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_stepPoint1!public!test step points!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_stepPoint2!public!test step points!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitBarEnabledOnEntry!public!test sunit tab!tests! !
