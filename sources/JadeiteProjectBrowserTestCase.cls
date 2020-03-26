@@ -2109,16 +2109,24 @@ test_loadProjectRemovingClass
 	self assert: self classListPresenter list size equals: 1!
 
 test_maximizeCode
+	"the arrangement proportions are somewhat arbitrary in appearance.
+	Good enough to test that the tabView got doubled in size"
+
+	| tabView |
 	self testsIssue: #issue495 withTitle: 'minor error dialogs (3.0.73)'.
+	tabView := self projectsPresenter view viewNamed: 'textAreaTabs'.
+	self assert: tabView arrangement equals: 12.
 	projectsBrowser maximizeCode.
-	self assert: (self projectsPresenter view viewNamed: 'textAreaTabs') arrangement equals: 100.
-	projectsBrowser maximizeCode.
-	self deny: (self projectsPresenter view viewNamed: 'textAreaTabs') arrangement equals: 100.
+	self assert: tabView arrangement equals: 24.
+	self assert: self projectsPresenter previousTabViewArrangement equals: 12.
+	projectsBrowser maximizeCode.	"minimizes tabView"
+	self assert: tabView arrangement equals: 12.
 	self selectSUnitTab.
 	projectsBrowser maximizeCode.
-	self assert: (self projectsPresenter view viewNamed: 'textAreaTabs') arrangement equals: 100.
-	projectsBrowser maximizeCode.
-	self deny: (self projectsPresenter view viewNamed: 'textAreaTabs') arrangement equals: 100!
+	self assert: tabView arrangement equals: 24.
+	self assert: self projectsPresenter previousTabViewArrangement equals: 12.
+	projectsBrowser maximizeCode.	"minimizes tabView"
+	self assert: tabView arrangement equals: 12!
 
 test_menuAddPackageOnProjectMenu
 	| transcriptProjectMenu transcriptCommands |
