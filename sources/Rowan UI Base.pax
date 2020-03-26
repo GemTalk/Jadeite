@@ -222,6 +222,7 @@ package methodNames
 	add: #JadePresenter -> #browseSelectedClassIn:newTab:;
 	add: #JadePresenter -> #browseSendersOf;
 	add: #JadePresenter -> #browseSendersOf:;
+	add: #JadePresenter -> #checkoutTag:;
 	add: #JadePresenter -> #clearAllBreaks;
 	add: #JadePresenter -> #clearMethodBreakpoints:;
 	add: #JadePresenter -> #compilationWarningFrom:;
@@ -2379,6 +2380,16 @@ browseSendersOf
 browseSendersOf: string
 	^self class browseSendersOf: string session: self gciSession!
 
+checkoutTag: projectService
+	| choice tags |
+	tags := projectService gitTags: self gciSession.
+	choice := ChoicePrompter choices: tags.
+	choice ifNil: [^self].
+	projectService
+		command: #checkoutTag:;
+		commandArgs: (Array with: choice).
+	self issueCommand: (Array with: projectService)!
+
 clearAllBreaks
 	^self class clearAllBreaksIn: self gciSession!
 
@@ -2617,6 +2628,7 @@ updateServices: services
 !JadePresenter categoriesFor: #browseSelectedClassIn:newTab:!Jade!public! !
 !JadePresenter categoriesFor: #browseSendersOf!browsing!public! !
 !JadePresenter categoriesFor: #browseSendersOf:!browsing!menu handlers!public! !
+!JadePresenter categoriesFor: #checkoutTag:!menu handlers!public! !
 !JadePresenter categoriesFor: #clearAllBreaks!menu handlers!public! !
 !JadePresenter categoriesFor: #clearMethodBreakpoints:!menu handlers!public! !
 !JadePresenter categoriesFor: #compilationWarningFrom:!public! !

@@ -1184,46 +1184,6 @@ projectLog
 	projectListPresenter selection projectLogUsing: self session: gciSession
 !
 
-projectMenu
-	^Menu fromStrings: self projectMenuStrings!
-
-projectMenuCommands
-	^self projectMenu items collect: [:item | item command]!
-
-projectMenuStrings
-	self rowanFixMe.	"this really is a cumbersome way to build a menu."
-	0 == 1
-		ifTrue: 
-			[self
-				addPackage;
-				cloneProject;
-				loadProjects;
-				unloadProjects;
-				pullFromGit;
-				gitCommit;
-				pushToGit;
-				projectChanges;
-				writeProject;
-				checkout;
-				projectLog;
-				refresh].
-	^#('Projects' 
-		'Clone Git Project ...//cloneProject' 
-		'Load//loadProjects' 'Unload//unloadProjects' 
-		'-'
-		'Pull from Git//pullFromGit'
-		'Commit to Git ...//gitCommit'
-		'Push to Git//pushToGit'
-		'-'
-		'&Changes//projectChanges'
-		'Write//writeProject'
-		'Checkout Git Branch ...//checkout'
-		'-'
-		'&Add Package...//addPackage'
-		'-'
-		'Git Log//projectLog'
-		'&Refresh//refreshFromServer')!
-
 projectTabLabel
 	"Selections get mixed up switching between system presenters unless the tabs
 	have a unique label. Rather silly, but we'll give the tab a unique number"
@@ -2345,9 +2305,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #projectInfoTab!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #projectListPresenter!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #projectLog!project menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #projectMenu!menus!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #projectMenuCommands!menus!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #projectMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #projectTabLabel!displaying!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #pullFromGit!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #pushToGit!project menu handlers!public! !

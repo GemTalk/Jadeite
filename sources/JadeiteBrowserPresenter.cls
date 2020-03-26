@@ -253,6 +253,11 @@ categoriesMenuStrings
 	)
 !
 
+checkoutTag
+	| selection |
+	selection := projectListPresenter selection.
+	self checkoutTag: selection!
+
 classCommentChanged
 	inUpdate ifTrue: [^self].
 	self selectedClass ifNil: [^self].
@@ -689,6 +694,48 @@ projectInfoMenuStrings
 	'Copy//copyProjectInfo'
 	'Browse Commit In GitHub//openCommitInGitHub')!
 
+projectMenu
+	^Menu fromStrings: self projectMenuStrings!
+
+projectMenuCommands
+	^self projectMenu items collect: [:item | item command]!
+
+projectMenuStrings
+	self rowanFixMe.	"this really is a cumbersome way to build a menu."
+	0 == 1
+		ifTrue: 
+			[self
+				addPackage;
+				cloneProject;
+				loadProjects;
+				unloadProjects;
+				pullFromGit;
+				gitCommit;
+				pushToGit;
+				projectChanges;
+				writeProject;
+				checkoutTag;
+				checkout;
+				projectLog;
+				refresh].
+	^#('Projects' 
+		'Clone Git Project ...//cloneProject' 
+		'Load//loadProjects' 'Unload//unloadProjects' 
+		'-'
+		'Pull from Git//pullFromGit'
+		'Commit to Git ...//gitCommit'
+		'Push to Git//pushToGit'
+		'-'
+		'&Changes//projectChanges'
+		'Write//writeProject'
+		'Checkout Git Tag ...//checkoutTag'
+		'Checkout Git Branch ...//checkout'
+		'-'
+		'&Add Package...//addPackage'
+		'-'
+		'Git Log//projectLog'
+		'&Refresh//refreshFromServer')!
+
 protectedDictionaries
 	^#('Published' 'Globals' 'UserGlobals')!
 
@@ -750,8 +797,14 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: methodListPresenter selections size = 1.
 			^true].
-	command == #editDelete ifTrue:
-		[aCommandQuery isEnabled: methodSourcePresenter hasSelection. ^true]. 
+	command == #editDelete
+		ifTrue: 
+			[aCommandQuery isEnabled: methodSourcePresenter hasSelection.
+			^true].
+	#checkoutTag == aCommandQuery command
+		ifTrue: 
+			[aCommandQuery isEnabled: self isNoneProjectSelected not.
+			^true].
 	^super queryCommand: aCommandQuery!
 
 reformatSource
@@ -1173,6 +1226,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #buildGlobalsTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #buildProjectTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !
+!JadeiteBrowserPresenter categoriesFor: #checkoutTag!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #classCommentChanged!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #classesMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #comparisonPresenter!accessing!public! !
@@ -1227,6 +1281,9 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #previousTopViewArrangement:!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #projectInfoMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #projectInfoMenuStrings!menus!public! !
+!JadeiteBrowserPresenter categoriesFor: #projectMenu!menus!public! !
+!JadeiteBrowserPresenter categoriesFor: #projectMenuCommands!menus!public! !
+!JadeiteBrowserPresenter categoriesFor: #projectMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #protectedDictionaries!constants!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #reformatSource!menu handlers!menu handlers support!private! !

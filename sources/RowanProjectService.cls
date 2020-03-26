@@ -113,6 +113,14 @@ displayStringFor: displayThing
 				ifFalse: [displayThing forecolor: Color black]]
 		ifFalse: [displayThing forecolor: Color black]!
 
+gitTags: session
+	| query tags |
+	query := RowanQueryService new
+				command: #gitTagListUsing:;
+				commandArgs: (Array with: self).
+	tags := (BrowserUpdate current issueCommand: query session: session) first answer.
+	^tags!
+
 hash
 	^self name hash!
 
@@ -250,6 +258,7 @@ sha: anObject
 !RowanProjectService categoriesFor: #checkoutUsing:!presenter support!public! !
 !RowanProjectService categoriesFor: #displayName!accessing!displaying!public! !
 !RowanProjectService categoriesFor: #displayStringFor:!displaying!public! !
+!RowanProjectService categoriesFor: #gitTags:!presenter support!public! !
 !RowanProjectService categoriesFor: #hash!comparing!public! !
 !RowanProjectService categoriesFor: #initialize!Init / Release!public! !
 !RowanProjectService categoriesFor: #isDiskDirty!accessing!public! !

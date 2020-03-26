@@ -45,6 +45,11 @@ browseProject
 checkout
 	projectListPresenter selection checkoutUsing: self.!
 
+checkoutTag
+	| selection |
+	selection := projectListPresenter selection.
+	self checkoutTag: selection!
+
 createComponents
 	super createComponents.
 	projectListPresenter := self add: ListPresenter new name: 'projectList'!
@@ -194,6 +199,10 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: true.
 			^true].
+	#checkoutTag == aCommandQuery command
+		ifTrue: 
+			[aCommandQuery isEnabled: projectListPresenter selections size = 1.
+			^true].
 	^true!
 
 refresh
@@ -249,6 +258,7 @@ writeProject
 !JadeiteProjectListPresenter categoriesFor: #basicUnloadProjects:!menu handlers!private! !
 !JadeiteProjectListPresenter categoriesFor: #browseProject!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #checkout!menu handlers!public! !
+!JadeiteProjectListPresenter categoriesFor: #checkoutTag!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #createComponents!public! !
 !JadeiteProjectListPresenter categoriesFor: #createSchematicWiring!initialization!public! !
 !JadeiteProjectListPresenter categoriesFor: #gitCommit!menu handlers!public! !

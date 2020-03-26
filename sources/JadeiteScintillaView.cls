@@ -10,6 +10,15 @@ JadeiteScintillaView comment: ''!
 !JadeiteScintillaView categoriesForClass!MVP-Views! !
 !JadeiteScintillaView methodsFor!
 
+editCopy
+	self copySelection!
+
+editCut
+	self cutSelection!
+
+editDelete
+	self clearSelection!
+
 editFind
 	"super implementation that just returns the dialog for testing"
 	^self findPrompt: self suggestedFindText!
@@ -81,6 +90,9 @@ searchFor: matchString in: text from: pos length: matchLen details: findDetails
 	^findDetails isWildcard
 		ifTrue: [matchString match: (text midString: matchLen from: pos) ignoreCase: findDetails isCaseSensitive not]
 		ifFalse: [matchString = (text midString: matchLen from: pos)]! !
+!JadeiteScintillaView categoriesFor: #editCopy!constants!private! !
+!JadeiteScintillaView categoriesFor: #editCut!constants!private! !
+!JadeiteScintillaView categoriesFor: #editDelete!constants!private! !
 !JadeiteScintillaView categoriesFor: #editFind!constants!private! !
 !JadeiteScintillaView categoriesFor: #find:range:!private!searching & replacing! !
 !JadeiteScintillaView categoriesFor: #findDialogClass!constants!private! !
