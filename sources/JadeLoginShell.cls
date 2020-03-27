@@ -280,16 +280,14 @@ onViewClosed
 !
 
 onViewOpened
-
 	super onViewOpened.
-	self view position: 80 @ 5.
-	self 
+	self
 		fillVersionList;
 		updateView;
 		sendRequiredMessages;
 		yourself.
 	[self checkScintillaVersion] postToMessageQueue.
-	self setWorkingDirectory.!
+	self setWorkingDirectory!
 
 openHomePage
 

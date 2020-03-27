@@ -4693,11 +4693,8 @@ onViewClosed
 
 onViewOpened
 	super onViewOpened.
-	codePane setDocumentPresenterWith: (self registry getClass: 'Object').
 	BrowserUpdate current
-		logComment: 'Opening ' , self class name asString , ' {' , self identityHash printString , '}'
-
-	"documentPresenter view styler: JadeExpressionStyler new."! !
+		logComment: 'Opening ' , self class name asString , ' {' , self identityHash printString , '}'! !
 !JadeWorkspace categoriesFor: #onViewClosed!private! !
 !JadeWorkspace categoriesFor: #onViewOpened!private! !
 

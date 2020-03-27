@@ -152,12 +152,6 @@ onIdleEntered
 				ifNotNil: [[Cursor current ifNotNil: [Cursor current: nil]] forkAt: Processor userBackgroundPriority]].
 	^super onIdleEntered!
 
-onViewOpened
-
-	super onViewOpened.
-	self view position: 95 @ 35.
-!
-
 queryCommand: query
 	(#(#'turnAutoMigrateOff' #'turnAutoMigrateOn') includes: query commandSymbol) ifTrue: [
 		query isEnabled: true.
@@ -209,7 +203,6 @@ turnAutoMigrateOn
 !JadeTranscript categoriesFor: #mySessionPresenter:!accessing!private! !
 !JadeTranscript categoriesFor: #onCloseRequested:!event handling!public! !
 !JadeTranscript categoriesFor: #onIdleEntered!public! !
-!JadeTranscript categoriesFor: #onViewOpened!public!updating! !
 !JadeTranscript categoriesFor: #queryCommand:!public!updating! !
 !JadeTranscript categoriesFor: #resetCursor!event handling!public! !
 !JadeTranscript categoriesFor: #stoneInfoPresenter!accessing!private! !

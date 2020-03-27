@@ -656,7 +656,7 @@ onDragMethod: aSession
 		yourself!
 
 onViewOpened
-	super onViewOpened. 
+	super onViewOpened.
 	self showPackageList!
 
 packageDictionaryCards

@@ -174,7 +174,6 @@ renameSelection
 restoreLayoutAndContents
 
 	self restoreLayoutAndContentsFromFile ifFalse: [
-		self view position: 115 @ 70.
 		self addSystemBrowserWithLayoutInfo: nil.
 	].
 !
