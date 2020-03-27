@@ -192,6 +192,24 @@ tearDown
 			[projectsBrowser view close.
 			projectsBrowser := nil]!
 
+test_additionalAccelerators
+	"No way yet to adequately test accelerators function
+	but we can assert that we tell Dolphin to set them up"
+
+	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
+	methodListBrowser := JadePresenter browseImplementorsOf: #test1 session: session.
+	self assert: self methodListBrowserPresenter additionalAccelerators first first
+		equals: #insertIfFalse.
+	self assert: self methodListBrowserPresenter additionalAccelerators first last
+		equals: 'Ctrl+Shift+D'.
+	self assert: self methodListBrowserPresenter additionalAccelerators second first
+		equals: #insertIfTrue.
+	self assert: self methodListBrowserPresenter additionalAccelerators second last
+		equals: 'Ctrl+Shift+T'.
+	self assert: self methodListBrowserPresenter additionalAccelerators last first equals: #raiseConsole.
+	self assert: self methodListBrowserPresenter additionalAccelerators last last equals: 'Ctrl+F7'.
+	self assert: self methodListBrowserPresenter additionalAccelerators size equals: 3	"should fail if we add a new one"!
+
 test_adHocContextClassSide
 	| classService |
 	self testsIssue: #issue517 withTitle: 'Context of non-debugger source panes should be the class'.
@@ -1402,6 +1420,7 @@ test_wildCardSearch
 !JadeiteMethodListBrowserTestCase categoriesFor: #setupTestMethodInProjectBrowser!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #sourcePresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_additionalAccelerators!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_adHocContextClassSide!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_adHocContextInstanceSide!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpoints!public!test browse methods! !

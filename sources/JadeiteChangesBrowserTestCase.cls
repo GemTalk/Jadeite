@@ -68,6 +68,17 @@ tearDown
 	changesBrowser ifNotNil: [self destroy: changesBrowser].
 	projectsBrowser ifNotNil: [self destroy: projectsBrowser]!
 
+test_additionalAccelerators
+	"No way yet to adequately test accelerators function
+	but we can assert that we tell Dolphin to set them up"
+
+	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	self assert: changesBrowser additionalAccelerators first first equals: #raiseConsole.
+	self assert: changesBrowser additionalAccelerators first last equals: 'Ctrl+F7'.
+	self assert: changesBrowser additionalAccelerators size equals: 1	"should fail if we add a new one"!
+
 test_browseImplementors
 	| methodListBrowser |
 	self testsIssue: #issue407
@@ -376,6 +387,7 @@ test_revertMethodRemoval
 !JadeiteChangesBrowserTestCase categoriesFor: #makeLotsOfChanges!public!support!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteChangesBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
+!JadeiteChangesBrowserTestCase categoriesFor: #test_additionalAccelerators!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementors!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementorsOfRevertedChange!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementorsSelectsChangedMethod!public!tests! !

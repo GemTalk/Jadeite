@@ -390,6 +390,19 @@ test_addInstVarWithVariablesTabOpen
 				with: 'testSelector').
 	self projectsPresenter textAreaTabs currentCard name = 'classDefinition'	"don't change tab to Method Source"!
 
+test_additionalAccelerators
+	"No way yet to adequately test accelerators function
+	but we can assert that we tell Dolphin to set them up"
+
+	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
+	self assert: self projectsPresenter additionalAccelerators first first equals: #insertIfFalse.
+	self assert: self projectsPresenter additionalAccelerators second first equals: #insertIfTrue.
+	self assert: self projectsPresenter additionalAccelerators last first equals: #raiseConsole.
+	self assert: self projectsPresenter additionalAccelerators first last equals: 'Ctrl+Shift+D'.
+	self assert: self projectsPresenter additionalAccelerators second last equals: 'Ctrl+Shift+T'.
+	self assert: self projectsPresenter additionalAccelerators last last equals: 'Ctrl+F7'.
+	self assert: self projectsPresenter additionalAccelerators size equals: 3	"should fail if we add a new one"!
+
 test_addPackageReloadProject
 	self testsIssue: #issue183
 		withTitle: 'Add package but don''t write it to disk then reload - walkback'.
@@ -3519,6 +3532,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addDuplicatePackage!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addInstVarVariablesStaySorted!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addInstVarWithVariablesTabOpen!public!test variable tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_additionalAccelerators!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addPackageReloadProject!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!test categories!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addSystemTab!public!test system tabs! !

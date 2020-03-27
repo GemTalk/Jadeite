@@ -45,6 +45,18 @@ test_addedBreakpointAddsMethod
 		equals: 'test2 (1)']
 			ensure: [self destroy: projectsBrowser]!
 
+test_additionalAccelerators
+	"No way yet to adequately test accelerators function
+	but we can assert that we tell Dolphin to set them up"
+
+	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
+	self openBreakpointBrowser.
+	self assert: breakpointBrowser additionalAccelerators first first equals: #editSaveMethod.
+	self assert: breakpointBrowser additionalAccelerators first last equals: 'Ctrl+S'.
+	self assert: breakpointBrowser additionalAccelerators last first equals: #raiseConsole.
+	self assert: breakpointBrowser additionalAccelerators last last equals: 'Ctrl+F7'.
+	self assert: breakpointBrowser additionalAccelerators size equals: 2	"should fail if we add a new one"!
+
 test_breakpointAdditionsUpdateAutomatically
 	| treeModel |
 	self openProjectBrowser.
@@ -171,6 +183,7 @@ test_showsBreakpoints
 !JadeiteBreakpointBrowserTestCase categoriesFor: #setUp!public!support! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #tearDown!public!support! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_addedBreakpointAddsMethod!public!tests! !
+!JadeiteBreakpointBrowserTestCase categoriesFor: #test_additionalAccelerators!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_breakpointAdditionsUpdateAutomatically!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_breakpointRemovalsUpdateAutomatically!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_openBreakpointBrowser!public!tests! !

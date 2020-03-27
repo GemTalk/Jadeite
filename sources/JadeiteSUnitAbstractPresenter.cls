@@ -73,7 +73,7 @@ runTestCommand: command methods: methodServices className: className
 
 runTestMethodServices: methodServices className: className
 	| jadeResult |
-	methodServices isEmpty ifTrue: [^self].
+	methodServices isEmpty ifTrue: [^self]. 
 	jadeResult := self
 				runTestCommand: #runTest:inClassName:
 				methods: methodServices

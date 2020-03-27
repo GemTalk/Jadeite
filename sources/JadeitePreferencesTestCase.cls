@@ -19,6 +19,18 @@ closeWorkspace
 tearDown
 	workspace ifNotNil: [self closeWorkspace]!
 
+test_additionalAccelerators
+	"No way yet to adequately test accelerators function
+	but we can assert that we tell Dolphin to set them up"
+
+	| prefs |
+	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
+	prefs := JadeitePreferences new session: session.
+	workspace := prefs openWorkspace: 'nil'.
+	self assert: workspace additionalAccelerators first first equals: #raiseConsole.
+	self assert: workspace additionalAccelerators first last equals: 'Ctrl+F7'.
+	self assert: workspace additionalAccelerators size equals: 1	"should fail if we add a new one"!
+
 test_autoCommitEnabled
 	| prefs autoCommitWasEnabled |
 	self testsIssue: #issue553 withTitle: 'Jadeite settings in preferences file (3.0.78)'.
@@ -259,6 +271,7 @@ test_validPreferences
 	validPreferences do: [:symbol | self assert: (prefs class canUnderstand: symbol)]! !
 !JadeitePreferencesTestCase categoriesFor: #closeWorkspace!public!support! !
 !JadeitePreferencesTestCase categoriesFor: #tearDown!private!setup teardown! !
+!JadeitePreferencesTestCase categoriesFor: #test_additionalAccelerators!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_autoCommitEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_autoCompleteEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_blanksInOpenWorkspaceArguments!public!tests! !

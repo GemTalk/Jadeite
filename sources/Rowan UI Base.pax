@@ -287,6 +287,7 @@ package methodNames
 	add: #JadeServer64bit3x -> #compileMethod:behavior:symbolList:inCategory:;
 	add: #JadeServer64bit3x -> #sbClassComment:;
 	add: #JadeServer64bit3x -> #sbUpdateMethodPragmas;
+	add: #JadeShell -> #raiseConsole;
 	add: #JadeShell -> #updateCaptionFromSearchString:;
 	add: #JadeSystemBrowserPresenter -> #basicAddMethodCategory:;
 	add: #JadeSystemBrowserPresenter -> #basicRemoveMethods;
@@ -3833,10 +3834,18 @@ setVersion
 
 !JadeShell methodsFor!
 
+raiseConsole
+	| transcript |
+	transcript := JadeiteTranscript allInstances
+				detect: [:trans | trans gciSession = GciSession current]
+				ifNone: [^self].
+	transcript view setFocus!
+
 updateCaptionFromSearchString: searchString
 
 	self caption: (gciSession titleBarFor: searchString).
 ! !
+!JadeShell categoriesFor: #raiseConsole!menu handlers!public! !
 !JadeShell categoriesFor: #updateCaptionFromSearchString:!overrides!private! !
 
 !JadeSystemBrowserPresenter methodsFor!

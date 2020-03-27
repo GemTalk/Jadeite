@@ -267,6 +267,7 @@ test_additionalAccelerators
 	"No way yet to adequately test accelerators function
 	but we can assert that we tell Dolphin to set them up"
 
+	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
 	self openDebuggerOn: 'self halt'.
 	self assert: debugger additionalAccelerators first first equals: #raiseConsole.
 	self assert: debugger additionalAccelerators last first equals: #reformatSource.

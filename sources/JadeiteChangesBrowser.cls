@@ -149,13 +149,6 @@ queryCommand: aCommandQuery
 			^true].
 	^super queryCommand: aCommandQuery!
 
-raiseConsole
-	| transcript |
-	transcript := JadeiteTranscript allInstances
-				detect: [:trans | trans gciSession = GciSession current]
-				ifNone: [^self].
-	transcript view setFocus!
-
 refresh
 	| projectService operations |
 	projectService := RowanProjectService new name: name.
@@ -196,7 +189,7 @@ showNoComparison
 		beforeTitle: 'Disk';
 		afterTitle: 'Image';
 		compare: String new with: String new! !
-!JadeiteChangesBrowser categoriesFor: #additionalAccelerators!accessing!public! !
+!JadeiteChangesBrowser categoriesFor: #additionalAccelerators!accessing!constants!public! !
 !JadeiteChangesBrowser categoriesFor: #afterTitle:!public! !
 !JadeiteChangesBrowser categoriesFor: #browseChangedThing!menu handlers!public! !
 !JadeiteChangesBrowser categoriesFor: #browseImplementors!menu handlers!public! !
@@ -211,7 +204,6 @@ showNoComparison
 !JadeiteChangesBrowser categoriesFor: #operationSelected!public! !
 !JadeiteChangesBrowser categoriesFor: #operationsList!public! !
 !JadeiteChangesBrowser categoriesFor: #queryCommand:!menu handlers!public! !
-!JadeiteChangesBrowser categoriesFor: #raiseConsole!menu handlers!public! !
 !JadeiteChangesBrowser categoriesFor: #refresh!menu handlers!public! !
 !JadeiteChangesBrowser categoriesFor: #refreshIdenticalSource!menu handlers!public! !
 !JadeiteChangesBrowser categoriesFor: #revert!menu handlers!public! !

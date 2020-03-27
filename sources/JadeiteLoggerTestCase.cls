@@ -28,6 +28,23 @@ tearDown
 	Smalltalk removeKey: #JadeiteTestLoggingServiceClass ifAbsent: [].
 	BrowserUpdate current resetLoggingService.  !
 
+test_additionalAccelerators
+	"No way yet to adequately test accelerators function
+	but we can assert that we tell Dolphin to set them up"
+
+	| logger wasLogging |
+	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
+	wasLogging := BrowserUpdate current isLogging.
+	BrowserUpdate current isLogging: true.
+	logger := self openLogBrowser.
+	
+	[self assert: logger primaryPresenter additionalAccelerators first first equals: #raiseConsole.
+	self assert: logger primaryPresenter additionalAccelerators first last equals: 'Ctrl+F7'.
+	self assert: logger primaryPresenter additionalAccelerators size equals: 1	"should fail if we add a new one"]
+			ensure: 
+				[BrowserUpdate current isLogging: wasLogging.
+				self destroy: logger]!
+
 test_equality
 	"sent & received logging services should have the same groupId because it's a service call.
 	id will vary based on number of comments logged"
@@ -265,6 +282,7 @@ test_noFileWrittenWhenNotLogging
 !JadeiteLoggerTestCase categoriesFor: #openLogBrowser!private!support!tests! !
 !JadeiteLoggerTestCase categoriesFor: #setUp!public!setup teardown! !
 !JadeiteLoggerTestCase categoriesFor: #tearDown!public!setup teardown! !
+!JadeiteLoggerTestCase categoriesFor: #test_additionalAccelerators!public!tests! !
 !JadeiteLoggerTestCase categoriesFor: #test_equality!public!tests! !
 !JadeiteLoggerTestCase categoriesFor: #test_isLoggingDefaults!public!tests! !
 !JadeiteLoggerTestCase categoriesFor: #test_logComment!public!tests! !
