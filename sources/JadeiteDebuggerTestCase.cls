@@ -861,6 +861,15 @@ testContextMenu - counter = ' , counter printString]
 				ex return].
 	self assert: error isNil!
 
+test_copyFrameString
+	| frameListSelection |
+	self testsIssue: #issue704
+		withTitle: 'would be nice to be able get a copy the selected frame printstring'.
+	self openDebuggerOn: 'self halt'.
+	frameListSelection := debugger frameListPresenter selection.
+	debugger copyFrameString.
+	self assert: Clipboard current getText equals: frameListSelection!
+
 test_copyNotifierStack
 	| notifierShell copiedStack |
 	[RowanAnsweringService new exec: '1 zork' in: session] on: Error
@@ -2329,6 +2338,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlockFailsWhenNoHomeMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlockSameSelectorOnStack!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_contextMenu!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_copyFrameString!public!test menus! !
 !JadeiteDebuggerTestCase categoriesFor: #test_copyNotifierStack!public!test notifier! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debugCodeWithLeadingLineReturns!public! !
 !JadeiteDebuggerTestCase categoriesFor: #test_debugCodeWithLeadingLineReturnsLF!public! !
