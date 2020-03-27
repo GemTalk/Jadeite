@@ -44,14 +44,14 @@ ProgressDialog showModalWhile: [:progress |
 
 
 SessionManager current splashShowAtStartup: false.
-SmalltalkSystemShell allInstances first position: 20@50.
+"SmalltalkSystemShell allInstances first position: 20@50."
 (TranscriptShell allInstances , #(nil)) first ifNotNil: [:shell | shell view position: 20@600].
 IdeaSpaceShell allInstances isEmpty ifTrue: [
 	IdeaSpaceShell show
 		absorbCard: SmalltalkWorkspaceDocument show;
 		absorbCard: PackageBrowserShell show;
 		absorbCard: ClassBrowserShell show;
-		position: 50@80; extent: 1200@700;
+		"position: 50@80; extent: 1200@700;"
 		yourself.
 ].
 ClassBrowserAbstract allSubclasses do: [:each | 
@@ -59,7 +59,7 @@ ClassBrowserAbstract allSubclasses do: [:each |
 Debugger defaultExtent: 1000@600.
 !
 JadeiteLoginShell show
-	position: 80@20;
+	"position: 80@20;"
 	yourself.
 JadeLoginShell removeFromDevelopmentTools.
 JadeiteLoginShell addToDevelopmentTools.
