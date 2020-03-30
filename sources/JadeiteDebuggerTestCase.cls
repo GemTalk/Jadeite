@@ -1733,9 +1733,13 @@ test_stackMenuEnablement
 	self openDebuggerOn: 'nil halt'.
 	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
 	frameContextMenu := debugger frameListPresenter view contextMenu.
-	frameContextMenu itemsDo: [:item | self deny: (self menuItemIsEnabled: item)].
+	frameContextMenu itemsDo: 
+			[:item |
+			(item isDivider not and: [(item command = #copyFrameString) not])
+				ifTrue: [self deny: (self menuItemIsEnabled: item)]].
 	debugger frameListPresenter selection: (debugger frameListPresenter list at: 2).
-	frameContextMenu itemsDo: [:item | self assert: (self menuItemIsEnabled: item)]!
+	frameContextMenu
+		itemsDo: [:item | item isDivider not ifTrue: [self assert: (self menuItemIsEnabled: item)]]!
 
 test_stepOutMethod
 	"not in a block. Step out to higher level method context"
