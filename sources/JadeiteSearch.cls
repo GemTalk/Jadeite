@@ -140,7 +140,11 @@ autoCompleteEnabled
 	^AutoCompleteEnabled!
 
 autoCompleteEnabled: boolean
-	AutoCompleteEnabled := boolean!
+	AutoCompleteEnabled := boolean.
+	boolean
+		ifFalse: 
+			[self allSelectorSymbols: OrderedCollection new.
+			self allClassNames: OrderedCollection new]!
 
 confirmAutoCompleteEnabled: boolean in: session
 	"If the use chooses not to continue. Reset the value
@@ -187,11 +191,14 @@ on: view session: session
 selectorsFrom: partialSelector session: session trailingWildcard: trailingWildCard
 	| symbol |
 	self allSelectorSymbols isEmpty
-		ifTrue: [^RowanAnsweringService new symbolsMatching: partialSelector session: session]
+		ifTrue: [^RowanAnsweringService new selectorsMatching: partialSelector session: session]
 		ifFalse: 
 			[symbol := partialSelector , (trailingWildCard ifTrue: ['*'] ifFalse: [String new]).
 			symbol := symbol asSymbol asLowercase.
 			^self allSelectorSymbols select: [:selector | symbol match: selector asLowercase]]!
+
+symbolsFrom: partialSelector session: session trailingWildcard: trailingWildCard
+	^RowanAnsweringService new symbolsMatching: partialSelector session: session!
 
 updateAutocompleteSymbolsIn: session
 	| service |
@@ -211,5 +218,6 @@ updateAutocompleteSymbolsIn: session
 !JadeiteSearch class categoriesFor: #initializeSelectorsIn:!public!utilities! !
 !JadeiteSearch class categoriesFor: #on:session:!instance creation!public! !
 !JadeiteSearch class categoriesFor: #selectorsFrom:session:trailingWildcard:!accessing!public! !
+!JadeiteSearch class categoriesFor: #symbolsFrom:session:trailingWildcard:!accessing!public! !
 !JadeiteSearch class categoriesFor: #updateAutocompleteSymbolsIn:!public!utilities! !
 

@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 JadeiteAbstractTestCase subclass: #JadeiteMethodListBrowserTestCase
-	instanceVariableNames: 'methodListBrowser'
+	instanceVariableNames: 'methodListBrowser cachedSymbols'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -116,6 +116,10 @@ selectMethodsNamed: selectors in: browser
 	methodListPresenter selections: methodServices.
 	^methodServices!
 
+setUp
+	super setUp.
+	cachedSymbols := JadeiteSearch allSelectorSymbols!
+
 setupMultiKeywordSenderAndSendee
 	| source |
 	source := 'jadeiteSender  ^self jadeiteSendeeWith: 1 keyword: 2'.
@@ -190,7 +194,8 @@ tearDown
 	projectsBrowser
 		ifNotNil: 
 			[projectsBrowser view close.
-			projectsBrowser := nil]!
+			projectsBrowser := nil].
+	JadeiteSearch allSelectorSymbols: cachedSymbols!
 
 test_additionalAccelerators
 	"No way yet to adequately test accelerators function
@@ -1257,6 +1262,43 @@ test_removeMethodWarningString
 				removeSelectorsString: self methodListPresenter selections.
 	self assert: ('RowanSample1>>new (referenced by #### methods)*' match: removalWarningString)	"assume it will always be at least 1000 senders"!
 
+test_selectorsNotSymbolsWithCachedSymbols
+	| symbols |
+	self testsIssue: #issue669 withTitle: 'Could use better senders/implementors pattern matching ...'.
+	session executeString: '#x1y2z3'.
+	JadeiteSearch initializeAutocompleteSymbolsIn: session.
+	symbols := JadePresenter selectorsFrom: 'x1y2*' session: session.
+	self assert: symbols isEmpty.
+	symbols := JadePresenter selectorsFrom: 'x1y2z3' session: session.
+	self assert: symbols isEmpty.
+	symbols := JadePresenter selectorsFrom: 'sortedSelecto*' session: session.
+	symbols do: [:symbol | self assert: ('sortedSelecto*' match: symbol)].
+	symbols := JadeiteSearch
+				symbolsFrom: 'x1y2*'
+				session: session
+				trailingWildcard: true.
+	self deny: symbols isEmpty.
+	self assert: (symbols includes: #x1y2z3)!
+
+test_selectorsNotSymbolsWithUncachedSymbols
+	| symbols |
+	self testsIssue: #issue669 withTitle: 'Could use better senders/implementors pattern matching ...'.
+	session executeString: '#x1y2z3'.
+	JadeiteSearch allSelectorSymbols: OrderedCollection new.
+	symbols := JadePresenter selectorsFrom: 'x1y2*' session: session.
+	self assert: symbols isEmpty.
+	symbols := JadePresenter selectorsFrom: 'x1y2z3' session: session.
+	self assert: symbols isEmpty.
+	symbols := JadePresenter selectorsFrom: 'sortedSelecto*' session: session.
+	symbols do: [:symbol | self assert: ('sortedSelecto*' match: symbol)].
+	self assert: JadeiteSearch allSelectorSymbols equals: OrderedCollection new.
+	symbols := JadeiteSearch
+				symbolsFrom: 'x1y2*'
+				session: session
+				trailingWildcard: true.
+	self deny: symbols isEmpty.
+	self assert: (symbols includes: #x1y2z3)!
+
 test_symbolsInitialized
 	"wildcard browse implementors and senders relies on these symbols. Make sure they
 	get lazy initialized"
@@ -1389,15 +1431,12 @@ test_wildCardSearch
 	"a little faked up to avoid messy dialogs and returns within the method. 
 	See JadePresenter class>>promptForMatchingSymbolsIn: session actionBlock: aBlock promptCaption: caption searchType: prompt"
 
-	| symbols cachedSymbols |
+	| symbols |
 	self testsIssue: #issue732 withTitle: 'Wildcard method search broken if autcomplete off (3.0.93-6)'.
-	cachedSymbols := JadeiteSearch allSelectorSymbols.
-	
-	[JadeiteSearch allSelectorSymbols: OrderedCollection new.	"forces code down the 'fix' path"
+	JadeiteSearch allSelectorSymbols: OrderedCollection new.	"forces code down the 'fix' path"
 	symbols := JadePresenter selectorsFrom: 'siz*' session: session.
 	symbols do: [:symbol | self assert: (symbol match: symbol)].
-	self assert: JadeiteSearch allSelectorSymbols equals: OrderedCollection new]
-			ensure: [JadeiteSearch allSelectorSymbols: cachedSymbols]! !
+	self assert: JadeiteSearch allSelectorSymbols equals: OrderedCollection new! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #browseLiteralTest:!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListBrowserPresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListMethodListPresenter!private!support! !
@@ -1415,6 +1454,7 @@ test_wildCardSearch
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodNamed:in:!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsNamed:!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsNamed:in:!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #setUp!public!setup teardown! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #setupMultiKeywordSenderAndSendee!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #setupMultipleReferencesToString!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #setupTestMethodInProjectBrowser!private!support! !
@@ -1476,6 +1516,8 @@ test_wildCardSearch
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodInProjectBrowser!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodOutsideServices!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodWarningString!public!test methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_selectorsNotSymbolsWithCachedSymbols!public!test methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_selectorsNotSymbolsWithUncachedSymbols!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_symbolsInitialized!public!test browse methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !

@@ -51,6 +51,7 @@ package methodNames
 	add: #JadeiteMethodListPresenter -> #listPresenter;
 	add: #JadeiteProjectsBrowserPresenter -> #definedClassPackageText;
 	add: #JadeiteProjectsBrowserPresenter -> #definedMethodPackageText;
+	add: #JadeiteTranscript -> #autoCompleteEnabled:;
 	add: #JadeLoginShell -> #loginButtonPresenter;
 	add: #JadeLoginShell -> #loginWithoutErrorHandling;
 	add: #JadeLoginShell -> #userIDPresenter:;
@@ -196,7 +197,7 @@ JadeiteAbstractTestCase subclass: #JadeiteMethodHistoryTestCase
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteAbstractTestCase subclass: #JadeiteMethodListBrowserTestCase
-	instanceVariableNames: 'methodListBrowser'
+	instanceVariableNames: 'methodListBrowser cachedSymbols'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -377,6 +378,15 @@ allSelectorSymbols: anObject
 	^AllSelectors := anObject! !
 !JadeiteSearch class categoriesFor: #allClassNames:!accessing!public! !
 !JadeiteSearch class categoriesFor: #allSelectorSymbols:!accessing!public! !
+
+!JadeiteTranscript methodsFor!
+
+autoCompleteEnabled: boolean
+	"for testing"
+
+	JadeiteSearch autoCompleteEnabled: boolean.
+	autoCompleteEnabled value: boolean! !
+!JadeiteTranscript categoriesFor: #autoCompleteEnabled:!accessing!private! !
 
 !JadeLoginShell methodsFor!
 

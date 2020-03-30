@@ -39,12 +39,6 @@ autoCompleteEnabled
 
 	^autoCompleteEnabled value!
 
-autoCompleteEnabled: boolean
-	"for testing"
-
-	JadeiteSearch autoCompleteEnabled: boolean.
-	autoCompleteEnabled value: boolean!
-
 browseBreakpointList
 	^JadePresenter browseBreakpointsIn: self gciSession!
 
@@ -271,7 +265,6 @@ toolbarPresenter
 !JadeiteTranscript categoriesFor: #autoCommit!accessing!private! !
 !JadeiteTranscript categoriesFor: #autoCommit:!accessing!private! !
 !JadeiteTranscript categoriesFor: #autoCompleteEnabled!accessing!private! !
-!JadeiteTranscript categoriesFor: #autoCompleteEnabled:!accessing!private! !
 !JadeiteTranscript categoriesFor: #browseBreakpointList!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #browseBreakpoints!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #browseClass!menu handlers!public! !

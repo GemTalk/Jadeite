@@ -84,6 +84,12 @@ printOn: stream
 		nextPutAll: commandArgs printString;
 		nextPut: $)!
 
+selectorsMatching: string session: session
+	command := #selectorsMatching:.
+	commandArgs := Array with: string.
+	BrowserUpdate current issueCommands: (Array with: self) session: session.
+	^answer!
+
 setAutoCommit: boolean for: session
 	command := #setAutoCommit:.
 	self commandArgs: (Array with: boolean).
@@ -125,6 +131,7 @@ updateSymbols: unused
 !RowanAnsweringService categoriesFor: #isTranscriptInstalledIn:!commands!public! !
 !RowanAnsweringService categoriesFor: #needsCommit:!commands!public! !
 !RowanAnsweringService categoriesFor: #printOn:!printing!public! !
+!RowanAnsweringService categoriesFor: #selectorsMatching:session:!commands!public!testing! !
 !RowanAnsweringService categoriesFor: #setAutoCommit:for:!commands!public! !
 !RowanAnsweringService categoriesFor: #setBreakpointsEnabled:session:!commands!public! !
 !RowanAnsweringService categoriesFor: #symbolExists:session:!commands!public!testing! !
