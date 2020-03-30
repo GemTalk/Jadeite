@@ -657,6 +657,15 @@ test_browseImplementorsInBlock
 	self assert: ('Implementors *' match: browser topShell view caption)]
 			ensure: [browser view close]!
 
+test_browseSelectedFrameMethod
+	|  methodListBrowser |
+	self testsIssue: #issue740
+		withTitle: 'nice to have `Browse selected method` menu item in debugger, too'.
+	self openDebuggerOn: 'self halt'.
+	debugger frameListPresenter selectionByIndex: 3.
+	methodListBrowser := debugger browseSelectedMethod .
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter selection selector equals: #halt!
+
 test_browseSendersInBlock
 	| browser source |
 	self testsIssue: #issue287
@@ -2335,6 +2344,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_browseFrameMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseFrameMethodInBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseImplementorsInBlock!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_browseSelectedFrameMethod!public!test menus! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseSendersInBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_bug74!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileError!public!tests! !
