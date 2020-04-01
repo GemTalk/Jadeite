@@ -257,10 +257,6 @@ categoriesMenuStrings
 categoryListPresenter
 	^categoryListPresenter!
 
-checkout
-	projectListPresenter selection checkoutUsing: self.
-	self refreshFromServer!
-
 classCommentPresenter
 	"for test access" 
 	^classCommentPresenter!
@@ -1459,17 +1455,6 @@ refreshClassListOrHierarchy
 					["No selection if in the refreshing after rename. Done later"
 					self selectMethods: selectedMethods]]!
 
-refreshFromServer
-	| services |
-	services := OrderedCollection with: RowanBrowserService new.
-	projectListPresenter selections isEmpty ifFalse: [services addAll: projectListPresenter selections].
-	packageListPresenter selections isEmpty ifFalse: [services addAll: packageListPresenter selections].
-	classListPresenter selectionOrNil ifNotNil: [:classService | services add: classService].
-	classHierarchyPresenter selectionOrNil ifNotNil: [:classService | services add: classService].
-	self updateServices: services.
-	self updateSUnitTab.
-	self redrawAllViews!
-
 refreshMethodsOn: presenter
 	| classService |
 	classService := self selectedClass ifNil:[^self].
@@ -2204,7 +2189,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #browseSelectedClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #categoryListPresenter!accessing!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #checkout!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #classCommentPresenter!accessing!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #classDefinitionPresenter!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #classesMenuStrings!menus!public! !
@@ -2311,7 +2295,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #redrawAllViews!displaying!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshClassListOrHierarchy!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #refreshFromServer!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshMethodsOn:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #registerClassData!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #registerPresentersForUpdates!event handlers!initialize/release!private!register presenters! !

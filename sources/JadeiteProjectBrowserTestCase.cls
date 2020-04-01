@@ -1116,6 +1116,32 @@ test_changeVariableWithModifiedMethodSource
 	self assert: self projectsPresenter variableListPresenter selection equals: 'classVarNames']
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+test_checkoutTagRefresh
+	| projectService |
+	self testsIssue: #issue425
+		withTitle: 'Jadeite should be able to check out a git tag not just branch'.
+	projectService := self projectListPresenter list detect: [:service | service name = 'Rowan'].
+	self projectsPresenter basicCheckoutTagAndRefresh: 'Oscar-3.0.93' for: projectService.
+	self assert: projectService branch equals: '(HEAD detached at Oscar-3.0.93)'.
+	self assert: projectService isSkew.
+	#('Cypress' 'STON' 'Tonel') do: 
+			[:projectName |
+			| dependentService |
+			dependentService := transcript projectListPresenter projectListPresenter list
+						detect: [:service | service name = projectName].	"the transcript will display the tag. Make sure it's updated"
+			self assert: dependentService branch equals: '(HEAD detached at Oscar-3.0.93)'.
+			self assert: dependentService isSkew].
+	projectService basicCheckout: 'oscar' using: self projectsPresenter.
+	self assert: projectService branch equals: 'oscar'.
+	self deny: projectService isSkew.
+	#('Cypress' 'STON' 'Tonel') do: 
+			[:projectName |
+			| dependentService |
+			dependentService := transcript projectListPresenter projectListPresenter list
+						detect: [:service | service name = projectName].	"the transcript will display the branch. Make sure it's updated"
+			self assert: dependentService branch equals: 'oscar'.
+			self deny: dependentService isSkew]!
+
 test_classDefinitionUpdatesAcrossTabs
 	| source firstTab secondTab newSource |
 	self testsIssue: #issue412 withTitle: '(3.0.56) incorrect project browser update on method accept '.
@@ -3562,6 +3588,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeClassComment!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeListSortOrder!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_changeVariableWithModifiedMethodSource!public!test variable tab!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_checkoutTagRefresh!public!test projects! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionUpdatesAcrossTabs!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_classListSelectionShouldNotUpdateOtherHierarchy!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleInvalidSession!public!tests! !

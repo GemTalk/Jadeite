@@ -375,6 +375,33 @@ test_browseSendersMenuItem
 	self assert: browseSendersItem command equals: #browseSendersOf.
 	self assert: (transcript class canUnderstand: #browseSendersOf)!
 
+test_checkoutTagRefresh
+	| projectService |
+	self testsIssue: #issue425
+		withTitle: 'Jadeite should be able to check out a git tag not just branch'.
+	projectService := transcript projectListPresenter projectListPresenter list
+				detect: [:service | service name = 'Rowan'].
+	transcript projectListPresenter basicCheckoutTagAndRefresh: 'Oscar-3.0.93' for: projectService.
+	self assert: projectService branch equals: '(HEAD detached at Oscar-3.0.93)'.
+	self assert: projectService isSkew.
+	#('Cypress' 'STON' 'Tonel') do: 
+			[:projectName |
+			| dependentService |
+			dependentService := transcript projectListPresenter projectListPresenter list
+						detect: [:service | service name = projectName].
+			self assert: dependentService branch equals: '(HEAD detached at Oscar-3.0.93)'.
+			self assert: dependentService isSkew].
+	projectService basicCheckout: 'oscar' using: transcript projectListPresenter.
+	self assert: projectService branch equals: 'oscar'.
+	self deny: projectService isSkew.
+	#('Cypress' 'STON' 'Tonel') do: 
+			[:projectName |
+			| dependentService |
+			dependentService := transcript projectListPresenter projectListPresenter list
+						detect: [:service | service name = projectName].
+			self assert: dependentService branch equals: 'oscar'.
+			self deny: dependentService isSkew]!
+
 test_closeConsoleNeedingCommit
 	"expect dialog asking for commit"
 
@@ -647,6 +674,42 @@ test_popupMenuHasBrowseSenders
 	self assert: browseClassItem command equals: #browseSenders.
 	self assert: (transcript transcriptPresenter class canUnderstand: #browseSenders)!
 
+test_projectMenuCheckoutMenuItemsEnablement
+	| checkoutMenuItem query projectService |
+	self testsIssue: #issue425
+		withTitle: 'Jadeite should be able to check out a git tag not just branch'.
+	checkoutMenuItem := transcript projectListPresenter projectListPresenter view queryContextMenu
+				items detect: [:item | #checkout == item command] ifNone: [].
+	self denyIsNil: checkoutMenuItem.
+	self assert: (transcript projectListPresenter class canUnderstand: #gitCommit).
+	query := CommandQuery commandDescription: checkoutMenuItem
+				source: transcript projectListPresenter view.
+	projectService := transcript projectListPresenter projectListPresenter list first.
+	transcript projectListPresenter projectListPresenter selection: projectService.
+	transcript projectListPresenter queryCommand: query.
+	self assert: query isEnabled. 
+	transcript projectListPresenter projectListPresenter selections: transcript projectListPresenter projectListPresenter list.
+	transcript projectListPresenter queryCommand: query.
+	self deny: query isEnabled. !
+
+test_projectMenuCheckoutTagMenuItemsEnablement
+	| checkoutMenuItem query projectService |
+	self testsIssue: #issue425
+		withTitle: 'Jadeite should be able to check out a git tag not just branch'.
+	checkoutMenuItem := transcript projectListPresenter projectListPresenter view queryContextMenu
+				items detect: [:item | #checkoutTag == item command] ifNone: [].
+	self denyIsNil: checkoutMenuItem.
+	self assert: (transcript projectListPresenter class canUnderstand: #gitCommit).
+	query := CommandQuery commandDescription: checkoutMenuItem
+				source: transcript projectListPresenter view.
+	projectService := transcript projectListPresenter projectListPresenter list first.
+	transcript projectListPresenter projectListPresenter selection: projectService.
+	transcript projectListPresenter queryCommand: query.
+	self assert: query isEnabled. 
+	transcript projectListPresenter projectListPresenter selections: transcript projectListPresenter projectListPresenter list.
+	transcript projectListPresenter queryCommand: query.
+	self deny: query isEnabled. !
+
 test_projectMenuGitCommitMenuItem
 	| gitCommitMenuItem query |
 	self testsIssue: #issue317 withTitle: 'Commit when no changes results in walkback'.
@@ -756,6 +819,7 @@ writeToPrefsFile: string
 !JadeiteTranscriptTestCase categoriesFor: #test_browseProjectsMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseSenders!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_browseSendersMenuItem!public!test menus! !
+!JadeiteTranscriptTestCase categoriesFor: #test_checkoutTagRefresh!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_closeConsoleNeedingCommit!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_closeConsoleNoCommitNeeded!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_commitTransaction!public!tests! !
@@ -773,6 +837,8 @@ writeToPrefsFile: string
 !JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseClass!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseImplementors!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseSenders!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_projectMenuCheckoutMenuItemsEnablement!public!test menus! !
+!JadeiteTranscriptTestCase categoriesFor: #test_projectMenuCheckoutTagMenuItemsEnablement!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_projectMenuGitCommitMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_raiseConsole!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_selectorsList!public!tests! !

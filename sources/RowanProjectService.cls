@@ -46,6 +46,19 @@ basicChangesUsing: session
 		do: [:changeString | operations addAll: (RowanPatch fromString: changeString session: session) operations].
 	^operations!
 
+basicCheckout: branchName using: presenter
+	self
+		command: #checkout:;
+		commandArgs: (Array with: (branchName copyWithout: $*)).
+	presenter issueCommand: (Array with: self).
+	presenter refresh!
+
+basicCheckoutTag: tag using: session
+	self
+		command: #checkoutTag:;
+		commandArgs: (Array with: tag).
+	BrowserUpdate current issueCommand: self session: session!
+
 basicCheckoutUsing: presenter
 	| branches query branchString |
 	query := RowanQueryService new
@@ -85,10 +98,7 @@ checkoutUsing: presenter
 				choices: branches
 				caption: 'Select branch to checkout:'.
 	branchName isNil ifTrue: [^self].
-	self
-		command: #checkout:;
-		commandArgs: (Array with: (branchName copyWithout: $*)).
-	presenter issueCommand: (Array with: self)!
+	self basicCheckout: branchName using: presenter!
 
 displayName
 	| displayName |
@@ -250,6 +260,8 @@ sha: anObject
 !RowanProjectService categoriesFor: #addPackageNamed:using:!presenter support!public! !
 !RowanProjectService categoriesFor: #allClasses!accessing!public! !
 !RowanProjectService categoriesFor: #basicChangesUsing:!presenter support!public! !
+!RowanProjectService categoriesFor: #basicCheckout:using:!presenter support!public! !
+!RowanProjectService categoriesFor: #basicCheckoutTag:using:!presenter support!public! !
 !RowanProjectService categoriesFor: #basicCheckoutUsing:!presenter support!private! !
 !RowanProjectService categoriesFor: #basicName:!accessing!public! !
 !RowanProjectService categoriesFor: #branch!accessing!public! !

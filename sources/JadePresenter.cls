@@ -67,6 +67,10 @@ insertIfTrue: methodSourcePresenter
 
 postEditSaveMethod!
 
+refresh
+
+	self subclassResponsibility!
+
 refreshFromServer
 	parentPresenter refreshFromServer!
 
@@ -146,6 +150,7 @@ updateService: service
 !JadePresenter categoriesFor: #insertIfFalse:!displaying!public! !
 !JadePresenter categoriesFor: #insertIfTrue:!displaying!public! !
 !JadePresenter categoriesFor: #postEditSaveMethod!menu handlers support!public! !
+!JadePresenter categoriesFor: #refresh!menu handlers!public! !
 !JadePresenter categoriesFor: #refreshFromServer!public! !
 !JadePresenter categoriesFor: #resetCursor!public! !
 !JadePresenter categoriesFor: #setStatusBarDefault!displaying!public! !

@@ -210,6 +210,7 @@ package methodNames
 	add: #JadePresenter -> #abortTransaction;
 	add: #JadePresenter -> #autoCommitExecutionString;
 	add: #JadePresenter -> #basicAllSelectedProjectsDirty:;
+	add: #JadePresenter -> #basicCheckoutTagAndRefresh:for:;
 	add: #JadePresenter -> #basicCloneProject:root:;
 	add: #JadePresenter -> #browseBreakpointList;
 	add: #JadePresenter -> #browseClassReferences:;
@@ -2344,6 +2345,10 @@ basicAllSelectedProjectsDirty: aProjectListPresenter
 		ifNone: [^true].
 	^false!
 
+basicCheckoutTagAndRefresh: choice for: projectService
+	projectService basicCheckoutTag: choice using: self gciSession.
+	self refresh. !
+
 basicCloneProject: path root: root
 	| service |
 	service := RowanProjectService new.
@@ -2406,10 +2411,7 @@ checkoutTag: projectService
 	tags := projectService gitTags: self gciSession.
 	choice := ChoicePrompter choices: tags.
 	choice ifNil: [^self].
-	projectService
-		command: #checkoutTag:;
-		commandArgs: (Array with: choice).
-	self issueCommand: (Array with: projectService)!
+	self basicCheckoutTagAndRefresh: choice for: projectService!
 
 clearAllBreaks
 	^self class clearAllBreaksIn: self gciSession!
@@ -2637,6 +2639,7 @@ updateServices: services
 !JadePresenter categoriesFor: #abortTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #autoCommitExecutionString!menu handlers support!public! !
 !JadePresenter categoriesFor: #basicAllSelectedProjectsDirty:!private!testing! !
+!JadePresenter categoriesFor: #basicCheckoutTagAndRefresh:for:!menu handlers support!private! !
 !JadePresenter categoriesFor: #basicCloneProject:root:!menu handlers!private! !
 !JadePresenter categoriesFor: #browseBreakpointList!menu handlers!public! !
 !JadePresenter categoriesFor: #browseClassReferences:!menu handlers!public! !

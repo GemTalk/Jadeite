@@ -43,12 +43,10 @@ browseProject
 	^shell currentCard!
 
 checkout
-	projectListPresenter selection checkoutUsing: self.!
+	projectListPresenter selection checkoutUsing: self!
 
 checkoutTag
-	| selection |
-	selection := projectListPresenter selection.
-	self checkoutTag: selection!
+	self checkoutTag: projectListPresenter selection!
 
 createComponents
 	super createComponents.
@@ -186,20 +184,21 @@ pushToGit
 	self issueCommand: projectServices!
 
 queryCommand: aCommandQuery
+
 	#gitCommit == aCommandQuery command
 		ifTrue: 
 			[aCommandQuery isEnabled: self allSelectedProjectsDirty.
 			^true].
-	(#(#unloadProjects #loadProjects #pullFromGit #pushToGit #writeProject #projectChanges #browseProject #projectLog #checkout)
+	(#(#unloadProjects #loadProjects #pullFromGit #pushToGit #writeProject #projectChanges #browseProject #projectLog)
 		includes: aCommandQuery command)
 			ifTrue: 
 				[aCommandQuery isEnabled: projectListPresenter selections notEmpty.
 				^true].
-	(#(#cloneProject #refresh #includes: #aCommandQuery #command) includes: aCommandQuery command)
+	(#(#cloneProject #refresh) includes: aCommandQuery command)
 		ifTrue: 
 			[aCommandQuery isEnabled: true.
 			^true].
-	#checkoutTag == aCommandQuery command
+	(#(#checkout #checkoutTag) includes: aCommandQuery command)
 		ifTrue: 
 			[aCommandQuery isEnabled: projectListPresenter selections size = 1.
 			^true].

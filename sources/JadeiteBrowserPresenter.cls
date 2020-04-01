@@ -253,6 +253,9 @@ categoriesMenuStrings
 	)
 !
 
+checkout
+	projectListPresenter selection checkoutUsing: self!
+
 checkoutTag
 	| selection |
 	selection := projectListPresenter selection.
@@ -829,6 +832,9 @@ reformatSource
 	self statusBarText: String new.
 	^methodSourcePresenter value!
 
+refresh
+	self refreshFromServer!
+
 refreshClass
 	| selection presenter |
 	presenter := self isClassListTabSelected
@@ -855,6 +861,18 @@ refreshClass
 	self issueCommand: (Array with: selection).
 	selection updateAfterCommand: true.
 	self updateClassInfo!
+
+refreshFromServer
+	| services |
+	services := OrderedCollection with: RowanBrowserService new.
+	services addAll: projectListPresenter selections.
+	services addAll: packageListPresenter selections.
+	classListPresenter selectionOrNil ifNotNil: [:classService | services add: classService].
+	classHierarchyPresenter selectionOrNil ifNotNil: [:classService | services add: classService].
+	services addAll: methodListPresenter selections.
+	self updateServices: services.
+	self updateSUnitTab.
+	self redrawAllViews!
 
 refreshFromServerAfterAbort: browserService
 	self autoCommit: (autoCommit value == #failed ifTrue: [true] ifFalse: [autoCommit value])!
@@ -1226,6 +1244,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #buildGlobalsTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #buildProjectTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !
+!JadeiteBrowserPresenter categoriesFor: #checkout!project menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #checkoutTag!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #classCommentChanged!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #classesMenuStrings!menus!public! !
@@ -1287,7 +1306,9 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #protectedDictionaries!constants!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #reformatSource!menu handlers!menu handlers support!private! !
+!JadeiteBrowserPresenter categoriesFor: #refresh!event handlers!menu handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #refreshClass!event handlers!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #refreshFromServer!event handlers!menu handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #refreshFromServerAfterAbort:!public! !
 !JadeiteBrowserPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteBrowserPresenter categoriesFor: #removeAppropriateTab!private!tabs! !
