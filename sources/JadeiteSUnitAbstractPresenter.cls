@@ -63,9 +63,9 @@ runTestCommand: command methods: methodServices className: className
 				command: command;
 				commandArgs: (Array with: methodService selector with: (className ifNil: [methodService className])).
 			self issueCommand: (Array with: methodService).
-			methodService testResult = 'error' ifTrue: [jadeResult addError: methodService selector].
-			methodService testResult = 'failure' ifTrue: [jadeResult addFailure: methodService selector].
-			methodService testResult = 'passed' ifTrue: [jadeResult addPassed: methodService selector].
+			methodService testResult = 'error' ifTrue: [jadeResult addError: methodService].
+			methodService testResult = 'failure' ifTrue: [jadeResult addFailure: methodService].
+			methodService testResult = 'passed' ifTrue: [jadeResult addPassed: methodService].
 			index := methodServices indexOf: methodService.
 			methodListPresenter view ensureVisible: index].
 	self updateResult: jadeResult.

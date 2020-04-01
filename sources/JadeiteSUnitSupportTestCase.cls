@@ -69,6 +69,41 @@ setUp
 	sunitBrowser := self openWindow: [transcript jadeBrowseTests].
 	transcript projectListPresenter refresh!
 
+setupAbstractSuperWithTest
+	"setup abstract super class with single test + 2 subclasses"
+
+	| source |
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self
+		saveClass: 'JadeiteTest'
+		superclass: 'TestCase'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'JadeiteTest' in: self classListPresenter.
+	self projectsPresenter selectClassTab.
+	source := 'isAbstract
+		^self name = #JadeiteTest'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self selectInstanceTab.
+	source := 'test_className
+		"fail in one subclass only" 
+		self assert: self class name = #JadeiteTestSubclass1'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self
+		saveClass: 'JadeiteTestSubclass1'
+		superclass: 'JadeiteTest'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	self
+		saveClass: 'JadeiteTestSubclass2'
+		superclass: 'JadeiteTest'
+		instVars: #()
+		package: 'RowanSample1-Tests'!
+
 setupRunInSelectedTestClassTest
 	"setup a test in the superclass that calls a method
 	defined in both the super and subclass"
@@ -167,6 +202,35 @@ test_abortWithSelections
 			ensure: 
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
+
+test_abstractTestAppearsOnlyInSubclasses
+	| subclass1MethodService subclass2MethodService classNames |
+	self testsIssue: #issue755
+		withTitle: 'SUnit browser runs test in abstract test class if more than one test class selected'.
+	self testsIssue: #issue756
+		withTitle: 'SUnit Browser does not handle duplicated test method selectors well'.
+	self setupAbstractSuperWithTest.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	classNames := self sunitPresenter classListPresenter list
+				collect: [:classService | classService name].
+	self assert: (classNames includes: 'JadeiteTestSubclass1').
+	self assert: (classNames includes: 'JadeiteTestSubclass2').
+	self deny: (classNames includes: 'JadeiteTest').
+	self selectServicesNamed: #('JadeiteTestSubclass1' 'JadeiteTestSubclass2')
+		in: self sunitPresenter classListPresenter.
+	subclass1MethodService := self sunitPresenter methodListPresenter list detect: 
+					[:methodService |
+					methodService selector = #test_className and: [methodService className = 'JadeiteTestSubclass1']]
+				ifNone: [].
+	self denyIsNil: subclass1MethodService.
+	subclass2MethodService := self sunitPresenter methodListPresenter list detect: 
+					[:methodService |
+					methodService selector = #test_className and: [methodService className = 'JadeiteTestSubclass2']]
+				ifNone: [].
+	self denyIsNil: subclass2MethodService.
+	self sunitPresenter runAll.
+	self assert: subclass1MethodService testResult equals: #passed.
+	self assert: subclass2MethodService testResult equals: #failure!
 
 test_addNewTestPackage
 	"test package should show up when test method is added"
@@ -715,6 +779,77 @@ test_runClassTests
 	self projectsPresenter runClassTests.
 	self methodListPresenter list do: [:methodService | self assert: methodService passed]!
 
+test_sameSelectorInheritedTests
+	| source superMethodService subMethodService |
+	self testsIssue: #issue755
+		withTitle: 'SUnit browser runs test in abstract test class if more than one test class selected'.
+	self testsIssue: #issue756
+		withTitle: 'SUnit Browser does not handle duplicated test method selectors well'.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self
+		saveClass: 'RowanSample1TestSubclass'
+		superclass: 'RowanSample1Test'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanSample1TestSubclass' in: self classListPresenter.
+	source := 'test1
+		"same selector as superclass"
+		self assert: false'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServicesNamed: #('RowanSample1Test' 'RowanSample1TestSubclass')
+		in: self sunitPresenter classListPresenter.
+	superMethodService := self sunitPresenter methodListPresenter list
+				detect: [:methodService | methodService selector = #test1 and: [methodService className = 'RowanSample1Test']]
+				ifNone: [].
+	self denyIsNil: superMethodService.
+	subMethodService := self sunitPresenter methodListPresenter list
+				detect: [:methodService | methodService selector = #test1 and: [methodService className = 'RowanSample1TestSubclass']]
+				ifNone: [].
+	self denyIsNil: subMethodService.
+	self sunitPresenter runAll.
+	self assert: superMethodService testResult equals: #passed.
+	self assert: subMethodService testResult equals: #failure!
+
+test_sameSelectorInheritedTestsFailureInSuper
+	| source superMethodService subMethodService |
+	self testsIssue: #issue755
+		withTitle: 'SUnit browser runs test in abstract test class if more than one test class selected'.
+	self testsIssue: #issue756
+		withTitle: 'SUnit Browser does not handle duplicated test method selectors well'.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self
+		saveClass: 'RowanSample1TestSubclass'
+		superclass: 'RowanSample1Test'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanSample1TestSubclass' in: self classListPresenter.
+	source := 'testFailure
+		"same selector as superclass"
+		self assert: true'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServicesNamed: #('RowanSample1Test' 'RowanSample1TestSubclass')
+		in: self sunitPresenter classListPresenter.
+	superMethodService := self sunitPresenter methodListPresenter list
+				detect: [:methodService | methodService selector = #testFailure and: [methodService className = 'RowanSample1Test']]
+				ifNone: [].
+	self denyIsNil: superMethodService.
+	subMethodService := self sunitPresenter methodListPresenter list detect: 
+					[:methodService |
+					methodService selector = #testFailure and: [methodService className = 'RowanSample1TestSubclass']]
+				ifNone: [].
+	self denyIsNil: subMethodService.
+	self sunitPresenter runAll.
+	self assert: superMethodService testResult equals: #failure.
+	self assert: subMethodService testResult equals: #passed!
+
 test_saveMethodInProjectBrowser
 	"should show up in sunit browser and disappear when removed"
 
@@ -1133,12 +1268,14 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #selectSUnitBrowserMethodNamed:!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #selectSUnitBrowserMethodsNamed:!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #setUp!public!support! !
+!JadeiteSUnitSupportTestCase categoriesFor: #setupAbstractSuperWithTest!public!support!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #setupRunInSelectedTestClassTest!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #setupTestSuperclass!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #sunitPresenter!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #tearDown!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_abortNoSelections!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_abortWithSelections!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_abstractTestAppearsOnlyInSubclasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_addNewTestPackage!public!test updates from other browsers!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseMethods!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseSunitClass!public!tests! !
@@ -1167,6 +1304,8 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_resetMenuItemsNamedProperly!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_resetStatusBar!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_runClassTests!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_sameSelectorInheritedTests!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_sameSelectorInheritedTestsFailureInSuper!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_saveMethodInProjectBrowser!public!test updates from other browsers!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_selectCategoryInProjectBrowserDoesNotUpdateSunitBrowser!public!test updates from other browsers!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_selectClassDoesNotLoseTestResults!public!test updates from other browsers! !
