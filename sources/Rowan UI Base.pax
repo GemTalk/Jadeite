@@ -2501,7 +2501,8 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 		ifNotNil: 
 			[:warning |
 			self setCompileWarningColor.
-			self statusBarText: warning].!
+			self statusBarText: warning].
+	self refreshBreakPointsIn: methodSourcePresenter!
 
 executeSelectionOrLine: contextObject
 	| answeringService answer oop window |

@@ -917,6 +917,38 @@ test_revertSource
 	self assert: self methodSourcePresenter value equals: originalSource.
 	self deny: self methodSourcePresenter view isModified!
 
+test_saveMethodResetsIndicators
+	| source originalSource |
+	self testsIssue: #issue608 withTitle: 'Mysteriously vanishing underlines (3.0.84)'.
+	self methodSourcePresenter view isModified: false.
+	self selectRowanSample1Class.
+	self selectMethodNamed: #foo.
+	originalSource := 'fooble  | array | array := Array new. ^''foo'''.
+	self
+		saveMethod: originalSource
+		in: 'RowanSample1'
+		category: 'other'.
+	self denyIsNil: self methodSourcePresenter view indicators.
+	methodListBrowser := JadePresenter browseImplementorsOf: 'fooble' session: session.
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list size
+		equals: 1.
+	self assert: methodListBrowser primaryPresenter methodSourcePresenter value equals: originalSource.
+	self denyIsNil: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter view
+				indicators.
+	source := 'fooble  ^''I am changed'''.
+	self
+		saveMethod: source
+		in: 'RowanSample1'
+		category: 'other'.
+	self denyIsNil: self methodSourcePresenter view indicators.
+	self denyIsNil: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter view
+				indicators.
+	methodListBrowser primaryPresenter methodSourcePresenter documentPresenter value: originalSource.
+	methodListBrowser primaryPresenter methodSourcePresenter editSaveMethod.
+	self denyIsNil: self methodSourcePresenter view indicators.
+	self denyIsNil: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter view
+				indicators!
+
 test_sortedTestSelectorsInSUnitTab
 	| sortedSelectors selectors |
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
@@ -1346,6 +1378,7 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reloadAfterClassCompile!public!test compiling!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_revertSource!public!test two browsers!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_saveMethodResetsIndicators!public!test two browsers!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sortedTestSelectorsInSUnitTab!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_stepPoint1!public!test step points!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_stepPoint2!public!test step points!tests! !
