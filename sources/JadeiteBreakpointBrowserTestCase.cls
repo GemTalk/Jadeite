@@ -143,6 +143,11 @@ test_openBreakpointBrowser
 	self assert: breakpointBrowser isKindOf: JadeiteBreakpointBrowser. 
 !
 
+test_openBreakpointBrowserDisabledSourcePane
+	self openBreakpointBrowser.
+	self assert: breakpointBrowser methodSourcePresenter value equals: String new.
+	self assert: breakpointBrowser methodSourcePresenter documentPresenter view isReadOnly!
+
 test_showsBreakpoints
 	| treeModel |
 	self openProjectBrowser.
@@ -187,5 +192,6 @@ test_showsBreakpoints
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_breakpointAdditionsUpdateAutomatically!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_breakpointRemovalsUpdateAutomatically!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_openBreakpointBrowser!public!tests! !
+!JadeiteBreakpointBrowserTestCase categoriesFor: #test_openBreakpointBrowserDisabledSourcePane!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_showsBreakpoints!public!tests! !
 

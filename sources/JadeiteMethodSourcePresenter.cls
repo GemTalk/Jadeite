@@ -59,6 +59,7 @@ editRevert
 
 editSaveMethod
 	| classService |
+	methodService ifNil:[^self]. 
 	classService := RowanClassService named: methodService className.
 	classService meta: methodService meta.
 	self
@@ -134,6 +135,11 @@ registerPresentersForUpdates
 		selector: #methodSourceUpdate:browser:
 		browser: self!
 
+resetSourcePane
+	self value: String new.
+	documentPresenter view backcolor: JadeiteTextStyles default colorForNoEdits.
+	documentPresenter view isReadOnly: true!
+
 statusBarText: aString
 	self topShell statusBarText: aString.
 	(self topShell view viewNamed: 'statusBarField') invalidate
@@ -172,6 +178,7 @@ value: string
 !JadeiteMethodSourcePresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteMethodSourcePresenter categoriesFor: #reformatSource!menu handlers!private! !
 !JadeiteMethodSourcePresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
+!JadeiteMethodSourcePresenter categoriesFor: #resetSourcePane!public! !
 !JadeiteMethodSourcePresenter categoriesFor: #statusBarText:!public! !
 !JadeiteMethodSourcePresenter categoriesFor: #update!public!updating! !
 !JadeiteMethodSourcePresenter categoriesFor: #updateMethodSource!public!updating! !
