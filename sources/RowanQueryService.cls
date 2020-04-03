@@ -13,12 +13,17 @@ RowanQueryService comment: ''!
 answer
 	^queryResults	!
 
+hasResults
+
+	^queryResults notEmpty!
+
 queryResults
 	^queryResults!
 
 queryResults: anObject
 	queryResults := anObject! !
 !RowanQueryService categoriesFor: #answer!accessing!private! !
+!RowanQueryService categoriesFor: #hasResults!public!testing! !
 !RowanQueryService categoriesFor: #queryResults!accessing!private! !
 !RowanQueryService categoriesFor: #queryResults:!accessing!private! !
 

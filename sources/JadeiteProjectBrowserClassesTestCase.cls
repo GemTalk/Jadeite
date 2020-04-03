@@ -1440,6 +1440,27 @@ test_removeClassFromList
 				classReferences view close.
 				TestMessageBox disableJadeiteTestMessageBox]!
 
+test_removeClassNoReferences
+	self testsIssue: #issue753
+		withTitle: '(3.0.93) when removing a class that has no references, no need for empty method browser and notification'.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'RowanSample1TestSubClass'
+		superclass: 'RowanSample1Test'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	self denyIsNil: (self classListPresenter list
+				detect: [:classService | classService name = 'RowanSample1TestSubClass']
+				ifNone: []).
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestMessageBox plannedResult: #(#yes) asOrderedCollection.
+	self projectsPresenter removeClass.
+	self assertIsNil: (self classListPresenter list
+				detect: [:classService | classService name = 'RowanSample1TestSubClass']
+				ifNone: [])	"no class references list appeared which is expected"]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_removeClassWithSubclasses
 	self testsIssue: #issue727 withTitle: 'Prevent class removal if subclasses present'.
 	self selectRowanSample1Class.
@@ -1934,6 +1955,7 @@ test_variablesUpdatedOnClassSaveInHierarchy
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_refreshFromServer!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_removeClassFromHierarchy!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_removeClassFromList!public!test class hierarchy!test class list!tests! !
+!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_removeClassNoReferences!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_removeClassWithSubclasses!public!test class hierarchy!test class list!tests! !
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_renameClassMethodListUpdates!public!test rename class! !
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_renameClassMethodListUpdatesFromClassesMenu!public!test rename class! !
