@@ -35,7 +35,11 @@ classesUpdate: presenter browser: browser
 			[updatedClasses := classes asSet reject: [:classService | classService wasRenamed].
 			updatedClasses addAll: presenter list.
 			presenter list: (ListModel withAll: updatedClasses)]
-		ifNotNil: [self updateList: presenter whilePreservingSelections: classes].
+		ifNotNil: 
+			[self
+				updateList: presenter
+				whilePreservingSelections: classes
+				browser: browser].
 	presenter list
 		do: [:classService | classService selectedPackageServices: browser packageListPresenter selections browser: browser].
 	presenter view invalidate.

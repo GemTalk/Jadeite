@@ -217,9 +217,11 @@ refreshProjects
 	self issueCommand: (Array with: browserService).!
 
 registerPresentersForUpdates
-	BrowserUpdate current register: projectListPresenter selector: #projectsUpdate:browser: browser: self.
-	BrowserUpdate current register: projectListPresenter selector: #removedProject:.
-	BrowserUpdate current register: projectListPresenter selector: #projectsUpdate:.!
+	BrowserUpdate current
+		register: projectListPresenter
+		selector: #projectsUpdate:browser:
+		browser: self.
+	BrowserUpdate current register: projectListPresenter selector: #removedProject:!
 
 unloadProjects
 	| projectNames ws |

@@ -413,7 +413,7 @@ updatedClassInHierarchy: aPresenter browser: projectBrowser!
 updateDictionarySelectionsFor: presenter
 	!
 
-updateList: presenter whilePreservingSelections: updates
+updateList: presenter whilePreservingSelections: updates browser: anObject
 	| replicate bag |
 	bag := presenter list asBag.
 	bag do: 
@@ -550,7 +550,7 @@ wasRenamed
 !RowanService categoriesFor: #updatedClassDefinition:browser:!public!updating! !
 !RowanService categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !
 !RowanService categoriesFor: #updateDictionarySelectionsFor:!public!updating! !
-!RowanService categoriesFor: #updateList:whilePreservingSelections:!private! !
+!RowanService categoriesFor: #updateList:whilePreservingSelections:browser:!private! !
 !RowanService categoriesFor: #updateMethodFilterSelectionFor:!public!updating! !
 !RowanService categoriesFor: #updateMethodSelectionFor:!public!updating! !
 !RowanService categoriesFor: #updatePackageSelectionsFor:!public!updating! !

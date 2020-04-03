@@ -45,7 +45,11 @@ classesUpdate: presenter browser: browser
 	condensedList := self condenseExtensions: presenter.
 	presenter selectionOrNil
 		ifNil: [presenter list: (ListModel withAll: condensedList keys)]
-		ifNotNil: [self updateList: presenter whilePreservingSelections: condensedList].
+		ifNotNil: 
+			[self
+				updateList: presenter
+				whilePreservingSelections: condensedList
+				browser: browser].
 	"#selections is very expensive in Dolphin. Don't send it in a loop"
 	selections := browser packageListPresenter selections.
 	selectedPackageServices := browser isRowanProjectSelected ifTrue: [selections] ifFalse: [Array new].
@@ -161,14 +165,17 @@ testClasses: presenter
 			updatedClass ifNotNil: [updatedClass replicateFrom: newClassService]].
 	presenter model addAll: additions!
 
-updateList: presenter whilePreservingSelections: updates
+updateList: presenter whilePreservingSelections: updates browser: browser
 	| replicate |
 	presenter list do: 
 			[:service |
 			replicate := updates at: service ifAbsent: [].
 			replicate notNil ifTrue: [service replicateFrom: replicate]].
-	updates
-		keysDo: [:update | ((presenter model includes: update) and: [update wasRenamed not]) ifFalse: [presenter model add: update]]! !
+	updates keysDo: 
+			[:update |
+			| existing |
+			existing := presenter model detect: [:service | service name = update name] ifNone: [].
+			existing ifNil: [update wasRenamed ifFalse: [presenter model add: update]]]! !
 !RowanPackageService categoriesFor: #=!comparing!public! !
 !RowanPackageService categoriesFor: #addHierarchyService:to:withParent:!private!updating! !
 !RowanPackageService categoriesFor: #basicPrepareForReplication!public!replication! !
@@ -195,7 +202,7 @@ updateList: presenter whilePreservingSelections: updates
 !RowanPackageService categoriesFor: #selectedClass!accessing!public! !
 !RowanPackageService categoriesFor: #selectedClass:!accessing!public! !
 !RowanPackageService categoriesFor: #testClasses:!public!updating! !
-!RowanPackageService categoriesFor: #updateList:whilePreservingSelections:!private!updating! !
+!RowanPackageService categoriesFor: #updateList:whilePreservingSelections:browser:!private!updating! !
 
 !RowanPackageService class methodsFor!
 

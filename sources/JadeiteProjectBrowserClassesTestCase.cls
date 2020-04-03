@@ -693,6 +693,23 @@ test_displayCompileWarningsNicely
 		equals: 'WARNING: unused method temp ''abc''; unused method temp ''def''; unused method temp ''aa''; unused method temp ''ddd''; ']
 			ensure: [self projectsPresenter removeMethods: (Array with: self projectsPresenter selectedClass)]!
 
+test_dontDuplicateClasses
+	self testsIssue: #issue760 withTitle: 'Duplicate classes pop up if a class is selected (3.1prerelease2)'.
+	self selectRowanSample1Test.
+	self selectClassTab. 
+	self assert: self classListPresenter list size equals: 1. 
+	self assert: self classListPresenter list first name equals: 'RowanSample1Test'. 
+	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter. 
+	self assert: self classListPresenter list size equals: 1. 
+	self assert: self classListPresenter list first name equals: 'RowanSample1Test'. 
+	self selectInstanceTab. 
+	self assert: self classListPresenter list size equals: 1. 
+	self assert: self classListPresenter list first name equals: 'RowanSample1Test'. 
+	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter. 
+	self assert: self classListPresenter list size equals: 1. 
+	self assert: self classListPresenter list first name equals: 'RowanSample1Test'. 
+	!
+
 test_dragClassInHierarchyDoesNotWalkback
 	"Not really a drag drop but make sure that 
 		class list is hooked up to the drag method we expect
@@ -1882,6 +1899,7 @@ test_variablesUpdatedOnClassSaveInHierarchy
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classVersionIncrementedInHierarchy!public!test class hierarchy!tests! !
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_copyClassExistingClassRetry!public!test rename class! !
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_displayCompileWarningsNicely!public!test class list! !
+!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_dontDuplicateClasses!public!test rename class!tests! !
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_dragClassInHierarchyDoesNotWalkback!public!test class hierarchy!test drag drop!tests! !
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_dragDropMethodFailCompile!public!test class hierarchy!test drag drop!tests! !
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_dragDropMultipleMethods!public!test class hierarchy!test drag drop!tests! !

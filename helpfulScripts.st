@@ -6,3 +6,5 @@ Good for debugging menus, etc"
 			["Smalltalk at: #stopOnce put: true"
 			Smalltalk at: #stopOnce put: false.
 			self halt].
+
+GciSession current: nil

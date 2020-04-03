@@ -13,7 +13,7 @@ JadeiteBrowser comment: ''!
 maximizeCode
 	| tabView topView |
 	self currentCard class == self systemBrowserPresenter ifFalse: [^self].
-	tabView := self currentCard view viewNamed: 'textAreaTabs'.
+	tabView := (self currentCard view viewNamed: 'textAreaTabs') parentView.
 	topView := (self currentCard view viewNamed: 'projectList') parentView parentView.
 	self currentCard previousTabViewArrangement
 		ifNil: 

@@ -2153,7 +2153,7 @@ test_maximizeCode
 
 	| tabView |
 	self testsIssue: #issue495 withTitle: 'minor error dialogs (3.0.73)'.
-	tabView := self projectsPresenter view viewNamed: 'textAreaTabs'.
+	tabView := (self projectsPresenter view viewNamed: 'textAreaTabs') parentView.
 	self assert: tabView arrangement equals: 12.
 	projectsBrowser maximizeCode.
 	self assert: tabView arrangement equals: 24.

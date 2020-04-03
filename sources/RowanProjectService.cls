@@ -215,8 +215,11 @@ projectPackagesUpdate: presenter browser: browser
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	browser projectListPresenter selections detect: [:projectService | projectService name = name]
 		ifNone: [^self].
-	self updateList: presenter whilePreservingSelections: packages.
-	browser isClassSelected ifFalse: [self emptyFilterListsIn: browser].!
+	self
+		updateList: presenter
+		whilePreservingSelections: packages
+		browser: browser.
+	browser isClassSelected ifFalse: [self emptyFilterListsIn: browser]!
 
 projectSelectionUpdate: presenter
 	| newSelections |
