@@ -129,6 +129,14 @@ enableBreakpoints
 				select: [:methodService | self selectedClassServices includes: methodService className]).
 	^JadePresenter enableMethodBreakpoints: methodServices in: self gciSession!
 
+ensureFirstBreakpointIsVisible
+	| breakpointIndicator methodSourceView |
+	methodSourceView := methodSourcePresenter documentPresenter view.
+	breakpointIndicator := methodSourceView  indicators
+				detect: [:indicator | indicator styleName == #breakPoint or: [indicator styleName == #disabledBreakPoint]].
+	methodSourceView selectionRange: breakpointIndicator range.
+	methodSourceView lineScrollBy: 1.  "make sure breakpoint doesn't fall off the bottom of the page" !
+
 flipBreakpointsEnabled
 	| answeringService | 
 	answeringService := RowanAnsweringService new.
@@ -164,6 +172,7 @@ methodSelected
 			methodSourcePresenter basicRefreshBreakpointsIn: methodSourcePresenter documentPresenter
 				selection: selections first.
 			methodSourcePresenter methodValueChanged.
+			self ensureFirstBreakpointIsVisible. 
 			methodSourcePresenter documentPresenter view isReadOnly: false]
 		ifFalse: [^self resetSourcePane]!
 
@@ -200,7 +209,8 @@ onViewOpened
 	answeringService := RowanAnsweringService new.
 	areBreakpointsEnabled
 		value: (breakPointsEnabled := answeringService breakPointsAreEnabled: self gciSession).
-	BrowserUpdate current breakpointsEnabled: breakPointsEnabled!
+	BrowserUpdate current breakpointsEnabled: breakPointsEnabled.
+	self selectFirstMethodService. !
 
 postEditSaveMethod
 	!
@@ -273,6 +283,12 @@ selectedClassServices
 selectedMethodServices
 	^breakpointListPresenter selections select: [:object | object isMethodService]!
 
+selectFirstMethodService
+	| methodServices |
+	methodServices := breakpointListPresenter model asArray select: [:object | object isMethodService]. 
+	methodServices isEmpty ifTrue:[^self]. 
+	breakpointListPresenter selection: methodServices first. !
+
 statusBarText: aString
 
 	"do nothing for now" !
@@ -324,6 +340,7 @@ updateSelection: selection
 !JadeiteBreakpointBrowser categoriesFor: #editSaveMethod!menu handlers!public! !
 !JadeiteBreakpointBrowser categoriesFor: #enableAllBreakpoints!menu handlers!public! !
 !JadeiteBreakpointBrowser categoriesFor: #enableBreakpoints!menu handlers!public! !
+!JadeiteBreakpointBrowser categoriesFor: #ensureFirstBreakpointIsVisible!event handlers support!public! !
 !JadeiteBreakpointBrowser categoriesFor: #flipBreakpointsEnabled!menu handlers!public! !
 !JadeiteBreakpointBrowser categoriesFor: #initialize!initialization!public! !
 !JadeiteBreakpointBrowser categoriesFor: #initializeMethods!event handlers support!initialization!private! !
@@ -346,6 +363,7 @@ updateSelection: selection
 !JadeiteBreakpointBrowser categoriesFor: #search!accessing!public! !
 !JadeiteBreakpointBrowser categoriesFor: #selectedClassServices!private!selection! !
 !JadeiteBreakpointBrowser categoriesFor: #selectedMethodServices!private!selection! !
+!JadeiteBreakpointBrowser categoriesFor: #selectFirstMethodService!public!selection! !
 !JadeiteBreakpointBrowser categoriesFor: #statusBarText:!accessing!public! !
 !JadeiteBreakpointBrowser categoriesFor: #updateClass:!public!updating! !
 !JadeiteBreakpointBrowser categoriesFor: #updateMethodList:!public!updating! !

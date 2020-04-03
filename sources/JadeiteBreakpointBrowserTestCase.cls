@@ -96,6 +96,24 @@ test_breakpointAdditionsUpdateAutomatically
 		equals: 'test2 (2)']
 			ensure: [self destroy: projectsBrowser]!
 
+test_breakpointIsSelectedAndVisible
+	| firstBreakpoint |
+	self testsIssue: #issue514
+		withTitle: '(3.0.77) should breakpoint browser come up with the first breakpoint in method highlighted?'.
+	self openProjectBrowser.
+	
+	[self selectRowanSample1Test.
+	self selectMethodNamed: #test2.
+	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
+	self openBreakpointBrowser.
+	self assert: breakpointBrowser selectedMethodServices size equals: 1.
+	self assert: breakpointBrowser selectedMethodServices first selector equals: #test2.
+	firstBreakpoint := breakpointBrowser methodSourcePresenter documentPresenter view indicators
+				detect: [:indicator | indicator styleName == #breakPoint or: [indicator styleName == #disabledBreakPoint]].
+	self assert: firstBreakpoint range
+		equals: breakpointBrowser methodSourcePresenter documentPresenter view selectionRange]
+			ensure: [self destroy: projectsBrowser]!
+
 test_breakpointRemovalsUpdateAutomatically
 	| treeModel |
 	self openProjectBrowser.
@@ -148,6 +166,31 @@ test_openBreakpointBrowserDisabledSourcePane
 	self assert: breakpointBrowser methodSourcePresenter value equals: String new.
 	self assert: breakpointBrowser methodSourcePresenter documentPresenter view isReadOnly!
 
+test_selectedMethodIsFirstSelected
+	"when bp browser is opened from the project browser, try to 
+	select the selected method in the bp browser using the selectin
+	in the project browser"
+
+	| firstBreakpoint |
+	self testsIssue: #issue514
+		withTitle: '(3.0.77) should breakpoint browser come up with the first breakpoint in method highlighted?'.
+	self openProjectBrowser.
+	
+	[self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
+	self selectMethodNamed: #test2.
+	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
+	self assert: self projectsPresenter methodListPresenter selection selector equals: #test2.	"not the first in the bp list"
+	breakpointBrowser := self projectsPresenter browseBreakpoints.
+	self assert: breakpointBrowser selectedMethodServices size equals: 1.
+	self assert: breakpointBrowser selectedMethodServices first selector equals: #test2.
+	firstBreakpoint := breakpointBrowser methodSourcePresenter documentPresenter view indicators
+				detect: [:indicator | indicator styleName == #breakPoint or: [indicator styleName == #disabledBreakPoint]].
+	self assert: firstBreakpoint range
+		equals: breakpointBrowser methodSourcePresenter documentPresenter view selectionRange]
+			ensure: [self destroy: projectsBrowser]!
+
 test_showsBreakpoints
 	| treeModel |
 	self openProjectBrowser.
@@ -190,8 +233,10 @@ test_showsBreakpoints
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_addedBreakpointAddsMethod!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_additionalAccelerators!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_breakpointAdditionsUpdateAutomatically!public!tests! !
+!JadeiteBreakpointBrowserTestCase categoriesFor: #test_breakpointIsSelectedAndVisible!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_breakpointRemovalsUpdateAutomatically!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_openBreakpointBrowser!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_openBreakpointBrowserDisabledSourcePane!public!tests! !
+!JadeiteBreakpointBrowserTestCase categoriesFor: #test_selectedMethodIsFirstSelected!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_showsBreakpoints!public!tests! !
 
