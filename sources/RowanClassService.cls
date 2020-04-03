@@ -139,6 +139,9 @@ computeVisibleMethods: presenter browser: browser
 		do: [:svc | svc inSelectedPackage: (self selectedPackageServiceNames includes: svc packageName)].
 	^visibleMethods!
 
+definedClass
+	^definedClass!
+
 definedPackageName
 	^definedPackageName!
 
@@ -590,6 +593,7 @@ wasRenamed
 !RowanClassService categoriesFor: #comment!accessing!public! !
 !RowanClassService categoriesFor: #comment:!accessing!public! !
 !RowanClassService categoriesFor: #computeVisibleMethods:browser:!private!updating support! !
+!RowanClassService categoriesFor: #definedClass!accessing!private! !
 !RowanClassService categoriesFor: #definedPackageName!accessing!private! !
 !RowanClassService categoriesFor: #definedPackageName:!accessing!private! !
 !RowanClassService categoriesFor: #dictionaryName!accessing!private! !

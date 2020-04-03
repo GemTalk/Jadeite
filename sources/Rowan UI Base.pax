@@ -731,7 +731,7 @@ RowanService subclass: #RowanLoggingService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName isMethodForBlock homeMethodOop hasMethodHistory searchString'
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName isMethodForBlock homeMethodOop hasMethodHistory searchString definedClassName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -2062,10 +2062,12 @@ step
 browseSelectedMethods
 	"convenience menu item to display randomly grouped methods in a browser"
 
-	| browser |
-	self updateServices: methodListPresenter selections.
+	| browser copiedMethodService |
+	copiedMethodService := methodListPresenter selections
+				collect: [:methodService | methodService copy className: methodService definedClassName].
+	self updateServices: copiedMethodService.
 	(browser := JadeiteMethodListBrowser showOnSession: gciSession) primaryPresenter
-		methods: methodListPresenter selections
+		methods: copiedMethodService
 		selecting: nil.
 	browser updateCaption: 'Selected Tests'.
 	^browser!

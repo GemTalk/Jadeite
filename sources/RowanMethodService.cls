@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName isMethodForBlock homeMethodOop hasMethodHistory searchString'
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName isMethodForBlock homeMethodOop hasMethodHistory searchString definedClassName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -174,6 +174,12 @@ debuggerMethodSourceUpdate: presenter browser: browser
 	"don't replicate the method - debugger is debugging the old method"
 
 	^browser refreshBreakPointsIn: presenter!
+
+definedClassName
+	^definedClassName!
+
+definedClassName: anObject
+	definedClassName := anObject!
 
 definedPackage
 	^definedPackage!
@@ -590,6 +596,8 @@ user: anObject
 !RowanMethodService categoriesFor: #compilationWarnings!accessing!private! !
 !RowanMethodService categoriesFor: #copyBasicsFrom:!public!updating! !
 !RowanMethodService categoriesFor: #debuggerMethodSourceUpdate:browser:!public!updating! !
+!RowanMethodService categoriesFor: #definedClassName!accessing!private! !
+!RowanMethodService categoriesFor: #definedClassName:!accessing!private! !
 !RowanMethodService categoriesFor: #definedPackage!accessing!private! !
 !RowanMethodService categoriesFor: #displayClassName!displaying!public! !
 !RowanMethodService categoriesFor: #displayName!displaying!public! !

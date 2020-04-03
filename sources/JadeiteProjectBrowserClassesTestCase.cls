@@ -1406,6 +1406,11 @@ test_refreshFromServer
 test_removeClassFromHierarchy
 	| classReferences |
 	self testsIssue: #issue377 withTitle: '(3.0.53) remove class in hierarchy class view does not work'.
+	self selectRowanSample1Class.
+	self
+		saveMethod: 'createReference  ^RowanSample1Test'
+		in: 'RowanSample1'
+		category: 'deleteme'.
 	self selectRowanSample1Test.
 	self selectHierarchyTab.
 	self assertLinearAncestry: #('Object' 'TestAsserter' 'TestCase' 'RowanSample1Test')
@@ -1423,6 +1428,11 @@ test_removeClassFromList
 	| classReferences |
 	self testsIssue: #issue377 withTitle: '(3.0.53) remove class in hierarchy class view does not work'.
 	self testsIssue: #issue725 withTitle: 'Handle removed class references better'.
+	self selectRowanSample1Class.
+	self
+		saveMethod: 'createReference  ^RowanSample1Test'
+		in: 'RowanSample1'
+		category: 'deleteme'.
 	self selectRowanSample1Test.
 	self denyIsNil: (self classListPresenter list
 				detect: [:classService | classService name = 'RowanSample1Test']
@@ -1436,9 +1446,8 @@ test_removeClassFromList
 				detect: [:classService | classService name = 'RowanSample1Test']
 				ifNone: [])]
 			ensure: 
-				[
-				classReferences view close.
-				TestMessageBox disableJadeiteTestMessageBox]!
+				[TestMessageBox disableJadeiteTestMessageBox.
+				classReferences view close]!
 
 test_removeClassNoReferences
 	self testsIssue: #issue753
