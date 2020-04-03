@@ -80,10 +80,11 @@ queryCommand: query
 		ifTrue: 
 			[query isEnabled: self canRedo.
 			^true].
-	(#(#editCut #editCopy #editDelete) includes: query command)
+	(#(#editCut #editCopy) includes: query command)
 		ifTrue: 
 			[query isEnabled: self hasSelection.
 			^true].
+	#editDelete == query command ifTrue: [query isEnabled: self value notEmpty].
 	^super queryCommand: query!
 
 searchFor: matchString in: text from: pos length: matchLen details: findDetails

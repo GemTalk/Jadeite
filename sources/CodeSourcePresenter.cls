@@ -95,7 +95,6 @@ editCut
 !
 
 editDelete
-
 	self selectLfIfEndingOnCr.
 	documentPresenter view
 		clearSelection;
