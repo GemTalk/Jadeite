@@ -200,7 +200,6 @@ isOkayToChange
 	^true!
 
 jadeDebug
-	
 	[gciSession
 		debugString: self currentSelectionOrLine
 		fromContext: (OopType64 fromInteger: self inspectorContextObject)

@@ -35,7 +35,7 @@ aboutToChangeFrame: aSelectionChangingEvent
 		value: (codePane documentPresenter view isModified ifTrue: [self isOkayToChangeFrame] ifFalse: [true])!
 
 additionalAccelerators
-	^#(#(#raiseConsole 'Ctrl+F7') #(#reformatSource 'Ctrl+Shift+O'))!
+	^#(#(#raiseConsole 'Ctrl+F7') #(#reformatSource 'Ctrl+Shift+O') #(#jadeDebug 'Ctrl+B'))!
 
 basicSelectedFrame
 	| index |
@@ -57,7 +57,7 @@ browseImplementors
 	^JadePresenter browseImplementorsOf: frame homeMethodSelector session: self gciSession!
 
 browseObjectClass
-	| shell classService |
+	| shell classService | 
 	classService := RowanClassService new
 				name: variableListPresenter selection className asString subStrings first.	"strip off 'class' if meta"
 	BrowserUpdate current updateService: classService session: gciSession.

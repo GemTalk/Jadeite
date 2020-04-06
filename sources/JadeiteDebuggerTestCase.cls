@@ -268,12 +268,15 @@ test_additionalAccelerators
 	but we can assert that we tell Dolphin to set them up"
 
 	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
+	self testsIssue: #issue762 withTitle: 'Debug-it in debugger / missing menu item, failure on up arrow, and error dialog (3.1pr3)'. 
 	self openDebuggerOn: 'self halt'.
 	self assert: debugger additionalAccelerators first first equals: #raiseConsole.
-	self assert: debugger additionalAccelerators last first equals: #reformatSource.
+	self assert: debugger additionalAccelerators second first equals: #reformatSource.
+	self assert: debugger additionalAccelerators last first equals: #jadeDebug. 
 	self assert: debugger additionalAccelerators first last equals: 'Ctrl+F7'.
-	self assert: debugger additionalAccelerators last last equals: 'Ctrl+Shift+O'.
-	self assert: debugger additionalAccelerators size equals: 2	"should fail if we add a new one"!
+	self assert: debugger additionalAccelerators second last equals: 'Ctrl+Shift+O'.
+	self assert: debugger additionalAccelerators last last equals: 'Ctrl+B'. 
+	self assert: debugger additionalAccelerators size equals: 3	"should fail if we add a new one"!
 
 test_adHocDebug
 	| workspace |
@@ -1287,6 +1290,21 @@ test_inspectedDebuggerObjectHeld
 	self assert: inspector documentPresenter value equals: 'anArray( anObject)']
 			ensure: [projectsBrowser view close]]
 			ensure: [inspector view close]!
+
+test_jadeItemsOnMenu
+	| contextMenu theItem |
+	self testsIssue: #issue762
+		withTitle: 'Debug-it in debugger / missing menu item, failure on up arrow, and error dialog (3.1pr3)'.
+	self openDebuggerOn: 'self halt'.
+	contextMenu := debugger methodSourcePresenter documentPresenter view contextMenu.
+	theItem := contextMenu items detect: [:menuItem | menuItem command = #jadeDebug] ifNone: [].
+	self denyIsNil: theItem.
+	theItem := contextMenu items detect: [:menuItem | menuItem command = #jadeExecute] ifNone: [].
+	self denyIsNil: theItem.
+	theItem := contextMenu items detect: [:menuItem | menuItem command = #jadeInspect] ifNone: [].
+	self denyIsNil: theItem.
+	theItem := contextMenu items detect: [:menuItem | menuItem command = #jadeDisplay] ifNone: [].
+	self denyIsNil: theItem!
 
 test_loginButtonEnablementAfterDebug
 	"transcript close wasn't setting GciSession current to nil"
@@ -2371,6 +2389,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_implementersFromDebugger!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_inspectedDebuggerObjectHeld!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_jadeItemsOnMenu!public!test menus! !
 !JadeiteDebuggerTestCase categoriesFor: #test_loginButtonEnablementAfterDebug!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_openDebuggerWthBreakpointInDebuggerService!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatIllegalSource!public!test source! !

@@ -14,6 +14,39 @@ clearBreakPointAt: stepPoint in: browser
 	super clearBreakPointAt: stepPoint in: browser.
 	self parentPresenter clearBreakPointsAt: stepPoint!
 
+editMenuStrings
+	false ifTrue: [
+		self editSaveMethod; undo; redo; cutSelection; copySelection; pasteClipboard; clearSelection; selectAll; editFind; editFindNext; editReplace; 
+			jadeDisplay; jadeExecute; jadeInspect; browseSelectedClass.
+	].
+	^#(
+		'&Edit'
+		'&Save/Ctrl+S/editSaveMethod'
+		'-'
+		'&Undo/Ctrl+Z/undo'
+		'&Redo/Ctrl+Y/redo'
+		'Revert//editRevert'
+		'-'
+		'&Reformat Source/Ctrl+Shift+O/reformatSource'
+		'-'
+		'&Cu&t/Ctrl+X/cutSelection'
+		'&Copy/Ctrl+C/copySelection'
+		'&Paste/Ctrl+V/pasteClipboard'
+		'&Delete/Delete/clearSelection'
+		'-'
+		'Select &All/Ctrl+A/selectAll'
+		'-'
+		'&Find/Ctrl+F/editFind'
+		'Find &Next/F3/editFindNext'
+		'&Replace/Ctrl+H/editReplace'
+		'-'
+		'Display/Ctrl+D/jadeDisplay'
+		'Execute/Ctrl+E/jadeExecute'
+		'Inspect/Ctrl+Q/jadeInspect'
+		'Debug/Ctrl+B/jadeDebug'
+	).
+!
+
 editRevert
 	self isOkayToChange
 		ifTrue: 
@@ -34,6 +67,7 @@ jadeInspect
 		thenInspectInContext: self inspectorContextObject
 		debugger: self parentPresenter! !
 !JadeiteDebuggerMethodSourcePresenter categoriesFor: #clearBreakPointAt:in:!menu handlers!public! !
+!JadeiteDebuggerMethodSourcePresenter categoriesFor: #editMenuStrings!Jade!private! !
 !JadeiteDebuggerMethodSourcePresenter categoriesFor: #editRevert!edit!private! !
 !JadeiteDebuggerMethodSourcePresenter categoriesFor: #executeSelectionOrLine:!menu handlers!public! !
 !JadeiteDebuggerMethodSourcePresenter categoriesFor: #inspectorContextObject!private! !
