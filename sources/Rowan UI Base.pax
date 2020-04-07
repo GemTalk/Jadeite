@@ -19,6 +19,8 @@ package classNames
 	add: #JadeiteBrowser;
 	add: #JadeiteBrowserPresenter;
 	add: #JadeiteChangesBrowser;
+	add: #JadeiteCommandLinePresenter;
+	add: #JadeiteCommandShell;
 	add: #JadeiteDebugger;
 	add: #JadeiteDebuggerMethodSourcePresenter;
 	add: #JadeiteDiffBrowser;
@@ -870,6 +872,11 @@ JadeNavigationInspector subclass: #JadeiteInspector
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+JadeWorkspace subclass: #JadeiteCommandShell
+	instanceVariableNames: 'commandLine'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 JadeWorkspace subclass: #JadeiteGitLog
 	instanceVariableNames: 'projectService'
 	classVariableNames: ''
@@ -1011,6 +1018,11 @@ SmalltalkSearchPresenter subclass: #JadeiteSmalltalkSearchPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 SmalltalkWorkspace subclass: #JadeiteSmalltalkWorkspace
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeAutoTextPresenter3 subclass: #JadeiteCommandLinePresenter
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

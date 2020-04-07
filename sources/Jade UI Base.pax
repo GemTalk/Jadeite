@@ -11,6 +11,7 @@ package classNames
 	add: #CodeSourcePresenter;
 	add: #JadeBrowserPresenter;
 	add: #JadeInspector;
+	add: #JadeiteGitCommandPresenter;
 	add: #JadeiteTextStyles;
 	add: #JadeMigrateClassDialog;
 	add: #JadePresenter;
@@ -87,6 +88,11 @@ JadePresenterA subclass: #CodeSourcePresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenterA subclass: #JadeBrowserPresenter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+CodeSourcePresenter subclass: #JadeiteGitCommandPresenter
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

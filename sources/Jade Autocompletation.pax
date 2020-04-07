@@ -24,6 +24,7 @@ package classNames
 
 package methodNames
 	add: #CodeSourcePresenter -> #createComponents;
+	add: #CodeSourcePresenter -> #documentPresenterClass;
 	add: #CodeSourcePresenter -> #hasClassSideSelected;
 	add: #JadeMethodListPresenter -> #getSelectedClassName;
 	add: #JadeMethodListPresenter -> #hasClassSideSelected;
@@ -137,14 +138,17 @@ JadeTextPresenter subclass: #JadeAutoTextPresenter3
 !CodeSourcePresenter methodsFor!
 
 createComponents
-
 	super createComponents.
-	documentPresenter := self add: JadeAutoTextPresenter3 new name: 'document'.
-	self updateCodeFont.!
+	documentPresenter := self add: self documentPresenterClass new name: 'document'.
+	self updateCodeFont!
+
+documentPresenterClass
+	^JadeAutoTextPresenter3!
 
 hasClassSideSelected
 	^parentPresenter hasClassSideSelected! !
 !CodeSourcePresenter categoriesFor: #createComponents!public! !
+!CodeSourcePresenter categoriesFor: #documentPresenterClass!public! !
 !CodeSourcePresenter categoriesFor: #hasClassSideSelected!public! !
 
 !JadeMethodListPresenter methodsFor!

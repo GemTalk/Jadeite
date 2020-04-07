@@ -84,7 +84,8 @@ queryCommand: query
 		ifTrue: 
 			[query isEnabled: self hasSelection.
 			^true].
-	#editDelete == query command ifTrue: [query isEnabled: self value notEmpty].
+	#editDelete == query command
+		ifTrue: [query isEnabled: (self value isNil not and: [self value notEmpty])].
 	^super queryCommand: query!
 
 searchFor: matchString in: text from: pos length: matchLen details: findDetails

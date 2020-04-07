@@ -382,18 +382,15 @@ onKeyPressed: aKeyEvent
 	"This is the main method for autocompletation, each key stroke is registered and analyzed here"
 
 	"super onKeyPressed: aKeyEvent. "
-
-	((aKeyEvent wParam = 27) and: [view isAutoCompletionActive]) ifTrue: [^view cancelAutoCompletion]."ESC pressed -> hide autocompletion"
-	"((aKeyEvent wParam = 13) and: [view isAutoCompletionActive]) ifTrue: [previousText := currentText. ^currentText := '']." "Enter pressed - autocompletion accepted" 
-
-	(Keyboard default isCtrlDown) ifTrue: [^self]. "the user is pressing ctrl--> not interested in autocompletion"
-
-	(#(37 38 39 40) includes: aKeyEvent wParam) ifTrue: [^[self getCurrentWord] forkAt: 4]. "user using cursor keys left = 37, up = 38, right = 39, down = 40"
-
-	self autocompletationConfiguration isEnabled ifFalse: [^self]. "autocompletation is disable"
-
-	[self processKeyPressed: aKeyEvent. 
-	self isKeyboardShorcut ifTrue: [self replaceKeyboardShortcut]] forkAt: 4.!
+	(aKeyEvent wParam = 27 and: [view isAutoCompletionActive]) ifTrue: [^view cancelAutoCompletion].	"ESC pressed -> hide autocompletion"
+	"((aKeyEvent wParam = 13) and: [view isAutoCompletionActive]) ifTrue: [previousText := currentText. ^currentText := '']."	"Enter pressed - autocompletion accepted"
+	Keyboard default isCtrlDown ifTrue: [^self].	"the user is pressing ctrl--> not interested in autocompletion"
+	(#(37 38 39 40) includes: aKeyEvent wParam) ifTrue: [^[self getCurrentWord] forkAt: 4].	"user using cursor keys left = 37, up = 38, right = 39, down = 40"
+	self autocompletationConfiguration isEnabled ifFalse: [^self].	"autocompletation is disable"
+	
+	[self processKeyPressed: aKeyEvent.
+	self isKeyboardShorcut ifTrue: [self replaceKeyboardShortcut]]
+			forkAt: 4!
 
 onLeftButtonPressed: aKeyEvent
 	"This is the main method for autocompletation, each key stroke is registered and analyzed here"
