@@ -34,3 +34,16 @@ systemBrowserPresenter
 !JadeiteBrowser categoriesFor: #maximizeCode!public! !
 !JadeiteBrowser categoriesFor: #systemBrowserPresenter!public! !
 
+!JadeiteBrowser class methodsFor!
+
+onSession: session
+	^self showOnSession: session!
+
+openOn: session projectName: projectName
+	| projectBrowser |
+	projectBrowser := self onSession: session.
+	projectBrowser currentCard selectProjectNamed: projectName.
+	^projectBrowser! !
+!JadeiteBrowser class categoriesFor: #onSession:!instance creation!public! !
+!JadeiteBrowser class categoriesFor: #openOn:projectName:!instance creation!public! !
+

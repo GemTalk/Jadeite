@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
-JadeAutoTextPresenter3 subclass: #JadeiteCommandLinePresenter
-	instanceVariableNames: ''
+TextPresenter subclass: #JadeiteCommandLinePresenter
+	instanceVariableNames: 'history historyIndex'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -10,13 +10,33 @@ JadeiteCommandLinePresenter comment: ''!
 !JadeiteCommandLinePresenter categoriesForClass!MVP-Presenters! !
 !JadeiteCommandLinePresenter methodsFor!
 
+initialize
+	super initialize. 
+	history := OrderedCollection new. 
+	historyIndex := 0. !
+
 onKeyPressed: aKeyEvent
-	aKeyEvent wParam = 13 ifTrue: [^self parentPresenter submitCommand].
-	super onKeyPressed: aKeyEvent!
+	"Enter"
 
-submitCommand
-
-	^'Answer like a big-boy shell'! !
+	aKeyEvent wParam = 13
+		ifTrue: 
+			[historyIndex := 0.
+			history addFirst: self value.
+			^self parentPresenter submitCommand].
+	"Up Arrow"
+	aKeyEvent wParam = 38
+		ifTrue: 
+			[historyIndex := historyIndex + 1 min: history size.
+			self value: (history at: historyIndex)].
+	"Down Arrow"
+	aKeyEvent wParam = 40
+		ifTrue: 
+			[historyIndex = 1
+				ifTrue: 
+					[historyIndex := 0.
+					^self value: String new].
+			historyIndex := historyIndex - 1 max: 1.
+			self value: (history at: historyIndex)]! !
+!JadeiteCommandLinePresenter categoriesFor: #initialize!initialization!public! !
 !JadeiteCommandLinePresenter categoriesFor: #onKeyPressed:!event handlers!public! !
-!JadeiteCommandLinePresenter categoriesFor: #submitCommand!private! !
 

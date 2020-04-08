@@ -20,6 +20,7 @@ package classNames
 	add: #JadeiteBrowserPresenter;
 	add: #JadeiteChangesBrowser;
 	add: #JadeiteCommandLinePresenter;
+	add: #JadeiteCommandPresenter;
 	add: #JadeiteCommandShell;
 	add: #JadeiteDebugger;
 	add: #JadeiteDebuggerMethodSourcePresenter;
@@ -772,6 +773,11 @@ JadePresenter subclass: #JadeiteLoggerPresenter
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+JadePresenterA subclass: #JadeiteCommandPresenter
+	instanceVariableNames: 'commandLine codePane'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 JadePresenterA subclass: #RowanPresenter
 	instanceVariableNames: 'projectToolsOop'
 	classVariableNames: ''
@@ -872,11 +878,6 @@ JadeNavigationInspector subclass: #JadeiteInspector
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeWorkspace subclass: #JadeiteCommandShell
-	instanceVariableNames: 'commandLine'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
 JadeWorkspace subclass: #JadeiteGitLog
 	instanceVariableNames: 'projectService'
 	classVariableNames: ''
@@ -939,6 +940,11 @@ Prompter subclass: #JadeiteMultilinePrompter
 	classInstanceVariableNames: ''!
 JadeShell subclass: #JadeiteBreakpointBrowser
 	instanceVariableNames: 'breakpointListPresenter methodSourcePresenter search areBreakpointsEnabled'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeShell subclass: #JadeiteCommandShell
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1022,8 +1028,8 @@ SmalltalkWorkspace subclass: #JadeiteSmalltalkWorkspace
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeAutoTextPresenter3 subclass: #JadeiteCommandLinePresenter
-	instanceVariableNames: ''
+TextPresenter subclass: #JadeiteCommandLinePresenter
+	instanceVariableNames: 'history historyIndex'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

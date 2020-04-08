@@ -73,8 +73,7 @@ openBrowserOnPackage: packageName
 
 openBrowserOnProject: projectName
 	| projectBrowser |
-	projectBrowser := self openProjectBrowser.
-	projectBrowser currentCard selectProjectNamed: projectName.
+	projectBrowser := JadeiteBrowser openOn: session projectName: projectName.
 	lastWindowPosition := projectBrowser view position.
 	^projectBrowser!
 
