@@ -155,6 +155,12 @@ initializeMethods
 	self addMethodServicesToTree: methodServices.
 	breakpointListPresenter view expandAll!
 
+methodListPresenter
+	"hook to make some method source presenter functions work.
+	breakpointListPresenter responds to some list api's"
+
+	^breakpointListPresenter!
+
 methodListSelection
 	
 	^breakpointListPresenter selections isEmpty ifTrue:[nil] ifFalse:[breakpointListPresenter selections first]!
@@ -344,6 +350,7 @@ updateSelection: selection
 !JadeiteBreakpointBrowser categoriesFor: #flipBreakpointsEnabled!menu handlers!public! !
 !JadeiteBreakpointBrowser categoriesFor: #initialize!initialization!public! !
 !JadeiteBreakpointBrowser categoriesFor: #initializeMethods!event handlers support!initialization!private! !
+!JadeiteBreakpointBrowser categoriesFor: #methodListPresenter!accessing!public! !
 !JadeiteBreakpointBrowser categoriesFor: #methodListSelection!public!selection! !
 !JadeiteBreakpointBrowser categoriesFor: #methodSelected!event handlers!public! !
 !JadeiteBreakpointBrowser categoriesFor: #methodServicesWithBreakpoints!accessing!private! !

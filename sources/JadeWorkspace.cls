@@ -16,7 +16,7 @@ codePane
 	^codePane!
 
 editRevert
-	documentPresenter value: String new!
+	documentPresenter value: lastSave!
 
 queryCommand: aCommandQuery
 

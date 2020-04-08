@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 TextDocument subclass: #JadeTextDocument
-	instanceVariableNames: 'gciSession codePane environment'
+	instanceVariableNames: 'gciSession codePane environment lastSave'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -185,6 +185,7 @@ initialize
 
 	super initialize.
 	environment := 0.
+	lastSave := String new
 !
 
 jadeDebug
@@ -281,6 +282,10 @@ onViewOpened
 	self updateCodeFont.
 !
 
+openOn: openFilename
+	super openOn: openFilename.
+	lastSave := self model value!
+
 parentPresenter
 	"workspaces, debuggers, and inspectors do not yet have 
 	a parent presenter. However, sometimes it's useful to 
@@ -332,12 +337,13 @@ removeQuotesFromSelection
 !
 
 saveDocument
-
-	| result | 
+	| result |
 	result := super saveDocument.
-	result ifTrue: [self isModified: false].
-	^result.
-!
+	result
+		ifTrue: 
+			[self isModified: false.
+			lastSave := self model value].
+	^result!
 
 selectLfIfEndingOnCr
 	"deleting a CR without the subsequent LF can leave things somewhat confused"
@@ -461,6 +467,7 @@ validateUserInterface
 !JadeTextDocument categoriesFor: #maxPrintStringSize!private! !
 !JadeTextDocument categoriesFor: #onViewClosed!private! !
 !JadeTextDocument categoriesFor: #onViewOpened!private! !
+!JadeTextDocument categoriesFor: #openOn:!overrides!public! !
 !JadeTextDocument categoriesFor: #parentPresenter!public! !
 !JadeTextDocument categoriesFor: #print!private! !
 !JadeTextDocument categoriesFor: #queryCommand:!menu handlers!private! !

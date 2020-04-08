@@ -27,6 +27,7 @@ package classNames
 	add: #JadeiteProjectBrowserDictionaryDataCuratorTestCase;
 	add: #JadeiteProjectBrowserDictionaryTestCase;
 	add: #JadeiteProjectBrowserLowerTabsTestCase;
+	add: #JadeiteProjectBrowserSystemTestCase;
 	add: #JadeiteProjectBrowserTestCase;
 	add: #JadeiteSUnitSupportTestCase;
 	add: #JadeiteTestResource;
@@ -81,6 +82,7 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\IDE\Base\Development System'
 	'..\Core\Object Arts\Dolphin\Base\Dolphin'
 	'..\Core\Object Arts\Dolphin\MVP\Base\Dolphin Basic Geometry'
+	'..\Core\Object Arts\Dolphin\MVP\Views\Cards\Dolphin Card Containers'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Choice Prompter'
 	'..\Core\Object Arts\Dolphin\MVP\Views\Common Controls\Dolphin Common Controls'
 	'..\Core\Object Arts\Dolphin\MVP\Views\Control Bars\Dolphin Control Bars'
@@ -242,6 +244,11 @@ JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserDictionary
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserLowerTabsTestCase
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserSystemTestCase
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

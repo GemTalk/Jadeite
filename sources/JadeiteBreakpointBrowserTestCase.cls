@@ -18,13 +18,14 @@ setUp
 	JadePresenter clearAllBreakpointsIn: session!
 
 tearDown
-	breakpointBrowser ifNotNil: [breakpointBrowser view close]!
+	breakpointBrowser ifNotNil: [breakpointBrowser view close].
+	projectsBrowser ifNotNil: [self destroy: projectsBrowser]!
 
 test_addedBreakpointAddsMethod
 	| treeModel |
 	self openProjectBrowser.
 	
-	[self selectRowanSample1Test.
+	self selectRowanSample1Test.
 	self selectMethodNamed: #test2.
 	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
 	self openBreakpointBrowser.
@@ -42,8 +43,7 @@ test_addedBreakpointAddsMethod
 	self assert: treeModel rootNodes first children first object breakpointDisplayString
 		equals: 'test1 (1)'.
 	self assert: treeModel rootNodes first children last object breakpointDisplayString
-		equals: 'test2 (1)']
-			ensure: [self destroy: projectsBrowser]!
+		equals: 'test2 (1)'!
 
 test_additionalAccelerators
 	"No way yet to adequately test accelerators function
@@ -58,10 +58,8 @@ test_additionalAccelerators
 	self assert: breakpointBrowser additionalAccelerators size equals: 2	"should fail if we add a new one"!
 
 test_breakpointAdditionsUpdateAutomatically
-	| treeModel |
+	| treeModel indicators |
 	self openProjectBrowser.
-	
-	[| indicators |
 	self selectRowanSample1Test.
 	self selectMethodNamed: #test2.
 	self projectsPresenter setBreakPointAt: 2 in: self projectsPresenter.
@@ -93,16 +91,14 @@ test_breakpointAdditionsUpdateAutomatically
 	self assert: (indicators at: 2) styleName equals: #breakPoint.
 	self assert: (indicators at: 2) range equals: (35 to: 37).
 	self assert: treeModel rootNodes first children first object breakpointDisplayString
-		equals: 'test2 (2)']
-			ensure: [self destroy: projectsBrowser]!
+		equals: 'test2 (2)'!
 
 test_breakpointIsSelectedAndVisible
 	| firstBreakpoint |
 	self testsIssue: #issue514
 		withTitle: '(3.0.77) should breakpoint browser come up with the first breakpoint in method highlighted?'.
 	self openProjectBrowser.
-	
-	[self selectRowanSample1Test.
+	self selectRowanSample1Test.
 	self selectMethodNamed: #test2.
 	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
 	self openBreakpointBrowser.
@@ -111,14 +107,11 @@ test_breakpointIsSelectedAndVisible
 	firstBreakpoint := breakpointBrowser methodSourcePresenter documentPresenter view indicators
 				detect: [:indicator | indicator styleName == #breakPoint or: [indicator styleName == #disabledBreakPoint]].
 	self assert: firstBreakpoint range
-		equals: breakpointBrowser methodSourcePresenter documentPresenter view selectionRange]
-			ensure: [self destroy: projectsBrowser]!
+		equals: breakpointBrowser methodSourcePresenter documentPresenter view selectionRange!
 
 test_breakpointRemovalsUpdateAutomatically
-	| treeModel |
+	| treeModel indicators |
 	self openProjectBrowser.
-	
-	[| indicators |
 	self selectRowanSample1Test.
 	self selectMethodNamed: #test2.
 	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
@@ -153,8 +146,7 @@ test_breakpointRemovalsUpdateAutomatically
 	self assert: (indicators at: 2) styleName equals: #breakPoint.
 	self assert: (indicators at: 2) range equals: (35 to: 37).
 	self assert: treeModel rootNodes first children first object breakpointDisplayString
-		equals: 'test2 (1)']
-			ensure: [self destroy: projectsBrowser]!
+		equals: 'test2 (1)'!
 
 test_openBreakpointBrowser
 	self openBreakpointBrowser.
@@ -166,6 +158,27 @@ test_openBreakpointBrowserDisabledSourcePane
 	self assert: breakpointBrowser methodSourcePresenter value equals: String new.
 	self assert: breakpointBrowser methodSourcePresenter documentPresenter view isReadOnly!
 
+test_revert
+	"revert should revert back to the method source
+	not related to issue per say but this comment within it
+	https://github.com/GemTalk/Jadeite/issues/584#issuecomment-610531382"
+
+	| originalSource |
+	self testsIssue: #issue584 withTitle: 'Would like changed method indicator on tab'.
+	self openProjectBrowser.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	originalSource := projectsBrowser currentCard methodSourcePresenter value.
+	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
+	breakpointBrowser := self projectsPresenter browseBreakpoints.
+	self assert: breakpointBrowser selectedMethodServices size equals: 1.
+	self assert: breakpointBrowser selectedMethodServices first selector equals: #test1.
+	self assert: breakpointBrowser methodSourcePresenter value equals: originalSource.
+	breakpointBrowser methodSourcePresenter value: originalSource , 'blahblahblah'.
+	self assert: breakpointBrowser methodSourcePresenter value equals: originalSource , 'blahblahblah'.
+	breakpointBrowser methodSourcePresenter editRevert.
+	self assert: breakpointBrowser methodSourcePresenter value equals: originalSource!
+
 test_selectedMethodIsFirstSelected
 	"when bp browser is opened from the project browser, try to 
 	select the selected method in the bp browser using the selectin
@@ -175,8 +188,7 @@ test_selectedMethodIsFirstSelected
 	self testsIssue: #issue514
 		withTitle: '(3.0.77) should breakpoint browser come up with the first breakpoint in method highlighted?'.
 	self openProjectBrowser.
-	
-	[self selectRowanSample1Test.
+	self selectRowanSample1Test.
 	self selectMethodNamed: #test1.
 	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
 	self selectMethodNamed: #test2.
@@ -188,14 +200,11 @@ test_selectedMethodIsFirstSelected
 	firstBreakpoint := breakpointBrowser methodSourcePresenter documentPresenter view indicators
 				detect: [:indicator | indicator styleName == #breakPoint or: [indicator styleName == #disabledBreakPoint]].
 	self assert: firstBreakpoint range
-		equals: breakpointBrowser methodSourcePresenter documentPresenter view selectionRange]
-			ensure: [self destroy: projectsBrowser]!
+		equals: breakpointBrowser methodSourcePresenter documentPresenter view selectionRange!
 
 test_showsBreakpoints
-	| treeModel |
+	| treeModel indicators |
 	self openProjectBrowser.
-	
-	[| indicators |
 	self selectRowanSample1Test.
 	self selectMethodNamed: #test2.
 	self projectsPresenter setBreakPointAt: 2 in: self projectsPresenter.
@@ -214,7 +223,7 @@ test_showsBreakpoints
 
 	self assert: RowanSample1 bar = ''bar'''.
 	indicators := breakpointBrowser methodSourcePresenter documentPresenter view indicators.
-	self assert: indicators size equals: 5. 
+	self assert: indicators size equals: 5.
 	self assert: (indicators at: 1) styleName equals: #stepPoint.
 	self assert: (indicators at: 1) range equals: (1 to: 5).
 	self assert: (indicators at: 2) styleName equals: #breakPoint.
@@ -224,9 +233,7 @@ test_showsBreakpoints
 	self assert: (indicators at: 4) styleName equals: #stepPoint.
 	self assert: (indicators at: 4) range equals: (14 to: 20).
 	self assert: (indicators at: 5) styleName equals: #stepPoint.
-	self assert: (indicators at: 5) range equals: (45 to: 46).
-]
-			ensure: [self destroy: projectsBrowser]! !
+	self assert: (indicators at: 5) range equals: (45 to: 46)! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #openBreakpointBrowser!private!support! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #setUp!public!support! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #tearDown!public!support! !
@@ -237,6 +244,7 @@ test_showsBreakpoints
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_breakpointRemovalsUpdateAutomatically!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_openBreakpointBrowser!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_openBreakpointBrowserDisabledSourcePane!public!tests! !
+!JadeiteBreakpointBrowserTestCase categoriesFor: #test_revert!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_selectedMethodIsFirstSelected!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_showsBreakpoints!public!tests! !
 

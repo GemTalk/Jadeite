@@ -643,15 +643,6 @@ editSaveClassComment
 		isModified: false;
 		backcolor: JadeiteTextStyles default colorForNoEdits!
 
-editSaveMethod
-	| selection |
-	selection := self selectedClass.
-	selection ifNil: [^self].
-	selection meta: self isClassSideSelected.
-	self editSaveMethod: selection.
-	self updateSUnitTab.
-	self redrawAllViews!
-
 expandHierarchyOneLevelAt: classService
 	Cursor wait showWhile: 
 			[classService command: #oneLevelClassHierarchy.
@@ -2154,12 +2145,6 @@ updateSUnitTab
 updateSUnitTab: service
 	service ifNil: [sunitPresenter testClassService: nil] ifNotNil: [self setTestClass: service]!
 
-updateSystemTab
-	| projectTabLabel |
-	projectTabLabel := self projectTabLabel.
-	self topShell cardsPresenter view currentCard arrangement: projectTabLabel.
-	self parentPresenter view updateTabs!
-
 updateTabLabel
 	self updateSystemTab!
 
@@ -2227,7 +2212,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #editFind!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editReplace!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editSaveClassComment!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #editSaveMethod!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #expandHierarchyOneLevelAt:!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #fileOutCategories!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #fileOutCategoriesOnPath:!menu handlers support!private! !
@@ -2388,7 +2372,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSingleMethodSource!event handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSUnitTab!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSUnitTab:!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateSystemTab!event handlers support!private!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateTabLabel!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #writeProject!project menu handlers!public! !
 

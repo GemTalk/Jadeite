@@ -103,7 +103,7 @@ Shell subclass: #JadeShell
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 TextDocument subclass: #JadeTextDocument
-	instanceVariableNames: 'gciSession codePane environment'
+	instanceVariableNames: 'gciSession codePane environment lastSave'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

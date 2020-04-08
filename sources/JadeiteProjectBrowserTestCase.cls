@@ -426,99 +426,6 @@ test_addRemoveCategory
 	self projectsPresenter basicRemoveMethodCategories.
 	self deny: (self categoryListPresenter list includes: 'jadeite test')!
 
-test_addSystemTab
-	self deselectProjects.
-	self selectRowanSample1Class.
-	self selectCategoryNamed: 'accessing'. 
-	self selectMethodNamed: #foo.
-	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
-	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
-	self assert: self classListPresenter selection name equals: 'RowanSample1'.
-	self assert: self categoryListPresenter selection equals: 'accessing'.
-	self assert: self methodListPresenter selection selector equals: #foo.
-	self projectsPresenter addSystemBrowser.
-	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
-	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
-	self assert: self classListPresenter selection name equals: 'RowanSample1'.
-	self assert: self categoryListPresenter selection equals: 'accessing'.
-	self assert: self methodListPresenter selection selector equals: #foo.
-	projectsBrowser closeCard.
-	"make sure previous card selections didn't change"
-	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
-	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
-	self assert: self classListPresenter selection name equals: 'RowanSample1'.
-	self assert: self categoryListPresenter selection equals: 'accessing'.
-	self assert: self methodListPresenter selection selector equals: #foo!
-
-test_addSystemTabClassSelection
-	self deselectProjects.
-	self selectRowanSample1Class.
-	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
-	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
-	self assert: self classListPresenter selection name equals: 'RowanSample1'.
-	self deny: self classListPresenter selection meta.
-	self projectsPresenter addSystemBrowser.
-	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
-	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
-	self assert: self classListPresenter selection name equals: 'RowanSample1'.
-	self deny: self classListPresenter selection meta.
-	projectsBrowser closeCard.
-	"make sure previous card selections didn't change"
-	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
-	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
-	self assert: self classListPresenter selection name equals: 'RowanSample1'.
-	self deny: self classListPresenter selection meta!
-
-test_addSystemTabClassSelectionClassSide
-	self deselectProjects.
-	self selectRowanSample1Class.
-	self selectClassTab.
-	self selectCategoriesNamed: (Array with: '*rowansample1-extensions').
-	self selectMethodNamed: #bar.
-	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
-	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
-	self assert: self classListPresenter selection name equals: 'RowanSample1'.
-	self assert: self classListPresenter selection meta.
-	self assert: self categoryListPresenter selection equals: '*rowansample1-extensions'.
-	self assert: self methodListPresenter selection selector equals: #bar.
-	self projectsPresenter addSystemBrowser.
-	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
-	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
-	self assert: self classListPresenter selection name equals: 'RowanSample1'.
-	self assert: self classListPresenter selection meta.
-	self assert: self categoryListPresenter selection equals: '*rowansample1-extensions'.
-	self assert: self methodListPresenter selection selector equals: #bar.
-	projectsBrowser closeCard.
-
-	"make sure previous card selections didn't change"
-	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
-	self assert: self packageListPresenter selection name equals: 'RowanSample1-Core'.
-	self assert: self classListPresenter selection name equals: 'RowanSample1'.
-	self assert: self classListPresenter selection meta.
-	self assert: self categoryListPresenter selection equals: '*rowansample1-extensions'.
-	self assert: self methodListPresenter selection selector equals: #bar!
-
-test_addSystemTabNoSelections
-	self deselectProjects.
-	self assertIsNil: (self projectListPresenter selectionIfNone:[]).
-	self assertIsNil: (self packageListPresenter selectionIfNone:[]).
-	self assertIsNil: (self classListPresenter selectionIfNone:[]).
-	self assertIsNil: (self categoryListPresenter selectionIfNone:[]).
-	self assertIsNil: (self methodListPresenter selectionIfNone:[]).
-	self projectsPresenter addSystemBrowser.
-	self assertIsNil: (self projectListPresenter selectionIfNone:[]).
-	self assertIsNil: (self packageListPresenter selectionIfNone:[]).
-	self assertIsNil: (self classListPresenter selectionIfNone:[]).
-	self assertIsNil: (self categoryListPresenter selectionIfNone:[]).
-	self assertIsNil: (self methodListPresenter selectionIfNone:[]).
-	projectsBrowser closeCard.
-	"make sure previous card selections didn't change"
-	self assertIsNil: (self projectListPresenter selectionIfNone:[]).
-	self assertIsNil: (self packageListPresenter selectionIfNone:[]).
-	self assertIsNil: (self classListPresenter selectionIfNone:[]).
-	self assertIsNil: (self categoryListPresenter selectionIfNone:[]).
-	self assertIsNil: (self methodListPresenter selectionIfNone:[]).!
-
 test_adHocContextClassSide
 	| classService |
 	self testsIssue: #issue517 withTitle: 'Context of non-debugger source panes should be the class'.
@@ -1393,16 +1300,6 @@ test_deselectAllVariables
 	self assert: self methodListPresenter list size
 		equals: self projectsPresenter selectedClass methods size!
 
-test_deselectProjectOnly
-	"make sure it updates the tab label"
-
-	self deselectProjects.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 Projects'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 Rowan'.
-	self deselectProjects.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 Projects'!
-
 test_dirtyPackages
 	self testsIssue: #issue539 withTitle: '(3.077) package not shown as dirty until it is reselected'.
 	self selectRowanSample1Test.
@@ -2214,28 +2111,6 @@ test_menusDontAddBreaks
 		presenter: self methodSourcePresenter view.
 	self noBreakIn: methodsMenu!
 
-test_moveTabsWithSUnitTabselected
-	self testsIssue: #issue556 withTitle: 'Funny orange boxes enabled for Sunit tab, but error'.
-	projectsBrowser closeCard.
-	projectsBrowser addSystemBrowser.
-	self selectSUnitTab.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 Projects'.
-	projectsBrowser addSystemBrowser.
-	self assert: projectsBrowser cardsPresenter view cards size equals: 2.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '2 Projects'.
-	self selectRowanSample1Class.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text
-		equals: '2 RowanSample1'.
-	projectsBrowser moveCardLeft.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text
-		equals: '2 RowanSample1'.
-	self assert: projectsBrowser cardsPresenter view cards size equals: 2.
-	projectsBrowser moveCardRight.
-	self assert: projectsBrowser cardsPresenter view cards size equals: 2.
-	projectsBrowser closeCard.
-	self assert: projectsBrowser cardsPresenter view cards size equals: 1.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 Projects'!
-
 test_multiplePackageSelection
 	"verify package selection shows packages in both packages and alphabetizes them"
 
@@ -2800,64 +2675,6 @@ test_symbolsWithoutImplementorsFound
 	symbols := search autocompleteSymbolsFrom: 'fnoodley1'.
 	self assert: symbols size equals: 1.
 	self assert: symbols first = #fnoodley1!
-
-test_systemTabNamesDictionaryClass
-	self testsIssue: #issue381
-		withTitle: '(3.0.53) useful to have class displayed when code pane is maximized'.
-	self deselectProjects.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 Projects'.
-	self selectNoneProject.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 (NONE)'.
-	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text
-		equals: '1 UserGlobals'.
-	self selectServiceNamed: 'JadeServer' in: self classListPresenter.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 JadeServer'!
-
-test_systemTabNamesDictionaryClassHierarchy
-	self testsIssue: #issue381
-		withTitle: '(3.0.53) useful to have class displayed when code pane is maximized'.
-	self deselectProjects.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 Projects'.
-	self selectNoneProject.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 (NONE)'.
-	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text
-		equals: '1 UserGlobals'.
-	self selectHierarchyTab.
-	self selectClassInHierarchyNamed: 'JadeServer'.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 JadeServer'!
-
-test_systemTabNamesProjectClassHierarchy
-	self testsIssue: #issue381
-		withTitle: '(3.0.53) useful to have class displayed when code pane is maximized'.
-	self deselectProjects.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 Projects'.
-	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text
-		equals: '1 RowanSample1'.
-	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text
-		equals: '1 RowanSample1-Core'.
-	self selectHierarchyTab.
-	self selectClassInHierarchyNamed: 'RowanSample1'.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text
-		equals: '1 RowanSample1'!
-
-test_systemTabNamesProjectClassList
-	self testsIssue: #issue381
-		withTitle: '(3.0.53) useful to have class displayed when code pane is maximized'.
-	self deselectProjects.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 Projects'.
-	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text
-		equals: '1 RowanSample1'.
-	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text
-		equals: '1 RowanSample1-Core'.
-	self selectServiceNamed: 'RowanSample1' in: self classListPresenter.
-	self assert: projectsBrowser cardsPresenter view currentCard arrangement text
-		equals: '1 RowanSample1'!
 
 test_tabNames
 	| textTabs |
@@ -3561,10 +3378,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_additionalAccelerators!public!test menus! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addPackageReloadProject!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!test categories!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_addSystemTab!public!test system tabs! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_addSystemTabClassSelection!public!test system tabs! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_addSystemTabClassSelectionClassSide!public!test system tabs! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_addSystemTabNoSelections!public!test system tabs! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_adHocContextClassSide!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_adHocContextInstanceSide!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_adHocInspectComplexObjectInProjectBrowser!public!tests! !
@@ -3597,7 +3410,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_copyClassEnablement!public!test menus!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_deselectProjectOnly!public!test system tabs! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dirtyPackages!public!test packages! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dirtyProjectOnDisk!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_dontChangeTabOnMethodSave!public!test two browsers!tests! !
@@ -3637,7 +3449,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuAddPackageOnProjectMenu!public!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menuEnablementDoesNotBreak!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_menusDontAddBreaks!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_moveTabsWithSUnitTabselected!public!test system tabs! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_multiplePackageSelection!public!test packages!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openChangesBrowser!public!test menus!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectBrowser!public!test menus!test projects!tests! !
@@ -3669,10 +3480,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_switchToVariableWithUnsavedChanges!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsLowerCaseMatch!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsWithoutImplementorsFound!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesDictionaryClass!public!test system tabs! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesDictionaryClassHierarchy!public!test system tabs! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesProjectClassHierarchy!public!test system tabs! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_systemTabNamesProjectClassList!public!test system tabs! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!tests! !

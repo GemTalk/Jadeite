@@ -8,3 +8,5 @@ Good for debugging menus, etc"
 			self halt].
 
 GciSession current: nil
+
+JadeiteCommandShell showOnSession: GciSession current
