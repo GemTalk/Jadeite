@@ -280,6 +280,33 @@ test_changesAlphabetized
 		equals: #('notAnotherMethod' 'yesIndeed' 'aaa' 'mmm' 'test1' 'test2' 'testFailure' 'zzz')	"first two are in RowanSample1"	"last few are in RowanSample1Test"]
 			ensure: [self destroy: projectsBrowser]!
 
+test_identicalSource
+	| methodListBrowser |
+	self testsIssue: #issue764
+		withTitle: 'Changes Browser confusing handling of newlines in method text (3.1.pr3)'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	"save method with functionally equivalent source"
+	self
+		saveMethod: 'test1
+
+	self assert: 
+RowanSample1 
+new foo = ''foo'''
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	self assert: changesBrowser operationListPresenter list first isKindOf: MCModification.
+	changesBrowser operationListPresenter selection: changesBrowser operationListPresenter list first.
+	changesBrowser includeIdenticalPresenter value: false.
+	self assert: changesBrowser operationListPresenter list isEmpty.
+	changesBrowser includeIdenticalPresenter value: true.
+	self assert: changesBrowser operationListPresenter list size equals: 1.
+	changesBrowser operationListPresenter selection: changesBrowser operationListPresenter list first.
+	self assert: changesBrowser operationListPresenter selection className equals: 'RowanSample1Test'.
+	self assert: changesBrowser operationListPresenter selection selector equals: 'test1'!
+
 test_noExtraLF
 	| change |
 	self testsIssue: #issue742 withTitle: '(3.0.93) Incomple revert in changes browser'.
@@ -397,6 +424,7 @@ test_revertMethodRemoval
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseSenders!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseSendersOfRevertedChange!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_changesAlphabetized!public!tests! !
+!JadeiteChangesBrowserTestCase categoriesFor: #test_identicalSource!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_noExtraLF!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_revertMethodAddition!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_revertMethodModification!public!tests! !

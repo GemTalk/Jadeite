@@ -105,6 +105,7 @@ package setPrerequisites: #(
 	'GemStone Objects'
 	'GemStone Services'
 	'JGF Fading Dialog'
+	'..\Core\Contributions\Refactory\Refactoring Browser\Parser\RBParser'
 	'..\Core\Object Arts\Dolphin\Sockets\Sockets Connection'
 	'..\Core\Object Arts\Dolphin\ActiveX\Components\XML DOM\XML DOM').
 

@@ -28,6 +28,12 @@ createSchematicWiring
 	operationListPresenter 		when: #'selectionChanged' send: #'operationSelected' 	to: self.
 !
 
+includeIdenticalPresenter
+	^includeIdenticalPresenter!
+
+includeIdenticalPresenter: anObject
+	includeIdenticalPresenter := anObject!
+
 inspectLine
 
 	| line |
@@ -70,6 +76,8 @@ shellName
 ! !
 !MCPatchBrowser categoriesFor: #createComponents!public! !
 !MCPatchBrowser categoriesFor: #createSchematicWiring!public! !
+!MCPatchBrowser categoriesFor: #includeIdenticalPresenter!accessing!private! !
+!MCPatchBrowser categoriesFor: #includeIdenticalPresenter:!accessing!private! !
 !MCPatchBrowser categoriesFor: #inspectLine!public! !
 !MCPatchBrowser categoriesFor: #model:!public! !
 !MCPatchBrowser categoriesFor: #onViewOpened!public! !

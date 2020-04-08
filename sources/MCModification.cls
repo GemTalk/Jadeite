@@ -113,7 +113,6 @@ firstMatchAfter: anInteger
 !
 
 hasEquivalentText
-
 	| crlf lf left right |
 	crlf := Character cr asString , Character lf asString.
 	lf := Character lf asString.
@@ -121,8 +120,9 @@ hasEquivalentText
 	right := modification displayMemo copyReplaceAll: crlf with: lf.
 	left := left trimBlanks.
 	right := right trimBlanks.
-	^left = right.
-!
+	^(RBParser parseMethod: left onError: [:string :pos | ^false])
+		equalTo: (RBParser parseMethod: right onError: [:string :pos | ^false])
+		exceptForVariables: #()!
 
 matchCountFromObsoletionLine: obsInteger modificationLine: modInteger
 
