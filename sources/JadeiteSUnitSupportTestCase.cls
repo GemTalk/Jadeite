@@ -318,6 +318,29 @@ test_browseSunitClass
 	self assert: browser currentCard classListPresenter selection name = 'JadeServerTest']
 			ensure: [browser view close]!
 
+test_browseTestSelectorsInSUnitTab
+	| browseMethodMenuItem browser selectors |
+	self testsIssue: #issue565
+		withTitle: 'Would like "browse selected" in the SUnit tab of the Project Browser (3.0.79)'.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanTestClassServiceTest' in: self sunitPresenter classListPresenter.
+	selectors := self sunitPresenter methodListPresenter list
+				select: [:service | service selector = #test_addCategory]
+				thenCollect: [:service | service selector].
+	self selectMethodsNamed: selectors.
+	browseMethodMenuItem := self sunitPresenter methodListPresenter view contextMenu items
+				detect: [:item | item isDivider not and: ['*Browse*Selected*Tests' match: item description]]
+				ifNone: [].
+	browser := browseMethodMenuItem commandDescription performAgainst: self sunitPresenter.
+	
+	[self assert: (browser isKindOf: JadeiteMethodListBrowser).
+	self assert: browser primaryPresenter methodListPresenter methodListPresenter list size
+		equals: selectors size.
+	self assert: browser primaryPresenter methodListPresenter selection selector equals: selectors first.
+	browser primaryPresenter methodListPresenter methodListPresenter list
+		do: [:methodService | self assert: methodService className equals: 'RowanClassServiceTest']]
+			ensure: [browser view close]!
+
 test_commitNoSelections
 	| commitCommand abortCommand |
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
@@ -1279,6 +1302,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_addNewTestPackage!public!test updates from other browsers!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseMethods!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseSunitClass!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_browseTestSelectorsInSUnitTab!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_commitNoSelections!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_commitWithSelections!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_debugWithDifferentSelectedClasses!public!tests! !
