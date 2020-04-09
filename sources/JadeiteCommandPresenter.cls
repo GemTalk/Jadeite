@@ -26,21 +26,16 @@ basicSubmitCommand: string
 	^answeringService answer!
 
 browse: substrings
-	| switches browser switchArgs browser1 |
-	switches := self switchesFrom: substrings.
-	(self are: switches legalIn: #browse:)
-		ifFalse: [^'legal switches - ' , (self switches at: #browse:) displayString].
-	switchArgs := self switchArgumentPairsFrom: substrings.
-	switchArgs do: 
-			[:switchArg |
-			| switch arg |
-			switch := switchArg first.
-			arg := switchArg second.
-			switch = '-project' ifTrue: [browser1 := JadeiteBrowser openOn: self gciSession projectName: arg].
-			switch = '-package' ifTrue: [browser1 := JadeiteBrowser openOn: self gciSession packageName: arg].
-			switch = '-class' ifTrue: [browser1 := JadeiteBrowser openOn: self gciSession className: arg]].
-	browser := browser1.
-	^browser!
+	| answeringService newService |
+	answeringService := RowanAnsweringService new
+				command: #resolveAsService:;
+				commandArgs: (Array with: substrings first).
+	self issueCommand: (Array with: answeringService).
+	newService := answeringService answer.
+	newService ifNil: [^JadePresenter browseImplementorsOf: substrings first session: self gciSession].
+	newService isProjectService ifTrue: [^JadeiteBrowser openOn: self gciSession project: newService].
+	newService isPackageService ifTrue: [^JadeiteBrowser openOn: self gciSession package: newService].
+	newService isClassService ifTrue: [^JadeiteBrowser openOn: self gciSession class: newService]!
 
 commandHelpTexts
 	^self commands collect: [:array | array last]!
@@ -80,13 +75,14 @@ selectorFromCommand: string
 	^self commandSelectors at: (self commandStrings indexOf: string)!
 
 submitCommand
-	| result |
-	result := self basicSubmitCommand: commandLine value.
+	| result input |
+	input := commandLine value.
 	self documentPresenter view appendText: Character cr asString , '>' , commandLine value.
-	self documentPresenter view appendText: Character cr asString , result.
 	self documentPresenter view moveToEndOfDocument.
 	commandLine value: String new.
-	commandLine setFocus!
+	commandLine setFocus.
+	result := self basicSubmitCommand: input.
+	self documentPresenter view appendText: Character cr asString , result!
 
 submitJadeiteCommand: string
 	| selector substrings browser |

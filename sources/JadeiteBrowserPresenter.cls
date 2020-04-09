@@ -993,10 +993,9 @@ selectPackageNamed: packageName
 	self issueCommand: (Array with: answeringService).
 	packageService := answeringService answer.
 	self selectProjectNamed: packageService projectName.
-	selectedPackage := packageListPresenter list
-				detect: [:packageService | packageService name = packageName]
+	selectedPackage := packageListPresenter list detect: [:pkgService | pkgService name = packageName]
 				ifNone: [^self].
-	packageListPresenter selections: (Array with: selectedPackage)!
+	packageListPresenter selections: (Array with: selectedPackage).!
 
 selectProjectNamed: projectName
 	| projectService |

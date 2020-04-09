@@ -39,32 +39,33 @@ systemBrowserPresenter
 onSession: session
 	^self showOnSession: session!
 
-openOn: session className: className
-	| browser classService |
+openOn: session class: classService
+	| browser |
 	browser := self onSession: session.
-	classService := RowanClassService new name: className.
 	BrowserUpdate current updateService: classService session: session.
 	browser currentCard selectProjectNamed: classService projectName.
 	browser currentCard selectPackageNamed: classService packageName.
 	browser currentCard selectClassNamed: classService name.
+	browser currentCard classListPresenter setFocus.
 	^browser!
 
-openOn: session packageName: packageName
-	| browser packageService |
+openOn: session package: packageService
+	| browser |
 	browser := self onSession: session.
-	packageService := RowanPackageService new name: packageName.
 	BrowserUpdate current updateService: packageService session: session.
 	browser currentCard selectProjectNamed: packageService projectName.
 	browser currentCard selectPackageNamed: packageService name.
+	browser currentCard packageListPresenter setFocus.
 	^browser!
 
-openOn: session projectName: projectName
-	| projectBrowser |
-	projectBrowser := self onSession: session.
-	projectBrowser currentCard selectProjectNamed: projectName.
-	^projectBrowser! !
+openOn: session project: projectService
+	| browser |
+	browser := self onSession: session.
+	browser currentCard selectProjectNamed: projectService name.
+	browser currentCard projectListPresenter setFocus.
+	^browser! !
 !JadeiteBrowser class categoriesFor: #onSession:!instance creation!public! !
-!JadeiteBrowser class categoriesFor: #openOn:className:!instance creation!public! !
-!JadeiteBrowser class categoriesFor: #openOn:packageName:!instance creation!public! !
-!JadeiteBrowser class categoriesFor: #openOn:projectName:!instance creation!public! !
+!JadeiteBrowser class categoriesFor: #openOn:class:!instance creation!public! !
+!JadeiteBrowser class categoriesFor: #openOn:package:!instance creation!public! !
+!JadeiteBrowser class categoriesFor: #openOn:project:!instance creation!public! !
 
