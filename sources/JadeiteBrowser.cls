@@ -39,11 +39,32 @@ systemBrowserPresenter
 onSession: session
 	^self showOnSession: session!
 
+openOn: session className: className
+	| browser classService |
+	browser := self onSession: session.
+	classService := RowanClassService new name: className.
+	BrowserUpdate current updateService: classService session: session.
+	browser currentCard selectProjectNamed: classService projectName.
+	browser currentCard selectPackageNamed: classService packageName.
+	browser currentCard selectClassNamed: classService name.
+	^browser!
+
+openOn: session packageName: packageName
+	| browser packageService |
+	browser := self onSession: session.
+	packageService := RowanPackageService new name: packageName.
+	BrowserUpdate current updateService: packageService session: session.
+	browser currentCard selectProjectNamed: packageService projectName.
+	browser currentCard selectPackageNamed: packageService name.
+	^browser!
+
 openOn: session projectName: projectName
 	| projectBrowser |
 	projectBrowser := self onSession: session.
 	projectBrowser currentCard selectProjectNamed: projectName.
 	^projectBrowser! !
 !JadeiteBrowser class categoriesFor: #onSession:!instance creation!public! !
+!JadeiteBrowser class categoriesFor: #openOn:className:!instance creation!public! !
+!JadeiteBrowser class categoriesFor: #openOn:packageName:!instance creation!public! !
 !JadeiteBrowser class categoriesFor: #openOn:projectName:!instance creation!public! !
 

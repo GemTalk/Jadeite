@@ -202,6 +202,26 @@ test_autocompleteSort
 	self assert: (search sortForAutoCompletion: #('aaaaa' 'bbbb' 'ccc' 'dd')) asArray
 		equals: #('dd' 'ccc' 'bbbb' 'aaaaa')!
 
+test_autocompleteSymbolsNotAddedToIfAutocompleteOff
+	self testsIssue: #issue732 withTitle: 'Wildcard method search broken if autcomplete off '.
+	JadeiteSearch initializeAutocompleteSymbolsIn: session.
+	JadeiteSearch autoCompleteEnabled: false.
+	self assert: JadeiteSearch allSelectorSymbols isEmpty.
+	self
+		saveMethod: 'covid  ^19'
+		in: 'RowanSample1'
+		category: 'deleteme'.
+	self assert: JadeiteSearch allSelectorSymbols isEmpty.	"new symbol #covid not added"
+	JadeiteSearch autoCompleteEnabled: true.
+	JadeiteSearch initializeAutocompleteSymbolsIn: session.
+	self assert: (JadeiteSearch allSelectorSymbols includes: #covid).	"picked up the new symbol"
+	self deny: (JadeiteSearch allSelectorSymbols includes: #covid19).
+	self
+		saveMethod: 'covid19 ^#isHappeningNow'
+		in: 'RowanSample1'
+		category: 'deleteme'.
+	self assert: (JadeiteSearch allSelectorSymbols includes: #covid19)!
+
 test_convertToPattern
 	| pattern |
 	self testsIssue: #issue258
@@ -784,16 +804,17 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_adHocCompileError!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_adHocDisplay!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_adHocExecute!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitDoesNotMakeRoundTripWhenOpeningBrowser!auto commit!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitInAdHocDisplay!auto commit!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitInAdHocExecution!auto commit!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocDisplay!auto commit!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocExecution!auto commit!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitUpdatedInSession!auto commit!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteCaseInsensitiveSearch!public!test methods! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSaveClassSymbolAdded!public!test methods! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSaveMethodSymbolAdded!public!test methods! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSort!public!test! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitDoesNotMakeRoundTripWhenOpeningBrowser!public!test auto commit! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitInAdHocDisplay!public!test auto commit! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitInAdHocExecution!public!test auto commit! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocDisplay!public!test auto commit! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocExecution!public!test auto commit! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitUpdatedInSession!public!test auto commit! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteCaseInsensitiveSearch!public!test auto complete!test methods! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSaveClassSymbolAdded!public!test auto complete!test methods! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSaveMethodSymbolAdded!public!test auto complete!test methods! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSort!public!test!test auto complete! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSymbolsNotAddedToIfAutocompleteOff!public!test auto complete!test methods! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_convertToPattern!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_findInWorkspace!public!test! !

@@ -147,7 +147,7 @@ autoCompleteEnabled: boolean
 			self allClassNames: OrderedCollection new]!
 
 confirmAutoCompleteEnabled: boolean in: session
-	"If the use chooses not to continue. Reset the value
+	"If the user chooses not to continue. Reset the value
 	return the former value to the sending method."
 
 	boolean

@@ -14,15 +14,19 @@ RowanBrowserService comment: ''!
 	^browserService isBrowserService and: [name = browserService name]!
 
 addCachedSymbols: unused
+	"only add new symbols if auto complete was turned on (symbol collections are empty)"
+
 	newCachedSelectors
 		ifNotNil: 
-			[newCachedSelectors do: 
+			[JadeiteSearch allSelectorSymbols isEmpty ifTrue: [^self].
+			newCachedSelectors do: 
 					[:selector |
 					(JadeiteSearch allSelectorSymbols includes: selector)
 						ifFalse: [JadeiteSearch allSelectorSymbols add: selector]]].
 	newCachedClasses
 		ifNotNil: 
-			[newCachedClasses do: 
+			[JadeiteSearch allClassNames isEmpty ifTrue: [^self].
+			newCachedClasses do: 
 					[:className |
 					(JadeiteSearch allClassNames includes: className)
 						ifFalse: [JadeiteSearch allClassNames add: className]]]!

@@ -10,6 +10,10 @@ JadeiteCommandPresenter comment: ''!
 !JadeiteCommandPresenter categoriesForClass!Unclassified! !
 !JadeiteCommandPresenter methodsFor!
 
+are: switches legalIn: command
+	switches do: [:switch | ((self switches at: command) includes: switch) ifFalse: [^false]].
+	^true!
+
 basicSubmitCommand: string
 	| answeringService |
 	(self isJadeiteCommand: string) ifTrue:[^self submitJadeiteCommand: string]. 
@@ -22,16 +26,27 @@ basicSubmitCommand: string
 	^answeringService answer!
 
 browse: substrings
-	| target browser |
-	target := substrings first.
-	browser := JadeiteBrowser openOn: self gciSession projectName: target.
+	| switches browser switchArgs browser1 |
+	switches := self switchesFrom: substrings.
+	(self are: switches legalIn: #browse:)
+		ifFalse: [^'legal switches - ' , (self switches at: #browse:) displayString].
+	switchArgs := self switchArgumentPairsFrom: substrings.
+	switchArgs do: 
+			[:switchArg |
+			| switch arg |
+			switch := switchArg first.
+			arg := switchArg second.
+			switch = '-project' ifTrue: [browser1 := JadeiteBrowser openOn: self gciSession projectName: arg].
+			switch = '-package' ifTrue: [browser1 := JadeiteBrowser openOn: self gciSession packageName: arg].
+			switch = '-class' ifTrue: [browser1 := JadeiteBrowser openOn: self gciSession className: arg]].
+	browser := browser1.
 	^browser!
 
 commandHelpTexts
 	^self commands collect: [:array | array last]!
 
 commands
-	"command with help text"
+	"Private - command with help text"
 
 	^#(#('browse' #browse: 'browse - browse [gemstone_object_name]'))!
 
@@ -48,6 +63,9 @@ createComponents
 
 documentPresenter
 	^codePane documentPresenter!
+
+is: switch legalIn: command
+	^(self switches at: command) includes: switch!
 
 isJadeiteCommand: string
 	string isEmpty ifTrue: [^false].
@@ -75,20 +93,44 @@ submitJadeiteCommand: string
 	substrings := string subStrings.
 	selector := self selectorFromCommand: string subStrings first.
 	browser := self perform: selector with: (substrings copyFrom: 2 to: substrings size).
-	^browser printString ! !
+	^browser printString!
+
+switchArgumentPairsFrom: substrings
+	"assume substrings format is switch/arg"
+
+	^substrings fold: [:switch :arg | Array with: switch with: arg]!
+
+switches
+	| switches |
+	switches := Dictionary new.
+	switches at: #browse:
+		put: (Array
+				with: '-project'
+				with: '-package'
+				with: '-class'
+				with: '-method').
+	^switches!
+
+switchesFrom: substrings
+	^substrings select: [:substring | substring first = $-]! !
+!JadeiteCommandPresenter categoriesFor: #are:legalIn:!public!testing! !
 !JadeiteCommandPresenter categoriesFor: #basicSubmitCommand:!operations!public! !
 !JadeiteCommandPresenter categoriesFor: #browse:!operations!public! !
-!JadeiteCommandPresenter categoriesFor: #commandHelpTexts!accessing!constants!public! !
-!JadeiteCommandPresenter categoriesFor: #commands!constants!public! !
-!JadeiteCommandPresenter categoriesFor: #commandSelectors!accessing!constants!public! !
-!JadeiteCommandPresenter categoriesFor: #commandStrings!accessing!constants!public! !
+!JadeiteCommandPresenter categoriesFor: #commandHelpTexts!accessing!command registry!private! !
+!JadeiteCommandPresenter categoriesFor: #commands!command registry!private! !
+!JadeiteCommandPresenter categoriesFor: #commandSelectors!accessing!command registry!private! !
+!JadeiteCommandPresenter categoriesFor: #commandStrings!accessing!command registry!private! !
 !JadeiteCommandPresenter categoriesFor: #createComponents!initialization!public! !
 !JadeiteCommandPresenter categoriesFor: #documentPresenter!accessing!private! !
+!JadeiteCommandPresenter categoriesFor: #is:legalIn:!public!testing! !
 !JadeiteCommandPresenter categoriesFor: #isJadeiteCommand:!public!testing! !
 !JadeiteCommandPresenter categoriesFor: #onViewOpened!event handlers!public! !
-!JadeiteCommandPresenter categoriesFor: #selectorFromCommand:!constants!private! !
+!JadeiteCommandPresenter categoriesFor: #selectorFromCommand:!command registry!private! !
 !JadeiteCommandPresenter categoriesFor: #submitCommand!operations!public! !
 !JadeiteCommandPresenter categoriesFor: #submitJadeiteCommand:!operations!public! !
+!JadeiteCommandPresenter categoriesFor: #switchArgumentPairsFrom:!private!switches! !
+!JadeiteCommandPresenter categoriesFor: #switches!private!switches! !
+!JadeiteCommandPresenter categoriesFor: #switchesFrom:!private!switches! !
 
 !JadeiteCommandPresenter class methodsFor!
 
