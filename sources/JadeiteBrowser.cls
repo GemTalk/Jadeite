@@ -44,9 +44,19 @@ openOn: session class: classService
 	browser := self onSession: session.
 	BrowserUpdate current updateService: classService session: session.
 	browser currentCard selectProjectNamed: classService projectName.
-	browser currentCard selectPackageNamed: classService packageName.
+	classService projectName = RowanProjectService noneProject name
+		ifTrue: [browser currentCard selectDictionaryNamed: classService dictionaryName]
+		ifFalse: [browser currentCard selectPackageNamed: classService packageName].
 	browser currentCard selectClassNamed: classService name.
 	browser currentCard classListPresenter setFocus.
+	^browser!
+
+openOn: session dictionary: dictionaryService
+	| browser |
+	browser := self onSession: session.
+	browser currentCard selectProjectNamed: RowanProjectService notRowanizedPackageName.
+	browser currentCard selectDictionaryNamed: dictionaryService name.
+	browser currentCard dictionaryPresenter setFocus.
 	^browser!
 
 openOn: session package: packageService
@@ -66,6 +76,7 @@ openOn: session project: projectService
 	^browser! !
 !JadeiteBrowser class categoriesFor: #onSession:!instance creation!public! !
 !JadeiteBrowser class categoriesFor: #openOn:class:!instance creation!public! !
+!JadeiteBrowser class categoriesFor: #openOn:dictionary:!instance creation!public! !
 !JadeiteBrowser class categoriesFor: #openOn:package:!instance creation!public! !
 !JadeiteBrowser class categoriesFor: #openOn:project:!instance creation!public! !
 

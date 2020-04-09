@@ -35,6 +35,8 @@ browse: substrings
 	newService ifNil: [^JadePresenter browseImplementorsOf: substrings first session: self gciSession].
 	newService isProjectService ifTrue: [^JadeiteBrowser openOn: self gciSession project: newService].
 	newService isPackageService ifTrue: [^JadeiteBrowser openOn: self gciSession package: newService].
+	newService isDictionaryService
+		ifTrue: [^JadeiteBrowser openOn: self gciSession dictionary: newService].
 	newService isClassService ifTrue: [^JadeiteBrowser openOn: self gciSession class: newService]!
 
 commandHelpTexts
@@ -43,7 +45,7 @@ commandHelpTexts
 commands
 	"Private - command with help text"
 
-	^#(#('browse' #browse: 'browse - browse [gemstone_object_name]'))!
+	^#(#('browse' #browse: 'browse - browse [gemstone_object_name]') #('implementors' #implementors: 'implementors - browse implementors of selector') #('senders' #senders: 'senders - browse senders of selector'))!
 
 commandSelectors
 	^self commands collect: [:array | array second]!
@@ -59,6 +61,9 @@ createComponents
 documentPresenter
 	^codePane documentPresenter!
 
+implementors: substrings
+	^JadePresenter browseImplementorsOf: substrings first session: self gciSession!
+
 is: switch legalIn: command
 	^(self switches at: command) includes: switch!
 
@@ -73,6 +78,9 @@ onViewOpened
 
 selectorFromCommand: string
 	^self commandSelectors at: (self commandStrings indexOf: string)!
+
+senders: substrings
+	^JadePresenter browseSendersOf: substrings first session: self gciSession!
 
 submitCommand
 	| result input |
@@ -118,10 +126,12 @@ switchesFrom: substrings
 !JadeiteCommandPresenter categoriesFor: #commandStrings!accessing!command registry!private! !
 !JadeiteCommandPresenter categoriesFor: #createComponents!initialization!public! !
 !JadeiteCommandPresenter categoriesFor: #documentPresenter!accessing!private! !
+!JadeiteCommandPresenter categoriesFor: #implementors:!operations!public! !
 !JadeiteCommandPresenter categoriesFor: #is:legalIn:!public!testing! !
 !JadeiteCommandPresenter categoriesFor: #isJadeiteCommand:!public!testing! !
 !JadeiteCommandPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteCommandPresenter categoriesFor: #selectorFromCommand:!command registry!private! !
+!JadeiteCommandPresenter categoriesFor: #senders:!operations!public! !
 !JadeiteCommandPresenter categoriesFor: #submitCommand!operations!public! !
 !JadeiteCommandPresenter categoriesFor: #submitJadeiteCommand:!operations!public! !
 !JadeiteCommandPresenter categoriesFor: #switchArgumentPairsFrom:!private!switches! !

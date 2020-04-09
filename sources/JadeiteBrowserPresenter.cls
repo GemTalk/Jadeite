@@ -964,6 +964,12 @@ runSelected
 search
 	^search ifNil: [search := JadeiteSearch on: methodSourcePresenter view session: self gciSession]!
 
+selectDictionaryNamed: dictionaryName
+	| dictionaryService |
+	dictionaryService := dictionaryPresenter list detect: [:service | service name = dictionaryName]
+				ifNone: [^self].
+	dictionaryPresenter selections: (Array with: dictionaryService)!
+
 selectedDictionaryNames
 	^dictionaryPresenter selections collect: [:dictionaryService | dictionaryService name]!
 
@@ -1336,6 +1342,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #runAll!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #runSelected!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #search!accessing!public! !
+!JadeiteBrowserPresenter categoriesFor: #selectDictionaryNamed:!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #selectedDictionaryNames!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #selectedGlobalName:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #selectedPackageNames!public!selection! !
