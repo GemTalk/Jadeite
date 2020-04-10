@@ -1114,7 +1114,7 @@ updateClass: classService
 				detect: [:listClassService | listClassService name = classService name]
 				ifNone: [^self].
 	update replicateFrom: classService.
-	classListPresenter view invalidate!
+	classListPresenter view invalidate.!
 
 updateClasses
 	self isNoneProjectSelected

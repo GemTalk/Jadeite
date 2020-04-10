@@ -148,6 +148,40 @@ test_breakpointRemovalsUpdateAutomatically
 	self assert: treeModel rootNodes first children first object breakpointDisplayString
 		equals: 'test2 (1)'!
 
+test_clearMethodPaneWhenBreakpointRemoved
+	| originalSource |
+	self testsIssue: #issue763
+		withTitle: 'Breakpoint browser text pane not refreshed on method disappear (3.1pr3)'.
+	self openProjectBrowser.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	originalSource := projectsBrowser currentCard methodSourcePresenter value.
+	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
+	breakpointBrowser := self projectsPresenter browseBreakpoints.
+	self assert: breakpointBrowser selectedMethodServices size equals: 1.
+	self assert: breakpointBrowser selectedMethodServices first selector equals: #test1.
+	self assert: breakpointBrowser methodSourcePresenter value equals: originalSource.
+	self projectsPresenter clearBreakPointAt: 1 in: self projectsPresenter.
+	self assert: breakpointBrowser methodSourcePresenter value equals: String new!
+
+test_clearMethodPaneWhenBreakpointRemoved2
+	"clear from the breakpoint browser which has slightly different behavior"
+
+	| originalSource |
+	self testsIssue: #issue763
+		withTitle: 'Breakpoint browser text pane not refreshed on method disappear (3.1pr3)'.
+	self openProjectBrowser.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	originalSource := projectsBrowser currentCard methodSourcePresenter value.
+	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
+	breakpointBrowser := self projectsPresenter browseBreakpoints.
+	self assert: breakpointBrowser selectedMethodServices size equals: 1.
+	self assert: breakpointBrowser selectedMethodServices first selector equals: #test1.
+	self assert: breakpointBrowser methodSourcePresenter value equals: originalSource.
+	breakpointBrowser methodSourcePresenter clearBreakPointAt: 1 in: self projectsPresenter.
+	self assert: breakpointBrowser methodSourcePresenter value equals: String new!
+
 test_openBreakpointBrowser
 	self openBreakpointBrowser.
 	self assert: breakpointBrowser isKindOf: JadeiteBreakpointBrowser. 
@@ -242,6 +276,8 @@ test_showsBreakpoints
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_breakpointAdditionsUpdateAutomatically!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_breakpointIsSelectedAndVisible!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_breakpointRemovalsUpdateAutomatically!public!tests! !
+!JadeiteBreakpointBrowserTestCase categoriesFor: #test_clearMethodPaneWhenBreakpointRemoved!public!tests! !
+!JadeiteBreakpointBrowserTestCase categoriesFor: #test_clearMethodPaneWhenBreakpointRemoved2!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_openBreakpointBrowser!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_openBreakpointBrowserDisabledSourcePane!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_revert!public!tests! !

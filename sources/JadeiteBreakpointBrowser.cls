@@ -77,7 +77,8 @@ clearBreakpoints
 
 createComponents
 	breakpointListPresenter := self add: TreePresenter new name: 'breakpointListPresenter'.
-	methodSourcePresenter := self add: JadeiteMethodSourcePresenter new name: 'methodSourcePresenter'.!
+	methodSourcePresenter := self add: JadeiteBreakpointBrowserSourcePresenter new
+				name: 'methodSourcePresenter'!
 
 createSchematicWiring
 	super createSchematicWiring.
@@ -276,6 +277,7 @@ resetBreakpointList
 				reset)!
 
 resetSourcePane
+	methodSourcePresenter methodService: nil. 
 	methodSourcePresenter resetSourcePane!
 
 search
@@ -307,14 +309,16 @@ updateClass: classService
 		addAll: (classService methods select: [:methodService | methodService breakPoints notEmpty]).
 	breakpointListPresenter model clear.
 	self addMethodServicesToTree: methodServices.
-	breakpointListPresenter view invalidate!
+	breakpointListPresenter view invalidate.
+	self selectedMethodServices isEmpty ifTrue: [self resetSourcePane]!
 
 updateMethodList: methodService
 	| methodServices |
 	methodServices := Array with: methodService.
-	self updateMethodServicesFrom: methodServices. 
+	self updateMethodServicesFrom: methodServices.
 	self addMethodServicesToTree: methodServices.
-	self removeMethodServicesWithoutBreakpoints!
+	self removeMethodServicesWithoutBreakpoints.
+	self selectedMethodServices isEmpty ifTrue: [self resetSourcePane]!
 
 updateMethodServicesFrom: methodServices
 	breakpointListPresenter model asBag do: 

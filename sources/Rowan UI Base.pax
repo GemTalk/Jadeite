@@ -16,6 +16,7 @@ package classNames
 	add: #JadeiteBasicMethodListPresenter;
 	add: #JadeiteBasicRenameClassMethodListPresenter;
 	add: #JadeiteBreakpointBrowser;
+	add: #JadeiteBreakpointBrowserSourcePresenter;
 	add: #JadeiteBrowser;
 	add: #JadeiteBrowserPresenter;
 	add: #JadeiteChangesBrowser;
@@ -795,6 +796,11 @@ MethodSourcePresenter subclass: #RowanMethodSourcePresenter
 	classInstanceVariableNames: ''!
 RowanMethodSourcePresenter subclass: #JadeiteMethodSourcePresenter
 	instanceVariableNames: 'methodService'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteMethodSourcePresenter subclass: #JadeiteBreakpointBrowserSourcePresenter
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
