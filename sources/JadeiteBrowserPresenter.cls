@@ -32,9 +32,11 @@ addNoneProject
 		ifFalse: [projectListPresenter model add: RowanProjectService noneProject]!
 
 addSystemBrowser
-	| browser |
+	| browser position |
+	position := self topShell view position.	"don't let default position takeover when adding tab"
 	browser := self topShell addSystemBrowser.
 	self makeSameSelectionsIn: browser currentCard as: self.
+	self topShell view position: position.
 	^browser!
 
 allSelectedProjectsDirty

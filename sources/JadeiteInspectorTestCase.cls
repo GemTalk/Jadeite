@@ -15,19 +15,13 @@ setUp
 	super setUp!
 
 test_inspectorRootObjectRegistered
-	| remoteObject inspectorHandle |
-	self testsIssue: #issue385 withTitle: 'Inspector should keep associated root object alive'.
+	| remoteObject |
+	self testsIssue: #issue735
+		withTitle: 'In multi-monitor setupt, inconsistent locations for opening windows (3.0.93-7)'.
 	remoteObject := session executeString: 'Object new'.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	inspectorHandle := inspector view handle value.
-	self assert: (session
-				executeString: '(RowanBrowserService new openWindows at: ' , inspectorHandle printString
-						, ' ifAbsent:[]) first asOop')
-		equals: remoteObject value.
-	inspector view close.
-	self assertIsNil: (session
-				executeString: 'RowanBrowserService new openWindows at: ' , inspectorHandle printString
-						, ' ifAbsent:[]')!
+	self assert: inspector view position
+		equals: transcript view position + JadePresenter defaultWindowOffset!
 
 test_inspectorRootSpecialObjectNotRegistered
 	| remoteObject inspectorHandle |

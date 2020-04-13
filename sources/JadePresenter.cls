@@ -65,6 +65,13 @@ insertIfTrue: methodSourcePresenter
 	methodSourcePresenter view replaceSelection: 'ifTrue:[]'.
 	methodSourcePresenter selectionRange: selectionRange + 8!
 
+onViewOpened
+	super onViewOpened.
+	self positionToDefaultLocation!
+
+positionToDefaultLocation
+	self topShell position: JadePresenter defaultWindowPosition!
+
 postEditSaveMethod!
 
 refresh
@@ -149,6 +156,8 @@ updateService: service
 !JadePresenter categoriesFor: #gciSession:!public! !
 !JadePresenter categoriesFor: #insertIfFalse:!displaying!public! !
 !JadePresenter categoriesFor: #insertIfTrue:!displaying!public! !
+!JadePresenter categoriesFor: #onViewOpened!event handlers!public! !
+!JadePresenter categoriesFor: #positionToDefaultLocation!event handlers!event handlers support!public! !
 !JadePresenter categoriesFor: #postEditSaveMethod!menu handlers support!public! !
 !JadePresenter categoriesFor: #refresh!menu handlers!public! !
 !JadePresenter categoriesFor: #refreshFromServer!public! !
@@ -163,11 +172,33 @@ updateService: service
 
 !JadePresenter class methodsFor!
 
+loadViewResource2: aString inContext: contextView
+	| resourceIdentifier |
+	ShellView
+		defaultExtentBlock: [:shellView | shellView extent];
+		createHookBlock: 
+				[:shellView :createBlock | (Smalltalk at: #stopOnce)
+		ifTrue: 
+			["Smalltalk at: #stopOnce put: true"
+			Smalltalk at: #stopOnce put: false.
+			self halt]. 
+				shellView beCentered.
+				createBlock value.
+				].
+	
+	[resourceIdentifier := ResourceIdentifier class: self name: aString.
+	^resourceIdentifier loadWithContext: contextView]
+			ensure: 
+				[ShellView
+					defaultExtentBlock: nil;
+					createHookBlock: nil]!
+
 maxPrintStringSize
 	^100000!
 
 openCommit: sha inGitHub: projectService
 	^ShellLibrary default shellOpen: projectService projectUrl , '/commit/' , sha directory: ''! !
+!JadePresenter class categoriesFor: #loadViewResource2:inContext:!operations!public! !
 !JadePresenter class categoriesFor: #maxPrintStringSize!constants!public! !
 !JadePresenter class categoriesFor: #openCommit:inGitHub:!browsing!public! !
 

@@ -29,9 +29,15 @@ maximizeCode
 			self currentCard previousTopViewArrangement: nil].
 	self currentCard view invalidate!
 
+position: aPoint
+	self cardsPresenter view cards size > 1
+		ifTrue: [^self	"don't move a project browser automatically if it has multiple tabs"].
+	super position: aPoint!
+
 systemBrowserPresenter
 	^JadeiteBrowserPresenter! !
 !JadeiteBrowser categoriesFor: #maximizeCode!public! !
+!JadeiteBrowser categoriesFor: #position:!public! !
 !JadeiteBrowser categoriesFor: #systemBrowserPresenter!public! !
 
 !JadeiteBrowser class methodsFor!

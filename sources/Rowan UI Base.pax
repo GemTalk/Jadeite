@@ -490,6 +490,8 @@ package methodNames
 	add: 'JadePresenter class' -> #convertToPattern:;
 	add: 'JadePresenter class' -> #defaultCaptionText:;
 	add: 'JadePresenter class' -> #defaultUnsavedChangesText;
+	add: 'JadePresenter class' -> #defaultWindowOffset;
+	add: 'JadePresenter class' -> #defaultWindowPosition;
 	add: 'JadePresenter class' -> #disableAllBreakpointsIn:;
 	add: 'JadePresenter class' -> #disableMethodBreakpoints:in:;
 	add: 'JadePresenter class' -> #enableAllBreakpointsIn:;
@@ -878,7 +880,7 @@ JadeDebugger subclass: #JadeiteDebugger
 	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore search debuggerService'
 	classVariableNames: ''
 	poolDictionaries: ''
-	classInstanceVariableNames: 'debuggerClass semaphore lastPosition'!
+	classInstanceVariableNames: 'debuggerClass semaphore lastPosition lastExtent'!
 JadeNavigationInspector subclass: #JadeiteInspector
 	instanceVariableNames: 'statusTextPresenter'
 	classVariableNames: ''
@@ -2956,6 +2958,16 @@ defaultCaptionText: presenter
 defaultUnsavedChangesText
 	^'Keep unsaved changes?'!
 
+defaultWindowOffset
+	^25 @ 25!
+
+defaultWindowPosition
+	"assume (safely?) there will be only one transcript"
+
+	| defaultTranscript |
+	defaultTranscript := JadeiteLoginShell defaultTranscript ifNil: [^0 @ 0].
+	^defaultTranscript view position + self defaultWindowOffset!
+
 disableAllBreakpointsIn: session
 	| service |
 	service := RowanAnsweringService command: #disableAllBreaks withArgs: Array new. 
@@ -3081,6 +3093,8 @@ unsavedChangesValidSessionDialogIn: presenter text: text
 !JadePresenter class categoriesFor: #convertToPattern:!browsing support!private! !
 !JadePresenter class categoriesFor: #defaultCaptionText:!public!unsaved changes support! !
 !JadePresenter class categoriesFor: #defaultUnsavedChangesText!public!unsaved changes support! !
+!JadePresenter class categoriesFor: #defaultWindowOffset!browsing support!private! !
+!JadePresenter class categoriesFor: #defaultWindowPosition!browsing support!public! !
 !JadePresenter class categoriesFor: #disableAllBreakpointsIn:!browsing!public! !
 !JadePresenter class categoriesFor: #disableMethodBreakpoints:in:!browsing!public! !
 !JadePresenter class categoriesFor: #enableAllBreakpointsIn:!browsing!public! !
@@ -4598,7 +4612,7 @@ updateServices: services
 !JadeTextDocument categoriesFor: #issueCommand:!public!services! !
 !JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:!Jade!private! !
 !JadeTextDocument categoriesFor: #jadeInspect!menu handlers!private! !
-!JadeTextDocument categoriesFor: #onPromptToSaveChanges:!private! !
+!JadeTextDocument categoriesFor: #onPromptToSaveChanges:!event handlers!private! !
 !JadeTextDocument categoriesFor: #openDictionaryBrowser!Jade!private! !
 !JadeTextDocument categoriesFor: #openProjectsBrowser!Jade!private! !
 !JadeTextDocument categoriesFor: #raiseConsole!public! !

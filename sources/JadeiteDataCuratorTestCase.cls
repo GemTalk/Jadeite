@@ -204,7 +204,13 @@ test_findClassNotInProject
 test_loginOk
 	self assert: jadeiteShell userIDPresenter value equals: 'DataCurator'.
 	self assert: GciSession current userID equals: 'DataCurator'.
-	self assert: (GciSession current executeString: '3+4') equals: 7! !
+	self assert: (GciSession current executeString: '3+4') equals: 7!
+
+test_transcriptWindowPosition
+	self testsIssue: #issue735
+		withTitle: 'In multi-monitor setupt, inconsistent locations for opening windows (3.0.93-7)'.
+	self assert: transcript view position
+		equals: jadeiteShell view position + JadePresenter defaultWindowOffset! !
 !JadeiteDataCuratorTestCase categoriesFor: #setUp!public!setup teardown! !
 !JadeiteDataCuratorTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_addAccessorsClassTab!public!test variable tab!tests! !
@@ -218,4 +224,5 @@ test_loginOk
 !JadeiteDataCuratorTestCase categoriesFor: #test_dontOverrideExistingAccessorMethods!public!test variable tab!tests! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_findClassNotInProject!public!test issue 217! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_loginOk!public!tests! !
+!JadeiteDataCuratorTestCase categoriesFor: #test_transcriptWindowPosition!public!tests! !
 

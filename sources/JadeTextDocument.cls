@@ -270,17 +270,19 @@ onViewClosed
 !
 
 onViewOpened
-
 	codePane ifNotNil: [codePane gciSession: gciSession].
 	super onViewOpened.
 	self updateStatusBar.
 	(documentPresenter view isKindOf: ScintillaView) ifFalse: [^self].
-	documentPresenter view 
+	documentPresenter view
 		restyleAll;
-		backcolor: (RGB red: 250 green: 242 blue: 208);
+		backcolor: (RGB
+					red: 250
+					green: 242
+					blue: 208);
 		yourself.
 	self updateCodeFont.
-!
+	self positionToDefaultLocation!
 
 openOn: openFilename
 	super openOn: openFilename.
@@ -295,6 +297,9 @@ parentPresenter
 	Mock up a parent presenter for those occasions"
 
 	^JadePresenter new gciSession: gciSession!
+
+positionToDefaultLocation
+	self view position: JadePresenter defaultWindowPosition!
 
 print!
 
@@ -465,10 +470,11 @@ validateUserInterface
 !JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:result:!Jade!private! !
 !JadeTextDocument categoriesFor: #logoutRequested:!private! !
 !JadeTextDocument categoriesFor: #maxPrintStringSize!private! !
-!JadeTextDocument categoriesFor: #onViewClosed!private! !
-!JadeTextDocument categoriesFor: #onViewOpened!private! !
+!JadeTextDocument categoriesFor: #onViewClosed!event handlers!private! !
+!JadeTextDocument categoriesFor: #onViewOpened!event handlers!private! !
 !JadeTextDocument categoriesFor: #openOn:!overrides!public! !
 !JadeTextDocument categoriesFor: #parentPresenter!public! !
+!JadeTextDocument categoriesFor: #positionToDefaultLocation!event handlers support!private! !
 !JadeTextDocument categoriesFor: #print!private! !
 !JadeTextDocument categoriesFor: #queryCommand:!menu handlers!private! !
 !JadeTextDocument categoriesFor: #removeQuotesFromSelection!menu handlers!private! !

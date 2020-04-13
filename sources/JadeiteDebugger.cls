@@ -4,7 +4,7 @@ JadeDebugger subclass: #JadeiteDebugger
 	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore search debuggerService'
 	classVariableNames: ''
 	poolDictionaries: ''
-	classInstanceVariableNames: 'debuggerClass semaphore lastPosition'!
+	classInstanceVariableNames: 'debuggerClass semaphore lastPosition lastExtent'!
 JadeiteDebugger guid: (GUID fromString: '{cae790de-8a45-49eb-813a-6cb32999cd4d}')!
 JadeiteDebugger comment: ''!
 !JadeiteDebugger categoriesForClass!Unclassified! !
@@ -298,8 +298,10 @@ onViewClosed
 	"Allow test to know when view is closed"
 	self class signalSemaphore.
 	self terminateIdleProcess.
+	self class lastPosition: self view position.
+	self class lastExtent: self view extent.
 	super onViewClosed.
-	self class lastPosition: self view position!
+!
 
 onViewDestroyed
 	"Private - copied from RowanSystemBrowserPresenter>>onViewClosed"
@@ -313,7 +315,8 @@ onViewOpened
 	super onViewOpened.
 	self registerPresentersForUpdates.
 	BrowserUpdate current logComment: 'Opening Debugger {' , self identityHash printString , '}'.
-	self class lastPosition ifNotNil: [self view position: self class lastPosition. ]!
+	self class lastPosition ifNotNil: [self view position: self class lastPosition].
+	self class lastExtent ifNotNil: [self view extent: self class lastExtent]!
 
 processListPresenter
 	^processListPresenter!
@@ -664,6 +667,12 @@ disableBreakpointsWhile: block session: session
 		ensure: [answeringService setBreakpointsEnabled: wereBreakpointsEnabled session: session].
 	^result!
 
+lastExtent
+	^lastExtent!
+
+lastExtent: anObject
+	lastExtent := anObject!
+
 lastPosition
 	^lastPosition!
 
@@ -710,6 +719,8 @@ signalSemaphore
 !JadeiteDebugger class categoriesFor: #debuggerClass!public! !
 !JadeiteDebugger class categoriesFor: #debuggerClass:!public! !
 !JadeiteDebugger class categoriesFor: #disableBreakpointsWhile:session:!private! !
+!JadeiteDebugger class categoriesFor: #lastExtent!accessing!private! !
+!JadeiteDebugger class categoriesFor: #lastExtent:!accessing!private! !
 !JadeiteDebugger class categoriesFor: #lastPosition!accessing!private! !
 !JadeiteDebugger class categoriesFor: #lastPosition:!accessing!private! !
 !JadeiteDebugger class categoriesFor: #openOn:message:terminateOnClose:!public! !

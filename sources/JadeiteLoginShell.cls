@@ -32,18 +32,17 @@ openGitHubRowanProject
 	^JadePresenter openGitHubRowanProject!
 
 postLogin: aGciSession
-	| result |
+	| result transcript |
 	aGciSession verifyRowanLoaded ifFalse: [^aGciSession logout].	"Already notified the user"
 	result := super postLogin: aGciSession.
-	JadeiteTranscript showOnSession: aGciSession.
+	transcript := JadeiteTranscript showOnSession: aGciSession.
+	transcript view position: self view position + JadePresenter defaultWindowOffset. 
 	^result!
 
 raiseConsole
 	| transcript |
-	transcript := JadeiteTranscript allInstances
-				detect: [:trans | trans gciSession = GciSession current]
-				ifNone: [^self].
-	transcript view setFocus!
+	transcript := self class defaultTranscript.
+	transcript ifNotNil: [transcript view setFocus]!
 
 updateCaption
 	self caption: 'Jadeite Login Version: ', self class jadeiteVersionString! !
@@ -67,6 +66,9 @@ addToDevelopmentTools
 	Smalltalk developmentSystem addAdditionalToolsFolderIcon: self toolsFolderIcon.
 !
 
+defaultTranscript
+	^JadeiteTranscript allInstances detect: [:trans | trans gciSession = GciSession current] ifNone: []!
+
 resource_Default_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.
 	DO NOT EDIT OR RECATEGORIZE THIS METHOD.
@@ -85,6 +87,7 @@ toolsFolderIcon
 		openBlock: [:folder :item | self show].
 ! !
 !JadeiteLoginShell class categoriesFor: #addToDevelopmentTools!Development Image!public! !
+!JadeiteLoginShell class categoriesFor: #defaultTranscript!public! !
 !JadeiteLoginShell class categoriesFor: #resource_Default_view!public!resources-views! !
 !JadeiteLoginShell class categoriesFor: #toolsFolderIcon!public! !
 

@@ -34,6 +34,23 @@ test_addSystemTab
 	self assert: self categoryListPresenter selection equals: 'accessing'.
 	self assert: self methodListPresenter selection selector equals: #foo!
 
+test_addSystemTabBrowserPosition
+	"browser should not move to default position when tab is opened" 
+	| newPosition |
+	self testsIssue: #issue735
+		withTitle: 'In multi-monitor setupt, inconsistent locations for opening windows (3.0.93-7)'.
+	self assert: projectsBrowser view position
+		equals: transcript view position + JadePresenter defaultWindowOffset.
+	newPosition := projectsBrowser view position + (100 @ 100).
+	projectsBrowser view position: newPosition.
+	self deny: projectsBrowser view position
+		equals: transcript view position + JadePresenter defaultWindowOffset.
+	self assert: projectsBrowser view position equals: newPosition.
+	self projectsPresenter addSystemBrowser.
+	self assert: projectsBrowser view position equals: newPosition.
+	projectsBrowser closeCard.
+	self assert: projectsBrowser view position equals: newPosition!
+
 test_addSystemTabClassSelection
 	self deselectProjects.
 	self selectRowanSample1Class.
@@ -102,6 +119,12 @@ test_addSystemTabNoSelections
 	self assertIsNil: (self classListPresenter selectionIfNone:[]).
 	self assertIsNil: (self categoryListPresenter selectionIfNone:[]).
 	self assertIsNil: (self methodListPresenter selectionIfNone:[]).!
+
+test_browserPosition
+	self testsIssue: #issue735
+		withTitle: 'In multi-monitor setupt, inconsistent locations for opening windows (3.0.93-7)'.
+	self assert: projectsBrowser view position
+		equals: transcript view position + JadePresenter defaultWindowOffset!
 
 test_deselectProjectOnly
 	"make sure it updates the tab label"
@@ -217,9 +240,11 @@ test_systemTabNamesProjectClassList
 	self assert: projectsBrowser cardsPresenter view currentCard arrangement text
 		equals: '1 RowanSample1'! !
 !JadeiteProjectBrowserSystemTestCase categoriesFor: #test_addSystemTab!public!test system tabs! !
+!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_addSystemTabBrowserPosition!public!test system tabs! !
 !JadeiteProjectBrowserSystemTestCase categoriesFor: #test_addSystemTabClassSelection!public!test system tabs! !
 !JadeiteProjectBrowserSystemTestCase categoriesFor: #test_addSystemTabClassSelectionClassSide!public!test system tabs! !
 !JadeiteProjectBrowserSystemTestCase categoriesFor: #test_addSystemTabNoSelections!public!test system tabs! !
+!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_browserPosition!public!test system tabs! !
 !JadeiteProjectBrowserSystemTestCase categoriesFor: #test_deselectProjectOnly!public!test system tabs! !
 !JadeiteProjectBrowserSystemTestCase categoriesFor: #test_modifiedSystemTab!public!test system tabs! !
 !JadeiteProjectBrowserSystemTestCase categoriesFor: #test_moveTabsWithSUnitTabselected!public!test system tabs! !

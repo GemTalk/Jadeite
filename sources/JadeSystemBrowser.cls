@@ -14,7 +14,6 @@ abortTransaction
 	self isOkayToChange ifTrue: [self currentCard abortTransaction]!
 
 addSystemBrowser
-
 	self addSystemBrowserWithLayoutInfo: (self currentCard ifNotNil: [:currentCard | currentCard layoutInfo]).
 !
 

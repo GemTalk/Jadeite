@@ -1518,6 +1518,25 @@ test_reloadWithDebuggerOpen
 				ifNone: [])]
 			ensure: [self assert: projectsBrowser topShell view close]!
 
+test_reopenInLastExtent
+	| newExtent |
+	self testsIssue: #issue741 withTitle: '(3.0.93) would be nice if debugger remembered it''s size'.
+	self openDebuggerOn: '| abc |
+abc := Array new. 
+self halt. 
+abc add: 1.
+^abc'.
+	debugger view extent: (newExtent := debugger view extent + (20 @ 20)).
+	self debuggerDo: [debugger resumeProcess].
+	self closeDebuggers.
+	self openDebuggerOn: '| abc |
+abc := Array new. 
+self halt. 
+abc add: 1.
+^abc'.
+	self assert: debugger view extent equals: newExtent.
+	self debuggerDo: [debugger resumeProcess]!
+
 test_reopenInLastPosition
 	| newPosition |
 	self testsIssue: #issue665
@@ -2398,6 +2417,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reloadWithDebuggerOpen!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_reopenInLastExtent!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reopenInLastPosition!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_restartInBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_runningTestDoesNotLoseStepPoint!public!tests! !
