@@ -190,12 +190,11 @@ on: view session: session
 
 selectorsFrom: partialSelector session: session trailingWildcard: trailingWildCard
 	| symbol |
+	symbol := partialSelector , (trailingWildCard ifTrue: ['*'] ifFalse: [String new]).
+	symbol := symbol asSymbol asLowercase.
 	self allSelectorSymbols isEmpty
-		ifTrue: [^RowanAnsweringService new selectorsMatching: partialSelector session: session]
-		ifFalse: 
-			[symbol := partialSelector , (trailingWildCard ifTrue: ['*'] ifFalse: [String new]).
-			symbol := symbol asSymbol asLowercase.
-			^self allSelectorSymbols select: [:selector | symbol match: selector asLowercase]]!
+		ifTrue: [^RowanAnsweringService new selectorsMatching: symbol session: session]
+		ifFalse: [^self allSelectorSymbols select: [:selector | symbol match: selector asLowercase]]!
 
 symbolsFrom: partialSelector session: session trailingWildcard: trailingWildCard
 	^RowanAnsweringService new symbolsMatching: partialSelector session: session!

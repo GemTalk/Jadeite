@@ -2652,15 +2652,15 @@ test_switchToVariableWithUnsavedChanges
 test_symbolsLowerCaseMatch
 	| symbols search |
 	self testsIssue: #issue636 withTitle: 'make autocomplete case insensitive'.
-	search := JadeiteSearch new.
-	symbols := search autocompleteSymbolsFrom: 'FOO'.
-	self assert: (symbols includes: #foo).
-	symbols := search autocompleteSymbolsFrom: 'FO'.
-	self assert: (symbols includes: #foo).
-	symbols := search autocompleteSymbolsFrom: 'foo'.
-	self assert: (symbols includes: #foo).
-	symbols := search autocompleteSymbolsFrom: 'fo'.
-	self assert: (symbols includes: #foo)!
+	search := JadeiteSearch new session: session.
+	symbols := search autocompleteSymbolsFrom: 'SIZE'.
+	self assert: (symbols includes: #size).
+	symbols := search autocompleteSymbolsFrom: 'SI'.
+	self assert: (symbols includes: #size).
+	symbols := search autocompleteSymbolsFrom: 'size'.
+	self assert: (symbols includes: #size).
+	symbols := search autocompleteSymbolsFrom: 'si'.
+	self assert: (symbols includes: #size)!
 
 test_symbolsWithoutImplementorsFound
 	"I think the only way for a symbol to get added to AllSymbols is to commit it"
@@ -2668,7 +2668,7 @@ test_symbolsWithoutImplementorsFound
 	| symbols search |
 	self testsIssue: #issue258
 		withTitle: 'wildcard senders and implentors don''t return proper selection list'.
-	search := JadeiteSearch new.
+	search := JadeiteSearch new session: session.
 	self selectRowanSample1Class.
 	self saveMethodWithUnimplementedSelector.
 	self commitTransaction.

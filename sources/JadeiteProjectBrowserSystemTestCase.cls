@@ -123,6 +123,11 @@ test_addSystemTabNoSelections
 test_browserPosition
 	self testsIssue: #issue735
 		withTitle: 'In multi-monitor setupt, inconsistent locations for opening windows (3.0.93-7)'.
+	projectsBrowser
+		ifNotNil: 
+			[self destroy: projectsBrowser.
+			projectsBrowser := nil].
+	self openProjectBrowser.
 	self assert: projectsBrowser view position
 		equals: transcript view position + JadePresenter defaultWindowOffset!
 

@@ -292,7 +292,7 @@ test_browseMethods
 	selectors := self sunitPresenter methodListPresenter list collect: [:service | service selector].
 	self selectMethodsNamed: selectors.
 	browseMethodMenuItem := self sunitPresenter methodListPresenter view contextMenu items
-				detect: [:item | item isDivider not and: ['*Browse*Methods*' match: item description]]
+				detect: [:item | item isDivider not and: ['*Browse*Selected*Tests' match: item description]]
 				ifNone: [].
 	browser := browseMethodMenuItem commandDescription performAgainst: self sunitPresenter.
 	
