@@ -68,10 +68,18 @@ browseObjectClass
 browseSelectedMethod
 	"convenience menu item to display randomly grouped methods in a browser"
 
-	| methodService browser |
+	| methodService browser isMeta className homeClassName |
 	frame homeMethodSelector ifNil: [^self	"block context"].
+	homeClassName := frame homeMethodClassName.
+	homeClassName size < 6
+		ifTrue: [isMeta := false]
+		ifFalse: [isMeta := (homeClassName last: 6) = ' class'	"don't yet have meta info for frames"].
+	className := isMeta
+				ifTrue: [homeClassName copyFrom: 1 to: homeClassName size - 6]
+				ifFalse: [homeClassName].
 	methodService := RowanMethodService new
-				className: frame homeMethodClassName;
+				className: className;
+				meta: isMeta;
 				selector: frame homeMethodSelector.
 	BrowserUpdate current updateService: methodService session: gciSession.
 	(browser := JadeiteMethodListBrowser showOnSession: gciSession) primaryPresenter

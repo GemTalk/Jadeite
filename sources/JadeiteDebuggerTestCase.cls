@@ -669,6 +669,18 @@ test_browseSelectedFrameMethod
 	methodListBrowser := debugger browseSelectedMethod .
 	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter selection selector equals: #halt!
 
+test_browseSelectedFrameMethodClassSide
+	|  methodListBrowser |
+	self testsIssue: #issue740
+		withTitle: 'nice to have `Browse selected method` menu item in debugger, too'.
+	self testsIssue: #issue765 withTitle: 'Debugger Browse Selected Method error on lower methods in stack (3.1pr3)'. 
+	self openDebuggerOn: 'RowanClassService halt; forClassNamed: ''RowanLoggingService'''. 
+	debugger stepOver.
+	debugger stepInto. 
+	debugger frameListPresenter selectionByIndex: 1.
+	methodListBrowser := debugger browseSelectedMethod .
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter selection selector equals: #forClassNamed:!
+
 test_browseSendersInBlock
 	| browser source |
 	self testsIssue: #issue287
@@ -2382,6 +2394,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_browseFrameMethodInBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseImplementorsInBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseSelectedFrameMethod!public!test menus! !
+!JadeiteDebuggerTestCase categoriesFor: #test_browseSelectedFrameMethodClassSide!public!test menus! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseSendersInBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_bug74!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_compileError!public!tests! !
