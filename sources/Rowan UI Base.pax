@@ -2113,7 +2113,8 @@ testClassService: classService
 	methodListPresenter view invalidate.
 	textResultPresenter view backcolor: Color face3d.
 	classService updateListIn: methodListPresenter from: classService visibleTests.
-	methodListPresenter list do:[:methodService | methodService testResult: nil]! !
+	methodListPresenter list sortBlock: [:x :y | x selector < y selector].
+	methodListPresenter list do: [:methodService | methodService testResult: nil]! !
 !JadeiteSUnitInClassPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteSUnitInClassPresenter categoriesFor: #testClassService!accessing!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #testClassService:!accessing!public! !
@@ -2241,7 +2242,7 @@ updateMethodsFrom: classServices
 			[:classService |
 			| tests |
 			"show the class that the test will be run under"
-			tests := classService visibleTests.
+			tests := classService visibleTests. 
 			tests do: [:methodService | methodService className: classService name].
 			newMethods addAll: tests].
 	self update: newMethods orRemove: removals.

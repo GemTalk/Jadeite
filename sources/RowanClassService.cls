@@ -37,8 +37,7 @@ addHierarchyService: service to: treeModel withParent: parentService
 				withParent: service]!
 
 addSorted: sortedAdditions to: theModel
-	theModel addAll: sortedAdditions
-!
+	theModel beSorted addAll: sortedAdditions!
 
 basicPrepareForReplication
 	"don't call anything potentially recursive here.

@@ -246,8 +246,8 @@ test_browseTestSelectorsInSUnitTab
 	self selectSUnitTab.
 	self projectsPresenter sunitPresenter editSelectAll.
 	methodListBrowser := self projectsPresenter sunitPresenter browseSelectedMethods.
-	self assert: self projectsPresenter sunitPresenter methodListPresenter list
-		equals: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list!
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list asArray
+		equals: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list asArray!
 
 test_classCopy
 	self testsIssue: #issue506 withTitle: 'Usefful to be able to copy a class ...'.
@@ -917,6 +917,23 @@ test_revertSource
 	self assert: self methodSourcePresenter value equals: originalSource.
 	self deny: self methodSourcePresenter view isModified!
 
+test_saveMethodKeepsAlphabetizedList
+	| methodSelectorsList newMethodSelectorsList originalSource |
+	self testsIssue: #issue770 withTitle: 'Ensure new method is alphabetized after compile'.
+	self selectRowanSample1Test.
+	methodSelectorsList := (self methodListPresenter list
+				collect: [:methodService | methodService selector]) asArray.
+	self assert: methodSelectorsList equals: #(#test1 #test2 #testError #testFailure).
+	originalSource := 'fooble  | array | array := Array new. ^''foo'''.
+	self projectsPresenter selectMethodSourceTab.
+	self selectCategoryNamed: 'tests'.
+	self methodSourcePresenter value: originalSource.
+	self methodSourcePresenter view isModified: true.
+	self projectsPresenter editSaveMethod.
+	newMethodSelectorsList := (self methodListPresenter list
+				collect: [:methodService | methodService selector]) asArray.
+	self assert: newMethodSelectorsList equals: #(#fooble #test1 #test2 #testError #testFailure)!
+
 test_saveMethodResetsIndicators
 	| source originalSource |
 	self testsIssue: #issue608 withTitle: 'Mysteriously vanishing underlines (3.0.84)'.
@@ -1378,6 +1395,7 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reloadAfterClassCompile!public!test compiling!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_revertSource!public!test two browsers!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_saveMethodKeepsAlphabetizedList!public!test two browsers!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_saveMethodResetsIndicators!public!test two browsers!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sortedTestSelectorsInSUnitTab!public!test sunit tab!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_stepPoint1!public!test step points!tests! !
