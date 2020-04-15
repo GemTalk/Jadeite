@@ -1436,6 +1436,17 @@ test_wildCardSearch
 	JadeiteSearch allSelectorSymbols: OrderedCollection new.	"forces code down the 'fix' path"
 	symbols := JadePresenter selectorsFrom: 'siz*' session: session.
 	symbols do: [:symbol | self assert: (symbol match: symbol)].
+	self assert: JadeiteSearch allSelectorSymbols equals: OrderedCollection new!
+
+test_wildCardSearchNotCaseSensitive
+	"a little faked up to avoid messy dialogs and returns within the method. 
+	See JadePresenter class>>promptForMatchingSymbolsIn: session actionBlock: aBlock promptCaption: caption searchType: prompt"
+
+	| symbols |
+	self testsIssue: #issue732 withTitle: 'Wildcard method search broken if autcomplete off (3.0.93-6)'.
+	JadeiteSearch allSelectorSymbols: OrderedCollection new.	"forces code down the 'fix' path"
+	symbols := JadePresenter selectorsFrom: 'postLo*' session: session. "the capitalization was not found" 
+	symbols do: [:symbol | self assert: (symbol match: symbol)].
 	self assert: JadeiteSearch allSelectorSymbols equals: OrderedCollection new! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #browseLiteralTest:!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListBrowserPresenter!private!support! !
@@ -1524,4 +1535,5 @@ test_wildCardSearch
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindow!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindowStayOnMethod!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_wildCardSearch!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_wildCardSearchNotCaseSensitive!public!test browse methods! !
 

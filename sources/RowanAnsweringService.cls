@@ -68,6 +68,15 @@ isTranscriptInstalledIn: session
 	BrowserUpdate current issueCommands: (Array with: self) session: session.
 	^answer!
 
+lowercaseSelectorsMatching: string session: session
+	"sender should pass in lowercase string which will be 
+	compared to lowercase on the server. Avoids case misses"
+
+	command := #lowercaseSelectorsMatching:.
+	commandArgs := Array with: string.
+	BrowserUpdate current issueCommands: (Array with: self) session: session.
+	^answer!
+
 needsCommit: session
 	command := #needsCommit.
 	self commandArgs: Array new.
@@ -83,12 +92,6 @@ printOn: stream
 		nextPutAll: '->';
 		nextPutAll: commandArgs printString;
 		nextPut: $)!
-
-selectorsMatching: string session: session
-	command := #selectorsMatching:.
-	commandArgs := Array with: string.
-	BrowserUpdate current issueCommands: (Array with: self) session: session.
-	^answer!
 
 setAutoCommit: boolean for: session
 	command := #setAutoCommit:.
@@ -129,9 +132,9 @@ updateSymbols: unused
 !RowanAnsweringService categoriesFor: #flipTranscriptIn:!commands!public! !
 !RowanAnsweringService categoriesFor: #isAnsweringService!public!testing! !
 !RowanAnsweringService categoriesFor: #isTranscriptInstalledIn:!commands!public! !
+!RowanAnsweringService categoriesFor: #lowercaseSelectorsMatching:session:!commands!public!testing! !
 !RowanAnsweringService categoriesFor: #needsCommit:!commands!public! !
 !RowanAnsweringService categoriesFor: #printOn:!printing!public! !
-!RowanAnsweringService categoriesFor: #selectorsMatching:session:!commands!public!testing! !
 !RowanAnsweringService categoriesFor: #setAutoCommit:for:!commands!public! !
 !RowanAnsweringService categoriesFor: #setBreakpointsEnabled:session:!commands!public! !
 !RowanAnsweringService categoriesFor: #symbolExists:session:!commands!public!testing! !

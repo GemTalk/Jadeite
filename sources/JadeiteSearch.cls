@@ -193,7 +193,7 @@ selectorsFrom: partialSelector session: session trailingWildcard: trailingWildCa
 	symbol := partialSelector , (trailingWildCard ifTrue: ['*'] ifFalse: [String new]).
 	symbol := symbol asSymbol asLowercase.
 	self allSelectorSymbols isEmpty
-		ifTrue: [^RowanAnsweringService new selectorsMatching: symbol session: session]
+		ifTrue: [^RowanAnsweringService new lowercaseSelectorsMatching: symbol session: session]
 		ifFalse: [^self allSelectorSymbols select: [:selector | symbol match: selector asLowercase]]!
 
 symbolsFrom: partialSelector session: session trailingWildcard: trailingWildCard

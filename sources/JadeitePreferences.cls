@@ -73,7 +73,8 @@ openBrowserOnPackage: packageName
 
 openBrowserOnProject: projectName
 	| projectBrowser |
-	projectBrowser := JadeiteBrowser openOn: session projectName: projectName.
+	projectBrowser := JadeiteBrowser openOn: session
+				project: (RowanProjectService new name: projectName).
 	lastWindowPosition := projectBrowser view position.
 	^projectBrowser!
 

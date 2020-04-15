@@ -326,6 +326,13 @@ onViewOpened
 	self class lastPosition ifNotNil: [self view position: self class lastPosition].
 	self class lastExtent ifNotNil: [self view extent: self class lastExtent]!
 
+printOn: stream
+	super printOn: stream.
+	stream
+		nextPutAll: ' <identityHash: ';
+		nextPutAll: self identityHash printString;
+		nextPutAll: '>'!
+
 processListPresenter
 	^processListPresenter!
 
@@ -616,6 +623,7 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #onViewClosed!event handlers!private! !
 !JadeiteDebugger categoriesFor: #onViewDestroyed!event handlers!private! !
 !JadeiteDebugger categoriesFor: #onViewOpened!event handlers!private! !
+!JadeiteDebugger categoriesFor: #printOn:!accessing!public! !
 !JadeiteDebugger categoriesFor: #processListPresenter!accessing!public! !
 !JadeiteDebugger categoriesFor: #queryCommand:!menu handlers support!public! !
 !JadeiteDebugger categoriesFor: #reformatSource!menu handlers!private! !
