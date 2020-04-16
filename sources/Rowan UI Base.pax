@@ -3237,9 +3237,12 @@ openMethodListOn: service selectingAnyMatch: string
 		session: self gciSession!
 
 queryCommand: query
+	"during logout, the session could be nil if the user chose to leave a window open
+	with unsaved changes" 
 	query commandSymbol = #flipAutoCommit
 		ifTrue: 
-			[query isChecked: GciSession current autoCommit == true.
+			[query
+				isChecked: (GciSession current ifNil: [false] ifNotNil: [:session | session autoCommit == true]).
 			^true].
 	^super queryCommand: query!
 

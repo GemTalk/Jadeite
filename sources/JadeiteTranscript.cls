@@ -222,7 +222,8 @@ queryCommand: query
 			^true].
 	query commandSymbol = #flipAutoCommit
 		ifTrue: 
-			[query isChecked: autoCommit value == true.
+			[query
+				isChecked: (GciSession current ifNil: [false] ifNotNil: [:session | session autoCommit == true]).
 			^true].
 	query commandSymbol = #flipDebugger
 		ifTrue: 

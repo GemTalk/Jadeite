@@ -726,6 +726,28 @@ test_projectMenuGitCommitMenuItem
 			transcript projectListPresenter queryCommand: query.
 			projectService isDirty ifTrue: [self assert: query isEnabled] ifFalse: [self deny: query isEnabled]]!
 
+test_queryCommandHandlesNilSession
+	| flipAutoCommitItem jadeiteMenu query previousAutoCommit |
+	self testsIssue: #issue773
+		withTitle: 'Answer no to "Unsaved Changes" on logout does not work as planned (3.1pr4)'.
+	jadeiteMenu := transcript view menuBar items detect: [:menu | '*Jadeite*' match: menu text]
+				ifNone: [].
+	flipAutoCommitItem := jadeiteMenu items detect: [:command | command command = #flipAutoCommit]
+				ifNone: [].
+	query := CommandQuery commandDescription: flipAutoCommitItem commandDescription
+				source: transcript view.
+	previousAutoCommit := session autoCommit.
+	session autoCommit: true.
+	
+	[transcript queryCommand: query.
+	self assert: query isChecked.
+	session := GciSession current.
+	GciSession current: nil.
+	
+	[transcript queryCommand: query.
+	self deny: query isChecked] ensure: [GciSession current: session]]
+			ensure: [session autoCommit: previousAutoCommit]!
+
 test_raiseConsole
 	| browser remoteObject |
 	self testsIssue: #issue603
@@ -840,6 +862,7 @@ writeToPrefsFile: string
 !JadeiteTranscriptTestCase categoriesFor: #test_projectMenuCheckoutMenuItemsEnablement!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_projectMenuCheckoutTagMenuItemsEnablement!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_projectMenuGitCommitMenuItem!public!test menus! !
+!JadeiteTranscriptTestCase categoriesFor: #test_queryCommandHandlesNilSession!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_raiseConsole!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_selectorsList!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_transcriptNamedConsole!public!tests! !

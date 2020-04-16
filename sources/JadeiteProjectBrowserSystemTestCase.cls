@@ -187,6 +187,25 @@ test_moveTabsWithSUnitTabselected
 	self assert: projectsBrowser cardsPresenter view cards size equals: 1.
 	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 Projects'!
 
+test_queryCommandHandlesNilSession
+	| flipAutoCommitItem query previousAutoCommit |
+	self testsIssue: #issue773
+		withTitle: 'Answer no to "Unsaved Changes" on logout does not work as planned (3.1pr4)'.
+	flipAutoCommitItem := MenuItem fromString: ' Fake Command//flipAutoCommit'.
+	query := CommandQuery commandDescription: flipAutoCommitItem commandDescription source: nil.
+	previousAutoCommit := session autoCommit.
+	session autoCommit: true.
+	
+	[JadePresenterA new queryCommand: query.
+	self assert: query isChecked.
+	session := GciSession current.
+	GciSession current: nil.
+	
+	[JadePresenterA new queryCommand: query.
+	self deny: query isChecked]
+			ensure: [GciSession current: session]]
+			ensure: [session autoCommit: previousAutoCommit]!
+
 test_systemTabNamesDictionaryClass
 	self testsIssue: #issue381
 		withTitle: '(3.0.53) useful to have class displayed when code pane is maximized'.
@@ -253,6 +272,7 @@ test_systemTabNamesProjectClassList
 !JadeiteProjectBrowserSystemTestCase categoriesFor: #test_deselectProjectOnly!public!test system tabs! !
 !JadeiteProjectBrowserSystemTestCase categoriesFor: #test_modifiedSystemTab!public!test system tabs! !
 !JadeiteProjectBrowserSystemTestCase categoriesFor: #test_moveTabsWithSUnitTabselected!public!test system tabs! !
+!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_queryCommandHandlesNilSession!public!tests! !
 !JadeiteProjectBrowserSystemTestCase categoriesFor: #test_systemTabNamesDictionaryClass!public!test system tabs! !
 !JadeiteProjectBrowserSystemTestCase categoriesFor: #test_systemTabNamesDictionaryClassHierarchy!public!test system tabs! !
 !JadeiteProjectBrowserSystemTestCase categoriesFor: #test_systemTabNamesProjectClassHierarchy!public!test system tabs! !
