@@ -93,9 +93,10 @@ isNoneProjectSelected
 onClassesChanged
 	Cursor wait showWhile: 
 			[self updateMethods.
+			methodListPresenter view resortOnLastColumnClicked.
 			status value: nil.
 			status value: self.
-			self reset.]!
+			self reset]!
 
 onPackageChanged
 	Cursor wait showWhile: 

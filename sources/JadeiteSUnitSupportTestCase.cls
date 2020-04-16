@@ -511,6 +511,31 @@ test_inheritedTests
 		self assert: (testClassTestSelectors includes: selector)].
 	!
 
+test_maintainColumnSort
+	| firstSortedMethods secondSortedMethods |
+	self testsIssue: #issue775 withTitle: 'Stubborn sorting in the Sunit browser'.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServicesNamed: #('RowanClassServiceTest' 'RowanTestClassServiceTest')
+		in: self sunitPresenter classListPresenter.
+	self sunitPresenter methodListPresenter view columnClicked: 1.	"class column"
+	firstSortedMethods := self sunitPresenter methodListPresenter list
+				collect: [:methodService | methodService className].
+	self selectServicesNamed: Array new in: self sunitPresenter classListPresenter.	"clear selection just in case"
+	self selectServicesNamed: #('RowanClassServiceTest' 'RowanTestClassServiceTest')
+		in: self sunitPresenter classListPresenter.
+	secondSortedMethods := self sunitPresenter methodListPresenter list
+				collect: [:methodService | methodService className].
+	self assert: firstSortedMethods equals: secondSortedMethods.
+	self sunitPresenter methodListPresenter view columnClicked: 2.	"method column"
+	firstSortedMethods := self sunitPresenter methodListPresenter list
+				collect: [:methodService | methodService selector].
+	self selectServicesNamed: Array new in: self sunitPresenter classListPresenter.	"clear selection just in case"
+	self selectServicesNamed: #('RowanClassServiceTest' 'RowanTestClassServiceTest')
+		in: self sunitPresenter classListPresenter.
+	secondSortedMethods := self sunitPresenter methodListPresenter list
+				collect: [:methodService | methodService selector].
+	self assert: firstSortedMethods equals: secondSortedMethods!
+
 test_menuEnablementDebugInClassPresenter
 	| debugItem query |
 	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
@@ -1312,6 +1337,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_extensionTestShowsUpInSUnitBrowser!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_extensionTestsShowUpInExtensionAndDefinedPackages!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_inheritedTests!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_maintainColumnSort!public!test updates from other browsers!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_menuEnablementDebugInClassPresenter!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_menuEnablementRunAndMesureTimeInClassPresenter!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_menuEnablementRunSelectedInClassPresenter!public!tests! !

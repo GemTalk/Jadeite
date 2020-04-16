@@ -348,6 +348,7 @@ package methodNames
 	add: #JadeWorkspace -> #onViewOpened;
 	add: #ListModel -> #removeAtIndexWithoutNotification:;
 	add: #ListPresenter -> #selectServiceStartingWith:;
+	add: #ListView -> #resortOnLastColumnClicked;
 	add: #MCAddition -> #revert:;
 	add: #MCClassDefinition -> #initialize:;
 	add: #MCDefinition -> #isMethodAddition;
@@ -4786,6 +4787,17 @@ selectServiceStartingWith: aKeyPressEvent
 	nearestElement := self list detect: [:service | service name first = character] ifNone: [].
 	nearestElement ifNotNil: [self selection: nearestElement]! !
 !ListPresenter categoriesFor: #selectServiceStartingWith:!Jadeite!public! !
+
+!ListView methodsFor!
+
+resortOnLastColumnClicked
+	| column selections |
+	lastClickedColIndex ifNil:[^self]. 
+	selections := self selections.
+	column := self columnAtIndex: lastClickedColIndex.
+	self sortOnColumn: column.
+	self selections: selections! !
+!ListView categoriesFor: #resortOnLastColumnClicked!helpers!public! !
 
 !MCAddition methodsFor!
 
