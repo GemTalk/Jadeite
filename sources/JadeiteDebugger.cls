@@ -339,10 +339,11 @@ processListPresenter
 queryCommand: query
 	processList := processListPresenter list
 				collect: [:each | GsProcess session: gciSession oopType: each oopType].
-	(#(#browseFrameMethod #browseImplementors #browseSenders #browseSelectedMethod) includes: query commandSymbol)
-		ifTrue: 
-			[query isEnabled: frame homeMethodSelector notNil.
-			^true].
+	(#(#browseFrameMethod #browseImplementors #browseSenders #browseSelectedMethod)
+		includes: query commandSymbol)
+			ifTrue: 
+				[query isEnabled: (frame homeMethodSelector notNil and: [frame classIsResolvable]).
+				^true].
 	(#(#resumeProcess #runToCursor #stepInto #stepOut #stepOver) includes: query commandSymbol)
 		ifTrue: 
 			[query isEnabled: processListPresenter selectionByIndex == 1.

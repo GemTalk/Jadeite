@@ -9,6 +9,7 @@ package classNames
 	add: #JadeiteBreakpointBrowserTestCase;
 	add: #JadeiteChangesBrowserTestCase;
 	add: #JadeiteDataCuratorTestCase;
+	add: #JadeiteDebuggerDataCuratorTestCase;
 	add: #JadeiteDebuggerTestCase;
 	add: #JadeiteDevelopmentSUnitBrowser;
 	add: #JadeiteDevelopmentSUnitBrowserModel;
@@ -173,7 +174,7 @@ JadeiteAbstractTestCase subclass: #JadeiteDataCuratorTestCase
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeiteAbstractTestCase subclass: #JadeiteDebuggerTestCase
+JadeiteAbstractTestCase subclass: #JadeiteDebuggerDataCuratorTestCase
 	instanceVariableNames: 'debugger gsProcess process secondDebugger'
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -224,6 +225,11 @@ JadeiteAbstractTestCase subclass: #JadeiteSUnitSupportTestCase
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteAbstractTestCase subclass: #JadeiteTranscriptTestCase
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteDebuggerDataCuratorTestCase subclass: #JadeiteDebuggerTestCase
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

@@ -722,7 +722,7 @@ RowanService subclass: #RowanDictionaryService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanFrameService
-	instanceVariableNames: 'label method stepPoint vars oop homeMethodSelector homeMethodClassName'
+	instanceVariableNames: 'label method stepPoint vars oop homeMethodSelector homeMethodClassName classIsResolvable'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

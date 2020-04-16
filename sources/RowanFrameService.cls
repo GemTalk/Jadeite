@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanFrameService
-	instanceVariableNames: 'label method stepPoint vars oop homeMethodSelector homeMethodClassName'
+	instanceVariableNames: 'label method stepPoint vars oop homeMethodSelector homeMethodClassName classIsResolvable'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -13,6 +13,9 @@ RowanFrameService comment: ''!
 breaks
 
 	^method breakPoints!
+
+classIsResolvable
+	^classIsResolvable!
 
 copyBasicsFrom: oldService
 
@@ -74,6 +77,7 @@ stepPoint
 vars
 	^vars! !
 !RowanFrameService categoriesFor: #breaks!public! !
+!RowanFrameService categoriesFor: #classIsResolvable!accessing!private! !
 !RowanFrameService categoriesFor: #copyBasicsFrom:!public! !
 !RowanFrameService categoriesFor: #gsMethod!public! !
 !RowanFrameService categoriesFor: #homeMethodClassName!accessing!public! !
