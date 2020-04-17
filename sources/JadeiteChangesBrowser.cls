@@ -111,7 +111,7 @@ operationSelected
 	operation := operationListPresenter selection.
 	afterTitle := self afterTitle: operation.
 	diffsPresenter
-		beforeTitle: 'Disk';
+		beforeTitle: 'Disk Equivalent';
 		afterTitle: afterTitle;
 		compare: operation obsoletionMemo with: operation modificationMemo!
 
