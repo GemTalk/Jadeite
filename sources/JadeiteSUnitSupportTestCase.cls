@@ -394,6 +394,32 @@ test_debugWithDifferentSelectedClasses
 	self sunitPresenter debug.
 	self assert: self methodListPresenter selections first testResult equals: 'passed'!
 
+test_dontAddClassWhenPackageNotSelected
+	| classesSize |
+	self testsIssue: #issue376
+		withTitle: 'SUnit browser updated with lists of classes without updating the package selection (3.1pr4)'.
+	self assert: sunitBrowser primaryPresenter classListPresenter selections isEmpty.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self selectServiceNamed: 'test1' in: self projectsPresenter methodListPresenter.
+	self
+		saveMethod: 'test_method'
+		in: 'RowanSample1Test'
+		category: 'other'.
+	self assert: sunitBrowser primaryPresenter classListPresenter selections isEmpty.
+	self projectsPresenter removeMethodSelector: #test_method.
+	self assert: sunitBrowser primaryPresenter classListPresenter selections isEmpty.
+	sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'.
+	classesSize := sunitBrowser primaryPresenter classListPresenter list size.
+	self assert: classesSize > 0.
+	self
+		saveMethod: 'test_method'
+		in: 'RowanSample1Test'
+		category: 'other'.
+	self assert: sunitBrowser primaryPresenter classListPresenter list size = classesSize.
+	self projectsPresenter removeMethodSelector: #test_method.
+	self assert: sunitBrowser primaryPresenter classListPresenter list size = classesSize!
+
 test_dontChangeTabs
 	| methodService |
 	self testsIssue: #issue405 withTitle: 'SUnit select class flips sunit pane in PB to the method'.
@@ -426,18 +452,16 @@ test_dontClearResults
 	self assert: self sunitPresenter methodListPresenter selections first testResult equals: 'passed'!
 
 test_extensionOnlyTestClassVisible
-	self testsIssue: #issue378
-		withTitle: '(3.0.53) test class not defined in package shows up in package of SUnit browser'.
+	self testsIssue: #issue376
+		withTitle: 'SUnit browser updated with lists of classes without updating the package selection (3.1pr4)'.
+	self assert: sunitBrowser packageListPresenter selections isEmpty. 
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
 	self selectRowanSample1Test.
-	self projectsPresenter methodListPresenter
-		selections: self projectsPresenter methodListPresenter list.
-	self projectsPresenter removeMethods: self projectsPresenter classListPresenter selections.
-	self assert: self methodListPresenter list isEmpty.
+	self selectMethodNamed: #test1. 
 	self
-		saveMethod: 'test_extension'
+		saveMethod: 'test_method'
 		in: 'RowanSample1Test'
-		category: '*RowanSample1-Extensions'.
+		category: 'other'. 
 	self selectServiceNamed: 'RowanSample1-Extensions'
 		in: sunitBrowser primaryPresenter packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: sunitBrowser primaryPresenter classListPresenter.
@@ -1331,6 +1355,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_commitNoSelections!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_commitWithSelections!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_debugWithDifferentSelectedClasses!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_dontAddClassWhenPackageNotSelected!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_dontChangeTabs!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_dontClearResults!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_extensionOnlyTestClassVisible!public!tests! !

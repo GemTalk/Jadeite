@@ -151,10 +151,10 @@ selectedClass
 selectedClass: anObject
 	selectedClass := anObject!
 
-testClasses: presenter
+testClasses: presenter browser: browser
 	| additions |
 	additions := OrderedCollection new.
-	testClasses ifNil: [^self]. 
+	testClasses ifNil: [^self].
 	testClasses do: 
 			[:newClassService |
 			| updatedClass |
@@ -163,7 +163,7 @@ testClasses: presenter
 							[additions add: newClassService.
 							nil].
 			updatedClass ifNotNil: [updatedClass replicateFrom: newClassService]].
-	presenter model addAll: additions!
+	browser addUpdatedTestClasses: additions!
 
 updateList: presenter whilePreservingSelections: updates browser: browser
 	| replicate |
@@ -201,7 +201,7 @@ updateList: presenter whilePreservingSelections: updates browser: browser
 !RowanPackageService categoriesFor: #replicateFrom:!public!replication! !
 !RowanPackageService categoriesFor: #selectedClass!accessing!public! !
 !RowanPackageService categoriesFor: #selectedClass:!accessing!public! !
-!RowanPackageService categoriesFor: #testClasses:!public!updating! !
+!RowanPackageService categoriesFor: #testClasses:browser:!public!updating! !
 !RowanPackageService categoriesFor: #updateList:whilePreservingSelections:browser:!private!updating! !
 
 !RowanPackageService class methodsFor!

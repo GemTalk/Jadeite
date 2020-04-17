@@ -427,7 +427,6 @@ package methodNames
 	add: #RowanCommandResult -> #removedClass:;
 	add: #RowanCommandResult -> #removedProject:;
 	add: #RowanCommandResult -> #superclassListUpdate:;
-	add: #RowanCommandResult -> #testClasses:;
 	add: #RowanCommandResult -> #testPackages:;
 	add: #RowanCommandResult -> #updateClassCategorySelectionsFor:;
 	add: #RowanCommandResult -> #updateClassHierarchySelectionFor:;
@@ -2188,10 +2187,22 @@ refresh
 
 registerPresentersForUpdates
 	BrowserUpdate current register: packageListPresenter selector: #testPackages:.
-	BrowserUpdate current register: classListPresenter 	selector: #testClasses:.
-	BrowserUpdate current register: classListPresenter 	selector: #renamedClass:browser: browser: self.
-	BrowserUpdate current register: methodListPresenter selector: #sunitMethodsUpdate:browser: browser: self.
-	BrowserUpdate current register: methodListPresenter selector: #testResultUpdate:browser: browser: self.!
+	BrowserUpdate current
+		register: classListPresenter
+		selector: #testClasses:browser:
+		browser: self.
+	BrowserUpdate current
+		register: classListPresenter
+		selector: #renamedClass:browser:
+		browser: self.
+	BrowserUpdate current
+		register: methodListPresenter
+		selector: #sunitMethodsUpdate:browser:
+		browser: self.
+	BrowserUpdate current
+		register: methodListPresenter
+		selector: #testResultUpdate:browser:
+		browser: self!
 
 update: newMethods orRemove: removals
 	| listModel |
@@ -5385,8 +5396,6 @@ removedProject: presenter
 superclassListUpdate: presenter
 	!
 
-testClasses: presenter!
-
 testPackages: presenter!
 
 updateClassCategorySelectionsFor: presenter!
@@ -5448,7 +5457,6 @@ updateType
 !RowanCommandResult categoriesFor: #removedClass:!public!updating! !
 !RowanCommandResult categoriesFor: #removedProject:!public!updating! !
 !RowanCommandResult categoriesFor: #superclassListUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #testClasses:!public!updating! !
 !RowanCommandResult categoriesFor: #testPackages:!public!updating! !
 !RowanCommandResult categoriesFor: #updateClassCategorySelectionsFor:!public!updating! !
 !RowanCommandResult categoriesFor: #updateClassHierarchySelectionFor:!public!updating! !

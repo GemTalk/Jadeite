@@ -381,7 +381,8 @@ sunitMethodsUpdate: presenter browser: browser!
 superclassListUpdate: presenter
 	!
 
-testClasses: presenter!
+testClasses: presenter browser: anObject
+	!
 
 testPackages: presenter!
 
@@ -538,7 +539,7 @@ wasRenamed
 !RowanService categoriesFor: #stonOn:!must not strip!public!ston! !
 !RowanService categoriesFor: #sunitMethodsUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #superclassListUpdate:!public!updating! !
-!RowanService categoriesFor: #testClasses:!public!updating! !
+!RowanService categoriesFor: #testClasses:browser:!public!updating! !
 !RowanService categoriesFor: #testPackages:!public!updating! !
 !RowanService categoriesFor: #testResultUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #toolTip!printing!public! !

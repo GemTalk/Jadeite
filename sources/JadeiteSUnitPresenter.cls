@@ -13,6 +13,19 @@ JadeiteSUnitPresenter comment: ''!
 additionalAccelerators
 	^#(#(#raiseConsole 'Ctrl+F7'))!
 
+addUpdatedTestClasses: classServices
+	"don't add class that the package doesn't think should be shown"
+
+	| inSelectedPackage |
+	inSelectedPackage := OrderedCollection new.
+	packageListPresenter selections do: 
+			[:packageService |
+			packageService classes
+				ifNotNil: 
+					[classServices
+						do: [:classService | (packageService classes includes: classService) ifTrue: [inSelectedPackage add: classService]]]].
+	classListPresenter model addAll: inSelectedPackage!
+
 basicDelete
 	classListPresenter selection
 		command: #removeMethods:;
@@ -145,6 +158,9 @@ selectedFilters
 	"no categories in sunit browser"
 	^Array new !
 
+selectedPackageServiceNames
+	^packageListPresenter selections collect: [:packageService | packageService name]!
+
 selectedPackageServices
 	^packageListPresenter selections!
 
@@ -186,6 +202,7 @@ testCasesSize
 testClassesSize
 	^'Test Classes:' , classListPresenter model size printString! !
 !JadeiteSUnitPresenter categoriesFor: #additionalAccelerators!accessing!public! !
+!JadeiteSUnitPresenter categoriesFor: #addUpdatedTestClasses:!public!updating! !
 !JadeiteSUnitPresenter categoriesFor: #basicDelete!menu handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #commitTransaction!public!transaction management! !
 !JadeiteSUnitPresenter categoriesFor: #createComponents!public! !
@@ -208,6 +225,7 @@ testClassesSize
 !JadeiteSUnitPresenter categoriesFor: #selectClassNamed:!public!selection! !
 !JadeiteSUnitPresenter categoriesFor: #selectedClass!accessing!public! !
 !JadeiteSUnitPresenter categoriesFor: #selectedFilters!accessing!public! !
+!JadeiteSUnitPresenter categoriesFor: #selectedPackageServiceNames!public!selection! !
 !JadeiteSUnitPresenter categoriesFor: #selectedPackageServices!public!selection! !
 !JadeiteSUnitPresenter categoriesFor: #selectMethodNamed:!public!selection! !
 !JadeiteSUnitPresenter categoriesFor: #selectMethodsNamed:!public!selection! !
