@@ -215,7 +215,7 @@ getProcessList
 				detect: [:processService | processService oop = gsProcess oop]
 				ifNone: [gsProcess	"it should be found though"].
 	debuggerService processes notEmpty
-		ifTrue: [processListPresenter selection: debuggerService processes first]!
+		ifTrue: [processListPresenter selection: debuggerService processes first].!
 
 homeFrame
 	^frameListPresenter list detect: [:str | str = (self homeFrameOf: frame) printString]!
@@ -509,6 +509,14 @@ selectedFrame
 	(self view viewNamed: 'toolbar') update.
 	BrowserUpdate current logComment: 'finished #selectedFrame'!
 
+selectedProcess
+	processListPresenter selectionOrNil ifNil: [^self].
+	self clearUI.
+	gsProcess := processListPresenter selectionOrNil.
+	gsProcess stack isEmpty
+		ifTrue: [BrowserUpdate current updateService: gsProcess session: self gciSession].
+	self stack: gsProcess stack!
+
 selectHomeMethod
 	frameListPresenter selection: self homeFrame!
 
@@ -635,6 +643,7 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #saveMethod!compiling!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #search!accessing!public! !
 !JadeiteDebugger categoriesFor: #selectedFrame!frames!public! !
+!JadeiteDebugger categoriesFor: #selectedProcess!public! !
 !JadeiteDebugger categoriesFor: #selectHomeMethod!compiling!frames!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #setCompileErrorColor!compiling!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #setCompileWarningColor!compiling!menu handlers!private! !

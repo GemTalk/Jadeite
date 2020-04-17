@@ -1158,6 +1158,18 @@ test_openDebuggerWthBreakpointInDebuggerService
 				self issueCommand: methodService.
 				answeringService setBreakpointsEnabled: wereBreakpointsEnabled session: session]!
 
+test_processIsServices
+	"not a great test but does look at the underlying problem with issue #762"
+
+	self testsIssue: #issue762
+		withTitle: 'Debug-it in debugger / missing menu item, failure on up arrow, and error dialog (3.1pr3)'.
+	self openDebuggerOn: '| abc | 1 halt. abc := 0. abc := 1. abc := 2.'.
+	self assert: debugger gsProcess isKindOf: RowanProcessService.
+	debugger stepOver.
+	self assert: debugger gsProcess isKindOf: RowanProcessService.
+	debugger stepOver.
+	self assert: debugger gsProcess isKindOf: RowanProcessService!
+
 test_reformatIllegalSource
 	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
 	self
@@ -2162,6 +2174,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_jadeItemsOnMenu!public!test menus! !
 !JadeiteDebuggerTestCase categoriesFor: #test_loginButtonEnablementAfterDebug!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_openDebuggerWthBreakpointInDebuggerService!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_processIsServices!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatIllegalSource!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatSource!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatSourceDoesNotStick!public!test source! !

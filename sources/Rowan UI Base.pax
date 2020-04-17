@@ -1581,7 +1581,7 @@ gsProcess: anObject
 
 initializeProcess: aProcess message: aString terminateOnClose: aBoolean
 	self registerWindow: self view handle rootObject: aProcess oopType.
-	gsProcess := aProcess.
+	gsProcess := RowanProcessService new oop: aProcess oopType value. "convert from old style GsProcess"
 	errorMessagePresenter value: aString.
 	terminateOnClose := aBoolean.
 	[self getProcessList] on: GsError
