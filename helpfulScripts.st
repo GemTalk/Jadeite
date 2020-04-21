@@ -7,6 +7,10 @@ Good for debugging menus, etc"
 			Smalltalk at: #stopOnce put: false.
 			self halt].
 
+"client side" 
+
+BrowserUpdate clearCurrent
+
 GciSession current: nil
 
 JadeiteCommandShell showOnSession: GciSession current

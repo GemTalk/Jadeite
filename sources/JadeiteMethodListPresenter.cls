@@ -268,6 +268,7 @@ updateMultiMethodComparison
 updateSingleMethodSource
 	| selection |
 	selection := methodListPresenter selection.
+	methodSourcePresenter documentPresenter view isModified ifTrue: [^self].
 	methodSourcePresenter value: selection source.
 	selection firstReference
 		ifNotNil: 

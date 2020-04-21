@@ -263,6 +263,7 @@ test_browseMenuOptionEnablement
 	| contextMenu browseMenuItems |
 	self testsIssue: #issue774
 		withTitle: 'Disable Browse* debugger frame list menu options if method not visible'.
+	session userID = 'SystemUser' ifTrue:[^self].  "will fail unless run as DataCurator"
 	self openDebuggerOn: '((Rowan platform serviceClassFor: ''RowanAnsweringService'') new) exec: ''self halt'''.
 	debugger frameListPresenter selectionByIndex: 1.	"halt frame"
 	contextMenu := debugger frameListPresenter view contextMenu.

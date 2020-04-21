@@ -1079,9 +1079,9 @@ test_methodBrowserSaveMethod
 	self assert: self methodListSourcePresenter documentPresenter value equals: source.
 	source2 := 'test1 self assert: RowanSample1 new foo = ''changedAgain'''.
 	self projectsPresenter methodSourcePresenter value: source2.
-	self methodListSourcePresenter documentPresenter isModified: true. "needed for tests" 
+	self projectsPresenter methodSourcePresenter view isModified: true. "needed for tests" 
 	self projectsPresenter editSaveMethod: self classListPresenter selection.
-	self assert: self methodSourcePresenter documentPresenter value equals: source2.
+	self assert: self projectsPresenter methodSourcePresenter value equals: source2.
 	self assert: self methodListSourcePresenter documentPresenter value equals: source2]
 			ensure: [self destroy: projectsBrowser]!
 

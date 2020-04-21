@@ -3076,8 +3076,10 @@ unsavedChangesValidSessionDialogIn: presenter
 	^self unsavedChangesValidSessionDialogIn: presenter text: self defaultUnsavedChangesText!
 
 unsavedChangesValidSessionDialogIn: presenter text: text
-	^MessageBox confirm: text
-		caption: 'Unsaved changes warning in ' , presenter view topShell caption , '!!'! !
+	^MessageBox new
+		owner: presenter view;
+		caption: 'Unsaved changes warning in ' , presenter view topShell caption , '!!';
+		confirm: text! !
 !JadePresenter class categoriesFor: #abortTransaction:!browsing support!public! !
 !JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
 !JadePresenter class categoriesFor: #basicBrowseClassReferences:session:!browsing!browsing support!public! !
@@ -3212,7 +3214,6 @@ enableBreakPointAt: stepPoint in: browser
 	browser updateMethodSource!
 
 isOkayToChangeSource: methodSourcePresenter
-	methodSourcePresenter ensureVisible.
 	gciSession isValidSession
 		ifTrue: [(self class unsavedChangesValidSessionDialogIn: self) ifTrue: [^false]]
 		ifFalse: 

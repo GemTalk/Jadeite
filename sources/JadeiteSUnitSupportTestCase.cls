@@ -454,14 +454,16 @@ test_dontClearResults
 test_extensionOnlyTestClassVisible
 	self testsIssue: #issue376
 		withTitle: 'SUnit browser updated with lists of classes without updating the package selection (3.1pr4)'.
-	self assert: sunitBrowser packageListPresenter selections isEmpty. 
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
 	self selectRowanSample1Test.
-	self selectMethodNamed: #test1. 
+	self projectsPresenter methodListPresenter
+		selections: self projectsPresenter methodListPresenter list.
+	self projectsPresenter removeMethods: self projectsPresenter classListPresenter selections.
+	self assert: self methodListPresenter list isEmpty.
 	self
-		saveMethod: 'test_method'
+		saveMethod: 'test_extension'
 		in: 'RowanSample1Test'
-		category: 'other'. 
+		category: '*RowanSample1-Extensions'.
 	self selectServiceNamed: 'RowanSample1-Extensions'
 		in: sunitBrowser primaryPresenter packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: sunitBrowser primaryPresenter classListPresenter.
