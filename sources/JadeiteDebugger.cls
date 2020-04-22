@@ -46,10 +46,11 @@ basicSelectedFrame
 browseFrameMethod
 	| classService shell |
 	frame homeMethodSelector ifNil: [^self	"block context"].
-	classService := RowanClassService new name: frame homeMethodClassName.
+	classService := self classServiceFromFrame.
 	BrowserUpdate current updateService: classService session: gciSession.
 	shell := JadeiteBrowser showOnSession: gciSession.
 	shell currentCard updateAfterFindClass: classService.
+	classService meta ifTrue: [shell currentCard selectClassTab].
 	shell currentCard findMethod: frame homeMethodSelector.
 	^shell!
 
@@ -68,18 +69,12 @@ browseObjectClass
 browseSelectedMethod
 	"convenience menu item to display randomly grouped methods in a browser"
 
-	| methodService browser isMeta className homeClassName |
+	| methodService browser classService |
 	frame homeMethodSelector ifNil: [^self	"block context"].
-	homeClassName := frame homeMethodClassName.
-	homeClassName size < 6
-		ifTrue: [isMeta := false]
-		ifFalse: [isMeta := (homeClassName last: 6) = ' class'	"don't yet have meta info for frames"].
-	className := isMeta
-				ifTrue: [homeClassName copyFrom: 1 to: homeClassName size - 6]
-				ifFalse: [homeClassName].
+	classService := self classServiceFromFrame.
 	methodService := RowanMethodService new
-				className: className;
-				meta: isMeta;
+				className: classService name;
+				meta: classService meta;
 				selector: frame homeMethodSelector.
 	BrowserUpdate current updateService: methodService session: gciSession.
 	(browser := JadeiteMethodListBrowser showOnSession: gciSession) primaryPresenter
@@ -90,6 +85,21 @@ browseSelectedMethod
 
 browseSenders
 	^JadePresenter browseSendersOf: frame homeMethodSelector session: self gciSession!
+
+classServiceFromFrame
+	| classService homeClassName isMeta |
+	classService := RowanClassService new.
+	homeClassName := frame homeMethodClassName.
+	homeClassName size < 6
+		ifTrue: [isMeta := false]
+		ifFalse: [isMeta := (homeClassName last: 6) = ' class'	"don't yet have meta info for frames"].
+	homeClassName := isMeta
+				ifTrue: [homeClassName copyFrom: 1 to: homeClassName size - 6]
+				ifFalse: [homeClassName].
+	classService
+		name: homeClassName;
+		meta: isMeta.
+	^classService!
 
 clearBreakPointsAt: stepPoint
 	gsProcess frames do: 
@@ -602,6 +612,7 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #browseObjectClass!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #browseSelectedMethod!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #browseSenders!menu handlers!private! !
+!JadeiteDebugger categoriesFor: #classServiceFromFrame!menu handlers support!public! !
 !JadeiteDebugger categoriesFor: #clearBreakPointsAt:!menu handlers support!public! !
 !JadeiteDebugger categoriesFor: #codeSourcePresenterClass!private! !
 !JadeiteDebugger categoriesFor: #contextObject!public! !

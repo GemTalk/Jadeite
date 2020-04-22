@@ -338,6 +338,22 @@ test_browseClassVariablePane
 		equals: 'RowanClassService'	"receiver is Array class"]
 			ensure: [self destroy: projectsBrowser]!
 
+test_browseFrameClassMethod
+	| browser |
+	self testsIssue: #issue774
+		withTitle: 'Disable Browse* debugger frame list menu options if method not visible'.
+	self saveMethodWithHalt.
+	self openDebuggerOn: 'RowanSample1 new sampleMethodWithHalt'.
+	self selectFrameAt: debugger frameListPresenter list size.
+	self assert: debugger frameListPresenter selection
+		equals: 'GsNMethod class >> _gsReturnToC @1 line 1'.
+	browser := debugger browseFrameMethod.
+	
+	[self assert: browser isKindOf: JadeiteBrowser.
+	self assert: browser currentCard classListPresenter selection name equals: 'GsNMethod'.
+	self assert: browser currentCard methodListPresenter selection selector equals: #_gsReturnToC]
+			ensure: [browser view close]!
+
 test_browseFrameMethod
 	| browser |
 	self saveMethodWithHalt.
@@ -417,6 +433,26 @@ test_browseImplementorsInBlock
 		equals: #testBlockMenuItems.
 	self assert: ('Implementors *' match: browser topShell view caption)]
 			ensure: [browser view close]!
+
+test_browseSelectedFrameClassMethod
+	| methodListBrowser |
+	self testsIssue: #issue774
+		withTitle: 'Disable Browse* debugger frame list menu options if method not visible'.
+	self saveMethodWithHalt.
+	self openDebuggerOn: 'RowanSample1 new sampleMethodWithHalt'.
+	self selectFrameAt: debugger frameListPresenter list size.
+	self assert: debugger frameListPresenter selection
+		equals: 'GsNMethod class >> _gsReturnToC @1 line 1'.
+	methodListBrowser := debugger browseSelectedMethod.
+	
+	[self assert: methodListBrowser isKindOf: JadeiteMethodListBrowser.
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter selection
+				className
+		equals: 'GsNMethod'.
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter selection
+				selector
+		equals: #_gsReturnToC]
+			ensure: [methodListBrowser view close]!
 
 test_browseSelectedFrameMethod
 	|  methodListBrowser |
@@ -2140,9 +2176,11 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_breakpointHighlightingInBlocks!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_browseFrameClassMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseFrameMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseFrameMethodInBlock!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseImplementorsInBlock!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_browseSelectedFrameClassMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseSelectedFrameMethod!public!test menus! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseSelectedFrameMethodClassSide!public!test menus! !
 !JadeiteDebuggerTestCase categoriesFor: #test_browseSendersInBlock!public!tests! !
