@@ -2260,7 +2260,8 @@ updateMethodsFrom: classServices
 	self update: newMethods orRemove: removals.
 	methodListPresenter selections: (methodListPresenter model
 				select: [:methodService | selectedSelectors includes: methodService selector]).
-	methodListPresenter view invalidate!
+	methodListPresenter view invalidate.
+	methodListPresenter view resortOnLastColumnClicked.!
 
 updatePackages
 	| browserService |
