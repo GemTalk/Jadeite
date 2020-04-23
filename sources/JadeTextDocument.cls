@@ -19,7 +19,7 @@ activeTextEdit
 !
 
 additionalAccelerators
-	^#(#(#raiseConsole 'Ctrl+F7'))!
+	^#(#(#raiseConsole 'Ctrl+F7') #(#abortTransaction 'Ctrl+Alt+A') #(#commitTransaction 'Ctrl+Alt+C'))!
 
 addQuotesToSelection
 

@@ -11,7 +11,7 @@ JadeiteLoginShell comment: ''!
 !JadeiteLoginShell methodsFor!
 
 additionalAccelerators
-	^#(#(#raiseConsole 'Ctrl+F7'))!
+	^#(#(#raiseConsole 'Ctrl+F7') #(#abortTransaction 'Ctrl+Alt+A') #(#commitTransaction 'Ctrl+Alt+C'))!
 
 basicCaption
 	^'Jadeite Login Version: ' , self class jadeiteVersionString!

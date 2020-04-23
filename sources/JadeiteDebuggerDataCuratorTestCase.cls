@@ -171,6 +171,12 @@ pressButtonIn: view
 			lParam: 16r12C0064;
 		yourself	"WM_RBUTTONDOWN"	" (300 @ 100) "	"WM_RBUTTONUP"!
 
+primaryTestWindow
+	"Every test should have a primary window it is testing. 
+	If not, just return nil"
+
+	^debugger!
+
 removeMethodNamed: aSymbol
 	| classService methodService |
 	methodService := RowanMethodService new
@@ -296,7 +302,17 @@ test_doubleClickWhenClassNotResolvable
 		openDebuggerOn: '((Rowan platform serviceClassFor: ''RowanAnsweringService'') new) exec: ''self halt'''.
 	debugger frameListPresenter selectionByIndex: debugger frameListPresenter list size - 2.	"Exec block frame"
 	self assert: ('RowanAnsweringService >>*' match: debugger frameListPresenter selection).
-	self assert: debugger browseFrameMethod isKindOf: JadeiteDebugger	"returned without opening browser"! !
+	self assert: debugger browseFrameMethod isKindOf: JadeiteDebugger	"returned without opening browser"!
+
+test_globalAdditionalAccelerators
+	self testsIssue: #issue779
+		withTitle: 'Implement keyboard shortcut for ''commit'' and ''abort'' actions'.
+	self openDebuggerOn: 'self halt'.
+	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
+	self
+		assert: (self primaryTestWindow additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
+	self
+		assert: (self primaryTestWindow additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C'))! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #cleanupProcesses!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #closeDebuggers!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #closeJadeiteLoginShells!private!support! !
@@ -310,6 +326,7 @@ test_doubleClickWhenClassNotResolvable
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #methodListBrowser!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #openDebuggerOn:!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #pressButtonIn:!private!support!tests! !
+!JadeiteDebuggerDataCuratorTestCase categoriesFor: #primaryTestWindow!accessing!public! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #removeMethodNamed:!private!support!test ad hoc execution! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #saveMethodWithHalt!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #selectFrameAt:!private!support! !
@@ -320,4 +337,5 @@ test_doubleClickWhenClassNotResolvable
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #terminateGsProcess!private!running!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #test_browseMenuOptionEnablement!public!tests! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #test_doubleClickWhenClassNotResolvable!public!tests! !
+!JadeiteDebuggerDataCuratorTestCase categoriesFor: #test_globalAdditionalAccelerators!public!tests! !
 

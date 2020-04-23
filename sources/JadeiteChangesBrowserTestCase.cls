@@ -75,9 +75,10 @@ test_additionalAccelerators
 	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	changesBrowser := self projectListPresenter selection changesUsing: session.
-	self assert: changesBrowser additionalAccelerators first first equals: #raiseConsole.
-	self assert: changesBrowser additionalAccelerators first last equals: 'Ctrl+F7'.
-	self assert: changesBrowser additionalAccelerators size equals: 1	"should fail if we add a new one"!
+	self assert: (changesBrowser additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
+	self assert: (changesBrowser additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
+	self assert: (changesBrowser additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C')).
+	self assert: changesBrowser additionalAccelerators size equals: 3	"should fail if we add a new one"!
 
 test_browseImplementors
 	| methodListBrowser |

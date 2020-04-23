@@ -26,15 +26,12 @@ test_additionalAccelerators
 	but we can assert that we tell Dolphin to set them up"
 
 	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
-	self testsIssue: #issue762 withTitle: 'Debug-it in debugger / missing menu item, failure on up arrow, and error dialog (3.1pr3)'. 
+	self testsIssue: #issue762
+		withTitle: 'Debug-it in debugger / missing menu item, failure on up arrow, and error dialog (3.1pr3)'.
 	self openDebuggerOn: 'self halt'.
-	self assert: debugger additionalAccelerators first first equals: #raiseConsole.
-	self assert: debugger additionalAccelerators second first equals: #reformatSource.
-	self assert: debugger additionalAccelerators last first equals: #jadeDebug. 
-	self assert: debugger additionalAccelerators first last equals: 'Ctrl+F7'.
-	self assert: debugger additionalAccelerators second last equals: 'Ctrl+Shift+O'.
-	self assert: debugger additionalAccelerators last last equals: 'Ctrl+B'. 
-	self assert: debugger additionalAccelerators size equals: 3	"should fail if we add a new one"!
+	self assert: (debugger additionalAccelerators includes: #(#reformatSource 'Ctrl+Shift+O')).
+	self assert: (debugger additionalAccelerators includes: #(#jadeDebug 'Ctrl+B')).
+	self assert: debugger additionalAccelerators size equals: 5	"should fail if we add a new one"!
 
 test_adHocDebug
 	| workspace |

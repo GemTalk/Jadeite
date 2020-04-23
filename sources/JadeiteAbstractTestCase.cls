@@ -274,6 +274,12 @@ openWindow: aBlock
 packageListPresenter
 	^self projectsPresenter packageListPresenter!
 
+primaryTestWindow
+	"Every test should have a primary window it is testing. 
+	If not, just return nil"
+
+	^projectsBrowser!
+
 projectListPresenter
 	^self projectsPresenter projectListPresenter!
 
@@ -577,6 +583,16 @@ tearDown
 	super tearDown.
 	SessionManager inputState pumpMessages!
 
+test_globalAdditionalAccelerators
+	self testsIssue: #issue779
+		withTitle: 'Implement keyboard shortcut for ''commit'' and ''abort'' actions'.
+	self primaryTestWindow ifNil: [^self].	"not all test classes have a primaryTestWindow"
+	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
+	self
+		assert: (self primaryTestWindow additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
+	self
+		assert: (self primaryTestWindow additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C'))!
+
 testsIssue: aSymbol withTitle: anObject
 	"send this to help identify which tests test which issues"
 
@@ -675,6 +691,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #openProjectBrowser!private!support!test methods! !
 !JadeiteAbstractTestCase categoriesFor: #openWindow:!browser test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #packageListPresenter!private!project browser support! !
+!JadeiteAbstractTestCase categoriesFor: #primaryTestWindow!accessing!public! !
 !JadeiteAbstractTestCase categoriesFor: #projectListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #projectsPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #queryCommand:inPresenter:view:!private! !
@@ -719,6 +736,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #setupProjectBrowser!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #setupSupclassComparisonMethods!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #tearDown!private!setup teardown! !
+!JadeiteAbstractTestCase categoriesFor: #test_globalAdditionalAccelerators!public!tests! !
 !JadeiteAbstractTestCase categoriesFor: #testsIssue:withTitle:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #testsRowanIssue:withTitle:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #transcript!public!transcript support! !

@@ -28,6 +28,9 @@ inspectInstVarAt: index
 	instVarPresenter selection: (Array with: (instVarPresenter list at: index)).
 	inspector inspectInstVar!
 
+primaryTestWindow
+	^inspector!
+
 setUp
 	user ifNil: [user := 'DataCurator'].
 	super setUp!
@@ -871,6 +874,21 @@ coll
 			inspector instVarListPresenter selectionByIndex: (Array with: index).
 			self
 				assert: (inspector documentPresenter model value equals: '''entry' , (index - 2) printString , '''')]!
+
+test_globalAdditionalAccelerators
+	| remoteObject |
+	self testsIssue: #issue779
+		withTitle: 'Implement keyboard shortcut for ''commit'' and ''abort'' actions'.
+	remoteObject := session
+				executeString: '$X'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
+	self
+		assert: (self primaryTestWindow additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
+	self
+		assert: (self primaryTestWindow additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C'))!
 
 test_inspectAsOopField
 	"if a non-string object is put into the inspectors text pane, 
@@ -1933,6 +1951,7 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #commandQueryOn:!private! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #enableForward:andBack:!private! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #inspectInstVarAt:!private! !
+!JadeiteInspectorDataCuratorTestCase categoriesFor: #primaryTestWindow!accessing!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_abortTransactionInBasicInspector!public!tests! !
@@ -1971,6 +1990,7 @@ UserGlobals at: #aDict4 put: d.'.
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_fileSaveEnabled!public!tests menu bar! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_forwardBack!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_fullInspectArray!public! !
+!JadeiteInspectorDataCuratorTestCase categoriesFor: #test_globalAdditionalAccelerators!public!tests! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectAsOopField!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectBag!public! !
 !JadeiteInspectorDataCuratorTestCase categoriesFor: #test_inspectDoubleByteString!public! !

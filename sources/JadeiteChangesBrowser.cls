@@ -11,7 +11,7 @@ JadeiteChangesBrowser comment: ''!
 !JadeiteChangesBrowser methodsFor!
 
 additionalAccelerators
-	^#(#(#raiseConsole 'Ctrl+F7'))!
+	^#(#(#raiseConsole 'Ctrl+F7') #(#abortTransaction 'Ctrl+Alt+A') #(#commitTransaction 'Ctrl+Alt+C'))!
 
 afterTitle: operation
 	^operation obsoletionMemo = operation modificationMemo

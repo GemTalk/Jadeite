@@ -35,7 +35,7 @@ aboutToChangeFrame: aSelectionChangingEvent
 		value: (codePane documentPresenter view isModified ifTrue: [self isOkayToChangeFrame] ifFalse: [true])!
 
 additionalAccelerators
-	^#(#(#raiseConsole 'Ctrl+F7') #(#reformatSource 'Ctrl+Shift+O') #(#jadeDebug 'Ctrl+B'))!
+	^super additionalAccelerators , #(#(#reformatSource 'Ctrl+Shift+O') #(#jadeDebug 'Ctrl+B'))!
 
 basicSelectedFrame
 	| index |

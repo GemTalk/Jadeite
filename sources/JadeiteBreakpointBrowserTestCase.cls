@@ -13,6 +13,12 @@ JadeiteBreakpointBrowserTestCase comment: ''!
 openBreakpointBrowser
 	^breakpointBrowser := transcript browseBreakpoints!
 
+primaryTestWindow
+	"Every test should have a primary window it is testing. 
+	If not, just return nil"
+
+	^breakpointBrowser!
+
 setUp
 	super setUp.
 	JadePresenter clearAllBreakpointsIn: session!
@@ -51,11 +57,8 @@ test_additionalAccelerators
 
 	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
 	self openBreakpointBrowser.
-	self assert: breakpointBrowser additionalAccelerators first first equals: #editSaveMethod.
-	self assert: breakpointBrowser additionalAccelerators first last equals: 'Ctrl+S'.
-	self assert: breakpointBrowser additionalAccelerators last first equals: #raiseConsole.
-	self assert: breakpointBrowser additionalAccelerators last last equals: 'Ctrl+F7'.
-	self assert: breakpointBrowser additionalAccelerators size equals: 2	"should fail if we add a new one"!
+	self assert: (breakpointBrowser additionalAccelerators includes: #(#editSaveMethod 'Ctrl+S')).
+	self assert: breakpointBrowser additionalAccelerators size equals: 4	"should fail if we add a new one"!
 
 test_breakpointAdditionsUpdateAutomatically
 	| treeModel indicators |
@@ -182,6 +185,17 @@ test_clearMethodPaneWhenBreakpointRemoved2
 	breakpointBrowser methodSourcePresenter clearBreakPointAt: 1 in: self projectsPresenter.
 	self assert: breakpointBrowser methodSourcePresenter value equals: String new!
 
+test_globalAdditionalAccelerators
+	self testsIssue: #issue779
+		withTitle: 'Implement keyboard shortcut for ''commit'' and ''abort'' actions'.
+	self openBreakpointBrowser.
+	self primaryTestWindow ifNil: [^self].	"not all test classes have a primaryTestWindow"
+	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
+	self
+		assert: (self primaryTestWindow additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
+	self
+		assert: (self primaryTestWindow additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C'))!
+
 test_openBreakpointBrowser
 	self openBreakpointBrowser.
 	self assert: breakpointBrowser isKindOf: JadeiteBreakpointBrowser. 
@@ -269,6 +283,7 @@ test_showsBreakpoints
 	self assert: (indicators at: 5) styleName equals: #stepPoint.
 	self assert: (indicators at: 5) range equals: (45 to: 46)! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #openBreakpointBrowser!private!support! !
+!JadeiteBreakpointBrowserTestCase categoriesFor: #primaryTestWindow!accessing!public! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #setUp!public!support! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #tearDown!public!support! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_addedBreakpointAddsMethod!public!tests! !
@@ -278,6 +293,7 @@ test_showsBreakpoints
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_breakpointRemovalsUpdateAutomatically!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_clearMethodPaneWhenBreakpointRemoved!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_clearMethodPaneWhenBreakpointRemoved2!public!tests! !
+!JadeiteBreakpointBrowserTestCase categoriesFor: #test_globalAdditionalAccelerators!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_openBreakpointBrowser!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_openBreakpointBrowserDisabledSourcePane!public!tests! !
 !JadeiteBreakpointBrowserTestCase categoriesFor: #test_revert!public!tests! !

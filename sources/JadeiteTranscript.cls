@@ -16,7 +16,7 @@ abortTransaction
 	self autoCommit: (autoCommit value == #failed ifTrue: [true] ifFalse: [autoCommit value])!
 
 additionalAccelerators
-	^#(#(#raiseConsole 'Ctrl+F7'))!
+	^super additionalAccelerators , #(#(#raiseConsole 'Ctrl+F7'))!
 
 areBreakpointsEnabled
 	^areBreakpointsEnabled!

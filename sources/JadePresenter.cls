@@ -10,6 +10,9 @@ JadePresenter comment: ''!
 !JadePresenter categoriesForClass!MVP-Presenters! !
 !JadePresenter methodsFor!
 
+additionalAccelerators
+	^#(#(#raiseConsole 'Ctrl+F7') #(#abortTransaction 'Ctrl+Alt+A') #(#commitTransaction 'Ctrl+Alt+C'))!
+
 addSystemBrowser
 	"only sent from browseSelectedClassIn:newTab:
 	Not implemented in all subclasses"
@@ -149,6 +152,7 @@ updateMenuBar: aMenuBar withName: aString itemsFrom: aPresenter
 updateService: service
 
 	^self updateServices: (Array with: service) ! !
+!JadePresenter categoriesFor: #additionalAccelerators!constants!public! !
 !JadePresenter categoriesFor: #addSystemBrowser!private! !
 !JadePresenter categoriesFor: #basicWriteProject:!menu handlers!public! !
 !JadePresenter categoriesFor: #commitTransaction!public!transaction management! !

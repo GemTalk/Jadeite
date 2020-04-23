@@ -10,9 +10,6 @@ JadeiteLoggerPresenter comment: ''!
 !JadeiteLoggerPresenter categoriesForClass!MVP-Presenters! !
 !JadeiteLoggerPresenter methodsFor!
 
-additionalAccelerators
-	^#(#(#raiseConsole 'Ctrl+F7'))!
-
 clientFilename
 	^clientFilename!
 
@@ -77,7 +74,6 @@ serverFilename
 
 serverFilename: anObject
 	serverFilename := anObject! !
-!JadeiteLoggerPresenter categoriesFor: #additionalAccelerators!accessing!public! !
 !JadeiteLoggerPresenter categoriesFor: #clientFilename!accessing!private! !
 !JadeiteLoggerPresenter categoriesFor: #clientFilename:!accessing!private! !
 !JadeiteLoggerPresenter categoriesFor: #createComponents!initialization!public! !

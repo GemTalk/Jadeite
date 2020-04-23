@@ -15,7 +15,7 @@ aboutToChange: aSelectionChangingEvent
 		ifTrue: [aSelectionChangingEvent value: methodSourcePresenter isOkayToChange]!
 
 additionalAccelerators
-	^#(#(#editSaveMethod 'Ctrl+S') #(#raiseConsole 'Ctrl+F7'))!
+	^super additionalAccelerators , #(#(#editSaveMethod 'Ctrl+S'))!
 
 addMethodServicesToTree: methodServices
 	| sortedMethodServices |

@@ -25,7 +25,7 @@ addDictionary
 			ifTrue: [^self basicAddDictionaryNamed: newDictionaryName]!
 
 additionalAccelerators
-	^#(#(#insertIfFalse 'Ctrl+Shift+D') #(#insertIfTrue 'Ctrl+Shift+T') #(#raiseConsole 'Ctrl+F7'))!
+	^super additionalAccelerators , #(#(#insertIfFalse 'Ctrl+Shift+D') #(#insertIfTrue 'Ctrl+Shift+T'))!
 
 addNoneProject
 	(projectListPresenter list includes: RowanProjectService noneProject)

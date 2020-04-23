@@ -33,6 +33,12 @@ methodListSourcePresenter
 methodSourcePresenter
 	^methodListBrowser primaryPresenter methodSourcePresenter!
 
+primaryTestWindow
+	"Every test should have a primary window it is testing. 
+	If not, just return nil"
+
+	^methodListBrowser primaryPresenter!
+
 removeMethods: methodServices in: className
 	"Private - remove method outside the browsers for performance"
 
@@ -203,17 +209,11 @@ test_additionalAccelerators
 
 	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
 	methodListBrowser := JadePresenter browseImplementorsOf: #test1 session: session.
-	self assert: self methodListBrowserPresenter additionalAccelerators first first
-		equals: #insertIfFalse.
-	self assert: self methodListBrowserPresenter additionalAccelerators first last
-		equals: 'Ctrl+Shift+D'.
-	self assert: self methodListBrowserPresenter additionalAccelerators second first
-		equals: #insertIfTrue.
-	self assert: self methodListBrowserPresenter additionalAccelerators second last
-		equals: 'Ctrl+Shift+T'.
-	self assert: self methodListBrowserPresenter additionalAccelerators last first equals: #raiseConsole.
-	self assert: self methodListBrowserPresenter additionalAccelerators last last equals: 'Ctrl+F7'.
-	self assert: self methodListBrowserPresenter additionalAccelerators size equals: 3	"should fail if we add a new one"!
+	self
+		assert: (self primaryTestWindow additionalAccelerators includes: #(#insertIfFalse 'Ctrl+Shift+D')).
+	self
+		assert: (self primaryTestWindow additionalAccelerators includes: #(#insertIfTrue 'Ctrl+Shift+T')).
+	self assert: self methodListBrowserPresenter additionalAccelerators size equals: 5	"should fail if we add a new one"!
 
 test_adHocContextClassSide
 	| classService |
@@ -1025,6 +1025,16 @@ test_firstReferenceRetained
 				[fooBrowser view close.
 				barBrowser view close]!
 
+test_globalAdditionalAccelerators
+	self testsIssue: #issue779
+		withTitle: 'Implement keyboard shortcut for ''commit'' and ''abort'' actions'.
+	methodListBrowser := JadePresenter browseImplementorsOf: #size session: session.
+	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
+	self
+		assert: (self primaryTestWindow additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
+	self
+		assert: (self primaryTestWindow additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C'))!
+
 test_insertIfFalse
 	methodListBrowser := JadePresenter browseImplementorsOf: #test1 session: session.
 	methodListBrowser primaryPresenter methodSourcePresenter documentPresenter selectionRange: (1 to: 0).
@@ -1036,8 +1046,8 @@ test_insertIfFalse
 	self
 		assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter selectionRange
 		equals: (10 to: 9).
-	self assert: methodListBrowser primaryPresenter additionalAccelerators first
-		equals: #(#insertIfFalse 'Ctrl+Shift+D')!
+	self assert: (methodListBrowser primaryPresenter additionalAccelerators
+				includes: #(#insertIfFalse 'Ctrl+Shift+D'))!
 
 test_insertIfTrue
 	methodListBrowser := JadePresenter browseImplementorsOf: #test1 session: session.
@@ -1050,8 +1060,8 @@ test_insertIfTrue
 	self
 		assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter selectionRange
 		equals: (9 to: 8).
-	self assert: methodListBrowser primaryPresenter additionalAccelerators second
-		equals: #(#insertIfTrue 'Ctrl+Shift+T')!
+	self assert: (methodListBrowser primaryPresenter additionalAccelerators
+				includes: #(#insertIfTrue 'Ctrl+Shift+T'))!
 
 test_methodBrowserSaveMethod
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
@@ -1454,6 +1464,7 @@ test_wildCardSearchNotCaseSensitive
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListSelector!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodListSourcePresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodSourcePresenter!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #primaryTestWindow!accessing!public! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #removeMethods:in:!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #removeMultiKeywordSenderAndSendee!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #removeMultipleReferencesToStringMethods!private!support! !
@@ -1515,6 +1526,7 @@ test_wildCardSearchNotCaseSensitive
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_dragMethodOntoComparisonTextPanes!public!test comparison tab! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_firstReferenceRemovedAfterRecompile!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_firstReferenceRetained!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #test_globalAdditionalAccelerators!public!tests! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_insertIfFalse!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_insertIfTrue!public!test methods! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #test_methodBrowserSaveMethod!public!tests! !

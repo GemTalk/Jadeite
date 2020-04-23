@@ -395,13 +395,11 @@ test_additionalAccelerators
 	but we can assert that we tell Dolphin to set them up"
 
 	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
-	self assert: self projectsPresenter additionalAccelerators first first equals: #insertIfFalse.
-	self assert: self projectsPresenter additionalAccelerators second first equals: #insertIfTrue.
-	self assert: self projectsPresenter additionalAccelerators last first equals: #raiseConsole.
-	self assert: self projectsPresenter additionalAccelerators first last equals: 'Ctrl+Shift+D'.
-	self assert: self projectsPresenter additionalAccelerators second last equals: 'Ctrl+Shift+T'.
-	self assert: self projectsPresenter additionalAccelerators last last equals: 'Ctrl+F7'.
-	self assert: self projectsPresenter additionalAccelerators size equals: 3	"should fail if we add a new one"!
+	self
+		assert: (self primaryTestWindow additionalAccelerators includes: #(#insertIfFalse 'Ctrl+Shift+D')).
+	self
+		assert: (self primaryTestWindow additionalAccelerators includes: #(#insertIfTrue 'Ctrl+Shift+T')).
+	self assert: self projectsPresenter additionalAccelerators size equals: 5	"should fail if we add a new one"!
 
 test_addPackageReloadProject
 	self testsIssue: #issue183

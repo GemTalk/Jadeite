@@ -10,9 +10,6 @@ JadeiteSUnitPresenter comment: ''!
 !JadeiteSUnitPresenter categoriesForClass!Unclassified! !
 !JadeiteSUnitPresenter methodsFor!
 
-additionalAccelerators
-	^#(#(#raiseConsole 'Ctrl+F7'))!
-
 addUpdatedTestClasses: classServices
 	"don't add class that the package doesn't think should be shown"
 
@@ -201,7 +198,6 @@ testCasesSize
 
 testClassesSize
 	^'Test Classes:' , classListPresenter model size printString! !
-!JadeiteSUnitPresenter categoriesFor: #additionalAccelerators!accessing!public! !
 !JadeiteSUnitPresenter categoriesFor: #addUpdatedTestClasses:!public!updating! !
 !JadeiteSUnitPresenter categoriesFor: #basicDelete!menu handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #commitTransaction!public!transaction management! !

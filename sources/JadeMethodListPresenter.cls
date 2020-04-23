@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 JadeBrowserPresenter subclass: #JadeMethodListPresenter
 	instanceVariableNames: 'methodListPresenter methodSourcePresenter searchBlock'
@@ -9,9 +9,6 @@ JadeMethodListPresenter guid: (GUID fromString: '{bcf7edb6-114a-4e67-84d3-6fecd6
 JadeMethodListPresenter comment: ''!
 !JadeMethodListPresenter categoriesForClass!Unclassified! !
 !JadeMethodListPresenter methodsFor!
-
-additionalAccelerators
-	^#(#(#insertIfFalse 'Ctrl+Shift+D') #(#insertIfTrue 'Ctrl+Shift+T'))!
 
 browse: performSelector gsMethod: aGsMethod
 
@@ -272,7 +269,6 @@ updateSource
 	methodListPresenter selectedMethod ifNil: [^self].
 	self displayUncompilableSourceIn: methodSourcePresenter documentPresenter
 		! !
-!JadeMethodListPresenter categoriesFor: #additionalAccelerators!constants!public! !
 !JadeMethodListPresenter categoriesFor: #browse:gsMethod:!public! !
 !JadeMethodListPresenter categoriesFor: #browse:method:!public! !
 !JadeMethodListPresenter categoriesFor: #browse:methodSelector:!public! !

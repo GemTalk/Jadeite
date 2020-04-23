@@ -16,6 +16,12 @@ closeWorkspace
 			[workspace codePane documentPresenter view isModified: false.
 			workspace view close]!
 
+primaryTestWindow
+	"Every test should have a primary window it is testing. 
+	If not, just return nil"
+
+	^workspace!
+
 tearDown
 	workspace ifNotNil: [self closeWorkspace]!
 
@@ -27,9 +33,7 @@ test_additionalAccelerators
 	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
 	prefs := JadeitePreferences new session: session.
 	workspace := prefs openWorkspace: 'nil'.
-	self assert: workspace additionalAccelerators first first equals: #raiseConsole.
-	self assert: workspace additionalAccelerators first last equals: 'Ctrl+F7'.
-	self assert: workspace additionalAccelerators size equals: 1	"should fail if we add a new one"!
+	self assert: workspace additionalAccelerators size equals: 3	"should fail if we add a new one"!
 
 test_autoCommitEnabled
 	| prefs autoCommitWasEnabled |
@@ -102,6 +106,18 @@ test_everyPreferenceIsInMustNotStripCategory
 			ensure: 
 				[self assert: count >= 10.	"sanity test that we checked every pref at the time test was written"
 				stream close]!
+
+test_globalAdditionalAccelerators
+	| prefs |
+	self testsIssue: #issue779
+		withTitle: 'Implement keyboard shortcut for ''commit'' and ''abort'' actions'.
+	prefs := JadeitePreferences new session: session.
+	workspace := prefs openWorkspace: 'nil'.
+	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
+	self
+		assert: (self primaryTestWindow additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
+	self
+		assert: (self primaryTestWindow additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C'))!
 
 test_handleMalformedPreference
 	| prefs result |
@@ -270,6 +286,7 @@ test_validPreferences
 	prefs := JadeitePreferences new session: session.
 	validPreferences do: [:symbol | self assert: (prefs class canUnderstand: symbol)]! !
 !JadeitePreferencesTestCase categoriesFor: #closeWorkspace!public!support! !
+!JadeitePreferencesTestCase categoriesFor: #primaryTestWindow!accessing!public! !
 !JadeitePreferencesTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeitePreferencesTestCase categoriesFor: #test_additionalAccelerators!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_autoCommitEnabled!public!tests! !
@@ -277,6 +294,7 @@ test_validPreferences
 !JadeitePreferencesTestCase categoriesFor: #test_blanksInOpenWorkspaceArguments!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_breakpointEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_everyPreferenceIsInMustNotStripCategory!public! !
+!JadeitePreferencesTestCase categoriesFor: #test_globalAdditionalAccelerators!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_handleMalformedPreference!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_loggingEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_preferencesHandlesBlanks!public!tests! !

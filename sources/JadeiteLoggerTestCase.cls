@@ -38,9 +38,10 @@ test_additionalAccelerators
 	BrowserUpdate current isLogging: true.
 	logger := self openLogBrowser.
 	
-	[self assert: logger primaryPresenter additionalAccelerators first first equals: #raiseConsole.
-	self assert: logger primaryPresenter additionalAccelerators first last equals: 'Ctrl+F7'.
-	self assert: logger primaryPresenter additionalAccelerators size equals: 1	"should fail if we add a new one"]
+	[self assert: (logger additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
+	self assert: (logger additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
+	self assert: (logger additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C')).
+	self assert: logger primaryPresenter additionalAccelerators size equals: 3	"should fail if we add a new one"]
 			ensure: 
 				[BrowserUpdate current isLogging: wasLogging.
 				self destroy: logger]!
@@ -72,6 +73,21 @@ test_equality
 				groupId: 2;
 				id: 1.
 	self deny: loggingServiceA equals: loggingServiceB!
+
+test_globalAdditionalAccelerators
+	| wasLogging logger |
+	self testsIssue: #issue779
+		withTitle: 'Implement keyboard shortcut for ''commit'' and ''abort'' actions'.
+	wasLogging := BrowserUpdate current isLogging.
+	BrowserUpdate current isLogging: true.
+	
+	[logger := self openLogBrowser.
+	self assert: (logger additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
+	self assert: (logger additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
+	self assert: (logger additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C'))]
+			ensure: 
+				[BrowserUpdate current isLogging: wasLogging.
+				logger view close]!
 
 test_isLoggingDefaults
 	self testsIssue: #issue250 withTitle: 'Need logging capability in Jadeite'.
@@ -284,6 +300,7 @@ test_noFileWrittenWhenNotLogging
 !JadeiteLoggerTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteLoggerTestCase categoriesFor: #test_additionalAccelerators!public!tests! !
 !JadeiteLoggerTestCase categoriesFor: #test_equality!public!tests! !
+!JadeiteLoggerTestCase categoriesFor: #test_globalAdditionalAccelerators!public!tests! !
 !JadeiteLoggerTestCase categoriesFor: #test_isLoggingDefaults!public!tests! !
 !JadeiteLoggerTestCase categoriesFor: #test_logComment!public!tests! !
 !JadeiteLoggerTestCase categoriesFor: #test_loggerCanHandleNilFilenames!public!tests! !

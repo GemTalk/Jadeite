@@ -53,6 +53,12 @@ openSecondBrowser
 	secondPresenter selectClassListTab.
 	^secondBrowser!
 
+primaryTestWindow
+	"Every test should have a primary window it is testing. 
+	If not, just return nil"
+
+	^self projectsPresenter!
+
 saveMethodWithUniqueString
 
 	| source |
@@ -96,6 +102,7 @@ tearDown
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #isAbstract!private!testing! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #openSecondBrowser!private! !
+!JadeiteProjectBrowserAbstractTestCase categoriesFor: #primaryTestWindow!accessing!public! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #saveMethodWithUniqueString!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectLowerTabsThenDo:!private!support! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectSUnitTab!private!selection! !

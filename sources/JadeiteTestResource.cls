@@ -55,7 +55,10 @@ ensureRowanSample1Loaded
 			self loadProjectNamed: self sampleProjectName]!
 
 hasValidSession
-	^GciSession current isValidSession!
+	| session |
+	session := GciSession current.
+	session ifNil: [^false].
+	^session isValidSession!
 
 isAvailable
 	^self session notNil and: [self transcript notNil]!

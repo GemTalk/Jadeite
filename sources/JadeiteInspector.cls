@@ -17,7 +17,8 @@ aboutToChange: aSelectionChangingEvent
 !
 
 additionalAccelerators
-	^#(#(#fileSave 'Ctrl+S') #(#selectAll 'Ctrl+A') #(#jadeDebug 'Ctrl+B'))!
+	^super additionalAccelerators
+		, #(#(#fileSave 'Ctrl+S') #(#selectAll 'Ctrl+A') #(#jadeDebug 'Ctrl+B'))!
 
 addObject
 	| string |

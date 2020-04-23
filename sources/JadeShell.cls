@@ -10,6 +10,9 @@ JadeShell comment: ''!
 !JadeShell categoriesForClass!Unclassified! !
 !JadeShell methodsFor!
 
+additionalAccelerators
+	^#(#(#raiseConsole 'Ctrl+F7') #(#abortTransaction 'Ctrl+Alt+A') #(#commitTransaction 'Ctrl+Alt+C'))!
+
 createComponents
 
 	super createComponents.
@@ -90,6 +93,7 @@ updateCaption
 
 updateCaption: string
 	self caption: (gciSession titleBarFor: string)! !
+!JadeShell categoriesFor: #additionalAccelerators!constants!public! !
 !JadeShell categoriesFor: #createComponents!private! !
 !JadeShell categoriesFor: #gciSession!private! !
 !JadeShell categoriesFor: #gciSession:!private! !
