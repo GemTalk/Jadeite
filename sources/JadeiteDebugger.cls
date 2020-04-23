@@ -46,6 +46,7 @@ basicSelectedFrame
 browseFrameMethod
 	| classService shell |
 	frame homeMethodSelector ifNil: [^self	"block context"].
+	frame classIsResolvable ifFalse: [^self].
 	classService := self classServiceFromFrame.
 	BrowserUpdate current updateService: classService session: gciSession.
 	shell := JadeiteBrowser showOnSession: gciSession.
@@ -237,6 +238,10 @@ homeFrameOf: theFrame
 					[frameService method selector = frameService homeMethodSelector
 						and: [theFrame homeMethodClassName = frameService homeMethodClassName]]]!
 
+initialize
+	super initialize.
+	processList := OrderedCollection new. !
+
 initializeIdleProcess
 	"Private - Support for automated testing so we know when UI is ready.
 	See #onIdleEntered"
@@ -310,16 +315,14 @@ onViewClosed
 	"Private - copied from RowanSystemBrowserPresenter>>onViewClosed"
 
 	BrowserUpdate current logComment: 'Closing Debugger {' , self identityHash printString , '}'.
-	processList := processListPresenter list
-				collect: [:each | GsProcess session: gciSession oopType: each oopType].
+	processList := processListPresenter list.
 	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter].
 	"Allow test to know when view is closed"
 	self class signalSemaphore.
 	self terminateIdleProcess.
 	self class lastPosition: self view position.
 	self class lastExtent: self view extent.
-	super onViewClosed.
-!
+	super onViewClosed!
 
 onViewDestroyed
 	"Private - copied from RowanSystemBrowserPresenter>>onViewClosed"
@@ -347,8 +350,7 @@ processListPresenter
 	^processListPresenter!
 
 queryCommand: query
-	processList := processListPresenter list
-				collect: [:each | GsProcess session: gciSession oopType: each oopType].
+
 	(#(#browseFrameMethod #browseImplementors #browseSenders #browseSelectedMethod)
 		includes: query commandSymbol)
 			ifTrue: 
@@ -631,6 +633,7 @@ variableListPresenter
 !JadeiteDebugger categoriesFor: #getProcessList!public! !
 !JadeiteDebugger categoriesFor: #homeFrame!compiling!frames!menu handlers!private! !
 !JadeiteDebugger categoriesFor: #homeFrameOf:!frames!public! !
+!JadeiteDebugger categoriesFor: #initialize!initialization!public! !
 !JadeiteDebugger categoriesFor: #initializeIdleProcess!initialization!public! !
 !JadeiteDebugger categoriesFor: #initializeProcess:message:terminateOnClose:!initialization!public! !
 !JadeiteDebugger categoriesFor: #isOkayToChangeFrame!public!testing! !

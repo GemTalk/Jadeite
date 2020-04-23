@@ -263,8 +263,9 @@ test_browseMenuOptionEnablement
 	| contextMenu browseMenuItems |
 	self testsIssue: #issue774
 		withTitle: 'Disable Browse* debugger frame list menu options if method not visible'.
-	session userID = 'SystemUser' ifTrue:[^self].  "will fail unless run as DataCurator"
-	self openDebuggerOn: '((Rowan platform serviceClassFor: ''RowanAnsweringService'') new) exec: ''self halt'''.
+	session userID = 'DataCurator' ifFalse: [^self].	"will fail unless run as DataCurator"
+	self
+		openDebuggerOn: '((Rowan platform serviceClassFor: ''RowanAnsweringService'') new) exec: ''self halt'''.
 	debugger frameListPresenter selectionByIndex: 1.	"halt frame"
 	contextMenu := debugger frameListPresenter view contextMenu.
 	browseMenuItems := contextMenu items
@@ -283,7 +284,19 @@ test_browseMenuOptionEnablement
 			query := CommandQuery commandDescription: theItem commandDescription
 						source: debugger frameListPresenter view.
 			debugger queryCommand: query.
-			self deny: query isEnabled]! !
+			self deny: query isEnabled]!
+
+test_doubleClickWhenClassNotResolvable
+	"Don't enable Browse methods if the class is not resolvable"
+
+	self testsIssue: #issue774
+		withTitle: 'Disable Browse* debugger frame list menu options if method not visible'.
+	session userID = 'DataCurator' ifFalse: [^self].	"will fail unless run as DataCurator"
+	self
+		openDebuggerOn: '((Rowan platform serviceClassFor: ''RowanAnsweringService'') new) exec: ''self halt'''.
+	debugger frameListPresenter selectionByIndex: debugger frameListPresenter list size - 2.	"Exec block frame"
+	self assert: ('RowanAnsweringService >>*' match: debugger frameListPresenter selection).
+	self assert: debugger browseFrameMethod isKindOf: JadeiteDebugger	"returned without opening browser"! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #cleanupProcesses!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #closeDebuggers!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #closeJadeiteLoginShells!private!support! !
@@ -306,4 +319,5 @@ test_browseMenuOptionEnablement
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #tearDown!private!setup teardown!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #terminateGsProcess!private!running!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #test_browseMenuOptionEnablement!public!tests! !
+!JadeiteDebuggerDataCuratorTestCase categoriesFor: #test_doubleClickWhenClassNotResolvable!public!tests! !
 

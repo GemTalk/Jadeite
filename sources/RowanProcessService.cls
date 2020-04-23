@@ -45,7 +45,14 @@ printOn: aStream
 
 stack
 
-	^frames collect: [:each | each printString]! !
+	^frames collect: [:each | each printString]!
+
+terminate
+	"temporary until debugger is rewritten"
+	(GsProcess session: GciSession current oopType: (GciSession current oopTypeWithOop: oop))
+		terminate.
+	
+	! !
 !RowanProcessService categoriesFor: #frameForLevel:!public! !
 !RowanProcessService categoriesFor: #frames!public! !
 !RowanProcessService categoriesFor: #gsProcessForSession:!public! !
@@ -55,4 +62,5 @@ stack
 !RowanProcessService categoriesFor: #oopType!public! !
 !RowanProcessService categoriesFor: #printOn:!printing!public! !
 !RowanProcessService categoriesFor: #stack!public! !
+!RowanProcessService categoriesFor: #terminate!operations!public! !
 

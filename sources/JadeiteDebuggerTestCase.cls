@@ -1206,6 +1206,39 @@ test_processIsServices
 	debugger stepOver.
 	self assert: debugger gsProcess isKindOf: RowanProcessService!
 
+test_processSwitching
+	| activeProcesses longRunningProcess |
+	activeProcesses := session executeString: 'ProcessorScheduler scheduler allProcesses size'.
+	gsProcess := session executeString: '[(Delay forSeconds: 9999) wait] fork asOop.'.
+	session executeString: '(Delay forSeconds: 1) wait'.	"let forked process start"
+	self
+		openDebuggerOn: 'nil halt';
+		assert: debugger processListPresenter list size equals: activeProcesses + 1.
+	longRunningProcess := debugger processListPresenter list
+				detect: [:processService | processService oop = gsProcess].
+	self debuggerDo: [debugger processListPresenter selection: longRunningProcess].
+	self debuggerDo: [self selectFrameAt: 6].
+	self
+		assert: debugger methodSourcePresenter documentPresenter value
+			equals: '[(Delay forSeconds: 9999) wait] fork asOop.';
+		assert: longRunningProcess oop equals: gsProcess!
+
+test_processTermination
+	| terminationProcessOop primaryProcessOop |
+	self testsIssue: #issue762
+		withTitle: 'Debug-it in debugger / missing menu item, failure on up arrow, and error dialog (3.1pr3)'.
+	gsProcess := session executeString: '[(Delay forSeconds: 9999) wait] fork asOop.'.
+	session executeString: '(Delay forSeconds: 1) wait'.	"let forked process start"
+	self openDebuggerOn: 'nil halt'.
+	self assert: debugger processListPresenter selectionByIndex equals: 1.	"always start on top process"
+	primaryProcessOop := debugger processListPresenter selection oop.
+	debugger processListPresenter selectionByIndex: 2.
+	terminationProcessOop := debugger processListPresenter selection oop.
+	debugger _terminateProcess.
+	self assert: debugger processListPresenter list first oop equals: primaryProcessOop.	"reselect top process"
+	debugger processListPresenter list
+		do: [:processService | self deny: processService oop equals: terminationProcessOop]!
+
 test_reformatIllegalSource
 	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
 	self
@@ -1762,24 +1795,6 @@ array'.
 	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @3 line 6'.
 	self debuggerDo: [debugger resumeProcess]!
 
-test_switchProcesses
-	| activeProcesses longRunningProcess |
-	activeProcesses := session executeString: 'ProcessorScheduler scheduler allProcesses size'.
-	gsProcess := session executeString: '[(Delay forSeconds: 9999) wait] fork asOop.'.
-	session executeString: '(Delay forSeconds: 1) wait'.	"let forked process start"
-	self
-		openDebuggerOn: 'nil halt';
-		assert: debugger _processList size equals: activeProcesses + 1;
-		assert: debugger processListPresenter list size equals: activeProcesses + 1.
-	longRunningProcess := debugger processListPresenter list
-				detect: [:processService | processService oop = gsProcess].
-	self debuggerDo: [debugger processListPresenter selection: longRunningProcess].
-	self debuggerDo: [self selectFrameAt: 6].
-	self
-		assert: debugger methodSourcePresenter documentPresenter value
-			equals: '[(Delay forSeconds: 9999) wait] fork asOop.';
-		assert: longRunningProcess oop equals: gsProcess!
-
 test_terminateDoesNotWalkback
 	"Terminate a process other than the primary one"
 
@@ -1791,7 +1806,6 @@ test_terminateDoesNotWalkback
 	[gsProcess := session executeString: '[(Delay forSeconds: 9999) wait] fork asOop'.
 	self
 		openDebuggerOn: 'nil halt';
-		assert: debugger _processList size equals: allProcesses + 1;
 		assert: debugger processListPresenter list size equals: allProcesses + 1;
 		assert: (debugger processListPresenter selectionByIndex: allProcesses + 1) notNil.
 	TestMessageBox plannedResult: #yes.	"confirm we want to terminate process"
@@ -2213,6 +2227,8 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_loginButtonEnablementAfterDebug!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_openDebuggerWthBreakpointInDebuggerService!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_processIsServices!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_processSwitching!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_processTermination!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatIllegalSource!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatSource!public!test source! !
 !JadeiteDebuggerTestCase categoriesFor: #test_reformatSourceDoesNotStick!public!test source! !
@@ -2237,7 +2253,6 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_stepOutSelectedFrame2!public!test step out! !
 !JadeiteDebuggerTestCase categoriesFor: #test_stepOutTopFrame!public!test step out! !
 !JadeiteDebuggerTestCase categoriesFor: #test_stepThrough!public!test step out! !
-!JadeiteDebuggerTestCase categoriesFor: #test_switchProcesses!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_terminateDoesNotWalkback!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_unicodeMethod!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_unsavedChangesActionChangeFrame!public!tests! !

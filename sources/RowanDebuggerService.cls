@@ -19,6 +19,7 @@ processes
 	^processes!
 
 processListUpdate: aPresenter
+	aPresenter parentPresenter gsProcess ifNil:[^self]. 
 	aPresenter parentPresenter gsProcess oop = processes first oop ifFalse: [^self].
 	aPresenter list: processes! !
 !RowanDebuggerService categoriesFor: #initialize:!public! !

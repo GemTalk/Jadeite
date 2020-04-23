@@ -1067,7 +1067,9 @@ updateAfterFindClass: classService
 	classService ifNil: [^self].
 	self updateService: classService.
 	projectService := projectListPresenter list
-				detect: [:service | service name = classService projectName].	"it should always be found"
+				detect: [:service | service name = classService projectName]
+				ifNone: 
+					[^self	"may not be found if class is not in symbol list but class visible in a debugger (currently)"].
 	projectListPresenter selections: (Array with: projectService).
 	projectService = RowanProjectService noneProject
 		ifTrue: [self updateAfterFindClassInDictionary: classService].

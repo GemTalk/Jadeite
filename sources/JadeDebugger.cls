@@ -11,20 +11,18 @@ JadeDebugger comment: ''!
 !JadeDebugger methodsFor!
 
 _terminateProcess
-
 	| cachedGsProcess |
 	cachedGsProcess := gsProcess.
 	self clearUI.
-	(processList size == 1 or: [gsProcess oopType = processList first oopType]) ifTrue: [self view close. ^self].
-	processList copy do: [:each | each oopType = gsProcess oopType ifTrue: [processList remove: each]].
-	processListPresenter list: processList.
-	[
-		self _terminateProcess: cachedGsProcess.
-	] on: TerminateProcess do: [:ex | 
-		ex return: nil.
-	].
-	gsProcess := processList first.
-	self update.!
+	(processListPresenter list size <= 1 or: [gsProcess oop = processListPresenter list first oop])
+		ifTrue: 
+			[self view close.
+			^self].
+	processListPresenter list copy
+		do: [:each | each oop = gsProcess oop ifTrue: [processListPresenter list remove: each]].
+	[self _terminateProcess: cachedGsProcess] on: TerminateProcess do: [:ex | ex return: nil].
+	gsProcess := processListPresenter list first.
+	self update!
 
 _terminateProcess: aGsProcess
 	aGsProcess terminate.
@@ -96,24 +94,6 @@ createSchematicWiring
 	variableListPresenter		when: #selectionChanged		send: #selectedVariable				to: self.
 	variableListPresenter		when: #actionPerformed		send: #inspectVariable				to: self.
 !
-
-getProcessList
-
-	| string lines |
-	string := gciSession serverPerform: #'processes'.
-	lines := (string subStrings: Character lf) asOrderedCollection.
-	processList := lines removeFirst; collect: [:each | 
-		| fields oopType oopValue type |
-		fields := each subStrings: Character tab.
-		oopValue := (fields at: 2) asNumber.
-		oopType := gciSession oopTypeWithOop: oopValue.
-		type := fields at: 9.	"forked or main (see JadeServer64Bit3x>>#'addProcess:to:withStatus:scheduler:')"
-		(GsProcess session: gciSession oopType: oopType)
-			type: type;
-			yourself
-	].
-	processList addFirst: gsProcess.
-	gsProcess type: 'active'.!
 
 implement
 
@@ -278,6 +258,9 @@ terminateProcess
 		ifFalse: [^self].
 	self _terminateProcess!
 
+updateProcessListPresenter
+	processListPresenter list: processList copy	"to ensure list gets updated"!
+
 updateSaveMethodOop: anInteger
 	"do nothing"
 ! !
@@ -291,7 +274,6 @@ updateSaveMethodOop: anInteger
 !JadeDebugger categoriesFor: #copyStack!menu handlers!private! !
 !JadeDebugger categoriesFor: #createComponents!public! !
 !JadeDebugger categoriesFor: #createSchematicWiring!public! !
-!JadeDebugger categoriesFor: #getProcessList!public! !
 !JadeDebugger categoriesFor: #implement!public! !
 !JadeDebugger categoriesFor: #inspectVariable!menu handlers!private! !
 !JadeDebugger categoriesFor: #queryCommand:!public! !
@@ -307,6 +289,7 @@ updateSaveMethodOop: anInteger
 !JadeDebugger categoriesFor: #stepOut!menu handlers!private! !
 !JadeDebugger categoriesFor: #stepOver!menu handlers!private! !
 !JadeDebugger categoriesFor: #terminateProcess!menu handlers!private! !
+!JadeDebugger categoriesFor: #updateProcessListPresenter!private! !
 !JadeDebugger categoriesFor: #updateSaveMethodOop:!public! !
 
 !JadeDebugger class methodsFor!

@@ -148,6 +148,7 @@ package methodNames
 	add: #JadeAutoSystemBrowserPresenter -> #methodMenuBreak:;
 	add: #JadeAutoTextPresenter3 -> #defaultMethod;
 	add: #JadeAutoTextPresenter3 -> #setDefaultMethod;
+	add: #JadeDebugger -> #getProcessList;
 	add: #JadeDebugger -> #gsProcess;
 	add: #JadeDebugger -> #gsProcess:;
 	add: #JadeDebugger -> #initializeProcess:message:terminateOnClose:;
@@ -1572,6 +1573,15 @@ setDefaultMethod
 
 !JadeDebugger methodsFor!
 
+getProcessList
+	| string lines |
+	string := gciSession serverPerform: #processes.
+	lines := (string subStrings: Character lf) asOrderedCollection.
+	processList := lines removeFirst.
+	processList addFirst: gsProcess.
+	processList := processList collect: [:proc | RowanProcessService new oop: proc oop].
+	gsProcess type: 'active'!
+
 gsProcess
 	^gsProcess!
 
@@ -1593,13 +1603,13 @@ initializeProcess: aProcess message: aString terminateOnClose: aBoolean
 	self update!
 
 onViewClosed
-	BrowserUpdate current logComment: 'Releasing debugger'. 
+	BrowserUpdate current logComment: 'Releasing debugger'.
 	self gciSession isValidSession
 		ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: self gciSession].
-	BrowserUpdate current logComment: 'Releasing debugger complete'. 
-	(processList notNil and: [processList notEmpty])
+	BrowserUpdate current logComment: 'Releasing debugger complete'.
+	(processListPresenter list notNil and: [processListPresenter list notEmpty])
 		ifTrue: 
-			[gsProcess := processList first.
+			[gsProcess := processListPresenter list first.
 			self class debuggers removeKey: gsProcess oopType asInteger ifAbsent: [].
 			(terminateOnClose and: [answer isNil])
 				ifTrue: 
@@ -1648,9 +1658,8 @@ update
 	BrowserUpdate current logComment: 'processList: ' , processList printString.
 	(2 <= processList size and: [processListPresenter selectionOrNil ~~ processList first])
 		ifTrue: 
-			[processListPresenter
-				list: processList;
-				selectionByIndex: 1	"This triggers a selection changed message that clears the current selection"]
+			[self updateProcessListPresenter.
+			processListPresenter selectionByIndex: 1	"This triggers a selection changed message that clears the current selection"]
 		ifFalse: 
 			[BrowserUpdate current logComment: '#update - about to send #stack:'.
 			self stack: stack.
@@ -1658,6 +1667,7 @@ update
 
 updateCaption
 	self caption: (gciSession titleBarFor: 'Debugger')! !
+!JadeDebugger categoriesFor: #getProcessList!public! !
 !JadeDebugger categoriesFor: #gsProcess!accessing!private! !
 !JadeDebugger categoriesFor: #gsProcess:!accessing!private! !
 !JadeDebugger categoriesFor: #initializeProcess:message:terminateOnClose:!public! !
