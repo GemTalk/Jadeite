@@ -1176,6 +1176,31 @@ test_sunitBrowserPassingDebugTestShowsResult
 	self assert: self sunitPresenter methodListPresenter selections size equals: 1.
 	self assert: self sunitPresenter methodListPresenter selections first testResult equals: 'passed'!
 
+test_sunitBrowserSortOrderAfterAddingMethod
+	|  visibleTestSelectors |
+	self testsIssue: #issue775 withTitle: 'Stubborn sorting in the Sunit browser'.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self saveClass: 'LisaTest' superclass: 'TestCase' instVars: #() package: 'RowanSample1-Tests'. 
+	self saveMethod: 'test_foo'  in: 'LisaTest' category: 'tests'. 
+	self saveMethod: 'test_bar'  in: 'LisaTest' category: 'tests'. 
+	self saveMethod: 'test_zork'  in: 'LisaTest' category: 'tests'. 
+	self saveClass: 'LisaSubTest' superclass: 'LisaTest' instVars: #() package: 'RowanSample1-Tests'. 
+	self saveMethod: 'test_foo'  in: 'LisaSubTest' category: 'tests'. 
+	self saveMethod: 'test_bar'  in: 'LisaSubTest' category: 'tests'. 
+	self saveMethod: 'test_zork'  in: 'LisaSubTest' category: 'tests'. 
+	self saveClass: 'LisaSubTestTwo' superclass: 'LisaSubTest' instVars: #() package: 'RowanSample1-Tests'. 
+	self saveMethod: 'test_foo'  in: 'LisaSubTestTwo' category: 'tests'. 
+	self saveMethod: 'test_bar'  in: 'LisaSubTestTwo' category: 'tests'. 
+	self saveMethod: 'test_zork'  in: 'LisaSubTestTwo' category: 'tests'. 
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServicesNamed: #('LisaTest' 'LisaSubTest' 'LisaSubTestTwo') in: self sunitPresenter classListPresenter.
+	visibleTestSelectors := self sunitPresenter methodListPresenter list collect:[:methodService | methodService selector]. 
+	self assert: visibleTestSelectors asArray equals: #(#test_bar #test_bar #test_bar #test_foo #test_foo #test_foo #test_zork #test_zork #test_zork). 
+	self saveMethod: 'test_newMethod'  in: 'LisaTest' category: 'tests'. 
+	visibleTestSelectors := self sunitPresenter methodListPresenter list collect:[:methodService | methodService selector]. 
+	self assert: visibleTestSelectors asArray equals: #(#test_bar #test_bar #test_bar #test_foo #test_foo #test_foo #test_newMethod #test_zork #test_zork #test_zork). !
+
 test_sunitBrowserUpdateRightClassInHierarchy
 	"inherited test runs don't impact test results of super class test runs"
 
@@ -1426,6 +1451,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestMethods!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserPassingDebugTestShowsResult!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserSortOrderAfterAddingMethod!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserUpdateRightClassInHierarchy!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserUpdateRightClassInHierarchy2!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserUpdates!public!test updates from other browsers! !
