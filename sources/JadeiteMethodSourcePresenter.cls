@@ -163,10 +163,20 @@ updateMethodSource
 	self refreshBreakPointsIn: documentPresenter!
 
 updateMethodSourceColor
-	documentPresenter view isModified
+	"not sure why, but presenters do not seem to acknowledge that keys
+	like 'Del' actually change the value. This hook, sent from #textChanged
+	event makes sure we show a visible change when those characters are
+	pressed.
+
+	#postToInputQueue sent so that we don't get a gpFault if done at the 
+	wrong time. That's presumably a dolphin bug."
+
+	
+	[documentPresenter view isModified
 		ifTrue: [documentPresenter view backcolor: JadeiteTextStyles default colorForUnsavedEdits]
 		ifFalse: [documentPresenter view backcolor: JadeiteTextStyles default colorForNoEdits].
-	documentPresenter view invalidate. !
+	documentPresenter view invalidate]
+			postToInputQueue!
 
 value
 	^documentPresenter value!

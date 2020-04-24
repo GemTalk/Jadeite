@@ -357,6 +357,9 @@ createSchematicWiring
 createSchematicWiringForMethodSource
 	super createSchematicWiringForMethodSource.
 	methodSourcePresenter
+		when: #textChanged
+			send: #updateMethodSourceColor
+			to: self;
 		when: #valueChanged
 			send: #methodValueChanged
 			to: self;
@@ -1186,6 +1189,22 @@ updateHierarchyForPacktionaries
 				commandArgs: (Array with: self selectedPackageNames)].
 	self issueCommand: (Array with: service)!
 
+updateMethodSourceColor
+	"not sure why, but presenters do not seem to acknowledge that keys
+	like 'Del' actually change the value. This hook, sent from #textChanged
+	event makes sure we show a visible change when those characters are
+	pressed.
+
+	#postToInputQueue sent so that we don't get a gpFault if done at the 
+	wrong time. That's presumably a dolphin bug."
+
+	
+	[methodSourcePresenter view isModified
+		ifTrue: [methodSourcePresenter view backcolor: JadeiteTextStyles default colorForUnsavedEdits]
+		ifFalse: [methodSourcePresenter view backcolor: JadeiteTextStyles default colorForNoEdits].
+	methodSourcePresenter view invalidate]
+			postToInputQueue!
+
 updateProject
 	self projectListPresenter selectionIfNone: 
 			[packageListPresenter clear.
@@ -1373,6 +1392,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #updateGlobalsTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #updateHierarchy!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateHierarchyForPacktionaries!private!updating! !
+!JadeiteBrowserPresenter categoriesFor: #updateMethodSourceColor!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateProject!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateProjectInfo!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #updateProjectTabFor:!private!tabs! !
