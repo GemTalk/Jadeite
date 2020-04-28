@@ -213,7 +213,7 @@ test_additionalAccelerators
 		assert: (self primaryTestWindow additionalAccelerators includes: #(#insertIfFalse 'Ctrl+Shift+D')).
 	self
 		assert: (self primaryTestWindow additionalAccelerators includes: #(#insertIfTrue 'Ctrl+Shift+T')).
-	self assert: self methodListBrowserPresenter additionalAccelerators size equals: 5	"should fail if we add a new one"!
+	self assert: self methodListBrowserPresenter additionalAccelerators size equals: 3	"should fail if we add a new one"!
 
 test_adHocContextClassSide
 	| classService |
@@ -1026,14 +1026,8 @@ test_firstReferenceRetained
 				barBrowser view close]!
 
 test_globalAdditionalAccelerators
-	self testsIssue: #issue779
-		withTitle: 'Implement keyboard shortcut for ''commit'' and ''abort'' actions'.
 	methodListBrowser := JadePresenter browseImplementorsOf: #size session: session.
-	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
-	self
-		assert: (self primaryTestWindow additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
-	self
-		assert: (self primaryTestWindow additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C'))!
+	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7'))!
 
 test_insertIfFalse
 	methodListBrowser := JadePresenter browseImplementorsOf: #test1 session: session.

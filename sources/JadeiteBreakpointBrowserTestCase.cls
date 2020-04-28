@@ -58,7 +58,7 @@ test_additionalAccelerators
 	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
 	self openBreakpointBrowser.
 	self assert: (breakpointBrowser additionalAccelerators includes: #(#editSaveMethod 'Ctrl+S')).
-	self assert: breakpointBrowser additionalAccelerators size equals: 4	"should fail if we add a new one"!
+	self assert: breakpointBrowser additionalAccelerators size equals: 2	"should fail if we add a new one"!
 
 test_breakpointAdditionsUpdateAutomatically
 	| treeModel indicators |
@@ -186,15 +186,9 @@ test_clearMethodPaneWhenBreakpointRemoved2
 	self assert: breakpointBrowser methodSourcePresenter value equals: String new!
 
 test_globalAdditionalAccelerators
-	self testsIssue: #issue779
-		withTitle: 'Implement keyboard shortcut for ''commit'' and ''abort'' actions'.
 	self openBreakpointBrowser.
 	self primaryTestWindow ifNil: [^self].	"not all test classes have a primaryTestWindow"
-	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
-	self
-		assert: (self primaryTestWindow additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
-	self
-		assert: (self primaryTestWindow additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C'))!
+	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7'))!
 
 test_openBreakpointBrowser
 	self openBreakpointBrowser.

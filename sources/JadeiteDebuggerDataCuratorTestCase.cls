@@ -305,14 +305,8 @@ test_doubleClickWhenClassNotResolvable
 	self assert: debugger browseFrameMethod isKindOf: JadeiteDebugger	"returned without opening browser"!
 
 test_globalAdditionalAccelerators
-	self testsIssue: #issue779
-		withTitle: 'Implement keyboard shortcut for ''commit'' and ''abort'' actions'.
 	self openDebuggerOn: 'self halt'.
-	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
-	self
-		assert: (self primaryTestWindow additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
-	self
-		assert: (self primaryTestWindow additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C'))! !
+	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7'))! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #cleanupProcesses!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #closeDebuggers!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #closeJadeiteLoginShells!private!support! !

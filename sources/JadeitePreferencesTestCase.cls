@@ -33,7 +33,7 @@ test_additionalAccelerators
 	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
 	prefs := JadeitePreferences new session: session.
 	workspace := prefs openWorkspace: 'nil'.
-	self assert: workspace additionalAccelerators size equals: 3	"should fail if we add a new one"!
+	self assert: workspace additionalAccelerators size equals: 1	"should fail if we add a new one"!
 
 test_autoCommitEnabled
 	| prefs autoCommitWasEnabled |
@@ -109,15 +109,9 @@ test_everyPreferenceIsInMustNotStripCategory
 
 test_globalAdditionalAccelerators
 	| prefs |
-	self testsIssue: #issue779
-		withTitle: 'Implement keyboard shortcut for ''commit'' and ''abort'' actions'.
 	prefs := JadeitePreferences new session: session.
 	workspace := prefs openWorkspace: 'nil'.
-	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
-	self
-		assert: (self primaryTestWindow additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
-	self
-		assert: (self primaryTestWindow additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C'))!
+	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7'))!
 
 test_handleMalformedPreference
 	| prefs result |

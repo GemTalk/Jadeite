@@ -877,18 +877,12 @@ coll
 
 test_globalAdditionalAccelerators
 	| remoteObject |
-	self testsIssue: #issue779
-		withTitle: 'Implement keyboard shortcut for ''commit'' and ''abort'' actions'.
 	remoteObject := session
 				executeString: '$X'
 				fromContext: nil
 				environment: 0.
 	inspector := JadeiteInspector showOn: remoteObject session: session.
-	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
-	self
-		assert: (self primaryTestWindow additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
-	self
-		assert: (self primaryTestWindow additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C'))!
+	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7'))!
 
 test_inspectAsOopField
 	"if a non-string object is put into the inspectors text pane, 

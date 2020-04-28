@@ -11,7 +11,7 @@ JadeShell comment: ''!
 !JadeShell methodsFor!
 
 additionalAccelerators
-	^#(#(#raiseConsole 'Ctrl+F7') #(#abortTransaction 'Ctrl+Alt+A') #(#commitTransaction 'Ctrl+Alt+C'))!
+	^#(#(#raiseConsole 'Ctrl+F7'))!
 
 createComponents
 

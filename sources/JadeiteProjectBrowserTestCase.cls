@@ -399,7 +399,7 @@ test_additionalAccelerators
 		assert: (self primaryTestWindow additionalAccelerators includes: #(#insertIfFalse 'Ctrl+Shift+D')).
 	self
 		assert: (self primaryTestWindow additionalAccelerators includes: #(#insertIfTrue 'Ctrl+Shift+T')).
-	self assert: self projectsPresenter additionalAccelerators size equals: 5	"should fail if we add a new one"!
+	self assert: self projectsPresenter additionalAccelerators size equals: 3	"should fail if we add a new one"!
 
 test_addPackageReloadProject
 	self testsIssue: #issue183

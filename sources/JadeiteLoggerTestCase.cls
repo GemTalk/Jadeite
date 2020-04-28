@@ -39,9 +39,7 @@ test_additionalAccelerators
 	logger := self openLogBrowser.
 	
 	[self assert: (logger additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
-	self assert: (logger additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
-	self assert: (logger additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C')).
-	self assert: logger primaryPresenter additionalAccelerators size equals: 3	"should fail if we add a new one"]
+	self assert: logger primaryPresenter additionalAccelerators size equals: 1	"should fail if we add a new one"]
 			ensure: 
 				[BrowserUpdate current isLogging: wasLogging.
 				self destroy: logger]!
@@ -76,15 +74,11 @@ test_equality
 
 test_globalAdditionalAccelerators
 	| wasLogging logger |
-	self testsIssue: #issue779
-		withTitle: 'Implement keyboard shortcut for ''commit'' and ''abort'' actions'.
 	wasLogging := BrowserUpdate current isLogging.
 	BrowserUpdate current isLogging: true.
 	
 	[logger := self openLogBrowser.
-	self assert: (logger additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
-	self assert: (logger additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
-	self assert: (logger additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C'))]
+	self assert: (logger additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7'))]
 			ensure: 
 				[BrowserUpdate current isLogging: wasLogging.
 				logger view close]!

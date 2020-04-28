@@ -31,7 +31,7 @@ test_additionalAccelerators
 	self openDebuggerOn: 'self halt'.
 	self assert: (debugger additionalAccelerators includes: #(#reformatSource 'Ctrl+Shift+O')).
 	self assert: (debugger additionalAccelerators includes: #(#jadeDebug 'Ctrl+B')).
-	self assert: debugger additionalAccelerators size equals: 5	"should fail if we add a new one"!
+	self assert: debugger additionalAccelerators size equals: 3	"should fail if we add a new one"!
 
 test_adHocDebug
 	| workspace |

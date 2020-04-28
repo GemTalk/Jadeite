@@ -584,14 +584,9 @@ tearDown
 	SessionManager inputState pumpMessages!
 
 test_globalAdditionalAccelerators
-	self testsIssue: #issue779
-		withTitle: 'Implement keyboard shortcut for ''commit'' and ''abort'' actions'.
 	self primaryTestWindow ifNil: [^self].	"not all test classes have a primaryTestWindow"
 	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
-	self
-		assert: (self primaryTestWindow additionalAccelerators includes: #(#abortTransaction 'Ctrl+Alt+A')).
-	self
-		assert: (self primaryTestWindow additionalAccelerators includes: #(#commitTransaction 'Ctrl+Alt+C'))!
+!
 
 testsIssue: aSymbol withTitle: anObject
 	"send this to help identify which tests test which issues"
