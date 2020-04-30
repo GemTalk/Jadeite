@@ -39,13 +39,35 @@ browse: substrings
 		ifTrue: [^JadeiteBrowser openOn: self gciSession dictionary: newService].
 	newService isClassService ifTrue: [^JadeiteBrowser openOn: self gciSession class: newService]!
 
-commandHelpTexts
+commandHelpStrings
+	| writeStream |
+	writeStream := WriteStream on: String new.
+	writeStream
+		nextPutAll: '"If a known command is not entered, input will be evaluated as an expression in the server."';
+		cr;
+		nextPutAll: 'Known Commands';
+		cr.
+	1 to: self commands size
+		do: 
+			[:index |
+			writeStream
+				nextPutAll: (self commandStrings at: index);
+				nextPutAll: ' - ';
+				nextPutAll: (self commandHelpText at: index).
+			index = self commands size ifFalse: [writeStream cr]].
+	^writeStream contents!
+
+commandHelpText
 	^self commands collect: [:array | array last]!
 
 commands
 	"Private - command with help text"
 
-	^#(#('browse' #browse: 'browse - browse [gemstone_object_name]') #('implementors' #implementors: 'implementors - browse implementors of selector') #('senders' #senders: 'senders - browse senders of selector'))!
+	| sorted |
+	sorted := SortedCollection sortBlock: [:x :y | x first < y first].
+	sorted
+		addAll: #(#('browse' #browse: 'browse [gemstone_object_name] "browse project/package/class name"') #('imp' #implementors: 'imp [implementor_name] "browse implementors of selector"') #('send' #senders: 'send [sender_name] "browse senders of selector"') #('help' #help: 'help "command help"')).
+	^sorted!
 
 commandSelectors
 	^self commands collect: [:array | array second]!
@@ -60,6 +82,9 @@ createComponents
 
 documentPresenter
 	^codePane documentPresenter!
+
+help: substrings
+	^self commandHelpStrings!
 
 implementors: substrings
 	^JadePresenter browseImplementorsOf: substrings first session: self gciSession!
@@ -90,14 +115,15 @@ submitCommand
 	commandLine value: String new.
 	commandLine setFocus.
 	result := self basicSubmitCommand: input.
-	self documentPresenter view appendText: Character cr asString , result!
+	self documentPresenter view appendText: Character cr asString , result.
+	self documentPresenter view moveToEndOfDocument!
 
 submitJadeiteCommand: string
-	| selector substrings browser |
+	| selector substrings result |
 	substrings := string subStrings.
 	selector := self selectorFromCommand: string subStrings first.
-	browser := self perform: selector with: (substrings copyFrom: 2 to: substrings size).
-	^browser printString!
+	result := self perform: selector with: (substrings copyFrom: 2 to: substrings size).
+	^(result isKindOf: String) ifTrue: [result] ifFalse: [result printString]!
 
 switchArgumentPairsFrom: substrings
 	"assume substrings format is switch/arg"
@@ -118,22 +144,24 @@ switches
 switchesFrom: substrings
 	^substrings select: [:substring | substring first = $-]! !
 !JadeiteCommandPresenter categoriesFor: #are:legalIn:!public!testing! !
-!JadeiteCommandPresenter categoriesFor: #basicSubmitCommand:!operations!public! !
+!JadeiteCommandPresenter categoriesFor: #basicSubmitCommand:!commands!public! !
 !JadeiteCommandPresenter categoriesFor: #browse:!operations!public! !
-!JadeiteCommandPresenter categoriesFor: #commandHelpTexts!accessing!command registry!private! !
+!JadeiteCommandPresenter categoriesFor: #commandHelpStrings!accessing!command registry!private! !
+!JadeiteCommandPresenter categoriesFor: #commandHelpText!accessing!command registry!private! !
 !JadeiteCommandPresenter categoriesFor: #commands!command registry!private! !
 !JadeiteCommandPresenter categoriesFor: #commandSelectors!accessing!command registry!private! !
 !JadeiteCommandPresenter categoriesFor: #commandStrings!accessing!command registry!private! !
 !JadeiteCommandPresenter categoriesFor: #createComponents!initialization!public! !
 !JadeiteCommandPresenter categoriesFor: #documentPresenter!accessing!private! !
+!JadeiteCommandPresenter categoriesFor: #help:!operations!public! !
 !JadeiteCommandPresenter categoriesFor: #implementors:!operations!public! !
 !JadeiteCommandPresenter categoriesFor: #is:legalIn:!public!testing! !
 !JadeiteCommandPresenter categoriesFor: #isJadeiteCommand:!public!testing! !
 !JadeiteCommandPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteCommandPresenter categoriesFor: #selectorFromCommand:!command registry!private! !
 !JadeiteCommandPresenter categoriesFor: #senders:!operations!public! !
-!JadeiteCommandPresenter categoriesFor: #submitCommand!operations!public! !
-!JadeiteCommandPresenter categoriesFor: #submitJadeiteCommand:!operations!public! !
+!JadeiteCommandPresenter categoriesFor: #submitCommand!commands!public! !
+!JadeiteCommandPresenter categoriesFor: #submitJadeiteCommand:!commands!public! !
 !JadeiteCommandPresenter categoriesFor: #switchArgumentPairsFrom:!private!switches! !
 !JadeiteCommandPresenter categoriesFor: #switches!private!switches! !
 !JadeiteCommandPresenter categoriesFor: #switchesFrom:!private!switches! !
