@@ -39,13 +39,24 @@ browse: substrings
 		ifTrue: [^JadeiteBrowser openOn: self gciSession dictionary: newService].
 	newService isClassService ifTrue: [^JadeiteBrowser openOn: self gciSession class: newService]!
 
+commandFrom: string
+	| matchingCommands first |
+	first := string subStrings first.
+	matchingCommands := self commandStrings select: [:commandString | first , '*' match: commandString].
+	matchingCommands size = 1 ifTrue: [^matchingCommands first].
+	^nil!
+
 commandHelpStrings
 	| writeStream |
 	writeStream := WriteStream on: String new.
 	writeStream
-		nextPutAll: '"If a known command is not entered, input will be evaluated as an expression in the server."';
+		nextPutAll: '"If a known command is not entered, input will be evaluated as an expression in the server.
+
+Shortcut
+	Type the first unique letters of a command. e.g. - If no other commands start with "b", typing "b Rowan" will bring up a Rowan Project browser"
+';
 		cr;
-		nextPutAll: 'Known Commands';
+		nextPutAll: '"Known Commands"';
 		cr.
 	1 to: self commands size
 		do: 
@@ -61,12 +72,16 @@ commandHelpText
 	^self commands collect: [:array | array last]!
 
 commands
-	"Private - command with help text"
+	"Private - command with help text. Do not use auto format on this source!!"
 
 	| sorted |
 	sorted := SortedCollection sortBlock: [:x :y | x first < y first].
 	sorted
-		addAll: #(#('browse' #browse: 'browse [gemstone_object_name] "browse project/package/class name"') #('imp' #implementors: 'imp [implementor_name] "browse implementors of selector"') #('send' #senders: 'send [sender_name] "browse senders of selector"') #('help' #help: 'help "command help"')).
+		addAll: #(
+			#('browse' #browse: 'browse [gemstone_object_name] "browse project/package/class name"')
+			#('implementors' #implementors: 'implementors [implementor_name][*] "browse implementors of selector"')
+			#('senders' #senders: 'senders [sender_name][*] "browse senders of selector"')
+			#('help' #help: 'help "command help"')).
 	^sorted!
 
 commandSelectors
@@ -87,14 +102,24 @@ help: substrings
 	^self commandHelpStrings!
 
 implementors: substrings
-	^JadePresenter browseImplementorsOf: substrings first session: self gciSession!
+	| inputSelector |
+	inputSelector := substrings first.
+	JadePresenter
+		promptForMatchingSymbolsIn: self gciSession
+		actionBlock: 
+			[:selector |
+			Cursor wait showWhile: [^JadePresenter browseImplementorsOf: selector session: self gciSession]]
+		promptCaption: 'Browse Senders Of ...'
+		searchType: 'selector'
+		selector: inputSelector!
 
 is: switch legalIn: command
 	^(self switches at: command) includes: switch!
 
 isJadeiteCommand: string
 	string isEmpty ifTrue: [^false].
-	^self commandStrings includes: string subStrings first!
+	(self commandFrom: string) ifNotNil: [:value | ^true].
+	^false!
 
 onViewOpened
 	super onViewOpened.
@@ -105,7 +130,16 @@ selectorFromCommand: string
 	^self commandSelectors at: (self commandStrings indexOf: string)!
 
 senders: substrings
-	^JadePresenter browseSendersOf: substrings first session: self gciSession!
+	| inputSelector |
+	inputSelector := substrings first.
+	JadePresenter
+		promptForMatchingSymbolsIn: self gciSession
+		actionBlock: 
+			[:selector |
+			Cursor wait showWhile: [^JadePresenter browseSendersOf: selector session: self gciSession]]
+		promptCaption: 'Browse Senders Of ...'
+		searchType: 'selector'
+		selector: inputSelector!
 
 submitCommand
 	| result input |
@@ -121,7 +155,7 @@ submitCommand
 submitJadeiteCommand: string
 	| selector substrings result |
 	substrings := string subStrings.
-	selector := self selectorFromCommand: string subStrings first.
+	selector := self selectorFromCommand: (self commandFrom: string).
 	result := self perform: selector with: (substrings copyFrom: 2 to: substrings size).
 	^(result isKindOf: String) ifTrue: [result] ifFalse: [result printString]!
 
@@ -144,8 +178,9 @@ switches
 switchesFrom: substrings
 	^substrings select: [:substring | substring first = $-]! !
 !JadeiteCommandPresenter categoriesFor: #are:legalIn:!public!testing! !
-!JadeiteCommandPresenter categoriesFor: #basicSubmitCommand:!commands!public! !
+!JadeiteCommandPresenter categoriesFor: #basicSubmitCommand:!commands!private! !
 !JadeiteCommandPresenter categoriesFor: #browse:!operations!public! !
+!JadeiteCommandPresenter categoriesFor: #commandFrom:!commands!private! !
 !JadeiteCommandPresenter categoriesFor: #commandHelpStrings!accessing!command registry!private! !
 !JadeiteCommandPresenter categoriesFor: #commandHelpText!accessing!command registry!private! !
 !JadeiteCommandPresenter categoriesFor: #commands!command registry!private! !
