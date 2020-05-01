@@ -496,7 +496,7 @@ test_implementorsSenders_SearchList
 				actionBlock: [:sel | sel]
 				promptCaption: 'Test search selectors:'
 				searchType: 'prompt:'
-				selector: nil.
+				searchString: nil.
 	self assert: selection equals: #subclasses.
 	"the code above doesn't really test that our list is populated. Hence the assertions below.
 	JadeiteSearch is referenced from #promptFor*"
@@ -523,7 +523,7 @@ test_implementorsSendersSearchList
 				actionBlock: [:sel | sel]
 				promptCaption: 'Test search selectors:'
 				searchType: 'prompt:'
-				selector: nil.
+				searchString: nil.
 	self assert: selection equals: #subclasses.
 	"the code above doesn't really test that our list is populated. Hence the assertions below.
 	JadeiteSearch is referenced from #promptFor*"

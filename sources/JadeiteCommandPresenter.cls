@@ -14,6 +14,20 @@ are: switches legalIn: command
 	switches do: [:switch | ((self switches at: command) includes: switch) ifFalse: [^false]].
 	^true!
 
+basicBrowse: string
+	| answeringService newService |
+	answeringService := RowanAnsweringService new
+				command: #resolveAsService:;
+				commandArgs: (Array with: string).
+	self issueCommand: (Array with: answeringService).
+	newService := answeringService answer.
+	newService ifNil: [^'Not resolvable'].
+	newService isProjectService ifTrue: [^JadeiteBrowser openOn: self gciSession project: newService].
+	newService isPackageService ifTrue: [^JadeiteBrowser openOn: self gciSession package: newService].
+	newService isDictionaryService
+		ifTrue: [^JadeiteBrowser openOn: self gciSession dictionary: newService].
+	newService isClassService ifTrue: [^JadeiteBrowser openOn: self gciSession class: newService]!
+
 basicSubmitCommand: string
 	| answeringService |
 	(self isJadeiteCommand: string) ifTrue:[^self submitJadeiteCommand: string]. 
@@ -26,18 +40,16 @@ basicSubmitCommand: string
 	^answeringService answer!
 
 browse: substrings
-	| answeringService newService |
-	answeringService := RowanAnsweringService new
-				command: #resolveAsService:;
-				commandArgs: (Array with: substrings first).
-	self issueCommand: (Array with: answeringService).
-	newService := answeringService answer.
-	newService ifNil: [^JadePresenter browseImplementorsOf: substrings first session: self gciSession].
-	newService isProjectService ifTrue: [^JadeiteBrowser openOn: self gciSession project: newService].
-	newService isPackageService ifTrue: [^JadeiteBrowser openOn: self gciSession package: newService].
-	newService isDictionaryService
-		ifTrue: [^JadeiteBrowser openOn: self gciSession dictionary: newService].
-	newService isClassService ifTrue: [^JadeiteBrowser openOn: self gciSession class: newService]!
+	| symbols symbol objectName |
+	objectName := substrings first.
+	objectName := objectName copyWithout: Character space.
+	(objectName includes: $*) ifFalse: [^self basicBrowse: substrings first].
+	symbols := JadeiteSearch
+				symbolsFrom: objectName
+				session: self gciSession
+				trailingWildcard: true.
+	(symbol := ChoicePrompter choices: symbols) isNil ifTrue: [^self].
+	objectName ifNotNil: [^self basicBrowse: symbol asString]!
 
 commandFrom: string
 	| matchingCommands first |
@@ -78,7 +90,7 @@ commands
 	sorted := SortedCollection sortBlock: [:x :y | x first < y first].
 	sorted
 		addAll: #(
-			#('browse' #browse: 'browse [gemstone_object_name] "browse project/package/class name"')
+			#('browse' #browse: 'browse [gemstone_object_name][*] "browse project/package/class name"')
 			#('implementors' #implementors: 'implementors [implementor_name][*] "browse implementors of selector"')
 			#('senders' #senders: 'senders [sender_name][*] "browse senders of selector"')
 			#('help' #help: 'help "command help"')).
@@ -109,9 +121,9 @@ implementors: substrings
 		actionBlock: 
 			[:selector |
 			Cursor wait showWhile: [^JadePresenter browseImplementorsOf: selector session: self gciSession]]
-		promptCaption: 'Browse Senders Of ...'
+		promptCaption: 'Browse Implementors Of ...'
 		searchType: 'selector'
-		selector: inputSelector!
+		searchString: inputSelector!
 
 is: switch legalIn: command
 	^(self switches at: command) includes: switch!
@@ -139,7 +151,7 @@ senders: substrings
 			Cursor wait showWhile: [^JadePresenter browseSendersOf: selector session: self gciSession]]
 		promptCaption: 'Browse Senders Of ...'
 		searchType: 'selector'
-		selector: inputSelector!
+		searchString: inputSelector!
 
 submitCommand
 	| result input |
@@ -178,6 +190,7 @@ switches
 switchesFrom: substrings
 	^substrings select: [:substring | substring first = $-]! !
 !JadeiteCommandPresenter categoriesFor: #are:legalIn:!public!testing! !
+!JadeiteCommandPresenter categoriesFor: #basicBrowse:!operations!private! !
 !JadeiteCommandPresenter categoriesFor: #basicSubmitCommand:!commands!private! !
 !JadeiteCommandPresenter categoriesFor: #browse:!operations!public! !
 !JadeiteCommandPresenter categoriesFor: #commandFrom:!commands!private! !
