@@ -1,0 +1,12 @@
+ RwSimpleProjectSpecification{
+	#specName : 'RowanSample1',
+	#projectUrl : 'https://github.com/dalehenrich/RowanSample1',
+	#repoSpec : RwGitRepositorySpecification {
+		#committish : 'sample',
+		#committishType : 'branch'
+	},
+	#configsPath : 'rowan/configs',
+	#repoPath : 'rowan/src',
+	#specsPath : 'rowan/specs',
+	#comment : 'Sample project to be used as an example project when first getting started with Jadeite and Rowan.'
+}

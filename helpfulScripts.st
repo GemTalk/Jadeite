@@ -18,3 +18,9 @@ JadeiteCommandShell showOnSession: GciSession current
 "server side" 
 25 timesRepeat: [[(Delay forSeconds: 30) wait] fork].
 (Delay forSeconds: 5) wait. "get em started"
+
+"Read in an RwSpecification" 
+RwSpecification fromUrl: 'file:/export//korea2/users/ewinger/shared/repos/RowanSample9/specs/spec_0052.ston'
+(RwSpecification fromFile: '/export//korea2/users/ewinger/shared/repos/RowanSample9/specs/spec_0052.ston') resolve load
+"Write out RwSimpleProjectSpecification"
+self exportToUrl: 'file:/home/ewinger/temp/' as: 'test.ston'

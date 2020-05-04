@@ -62,7 +62,7 @@ commandHelpStrings
 	| writeStream |
 	writeStream := WriteStream on: String new.
 	writeStream
-		nextPutAll: '"If a known command is not entered, input will be evaluated as an expression in the server.
+		nextPutAll: '"If a known command is not entered, input will be evaluated as server expression."
 
 Shortcut
 	Type the first unique letters of a command. e.g. - If no other commands start with "b", typing "b Rowan" will bring up a Rowan Project browser"
@@ -110,6 +110,10 @@ createComponents
 documentPresenter
 	^codePane documentPresenter!
 
+fileSave
+
+	self halt. !
+
 help: substrings
 	^self commandHelpStrings!
 
@@ -155,7 +159,7 @@ senders: substrings
 
 submitCommand
 	| result input |
-	input := commandLine value.
+	input := commandLine value. 
 	self documentPresenter view appendText: Character cr asString , '>' , commandLine value.
 	self documentPresenter view moveToEndOfDocument.
 	commandLine value: String new.
@@ -201,6 +205,7 @@ switchesFrom: substrings
 !JadeiteCommandPresenter categoriesFor: #commandStrings!accessing!command registry!private! !
 !JadeiteCommandPresenter categoriesFor: #createComponents!initialization!public! !
 !JadeiteCommandPresenter categoriesFor: #documentPresenter!accessing!private! !
+!JadeiteCommandPresenter categoriesFor: #fileSave!operations!public! !
 !JadeiteCommandPresenter categoriesFor: #help:!operations!public! !
 !JadeiteCommandPresenter categoriesFor: #implementors:!operations!public! !
 !JadeiteCommandPresenter categoriesFor: #is:legalIn:!public!testing! !
