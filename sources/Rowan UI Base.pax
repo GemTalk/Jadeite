@@ -49,6 +49,7 @@ package classNames
 	add: #JadeiteProjectListPresenter;
 	add: #JadeiteProjectsBrowserPresenter;
 	add: #JadeiteProjectsSystemBrowser;
+	add: #JadeitePropertyInspector;
 	add: #JadeiteRenameClassMethodListBrowser;
 	add: #JadeiteRenameClassMethodListPresenter;
 	add: #JadeiteScintillaView;
@@ -95,6 +96,7 @@ package classNames
 	add: #RowanSavePackageDialog;
 	add: #RowanService;
 	add: #RowanShell;
+	add: #RowanSpecificationService;
 	add: #RowanSuperclassUpdate;
 	add: #RowanSystemBrowser;
 	add: #RowanSystemBrowserPresenter;
@@ -104,6 +106,7 @@ package classNames
 	yourself.
 
 package methodNames
+	add: #Aspect -> #immediateActionBlock:;
 	add: #Association -> #stonOn:;
 	add: #CodeSourcePresenter -> #browseSelectedClass;
 	add: #CodeSourcePresenter -> #currentSelection;
@@ -538,6 +541,7 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Difference\Dolphin Differences Presenter'
 	'..\Core\Object Arts\Dolphin\MVP\Dialogs\Find\Dolphin Find Dialog'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Font\Dolphin Font Presenter'
+	'..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin In-place Text Editor'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Key-Value Prompter'
 	'..\Core\Object Arts\Dolphin\Base\Dolphin Legacy Date & Time'
 	'..\Core\Object Arts\Dolphin\MVP\Models\List\Dolphin List Models'
@@ -767,6 +771,11 @@ RowanService subclass: #RowanVariableService
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+RowanInspectorService subclass: #RowanSpecificationService
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 DifferencesPresenter subclass: #JadeiteDifferencesPresenter
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -833,7 +842,7 @@ RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement'
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement specEditor'
 	classVariableNames: ''
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
@@ -1037,6 +1046,11 @@ SmalltalkWorkspace subclass: #JadeiteSmalltalkWorkspace
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+PropertyInspector subclass: #JadeitePropertyInspector
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 TextPresenter subclass: #JadeiteCommandLinePresenter
 	instanceVariableNames: 'history historyIndex'
 	classVariableNames: ''
@@ -1062,6 +1076,14 @@ ScintillaView subclass: #JadeiteScintillaView
 
 
 "Loose Methods"!
+
+!Aspect methodsFor!
+
+immediateActionBlock: aBlock
+	"Jadeite - allow for unsetting of immediate actions"
+
+	immediateActionBlock := aBlock! !
+!Aspect categoriesFor: #immediateActionBlock:!accessing!private! !
 
 !Association methodsFor!
 
