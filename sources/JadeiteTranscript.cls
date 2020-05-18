@@ -247,7 +247,8 @@ registerPresentersForUpdates
 		register: self selector: #autoCommitUpdate:;
 		register: self selector: #breakpointSettingChanged:;
 		register: self selector: #updateSymbols:;
-		register: projectListPresenter projectListPresenter selector: #projectsUpdate:!
+		register: projectListPresenter projectListPresenter selector: #projectsUpdate:;
+		register: projectListPresenter projectListPresenter selector: #newProject:!
 
 remoteAutoCommit
 	| answeringService |

@@ -70,12 +70,14 @@ package classNames
 	add: #RowanClassService;
 	add: #RowanDebuggerService;
 	add: #RowanDebuggerStepPointError;
+	add: #RowanDefinedProjectService;
 	add: #RowanDictionaryService;
 	add: #RowanDictionaryUpdate;
 	add: #RowanFrameService;
 	add: #RowanGlobalsUpdate;
 	add: #RowanInspectorService;
 	add: #RowanKeyValuePrompter;
+	add: #RowanLoadedProjectService;
 	add: #RowanLoggingService;
 	add: #RowanMethodListBrowser;
 	add: #RowanMethodListPresenter;
@@ -93,6 +95,7 @@ package classNames
 	add: #RowanProjectService;
 	add: #RowanProjectsUpdate;
 	add: #RowanQueryService;
+	add: #RowanResolvedProjectService;
 	add: #RowanSavePackageDialog;
 	add: #RowanService;
 	add: #RowanShell;
@@ -541,7 +544,6 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Difference\Dolphin Differences Presenter'
 	'..\Core\Object Arts\Dolphin\MVP\Dialogs\Find\Dolphin Find Dialog'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Font\Dolphin Font Presenter'
-	'..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin In-place Text Editor'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Key-Value Prompter'
 	'..\Core\Object Arts\Dolphin\Base\Dolphin Legacy Date & Time'
 	'..\Core\Object Arts\Dolphin\MVP\Models\List\Dolphin List Models'
@@ -757,7 +759,7 @@ RowanService subclass: #RowanProcessService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanProjectService
-	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty'
+	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -772,6 +774,21 @@ RowanService subclass: #RowanVariableService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanInspectorService subclass: #RowanSpecificationService
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanProjectService subclass: #RowanDefinedProjectService
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanProjectService subclass: #RowanLoadedProjectService
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanProjectService subclass: #RowanResolvedProjectService
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

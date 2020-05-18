@@ -205,6 +205,10 @@ isClassService
 
 	^false!
 
+isDefinedProject
+
+	^true!
+
 isDictionaryService
 
 	^false!
@@ -264,6 +268,8 @@ name
 
 name: aString
 	name := aString asString!
+
+newProject: presenter!
 
 notRowanizedPackageName
 	^self class notRowanizedPackageName!
@@ -493,6 +499,7 @@ wasRenamed
 !RowanService categoriesFor: #isAnsweringService!public!testing! !
 !RowanService categoriesFor: #isBrowserService!public!testing! !
 !RowanService categoriesFor: #isClassService!public!testing! !
+!RowanService categoriesFor: #isDefinedProject!public!testing! !
 !RowanService categoriesFor: #isDictionaryService!public!testing! !
 !RowanService categoriesFor: #isDirty!accessing!public! !
 !RowanService categoriesFor: #isDirty:!accessing!public! !
@@ -511,6 +518,7 @@ wasRenamed
 !RowanService categoriesFor: #methodUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #name!accessing!public! !
 !RowanService categoriesFor: #name:!accessing!public! !
+!RowanService categoriesFor: #newProject:!public!updating! !
 !RowanService categoriesFor: #notRowanizedPackageName!displaying!public! !
 !RowanService categoriesFor: #packagesUpdate:!public!updating! !
 !RowanService categoriesFor: #packageUpdate:!public!updating! !

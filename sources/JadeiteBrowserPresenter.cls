@@ -332,6 +332,14 @@ createListViewFor: newCard
 		customDrawBlock: [:each | each item displayStringFor: each].
 	^listView!
 
+createNewProject
+	| projectName |
+	projectName := Prompter prompt: 'Enter Project Name' caption: 'Create new Rowan project'.
+	projectName
+		ifNotNil: 
+			[self newProjectNamed: projectName.
+			self selectProjectNamed: projectName]!
+
 createSchematicWiring
 	super createSchematicWiring.
 	dictionaryPresenter
@@ -653,6 +661,12 @@ methodValueChanged
 				yourself].
 	self updateSystemTab.!
 
+newProjectNamed: projectName
+	RowanBrowserService new
+		newProjectNamed: projectName
+		session: self gciSession
+		windowHandle: self view handle value!
+
 noClassSelectedInEitherPresenter
 	classListPresenter selectionIfNone: [classHierarchyPresenter selectionIfNone: [^true]].
 	^false!
@@ -737,6 +751,7 @@ projectMenuStrings
 	0 == 1
 		ifTrue: 
 			[self
+				createNewProject;
 				addPackage;
 				cloneProject;
 				loadProjects;
@@ -751,6 +766,7 @@ projectMenuStrings
 				projectLog;
 				refresh].
 	^#('Projects' 
+		'Create ...//createNewProject'
 		'Clone Git Project ...//cloneProject' 
 		'Load//loadProjects' 'Unload//unloadProjects' 
 		'-'
@@ -795,6 +811,10 @@ queryCommand: aCommandQuery
 	#gitCommit == command
 		ifTrue: 
 			[aCommandQuery isEnabled: self allSelectedProjectsDirty.
+			^true].
+	#createNewProject = command
+		ifTrue: 
+			[aCommandQuery isEnabled: true.
 			^true].
 	(self projectMenuCommands includes: command)
 		ifTrue: 
@@ -1302,7 +1322,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #buildGlobalsTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #buildProjectTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #checkout!project menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #checkout!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #checkoutTag!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #classCommentChanged!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #classesMenuStrings!menus!public! !
@@ -1310,6 +1330,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #contextObject!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
 !JadeiteBrowserPresenter categoriesFor: #createListViewFor:!private! !
+!JadeiteBrowserPresenter categoriesFor: #createNewProject!menu handlers!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
 !JadeiteBrowserPresenter categoriesFor: #createSchematicWiringForMethodSource!create schemantic wiring!public! !
 !JadeiteBrowserPresenter categoriesFor: #debug!menu handlers!public! !
@@ -1348,6 +1369,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #methodsUpdate:!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #methodToReformat!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #methodValueChanged!event handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #newProjectNamed:!menu handlers!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #noClassSelectedInEitherPresenter!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #onDragMethod:!drag & drop!public! !
 !JadeiteBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !

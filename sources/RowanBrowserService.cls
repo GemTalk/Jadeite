@@ -88,6 +88,12 @@ name
 
 	^nil!
 
+newProjectNamed: projectName session: session windowHandle: handle
+	self
+		command: #newProjectNamed:windowHandle:;
+		commandArgs: (Array with: projectName with: handle).
+	BrowserUpdate current issueCommands: (Array with: self) session: session!
+
 postUpdate
 	super postUpdate.
 	projects ifNotNil: [projects do: [:service | service postUpdate]].
@@ -210,6 +216,7 @@ testPackages: presenter
 !RowanBrowserService categoriesFor: #initialize!initialization!public! !
 !RowanBrowserService categoriesFor: #isBrowserService!public!testing! !
 !RowanBrowserService categoriesFor: #name!accessing!public! !
+!RowanBrowserService categoriesFor: #newProjectNamed:session:windowHandle:!commands!public!registering windows! !
 !RowanBrowserService categoriesFor: #postUpdate!public! !
 !RowanBrowserService categoriesFor: #prepareForReplication!public!replication! !
 !RowanBrowserService categoriesFor: #printOn:!printing!public! !

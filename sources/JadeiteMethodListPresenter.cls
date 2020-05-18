@@ -283,6 +283,7 @@ updateSource
 	methodSourcePresenter methodService: selection.
 	methodSourcePresenter update.
 	self doSearch. 
+	methodSourcePresenter documentPresenter value ifNil:[^self]. 
 	('*METHOD SOURCE CANNOT BE DISPLAYED*' match: methodSourcePresenter documentPresenter value)
 		ifTrue: [methodSourcePresenter documentPresenter view backcolor: Color red faded faded].! !
 !JadeiteMethodListPresenter categoriesFor: #additionalAccelerators!accessing!public! !

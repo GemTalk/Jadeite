@@ -32,3 +32,5 @@ self exportToUrl: 'file:/home/ewinger/temp/' as: 'test.ston'
         newRepositoryRoot: '$ROWAN_PROJECTS_HOME/Rowan' 
         platformConditionalAttributes: Rowan platformConditionalAttributes, #('tests' 'v2' 'v2Only' 'testsV2')
         forProjectNamed: 'Rowan'
+
+(Rowan projectNamed: 'Rowan') gitRepositoryRoot: '$ROWAN_PROJECTS_HOME/Rowan'

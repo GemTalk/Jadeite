@@ -1462,6 +1462,7 @@ registerPresentersForUpdates
 
 	BrowserUpdate current register: projectListPresenter 		selector: #projectsUpdate:browser: browser: self.
 	BrowserUpdate current register: projectListPresenter 		selector: #removedProject:.
+	BrowserUpdate current register: projectListPresenter 		selector: #newProject:.
 	BrowserUpdate current register: projectListPresenter 		selector: #projectsUpdate:.
 	BrowserUpdate current register: projectListPresenter 		selector: #removed:.
 	BrowserUpdate current register: classListPresenter 		selector: #classesUpdate:browser: browser: self.

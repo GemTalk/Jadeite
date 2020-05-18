@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanProjectService
-	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty'
+	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -240,6 +240,7 @@ remoteServiceName
 
 removed: presenter
 	self = RowanProjectService noneProject ifTrue: [^self].
+	self isDefinedProject ifTrue:[^self]. 
 	^super removed: presenter!
 
 removedProject: presenter
