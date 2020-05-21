@@ -38,9 +38,11 @@ ProgressDialog showModalWhile: [:progress |
 			value: percent;
 			text: 'Loading package: ' , name;
 			yourself.
-		PackageManager current install: 'sources\' , name , '.pax'
+		PackageManager current install: 'sources\' , name , '.pax'.
+	
 	].
 ].
+PackageManager current install: 'C:\Users\ewinger\source\repos\RemoteServiceReplication\src-dolphin\RemoteServiceReplication-Test.pac'.
 
 
 SessionManager current splashShowAtStartup: false.

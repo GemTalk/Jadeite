@@ -34,3 +34,7 @@ self exportToUrl: 'file:/home/ewinger/temp/' as: 'test.ston'
         forProjectNamed: 'Rowan'
 
 (Rowan projectNamed: 'Rowan') gitRepositoryRoot: '$ROWAN_PROJECTS_HOME/Rowan'
+
+"RSR" 
+
+[UserGlobals at: #rsrConnection put: (RsrConnection acceptOn: RsrSocketPair listenPort)] fork
