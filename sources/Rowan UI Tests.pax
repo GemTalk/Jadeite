@@ -124,22 +124,22 @@ MessageBox subclass: #TestMessageBox
 	classVariableNames: 'LastMessageBox PlannedResult'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-RowanService subclass: #RowanTestService
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanLoggingService subclass: #TestLoggingService
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
 Prompter subclass: #TestPrompter
 	instanceVariableNames: ''
 	classVariableNames: 'LastPrompt PlannedResult'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 SUnitBrowser subclass: #JadeiteDevelopmentSUnitBrowser
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanTestService
+	instanceVariableNames: 'name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanLoggingService subclass: #TestLoggingService
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

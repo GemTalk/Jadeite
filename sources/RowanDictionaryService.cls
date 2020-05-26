@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanDictionaryService
-	instanceVariableNames: 'classes hierarchyServices globals defaultTemplate'
+	instanceVariableNames: 'classes hierarchyServices globals defaultTemplate name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -61,6 +61,14 @@ defaultTemplate
 defaultTemplate: anObject
 	defaultTemplate := anObject!
 
+displayName
+	"for logging. for now"
+
+	^name!
+
+displayString
+	^self name!
+
 displayStringFor: displayThing
 	displayThing forecolor: Color black!
 
@@ -81,6 +89,12 @@ hash
 isDictionaryService
 
 	^true!
+
+name
+	^name!
+
+name: aString
+	name := aString asString!
 
 postUpdate
 	super postUpdate.
@@ -103,7 +117,11 @@ removeDeletedClassesIn: presenter browser: browser
 	^super
 		removeDeletedClassesIn: presenter
 		browser: browser
-		classes: classes! !
+		classes: classes!
+
+sortAspect
+
+	^name! !
 !RowanDictionaryService categoriesFor: #=!comparing!public! !
 !RowanDictionaryService categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanDictionaryService categoriesFor: #classes!accessing!public! !
@@ -112,15 +130,20 @@ removeDeletedClassesIn: presenter browser: browser
 !RowanDictionaryService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
 !RowanDictionaryService categoriesFor: #defaultTemplate!accessing!private! !
 !RowanDictionaryService categoriesFor: #defaultTemplate:!accessing!private! !
+!RowanDictionaryService categoriesFor: #displayName!displaying!public! !
+!RowanDictionaryService categoriesFor: #displayString!displaying!public! !
 !RowanDictionaryService categoriesFor: #displayStringFor:!displaying!public! !
 !RowanDictionaryService categoriesFor: #doesUpdateApply:!private!testing! !
 !RowanDictionaryService categoriesFor: #globals!accessing!public! !
 !RowanDictionaryService categoriesFor: #globals:!accessing!public! !
 !RowanDictionaryService categoriesFor: #hash!comparing!public! !
 !RowanDictionaryService categoriesFor: #isDictionaryService!public!testing! !
+!RowanDictionaryService categoriesFor: #name!accessing!public! !
+!RowanDictionaryService categoriesFor: #name:!accessing!public! !
 !RowanDictionaryService categoriesFor: #postUpdate!Init / Release!public! !
 !RowanDictionaryService categoriesFor: #prepareForReplication!public!replication! !
 !RowanDictionaryService categoriesFor: #removeDeletedClassesIn:browser:!private! !
+!RowanDictionaryService categoriesFor: #sortAspect!accessing!public! !
 
 !RowanDictionaryService class methodsFor!
 

@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanClassService
-	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand isInSymbolList dictionaryName wasRemoved renamedName'
+	instanceVariableNames: 'comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions template oop filters filterType methods packageName definedPackageName selectedPackageServices selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand isInSymbolList dictionaryName wasRemoved renamedName name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -155,9 +155,14 @@ displayMethodsOn: presenter browser: browser
 	visibleMethods := self computeVisibleMethods: presenter browser: browser.
 	self updateListIn: presenter from: visibleMethods!
 
+displayName
+	"for logging. for now"
+
+	^name!
+
 displayString
 	| displayString |
-	displayString := self name.
+	displayString := self name ifNil: [String new]. 
 	versions ~= 1
 		ifTrue: 
 			[displayString := displayString , ' (' , version printString , '/' , versions printString , ')'].
@@ -318,6 +323,12 @@ moveNodeToBeChildOf: superclassService in: classHierarchyPresenter
 			[classHierarchyPresenter model move: self asChildOf: superclassService].
 	classHierarchyPresenter view expand: myNode!
 
+name
+	^name!
+
+name: aString
+	name := aString asString!
+
 oop
 	^oop!
 
@@ -458,6 +469,10 @@ shouldReplicateInstVarAtIndex: index newService: newService
 	self indexOfMethodsInstVar = index ifTrue: [newService meta = meta ifFalse: [^false]].
 	^true!
 
+sortAspect
+
+	^name!
+
 sunitMethodsUpdate: presenter browser: browser
 	| selections oldClassService |
 	browser classListPresenter selections isEmpty ifTrue: [^self].
@@ -597,6 +612,7 @@ wasRenamed
 !RowanClassService categoriesFor: #definedPackageName:!accessing!private! !
 !RowanClassService categoriesFor: #dictionaryName!accessing!private! !
 !RowanClassService categoriesFor: #displayMethodsOn:browser:!public!updating! !
+!RowanClassService categoriesFor: #displayName!displaying!public! !
 !RowanClassService categoriesFor: #displayString!displaying!public! !
 !RowanClassService categoriesFor: #displayStringFor:browser:!displaying!public! !
 !RowanClassService categoriesFor: #equalBeforeRename:!comparing!public! !
@@ -631,6 +647,8 @@ wasRenamed
 !RowanClassService categoriesFor: #methodsWithBreakpoints!public!testing! !
 !RowanClassService categoriesFor: #methodUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #moveNodeToBeChildOf:in:!private!updating support! !
+!RowanClassService categoriesFor: #name!accessing!public! !
+!RowanClassService categoriesFor: #name:!accessing!public! !
 !RowanClassService categoriesFor: #oop!accessing!private! !
 !RowanClassService categoriesFor: #oop:!accessing!private! !
 !RowanClassService categoriesFor: #packageName!accessing!private! !
@@ -655,6 +673,7 @@ wasRenamed
 !RowanClassService categoriesFor: #selectedPackageServices:browser:!accessing!private! !
 !RowanClassService categoriesFor: #shouldColorAsExtension:!public!testing! !
 !RowanClassService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
+!RowanClassService categoriesFor: #sortAspect!accessing!public! !
 !RowanClassService categoriesFor: #sunitMethodsUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #template!accessing!private! !
 !RowanClassService categoriesFor: #template:!accessing!private! !

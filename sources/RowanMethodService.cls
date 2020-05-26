@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName isMethodForBlock homeMethodOop hasMethodHistory searchString definedClassName'
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName isMethodForBlock homeMethodOop hasMethodHistory searchString definedClassName name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -199,6 +199,9 @@ displayOn: aStream
 		nextPutAll: '>>';
 		nextPutAll: (selector ifNil: ['?'])!
 
+displayString
+	^selector!
+
 displayStringFor: displayThing
 	isExtension
 		ifTrue: 
@@ -344,6 +347,9 @@ methodUpdate: presenter browser: browser
 name
 	selector isNil ifTrue:[^String new].
 	^selector asString!
+
+name: aString
+	name := aString asString!
 
 oop
 
@@ -602,6 +608,7 @@ user: anObject
 !RowanMethodService categoriesFor: #displayClassName!displaying!public! !
 !RowanMethodService categoriesFor: #displayName!displaying!public! !
 !RowanMethodService categoriesFor: #displayOn:!displaying!public! !
+!RowanMethodService categoriesFor: #displayString!displaying!public! !
 !RowanMethodService categoriesFor: #displayStringFor:!displaying!public! !
 !RowanMethodService categoriesFor: #displayStringFor:browser:!displaying!public! !
 !RowanMethodService categoriesFor: #equalBeforeRename:!comparing!public! !
@@ -637,6 +644,7 @@ user: anObject
 !RowanMethodService categoriesFor: #methodSourceUpdate:browser:!public!updating! !
 !RowanMethodService categoriesFor: #methodUpdate:browser:!public!updating! !
 !RowanMethodService categoriesFor: #name!accessing!public! !
+!RowanMethodService categoriesFor: #name:!accessing!public! !
 !RowanMethodService categoriesFor: #oop!public! !
 !RowanMethodService categoriesFor: #oopType!public! !
 !RowanMethodService categoriesFor: #packageName!accessing!private! !

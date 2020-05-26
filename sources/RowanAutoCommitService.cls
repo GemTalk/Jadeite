@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanAutoCommitService
-	instanceVariableNames: 'autoCommit'
+	instanceVariableNames: 'autoCommit postUpdateBlock name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -25,6 +25,11 @@ autoCommitUpdate: browser
 	browser autoCommit: autoCommit.
 	^postUpdateBlock!
 
+displayName
+	"for logging. for now"
+
+	^name!
+
 displayTransactionConflicts: browser
 	| inspector session service |
 	session := browser gciSession.
@@ -32,7 +37,21 @@ displayTransactionConflicts: browser
 	service := inspector evaluateText: 'System transactionConflicts'
 				thenInspectInContext: session oopNil value.
 	inspector showOn: service.
-	inspector updateCaption: 'Transaction Conflicts'. ! !
+	inspector updateCaption: 'Transaction Conflicts'. !
+
+name
+	^name!
+
+name: aString
+	name := aString asString!
+
+sortAspect
+
+	^name! !
 !RowanAutoCommitService categoriesFor: #autoCommitUpdate:!public!updating! !
+!RowanAutoCommitService categoriesFor: #displayName!displaying!public! !
 !RowanAutoCommitService categoriesFor: #displayTransactionConflicts:!private!transaction management! !
+!RowanAutoCommitService categoriesFor: #name!accessing!public! !
+!RowanAutoCommitService categoriesFor: #name:!accessing!public! !
+!RowanAutoCommitService categoriesFor: #sortAspect!accessing!public! !
 

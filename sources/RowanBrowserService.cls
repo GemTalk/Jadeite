@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanBrowserService
-	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount dictionaries selectedClass newCachedSelectors newCachedClasses'
+	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount dictionaries selectedClass newCachedSelectors newCachedClasses name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -69,6 +69,11 @@ dictionaryListUpdate: presenter
 			(dictionaries at: index) = (presenter model at: index ifAbsent: [RowanDictionaryService new])
 				ifFalse: [presenter model add: (dictionaries at: index) afterIndex: index - 1]]!
 
+displayName
+	"for logging. for now"
+
+	^name!
+
 excludedInstVars
 	^super excludedInstVars , #('hierarchyServices')!
 
@@ -87,6 +92,9 @@ name
 	"browser services aren't named, but (for convenience) can respond"
 
 	^nil!
+
+name: aString
+	name := aString asString!
 
 newProjectNamed: projectName session: session windowHandle: handle
 	self
@@ -184,6 +192,10 @@ selectedClass
 selectedClass: anObject
 	selectedClass := anObject!
 
+sortAspect
+
+	^name!
+
 testCount
 	^testCount!
 
@@ -211,11 +223,13 @@ testPackages: presenter
 !RowanBrowserService categoriesFor: #basicPrepareForReplication!public!replication! !
 !RowanBrowserService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
 !RowanBrowserService categoriesFor: #dictionaryListUpdate:!public!updating! !
+!RowanBrowserService categoriesFor: #displayName!displaying!public! !
 !RowanBrowserService categoriesFor: #excludedInstVars!public!ston! !
 !RowanBrowserService categoriesFor: #hash!comparing!public! !
 !RowanBrowserService categoriesFor: #initialize!initialization!public! !
 !RowanBrowserService categoriesFor: #isBrowserService!public!testing! !
 !RowanBrowserService categoriesFor: #name!accessing!public! !
+!RowanBrowserService categoriesFor: #name:!accessing!public! !
 !RowanBrowserService categoriesFor: #newProjectNamed:session:windowHandle:!commands!public!registering windows! !
 !RowanBrowserService categoriesFor: #postUpdate!public! !
 !RowanBrowserService categoriesFor: #prepareForReplication!public!replication! !
@@ -231,6 +245,7 @@ testPackages: presenter
 !RowanBrowserService categoriesFor: #replicateFrom:!public!replication! !
 !RowanBrowserService categoriesFor: #selectedClass!accessing!public! !
 !RowanBrowserService categoriesFor: #selectedClass:!accessing!public! !
+!RowanBrowserService categoriesFor: #sortAspect!accessing!public! !
 !RowanBrowserService categoriesFor: #testCount!accessing!private! !
 !RowanBrowserService categoriesFor: #testCount:!accessing!private! !
 !RowanBrowserService categoriesFor: #testPackages:!public!updating! !

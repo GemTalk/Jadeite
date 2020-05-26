@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanPackageService
-	instanceVariableNames: 'classes defaultTemplate projectName classCompilationFailures testClasses hierarchyServices selectedClass'
+	instanceVariableNames: 'classes defaultTemplate projectName classCompilationFailures testClasses hierarchyServices selectedClass name isDirty'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -86,6 +86,14 @@ defaultTemplate
 defaultTemplate: anObject
 	defaultTemplate := anObject!
 
+displayName
+	"for logging. for now"
+
+	^name!
+
+displayString
+	^self name!
+
 displayStringFor: displayThing
 	name ifNil: [^self].
 	self isDirty == true
@@ -107,14 +115,26 @@ hierarchyServices: collection
 
 	hierarchyServices := collection!
 
+isDirty
+	^isDirty!
+
+isDirty: anObject
+	isDirty := anObject!
+
 isPackageService
 
 	^true!
 
+name
+	^name!
+
+name: aString
+	name := aString asString!
+
 packageUpdate: presenter
 	| packageInList |
 	packageInList := presenter list detect: [:packageService | packageService name = name] ifNone: [].
-	packageInList ifNotNil: [:packageService | packageService isDirty: isDirty].
+	packageInList ifNotNil: [:packageService | packageService isDirty: self isDirty].
 	presenter view invalidate!
 
 postUpdate
@@ -151,6 +171,10 @@ selectedClass
 selectedClass: anObject
 	selectedClass := anObject!
 
+sortAspect
+
+	^name!
+
 testClasses: presenter browser: browser
 	| additions |
 	additions := OrderedCollection new.
@@ -186,11 +210,17 @@ updateList: presenter whilePreservingSelections: updates browser: browser
 !RowanPackageService categoriesFor: #condenseExtensions:!private!updating! !
 !RowanPackageService categoriesFor: #defaultTemplate!accessing!private! !
 !RowanPackageService categoriesFor: #defaultTemplate:!accessing!private! !
+!RowanPackageService categoriesFor: #displayName!displaying!public! !
+!RowanPackageService categoriesFor: #displayString!displaying!public! !
 !RowanPackageService categoriesFor: #displayStringFor:!displaying!public! !
 !RowanPackageService categoriesFor: #doesUpdateApply:!private!testing! !
 !RowanPackageService categoriesFor: #hash!comparing!public! !
 !RowanPackageService categoriesFor: #hierarchyServices:!public!updating! !
+!RowanPackageService categoriesFor: #isDirty!accessing!public! !
+!RowanPackageService categoriesFor: #isDirty:!accessing!public! !
 !RowanPackageService categoriesFor: #isPackageService!public!testing! !
+!RowanPackageService categoriesFor: #name!accessing!public! !
+!RowanPackageService categoriesFor: #name:!accessing!public! !
 !RowanPackageService categoriesFor: #packageUpdate:!public!updating! !
 !RowanPackageService categoriesFor: #postUpdate!Init / Release!public! !
 !RowanPackageService categoriesFor: #prepareForReplication!public!replication! !
@@ -201,6 +231,7 @@ updateList: presenter whilePreservingSelections: updates browser: browser
 !RowanPackageService categoriesFor: #replicateFrom:!public!replication! !
 !RowanPackageService categoriesFor: #selectedClass!accessing!public! !
 !RowanPackageService categoriesFor: #selectedClass:!accessing!public! !
+!RowanPackageService categoriesFor: #sortAspect!accessing!public! !
 !RowanPackageService categoriesFor: #testClasses:browser:!public!updating! !
 !RowanPackageService categoriesFor: #updateList:whilePreservingSelections:browser:!private!updating! !
 

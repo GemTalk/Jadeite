@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanProjectService
-	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop'
+	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop name isDirty'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -142,6 +142,12 @@ initialize
 	sha := 'not a project'.
 	isDiskDirty := false. !
 
+isDirty
+	^isDirty!
+
+isDirty: anObject
+	isDirty := anObject!
+
 isDiskDirty
 	^isDiskDirty!
 
@@ -158,6 +164,12 @@ isSkew
 
 isSkew: anObject
 	isSkew := anObject!
+
+name
+	^name!
+
+name: aString
+	name := aString asString!
 
 newTextView: session using: parentPresenter
 	| edit shell |
@@ -259,7 +271,11 @@ sha
 	^sha!
 
 sha: anObject
-	sha := anObject! !
+	sha := anObject!
+
+sortAspect
+
+	^name! !
 !RowanProjectService categoriesFor: #=!comparing!public! !
 !RowanProjectService categoriesFor: #addPackageNamed:using:!presenter support!public! !
 !RowanProjectService categoriesFor: #allClasses!accessing!public! !
@@ -277,11 +293,15 @@ sha: anObject
 !RowanProjectService categoriesFor: #gitTags:!presenter support!public! !
 !RowanProjectService categoriesFor: #hash!comparing!public! !
 !RowanProjectService categoriesFor: #initialize!Init / Release!public! !
+!RowanProjectService categoriesFor: #isDirty!accessing!public! !
+!RowanProjectService categoriesFor: #isDirty:!accessing!public! !
 !RowanProjectService categoriesFor: #isDiskDirty!accessing!public! !
 !RowanProjectService categoriesFor: #isLoaded!public!testing! !
 !RowanProjectService categoriesFor: #isProjectService!public!testing! !
 !RowanProjectService categoriesFor: #isSkew!accessing!private! !
 !RowanProjectService categoriesFor: #isSkew:!accessing!private! !
+!RowanProjectService categoriesFor: #name!accessing!public! !
+!RowanProjectService categoriesFor: #name:!accessing!public! !
 !RowanProjectService categoriesFor: #newTextView:using:!displaying!private! !
 !RowanProjectService categoriesFor: #packages!accessing!public! !
 !RowanProjectService categoriesFor: #performGitCommand:with:in:!presenter support!public! !
@@ -299,6 +319,7 @@ sha: anObject
 !RowanProjectService categoriesFor: #rowanProjectsHome!accessing!public! !
 !RowanProjectService categoriesFor: #sha!accessing!public! !
 !RowanProjectService categoriesFor: #sha:!accessing!public! !
+!RowanProjectService categoriesFor: #sortAspect!accessing!public! !
 
 !RowanProjectService class methodsFor!
 

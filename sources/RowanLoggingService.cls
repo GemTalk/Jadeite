@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanLoggingService
-	instanceVariableNames: 'fileName id groupId date time comment services mode location isLogging'
+	instanceVariableNames: 'fileName id groupId date time comment services mode location isLogging name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -55,6 +55,11 @@ displayCommand
 				space;
 				nextPutAll: (service displayName ifNil: [String new])].
 	^ws contents!
+
+displayName
+	"for logging. for now"
+
+	^name!
 
 displayString
 	| ws |
@@ -158,6 +163,12 @@ logServices: theServices
 mode
 	^mode!
 
+name
+	^name!
+
+name: aString
+	name := aString asString!
+
 printString
 	^self class name , ' ' , self displayString!
 
@@ -167,6 +178,10 @@ serverDisplayString
 services
 
 	^services!
+
+sortAspect
+
+	^name!
 
 time
 	^time!
@@ -183,6 +198,7 @@ time: anObject
 !RowanLoggingService categoriesFor: #date!accessing!private! !
 !RowanLoggingService categoriesFor: #date:!accessing!private! !
 !RowanLoggingService categoriesFor: #displayCommand!displaying!public! !
+!RowanLoggingService categoriesFor: #displayName!displaying!public! !
 !RowanLoggingService categoriesFor: #displayString!displaying!public! !
 !RowanLoggingService categoriesFor: #fileName!accessing!private! !
 !RowanLoggingService categoriesFor: #fileName:!accessing!private! !
@@ -203,9 +219,12 @@ time: anObject
 !RowanLoggingService categoriesFor: #logSentServices:!logging!public! !
 !RowanLoggingService categoriesFor: #logServices:!logging!public! !
 !RowanLoggingService categoriesFor: #mode!accessing!public! !
+!RowanLoggingService categoriesFor: #name!accessing!public! !
+!RowanLoggingService categoriesFor: #name:!accessing!public! !
 !RowanLoggingService categoriesFor: #printString!displaying!public! !
 !RowanLoggingService categoriesFor: #serverDisplayString!displaying!public! !
 !RowanLoggingService categoriesFor: #services!accessing!public! !
+!RowanLoggingService categoriesFor: #sortAspect!accessing!public! !
 !RowanLoggingService categoriesFor: #time!accessing!private! !
 !RowanLoggingService categoriesFor: #time:!accessing!private! !
 

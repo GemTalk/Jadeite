@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanInspectorService
-	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray isOop instVarNames instVarsAreRemovable isDictionary isVariable selectionOop isUnordered statusText'
+	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray isOop instVarNames instVarsAreRemovable isDictionary isVariable selectionOop isUnordered statusText name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -27,6 +27,11 @@ compileErrorArray: anObject
 
 defaultIndexedSize
 	^1000!
+
+displayName
+	"for logging. for now"
+
+	^name!
 
 executeThenInspect: string context: anOop session: session windowHandle: handle
 	self
@@ -132,6 +137,12 @@ myself
 myself: anObject
 	myself := anObject!
 
+name
+	^name!
+
+name: aString
+	name := aString asString!
+
 nextIndexedVarsFrom: indexStart to: indexStop session: session
 	self
 		command: #nextIndexedVarsFrom:to:;
@@ -184,6 +195,10 @@ removeOop: theOop session: session
 selectionOop
 	^selectionOop!
 
+sortAspect
+
+	^name!
+
 statusText
 	^statusText!
 
@@ -201,6 +216,7 @@ visibleIndices: anObject
 !RowanInspectorService categoriesFor: #compileErrorArray!accessing!private! !
 !RowanInspectorService categoriesFor: #compileErrorArray:!accessing!private! !
 !RowanInspectorService categoriesFor: #defaultIndexedSize!constants!public! !
+!RowanInspectorService categoriesFor: #displayName!displaying!public! !
 !RowanInspectorService categoriesFor: #executeThenInspect:context:session:windowHandle:!inspecting!public! !
 !RowanInspectorService categoriesFor: #executeThenInspect:context:session:windowHandle:debugger:!inspecting!public! !
 !RowanInspectorService categoriesFor: #hash!comparison!private! !
@@ -223,6 +239,8 @@ visibleIndices: anObject
 !RowanInspectorService categoriesFor: #maxIndexedVars:!accessing!private! !
 !RowanInspectorService categoriesFor: #myself!accessing!private! !
 !RowanInspectorService categoriesFor: #myself:!accessing!private! !
+!RowanInspectorService categoriesFor: #name!accessing!public! !
+!RowanInspectorService categoriesFor: #name:!accessing!public! !
 !RowanInspectorService categoriesFor: #nextIndexedVarsFrom:to:session:!inspecting!public! !
 !RowanInspectorService categoriesFor: #nextIndices!accessing!private! !
 !RowanInspectorService categoriesFor: #nextIndices:!accessing!private! !
@@ -235,6 +253,7 @@ visibleIndices: anObject
 !RowanInspectorService categoriesFor: #removeKeys:session:!operations!public! !
 !RowanInspectorService categoriesFor: #removeOop:session:!operations!public! !
 !RowanInspectorService categoriesFor: #selectionOop!accessing!private! !
+!RowanInspectorService categoriesFor: #sortAspect!accessing!public! !
 !RowanInspectorService categoriesFor: #statusText!accessing!private! !
 !RowanInspectorService categoriesFor: #statusText:!accessing!private! !
 !RowanInspectorService categoriesFor: #visibleIndices!accessing!private! !

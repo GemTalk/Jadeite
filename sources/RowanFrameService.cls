@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanFrameService
-	instanceVariableNames: 'label method stepPoint vars oop homeMethodSelector homeMethodClassName classIsResolvable'
+	instanceVariableNames: 'label method stepPoint vars oop homeMethodSelector homeMethodClassName classIsResolvable name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -21,6 +21,11 @@ copyBasicsFrom: oldService
 
 	method := RowanMethodService new copyBasicsFrom: oldService method.
 !
+
+displayName
+	"for logging. for now"
+
+	^name!
 
 gsMethod
 
@@ -52,6 +57,12 @@ label
 method
 	^method!
 
+name
+	^name!
+
+name: aString
+	name := aString asString!
+
 offsets
 
 	^method stepPoints collect: [:each | each key start]!
@@ -67,6 +78,10 @@ printOn: aStream
 	aStream nextPutAll: (label ifNil: ['?'])
 !
 
+sortAspect
+
+	^name!
+
 source
 
 	^method source!
@@ -79,6 +94,7 @@ vars
 !RowanFrameService categoriesFor: #breaks!public! !
 !RowanFrameService categoriesFor: #classIsResolvable!accessing!private! !
 !RowanFrameService categoriesFor: #copyBasicsFrom:!public! !
+!RowanFrameService categoriesFor: #displayName!displaying!public! !
 !RowanFrameService categoriesFor: #gsMethod!public! !
 !RowanFrameService categoriesFor: #homeMethodClassName!accessing!public! !
 !RowanFrameService categoriesFor: #homeMethodSelector!accessing!public! !
@@ -87,10 +103,13 @@ vars
 !RowanFrameService categoriesFor: #isUpdatableService!public!testing! !
 !RowanFrameService categoriesFor: #label!accessing!public! !
 !RowanFrameService categoriesFor: #method!public! !
+!RowanFrameService categoriesFor: #name!accessing!public! !
+!RowanFrameService categoriesFor: #name:!accessing!public! !
 !RowanFrameService categoriesFor: #offsets!public! !
 !RowanFrameService categoriesFor: #oop!accessing!private! !
 !RowanFrameService categoriesFor: #oop:!accessing!private! !
 !RowanFrameService categoriesFor: #printOn:!public! !
+!RowanFrameService categoriesFor: #sortAspect!accessing!public! !
 !RowanFrameService categoriesFor: #source!public! !
 !RowanFrameService categoriesFor: #stepPoint!public! !
 !RowanFrameService categoriesFor: #vars!public! !

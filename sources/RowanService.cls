@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
-Model subclass: #RowanService
-	instanceVariableNames: 'remoteService name isDirty command commandArgs updateType postUpdateBlock'
+RsrService subclass: #RowanService
+	instanceVariableNames: 'command commandArgs updateType organizer'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -126,7 +126,8 @@ command
 	^command!
 
 command: symbol
-	command := symbol.!
+	command := symbol.
+	!
 
 commandArgs
 	^commandArgs!
@@ -160,15 +161,6 @@ dictionaryListUpdate: presenter
 
 dictionaryUpdate: presenter
 	!
-
-displayName
-	"for logging. for now"
-
-	^name!
-
-displayString
-
-	^self name!
 
 emptyFilterListsIn: browser
 	browser categoryListPresenter sortBlock: [:x :y | x < y].
@@ -212,12 +204,6 @@ isDefinedProject
 isDictionaryService
 
 	^false!
-
-isDirty
-	^isDirty!
-
-isDirty: anObject
-	isDirty := anObject!
 
 isInspectorService
 
@@ -264,10 +250,7 @@ methodUpdate: presenter browser: anObject
 	!
 
 name
-	^name!
-
-name: aString
-	name := aString asString!
+	^nil!
 
 newProject: presenter!
 
@@ -289,10 +272,11 @@ postUpdate
 	!
 
 postUpdateBlock
-	^postUpdateBlock!
+	"RowanAutoCommitService is the only use now. 
+	Pushed the inst var to that class to conform with RSR
+	replication protocols."
 
-postUpdateBlock: anObject
-	postUpdateBlock := anObject!
+	^nil!
 
 prepareForReplication
 	"only replicate what is absolutely necessary. Each service knows how to do that. 
@@ -303,7 +287,7 @@ printOn: aStream
 
 	super printOn: aStream. 
 	aStream nextPut: $:. 
-	aStream nextPutAll: (name ifNil: [nil printString])!
+	aStream nextPutAll: (self name ifNil: [nil printString])!
 
 processListUpdate: aPresenter!
 
@@ -316,9 +300,6 @@ projectSelectionUpdate: aPresenter
 projectsUpdate: aPresenter!
 
 projectsUpdate: presenter browser: browser!
-
-remoteService
-	^remoteService!
 
 remoteServiceName
 	self subclassResponsibility!
@@ -334,10 +315,10 @@ removedClass: aPresenter!
 
 removeDeletedClassesIn: presenter browser: browser classes: theClasses
 	| updatedClasses removedClasses renamedClassNames |
-	updatedClasses := theClasses select: [:classService | classService packageName = name]
+	updatedClasses := theClasses select: [:classService | classService packageName = self name]
 				thenCollect: [:classService | classService name asString].
 	removedClasses := presenter list
-				select: [:classService | classService packageName = name and: [(updatedClasses includes: classService name) not]].
+				select: [:classService | classService packageName = self name and: [(updatedClasses includes: classService name) not]].
 	renamedClassNames := theClasses collect: [:classService | classService renamedName].
 	removedClasses := removedClasses
 				reject: [:classService | renamedClassNames includes: classService name].
@@ -360,12 +341,17 @@ replicateFrom: newService
 	(newService class = self class and: [newService name = self name])
 		ifTrue: [self basicReplicateFrom: newService]!
 
+rsrCommand: symbol
+	command := symbol.
+	^self rsrCommand: symbol withArguments: Array new!
+
+rsrCommand: symbol withArguments: arguments
+	command := symbol.
+	commandArgs := arguments.
+	^remoteSelf perform: symbol withArguments: arguments!
+
 shouldReplicateInstVarAtIndex: index newService: anObject
 	^true!
-
-sortAspect
-
-	^name!
 
 stonOn: stonWriter
 	| instanceVariableNames |
@@ -487,8 +473,6 @@ wasRenamed
 !RowanService categoriesFor: #debugPrintString!printing!public! !
 !RowanService categoriesFor: #dictionaryListUpdate:!public!updating! !
 !RowanService categoriesFor: #dictionaryUpdate:!public!updating! !
-!RowanService categoriesFor: #displayName!displaying!public! !
-!RowanService categoriesFor: #displayString!displaying!public! !
 !RowanService categoriesFor: #emptyFilterListsIn:!Init / Release!private! !
 !RowanService categoriesFor: #excludedInstVars!public!ston! !
 !RowanService categoriesFor: #filterUpdate:browser:!public!updating! !
@@ -501,8 +485,6 @@ wasRenamed
 !RowanService categoriesFor: #isClassService!public!testing! !
 !RowanService categoriesFor: #isDefinedProject!public!testing! !
 !RowanService categoriesFor: #isDictionaryService!public!testing! !
-!RowanService categoriesFor: #isDirty!accessing!public! !
-!RowanService categoriesFor: #isDirty:!accessing!public! !
 !RowanService categoriesFor: #isInspectorService!public!testing! !
 !RowanService categoriesFor: #isLoggingService!public!testing! !
 !RowanService categoriesFor: #isMethodService!public!testing! !
@@ -517,7 +499,6 @@ wasRenamed
 !RowanService categoriesFor: #methodsUpdate:!public!updating! !
 !RowanService categoriesFor: #methodUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #name!accessing!public! !
-!RowanService categoriesFor: #name:!accessing!public! !
 !RowanService categoriesFor: #newProject:!public!updating! !
 !RowanService categoriesFor: #notRowanizedPackageName!displaying!public! !
 !RowanService categoriesFor: #packagesUpdate:!public!updating! !
@@ -525,7 +506,6 @@ wasRenamed
 !RowanService categoriesFor: #postReload!public!replication! !
 !RowanService categoriesFor: #postUpdate!Init / Release!public! !
 !RowanService categoriesFor: #postUpdateBlock!accessing!private! !
-!RowanService categoriesFor: #postUpdateBlock:!accessing!private! !
 !RowanService categoriesFor: #prepareForReplication!public!replication! !
 !RowanService categoriesFor: #printOn:!printing!public! !
 !RowanService categoriesFor: #processListUpdate:!Debugger!public!updating! !
@@ -533,7 +513,6 @@ wasRenamed
 !RowanService categoriesFor: #projectSelectionUpdate:!public!updating! !
 !RowanService categoriesFor: #projectsUpdate:!public!updating! !
 !RowanService categoriesFor: #projectsUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #remoteService!public! !
 !RowanService categoriesFor: #remoteServiceName!must not strip!public! !
 !RowanService categoriesFor: #removed:!public!updating! !
 !RowanService categoriesFor: #removedClass:!public!updating! !
@@ -542,8 +521,9 @@ wasRenamed
 !RowanService categoriesFor: #renamedClass:browser:!public!updating! !
 !RowanService categoriesFor: #renamedClassInHierarchy:browser:!public!updating! !
 !RowanService categoriesFor: #replicateFrom:!public!replication! !
+!RowanService categoriesFor: #rsrCommand:!public!rsr! !
+!RowanService categoriesFor: #rsrCommand:withArguments:!public!rsr! !
 !RowanService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
-!RowanService categoriesFor: #sortAspect!accessing!public! !
 !RowanService categoriesFor: #stonOn:!must not strip!public!ston! !
 !RowanService categoriesFor: #sunitMethodsUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #superclassListUpdate:!public!updating! !
@@ -575,6 +555,10 @@ wasRenamed
 
 !RowanService class methodsFor!
 
+clientClassName
+
+	^self name!
+
 command: symbol withArgs: array
 	| inst |
 	inst := self new.
@@ -601,22 +585,38 @@ icon
 
 	^##(self) defaultIcon!
 
+isClientClass
+	
+	^true!
+
+isServerClass
+	
+	^false!
+
 new
 	^super new initialize!
 
 notRowanizedPackageName
 	^'(NONE)'!
 
+serverClassName
+
+	^self name!
+
 version
 	"change this method carefully and only at Jadeite release boundaries.
 	Failure to do so will prevent logins"
 
 	^3092! !
+!RowanService class categoriesFor: #clientClassName!public!rsr! !
 !RowanService class categoriesFor: #command:withArgs:!instance creation!public! !
 !RowanService class categoriesFor: #defaultIcon!private! !
 !RowanService class categoriesFor: #defaultIconName!private! !
 !RowanService class categoriesFor: #icon!private! !
+!RowanService class categoriesFor: #isClientClass!public!rsr! !
+!RowanService class categoriesFor: #isServerClass!public!rsr! !
 !RowanService class categoriesFor: #new!initialization!public! !
 !RowanService class categoriesFor: #notRowanizedPackageName!constants!public! !
+!RowanService class categoriesFor: #serverClassName!public!rsr! !
 !RowanService class categoriesFor: #version!public!version actions! !
 
