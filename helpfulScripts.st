@@ -21,8 +21,17 @@ JadeiteCommandShell showOnSession: GciSession current
 | connection service  |
 connection := RsrConnection connectTo: RsrSocketPair listenPort on: 'owl'.
 service := connection serviceFor: #RowanAnsweringService.
-service rsrCommand: #needsCommit.
+service rsrCommand: #isTranscriptInstalled.
 service
+
+| connection service  |
+connection := RsrConnection connectTo: RsrSocketPair listenPort on: 'owl'.
+service := connection serviceFor: #RowanClassService.
+service name: 'Array'. 
+service comment: 'this is a comment'. 
+service rsrCommand: #update.
+service
+
 
 | connection service |
 connection := RsrConnection connectTo: RsrSocketPair listenPort on: 'owl'.

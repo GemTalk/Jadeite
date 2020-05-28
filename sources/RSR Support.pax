@@ -7,8 +7,14 @@ package paxVersion: 1;
 package methodNames
 	add: #IndexedInstVarBatchAccessor -> #getBatchAccessors;
 	add: #InstVarInspector -> #getInstVarAccessorsOf:;
-	add: #RsrForwarder -> #newAspect:class:;
+	add: #RsrService -> #rsrRemoteServiceName;
+	add: 'RowanService class' -> #abstractClassName;
+	add: 'RowanService class' -> #clientClassName;
+	add: 'RowanService class' -> #isClientClass;
+	add: 'RowanService class' -> #isServerClass;
+	add: 'RowanService class' -> #serverClassName;
 	add: 'RsrForwarder class' -> #newInstanceAspect:class:;
+	add: 'RsrServiceSpecies class' -> #encode:using:on:;
 	yourself.
 
 package binaryGlobalNames: (Set new
@@ -20,7 +26,10 @@ package globalAliases: (Set new
 package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\IDE\Base\Development System'
 	'..\Core\Object Arts\Dolphin\Base\Dolphin'
-	'..\..\..\RemoteServiceReplication\src-dolphin\RemoteServiceReplication-Compatibility-Dolphin').
+	'..\..\..\RemoteServiceReplication\src-dolphin\RemoteServiceReplication'
+	'..\..\..\RemoteServiceReplication\src-dolphin\RemoteServiceReplication-Base'
+	'..\..\..\RemoteServiceReplication\src-dolphin\RemoteServiceReplication-Compatibility-Dolphin'
+	'Rowan UI Base').
 
 package!
 
@@ -71,14 +80,30 @@ getInstVarAccessorsOf: anInstVarAccessor
 	^fixedPart , indexedPart! !
 !InstVarInspector categoriesFor: #getInstVarAccessorsOf:!accessing!private! !
 
-!RsrForwarder methodsFor!
+!RowanService class methodsFor!
 
-newAspect: keyObject class: aspectClass 
-	"Answer an instance of the <Aspect> class, aspectClass, appropriately configured to represent
-	the aspect of the receiver named by the <Object>, keyObject (usually a <Symbol>)."
+abstractClassName
 
-	^self basicClass newInstanceAspect: keyObject class: aspectClass! !
-!RsrForwarder categoriesFor: #newAspect:class:!Jadeite!public! !
+	^self name!
+
+clientClassName
+	^self name!
+
+isClientClass
+	
+	^true!
+
+isServerClass
+	
+	^true!
+
+serverClassName
+	^self name! !
+!RowanService class categoriesFor: #abstractClassName!public!rsr! !
+!RowanService class categoriesFor: #clientClassName!public!rsr! !
+!RowanService class categoriesFor: #isClientClass!public!rsr! !
+!RowanService class categoriesFor: #isServerClass!public!rsr! !
+!RowanService class categoriesFor: #serverClassName!public!rsr! !
 
 !RsrForwarder class methodsFor!
 
@@ -88,6 +113,16 @@ newInstanceAspect: aSymbol class: aspectClass
 
 	^aspectClass name: aSymbol! !
 !RsrForwarder class categoriesFor: #newInstanceAspect:class:!Jadeite!private! !
+
+!RsrService methodsFor!
+
+rsrRemoteServiceName	^self isClient		ifTrue: [self class serverClassName]		ifFalse: [self class clientClassName]! !
+!RsrService categoriesFor: #rsrRemoteServiceName!public! !
+
+!RsrServiceSpecies class methodsFor!
+
+encode: aServiceusing: anEncoderon: aStream	"Encode this object. This is specifically used by RsrServiceSpecies."	"type"	"the OID for the object"	"the name of the remote service to create"	"Write the object slots"	| reflectedVariables |	reflectedVariables := aService _variablesToReflect.	anEncoder		encodeControlWord: self speciesIdentifier		onto: aStream.	anEncoder		encodeControlWord: aService _id		onto: aStream.	anEncoder		encodeControlWord: reflectedVariables size		onto: aStream.	(anEncoder speciesOf: aService rsrRemoteServiceName)		encodeReference: aService rsrRemoteServiceName		using: anEncoder		onto: aStream.	aService _reflectedVariablesDo: [:each | anEncoder encodeReferenceOf: each onto: aStream]! !
+!RsrServiceSpecies class categoriesFor: #encode:using:on:!public! !
 
 "End of package definition"!
 

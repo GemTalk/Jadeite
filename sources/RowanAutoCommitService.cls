@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanAutoCommitService
-	instanceVariableNames: 'autoCommit postUpdateBlock name'
+	instanceVariableNames: 'autoCommit postUpdateBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

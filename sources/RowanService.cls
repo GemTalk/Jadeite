@@ -555,10 +555,6 @@ wasRenamed
 
 !RowanService class methodsFor!
 
-clientClassName
-
-	^self name!
-
 command: symbol withArgs: array
 	| inst |
 	inst := self new.
@@ -585,38 +581,22 @@ icon
 
 	^##(self) defaultIcon!
 
-isClientClass
-	
-	^true!
-
-isServerClass
-	
-	^false!
-
 new
 	^super new initialize!
 
 notRowanizedPackageName
 	^'(NONE)'!
 
-serverClassName
-
-	^self name!
-
 version
 	"change this method carefully and only at Jadeite release boundaries.
 	Failure to do so will prevent logins"
 
 	^3092! !
-!RowanService class categoriesFor: #clientClassName!public!rsr! !
 !RowanService class categoriesFor: #command:withArgs:!instance creation!public! !
 !RowanService class categoriesFor: #defaultIcon!private! !
 !RowanService class categoriesFor: #defaultIconName!private! !
 !RowanService class categoriesFor: #icon!private! !
-!RowanService class categoriesFor: #isClientClass!public!rsr! !
-!RowanService class categoriesFor: #isServerClass!public!rsr! !
 !RowanService class categoriesFor: #new!initialization!public! !
 !RowanService class categoriesFor: #notRowanizedPackageName!constants!public! !
-!RowanService class categoriesFor: #serverClassName!public!rsr! !
 !RowanService class categoriesFor: #version!public!version actions! !
 
