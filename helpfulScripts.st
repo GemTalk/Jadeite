@@ -15,23 +15,54 @@ GciSession current: nil
 
 JadeiteCommandShell showOnSession: GciSession current
 
-[GciSession current executeString: '(Delay forSeconds: 20) wait'. ] fork
+
 
 "RSR"
-| connection service  |
-connection := RsrConnection connectTo: RsrSocketPair listenPort on: 'owl'.
-service := connection serviceFor: #RowanAnsweringService.
-service rsrCommand: #isTranscriptInstalled.
-service
+| connection   |
+[GciSession current executeString: '(Delay forSeconds: 1) wait'. ] fork.
+connection := RsrConnection connectTo: 4321 on: 'owl'.
+Smalltalk at: #connection put: connection. 
+[[connection isOpen]
+  whileTrue:
+    [GciSession current executeString: '(Delay forSeconds: 1) wait'.
+    (Delay forSeconds: 1) wait]] fork
 
-| connection service  |
-connection := RsrConnection connectTo: RsrSocketPair listenPort on: 'owl'.
+[GciSession current executeString: '(Delay forSeconds: 1) wait'. ] fork
+
+[GciSession current executeString: '| connection |
+connection := RsrConnection acceptOn: 4321.
+connection log addSink: RsrTranscriptSink new.
+connection waitUntilClose'] fork.
+
+[GciSession current executeString: '| connection |
+connection := RsrConnection acceptOn: 4321.
+UserGlobals at: #connection put: connection. 
+connection log addSink: RsrTranscriptSink new.'] fork. 
+
+[[connection isOpen]
+  whileTrue:
+    [GciSession current executeString: '(Delay forSeconds: 1) wait'.
+    (Delay forSeconds: 1) wait] fork.
+
+---------
+
+"1"
+[GciSession current executeString: '| connection |
+connection := RsrConnection acceptOn: 4321.
+connection log addSink: RsrTranscriptSink new'] fork.
+
+"2"
+[GciSession current executeString: '(Delay forSeconds: 1) wait'] fork.
+
+"3"
+| connection | 
+connection := RsrConnection connectTo: 4322 on: 'owl'.
 service := connection serviceFor: #RowanClassService.
 service name: 'Array'. 
-service comment: 'this is a comment'. 
 service rsrCommand: #update.
-service
+service inspect.
 
+--------
 
 | connection service |
 connection := RsrConnection connectTo: RsrSocketPair listenPort on: 'owl'.

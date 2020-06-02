@@ -1,8 +1,15 @@
 ﻿"RSR" 
 
-[RsrConnection acceptOn: RsrSocketPair listenPort] fork.
+[RsrConnection acceptOn: 4321] fork.
 (Delay forSeconds: 1) wait. 
-1
+
+
+======>>>>>>>
+[| connection |
+connection := RsrConnection acceptOn: 4321.
+UserGlobals at: #connection put: connection. 
+connection log addSink: RsrTranscriptSink new] fork
+
 
 "RSR - close dead socket" 
 GsSignalingSocket allInstancesInMemory do:[:ea | [ea port = RsrSocketPair listenPort ifTrue:[ea close]] on: Error do:[:ex | ]]

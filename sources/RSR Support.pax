@@ -5,8 +5,6 @@ package paxVersion: 1;
 
 
 package methodNames
-	add: #IndexedInstVarBatchAccessor -> #getBatchAccessors;
-	add: #InstVarInspector -> #getInstVarAccessorsOf:;
 	add: #RsrService -> #rsrRemoteServiceName;
 	add: 'RowanService class' -> #abstractClassName;
 	add: 'RowanService class' -> #clientClassName;
@@ -14,7 +12,6 @@ package methodNames
 	add: 'RowanService class' -> #isServerClass;
 	add: 'RowanService class' -> #serverClassName;
 	add: 'RsrForwarder class' -> #newInstanceAspect:class:;
-	add: 'RsrServiceSpecies class' -> #encode:using:on:;
 	yourself.
 
 package binaryGlobalNames: (Set new
@@ -24,10 +21,7 @@ package globalAliases: (Set new
 	yourself).
 
 package setPrerequisites: #(
-	'..\Core\Object Arts\Dolphin\IDE\Base\Development System'
-	'..\Core\Object Arts\Dolphin\Base\Dolphin'
 	'..\..\..\RemoteServiceReplication\src-dolphin\RemoteServiceReplication'
-	'..\..\..\RemoteServiceReplication\src-dolphin\RemoteServiceReplication-Base'
 	'..\..\..\RemoteServiceReplication\src-dolphin\RemoteServiceReplication-Compatibility-Dolphin'
 	'Rowan UI Base').
 
@@ -40,45 +34,6 @@ package!
 
 
 "Loose Methods"!
-
-!IndexedInstVarBatchAccessor methodsFor!
-
-getBatchAccessors
-	"Answer an <OrderedCollection> of the IndexedInstVarAccessors represented by the receiver"
-
-	| accessors subj offset start end |
-	subj := self subject.
-	offset := subj basicClass instSize.
-	start := self startKey.
-	end := start + self batchSize - 1 min: subj basicSize.
-	accessors := OrderedCollection new: end - start + 1.
-	start to: end
-		do: 
-			[:n | 
-			| item |
-			item := subj basicAt: n.
-			accessors add: ((item newAspect: n + offset class: self aspectClass) accessorFor: self subject)].
-	(self nextBatch: end+1) ifNotNil: [:nextBatch | accessors add: nextBatch].
-	^accessors! !
-!IndexedInstVarBatchAccessor categoriesFor: #getBatchAccessors!accessing!public! !
-
-!InstVarInspector methodsFor!
-
-getInstVarAccessorsOf: anInstVarAccessor 
-	"Private - Answers an <Array> of  <InstVarAccessors> to show as children of anInstVarAccessor"
-
-	| fixedPart indexedPart inspectee batchAccessor |
-	inspectee := [anInstVarAccessor value] on: Error do: [:ex | ex].
-	fixedPart := (1 to: inspectee basicClass instSize) collect: 
-					[:each | 
-					| value aspect |
-					value := inspectee instVarAt: each.
-					aspect := value newAspect: each class: InstVarAspect.
-					aspect accessorFor: inspectee].
-	batchAccessor := IndexedInstVarBatchAccessor subject: inspectee batchSize: self defaultBatchSize.
-	indexedPart := batchAccessor getBatchAccessors.
-	^fixedPart , indexedPart! !
-!InstVarInspector categoriesFor: #getInstVarAccessorsOf:!accessing!private! !
 
 !RowanService class methodsFor!
 
@@ -118,11 +73,6 @@ newInstanceAspect: aSymbol class: aspectClass
 
 rsrRemoteServiceName	^self isClient		ifTrue: [self class serverClassName]		ifFalse: [self class clientClassName]! !
 !RsrService categoriesFor: #rsrRemoteServiceName!public! !
-
-!RsrServiceSpecies class methodsFor!
-
-encode: aServiceusing: anEncoderon: aStream	"Encode this object. This is specifically used by RsrServiceSpecies."	"type"	"the OID for the object"	"the name of the remote service to create"	"Write the object slots"	| reflectedVariables |	reflectedVariables := aService _variablesToReflect.	anEncoder		encodeControlWord: self speciesIdentifier		onto: aStream.	anEncoder		encodeControlWord: aService _id		onto: aStream.	anEncoder		encodeControlWord: reflectedVariables size		onto: aStream.	(anEncoder speciesOf: aService rsrRemoteServiceName)		encodeReference: aService rsrRemoteServiceName		using: anEncoder		onto: aStream.	aService _reflectedVariablesDo: [:each | anEncoder encodeReferenceOf: each onto: aStream]! !
-!RsrServiceSpecies class categoriesFor: #encode:using:on:!public! !
 
 "End of package definition"!
 

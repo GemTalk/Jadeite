@@ -8,10 +8,6 @@ ProcessorScheduler removeSelector: #userBreak:.
 Association removeSelector: #stonOn:.
 Time removeSelector: #stonOn:.
 
-"readded by RSR Support package"
-InstVarInspector removeSelector: #getInstVarAccessorsOf:. 
-IndexedInstVarBatchAccessor removeSelector: #getBatchAccessors.
-RsrServiceSpecies class removeSelector: #encode:using:on:
 '.
 
 package binaryGlobalNames: (Set new

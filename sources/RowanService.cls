@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RsrService subclass: #RowanService
-	instanceVariableNames: 'command commandArgs updateType organizer'
+	instanceVariableNames: 'command commandArgs updateType organizer updates'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -342,13 +342,12 @@ replicateFrom: newService
 		ifTrue: [self basicReplicateFrom: newService]!
 
 rsrCommand: symbol
-	command := symbol.
 	^self rsrCommand: symbol withArguments: Array new!
 
 rsrCommand: symbol withArguments: arguments
 	command := symbol.
 	commandArgs := arguments.
-	^remoteSelf perform: symbol withArguments: arguments!
+	^remoteSelf perform: #executeCommand !
 
 shouldReplicateInstVarAtIndex: index newService: anObject
 	^true!

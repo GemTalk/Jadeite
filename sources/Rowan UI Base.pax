@@ -975,7 +975,7 @@ TextPresenter subclass: #JadeiteCommandLinePresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RsrService subclass: #RowanService
-	instanceVariableNames: 'command commandArgs updateType organizer'
+	instanceVariableNames: 'command commandArgs updateType organizer updates'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
