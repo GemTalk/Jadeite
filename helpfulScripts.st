@@ -57,6 +57,7 @@ connection log addSink: RsrTranscriptSink new'] fork.
 "3"
 | connection | 
 connection := RsrConnection connectTo: 4322 on: 'owl'.
+connection log addSink: RsrTranscriptSink new.
 service := connection serviceFor: #RowanClassService.
 service name: 'Array'. 
 service rsrCommand: #update.

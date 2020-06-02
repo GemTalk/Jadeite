@@ -6,11 +6,11 @@ package paxVersion: 1;
 
 package methodNames
 	add: #RsrService -> #rsrRemoteServiceName;
-	add: 'RowanService class' -> #abstractClassName;
 	add: 'RowanService class' -> #clientClassName;
 	add: 'RowanService class' -> #isClientClass;
 	add: 'RowanService class' -> #isServerClass;
 	add: 'RowanService class' -> #serverClassName;
+	add: 'RowanService class' -> #templateClassName;
 	add: 'RsrForwarder class' -> #newInstanceAspect:class:;
 	yourself.
 
@@ -37,10 +37,6 @@ package!
 
 !RowanService class methodsFor!
 
-abstractClassName
-
-	^self name!
-
 clientClassName
 	^self name!
 
@@ -53,12 +49,16 @@ isServerClass
 	^true!
 
 serverClassName
-	^self name! !
-!RowanService class categoriesFor: #abstractClassName!public!rsr! !
+	^self name!
+
+templateClassName 
+
+	^self name ! !
 !RowanService class categoriesFor: #clientClassName!public!rsr! !
 !RowanService class categoriesFor: #isClientClass!public!rsr! !
 !RowanService class categoriesFor: #isServerClass!public!rsr! !
 !RowanService class categoriesFor: #serverClassName!public!rsr! !
+!RowanService class categoriesFor: #templateClassName!public!rsr! !
 
 !RsrForwarder class methodsFor!
 

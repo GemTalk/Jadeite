@@ -28,7 +28,7 @@ autoCommitUpdate: browser
 displayName
 	"for logging. for now"
 
-	^name!
+	^self printString!
 
 displayTransactionConflicts: browser
 	| inspector session service |
@@ -39,19 +39,11 @@ displayTransactionConflicts: browser
 	inspector showOn: service.
 	inspector updateCaption: 'Transaction Conflicts'. !
 
-name
-	^name!
-
-name: aString
-	name := aString asString!
-
 sortAspect
-
-	^name! !
+	"don't think this is used"
+	^self printString ! !
 !RowanAutoCommitService categoriesFor: #autoCommitUpdate:!public!updating! !
 !RowanAutoCommitService categoriesFor: #displayName!displaying!public! !
 !RowanAutoCommitService categoriesFor: #displayTransactionConflicts:!private!transaction management! !
-!RowanAutoCommitService categoriesFor: #name!accessing!public! !
-!RowanAutoCommitService categoriesFor: #name:!accessing!public! !
 !RowanAutoCommitService categoriesFor: #sortAspect!accessing!public! !
 
