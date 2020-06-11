@@ -586,6 +586,8 @@ new
 notRowanizedPackageName
 	^'(NONE)'!
 
+templateClassName	^self name!
+
 version
 	"change this method carefully and only at Jadeite release boundaries.
 	Failure to do so will prevent logins"
@@ -597,5 +599,6 @@ version
 !RowanService class categoriesFor: #icon!private! !
 !RowanService class categoriesFor: #new!initialization!public! !
 !RowanService class categoriesFor: #notRowanizedPackageName!constants!public! !
+!RowanService class categoriesFor: #templateClassName!public! !
 !RowanService class categoriesFor: #version!public!version actions! !
 

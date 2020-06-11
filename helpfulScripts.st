@@ -51,14 +51,18 @@ connection log addSink: RsrTranscriptSink new.'] fork.
 connection := RsrConnection acceptOn: 4321.
 connection log addSink: RsrTranscriptSink new'] fork.
 
+"1a"
+| connection | 
+connection := RsrConnection connectToHost: 'owl' port: 4322.
+connection log addSink: RsrTranscriptSink new.
+Smalltalk at: #rsrConnection put: connection. 
+
 "2"
 [GciSession current executeString: '(Delay forSeconds: 1) wait'] fork.
 
 "3"
-| connection | 
-connection := RsrConnection connectTo: 4322 on: 'owl'.
-connection log addSink: RsrTranscriptSink new.
-service := connection serviceFor: #RowanClassService.
+
+service := (Smalltalk at: #rsrConnection) serviceFor: #RowanClassService.
 service name: 'Array'. 
 service rsrCommand: #update.
 service inspect.
