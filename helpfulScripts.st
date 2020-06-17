@@ -73,4 +73,50 @@ service inspect.
 connection := RsrConnection connectTo: RsrSocketPair listenPort on: 'owl'.
 service := connection serviceFor: #RsrClientNoInstVars.
 
+------
 
+Smalltalk at: #jadeiteInstVarClasses put: Dictionary new. 
+"print service classes"
+RowanService>>postUpdate
+	"Give the service a chance to clean up unnecessary objects after replication"
+
+	self class instVarNames do: 
+			[:instVarName |
+			| theClass |
+			theClass := (self instVarNamed: instVarName) class.
+			((Smalltalk at: #jadeiteInstVarClasses) keys includes: theClass)
+				ifFalse: 
+					[(Smalltalk at: #jadeiteInstVarClasses) at: theClass
+						put: (Array with: self class name with: instVarName).
+					Transcript
+						cr;
+						tab;
+						show: self class name , ' | ';
+						show: instVarName , ': ';
+						print: (self instVarNamed: instVarName) class.
+					Transcript flush]]
+
+"sample output: RowanAnsweringService | answer: Utf8String
+	RowanAutoCommitService | autoCommit: True
+	RowanAutoCommitService | postUpdateBlock: UndefinedObject
+	RowanProjectService | isSkew: False
+	RowanProjectService | packages: Array
+	RowanProjectService | projectOop: SmallInteger
+	RowanBrowserService | projects: OrderedCollection
+	RowanMethodService | selector: Symbol
+	RowanClassService | hierarchyServices: Dictionary
+	RowanInspectorService | myself: Association
+	RowanProjectService | sha: AnsiString
+
+	RowanProjectService | sha: Utf8String
+	RowanProjectService | isSkew: False
+	RowanProjectService | packages: Array
+	RowanProjectService | changes: UndefinedObject
+	RowanProjectService | existsOnDisk: True
+	RowanProjectService | projectOop: SmallInteger
+	RowanBrowserService | projects: OrderedCollection
+	RowanMethodService | selector: Symbol
+	RowanPackageService | selectedClass: RowanClassService
+	RowanAnsweringService | answer: Association
+	RowanClassService | hierarchyServices: Dictionary
+"

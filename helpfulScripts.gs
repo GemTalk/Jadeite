@@ -1,4 +1,14 @@
-﻿"RSR" 
+﻿(RwSpecification fromUrl: 'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1_v2.ston') resolveStrict load.
+
+(Rowan projectNamed: 'Rowan') gitRepositoryRoot: '$ROWAN_PROJECTS_HOME/Rowan'.
+Rowan projects do: [:project | project existsOnDisk ].
+
+"reload changing which packages are loaded"
+[(Rowan projectNamed: 'Rowan') defined
+	read: Rowan platformConditionalAttributes, #('tests' 'v2' 'v2Only' 'testsV2');
+	load ] on: Warning do: [:ex | ex resume: true ]
+
+"RSR" 
 
 [RsrConnection acceptOn: 4321] fork.
 (Delay forSeconds: 1) wait. 

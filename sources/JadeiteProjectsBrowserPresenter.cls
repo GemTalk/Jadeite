@@ -26,6 +26,11 @@ addNoneProject
 
 addPackage
 	| projectService newPackageName |
+	true
+		ifTrue: 
+			[self rowanFixMe.
+			^MessageBox notify: 'Packages cannot be added in RowanV2.0 yet. Sorry.'
+				caption: 'Unavailable operation'].
 	(newPackageName := Prompter prompt: 'Enter new package name:') isNil ifTrue: [^self].
 	projectService := projectListPresenter selection.
 	projectService addPackageNamed: newPackageName using: self!

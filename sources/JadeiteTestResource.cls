@@ -51,8 +51,7 @@ ensureRowanSample1Loaded
 	self disableInteractionsWhile: 
 			[self unloadSampleProject.
 			self session commit.
-			self cloneRowanSample1.
-			self loadProjectNamed: self sampleProjectName]!
+			self loadProjectFromFile: 'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1_resolved_v2.ston']!
 
 hasValidSession
 	| session |
@@ -65,6 +64,14 @@ isAvailable
 
 issueCommand: service
 	^JadePresenter issueCommands: (Array with: service) session: self session!
+
+loadProjectFromFile: fileString
+	| projectService |
+	projectService := RowanProjectService new.
+	projectService
+		command: #loadProjectFromFile:;
+		commandArgs: (Array with: fileString).
+	JadePresenter issueCommands: (Array with: projectService) session: self session!
 
 loadProjectNamed: projectName
 	| projectService |
@@ -143,7 +150,6 @@ setUp
 			[MessageBox notify: 'GciSession current is nil. Login again.'.
 			Processor activeProcess terminate	"There's not a good way to safely return without many subsequent errors. Just kill the test process."].
 	self unloadSampleProject.
-	self cloneRowanSample1.
 	self ensureRowanSample1Loaded!
 
 tearDown
@@ -176,6 +182,7 @@ unloadSampleProject
 !JadeiteTestResource categoriesFor: #hasValidSession!public!testing! !
 !JadeiteTestResource categoriesFor: #isAvailable!public!testing! !
 !JadeiteTestResource categoriesFor: #issueCommand:!public!setup teardown! !
+!JadeiteTestResource categoriesFor: #loadProjectFromFile:!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #loadProjectNamed:!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #loginWithRetry:!private!support! !
 !JadeiteTestResource categoriesFor: #logoutThenLoginAs:!private!setup teardown!support! !
