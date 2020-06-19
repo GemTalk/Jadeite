@@ -754,6 +754,7 @@ projectMenuStrings
 				createNewProject;
 				addPackage;
 				loadV2Project;
+				reloadV2Project; 
 				unloadProjects;
 				pullFromGit;
 				gitCommit;
@@ -764,7 +765,7 @@ projectMenuStrings
 				checkout;
 				projectLog;
 				refresh].
-	^#('Projects' 'Create ...//createNewProject' 'Load Git Project ...//loadV2Project' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' '&Add Package...//addPackage' '-' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
+	^#('Projects' 'Create ...//createNewProject' 'Load Git Project ...//loadV2Project' 'Reload Project //reloadV2Project' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' '&Add Package...//addPackage' '-' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
 
 protectedDictionaries
 	^#('Published' 'Globals' 'UserGlobals')!
@@ -923,6 +924,11 @@ registerPresentersForUpdates
 		register: classListPresenter
 		selector: #addCachedSymbols:
 !
+
+reloadV2Project
+	"intention revealing selector"
+
+	^self loadProjects!
 
 removeAppropriateTab
 	self isNoneProjectSelected ifTrue: [self removeProjectTab] ifFalse: [self removeGlobalsTab]!
@@ -1375,6 +1381,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #refreshFromServer!event handlers!menu handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #refreshFromServerAfterAbort:!public! !
 !JadeiteBrowserPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
+!JadeiteBrowserPresenter categoriesFor: #reloadV2Project!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #removeAppropriateTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #removeDictionaries!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #removeGlobal!menu handlers!public! !
