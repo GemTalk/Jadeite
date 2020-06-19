@@ -478,7 +478,7 @@ test_adHocInspectComplexObjectInProjectBrowser
 	self assert: (inspector model oop isKindOf: Integer).	"the oop"
 	self assert: inspector instVarListPresenter selections first key equals: 'self'.
 	self assert: inspector instVarListPresenter selections first value
-		equals: 'RowanSample1Test>>#test1'.
+		equals: 'RowanSample1Test debug: #test1'.
 	inspector instVarListPresenter selectionByIndex: #(2).
 	self assert: inspector instVarListPresenter selections first key equals: '-.asOop'.
 	self assert: inspector instVarListPresenter selections first value

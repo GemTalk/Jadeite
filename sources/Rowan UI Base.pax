@@ -222,7 +222,7 @@ package methodNames
 	add: #JadePresenter -> #autoCommitExecutionString;
 	add: #JadePresenter -> #basicAllSelectedProjectsDirty:;
 	add: #JadePresenter -> #basicCheckoutTagAndRefresh:for:;
-	add: #JadePresenter -> #basicCloneProject:root:;
+	add: #JadePresenter -> #basicLoadV2Project:projectsHome:;
 	add: #JadePresenter -> #browseBreakpointList;
 	add: #JadePresenter -> #browseClassReferences:;
 	add: #JadePresenter -> #browseHierarchyImplementorsOf:className:;
@@ -261,12 +261,12 @@ package methodNames
 	add: #JadePresenter -> #updateServices:;
 	add: #JadePresenterA -> #basicRefreshBreakpointsIn:selection:;
 	add: #JadePresenterA -> #clearBreakPointAt:in:;
-	add: #JadePresenterA -> #cloneProject;
 	add: #JadePresenterA -> #confirmReloadProjects:;
 	add: #JadePresenterA -> #disableBreakPointAt:in:;
 	add: #JadePresenterA -> #enableBreakPointAt:in:;
 	add: #JadePresenterA -> #isOkayToChangeSource:;
 	add: #JadePresenterA -> #loadProjectsFrom:;
+	add: #JadePresenterA -> #loadV2Project;
 	add: #JadePresenterA -> #methodListSelection;
 	add: #JadePresenterA -> #openMethodListOn:selecting:;
 	add: #JadePresenterA -> #openMethodListOn:selectingAnyMatch:;
@@ -2436,15 +2436,12 @@ basicCheckoutTagAndRefresh: choice for: projectService
 	projectService basicCheckoutTag: choice using: self gciSession.
 	self refresh. !
 
-basicCloneProject: path root: root
+basicLoadV2Project: path projectsHome: root
 	| service |
 	service := RowanProjectService new.
 	service
-		command: #newGitProject:root:useSsh:;
-		commandArgs: (Array
-					with: path
-					with: root
-					with: true).
+		command: #loadProjectFromFile:projectsHome:;
+		commandArgs: (Array with: path with: root).
 	self issueCommand: (Array with: service)!
 
 browseBreakpointList
@@ -2728,7 +2725,7 @@ updateServices: services
 !JadePresenter categoriesFor: #autoCommitExecutionString!menu handlers support!public! !
 !JadePresenter categoriesFor: #basicAllSelectedProjectsDirty:!private!testing! !
 !JadePresenter categoriesFor: #basicCheckoutTagAndRefresh:for:!menu handlers support!private! !
-!JadePresenter categoriesFor: #basicCloneProject:root:!menu handlers!private! !
+!JadePresenter categoriesFor: #basicLoadV2Project:projectsHome:!menu handlers!private! !
 !JadePresenter categoriesFor: #browseBreakpointList!menu handlers!public! !
 !JadePresenter categoriesFor: #browseClassReferences:!menu handlers!public! !
 !JadePresenter categoriesFor: #browseHierarchyImplementorsOf:className:!browsing!public! !
@@ -3222,17 +3219,6 @@ clearBreakPointAt: stepPoint in: browser
 	self issueCommand: (Array with: selection).
 	browser updateMethodSource. !
 
-cloneProject
-	"Does a clone and 'attach'"
-
-	| filePath |
-	filePath := RowanKeyValuePrompter
-				on: 'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1.ston' -> '$ROWAN_PROJECTS_HOME'
-				prompt: 'Please select location of the code repository to clone:'
-				caption: 'Clone Git Repository'.
-	filePath isNil ifTrue: [^false].
-	self basicCloneProject: filePath key root: filePath value.!
-
 confirmReloadProjects: selections
 	| ws |
 	ws := String new writeStream.
@@ -3286,6 +3272,15 @@ loadProjectsFrom: browser
 		ifTrue: 
 			[RowanBrowserService new reloadProjects: selections presenter: self.
 			BrowserUpdate current selectedServices do: [:service | service postReload]]!
+
+loadV2Project
+	| filePath |
+	filePath := RowanKeyValuePrompter
+				on: self class rowanSample1Path -> self class rowanProjectsHomeEnvVarString
+				prompt: 'Please select location of the code repository to load:'
+				caption: 'Load Git Repository'.
+	filePath isNil ifTrue: [^false].
+	self basicLoadV2Project: filePath key projectsHome: filePath value!
 
 methodListSelection
 	
@@ -3357,12 +3352,12 @@ updateMethodReferences: services
 	^services! !
 !JadePresenterA categoriesFor: #basicRefreshBreakpointsIn:selection:!Jadeite!public! !
 !JadePresenterA categoriesFor: #clearBreakPointAt:in:!Jadeite!public! !
-!JadePresenterA categoriesFor: #cloneProject!Jadeite!public! !
 !JadePresenterA categoriesFor: #confirmReloadProjects:!Jadeite!public! !
 !JadePresenterA categoriesFor: #disableBreakPointAt:in:!Jadeite!public! !
 !JadePresenterA categoriesFor: #enableBreakPointAt:in:!Jadeite!public! !
 !JadePresenterA categoriesFor: #isOkayToChangeSource:!Jadeite!public! !
 !JadePresenterA categoriesFor: #loadProjectsFrom:!Jadeite!public! !
+!JadePresenterA categoriesFor: #loadV2Project!Jadeite!public! !
 !JadePresenterA categoriesFor: #methodListSelection!Jadeite!public! !
 !JadePresenterA categoriesFor: #openMethodListOn:selecting:!menu handlers support!private!queries! !
 !JadePresenterA categoriesFor: #openMethodListOn:selectingAnyMatch:!menu handlers support!private!queries! !

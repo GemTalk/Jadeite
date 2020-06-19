@@ -552,7 +552,7 @@ isNoneProjectSelected
 	^projectListPresenter selections includes: RowanProjectService noneProject!
 
 isProjectItemEnabled: command
-	(command = #refreshFromServer or: [command = #cloneProject]) ifTrue: [^true].
+	(command = #refreshFromServer or: [command = #loadV2Project]) ifTrue: [^true].
 	^projectListPresenter selections notEmpty
 		and: [(projectListPresenter selections includes: RowanProjectService noneProject) not]!
 
@@ -753,8 +753,7 @@ projectMenuStrings
 			[self
 				createNewProject;
 				addPackage;
-				cloneProject;
-				loadProjects;
+				loadV2Project;
 				unloadProjects;
 				pullFromGit;
 				gitCommit;
@@ -765,24 +764,7 @@ projectMenuStrings
 				checkout;
 				projectLog;
 				refresh].
-	^#('Projects' 
-		'Create ...//createNewProject'
-		'Clone Git Project ...//cloneProject' 
-		'Load//loadProjects' 'Unload//unloadProjects' 
-		'-'
-		'Pull from Git//pullFromGit'
-		'Commit to Git ...//gitCommit'
-		'Push to Git//pushToGit'
-		'-'
-		'&Changes//projectChanges'
-		'Write//writeProject'
-		'Checkout Git Tag ...//checkoutTag'
-		'Checkout Git Branch ...//checkout'
-		'-'
-		'&Add Package...//addPackage'
-		'-'
-		'Git Log//projectLog'
-		'&Refresh//refreshFromServer')!
+	^#('Projects' 'Create ...//createNewProject' 'Load Git Project ...//loadV2Project' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' '&Add Package...//addPackage' '-' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
 
 protectedDictionaries
 	^#('Published' 'Globals' 'UserGlobals')!

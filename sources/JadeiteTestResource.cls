@@ -51,7 +51,7 @@ ensureRowanSample1Loaded
 	self disableInteractionsWhile: 
 			[self unloadSampleProject.
 			self session commit.
-			self loadProjectFromFile: 'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1_resolved_v2.ston']!
+			self loadProjectFromFile: self rowanSample1Path]!
 
 hasValidSession
 	| session |
@@ -125,10 +125,10 @@ projectsBrowser: anObject
 	projectsBrowser := anObject!
 
 rowanProjectsHome
-	^'$ROWAN_PROJECTS_HOME'!
+	^JadePresenter rowanProjectsHomeEnvVarString!
 
 rowanSample1Path
-	^'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1.ston'!
+	^JadePresenter rowanSample1Path!
 
 rowanSample1Project
 	^self transcript projectListPresenter projectListPresenter list
@@ -136,7 +136,7 @@ rowanSample1Project
 		ifNone: []!
 
 sampleProjectName
-	^'RowanSample1'!
+	^self class sampleProjectName!
 
 session
 
@@ -213,6 +213,9 @@ current
 isAvailable
 	^self current isAvailable!
 
+sampleProjectName
+	^'RowanSample1'!
+
 signalInitializationError
 	"TestSuite>>run: in the SUnit pacakge sends this method
 	to the class, but implements it on the instance. That appears
@@ -222,5 +225,6 @@ signalInitializationError
 	^TestResult signalErrorWith: 'Resource ' , self name , ' could not be initialized'! !
 !JadeiteTestResource class categoriesFor: #current!Accessing!public! !
 !JadeiteTestResource class categoriesFor: #isAvailable!public! !
+!JadeiteTestResource class categoriesFor: #sampleProjectName!constants!public! !
 !JadeiteTestResource class categoriesFor: #signalInitializationError!error handling!public! !
 

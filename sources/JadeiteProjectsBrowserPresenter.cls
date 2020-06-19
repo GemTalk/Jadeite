@@ -1284,7 +1284,7 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: globalsPresenter selections notEmpty.
 			^true].
-	(#(#fileOutMethods #clearMethodBreakpoints ) includes: command)
+	(#(#fileOutMethods #clearMethodBreakpoints) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: self methodListPresenter selections notEmpty.
 			^true].
@@ -1343,7 +1343,7 @@ queryCommand: aCommandQuery
 			[aCommandQuery
 				isEnabled: (self selectedClass ifNil: [false] ifNotNil: [:classService | classService isTestCase]).
 			^true].
-	(#( #runSelected #runMethodTests #runAndMesureTime #debug) includes: command)
+	(#(#runSelected #runMethodTests #runAndMesureTime #debug) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: (methodListPresenter selections notEmpty
 						and: [methodListPresenter selections first isTestMethod]).
@@ -1372,7 +1372,7 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: self hasCategorySelected.
 			^true].
-	command == #cloneProject
+	command == #loadV2Project
 		ifTrue: 
 			[aCommandQuery isEnabled: true.
 			^true].
@@ -1408,7 +1408,6 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: (self selectedClass notNil and: [self selectedClass isTestCase]).
 			^true].
-	
 	(self queryCommandHandlers: aCommandQuery) ifTrue: [^true].
 	(aCommandQuery canPerformAgainst: self) ifTrue: [aCommandQuery beEnabled].
 	^false	"There was no specific enablement of the command at this level"!

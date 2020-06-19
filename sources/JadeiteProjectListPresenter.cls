@@ -184,7 +184,6 @@ pushToGit
 	self issueCommand: projectServices!
 
 queryCommand: aCommandQuery
-
 	#gitCommit == aCommandQuery command
 		ifTrue: 
 			[aCommandQuery isEnabled: self allSelectedProjectsDirty.
@@ -194,7 +193,7 @@ queryCommand: aCommandQuery
 			ifTrue: 
 				[aCommandQuery isEnabled: projectListPresenter selections notEmpty.
 				^true].
-	(#(#cloneProject #refresh) includes: aCommandQuery command)
+	(#(#loadV2Project #refresh) includes: aCommandQuery command)
 		ifTrue: 
 			[aCommandQuery isEnabled: true.
 			^true].

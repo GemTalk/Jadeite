@@ -75,48 +75,74 @@ service := connection serviceFor: #RsrClientNoInstVars.
 
 ------
 
-Smalltalk at: #jadeiteInstVarClasses put: Dictionary new. 
-"print service classes"
-RowanService>>postUpdate
+	Smalltalk at: #jadeiteInstVarClasses
+		put: (SortedCollection sortBlock: 
+					[:x :y |
+					x first = y first
+						ifTrue: [x second = y second ifTrue: [x third <= y third] ifFalse: [x second <= y second]]
+						ifFalse: [x first <= y first]])
+
+"print service instVar classes"
+postUpdate
 	"Give the service a chance to clean up unnecessary objects after replication"
 
 	self class instVarNames do: 
 			[:instVarName |
-			| theClass |
+			| theClass theService existing |
 			theClass := (self instVarNamed: instVarName) class.
-			((Smalltalk at: #jadeiteInstVarClasses) keys includes: theClass)
-				ifFalse: 
-					[(Smalltalk at: #jadeiteInstVarClasses) at: theClass
-						put: (Array with: self class name with: instVarName).
-					Transcript
-						cr;
-						tab;
-						show: self class name , ' | ';
-						show: instVarName , ': ';
-						print: (self instVarNamed: instVarName) class.
-					Transcript flush]]
+			theService := self class.
+			existing := (Smalltalk at: #jadeiteInstVarClasses) detect: 
+							[:triplet |
+							(triplet at: 1) = theClass and: [(triplet at: 2) = theService and: [(triplet at: 3) = instVarName]]]
+						ifNone: [].
+			existing
+				ifNil: 
+					[(Smalltalk at: #jadeiteInstVarClasses) add: (Array
+								with: theClass
+								with: theService
+								with: instVarName)]]
 
-"sample output: RowanAnsweringService | answer: Utf8String
-	RowanAutoCommitService | autoCommit: True
-	RowanAutoCommitService | postUpdateBlock: UndefinedObject
-	RowanProjectService | isSkew: False
-	RowanProjectService | packages: Array
-	RowanProjectService | projectOop: SmallInteger
-	RowanBrowserService | projects: OrderedCollection
-	RowanMethodService | selector: Symbol
-	RowanClassService | hierarchyServices: Dictionary
-	RowanInspectorService | myself: Association
-	RowanProjectService | sha: AnsiString
+| count lastClass countStream |
+	count := 0.
+	countStream := WriteStream on: String new.
+	(Smalltalk at: #jadeiteInstVarClasses) do: 
+			[:triplet |
+			| theClass theService theInstVarName |
+			theClass := triplet at: 1.
+			theService := triplet at: 2.
+			theInstVarName := triplet at: 3.
+			lastClass
+				ifNotNil: 
+					[lastClass ~= theClass
+						ifTrue: 
+							[countStream
+								cr;
+								tab;
+								tab;
+								nextPutAll: lastClass name , ' count: ';
+								print: count.
+							count := 0]].
+			lastClass := theClass.
+			count := count + 1.
+			Transcript
+				cr;
+				tab;
+				show: theClass name , ' | ';
+				show: theService name , ' | ';
+				print: theInstVarName.
+			Transcript flush].
+	countStream
+		cr;
+		tab;
+		tab;
+		nextPutAll: lastClass name , ' count: ';
+		print: count.
+	Transcript
+		cr;
+		cr;
+		show: 'Totals:';
+		cr;
+		show: countStream contents
+	
 
-	RowanProjectService | sha: Utf8String
-	RowanProjectService | isSkew: False
-	RowanProjectService | packages: Array
-	RowanProjectService | changes: UndefinedObject
-	RowanProjectService | existsOnDisk: True
-	RowanProjectService | projectOop: SmallInteger
-	RowanBrowserService | projects: OrderedCollection
-	RowanMethodService | selector: Symbol
-	RowanPackageService | selectedClass: RowanClassService
-	RowanAnsweringService | answer: Association
-	RowanClassService | hierarchyServices: Dictionary
-"
+""

@@ -209,7 +209,7 @@ loadRowanSample1InProjectList
 	| sample1Path root selections |
 	sample1Path := self rowanSample1Path.
 	root := self rowanProjectsHome.
-	self transcriptTab basicCloneProject: sample1Path root: root.
+	self transcriptTab basicLoadV2Project: sample1Path projectsHome: root.
 	self transcriptTab refresh.
 	self selectServicesNamed: (Array with: self sampleProjectName)
 		in: self transcriptTab projectListPresenter.
@@ -294,16 +294,16 @@ queryCommand: commandSymbol inPresenter: presenter view: view
 	^commandQuery!
 
 rowanProjectsHome
-	^'$ROWAN_PROJECTS_HOME'!
+	^JadePresenter rowanProjectsHomeEnvVarString!
 
 rowanSample1Path
-	^'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1.ston'!
+	^JadePresenter rowanSample1Path!
 
 sampleClassName
 	^'RowanSample1'!
 
 sampleProjectName
-	^'RowanSample1'!
+	^JadeiteTestResource sampleProjectName!
 
 saveClass: className superclass: superName instVars: instVars package: aString
 	self projectsPresenter classDefinitionPresenter

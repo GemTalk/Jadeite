@@ -201,8 +201,16 @@ maxPrintStringSize
 	^100000!
 
 openCommit: sha inGitHub: projectService
-	^ShellLibrary default shellOpen: projectService projectUrl , '/commit/' , sha directory: ''! !
+	^ShellLibrary default shellOpen: projectService projectUrl , '/commit/' , sha directory: ''!
+
+rowanProjectsHomeEnvVarString
+	^'$ROWAN_PROJECTS_HOME'!
+
+rowanSample1Path
+	^'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1_resolved_v2.ston'! !
 !JadePresenter class categoriesFor: #loadViewResource2:inContext:!operations!public! !
 !JadePresenter class categoriesFor: #maxPrintStringSize!constants!public! !
 !JadePresenter class categoriesFor: #openCommit:inGitHub:!browsing!public! !
+!JadePresenter class categoriesFor: #rowanProjectsHomeEnvVarString!constants!public! !
+!JadePresenter class categoriesFor: #rowanSample1Path!constants!public! !
 

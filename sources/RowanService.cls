@@ -269,21 +269,7 @@ postReload
 postUpdate
 	"Give the service a chance to clean up unnecessary objects after replication"
 
-	self class instVarNames do: 
-			[:instVarName |
-			| theClass |
-			theClass := (self instVarNamed: instVarName) class.
-			((Smalltalk at: #jadeiteInstVarClasses) keys includes: theClass)
-				ifFalse: 
-					[(Smalltalk at: #jadeiteInstVarClasses) at: theClass
-						put: (Array with: self class name with: instVarName).
-					Transcript
-						cr;
-						tab;
-						show: self class name , ' | ';
-						show: instVarName , ': ';
-						print: (self instVarNamed: instVarName) class.
-					Transcript flush]]!
+	!
 
 postUpdateBlock
 	"RowanAutoCommitService is the only use now. 
