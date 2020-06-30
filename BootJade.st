@@ -27,9 +27,8 @@ list := #(
 	'Contacts Demo'
 	'Jade in Dolphin'
 	'Jade Tests'
-	'Rowan UI Base'
-	'Rowan UI Tests'
 ).
+
 (Delay forMilliseconds: 200) wait.
 ProgressDialog showModalWhile: [:progress |
 	1 to: list size do: [:i |
@@ -45,8 +44,28 @@ ProgressDialog showModalWhile: [:progress |
 	].
 ].
 
-PackageManager current install: 'sources\RSR Support.pax'.
+"Install Rowan Client Services from a separate directory"
+PackageManager current install: 'C:\Users\ewinger\source\repos\Dolphin719\RowanClientServices\Rowan Client Services.pac'.
 
+list := #(
+	'Rowan UI Base'
+	'Rowan UI Tests'
+	'RSR Support'
+).
+
+(Delay forMilliseconds: 200) wait.
+ProgressDialog showModalWhile: [:progress |
+	1 to: list size do: [:i |
+		| name percent |
+		name := list at: i.
+		percent := (i * 100 / list size) asInteger.
+		progress
+			value: percent;
+			text: 'Loading package: ' , name;
+			yourself.
+		PackageManager current install: 'sources\' , name , '.pax'.
+	].
+].
 
 
 SessionManager current splashShowAtStartup: false.

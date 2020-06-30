@@ -927,7 +927,7 @@ registerPresentersForUpdates
 
 reloadV2Project
 	"intention revealing selector"
-
+	self halt. 
 	^self loadProjects!
 
 removeAppropriateTab

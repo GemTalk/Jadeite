@@ -33,7 +33,6 @@ package classNames
 	add: #JadeiteSUnitSupportTestCase;
 	add: #JadeiteTestResource;
 	add: #JadeiteTranscriptTestCase;
-	add: #RowanTestService;
 	add: #TestLoggingService;
 	add: #TestMessageBox;
 	add: #TestPrompter;
@@ -107,6 +106,7 @@ package setPrerequisites: #(
 	'Jade Test Browser'
 	'Jade UI'
 	'Jade UI Base'
+	'Rowan Client Services'
 	'Rowan UI Base'
 	'..\Core\Contributions\Solutions Software\SSW EditableListView'
 	'..\Core\Contributions\svenc\STON\STON-Core'
@@ -131,11 +131,6 @@ Prompter subclass: #TestPrompter
 	classInstanceVariableNames: ''!
 SUnitBrowser subclass: #JadeiteDevelopmentSUnitBrowser
 	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanService subclass: #RowanTestService
-	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

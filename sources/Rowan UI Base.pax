@@ -8,7 +8,6 @@ AAAARG9scGhpbiBNVlAgQmFzZVIAAAAVAAAAUnVudGltZVNlc3Npb25NYW5hZ2Vy778lAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=').
 
 package classNames
-	add: #BrowserUpdate;
 	add: #DiffsScintillaStyler;
 	add: #JadeFindClassDialog;
 	add: #JadeFindDialog;
@@ -54,56 +53,35 @@ package classNames
 	add: #JadeiteRenameClassMethodListPresenter;
 	add: #JadeiteScintillaView;
 	add: #JadeiteSearch;
-	add: #JadeiteSemaphore;
 	add: #JadeiteSmalltalkSearchPresenter;
 	add: #JadeiteSmalltalkWorkspace;
 	add: #JadeiteTranscript;
 	add: #PackageMethodListPresenter;
 	add: #Rowan;
-	add: #RowanAnsweringService;
-	add: #RowanAutoCommitService;
-	add: #RowanBrowserService;
 	add: #RowanClassCategoryUpdate;
 	add: #RowanClassesUpdate;
 	add: #RowanClassHierarchyUpdate;
 	add: #RowanClassInfoUpdate;
-	add: #RowanClassService;
-	add: #RowanDebuggerService;
 	add: #RowanDebuggerStepPointError;
-	add: #RowanDefinedProjectService;
-	add: #RowanDictionaryService;
 	add: #RowanDictionaryUpdate;
-	add: #RowanFrameService;
 	add: #RowanGlobalsUpdate;
-	add: #RowanInspectorService;
 	add: #RowanKeyValuePrompter;
-	add: #RowanLoadedProjectService;
-	add: #RowanLoggingService;
 	add: #RowanMethodListBrowser;
 	add: #RowanMethodListPresenter;
 	add: #RowanMethodSelectionPresenter;
-	add: #RowanMethodService;
 	add: #RowanMethodSourcePresenter;
 	add: #RowanMethodsUpdate;
 	add: #RowanMethodUpdate;
 	add: #RowanPackagePresenter;
-	add: #RowanPackageService;
 	add: #RowanPackageShell;
 	add: #RowanPackageUpdate;
 	add: #RowanPresenter;
-	add: #RowanProcessService;
-	add: #RowanProjectService;
 	add: #RowanProjectsUpdate;
-	add: #RowanQueryService;
-	add: #RowanResolvedProjectService;
 	add: #RowanSavePackageDialog;
-	add: #RowanService;
 	add: #RowanShell;
-	add: #RowanSpecificationService;
 	add: #RowanSuperclassUpdate;
 	add: #RowanSystemBrowser;
 	add: #RowanSystemBrowserPresenter;
-	add: #RowanVariableService;
 	add: #SUnitToolbar;
 	add: #TestChoicePrompter;
 	yourself.
@@ -111,6 +89,7 @@ package classNames
 package methodNames
 	add: #Aspect -> #immediateActionBlock:;
 	add: #Association -> #stonOn:;
+	add: #BrowserUpdate -> #initialize;
 	add: #CodeSourcePresenter -> #browseSelectedClass;
 	add: #CodeSourcePresenter -> #currentSelection;
 	add: #CodeSourcePresenter -> #executeSelectionOrLine;
@@ -407,6 +386,9 @@ package methodNames
 	add: #Presenter -> #updateSelectionsFor:;
 	add: #Presenter -> #updateSelectionsForUpdate:;
 	add: #ProcessorScheduler -> #userBreak:;
+	add: #RowanAnsweringService -> #updateSymbols:;
+	add: #RowanAutoCommitService -> #displayTransactionConflicts:;
+	add: #RowanBrowserService -> #addCachedSymbols:;
 	add: #RowanCommandResult -> #autoCommitUpdate:;
 	add: #RowanCommandResult -> #basicPrepareForReplication;
 	add: #RowanCommandResult -> #classCategoryUpdate:;
@@ -449,8 +431,12 @@ package methodNames
 	add: #RowanCommandResult -> #updateType;
 	add: #RowanGsMethod -> #printOn:;
 	add: #RowanMethodDefinition -> #methodService;
+	add: #RowanMethodService -> #basicSubSuperIcon;
+	add: #RowanMethodService -> #removeTrailingMenuItemsFrom:;
 	add: #RowanPatch -> #operations:;
 	add: #RowanPatch -> #session:;
+	add: #RowanProjectService -> #changesUsing:;
+	add: #RowanProjectService -> #projectLogUsing:session:;
 	add: #SequencedGrowableCollection -> #removeAtIndexWithoutNotification:;
 	add: #SequencedGrowableCollection -> #removeWithoutNotification:ifAbsent:;
 	add: #SmallInteger -> #_digitsAsString;
@@ -583,7 +569,7 @@ package setPrerequisites: #(
 	'Jade UI Base'
 	'Monticello'
 	'Object Log Browser'
-	'..\..\..\RemoteServiceReplication\src-dolphin\RemoteServiceReplication'
+	'Rowan Client Services'
 	'Rowan UI Base PreInstall'
 	'..\Core\Object Arts\Dolphin\System\Compiler\Smalltalk Parser'
 	'..\Core\Contributions\Solutions Software\SSW EditableListView'
@@ -614,11 +600,6 @@ Object subclass: #Rowan
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-Semaphore subclass: #JadeiteSemaphore
-	instanceVariableNames: 'lockingProcess'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
 Error subclass: #RowanDebuggerStepPointError
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -627,11 +608,6 @@ Error subclass: #RowanDebuggerStepPointError
 DividerMenuItem subclass: #JadeiteDividerMenuItem
 	instanceVariableNames: ''
 	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-Model subclass: #BrowserUpdate
-	instanceVariableNames: 'updates debug inUpdate logger applyingUpdates breakpointsEnabled'
-	classVariableNames: 'Current'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Model subclass: #JadeiteLogger
@@ -974,106 +950,6 @@ TextPresenter subclass: #JadeiteCommandLinePresenter
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-RsrService subclass: #RowanService
-	instanceVariableNames: 'command commandArgs updateType organizer updates'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanService subclass: #RowanAnsweringService
-	instanceVariableNames: 'answer'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanService subclass: #RowanAutoCommitService
-	instanceVariableNames: 'autoCommit postUpdateBlock'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanService subclass: #RowanBrowserService
-	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount dictionaries selectedClass newCachedSelectors newCachedClasses name'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanService subclass: #RowanClassService
-	instanceVariableNames: 'name comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions oop template filters filterType methods selectedPackageServices packageName definedPackageName selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand isInSymbolList dictionaryName wasRemoved renamedName'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanService subclass: #RowanDebuggerService
-	instanceVariableNames: 'initialProcessOop processes name'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanService subclass: #RowanDictionaryService
-	instanceVariableNames: 'classes hierarchyServices globals defaultTemplate name'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanService subclass: #RowanFrameService
-	instanceVariableNames: 'label method stepPoint vars oop homeMethodSelector homeMethodClassName classIsResolvable name'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanService subclass: #RowanInspectorService
-	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray isOop instVarNames instVarsAreRemovable isDictionary isVariable selectionOop isUnordered statusText name'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanService subclass: #RowanLoggingService
-	instanceVariableNames: 'fileName id groupId date time comment services mode location isLogging name'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanService subclass: #RowanMethodService
-	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName isMethodForBlock homeMethodOop hasMethodHistory searchString definedClassName name'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanService subclass: #RowanPackageService
-	instanceVariableNames: 'classes defaultTemplate projectName classCompilationFailures testClasses hierarchyServices selectedClass name isDirty'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanService subclass: #RowanProcessService
-	instanceVariableNames: 'frames oop status name'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanService subclass: #RowanProjectService
-	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop name isDirty'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanService subclass: #RowanQueryService
-	instanceVariableNames: 'queryResults name'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanService subclass: #RowanVariableService
-	instanceVariableNames: 'oop key value className name'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanInspectorService subclass: #RowanSpecificationService
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanProjectService subclass: #RowanDefinedProjectService
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanProjectService subclass: #RowanLoadedProjectService
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanProjectService subclass: #RowanResolvedProjectService
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
 ScintillaStyler subclass: #DiffsScintillaStyler
 	instanceVariableNames: 'diffs'
 	classVariableNames: ''
@@ -1110,6 +986,16 @@ stonOn: stonWriter
 	Code loaded from BootJade.st" 
 	^super stonOn: stonWriter! !
 !Association categoriesFor: #stonOn:!public!writing! !
+
+!BrowserUpdate methodsFor!
+
+initialize
+	self initializeUpdates.
+	debug := false.
+	inUpdate := RowanSemaphore forMutualExclusion.
+	logger := JadeiteLogger new.
+	breakpointsEnabled := false! !
+!BrowserUpdate categoriesFor: #initialize!initialization!public! !
 
 !CodeSourcePresenter methodsFor!
 
@@ -5366,6 +5252,47 @@ createOn: aValueModel
 			[super createOn: aValueModel]! !
 !Prompter class categoriesFor: #createOn:!instance creation!public! !
 
+!RowanAnsweringService methodsFor!
+
+updateSymbols: unused
+	updateType = #updateSymbols: ifFalse: [^self].
+	JadeiteSearch allClassNames addAll: answer first.
+	JadeiteSearch allSelectors addAll: answer last! !
+!RowanAnsweringService categoriesFor: #updateSymbols:!public!updating! !
+
+!RowanAutoCommitService methodsFor!
+
+displayTransactionConflicts: browser
+	| inspector session service |
+	session := browser gciSession.
+	inspector := JadeiteInspector new gciSession: session.
+	service := inspector evaluateText: 'System transactionConflicts'
+				thenInspectInContext: session oopNil value.
+	inspector showOn: service.
+	inspector updateCaption: 'Transaction Conflicts'. ! !
+!RowanAutoCommitService categoriesFor: #displayTransactionConflicts:!private!transaction management! !
+
+!RowanBrowserService methodsFor!
+
+addCachedSymbols: unused
+	"only add new symbols if auto complete was turned on (symbol collections are empty)"
+
+	newCachedSelectors
+		ifNotNil: 
+			[JadeiteSearch allSelectorSymbols isEmpty ifTrue: [^self].
+			newCachedSelectors do: 
+					[:selector |
+					(JadeiteSearch allSelectorSymbols includes: selector)
+						ifFalse: [JadeiteSearch allSelectorSymbols add: selector]]].
+	newCachedClasses
+		ifNotNil: 
+			[JadeiteSearch allClassNames isEmpty ifTrue: [^self].
+			newCachedClasses do: 
+					[:className |
+					(JadeiteSearch allClassNames includes: className)
+						ifFalse: [JadeiteSearch allClassNames add: className]]]! !
+!RowanBrowserService categoriesFor: #addCachedSymbols:!public!updating! !
+
 !RowanCommandResult methodsFor!
 
 autoCommitUpdate: browser
@@ -5541,6 +5468,22 @@ methodService
 	^methodDefinitionService ifNil: [methodDefinitionService := RowanMethodService on: gciSession]! !
 !RowanMethodDefinition categoriesFor: #methodService!public!services! !
 
+!RowanMethodService methodsFor!
+
+basicSubSuperIcon
+	hasSupers ifTrue: [^JadeSystemBrowserPresenter overriddenIcon].
+	hasSubs ifTrue: [^JadeiteBrowserPresenter downArrowIcon].
+	^Icon blank!
+
+removeTrailingMenuItemsFrom: aMenu
+	| jadeiteSeparator |
+	jadeiteSeparator := aMenu items detect: [:menuItem | menuItem id = #jadeiteDivider]
+				ifNone: [aMenu addItem: JadeiteDividerMenuItem separator].
+	[aMenu items size > (aMenu items indexOf: jadeiteSeparator)]
+		whileTrue: [aMenu removeItemAt: (aMenu items indexOf: jadeiteSeparator) + 1]! !
+!RowanMethodService categoriesFor: #basicSubSuperIcon!displaying!public! !
+!RowanMethodService categoriesFor: #removeTrailingMenuItemsFrom:!method menu support!private! !
+
 !RowanPatch methodsFor!
 
 operations: aCollection 
@@ -5552,6 +5495,30 @@ session: aCollection
 	gciSession := aCollection! !
 !RowanPatch categoriesFor: #operations:!public! !
 !RowanPatch categoriesFor: #session:!public! !
+
+!RowanProjectService methodsFor!
+
+changesUsing: session
+	| operations |
+	operations := self basicChangesUsing: session.
+	changes isEmpty ifTrue: [^MessageBox notify: 'No changes!!'].
+	[^JadeiteChangesBrowser showOn: (RowanPatch new
+				operations: operations;
+				session: session)
+		name: name]
+			ensure: [changes := nil	"clean this up. no longer needed and can be large"]!
+
+projectLogUsing: parentPresenter session: session
+	| gitLog projectName queryService |
+	projectName := self name.
+	gitLog := JadeiteGitLog showOnSession: session.
+	gitLog projectService: self. 
+	gitLog caption: (parentPresenter gciSession titleBarFor: projectName , ' Project Git Log').
+	queryService := RowanQueryService command: #projectLog: withArgs: (Array with: projectName).
+	parentPresenter issueCommand: (Array with: queryService).
+	gitLog codePane documentPresenter value: queryService queryResults! !
+!RowanProjectService categoriesFor: #changesUsing:!presenter support!public! !
+!RowanProjectService categoriesFor: #projectLogUsing:session:!presenter support!public! !
 
 !SequencedGrowableCollection methodsFor!
 
