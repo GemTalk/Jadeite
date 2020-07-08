@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 Error subclass: #GsError
 	instanceVariableNames: 'gciErrSType gsProcess debugger'
@@ -86,6 +86,7 @@ reportError
 		MessageBox warning: 'Error while processing error: ' , ex description.
 		SessionManager current pause.
 		self reportErrorMessage.
+		Processor activeProcess terminate.
 	].
 !
 

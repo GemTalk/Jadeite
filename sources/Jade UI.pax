@@ -137,13 +137,19 @@ terminate
 !
 
 trimStackToLevel: anInteger
-
+	Transcript
+		cr;
+		print: Processor activeProcess identityHash;
+		space;
+		show: 'trimStackToLevel:';
+		tab;
+		print: {anInteger};
+		flush.
 	stack := nil.
 	gciSession
-		send: #'_trimStackToLevel:'
+		send: #_trimStackToLevel:
 		to: self
-		withAll: (Array with: anInteger).
-! !
+		withAll: (Array with: anInteger)! !
 !GsProcess categoriesFor: #stepInto:!public! !
 !GsProcess categoriesFor: #stepOut:!public! !
 !GsProcess categoriesFor: #stepOver:!public! !

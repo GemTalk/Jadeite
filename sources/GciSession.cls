@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 Object subclass: #GciSession
 	instanceVariableNames: 'briefDescription clientForwarders eventCount gciSessionId gemHost gemNRS heartbeatProcess isHandlingClientForwarderSend isPackagePolicyEnabled library netPort netTask server stoneHost stoneName stoneNRS stoneSerial stoneSessionID userID blocking autoCommit'
@@ -25,22 +25,26 @@ _library
 !
 
 _send: aSymbol to: anObject withAll: anArray
-
 	| arguments oops result |
+	Transcript
+		cr;
+		print: Processor activeProcess identityHash;
+		space;
+		show: '_send:to:withAll:';
+		flush.
 	oops := OrderedCollection new.
-	arguments := anArray collect: [:each | 
-		(each isKindOf: Integer) ifTrue: [library session: gciSessionId oopForInteger: each] ifFalse: [
-		(each isKindOf: String) ifTrue: [oops add: (self oopForString: each)] ifFalse: [
-		each]].
-	].  
-	result := library 
-		session: gciSessionId
-		send: aSymbol 
-		to: (self oopTypeFor: anObject) 
-		with: (self serverArrayFor: arguments).
+	arguments := anArray collect: 
+					[:each |
+					(each isKindOf: Integer)
+						ifTrue: [library session: gciSessionId oopForInteger: each]
+						ifFalse: [(each isKindOf: String) ifTrue: [oops add: (self oopForString: each)] ifFalse: [each]]].
+	result := library
+				session: gciSessionId
+				send: aSymbol
+				to: (self oopTypeFor: anObject)
+				with: (self serverArrayFor: arguments).
 	self releaseOops: oops.
-	^result.
-!
+	^result!
 
 _server
 
@@ -202,24 +206,32 @@ gsHasPragmas
 	^library gsHasPragmas!
 
 handlingClientForwarderSendDo: aBlock
-
 	| block result continueWith |
-
+	Transcript
+		cr;
+		print: Processor activeProcess identityHash;
+		space;
+		show: 'handlingClientForwarderSendDo:';
+		flush.
 	block := aBlock.
-	[
-		result := self returningResultOrErrorDo: block. 
-		result isKindOf: GsClientForwarderSend.
-	] whileTrue: [
-		continueWith := result signal.
-		block := [
-			library
-				session: gciSessionId
-				continue: result errorReport contextOop
-				withObject: continueWith.
-		].
-	].
-	^result.
-!
+	
+	[Transcript
+		cr;
+		print: Processor activeProcess identityHash;
+		space;
+		show: 'handlingClientForwarderSendDo:(returningResultOrErrorDo:) block:';
+		print: block;
+		flush.
+	result := self returningResultOrErrorDo: block.
+	result isKindOf: GsClientForwarderSend]
+			whileTrue: 
+				[continueWith := result signal.
+				block := 
+						[library
+							session: gciSessionId
+							continue: result errorReport contextOop
+							withObject: continueWith]].
+	^result!
 
 hardBreak
 
@@ -465,37 +477,52 @@ returningResultOrErrorDo: aBlock
 !
 
 send: aSymbol to: anObject
-
+	Transcript
+		cr;
+		print: Processor activeProcess identityHash;
+		space;
+		show: 'send:to:';
+		tab;
+		print: {aSymbol. server. anObject};
+		flush.
 	^self
 		send: aSymbol
 		to: anObject
-		withAll: #().
-!
+		withAll: #()!
 
 send: aSymbol to: anObject withAll: anArray
-
 	| stream |
 	stream := WriteStream on: String new.
-	stream 
-		nextPutAll: (anObject == server ifTrue: ['jadeServer'] ifFalse: [anObject printString]); cr;
+	stream
+		nextPutAll: (anObject == server ifTrue: ['jadeServer'] ifFalse: [anObject printString]);
+		cr;
 		nextPutAll: '	perform: #''';
 		nextPutAll: aSymbol;
-		nextPut: $'; cr;
+		nextPut: $';
+		cr;
 		nextPutAll: '	withAll: (Array';
 		yourself.
-	anArray do: [:each | 
-		stream cr; nextPutAll: '		with: '; print: each.
-	].
+	anArray do: 
+			[:each |
+			stream
+				cr;
+				nextPutAll: '		with: ';
+				print: each].
 	stream nextPut: $).
-	^self
-		withExplanation: stream contents 
-		do: [
+	^self withExplanation: stream contents
+		do: 
+			[Transcript
+				cr;
+				print: Processor activeProcess identityHash;
+				space;
+				show: 'send:to:withAll:';
+				tab;
+				print: {aSymbol. anObject. anArray class};
+				flush.
 			self
-				_send: aSymbol 
-				to: anObject 
-				withAll: anArray.
-		].
-!
+				_send: aSymbol
+				to: anObject
+				withAll: anArray]!
 
 sendInterpreted: aString to: anObject withAll: anArray
 

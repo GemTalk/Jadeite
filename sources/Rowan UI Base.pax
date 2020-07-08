@@ -569,7 +569,7 @@ package setPrerequisites: #(
 	'Jade UI Base'
 	'Monticello'
 	'Object Log Browser'
-	'Rowan Client Services'
+	'..\..\RowanClientServices\Rowan Client Services'
 	'Rowan UI Base PreInstall'
 	'..\Core\Object Arts\Dolphin\System\Compiler\Smalltalk Parser'
 	'..\Core\Contributions\Solutions Software\SSW EditableListView'
@@ -1303,6 +1303,14 @@ preferencesFile
 
 serverPerform: aSymbol withArguments: anArray
 	| answer |
+	Transcript
+		cr;
+		print: Processor activeProcess identityHash;
+		space;
+		show: 'serverPerform:withArguments';
+		tab;
+		print: {aSymbol. server. anArray class};
+		flush.
 	server isNil
 		ifTrue: 
 			[MessageBox notify: 'Unable to perform action due to server initialization failure.'.
@@ -1360,15 +1368,54 @@ withExplanation: aString do: aBlock
 	"Here we make the call and handle any error."
 
 	| result error |
+	Transcript
+		cr;
+		print: Processor activeProcess identityHash;
+		space;
+		show: 'withExplanation:do:';
+		cr;
+		print: aString;
+		cr;
+		print: aBlock;
+		flush.
 	BrowserUpdate current inUpdateWhile: 
 			[
 			[(Delay forMilliseconds: 10) wait.
 			self isCallInProgress] whileTrue: [].
 			result := self withExplanation: aString doA: aBlock.
+			Transcript
+				cr;
+				print: Processor activeProcess identityHash;
+				space;
+				show: 'withExplanation:do: (inUpdateWhile: block)';
+				cr;
+				print: aString;
+				cr;
+				print: aBlock;
+				flush.
 			self incrementEventCount.
-			(result isKindOf: GsError) ifFalse: [^result].
+			(result isKindOf: GsError)
+				ifFalse: 
+					[Transcript
+						cr;
+						print: Processor activeProcess identityHash;
+						space;
+						show: 'withExplanation:do: (return) result: ';
+						show: (result printString copyFrom: 1 to: (result printString size min: 50));
+						flush.
+					self halt. 
+					^result].
 			error := result.
-			[result := error signal] ensure: [self releaseAllOops].
+			
+			[Transcript
+				cr;
+				print: Processor activeProcess identityHash;
+				space;
+				show: 'withExplanation:do: (error) ';
+				show: (error printString copyFrom: 1 to: (error printString size min: 50));
+				flush.
+			result := error signal]
+					ensure: [self releaseAllOops].
 			result = #resume ifFalse: [self error: 'Unrecognized response of ' , result printString]].
 	"other work may need to be done by, say, the debugger. Give those processes a chance to run 
 	before continuing"
@@ -1376,7 +1423,14 @@ withExplanation: aString do: aBlock
 	[(Delay forMilliseconds: 10) wait.
 	self isCallInProgress] whileTrue: [].
 	^self withExplanation: aString
-		do: [library session: gciSessionId continue: error errorReport contextOop]!
+		do: 
+			[Transcript
+				cr;
+				print: Processor activeProcess identityHash;
+				space;
+				show: 'withExplanation:do: (continue)';
+				flush.
+			library session: gciSessionId continue: error errorReport contextOop]!
 
 withExplanation: aString doA: aBlock
 	"We've (temporarily) eliminated the complicated monitoring loop
@@ -1389,6 +1443,12 @@ withExplanation: aString doA: aBlock
 	for the original implementation when we're ready to implement
 	an improved monitoring solution"
 
+	Transcript
+		cr;
+		print: Processor activeProcess identityHash;
+		space;
+		show: 'withExplanation:doA:';
+		flush.
 	^self handlingClientForwarderSendDo: aBlock! !
 !GciSession categoriesFor: #_executeString:fromContextOop:environment:!private! !
 !GciSession categoriesFor: #clientServerVersionRelationship!private! !
