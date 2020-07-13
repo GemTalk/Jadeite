@@ -77,7 +77,7 @@ JadePresenterA subclass: #JadePreferencesPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeTextDocument subclass: #JadeDebugger
-	instanceVariableNames: 'answer errorMessagePresenter frame frameListOffset frameListPresenter gsProcess processList processListPresenter terminateOnClose variableDataPresenter variableListPresenter'
+	instanceVariableNames: 'answer errorMessagePresenter frame frameListOffset frameListPresenter gsProcess processList processListPresenter terminateOnClose variableDataPresenter variableListPresenter waitingForAnswerProcess debuggerProcess'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggers'!

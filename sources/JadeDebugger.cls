@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 JadeTextDocument subclass: #JadeDebugger
-	instanceVariableNames: 'answer errorMessagePresenter frame frameListOffset frameListPresenter gsProcess processList processListPresenter terminateOnClose variableDataPresenter variableListPresenter'
+	instanceVariableNames: 'answer errorMessagePresenter frame frameListOffset frameListPresenter gsProcess processList processListPresenter terminateOnClose variableDataPresenter variableListPresenter waitingForAnswerProcess debuggerProcess'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggers'!
@@ -37,15 +37,43 @@ activeTextEdit
 	^theView!
 
 answer
-		"It is likely that the debugger was opened by some UI command that changed the cursor to a wait cursor.
+	"It is likely that the debugger was opened by some UI command that changed the cursor to a wait cursor.
 		Because we are starting a new main UI process, and because our process can be terminated, we can be
 		left in a state in which the cursor is not set back to its original value.
 		We mitigate that problem by changing it to the default."
 
-	Cursor current: nil.
-	SessionManager inputState loopWhile: [answer isNil].
-	^answer.
-!
+	Cursor reset.
+	Transcript
+		cr;
+		show: 'JadeiteDebugger>>answer(1): ';
+		print: self identityHash;
+		flush.
+	Transcript
+		cr;
+		show: 'Active process id: ';
+		print: Processor activeProcess id;
+		flush.
+	waitingForAnswerProcess := 
+			[[[answer isNil] whileTrue: [(Delay forMilliseconds: 1) wait]] ensure: 
+					[waitingForAnswerProcess := nil.
+					debuggerProcess resume]]
+					fork.
+	(debuggerProcess := Processor activeProcess) suspend.
+	Transcript
+		cr;
+		show: 'JadeiteDebugger>>answer(2): ';
+		print: self identityHash;
+		flush.
+	Transcript
+		cr;
+		show: 'Active process id: ';
+		print: Processor activeProcess id;
+		cr;
+		cr;
+		cr;
+		show: '==================';
+		flush.
+	^answer!
 
 clearUI
 

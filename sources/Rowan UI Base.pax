@@ -1372,6 +1372,9 @@ withExplanation: aString do: aBlock
 		cr;
 		print: Processor activeProcess identityHash;
 		space;
+		cr;
+		show: '--------------';
+		cr;
 		show: 'withExplanation:do:';
 		cr;
 		print: aString;
@@ -1402,8 +1405,10 @@ withExplanation: aString do: aBlock
 						space;
 						show: 'withExplanation:do: (return) result: ';
 						show: (result printString copyFrom: 1 to: (result printString size min: 50));
+						cr;
+						show: '--------------';
+						cr;
 						flush.
-					self halt. 
 					^result].
 			error := result.
 			
