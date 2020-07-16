@@ -1,4 +1,11 @@
-﻿"In lieu of conditional breakpoints in Dolphin, use this to stop only once. 
+﻿JadeiteDebugger allInstances do:[:debugger | debugger debuggerProcess ifNotNil:[:proc | proc terminate]. debugger debuggerProcess: nil]
+
+JadeiteDebugger allInstances size
+SessionManager current inputState topLevelWindows
+Process allInstances
+JadeiteDebugger debuggers
+
+"In lieu of conditional breakpoints in Dolphin, use this to stop only once. 
 Good for debugging menus, etc" 
 
 "client side" 

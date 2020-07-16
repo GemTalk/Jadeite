@@ -43,36 +43,25 @@ answer
 		We mitigate that problem by changing it to the default."
 
 	Cursor reset.
-	Transcript
-		cr;
-		show: 'JadeiteDebugger>>answer(1): ';
-		print: self identityHash;
-		flush.
-	Transcript
-		cr;
-		show: 'Active process id: ';
-		print: Processor activeProcess id;
-		flush.
 	waitingForAnswerProcess := 
 			[[[answer isNil] whileTrue: [(Delay forMilliseconds: 1) wait]] ensure: 
 					[waitingForAnswerProcess := nil.
-					debuggerProcess resume]]
+					answer isNil
+						ifTrue: 
+							[Processor activeProcess == debuggerProcess ifFalse: [debuggerProcess terminate].
+							debuggerProcess := nil]
+						ifFalse: 
+							[debuggerProcess
+								ifNotNil: 
+									[:proc |
+									"need to resume the suspended main process as main process"
+									SessionManager current inputState main: Processor activeProcess.
+									proc resume.
+									Processor terminateActive]]]]
 					fork.
-	(debuggerProcess := Processor activeProcess) suspend.
-	Transcript
-		cr;
-		show: 'JadeiteDebugger>>answer(2): ';
-		print: self identityHash;
-		flush.
-	Transcript
-		cr;
-		show: 'Active process id: ';
-		print: Processor activeProcess id;
-		cr;
-		cr;
-		cr;
-		show: '==================';
-		flush.
+	debuggerProcess := Processor activeProcess.
+	Processor suspendActive.
+	debuggerProcess := nil.
 	^answer!
 
 clearUI
@@ -122,6 +111,12 @@ createSchematicWiring
 	variableListPresenter		when: #selectionChanged		send: #selectedVariable				to: self.
 	variableListPresenter		when: #actionPerformed		send: #inspectVariable				to: self.
 !
+
+debuggerProcess
+	^debuggerProcess!
+
+debuggerProcess: anObject
+	^debuggerProcess := anObject!
 
 implement
 
@@ -302,6 +297,8 @@ updateSaveMethodOop: anInteger
 !JadeDebugger categoriesFor: #copyStack!menu handlers!private! !
 !JadeDebugger categoriesFor: #createComponents!public! !
 !JadeDebugger categoriesFor: #createSchematicWiring!public! !
+!JadeDebugger categoriesFor: #debuggerProcess!accessing!private! !
+!JadeDebugger categoriesFor: #debuggerProcess:!accessing!private! !
 !JadeDebugger categoriesFor: #implement!public! !
 !JadeDebugger categoriesFor: #inspectVariable!menu handlers!private! !
 !JadeDebugger categoriesFor: #queryCommand:!public! !

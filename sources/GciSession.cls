@@ -26,12 +26,6 @@ _library
 
 _send: aSymbol to: anObject withAll: anArray
 	| arguments oops result |
-	Transcript
-		cr;
-		print: Processor activeProcess identityHash;
-		space;
-		show: '_send:to:withAll:';
-		flush.
 	oops := OrderedCollection new.
 	arguments := anArray collect: 
 					[:each |
@@ -207,22 +201,9 @@ gsHasPragmas
 
 handlingClientForwarderSendDo: aBlock
 	| block result continueWith |
-	Transcript
-		cr;
-		print: Processor activeProcess identityHash;
-		space;
-		show: 'handlingClientForwarderSendDo:';
-		flush.
 	block := aBlock.
 	
-	[Transcript
-		cr;
-		print: Processor activeProcess identityHash;
-		space;
-		show: 'handlingClientForwarderSendDo:(returningResultOrErrorDo:) block:';
-		print: block;
-		flush.
-	result := self returningResultOrErrorDo: block.
+	[result := self returningResultOrErrorDo: block.
 	result isKindOf: GsClientForwarderSend]
 			whileTrue: 
 				[continueWith := result signal.
@@ -477,14 +458,6 @@ returningResultOrErrorDo: aBlock
 !
 
 send: aSymbol to: anObject
-	Transcript
-		cr;
-		print: Processor activeProcess identityHash;
-		space;
-		show: 'send:to:';
-		tab;
-		print: {aSymbol. server. anObject};
-		flush.
 	^self
 		send: aSymbol
 		to: anObject
@@ -511,15 +484,7 @@ send: aSymbol to: anObject withAll: anArray
 	stream nextPut: $).
 	^self withExplanation: stream contents
 		do: 
-			[Transcript
-				cr;
-				print: Processor activeProcess identityHash;
-				space;
-				show: 'send:to:withAll:';
-				tab;
-				print: {aSymbol. anObject. anArray class};
-				flush.
-			self
+			[self
 				_send: aSymbol
 				to: anObject
 				withAll: anArray]!

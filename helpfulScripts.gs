@@ -1,4 +1,4 @@
-﻿RowanSample1Test new arbitraryCode
+﻿RowanSample1Test new arbitraryCode   
 
 (RwSpecification fromUrl: 'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1_v2.ston') resolveStrict load.
 
