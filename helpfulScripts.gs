@@ -1,5 +1,20 @@
 ﻿RowanSample1Test new arbitraryCode   
 
+arbitraryCode
+	| fnoodle |
+	fnoodle := UserGlobals
+		at: #'iShouldNotBeHere'
+		ifAbsent: [ 
+			| def |
+			def := Array with: 1 with: 2 with: 4.
+			def
+				do: [ :idx | 
+					UserGlobals
+						at: #'iShouldNotBeHere'
+						ifAbsent: [ Transcript cr; show: idx printString ] ] ]
+
+
+
 (RwSpecification fromUrl: 'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1_v2.ston') resolveStrict load.
 
 (Rowan projectNamed: 'Rowan') gitRepositoryRoot: '$ROWAN_PROJECTS_HOME/Rowan'.

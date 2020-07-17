@@ -1540,7 +1540,7 @@ onViewClosed
 			waitingForAnswerProcess ifNotNil: [waitingForAnswerProcess terminate].
 			(terminateOnClose and: [answer isNil])
 				ifTrue: 
-					[[super onViewClosed] ensure: [gsProcess terminate].
+					[[gsProcess terminate] ensure: [super onViewClosed].
 					self error: 'We should never get here!!']].
 	^super onViewClosed!
 
