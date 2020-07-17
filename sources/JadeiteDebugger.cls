@@ -316,7 +316,7 @@ onViewClosed
 
 	BrowserUpdate current logComment: 'Closing Debugger {' , self identityHash printString , '}'.
 	processList := processListPresenter list.
-	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter].
+	BrowserUpdate current removeEventsTriggeredFor: self. 
 	"Allow test to know when view is closed"
 	self class signalSemaphore.
 	self terminateIdleProcess.

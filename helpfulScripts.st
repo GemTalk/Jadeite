@@ -1,7 +1,14 @@
 ﻿JadeiteDebugger allInstances do:[:debugger | debugger debuggerProcess ifNotNil:[:proc | proc terminate]. debugger debuggerProcess: nil]
 
+JadeiteDebugger allInstances first 
 JadeiteDebugger allInstances size
-SessionManager current inputState topLevelWindows
+
+SessionManager current inputState windows size "old 583"  
+SessionManager current inputState purgeDeadWindows
+SessionManager current inputState main
+BrowserUpdate clearCurrent
+SessionManager current inputState windows collect:[:ea | (ea class canUnderstand: #presenter) ifTrue:[ea presenter topShell] ifFalse:[]]
+
 Process allInstances
 JadeiteDebugger debuggers
 

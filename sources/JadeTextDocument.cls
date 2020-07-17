@@ -257,7 +257,6 @@ maxPrintStringSize
 	^JadePresenter maxPrintStringSize!
 
 onViewClosed
-
 	gciSession notNil ifTrue: [
 		| temp |
 		temp := gciSession.
