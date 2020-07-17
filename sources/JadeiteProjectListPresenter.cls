@@ -96,7 +96,7 @@ onViewClosed
 	super onViewClosed.
 	BrowserUpdate current
 		logComment: 'Closing Project List Browser {' , self identityHash printString , '}'.
-	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter]!
+	BrowserUpdate current removeEventsTriggeredFor: self. !
 
 onViewOpened
 	super onViewOpened.

@@ -47,7 +47,7 @@ methodSelectionChanged
 
 onViewClosed
 	super onViewClosed.
-	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter]!
+	BrowserUpdate current removeEventsTriggeredFor: self. !
 
 onViewOpened
 	super onViewOpened.

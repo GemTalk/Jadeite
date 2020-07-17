@@ -104,7 +104,7 @@ methodValueChanged
 onViewClosed
 	(Delay forMilliseconds: 2) wait.  "let paint events finish" 
 	super onViewClosed.
-	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter]!
+	BrowserUpdate current removeEventsTriggeredFor: self. !
 
 onViewOpened
 	super onViewOpened.
