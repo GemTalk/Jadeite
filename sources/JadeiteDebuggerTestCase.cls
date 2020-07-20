@@ -103,10 +103,9 @@ test_adHocExecutionSelf
 	self openDebuggerOn: '''gloop'' halt'.
 	debugger frameListPresenter selectionByIndex: 3.
 	debugger methodSourcePresenter documentPresenter value: 'self'.
-	debugger methodSourcePresenter documentPresenter view setFocus.
 	self debuggerDo: 
 			[
-			[debugger jadeDisplay.
+			[debugger jadeExecuteAndDisplay: true view: debugger methodSourcePresenter documentPresenter view.
 			debugger methodSourcePresenter documentPresenter view invalidate]
 					forkAt: Processor activePriority + 1].
 	[debugger methodSourcePresenter documentPresenter value = 'self ''gloop''']

@@ -390,13 +390,19 @@ test_workspaceConfirmInteraction
 	[TestMessageBox plannedResult: #no.
 	result := workspace executeSelectionOrLine.	"JadeTextDocument>>jadeExecuteAndDisplay: creates a new process which is hard to test. Send the underlying
 										commands instead which do not fork"
-	workspace jadeExecuteAndDisplay: true result: result.
+	workspace
+		jadeExecuteAndDisplay: true
+		result: result
+		view: nil.
 	self assert: workspace codePane documentPresenter value equals: 'self confirm: ''hi'' false'.
 	workspace codePane documentPresenter value: 'self confirm: ''hi'''.
 	workspace codePane selectAll.
 	TestMessageBox plannedResult: #yes.
 	result := workspace executeSelectionOrLine.
-	workspace jadeExecuteAndDisplay: true result: result.
+	workspace
+		jadeExecuteAndDisplay: true
+		result: result
+		view: nil.
 	self assert: workspace codePane documentPresenter value equals: 'self confirm: ''hi'' true'.
 	self assert: TestMessageBox lastMessageBox caption equals: 'Rowan Confirmation'.
 	self assert: TestMessageBox lastMessageBox text equals: 'hi']
@@ -450,7 +456,10 @@ test_workspaceInformInteraction
 	[TestMessageBox plannedResult: #ok.
 	result := workspace executeSelectionOrLine.	"JadeTextDocument>>jadeExecuteAndDisplay: creates a new process which is hard to test. Send the underlying
 										commands instead which do not fork"
-	workspace jadeExecuteAndDisplay: false result: result.
+	workspace
+		jadeExecuteAndDisplay: false
+		result: result
+		view: nil.
 	self assert: workspace codePane documentPresenter value equals: 'self inform: ''hi'''.
 	self assert: TestMessageBox lastMessageBox caption equals: 'Rowan Notification'.
 	self assert: TestMessageBox lastMessageBox text equals: 'hi']

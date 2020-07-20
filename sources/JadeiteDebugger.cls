@@ -748,13 +748,12 @@ semaphore: aSemaphore
 !
 
 signalSemaphore
-
-	self semaphore ifNotNil: [:value | 
-		[
-			value signal.
-			SessionManager inputState prod.
-		] forkAt: Processor userBackgroundPriority.
-	].! !
+	self semaphore
+		ifNotNil: 
+			[:sem |
+			
+			[sem signal.
+			SessionManager inputState prod] forkAt: Processor userBackgroundPriority]! !
 !JadeiteDebugger class categoriesFor: #aboutToShowErrorShellOn:!public! !
 !JadeiteDebugger class categoriesFor: #debuggerClass!public! !
 !JadeiteDebugger class categoriesFor: #debuggerClass:!public! !

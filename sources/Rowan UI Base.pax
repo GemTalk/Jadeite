@@ -312,6 +312,7 @@ package methodNames
 	add: #JadeTextDocument -> #executeSelectionOrLine:;
 	add: #JadeTextDocument -> #issueCommand:;
 	add: #JadeTextDocument -> #jadeExecuteAndDisplay:;
+	add: #JadeTextDocument -> #jadeExecuteAndDisplay:view:;
 	add: #JadeTextDocument -> #jadeInspect;
 	add: #JadeTextDocument -> #onPromptToSaveChanges:;
 	add: #JadeTextDocument -> #openDictionaryBrowser;
@@ -4509,7 +4510,28 @@ jadeExecuteAndDisplay: showResult
 	BrowserUpdate current logComment: '#jadeExecuteAndDisplay:'.
 	
 	[result := self executeSelectionOrLine.
-	[self jadeExecuteAndDisplay: showResult result: result] postToInputQueue]
+	
+	[self
+		jadeExecuteAndDisplay: showResult
+		result: result
+		view: nil] postToInputQueue]
+			newProcess
+		name: 'GciSession';
+		resume.
+	[result isNil] whileTrue: [(Delay forMilliseconds: 10) wait].
+	^result!
+
+jadeExecuteAndDisplay: showResult view: focusViewOrNil
+	| result |
+	BrowserUpdate current logComment: '#jadeExecuteAndDisplay:'.
+	
+	[result := self executeSelectionOrLine.
+	
+	[self
+		jadeExecuteAndDisplay: showResult
+		result: result
+		view: focusViewOrNil]
+			postToInputQueue]
 			newProcess
 		name: 'GciSession';
 		resume.
@@ -4565,6 +4587,7 @@ updateServices: services
 !JadeTextDocument categoriesFor: #executeSelectionOrLine:!Jade!private! !
 !JadeTextDocument categoriesFor: #issueCommand:!public!services! !
 !JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:!Jade!private! !
+!JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:view:!Jade!private! !
 !JadeTextDocument categoriesFor: #jadeInspect!menu handlers!private! !
 !JadeTextDocument categoriesFor: #onPromptToSaveChanges:!event handlers!private! !
 !JadeTextDocument categoriesFor: #openDictionaryBrowser!Jade!private! !

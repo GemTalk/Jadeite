@@ -201,7 +201,7 @@ jadeExecute
 	^self jadeExecuteAndDisplay: false.
 !
 
-jadeExecuteAndDisplay: showResult result: anAssociation
+jadeExecuteAndDisplay: showResult result: anAssociation view: focusViewOrNil
 	| textView result value selectionRange offset |
 	anAssociation
 		ifNil: 
@@ -211,7 +211,8 @@ jadeExecuteAndDisplay: showResult result: anAssociation
 		ifTrue: 
 			[MessageBox notify: result value.
 			^self].
-	textView := self activeTextEdit.
+	Transcript cr; print: focusViewOrNil; flush. 
+	textView := focusViewOrNil ifNil: [self activeTextEdit].
 	result key
 		ifTrue: 
 			[value := result value.
@@ -466,7 +467,7 @@ validateUserInterface
 !JadeTextDocument categoriesFor: #jadeDebug!menu handlers!private! !
 !JadeTextDocument categoriesFor: #jadeDisplay!menu handlers!private! !
 !JadeTextDocument categoriesFor: #jadeExecute!menu handlers!private! !
-!JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:result:!Jade!private! !
+!JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:result:view:!Jade!private! !
 !JadeTextDocument categoriesFor: #logoutRequested:!private! !
 !JadeTextDocument categoriesFor: #maxPrintStringSize!private! !
 !JadeTextDocument categoriesFor: #onViewClosed!event handlers!private! !

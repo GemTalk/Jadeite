@@ -44,7 +44,7 @@ answer
 
 	Cursor reset.
 	waitingForAnswerProcess := 
-			[[[answer isNil] whileTrue: [(Delay forMilliseconds: 1) wait]] ensure: 
+			[[[answer isNil] whileTrue: [(Delay forMilliseconds: 10) wait]] ensure: 
 					[waitingForAnswerProcess := nil.
 					answer isNil
 						ifTrue: 
@@ -391,13 +391,6 @@ openDebuggerOnException: gciError
 		terminateOnClose: true.
 !
 
-openOn: gsProcess message: aString terminateOnClose: aBoolean
-	^(self showOnSession: gsProcess gciSession)
-				initializeProcess: gsProcess
-					message: aString
-					terminateOnClose: aBoolean;
-				answer!
-
 printShortFrameAt: index process: gsProcess on: stream
 	| frameString  |
 	frameString := gsProcess stack at: index.
@@ -460,7 +453,6 @@ resetDebuggers
 !JadeDebugger class categoriesFor: #dumpStackFor:errorMessage:on:!public!stack dumping support! !
 !JadeDebugger class categoriesFor: #maxPrint!private!stack dumping support! !
 !JadeDebugger class categoriesFor: #openDebuggerOnException:!public! !
-!JadeDebugger class categoriesFor: #openOn:message:terminateOnClose:!public! !
 !JadeDebugger class categoriesFor: #printShortFrameAt:process:on:!private!stack dumping support! !
 !JadeDebugger class categoriesFor: #printVar:on:!private!stack dumping support! !
 !JadeDebugger class categoriesFor: #printVariables:on:!private!stack dumping support! !

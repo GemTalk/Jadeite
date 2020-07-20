@@ -94,7 +94,8 @@ debuggerDo: aBlock
 	self assert: JadeiteDebugger semaphore isNil.
 	JadeiteDebugger semaphore: Semaphore new.
 	[aBlock value] ensure: 
-			[JadeiteDebugger semaphore wait.
+			[SessionManager inputState processDeferredActions.
+			JadeiteDebugger semaphore wait.
 			JadeiteDebugger semaphore: nil]!
 
 getClipboardContents
