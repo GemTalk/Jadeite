@@ -86,7 +86,7 @@ createTestMethodWithBreakpoints
 		in: 'RowanSample1Test'
 		category: 'tests'.
 	self selectMethodNamed: #test_highlightBreaks.
-	self setBreakAt: 20.
+	self isServerVersion36 ifTrue: [self setBreakAt: 22] ifFalse: [self setBreakAt: 20	"first add:"].
 	self setBreakAt: 25.
 	self setBreakAt: 28!
 
@@ -133,6 +133,9 @@ getSecondDebugger
 						and: [secondDebugger documentPresenter view selection notEmpty and: [secondDebugger ~~ debugger]]])
 				ifTrue: [^self].
 			(Delay forMilliseconds: 10) wait]!
+
+isServerVersion36
+	^'64-bit 3.6.0*' match: session libraryVersion!
 
 keyDownEscapeIn: view
 	^view
@@ -216,6 +219,26 @@ selectFrameAt: integer
 	debugger frameListPresenter onSelectionChanging: event.
 	event value ifFalse:[^self]. 
 	debugger frameListPresenter selection: (debugger frameListPresenter list at: integer)!
+
+selectFrameMatching: wildCardString
+	"foolishly, the selection changing event which needs testing
+	is only sent through a button click in Dolphin. We need to 
+	fake it out for the test. frustrating.
+
+	Note - even though we are faking up the event, the event itself
+	should get modified based on the debugger's state which is a
+	valid test."
+
+	| event selectedFrame |
+	selectedFrame := debugger frameListPresenter list detect: [:frame | wildCardString match: frame].
+	event := (SelectionChangingEvent forSource: self)
+				oldSelections: debugger frameListPresenter selections;
+				newSelections: (Array with: selectedFrame);
+				cause: #test;
+				yourself.
+	debugger frameListPresenter onSelectionChanging: event.
+	event value ifFalse: [^self].
+	debugger frameListPresenter selection: selectedFrame!
 
 setUp
 	user ifNil: [user := 'DataCurator']. "SystemUser will already be set in the subclass if not running as DataCurator" 
@@ -316,6 +339,7 @@ test_globalAdditionalAccelerators
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #getClipboardContents!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #getDebugger!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #getSecondDebugger!private!support! !
+!JadeiteDebuggerDataCuratorTestCase categoriesFor: #isServerVersion36!public!testing! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #keyDownEscapeIn:!private!support!tests! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #menuItemIsEnabled:!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #methodListBrowser!private!support! !
@@ -325,6 +349,7 @@ test_globalAdditionalAccelerators
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #removeMethodNamed:!private!support!test ad hoc execution! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #saveMethodWithHalt!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #selectFrameAt:!private!support! !
+!JadeiteDebuggerDataCuratorTestCase categoriesFor: #selectFrameMatching:!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #setUp!private!setup teardown!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #statusBarValue!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #systemBrowser!private!support! !

@@ -211,7 +211,6 @@ jadeExecuteAndDisplay: showResult result: anAssociation view: focusViewOrNil
 		ifTrue: 
 			[MessageBox notify: result value.
 			^self].
-	Transcript cr; print: focusViewOrNil; flush. 
 	textView := focusViewOrNil ifNil: [self activeTextEdit].
 	result key
 		ifTrue: 

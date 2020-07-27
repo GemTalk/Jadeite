@@ -1531,8 +1531,9 @@ initializeProcess: aProcess message: aString terminateOnClose: aBoolean
 
 onViewClosed
 	BrowserUpdate current logComment: 'Releasing debugger'.
-	self gciSession isValidSession
-		ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: self gciSession].
+	gciSession ifNil:[^super onViewClosed].
+	gciSession isValidSession
+		ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: gciSession].
 	BrowserUpdate current logComment: 'Releasing debugger complete'.
 	(processListPresenter list notNil and: [processListPresenter list notEmpty])
 		ifTrue: 

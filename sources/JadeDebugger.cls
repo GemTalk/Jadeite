@@ -44,7 +44,7 @@ answer
 
 	Cursor reset.
 	waitingForAnswerProcess := 
-			[[[answer isNil] whileTrue: [(Delay forMilliseconds: 10) wait]] ensure: 
+			[[SessionManager inputState loopWhile: [answer isNil]] ensure: 
 					[waitingForAnswerProcess := nil.
 					answer isNil
 						ifTrue: 
@@ -256,6 +256,7 @@ stackInitialSelectionData
 		'Object >> halt (envId 0) @2 line 5'
 		'(TestAsserter) >> assert: @5 line 4'
 		'TestAsserter >> assert: (envId 0) @5 line 4'
+		'UndefinedObject (Object) >> _doesNotUnderstand:args:envId:reason: @8 line 14'
 	)!
 
 statusBarText: aString

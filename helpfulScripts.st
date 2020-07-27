@@ -12,6 +12,8 @@ SessionManager current inputState windows collect:[:ea | (ea class canUnderstand
 Process allInstances
 JadeiteDebugger debuggers
 
+JadeiteDebugger semaphore: nil
+
 "In lieu of conditional breakpoints in Dolphin, use this to stop only once. 
 Good for debugging menus, etc" 
 

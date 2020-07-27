@@ -103,9 +103,10 @@ test_adHocExecutionSelf
 	self openDebuggerOn: '''gloop'' halt'.
 	debugger frameListPresenter selectionByIndex: 3.
 	debugger methodSourcePresenter documentPresenter value: 'self'.
+	debugger methodSourcePresenter documentPresenter view setFocus.
 	self debuggerDo: 
 			[
-			[debugger jadeExecuteAndDisplay: true view: debugger methodSourcePresenter documentPresenter view.
+			[debugger jadeDisplay.
 			debugger methodSourcePresenter documentPresenter view invalidate]
 					forkAt: Processor activePriority + 1].
 	[debugger methodSourcePresenter documentPresenter value = 'self ''gloop''']
@@ -266,7 +267,7 @@ test_breakpointHighlightingInBlocks
 	self openDebuggerOn: 'RowanSample1Test new test_highlightBreaks'.
 	
 	[self assert: debugger frameListPresenter selection
-		equals: '[] in  ExecBlock0 (RowanSample1Test) >> test_highlightBreaks @5 line 14'.
+		equals: '[] in RowanSample1Test >> test_highlightBreaks @22 line 14'.
 	sourcePresenter := debugger methodSourcePresenter documentPresenter.
 	self assert: sourcePresenter selectionRange equals: (245 to: 248).
 	self assert: sourcePresenter selection equals: 'add:'.
@@ -314,16 +315,16 @@ test_browseClass
 test_browseClassVariablePane
 	self testsIssue: #issue192
 		withTitle: 'Oscar-3.0.40: `browse object class` menu item in inspector (debugger) opens dictionary browser...'.
-	self openDebuggerOn: 'nil halt. Array with: RowanClassService new'.
+	self openDebuggerOn: 'nil halt. OrderedCollection with: RowanClassService new'.
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].	"on with:"
 	self debuggerDo: [debugger stepInto].
 	debugger variableListPresenter selectionByIndex: 1.
-	self assert: debugger variableDataPresenter value equals: 'Array'.
+	self assert: debugger variableDataPresenter value equals: 'OrderedCollection'.
 	projectsBrowser := debugger browseObjectClass.
 	
 	[self assert: (projectsBrowser isKindOf: JadeiteBrowser).
-	self assert: projectsBrowser currentCard classListPresenter selection name equals: 'Array'	"receiver is Array class"]
+	self assert: projectsBrowser currentCard classListPresenter selection name equals: 'OrderedCollection'	"receiver is OrderedCollection class"]
 			ensure: [projectsBrowser view close].
 	debugger variableListPresenter selectionByIndex: 2.
 	self assert: debugger variableDataPresenter value equals: 'aRowanClassService:nil'.
@@ -331,7 +332,7 @@ test_browseClassVariablePane
 	
 	[self assert: (projectsBrowser isKindOf: JadeiteBrowser).
 	self assert: projectsBrowser currentCard classListPresenter selection name
-		equals: 'RowanClassService'	"receiver is Array class"]
+		equals: 'RowanClassService'	"receiver is OrderedCollection class"]
 			ensure: [self destroy: projectsBrowser]!
 
 test_browseFrameClassMethod
@@ -341,8 +342,13 @@ test_browseFrameClassMethod
 	self saveMethodWithHalt.
 	self openDebuggerOn: 'RowanSample1 new sampleMethodWithHalt'.
 	self selectFrameAt: debugger frameListPresenter list size.
-	self assert: debugger frameListPresenter selection
-		equals: 'GsNMethod class >> _gsReturnToC @1 line 1'.
+	self isServerVersion36
+		ifTrue: 
+			[self assert: debugger frameListPresenter selection
+				equals: 'GsNMethod class >> _gsReturnToC @1 line 11']
+		ifFalse: 
+			[self assert: debugger frameListPresenter selection
+				equals: 'GsNMethod class >> _gsReturnToC @1 line 1'].
 	browser := debugger browseFrameMethod.
 	
 	[self assert: browser isKindOf: JadeiteBrowser.
@@ -378,7 +384,11 @@ test_browseFrameMethodInBlock
 		in: 'RowanSample1Test'
 		category: 'other'.
 	self openDebuggerOn: 'RowanSample1Test new testBlockMenuItems'.
-	self assert: ('[] in  ExecBlock0 *' match: debugger frameListPresenter selection).
+	self isServerVersion36
+		ifTrue: 
+			[self assert: ('[] in RowanSample1Test >> testBlockMenuItems @11 line 6'
+						match: debugger frameListPresenter selection)]
+		ifFalse: [self assert: ('[] in  ExecBlock0 *' match: debugger frameListPresenter selection)].
 	browser := debugger browseFrameMethod.
 	
 	[self assert: browser isKindOf: JadeiteBrowser.
@@ -386,14 +396,14 @@ test_browseFrameMethodInBlock
 	self assert: browser currentCard methodListPresenter selection selector equals: #testBlockMenuItems]
 			ensure: [browser view close].
 	self selectFrameAt: 5.
-self assert: ('RowanSample1Test >> testBlockMenuItems*' match: debugger frameListPresenter selection).
+	self
+		assert: ('RowanSample1Test >> testBlockMenuItems*' match: debugger frameListPresenter selection).
 	browser := debugger browseFrameMethod.
 	
 	[self assert: browser isKindOf: JadeiteBrowser.
 	self assert: browser currentCard classListPresenter selection name equals: 'RowanSample1Test'.
 	self assert: browser currentCard methodListPresenter selection selector equals: #testBlockMenuItems]
-			ensure: [browser view close].
-!
+			ensure: [browser view close]!
 
 test_browseImplementorsInBlock
 	| browser source |
@@ -411,7 +421,11 @@ test_browseImplementorsInBlock
 		in: 'RowanSample1Test'
 		category: 'other'.
 	self openDebuggerOn: 'RowanSample1Test new testBlockMenuItems'.
-	self assert: ('[] in  ExecBlock0 *' match: debugger frameListPresenter selection).
+	self isServerVersion36
+		ifTrue: 
+			[self assert: ('[] in RowanSample1Test >> testBlockMenuItems @11 line 6'
+						match: debugger frameListPresenter selection)]
+		ifFalse: [self assert: ('[] in  ExecBlock0 *' match: debugger frameListPresenter selection)].
 	browser := debugger browseImplementors.
 	
 	[self assert: browser isKindOf: JadeiteMethodListBrowser.
@@ -437,8 +451,13 @@ test_browseSelectedFrameClassMethod
 	self saveMethodWithHalt.
 	self openDebuggerOn: 'RowanSample1 new sampleMethodWithHalt'.
 	self selectFrameAt: debugger frameListPresenter list size.
-	self assert: debugger frameListPresenter selection
-		equals: 'GsNMethod class >> _gsReturnToC @1 line 1'.
+	self isServerVersion36
+		ifTrue: 
+			[self assert: debugger frameListPresenter selection
+				equals: 'GsNMethod class >> _gsReturnToC @1 line 11']
+		ifFalse: 
+			[self assert: debugger frameListPresenter selection
+				equals: 'GsNMethod class >> _gsReturnToC @1 line 1'].
 	methodListBrowser := debugger browseSelectedMethod.
 	
 	[self assert: methodListBrowser isKindOf: JadeiteMethodListBrowser.
@@ -493,7 +512,11 @@ test_browseSendersInBlock
 		in: 'RowanSample1Test'
 		category: 'other'.
 	self openDebuggerOn: 'RowanSample1Test new testBlockMenuItems'.
-	self assert: ('[] in  ExecBlock0 *' match: debugger frameListPresenter selection).
+	self isServerVersion36
+		ifTrue: 
+			[self
+				assert: ('[] in RowanSample1Test >> testBlockMenuItems*' match: debugger frameListPresenter selection)]
+		ifFalse: [self assert: ('[] in  ExecBlock0 *' match: debugger frameListPresenter selection)].
 	browser := debugger browseSenders.
 	
 	[self assert: browser isKindOf: JadeiteMethodListBrowser.
@@ -586,18 +609,18 @@ test_compileInExecutedBlockFailsWhenNoHomeMethod
 	
 	[self openDebuggerOn: '#(1 2 3) do:[:idx | self halt].'.
 	self assert: debugger frameListPresenter selectionByIndex equals: 4.
-	self assert: (debugger frameListPresenter list at: 4) equals: '[] in  Executed Code  @2 line 1'.
+	self assert: ('[] in Executed Code  * line *' match: (debugger frameListPresenter list at: 4)).
 	debugger documentPresenter value: '#(1 2 3) do:[:idx | self].'.
 	TestMessageBox plannedResult: 'ok'.
 	debugger saveMethod.
 	self assert: debugger frameListPresenter selectionByIndex equals: 4.
-	self assert: (debugger frameListPresenter list at: 4) equals: '[] in  Executed Code  @2 line 1']
+	self assert: ('[] in Executed Code  * line *' match: (debugger frameListPresenter list at: 4))]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_compileInExecutedBlockSameSelectorOnStack
 	self testsIssue: #issue498
 		withTitle: 'Would like to be able to compile method in debugger when block frame selected'.
-	self openProjectBrowser. 
+	self openProjectBrowser.
 	
 	[self selectRowanSample1Test.
 	self
@@ -618,8 +641,13 @@ test_compileInExecutedBlockSameSelectorOnStack
 	
 	[self openDebuggerOn: 'RowanSample1Test new doSomething'.
 	self assert: debugger frameListPresenter selectionByIndex equals: 4.
-	self assert: (debugger frameListPresenter list at: 4)
-		equals: '[] in  ExecBlock1 (RowanSample1) >> doSomething @2 line 4'.
+	self isServerVersion36
+		ifTrue: 
+			[self assert: (debugger frameListPresenter list at: 4)
+				equals: '[] in RowanSample1 >> doSomething @6 line 4']
+		ifFalse: 
+			[self assert: (debugger frameListPresenter list at: 4)
+				equals: '[] in  ExecBlock1 (RowanSample1) >> doSomething @2 line 4'].
 	self assert: (debugger frameListPresenter list at: 9)
 		equals: 'RowanSample1Test >> doSomething @2 line 3'.
 	debugger documentPresenter value: 'doSomething
@@ -1213,7 +1241,7 @@ test_processSwitching
 	longRunningProcess := debugger processListPresenter list
 				detect: [:processService | processService oop = gsProcess].
 	self debuggerDo: [debugger processListPresenter selection: longRunningProcess].
-	self debuggerDo: [self selectFrameAt: 6].
+	self selectFrameMatching: '*Executed Code*'. 
 	self
 		assert: debugger methodSourcePresenter documentPresenter value
 			equals: '[(Delay forSeconds: 9999) wait] fork asOop.';
@@ -1267,10 +1295,17 @@ test_reformatSource
 		equals: 'reformatSourceTemporaryMethod self halt. ^#test'.
 	debugger reformatSource.
 	self assert: debugger documentPresenter view isModified.
-	self assert: debugger documentPresenter value
-		equals: 'reformatSourceTemporaryMethod
+	self isServerVersion36
+		ifTrue: 
+			[self assert: debugger documentPresenter value
+				equals: 'reformatSourceTemporaryMethod
+	self halt.
+	^ #''test''' replaceCrLfWithLf]
+		ifFalse: 
+			[self assert: debugger documentPresenter value
+				equals: 'reformatSourceTemporaryMethod
   self halt.
-  ^ #''test''' replaceCrLfWithLf]
+  ^ #''test''' replaceCrLfWithLf]	"different formatting code in 3.6"]
 			ensure: [debugger documentPresenter view isModified: false]!
 
 test_reformatSourceDoesNotStick
@@ -1291,10 +1326,17 @@ self halt. ^#test'
 self halt. ^#test'.
 	debugger reformatSource.
 	self assert: debugger documentPresenter view isModified.
-	self assert: debugger documentPresenter value
-		equals: 'reformatSourceTemporaryMethod
+	self isServerVersion36
+		ifTrue: 
+			[self assert: debugger documentPresenter value
+				equals: 'reformatSourceTemporaryMethod
+	self halt.
+	^ #''test''' replaceCrLfWithLf]
+		ifFalse: 
+			[self assert: debugger documentPresenter value
+				equals: 'reformatSourceTemporaryMethod
   self halt.
-  ^ #''test''' replaceCrLfWithLf.
+  ^ #''test''' replaceCrLfWithLf].	"different formatting code in 3.6"
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #no.
 	self selectFrameAt: 6.
@@ -1322,15 +1364,23 @@ test_reformatSourceIsUndoable
 		equals: 'reformatSourceTemporaryMethod | abc | abc := #abc. ^abc'.
 	debugger reformatSource.
 	self assert: debugger documentPresenter view isModified.
-	self assert: debugger documentPresenter view text
-		equals: 'reformatSourceTemporaryMethod
+	self isServerVersion36
+		ifFalse: 
+			[self assert: debugger documentPresenter view text
+				equals: 'reformatSourceTemporaryMethod
   | abc |
   abc := #''abc''.
-  ^ abc' replaceCrLfWithLf.
+  ^ abc' replaceCrLfWithLf]
+		ifTrue: 
+			[self assert: debugger documentPresenter view text
+				equals: 'reformatSourceTemporaryMethod
+	| abc |
+	abc := #''abc''.
+	^ abc' replaceCrLfWithLf].
 	debugger documentPresenter view undo.
 	self assert: self methodSourcePresenter value
 		equals: 'reformatSourceTemporaryMethod | abc | abc := #abc. ^abc'.
-	debugger documentPresenter view isModified: false. 
+	debugger documentPresenter view isModified: false.
 	self debuggerDo: [debugger resumeProcess]]
 			ensure: [self projectsPresenter removeMethods: self classListPresenter selections]!
 
