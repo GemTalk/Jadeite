@@ -688,7 +688,8 @@ onViewOpened
 	| inspectorService specModel |
 	super onViewOpened.
 	self showPackageList.
-	specEditor isRootAspectVisible: false.
+	self rowanFixMe.  "Have code to show spec service that needs to be finished"
+	"specEditor isRootAspectVisible: false.
 	inspectorService := RowanSpecificationService new
 				executeThenInspect: 'RwSpecification fromUrl: ''file:/export//korea2/users/ewinger/shared/repos/Rowan/rowan/v2/proposed_specs/Rowan_proposed_2.ston'''
 				context: self gciSession oopNil value
@@ -696,7 +697,7 @@ onViewOpened
 				windowHandle: self view handle value.
 	specModel := Dictionary new.
 	inspectorService objects do: [:keyValue | specModel at: keyValue key put: keyValue value].
-	specEditor model: specModel!
+	specEditor model: specModel"!
 
 openSpecFile
 	specEditor model: (Array

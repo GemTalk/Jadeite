@@ -1455,13 +1455,15 @@ abc add: 1.
 	self debuggerDo: [debugger resumeProcess]!
 
 test_restartInBlock
-	| restartProcess |
+	| restartProcess breakPoint |
 	self testsIssue: #issue126
 		withTitle: 'Debugger opens second debugger, loses stack in original debugger'.
+	self isServerVersion36 ifTrue: [^self rowanFixMe	"can't trim stack in recompiled block"].
 	self openProjectBrowser.
 	self selectRowanSample1Class.
 	self saveInterestingLoopMethod.
-	self projectsPresenter setBreakPointAt: 8 in: self projectsPresenter.	"inside the block"
+	breakPoint := 8.
+	self projectsPresenter setBreakPointAt: breakPoint in: self projectsPresenter.	"inside the block"
 	
 	[self openDebuggerOn: 'RowanSample1 new interestingLoop'.
 	restartProcess := [self debuggerDo: [debugger restart]] fork.	"can't restart inside block. expect notifier"
@@ -1473,7 +1475,7 @@ test_restartInBlock
 	self deny: debugger frameListPresenter list size = secondDebugger frameListPresenter list size]
 			ensure: [restartProcess terminate]]
 			ensure: 
-				[self projectsPresenter clearBreakPointAt: 8 in: self projectsPresenter.	"inside the block"
+				[self projectsPresenter clearBreakPointAt: breakPoint in: self projectsPresenter.	"inside the block"
 				self destroy: projectsBrowser]!
 
 test_runningTestDoesNotLoseStepPoint
@@ -1571,18 +1573,25 @@ test_saveMethodDuringTestRun
 			ensure: [projectsBrowser view close]!
 
 test_selectAfterDiveNoStepPoint
+	| breakpoint |
 	self testsIssue: #issue166
 		withTitle: 'Debugger step with unsaved edits results in empty source pane'.
 	self openProjectBrowser.
 	self selectRowanSample1Class.
 	self saveInterestingLoopMethod.
-	self projectsPresenter setBreakPointAt: 8 in: self projectsPresenter.	"inside the block"
+	breakpoint := self isServerVersion36 ifTrue: [9] ifFalse: [8].
+	self projectsPresenter setBreakPointAt: breakpoint in: self projectsPresenter.	"inside the block"
 	
 	[self openDebuggerOn: 'RowanSample1 new interestingLoop'.
 	self debuggerDo: [debugger stepInto].
 	self assert: debugger frameListPresenter list first equals: 'RowanSample1 >> test @1 line 1'.
-	self assert: (debugger frameListPresenter list at: 2)
-		equals: '[] in  ExecBlock1 (RowanSample1) >> interestingLoop @2 line 8'.
+	self isServerVersion36
+		ifTrue: 
+			[self assert: (debugger frameListPresenter list at: 2)
+				equals: '[] in RowanSample1 >> interestingLoop @9 line 8']
+		ifFalse: 
+			[self assert: (debugger frameListPresenter list at: 2)
+				equals: '[] in  ExecBlock1 (RowanSample1) >> interestingLoop @2 line 8'].
 	[self selectFrameAt: 2] fork.	"<<< Walkback occurred here"	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
 	(Delay forMilliseconds: 100) wait.
 	[debugger documentPresenter value replaceLfWithCrLf isEmpty]
@@ -1590,7 +1599,7 @@ test_selectAfterDiveNoStepPoint
 	self assert: debugger documentPresenter value replaceLfWithCrLf
 		equals: self interestingLoopMethodSource]
 			ensure: 
-				[self projectsPresenter clearBreakPointAt: 8 in: self projectsPresenter.
+				[self projectsPresenter clearBreakPointAt: breakpoint in: self projectsPresenter.
 				self destroy: projectsBrowser]!
 
 test_selectBlockContext
@@ -1690,10 +1699,10 @@ test_stepOutMethod
 	self
 		openDebuggerOn: '| abc |
 self halt.
-abc := Array with: 1 with: 2 with: 3. 
+abc := OrderedCollection with: 1 with: 2 with: 3. 
 abc do:[:int |
 	| array |
-	array := Array with: $a with: $b with: $c. 
+	array := OrderedCollection with: $a with: $b with: $c. 
 	array do: [:char | 
 		char size. 
 		char printString].
@@ -1705,9 +1714,8 @@ abc'.
 	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: 'with:'.
 	self debuggerDo: [debugger stepInto].
-	self assert: debugger documentPresenter view selection equals: 'new:'.
-	self assert: debugger frameListPresenter selection
-		equals: 'Array class (SequenceableCollection class) >> with:with:with: @2 line 9'.
+	self assert: ('OrderedCollection class (SequenceableCollection class) >> with:with:with:*'
+				match: debugger frameListPresenter selection).
 	self debuggerDo: [debugger stepOut].
 	self assert: debugger frameListPresenter selection equals: 'Executed Code  @4 line 3'.	"on the top frame so should step one frame up"
 	self assert: debugger documentPresenter view selection equals: ':='!
@@ -1919,7 +1927,9 @@ test_unsavedChangesActionChangeToHomeFrame
 	[| originalSource |
 	originalSource := '(Array with: 1) do:[:obj | self halt. obj size]'.
 	self openDebuggerOn: originalSource.
-	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @2 line 1'.
+	self isServerVersion36 ifTrue:[
+	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @7 line 1'] ifFalse:[
+	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @2 line 1'].
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
 	TestMessageBox plannedResult: #no.
@@ -1990,9 +2000,15 @@ test_variablesSorted
 		assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
 		equals: #(#receiver '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' #block).
 	self selectFrameAt: 6.
-	self
-		assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
-		equals: #(#receiver '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' #uvw)!
+	self isServerVersion36
+		ifTrue: 
+			[self
+				assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
+				equals: #(#receiver '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' #uvw #xyz)]
+		ifFalse: 
+			[self
+				assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
+				equals: #(#receiver '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' #uvw)]!
 
 test1
 	"Basics of opening a debugger, viewing the UI, and resuming."

@@ -1,4 +1,19 @@
-﻿RowanSample1Test new arbitraryCode   
+﻿
+
+Prepare for Rowan development: 
+"attach to local Rowan git clone"
+(Rowan projectNamed: 'Rowan') gitRepositoryRoot: '$ROWAN_PROJECTS_HOME/Rowan'.
+"attach to local 3.6.0 git clone"
+"(Rowan projectNamed: 'gemstoneBaseImage') gitRepositoryRoot: '$ARCHBASE/image'."
+"trigger lazy inititialization ... need to incorporate into gitRepositoryRoot: implementation"
+Rowan projects do: [:project | project existsOnDisk ].	
+"reload Rowan and load Rowan tests"
+[(Rowan projectNamed: 'Rowan') defined
+	read: Rowan platformConditionalAttributes, #('tests' 'v2' 'v2Only' 'testsV2');
+	load ] on: Warning do: [:ex | ex resume: true ]
+
+
+RowanSample1Test new arbitraryCode   
 
 arbitraryCode
 	| fnoodle |
