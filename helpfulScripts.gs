@@ -67,12 +67,31 @@ RwSpecification fromUrl: 'file:/export//korea2/users/ewinger/shared/repos/Rowan/
 "Write out RwSimpleProjectSpecification"
 self exportToUrl: 'file:/home/ewinger/temp/' as: 'test.ston'
 
-"Attach my clone to Rowan"
+"Attach my clone to Rowan ---- old"
  Rowan gemstoneTools image 
         newRepositoryRoot: '$ROWAN_PROJECTS_HOME/Rowan' 
         platformConditionalAttributes: Rowan platformConditionalAttributes, #('tests' 'v2' 'v2Only' 'testsV2')
         forProjectNamed: 'Rowan'
 
 (Rowan projectNamed: 'Rowan') gitRepositoryRoot: '$ROWAN_PROJECTS_HOME/Rowan'
+
+
+file:$ROWAN_PROJECTS_HOME/RowanSample9/specs/spec_0052.ston
+
+loadProjectFromFile: fileString projectsHome: projectsHomePath
+	"customConditionalAttributes: and componentNames: will 
+	eventually be parameters" 
+	[ 
+	((RwSpecification fromUrl: fileString)
+		projectsHome: projectsHomePath; 
+		yourself)) resolveProjectSetStrict load ]
+		on: Warning
+		do: [ :ex | 
+			Transcript
+				cr;
+				show: ex description.
+			ex resume ].
+	RowanBrowserService new updateProjects
+
 
 

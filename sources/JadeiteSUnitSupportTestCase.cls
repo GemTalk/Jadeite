@@ -304,6 +304,32 @@ test_browseMethods
 		equals: self sunitPresenter methodListPresenter selections first source]
 			ensure: [browser view close]!
 
+test_browseSelectedMethodForNewlyAddedTest
+	| newMethodService methodListBrowser |
+	self testsIssue: #issue828
+		withTitle: '`UndefinedObject does not understand #asString` from `Browse Selected method` in SUnit Browser'.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
+	self assertIsNil: (self methodListPresenter list
+				detect: [:methodService | methodService selector == #test_newMethod]
+				ifNone: []).
+	self
+		saveMethod: 'test_newMethod'
+		in: 'RowanSample1Test'
+		category: '*RowanSample1-Tests'.
+	newMethodService := self methodListPresenter list
+				detect: [:methodService | methodService selector == #test_newMethod]
+				ifNone: [].
+	self denyIsNil: newMethodService.
+	self assert: newMethodService definedClassName equals: 'RowanSample1Test'.	"this inst var was nil which was the bug"
+	self sunitPresenter methodListPresenter selections: (Array with: newMethodService).
+	methodListBrowser := self sunitPresenter browseSelectedMethods.
+	
+	[self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter selection
+				selector
+		equals: #test_newMethod]
+			ensure: [self destroy: methodListBrowser]!
+
 test_browseSunitClass
 	| browseClassMenuItem browser |
 	self testsIssue: #issue207 withTitle: 'should be able to browe source for test from SUit browser'.
@@ -1407,6 +1433,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_abstractTestAppearsOnlyInSubclasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_addNewTestPackage!public!test updates from other browsers!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseMethods!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_browseSelectedMethodForNewlyAddedTest!public!test updates from other browsers! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseSunitClass!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_browseTestSelectorsInSUnitTab!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_commitNoSelections!public!tests! !

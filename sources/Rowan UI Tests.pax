@@ -39,6 +39,7 @@ package classNames
 	yourself.
 
 package methodNames
+	add: #BrowserUpdate -> #returnedServices;
 	add: #DifferencesPresenter -> #afterPresenter;
 	add: #DifferencesPresenter -> #afterTitlePresenter;
 	add: #DifferencesPresenter -> #beforePresenter;
@@ -279,6 +280,13 @@ TestResource subclass: #JadeiteTestResource
 
 
 "Loose Methods"!
+
+!BrowserUpdate methodsFor!
+
+returnedServices
+
+	^returnedServices! !
+!BrowserUpdate categoriesFor: #returnedServices!public!updating! !
 
 !ChoicePrompter class methodsFor!
 

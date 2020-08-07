@@ -306,6 +306,19 @@ test_releaseOops
 	self assert: (session executeString: 'System hiddenSetSize: 39') equals: 0.
 	self auditAll!
 
+test_returnedServices
+	"sanity test that we can use the returned services in other tests" 
+
+	workspace := JadeWorkspace showOnSession: session.
+	self assert: (workspace isKindOf: JadeWorkspace).
+	workspace setDocumentData: '123'.
+	workspace codePane documentPresenter setFocus.
+	workspace codePane jadeDisplay.
+	self assert: workspace codePane documentPresenter value equals: '123 123'.
+	self assert: BrowserUpdate current returnedServices size equals: 1. 
+	self assert: (BrowserUpdate current returnedServices first isKindOf: RowanAnsweringService). 
+	self assert: BrowserUpdate current returnedServices first answer equals: '123'!
+
 test_serviceClassBookkeeping
 	"All service classes should have an entry in`Rowan platform serviceClasses`. 
 	Only SystemUser can reference rowan services classes directly so other users
@@ -829,6 +842,7 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_findInWorkspace!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_instVarConstants!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_returnedServices!public!test!test auto complete! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_serviceClassBookkeeping!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_versionMatches!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workingDirectoryEqualsImageDirectory!public!test! !

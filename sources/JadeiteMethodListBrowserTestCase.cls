@@ -549,6 +549,8 @@ test_browseLiteralReferencesBlankSearch
 test_browseMethodsContaining
 	self testsIssue: #issue695
 		withTitle: '(3.0.91) finf methods containing `allusers` selects second occurrence in method'.
+	self testsIssue: #issue832
+		withTitle: 'OffsetError during `find method containing` in 3.6.0'.
 	self setupMultipleReferencesToString.
 	methodListBrowser := JadePresenter browseMethodsContaining: 'blerf' session: session.
 	
@@ -565,7 +567,13 @@ test_browseMethodsContaining
 	self assert: self methodListMethodListPresenter selection selector equals: #flub3.
 	self assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter view
 				selectionRange
-		equals: (50 to: 54)]
+		equals: (50 to: 54).
+	self destroy: methodListBrowser.
+	"sanity test for #832 specific search string"
+	methodListBrowser := JadePresenter browseMethodsContaining: 'tonel' session: session.
+	self methodListMethodListPresenter selectionByIndex: 1.
+	self assert: ('*tonel*' match: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter value).
+	]
 			ensure: [self removeMultipleReferencesToStringMethods]!
 
 test_browseMultiKeywordSendersHighlighting

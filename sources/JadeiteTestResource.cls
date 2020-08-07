@@ -47,11 +47,15 @@ disableInteractionsWhile: block
 			self issueCommand: answeringService]!
 
 ensureRowanSample1Loaded
-	self rowanSample1Project ifNotNil: [:projectService | projectService isDirty ifFalse:[^self]]. 
+	self rowanSample1Project ifNotNil: [:projectService | projectService isDirty ifFalse: [^self]].
 	self disableInteractionsWhile: 
 			[self unloadSampleProject.
 			self session commit.
-			self loadProjectFromFile: self rowanSample1Path]!
+			self
+				loadProjectFromFile: self rowanSample1Path
+				projectsHome: '$ROWAN_PROJECTS_HOME'
+				customConditionalAttributes: #('tests')
+				componentNames: #('Core' 'Tests')]!
 
 hasValidSession
 	| session |
@@ -65,12 +69,16 @@ isAvailable
 issueCommand: service
 	^JadePresenter issueCommands: (Array with: service) session: self session!
 
-loadProjectFromFile: fileString
+loadProjectFromFile: fileString projectsHome: projectsHomePath customConditionalAttributes: attributes componentNames: componentNames
 	| projectService |
 	projectService := RowanProjectService new.
 	projectService
-		command: #loadProjectFromFile:;
-		commandArgs: (Array with: fileString).
+		command: #loadProjectFromFile:projectsHome:customConditionalAttributes:componentNames:;
+		commandArgs: (Array
+					with: fileString
+					with: projectsHomePath
+					with: attributes
+					with: componentNames).
 	JadePresenter issueCommands: (Array with: projectService) session: self session!
 
 loadProjectNamed: projectName
@@ -182,7 +190,7 @@ unloadSampleProject
 !JadeiteTestResource categoriesFor: #hasValidSession!public!testing! !
 !JadeiteTestResource categoriesFor: #isAvailable!public!testing! !
 !JadeiteTestResource categoriesFor: #issueCommand:!public!setup teardown! !
-!JadeiteTestResource categoriesFor: #loadProjectFromFile:!private!setup teardown! !
+!JadeiteTestResource categoriesFor: #loadProjectFromFile:projectsHome:customConditionalAttributes:componentNames:!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #loadProjectNamed:!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #loginWithRetry:!private!support! !
 !JadeiteTestResource categoriesFor: #logoutThenLoginAs:!private!setup teardown!support! !
