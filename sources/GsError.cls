@@ -72,23 +72,21 @@ processOop
 !
 
 reportError
-
 	"The error can occur before code starts executing (see bug #44232)"
-	gciErrSType contextOop isGsNil ifTrue: [
-		self reportErrorMessage.
-		Processor activeProcess terminate.
-	].
-	[
-		^self debugError.
-	] on: Error do: [:ex | 
-		(ex isKindOf: GsError) ifTrue: [ex pass].
-		SessionManager current logError: ex.
-		MessageBox warning: 'Error while processing error: ' , ex description.
-		SessionManager current pause.
-		self reportErrorMessage.
-		Processor activeProcess terminate.
-	].
-!
+
+	gciErrSType contextOop isGsNil
+		ifTrue: 
+			[self reportErrorMessage.
+			Processor activeProcess terminate].
+	[^self debugError] on: Error
+		do: 
+			[:ex |
+			(ex isKindOf: GsError) ifTrue: [ex isNested ifTrue: [ex pass] "don't pass if we will end up in recursion" ].
+			SessionManager current logError: ex.
+			MessageBox warning: 'Error while processing error: ' , ex description.
+			SessionManager current pause.
+			self reportErrorMessage.
+			Processor activeProcess terminate]!
 
 reportErrorMessage
 

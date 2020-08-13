@@ -678,13 +678,13 @@ variableListPresenter
 
 aboutToShowErrorShellOn: gsError
 	self semaphore ifNil: [^self].
-	[
-		^self openDebuggerOnException: gsError
-	] on: GsError do: [:ex | 
-		ex debugger view close.
-		MessageBox warning: ex description.
-		Processor activeProcess terminate. 
-	]!
+	[^self openDebuggerOnException: gsError] on: GsError
+		do: 
+			[:ex |
+			ex debugger ifNotNil: [:debugger | debugger view close].
+			MessageBox
+				warning: 'Error occurred while debugging. Closing debugger. Error description: ' , ex description.
+			Processor activeProcess terminate]!
 
 debuggerClass
 	^debuggerClass ifNil: [JadeiteDebugger]!
