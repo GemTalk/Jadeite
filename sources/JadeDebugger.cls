@@ -21,8 +21,9 @@ _terminateProcess
 	processListPresenter list copy
 		do: [:each | each oop = gsProcess oop ifTrue: [processListPresenter list remove: each]].
 	[self _terminateProcess: cachedGsProcess] on: TerminateProcess do: [:ex | ex return: nil].
+	self update.
 	gsProcess := processListPresenter list first.
-	self update!
+!
 
 _terminateProcess: aGsProcess
 	aGsProcess terminate.
@@ -277,11 +278,6 @@ stepOver
 	gsProcess stepOver: frameListPresenter selectionByIndex + frameListOffset.
 	^self update!
 
-terminateProcess
-	(MessageBox confirm: 'Terminate process?' caption: 'GemStone/S Process Termination')
-		ifFalse: [^self].
-	self _terminateProcess!
-
 updateProcessListPresenter
 	processListPresenter list: processList copy	"to ensure list gets updated"!
 
@@ -314,7 +310,6 @@ updateSaveMethodOop: anInteger
 !JadeDebugger categoriesFor: #stepInto!menu handlers!private! !
 !JadeDebugger categoriesFor: #stepOut!menu handlers!private! !
 !JadeDebugger categoriesFor: #stepOver!menu handlers!private! !
-!JadeDebugger categoriesFor: #terminateProcess!menu handlers!private! !
 !JadeDebugger categoriesFor: #updateProcessListPresenter!private! !
 !JadeDebugger categoriesFor: #updateSaveMethodOop:!public! !
 

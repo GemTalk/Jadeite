@@ -67,7 +67,9 @@ addToDevelopmentTools
 !
 
 defaultTranscript
-	^JadeiteTranscript allInstances detect: [:trans | trans gciSession = GciSession current] ifNone: []!
+	^JadeiteTranscript allInstances
+		detect: [:trans | trans gciSession = GciSession current and: [trans view class ~= DeafObject]]
+		ifNone: []!
 
 resource_Default_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.

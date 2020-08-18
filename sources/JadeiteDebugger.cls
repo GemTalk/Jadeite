@@ -362,7 +362,7 @@ queryCommand: query
 			^true].
 	(#(#terminateProcess) includes: query commandSymbol)
 		ifTrue: 
-			[query isEnabled: (processList notEmpty and: [processList first ~~ gsProcess]).
+			[query isEnabled: (processListPresenter model notEmpty and: [processListPresenter model first ~~ gsProcess]).
 			^true].
 	(#(#implement) includes: query commandSymbol)
 		ifTrue: 
@@ -370,7 +370,7 @@ queryCommand: query
 			^true].
 	(#(#browseObjectClass) includes: query commandSymbol)
 		ifTrue: 
-			[query isEnabled: variableListPresenter hasSelection.
+			[query isEnabled: variableListPresenter hasSelection. 
 			^true].
 	query commandSymbol == #saveMethod
 		ifTrue: 

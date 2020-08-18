@@ -2918,7 +2918,8 @@ defaultWindowPosition
 	"assume (safely?) there will be only one transcript"
 
 	| defaultTranscript |
-	defaultTranscript := JadeiteLoginShell defaultTranscript ifNil: [^0 @ 0].
+	defaultTranscript := JadeiteLoginShell defaultTranscript.
+	defaultTranscript ifNil: [^0 @ 0].
 	^defaultTranscript view position + self defaultWindowOffset!
 
 disableAllBreakpointsIn: session
