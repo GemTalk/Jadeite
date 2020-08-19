@@ -570,7 +570,7 @@ makeSameSelectionsIn: newPresenter as: previousPresenter
 	projectService := previousPresenter projectListPresenter selectionIfNone: [].
 	packageService := previousPresenter packageListPresenter selectionIfNone: [].
 	dictionaryService := previousPresenter dictionaryPresenter selectionIfNone: [].
-	classService := previousPresenter classListPresenter selectionIfNone: [].
+	classService := previousPresenter selectedClass.
 	classService
 		ifNotNil: 
 			[isMeta := classService meta.
@@ -585,6 +585,7 @@ makeSameSelectionsIn: newPresenter as: previousPresenter
 		ifNotNil: [newPresenter gotoPackageNamed: packageService name].
 	classService ifNil: [^self].
 	newPresenter updateAfterFindClass: classService.
+	previousPresenter isHierarchyTabSelected ifTrue: [newPresenter classHierarchyTabs lastCard].
 	isMeta ifTrue: [newPresenter selectClassTab].
 	methodService ifNil: [^self].
 	newPresenter findMethod: methodService selector!
