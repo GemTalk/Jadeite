@@ -1278,6 +1278,9 @@ updateSystemTab
 	self topShell cardsPresenter view currentCard arrangement: projectTabLabel.
 	self parentPresenter view updateTabs!
 
+updateTabLabel
+	self updateSystemTab!
+
 variablesMenuStrings
 	false
 		ifTrue: 
@@ -1424,6 +1427,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #updateProjectInfo!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #updateProjectTabFor:!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #updateSystemTab!event handlers support!private!updating! !
+!JadeiteBrowserPresenter categoriesFor: #updateTabLabel!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #variablesMenuStrings!menus!public! !
 
 !JadeiteBrowserPresenter class methodsFor!

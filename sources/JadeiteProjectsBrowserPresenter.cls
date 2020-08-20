@@ -2150,9 +2150,6 @@ updateSUnitTab
 updateSUnitTab: service
 	service ifNil: [sunitPresenter testClassService: nil] ifNotNil: [self setTestClass: service]!
 
-updateTabLabel
-	self updateSystemTab!
-
 writeProject
 	| projectServices |
 	projectServices := projectListPresenter selections.
@@ -2377,7 +2374,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSingleMethodSource!event handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSUnitTab!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSUnitTab:!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateTabLabel!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #writeProject!project menu handlers!public! !
 
 !JadeiteProjectsBrowserPresenter class methodsFor!
