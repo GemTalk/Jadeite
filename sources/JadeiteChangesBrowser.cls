@@ -39,17 +39,17 @@ browseChangedThing
 	^shell!
 
 browseImplementors
-	| selection shell methodListPresenter changedMethod  modifiedSelector |
+	| selection shell methodListPresenter changedMethod modifiedSelector |
 	selection := operationListPresenter selectionOrNil.
 	selection isNil ifTrue: [^MessageBox notify: 'Nothing to browse'].
-	selection isRemoval ifTrue: [^MessageBox notify: 'Cannot browse a removed item'].
-	
+	selection isMethod ifFalse: [^MessageBox notify: 'Cannot browse implementors of a non-method'].
 	modifiedSelector := self modifiedSelectorForBrowsing: selection.
-	[shell := JadePresenter browseImplementorsOf: modifiedSelector  session: self gciSession.
+	
+	[shell := JadePresenter browseImplementorsOf: modifiedSelector session: self gciSession.
 	methodListPresenter := shell primaryPresenter methodListPresenter methodListPresenter.
-	changedMethod := methodListPresenter  list
+	changedMethod := methodListPresenter list
 				detect: [:methodService | methodService className = selection className]
-				ifNone: [^self].
+				ifNone: [^shell].
 	methodListPresenter selection: changedMethod]
 			on: Error
 			do: 
@@ -62,7 +62,7 @@ browseSenders
 	| selection shell modifiedSelector |
 	selection := operationListPresenter selectionOrNil.
 	selection isNil ifTrue: [^MessageBox notify: 'Nothing to browse'].
-	selection isRemoval ifTrue: [^MessageBox notify: 'Cannot browse a removed item'].
+	selection isMethod ifFalse: [^MessageBox notify: 'Cannot browse senders of a non-method'].
 	modifiedSelector := self modifiedSelectorForBrowsing: selection.
 	[shell := JadePresenter browseSendersOf: modifiedSelector session: self gciSession] on: Error
 		do: 

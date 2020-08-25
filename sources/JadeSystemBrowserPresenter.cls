@@ -51,8 +51,6 @@ addMethodCategory
 	| string |
 	(string := Prompter prompt: 'New method category?') isNil ifTrue: [^self].
 	string trimBlanks isEmpty ifTrue: [^MessageBox notify: 'Category name must not be blank'].
-	(self verifyValidCategory: string)
-		ifFalse: [^MessageBox notify: 'Loaded package named: ' , string , ' not found'].
 	self basicAddMethodCategory: string!
 
 addMethodInfoTo: aStream

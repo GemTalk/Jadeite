@@ -101,6 +101,40 @@ test_browseImplementors
 				[self destroy: methodListBrowser.
 				self destroy: projectsBrowser]!
 
+test_browseImplementorsOfRemovedMethod
+	| methodListBrowser |
+	self testsIssue: #issue837
+		withTitle: '(3.1.0) Should be legal to `browser implementors or senders` of a removed method from changes browser'.
+	self selectRowanSample1Class.
+	self
+		saveMethod: 'test2  ^123'
+		in: 'RowanSample1'
+		category: 'deleteMe'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test2.
+	self projectsPresenter removeMethods: (Array with: self projectsPresenter selectedClass).
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	self assert: changesBrowser operationListPresenter list last isKindOf: MCRemoval.
+	changesBrowser operationListPresenter selectionByIndex: 2. 
+	self assert: changesBrowser operationListPresenter selection isKindOf: MCRemoval.
+	changesBrowser operationListPresenter selection: (changesBrowser operationListPresenter list
+				detect: [:chg | chg definition className = 'RowanSample1Test']).
+	self assert: changesBrowser operationListPresenter selection className equals: 'RowanSample1Test'.
+	self assert: changesBrowser operationListPresenter selection selector equals: 'test2'.
+	self assert: changesBrowser operationListPresenter selection isMethodRemoval.
+	methodListBrowser := changesBrowser browseImplementors.
+	
+	[self assert: methodListBrowser primaryPresenter methodListPresenter selection selector
+		equals: #test2.
+	self assert: methodListBrowser primaryPresenter methodListPresenter selection className
+		equals: 'RowanSample1'.
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list size equals: 1.
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter selection source
+		equals: 'test2  ^123']
+			ensure: 
+				[self destroy: methodListBrowser.
+				self destroy: projectsBrowser]!
+
 test_browseImplementorsOfRevertedChange
 	| methodListBrowser |
 	self testsIssue: #issue686
@@ -415,6 +449,7 @@ test_revertMethodRemoval
 !JadeiteChangesBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_additionalAccelerators!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementors!public!tests! !
+!JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementorsOfRemovedMethod!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementorsOfRevertedChange!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementorsSelectsChangedMethod!public!tests! !
 !JadeiteChangesBrowserTestCase categoriesFor: #test_browseMethodSelectsAddedClass!public!tests! !

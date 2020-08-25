@@ -339,25 +339,30 @@ package methodNames
 	add: #MCAddition -> #revert:;
 	add: #MCClassDefinition -> #initialize:;
 	add: #MCDefinition -> #isMethodAddition;
+	add: #MCDefinition -> #isMethodDefinition;
 	add: #MCDefinition -> #isMethodModification;
 	add: #MCDefinition -> #isMethodRemoval;
 	add: #MCDefinition -> #revert:;
 	add: #MCMethodDefinition -> #basicClassName;
 	add: #MCMethodDefinition -> #isMethodAddition;
+	add: #MCMethodDefinition -> #isMethodDefinition;
 	add: #MCMethodDefinition -> #isMethodModification;
 	add: #MCMethodDefinition -> #isMethodRemoval;
 	add: #MCMethodDefinition -> #revert:;
 	add: #MCMethodDefinition -> #selector:;
 	add: #MCModification -> #clearObsoletionMemo;
+	add: #MCModification -> #isMethod;
 	add: #MCModification -> #isMethodModification;
 	add: #MCModification -> #revert:;
 	add: #MCPatchBrowser -> #operationSelected;
 	add: #MCPatchOperation -> #canBeReverted;
 	add: #MCPatchOperation -> #clearObsoletionMemo;
+	add: #MCPatchOperation -> #isMethod;
 	add: #MCPatchOperation -> #isMethodAddition;
 	add: #MCPatchOperation -> #isMethodModification;
 	add: #MCPatchOperation -> #isMethodRemoval;
 	add: #MCPatchOperation -> #revert:;
+	add: #MCRemoval -> #isMethod;
 	add: #MCRemoval -> #isMethodRemoval;
 	add: #MCRemoval -> #revert:;
 	add: #Menu -> #addJadeiteSeparator;
@@ -4811,6 +4816,9 @@ initialize: aStream
 isMethodAddition
 	^false!
 
+isMethodDefinition
+	^false!
+
 isMethodModification
 	^false!
 
@@ -4819,6 +4827,7 @@ isMethodRemoval
 
 revert: session! !
 !MCDefinition categoriesFor: #isMethodAddition!public!testing! !
+!MCDefinition categoriesFor: #isMethodDefinition!public!testing! !
 !MCDefinition categoriesFor: #isMethodModification!public!testing! !
 !MCDefinition categoriesFor: #isMethodRemoval!public!testing! !
 !MCDefinition categoriesFor: #revert:!public! !
@@ -4829,6 +4838,9 @@ basicClassName
 	^className!
 
 isMethodAddition
+	^true!
+
+isMethodDefinition
 	^true!
 
 isMethodModification
@@ -4849,6 +4861,7 @@ selector: anObject
 	selector := anObject! !
 !MCMethodDefinition categoriesFor: #basicClassName!accessing!public! !
 !MCMethodDefinition categoriesFor: #isMethodAddition!public!testing! !
+!MCMethodDefinition categoriesFor: #isMethodDefinition!public!testing! !
 !MCMethodDefinition categoriesFor: #isMethodModification!public!testing! !
 !MCMethodDefinition categoriesFor: #isMethodRemoval!public!testing! !
 !MCMethodDefinition categoriesFor: #revert:!public! !
@@ -4858,6 +4871,9 @@ selector: anObject
 
 clearObsoletionMemo
 	obsoletionMemo := nil!
+
+isMethod
+	^modification isMethodModification!
 
 isMethodModification
 	^modification isMethodModification!
@@ -4870,6 +4886,7 @@ revert: session
 	('*(reverted)*' match: modification selector)
 		ifFalse: [modification selector: modification selector , ' (reverted)']! !
 !MCModification categoriesFor: #clearObsoletionMemo!public! !
+!MCModification categoriesFor: #isMethod!public!testing! !
 !MCModification categoriesFor: #isMethodModification!public!testing! !
 !MCModification categoriesFor: #revert:!public! !
 
@@ -4905,6 +4922,9 @@ canBeReverted
 clearObsoletionMemo
 	!
 
+isMethod
+	^false!
+
 isMethodAddition
 	^false!
 
@@ -4917,12 +4937,16 @@ isMethodRemoval
 revert: session! !
 !MCPatchOperation categoriesFor: #canBeReverted!public!testing! !
 !MCPatchOperation categoriesFor: #clearObsoletionMemo!public! !
+!MCPatchOperation categoriesFor: #isMethod!public!testing! !
 !MCPatchOperation categoriesFor: #isMethodAddition!public!testing! !
 !MCPatchOperation categoriesFor: #isMethodModification!public!testing! !
 !MCPatchOperation categoriesFor: #isMethodRemoval!public!testing! !
 !MCPatchOperation categoriesFor: #revert:!public! !
 
 !MCRemoval methodsFor!
+
+isMethod
+	^definition isMethodDefinition!
 
 isMethodRemoval
 	^definition isMethodRemoval!
@@ -4931,6 +4955,7 @@ revert: session
 	definition revert: session.
 	('*(restored)*' match: definition selector)
 		ifFalse: [definition selector: definition selector , ' (restored)']! !
+!MCRemoval categoriesFor: #isMethod!public!testing! !
 !MCRemoval categoriesFor: #isMethodRemoval!public!testing! !
 !MCRemoval categoriesFor: #revert:!public! !
 

@@ -3329,6 +3329,7 @@ test_variableTabSortOrder2
 	projectsBrowser ifNotNil: [self assertVariableTabSorted]!
 
 test_verifyValidCategory
+	"no longer sent when adding a category but still a useful test & method" 
 	self testsIssue: #issue205 withTitle: 'misspelled extension category name causes trouble'.
 	self assert: (self projectsPresenter verifyValidCategory: '*Rowan-Kernel') .
 	self assert: (self projectsPresenter verifyValidCategory: '*rowan-kernel') .
