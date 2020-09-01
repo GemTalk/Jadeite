@@ -703,6 +703,27 @@ test_menuEnablementRunSelectedInClassPresenter
 	self projectsPresenter sunitPresenter queryCommand: query.
 	self deny: query isEnabled!
 
+test_methodColumnDisplay
+	self testsIssue: #issue799 withTitle: '(3.1.0) Wondering what purpose the `Test Execution Class` column serves in SUnit Browser'.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self assert: self sunitPresenter methodListPresenter view columnsList size equals: 1. 
+	self selectServicesNamed: #('RowanTestClassServiceTest')
+		in: self sunitPresenter classListPresenter.
+	self assert: self sunitPresenter methodListPresenter view columnsList size equals: 1. 
+	self assert: self sunitPresenter methodListPresenter view columnsList first text equals: 'Test Selector'. 
+	self assert: (self sunitPresenter methodListPresenter list first isKindOf: RowanMethodService). 
+	self selectServicesNamed: #('RowanTestClassServiceTest' 'RowanProjectServiceTest')
+		in: self sunitPresenter classListPresenter.
+	self assert: self sunitPresenter methodListPresenter view columnsList size equals: 2. 
+	self assert: self sunitPresenter methodListPresenter view columnsList first text equals: 'Test Execution Class'. 
+	self assert: self sunitPresenter methodListPresenter view columnsList last text equals: 'Test Selector'. 
+	self assert: (self sunitPresenter methodListPresenter list first isKindOf: RowanMethodService). 
+	self selectServicesNamed: #('RowanTestClassServiceTest')
+		in: self sunitPresenter classListPresenter.
+	self assert: self sunitPresenter methodListPresenter view columnsList size equals: 1. 
+	self assert: self sunitPresenter methodListPresenter view columnsList first text equals: 'Test Selector'. 
+	self assert: (self sunitPresenter methodListPresenter list first isKindOf: RowanMethodService). !
+
 test_multiSelectClasses
 	| jadeServerTestCount  rowanClassServiceTestCount|
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
@@ -1451,6 +1472,7 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #test_menuEnablementDebugInClassPresenter!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_menuEnablementRunAndMesureTimeInClassPresenter!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_menuEnablementRunSelectedInClassPresenter!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesFor: #test_methodColumnDisplay!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectClasses!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectNoDuplicates!public!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #test_openSunitBrowser!public!tests! !

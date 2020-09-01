@@ -52,7 +52,6 @@ package globalAliases: (Set new
 	yourself).
 
 package setPrerequisites: #(
-	'..\Core\Object Arts\Dolphin\IDE\Base\Development System'
 	'..\Core\Object Arts\Dolphin\Base\Dolphin'
 	'..\Core\Object Arts\Dolphin\Base\Deprecated\Dolphin Base (Deprecated)'
 	'..\Core\Object Arts\Dolphin\MVP\Base\Dolphin Basic Geometry'
@@ -68,10 +67,8 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Prompter'
 	'..\Core\Object Arts\Dolphin\MVP\Views\Scintilla\Dolphin Scintilla View'
-	'..\Core\Object Arts\Dolphin\MVP\Views\Sliding Tray\Dolphin Slidey-Inney-Outey Thing'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Text\Dolphin Text Presenter'
 	'..\Core\Object Arts\Dolphin\MVP\Models\Tree\Dolphin Tree Models'
-	'..\Core\Object Arts\Dolphin\MVP\Presenters\Tree\Dolphin Tree Presenter'
 	'..\Core\Object Arts\Dolphin\MVP\Type Converters\Dolphin Type Converters'
 	'..\Core\Object Arts\Dolphin\MVP\Models\Value\Dolphin Value Models'
 	'GemStone Objects'
@@ -79,7 +76,6 @@ package setPrerequisites: #(
 	'GemStone Session'
 	'Jade Autocompletation'
 	'Jade Method Browser'
-	'Jade Test Browser'
 	'Jade Transcript'
 	'Jade UI'
 	'Jade UI Base'

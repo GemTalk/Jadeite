@@ -9,15 +9,8 @@ package basicPackageVersion: '0.022'.
 package classNames
 	add: #GsTestMethod;
 	add: #JadeiteSUnitAbstractPresenter;
-	add: #JadeiteSUnitBrowser;
 	add: #JadeiteSUnitInClassPresenter;
-	add: #JadeiteSUnitPresenter;
 	add: #JadeTestResult;
-	yourself.
-
-package methodNames
-	add: #JadeTextDocument -> #jadeBrowseTests;
-	add: #JadeToolsToolBarPresenter -> #browseTests;
 	yourself.
 
 package binaryGlobalNames: (Set new
@@ -65,33 +58,11 @@ JadeiteSUnitAbstractPresenter subclass: #JadeiteSUnitInClassPresenter
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeiteSUnitAbstractPresenter subclass: #JadeiteSUnitPresenter
-	instanceVariableNames: 'packageListPresenter classListPresenter status testCounter'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-JadeShell subclass: #JadeiteSUnitBrowser
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
 
 "Global Aliases"!
 
 
 "Loose Methods"!
-
-!JadeTextDocument methodsFor!
-
-jadeBrowseTests
-	^JadeiteSUnitBrowser showOnSession: gciSession! !
-!JadeTextDocument categoriesFor: #jadeBrowseTests!Jade!public! !
-
-!JadeToolsToolBarPresenter methodsFor!
-
-browseTests
-	JadeiteSUnitBrowser showOnSession: gciSession! !
-!JadeToolsToolBarPresenter categoriesFor: #browseTests!public! !
 
 "End of package definition"!
 
