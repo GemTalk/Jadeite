@@ -570,6 +570,11 @@ setupProjectBrowser
 setupSupclassComparisonMethods
 	self selectRowanSample1Class.
 	self
+		saveClass: 'RowanSubClass'
+		superclass: 'RowanSample1'
+		instVars: #()
+		package: 'RowanSample1-Core'.
+	self
 		saveMethod: 'comparisonMethod  ^self subclassResponsibility'
 		in: 'RowanSample1'
 		category: 'test support'.

@@ -22,14 +22,13 @@ test_abstractTestsShown
 	| commandQuery methodService |
 	self testsIssue: #issue336
 		withTitle: 'S-Unit Tests In an abstract class and its subclasses are not managed properly'.
-	self loadProjectNamed: 'Tonel'.	"ensure tests are present"
-	self selectServiceNamed: 'Tonel' in: self projectListPresenter.
-	self selectServiceNamed: 'Tonel-Tests' in: self packageListPresenter.
-	self selectServiceNamed: 'TonelAbstractWriterTest' in: self classListPresenter.
-	self assert: (session executeString: 'TonelAbstractWriterTest isAbstract').
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanServicesTest' in: self classListPresenter.
+	self assert: (session executeString: 'RowanServicesTest isAbstract').
 	self selectCategoryNamed: 'tests'.
 	methodService := self methodListPresenter list
-				detect: [:method | method selector == #testWriteSnapshot]
+				detect: [:method | method selector == #test_isAbstract]
 				ifNone: [].
 	self denyIsNil: methodService.
 	self methodListPresenter selection: methodService.
@@ -690,12 +689,16 @@ test_okayToChangeBeforeFindClass
 	self selectRowanSample1Test.
 	self selectMethodNamed: #test1.
 	self methodSourcePresenter value: 'abc'.
-	self methodSourcePresenter isModified: true. 
+	self methodSourcePresenter isModified: true.
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #yes.	"Keep unsaved changes"
+	
 	[self projectsPresenter findClass.
 	self assert: self methodSourcePresenter value equals: 'abc'	"no change"]
-			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+			ensure: 
+				[self methodSourcePresenter isModified: false.
+				self destroy: projectsBrowser.
+				TestMessageBox disableJadeiteTestMessageBox]!
 
 test_openComparisonTabWhenTwoMethodsSelected
 	self testsIssue: #issue752 withTitle: '(3.0.93) nice if I could compare two arbitrary methods'.
@@ -1265,13 +1268,15 @@ test_sunitRunTestAsSelectedSubclass
 	selection := self projectsPresenter sunitPresenter methodListPresenter list
 				detect: [:methodService | methodService selector = #test_error].
 	self projectsPresenter sunitPresenter methodListPresenter selections: (Array with: selection).
-	self projectsPresenter sunitPresenter reset.	
+	self projectsPresenter sunitPresenter reset.
 	errorOccurred := false.
 	[runSelectedItem commandDescription performAgainst: self projectsPresenter sunitPresenter] on: Error
 		do: 
 			[:ex |
+			| matchString |
 			errorOccurred := true.
-			self assert: ex description equals: 'a TestFailure occurred (error 2702), Assertion failed'].
+			matchString := 'a TestFailure occurred (error *), Assertion failed'.
+			self assert: (matchString match: ex description)].
 	self assert: errorOccurred]
 			ensure: 
 				[self selectServiceNamed: 'LisaSubTest' in: self classListPresenter.
@@ -1294,7 +1299,7 @@ test_sUnitTabHandlesShortSelector
 	self testsIssue: #issue173 withTitle: 'new SUnit browser code walksback on short selector'.
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
-	self selectServiceNamed: 'RwRowanProjectIssuesTest' in: self classListPresenter.
+	self selectServiceNamed: 'RowanTestClassServiceTest' in: self classListPresenter.
 	self selectHierarchyTab.
 	self selectClassInHierarchyNamed: 'TestCase'.	"<<< bug occurred here"
 	self assert: self projectsPresenter selectedClass name = 'TestCase'!
