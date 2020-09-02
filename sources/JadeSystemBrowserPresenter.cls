@@ -903,7 +903,7 @@ findClassList
 "
 	Array with: className with: dictionaryName with: catetory with: packageName.
 "
-	| string list |
+	| string list | 
 	string := self gciSession 
 		serverPerform: #'systemBrowser:' 
 		with: environment printString , ' findClass'.
@@ -2520,7 +2520,7 @@ updateSuperclassList
 
 updateTabLabel
 
-	| cardNumber newLabel |
+	| cardNumber newLabel | 
 	cardNumber := self parentPresenter view cards indexOf: self view.
 	(newLabel := self selectedClassNameWithoutVersion) notEmpty ifTrue: [
 		instanceClassTabs currentCard name = 'classTab' ifTrue: [

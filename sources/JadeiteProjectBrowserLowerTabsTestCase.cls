@@ -684,6 +684,19 @@ test_modifiedSourceShouldNotChangeMethodList
 				[self methodSourcePresenter value: originalSource.
 				self methodSourcePresenter view isModified: false]!
 
+test_okayToChangeBeforeFindClass
+	self testsIssue: #issue835
+		withTitle: 'Doing a Find Class with unsaved method changes should confirm then save changes'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self methodSourcePresenter value: 'abc'.
+	self methodSourcePresenter isModified: true. 
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #yes.	"Keep unsaved changes"
+	[self projectsPresenter findClass.
+	self assert: self methodSourcePresenter value equals: 'abc'	"no change"]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_openComparisonTabWhenTwoMethodsSelected
 	self testsIssue: #issue752 withTitle: '(3.0.93) nice if I could compare two arbitrary methods'.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
@@ -1384,6 +1397,7 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_inspectShowsCompileError!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_modifiedSourceShouldNotChange!public!test two browsers!tests! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_modifiedSourceShouldNotChangeMethodList!public!test two browsers!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_okayToChangeBeforeFindClass!public!test source! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_openComparisonTabWhenTwoMethodsSelected!public!test comparison tab! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_openMethodTabWhenOneMethodsSelected!public!test comparison tab! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_openNewBrowserTabWhileSUnitTabSelected!public!test sunit tab!tests! !

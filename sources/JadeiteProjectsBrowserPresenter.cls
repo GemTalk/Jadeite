@@ -759,6 +759,7 @@ filterTabChanged
 
 findClass
 	| find |
+	self isOkayToChange ifFalse:[^self]. 
 	find := JadeiteFindClassDialog showModal: 'DefaultView' on: self allClasses.
 	find ifNotNil: [self updateAfterFindClass: find]!
 

@@ -1228,7 +1228,7 @@ updateMethodSourceColor
 	methodSourcePresenter view invalidate]
 			postToInputQueue!
 
-updateProject
+updateProject 
 	self projectListPresenter selectionIfNone: 
 			[packageListPresenter clear.
 			dictionaryPresenter clear.
@@ -1273,7 +1273,7 @@ updateProjectTabFor: services
 	projectInfoTab list: array contents!
 
 updateSystemTab
-	| projectTabLabel |
+	| projectTabLabel | 
 	projectTabLabel := self projectTabLabel.
 	self topShell cardsPresenter view currentCard arrangement: projectTabLabel.
 	self parentPresenter view updateTabs!
