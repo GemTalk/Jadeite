@@ -1611,7 +1611,10 @@ openSourceStyler
 	textStyles := methodSourcePresenter view editStyles textStyles.
 	JadeiteTextStyles default textStyles: textStyles.
 	classDefinitionPresenter view textStyles: textStyles.
-	originalSourcePresenter view textStyles: textStyles!
+	originalSourcePresenter view textStyles: textStyles.
+	classCommentPresenter view textStyles: textStyles. 
+	^textStyles
+	!
 
 packageListPresenter
 

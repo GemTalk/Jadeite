@@ -64,6 +64,11 @@ defaultIndicatorStyles
 					name: #compileError;
 					hoverStyle: #fullBox;
 					yourself);
+		add: (ScintillaIndicatorStyle new
+					forecolor: Color yellow;
+					style: #fullBox;
+					name: #diff;
+					yourself);
 		yourself!
 
 defaultTextStyles

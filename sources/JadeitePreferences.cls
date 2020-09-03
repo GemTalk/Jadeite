@@ -51,6 +51,17 @@ breakpointsEnabled: booleanString
 				commandArgs: (Array with: boolean).
 	BrowserUpdate current issueCommands: (Array with: answeringService) session: session!
 
+fontSize: integerStringOrNil
+	"file syntax - fontSize: 12"
+
+	| pointSize |
+	pointSize := integerStringOrNil = 'nil'
+				ifTrue: [nil]
+				ifFalse: 
+					[[integerStringOrNil asNumber] on: Error
+						do: [:ex | ^MessageBox notify: 'Error setting fontSize preference. Error description:' , ex description]].
+	JadeiteTextStyles default textStyles do: [:textStyle | textStyle pointSize: pointSize]!
+
 loggingEnabled: booleanString
 	| boolean |
 	boolean := booleanString = 'true'.
@@ -141,6 +152,7 @@ transcriptEnabled: booleanString
 !JadeitePreferences categoriesFor: #autocommitEnabled:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #autocompleteEnabled:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #breakpointsEnabled:!must not strip!preferences!public! !
+!JadeitePreferences categoriesFor: #fontSize:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #loggingEnabled:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #openBrowserOnClass:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #openBrowserOnPackage:!must not strip!preferences!public! !
@@ -171,6 +183,9 @@ preferencesFileDefaultContents
 #breakpointsEnabled: true
 #loggingEnabled: false
 #transcriptEnabled: true
+
+#legal values are an integer or nil for default font size
+#fontSize: <anInteger or nil>
 
 #legal values are a name (without quotes) or nil
 #openBrowserOnClass: <class name>

@@ -107,6 +107,15 @@ test_everyPreferenceIsInMustNotStripCategory
 				[self assert: count >= 10.	"sanity test that we checked every pref at the time test was written"
 				stream close]!
 
+test_fontSize
+	| prefs |
+	self testsIssue: #issue805 withTitle: 'Preference to adjust font size (3.1.0)'.
+	prefs := JadeitePreferences new session: session.
+	prefs applyPreference: 'fontSize: 20'.
+	JadeiteTextStyles default textStyles do: [:style | self assert: style pointSize equals: 20].
+	prefs applyPreference: 'fontSize: nil'.
+	JadeiteTextStyles default textStyles do: [:style | self assert: style pointSize equals: nil]!
+
 test_globalAdditionalAccelerators
 	| prefs |
 	prefs := JadeitePreferences new session: session.
@@ -288,6 +297,7 @@ test_validPreferences
 !JadeitePreferencesTestCase categoriesFor: #test_blanksInOpenWorkspaceArguments!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_breakpointEnabled!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_everyPreferenceIsInMustNotStripCategory!public! !
+!JadeitePreferencesTestCase categoriesFor: #test_fontSize!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_globalAdditionalAccelerators!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_handleMalformedPreference!public!tests! !
 !JadeitePreferencesTestCase categoriesFor: #test_loggingEnabled!public!tests! !

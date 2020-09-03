@@ -700,6 +700,12 @@ onViewOpened
 	inspectorService objects do: [:keyValue | specModel at: keyValue key put: keyValue value].
 	specEditor model: specModel"!
 
+openSourceStyler
+	| textStyles |
+	textStyles := super openSourceStyler.
+	comparisonPresenter afterPresenter view textStyles: textStyles.
+	comparisonPresenter beforePresenter view textStyles: textStyles!
+
 openSpecFile
 	specEditor model: (Array
 				with: 1
@@ -1323,8 +1329,8 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
 !JadeiteBrowserPresenter categoriesFor: #createListViewFor:!private! !
 !JadeiteBrowserPresenter categoriesFor: #createNewProject!menu handlers!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
-!JadeiteBrowserPresenter categoriesFor: #createSchematicWiringForMethodSource!create schemantic wiring!public! !
+!JadeiteBrowserPresenter categoriesFor: #createSchematicWiring!initialize/release!public! !
+!JadeiteBrowserPresenter categoriesFor: #createSchematicWiringForMethodSource!initialize/release!public! !
 !JadeiteBrowserPresenter categoriesFor: #debug!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryMenuStrings!menus!public! !
@@ -1365,6 +1371,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #noClassSelectedInEitherPresenter!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #onDragMethod:!drag & drop!public! !
 !JadeiteBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #openSourceStyler!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #openSpecFile!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #packageDictionaryCards!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #possiblyClearProjectInfoTab!event handlers!public!updating! !

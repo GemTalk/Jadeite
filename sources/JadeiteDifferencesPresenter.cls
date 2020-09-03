@@ -13,6 +13,13 @@ JadeiteDifferencesPresenter comment: ''!
 comparisonValueChanged
 	self refresh!
 
+createComponents
+
+	beforePresenter := self add: JadeTextPresenter new name: 'before'.
+	afterPresenter := self add: JadeTextPresenter new name: 'after'.
+	beforeTitlePresenter := self add: JadeTextPresenter new name: 'beforeTitle'.
+	afterTitlePresenter := self add: JadeTextPresenter new name: 'afterTitle'!
+
 createSchematicWiring
 	super createSchematicWiring.
 	beforePresenter
@@ -78,6 +85,7 @@ setDragOperationsFor: aDragDropSession
 				operation: #copy;
 				yourself]! !
 !JadeiteDifferencesPresenter categoriesFor: #comparisonValueChanged!event handlers!public! !
+!JadeiteDifferencesPresenter categoriesFor: #createComponents!initializing!private! !
 !JadeiteDifferencesPresenter categoriesFor: #createSchematicWiring!initialize/release!public! !
 !JadeiteDifferencesPresenter categoriesFor: #onDragOverSource:!event handlers!public! !
 !JadeiteDifferencesPresenter categoriesFor: #onDropOnAfter:!event handlers!public! !
