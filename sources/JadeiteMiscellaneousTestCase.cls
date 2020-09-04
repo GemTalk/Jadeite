@@ -352,6 +352,16 @@ test_serviceClassBookkeeping
 		overArrayOop: remoteOop
 		session: session!
 
+test_setResetTextPaneFontSize
+	self testsIssue: #issue805 withTitle: 'Preference to adjust font size (3.1.0)'.
+	self openProjectBrowser.
+	self projectsPresenter setFontSizeTo: 20.
+	JadeiteScintillaView allInstances
+		do: [:scintillaView | scintillaView textStyles do: [:textStyle | self assert: textStyle pointSize equals: 20]].
+	self projectsPresenter resetFontSize.
+	JadeiteScintillaView allInstances
+		do: [:scintillaView | scintillaView textStyles do: [:textStyle | self assert: textStyle pointSize equals: nil]]!
+
 test_versionMatches
 	"to prevent invalid logins, make sure internal server
 	version matches internal client version"
@@ -844,6 +854,7 @@ testMethodServiceClassNameIsString
 !JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_returnedServices!public!test!test auto complete! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_serviceClassBookkeeping!public! !
+!JadeiteMiscellaneousTestCase categoriesFor: #test_setResetTextPaneFontSize!public!test auto complete!test methods! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_versionMatches!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workingDirectoryEqualsImageDirectory!public!test! !
 !JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceAdHocDisplayUnicodeCharacters!public!test!test menus!test workspaces! !
