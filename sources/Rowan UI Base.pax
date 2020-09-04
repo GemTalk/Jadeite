@@ -527,6 +527,7 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Difference\Dolphin Differences Presenter'
 	'..\Core\Object Arts\Dolphin\MVP\Dialogs\Find\Dolphin Find Dialog'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Font\Dolphin Font Presenter'
+	'..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Integer Prompter'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Key-Value Prompter'
 	'..\Core\Object Arts\Dolphin\Base\Dolphin Legacy Date & Time'
 	'..\Core\Object Arts\Dolphin\MVP\Models\List\Dolphin List Models'

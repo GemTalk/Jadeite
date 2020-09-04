@@ -988,6 +988,9 @@ resetClassTemplate
 				ifFalse: [presenter selections first defaultTemplate]).
 	self resetClassDefinitionPane!
 
+resetFontSize
+	self setFontSizeTo: nil!
+
 runAll
 	self selectSUnitTab.
 	self sunitPresenter runAll!
@@ -1048,6 +1051,25 @@ setCompileErrorColor
 
 setCompileWarningColor
 	statusBarText view backcolor: Color yellow faded!
+
+setFontSize
+	| fontSize |
+	fontSize := IntegerPrompter create
+				caption: 'Update Text Pane Font Size';
+				prompt: 'Enter Font Size:';
+				interval: (1 to: 50);
+				showModal.
+	self setFontSizeTo: fontSize!
+
+setFontSizeTo: anIntegerOrNil
+	| textStyles |
+	textStyles := JadeiteTextStyles default textStyles.
+	textStyles do: [:textStyle | textStyle pointSize: anIntegerOrNil].
+	JadeiteScintillaView allInstances do: 
+			[:scintillaView |
+			( scintillaView class canUnderstand: #textStyles:)
+				ifTrue: [scintillaView textStyles: textStyles]].
+	!
 
 setStatusBarDefault
 	statusBarText view backcolor: statusBarText view defaultBackcolor!
@@ -1399,6 +1421,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #removeGlobalsTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #removeProjectTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #resetClassTemplate!private! !
+!JadeiteBrowserPresenter categoriesFor: #resetFontSize!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #runAll!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #runSelected!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #search!accessing!public! !
@@ -1412,6 +1435,8 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #selectProjectNamed:!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #setCompileErrorColor!compile support!public! !
 !JadeiteBrowserPresenter categoriesFor: #setCompileWarningColor!compile support!public! !
+!JadeiteBrowserPresenter categoriesFor: #setFontSize!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #setFontSizeTo:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #setStatusBarDefault!compile support!public! !
 !JadeiteBrowserPresenter categoriesFor: #shouldShowNoneTabLabel!displaying!private!testing! !
 !JadeiteBrowserPresenter categoriesFor: #showDictionaryList!event handlers!public!updating! !
