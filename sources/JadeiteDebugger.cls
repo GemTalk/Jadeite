@@ -165,7 +165,7 @@ displayVariables
 	variables := frame vars.
 	sortedVariables := (variables reject: [:variableService | variableService _key = 'receiver'])
 				asSortedCollection: [:x :y | (x _key asString _cmp: y _key asString) < 1].
-	sortedVariables := sortedVariables asOrderedCollection. 
+	sortedVariables := sortedVariables asOrderedCollection.
 	instVars := sortedVariables select: [:var | var _key first = $-].
 	dynamicInstVars := sortedVariables select: [:var | var _key first = $.].
 	argsAndTemps := sortedVariables select: [:var | var _key first ~= $- and: [var _key first ~= $.]].
@@ -173,15 +173,15 @@ displayVariables
 	displayVariables := OrderedCollection with: receiver.
 	instVars notEmpty
 		ifTrue: 
-			[displayVariables add: (RowanPseudoVariableService new value: 'instance variables').
+			[displayVariables add: (RowanDisplayLabelVariableService new value: 'instance variables').
 			displayVariables addAll: instVars].
 	dynamicInstVars notEmpty
 		ifTrue: 
-			[displayVariables add: (RowanPseudoVariableService new value: 'dynamic instance variables').
+			[displayVariables add: (RowanDisplayLabelVariableService new value: 'dynamic instance variables').
 			displayVariables addAll: dynamicInstVars].
 	argsAndTemps notEmpty
 		ifTrue: 
-			[displayVariables add: (RowanPseudoVariableService new value: 'args and temps').
+			[displayVariables add: (RowanDisplayLabelVariableService new value: 'args and temps').
 			displayVariables addAll: argsAndTemps].
 	variableListPresenter list: displayVariables!
 

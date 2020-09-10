@@ -1957,6 +1957,67 @@ test_unsavedChangesActionStepping
 	self assert: debugger methodSourcePresenter documentPresenter value equals: 'step into']
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+test_variableDisplayLabels
+	| source |
+	self testsIssue: #issue314 withTitle: 'Jadeite debugger - Alphabetical variables'.
+	self openProjectBrowser.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'RowanSample1Test'
+		superclass: 'TestCase'
+		instVars: #(#achoo #ulp #vooey #wahoo)
+		package: 'RowanSample1-Tests'.
+	source := 'testBlockMenuItems
+	| xyz uvw |
+	uvw := Array new. 
+  self
+    testBlockMenuItems: [ 
+      | ghi abc def |
+      def := uvw.
+      def
+        add: #abc;
+        add: 2.
+		ghi := def. 
+		abc := ghi. 
+      xyz
+        size;
+        halt ]'.
+	self selectCategoriesNamed: (Array with: 'tests').
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	source := 'testBlockMenuItems: block
+	block value.'.
+	self selectCategoriesNamed: (Array with: 'tests').
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self openDebuggerOn: 'RowanSample1Test new testBlockMenuItems'.
+	"on ExecBlock frame"
+	self assert: (debugger variableListPresenter list at: 2) value equals: 'args and temps'.
+	self
+		assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
+		equals: #(#receiver '' #abc #def #ghi #uvw #xyz) asOrderedCollection.
+	self selectFrameAt: 5.
+	self assert: (debugger variableListPresenter list at: 2) value equals: 'instance variables'.
+	self assert: (debugger variableListPresenter list at: 8) value equals: 'args and temps'.
+	self
+		assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
+		equals: #(#receiver '' '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' '' #block)
+				asOrderedCollection.
+	self selectFrameAt: 6.
+	self assert: (debugger variableListPresenter list at: 2) value equals: 'instance variables'.
+	self assert: (debugger variableListPresenter list at: 8) value equals: 'args and temps'.
+	self isServerVersion36
+		ifTrue: 
+			[self
+				assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
+				equals: #(#receiver '' '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' '' #uvw #xyz)
+						asOrderedCollection]
+		ifFalse: 
+			[self
+				assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
+				equals: #(#receiver '' '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' '' #uvw)
+						asOrderedCollection]!
+
 test_variablesSorted
 	| source |
 	self testsIssue: #issue314 withTitle: 'Jadeite debugger - Alphabetical variables'.
@@ -1994,21 +2055,24 @@ test_variablesSorted
 	"on ExecBlock frame"
 	self
 		assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
-		equals: #(#receiver #abc #def #ghi #uvw #xyz).
+		equals: #(#receiver '' #abc #def #ghi #uvw #xyz) asOrderedCollection.
 	self selectFrameAt: 5.
 	self
 		assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
-		equals: #(#receiver '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' #block).
+		equals: #(#receiver '' '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' '' #block)
+				asOrderedCollection.
 	self selectFrameAt: 6.
 	self isServerVersion36
 		ifTrue: 
 			[self
 				assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
-				equals: #(#receiver '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' #uvw #xyz)]
+				equals: #(#receiver '' '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' '' #uvw #xyz)
+						asOrderedCollection]
 		ifFalse: 
 			[self
 				assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
-				equals: #(#receiver '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' #uvw)]!
+				equals: #(#receiver '' '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' '' #uvw)
+						asOrderedCollection]!
 
 test1
 	"Basics of opening a debugger, viewing the UI, and resuming."
@@ -2320,6 +2384,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_unsavedChangesActionChangeFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_unsavedChangesActionChangeToHomeFrame!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_unsavedChangesActionStepping!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_variableDisplayLabels!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_variablesSorted!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test1!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test2!public!tests! !
