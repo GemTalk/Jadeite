@@ -56,7 +56,6 @@ package classNames
 	add: #JadeiteSmalltalkSearchPresenter;
 	add: #JadeiteSmalltalkWorkspace;
 	add: #JadeiteSUnitBrowser;
-	add: #JadeiteSUnitPresenter;
 	add: #JadeiteTranscript;
 	add: #PackageMethodListPresenter;
 	add: #Rowan;
@@ -66,6 +65,7 @@ package classNames
 	add: #RowanClassInfoUpdate;
 	add: #RowanDebuggerStepPointError;
 	add: #RowanDictionaryUpdate;
+	add: #RowanDisplayLabelVariableService;
 	add: #RowanGlobalsUpdate;
 	add: #RowanKeyValuePrompter;
 	add: #RowanMethodListBrowser;
@@ -84,7 +84,6 @@ package classNames
 	add: #RowanSuperclassUpdate;
 	add: #RowanSystemBrowser;
 	add: #RowanSystemBrowserPresenter;
-	add: #SUnitToolbar;
 	add: #TestChoicePrompter;
 	yourself.
 
@@ -172,12 +171,11 @@ package methodNames
 	add: #JadeiteSUnitAbstractPresenter -> #browseSelectedMethods;
 	add: #JadeiteSUnitAbstractPresenter -> #delete;
 	add: #JadeiteSUnitAbstractPresenter -> #inspectSelected;
-	add: #JadeiteSUnitAbstractPresenter -> #methodListPresenter;
-	add: #JadeiteSUnitAbstractPresenter -> #methodListPresenter:;
 	add: #JadeiteSUnitAbstractPresenter -> #step;
 	add: #JadeiteSUnitInClassPresenter -> #registerPresentersForUpdates;
 	add: #JadeiteSUnitInClassPresenter -> #testClassService;
 	add: #JadeiteSUnitInClassPresenter -> #testClassService:;
+	add: #JadeiteSUnitPresenter -> #browseClass;
 	add: #JadeLoginShell -> #aboutJadeite;
 	add: #JadeMethodListPresenter -> #newProjectsBrowser;
 	add: #JadeMethodListPresenter -> #newWorkspace;
@@ -567,7 +565,7 @@ package setPrerequisites: #(
 	'Jade UI Base'
 	'Monticello'
 	'Object Log Browser'
-	'..\..\RowanClientServices\Rowan Client Services'
+	'..\..\..\..\Dolphin719\RowanClientServices\Rowan Client Services'
 	'Rowan UI Base PreInstall'
 	'..\Core\Object Arts\Dolphin\System\Compiler\Smalltalk Parser'
 	'..\Core\Contributions\Solutions Software\SSW EditableListView'
@@ -675,11 +673,6 @@ DifferencesPresenter subclass: #JadeiteDifferencesPresenter
 	classInstanceVariableNames: ''!
 JadePresenter subclass: #JadeiteLoggerPresenter
 	instanceVariableNames: 'logListPresenter clientFilename serverFilename'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-JadeiteSUnitAbstractPresenter subclass: #JadeiteSUnitPresenter
-	instanceVariableNames: 'packageListPresenter classListPresenter status testCounter methodColumns'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -958,13 +951,13 @@ TextPresenter subclass: #JadeiteCommandLinePresenter
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-ScintillaStyler subclass: #DiffsScintillaStyler
-	instanceVariableNames: 'diffs'
+RowanVariableService subclass: #RowanDisplayLabelVariableService
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-Toolbar subclass: #SUnitToolbar
-	instanceVariableNames: ''
+ScintillaStyler subclass: #DiffsScintillaStyler
+	instanceVariableNames: 'diffs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -2028,20 +2021,12 @@ inspectSelected
 			[^JadeiteInspector showOn: (OopType64 fromInteger: methodListPresenter selections first oop)
 				session: gciSession]!
 
-methodListPresenter
-	^methodListPresenter!
-
-methodListPresenter: anObject
-	methodListPresenter := anObject!
-
 step
 
 	^self debugTestAsFailureMethodServices: methodListPresenter selections className: self selectedClass name! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #browseSelectedMethods!menu handlers!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #delete!menu handlers!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #inspectSelected!menu handlers support!public! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #methodListPresenter!accessing!private! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #methodListPresenter:!accessing!private! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #step!menu handlers!private! !
 
 !JadeiteSUnitInClassPresenter methodsFor!
@@ -2065,6 +2050,18 @@ testClassService: classService
 !JadeiteSUnitInClassPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteSUnitInClassPresenter categoriesFor: #testClassService!accessing!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #testClassService:!accessing!public! !
+
+!JadeiteSUnitPresenter methodsFor!
+
+browseClass
+	| shell selection |
+	selection := classListPresenter selections isEmpty
+				ifTrue: [^MessageBox notify: 'No class selected']
+				ifFalse: [classListPresenter selections first].
+	shell := JadeiteBrowser showOnSession: gciSession.
+	shell currentCard updateAfterFindClass: selection.
+	^shell! !
+!JadeiteSUnitPresenter categoriesFor: #browseClass!event handlers!public! !
 
 !JadeLoginShell methodsFor!
 

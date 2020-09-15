@@ -171,7 +171,7 @@ displayVariables
 	argsAndTemps := sortedVariables select: [:var | var _key first ~= $- and: [var _key first ~= $.]].
 	receiver := variables detect: [:variableService | variableService _key = 'receiver'] ifNone: [].
 	displayVariables := OrderedCollection with: receiver.
-	instVars notEmpty
+	instVars notEmpty 
 		ifTrue: 
 			[displayVariables add: (RowanDisplayLabelVariableService new value: 'instance variables').
 			displayVariables addAll: instVars].

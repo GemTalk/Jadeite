@@ -17,13 +17,14 @@ inplaceEditAspect
 	"using renameVariable: aStVariableNode operation: operationBlock validationBlock: validationBlock "
 
 	| name editor style font |
-	name := aspectPresenter value.
+	#rowanFixMe.  " broken in Dolphin 7.1.14 port. Wasn't finished yet" 
+	"name := aspectPresenter value.
 	editor := JadeiteInplaceTextEditor createOn: name asValue.
 	editor validationBlock: 
 			[:value |
 			
 			[editor model value: (Compiler evaluate: value).
-			true] on: Error do: [:ex | false]	"for now"].
+			true] on: Error do: [:ex | false]	for now].
 	editor textRectangle: self selectedAspectValueRect.
 	style := JadeiteScintillaView new styleAt: 1.
 	font := style fontName ifNil: [self view actualFont copy] ifNotNil: [:face | Font name: face].
@@ -33,7 +34,7 @@ inplaceEditAspect
 	(editor model value isKindOf: Boolean)
 		ifTrue: [self aspectAccessor aspectDescriptor beImmediateActionIsEdit]
 		ifFalse: [self aspectAccessor aspectDescriptor immediateActionBlock: nil ].
-	aspectPresenter value: editor model value!
+	aspectPresenter value: editor model value"!
 
 onAspectActioned
 	"Event handler for an action being performed on the current aspect, i.e. Enter or double-click"

@@ -39,6 +39,12 @@ debugTests: methodServices
 editSelectAll
 	methodListPresenter selections: methodListPresenter list. !
 
+methodListPresenter
+	^methodListPresenter!
+
+methodListPresenter: anObject
+	methodListPresenter := anObject!
+
 refresh
 
 	self subclassResponsibility!
@@ -120,6 +126,8 @@ updateResult: jadeResult
 !JadeiteSUnitAbstractPresenter categoriesFor: #debugTestMethodServices:className:!private! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #debugTests:!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #editSelectAll!menu handlers support!public! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #methodListPresenter!accessing!private! !
+!JadeiteSUnitAbstractPresenter categoriesFor: #methodListPresenter:!accessing!private! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #refresh!event handlers!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #refreshFromServerAfterAbort:!event handlers!public! !
 !JadeiteSUnitAbstractPresenter categoriesFor: #reset!public! !

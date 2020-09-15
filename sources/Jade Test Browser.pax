@@ -10,7 +10,9 @@ package classNames
 	add: #GsTestMethod;
 	add: #JadeiteSUnitAbstractPresenter;
 	add: #JadeiteSUnitInClassPresenter;
+	add: #JadeiteSUnitPresenter;
 	add: #JadeTestResult;
+	add: #SUnitToolbar;
 	yourself.
 
 package binaryGlobalNames: (Set new
@@ -32,7 +34,9 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Text\Dolphin Text Presenter'
 	'..\Core\Object Arts\Dolphin\MVP\Type Converters\Dolphin Type Converters'
-	'Jade UI Base').
+	'..\Core\Object Arts\Dolphin\MVP\Models\Value\Dolphin Value Models'
+	'Jade UI Base'
+	'..\..\..\..\Dolphin719\RowanClientServices\Rowan Client Services').
 
 package!
 
@@ -55,6 +59,16 @@ JadePresenter subclass: #JadeiteSUnitAbstractPresenter
 	classInstanceVariableNames: ''!
 JadeiteSUnitAbstractPresenter subclass: #JadeiteSUnitInClassPresenter
 	instanceVariableNames: 'testClassService'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteSUnitAbstractPresenter subclass: #JadeiteSUnitPresenter
+	instanceVariableNames: 'packageListPresenter classListPresenter status testCounter methodColumns'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+Toolbar subclass: #SUnitToolbar
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
