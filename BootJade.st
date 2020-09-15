@@ -45,7 +45,7 @@ ProgressDialog showModalWhile: [:progress |
 ].
 
 "Install Rowan Client Services from a separate directory"
-PackageManager current install: 'C:\Users\ewinger\source\repos\Dolphin719\RowanClientServices\Rowan Client Services.pac'.
+PackageManager current install: 'C:\Users\ewinger\source\repos\Dolphin7114\Dolphin\RowanClientServices\Rowan Client Services.pac'.
 
 list := #(
 	'Rowan UI Base'
