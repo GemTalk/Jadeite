@@ -34,9 +34,7 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Text\Dolphin Text Presenter'
 	'..\Core\Object Arts\Dolphin\MVP\Type Converters\Dolphin Type Converters'
-	'..\Core\Object Arts\Dolphin\MVP\Models\Value\Dolphin Value Models'
-	'Jade UI Base'
-	'..\..\..\..\Dolphin719\RowanClientServices\Rowan Client Services').
+	'Jade UI Base').
 
 package!
 

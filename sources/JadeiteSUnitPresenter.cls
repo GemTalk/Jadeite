@@ -127,25 +127,6 @@ onPackageChanged
 			status value: self.
 			self reset]!
 
-onViewClosed
-	super onViewClosed.
-	BrowserUpdate current logComment: 'Closing SUnit Browser {' , self identityHash printString , '}'.
-	BrowserUpdate current removeEventsTriggeredFor: self!
-
-onViewOpened
-	BrowserUpdate current logComment: 'Opening SUnit Browser {' , self identityHash printString , '}'.
-	testCounter := Array with: 0 with: OrderedCollection new.
-	super onViewOpened.
-	self registerPresentersForUpdates.
-	status := ValueHolder new.
-	(self view viewNamed: 'statusPackages') model: status.
-	(self view viewNamed: 'statusTestsClasses') model: status.
-	(self view viewNamed: 'statusTestCases') model: status.
-	(self view viewNamed: 'statusTestCounter') model: status.
-	self updatePackages.
-	methodColumns := methodListPresenter view columnsList.	"columns will be selectively displayed based on class selections"
-	methodListPresenter view columnsList: (Array with: methodColumns second)!
-
 packageListPresenter
 	^packageListPresenter!
 
@@ -180,25 +161,6 @@ refresh
 
 refreshFromServerAfterAbort: browserService
 	browserService testPackages: packageListPresenter!
-
-registerPresentersForUpdates
-	BrowserUpdate current register: packageListPresenter selector: #testPackages:.
-	BrowserUpdate current
-		register: classListPresenter
-		selector: #testClasses:browser:
-		browser: self.
-	BrowserUpdate current
-		register: classListPresenter
-		selector: #renamedClass:browser:
-		browser: self.
-	BrowserUpdate current
-		register: methodListPresenter
-		selector: #sunitMethodsUpdate:browser:
-		browser: self.
-	BrowserUpdate current
-		register: methodListPresenter
-		selector: #testResultUpdate:browser:
-		browser: self!
 
 runAll
 	^(classListPresenter selections size > 1 or: [classListPresenter selections isEmpty])
@@ -335,14 +297,7 @@ updateMethodsFrom: classServices
 	methodListPresenter selections: (methodListPresenter model
 				select: [:methodService | selectedSelectors includes: methodService selector]).
 	methodListPresenter view invalidate.
-	methodListPresenter view resortOnLastColumnClicked.!
-
-updatePackages
-	| browserService |
-	browserService := RowanBrowserService new.
-	browserService command: #packagesWithTests.
-	self issueCommand: (Array with: browserService).
-	testCounter at: 1 put: browserService testCount. ! !
+	methodListPresenter view resortOnLastColumnClicked.! !
 !JadeiteSUnitPresenter categoriesFor: #addUpdatedTestClasses:!public!updating! !
 !JadeiteSUnitPresenter categoriesFor: #basicDelete!menu handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #browseMethods!event handlers!public! !
@@ -361,14 +316,11 @@ updatePackages
 !JadeiteSUnitPresenter categoriesFor: #methodListPresenter!accessing!private! !
 !JadeiteSUnitPresenter categoriesFor: #onClassesChanged!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #onPackageChanged!event handlers!public! !
-!JadeiteSUnitPresenter categoriesFor: #onViewClosed!event handlers!public! !
-!JadeiteSUnitPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #packageListPresenter!accessing!private! !
 !JadeiteSUnitPresenter categoriesFor: #packagesSize!public! !
 !JadeiteSUnitPresenter categoriesFor: #queryCommand:!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #refresh!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #refreshFromServerAfterAbort:!event handlers!public! !
-!JadeiteSUnitPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteSUnitPresenter categoriesFor: #runAll!public! !
 !JadeiteSUnitPresenter categoriesFor: #runSelected!public! !
 !JadeiteSUnitPresenter categoriesFor: #runTestMethodServices:className:!private! !
@@ -389,7 +341,6 @@ updatePackages
 !JadeiteSUnitPresenter categoriesFor: #updateClasses!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #updateMethods!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #updateMethodsFrom:!event handlers!public! !
-!JadeiteSUnitPresenter categoriesFor: #updatePackages!event handlers!public! !
 
 !JadeiteSUnitPresenter class methodsFor!
 

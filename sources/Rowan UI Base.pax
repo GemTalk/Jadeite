@@ -176,6 +176,10 @@ package methodNames
 	add: #JadeiteSUnitInClassPresenter -> #testClassService;
 	add: #JadeiteSUnitInClassPresenter -> #testClassService:;
 	add: #JadeiteSUnitPresenter -> #browseClass;
+	add: #JadeiteSUnitPresenter -> #onViewClosed;
+	add: #JadeiteSUnitPresenter -> #onViewOpened;
+	add: #JadeiteSUnitPresenter -> #registerPresentersForUpdates;
+	add: #JadeiteSUnitPresenter -> #updatePackages;
 	add: #JadeLoginShell -> #aboutJadeite;
 	add: #JadeMethodListPresenter -> #newProjectsBrowser;
 	add: #JadeMethodListPresenter -> #newWorkspace;
@@ -2060,8 +2064,57 @@ browseClass
 				ifFalse: [classListPresenter selections first].
 	shell := JadeiteBrowser showOnSession: gciSession.
 	shell currentCard updateAfterFindClass: selection.
-	^shell! !
+	^shell!
+
+onViewClosed
+	super onViewClosed.
+	BrowserUpdate current logComment: 'Closing SUnit Browser {' , self identityHash printString , '}'.
+	BrowserUpdate current removeEventsTriggeredFor: self!
+
+onViewOpened
+	BrowserUpdate current logComment: 'Opening SUnit Browser {' , self identityHash printString , '}'.
+	testCounter := Array with: 0 with: OrderedCollection new.
+	super onViewOpened.
+	self registerPresentersForUpdates.
+	status := ValueHolder new.
+	(self view viewNamed: 'statusPackages') model: status.
+	(self view viewNamed: 'statusTestsClasses') model: status.
+	(self view viewNamed: 'statusTestCases') model: status.
+	(self view viewNamed: 'statusTestCounter') model: status.
+	self updatePackages.
+	methodColumns := methodListPresenter view columnsList.	"columns will be selectively displayed based on class selections"
+	methodListPresenter view columnsList: (Array with: methodColumns second)!
+
+registerPresentersForUpdates
+	BrowserUpdate current register: packageListPresenter selector: #testPackages:.
+	BrowserUpdate current
+		register: classListPresenter
+		selector: #testClasses:browser:
+		browser: self.
+	BrowserUpdate current
+		register: classListPresenter
+		selector: #renamedClass:browser:
+		browser: self.
+	BrowserUpdate current
+		register: methodListPresenter
+		selector: #sunitMethodsUpdate:browser:
+		browser: self.
+	BrowserUpdate current
+		register: methodListPresenter
+		selector: #testResultUpdate:browser:
+		browser: self!
+
+updatePackages
+	| browserService |
+	browserService := RowanBrowserService new.
+	browserService command: #packagesWithTests.
+	self issueCommand: (Array with: browserService).
+	testCounter at: 1 put: browserService testCount. ! !
 !JadeiteSUnitPresenter categoriesFor: #browseClass!event handlers!public! !
+!JadeiteSUnitPresenter categoriesFor: #onViewClosed!event handlers!public! !
+!JadeiteSUnitPresenter categoriesFor: #onViewOpened!event handlers!public! !
+!JadeiteSUnitPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
+!JadeiteSUnitPresenter categoriesFor: #updatePackages!event handlers!public! !
 
 !JadeLoginShell methodsFor!
 
