@@ -42,6 +42,18 @@ addSystemBrowser
 allSelectedProjectsDirty
 	^self basicAllSelectedProjectsDirty: projectListPresenter!
 
+auditProject
+	| answeringService workspace projectName |
+	projectName := projectListPresenter selection name.
+	answeringService := RowanAnsweringService new
+				command: #auditProjectNamed:;
+				commandArgs: (Array with: projectName).
+	BrowserUpdate current issueCommands: (Array with: answeringService) session: self gciSession.
+	workspace := JadeWorkspace showOnSession: self gciSession.
+	workspace updateCaption: 'Audit Report for project ' , projectName.
+	workspace model value: answeringService answer.
+	^workspace!
+
 basicAddDictionaryNamed: newDictionaryName
 	| insertionIndex dictionaryService |
 	insertionIndex := dictionaryPresenter selectionByIndex = 0
@@ -771,9 +783,10 @@ projectMenuStrings
 				writeProject;
 				checkoutTag;
 				checkout;
+				auditProject;
 				projectLog;
 				refresh].
-	^#('Projects' 'Create ...//createNewProject' 'Load Git Project ...//loadV2Project' 'Reload Project //reloadV2Project' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' '&Add Package...//addPackage' '-' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
+	^#('Projects' 'Create ...//createNewProject' 'Load Git Project ...//loadV2Project' 'Reload Project //reloadV2Project' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' '&Add Package...//addPackage' '-' 'Audit//auditProject' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
 
 protectedDictionaries
 	^#('Published' 'Globals' 'UserGlobals')!
@@ -1323,6 +1336,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #addSystemBrowser!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #allSelectedProjectsDirty!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #auditProject!project menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #basicAddDictionaryNamed:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicDictionaryTabLabel!displaying!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicProjectTabLabel!displaying!private!tabs! !

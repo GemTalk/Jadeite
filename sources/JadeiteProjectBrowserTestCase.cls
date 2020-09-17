@@ -542,6 +542,20 @@ test_allSpacesCategory
 	self assert: self categoryListPresenter selection equals: 'grubnik']
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+test_auditProject
+	| auditWorkspace menu item |
+	self testsIssue: #issue457 withTitle: '`audit project` menu item in project list pane?'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	menu := Menu fromStrings: self projectsPresenter projectMenuStrings.
+	self
+		denyIsNil: (item := menu items detect: [:menuItem | menuItem command == #auditProject] ifNone: []).
+	auditWorkspace := item commandDescription performAgainst: self projectsPresenter.
+	
+	[self assert: auditWorkspace isKindOf: JadeWorkspace.
+	self assert: ('*Auditing  project Rowan*' match: auditWorkspace model value).
+	self assert: ('Audit Report for project Rowan*' match: auditWorkspace caption)]
+			ensure: [auditWorkspace exit]!
+
 test_autoCommit
 	| methodListPresenter autoCommit |
 	self testsIssue: #issue421 withTitle: 'Need a way to know if you are in autocommit'.
@@ -3382,6 +3396,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_adHocInspectComplexObjectInProjectBrowser!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_adHocInspectComplexObjectInProjectBrowser2!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_allSpacesCategory!public!test categories!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_auditProject!public!test menus!test projects!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommit!public!test auto commit!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitButtonFailureResetOnAbort!public!test auto commit!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitClickButtonAfterFailure!public!test auto commit!tests! !
