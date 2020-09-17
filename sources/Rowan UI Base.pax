@@ -569,7 +569,7 @@ package setPrerequisites: #(
 	'Jade UI Base'
 	'Monticello'
 	'Object Log Browser'
-	'..\..\..\..\Dolphin719\RowanClientServices\Rowan Client Services'
+	'..\..\RowanClientServices\Rowan Client Services'
 	'Rowan UI Base PreInstall'
 	'..\Core\Object Arts\Dolphin\System\Compiler\Smalltalk Parser'
 	'..\Core\Contributions\Solutions Software\SSW EditableListView'
