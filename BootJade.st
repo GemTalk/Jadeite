@@ -93,6 +93,8 @@ JadeiteDevelopmentSUnitBrowser initialize."to open in ideaspace"
 "to prevent right-mouse drag errors #nmBeginRDrag:"
 "ListView initializeNotificationMap."
 Cursor wait showWhile: [
+	Object recompileAll. "https://github.com/dolphinsmalltalk/Dolphin/issues/852#issuecomment-623143858"
+	Transcript flush. 
 	SourceManager default compressSources.
 	(Delay forMilliseconds: 200) wait.
 	SessionManager current saveImage.
