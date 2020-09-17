@@ -4907,11 +4907,8 @@ browseClass
 !
 
 selectedMethodsAreTestCases
-	| classServices |
-	classServices := methodListPresenter selections
-				collect: [:methodService | methodService classService command: #setIsTestCaseCommand].
-	self issueCommand: classServices. 
-	^classServices allSatisfy: [:classService | classService isTestCase]! !
+	^(methodListPresenter selections collect: [:methodService | methodService isTestMethod]) asSet
+		asArray = #(true)! !
 !MethodListPresenter categoriesFor: #browseClass!public! !
 !MethodListPresenter categoriesFor: #selectedMethodsAreTestCases!public!testing! !
 

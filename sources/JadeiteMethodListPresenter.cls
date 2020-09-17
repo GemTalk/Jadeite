@@ -26,6 +26,17 @@ browseMethodHistory
 	methodService := methodListPresenter selections first.
 	^JadeiteMethodHistoryBrowser showOnClass: methodService classService selector: methodService!
 
+browseSelectedMethods
+	"convenience menu item to display randomly grouped methods in a browser"
+
+	| browser |
+	self updateServices: methodListPresenter selections.
+	(browser := JadeiteMethodListBrowser showOnSession: gciSession) primaryPresenter
+		methods: methodListPresenter selections
+		selecting: nil.
+	browser updateCaption: 'Selected Methods'.
+	^browser!
+
 cleanupComparisonBrowser
 	comparisonPresenter
 		beforeTitle: String new;
@@ -153,13 +164,13 @@ postEditSaveMethod
 queryCommand: aCommandQuery
 	| command |
 	command := aCommandQuery command.
-	(#(#clearMethodBreakpoints) includes: command)
+	(#(#clearMethodBreakpoints #browseSelectedMethods) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: methodListPresenter selections notEmpty.
 			^true].
 	#browseMethodHistory = command
 		ifTrue: 
-			[| selections | 
+			[| selections |
 			selections := self methodListPresenter selections.
 			aCommandQuery isEnabled: (selections size = 1 and: [selections first hasMethodHistory]).
 			^true].
@@ -290,6 +301,7 @@ updateSource
 !JadeiteMethodListPresenter categoriesFor: #autoCommit!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #autoCommit:!accessing!public! !
 !JadeiteMethodListPresenter categoriesFor: #browseMethodHistory!menu handlers!public! !
+!JadeiteMethodListPresenter categoriesFor: #browseSelectedMethods!menu handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #cleanupComparisonBrowser!private!text tabs! !
 !JadeiteMethodListPresenter categoriesFor: #clearAllBreakpoints!menu handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #clearMethodBreakpoints!menu handlers!public! !
@@ -307,7 +319,7 @@ updateSource
 !JadeiteMethodListPresenter categoriesFor: #onCloseRequested:!event handlers!public! !
 !JadeiteMethodListPresenter categoriesFor: #onDragMethod:!drag & drop!public! !
 !JadeiteMethodListPresenter categoriesFor: #onViewOpened!event handlers!public! !
-!JadeiteMethodListPresenter categoriesFor: #postEditSaveMethod!menu handlers!public! !
+!JadeiteMethodListPresenter categoriesFor: #postEditSaveMethod!menu handlers support!public! !
 !JadeiteMethodListPresenter categoriesFor: #queryCommand:!menu handlers support!public! !
 !JadeiteMethodListPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteMethodListPresenter categoriesFor: #removeComparisonTab!private!selection!text tabs! !
