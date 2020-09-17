@@ -10,6 +10,9 @@ RowanDisplayLabelVariableService comment: 'Not a true service. Used for displayi
 !RowanDisplayLabelVariableService categoriesForClass!Kernel-Objects! !
 !RowanDisplayLabelVariableService methodsFor!
 
+_key
+	^String new!
+
 displayOop
 
 	^String new!
@@ -24,10 +27,16 @@ initialize
 	oop := nil. 
 	value := nil. !
 
+isDisplayLabel
+
+	^true!
+
 value: aString
 	value := aString! !
+!RowanDisplayLabelVariableService categoriesFor: #_key!accessing!public! !
 !RowanDisplayLabelVariableService categoriesFor: #displayOop!printing!public! !
 !RowanDisplayLabelVariableService categoriesFor: #displayStringOn:!printing!public! !
 !RowanDisplayLabelVariableService categoriesFor: #initialize!initialization!public! !
+!RowanDisplayLabelVariableService categoriesFor: #isDisplayLabel!public!testing! !
 !RowanDisplayLabelVariableService categoriesFor: #value:!accessing!public! !
 

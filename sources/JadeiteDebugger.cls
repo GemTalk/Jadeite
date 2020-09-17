@@ -59,9 +59,9 @@ browseImplementors
 	^JadePresenter browseImplementorsOf: frame homeMethodSelector session: self gciSession!
 
 browseObjectClass
-	| shell classService | 
-	classService := RowanClassService new
-				name: variableListPresenter selection className asString subStrings first.	"strip off 'class' if meta"
+	| shell classService selection |
+	(selection := variableListPresenter selection) isDisplayLabel ifTrue: [^self].
+	classService := RowanClassService new name: selection className asString subStrings first.	"strip off 'class' if meta"
 	BrowserUpdate current updateService: classService session: gciSession.
 	shell := JadeiteBrowser showOnSession: gciSession.
 	shell currentCard updateAfterFindClass: classService.
@@ -365,7 +365,6 @@ processListPresenter
 	^processListPresenter!
 
 queryCommand: query
-
 	(#(#browseFrameMethod #browseImplementors #browseSenders #browseSelectedMethod)
 		includes: query commandSymbol)
 			ifTrue: 
@@ -377,15 +376,17 @@ queryCommand: query
 			^true].
 	(#(#terminateProcess) includes: query commandSymbol)
 		ifTrue: 
-			[query isEnabled: (processListPresenter model notEmpty and: [processListPresenter model first ~~ gsProcess]).
+			[query
+				isEnabled: (processListPresenter model notEmpty and: [processListPresenter model first ~~ gsProcess]).
 			^true].
 	(#(#implement) includes: query commandSymbol)
 		ifTrue: 
 			[query isEnabled: false.	"frameListPresenter model first subStrings first = 'MessageNotUnderstood'."
 			^true].
-	(#(#browseObjectClass) includes: query commandSymbol)
+	(#(#browseObjectClass #inspectVariable) includes: query commandSymbol)
 		ifTrue: 
-			[query isEnabled: variableListPresenter hasSelection. 
+			[query isEnabled: (variableListPresenter hasSelection
+						and: [variableListPresenter selection isDisplayLabel not]).
 			^true].
 	query commandSymbol == #saveMethod
 		ifTrue: 

@@ -2082,6 +2082,42 @@ test_variableDynamicInstVarLabels
 				equals: #(#receiver '' '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' '' '.dynamic' '' #uvw)
 						asOrderedCollection]!
 
+test_variablePaneMenuOptions
+	| contextMenu variableListPresenter |
+	self testsIssue: #issue314 withTitle: 'Jadeite debugger - Alphabetical variables'.
+	self openDebuggerOn: 'RowanSample1Test new testError'.
+	variableListPresenter := debugger variableListPresenter.
+	contextMenu := variableListPresenter view contextMenu.
+	variableListPresenter selectionByIndex: 1.	"receiver is always first"
+	#(#browseObjectClass #inspectVariable) do: 
+			[:selector |
+			| theItem query |
+			theItem := contextMenu items detect: [:menuItem | menuItem command = selector] ifNone: [].
+			query := CommandQuery commandDescription: theItem commandDescription
+						source: variableListPresenter view.
+			debugger queryCommand: query.
+			self assert: query isEnabled equals: true].
+	variableListPresenter selectionByIndex: 0.	"receiver is always first"
+	#(#browseObjectClass #inspectVariable) do: 
+			[:selector |
+			| theItem query |
+			theItem := contextMenu items detect: [:menuItem | menuItem command = selector] ifNone: [].
+			query := CommandQuery commandDescription: theItem commandDescription
+						source: variableListPresenter view.
+			debugger queryCommand: query.
+			self assert: query isEnabled equals: false].
+	variableListPresenter selectionByIndex: 2.
+	self assert: variableListPresenter selection isDisplayLabel.
+	self assert: variableListPresenter selection value equals: 'instance variables'.
+	#(#browseObjectClass #inspectVariable) do: 
+			[:selector |
+			| theItem query |
+			theItem := contextMenu items detect: [:menuItem | menuItem command = selector] ifNone: [].
+			query := CommandQuery commandDescription: theItem commandDescription
+						source: variableListPresenter view.
+			debugger queryCommand: query.
+			self assert: query isEnabled equals: false]!
+
 test_variablesSorted
 	| source |
 	self testsIssue: #issue314 withTitle: 'Jadeite debugger - Alphabetical variables'.
@@ -2450,6 +2486,7 @@ x halt.
 !JadeiteDebuggerTestCase categoriesFor: #test_unsavedChangesActionStepping!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_variableDisplayLabels!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_variableDynamicInstVarLabels!public!tests! !
+!JadeiteDebuggerTestCase categoriesFor: #test_variablePaneMenuOptions!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test_variablesSorted!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test1!public!tests! !
 !JadeiteDebuggerTestCase categoriesFor: #test2!public!tests! !

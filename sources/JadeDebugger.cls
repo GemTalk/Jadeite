@@ -125,8 +125,9 @@ implement
 !
 
 inspectVariable
-	| object |
-	object := gciSession oopTypeWithOop: variableListPresenter selection key key asNumber.
+	| object selection |
+	(selection := variableListPresenter selection) isDisplayLabel ifTrue: [^self].
+	object := gciSession oopTypeWithOop: selection key key asNumber.
 	^JadeInspector showOn: object session: gciSession!
 
 queryCommand: query

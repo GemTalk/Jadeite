@@ -106,7 +106,7 @@ package setPrerequisites: #(
 	'Jade Test Browser'
 	'Jade UI'
 	'Jade UI Base'
-	'..\..\..\..\Dolphin719\RowanClientServices\Rowan Client Services'
+	'..\..\RowanClientServices\Rowan Client Services'
 	'Rowan UI Base'
 	'..\Core\Contributions\Solutions Software\SSW EditableListView'
 	'..\Core\Contributions\svenc\STON\STON-Core'
