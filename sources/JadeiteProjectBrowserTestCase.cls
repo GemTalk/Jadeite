@@ -159,10 +159,15 @@ projectNamed: aString
 		detect: [:projectService | projectService name = aString]
 		ifNone: []!
 
+rowanDependentProjectNames
+	"this may change"
+
+	^#('Cypress' 'STON')!
+
 rowanProjectNames
 	"this may change"
 
-	^#('Cypress' 'Rowan' 'STON' 'Tonel')!
+	^#('Cypress' 'Rowan' 'STON')!
 
 saveHooMethod
 
@@ -1036,29 +1041,30 @@ test_changeVariableWithModifiedMethodSource
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_checkoutTagRefresh
-	| projectService |
+	| projectService workingBranch |
 	self testsIssue: #issue425
 		withTitle: 'Jadeite should be able to check out a git tag not just branch'.
 	projectService := self projectListPresenter list detect: [:service | service name = 'Rowan'].
+	workingBranch := projectService branch.
 	self projectsPresenter basicCheckoutTagAndRefresh: 'Oscar-3.0.93' for: projectService.
 	self assert: projectService branch equals: '(HEAD detached at Oscar-3.0.93)'.
 	self assert: projectService isSkew.
-	#('Cypress' 'STON' 'Tonel') do: 
+	self rowanDependentProjectNames do: 
 			[:projectName |
 			| dependentService |
 			dependentService := transcript projectListPresenter projectListPresenter list
 						detect: [:service | service name = projectName].	"the transcript will display the tag. Make sure it's updated"
 			self assert: dependentService branch equals: '(HEAD detached at Oscar-3.0.93)'.
 			self assert: dependentService isSkew].
-	projectService basicCheckout: 'oscar' using: self projectsPresenter.
-	self assert: projectService branch equals: 'oscar'.
+	projectService basicCheckout: workingBranch using: self projectsPresenter.
+	self assert: projectService branch equals: workingBranch.
 	self deny: projectService isSkew.
-	#('Cypress' 'STON' 'Tonel') do: 
+	self rowanDependentProjectNames do: 
 			[:projectName |
 			| dependentService |
 			dependentService := transcript projectListPresenter projectListPresenter list
 						detect: [:service | service name = projectName].	"the transcript will display the branch. Make sure it's updated"
-			self assert: dependentService branch equals: 'oscar'.
+			self assert: dependentService branch equals: workingBranch.
 			self deny: dependentService isSkew]!
 
 test_classDefinitionUpdatesAcrossTabs
@@ -3373,6 +3379,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #previousTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectList!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectNamed:!private!project support! !
+!JadeiteProjectBrowserTestCase categoriesFor: #rowanDependentProjectNames!constants!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #rowanProjectNames!constants!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveHooMethod!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUnimplementedSelector!private! !
