@@ -1297,9 +1297,9 @@ test_definedClassMenuItem
 				detect: [:commandItem | commandItem commandDescription command = #gotoClassDefinedPackage]
 				ifNone: [^self error: 'go to defined package not found'].
 	self assert: classMenuItem description equals: menuLabel.
-	menuLabel := 'Go To Defining Package (Rowan-Core)'.
-	self selectServiceNamed: 'Rowan-GemStone-Loader-Extensions' in: self packageListPresenter.
-	self selectServiceNamed: 'RwClassModification' in: self classListPresenter.
+	menuLabel := 'Go To Defining Package (Rowan-Definitions)'.
+	self selectServiceNamed: 'Rowan-Core-Definitions-Extensions' in: self packageListPresenter.
+	self selectServiceNamed: 'RwClassDefinition' in: self classListPresenter.
 	self assert: self projectsPresenter definedClassMenuItemLabel equals: menuLabel.
 	self projectsPresenter updateClassMenu: self classListPresenter view contextMenu.	"triggered just before pop-up menu opens"
 	self assert: classMenuItem description equals: menuLabel!
@@ -1377,6 +1377,10 @@ test_dirtyProjectOnDisk
 				self projectListPresenter selection
 					performGitCommand: 'reset'
 					with: '--hard'
+					in: session.
+				self projectListPresenter selection
+					performGitCommand: 'clean'
+					with: '-xdf'
 					in: session.
 				self assert: self projectListPresenter selection displayName equals: 'RowanSample1'.
 				self assert: transcript projectListPresenter projectListPresenter selections first displayName

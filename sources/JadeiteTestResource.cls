@@ -55,7 +55,7 @@ ensureRowanSample1Loaded
 				loadProjectFromFile: self rowanSample1Path
 				projectsHome: '$ROWAN_PROJECTS_HOME'
 				customConditionalAttributes: #('tests')
-				componentNames: #('Core' 'Tests')]!
+				componentNames: #('Core' 'Tests')].!
 
 hasValidSession
 	| session |
