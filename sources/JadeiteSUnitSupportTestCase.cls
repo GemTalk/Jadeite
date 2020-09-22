@@ -550,44 +550,71 @@ test_extensionTestsShowUpInExtensionAndDefinedPackages
 	self assert: self methodListPresenter list second selector equals: #test1!
 
 test_inheritedTests
-	| classTestSelectors testClassTestSelectors |
+	| subTestClassTestSelectors testClassTestSelectors source |
+	self openProjectBrowser.
 	self testsIssue: #issue211
 		withTitle: 'SUnit browser and SUnit tab in Project browser missing inherited test cases'.
+	self
+		saveClass: 'RowanTestSubClassServiceTest'
+		superclass: 'RowanTestClassServiceTest'
+		instVars: Array new
+		package: 'Rowan-Services-Tests'.
+	
+	[source := 'testMethod
+
+	^self assert: true'.
+	self projectsPresenter basicAddMethodCategory: 'testing'.
+	self methodSourcePresenter value: source.
+	self classListPresenter selection meta: false.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'RowanTestClassServiceTest' in: self sunitPresenter classListPresenter.
-	classTestSelectors := self sunitPresenter methodListPresenter list
-				collect: [:service | service selector].
-	self selectServiceNamed: 'RowanTestClassServiceTest' in: self sunitPresenter classListPresenter.
-	self assert: (session executeString: 'RowanTestClassServiceTest shouldInheritSelectors').	"required to see the superclass non-abstract methods"
 	testClassTestSelectors := self sunitPresenter methodListPresenter list
 				collect: [:service | service selector].
-	self assert: testClassTestSelectors size > classTestSelectors size.	"the subclass inherits the super class's tests"
-	classTestSelectors do: [:selector | self assert: (testClassTestSelectors includes: selector)]!
+	self selectServiceNamed: 'RowanTestSubClassServiceTest' in: self sunitPresenter classListPresenter.
+	self assert: (session executeString: 'RowanTestClassServiceTest shouldInheritSelectors').	"required to see the superclass non-abstract methods"
+	subTestClassTestSelectors := self sunitPresenter methodListPresenter list
+				collect: [:service | service selector].
+	self assert: subTestClassTestSelectors size > testClassTestSelectors size.	"the subclass inherits the super class's tests"
+	testClassTestSelectors do: [:selector | self assert: (subTestClassTestSelectors includes: selector)]]
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter classListPresenter selection]!
 
 test_maintainColumnSort
 	| firstSortedMethods secondSortedMethods |
+	self openProjectBrowser.
 	self testsIssue: #issue775 withTitle: 'Stubborn sorting in the Sunit browser'.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
-	self selectServicesNamed: #('RowanTestClassServiceTest' 'RowanTestClassServiceTest')
-		in: self sunitPresenter classListPresenter.
+	self
+		saveClass: 'RowanTestSubClassServiceTest'
+		superclass: 'RowanTestClassServiceTest'
+		instVars: Array new
+		package: 'Rowan-Services-Tests'.
+	
+	[self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServicesNamed: #('RowanTestClassServiceTest' 'RowanTestSubClassServiceTest')
+		in: self sunitPresenter classListPresenter.	"select two so both sortable columns appear"
 	self sunitPresenter methodListPresenter view columnClicked: 1.	"class column"
+	self sunitPresenter methodListPresenter list first className = 'RowanTestSubClassServiceTest'
+		ifTrue: [self sunitPresenter methodListPresenter view columnClicked: 1	"resort if necessary"].
 	firstSortedMethods := self sunitPresenter methodListPresenter list
 				collect: [:methodService | methodService className].
 	self selectServicesNamed: Array new in: self sunitPresenter classListPresenter.	"clear selection just in case"
-	self selectServicesNamed: #('RowanTestClassServiceTest' 'RowanTestClassServiceTest')
+	self selectServicesNamed: #('RowanTestClassServiceTest' 'RowanTestSubClassServiceTest')
 		in: self sunitPresenter classListPresenter.
-	secondSortedMethods := self sunitPresenter methodListPresenter list
-				collect: [:methodService | methodService className].
+	secondSortedMethods := (self sunitPresenter methodListPresenter list
+				collect: [:methodService | methodService className]) asSortedCollection
+				asOrderedCollection.
 	self assert: firstSortedMethods equals: secondSortedMethods.
 	self sunitPresenter methodListPresenter view columnClicked: 2.	"method column"
 	firstSortedMethods := self sunitPresenter methodListPresenter list
 				collect: [:methodService | methodService selector].
 	self selectServicesNamed: Array new in: self sunitPresenter classListPresenter.	"clear selection just in case"
-	self selectServicesNamed: #('RowanTestClassServiceTest' 'RowanTestClassServiceTest')
+	self selectServicesNamed: #('RowanTestClassServiceTest' 'RowanTestSubClassServiceTest')
 		in: self sunitPresenter classListPresenter.
-	secondSortedMethods := self sunitPresenter methodListPresenter list
-				collect: [:methodService | methodService selector].
-	self assert: firstSortedMethods equals: secondSortedMethods!
+	secondSortedMethods := (self sunitPresenter methodListPresenter list
+				collect: [:methodService | methodService selector]) asSortedCollection
+				asOrderedCollection.
+	self assert: firstSortedMethods equals: secondSortedMethods]
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter classListPresenter selection]!
 
 test_maintainColumnSortChangeFromProjectBrowser
 	| firstSortedMethods secondSortedMethods |
