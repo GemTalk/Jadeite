@@ -2836,7 +2836,8 @@ test_twoBrowsersAddedClassAppearsInHierarchy1
 	family at: 'TestClass' put: Array new.
 	self assertAncestry: family in: secondPresenter classHierarchyPresenter]
 			ensure: 
-				[self selectServiceNamed: 'TestClass' in: secondPresenter classListPresenter.
+				[secondPresenter selectClassListTab. 
+				self selectServiceNamed: 'TestClass' in: secondPresenter classListPresenter .
 				self projectsPresenter basicRemoveClass: secondPresenter selectedClass]!
 
 test_twoBrowsersAddedClassAppearsInHierarchy2
@@ -2850,9 +2851,8 @@ test_twoBrowsersAddedClassAppearsInHierarchy2
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
 	self selectHierarchyTabIn: secondPresenter.
-	self assert: secondPresenter classHierarchyPresenter model size equals: 3.
-	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
-		in: secondPresenter classHierarchyPresenter.
+	self assert: secondPresenter classHierarchyPresenter model size equals: 2.
+	self assertLinearAncestry: #('Object' 'RowanSample1') in: secondPresenter classHierarchyPresenter.
 	self assertIsNil: (secondPresenter classHierarchyPresenter model asBag
 				detect: [:classService | classService name = 'TestClass']
 				ifNone: []).
@@ -2864,24 +2864,35 @@ test_twoBrowsersAddedClassAppearsInHierarchy2
 	self assert: self classHierarchyPresenter selection name = 'TestClass'.
 	self
 		saveClass: 'SubSubSub'
-		superclass: 'RowanSubClass'
+		superclass: 'TestClass'
 		instVars: Array new
 		package: 'RowanSample1-Core'.
-	self assert: self classHierarchyPresenter selection name = 'SubSubSub'.
-	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'.
-	self assert: secondPresenter classHierarchyPresenter model size equals: 5.
+	
+	[self assert: self classHierarchyPresenter selection name = 'SubSubSub'.
+	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'.	"did not change selection ..."
+	self assert: secondPresenter classHierarchyPresenter model size equals: 4.	"...but added new classes"
 	family := Dictionary new.
 	family at: 'Object' put: (Array with: 'RowanSample1' with: 'TestClass').
-	family at: 'RowanSample1' put: (Array with: 'RowanSubClass').
-	family at: 'RowanSubClass' put: (Array with: 'SubSubSub').
-	family at: 'TestClass' put: Array new.
-	self assertAncestry: family in: secondPresenter classHierarchyPresenter!
+	family at: 'TestClass' put: (Array with: 'SubSubSub').
+	self assertAncestry: family in: secondPresenter classHierarchyPresenter]
+			ensure: 
+				[secondPresenter selectClassListTab.
+				self selectServiceNamed: 'SubSubSub' in: secondPresenter classListPresenter.
+				self projectsPresenter basicRemoveClass: secondPresenter selectedClass.
+				self selectServiceNamed: 'TestClass' in: secondPresenter classListPresenter.
+				self projectsPresenter basicRemoveClass: secondPresenter selectedClass]!
 
 test_twoBrowsersAddedClassDoesNotAppearInDifferentHierarchy
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
+	self
+		saveClass: 'RowanSubClass'
+		superclass: 'RowanSample1'
+		instVars: Array new
+		package: 'RowanSample1-Core'.
 	self selectRowanSample1Class.
-	self selectHierarchyTab.
+	
+	[self selectHierarchyTab.
 	self openSecondBrowser.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
@@ -2895,12 +2906,21 @@ test_twoBrowsersAddedClassDoesNotAppearInDifferentHierarchy
 				ifNone: []).
 	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Core'.	"add new class in first browser"
 	self assert: self classHierarchyPresenter selection name = 'TestClass'.
-	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'	"no change in second browser because new class not in hierarchy"!
+	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'	"no change in second browser because new class not in hierarchy"]
+			ensure: 
+				[secondPresenter selectClassListTab.
+				self selectServiceNamed: 'RowanSubClass' in: secondPresenter classListPresenter.
+				secondPresenter basicRemoveClass: secondPresenter selectedClass]!
 
 test_twoBrowsersAddedClassRearrangesItselfInHierarchy
 	| family |
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
+	self
+		saveClass: 'RowanSubClass'
+		superclass: 'RowanSample1'
+		instVars: Array new
+		package: 'RowanSample1-Core'.
 	self selectRowanSample1Class.
 	self selectHierarchyTab.
 	self openSecondBrowser.
@@ -2919,7 +2939,8 @@ test_twoBrowsersAddedClassRearrangesItselfInHierarchy
 		superclass: 'Object'
 		instVars: Array new
 		package: 'RowanSample1-Core'.
-	self assert: self classHierarchyPresenter selection name = 'TestClass'.
+	
+	[self assert: self classHierarchyPresenter selection name = 'TestClass'.
 	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'.
 	self assert: secondPresenter classHierarchyPresenter model size equals: 4.
 	family := Dictionary new.
@@ -2940,7 +2961,13 @@ test_twoBrowsersAddedClassRearrangesItselfInHierarchy
 	family at: 'RowanSample1' put: (Array with: 'RowanSubClass').
 	family at: 'RowanSubClass' put: (Array with: 'TestClass').
 	family at: 'TestClass' put: Array new.
-	self assertAncestry: family in: secondPresenter classHierarchyPresenter!
+	self assertAncestry: family in: secondPresenter classHierarchyPresenter]
+			ensure: 
+				[secondPresenter selectClassListTab.
+				self selectServiceNamed: 'RowanSubClass' in: secondPresenter classListPresenter.
+				secondPresenter basicRemoveClass: secondPresenter selectedClass.
+				self selectServiceNamed: 'TestClass' in: secondPresenter classListPresenter.
+				secondPresenter basicRemoveClass: secondPresenter selectedClass]!
 
 test_twoBrowsersAddSameCategoryToClassAndInstance
 	self testsIssue: #issue418
@@ -2999,14 +3026,20 @@ test_twoBrowsersNoUpdateWithoutPackageSelection
 		superclass: 'RowanSample1'
 		instVars: Array new
 		package: 'RowanSample1-Core'.
-	self assert: self classListPresenter selection name = 'TestClass'.
+	
+	[self assert: self classListPresenter selection name = 'TestClass'.
 	self assert: secondPresenter projectListPresenter selections isEmpty.
 	self assert: secondPresenter packageListPresenter model isEmpty.
 	self assert: secondPresenter classListPresenter model isEmpty.
 	self assert: secondPresenter classHierarchyPresenter model isEmpty.
 	self assert: secondPresenter categoryListPresenter model isEmpty.
 	self assert: secondPresenter variableListPresenter model isEmpty.
-	self assert: secondPresenter methodListPresenter model isEmpty!
+	self assert: secondPresenter methodListPresenter model isEmpty]
+			ensure: 
+				[self selectRowanSample1Class.
+				self projectsPresenter selectClassListTab.
+				self selectServiceNamed: 'TestClass' in: self projectsPresenter classListPresenter.
+				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_twoBrowsersRemoveMethod
 	self testsIssue: #issue404 withTitle: 'Removing a method using method browser'.
@@ -3028,7 +3061,13 @@ test_twoBrowsersRemoveMethod
 test_twoBrowsersUpdate
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
-	self selectRowanSample1Class.
+	self
+		saveClass: 'RowanSubClass'
+		superclass: 'RowanSample1'
+		instVars: Array new
+		package: 'RowanSample1-Core'.
+	
+	[self selectRowanSample1Class.
 	self assert: self classListPresenter selection name equals: 'RowanSample1'.
 	self assert: self classListPresenter list size equals: 2.
 	self assert: self classListPresenter list first name equals: 'RowanSample1'.
@@ -3056,10 +3095,21 @@ test_twoBrowsersUpdate
 	self assert: secondPresenter classListPresenter list size equals: 2.
 	self assert: secondPresenter classListPresenter list first name equals: 'RowanSample1'.
 	self assert: secondPresenter classListPresenter list last name equals: 'RowanSubClass'.
-	self assert: secondPresenter packageListPresenter selection name equals: 'RowanSample1-Core'!
+	self assert: secondPresenter packageListPresenter selection name equals: 'RowanSample1-Core']
+			ensure: 
+				[self selectRowanSample1Class.
+				self projectsPresenter selectClassListTab.
+				self selectServiceNamed: 'RowanSubClass' in: self projectsPresenter classListPresenter.
+				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_twoBrowsersUpdateClassHierarchyDifferentDictionarySelected
-	self selectRowanSample1Class.
+	self
+		saveClass: 'RowanSubClass'
+		superclass: 'RowanSample1'
+		instVars: Array new
+		package: 'RowanSample1-Core'.
+	
+	[self selectRowanSample1Class.
 	self openSecondBrowser.
 	"no dictionary selected"
 	self selectServiceNamed: RowanProjectService noneProject name
@@ -3070,10 +3120,20 @@ test_twoBrowsersUpdateClassHierarchyDifferentDictionarySelected
 	self selectHierarchyTab.	"in first browser"
 	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
 		in: self classHierarchyPresenter.
-	self assertLinearAncestry: #('Object' 'Rowan') in: secondPresenter classHierarchyPresenter!
+	self assertLinearAncestry: #('Object' 'Rowan') in: secondPresenter classHierarchyPresenter]
+			ensure: 
+				[self projectsPresenter selectClassListTab.
+				self selectServiceNamed: 'RowanSubClass' in: self projectsPresenter classListPresenter.
+				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_twoBrowsersUpdateClassHierarchyDifferentPackageSelected
-	self openSecondBrowser.
+	self
+		saveClass: 'RowanSubClass'
+		superclass: 'RowanSample1'
+		instVars: Array new
+		package: 'RowanSample1-Core'.
+	
+	[self openSecondBrowser.
 
 	"different package selected"
 	self selectRowanSample1Class.
@@ -3086,7 +3146,11 @@ test_twoBrowsersUpdateClassHierarchyDifferentPackageSelected
 	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
 		in: self classHierarchyPresenter.
 	self assertLinearAncestry: #('Object' 'TestAsserter' 'TestCase' 'RowanSample1Test')
-		in: secondPresenter classHierarchyPresenter!
+		in: secondPresenter classHierarchyPresenter]
+			ensure: 
+				[self projectsPresenter selectClassListTab.
+				self selectServiceNamed: 'RowanSubClass' in: self projectsPresenter classListPresenter.
+				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_twoBrowsersUpdateClassHierarchyNoDictionarySelected
 	self selectRowanSample1Class. 
@@ -3098,7 +3162,7 @@ test_twoBrowsersUpdateClassHierarchyNoDictionarySelected
 	self selectHierarchyTabIn: secondPresenter.
 	self assert: secondPresenter classHierarchyPresenter model isEmpty.
 	self selectHierarchyTab.	"in first browser"
-	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
+	self assertLinearAncestry: #('Object' 'RowanSample1')
 		in: self classHierarchyPresenter.
 	self assert: secondPresenter classHierarchyPresenter model isEmpty!
 
@@ -3111,8 +3175,7 @@ test_twoBrowsersUpdateClassHierarchyNoPackageSelected
 	self selectHierarchyTabIn: secondPresenter.
 	self assert: secondPresenter classHierarchyPresenter model isEmpty.
 	self selectHierarchyTab.	"in first browser"
-	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
-		in: self classHierarchyPresenter.
+	self assertLinearAncestry: #('Object' 'RowanSample1') in: self classHierarchyPresenter.
 	self assert: secondPresenter classHierarchyPresenter model isEmpty!
 
 test_twoBrowsersUpdateClassHierarchyNoProjectSelected
@@ -3123,15 +3186,19 @@ test_twoBrowsersUpdateClassHierarchyNoProjectSelected
 	self selectHierarchyTabIn: secondPresenter.
 	self assert: secondPresenter classHierarchyPresenter model isEmpty.
 	self selectHierarchyTab.	"in first browser"
-	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
-		in: self classHierarchyPresenter.
-	self assert: secondPresenter classHierarchyPresenter model isEmpty.
-!
+	self assertLinearAncestry: #('Object' 'RowanSample1') in: self classHierarchyPresenter.
+	self assert: secondPresenter classHierarchyPresenter model isEmpty!
 
 test_twoBrowsersUpdateHierarchy
 	self testsIssue: #issue374
 		withTitle: '(3.0.53) selecting package in one project browser causes sympathetic update in other'.
-	self selectRowanSample1Class.
+	self
+		saveClass: 'RowanSubClass'
+		superclass: 'RowanSample1'
+		instVars: Array new
+		package: 'RowanSample1-Core'.
+	
+	[self selectRowanSample1Class.
 	self selectHierarchyTab.
 	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
 		in: self classHierarchyPresenter.
@@ -3152,7 +3219,12 @@ test_twoBrowsersUpdateHierarchy
 	self assert: self packageListPresenter selection name equals: 'RowanSample1-Tests'.
 	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'.
 	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
-		in: secondPresenter classHierarchyPresenter!
+		in: secondPresenter classHierarchyPresenter]
+			ensure: 
+				[self selectRowanSample1Class.
+				self projectsPresenter selectClassListTab.
+				self selectServiceNamed: 'RowanSubClass' in: self projectsPresenter classListPresenter.
+				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_twoTabsHaveIndependentCompileErrors
 	self testsIssue: #issue440
