@@ -47,7 +47,8 @@ methodSelectionChanged
 
 onViewClosed
 	super onViewClosed.
-	BrowserUpdate current removeEventsTriggeredFor: self. !
+	BrowserUpdate current removeEventsTriggeredFor: self. 
+	BrowserUpdate current removeEventsTriggeredFor: methodListPresenter. !
 
 onViewOpened
 	super onViewOpened.

@@ -187,6 +187,9 @@ isSampleProjectLoaded
 		detect: [:projectService | projectService name = self sampleProjectName]
 		ifNone: []) notNil!
 
+isServerVersion36
+	^'64-bit 3.6.0*' match: session libraryVersion!
+
 issueCommand: service
 
 	^self issueCommands: (Array with: service)!
@@ -677,6 +680,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #fail:!asserting!public! !
 !JadeiteAbstractTestCase categoriesFor: #interestingLoopMethodSource!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #isSampleProjectLoaded!private!private testing!project support! !
+!JadeiteAbstractTestCase categoriesFor: #isServerVersion36!public!testing! !
 !JadeiteAbstractTestCase categoriesFor: #issueCommand:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #issueCommands:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #itemNamed:in:!issue test support!private! !

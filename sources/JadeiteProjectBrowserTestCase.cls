@@ -1741,11 +1741,11 @@ test_gitBranchesDoesNotShowHead
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	branchesString := session
 				executeString: 'Rowan gitTools gitbranchIn: (RwProject newNamed: ''RowanSample1'') repositoryRootPath with: '''''.
-	self assert: (branchesString copyWithout: Character lf) equals: '* master'.
+	self assert: ('*master*' match: (branchesString copyWithout: Character lf)).
 	branches := (RowanProjectService new name: 'RowanSample1')
 				basicCheckoutUsing: self projectsPresenter.
 	self assert: branches isKindOf: Collection.
-	self assert: branches first equals: '*master'!
+	self assert: ('*master*' match: branches first)!
 
 test_goToDefinedClassFromClassList
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
@@ -1768,6 +1768,25 @@ test_goToDefinedClassFromClassListViaButton
 	self assert: self packageListPresenter selection name = 'Rowan-GemStone-Core'!
 
 test_goToDefinedMethodFromClassListClassSide
+	self isServerVersion36 ifFalse: [^self].
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-GemStone-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'Rowan' in: self classListPresenter.
+	self selectClassTab.
+	self selectCategoryNamed: '*rowan-core'.
+	self selectMethodNamed: #initialize.
+	self assert: self projectsPresenter isClassListTabSelected.
+	self projectsPresenter gotoMethodDefinedPackage.
+	self assert: self packageListPresenter selection name = 'Rowan-Core'.
+	self assert: self classListPresenter selection name = 'Rowan'.
+	self assert: self categoryListPresenter selection = '*rowan-core'.
+	self assert: self methodListPresenter selection selector = #initialize.
+	self assert: self projectsPresenter isClassListTabSelected.
+	self assert: self projectsPresenter isClassSideSelected!
+
+test_goToDefinedMethodFromClassListClassSide3215
+	"should still work against a 3.2.15 server. I hope" 
+	self isServerVersion36 ifTrue:[^self]. 
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-GemStone-Loader-Extensions' in: self packageListPresenter.
 	self selectServiceNamed: 'RwGsImage' in: self classListPresenter.
@@ -1809,7 +1828,10 @@ test_gotoDefinedPackage
 	self selectServiceNamed: 'Rowan-GemStone-Kernel' in: self packageListPresenter.
 	self selectServiceNamed: 'ByteArray' in: self classListPresenter.
 	self projectsPresenter gotoClassDefinedPackage.
-	self assert: self dictionaryPresenter selection name = 'Globals'.
+	self isServerVersion36
+		ifFalse: 
+			["ByteArray is packaged in 3.6 (+?)"
+			self assert: self dictionaryPresenter selection name = 'Globals'].
 	self assert: self classListPresenter selection name = 'ByteArray'!
 
 test_goToDefinedPackageNoClassSelected
@@ -2716,13 +2738,14 @@ test_tabNames_projectsBrowser
 	self selectRowanSample1Class.
 	self saveHooMethod.
 	textTabs := self projectsPresenter textTabs.
-	self assert: textTabs size equals: 6.
+	self assert: textTabs size equals: 7.
 	self assert: (textTabs at: 1) text equals: 'Class Definition'.
 	self assert: (textTabs at: 2) text equals: 'Class Documentation'.
 	self assert: (textTabs at: 3) text equals: 'Method Source'.
 	self assert: (textTabs at: 4) text equals: 'SUnit'.
 	self assert: (textTabs at: 5) text equals: 'Comparison'.	"for some as yet unknown reason, this is created differently"
-	self assert: (textTabs at: 6) text equals: 'Project'!
+	self assert: (textTabs at: 6) text equals: 'Spec'.
+	self assert: (textTabs at: 7) text equals: 'Project'!
 
 test_tabNames_projectsBrowserNotLost
 	"why we have to put the text in the arrangement field is beyond me"
@@ -2765,15 +2788,19 @@ test_twoBrowsersAddedClassAppears
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
-	self assert: secondPresenter classListPresenter list size equals: 2.
+	self assert: secondPresenter classListPresenter list size equals: 1.
 	self assertIsNil: (secondPresenter classListPresenter list
 				detect: [:classService | classService name = 'TestClass']
 				ifNone: []).
 	self saveTestClassWithInstVars: Array new package: 'RowanSample1-Core'.	"add new class in first browser"
-	self assert: self classListPresenter selection name = 'TestClass'.
+	
+	[self assert: self classListPresenter selection name = 'TestClass'.
 	self assert: secondPresenter classListPresenter selection name equals: 'RowanSample1'.	"no selection change in second browser ..."
-	self assert: secondPresenter classListPresenter list size equals: 3.	"... but new class shows up"
-	self assert: secondPresenter classListPresenter list last name equals: 'TestClass'!
+	self assert: secondPresenter classListPresenter list size equals: 2.	"... but new class shows up"
+	self assert: secondPresenter classListPresenter list last name equals: 'TestClass']
+			ensure: 
+				[self selectServiceNamed: 'TestClass' in: secondPresenter classListPresenter.
+				self projectsPresenter basicRemoveClass: secondPresenter selectedClass]!
 
 test_twoBrowsersAddedClassAppearsInHierarchy1
 	| family |
@@ -2786,9 +2813,8 @@ test_twoBrowsersAddedClassAppearsInHierarchy1
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
 	self selectHierarchyTabIn: secondPresenter.
-	self assert: secondPresenter classHierarchyPresenter model size equals: 3.
-	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
-		in: secondPresenter classHierarchyPresenter.
+	self assert: secondPresenter classHierarchyPresenter model size equals: 2.
+	self assertLinearAncestry: #('Object' 'RowanSample1') in: secondPresenter classHierarchyPresenter.
 	self assertIsNil: (secondPresenter classHierarchyPresenter model asBag
 				detect: [:classService | classService name = 'TestClass']
 				ifNone: []).
@@ -2797,18 +2823,21 @@ test_twoBrowsersAddedClassAppearsInHierarchy1
 		superclass: 'RowanSample1'
 		instVars: Array new
 		package: 'RowanSample1-Core'.
-	self assert: self classHierarchyPresenter selection name = 'TestClass'.
+	
+	[self assert: self classHierarchyPresenter selection name = 'TestClass'.
 	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'.
-	self assert: secondPresenter classHierarchyPresenter model size equals: 4.
+	self assert: secondPresenter classHierarchyPresenter model size equals: 3.
 	self denyIsNil: (secondPresenter classHierarchyPresenter model asBag
 				detect: [:classService | classService name = 'TestClass']
 				ifNone: []).
 	family := Dictionary new.
 	family at: 'Object' put: (Array with: 'RowanSample1').
-	family at: 'RowanSample1' put: (Array with: 'RowanSubClass' with: 'TestClass').
-	family at: 'RowanSubClass' put: Array new.
+	family at: 'RowanSample1' put: (Array with: 'TestClass').
 	family at: 'TestClass' put: Array new.
-	self assertAncestry: family in: secondPresenter classHierarchyPresenter!
+	self assertAncestry: family in: secondPresenter classHierarchyPresenter]
+			ensure: 
+				[self selectServiceNamed: 'TestClass' in: secondPresenter classListPresenter.
+				self projectsPresenter basicRemoveClass: secondPresenter selectedClass]!
 
 test_twoBrowsersAddedClassAppearsInHierarchy2
 	| family |
@@ -3456,6 +3485,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassListViaButton!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromClassListClassSide!public!test defined package!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromClassListClassSide3215!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedMethodNotSameAsClass!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedPackage!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedPackageNoClassSelected!public!test defined package!tests! !

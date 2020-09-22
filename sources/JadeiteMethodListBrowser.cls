@@ -28,7 +28,8 @@ onViewClosed
 	super onViewClosed.
 	BrowserUpdate current
 		logComment: 'Closing Method List Browser {' , self identityHash printString , '}'.
-	BrowserUpdate current removeEventsTriggeredFor: self primaryPresenter!
+	BrowserUpdate current removeEventsTriggeredFor: self primaryPresenter.
+	BrowserUpdate current removeEventsTriggeredFor: self primaryPresenter methodSourcePresenter documentPresenter.  !
 
 onViewOpened
 	super onViewOpened.

@@ -134,9 +134,6 @@ getSecondDebugger
 				ifTrue: [^self].
 			(Delay forMilliseconds: 10) wait]!
 
-isServerVersion36
-	^'64-bit 3.6.0*' match: session libraryVersion!
-
 keyDownEscapeIn: view
 	^view
 		postMessage: 16r100
@@ -339,7 +336,6 @@ test_globalAdditionalAccelerators
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #getClipboardContents!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #getDebugger!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #getSecondDebugger!private!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #isServerVersion36!public!testing! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #keyDownEscapeIn:!private!support!tests! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #menuItemIsEnabled:!private!support! !
 !JadeiteDebuggerDataCuratorTestCase categoriesFor: #methodListBrowser!private!support! !
