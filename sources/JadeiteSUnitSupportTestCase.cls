@@ -619,16 +619,26 @@ test_maintainColumnSort
 test_maintainColumnSortChangeFromProjectBrowser
 	| firstSortedMethods secondSortedMethods |
 	self testsIssue: #issue775 withTitle: 'Stubborn sorting in the Sunit browser'.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
-	self selectServicesNamed: #('RowanTestClassServiceTest' 'RowanTestClassServiceTest')
+	self openProjectBrowser.
+	self
+		saveClass: 'RowanTestSubClassServiceTest'
+		superclass: 'RowanTestClassServiceTest'
+		instVars: Array new
+		package: 'Rowan-Services-Tests'.
+	
+	[self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServicesNamed: #('RowanTestClassServiceTest' 'RowanTestSubClassServiceTest')
 		in: self sunitPresenter classListPresenter.
 	self sunitPresenter methodListPresenter view columnClicked: 1.	"class column"
+	self sunitPresenter methodListPresenter list first className = 'RowanTestSubClassServiceTest'
+		ifTrue: 
+			[self sunitPresenter methodListPresenter view columnClicked: 1	"resort if necessary for ascending list"].
 	firstSortedMethods := self sunitPresenter methodListPresenter list
 				collect: [:methodService | methodService className].
 	self openProjectBrowser.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
-	self selectServicesNamed: #('RowanTestClassServiceTest') in: self classListPresenter.
+	self selectServicesNamed: #('RowanTestSubClassServiceTest') in: self classListPresenter.
 	secondSortedMethods := self sunitPresenter methodListPresenter list
 				collect: [:methodService | methodService className].
 	self assert: firstSortedMethods equals: secondSortedMethods.
@@ -637,6 +647,8 @@ test_maintainColumnSortChangeFromProjectBrowser
 				collect: [:methodService | methodService className].
 	self assert: firstSortedMethods equals: secondSortedMethods.
 	self sunitPresenter methodListPresenter view columnClicked: 2.	"method column"
+	self sunitPresenter methodListPresenter list first className = 'RowanTestSubClassServiceTest'
+		ifTrue: [self sunitPresenter methodListPresenter view columnClicked: 1	"resort if necessary"].
 	firstSortedMethods := self sunitPresenter methodListPresenter list
 				collect: [:methodService | methodService selector].
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
@@ -644,7 +656,11 @@ test_maintainColumnSortChangeFromProjectBrowser
 	self selectServicesNamed: #('RowanTestClassServiceTest') in: self classListPresenter.
 	secondSortedMethods := self sunitPresenter methodListPresenter list
 				collect: [:methodService | methodService selector].
-	self assert: firstSortedMethods equals: secondSortedMethods!
+	self assert: firstSortedMethods equals: secondSortedMethods]
+			ensure: 
+				[self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+				self selectServicesNamed: #('RowanTestSubClassServiceTest') in: self classListPresenter.
+				self projectsPresenter basicRemoveClass: self projectsPresenter classListPresenter selection]!
 
 test_menuEnablementDebugInClassPresenter
 	| debugItem query |
