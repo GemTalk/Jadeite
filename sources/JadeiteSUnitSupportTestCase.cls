@@ -856,7 +856,7 @@ test_projectBrowserRunSelectedTests
 	self openProjectBrowser.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
-	self selectServiceNamed: 'RowanTestClassServiceTest' in: self classListPresenter.
+	self selectServiceNamed: 'RowanClassServiceTest' in: self classListPresenter.
 	self selecProjectBrowserMethodNamed: #test_addCategory.
 	self projectsPresenter runSelected.
 	self assert: self projectsPresenter isSunitTabSelected.

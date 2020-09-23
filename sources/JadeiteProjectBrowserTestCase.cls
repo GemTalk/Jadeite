@@ -90,12 +90,46 @@ issue261createTestProject
 
 	self testsIssue: #issue261 withTitle: 'Project tab should display reason for project font styling'.
 	session
-		executeString: '| proj pkg cls meth |
-proj := RwProjectDefinition newForGitBasedProjectNamed: ''Izmir''.
-proj repositoryRootPath: ''$ROWAN_PROJECTS_HOME/Izmir''.
-Rowan projectTools create createProjectFor: proj.'.
+		executeString: '| project projectName resolvedProject loadedProjects loadedProject |
+projectName := '''
+				, self issue261TestProjectName
+					, '''. 
+project := (Rowan newProjectNamed: projectName)
+	gitUrl:  ''file:'
+					, self issue261TestProjectPath
+					, ''';
+	packageFormat: ''tonel'';
+	packageConvention: ''Rowan'';
+	addTopLevelComponentNamed: ''Core'';
+	yourself.
+true ifTrue: [
+	project addPackagesNamed: {projectName, ''-Core''} toComponentNamed: ''Core''.
+].
+	yourself.										"RwDefinedProject - this guy can be manipulated (new packages, classes, etc.)"
+"the resolve message, creates the git repository on disk or attaches to an existing repository in disk"
+resolvedProject := project resolve.		"RwResolvedProject - this guy can be written to disk (write) and/or loaded (load)"
+loadedProjects := resolvedProject
+	write;									
+	load.
+loadedProject := loadedProjects at: 1.	"this guy is the same object as (Rowan projectNamed: projectName)"'.
 	self auditAll.
 	self projectsPresenter refreshFromServer!
+
+issue261DeleteTestProjectPath
+	"Private - support method for issue 261"
+
+	"do not really care if we cannot delete but make a note in the Transcript"
+
+	session
+		executeString: '[RwGsFileUtilities deleteDirectory: ''' , self issue261TestProjectPath
+				, '''] on: Error do:[:ex | Transcript cr; show: ''Could not delete ' , self issue261TestProjectPath
+				, '. Reason: '' ; show: ex printString]. '!
+
+issue261TestProjectName
+	^'Izmir'!
+
+issue261TestProjectPath
+	^'$ROWAN_PROJECTS_HOME/' , self issue261TestProjectName!
 
 issue284methodCreation
 	self methodSourcePresenter value: 'addedMethod  ^5'.
@@ -2065,6 +2099,7 @@ test_instVarWriters
 
 test_issue261
 	"create a loaded project and test the info display"
+
 	| view |
 	self testsIssue: #issue261 withTitle: 'Project tab should display reason for project font styling'.
 	self issue261createTestProject.
@@ -2072,8 +2107,10 @@ test_issue261
 	[self selectServiceNamed: 'Izmir' in: self projectListPresenter.
 	view := self projectsPresenter projectInfoTab view.
 	self assert: (view columns first contentFromRow: (view list at: 3)) equals: 'Izmir'.
-	self assert: (view columns first contentFromRow: (view list at: 7)).	"isDirty"]
-			ensure: [self projectsPresenter basicUnloadProjects: #('Izmir')]!
+	self assert: (view columns first contentFromRow: (view list at: 7))	"isDirty"]
+			ensure: 
+				[self projectsPresenter basicUnloadProjects: #('Izmir').
+				self issue261DeleteTestProjectPath]!
 
 test_loadProjectRemovingClass
 	self selectRowanSample1Test.
@@ -3473,6 +3510,9 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #executeStringInOtherSession:!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #family:ofNodesIn:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue261createTestProject!issue test support!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #issue261DeleteTestProjectPath!issue test support!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #issue261TestProjectName!constants!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #issue261TestProjectPath!constants!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue284methodCreation!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #loadProjectNamed:!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #loginOtherSession!public!support! !
