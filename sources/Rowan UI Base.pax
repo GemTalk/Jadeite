@@ -2069,7 +2069,9 @@ browseClass
 onViewClosed
 	super onViewClosed.
 	BrowserUpdate current logComment: 'Closing SUnit Browser {' , self identityHash printString , '}'.
-	BrowserUpdate current removeEventsTriggeredFor: self!
+	BrowserUpdate current removeEventsTriggeredFor: self.
+	BrowserUpdate current removeEventsTriggeredFor: classListPresenter. 
+	BrowserUpdate current removeEventsTriggeredFor: methodListPresenter!
 
 onViewOpened
 	BrowserUpdate current logComment: 'Opening SUnit Browser {' , self identityHash printString , '}'.
