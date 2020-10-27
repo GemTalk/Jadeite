@@ -1,4 +1,10 @@
-﻿README ===>>>> Go to $ROWAN_PROJECTS_HOME/Rowan/platforms/topaz/3.6.0/newRowanRepositoryRoot V2.tpz for latest version of this script: 
+Update 9/3/20 - Use this topaz script which should be kept update to date by Dale: 
+
+$ROWAN_PROJECTS_HOME/Rowan/platforms/gemstone/topaz/3.6.0/newRowanRepositoryTestsRootV2.tpz
+
+
+
+README ===>>>> Go to $ROWAN_PROJECTS_HOME/Rowan/platforms/topaz/3.6.0/newRowanRepositoryRoot V2.tpz for latest version of this script: 
 
 Prepare for Rowan development: 
 (Rowan projectNamed: 'Rowan') gitRepositoryRoot: '$ROWAN_PROJECTS_HOME/Rowan'.

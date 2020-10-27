@@ -1341,8 +1341,9 @@ queryCommand: aCommandQuery
 			^true].
 	(#(#runClassTests #runAll) includes: command)
 		ifTrue: 
-			[aCommandQuery
-				isEnabled: (self selectedClass ifNil: [false] ifNotNil: [:classService | classService isTestCase]).
+			[aCommandQuery isEnabled: (self selectedClass
+						ifNil: [false]
+						ifNotNil: [:classService | classService isTestCase ifNil: [false]]).
 			^true].
 	(#(#runSelected #runMethodTests #runAndMesureTime #debug) includes: command)
 		ifTrue: 
