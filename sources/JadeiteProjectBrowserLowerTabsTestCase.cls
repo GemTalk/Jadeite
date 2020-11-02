@@ -828,21 +828,29 @@ test_reformatSource
 		saveMethod: 'reformatSourceTemporaryMethod ^#test'
 		in: 'RowanSample1Test'
 		category: 'other'.
+	
 	[self selectMethodNamed: #reformatSourceTemporaryMethod.
 	self assert: self methodSourcePresenter value equals: 'reformatSourceTemporaryMethod ^#test'.
 	self projectsPresenter reformatSource.
 	self assert: self methodSourcePresenter view isModified.
-	self assert: self methodSourcePresenter value
-		equals: 'reformatSourceTemporaryMethod
-  ^ #''test''' replaceCrLfWithLf] ensure:[
-		self projectsPresenter removeMethods: self classListPresenter selections]!
+	self isServerVersion36
+		ifTrue: 
+			[self assert: self methodSourcePresenter value
+				equals: 'reformatSourceTemporaryMethod
+	^ #''test''' replaceCrLfWithLf]
+		ifFalse: 
+			["no tab, server formatting change"
+			self assert: self methodSourcePresenter value
+				equals: 'reformatSourceTemporaryMethod
+^ #''test''' replaceCrLfWithLf]]
+			ensure: [self projectsPresenter removeMethods: self classListPresenter selections]!
 
 test_reformatSourceAppliesOnlyToCurrentBrowser
 	| methodServices |
 	self testsIssue: #issue345 withTitle: 'Jadeite format option (server ready) #345'.
 	self selectRowanSample1Class.
-	self methodSourcePresenter value: nil. 
-	self methodSourcePresenter isModified: false. 
+	self methodSourcePresenter value: nil.
+	self methodSourcePresenter isModified: false.
 	self
 		saveMethod: 'reformatSourceTemporaryMethod ^#test'
 		in: 'RowanSample1'
@@ -860,13 +868,20 @@ test_reformatSourceAppliesOnlyToCurrentBrowser
 		equals: 'reformatSourceTemporaryMethod ^#test'.
 	self projectsPresenter reformatSource.
 	self assert: self methodSourcePresenter view isModified.
-	self assert: self methodSourcePresenter value
-		equals: 'reformatSourceTemporaryMethod
-  ^ #''test''' replaceCrLfWithLf.
+	self isServerVersion36
+		ifTrue: 
+			[self assert: self methodSourcePresenter value
+				equals: 'reformatSourceTemporaryMethod
+	^ #''test''' replaceCrLfWithLf]
+		ifFalse: 
+			["no tab, server formatting change"
+			self assert: self methodSourcePresenter value
+				equals: 'reformatSourceTemporaryMethod
+^ #''test''' replaceCrLfWithLf].
 	self assert: secondPresenter methodSourcePresenter value
 		equals: 'reformatSourceTemporaryMethod ^#test'.
-	self methodSourcePresenter isModified: false. 
-	self projectsPresenter removeMethods: self classListPresenter selections. !
+	self methodSourcePresenter isModified: false.
+	self projectsPresenter removeMethods: self classListPresenter selections!
 
 test_reformatSourceIsUndoable
 	self testsIssue: #issue550
@@ -882,11 +897,23 @@ test_reformatSourceIsUndoable
 		equals: 'reformatSourceTemporaryMethod | abc | abc := #abc. ^abc'.
 	self projectsPresenter reformatSource.
 	self assert: self methodSourcePresenter view isModified.
-	self assert: self methodSourcePresenter value
+
+	self isServerVersion36
+		ifTrue: 
+			[self assert: self methodSourcePresenter value
+		equals: 'reformatSourceTemporaryMethod
+	| abc |
+	abc := #''abc''.
+	^ abc' replaceCrLfWithLf.]
+		ifFalse: 
+			["no tab, server formatting change in 3.6"
+				self assert: self methodSourcePresenter value
 		equals: 'reformatSourceTemporaryMethod
   | abc |
   abc := #''abc''.
-  ^ abc' replaceCrLfWithLf.
+  ^ abc' replaceCrLfWithLf.].
+
+
 	self methodSourcePresenter view undo.
 	self assert: self methodSourcePresenter value
 		equals: 'reformatSourceTemporaryMethod | abc | abc := #abc. ^abc']

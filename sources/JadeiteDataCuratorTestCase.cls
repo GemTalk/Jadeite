@@ -19,6 +19,7 @@ setUp
 	self setupProjectBrowser!
 
 tearDown
+	GciSession current userID: nil.	"ensure we logout and back in"
 	self logoutThenLoginAs: 'SystemUser'.
 	self assert: jadeiteShell userIDPresenter value equals: 'SystemUser'.
 	self assert: GciSession current userID equals: 'SystemUser'.
@@ -180,27 +181,6 @@ test_dontOverrideExistingAccessorMethods
 	self assert: self methodSourcePresenter value equals: 'abc: foo ^123']
 			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
-test_findClassNotInProject
-	"we no longer open the old dictionary browser"
-
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'Object').
-	self assert: self classListPresenter selection name equals: 'Object'.
-	self assert: self dictionaryPresenter selection name equals: 'Globals'.
-	self assert: self projectListPresenter selection name equals: RowanProjectService noneProject name.
-	self assert: self projectsPresenter isNoneProjectSelected.
-	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'ExecBlock').
-	self assert: self classListPresenter selection name equals: 'ExecBlock'.
-	self assert: self dictionaryPresenter selection name equals: 'Globals'.
-	self assert: self projectListPresenter selection name equals: RowanProjectService noneProject name.
-	self assert: self projectsPresenter isNoneProjectSelected.
-	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'CypressClassDefinition').
-	self assert: self classListPresenter selection name equals: 'CypressClassDefinition'.
-	self assert: self classListPresenter selection definedPackageName equals: 'Cypress-Definitions'.
-	self assert: self packageListPresenter selection name equals: 'Cypress-Definitions'.
-	self assert: self projectListPresenter selection name equals: 'Cypress'.
-	self deny: self projectsPresenter isNoneProjectSelected!
-
 test_loginOk
 	self assert: jadeiteShell userIDPresenter value equals: 'DataCurator'.
 	self assert: GciSession current userID equals: 'DataCurator'.
@@ -222,7 +202,6 @@ test_transcriptWindowPosition
 !JadeiteDataCuratorTestCase categoriesFor: #test_dictionaryWithoutClassHasClassTemplate!public!test issue 217! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_dontDuplicateBreakpoints!public!test breakpoints! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_dontOverrideExistingAccessorMethods!public!test variable tab!tests! !
-!JadeiteDataCuratorTestCase categoriesFor: #test_findClassNotInProject!public!test issue 217! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_loginOk!public!tests! !
 !JadeiteDataCuratorTestCase categoriesFor: #test_transcriptWindowPosition!public!tests! !
 

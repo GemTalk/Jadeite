@@ -287,7 +287,7 @@ Processor allProcesses includes: gsProcess'.
 test_browseMenuOptionEnablement
 	"Don't enable Browse methods if the class is not resolvable"
 
-	| contextMenu browseMenuItems |
+	| contextMenu browseMenuItems frame |
 	self testsIssue: #issue774
 		withTitle: 'Disable Browse* debugger frame list menu options if method not visible'.
 	session userID = 'DataCurator' ifFalse: [^self].	"will fail unless run as DataCurator"
@@ -304,7 +304,10 @@ test_browseMenuOptionEnablement
 						source: debugger frameListPresenter view.
 			debugger queryCommand: query.
 			self assert: query isEnabled].
-	debugger frameListPresenter selectionByIndex: 6.	"RowanAnsweringService frame"
+	frame := debugger frameListPresenter list
+				detect: [:frameString | '*RowanAnsweringService*' match: frameString]
+				ifNone: [].
+	debugger frameListPresenter selectionByIndex: (debugger frameListPresenter list indexOf: frame).
 	browseMenuItems do: 
 			[:theItem |
 			| query |

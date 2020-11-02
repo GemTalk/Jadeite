@@ -7,6 +7,7 @@ package paxVersion: 1;
 package classNames
 	add: #JadeiteAbstractTestCase;
 	add: #JadeiteBreakpointBrowserTestCase;
+	add: #JadeiteBrokenTests;
 	add: #JadeiteChangesBrowserTestCase;
 	add: #JadeiteDataCuratorTestCase;
 	add: #JadeiteDebuggerDataCuratorTestCase;
@@ -44,6 +45,7 @@ package methodNames
 	add: #DifferencesPresenter -> #beforePresenter;
 	add: #DifferencesPresenter -> #beforeTitlePresenter;
 	add: #EventMessageSequence -> #messages;
+	add: #GciSession -> #userID:;
 	add: #JadeInspector -> #documentPresenter;
 	add: #JadeiteChangesBrowser -> #diffsPresenter;
 	add: #JadeiteChangesBrowser -> #operationListPresenter;
@@ -264,6 +266,11 @@ JadeiteProjectBrowserDictionaryDataCuratorTestCase subclass: #JadeiteProjectBrow
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+TestCase2 subclass: #JadeiteBrokenTests
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 TestResource subclass: #JadeiteTestResource
 	instanceVariableNames: 'projectsBrowser jadeiteShell'
 	classVariableNames: ''
@@ -319,6 +326,14 @@ messages
 
 	^messages! !
 !EventMessageSequence categoriesFor: #messages!private! !
+
+!GciSession methodsFor!
+
+userID: anObject
+
+	^userID := anObject
+! !
+!GciSession categoriesFor: #userID:!public! !
 
 !JadeInspector methodsFor!
 

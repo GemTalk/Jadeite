@@ -230,7 +230,9 @@ loginWithRetry: loginShell
 					do: [:ex | (Delay forMilliseconds: 100) wait]]!
 
 logoutThenLoginAs: userName
-	"closing the transcript will logout the session. don't commit"
+	"closing the transcript will logout the session. don't commit.
+	If the user name hasn't changed, we don't perform the logout. This saves time in the tests."
+
 	userName ifNil: [^self].
 	userName = GciSession current userID ifTrue: [^self].
 	self closeTranscriptAndLogout.

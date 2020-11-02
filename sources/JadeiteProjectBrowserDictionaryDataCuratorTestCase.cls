@@ -68,7 +68,7 @@ test_addSubclassNoSuperclassPackage
 	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
 	self projectsPresenter selectClassNamed: 'Dictionary'.
 	self assert: self projectsPresenter selectedClass packageName
-		equals: RowanService notRowanizedPackageName.
+		equals: 'Filein1C'.
 	self projectsPresenter addSubclass.
 	
 	[self assert: self projectsPresenter classDefinitionPresenter view isModified.
@@ -90,7 +90,7 @@ test_addSubclassNoSuperclassPackageGoesToNewClass
 	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
 	self projectsPresenter selectClassNamed: 'Dictionary'.
 	self assert: self projectsPresenter selectedClass packageName
-		equals: RowanService notRowanizedPackageName.
+		equals: 'Filein1C'.
 	self projectsPresenter addSubclass.
 	self assert: self projectsPresenter classDefinitionPresenter view isModified.
 	self assert: self projectsPresenter classDefinitionPresenter value
@@ -251,27 +251,6 @@ test_dictionaryWithoutClassHasClassTemplate
 	self assertIsNil: self projectsPresenter selectedClass.
 	self rowanFixMe.
 	self assert: self projectsPresenter classDefinitionPresenter value notEmpty	"not sure what this should be yet"!
-
-test_findClassNotInProject
-	"we no longer open the old dictionary browser"
-
-	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'Object').
-	self assert: self classListPresenter selection name equals: 'Object'.
-	self assert: self dictionaryPresenter selection name equals: 'Globals'.
-	self assert: self projectListPresenter selection name equals: RowanProjectService noneProject name.
-	self assert: self projectsPresenter isNoneProjectSelected.
-	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'ExecBlock').
-	self assert: self classListPresenter selection name equals: 'ExecBlock'.
-	self assert: self dictionaryPresenter selection name equals: 'Globals'.
-	self assert: self projectListPresenter selection name equals: RowanProjectService noneProject name.
-	self assert: self projectsPresenter isNoneProjectSelected.
-	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'CypressClassDefinition').
-	self assert: self classListPresenter selection name equals: 'CypressClassDefinition'.
-	self assert: self classListPresenter selection definedPackageName equals: 'Cypress-Definitions'.
-	self assert: self packageListPresenter selection name equals: 'Cypress-Definitions'.
-	self assert: self projectListPresenter selection name equals: 'Cypress'.
-	self deny: self projectsPresenter isNoneProjectSelected!
 
 test_firstClickDictionaries
 	"make sure the first click on the (NONE) project shows the dictionaries"
@@ -841,7 +820,6 @@ test_textTabSelectedWithProjectChange
 !JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_dictionarySelectionChangesTab!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_dictionarySelectionIndependentInTab!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_dictionaryWithoutClassHasClassTemplate!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_findClassNotInProject!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_firstClickDictionaries!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_fullHierarchyExpansion!public!test class hierarchy! !
 !JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_globalRemove!public!test issue 217! !

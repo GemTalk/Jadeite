@@ -24,6 +24,11 @@ cloneRowanSample1
 							with: true).
 			JadePresenter issueCommands: (Array with: service) session: GciSession current]!
 
+closeTranscript: aTranscript
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.	"closing the transcript will logout the session. don't commit"
+	[aTranscript view close] ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 disableInteractionsWhile: block
 	"interactions like confirm: and notify: are enabled by 
 	default on all service commands. Disable for the duration
@@ -99,12 +104,12 @@ loginWithRetry: loginShell
 					do: [:ex | (Delay forMilliseconds: 100) wait]]!
 
 logoutThenLoginAs: userName
+	"closing the transcript will logout the session. don't commit"
+
 	userName ifNil: [^self].
 	GciSession current ifNil: [^self].
 	userName = GciSession current userID ifTrue: [^self].
-	TestMessageBox enableJadeiteTestMessageBox.
-	TestMessageBox plannedResult: #no.	"closing the transcript will logout the session. don't commit"
-	[self transcript view close] ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self closeTranscript: self transcript.
 	JadeiteLoginShell allInstances do: [:shell | shell view close].	"should save to the remote JadeDefaultConnection.gss file"
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteShell userIDPresenter value: userName.
@@ -176,7 +181,21 @@ transcript
 	^self transcriptForCurrentSession!
 
 transcriptForCurrentSession
-	^JadeiteTranscript allInstances detect: [:tran | tran gciSession == GciSession current] ifNone: []!
+	| transcript |
+	transcript := JadeiteTranscript allInstances
+				detect: [:aTranscript | aTranscript gciSession == GciSession current]
+				ifNone: [].
+	transcript
+		ifNil: 
+			["somehow we have a transcript disconnected from the current session or no session at all. 
+				This might have happened when a test failed in a bad way. Reestablish
+				a valid session and transcript"
+			JadeiteTranscript allInstances do: 
+					[:aTranscript |
+					aTranscript gciSession ifNotNil: [:sess | sess logout].
+					self closeTranscript: aTranscript].
+			GciSession current ifNotNil: [:sess | sess logout]].
+	^transcript!
 
 unloadSampleProject
 	self transcript projectListPresenter primaryPresenter list
@@ -185,6 +204,7 @@ unloadSampleProject
 	self transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName).
 	self session commit! !
 !JadeiteTestResource categoriesFor: #cloneRowanSample1!private!setup teardown! !
+!JadeiteTestResource categoriesFor: #closeTranscript:!private!setup teardown!support! !
 !JadeiteTestResource categoriesFor: #disableInteractionsWhile:!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #ensureRowanSample1Loaded!private!setup teardown! !
 !JadeiteTestResource categoriesFor: #hasValidSession!public!testing! !

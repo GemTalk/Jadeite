@@ -12,6 +12,18 @@ It''s recommended to run this set of tests with a fresh login to avoid counting 
 !JadeiteDebuggerTestCase categoriesForClass!SUnit! !
 !JadeiteDebuggerTestCase methodsFor!
 
+indexOfVariableNamed: aSymbol
+	| variable |
+	variable := debugger variableListPresenter list detect: [:var | aSymbol = var key value] ifNone: [].
+	^debugger variableListPresenter list indexOf: variable!
+
+selectVariableNamed: aSymbol
+	| variable |
+	variable := debugger variableListPresenter list detect: [:var | aSymbol = var key value] ifNone: [].
+	debugger variableListPresenter
+		selectionByIndex: (debugger variableListPresenter list indexOf: variable).
+	self assert: debugger variableListPresenter selection _key equals: aSymbol!
+
 setUp
 	user := 'SystemUser'.
 	super setUp.
@@ -81,11 +93,9 @@ test_adHocExecutionEvaluatesTemp
 		category: 'tests'.
 	
 	[self openDebuggerOn: 'RowanSample1Test new testAdHocExecutionWith: 1 '.
-	debugger variableListPresenter selectionByIndex: 3.
-	self assert: debugger variableListPresenter selection _key equals: #arg1.
+	self selectVariableNamed: #arg1.
 	self assert: debugger variableListPresenter selection value equals: '1'.
-	debugger variableListPresenter selectionByIndex: 4.
-	self assert: debugger variableListPresenter selection _key equals: #temp1.
+	self selectVariableNamed: #temp1.
 	self assert: debugger variableListPresenter selection value equals: '1'.
 	debugger methodSourcePresenter documentPresenter selectionRange: (44 to: 57).
 	self assert: debugger methodSourcePresenter documentPresenter selection equals: 'temp1 := arg1.'.
@@ -125,8 +135,7 @@ test_adHocExecutionUpdatesVariablesList
 		category: 'tests'.
 	
 	[self openDebuggerOn: 'RowanSample1Test new testAdHocExecutionWith: 1 '.
-	debugger variableListPresenter selectionByIndex: 4.
-	self assert: debugger variableListPresenter selection _key equals: #temp1.
+	self selectVariableNamed: #temp1. 
 	self assert: debugger variableListPresenter selection value equals: '1'.
 	debugger methodSourcePresenter documentPresenter selectionRange: (44 to: 57).
 	self assert: debugger methodSourcePresenter documentPresenter selection equals: 'temp1 := arg1.'.
@@ -134,8 +143,7 @@ test_adHocExecutionUpdatesVariablesList
 	debugger methodSourcePresenter documentPresenter selectionRange: (44 to: 53).
 	debugger methodSourcePresenter documentPresenter view setFocus.
 	debugger methodSourcePresenter executeSelectionOrLine.
-	debugger variableListPresenter selectionByIndex: 4.
-	self assert: debugger variableListPresenter selection _key equals: #temp1.
+	self selectVariableNamed: #temp1. 
 	self assert: debugger variableListPresenter selection value equals: '5']
 			ensure: [self removeMethodNamed: #testAdHocExecutionWith:]!
 
@@ -154,13 +162,15 @@ test_adHocVariablePaneDisplay
 	self debuggerDo: [debugger resumeProcess]!
 
 test_adHocVariablePaneExecute
+	| index |
 	self openDebuggerOn: '| abc | abc := 123. self halt. abc := 234'.
-	self assert: (debugger variableListPresenter list at: 2) _key equals: #abc.
-	self assert: (debugger variableListPresenter list at: 2) value equals: '123'.
+	index := self indexOfVariableNamed:  #abc.
+	self assert: (debugger variableListPresenter list at: index) _key equals: #abc.
+	self assert: (debugger variableListPresenter list at: index) value equals: '123'.
 	self assert: debugger variableDataPresenter value equals: String new.
 	debugger variableDataPresenter value: 'abc := 567'.
 	self debuggerDo: [debugger jadeExecute].
-	self assert: (debugger variableListPresenter list at: 2) value equals: '567'.
+	self assert: (debugger variableListPresenter list at: index) value equals: '567'.
 	self debuggerDo: [debugger resumeProcess]!
 
 test_adHocVariablePaneInspect
@@ -319,14 +329,14 @@ test_browseClassVariablePane
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].	"on with:"
 	self debuggerDo: [debugger stepInto].
-	debugger variableListPresenter selectionByIndex: 1.
+	self selectVariableNamed: #receiver.
 	self assert: debugger variableDataPresenter value equals: 'OrderedCollection'.
 	projectsBrowser := debugger browseObjectClass.
 	
 	[self assert: (projectsBrowser isKindOf: JadeiteBrowser).
 	self assert: projectsBrowser currentCard classListPresenter selection name equals: 'OrderedCollection'	"receiver is OrderedCollection class"]
 			ensure: [projectsBrowser view close].
-	debugger variableListPresenter selectionByIndex: 2.
+	self selectVariableNamed: #aValue.
 	self assert: debugger variableDataPresenter value equals: 'aRowanClassService:nil'.
 	projectsBrowser := debugger browseObjectClass.
 	
@@ -1100,7 +1110,7 @@ test_inspectedDebuggerObjectHeld
 		in: 'RowanSample1'
 		category: 'other'.
 	self openDebuggerOn: 'RowanSample1 new issue385'.
-	self debuggerDo: [debugger variableListPresenter selectionByIndex: 2].
+	self debuggerDo: [self selectVariableNamed: #abc ].
 	self debuggerDo: [inspector := debugger inspectVariable].
 	
 	[self assert: (session executeString: 'Object = Object').
@@ -1740,17 +1750,13 @@ abc'.
 	self assert: debugger documentPresenter view selection equals: 'with:'.
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepInto].
+	self debuggerDo: [debugger stepThrough].
 	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepInto].
 	self assert: debugger documentPresenter view selection equals: 'with:'.	"inner #with:with:with:"
 	debugger frameListPresenter selectionByIndex: 3.
 	self debuggerDo: [debugger stepOut].
 	self assert: ('Executed Code*' match: debugger frameListPresenter selection).	"on the top frame so should step one frame up"
-	self assert: debugger documentPresenter view selection equals: '[:'!
+	self assert: debugger documentPresenter view selection equals: 'c' "on last 'abc'"!
 
 test_stepOutSelectedFrame2
 	self
@@ -1772,27 +1778,17 @@ abc'.
 	self assert: debugger documentPresenter view selection equals: 'with:'.
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepInto].
-	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepInto].
+	self debuggerDo: [debugger stepThrough].
+	self debuggerDo: [debugger stepThrough].
 	self assert: debugger documentPresenter view selection equals: 'with:'.	"inner #with:with:with:"
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepInto].
-	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepInto].
-	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepThrough].
 	self assert: debugger documentPresenter view selection equals: 'size'.	"innermost `size`"
 	debugger frameListPresenter selectionByIndex: 5.	"Executed code `home frame`"
 	self debuggerDo: [debugger stepOut].
 	self assert: ('Executed Code*' match: debugger frameListPresenter selection).	"on the top frame so should step one frame up"
-	self assert: debugger documentPresenter view selection equals: '[:'!
+	self assert: debugger documentPresenter view selection equals: 'c' "last character of 'abc'"!
 
 test_stepOutTopFrame
 	self
@@ -1814,17 +1810,13 @@ abc'.
 	self assert: debugger documentPresenter view selection equals: 'with:'.
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepInto].
-	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepInto].
+	self debuggerDo: [debugger stepThrough].
+	self debuggerDo: [debugger stepThrough].
 	self assert: debugger documentPresenter view selection equals: 'with:'.	"inner #with:with:with:"
 	self assert: debugger frameListPresenter selectionByIndex equals: 1.
 	self debuggerDo: [debugger stepOut].
-	self assert: debugger frameListPresenter selection equals: 'Array (Collection) >> do: @6 line 9'.	"on the top frame so should step one frame up"
-	self assert: debugger documentPresenter view selection equals: 'to:'.
+	self assert: debugger frameListPresenter selection equals: 'Array (Collection) >> do: @2 line 9'.	"on the top frame so should step one frame up"
+	self assert: debugger documentPresenter view selection equals: 'size'.
 	self debuggerDo: [debugger resumeProcess]!
 
 test_stepThrough
@@ -1843,10 +1835,10 @@ array'.
 	self assert: debugger documentPresenter view selection equals: 'do:'.
 	self debuggerDo: [debugger stepThrough].
 	self assert: debugger documentPresenter view selection equals: ', '.	"inside block"
-	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @2 line 6'.
+	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @11 line 6'.
 	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: ':='.
-	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @3 line 6'.
+	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @12 line 6'.
 	self debuggerDo: [debugger resumeProcess]!
 
 test_terminateDoesNotWalkback
@@ -2230,7 +2222,7 @@ x yourself';
 		debuggerDo: [debugger stepOver];
 		assert: (debugger documentPresenter view selection) equals: 'value'; 
 		debuggerDo: [debugger stepInto];
-		assert: (debugger documentPresenter view selection) equals: ':=';
+		assert: (debugger documentPresenter view selection) equals: 'x';
 		debuggerDo: [debugger stepOver];
 		debuggerDo: [debugger stepOut];
 		assert: (debugger documentPresenter view selection) equals: 'yourself';
@@ -2272,7 +2264,7 @@ x yourself';
 		debuggerDo: [debugger stepOver];
 		debuggerDo: [debugger stepOver];
 		debuggerDo: [debugger stepOver];
-		assert: (debugger variableListPresenter selectionByIndex: 2) notNil;
+		assert: (self selectVariableNamed: #x ) notNil;
 		debuggerDo: [projectsBrowser := debugger browseObjectClass];
 		assert: projectsBrowser isKindOf: JadeiteBrowser.
 	
@@ -2399,6 +2391,8 @@ x halt.
 		halt;"
 		yourself.
 ! !
+!JadeiteDebuggerTestCase categoriesFor: #indexOfVariableNamed:!public!support! !
+!JadeiteDebuggerTestCase categoriesFor: #selectVariableNamed:!public!support! !
 !JadeiteDebuggerTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteDebuggerTestCase categoriesFor: #test_additionalAccelerators!public!test menus! !
 !JadeiteDebuggerTestCase categoriesFor: #test_adHocDebug!public!test ad hoc execution! !

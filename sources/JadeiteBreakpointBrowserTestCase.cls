@@ -76,10 +76,8 @@ test_breakpointAdditionsUpdateAutomatically
 		selections: (Array with: treeModel rootNodes first children first object).
 	self assert: treeModel rootNodes first children first object breakpointDisplayString
 		equals: 'test2 (1)'.
-	self assert: breakpointBrowser methodSourcePresenter value
-		equals: 'test2
-
-	self assert: RowanSample1 bar = ''bar'''.
+	self assert: ('test2*self assert: RowanSample1 bar = ''bar'''
+				match: breakpointBrowser methodSourcePresenter value).
 	indicators := breakpointBrowser methodSourcePresenter documentPresenter view indicators.
 	self assert: indicators size equals: 5.
 	self assert: (indicators at: 1) styleName equals: #stepPoint.
@@ -129,10 +127,7 @@ test_breakpointRemovalsUpdateAutomatically
 		selections: (Array with: treeModel rootNodes first children first object).
 	self assert: treeModel rootNodes first children first object breakpointDisplayString
 		equals: 'test2 (2)'.
-	self assert: breakpointBrowser methodSourcePresenter value
-		equals: 'test2
-
-	self assert: RowanSample1 bar = ''bar'''.
+	self assert: ('test2*self assert: RowanSample1 bar = ''bar''' match: breakpointBrowser methodSourcePresenter value). 
 	indicators := breakpointBrowser methodSourcePresenter documentPresenter view indicators.
 	self assert: indicators size equals: 5.
 	self assert: (indicators at: 1) styleName equals: #breakPoint.
@@ -260,10 +255,7 @@ test_showsBreakpoints
 		selections: (Array with: treeModel rootNodes first children first object).
 	self assert: treeModel rootNodes first children first object breakpointDisplayString
 		equals: 'test2 (1)'.
-	self assert: breakpointBrowser methodSourcePresenter value
-		equals: 'test2
-
-	self assert: RowanSample1 bar = ''bar'''.
+	self assert: ('test2*self assert: RowanSample1 bar = ''bar''' match: breakpointBrowser methodSourcePresenter value).
 	indicators := breakpointBrowser methodSourcePresenter documentPresenter view indicators.
 	self assert: indicators size equals: 5.
 	self assert: (indicators at: 1) styleName equals: #stepPoint.
