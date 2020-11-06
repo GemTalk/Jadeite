@@ -1476,9 +1476,9 @@ registerPresentersForUpdates
 	BrowserUpdate current register: classListPresenter 		selector: #updatedClass:browser: browser: self.
 	BrowserUpdate current register: classDefinitionPresenter 	selector: #updatedClassDefinition:browser: browser: self.
 	BrowserUpdate current register: classListPresenter 		selector: #removed:.
-	BrowserUpdate current register: packageListPresenter 	selector: #projectPackagesUpdate:browser: browser: self.
-	BrowserUpdate current register: packageListPresenter 	selector: #removed:.
-	BrowserUpdate current register: packageListPresenter 	selector: #packageUpdate:.
+	BrowserUpdate current register: packageListPresenter 		selector: #projectPackagesUpdate:browser: browser: self.
+	BrowserUpdate current register: packageListPresenter 		selector: #removed:.
+	BrowserUpdate current register: packageListPresenter 		selector: #packageUpdate:.
 	BrowserUpdate current register: categoryListPresenter 	selector: #filterUpdate:browser: browser: self.
 	BrowserUpdate current register: classHierarchyPresenter 	selector: #classHierarchyUpdate:browser: browser: self.
 	BrowserUpdate current register: classListPresenter 		selector: #updatedClass:browser: browser: self.
