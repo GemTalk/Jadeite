@@ -57,6 +57,8 @@ package classNames
 	add: #JadeiteSmalltalkWorkspace;
 	add: #JadeiteSUnitBrowser;
 	add: #JadeiteTranscript;
+	add: #JadeiteTreePresenter;
+	add: #JadeiteTreeView;
 	add: #PackageMethodListPresenter;
 	add: #Rowan;
 	add: #RowanClassCategoryUpdate;
@@ -775,6 +777,11 @@ RowanPresenter subclass: #RowanPackagePresenter
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+TreePresenter subclass: #JadeiteTreePresenter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 JadeLoginShell subclass: #JadeiteLoginShell
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -962,6 +969,11 @@ RowanVariableService subclass: #RowanDisplayLabelVariableService
 	classInstanceVariableNames: ''!
 ScintillaStyler subclass: #DiffsScintillaStyler
 	instanceVariableNames: 'diffs'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+TreeView subclass: #JadeiteTreeView
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
