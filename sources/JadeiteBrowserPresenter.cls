@@ -317,6 +317,12 @@ comparisonPresenter
 
 	^comparisonPresenter!
 
+componentListPresenter
+	^componentListPresenter!
+
+componentListPresenter: anObject
+	componentListPresenter := anObject!
+
 contextObject
 	^self selectedClass ifNil: [^gciSession oopNil value] ifNotNil: [:classService | classService oop]!
 
@@ -370,6 +376,10 @@ createSchematicWiring
 	classHierarchyPresenter
 		when: #selectionChanged
 		send: #updateTabLabel
+		to: self.
+	componentListPresenter
+		when: #selectionChanged
+		send: #updateComponentPackages
 		to: self!
 
 createSchematicWiringForMethodSource
@@ -945,7 +955,10 @@ registerPresentersForUpdates
 		register: classHierarchyPresenter
 			selector: #renamedClassInHierarchy:browser:
 			browser: self;
-		register: classListPresenter selector: #addCachedSymbols:; 
+		register: classListPresenter selector: #addCachedSymbols:;
+		register: packageListPresenter
+			selector: #componentPackagesUpdate:browser:
+			browser: self;
 		register: componentListPresenter
 			selector: #componentsUpdate:browser:
 			browser: self!
@@ -1196,6 +1209,12 @@ updateClasses
 		ifTrue: [self updateServices: dictionaryPresenter selections]
 		ifFalse: [self updateServices: packageListPresenter selections]!
 
+updateComponentPackages
+	packageListPresenter clear.
+	componentListPresenter selections isEmpty ifTrue: [^self].
+	self updateServices: componentListPresenter selections.
+	self sundryCleanup!
+
 updateDictionaries
 	| browserService |
 	browserService := RowanBrowserService new.
@@ -1365,6 +1384,8 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #classCommentChanged!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #classesMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #comparisonPresenter!accessing!public! !
+!JadeiteBrowserPresenter categoriesFor: #componentListPresenter!accessing!private! !
+!JadeiteBrowserPresenter categoriesFor: #componentListPresenter:!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #contextObject!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
 !JadeiteBrowserPresenter categoriesFor: #createListViewFor:!private! !
@@ -1468,6 +1489,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #updateAutoCommit!public!register presenters!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateClass:!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateClasses!event handlers!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #updateComponentPackages!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateDictionaries!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateDictionary!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateGlobalsTab!private!tabs! !

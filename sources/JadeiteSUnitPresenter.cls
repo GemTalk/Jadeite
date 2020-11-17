@@ -150,7 +150,7 @@ refresh
 	packageSelections := packageListPresenter selections.
 	classSelections := classListPresenter selections.
 	methodSelections := methodListPresenter selections.
-	self updatePackages.
+	self updateProjectPackages.
 	packageListPresenter selections: (packageListPresenter list
 				select: [:packageService | packageSelections includes: packageService]).
 	classListPresenter selections: (classListPresenter list

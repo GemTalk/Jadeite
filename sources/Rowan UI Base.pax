@@ -181,7 +181,7 @@ package methodNames
 	add: #JadeiteSUnitPresenter -> #onViewClosed;
 	add: #JadeiteSUnitPresenter -> #onViewOpened;
 	add: #JadeiteSUnitPresenter -> #registerPresentersForUpdates;
-	add: #JadeiteSUnitPresenter -> #updatePackages;
+	add: #JadeiteSUnitPresenter -> #updateProjectPackages;
 	add: #JadeLoginShell -> #aboutJadeite;
 	add: #JadeMethodListPresenter -> #newProjectsBrowser;
 	add: #JadeMethodListPresenter -> #newWorkspace;
@@ -2095,7 +2095,7 @@ onViewOpened
 	(self view viewNamed: 'statusTestsClasses') model: status.
 	(self view viewNamed: 'statusTestCases') model: status.
 	(self view viewNamed: 'statusTestCounter') model: status.
-	self updatePackages.
+	self updateProjectPackages.
 	methodColumns := methodListPresenter view columnsList.	"columns will be selectively displayed based on class selections"
 	methodListPresenter view columnsList: (Array with: methodColumns second)!
 
@@ -2118,17 +2118,17 @@ registerPresentersForUpdates
 		selector: #testResultUpdate:browser:
 		browser: self!
 
-updatePackages
+updateProjectPackages
 	| browserService |
 	browserService := RowanBrowserService new.
 	browserService command: #packagesWithTests.
 	self issueCommand: (Array with: browserService).
-	testCounter at: 1 put: browserService testCount. ! !
+	testCounter at: 1 put: browserService testCount! !
 !JadeiteSUnitPresenter categoriesFor: #browseClass!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #onViewOpened!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
-!JadeiteSUnitPresenter categoriesFor: #updatePackages!event handlers!public! !
+!JadeiteSUnitPresenter categoriesFor: #updateProjectPackages!event handlers!public! !
 
 !JadeLoginShell methodsFor!
 

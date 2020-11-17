@@ -237,13 +237,13 @@ unloadProjects
 		caption: 'UNLOAD PROJECTS WARNING!!') ifFalse: [^self].
 	self basicUnloadProjects: projectNames!
 
-updatePackages
-	"no op for project list"
+updateProject
+	"no project tab to update" 
 
 	!
 
-updateProject
-	"no project tab to update" 
+updateProjectPackages
+	"no op for project list"
 
 	!
 
@@ -281,7 +281,7 @@ writeProject
 !JadeiteProjectListPresenter categoriesFor: #refreshProjects!public! !
 !JadeiteProjectListPresenter categoriesFor: #registerPresentersForUpdates!private!register presenters! !
 !JadeiteProjectListPresenter categoriesFor: #unloadProjects!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #updatePackages!public!updating! !
 !JadeiteProjectListPresenter categoriesFor: #updateProject!public!updating! !
+!JadeiteProjectListPresenter categoriesFor: #updateProjectPackages!public!updating! !
 !JadeiteProjectListPresenter categoriesFor: #writeProject!menu handlers!public! !
 

@@ -2082,12 +2082,6 @@ updatePackageInfo
 		isModified: false.
 	classDefinitionPresenter ensureVisible!
 
-updatePackages
-	packageListPresenter clear.
-	projectListPresenter selections isEmpty ifTrue: [^self].
-	self updateServices: projectListPresenter selections.
-	self sundryCleanup!
-
 updatePresenter: presenter selections: selections
 	| newSelections |
 	newSelections := OrderedCollection new.
@@ -2098,7 +2092,7 @@ updatePresenter: presenter selections: selections
 	presenter selections: newSelections!
 
 updateProject
-	self updatePackages.
+	self updateProjectPackages.
 	self updateProjectInfo.
 	projectInfoTab ensureVisible.
 	self sundryCleanup!
@@ -2121,6 +2115,12 @@ updateProjectInfo
 			array nextPut: (Array with: service with: 'projectUrl').
 			service == services last ifFalse: [array nextPut: (Array with: RowanProjectService new with: nil)]].
 	projectInfoTab list: array contents!
+
+updateProjectPackages
+	packageListPresenter clear.
+	projectListPresenter selections isEmpty ifTrue: [^self].
+	self updateServices: projectListPresenter selections.
+	self sundryCleanup!
 
 updateProjects
 	| browserService |
@@ -2367,10 +2367,10 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateMultiMethodComparison!event handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updatePackage!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updatePackageInfo!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updatePackages!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updatePresenter:selections:!event handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProject!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProjectInfo!event handlers!public!updating! !
+!JadeiteProjectsBrowserPresenter categoriesFor: #updateProjectPackages!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProjects!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSelectionsForUpdate:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSingleMethodSource!event handlers support!private! !
