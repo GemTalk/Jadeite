@@ -304,6 +304,7 @@ package methodNames
 	add: #JadeTextDocument -> #aboutJadeite;
 	add: #JadeTextDocument -> #executeSelectionOrLine:;
 	add: #JadeTextDocument -> #issueCommand:;
+	add: #JadeTextDocument -> #issueCommands:;
 	add: #JadeTextDocument -> #jadeBrowseTests;
 	add: #JadeTextDocument -> #jadeExecuteAndDisplay:;
 	add: #JadeTextDocument -> #jadeExecuteAndDisplay:view:;
@@ -4431,17 +4432,20 @@ executeSelectionOrLine: contextObject
 	oop := (contextObject isKindOf: ExternalInteger)
 				ifTrue: [contextObject value]
 				ifFalse: [contextObject].	"services wants a local special as a context"
-	oop ifNil: [oop := 20]. 
+	oop ifNil: [oop := 20].
 	answeringService := RowanAnsweringService new.
 	answeringService
 		command: #exec:context:;
 		commandArgs: (Array with: self currentSelectionOrLine with: oop).
-	self issueCommand: (Array with: answeringService).
+	self issueCommand: answeringService.
 	answer := answeringService answer.
 	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
 	^answer!
 
-issueCommand: services
+issueCommand: service
+	^self issueCommands: (Array with: service)!
+
+issueCommands: services
 	^BrowserUpdate current issueCommands: services session: self gciSession!
 
 jadeBrowseTests
@@ -4528,6 +4532,7 @@ updateServices: services
 !JadeTextDocument categoriesFor: #aboutJadeite!private! !
 !JadeTextDocument categoriesFor: #executeSelectionOrLine:!Jade!private! !
 !JadeTextDocument categoriesFor: #issueCommand:!public!services! !
+!JadeTextDocument categoriesFor: #issueCommands:!public!services! !
 !JadeTextDocument categoriesFor: #jadeBrowseTests!Jade!public! !
 !JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:!Jade!private! !
 !JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:view:!Jade!private! !

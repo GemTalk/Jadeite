@@ -232,7 +232,8 @@ getProcessList
 
 	BrowserUpdate current logComment: 'Update debugger service'.
 	debuggerService := RowanDebuggerService onProcess: gsProcess.
-	self updateServices: (Array with: debuggerService).
+	debuggerService command: #updateProcesses.
+	self issueCommand: debuggerService.
 	BrowserUpdate current logComment: 'Update debugger service complete'.
 	BrowserUpdate current
 		logComment: 'debuggerService processes: ' , debuggerService processes printString.
@@ -241,7 +242,7 @@ getProcessList
 				detect: [:processService | processService oop = gsProcess oop]
 				ifNone: [gsProcess	"it should be found though"].
 	debuggerService processes notEmpty
-		ifTrue: [processListPresenter selection: debuggerService processes first].!
+		ifTrue: [processListPresenter selection: debuggerService processes first]!
 
 homeFrame
 	^frameListPresenter list detect: [:str | str = (self homeFrameOf: frame) printString]!
