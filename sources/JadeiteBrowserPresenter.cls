@@ -513,6 +513,13 @@ expandFullAt: classService
 expandFullHierarchy
 	self expandFullAt: self selectedClass!
 
+findRemovedServices
+	| browserService |
+	browserService := RowanBrowserService new
+				command: #findRemovedServices:;
+				commandArgs: (Array with: BrowserUpdate current activeServices asArray).
+	BrowserUpdate current issueCommands: (Array with: browserService) session: self gciSession!
+
 globalsMenu
 	^Menu fromStrings: self globalsMenuStrings!
 
@@ -587,6 +594,10 @@ jadeInspect
 	inspector := JadeiteInspector new gciSession: gciSession.
 	^inspector evaluateSelectedTextIn: methodSourcePresenter
 		thenInspectInContext: self inspectorContextObject!
+
+loadProjects
+	self loadProjectsFrom: self.
+	self findRemovedServices!
 
 makeSameSelectionsIn: newPresenter as: previousPresenter
 	| projectService packageService dictionaryService classService isMeta methodService |
@@ -1405,6 +1416,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #editSaveMethod:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #expandFullAt:!menu handlers support!private!updating! !
 !JadeiteBrowserPresenter categoriesFor: #expandFullHierarchy!menu handlers!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #findRemovedServices!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #globalsMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #globalsMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #globalsTab!accessing!private! !
@@ -1420,6 +1432,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #isProjectItemEnabled:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #isRowanProjectSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #jadeInspect!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #loadProjects!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #makeSameSelectionsIn:as:!menu handlers!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #maxAutoCompleteListSize!constants!public! !
 !JadeiteBrowserPresenter categoriesFor: #methodMenu:!menu handlers support!private! !

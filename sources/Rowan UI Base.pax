@@ -228,6 +228,7 @@ package methodNames
 	add: #JadePresenter -> #setCompileErrorColor;
 	add: #JadePresenter -> #setCompileWarningColor;
 	add: #JadePresenter -> #update:afterStonReplication:;
+	add: #JadePresenter -> #updateProjects;
 	add: #JadePresenter -> #updateServices:;
 	add: #JadePresenterA -> #basicRefreshBreakpointsIn:selection:;
 	add: #JadePresenterA -> #clearBreakPointAt:in:;
@@ -2502,6 +2503,12 @@ setCompileWarningColor
 update: services afterStonReplication: stonResults
 	^BrowserUpdate current update: services afterStonReplication: stonResults!
 
+updateProjects
+	| browserService |
+	browserService := RowanBrowserService new.
+	browserService command: #updateProjects.
+	self issueCommand: (Array with: browserService)!
+
 updateServices: services
 	BrowserUpdate current updateServices: services asSet asArray session: gciSession! !
 !JadePresenter categoriesFor: #abortTransaction!public!transaction management! !
@@ -2544,6 +2551,7 @@ updateServices: services
 !JadePresenter categoriesFor: #setCompileErrorColor!compile support!public! !
 !JadePresenter categoriesFor: #setCompileWarningColor!compile support!public! !
 !JadePresenter categoriesFor: #update:afterStonReplication:!browsing support!public! !
+!JadePresenter categoriesFor: #updateProjects!public! !
 !JadePresenter categoriesFor: #updateServices:!private!services! !
 
 !JadePresenter class methodsFor!
@@ -4593,7 +4601,7 @@ methodsChangedDays
 
 openRowanProjectList
 	^(JadeiteProjectListBrowser showOnSession: self gciSession) primaryPresenter
-		refreshProjects;
+		updateProjects;
 		yourself!
 
 updateCaption

@@ -183,7 +183,7 @@ onViewOpened
 	super onViewOpened.
 	projectListPresenter
 		gciSession: gciSession;
-		refreshProjects.
+		updateProjects.
 	JadeiteTextStyles default resetColors.	"reset colors on login"
 	answeringService := RowanAnsweringService new.
 	installed := answeringService isTranscriptInstalledIn: self gciSession.

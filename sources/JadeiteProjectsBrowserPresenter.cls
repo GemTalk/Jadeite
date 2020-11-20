@@ -781,13 +781,6 @@ findMethod: selector
 		ifFalse: [variableListPresenter selection: nil].
 	methodListPresenter selections: (Array with: methodService)!
 
-findRemovedServices
-	| browserService |
-	browserService := RowanBrowserService new
-				command: #findRemovedServices:;
-				commandArgs: (Array with: BrowserUpdate current activeServices asArray).
-	BrowserUpdate current issueCommands: (Array with: browserService) session: self gciSession!
-
 gciSession: aGciSession
 	super gciSession: aGciSession.
 	autoCommit := ValueHolder with: aGciSession autoCommit!
@@ -992,10 +985,6 @@ jadeMenuStrings
 		'E&xit/Shift+F4/exit'
 	).
 !
-
-loadProjects
-	self loadProjectsFrom: self.
-	self findRemovedServices!
 
 methodCategoryText
 	^methodCategoryText!
@@ -2122,13 +2111,6 @@ updateProjectPackages
 	self updateServices: projectListPresenter selections.
 	self sundryCleanup!
 
-updateProjects
-	| browserService |
-	browserService := RowanBrowserService new.
-	browserService
-		command: #updateProjects.
-	self issueCommand: (Array with: browserService).!
-
 updateSelectionsForUpdate: update
 	update updatePackageSelectionsFor: packageListPresenter.
 	update updateClassCategorySelectionsFor: classCategoryPresenter.
@@ -2227,7 +2209,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #findClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #findMethod!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #findMethod:!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #findRemovedServices!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gciSession:!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #getterMethodSourceFor:!menu handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #getViews!public! !
@@ -2256,7 +2237,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeDisplay!menu handlers!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeExecute!menu handlers!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeMenuStrings!menus!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #loadProjects!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodCategoryText!accessing!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodListPresenter!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodListSelection!accessing!public! !
@@ -2371,7 +2351,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProject!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProjectInfo!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProjectPackages!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateProjects!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSelectionsForUpdate:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSingleMethodSource!event handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSUnitTab!event handlers!public!updating! !

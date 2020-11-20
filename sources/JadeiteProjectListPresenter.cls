@@ -12,7 +12,7 @@ JadeiteProjectListPresenter comment: ''!
 
 abortTransaction
 	parentPresenter abortTransaction.
-	self refreshProjects.
+	self updateProjects.
 	self refreshGlobalSelections!
 
 addNoneProject
@@ -204,16 +204,10 @@ queryCommand: aCommandQuery
 	^true!
 
 refresh
-	self refreshProjects!
+	self updateProjects!
 
 refreshFromServerAfterAbort: browserService
 	browserService projectsUpdate: projectListPresenter browser: self. !
-
-refreshProjects
-	| browserService |
-	browserService := RowanBrowserService new.
-	browserService command: #updateProjects.
-	self issueCommand: (Array with: browserService).!
 
 registerPresentersForUpdates
 	BrowserUpdate current
@@ -278,7 +272,6 @@ writeProject
 !JadeiteProjectListPresenter categoriesFor: #queryCommand:!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #refresh!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #refreshFromServerAfterAbort:!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #refreshProjects!public! !
 !JadeiteProjectListPresenter categoriesFor: #registerPresentersForUpdates!private!register presenters! !
 !JadeiteProjectListPresenter categoriesFor: #unloadProjects!menu handlers!public! !
 !JadeiteProjectListPresenter categoriesFor: #updateProject!public!updating! !
