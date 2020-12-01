@@ -828,7 +828,7 @@ moveClassToPackageNamed: packageName
 	| packageServiceToSelect |
 	self selectedClass ifNil: [^self].
 	self selectedClass
-		command: #moveClassToPackageNamed:;
+		command: #moveToPackageNamed:;
 		commandArgs: (Array with: packageName).
 	self issueCommand: (Array with: self selectedClass).
 	packageServiceToSelect := packageListPresenter list
