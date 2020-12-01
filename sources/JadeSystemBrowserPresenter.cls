@@ -393,7 +393,7 @@ createSchematicWiringForClassDefinition
 createSchematicWiringForClassHierarchy
 
 	classHierarchyPresenter	
-		when: #'drag:'				send: #'onDragClassHierarchy:'		to: self;
+		when: #'drag:'				send: #'onDragClass:'		to: self;
 		when: #'dragCut:'			send: #'onDragCutClassHierarchy:'	to: self;
 		when: #'dragOver:'			send: #'onDragOverClassHierarchy:'	to: self;
 		when: #'drop:'				send: #'onDropOnClassHierarchy:'	to: self;
@@ -1449,17 +1449,6 @@ onDragOverMethodCategory: aSession
 		yourself.
 !
 
-onDragOverPackageList: aSession 
-
-	aSession operation: nil.
-	aSession dragObjects isEmpty ifTrue: [^self].
-	aSession suggestedTarget isNil ifTrue: [^self].
-	(aSession isFormatAvailable: #'package') ifTrue: [^self].
-	(aSession isFormatAvailable: #'class') 	ifTrue: [^self onDragClassesOverPackageList: aSession].
-	MessageBox notify: 'Sorry, we are not yet prepared to handle ' , aSession printString , '!!'.
-	SessionManager current pause.
-!
-
 onDropClassesOnDictionary: aSession 
 
 	| classNames stream |
@@ -1475,30 +1464,6 @@ onDropClassesOnDictionary: aSession
 	stream lf; nextPutAll: self requestString.
 	self updateCommand: stream contents.
 !
-
-onDropClassesOnPackage: aString session: aSession 
-
-	| classes stream |
-	classes := aSession dragObjects collect: [:each | each format: #'class'].
-	MessageBox notify: 'Sorry, we are not yet prepared to handle ' , aSession printString , '!!'.
-	SessionManager current pause.
-"
-	stream := (WriteStream on: String new)
-		nextPutAll: 'methodClass'; tab;
-		nextPutAll: self behaviorIdentifier; tab;
-		nextPutAll: aSession operation; tab;
-		nextPutAll: aString;
-		yourself.
-	classes do: [:each | stream tab; nextPutAll: each].
-	stream lf; nextPutAll: self requestString.
-	self updateCommand: stream contents.
-"!
-
-onDropClassesOnPackageList: aSession 
-
-	self
-		onDropClassesOnPackage: aSession suggestedTarget 
-		session: aSession.!
 
 onDropMethodsOnClass: aString session: aSession 
 
@@ -1569,12 +1534,6 @@ onDropOnMethodCategory: aSession
 	stream lf; nextPutAll: self requestString.
 	self updateCommand: stream contents.
 !
-
-onDropOnPackageList: aSession 
-
-	(aSession isFormatAvailable: #'class') 	ifTrue: [^self onDropClassesOnPackageList: aSession].
-	MessageBox notify: 'Sorry, we are not yet prepared to handle ' , aSession printString , '!!'.
-	SessionManager current pause.!
 
 onSetFocus: aView stack: aString
 
@@ -1656,25 +1615,6 @@ pkgsMenuStrings
 				showPackageChanges;
 				deletePackage].
 	^#('&Packages' '&Find Class.../Ctrl+Shift+F/findClass' '&Add Package...//addPackage' '-' '&Load Latest Version//loadLatestVersion' 'Add &Repository...//addRepository' 'Remo&ve Repository...//removeRepository' '&Write Package..//savePackage' 'Show &Changes//showPackageChanges' '&Unload Package...//unloadPackage')!
-
-preferencesMenuStrings
-
-	false ifTrue: [		"adding explicit senders ensures that packaging will not drop methods and allows us to find references by browsing senders"
-		self openSourceStyler; setColorForCompileErrors; setColorForNoEdits; setColorForUnsavedEdits.
-	].
-	^#(
-		'&Preferences'
-		'&Source Styler...//openSourceStyler'
-		'-'
-		'Reset &Font Size//resetFontSize'
-		'Set Font Size...//setFontSize'
-		'-'
-		'&Reset Colors//resetColors'
-		'Color for &Compile Errors...//setColorForCompileErrors'
-		'Color for &No Edits...//setColorForNoEdits'
-		'Color for &Unsaved Edits...//setColorForUnsavedEdits'
-	).
-!
 
 promptForSelector
 
@@ -2306,28 +2246,6 @@ updateDictionaryList
 	globalsPresenter list: (ListModel withAll: lines).
 !
 
-updateMenuBar
-	| shellView menuBar dictionaryMenu methodFilterMenu textAreaMenu |
-	dictionaryMenu := Menu fromStrings: self dictsMenuStrings.
-	methodFilterMenu := Menu fromStrings: (self isCategoryTabSelected
-						ifTrue: [self categoriesMenuStrings]
-						ifFalse: [self variablesMenuStrings]).
-	textAreaMenu := Menu fromStrings: (self isGlobalsTabSelected
-						ifTrue: [self globalsMenuStrings]
-						ifFalse: [self editMenuStrings]).
-	shellView := self parentPresenter parentPresenter view.
-	menuBar := shellView menuBar
-				clear;
-				addItem: (Menu fromStrings: self jadeMenuStrings);
-				addItem: dictionaryMenu;
-				addItem: (Menu fromStrings: self classesMenuStrings);
-				addItem: methodFilterMenu;
-				addItem: (Menu fromStrings: self methodsMenuStrings);
-				addItem: textAreaMenu;
-				addItem: (Menu fromStrings: self preferencesMenuStrings);
-				yourself.
-	shellView menuBar: menuBar!
-
 updateMethodFilter
 
 	| listPresenter pieces type tabs tab filters selections |
@@ -2692,10 +2610,7 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #onDragOverClassList:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDragOverDictionary:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDragOverMethodCategory:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragOverPackageList:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDropClassesOnDictionary:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDropClassesOnPackage:session:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDropClassesOnPackageList:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDropMethodsOnClass:session:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDropMethodsOnClassHierarchy:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDropMethodsOnClassList:!drag & drop!public! !
@@ -2704,14 +2619,12 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #onDropOnClassList:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDropOnDictionary:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDropOnMethodCategory:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDropOnPackageList:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onSetFocus:stack:!public! !
 !JadeSystemBrowserPresenter categoriesFor: #openSourceStyler!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #packageListPresenter!accessing!public! !
 !JadeSystemBrowserPresenter categoriesFor: #parseContext!public! !
 !JadeSystemBrowserPresenter categoriesFor: #pkgDictChanged!event handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #pkgsMenuStrings!menus!public! !
-!JadeSystemBrowserPresenter categoriesFor: #preferencesMenuStrings!menus!public! !
 !JadeSystemBrowserPresenter categoriesFor: #promptForSelector!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #removeClass!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #removeDictionary!menu handlers!public! !
@@ -2760,7 +2673,6 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #updateCommand:!public!updating! !
 !JadeSystemBrowserPresenter categoriesFor: #updateCommand:onSuccessDo:!public!updating! !
 !JadeSystemBrowserPresenter categoriesFor: #updateDictionaryList!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateMenuBar!menus!public! !
 !JadeSystemBrowserPresenter categoriesFor: #updateMethodFilter!public!updating! !
 !JadeSystemBrowserPresenter categoriesFor: #updateMethodList!public!updating! !
 !JadeSystemBrowserPresenter categoriesFor: #updateMethodStepPoints!public!updating! !

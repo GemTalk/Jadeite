@@ -125,9 +125,6 @@ onViewClosed
 	super onViewClosed.
 	subPresenters do: [:presenter | BrowserUpdate current removeEventsTriggeredFor: presenter]!
 
-projectDictionaryChanged
-!
-
 registerPresentersForUpdates
 	BrowserUpdate current register: dictionaryListPresenter selector: #dictionaryUpdate:.
 	BrowserUpdate current register: globalsPresenter selector: #globalsUpdate:.
@@ -502,7 +499,6 @@ updateTabLabel
 !RowanSystemBrowserPresenter categoriesFor: #labelOfClass:changedTo:!event handlers!public! !
 !RowanSystemBrowserPresenter categoriesFor: #methodListSelection!private! !
 !RowanSystemBrowserPresenter categoriesFor: #onViewClosed!event handlers!public! !
-!RowanSystemBrowserPresenter categoriesFor: #projectDictionaryChanged!event handlers!public! !
 !RowanSystemBrowserPresenter categoriesFor: #registerPresentersForUpdates!event handlers!initialization!public!rowan! !
 !RowanSystemBrowserPresenter categoriesFor: #registerTabPresentersForUpdates!event handlers!initialization!public!rowan! !
 !RowanSystemBrowserPresenter categoriesFor: #resetClassDefinitionPresenter!private!updating! !

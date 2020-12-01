@@ -400,7 +400,7 @@ printInstVar
 	answeringService
 		command: #printStringOf:toMaxSize:;
 		commandArgs: (Array with: printString with: self maxPrintStringSize).
-	self issueCommand: (Array with: answeringService).
+	self issueCommand: answeringService.
 	answeringService answer]
 			on: Error
 			do: [:ex | self displayInstVarError: ex instVar: instVarListPresenter selections first value]!

@@ -11,10 +11,10 @@ RowanSystemBrowser comment: ''!
 !RowanSystemBrowser methodsFor!
 
 addSystemBrowserWithLayoutInfo: each
-	| presenter |
+	"method can be removed - I think" 
+	"| presenter |
 	presenter := (self systemBrowserPresenter createIn: cardsPresenter gciSession: gciSession)
-				layoutInfo: each.
-	presenter projectDictionaryChanged!
+				layoutInfo: each."!
 
 restoreLayoutAndContentsFromFile
 	self rowanFixMe. "Need to restore from saved state via services"

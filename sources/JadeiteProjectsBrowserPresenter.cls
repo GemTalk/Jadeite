@@ -371,10 +371,6 @@ copyClass
 			validClassNameSelected ifFalse: [MessageBox notify: 'Symbol exists. Please retry.']].
 	self basicCopyClass: oldClassService to: newClassName!
 
-copyProjectInfo
-	projectInfoTab selection last ifNil:[^self]. 
-	(projectInfoTab selection first perform: projectInfoTab selection last asSymbol) displayString copyToClipboard!
-
 createComponents
 	super createComponents.
 	projectListPresenter := self add: ListPresenter new name: 'projectList'.
@@ -395,37 +391,6 @@ createSchematicWiring
 		send: #updateAutoCommit
 		to: self!
 
-createSchematicWiringForClassHierarchy
-		
-	classHierarchyPresenter
-		when: #drag:
-			send: #onDragClass:
-			to: self;
-		when: #dragCut:
-			send: #onDragCutClassHierarchy:
-			to: self;
-		when: #dragOver:
-			send: #onDragOverClassHierarchy:
-			to: self;
-		when: #drop:
-			send: #onDropOnClassHierarchy:
-			to: self;
-		when: #aboutToDisplayMenu:
-			send: #updateClassMenu:
-			to: self;
-		when: #selectionChanging:
-			send: #aboutToChange:
-			to: self;
-		when: #selectionChanging:
-			send: #releasedReferencedServices:
-			to: self;
-		when: #selectionChanged
-			send: #refreshClass
-			to: self;
-		when: #actionPerformed
-			send: #hierarchyClassDoubleClicked
-			to: self!
-
 createSchematicWiringForClassHierarchyTabs
 	classHierarchyTabs
 		when: #currentCardChanging:
@@ -434,59 +399,6 @@ createSchematicWiringForClassHierarchyTabs
 		when: #currentCardChanged
 			send: #refreshClassListOrHierarchy
 			to: self!
-
-createSchematicWiringForClassList
-	"dolphin does not consistently send #selectionChanging: events after
-	the class list has been updated. It always sends #selectionChanged. 
-	However, in order to avoid conflicting updates and commands to the server
-	we sometimes need to update the selection on the #selectionChanging. 
-	Hence, two very similar methods. See issue #334. 
-	"
-
-	classListPresenter
-		when: #drag:
-			send: #onDragClass:
-			to: self;
-		when: #dragCut:
-			send: #onDragCutClassList:
-			to: self;
-		when: #dragOver:
-			send: #onDragOverClassList:
-			to: self;
-		when: #drop:
-			send: #onDropOnClassList:
-			to: self;
-		when: #keyTyped:
-			send: #delayUpdate
-			to: self;
-		when: #aboutToDisplayMenu:
-			send: #updateClassMenu:
-			to: self;
-		when: #selectionChanging:
-			send: #aboutToChange:
-			to: self;
-		when: #selectionChanging:
-			send: #releasedReferencedServices:
-			to: self;
-		when: #selectionChanged:
-			send: #selectedClassChanged:
-			to: self
-			with: true;
-		when: #selectionChanged
-			send: #refreshClass
-			to: self;
-		when: #labelOf:changedTo:
-			send: #labelOfClass:changedTo:
-			to: self;
-		when: #aboutToEditLabel:accept:
-			send: #aboutToEditClassLabel:accept:
-			to: self;
-		when: #labelOf:editedTo:accept:
-			send: #labelOfClass:editedTo:accept:
-			to: self;
-		when: #keyTyped:
-			send: #selectServiceStartingWith:
-			to: classListPresenter!
 
 createSchematicWiringForInstanceClassTabs
 	instanceClassTabs
@@ -532,16 +444,6 @@ createSchematicWiringForMethodFilterTabs
 			to: self
 			with: methodListPresenter!
 
-createSchematicWiringForMethodList
-	methodListPresenter
-		when: #drag: 				send: #onDragMethod: 			to: self; 
-		when: #dragCut: 			send: #onDragCutMethod: 			to: self; 
-		when: #keyTyped: 			send: #delayUpdate 				to: self; 
-		when: #aboutToDisplayMenu: 	send: #updateMethodMenu:		to: self;
-		when: #selectionChanging:		send: #aboutToChange:			to: self; 
-		when: #keyTyped: 			send: #selectServiceStartingWith: 	to: methodListPresenter; 
-		when: #selectionChanged 		send: #methodSelectionChanged 	to: self!
-
 createSchematicWiringForPackageDictionaryTabs
 
 	"Yes, I know. Subclasses should not remove behavior."!
@@ -559,16 +461,6 @@ createSchematicWiringForPackageList
 		when: #'selectionChanged'		send: #'updatePackage' 			to: self;
 		when: #keyTyped: 			send: #selectServiceStartingWith: 	to: packageListPresenter
 !
-
-createSchematicWiringForProjectDictionaryList
-	projectDictionaryTabs
-		when: #currentCardChanging:
-			send: #aboutToChange:
-			to: self;
-		when: #currentCardChanged
-			send: #projectDictionaryChanged
-			to: self;
-		yourself!
 
 createSchematicWiringForProjectList
 
@@ -1049,17 +941,6 @@ newBrowser
 	selector := methodListPresenter selectionOrNil ifNotNil: [:methodService | methodService selector].
 	^self openProjectBrowserOn: classService selector: selector!
 
-onDragClass: aSession
-	| className |
-	className := self selectedClass name.
-	^super onDragClass: aSession className: className
-!
-
-onDragClassHierarchy: aSession
-	| className |
-	className := classHierarchyPresenter selection name.
-	^super onDragClass: aSession className: className!
-
 onDropMethodsOnClassHierarchy: aSession
 	^self onDropOnClassList: aSession!
 
@@ -1143,21 +1024,6 @@ postOkToChangeEvent
 projectChanges
 	projectListPresenter selections isEmpty ifTrue: [^MessageBox notify: 'No project selected'].
 	^projectListPresenter selection changesUsing: self gciSession!
-
-projectDictionaryChanged
-	| listModel |
-	listModel := self textTabs.
-	globalsLabel ifNil: [globalsLabel := listModel detect: [:each | each text = 'Globals']].
-	self setDefaultProjectTablLabel.
-	packageLabel ifNil: [packageLabel := listModel detect: [:each | each text = 'Package']].
-	(listModel includes: projectLabel) ifFalse: [listModel addFirst: projectLabel].
-	self updateProjectInfo.
-	projectInfoTab ensureVisible.
-	listModel remove: globalsLabel ifAbsent: [].
-	listModel remove: packageLabel ifAbsent: []!
-
-projectInfoTab
-	^projectInfoTab!
 
 projectListPresenter
 	^projectListPresenter!
@@ -1882,13 +1748,6 @@ textAreaTabs
 	"for testing"
 	^textAreaTabs!
 
-textTabChanged
-	methodSourcePresenter view cancelCallTip.
-	textAreaTabs currentCard name = 'projectInfo' ifTrue: [projectInfoTab ensureVisible].
-	textAreaTabs currentCard name = 'sunit'
-		ifTrue: [sunitPresenter methodListPresenter setFocus	"to ensure sunit bar is enabled"].
-	self updateMenuBar!
-
 textTabs
 	^(textAreaTabs subViews detect: [:each | each class == TabViewXP]) model!
 
@@ -1981,29 +1840,6 @@ updateCommand: aString onSuccessDo: aBlock
 					ensure: [selectedClassChanged := false]].
 	^nil!
 
-updateMenuBar
-	| shellView menuBar methodFilterMenu textAreaMenu methodMenu |
-	methodFilterMenu := Menu fromStrings: (self isCategoryTabSelected
-						ifTrue: [self categoriesMenuStrings]
-						ifFalse: [self variablesMenuStrings]).
-	textAreaMenu := Menu fromStrings: (self isGlobalsTabSelected
-						ifTrue: [self globalsMenuStrings]
-						ifFalse: [self editMenuStrings]).
-	shellView := self parentPresenter parentPresenter view.
-	menuBar := shellView menuBar
-				clear;
-				addItem: (Menu fromStrings: self jadeMenuStrings);
-				addItem: self projectMenu;
-				addItem: (Menu fromStrings: self pkgsMenuStrings);
-				addItem: (Menu fromStrings: self classesMenuStrings);
-				addItem: methodFilterMenu;
-				addItem: (methodMenu := Menu fromStrings: self methodsMenuStrings);
-				addItem: textAreaMenu;
-				addItem: (Menu fromStrings: self preferencesMenuStrings);
-				yourself.
-	shellView menuBar: menuBar.
-	self updateMethodMenu: methodMenu!
-
 updateMethodMenu: menu
 	| item |
 	methodListPresenter selectionIfNone: [^self].
@@ -2080,31 +1916,6 @@ updatePresenter: presenter selections: selections
 				ifNotNil: [:newSelection | newSelections add: newSelection]].
 	presenter selections: newSelections!
 
-updateProject
-	self updateProjectPackages.
-	self updateProjectInfo.
-	projectInfoTab ensureVisible.
-	self sundryCleanup!
-
-updateProjectInfo
-	| services array |
-	services := projectListPresenter selections.
-	self updateTabLabel.
-	services isEmpty ifTrue: [^projectInfoTab list: ListModel new].
-	array := Array writeStream: services size.
-	array nextPut: (Array with: services first with: 'rowanProjectsHome').
-	array nextPut: (Array with: RowanProjectService new with: nil).
-	services do: 
-			[:service |
-			array nextPut: (Array with: service with: 'name').
-			array nextPut: (Array with: service with: 'sha').
-			array nextPut: (Array with: service with: 'branch').
-			array nextPut: (Array with: service with: 'isSkew').
-			array nextPut: (Array with: service with: 'isDirty').
-			array nextPut: (Array with: service with: 'projectUrl').
-			service == services last ifFalse: [array nextPut: (Array with: RowanProjectService new with: nil)]].
-	projectInfoTab list: array contents!
-
 updateProjectPackages
 	packageListPresenter clear.
 	projectListPresenter selections isEmpty ifTrue: [^self].
@@ -2176,19 +1987,14 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #confirmOverwriteAccessor!menu handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #containedDictionaryLabel!menus!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #copyClass!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #copyProjectInfo!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForClassHierarchy!create schemantic wiring!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForClassHierarchyTabs!create schemantic wiring!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForClassList!create schemantic wiring!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForInstanceClassTabs!create schemantic wiring!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForMethodCategoryList!create schemantic wiring!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForMethodFilterTabs!create schemantic wiring!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForMethodList!create schemantic wiring!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForPackageDictionaryTabs!create schemantic wiring!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForPackageList!create schemantic wiring!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForProjectDictionaryList!create schemantic wiring!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForProjectList!create schemantic wiring!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForVariableList!create schemantic wiring!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createStateEntry!accessing!public!updating! !
@@ -2245,8 +2051,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #methodSourcePresenter:!accessing!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #moveMethods:toCategory:!drag & drop!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #newBrowser!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #onDragClass:!drag & drop!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #onDragClassHierarchy:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropMethodsOnClassHierarchy:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropOnClassList:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #onDropOnMethodCategory:!drag & drop!public! !
@@ -2257,8 +2061,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #populateFilterList!event handlers support!private!services!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #postOkToChangeEvent!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #projectChanges!project menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #projectDictionaryChanged!event handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #projectInfoTab!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #projectListPresenter!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #projectLog!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #projectTabLabel!displaying!private! !
@@ -2330,7 +2132,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #symbolExists:!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #targetCategory!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #textAreaTabs!private!text tabs! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #textTabChanged!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #textTabs!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #unloadPackage!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #unloadProjects!project menu handlers!public! !
@@ -2340,7 +2141,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClassInfo!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClassMenu:!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateCommand:onSuccessDo:!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateMenuBar!menus!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateMethodMenu:!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateMethodReferences:!private!services! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateMethodSource!event handlers!public!text tabs!updating! !
@@ -2348,8 +2148,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #updatePackage!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updatePackageInfo!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updatePresenter:selections:!event handlers support!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateProject!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateProjectInfo!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateProjectPackages!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSelectionsForUpdate:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSingleMethodSource!event handlers support!private! !
