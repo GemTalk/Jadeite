@@ -217,6 +217,7 @@ package methodNames
 	add: #JadePresenter -> #flipAutoCommit;
 	add: #JadePresenter -> #insertCompileErrorText:into:;
 	add: #JadePresenter -> #issueCommand:;
+	add: #JadePresenter -> #issueCommands:;
 	add: #JadePresenter -> #openBrowserInNewTab:on:;
 	add: #JadePresenter -> #openProjectBrowserOn:selector:;
 	add: #JadePresenter -> #raiseConsole;
@@ -2124,7 +2125,7 @@ updateProjectPackages
 	| browserService |
 	browserService := RowanBrowserService new.
 	browserService command: #packagesWithTests.
-	self issueCommand: (Array with: browserService).
+	self issueCommand: browserService.
 	testCounter at: 1 put: browserService testCount! !
 !JadeiteSUnitPresenter categoriesFor: #browseClass!event handlers!public! !
 !JadeiteSUnitPresenter categoriesFor: #onViewClosed!event handlers!public! !
@@ -2226,7 +2227,7 @@ basicLoadV2Project: path projectsHome: root
 	service
 		command: #loadProjectFromFile:projectsHome:;
 		commandArgs: (Array with: path with: root).
-	self issueCommand: (Array with: service)!
+	self issueCommand: service!
 
 browseBreakpointList
 	^self class browseBreakpointsIn: self gciSession!
@@ -2353,7 +2354,7 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 	classService
 		command: #saveMethodSource:category:;
 		commandArgs: (Array with: methodSource1 with: category).
-	[self issueCommand: (Array with: classService)] on: GsCompileError
+	[self issueCommand: classService] on: GsCompileError
 		do: 
 			[:ex |
 			self setCompileErrorColor.
@@ -2388,7 +2389,7 @@ executeSelectionOrLine: contextObject
 					with: self currentSelectionOrLine
 					with: oop
 					with: window view handle value).
-	self issueCommand: (Array with: answeringService).
+	self issueCommand: answeringService.
 	answer := answeringService answer.
 	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
 	^answer!
@@ -2397,14 +2398,17 @@ flipAutoCommit
 	| browserService |
 	browserService := RowanAutoCommitService new.
 	browserService command: #flipAutoCommit; commandArgs: Array new. 
-	self issueCommand: (Array with: browserService). 
+	self issueCommand: browserService
 	!
 
 insertCompileErrorText: string into: methodSourcePresenter
 	methodSourcePresenter view topShell statusBarText: (string copyFrom: 1 to: string size - 2)!
 
 issueCommand: service
-	^self class issueCommands: service session: self gciSession!
+	^self issueCommands: (Array with: service)!
+
+issueCommands: services
+	^self class issueCommands: services session: self gciSession!
 
 openBrowserInNewTab: openNewTab on: classService
 	| shell |
@@ -2445,7 +2449,7 @@ remoteAutoCommit
 	answeringService
 		command: #autoCommit;
 		commandArgs: Array new.
-	self issueCommand: (Array with: answeringService).
+	self issueCommand: answeringService.
 	^answeringService answer!
 
 reportCompileError: anArrayOfArray in: methodSourcePresenter
@@ -2507,7 +2511,7 @@ updateProjects
 	| browserService |
 	browserService := RowanBrowserService new.
 	browserService command: #updateProjects.
-	self issueCommand: (Array with: browserService)!
+	self issueCommand: browserService!
 
 updateServices: services
 	BrowserUpdate current updateServices: services asSet asArray session: gciSession! !
@@ -2540,6 +2544,7 @@ updateServices: services
 !JadePresenter categoriesFor: #flipAutoCommit!menu handlers!public! !
 !JadePresenter categoriesFor: #insertCompileErrorText:into:!compile support!public! !
 !JadePresenter categoriesFor: #issueCommand:!browsing support!public! !
+!JadePresenter categoriesFor: #issueCommands:!browsing support!public! !
 !JadePresenter categoriesFor: #openBrowserInNewTab:on:!Jade!public! !
 !JadePresenter categoriesFor: #openProjectBrowserOn:selector:!browsing!public! !
 !JadePresenter categoriesFor: #raiseConsole!menu handlers!public! !
@@ -3008,7 +3013,7 @@ clearBreakPointAt: stepPoint in: browser
 	selection
 		command: #clearBreakAt:;
 		commandArgs: (Array with: stepPoint).
-	self issueCommand: (Array with: selection).
+	self issueCommand: selection.
 	browser updateMethodSource. !
 
 confirmReloadProjects: selections
@@ -3033,7 +3038,7 @@ disableBreakPointAt: stepPoint in: browser
 	selection
 		command: #disableBreakAt:;
 		commandArgs: (Array with: stepPoint).
-	self issueCommand: (Array with: selection).
+	self issueCommand: selection.
 	browser updateMethodSource. !
 
 enableBreakPointAt: stepPoint in: browser
@@ -3042,7 +3047,7 @@ enableBreakPointAt: stepPoint in: browser
 	selection
 		command: #enableBreakAt:;
 		commandArgs: (Array with: stepPoint).
-	self issueCommand: (Array with: selection).
+	self issueCommand: selection.
 	browser updateMethodSource!
 
 isOkayToChangeSource: methodSourcePresenter
@@ -3135,12 +3140,12 @@ setBreakPointAt: stepPoint in: browser
 	selection
 		command: #setBreakAt:;
 		commandArgs: (Array with: stepPoint).
-	self issueCommand: (Array with: selection).
+	self issueCommand: selection.
 	browser updateMethodSource. !
 
 updateMethodReferences: services
 	services do: [:service | service command: #allReferences].
-	self issueCommand: services.
+	self issueCommands: services.
 	^services! !
 !JadePresenterA categoriesFor: #basicRefreshBreakpointsIn:selection:!Jadeite!public! !
 !JadePresenterA categoriesFor: #clearBreakPointAt:in:!Jadeite!public! !
@@ -4382,7 +4387,7 @@ verifyValidCategory: category
 	service := RowanAnsweringService new
 				command: #loadedPackageExists:;
 				commandArgs: (Array with: packageName).
-	self issueCommand: (Array with: service).
+	self issueCommand: service.
 	^service answer! !
 !JadeSystemBrowserPresenter categoriesFor: #basicAddMethodCategory:!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #basicRemoveMethods!menu handlers!public! !

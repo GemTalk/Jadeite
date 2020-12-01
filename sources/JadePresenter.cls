@@ -30,7 +30,7 @@ basicWriteProject: projectServices
 	(MessageBox confirm: 'Write projects - ' , ws contents , '- to disk without committing?')
 		ifFalse: [^false].
 	projectServices do: [:service | service command: #write].
-	self issueCommand: projectServices.
+	self issueCommands: projectServices.
 	MessageBox notify: 'Projects ' , ws contents , ' written to disk'!
 
 commitTransaction

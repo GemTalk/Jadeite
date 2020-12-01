@@ -63,7 +63,7 @@ basicAddDictionaryNamed: newDictionaryName
 	dictionaryService
 		command: #insertAt:;
 		commandArgs: (Array with: insertionIndex).
-	self issueCommand: (Array with: dictionaryService).
+	self issueCommand: dictionaryService.
 	dictionaryPresenter
 		selection: (dictionaryPresenter list detect: [:newService | newService name = newDictionaryName])!
 
@@ -88,7 +88,7 @@ basicRemoveClass: theClassService
 	service
 		command: #removeClass:;
 		commandArgs: (Array with: theClassService).
-	self issueCommand: (Array with: service).
+	self issueCommand: service.
 	classListPresenter model: classListPresenter model.	"force a gui update"
 	self isHierarchyTabSelected
 		ifTrue: 
@@ -107,7 +107,7 @@ basicRemoveDictionaries: dictionaryNames
 	browserService
 		command: #removeDictionariesNamed:;
 		commandArgs: (Array with: dictionaryNames).
-	self issueCommand: (Array with: browserService)!
+	self issueCommand: browserService!
 
 basicRemoveGlobal: qualifiedString
 	| symbol rs dictionaryService globalDictionaryName |
@@ -119,7 +119,7 @@ basicRemoveGlobal: qualifiedString
 	dictionaryService
 		command: #removeGlobalNamed:;
 		commandArgs: (Array with: symbol).
-	self issueCommand: (Array with: dictionaryService).
+	self issueCommand: dictionaryService.
 	self removeGlobalsTab.
 	self buildGlobalsTab!
 
@@ -585,8 +585,8 @@ editSaveClass
 	browserService
 		command: #compileClass:;
 		commandArgs: (Array with: classDefinitionPresenter value).
-	browserService selectedClass: self selectedClass name. 
-	[self issueCommand: (Array with: browserService)] on: Error
+	browserService selectedClass: self selectedClass name.
+	[self issueCommand: browserService] on: Error
 		do: 
 			[:ex |
 			(ex isKindOf: GsCompileError)
@@ -599,7 +599,7 @@ editSaveClass
 		commandArgs: #().
 	self issueCommand: (Array with: browserService)]
 			on: GsCompileError
-			do: [:ex | ^self showMethodRecompilationError: ex. ].
+			do: [:ex | ^self showMethodRecompilationError: ex].
 	self resetClassDefinitionPane.
 	self updateAfterFindClass: browserService selectedClass!
 
@@ -633,7 +633,7 @@ editSaveMethod: classService
 expandFullAt: classService
 	Cursor wait showWhile: 
 			[classService command: #fullHierarchy.
-			self issueCommand: (Array with: classService).
+			self issueCommand: classService.
 			self selectClassNamed: classService name.
 			classHierarchyPresenter view expandAll]!
 
@@ -830,7 +830,7 @@ moveClassToPackageNamed: packageName
 	self selectedClass
 		command: #moveToPackageNamed:;
 		commandArgs: (Array with: packageName).
-	self issueCommand: (Array with: self selectedClass).
+	self issueCommand: self selectedClass.
 	packageServiceToSelect := packageListPresenter list
 				detect: [:packageService | packageService name = packageName].
 	packageListPresenter selections: (self selectedPackageServices asOrderedCollection
@@ -1097,7 +1097,7 @@ reformatSource
 		source: methodSourcePresenter value;
 		command: #reformatSource;
 		commandArgs: Array new.
-	[self issueCommand: (Array with: methodService)] on: Error
+	[self issueCommand: methodService] on: Error
 		do: 
 			[:ex |
 			self setCompileErrorColor.
@@ -1139,7 +1139,7 @@ refreshClass
 	selection
 		updateAfterCommand: false;
 		command: #fastRefresh.
-	self issueCommand: (Array with: selection).
+	self issueCommand: selection.
 	selection updateAfterCommand: true.
 	self updateClassInfo!
 
@@ -1276,7 +1276,7 @@ selectPackageNamed: packageName
 	answeringService
 		command: #newPackageNamed:;
 		commandArgs: (Array with: packageName).
-	self issueCommand: (Array with: answeringService).
+	self issueCommand: answeringService.
 	packageService := answeringService answer.
 	self selectProjectNamed: packageService projectName.
 	selectedPackage := packageListPresenter list detect: [:pkgService | pkgService name = packageName]
@@ -1453,7 +1453,7 @@ updateDictionaries
 	| browserService |
 	browserService := RowanBrowserService new.
 	browserService command: #updateDictionaries.
-	self issueCommand: (Array with: browserService).!
+	self issueCommand: browserService!
 
 updateDictionary
 	classListPresenter model: ListModel new.
@@ -1493,7 +1493,7 @@ updateHierarchy
 					[service
 						updateAfterCommand: false;
 						command: #classHierarchy.
-					self issueCommand: (Array with: service).
+					self issueCommand: service.
 					self selectClassNamed: service name]]!
 
 updateHierarchyForPacktionaries
@@ -1508,7 +1508,7 @@ updateHierarchyForPacktionaries
 			[service
 				command: #classHierarchyForPackagesNamed:;
 				commandArgs: (Array with: self selectedPackageNames)].
-	self issueCommand: (Array with: service)!
+	self issueCommand: service!
 
 updateMenuBar
 	| shellView menuBar methodFilterMenu textAreaMenu methodMenu |

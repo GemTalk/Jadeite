@@ -29,7 +29,7 @@ basicUnloadProjects: projectNames
 	browserService
 		command: #unloadProjectsNamed:;
 		commandArgs: (Array with: projectNames).
-	self issueCommand: (Array with: browserService).
+	self issueCommand: browserService.
 	self refreshGlobalSelections!
 
 browseProject
@@ -77,7 +77,7 @@ gitCommit
 	service
 		command: #commitWithMessage:;
 		commandArgs: (Array with: message value asString).
-	self issueCommand: (Array with: service).
+	self issueCommand: service.
 	self updateServices: self projectListPresenter list.
 	MessageBox notify: 'Project ' , projectName , ' committed to local repository!!'!
 
@@ -165,7 +165,7 @@ pullFromGit
 				, ' -  from git. Really proceed?')
 			ifFalse: [^self].
 	projectServices do: [:service | service command: #pullFromGit].
-	self issueCommand: projectServices!
+	self issueCommands: projectServices!
 
 pushToGit
 	| projectServices ws |
@@ -181,7 +181,7 @@ pushToGit
 		confirm: 'Push projects - ' , ws contents , '- from the local repository to the remote server?')
 			ifFalse: [^self].
 	projectServices do: [:service | service command: #pushToGit].
-	self issueCommand: projectServices!
+	self issueCommands: projectServices!
 
 queryCommand: aCommandQuery
 	#gitCommit == aCommandQuery command

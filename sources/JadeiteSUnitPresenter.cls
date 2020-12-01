@@ -27,7 +27,7 @@ basicDelete
 	classListPresenter selection
 		command: #removeMethods:;
 		commandArgs: (Array with: methodListPresenter selections).
-	self issueCommand: (Array with: classListPresenter selection)!
+	self issueCommand: classListPresenter selection!
 
 browseMethods
 	^self browseSelectedMethods!

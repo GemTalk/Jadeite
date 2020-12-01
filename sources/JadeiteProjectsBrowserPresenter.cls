@@ -45,7 +45,7 @@ addSubclass
 	classService
 		command: #subclassCreationTemplate;
 		commandArgs: Array new. 
-	answerService := (self issueCommand: (Array with: classService)) first.
+	answerService := (self issueCommand: classService) first.
 	classDefinitionPresenter
 		ensureVisible;
 		value: answerService answer!
@@ -74,7 +74,7 @@ allClasses
 	browserService := RowanBrowserService new.
 	browserService
 		command: #allClasses.
-	self issueCommand: (Array with: browserService).
+	self issueCommand: browserService.
 	^browserService allClasses ifNil:[Array new]!
 
 autoCommit
@@ -93,15 +93,15 @@ basicAddMethodCategory: string
 			[service := self selectedClass
 						command: #addCategory:;
 						commandArgs: (Array with: string).
-			service meta: self isClassSideSelected. 
-			self issueCommand: (Array with: service)].
+			service meta: self isClassSideSelected.
+			self issueCommand: service].
 	self selectCategoriesNamed: (Array with: string)!
 
 basicCopyClass: oldClassService to: newClassName
 	oldClassService
 		command: #copyClassTo:;
 		commandArgs: (Array with: newClassName).
-	self issueCommand: (Array with: oldClassService).
+	self issueCommand: oldClassService.
 	self updateAfterFindClass: (RowanClassService new name: newClassName)!
 
 basicOnDropClassList: dragDropSession
@@ -150,7 +150,7 @@ basicRemoveClass: selection
 	packageService
 		command: #removeClass:;
 		commandArgs: (Array with: selection).
-	self issueCommand: (Array with: packageService).
+	self issueCommand: packageService.
 	classListPresenter model: classListPresenter model.	"force a gui update"
 	self isHierarchyTabSelected
 		ifTrue: 
@@ -168,7 +168,7 @@ basicRemoveMethodCategories
 	service := self selectedClass
 				command: #removeCategories:;
 				commandArgs: (Array with: categoryListPresenter selections).
-	self issueCommand: (Array with: service)!
+	self issueCommand: service!
 
 basicRemoveMethods
 	| service presenter |
@@ -185,7 +185,7 @@ basicRenameCategoryFrom: old to: new
 	service := self selectedClass
 				command: #renameCategoryFrom:to:;
 				commandArgs: (Array with: old with: new).
-	self issueCommand: (Array with: service).
+	self issueCommand: service.
 	categoryListPresenter selection: new!
 
 basicRenameClass: classService to: newName
@@ -194,7 +194,7 @@ basicRenameClass: classService to: newName
 	classService
 		command: #renameClass:to:;
 		commandArgs: (Array with: classService name with: newName).
-	[serviceArray := self issueCommand: (Array with: classService)] on: GsCompileError
+	[serviceArray := self issueCommand: classService] on: GsCompileError
 		do: 
 			[:ex |
 			^MessageBox
@@ -222,12 +222,12 @@ basicUnloadProjects: projectNames
 	browserService
 		command: #unloadProjectsNamed:;
 		commandArgs: (Array with: projectNames).
-	self issueCommand: (Array with: browserService).
+	self issueCommand: browserService.
 	packageListPresenter model: ListModel new.
 	classListPresenter model: ListModel new.
 	categoryListPresenter model: (ListModel new searchPolicy: SearchPolicy equality).
 	variableListPresenter model: (ListModel new searchPolicy: SearchPolicy equality).
-	methodListPresenter model: ListModel new. 
+	methodListPresenter model: ListModel new.
 	self refreshGlobalSelections!
 
 behaviorIdentifier
@@ -533,7 +533,7 @@ editSaveClassComment
 	classService
 		command: #classComment:;
 		commandArgs: (Array with: classCommentPresenter value trimBlanks).
-	self issueCommand: (Array with: classService).
+	self issueCommand: classService.
 	classCommentPresenter ensureVisible.
 	self refreshFromServer.
 	classCommentPresenter view
@@ -543,7 +543,7 @@ editSaveClassComment
 expandHierarchyOneLevelAt: classService
 	Cursor wait showWhile: 
 			[classService command: #oneLevelClassHierarchy.
-			self issueCommand: (Array with: classService).
+			self issueCommand: classService.
 			self selectClassNamed: classService name.
 			self classHierarchyPresenter view expandAll]!
 
@@ -573,7 +573,7 @@ fileOutCategoriesOnPath: path
 	service
 		command: #fileoutCategories:;
 		commandArgs: (Array with: categoryListPresenter selections).
-	answeringService := (self issueCommand: (Array with: service)) first.
+	answeringService := (self issueCommand: service) first.
 	file := FileStream write: path.
 	[file nextPutAll: answeringService answer] ensure: [file close]!
 
@@ -597,7 +597,7 @@ fileOutClassOnPath: path
 	| file answeringService service |
 	service := self selectedClass.
 	service command: #fileoutClass.
-	answeringService := (self issueCommand: (Array with: service)) first.
+	answeringService := (self issueCommand: service) first.
 	file := FileStream write: path.
 	[file nextPutAll: answeringService answer] ensure: [file close]!
 
@@ -628,7 +628,7 @@ fileOutMethodsOnPath: path
 	service
 		command: #fileoutMethods:;
 		commandArgs: (Array with: methodListPresenter selections).
-	answeringService := (self issueCommand: (Array with: service)) first.
+	answeringService := (self issueCommand: service) first.
 	file := FileStream write: path.
 	[file nextPutAll: answeringService answer] ensure: [file close]!
 
@@ -711,9 +711,9 @@ gitCommit
 	service
 		command: #commitWithMessage:;
 		commandArgs: (Array with: message value asString).
-	self issueCommand: (Array with: service).
+	self issueCommand: service.
 	MessageBox notify: 'Project ' , projectName , ' committed to local repository!!'.
-	self refreshFromServer. !
+	self refreshFromServer!
 
 gotoClass
 	JadePresenter browseClassIn: self gciSession!
@@ -932,7 +932,7 @@ moveMethods: methodServices toCategory: targetCategory
 	classService
 		command: #moveMethods:to:;
 		commandArgs: (Array with: methodServices with: targetCategory).
-	self issueCommand: (Array with: classService).
+	self issueCommand: classService.
 	self selectMethodsFrom: classService!
 
 newBrowser
@@ -1060,7 +1060,7 @@ pullFromGit
 				, ' -  from git. Really proceed?')
 			ifFalse: [^self].
 	projectServices do: [:service | service command: #pullFromGit].
-	self issueCommand: projectServices!
+	self issueCommands: projectServices!
 
 pushToGit
 	| projectServices ws |
@@ -1075,7 +1075,7 @@ pushToGit
 		confirm: 'Push projects - ' , ws contents , '- from the local repository to the remote server?')
 			ifFalse: [^self].
 	projectServices do: [:service | service command: #pushToGit].
-	self issueCommand: projectServices!
+	self issueCommands: projectServices!
 
 queryCommand: aCommandQuery
 	| command focusView isTextEdit |
@@ -1357,7 +1357,7 @@ removeClass
 	answeringService
 		command: #classHasSubclasses:;
 		commandArgs: (Array with: classService oop).
-	self issueCommand: (Array with: answeringService).
+	self issueCommand: answeringService.
 	answeringService answer ifTrue: [^MessageBox notify: 'Cannot remove class with subclasses'].
 	(MessageBox confirm: 'Really delete class ' , classService name , '?') ifFalse: [^self].
 	queryService := JadePresenter basicBrowseClassReferences: classService name session: self gciSession.
@@ -1395,7 +1395,7 @@ removeMethodSelectors: selectors
 	self selectedClass
 		command: #removeMethods:;
 		commandArgs: (Array with: methodListPresenter selections).
-	self issueCommand: (Array with: self selectedClass)!
+	self issueCommand: self selectedClass!
 
 renameClass
 	| oldClassService newClassName |
@@ -1469,10 +1469,10 @@ runClassTests
 	classService
 		command: #runClassTests:;
 		commandArgs: (Array with: self selectedClass).
-	answeringService := [self issueCommand: (Array with: classService)] on: Error
+	answeringService := [self issueCommand: classService] on: Error
 				do: 
 					[:ex |
-					ex pass. 
+					ex pass.
 					^self].
 	answeringService first answer
 		ifTrue: 

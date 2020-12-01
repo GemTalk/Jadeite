@@ -27,7 +27,7 @@ addSubclass
 	answeringService
 		command: #subclassCreationTemplate:;
 		commandArgs: (Array with: self selectedClassNameWithoutVersion).
-	self issueCommand: (Array with: answeringService).
+	self issueCommand: answeringService.
 	classDefinitionPresenter
 		ensureVisible;
 		value: answeringService answer!
@@ -400,7 +400,7 @@ updateMethodReferences: displayArrays
 			[:service |
 			service meta: self isClassSideSelected.
 			service command: #allReferences].
-	self issueCommand: services. 
+	self issueCommands: services. 
 	^services!
 
 updateMethodsFrom: update

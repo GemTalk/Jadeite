@@ -84,7 +84,7 @@ removeMethods: services
 	browserService
 		command: #removeMethods:;
 		commandArgs: (Array with: methodListPresenter selections).
-	self issueCommand: (Array with: browserService).
+	self issueCommand: browserService
 	!
 
 runTests

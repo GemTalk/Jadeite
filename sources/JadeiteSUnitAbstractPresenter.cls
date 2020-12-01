@@ -68,7 +68,7 @@ runTestCommand: command methods: methodServices className: className
 			methodService
 				command: command;
 				commandArgs: (Array with: methodService selector with: (className ifNil: [methodService className])).
-			self issueCommand: (Array with: methodService).
+			self issueCommand: methodService.
 			methodService testResult = 'error' ifTrue: [jadeResult addError: methodService].
 			methodService testResult = 'failure' ifTrue: [jadeResult addFailure: methodService].
 			methodService testResult = 'passed' ifTrue: [jadeResult addPassed: methodService].

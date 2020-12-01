@@ -19,7 +19,7 @@ basicBrowse: string
 	answeringService := RowanAnsweringService new
 				command: #resolveAsService:;
 				commandArgs: (Array with: string).
-	self issueCommand: (Array with: answeringService).
+	self issueCommand: answeringService.
 	newService := answeringService answer.
 	newService ifNil: [^'Not resolvable'].
 	newService isProjectService ifTrue: [^JadeiteBrowser openOn: self gciSession project: newService].
