@@ -40,6 +40,7 @@ package classNames
 	add: #JadeiteMethodListPresenter;
 	add: #JadeiteMethodSourcePresenter;
 	add: #JadeiteMultilinePrompter;
+	add: #JadeitePackageDialog;
 	add: #JadeitePreferences;
 	add: #JadeitePreferencesPresenter;
 	add: #JadeitePreferencesShell;
@@ -460,6 +461,7 @@ package methodNames
 	add: 'JadeNavigationInspector class' -> #resource_Default_view;
 	add: 'JadePresenter class' -> #abortTransaction:;
 	add: 'JadePresenter class' -> #allClassesIn:;
+	add: 'JadePresenter class' -> #allPackagesIn:;
 	add: 'JadePresenter class' -> #basicBrowseClassReferences:session:;
 	add: 'JadePresenter class' -> #basicBrowseMethod:presenter:;
 	add: 'JadePresenter class' -> #browseBreakpointsIn:;
@@ -847,6 +849,11 @@ JadeFindDialog subclass: #JadeFindClassDialog
 	classInstanceVariableNames: ''!
 JadeFindDialog subclass: #JadeiteFindMethodDialog
 	instanceVariableNames: 'listPresenter available'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeFindDialog subclass: #JadeitePackageDialog
+	instanceVariableNames: 'packageListPresenter availablePackages'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -2580,6 +2587,16 @@ allClassesIn: session
 	self issueCommands: (Array with: browserService) session: session.
 	^browserService allClasses ifNil: [Array new]!
 
+allPackagesIn: session
+	| browserService packageServices |
+	browserService := RowanBrowserService new.
+	browserService command: #allPackages.
+	self issueCommands: (Array with: browserService) session: session.	"get the projects and extract the packages"
+	packageServices := SortedCollection new.
+	browserService projects
+		do: [:projectService | packageServices addAll: projectService packageServices].
+	^packageServices!
+
 basicBrowseClassReferences: className session: session
 	| service |
 	service := RowanQueryService command: #browseClassReferences: withArgs: (Array with: className).
@@ -2930,6 +2947,7 @@ unsavedChangesValidSessionDialogIn: presenter text: text
 		confirm: text! !
 !JadePresenter class categoriesFor: #abortTransaction:!browsing support!public! !
 !JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
+!JadePresenter class categoriesFor: #allPackagesIn:!browsing support!private! !
 !JadePresenter class categoriesFor: #basicBrowseClassReferences:session:!browsing!browsing support!public! !
 !JadePresenter class categoriesFor: #basicBrowseMethod:presenter:!browsing!public! !
 !JadePresenter class categoriesFor: #browseBreakpointsIn:!browsing!public! !

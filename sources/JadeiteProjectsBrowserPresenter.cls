@@ -1386,7 +1386,7 @@ removeMethods: classServices
 			classService
 				command: #removeMethods:;
 				commandArgs: (Array with: methodListPresenter selections)].
-	self issueCommand: classServices!
+	self issueCommands: classServices!
 
 removeMethodSelector: selector
 	self removeMethodSelectors: (Array with: selector)!

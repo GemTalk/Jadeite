@@ -324,6 +324,8 @@ classesMenuStrings
 				asOrderedCollection.
 	menuStrings add: '&Expand Full Hierarchy//expandFullHierarchy'.
 	menuStrings add: '-'.
+	menuStrings addLast: 'Move To Package ...//moveClassToPackage'.
+	menuStrings add: '-'.
 	menuStrings addLast: definedLabel , '//gotoClassDefinedPackage'.
 	menuStrings addLast: containedDictionaryLabel , '//gotoDictionary'.
 	^menuStrings!
@@ -823,6 +825,13 @@ methodValueChanged
 				clearContainerIndicators;
 				yourself].
 	self updateSystemTab.!
+
+moveClassToPackage
+	| packageService |
+	packageService := JadeitePackageDialog showModal: 'DefaultView'
+				on: (self class allPackagesIn: self gciSession).
+	packageService ifNil: [^self].
+	self moveClassToPackageNamed: packageService name!
 
 moveClassToPackageNamed: packageName
 	| packageServiceToSelect |
@@ -1694,6 +1703,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #methodsUpdate:!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #methodToReformat!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #methodValueChanged!event handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #moveClassToPackage!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #moveClassToPackageNamed:!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #newProjectNamed:!menu handlers!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #noClassSelectedInEitherPresenter!public!testing! !
