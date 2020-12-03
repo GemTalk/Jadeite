@@ -1340,14 +1340,6 @@ onDragClassesOverDictionary: aSession
 		yourself.
 !
 
-onDragClassesOverPackageList: aSession
-
-	aSession
-		supportedOperations: #(#'move');
-		operation: #'move';
-		yourself.
-!
-
 onDragClassHierarchy: aSession
 	| className |
 	className := classHierarchyPresenter selection last.
@@ -1367,6 +1359,12 @@ onDragClassList: aSession
 		defaultOperation: #move;
 		yourself.
 !
+
+onDragClassOrMethodOverPackageList: aSession
+	aSession
+		supportedOperations: #(#move);
+		operation: #move;
+		yourself!
 
 onDragCutClassHierarchy: aSession 
 !
@@ -2597,9 +2595,9 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #methodsIdentifier!menu handlers!public! !
 !JadeSystemBrowserPresenter categoriesFor: #methodSourcePresenter!public!updating! !
 !JadeSystemBrowserPresenter categoriesFor: #onDragClassesOverDictionary:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragClassesOverPackageList:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDragClassHierarchy:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDragClassList:!drag & drop!public! !
+!JadeSystemBrowserPresenter categoriesFor: #onDragClassOrMethodOverPackageList:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDragCutClassHierarchy:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDragCutClassList:!drag & drop!public! !
 !JadeSystemBrowserPresenter categoriesFor: #onDragCutMethod:!drag & drop!public! !
