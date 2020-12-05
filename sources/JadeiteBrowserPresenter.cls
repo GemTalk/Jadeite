@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement specEditor componentListPresenter componentPackageContainer packageDictionaryContainer'
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement specEditor componentListPresenter componentPackageContainer packageDictionaryContainer loadSpecTab'
 	classVariableNames: ''
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
@@ -66,6 +66,13 @@ basicAddDictionaryNamed: newDictionaryName
 	self issueCommand: dictionaryService.
 	dictionaryPresenter
 		selection: (dictionaryPresenter list detect: [:newService | newService name = newDictionaryName])!
+
+basicCopyClass: oldClassService to: newClassName
+	oldClassService
+		command: #copyClassTo:;
+		commandArgs: (Array with: newClassName).
+	self issueCommand: oldClassService.
+	self updateAfterFindClass: (RowanClassService new name: newClassName)!
 
 basicDictionaryTabLabel
 	| label |
@@ -225,6 +232,44 @@ buildGlobalsTab
 	classListPresenter list: ListModel new.
 	self updateGlobalsTab!
 
+buildInfoTab: infoTab
+	| infoTabView |
+	infoTab parentPresenter: self textAreaTabs.
+	infoTabView := infoTab createView: 'Editable list view'.
+	infoTabView backcolor: JadeiteTextStyles default colorForNoEdits.
+	infoTabView
+		hasColumnHeaders: false;
+		hasGridLines: false;
+		isMultiSelect: true.
+	(infoTabView allColumns at: 1)
+		isEditable: false;
+		width: 175;
+		getContentsBlock: [:each | each at: 2].
+	infoTabView addColumn.
+	(infoTabView allColumns at: 2)
+		isEditable: false;
+		isAutoResize: true;
+		getContentsBlock: [:each | (each at: 2) ifNil: [String new] ifNotNil: [:iv | (each at: 1) instVarNamed: iv]].
+	^infoTabView!
+
+buildLoadSpecTabIfNecessary
+	| loadSpecTabView cardLabel |
+	loadSpecTab
+		ifNil: 
+			[loadSpecTab := ListPresenter new.
+			loadSpecTabView := self buildInfoTab: loadSpecTab]
+		ifNotNil: [loadSpecTabView := loadSpecTab view].
+	loadSpecTabView contextMenu: self loadSpecMenu.
+	(loadSpecTabView allColumns at: 1) getContentsBlock: [:each | each first].
+	(loadSpecTabView allColumns at: 2) getContentsBlock: [:each | each last].
+	cardLabel := CardLabel text: 'Load Spec'.
+	cardLabel iconBlock: [Icon fromId: (File composeStem: 'Collection' extension: 'ico')].
+	loadSpecTabView
+		arrangement: cardLabel;
+		getImageBlock: nil;
+		name: 'loadSpecTab'.
+	^loadSpecTabView!
+
 buildPreferencesMenu
 	| preferencesMenu showPackageItem |
 	preferencesMenu := Menu fromStrings: self preferencesMenuStrings.
@@ -239,24 +284,9 @@ buildProjectTabIfNecessary
 	projectInfoTab
 		ifNil: 
 			[projectInfoTab := ListPresenter new.
-			projectInfoTab parentPresenter: self textAreaTabs.
-			projectInfoView := projectInfoTab createView: 'Editable list view'.
-			projectInfoView backcolor: JadeiteTextStyles default colorForNoEdits.
-			projectInfoView
-				contextMenu: self projectInfoMenu;
-				hasColumnHeaders: false;
-				hasGridLines: false;
-				isMultiSelect: true.
-			(projectInfoView allColumns at: 1)
-				isEditable: false;
-				width: 175;
-				getContentsBlock: [:each | each at: 2].
-			projectInfoView addColumn.
-			(projectInfoView allColumns at: 2)
-				isEditable: false;
-				isAutoResize: true;
-				getContentsBlock: [:each | (each at: 2) ifNil: [String new] ifNotNil: [:iv | (each at: 1) instVarNamed: iv]]]
+			projectInfoView := self buildInfoTab: projectInfoTab]
 		ifNotNil: [projectInfoView := projectInfoTab view].
+	projectInfoView contextMenu: self projectInfoMenu.
 	cardLabel := CardLabel text: 'Project'.
 	cardLabel iconBlock: [Icon fromId: (File composeStem: 'Collection' extension: 'ico')].
 	projectInfoView
@@ -348,9 +378,24 @@ componentListPresenter: anObject
 contextObject
 	^self selectedClass ifNil: [^gciSession oopNil value] ifNotNil: [:classService | classService oop]!
 
+copyInfo
+	self isProjectInfoTabSelected ifTrue: [self copyProjectInfo].
+	self isLoadSpecTabSelected ifTrue: [self copyLoadSpecInfo]!
+
+copyLoadSpecInfo
+	loadSpecTab selectionIfNone: 
+			[MessageBox notify: 'No selection to copy'.
+			^self].
+	loadSpecTab selection last ifNil: [^self].
+	loadSpecTab selection last copyToClipboard!
+
 copyProjectInfo
-	projectInfoTab selection last ifNil:[^self]. 
-	(projectInfoTab selection first perform: projectInfoTab selection last asSymbol) displayString copyToClipboard!
+	projectInfoTab selectionIfNone: 
+			[MessageBox notify: 'No selection to copy'.
+			^self].
+	projectInfoTab selection last ifNil: [^self].
+	(projectInfoTab selection first perform: projectInfoTab selection last asSymbol) displayString
+		copyToClipboard!
 
 createComponents
 	super createComponents.
@@ -530,6 +575,20 @@ createSchematicWiringForMethodSource
 			send: #onCharAdded:
 			to: self search!
 
+createSchematicWiringForProjectList
+
+	projectListPresenter 
+		when: #'drag:'				send: #'onDragPackageList:'		to: self;
+		when: #'dragCut:'			send: #'onDragCutPackageList:'		to: self;
+		when: #'dragOver:'			send: #'onDragOverPackageList:'	to: self;
+		when: #'drop:'				send: #'onDropOnPackageList:'		to: self;
+		when: #'keyTyped:'			send: #'delayUpdate'				to: self;
+		when: #'selectionChanging:'	send: #'aboutToChange:'			to: self;
+		when: #'selectionChanging:'	send: #'releasedReferencedServices:'	to: self;
+		when: #'selectionChanged' 		send: #'ensureVisible'				to: projectListPresenter;
+		when: #'selectionChanged'		send: #'updateProject' 			to: self
+!
+
 debug
 	self jadeDebug!
 
@@ -642,12 +701,39 @@ expandFullAt: classService
 expandFullHierarchy
 	self expandFullAt: self selectedClass!
 
+findClass
+	| find |
+	self isOkayToChange ifFalse:[^self]. 
+	find := JadeiteFindClassDialog showModal: 'DefaultView' on: self allClasses.
+	find ifNotNil: [self updateAfterFindClass: find]!
+
 findRemovedServices
 	| browserService |
 	browserService := RowanBrowserService new
 				command: #findRemovedServices:;
 				commandArgs: (Array with: BrowserUpdate current activeServices asArray).
 	BrowserUpdate current issueCommands: (Array with: browserService) session: self gciSession!
+
+gitCommit
+	| projectName message service promptResult |
+	projectListPresenter selections size > 1
+		ifTrue: [MessageBox notify: 'Only one project may be committed'].
+	projectName := projectListPresenter selection name.
+	message := String new asValue.
+	promptResult := JadeiteMultilinePrompter
+				on: message
+				prompt: 'Enter Git commit message. (Note - This will NOT do a GemStone commit)'
+				caption: 'Committing Project ' , projectName.
+	promptResult isNil ifTrue: [^self].
+	message value isEmpty
+		ifTrue: [^MessageBox notify: 'Commit message must not be empty. Commit to local repository NOT done.'].
+	service := projectListPresenter selection.
+	service
+		command: #commitWithMessage:;
+		commandArgs: (Array with: message value asString).
+	self issueCommand: service.
+	MessageBox notify: 'Project ' , projectName , ' committed to local repository!!'.
+	self refreshFromServer!
 
 globalsMenu
 	^Menu fromStrings: self globalsMenuStrings!
@@ -666,6 +752,20 @@ globalsMenuStrings
 globalsTab
 	^globalsTab!
 
+gotoClassDefinedPackage
+	" find will go to the class in it's defined package project"
+
+	| selectedCategory selectedMethod |
+	selectedCategory := categoryListPresenter selectionIfNone: [].
+	selectedMethod := methodListPresenter selectionIfNone: [].
+	self updateAfterFindClass: self selectedClass.
+	selectedCategory ifNotNil: [:category | categoryListPresenter selection: category].
+	selectedMethod
+		ifNotNil: 
+			[methodListPresenter selection: (methodListPresenter list
+						detect: [:methodService | methodService selector = selectedMethod selector]).	"It better be there"
+			self updateMenuBar	"to refresh method menu"]!
+
 gotoDictionary
 	" find will go to the class in the dictionary it lives"
 
@@ -679,6 +779,14 @@ gotoDictionaryNamed: dictionaryName
 	dictionaryService := dictionaryPresenter list detect: [:service | service name = dictionaryName]
 				ifNone: [^self].
 	dictionaryPresenter selections: (Array with: dictionaryService)!
+
+hasCategorySelected
+
+	^categoryListPresenter selections notEmpty!
+
+hasExactlyOneCategorySelected
+
+	^categoryListPresenter selections size = 1!
 
 insertCompileErrorText: string into: presenter
 	"parameters ignored in this presenter"
@@ -707,9 +815,71 @@ inspectorContextObject
 
 	^self contextObject!
 
+isClassDefinitionTabSelected
+	^textAreaTabs currentCard name = 'classDefinition'!
+
+isClassSelected
+	^self selectedClass notNil!
+
+isComparisonTabSelected
+	^textAreaTabs currentCard name = 'comparisonTab'!
+
+isDictionariesTabSelected
+
+	^projectDictionaryTabs currentCard name = 'dictionaryList'.
+!
+
+isHierarchyTabSelected
+	^classHierarchyTabs currentCard name = 'classHierarchy'!
+
+isLoadSpecTabSelected
+	^textAreaTabs currentCard name = 'loadSpecTab'.
+!
+
+isMethodSourceTabSelected
+	^textAreaTabs currentCard name = 'methodSource'!
+
 isNoneProjectSelected
 	self projectListPresenter selectionIfNone: [^false].
 	^self projectListPresenter selection name = RowanService notRowanizedPackageName!
+
+isOkayToChange
+	methodSourcePresenter view isModified
+		ifTrue: [(self isOkayToChangeSource: methodSourcePresenter) ifFalse: [^false]].
+	classDefinitionPresenter view isModified
+		ifTrue: 
+			[classDefinitionPresenter ensureVisible.
+			gciSession isValidSession
+				ifTrue: [(JadePresenter unsavedChangesValidSessionDialogIn: self) ifTrue: [^false]]
+				ifFalse: 
+					[(JadePresenter unsavedChangesInvalidSessionDialogIn: self)
+						ifTrue: 
+							[classDefinitionPresenter
+								selectAll;
+								copySelection]].
+			classDefinitionPresenter view isModified: false].
+	classCommentPresenter view isModified
+		ifTrue: 
+			[classCommentPresenter ensureVisible.
+			gciSession isValidSession
+				ifTrue: 
+					[(JadePresenter unsavedChangesValidSessionDialogIn: self
+						text: 'Stay on window with unsaved changes? Class comment has unsaved changes.') ifTrue: [^false]]
+				ifFalse: 
+					[(JadePresenter unsavedChangesInvalidSessionDialogIn: self
+						text: 'Copy changes to Clipboard? Class comment has unsaved changes')
+							ifTrue: 
+								[classCommentPresenter
+									selectAll;
+									copySelection]].
+			classCommentPresenter view isModified: false].
+	self postOkToChangeEvent.
+	^true!
+
+isProjectInfoTabSelected
+
+	^textAreaTabs currentCard name = 'projectInfoTab'.
+!
 
 isProjectItemEnabled: command
 	(command = #refreshFromServer or: [command = #loadV2Project]) ifTrue: [^true].
@@ -718,6 +888,14 @@ isProjectItemEnabled: command
 
 isRowanProjectSelected
 	^(self isNoneProjectSelected or: [projectListPresenter selections isEmpty]) not!
+
+isSourceTabSelected
+
+	^textAreaTabs currentCard name = 'methodSource'.
+!
+
+isSunitTabSelected
+	^self textAreaTabs currentCard name = 'sunit'!
 
 jadeInspect
 	| inspector |
@@ -728,6 +906,20 @@ jadeInspect
 loadProjects
 	self loadProjectsFrom: self.
 	self findRemovedServices!
+
+loadSpecMenu
+	^Menu fromStrings: self loadSpecMenuStrings!
+
+loadSpecMenuStrings
+	self rowanFixMe.	"this really is a cumbersome way to build a menu."
+	0 == 1
+		ifTrue: 
+			[self
+				copyLoadSpecInfo
+				].
+	^#('Dictionaries' 
+	'Copy//copyLoadSpecInfo'
+	'Browse Commit In GitHub//openCommitInGitHub')!
 
 makeSameSelectionsIn: newPresenter as: previousPresenter
 	| projectService packageService dictionaryService classService isMeta methodService |
@@ -1016,6 +1208,10 @@ previousTopViewArrangement
 previousTopViewArrangement: anObject
 	previousTopViewArrangement := anObject!
 
+projectChanges
+	projectListPresenter selections isEmpty ifTrue: [^MessageBox notify: 'No project selected'].
+	^projectListPresenter selection changesUsing: self gciSession!
+
 projectInfoMenu
 	^Menu fromStrings: self projectInfoMenuStrings!
 
@@ -1024,14 +1220,18 @@ projectInfoMenuStrings
 	0 == 1
 		ifTrue: 
 			[self
-				copyProjectInfo
+				copyInfo
 				].
 	^#('Dictionaries' 
-	'Copy//copyProjectInfo'
+	'Copy//copyInfo'
 	'Browse Commit In GitHub//openCommitInGitHub')!
 
 projectInfoTab
 	^projectInfoTab!
+
+projectLog
+	projectListPresenter selection projectLogUsing: self session: gciSession
+!
 
 projectMenu
 	^Menu fromStrings: self projectMenuStrings!
@@ -1061,8 +1261,52 @@ projectMenuStrings
 				refresh].
 	^#('Projects' 'Create ...//createNewProject' 'Load Git Project ...//loadV2Project' 'Reload Project //reloadV2Project' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' '&Add Package...//addPackage' '-' 'Audit//auditProject' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
 
+projectTabLabel
+	"Selections get mixed up switching between system presenters unless the tabs
+	have a unique label. Rather silly, but we'll give the tab a unique number"
+
+	| cardNumber labelString numberedLabelString label |
+	labelString := self basicProjectTabLabel.
+	cardNumber := self parentPresenter view cards indexOf: self view.
+	numberedLabelString := cardNumber printString , ' ' , labelString.
+	label := CardLabel text: numberedLabelString iconBlock: nil. 
+	methodSourcePresenter view isModified
+		ifTrue: 
+			[label := CardLabel text: numberedLabelString iconBlock: [Icon fromId: 'Changed.ico']].
+	^label!
+
 protectedDictionaries
 	^#('Published' 'Globals' 'UserGlobals')!
+
+pullFromGit
+	| projectServices ws |
+	projectServices := projectListPresenter selections.
+	ws := WriteStream on: String new.
+	projectServices do: 
+			[:service |
+			ws
+				nextPutAll: service name;
+				space].
+	(MessageBox
+		confirm: 'It is recommended that you commit changes before doing a pulling projects - ' , ws contents
+				, ' -  from git. Really proceed?')
+			ifFalse: [^self].
+	projectServices do: [:service | service command: #pullFromGit].
+	self issueCommands: projectServices!
+
+pushToGit
+	| projectService ws |
+	projectService := projectListPresenter selection.
+	ws := WriteStream on: String new.
+	ws
+		nextPutAll: projectService name;
+		space.
+	(MessageBox
+		confirm: 'Push projects - ' , ws contents , '- from the local repository to the remote server?')
+			ifFalse: [^self].
+	projectService command: #pushToGit.
+	self issueCommand: projectService.
+	MessageBox notify: 'Project ' , projectService name , ' pushed to remote repository!!'!
 
 queryCommand: aCommandQuery
 	| command |
@@ -1231,7 +1475,12 @@ reloadV2Project
 	^self loadProjects!
 
 removeAppropriateTab
-	self isNoneProjectSelected ifTrue: [self removeProjectTab] ifFalse: [self removeGlobalsTab]!
+	self isNoneProjectSelected
+		ifTrue: 
+			[self
+				removeProjectTab;
+				removeLoadSpecTab]
+		ifFalse: [self removeGlobalsTab]!
 
 removeDictionaries
 	| dictionaryNames |
@@ -1259,6 +1508,12 @@ removeGlobalsTab
 	globalsTabView := self view viewNamed: 'globalsTab' ifNone: [nil].
 	globalsTabView ifNotNil: [self textAreaTabs removeSubView: globalsTabView].
 	globalsTab := nil!
+
+removeLoadSpecTab
+	| loadSpecTabView |
+	loadSpecTabView := self view viewNamed: 'loadSpecTab' ifNone: [nil].
+	loadSpecTabView ifNotNil: [self textAreaTabs removeSubView: loadSpecTabView].
+	loadSpecTab := nil!
 
 removeProjectTab
 	| projectInfoView |
@@ -1411,6 +1666,9 @@ statusBarText
 statusBarText: string
 	statusBarText value: string!
 
+symbolExists: newClassName
+	^(RowanAnsweringService new symbolExists: newClassName asSymbol session: self gciSession) not!
+
 textTabChanged
 	methodSourcePresenter view cancelCallTip.
 	textAreaTabs currentCard name = 'projectInfo' ifTrue: [projectInfoTab ensureVisible].
@@ -1427,6 +1685,21 @@ togglePackageDictionaryColumn
 			[componentPackageContainer view arrangement: 1 / 3.
 			packageDictionaryContainer view show].
 !
+
+unloadProjects
+	| projectNames ws |
+	projectNames := projectListPresenter selections collect: [:projectService | projectService name].
+	projectNames isEmpty ifTrue: [^self].
+	ws := WriteStream on: String new.
+	projectNames do: 
+			[:projectName |
+			ws
+				space;
+				nextPutAll: projectName].
+	(MessageBox
+		confirm: 'Really unload project(s) - ' , ws contents , '?  You will lose any unsaved changes!! '
+		caption: 'UNLOAD PROJECTS WARNING!!') ifFalse: [^self].
+	self basicUnloadProjects: projectNames!
 
 updateAfterFindClass: classService
 	| projectService |
@@ -1455,11 +1728,9 @@ updateAfterFindClassInDictionary: classService
 					self updateHierarchy]]!
 
 updateAfterFindClassInPackage: classService
-	| packageService |
-	packageService := packageListPresenter list
-				detect: [:service | service name = classService definedPackageName]
-				ifNone: [^self].
-	packageListPresenter selections: (Array with: packageService).
+	packageListPresenter list detect: [:service | service name = classService definedPackageName]
+		ifNone: [self projectListPresenter selectionByIndex: 0	"display full list of packages"].
+	self selectPackageNamed: classService packageName.
 	classService meta == true ifTrue: [self selectClassTab].
 	self isClassListTabSelected
 		ifTrue: [self selectClassNamed: classService name asString]
@@ -1560,6 +1831,13 @@ updateHierarchyForPacktionaries
 				commandArgs: (Array with: self selectedPackageNames)].
 	self issueCommand: service!
 
+updateLoadSpecInfoTabFor: service
+	| ws |
+	ws := Array writeStream: 1.
+	service specService objects
+		do: [:assoc | ws nextPut: (Array with: assoc key with: assoc value)].
+	loadSpecTab list: ws contents!
+
 updateMenuBar
 	| shellView menuBar methodFilterMenu textAreaMenu methodMenu |
 	methodFilterMenu := Menu fromStrings: (self isCategoryTabSelected
@@ -1623,11 +1901,13 @@ updateProjectInfo
 	self removeAppropriateTab.
 	self isNoneProjectSelected ifTrue: [^self buildGlobalsTab].
 	self buildProjectTabIfNecessary.
+	self buildLoadSpecTabIfNecessary.
 	service := projectListPresenter selectionIfNone: [^projectInfoTab list: ListModel new].
 	self updateTabLabel.
-	self updateProjectTabFor: service!
+	self updateProjectInfoTabFor: service.
+	self updateLoadSpecInfoTabFor: service.!
 
-updateProjectTabFor: service
+updateProjectInfoTabFor: service
 	| array |
 	array := Array writeStream: 1.
 	array nextPut: (Array with: service with: 'rowanProjectsHome').
@@ -1659,7 +1939,13 @@ variablesMenuStrings
 			self
 				browseInstVarReaders;
 				browseInstVarWriters].
-	^#('&Variables' '&Add Accessors//addVariableAccessors' '&Browse Inst Var Readers//browseInstVarReaders' '&Browse Inst Var Writers//browseInstVarWriters')! !
+	^#('&Variables' '&Add Accessors//addVariableAccessors' '&Browse Inst Var Readers//browseInstVarReaders' '&Browse Inst Var Writers//browseInstVarWriters')!
+
+writeProject
+	| projectServices |
+	projectServices := projectListPresenter selections.
+	projectServices isEmpty ifTrue: [^MessageBox notify: 'No project selected'].
+	^self basicWriteProject: projectServices! !
 !JadeiteBrowserPresenter categoriesFor: #abortTransaction!public!transaction management! !
 !JadeiteBrowserPresenter categoriesFor: #addDictionary!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #additionalAccelerators!constants!public! !
@@ -1668,6 +1954,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #allSelectedProjectsDirty!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #auditProject!project menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #basicAddDictionaryNamed:!menu handlers support!private! !
+!JadeiteBrowserPresenter categoriesFor: #basicCopyClass:to:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicDictionaryTabLabel!displaying!private! !
 !JadeiteBrowserPresenter categoriesFor: #basicProjectTabLabel!displaying!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #basicRemoveClass:!menu handlers support!private! !
@@ -1685,6 +1972,8 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #browseSelectedCategoryMethods!menu handlers!public!queries! !
 !JadeiteBrowserPresenter categoriesFor: #browseSelectedMethods!menu handlers!public!queries! !
 !JadeiteBrowserPresenter categoriesFor: #buildGlobalsTab!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #buildInfoTab:!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #buildLoadSpecTabIfNecessary!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #buildPreferencesMenu!menus!private!updating! !
 !JadeiteBrowserPresenter categoriesFor: #buildProjectTabIfNecessary!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !
@@ -1697,6 +1986,8 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #componentListPresenter!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #componentListPresenter:!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #contextObject!menu handlers support!private! !
+!JadeiteBrowserPresenter categoriesFor: #copyInfo!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #copyLoadSpecInfo!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #copyProjectInfo!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
 !JadeiteBrowserPresenter categoriesFor: #createListViewFor:!private! !
@@ -1706,6 +1997,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #createSchematicWiringForClassList!create schemantic wiring!public! !
 !JadeiteBrowserPresenter categoriesFor: #createSchematicWiringForMethodList!create schemantic wiring!public! !
 !JadeiteBrowserPresenter categoriesFor: #createSchematicWiringForMethodSource!initialize/release!public! !
+!JadeiteBrowserPresenter categoriesFor: #createSchematicWiringForProjectList!create schemantic wiring!public! !
 !JadeiteBrowserPresenter categoriesFor: #debug!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #dictionaryMenuStrings!menus!public! !
@@ -1719,23 +2011,41 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #editSaveMethod:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #expandFullAt:!menu handlers support!private!updating! !
 !JadeiteBrowserPresenter categoriesFor: #expandFullHierarchy!menu handlers!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #findClass!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #findRemovedServices!menu handlers support!private! !
+!JadeiteBrowserPresenter categoriesFor: #gitCommit!project menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #globalsMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #globalsMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #globalsTab!accessing!private! !
+!JadeiteBrowserPresenter categoriesFor: #gotoClassDefinedPackage!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #gotoDictionary!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #gotoDictionaryNamed:!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #hasCategorySelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #hasExactlyOneCategorySelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #insertCompileErrorText:into:!compile support!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertIfFalse!menu handlers!must not strip!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertIfTrue!menu handlers!must not strip!public! !
 !JadeiteBrowserPresenter categoriesFor: #inspectGlobal!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #inspectMethod!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #inspectorContextObject!menu handlers support!private! !
+!JadeiteBrowserPresenter categoriesFor: #isClassDefinitionTabSelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #isClassSelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #isComparisonTabSelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #isDictionariesTabSelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #isHierarchyTabSelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #isLoadSpecTabSelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #isMethodSourceTabSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #isNoneProjectSelected!event handlers!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #isOkayToChange!event handlers!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #isProjectInfoTabSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #isProjectItemEnabled:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #isRowanProjectSelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #isSourceTabSelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #isSunitTabSelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #jadeInspect!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #loadProjects!menu handlers support!private! !
+!JadeiteBrowserPresenter categoriesFor: #loadSpecMenu!menus!public! !
+!JadeiteBrowserPresenter categoriesFor: #loadSpecMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #makeSameSelectionsIn:as:!menu handlers!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #maxAutoCompleteListSize!constants!public! !
 !JadeiteBrowserPresenter categoriesFor: #methodMenu:!menu handlers support!private! !
@@ -1769,13 +2079,18 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #previousTabViewArrangement:!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #previousTopViewArrangement!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #previousTopViewArrangement:!accessing!private! !
+!JadeiteBrowserPresenter categoriesFor: #projectChanges!project menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #projectInfoMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #projectInfoMenuStrings!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #projectInfoTab!accessing!public! !
+!JadeiteBrowserPresenter categoriesFor: #projectLog!project menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #projectMenu!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #projectMenuCommands!menus!public! !
 !JadeiteBrowserPresenter categoriesFor: #projectMenuStrings!menus!public! !
+!JadeiteBrowserPresenter categoriesFor: #projectTabLabel!displaying!private! !
 !JadeiteBrowserPresenter categoriesFor: #protectedDictionaries!constants!menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #pullFromGit!project menu handlers!public! !
+!JadeiteBrowserPresenter categoriesFor: #pushToGit!project menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #reformatSource!menu handlers!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #refresh!event handlers!menu handlers!public!updating! !
@@ -1788,6 +2103,7 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #removeDictionaries!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #removeGlobal!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #removeGlobalsTab!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #removeLoadSpecTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #removeProjectTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #resetClassTemplate!private! !
 !JadeiteBrowserPresenter categoriesFor: #resetFontSize!menu handlers!public! !
@@ -1812,8 +2128,10 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #showPackageList!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #statusBarText!accessing!public! !
 !JadeiteBrowserPresenter categoriesFor: #statusBarText:!accessing!public! !
+!JadeiteBrowserPresenter categoriesFor: #symbolExists:!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #textTabChanged!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #togglePackageDictionaryColumn!event handlers!public!updating! !
+!JadeiteBrowserPresenter categoriesFor: #unloadProjects!project menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #updateAfterFindClass:!menu handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateAfterFindClassInDictionary:!menu handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateAfterFindClassInPackage:!menu handlers!public!updating! !
@@ -1826,14 +2144,16 @@ variablesMenuStrings
 !JadeiteBrowserPresenter categoriesFor: #updateGlobalsTab!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #updateHierarchy!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateHierarchyForPacktionaries!private!updating! !
+!JadeiteBrowserPresenter categoriesFor: #updateLoadSpecInfoTabFor:!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #updateMenuBar!menus!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateMethodSourceColor!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateProject!event handlers!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateProjectInfo!private!tabs! !
-!JadeiteBrowserPresenter categoriesFor: #updateProjectTabFor:!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #updateProjectInfoTabFor:!private!tabs! !
 !JadeiteBrowserPresenter categoriesFor: #updateSystemTab!event handlers support!private!updating! !
 !JadeiteBrowserPresenter categoriesFor: #updateTabLabel!public!updating! !
 !JadeiteBrowserPresenter categoriesFor: #variablesMenuStrings!menus!public! !
+!JadeiteBrowserPresenter categoriesFor: #writeProject!project menu handlers!public! !
 
 !JadeiteBrowserPresenter class methodsFor!
 
@@ -1845,10 +2165,10 @@ resource_Default_view
 	ViewComposer openOn: (ResourceIdentifier class: self selector: #resource_Default_view)
 	"
 
-	^#(#'!!STL' 4 788558 10 ##(Smalltalk.STBViewProxy) ##(Smalltalk.ContainerView) 34 15 nil nil 34 2 8 1409286144 131073 416 nil nil 328198 ##(Smalltalk.Point) 3001 1601 517 nil nil nil 416 1180166 ##(Smalltalk.ProportionalLayout) 170 176 34 4 410 ##(Smalltalk.ContainerView) 34 15 nil 416 34 2 8 1140850688 131073 576 nil nil nil 5 nil nil nil 576 514 170 176 34 8 410 ##(Smalltalk.ContainerView) 34 15 nil 576 34 2 8 1140850688 131073 688 nil nil nil 5 nil nil nil 688 852230 ##(Smalltalk.FramingLayout) 170 176 34 6 410 ##(Smalltalk.CardContainer) 34 16 nil 688 34 2 8 1409286144 131073 816 nil 327686 ##(Smalltalk.Color) #default nil 5 nil 263174 ##(Smalltalk.Font) nil true 524550 ##(Smalltalk.LOGFONTW) 8 #[240 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 188 2 0 0 0 0 0 0 1 2 1 34 83 0 121 0 115 0 116 0 101 0 109 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 482 193 193 nil 816 656710 1 ##(Smalltalk.CardLayout) 138 144 34 2 721414 ##(Smalltalk.Association) 590662 1 ##(Smalltalk.CardLabel) 8 'Class' nil nil 410 ##(Smalltalk.ContainerView) 34 15 nil 816 34 2 8 1140850688 131073 1152 nil nil nil 5 nil nil nil 1152 nil 170 192 8 #() nil 983302 ##(Smalltalk.MessageSequence) 138 144 34 1 721670 ##(Smalltalk.MessageSend) #createAt:extent: 34 2 482 9 9 482 561 1 1152 983302 ##(Smalltalk.WINDOWPLACEMENT) 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 4 0 0 0 28 1 0 0 4 0 0 0] 8 #() 482 193 193 nil 27 1074 1106 8 'Instance' nil nil 410 ##(Smalltalk.ContainerView) 34 15 nil 816 34 2 8 1140850688 131073 1520 nil nil nil 5 nil nil nil 1520 nil 170 192 1232 nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 9 9 482 561 1 1520 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 4 0 0 0 28 1 0 0 4 0 0 0] 8 #() 1456 nil 27 1520 nil nil nil 170 192 34 4 1152 8 'classTab' 1520 8 'instanceTab' nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 816 34 2 8 1140916738 1 1824 590662 2 ##(Smalltalk.ListModel) 138 144 34 2 1488 1120 nil 1310726 ##(Smalltalk.IdentitySearchPolicy) nil nil 1 nil nil nil 1824 nil 8 1737494000 787814 3 ##(Smalltalk.BlockClosure) 0 nil 918822 ##(Smalltalk.CompiledMethod) 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 2016 7 257 nil 2002 0 nil 2034 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 2080 7 257 nil 1049926 1 ##(Smalltalk.IconImageManager) nil nil nil nil nil #smallIcons nil nil nil nil nil 1250 138 144 34 3 1314 #createAt:extent: 34 2 482 1 1 482 577 51 1824 1314 #setSingleSelection: 8 #(1) 1824 1314 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 1824 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 32 1 0 0 25 0 0 0] 8 #() 1456 nil 27 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 695 482 577 51 816 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 91 1 0 0 32 1 0 0 116 1 0 0] 34 3 1520 1152 1824 1456 nil 27 1181766 2 ##(Smalltalk.FramingConstraints) 1180678 ##(Smalltalk.FramingCalculation) #fixedParentLeft 1 2578 #fixedParentRight 1 2578 #fixedParentBottom -99 2578 #fixedViewTop 51 410 ##(Smalltalk.CardContainer) 34 16 nil 688 34 2 8 1409286144 131073 2656 nil 896 nil 5 nil nil nil 2656 1010 138 144 34 2 1074 1106 8 'Hierarchy' nil nil 410 ##(Smalltalk.TreeView) 34 27 nil 2656 34 2 8 1409356327 1025 2816 590918 3 ##(Smalltalk.TreeModel) nil 1968 525062 ##(Smalltalk.TreeNode) nil nil nil 170 192 1232 896 nil 29 nil nil nil 2816 nil 8 1737728064 2002 0 nil 1180966 ##(Smalltalk.CompiledExpression) 2 1 2000 8 'doIt' 8 '[:each | each displayString]' 8 #[30 105 226 0 106] #displayString 2976 7 257 nil ##(Smalltalk.IconicListAbstract) 2144 nil 2002 0 nil 2994 2 1 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each toolTip]' 8 #[30 105 226 0 106] #toolTip 3072 7 257 nil 2002 0 nil 2994 5 1 2000 8 'doIt' 8 '[:each | each item displayStringFor: each browser: each view parentPresenter]' 8 #[33 105 226 0 17 226 1 160 193 106] #item #view #parentPresenter #displayStringFor:browser: 3152 7 257 nil nil nil 170 176 1232 33 #noIcons 1 170 ##(Smalltalk.PluggableLookupTable) 1232 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 9 53 482 561 635 2816 1394 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 28 1 0 0 87 1 0 0] 8 #() 1456 nil 27 1074 1106 8 'Classes' nil nil 410 ##(Smalltalk.ListView) 34 45 nil 2656 34 2 8 1409372237 1025 3472 1890 138 144 1232 nil 1968 896 nil 29 nil nil nil 3472 nil 8 1737156720 459270 ##(Smalltalk.Message) #displayString 8 #() nil 2144 nil nil nil nil nil nil 138 144 34 1 920646 5 ##(Smalltalk.ListViewColumn) 8 '' 553 #left 3586 #displayString 8 #() 3586 #<= 8 #() nil nil 3472 nil 3 nil 2002 0 nil 2994 5 1 2000 8 'doIt' 8 '[:each | each item displayStringFor: each browser: each view parentPresenter]' 8 #[33 105 226 0 17 226 1 160 193 106] #item #view #parentPresenter #displayStringFor:browser: 3776 7 257 nil #report 8 #() nil 131169 nil 1 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 9 53 482 561 635 3472 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 28 1 0 0 87 1 0 0] 8 #() 1456 nil 35 3472 nil nil nil 170 192 34 4 3472 8 'classList' 2816 8 'classHierarchy' nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 2656 34 2 8 1140916736 1 4096 1890 138 144 34 2 3440 2784 nil 1968 nil nil 1 nil nil nil 4096 nil 8 1737494000 2002 0 nil 2034 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 4224 7 257 nil 2002 0 nil 2034 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 4272 7 257 nil 2144 nil nil nil nil nil #smallIcons nil nil nil nil nil 1250 138 144 34 3 1314 #createAt:extent: 34 2 482 1 1 482 577 695 4096 1314 #setSingleSelection: 8 #(1) 4096 1314 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 4096 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 32 1 0 0 91 1 0 0] 8 #() 1456 nil 27 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 1 482 577 695 2656 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 32 1 0 0 91 1 0 0] 34 3 3472 2816 4096 1456 nil 27 2546 2592 1 2608 1 2578 #fixedParentTop 1 2624 -99 410 ##(Smalltalk.PushButton) 34 20 nil 688 34 2 8 1140858880 1 4736 nil 882 #silver nil 5 nil nil nil 4736 nil 8 1737266240 1180998 4 ##(Smalltalk.CommandDescription) #gotoClassDefinedPackageViaButton nil 1 1 nil nil false nil nil nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 745 482 577 51 4736 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 116 1 0 0 32 1 0 0 141 1 0 0] 8 #() 1456 nil 29 2546 2592 1 2608 1 2624 -49 2624 1 170 192 34 6 816 8 'instanceClassTabs' 2656 8 'classHierarchyTabs' 4736 8 'definedPackageClassText' nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1403 1 482 577 795 688 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 189 2 0 0 0 0 0 0 221 3 0 0 141 1 0 0] 34 3 2656 816 4736 1456 nil 27 524806 ##(Smalltalk.Fraction) 3 11 410 ##(Smalltalk.ContainerView) 34 15 nil 576 34 2 8 1140850688 131073 5312 nil nil nil 5 nil nil nil 5312 514 170 176 1232 false 170 192 34 2 410 ##(Smalltalk.ListView) 34 45 nil 5312 34 2 8 1409405261 1025 5440 1890 138 144 1232 nil 1968 896 nil 5 nil nil nil 5440 nil 8 1737156720 3586 #displayString 8 #() ##(Smalltalk.IconicListAbstract) 2144 nil nil nil nil nil nil 138 144 34 1 3666 8 'Column 1' 425 #left 2002 0 nil 2994 2 1 2000 8 'doIt' 8 '[:each | each displayName]' 8 #[30 105 226 0 106] #displayName 5648 7 257 nil ##(Smalltalk.SortedCollection) nil nil 5440 nil 3 2002 0 nil 2994 2 1 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each toolTip]' 8 #[30 105 226 0 106] #toolTip 5728 7 257 nil 2002 0 nil 2994 3 1 2000 8 'doIt' 8 '[:each | each item displayStringFor: each]' 8 #[31 105 226 0 17 177 106] #item #displayStringFor: 5808 7 257 nil #report 3856 nil 133217 nil 1 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1250 138 144 34 2 1314 #createAt:extent: 34 2 482 1 1 482 433 795 5440 1314 #text: 34 1 8 'Column 1' 5440 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 216 0 0 0 141 1 0 0] 8 #() 1456 nil 35 8 'projectList' nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 1 482 433 795 5312 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 216 0 0 0 141 1 0 0] 34 1 5440 1456 nil 27 5282 7 41 410 ##(Smalltalk.ContainerView) 34 15 nil 576 34 2 8 1140850688 131073 6288 nil nil nil 5 nil nil nil 6288 514 170 176 1232 false 170 192 34 2 410 ##(Smalltalk.ContainerView) 34 15 nil 6288 34 2 8 1140850688 131073 6416 nil nil nil 5 nil nil nil 6416 514 170 176 34 2 410 ##(Smalltalk.CardContainer) 34 16 nil 6416 34 2 8 1409286144 131073 6528 nil 896 nil 21 nil nil nil 6528 1010 138 144 1232 nil nil nil nil 170 192 1232 nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 6528 34 2 8 1140916736 1 6640 1890 138 144 1232 nil 1968 nil nil 17 nil nil nil 6640 nil 8 1737494000 2002 0 nil 2034 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 6752 7 257 nil 2002 0 nil 2034 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 6800 7 257 nil 2144 nil nil nil nil nil #noIcons nil nil nil nil nil 1250 138 144 34 2 1314 #createAt:extent: 34 2 482 1 1 482 477 795 6640 1314 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 6640 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 238 0 0 0 141 1 0 0] 8 #() 1456 nil 27 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 1 482 477 795 6528 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 238 0 0 0 141 1 0 0] 34 1 6640 1456 nil 27 3 false 170 192 34 2 6528 8 'packageDictionaryCards' nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 485 1 482 477 795 6416 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 242 0 0 0 0 0 0 0 224 1 0 0 141 1 0 0] 34 1 6528 1456 nil 27 8 'packageDictionaryContainer' nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 433 1 482 961 795 6288 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 216 0 0 0 0 0 0 0 184 2 0 0 141 1 0 0] 34 3 410 ##(Smalltalk.ContainerView) 34 15 nil 6288 34 2 8 1140850688 131073 7584 nil nil nil 5 nil nil nil 7584 514 170 176 1232 false 170 192 1232 nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 1 482 475 795 7584 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 237 0 0 0 141 1 0 0] 34 1 410 ##(Smalltalk.CardContainer) 34 16 nil 7584 34 2 8 1409286144 131073 7856 nil 896 nil 5 nil nil nil 7856 1010 138 144 34 1 1074 8 'Components' 410 ##(Smalltalk.JadeiteTreeView) 34 27 nil 7856 34 2 8 1140916775 1025 8000 1049670 3 ##(Smalltalk.JadeiteTreeModel) nil 1968 984070 ##(Smalltalk.JadeiteTreeNode) nil nil nil nil 170 192 1232 896 nil 5 nil nil nil 8000 nil 8 1737728064 2002 0 nil 2994 2 1 3584 8 'doIt' 8 '[:service | service displayString]' 8 #[30 105 226 0 106] #displayString 8160 7 257 nil ##(Smalltalk.IconicListAbstract) 2144 nil nil nil nil nil 170 176 1232 33 #noIcons 1 170 ##(Smalltalk.PluggableLookupTable) 1232 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 9 53 482 459 735 8000 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 233 0 0 0 137 1 0 0] 8 #() 1456 nil 27 8000 nil nil nil 170 192 34 2 8000 8 'componentTree' nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 7856 34 2 8 1140916736 1 8480 1890 138 144 34 1 7984 nil 1968 nil nil 1 nil nil nil 8480 nil 8 1737494000 2002 0 nil 2034 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 8608 7 257 nil 2002 0 nil 2034 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 8656 7 257 nil 2144 nil nil nil nil nil #noIcons nil nil nil nil nil 1250 138 144 34 3 1314 #createAt:extent: 34 2 482 1 1 482 475 795 8480 1314 #setSingleSelection: 8 #(1) 8480 1314 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 8480 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 237 0 0 0 141 1 0 0] 8 #() 1456 nil 27 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 1 482 475 795 7856 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 237 0 0 0 141 1 0 0] 34 2 8000 8480 1456 nil 27 1456 nil 27 410 ##(Smalltalk.Splitter) 34 12 nil 6288 34 2 8 1140850688 1 9088 nil 896 nil 517 nil nil nil 1510470 1 ##(Smalltalk.DraggableViewInteractor) 9088 nil 1 #left nil nil nil 482 1 1 482 9 9 nil 9184 nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 475 1 482 11 795 9088 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 237 0 0 0 0 0 0 0 242 0 0 0 141 1 0 0] 8 #() 1456 nil 27 6416 1456 nil 27 5282 3 7 410 ##(Smalltalk.ContainerView) 34 15 nil 576 34 2 8 1140850688 131073 9392 nil nil nil 5 nil nil nil 9392 514 170 176 34 4 410 ##(Smalltalk.CardContainer) 34 16 nil 9392 34 2 8 1409286144 131073 9504 nil 896 nil 5 nil nil nil 9504 1010 138 144 34 2 1074 8 'Category' 410 ##(Smalltalk.ListView) 34 45 nil 9504 34 2 8 1409372233 1025 9648 1890 138 144 1232 nil 1968 896 nil 21 nil nil nil 9648 nil 8 1737156720 3586 #displayString 8 #() nil 2144 nil nil nil nil nil nil 138 144 34 1 3666 8 'Column 1' 351 #left 3586 #displayString 8 #() ##(Smalltalk.SortedCollection) 2002 0 nil 2994 1 83886081 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each]' 1779525917 9888 7 257 nil nil 9648 nil 3 nil nil #report 3856 nil 131169 nil 1 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1250 138 144 34 2 1314 #createAt:extent: 34 2 482 9 53 482 359 735 9648 1314 #text: 34 1 8 'Column 1' 9648 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 183 0 0 0 137 1 0 0] 8 #() 1456 nil 35 1074 8 'Variables' 410 ##(Smalltalk.ListView) 34 45 nil 9504 34 2 8 1409372233 1025 10192 1890 138 144 1232 nil 1968 896 nil 21 nil nil nil 10192 nil 8 1737156720 3586 #displayString 8 #() nil 2144 nil nil 2002 0 nil 2994 4 1 2000 8 'doIt' 8 '[:each | 
-each view parentPresenter possiblyBoldVariable: each]' 8 #[32 105 226 0 159 17 178 106] #view #parentPresenter #displayVariable: 10336 7 257 nil nil nil nil 138 144 34 1 3666 8 'Column 1' 351 #left 3586 #displayString 10320 ##(Smalltalk.SortedCollection) nil nil 10192 nil 3 nil 2002 0 nil 2994 4 1 2000 8 'doIt' 8 '[:each | 
-each view parentPresenter possiblyBoldVariable: each]' 8 #[32 105 226 0 159 17 178 106] #view #parentPresenter #displayVariable: 10496 7 257 nil #report 3856 nil 131169 nil 1 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1250 138 144 34 2 1314 #createAt:extent: 34 2 482 9 53 482 359 735 10192 1314 #text: 34 1 8 'Column 1' 10192 1394 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 183 0 0 0 137 1 0 0] 8 #() 1456 nil 35 9648 nil nil nil 170 192 34 4 9648 8 'categoryList' 10192 8 'variableList' nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 9504 34 2 8 1140916736 1 10848 1890 138 144 34 2 9632 10176 nil 1968 nil nil 1 nil nil nil 10848 nil 8 1737494000 2002 0 nil 2034 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 10976 7 257 nil 2002 0 nil 2034 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 11024 7 257 nil 2144 nil nil nil nil nil #noIcons nil nil nil nil nil 1250 138 144 34 3 1314 #createAt:extent: 34 2 482 1 1 482 375 795 10848 1314 #setSingleSelection: 8 #(1) 10848 1314 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 10848 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 187 0 0 0 141 1 0 0] 8 #() 1456 nil 27 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 1 482 375 795 9504 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 187 0 0 0 141 1 0 0] 34 3 9648 10192 10848 1456 nil 27 327734 ##(Smalltalk.Float) 8 0 0 0 0 0 0 232 63 410 ##(Smalltalk.ContainerView) 34 15 nil 9392 34 2 8 1140850688 131073 11488 nil nil nil 5 nil nil nil 11488 754 170 176 34 6 410 ##(Smalltalk.TextEdit) 34 16 nil 11488 34 2 8 1140916352 1025 11600 nil 896 nil 5 nil nil nil 11600 nil 8 1737104896 852486 ##(Smalltalk.NullConverter) nil nil 3 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 1 482 629 51 11600 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 58 1 0 0 25 0 0 0] 8 #() 1456 nil 27 2546 2592 1 2608 1 4720 1 4720 51 410 ##(Smalltalk.ListView) 34 45 nil 11488 34 2 8 1409372233 1025 11888 1890 138 144 1232 nil 1968 896 nil 13 nil nil nil 11888 nil 8 1737156720 3586 #displayString 8 #() ##(Smalltalk.IconicListAbstract) 2144 nil nil nil nil nil nil 138 144 34 2 3666 8 '' 41 #left 1314 #empty 8 #() 16 3586 #<= 8 #() nil nil 11888 2002 0 nil 2994 2 1 2000 8 'doIt' 8 '[:each | each subSuperIcon]' 8 #[30 105 226 0 106] #subSuperIcon 12160 7 257 nil 1 nil nil 3666 8 'Selector' 581 #left 3586 #displayString 12016 ##(Smalltalk.SortedCollection) nil nil 11888 nil 3 nil 2002 0 nil 2994 5 1 2000 8 'doIt' 8 '[:each | each item displayStringFor: each browser: each view parentPresenter]' 8 #[33 105 226 0 17 226 1 160 193 106] #item #view #parentPresenter #displayStringFor:browser: 12288 7 257 nil #report 3856 nil 133221 nil 1 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 55 482 629 691 11888 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 27 0 0 0 58 1 0 0 116 1 0 0] 8 #() 1456 nil 35 2546 2592 1 2608 1 4720 55 2624 -49 410 ##(Smalltalk.PushButton) 34 20 nil 11488 34 2 8 1140858880 1 12544 nil 896 nil 5 nil nil nil 12544 nil 8 1737266240 4834 #gotoMethodDefinedPackageViaButton nil 1 1 nil nil false nil nil nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 745 482 629 51 12544 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 116 1 0 0 58 1 0 0 141 1 0 0] 8 #() 1456 nil 29 2546 2592 1 2608 1 2624 -49 2624 1 170 192 34 6 11600 8 'categoryMethodText' 11888 8 'methodList' 12544 8 'definedPackageMethodText' nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 385 1 482 629 795 11488 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 192 0 0 0 0 0 0 0 250 1 0 0 141 1 0 0] 34 3 11888 12544 11600 1456 nil 27 11458 8 0 0 0 0 0 0 244 63 false 170 192 34 2 9504 8 'methodFilterTabs' nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1989 1 482 1013 795 9392 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 226 3 0 0 0 0 0 0 220 5 0 0 141 1 0 0] 34 3 9504 410 ##(Smalltalk.Splitter) 34 12 nil 9392 34 2 8 1140850688 1 13280 nil 896 nil 517 nil nil nil 9154 13280 nil 1 #left nil nil nil 9184 9200 nil 9184 nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 375 1 482 11 795 13280 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 187 0 0 0 0 0 0 0 192 0 0 0 141 1 0 0] 8 #() 1456 nil 27 11488 1456 nil 27 5282 15 41 false 170 192 34 2 6288 8 'componentPackageContainer' nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 1 482 3001 795 576 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 220 5 0 0 141 1 0 0] 34 6 5312 6288 410 ##(Smalltalk.Splitter) 34 12 nil 576 34 2 8 1140850688 1 13744 nil 896 nil 517 nil nil nil 9154 13744 nil 1 #left nil nil nil 9184 9200 nil 9184 nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1393 1 482 11 795 13744 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 184 2 0 0 0 0 0 0 189 2 0 0 141 1 0 0] 8 #() 1456 nil 27 688 410 ##(Smalltalk.Splitter) 34 12 nil 576 34 2 8 1140850688 1 13984 nil 896 nil 517 nil nil nil 9154 13984 nil 1 #left nil nil nil 9184 9200 nil 9184 nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1979 1 482 11 795 13984 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 221 3 0 0 0 0 0 0 226 3 0 0 141 1 0 0] 8 #() 1456 nil 27 9392 1456 nil 27 25 410 ##(Smalltalk.ContainerView) 34 15 nil 416 34 2 8 1140850688 131073 14224 nil nil nil 5 nil nil nil 14224 754 170 176 34 4 410 ##(Smalltalk.CardContainer) 34 16 nil 14224 34 2 8 1409286144 131073 14336 nil 896 nil 5 nil nil nil 14336 1010 138 144 34 6 1074 1106 8 'SUnit' 2002 0 nil 2994 4 1 2000 8 'doIt' 8 '[Icon fromId: ''icons\UnitTestPlugin.ico'']' 8 #[32 105 45 30 178 106] 983558 ##(Smalltalk.VariableBinding) #Icon ##(Smalltalk.Icon) 8 'icons\UnitTestPlugin.ico' #fromId: 14496 7 1 nil nil 410 ##(Smalltalk.ReferenceView) 34 14 nil 14336 34 2 8 1140850688 131073 14624 nil 196934 1 ##(Smalltalk.RGB) 26337781 nil 5 nil nil nil 14624 1180230 1 ##(Smalltalk.ResourceIdentifier) ##(Smalltalk.JadeiteSUnitInClassPresenter) #resource_Default_view nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 9 53 482 2985 697 14624 1394 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 216 5 0 0 118 1 0 0] 1232 1456 nil 27 1074 1106 8 'Class Definition' nil nil 410 ##(Smalltalk.JadeiteScintillaView) 34 50 nil 14336 34 2 8 1445007428 1025 14944 721990 2 ##(Smalltalk.ValueHolder) nil false 1310726 ##(Smalltalk.EqualitySearchPolicy) nil 14690 26337781 nil 5 265030 4 ##(Smalltalk.Menu) nil true 34 11 984134 2 ##(Smalltalk.CommandMenuItem) 1 4834 #editSave 8 '&Save' 9383 1 nil nil nil 983366 1 ##(Smalltalk.DividerMenuItem) 4097 15138 1 4834 #editUndo 8 '&Undo' 9397 1 nil nil nil 15138 1 4834 #editRedo 8 '&Redo' 9395 1 nil nil nil 15202 4097 15138 1 4834 #editCut 8 'Cu&t' 9393 1 nil nil nil 15138 1 4834 #editCopy 8 '&Copy' 9351 1 nil nil nil 15138 1 4834 #editPaste 8 '&Paste' 9389 1 nil nil nil 15138 1 4834 #editDelete 8 '&Delete' 1629 1 nil nil nil 15202 4097 15138 1 4834 #editSelectAll 8 'Select &All' 9347 1 nil nil nil 8 '' nil 134217729 nil nil nil nil nil 914 nil true 459014 ##(Smalltalk.LOGFONT) 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 86 101 114 100 97 110 97 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 482 193 193 nil 14944 nil 8 1429223005 11682 nil nil 13 nil 170 192 34 4 #normal 1182790 1 ##(Smalltalk.ScintillaTextStyle) 1 nil nil 1 nil nil nil nil #normal nil nil nil #callTip 15762 77 882 #gray 882 #white 1 nil nil nil nil #callTip nil nil nil nil 1639686 ##(Smalltalk.SmalltalkExpressionStyler) 1 nil nil false 138 144 1232 170 192 34 2 #default 1641542 2 ##(Smalltalk.ScintillaMarkerDefinition) 1 nil nil nil 14944 #circle nil nil nil nil nil nil 138 ##(Smalltalk.IdentitySet) 1232 nil 170 176 1232 9215 nil nil nil nil 4800 nil nil 65 nil nil 170 192 34 6 #specialCharacter 8 '()[]<>' #literalArray 8 '()' #literalBytes 8 '[]' 8 '' 3 170 192 34 2 #container 170 192 34 2 #normal 15776 nil nil nil nil 1 nil 170 192 34 6 1 1510470 3 ##(Smalltalk.ScintillaIndicatorStyle) 1 14944 14690 65025 3 false 1 nil nil nil nil nil nil 3 16178 3 14944 882 #blue 5 false 3 nil nil nil nil nil nil 5 16178 5 14944 882 #red 1 false 5 nil nil nil nil nil nil nil nil 170 192 34 6 #Warning 15762 1027 14690 60239 14690 31326207 1 nil nil nil nil #Warning nil nil nil #Error 15762 1031 14690 335 14690 31317503 1 nil nil nil nil #Error nil nil nil #Notification 15762 1029 nil 14690 31185883 1 nil nil nil nil #Notification nil nil nil nil 1250 138 144 34 9 1314 #createAt:extent: 34 2 482 9 53 482 2985 697 14944 1314 #contextMenu: 34 1 15104 14944 1314 #caretPeriod: 8 #(530) 14944 1314 #wordWrap: 8 #(true) 14944 1314 #margins: 34 1 34 3 985158 3 ##(Smalltalk.ScintillaMargin) 1 14944 1 3 nil nil 5 nil 16706 3 14944 33 nil 3 67108863 5 nil 16706 5 14944 1 nil 3 -67108863 5 nil 14944 1314 #tabWidth: 8 #(4) 14944 1314 #targetRange: 34 1 525062 ##(Smalltalk.Interval) 1 -1 3 14944 1314 #maxCompletionListHeight: 8 #(9) 14944 1314 #edgeColumn: 8 #(1) 14944 1394 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 216 5 0 0 118 1 0 0] 8 #() 1456 nil 29 1074 1106 8 'Class Documentation' nil nil 410 ##(Smalltalk.JadeiteScintillaView) 34 50 nil 14336 34 2 8 1445007428 1025 17024 15010 nil false 15056 nil 14690 26337781 nil 5 15090 nil true 34 1 15138 1 4834 #editSaveClassComment 8 'Save' 1025 1 nil nil nil 8 '' nil 134217729 nil nil nil nil nil 914 nil true 15634 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 86 101 114 100 97 110 97 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 482 193 193 nil 17024 nil 8 1429223005 11682 nil nil 15 nil 170 192 34 4 #normal 15762 1 nil nil 1 nil nil nil nil #normal nil nil nil #callTip 15762 77 15808 15824 1 nil nil nil nil #callTip nil nil nil nil 1245510 1 ##(Smalltalk.NullScintillaStyler) #normal 170 192 34 2 #default 15922 1 nil nil nil 17024 #circle nil nil nil nil nil nil 138 ##(Smalltalk.IdentitySet) 1232 nil 170 176 1232 9215 nil nil nil nil 4800 nil nil 65 nil nil nil 8 '' 3 170 192 34 2 #container 170 192 34 2 #normal 17344 nil nil nil nil 1 nil 170 192 34 6 1 16178 1 17024 14690 65025 3 false 1 nil nil nil nil nil nil 3 16178 3 17024 16240 5 false 3 nil nil nil nil nil nil 5 16178 5 17024 16272 1 false 5 nil nil nil nil nil nil nil nil 170 192 34 6 #Warning 15762 1027 14690 60239 14690 31326207 1 nil nil nil nil #Warning nil nil nil #Error 15762 1031 14690 335 14690 31317503 1 nil nil nil nil #Error nil nil nil #Notification 15762 1029 nil 14690 31185883 1 nil nil nil nil #Notification nil nil nil nil 1250 138 144 34 10 1314 #createAt:extent: 34 2 482 9 53 482 2985 697 17024 1314 #contextMenu: 34 1 17120 17024 1314 #hoverTime: 8 #(1000000) 17024 1314 #caretPeriod: 8 #(530) 17024 1314 #wordWrap: 8 #(true) 17024 1314 #margins: 34 1 34 3 16706 1 17024 1 3 nil nil 5 nil 16706 3 17024 33 nil 3 67108863 5 nil 16706 5 17024 1 nil 3 -67108863 5 nil 17024 1314 #tabWidth: 8 #(4) 17024 1314 #targetRange: 34 1 16834 1 -1 3 17024 1314 #maxCompletionListHeight: 8 #(9) 17024 1314 #edgeColumn: 8 #(1) 17024 1394 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 216 5 0 0 118 1 0 0] 8 #() 1456 nil 29 1074 1106 8 'Method Source' nil nil 410 ##(Smalltalk.JadeiteScintillaView) 34 50 nil 14336 34 2 8 1445007428 1025 18400 15010 nil false 15056 nil 14690 26337781 nil 5 nil 914 nil true 15634 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 86 101 114 100 97 110 97 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 482 193 193 nil 18400 nil 8 1429223005 11682 nil nil 13 nil 170 192 34 4 #normal 15762 1 nil nil 1 nil nil nil nil #normal nil nil nil #callTip 15762 77 15808 15824 1 nil nil nil nil #callTip nil nil nil nil 1377542 ##(Smalltalk.SmalltalkMethodStyler) 1 nil nil false 138 144 1232 170 192 34 2 #default 15922 1 nil nil nil 18400 #circle nil nil nil nil nil nil 138 ##(Smalltalk.IdentitySet) 1232 nil 170 176 1232 9215 nil nil nil nil 4800 nil nil 65 nil nil 170 192 34 6 #specialCharacter 8 '()[]<>' #literalArray 8 '()' #literalBytes 8 '[]' 8 '' 3 170 192 34 2 #container 170 192 34 4 #normal 18624 #callTip 18640 nil nil nil nil 1 nil 170 192 34 12 1 16178 1 18400 14690 65025 3 false 1 nil nil nil nil nil nil 8 'indicator10' 16178 21 18400 16272 3 nil nil nil nil nil nil nil nil 8 'indicator8' 16178 17 18400 4800 1 nil nil nil nil nil nil nil nil 8 'indicator9' 16178 19 18400 16272 13 nil nil nil nil nil nil nil nil 3 16178 3 18400 16240 5 false 3 nil nil nil nil nil nil 5 16178 5 18400 16272 1 false 5 nil nil nil nil nil nil nil nil 170 192 34 6 #Warning 15762 1027 14690 60239 14690 31326207 1 nil nil nil nil #Warning nil nil nil #Error 15762 1031 14690 335 14690 31317503 1 nil nil nil nil #Error nil nil nil #Notification 15762 1029 nil 14690 31185883 1 nil nil nil nil #Notification nil nil nil nil 1250 138 144 34 9 1314 #createAt:extent: 34 2 482 9 53 482 2985 697 18400 1314 #hoverTime: 8 #(500) 18400 1314 #caretPeriod: 8 #(530) 18400 1314 #wordWrap: 8 #(true) 18400 1314 #margins: 34 1 34 3 16706 1 18400 61 3 nil nil 5 nil 16706 3 18400 1 nil 3 67108863 nil nil 16706 5 18400 1 nil 3 -67108863 nil nil 18400 1314 #tabWidth: 8 #(4) 18400 1314 #targetRange: 34 1 16834 1 -1 3 18400 1314 #maxCompletionListHeight: 8 #(9) 18400 1314 #edgeColumn: 8 #(1) 18400 1394 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 216 5 0 0 118 1 0 0] 8 #() 1456 nil 29 1074 1106 8 'Comparison' nil nil 410 ##(Smalltalk.ShellView) 34 27 nil 14336 34 2 8 1078919168 131073 19840 nil 896 nil 517 nil nil nil 19840 788230 ##(Smalltalk.BorderLayout) 1 1 nil nil nil nil 410 ##(Smalltalk.ContainerView) 34 15 nil 19840 34 2 8 1140850688 131073 19936 nil 14690 26337781 nil 5 15090 nil true 34 5 15138 1 4834 #toggleIndentGuides 8 'Indentation &Guides' 1 1 nil nil nil 15138 1 4834 #toggleVisibleLineEndings 8 'Line &Endings' 1 1 nil nil nil 15138 1 4834 #toggleLineNumberMargins 8 'Line N&umbers' 1 1 nil nil nil 15138 1 4834 #toggleVisibleWhitespace 8 'W&hitespace' 1 1 nil nil nil 15138 1 4834 #toggleWrapping 8 '&Word Wrap' 1 1 nil nil nil 8 '' nil 1 nil nil nil nil nil nil nil 19936 514 170 176 1232 false 170 192 1232 nil 1250 138 144 34 2 1314 #createAt:extent: 34 2 482 1 1 482 2193 565 19936 1314 #contextMenu: 34 1 20016 19936 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 72 4 0 0 26 1 0 0] 34 3 410 ##(Smalltalk.ContainerView) 34 15 nil 19936 34 2 8 1140850688 131073 20544 nil 896 nil 5 nil nil nil 20544 19906 1 1 nil 410 ##(Smalltalk.StaticText) 34 16 nil 20544 34 2 8 1140850945 262145 20624 nil nil nil 21 nil nil nil 20624 nil 8 1737263776 11682 nil nil nil 1250 138 144 34 2 1314 #createAt:extent: 34 2 482 1 525 482 1091 41 20624 1314 #text: 34 1 8 '
-' 20624 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 6 1 0 0 33 2 0 0 26 1 0 0] 8 #() 1456 nil 27 nil nil 410 ##(Smalltalk.JadeiteScintillaView) 34 50 nil 20544 34 2 8 1140920580 1025 20928 15010 nil false 15056 nil 14690 26337781 nil 21 nil nil nil 20928 nil 8 1429223005 11682 nil nil 13 nil 170 192 34 12 #callTip 15762 77 15808 15824 1 nil nil nil nil #callTip nil nil nil #indentGuide 15762 75 nil nil 1 nil nil nil nil #indentGuide nil nil nil #whitespace 15762 3 882 #teal nil 1 nil nil nil nil #whitespace nil nil nil #lineNumber 15762 67 nil nil 1 nil nil nil nil #lineNumber nil nil nil #normal 15762 1 nil nil 1 nil nil nil nil #normal nil nil nil #diff 15762 5 nil 14690 16908287 3 nil nil nil nil #diff nil 1401 nil nil 1310982 ##(Smalltalk.DiffsScintillaStyler) 8 #() 170 192 34 2 #default 15922 1 nil nil nil 20928 #circle nil nil nil nil nil nil 138 ##(Smalltalk.IdentitySet) 1232 nil 170 176 1232 9215 nil nil nil nil 4800 nil nil 65 nil nil 170 192 34 6 #specialCharacter 8 '()[]<>' #literalArray 8 '()' #literalBytes 8 '[]' 8 '' 3 170 192 34 2 #container 21056 nil nil nil nil 1 nil 170 192 34 2 #diff 16178 1 20928 882 #yellow 33 false #diff 201 nil nil nil 171 nil nil nil 170 192 34 6 #Warning 15762 1027 14690 60239 14690 31326207 1 nil nil nil nil #Warning nil nil nil #Error 15762 1031 14690 335 14690 31317503 1 nil nil nil nil #Error nil nil nil #Notification 15762 1029 nil 14690 31185883 1 nil nil nil nil #Notification nil nil nil nil 1250 138 144 34 8 1314 #createAt:extent: 34 2 482 1 1 482 1091 525 20928 1314 #caretPeriod: 8 #(530) 20928 1314 #wordWrap: 8 #(true) 20928 1314 #margins: 34 1 34 3 16706 1 20928 49 3 nil nil nil nil 16706 3 20928 1 nil nil 67108863 nil nil 16706 5 20928 1 nil nil nil nil nil 20928 1314 #canHScroll: 8 #(false) 20928 1314 #targetRange: 34 1 16834 1 -1 3 20928 1314 #maxCompletionListHeight: 8 #(9) 20928 1314 #edgeColumn: 8 #(1) 20928 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 33 2 0 0 6 1 0 0] 8 #() 1456 nil 29 170 192 34 4 20624 8 'beforeTitle' 20928 8 'before' nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 1 482 1091 565 20544 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 33 2 0 0 26 1 0 0] 34 2 20928 20624 1456 nil 27 410 ##(Smalltalk.Splitter) 34 12 nil 19936 34 2 8 1140850688 1 22384 nil 14690 66047 nil 517 nil nil nil 9154 22384 nil 1 #left nil nil nil 9184 9200 nil 9184 nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1091 1 482 11 565 22384 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 33 2 0 0 0 0 0 0 38 2 0 0 26 1 0 0] 8 #() 1456 nil 27 410 ##(Smalltalk.ContainerView) 34 15 nil 19936 34 2 8 1140850688 131073 22640 nil 896 nil 5 nil nil nil 22640 19906 1 1 nil 410 ##(Smalltalk.StaticText) 34 16 nil 22640 34 2 8 1140850945 262145 22720 nil nil nil 21 nil nil nil 22720 nil 8 1737263776 11682 nil nil nil 1250 138 144 34 2 1314 #createAt:extent: 34 2 482 1 525 482 1093 41 22720 1314 #text: 34 1 8 '
-' 22720 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 6 1 0 0 34 2 0 0 26 1 0 0] 8 #() 1456 nil 27 nil nil 410 ##(Smalltalk.JadeiteScintillaView) 34 50 nil 22640 34 2 8 1140920580 1025 23024 15010 nil false 15056 nil 14690 26337781 nil 21 nil nil nil 23024 nil 8 1429223005 11682 nil nil 13 nil 170 192 34 12 #callTip 15762 77 15808 15824 1 nil nil nil nil #callTip nil nil nil #indentGuide 15762 75 nil nil 1 nil nil nil nil #indentGuide nil nil nil #whitespace 15762 3 21136 nil 1 nil nil nil nil #whitespace nil nil nil #lineNumber 15762 67 nil nil 1 nil nil nil nil #lineNumber nil nil nil #normal 15762 1 nil nil 1 nil nil nil nil #normal nil nil nil #diff 15762 5 nil 14690 16908287 3 nil nil nil nil #diff nil 1401 nil nil 21218 21248 170 192 34 2 #default 15922 1 nil nil nil 23024 #circle nil nil nil nil nil nil 138 ##(Smalltalk.IdentitySet) 1232 nil 170 176 1232 9215 nil nil nil nil 4800 nil nil 65 nil nil 21344 21424 3 170 192 34 2 #container 23152 nil nil nil nil 1 nil 170 192 34 2 #diff 16178 1 23024 21520 33 false #diff 201 nil nil nil 171 nil nil nil 170 192 34 6 #Warning 15762 1027 14690 60239 14690 31326207 1 nil nil nil nil #Warning nil nil nil #Error 15762 1031 14690 335 14690 31317503 1 nil nil nil nil #Error nil nil nil #Notification 15762 1029 nil 14690 31185883 1 nil nil nil nil #Notification nil nil nil nil 1250 138 144 34 8 1314 #createAt:extent: 34 2 482 1 1 482 1093 525 23024 1314 #caretPeriod: 8 #(530) 23024 1314 #wordWrap: 8 #(true) 23024 1314 #margins: 34 1 34 3 16706 1 23024 49 3 nil nil nil nil 16706 3 23024 1 nil nil 67108863 nil nil 16706 5 23024 1 nil nil nil nil nil 23024 1314 #canHScroll: 8 #(false) 23024 1314 #targetRange: 34 1 16834 1 -1 3 23024 1314 #maxCompletionListHeight: 8 #(9) 23024 1314 #edgeColumn: 8 #(1) 23024 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 34 2 0 0 6 1 0 0] 8 #() 1456 nil 29 170 192 34 4 22720 8 'afterTitle' 23024 8 'after' nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1101 1 482 1093 565 22640 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 38 2 0 0 0 0 0 0 72 4 0 0 26 1 0 0] 34 2 23024 22720 1456 nil 27 1456 nil 27 170 192 34 2 19936 8 'diffs' nil 461638 4 ##(Smalltalk.MenuBar) nil true 34 3 15090 nil true 34 4 15138 1 4834 #selectUpper 8 'Select &upper' 1 1 nil nil nil 15138 1 4834 #selectLower 8 'Select &lower' 1 1 nil nil nil 15202 4097 15138 1 4834 #exit 8 '&Close' 1 1 nil nil nil 8 '&File' nil 1 nil nil 49625 nil nil 15090 nil true 34 3 15138 1 4834 #character 8 '&Character' 1 1 nil nil nil 15138 1 4834 #word 8 '&Word' 1 1 nil nil nil 15138 1 4834 #line 8 '&Line' 1 1 nil nil nil 8 '&Mode' nil 1 nil nil 49627 nil nil 15090 nil true 34 1 15138 1 4834 #about 8 '&About' 1 1 nil nil nil 8 '&Help' nil 134217729 nil nil 49629 nil nil 8 '' nil 1 nil nil nil nil nil nil nil nil 1 nil nil nil nil 1 nil nil 1250 138 144 34 2 1314 #createAt:extent: 34 2 482 9 53 482 2985 697 19840 1314 #text: 34 1 8 'Comparison' 19840 1394 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 216 5 0 0 118 1 0 0] 34 1 19936 1456 nil 27 1074 1106 8 'Spec' nil nil 410 ##(Smalltalk.ContainerView) 34 15 nil 14336 34 2 8 1409286144 131073 25184 nil nil nil 5 nil nil nil 25184 514 138 ##(Smalltalk.Dictionary) 34 1 1074 410 ##(Smalltalk.Splitter) 34 12 nil 25184 34 2 8 1140850688 1 25312 nil nil nil 517 nil nil nil 9154 25312 nil 1 #left nil nil nil 9184 9200 nil 9184 nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 85 482 731 11 25312 1394 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 42 0 0 0 109 1 0 0 47 0 0 0] 8 #() 1456 nil 27 1 true 170 192 34 2 410 ##(Smalltalk.ListTreeView) 34 59 nil 25184 34 2 8 1140953421 1 25584 1890 138 144 1232 nil 1968 14690 26337781 nil 13 15090 nil true 34 12 15138 1 4834 #inspectIt 8 '&Inspect' 1 1 263494 3 ##(Smalltalk.Icon) nil true 1572870 ##(Smalltalk.ImageRelativeFileLocator) 8 'BasicInspector.ico' 2032142 ##(Smalltalk.STBExternalResourceLibraryProxy) 8 'dolphindr7.dll' nil nil nil 15138 1 4834 #inspectReferences 8 'Inspect &References' 1 1 nil nil nil 15202 4097 15138 1 4834 #browseIt 8 '&Browse It' 1 1 25778 nil true 25824 8 'ClassBrowserShell.ico' 25872 nil nil 15202 4097 15138 1 4834 #copyAspect 8 '&Copy' 1 1 nil nil nil 15138 1 4834 #pasteAspect 8 '&Paste <1d>' 1 1 nil nil nil 15202 4097 15138 1 4834 #editAspect 8 '&Edit' 1 1 nil nil nil 15138 1 4834 #nilAspect 8 'Set to &Nil' 1 1 nil nil nil 15202 4097 15138 1 4834 #refresh 8 'Re&fresh' 1 1 nil nil nil 8 '&Workspace' nil 134217729 nil nil nil nil nil nil nil 25584 nil 8 1737156720 3586 #valueText 8 #() nil 2144 nil nil nil nil nil nil 138 144 34 3 3666 8 'Property' 1473 #left 3586 #valueNameOnly 8 #() 3586 #<= 8 #() nil nil 25584 nil 3 3586 #valueNameInfo 8 #() nil 3666 8 'Value' 1473 #left 3586 #valueTextOnly 8 #() 3586 #<= 26512 nil nil 25584 3586 #valueImage 8 #() 3 nil nil 3666 8 '' 33 #center nil 3586 #<= 8 #() nil nil 25584 2002 0 nil 2994 3 1 2000 8 'doIt' 8 '[:x | PropertyInspector editButtonImageIndexFor: x ]' 8 #[31 105 29 17 177 106] ##(Smalltalk.PropertyInspector) #editButtonImageIndexFor: 26736 7 257 nil 1 nil nil #report 3856 nil 131431 482 129 129 1 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil false 1050438 3 ##(Smalltalk.VirtualTreeModel) nil 1968 138 144 1232 nil nil 2002 0 nil 2034 2 3 26832 #defaultHasChildrenBlock 508791331 8 #[252 1 0 0 1 4 0 65 176 159 106 105] #childrenOf: #notEmpty 17 257 26848 2002 0 nil 2034 1 83886083 26832 #defaultFilterBlock 508773827 8 #[29 105 17 157 106] 26928 7 257 nil nil 138 ##(Smalltalk.PluggableSet) 1232 138 ##(Smalltalk.IdentitySet) 1232 13 1 nil nil nil nil nil nil nil 1250 138 144 34 3 1314 #createAt:extent: 34 2 482 1 1 482 2985 697 25584 1314 #contextMenu: 34 1 25696 25584 1314 #text: 34 1 8 'Property' 25584 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 212 5 0 0 92 1 0 0] 8 #() 1456 nil 2029 8 'aspects' nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 9 53 482 2985 697 25184 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 216 5 0 0 118 1 0 0] 34 2 25312 25584 1456 nil 27 25184 nil nil nil 170 192 34 10 18400 8 'methodSource' 14624 8 'sunit' 17024 8 'classDocumentation' 19840 8 'comparisonTab' 14944 8 'classDefinition' nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 14336 34 2 8 1140916736 1 27536 1890 138 144 34 6 14912 16992 18368 14464 19808 25152 nil 1968 nil nil 1 nil nil nil 27536 nil 8 1737494000 2002 0 nil 2034 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 27664 7 257 nil 2002 0 nil 2034 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 27712 7 257 nil 2144 nil nil nil nil nil #smallIcons nil nil nil nil nil 1250 138 144 34 3 1314 #createAt:extent: 34 2 482 1 1 482 3001 757 27536 1314 #setSingleSelection: 8 #(6) 27536 1314 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 27536 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 220 5 0 0 122 1 0 0] 8 #() 1456 nil 27 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 1 482 3001 757 14336 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 220 5 0 0 122 1 0 0] 34 7 14944 17024 18400 14624 19840 25184 27536 1456 nil 27 2546 2592 1 2608 1 4720 1 2624 -39 410 ##(Smalltalk.ContainerView) 34 15 nil 14224 34 2 8 1140850688 131073 28160 nil nil 482 2241 43 517 nil nil nil 28160 754 170 176 34 4 410 ##(Smalltalk.ToolButton) 34 14 nil 28160 34 2 8 1140850688 131073 28288 nil nil nil 1029 nil nil nil 28288 nil 410 ##(Smalltalk.Toolbar) 34 25 nil 28288 34 2 8 1140853580 131137 28352 nil nil 482 43 43 513 nil nil nil 28352 nil 8 1737207072 nil 170 192 34 2 49533 1115206 1 ##(Smalltalk.ToolbarIconButton) 28352 1 4834 #flipAutoCommit 8 'Auto Commit' 1 1 25778 nil true 25824 8 'icons/camera16_light_icon.ico' nil 49533 34 1 28496 nil nil 3 nil 482 33 33 482 33 33 nil nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 1 482 43 43 28352 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 21 0 0 0 21 0 0 0] 8 #() 1456 nil 27 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 1 482 43 43 28288 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 21 0 0 0 21 0 0 0] 34 1 28352 1456 nil 27 2546 2592 1 2578 #fixedViewLeft 43 4720 1 2640 43 410 ##(Smalltalk.TextEdit) 34 16 nil 28160 34 2 8 1140850688 1 28976 nil 896 482 2199 43 517 nil 914 nil true 15634 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 65 114 105 97 108 0 159 4 0 134 63 1 0 0 204 53 63 1 2 0 20 59 0 0 0 0 247 0 5 86 111 1] 482 193 193 nil 28976 882 #black 8 1737104896 11682 nil nil 67 1250 138 144 34 2 1314 #createAt:extent: 34 2 482 43 1 482 2959 41 28976 1314 #setMarginWidths: 34 1 8 #(3 3) 28976 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 21 0 0 0 0 0 0 0 220 5 0 0 20 0 0 0] 8 #() 1456 nil 27 2546 2592 43 2608 1 4720 1 2624 1 170 192 34 4 28288 8 'autoCommitButton' 28976 8 'statusBarField' nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 757 482 3001 41 28160 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 122 1 0 0 220 5 0 0 142 1 0 0] 34 2 28288 28976 1456 nil 27 2546 2592 1 2608 1 2624 -39 2624 1 170 192 34 2 14336 8 'textAreaTabs' nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 805 482 3001 797 14224 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 146 1 0 0 220 5 0 0 32 3 0 0] 34 2 14336 28160 1456 nil 27 25 true 170 192 34 2 410 ##(Smalltalk.Splitter) 34 12 nil 416 34 2 8 1140850688 1 29872 nil 896 nil 517 nil nil nil 9154 29872 nil 1 #left nil nil nil 9184 9200 nil 9184 nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 1 795 482 3001 11 29872 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 141 1 0 0 220 5 0 0 146 1 0 0] 8 #() 1456 nil 27 8 'splitter' nil 1250 138 144 34 1 1314 #createAt:extent: 34 2 482 7545 21 482 3001 1601 416 1394 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 188 14 0 0 10 0 0 0 152 20 0 0 42 3 0 0] 34 3 576 29872 14224 1456 nil 27 )! !
+	^#(#'!!STL' 4 788558 10 ##(Smalltalk.STBViewProxy) ##(Smalltalk.ContainerView) 34 15 nil nil 34 2 8 1409286144 131073 416 nil nil 328198 ##(Smalltalk.Point) 3001 1601 517 nil nil nil 416 1180166 ##(Smalltalk.ProportionalLayout) 170 176 34 4 410 ##(Smalltalk.ContainerView) 34 15 nil 416 34 2 8 1140850688 131073 576 nil nil nil 5 nil nil nil 576 852230 ##(Smalltalk.FramingLayout) 170 176 34 4 410 ##(Smalltalk.CardContainer) 34 16 nil 576 34 2 8 1409286144 131073 704 nil 327686 ##(Smalltalk.Color) #default nil 5 nil nil nil 704 656710 1 ##(Smalltalk.CardLayout) 138 144 34 5 721414 ##(Smalltalk.Association) 590662 1 ##(Smalltalk.CardLabel) 8 'SUnit' 787814 3 ##(Smalltalk.BlockClosure) 0 nil 1180966 ##(Smalltalk.CompiledExpression) 4 1 944 8 'doIt' 8 '[Icon fromId: ''icons\UnitTestPlugin.ico'']' 8 #[32 105 45 30 178 106] 983558 ##(Smalltalk.VariableBinding) #Icon ##(Smalltalk.Icon) 8 'icons\UnitTestPlugin.ico' #fromId: 960 7 1 nil nil 410 ##(Smalltalk.ReferenceView) 34 14 nil 704 34 2 8 1140850688 131073 1104 nil 196934 1 ##(Smalltalk.RGB) 26337781 nil 5 nil nil nil 1104 1180230 1 ##(Smalltalk.ResourceIdentifier) ##(Smalltalk.JadeiteSUnitInClassPresenter) #resource_Default_view nil 983302 ##(Smalltalk.MessageSequence) 138 144 34 1 721670 ##(Smalltalk.MessageSend) #createAt:extent: 34 2 482 9 53 482 2985 697 1104 983302 ##(Smalltalk.WINDOWPLACEMENT) 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 216 5 0 0 118 1 0 0] 8 #() 482 193 193 nil 27 866 898 8 'Class Definition' nil nil 410 ##(Smalltalk.JadeiteScintillaView) 34 50 nil 704 34 2 8 1445007428 1025 1504 721990 2 ##(Smalltalk.ValueHolder) nil false 1310726 ##(Smalltalk.EqualitySearchPolicy) nil 1170 26337781 nil 5 265030 4 ##(Smalltalk.Menu) nil true 34 11 984134 2 ##(Smalltalk.CommandMenuItem) 1 1180998 4 ##(Smalltalk.CommandDescription) #editSave 8 '&Save' 9383 1 nil nil nil 983366 1 ##(Smalltalk.DividerMenuItem) 4097 1698 1 1730 #editUndo 8 '&Undo' 9397 1 nil nil nil 1698 1 1730 #editRedo 8 '&Redo' 9395 1 nil nil nil 1778 4097 1698 1 1730 #editCut 8 'Cu&t' 9393 1 nil nil nil 1698 1 1730 #editCopy 8 '&Copy' 9351 1 nil nil nil 1698 1 1730 #editPaste 8 '&Paste' 9389 1 nil nil nil 1698 1 1730 #editDelete 8 '&Delete' 1629 1 nil nil nil 1778 4097 1698 1 1730 #editSelectAll 8 'Select &All' 9347 1 nil nil nil 8 '' nil 134217729 nil nil nil nil nil 263174 ##(Smalltalk.Font) nil true 459014 ##(Smalltalk.LOGFONT) 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 86 101 114 100 97 110 97 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 482 193 193 nil 1504 nil 8 1429223005 852486 ##(Smalltalk.NullConverter) nil nil 13 nil 170 192 34 4 #normal 1182790 1 ##(Smalltalk.ScintillaTextStyle) 1 nil nil 1 nil nil nil nil #normal nil nil nil #callTip 2370 77 770 #gray 770 #white 1 nil nil nil nil #callTip nil nil nil nil 1639686 ##(Smalltalk.SmalltalkExpressionStyler) 1 nil nil false 138 144 1424 170 192 34 2 #default 1641542 2 ##(Smalltalk.ScintillaMarkerDefinition) 1 nil nil nil 1504 #circle nil nil nil nil nil nil 138 ##(Smalltalk.IdentitySet) 1424 nil 170 176 1424 9215 nil nil nil nil 770 #silver nil nil 65 nil nil 170 192 34 6 #literalBytes 8 '[]' #specialCharacter 8 '()[]<>' #literalArray 8 '()' 8 '' 3 170 192 34 2 #container 170 192 34 2 #normal 2384 nil nil nil nil 1 nil 170 192 34 6 1 1510470 3 ##(Smalltalk.ScintillaIndicatorStyle) 1 1504 1170 65025 3 false 1 nil nil nil nil nil nil 3 2802 3 1504 770 #blue 5 false 3 nil nil nil nil nil nil 5 2802 5 1504 770 #red 1 false 5 nil nil nil nil nil nil nil nil 170 192 34 6 #Warning 2370 1027 1170 60239 1170 31326207 1 nil nil nil nil #Warning nil nil nil #Error 2370 1031 1170 335 1170 31317503 1 nil nil nil nil #Error nil nil nil #Notification 2370 1029 nil 1170 31185883 1 nil nil nil nil #Notification nil nil nil nil 1234 138 144 34 9 1298 #createAt:extent: 34 2 482 9 53 482 2985 697 1504 1298 #contextMenu: 34 1 1664 1504 1298 #caretPeriod: 8 #(530) 1504 1298 #wordWrap: 8 #(true) 1504 1298 #margins: 34 1 34 3 985158 3 ##(Smalltalk.ScintillaMargin) 1 1504 1 3 nil nil 5 nil 3330 3 1504 33 nil 3 67108863 5 nil 3330 5 1504 1 nil 3 -67108863 5 nil 1504 1298 #tabWidth: 8 #(4) 1504 1298 #targetRange: 34 1 525062 ##(Smalltalk.Interval) 1 -1 3 1504 1298 #maxCompletionListHeight: 8 #(9) 1504 1298 #edgeColumn: 8 #(1) 1504 1378 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 216 5 0 0 118 1 0 0] 8 #() 1440 nil 29 866 898 8 'Class Documentation' nil nil 410 ##(Smalltalk.JadeiteScintillaView) 34 50 nil 704 34 2 8 1445007428 1025 3648 1570 nil false 1616 nil 1170 26337781 nil 5 1650 nil true 34 1 1698 1 1730 #editSaveClassComment 8 'Save' 1025 1 nil nil nil 8 '' nil 134217729 nil nil nil nil nil 2194 nil true 2226 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 86 101 114 100 97 110 97 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 482 193 193 nil 3648 nil 8 1429223005 2306 nil nil 15 nil 170 192 34 4 #normal 2370 1 nil nil 1 nil nil nil nil #normal nil nil nil #callTip 2370 77 2416 2432 1 nil nil nil nil #callTip nil nil nil nil 1245510 1 ##(Smalltalk.NullScintillaStyler) #normal 170 192 34 2 #default 2530 1 nil nil nil 3648 #circle nil nil nil nil nil nil 138 ##(Smalltalk.IdentitySet) 1424 nil 170 176 1424 9215 nil nil nil nil 2592 nil nil 65 nil nil nil 8 '' 3 170 192 34 2 #container 170 192 34 2 #normal 3968 nil nil nil nil 1 nil 170 192 34 6 1 2802 1 3648 1170 65025 3 false 1 nil nil nil nil nil nil 3 2802 3 3648 2864 5 false 3 nil nil nil nil nil nil 5 2802 5 3648 2896 1 false 5 nil nil nil nil nil nil nil nil 170 192 34 6 #Warning 2370 1027 1170 60239 1170 31326207 1 nil nil nil nil #Warning nil nil nil #Error 2370 1031 1170 335 1170 31317503 1 nil nil nil nil #Error nil nil nil #Notification 2370 1029 nil 1170 31185883 1 nil nil nil nil #Notification nil nil nil nil 1234 138 144 34 10 1298 #createAt:extent: 34 2 482 9 53 482 2985 697 3648 1298 #contextMenu: 34 1 3744 3648 1298 #hoverTime: 8 #(1000000) 3648 1298 #caretPeriod: 8 #(530) 3648 1298 #wordWrap: 8 #(true) 3648 1298 #margins: 34 1 34 3 3330 1 3648 1 3 nil nil 5 nil 3330 3 3648 33 nil 3 67108863 5 nil 3330 5 3648 1 nil 3 -67108863 5 nil 3648 1298 #tabWidth: 8 #(4) 3648 1298 #targetRange: 34 1 3458 1 -1 3 3648 1298 #maxCompletionListHeight: 8 #(9) 3648 1298 #edgeColumn: 8 #(1) 3648 1378 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 216 5 0 0 118 1 0 0] 8 #() 1440 nil 29 866 898 8 'Method Source' nil nil 410 ##(Smalltalk.JadeiteScintillaView) 34 50 nil 704 34 2 8 1445007428 1025 5024 1570 nil false 1616 nil 1170 26337781 nil 5 nil 2194 nil true 2226 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 86 101 114 100 97 110 97 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 482 193 193 nil 5024 nil 8 1429223005 2306 nil nil 13 nil 170 192 34 4 #normal 2370 1 nil nil 1 nil nil nil nil #normal nil nil nil #callTip 2370 77 2416 2432 1 nil nil nil nil #callTip nil nil nil nil 1377542 ##(Smalltalk.SmalltalkMethodStyler) 1 nil nil false 138 144 1424 170 192 34 2 #default 2530 1 nil nil nil 5024 #circle nil nil nil nil nil nil 138 ##(Smalltalk.IdentitySet) 1424 nil 170 176 1424 9215 nil nil nil nil 2592 nil nil 65 nil nil 170 192 34 6 #literalBytes 8 '[]' #specialCharacter 8 '()[]<>' #literalArray 8 '()' 8 '' 3 170 192 34 2 #container 170 192 34 4 #normal 5248 #callTip 5264 nil nil nil nil 1 nil 170 192 34 12 1 2802 1 5024 1170 65025 3 false 1 nil nil nil nil nil nil 8 'indicator8' 2802 17 5024 2592 1 nil nil nil nil nil nil nil nil 8 'indicator10' 2802 21 5024 2896 3 nil nil nil nil nil nil nil nil 3 2802 3 5024 2864 5 false 3 nil nil nil nil nil nil 8 'indicator9' 2802 19 5024 2896 13 nil nil nil nil nil nil nil nil 5 2802 5 5024 2896 1 false 5 nil nil nil nil nil nil nil nil 170 192 34 6 #Warning 2370 1027 1170 60239 1170 31326207 1 nil nil nil nil #Warning nil nil nil #Error 2370 1031 1170 335 1170 31317503 1 nil nil nil nil #Error nil nil nil #Notification 2370 1029 nil 1170 31185883 1 nil nil nil nil #Notification nil nil nil nil 1234 138 144 34 9 1298 #createAt:extent: 34 2 482 9 53 482 2985 697 5024 1298 #hoverTime: 8 #(500) 5024 1298 #caretPeriod: 8 #(530) 5024 1298 #wordWrap: 8 #(true) 5024 1298 #margins: 34 1 34 3 3330 1 5024 61 3 nil nil 5 nil 3330 3 5024 1 nil 3 67108863 nil nil 3330 5 5024 1 nil 3 -67108863 nil nil 5024 1298 #tabWidth: 8 #(4) 5024 1298 #targetRange: 34 1 3458 1 -1 3 5024 1298 #maxCompletionListHeight: 8 #(9) 5024 1298 #edgeColumn: 8 #(1) 5024 1378 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 216 5 0 0 118 1 0 0] 8 #() 1440 nil 29 866 898 8 'Comparison' nil nil 410 ##(Smalltalk.ShellView) 34 27 nil 704 34 2 8 1078919168 131073 6464 nil 784 nil 517 nil nil nil 6464 788230 ##(Smalltalk.BorderLayout) 1 1 nil nil nil nil 410 ##(Smalltalk.ContainerView) 34 15 nil 6464 34 2 8 1140850688 131073 6560 nil 1170 26337781 nil 5 1650 nil true 34 5 1698 1 1730 #toggleIndentGuides 8 'Indentation &Guides' 1 1 nil nil nil 1698 1 1730 #toggleVisibleLineEndings 8 'Line &Endings' 1 1 nil nil nil 1698 1 1730 #toggleLineNumberMargins 8 'Line N&umbers' 1 1 nil nil nil 1698 1 1730 #toggleVisibleWhitespace 8 'W&hitespace' 1 1 nil nil nil 1698 1 1730 #toggleWrapping 8 '&Word Wrap' 1 1 nil nil nil 8 '' nil 1 nil nil nil nil nil nil nil 6560 514 170 176 1424 false 170 192 1424 nil 1234 138 144 34 2 1298 #createAt:extent: 34 2 482 1 1 482 2953 665 6560 1298 #contextMenu: 34 1 6640 6560 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 196 5 0 0 76 1 0 0] 34 3 410 ##(Smalltalk.ContainerView) 34 15 nil 6560 34 2 8 1140850688 131073 7168 nil 784 nil 5 nil nil nil 7168 6530 1 1 nil 410 ##(Smalltalk.StaticText) 34 16 nil 7168 34 2 8 1140850945 262145 7248 nil nil nil 21 nil nil nil 7248 nil 8 1737263776 2306 nil nil nil 1234 138 144 34 2 1298 #createAt:extent: 34 2 482 1 625 482 1471 41 7248 1298 #text: 34 1 8 '
+' 7248 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 56 1 0 0 223 2 0 0 76 1 0 0] 8 #() 1440 nil 27 nil nil 410 ##(Smalltalk.JadeiteScintillaView) 34 50 nil 7168 34 2 8 1140920580 1025 7552 1570 nil false 1616 nil 1170 26337781 nil 21 nil nil nil 7552 nil 8 1429223005 2306 nil nil 13 nil 170 192 34 12 #callTip 2370 77 2416 2432 1 nil nil nil nil #callTip nil nil nil #indentGuide 2370 75 nil nil 1 nil nil nil nil #indentGuide nil nil nil #whitespace 2370 3 770 #teal nil 1 nil nil nil nil #whitespace nil nil nil #lineNumber 2370 67 nil nil 1 nil nil nil nil #lineNumber nil nil nil #normal 2370 1 nil nil 1 nil nil nil nil #normal nil nil nil #diff 2370 5 nil 1170 16908287 3 nil nil nil nil #diff nil 1401 nil nil 1310982 ##(Smalltalk.DiffsScintillaStyler) 8 #() 170 192 34 2 #default 2530 1 nil nil nil 7552 #circle nil nil nil nil nil nil 138 ##(Smalltalk.IdentitySet) 1424 nil 170 176 1424 9215 nil nil nil nil 2592 nil nil 65 nil nil 170 192 34 6 #literalBytes 8 '[]' #specialCharacter 8 '()[]<>' #literalArray 8 '()' 8 '' 3 170 192 34 2 #container 7680 nil nil nil nil 1 nil 170 192 34 2 #diff 2802 1 7552 770 #yellow 33 false #diff 201 nil nil nil 171 nil nil nil 170 192 34 6 #Warning 2370 1027 1170 60239 1170 31326207 1 nil nil nil nil #Warning nil nil nil #Error 2370 1031 1170 335 1170 31317503 1 nil nil nil nil #Error nil nil nil #Notification 2370 1029 nil 1170 31185883 1 nil nil nil nil #Notification nil nil nil nil 1234 138 144 34 8 1298 #createAt:extent: 34 2 482 1 1 482 1471 625 7552 1298 #caretPeriod: 8 #(530) 7552 1298 #wordWrap: 8 #(true) 7552 1298 #margins: 34 1 34 3 3330 1 7552 49 3 nil nil nil nil 3330 3 7552 1 nil nil 67108863 nil nil 3330 5 7552 1 nil nil nil nil nil 7552 1298 #canHScroll: 8 #(false) 7552 1298 #targetRange: 34 1 3458 1 -1 3 7552 1298 #maxCompletionListHeight: 8 #(9) 7552 1298 #edgeColumn: 8 #(1) 7552 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 223 2 0 0 56 1 0 0] 8 #() 1440 nil 29 170 192 34 4 7552 8 'before' 7248 8 'beforeTitle' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 1471 665 7168 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 223 2 0 0 76 1 0 0] 34 2 7552 7248 1440 nil 27 410 ##(Smalltalk.Splitter) 34 12 nil 6560 34 2 8 1140850688 1 9008 nil 1170 66047 nil 517 nil nil nil 1510470 1 ##(Smalltalk.DraggableViewInteractor) 9008 nil 1 #left nil nil nil 482 1 1 482 9 9 nil 9120 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1471 1 482 11 665 9008 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 223 2 0 0 0 0 0 0 228 2 0 0 76 1 0 0] 8 #() 1440 nil 27 410 ##(Smalltalk.ContainerView) 34 15 nil 6560 34 2 8 1140850688 131073 9312 nil 784 nil 5 nil nil nil 9312 6530 1 1 nil 410 ##(Smalltalk.StaticText) 34 16 nil 9312 34 2 8 1140850945 262145 9392 nil nil nil 21 nil nil nil 9392 nil 8 1737263776 2306 nil nil nil 1234 138 144 34 2 1298 #createAt:extent: 34 2 482 1 625 482 1473 41 9392 1298 #text: 34 1 8 '
+' 9392 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 56 1 0 0 224 2 0 0 76 1 0 0] 8 #() 1440 nil 27 nil nil 410 ##(Smalltalk.JadeiteScintillaView) 34 50 nil 9312 34 2 8 1140920580 1025 9696 1570 nil false 1616 nil 1170 26337781 nil 21 nil nil nil 9696 nil 8 1429223005 2306 nil nil 13 nil 170 192 34 12 #callTip 2370 77 2416 2432 1 nil nil nil nil #callTip nil nil nil #indentGuide 2370 75 nil nil 1 nil nil nil nil #indentGuide nil nil nil #whitespace 2370 3 7760 nil 1 nil nil nil nil #whitespace nil nil nil #lineNumber 2370 67 nil nil 1 nil nil nil nil #lineNumber nil nil nil #normal 2370 1 nil nil 1 nil nil nil nil #normal nil nil nil #diff 2370 5 nil 1170 16908287 3 nil nil nil nil #diff nil 1401 nil nil 7842 7872 170 192 34 2 #default 2530 1 nil nil nil 9696 #circle nil nil nil nil nil nil 138 ##(Smalltalk.IdentitySet) 1424 nil 170 176 1424 9215 nil nil nil nil 2592 nil nil 65 nil nil 7968 8048 3 170 192 34 2 #container 9824 nil nil nil nil 1 nil 170 192 34 2 #diff 2802 1 9696 8144 33 false #diff 201 nil nil nil 171 nil nil nil 170 192 34 6 #Warning 2370 1027 1170 60239 1170 31326207 1 nil nil nil nil #Warning nil nil nil #Error 2370 1031 1170 335 1170 31317503 1 nil nil nil nil #Error nil nil nil #Notification 2370 1029 nil 1170 31185883 1 nil nil nil nil #Notification nil nil nil nil 1234 138 144 34 8 1298 #createAt:extent: 34 2 482 1 1 482 1473 625 9696 1298 #caretPeriod: 8 #(530) 9696 1298 #wordWrap: 8 #(true) 9696 1298 #margins: 34 1 34 3 3330 1 9696 49 3 nil nil nil nil 3330 3 9696 1 nil nil 67108863 nil nil 3330 5 9696 1 nil nil nil nil nil 9696 1298 #canHScroll: 8 #(false) 9696 1298 #targetRange: 34 1 3458 1 -1 3 9696 1298 #maxCompletionListHeight: 8 #(9) 9696 1298 #edgeColumn: 8 #(1) 9696 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 224 2 0 0 56 1 0 0] 8 #() 1440 nil 29 170 192 34 4 9392 8 'afterTitle' 9696 8 'after' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1481 1 482 1473 665 9312 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 228 2 0 0 0 0 0 0 196 5 0 0 76 1 0 0] 34 2 9696 9392 1440 nil 27 1440 nil 27 170 192 34 2 6560 8 'diffs' nil 461638 4 ##(Smalltalk.MenuBar) nil true 34 3 1650 nil true 34 4 1698 1 1730 #selectUpper 8 'Select &upper' 1 1 nil nil nil 1698 1 1730 #selectLower 8 'Select &lower' 1 1 nil nil nil 1778 4097 1698 1 1730 #exit 8 '&Close' 1 1 nil nil nil 8 '&File' nil 1 nil nil 43683 nil nil 1650 nil true 34 3 1698 1 1730 #character 8 '&Character' 1 1 nil nil nil 1698 1 1730 #word 8 '&Word' 1 1 nil nil nil 1698 1 1730 #line 8 '&Line' 1 1 nil nil nil 8 '&Mode' nil 1 nil nil 43685 nil nil 1650 nil true 34 1 1698 1 1730 #about 8 '&About' 1 1 nil nil nil 8 '&Help' nil 134217729 nil nil 43687 nil nil 8 '' nil 1 nil nil nil nil nil nil nil nil 1 nil nil nil nil 1 nil nil 1234 138 144 34 2 1298 #createAt:extent: 34 2 482 9 53 482 2985 697 6464 1298 #text: 34 1 8 'Comparison' 6464 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 216 5 0 0 118 1 0 0] 34 1 6560 1440 nil 27 6464 nil nil nil 170 192 34 10 1104 8 'sunit' 5024 8 'methodSource' 3648 8 'classDocumentation' 1504 8 'classDefinition' 6464 8 'comparisonTab' nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 704 34 2 8 1140916736 1 11920 590662 2 ##(Smalltalk.ListModel) 138 144 34 5 1472 3616 4992 912 6432 nil 1310726 ##(Smalltalk.IdentitySearchPolicy) nil nil 1 nil nil nil 11920 nil 8 1737494000 946 0 nil 918822 ##(Smalltalk.CompiledMethod) 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 12096 7 257 nil 946 0 nil 12114 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 12160 7 257 nil 1049926 1 ##(Smalltalk.IconImageManager) nil nil nil nil nil #smallIcons nil nil nil nil nil 1234 138 144 34 3 1298 #createAt:extent: 34 2 482 1 1 482 3001 757 11920 1298 #setSingleSelection: 8 #(5) 11920 1298 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 11920 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 220 5 0 0 122 1 0 0] 8 #() 1440 nil 27 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 3001 757 704 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 220 5 0 0 122 1 0 0] 34 6 1504 3648 5024 1104 6464 11920 1440 nil 27 1181766 2 ##(Smalltalk.FramingConstraints) 1180678 ##(Smalltalk.FramingCalculation) #fixedParentLeft 1 12658 #fixedParentRight 1 12658 #fixedParentTop 1 12658 #fixedParentBottom -39 410 ##(Smalltalk.ContainerView) 34 15 nil 576 34 2 8 1140850688 131073 12736 nil nil 482 2241 43 517 nil nil nil 12736 642 170 176 34 4 410 ##(Smalltalk.ToolButton) 34 14 nil 12736 34 2 8 1140850688 131073 12864 nil nil nil 1029 nil nil nil 12864 nil 410 ##(Smalltalk.Toolbar) 34 25 nil 12864 34 2 8 1140853580 131137 12928 nil nil 482 43 43 513 nil nil nil 12928 nil 8 1737207072 nil 170 192 34 2 43519 1115206 1 ##(Smalltalk.ToolbarIconButton) 12928 1 1730 #flipAutoCommit 8 'Auto Commit' 1 1 263494 3 ##(Smalltalk.Icon) nil true 1572870 ##(Smalltalk.ImageRelativeFileLocator) 8 'icons/camera16_light_icon.ico' nil 43519 34 1 13072 nil nil 3 nil 482 33 33 482 33 33 nil nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 43 43 12928 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 21 0 0 0 21 0 0 0] 8 #() 1440 nil 27 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 43 43 12864 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 21 0 0 0 21 0 0 0] 34 1 12928 1440 nil 27 12626 12672 1 12658 #fixedViewLeft 43 12704 1 12658 #fixedViewTop 43 410 ##(Smalltalk.TextEdit) 34 16 nil 12736 34 2 8 1140850688 1 13616 nil 784 482 2199 43 517 nil 2194 nil true 2226 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 65 114 105 97 108 0 159 4 0 134 63 1 0 0 204 53 63 1 2 0 20 59 0 0 0 0 247 0 5 86 111 1] 482 193 193 nil 13616 770 #black 8 1737104896 2306 nil nil 67 1234 138 144 34 2 1298 #createAt:extent: 34 2 482 43 1 482 2959 41 13616 1298 #setMarginWidths: 34 1 8 #(3 3) 13616 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 21 0 0 0 0 0 0 0 220 5 0 0 20 0 0 0] 8 #() 1440 nil 27 12626 12672 43 12688 1 12704 1 12720 1 170 192 34 4 12864 8 'autoCommitButton' 13616 8 'statusBarField' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 757 482 3001 41 12736 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 122 1 0 0 220 5 0 0 142 1 0 0] 34 2 12864 13616 1440 nil 27 12626 12672 1 12688 1 12720 -39 12720 1 170 192 34 2 704 8 'textAreaTabs' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 805 482 3001 797 576 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 146 1 0 0 220 5 0 0 32 3 0 0] 34 2 704 12736 1440 nil 27 25 410 ##(Smalltalk.ContainerView) 34 15 nil 416 34 2 8 1140850688 131073 14480 nil nil nil 5 nil nil nil 14480 514 170 176 34 8 410 ##(Smalltalk.ContainerView) 34 15 nil 14480 34 2 8 1140850688 131073 14592 nil nil nil 5 nil nil nil 14592 642 170 176 34 6 410 ##(Smalltalk.PushButton) 34 20 nil 14592 34 2 8 1140858880 1 14704 nil 2592 nil 5 nil nil nil 14704 nil 8 1737266240 1730 #gotoClassDefinedPackageViaButton nil 1 1 nil nil false nil nil nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 745 482 577 51 14704 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 116 1 0 0 32 1 0 0 141 1 0 0] 8 #() 1440 nil 29 12626 12672 1 12688 1 12720 -49 12720 1 410 ##(Smalltalk.CardContainer) 34 16 nil 14592 34 2 8 1409286144 131073 14976 nil 784 nil 5 nil nil nil 14976 802 138 144 34 2 866 898 8 'Hierarchy' nil nil 410 ##(Smalltalk.TreeView) 34 27 nil 14976 34 2 8 1409356327 1025 15136 590918 3 ##(Smalltalk.TreeModel) nil 12064 525062 ##(Smalltalk.TreeNode) nil nil nil 170 192 1424 784 nil 29 nil nil nil 15136 nil 8 1737728064 946 0 nil 978 2 1 944 8 'doIt' 8 '[:each | each displayString]' 8 #[30 105 226 0 106] #displayString 15296 7 257 nil ##(Smalltalk.IconicListAbstract) 12224 nil 946 0 nil 978 2 1 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each toolTip]' 8 #[30 105 226 0 106] #toolTip 15376 7 257 nil 946 0 nil 978 5 1 944 8 'doIt' 8 '[:each | each item displayStringFor: each browser: each view parentPresenter]' 8 #[33 105 226 0 17 226 1 160 193 106] #item #view #parentPresenter #displayStringFor:browser: 15456 7 257 nil nil nil 170 176 1424 33 #noIcons 1 170 ##(Smalltalk.PluggableLookupTable) 1424 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 9 53 482 561 635 15136 1378 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 28 1 0 0 87 1 0 0] 8 #() 1440 nil 27 866 898 8 'Classes' nil nil 410 ##(Smalltalk.ListView) 34 45 nil 14976 34 2 8 1409372237 1025 15776 11986 138 144 1424 nil 12064 784 nil 29 nil nil nil 15776 nil 8 1737156720 459270 ##(Smalltalk.Message) #displayString 8 #() nil 12224 nil nil nil nil nil nil 138 144 34 1 920646 5 ##(Smalltalk.ListViewColumn) 8 '' 553 #left 15890 #displayString 8 #() 15890 #<= 8 #() nil nil 15776 nil 3 nil 946 0 nil 978 5 1 944 8 'doIt' 8 '[:each | each item displayStringFor: each browser: each view parentPresenter]' 8 #[33 105 226 0 17 226 1 160 193 106] #item #view #parentPresenter #displayStringFor:browser: 16080 7 257 nil #report 8 #() nil 131169 nil 1 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 9 53 482 561 635 15776 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 28 1 0 0 87 1 0 0] 8 #() 1440 nil 35 15776 nil nil nil 170 192 34 4 15776 8 'classList' 15136 8 'classHierarchy' nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 14976 34 2 8 1140916736 1 16400 11986 138 144 34 2 15744 15104 nil 12064 nil nil 1 nil nil nil 16400 nil 8 1737494000 946 0 nil 12114 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 16528 7 257 nil 946 0 nil 12114 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 16576 7 257 nil 12224 nil nil nil nil nil #smallIcons nil nil nil nil nil 1234 138 144 34 3 1298 #createAt:extent: 34 2 482 1 1 482 577 695 16400 1298 #setSingleSelection: 8 #(1) 16400 1298 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 16400 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 32 1 0 0 91 1 0 0] 8 #() 1440 nil 27 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 577 695 14976 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 32 1 0 0 91 1 0 0] 34 3 15776 15136 16400 1440 nil 27 12626 12672 1 12688 1 12704 1 12720 -99 410 ##(Smalltalk.CardContainer) 34 16 nil 14592 34 2 8 1409286144 131073 17024 nil 784 nil 5 nil 2194 nil true 524550 ##(Smalltalk.LOGFONTW) 8 #[240 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 188 2 0 0 0 0 0 0 1 2 1 34 83 0 121 0 115 0 116 0 101 0 109 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 482 193 193 nil 17024 802 138 144 34 2 866 898 8 'Class' nil nil 410 ##(Smalltalk.ContainerView) 34 15 nil 17024 34 2 8 1140850688 131073 17264 nil nil nil 5 nil nil nil 17264 nil 170 192 1424 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 9 9 482 561 1 17264 1378 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 4 0 0 0 28 1 0 0 4 0 0 0] 8 #() 1440 nil 27 866 898 8 'Instance' nil nil 410 ##(Smalltalk.ContainerView) 34 15 nil 17024 34 2 8 1140850688 131073 17552 nil nil nil 5 nil nil nil 17552 nil 170 192 1424 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 9 9 482 561 1 17552 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 4 0 0 0 28 1 0 0 4 0 0 0] 8 #() 1440 nil 27 17552 nil nil nil 170 192 34 4 17552 8 'instanceTab' 17264 8 'classTab' nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 17024 34 2 8 1140916738 1 17856 11986 138 144 34 2 17520 17232 nil 12064 nil nil 1 nil nil nil 17856 nil 8 1737494000 946 0 nil 12114 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 17984 7 257 nil 946 0 nil 12114 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 18032 7 257 nil 12224 nil nil nil nil nil #smallIcons nil nil nil nil nil 1234 138 144 34 3 1298 #createAt:extent: 34 2 482 1 1 482 577 51 17856 1298 #setSingleSelection: 8 #(1) 17856 1298 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 17856 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 32 1 0 0 25 0 0 0] 8 #() 1440 nil 27 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 695 482 577 51 17024 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 91 1 0 0 32 1 0 0 116 1 0 0] 34 3 17552 17264 17856 1440 nil 27 12626 12672 1 12688 1 12720 -99 13600 51 170 192 34 6 14704 8 'definedPackageClassText' 14976 8 'classHierarchyTabs' 17024 8 'instanceClassTabs' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1403 1 482 577 795 14592 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 189 2 0 0 0 0 0 0 221 3 0 0 141 1 0 0] 34 3 14976 17024 14704 1440 nil 27 524806 ##(Smalltalk.Fraction) 3 11 410 ##(Smalltalk.ContainerView) 34 15 nil 14480 34 2 8 1140850688 131073 18752 nil nil nil 5 nil nil nil 18752 514 170 176 34 4 410 ##(Smalltalk.ContainerView) 34 15 nil 18752 34 2 8 1140850688 131073 18864 nil nil nil 5 nil nil nil 18864 642 170 176 34 6 410 ##(Smalltalk.PushButton) 34 20 nil 18864 34 2 8 1140858880 1 18976 nil 784 nil 5 nil nil nil 18976 nil 8 1737266240 1730 #gotoMethodDefinedPackageViaButton nil 1 1 nil nil false nil nil nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 745 482 629 51 18976 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 116 1 0 0 58 1 0 0 141 1 0 0] 8 #() 1440 nil 29 12626 12672 1 12688 1 12720 -49 12720 1 410 ##(Smalltalk.TextEdit) 34 16 nil 18864 34 2 8 1140916352 1025 19248 nil 784 nil 5 nil nil nil 19248 nil 8 1737104896 2306 nil nil 3 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 629 51 19248 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 58 1 0 0 25 0 0 0] 8 #() 1440 nil 27 12626 12672 1 12688 1 12704 1 12704 51 410 ##(Smalltalk.ListView) 34 45 nil 18864 34 2 8 1409372233 1025 19520 11986 138 144 1424 nil 12064 784 nil 13 nil nil nil 19520 nil 8 1737156720 15890 #displayString 8 #() ##(Smalltalk.IconicListAbstract) 12224 nil nil nil nil nil nil 138 144 34 2 15970 8 '' 41 #left 1298 #empty 8 #() 16 15890 #<= 8 #() nil nil 19520 946 0 nil 978 2 1 944 8 'doIt' 8 '[:each | each subSuperIcon]' 8 #[30 105 226 0 106] #subSuperIcon 19792 7 257 nil 1 nil nil 15970 8 'Selector' 581 #left 15890 #displayString 19648 ##(Smalltalk.SortedCollection) nil nil 19520 nil 3 nil 946 0 nil 978 5 1 944 8 'doIt' 8 '[:each | each item displayStringFor: each browser: each view parentPresenter]' 8 #[33 105 226 0 17 226 1 160 193 106] #item #view #parentPresenter #displayStringFor:browser: 19920 7 257 nil #report 16160 nil 133221 nil 1 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 55 482 629 691 19520 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 27 0 0 0 58 1 0 0 116 1 0 0] 8 #() 1440 nil 35 12626 12672 1 12688 1 12704 55 12720 -49 170 192 34 6 18976 8 'definedPackageMethodText' 19248 8 'categoryMethodText' 19520 8 'methodList' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 385 1 482 629 795 18864 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 192 0 0 0 0 0 0 0 250 1 0 0 141 1 0 0] 34 3 19520 18976 19248 1440 nil 27 327734 ##(Smalltalk.Float) 8 0 0 0 0 0 0 244 63 410 ##(Smalltalk.CardContainer) 34 16 nil 18752 34 2 8 1409286144 131073 20448 nil 784 nil 5 nil nil nil 20448 802 138 144 34 2 866 8 'Category' 410 ##(Smalltalk.ListView) 34 45 nil 20448 34 2 8 1409372233 1025 20592 11986 138 144 1424 nil 12064 784 nil 21 nil nil nil 20592 nil 8 1737156720 15890 #displayString 8 #() nil 12224 nil nil nil nil nil nil 138 144 34 1 15970 8 'Column 1' 351 #left 15890 #displayString 8 #() ##(Smalltalk.SortedCollection) 946 0 nil 978 1 83886081 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each]' 1779525917 20832 7 257 nil nil 20592 nil 3 nil nil #report 16160 nil 131169 nil 1 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1234 138 144 34 2 1298 #createAt:extent: 34 2 482 9 53 482 359 735 20592 1298 #text: 34 1 8 'Column 1' 20592 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 183 0 0 0 137 1 0 0] 8 #() 1440 nil 35 866 8 'Variables' 410 ##(Smalltalk.ListView) 34 45 nil 20448 34 2 8 1409372233 1025 21136 11986 138 144 1424 nil 12064 784 nil 21 nil nil nil 21136 nil 8 1737156720 15890 #displayString 8 #() nil 12224 nil nil 946 0 nil 978 4 1 944 8 'doIt' 8 '[:each | 
+each view parentPresenter possiblyBoldVariable: each]' 8 #[32 105 226 0 159 17 178 106] #view #parentPresenter #displayVariable: 21280 7 257 nil nil nil nil 138 144 34 1 15970 8 'Column 1' 351 #left 15890 #displayString 21264 ##(Smalltalk.SortedCollection) nil nil 21136 nil 3 nil 946 0 nil 978 4 1 944 8 'doIt' 8 '[:each | 
+each view parentPresenter possiblyBoldVariable: each]' 8 #[32 105 226 0 159 17 178 106] #view #parentPresenter #displayVariable: 21440 7 257 nil #report 16160 nil 131169 nil 1 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1234 138 144 34 2 1298 #createAt:extent: 34 2 482 9 53 482 359 735 21136 1298 #text: 34 1 8 'Column 1' 21136 1378 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 183 0 0 0 137 1 0 0] 8 #() 1440 nil 35 20592 nil nil nil 170 192 34 4 21136 8 'variableList' 20592 8 'categoryList' nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 20448 34 2 8 1140916736 1 21792 11986 138 144 34 2 20576 21120 nil 12064 nil nil 1 nil nil nil 21792 nil 8 1737494000 946 0 nil 12114 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 21920 7 257 nil 946 0 nil 12114 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 21968 7 257 nil 12224 nil nil nil nil nil #noIcons nil nil nil nil nil 1234 138 144 34 3 1298 #createAt:extent: 34 2 482 1 1 482 375 795 21792 1298 #setSingleSelection: 8 #(1) 21792 1298 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 21792 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 187 0 0 0 141 1 0 0] 8 #() 1440 nil 27 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 375 795 20448 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 187 0 0 0 141 1 0 0] 34 3 20592 21136 21792 1440 nil 27 20418 8 0 0 0 0 0 0 232 63 false 170 192 34 2 20448 8 'methodFilterTabs' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1989 1 482 1013 795 18752 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 226 3 0 0 0 0 0 0 220 5 0 0 141 1 0 0] 34 3 20448 410 ##(Smalltalk.Splitter) 34 12 nil 18752 34 2 8 1140850688 1 22624 nil 784 nil 517 nil nil nil 9090 22624 nil 1 #left nil nil nil 9120 9136 nil 9120 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 375 1 482 11 795 22624 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 187 0 0 0 0 0 0 0 192 0 0 0 141 1 0 0] 8 #() 1440 nil 27 18864 1440 nil 27 18722 15 41 410 ##(Smalltalk.ContainerView) 34 15 nil 14480 34 2 8 1140850688 131073 22880 nil nil nil 5 nil nil nil 22880 514 170 176 1424 false 170 192 34 2 410 ##(Smalltalk.ListView) 34 45 nil 22880 34 2 8 1409405261 1025 23008 11986 138 144 1424 nil 12064 784 nil 5 nil nil nil 23008 nil 8 1737156720 15890 #displayString 8 #() ##(Smalltalk.IconicListAbstract) 12224 nil nil nil nil nil nil 138 144 34 1 15970 8 'Column 1' 425 #left 946 0 nil 978 2 1 944 8 'doIt' 8 '[:each | each displayName]' 8 #[30 105 226 0 106] #displayName 23216 7 257 nil ##(Smalltalk.SortedCollection) nil nil 23008 nil 3 946 0 nil 978 2 1 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each toolTip]' 8 #[30 105 226 0 106] #toolTip 23296 7 257 nil 946 0 nil 978 3 1 944 8 'doIt' 8 '[:each | each item displayStringFor: each]' 8 #[31 105 226 0 17 177 106] #item #displayStringFor: 23376 7 257 nil #report 16160 nil 133217 nil 1 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1234 138 144 34 2 1298 #createAt:extent: 34 2 482 1 1 482 433 795 23008 1298 #text: 34 1 8 'Column 1' 23008 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 216 0 0 0 141 1 0 0] 8 #() 1440 nil 35 8 'projectList' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 433 795 22880 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 216 0 0 0 141 1 0 0] 34 1 23008 1440 nil 27 18722 7 41 410 ##(Smalltalk.ContainerView) 34 15 nil 14480 34 2 8 1140850688 131073 23856 nil nil nil 5 nil nil nil 23856 514 170 176 1424 false 170 192 34 2 410 ##(Smalltalk.ContainerView) 34 15 nil 23856 34 2 8 1140850688 131073 23984 nil nil nil 5 nil nil nil 23984 514 170 176 34 2 410 ##(Smalltalk.CardContainer) 34 16 nil 23984 34 2 8 1409286144 131073 24096 nil 784 nil 21 nil nil nil 24096 802 138 144 1424 nil nil nil nil 170 192 1424 nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 24096 34 2 8 1140916736 1 24208 11986 138 144 1424 nil 12064 nil nil 17 nil nil nil 24208 nil 8 1737494000 946 0 nil 12114 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 24320 7 257 nil 946 0 nil 12114 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 24368 7 257 nil 12224 nil nil nil nil nil #noIcons nil nil nil nil nil 1234 138 144 34 2 1298 #createAt:extent: 34 2 482 1 1 482 477 795 24208 1298 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 24208 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 238 0 0 0 141 1 0 0] 8 #() 1440 nil 27 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 477 795 24096 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 238 0 0 0 141 1 0 0] 34 1 24208 1440 nil 27 3 false 170 192 34 2 24096 8 'packageDictionaryCards' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 485 1 482 477 795 23984 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 242 0 0 0 0 0 0 0 224 1 0 0 141 1 0 0] 34 1 24096 1440 nil 27 8 'packageDictionaryContainer' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 433 1 482 961 795 23856 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 216 0 0 0 0 0 0 0 184 2 0 0 141 1 0 0] 34 3 410 ##(Smalltalk.ContainerView) 34 15 nil 23856 34 2 8 1140850688 131073 25152 nil nil nil 5 nil nil nil 25152 514 170 176 1424 false 170 192 1424 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 475 795 25152 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 237 0 0 0 141 1 0 0] 34 1 410 ##(Smalltalk.CardContainer) 34 16 nil 25152 34 2 8 1409286144 131073 25424 nil 784 nil 5 nil nil nil 25424 802 138 144 34 1 866 8 'Components' 410 ##(Smalltalk.JadeiteTreeView) 34 27 nil 25424 34 2 8 1140916775 1025 25568 1049670 3 ##(Smalltalk.JadeiteTreeModel) nil 12064 984070 ##(Smalltalk.JadeiteTreeNode) nil nil nil nil 170 192 1424 784 nil 5 nil nil nil 25568 nil 8 1737728064 946 0 nil 978 2 1 15888 8 'doIt' 8 '[:service | service displayString]' 8 #[30 105 226 0 106] #displayString 25728 7 257 nil ##(Smalltalk.IconicListAbstract) 12224 nil nil nil nil nil 170 176 1424 33 #noIcons 1 170 ##(Smalltalk.PluggableLookupTable) 1424 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 9 53 482 459 735 25568 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 233 0 0 0 137 1 0 0] 8 #() 1440 nil 27 25568 nil nil nil 170 192 34 2 25568 8 'componentTree' nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 25424 34 2 8 1140916736 1 26048 11986 138 144 34 1 25552 nil 12064 nil nil 1 nil nil nil 26048 nil 8 1737494000 946 0 nil 12114 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 26176 7 257 nil 946 0 nil 12114 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 26224 7 257 nil 12224 nil nil nil nil nil #noIcons nil nil nil nil nil 1234 138 144 34 3 1298 #createAt:extent: 34 2 482 1 1 482 475 795 26048 1298 #setSingleSelection: 8 #(1) 26048 1298 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 26048 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 237 0 0 0 141 1 0 0] 8 #() 1440 nil 27 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 475 795 25424 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 237 0 0 0 141 1 0 0] 34 2 25568 26048 1440 nil 27 1440 nil 27 410 ##(Smalltalk.Splitter) 34 12 nil 23856 34 2 8 1140850688 1 26656 nil 784 nil 517 nil nil nil 9090 26656 nil 1 #left nil nil nil 9120 9136 nil 9120 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 475 1 482 11 795 26656 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 237 0 0 0 0 0 0 0 242 0 0 0 141 1 0 0] 8 #() 1440 nil 27 23984 1440 nil 27 18722 3 7 false 170 192 34 2 23856 8 'componentPackageContainer' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 3001 795 14480 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 220 5 0 0 141 1 0 0] 34 6 22880 23856 410 ##(Smalltalk.Splitter) 34 12 nil 14480 34 2 8 1140850688 1 27120 nil 784 nil 517 nil nil nil 9090 27120 nil 1 #left nil nil nil 9120 9136 nil 9120 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1393 1 482 11 795 27120 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 184 2 0 0 0 0 0 0 189 2 0 0 141 1 0 0] 8 #() 1440 nil 27 14592 410 ##(Smalltalk.Splitter) 34 12 nil 14480 34 2 8 1140850688 1 27360 nil 784 nil 517 nil nil nil 9090 27360 nil 1 #left nil nil nil 9120 9136 nil 9120 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1979 1 482 11 795 27360 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 221 3 0 0 0 0 0 0 226 3 0 0 141 1 0 0] 8 #() 1440 nil 27 18752 1440 nil 27 25 true 170 192 34 2 410 ##(Smalltalk.Splitter) 34 12 nil 416 34 2 8 1140850688 1 27632 nil 784 nil 517 nil nil nil 9090 27632 nil 1 #left nil nil nil 9120 9136 nil 9120 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 795 482 3001 11 27632 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 141 1 0 0 220 5 0 0 146 1 0 0] 8 #() 1440 nil 27 8 'splitter' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 7545 21 482 3001 1601 416 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 188 14 0 0 10 0 0 0 152 20 0 0 42 3 0 0] 34 3 14480 27632 576 1440 nil 27 )! !
 !JadeiteBrowserPresenter class categoriesFor: #resource_Default_view!public!resources-views! !
 

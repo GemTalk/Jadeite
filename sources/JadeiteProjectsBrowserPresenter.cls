@@ -97,13 +97,6 @@ basicAddMethodCategory: string
 			self issueCommand: service].
 	self selectCategoriesNamed: (Array with: string)!
 
-basicCopyClass: oldClassService to: newClassName
-	oldClassService
-		command: #copyClassTo:;
-		commandArgs: (Array with: newClassName).
-	self issueCommand: oldClassService.
-	self updateAfterFindClass: (RowanClassService new name: newClassName)!
-
 basicOnDropClassList: dragDropSession
 	| classService failedCompilations newSelections |
 	failedCompilations := OrderedCollection new.
@@ -462,20 +455,6 @@ createSchematicWiringForPackageList
 		when: #keyTyped: 			send: #selectServiceStartingWith: 	to: packageListPresenter
 !
 
-createSchematicWiringForProjectList
-
-	projectListPresenter 
-		when: #'drag:'				send: #'onDragPackageList:'		to: self;
-		when: #'dragCut:'			send: #'onDragCutPackageList:'		to: self;
-		when: #'dragOver:'			send: #'onDragOverPackageList:'	to: self;
-		when: #'drop:'				send: #'onDropOnPackageList:'		to: self;
-		when: #'keyTyped:'			send: #'delayUpdate'				to: self;
-		when: #'selectionChanging:'	send: #'aboutToChange:'			to: self;
-		when: #'selectionChanging:'	send: #'releasedReferencedServices:'	to: self;
-		when: #'selectionChanged' 		send: #'ensureVisible'				to: projectListPresenter;
-		when: #'selectionChanged'		send: #'updateProject' 			to: self
-!
-
 createSchematicWiringForVariableList
 	variableListPresenter
 		when: #selectionChanging: send: #aboutToChange: to: self;
@@ -649,12 +628,6 @@ filterTabChanged
 					self selectMethodSourceTab]].
 	methodListPresenter selectionOrNil ifNotNil: [self selectMethodSourceTab]!
 
-findClass
-	| find |
-	self isOkayToChange ifFalse:[^self]. 
-	find := JadeiteFindClassDialog showModal: 'DefaultView' on: self allClasses.
-	find ifNotNil: [self updateAfterFindClass: find]!
-
 findMethod
 	self selectedClass isNil ifTrue: [^self].
 	^self class
@@ -694,43 +667,8 @@ getViews
 	methodFilterTabs := self view viewNamed: 'methodFilterTabs'.
 	textAreaTabs := self view viewNamed: 'textAreaTabs'.!
 
-gitCommit
-	| projectName message service promptResult |
-	projectListPresenter selections size > 1
-		ifTrue: [MessageBox notify: 'Only one project may be committed'].
-	projectName := projectListPresenter selection name.
-	message := String new asValue.
-	promptResult := JadeiteMultilinePrompter
-				on: message
-				prompt: 'Enter Git commit message. (Note - This will NOT do a GemStone commit)'
-				caption: 'Committing Project ' , projectName.
-	promptResult isNil ifTrue: [^self].
-	message value isEmpty
-		ifTrue: [^MessageBox notify: 'Commit message must not be empty. Commit to local repository NOT done.'].
-	service := projectListPresenter selection.
-	service
-		command: #commitWithMessage:;
-		commandArgs: (Array with: message value asString).
-	self issueCommand: service.
-	MessageBox notify: 'Project ' , projectName , ' committed to local repository!!'.
-	self refreshFromServer!
-
 gotoClass
 	JadePresenter browseClassIn: self gciSession!
-
-gotoClassDefinedPackage
-	" find will go to the class in it's defined package project"
-
-	| selectedCategory selectedMethod |
-	selectedCategory := categoryListPresenter selectionIfNone: [].
-	selectedMethod := methodListPresenter selectionIfNone: [].
-	self updateAfterFindClass: self selectedClass.
-	selectedCategory ifNotNil: [:category | categoryListPresenter selection: category].
-	selectedMethod
-		ifNotNil: 
-			[methodListPresenter selection: (methodListPresenter list
-						detect: [:methodService | methodService selector = selectedMethod selector]).	"It better be there"
-			self updateMenuBar	"to refresh method menu"]!
 
 gotoClassDefinedPackageViaButton
 	^self gotoClassDefinedPackage!
@@ -769,81 +707,12 @@ gotoProjectNamed: projectName
 	projectListPresenter selections: (Array with: projectService).
 	!
 
-hasCategorySelected
-
-	^categoryListPresenter selections notEmpty!
-
-hasExactlyOneCategorySelected
-
-	^categoryListPresenter selections size = 1!
-
 hierarchyClassDoubleClicked
 	self expandHierarchyOneLevelAt: classHierarchyPresenter selection!
 
 initialize
 	super initialize.
 	stonCritical := Semaphore forMutualExclusion.!
-
-isClassDefinitionTabSelected
-	^textAreaTabs currentCard name = 'classDefinition'!
-
-isClassSelected
-	^self selectedClass notNil!
-
-isComparisonTabSelected
-	^textAreaTabs currentCard name = 'comparisonTab'!
-
-isDictionariesTabSelected
-
-	^projectDictionaryTabs currentCard name = 'dictionaryList'.
-!
-
-isHierarchyTabSelected
-	^classHierarchyTabs currentCard name = 'classHierarchy'!
-
-isMethodSourceTabSelected
-	^textAreaTabs currentCard name = 'methodSource'!
-
-isOkayToChange
-	methodSourcePresenter view isModified
-		ifTrue: [(self isOkayToChangeSource: methodSourcePresenter) ifFalse: [^false]].
-	classDefinitionPresenter view isModified
-		ifTrue: 
-			[classDefinitionPresenter ensureVisible.
-			gciSession isValidSession
-				ifTrue: [(JadePresenter unsavedChangesValidSessionDialogIn: self) ifTrue: [^false]]
-				ifFalse: 
-					[(JadePresenter unsavedChangesInvalidSessionDialogIn: self)
-						ifTrue: 
-							[classDefinitionPresenter
-								selectAll;
-								copySelection]].
-			classDefinitionPresenter view isModified: false].
-	classCommentPresenter view isModified
-		ifTrue: 
-			[classCommentPresenter ensureVisible.
-			gciSession isValidSession
-				ifTrue: 
-					[(JadePresenter unsavedChangesValidSessionDialogIn: self
-						text: 'Stay on window with unsaved changes? Class comment has unsaved changes.') ifTrue: [^false]]
-				ifFalse: 
-					[(JadePresenter unsavedChangesInvalidSessionDialogIn: self
-						text: 'Copy changes to Clipboard? Class comment has unsaved changes')
-							ifTrue: 
-								[classCommentPresenter
-									selectAll;
-									copySelection]].
-			classCommentPresenter view isModified: false].
-	self postOkToChangeEvent.
-	^true!
-
-isSourceTabSelected
-
-	^textAreaTabs currentCard name = 'methodSource'.
-!
-
-isSunitTabSelected
-	^self textAreaTabs currentCard name = 'sunit'!
 
 jadeDebug
 	View focus name = 'methodSource' ifFalse: [^self runMethodTests].
@@ -1021,61 +890,8 @@ postOkToChangeEvent
 	self resetClassDefinitionPane.
 	self sundryCleanup!
 
-projectChanges
-	projectListPresenter selections isEmpty ifTrue: [^MessageBox notify: 'No project selected'].
-	^projectListPresenter selection changesUsing: self gciSession!
-
 projectListPresenter
 	^projectListPresenter!
-
-projectLog
-	projectListPresenter selection projectLogUsing: self session: gciSession
-!
-
-projectTabLabel
-	"Selections get mixed up switching between system presenters unless the tabs
-	have a unique label. Rather silly, but we'll give the tab a unique number"
-
-	| cardNumber labelString numberedLabelString label |
-	labelString := self basicProjectTabLabel.
-	cardNumber := self parentPresenter view cards indexOf: self view.
-	numberedLabelString := cardNumber printString , ' ' , labelString.
-	label := CardLabel text: numberedLabelString iconBlock: nil. 
-	methodSourcePresenter view isModified
-		ifTrue: 
-			[label := CardLabel text: numberedLabelString iconBlock: [Icon fromId: 'Changed.ico']].
-	^label!
-
-pullFromGit
-	| projectServices ws |
-	projectServices := projectListPresenter selections.
-	ws := WriteStream on: String new.
-	projectServices do: 
-			[:service |
-			ws
-				nextPutAll: service name;
-				space].
-	(MessageBox
-		confirm: 'It is recommended that you commit changes before doing a pulling projects - ' , ws contents
-				, ' -  from git. Really proceed?')
-			ifFalse: [^self].
-	projectServices do: [:service | service command: #pullFromGit].
-	self issueCommands: projectServices!
-
-pushToGit
-	| projectServices ws |
-	projectServices := projectListPresenter selections.
-	ws := WriteStream on: String new.
-	projectServices do: 
-			[:service |
-			ws
-				nextPutAll: service name;
-				space].
-	(MessageBox
-		confirm: 'Push projects - ' , ws contents , '- from the local repository to the remote server?')
-			ifFalse: [^self].
-	projectServices do: [:service | service command: #pushToGit].
-	self issueCommands: projectServices!
 
 queryCommand: aCommandQuery
 	| command focusView isTextEdit |
@@ -1735,9 +1551,6 @@ sunitPresenter
 
 	^sunitPresenter!
 
-symbolExists: newClassName
-	^(RowanAnsweringService new symbolExists: newClassName asSymbol session: self gciSession) not!
-
 targetCategory
 	self isVariablesTabSelected ifTrue: [^self selectedMethodCategory].
 	categoryListPresenter hasSelection ifFalse: [^self selectedMethodCategory].
@@ -1753,21 +1566,6 @@ textTabs
 
 unloadPackage
 	MessageBox notify: 'This feature is not yet available'!
-
-unloadProjects
-	| projectNames ws |
-	projectNames := projectListPresenter selections collect: [:projectService | projectService name].
-	projectNames isEmpty ifTrue: [^self].
-	ws := WriteStream on: String new.
-	projectNames do: 
-			[:projectName |
-			ws
-				space;
-				nextPutAll: projectName].
-	(MessageBox
-		confirm: 'Really unload project(s) - ' , ws contents , '?  You will lose any unsaved changes!! '
-		caption: 'UNLOAD PROJECTS WARNING!!') ifFalse: [^self].
-	self basicUnloadProjects: projectNames!
 
 update: services afterStonReplication: stonResults
 	| result |
@@ -1943,13 +1741,7 @@ updateSUnitTab
 		ifNotNil: [:service | self setTestClass: service]!
 
 updateSUnitTab: service
-	service ifNil: [sunitPresenter testClassService: nil] ifNotNil: [self setTestClass: service]!
-
-writeProject
-	| projectServices |
-	projectServices := projectListPresenter selections.
-	projectServices isEmpty ifTrue: [^MessageBox notify: 'No project selected'].
-	^self basicWriteProject: projectServices! !
+	service ifNil: [sunitPresenter testClassService: nil] ifNotNil: [self setTestClass: service]! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #aboutToChange:!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addNoneProject!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #addPackage!menu handlers!public! !
@@ -1960,7 +1752,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #autoCommit!accessing!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #autoCommit:!initialize/release!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicAddMethodCategory:!menu handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #basicCopyClass:to:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicOnDropClassList:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicProjectTabLabel!displaying!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveClass:!menu handlers support!private! !
@@ -1995,7 +1786,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForMethodFilterTabs!create schemantic wiring!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForPackageDictionaryTabs!create schemantic wiring!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForPackageList!create schemantic wiring!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForProjectList!create schemantic wiring!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForVariableList!create schemantic wiring!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #createStateEntry!accessing!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #definedClassMenuItemLabel!menus!private! !
@@ -2012,33 +1802,19 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #fileOutMethods!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #fileOutMethodsOnPath:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #filterTabChanged!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #findClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #findMethod!event handlers!menu handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #findMethod:!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gciSession:!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #getterMethodSourceFor:!menu handlers support!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #getViews!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #gitCommit!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoClass!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #gotoClassDefinedPackage!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoClassDefinedPackageViaButton!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoMethodDefinedPackage!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoMethodDefinedPackageViaButton!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoPackageNamed:!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoProjectNamed:!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #hasCategorySelected!public!testing! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #hasExactlyOneCategorySelected!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #hierarchyClassDoubleClicked!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #initialize!initialize/release!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #isClassDefinitionTabSelected!public!testing! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #isClassSelected!public!testing! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #isComparisonTabSelected!public!testing! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #isDictionariesTabSelected!public!testing! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #isHierarchyTabSelected!public!testing! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #isMethodSourceTabSelected!public!testing! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #isOkayToChange!event handlers!public!testing! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #isSourceTabSelected!public!testing! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #isSunitTabSelected!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeDebug!menu handlers!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeDisplay!menu handlers!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeExecute!menu handlers!private! !
@@ -2060,12 +1836,7 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #pkgsMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #populateFilterList!event handlers support!private!services!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #postOkToChangeEvent!event handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #projectChanges!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #projectListPresenter!accessing!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #projectLog!project menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #projectTabLabel!displaying!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #pullFromGit!project menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #pushToGit!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #redrawAllViews!displaying!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #refreshClassListOrHierarchy!event handlers!public!updating! !
@@ -2129,12 +1900,10 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #showSuperClassComparison!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #sundryCleanup!initialize/release!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #sunitPresenter!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #symbolExists:!public!testing! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #targetCategory!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #textAreaTabs!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #textTabs!private!text tabs! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #unloadPackage!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #unloadProjects!project menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #update:afterStonReplication:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateAndSelectA:!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateClasses!event handlers!public!updating! !
@@ -2153,7 +1922,6 @@ writeProject
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSingleMethodSource!event handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSUnitTab!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #updateSUnitTab:!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #writeProject!project menu handlers!public! !
 
 !JadeiteProjectsBrowserPresenter class methodsFor!
 

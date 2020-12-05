@@ -482,7 +482,7 @@ saveMethod
 	classService
 		command: #saveMethodSource:category:;
 		commandArgs: (Array with: string with: frame method category).
-	[self issueCommand: (Array with: classService)] on: GsCompileError
+	[self issueCommand: classService] on: GsCompileError
 		do: 
 			[:ex |
 			self setCompileErrorColor.

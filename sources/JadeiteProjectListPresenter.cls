@@ -181,7 +181,9 @@ pushToGit
 		confirm: 'Push projects - ' , ws contents , '- from the local repository to the remote server?')
 			ifFalse: [^self].
 	projectServices do: [:service | service command: #pushToGit].
-	self issueCommands: projectServices!
+	self issueCommands: projectServices.
+	MessageBox notify: 'Projects ' , (projectServices collect: [:service | service name]) printString
+				, ' pushed to remote repository!!'!
 
 queryCommand: aCommandQuery
 	#gitCommit == aCommandQuery command

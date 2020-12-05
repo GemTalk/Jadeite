@@ -342,7 +342,7 @@ multipleInstVarsSelected
 	answeringService
 		command: #printStringOfOops:toMaxSize:;
 		commandArgs: (Array with: oops with: self maxPrintStringSize).
-	self issueCommand: (Array with: answeringService).
+	self issueCommand: answeringService.
 	computedSelections := self computedListSelections.
 	boldNeeded := OrderedCollection new.
 	computedSelections do: 
