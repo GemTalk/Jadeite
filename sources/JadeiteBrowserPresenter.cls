@@ -658,7 +658,7 @@ editSaveClass
 	[browserService
 		command: #recompileMethodsAfterClassCompilation;
 		commandArgs: #().
-	self issueCommand: (Array with: browserService)]
+	self issueCommand: browserService]
 			on: GsCompileError
 			do: [:ex | ^self showMethodRecompilationError: ex].
 	self resetClassDefinitionPane.

@@ -82,7 +82,7 @@ flipAutoCommit
 	browserService
 		command: #flipAutoCommit;
 		commandArgs: Array new.
-	self issueCommand: (Array with: browserService)!
+	self issueCommand: browserService!
 
 flipAutocomplete
 	| newValue confirmedValue |

@@ -1088,7 +1088,7 @@ test_checkoutTagRefresh
 			| dependentService |
 			dependentService := transcript projectListPresenter projectListPresenter list
 						detect: [:service | service name = projectName].	"the transcript will display the tag. Make sure it's updated"
-			self assert: dependentService branch equals: '(HEAD detached at Oscar-3.0.93)'.
+			self assert: dependentService branch equals: 'oscarV2.0Component'.
 			self assert: dependentService isSkew].
 	projectService basicCheckout: workingBranch using: self projectsPresenter.
 	self assert: projectService branch equals: workingBranch.
