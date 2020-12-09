@@ -686,7 +686,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #issueCommand:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #issueCommands:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #itemNamed:in:!issue test support!private! !
-!JadeiteAbstractTestCase categoriesFor: #loadProjectNamed:!private!project support! !
+!JadeiteAbstractTestCase categoriesFor: #loadProjectNamed:!project support!public! !
 !JadeiteAbstractTestCase categoriesFor: #loadRowanSample1InProjectList!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #loginWithRetry:!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #logoutThenLoginAs:!private!setup teardown!support! !

@@ -135,11 +135,6 @@ issue284methodCreation
 	self methodSourcePresenter value: 'addedMethod  ^5'.
 	self projectsPresenter editSaveMethod: self classListPresenter selection!
 
-loadProjectNamed: projectName
-	| projectService |
-	projectService := RowanProjectService new name: projectName.
-	RowanBrowserService new reloadProjects: (Array with: projectService) presenter: self projectsPresenter!
-
 loginOtherSession
 	(Delay forSeconds: 1) wait.	"not sure if this is necessary"
 	session
@@ -2338,7 +2333,6 @@ test_projectRemoved
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
 	session executeString: 'Rowan projectTools delete deleteProjectNamed: ''RowanSample1'''.	"delete project behind tool's back"
 	self auditAll.
-	
 	[self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.	"expect project to disappear but not walkback"
 	sampleProject := self projectNamed: 'RowanSample1'.
 	self assertIsNil: sampleProject]
@@ -2427,7 +2421,7 @@ test_refreshAfterReloadInProjectsBrowserWithAddedMethod
 	self issue284methodCreation.
 	self selectMethodNamed: #addedMethod.
 	loadProjectsMenuItem := self projectListPresenter view queryContextMenu items
-				detect: [:menuItem | menuItem command == #loadProjects].
+				detect: [:menuItem | menuItem command == #reloadV2Project].
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #yes.	"confirm we want to load project"
 	
@@ -2769,8 +2763,8 @@ test_tabNames_projectsBrowser
 	self assert: (textTabs at: 3) text equals: 'Method Source'.
 	self assert: (textTabs at: 4) text equals: 'SUnit'.
 	self assert: (textTabs at: 5) text equals: 'Comparison'.	"for some as yet unknown reason, this is created differently"
-	self assert: (textTabs at: 6) text equals: 'Spec'.
-	self assert: (textTabs at: 7) text equals: 'Project'!
+	self assert: (textTabs at: 6) text equals: 'Project'.
+	self assert: (textTabs at: 7) text equals: 'Load Spec'.!
 
 test_tabNames_projectsBrowserNotLost
 	"why we have to put the text in the arrangement field is beyond me"
@@ -2838,7 +2832,6 @@ test_twoBrowsersAddedClassAppearsInHierarchy1
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
 	self selectHierarchyTabIn: secondPresenter.
-	self assert: secondPresenter classHierarchyPresenter model size equals: 2.
 	self assertLinearAncestry: #('Object' 'RowanSample1') in: secondPresenter classHierarchyPresenter.
 	self assertIsNil: (secondPresenter classHierarchyPresenter model asBag
 				detect: [:classService | classService name = 'TestClass']
@@ -2851,18 +2844,17 @@ test_twoBrowsersAddedClassAppearsInHierarchy1
 	
 	[self assert: self classHierarchyPresenter selection name = 'TestClass'.
 	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'.
-	self assert: secondPresenter classHierarchyPresenter model size equals: 3.
 	self denyIsNil: (secondPresenter classHierarchyPresenter model asBag
 				detect: [:classService | classService name = 'TestClass']
 				ifNone: []).
-	family := Dictionary new.
-	family at: 'Object' put: (Array with: 'RowanSample1').
-	family at: 'RowanSample1' put: (Array with: 'TestClass').
-	family at: 'TestClass' put: Array new.
-	self assertAncestry: family in: secondPresenter classHierarchyPresenter]
+	family := Array
+				with: 'Object'
+				with: 'RowanSample1'
+				with: 'TestClass'.
+	self assertLinearAncestry: family in: secondPresenter classHierarchyPresenter]
 			ensure: 
-				[secondPresenter selectClassListTab. 
-				self selectServiceNamed: 'TestClass' in: secondPresenter classListPresenter .
+				[secondPresenter selectClassListTab.
+				self selectServiceNamed: 'TestClass' in: secondPresenter classListPresenter.
 				self projectsPresenter basicRemoveClass: secondPresenter selectedClass]!
 
 test_twoBrowsersAddedClassAppearsInHierarchy2
@@ -2876,7 +2868,6 @@ test_twoBrowsersAddedClassAppearsInHierarchy2
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
 	self selectHierarchyTabIn: secondPresenter.
-	self assert: secondPresenter classHierarchyPresenter model size equals: 2.
 	self assertLinearAncestry: #('Object' 'RowanSample1') in: secondPresenter classHierarchyPresenter.
 	self assertIsNil: (secondPresenter classHierarchyPresenter model asBag
 				detect: [:classService | classService name = 'TestClass']
@@ -2895,11 +2886,8 @@ test_twoBrowsersAddedClassAppearsInHierarchy2
 	
 	[self assert: self classHierarchyPresenter selection name = 'SubSubSub'.
 	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'.	"did not change selection ..."
-	self assert: secondPresenter classHierarchyPresenter model size equals: 4.	"...but added new classes"
-	family := Dictionary new.
-	family at: 'Object' put: (Array with: 'RowanSample1' with: 'TestClass').
-	family at: 'TestClass' put: (Array with: 'SubSubSub').
-	self assertAncestry: family in: secondPresenter classHierarchyPresenter]
+	family := Array with: 'Object' with: 'TestClass' with: 'SubSubSub'. 	"...but added new classes"
+	self assertLinearAncestry: family in: secondPresenter classHierarchyPresenter]
 			ensure: 
 				[secondPresenter selectClassListTab.
 				self selectServiceNamed: 'SubSubSub' in: secondPresenter classListPresenter.
@@ -2923,7 +2911,6 @@ test_twoBrowsersAddedClassDoesNotAppearInDifferentHierarchy
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
 	self selectHierarchyTabIn: secondPresenter.
-	self assert: secondPresenter classHierarchyPresenter model size equals: 3.
 	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
 		in: secondPresenter classHierarchyPresenter.
 	self assertIsNil: (secondPresenter classHierarchyPresenter model asBag
@@ -2953,7 +2940,6 @@ test_twoBrowsersAddedClassRearrangesItselfInHierarchy
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
 	self selectServiceNamed: self sampleClassName in: secondPresenter classListPresenter.
 	self selectHierarchyTabIn: secondPresenter.
-	self assert: secondPresenter classHierarchyPresenter model size equals: 3.
 	self assertLinearAncestry: #('Object' 'RowanSample1' 'RowanSubClass')
 		in: secondPresenter classHierarchyPresenter.
 	self assertIsNil: (secondPresenter classHierarchyPresenter model asBag
@@ -2967,26 +2953,18 @@ test_twoBrowsersAddedClassRearrangesItselfInHierarchy
 	
 	[self assert: self classHierarchyPresenter selection name = 'TestClass'.
 	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'.
-	self assert: secondPresenter classHierarchyPresenter model size equals: 4.
-	family := Dictionary new.
-	family at: 'Object' put: (Array with: 'RowanSample1' with: 'TestClass').
-	family at: 'RowanSample1' put: (Array with: 'RowanSubClass').
-	family at: 'RowanSubClass' put: Array new.
-	family at: 'TestClass' put: Array new.
-	self assertAncestry: family in: secondPresenter classHierarchyPresenter.
+	family := Array with: 'Object' with: 'RowanSample1' with: 'RowanSubClass'. 
+	self assertLinearAncestry: family in: secondPresenter classHierarchyPresenter.
+	family := Array with: 'Object' with: 'TestClass'.
+	self assertLinearAncestry: family in: secondPresenter classHierarchyPresenter.
 	self
 		saveClass: 'TestClass'
 		superclass: 'RowanSubClass'
 		instVars: Array new
 		package: 'RowanSample1-Core'.	"changed superclass"
 	self assert: secondPresenter classHierarchyPresenter selection name equals: 'RowanSample1'.
-	self assert: secondPresenter classHierarchyPresenter model size equals: 4.
-	family := Dictionary new.
-	family at: 'Object' put: (Array with: 'RowanSample1').
-	family at: 'RowanSample1' put: (Array with: 'RowanSubClass').
-	family at: 'RowanSubClass' put: (Array with: 'TestClass').
-	family at: 'TestClass' put: Array new.
-	self assertAncestry: family in: secondPresenter classHierarchyPresenter]
+	family := Array with: 'Object' with: 'RowanSample1' with: 'RowanSubClass' with: 'TestClass'.
+	self assertLinearAncestry: family in: secondPresenter classHierarchyPresenter]
 			ensure: 
 				[secondPresenter selectClassListTab.
 				self selectServiceNamed: 'RowanSubClass' in: secondPresenter classListPresenter.
@@ -3502,7 +3480,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #issue261TestProjectName!constants!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue261TestProjectPath!constants!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue284methodCreation!issue test support!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #loadProjectNamed:!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #loginOtherSession!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #logoutOtherSession!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #logoutOtherSystemUsersSessions!public!support! !
