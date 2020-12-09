@@ -265,7 +265,7 @@ updateClasses
 	self initializeClassList.
 	packageServices := packageListPresenter selections.
 	packageServices do: [:packageService | packageService command: #testClasses].
-	self issueCommand: packageServices!
+	self issueCommands: packageServices!
 
 updateMethods
 	| classServices |
@@ -275,7 +275,7 @@ updateMethods
 			service
 				updateAfterCommand: false;
 				command: #fastRefresh].
-	self issueCommand: classServices.
+	self issueCommands: classServices.
 	classServices do: [:service | service updateAfterCommand: true].
 	^self updateMethodsFrom: classServices!
 

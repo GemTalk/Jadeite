@@ -1873,7 +1873,7 @@ printInstVar
 	answeringService
 		command: #printStringOf:toMaxSize:;
 		commandArgs: (Array with: instVarListPresenter selection value value with: self maxPrintStringSize).
-	self issueCommand: (Array with: answeringService).
+	self issueCommand: answeringService.
 	answeringService answer]
 			on: Error
 			do: [:ex | self displayInstVarError: ex instVar: instVarListPresenter selection value]!
@@ -5540,7 +5540,7 @@ projectLogUsing: parentPresenter session: session
 	gitLog projectService: self. 
 	gitLog caption: (parentPresenter gciSession titleBarFor: projectName , ' Project Git Log').
 	queryService := RowanQueryService command: #projectLog: withArgs: (Array with: projectName).
-	parentPresenter issueCommand: (Array with: queryService).
+	parentPresenter issueCommand: queryService.
 	gitLog codePane documentPresenter value: queryService queryResults! !
 !RowanProjectService categoriesFor: #changesUsing:!presenter support!public! !
 !RowanProjectService categoriesFor: #projectLogUsing:session:!presenter support!public! !

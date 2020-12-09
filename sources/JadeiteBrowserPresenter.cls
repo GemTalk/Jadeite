@@ -1439,7 +1439,7 @@ refreshClass
 
 refreshFromServer
 	| services |
-	services := OrderedCollection with: RowanBrowserService new.
+	services := OrderedCollection new.
 	services addAll: projectListPresenter selections.
 	services addAll: packageListPresenter selections.
 	classListPresenter selectionOrNil ifNotNil: [:classService | services add: classService].
@@ -1447,6 +1447,7 @@ refreshFromServer
 	services addAll: methodListPresenter selections.
 	self updateServices: services.
 	self updateSUnitTab.
+	self updateProjects.	"don't like this double round trip, but also don't want RowanBrowserService to have to understand update on the server"
 	self redrawAllViews!
 
 refreshFromServerAfterAbort: browserService
@@ -1592,7 +1593,8 @@ selectProjectNamed: projectName
 	| projectService |
 	projectService := projectListPresenter list detect: [:service | service name = projectName]
 				ifNone: [^self].
-	projectListPresenter selections: (Array with: projectService)!
+	projectListPresenter selections: (Array with: projectService).
+	^projectService "return for testing"!
 
 setCompileErrorColor
 	statusBarText view backcolor: Color red faded!

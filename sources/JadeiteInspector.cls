@@ -45,7 +45,7 @@ basicAddKey: string
 	model
 		command: #addKey:;
 		commandArgs: (Array with: string).
-	self issueCommand: (Array with: model).
+	self issueCommand: model.
 	addedObject := model objects
 				detect: [:assoc | (assoc value isKindOf: Array) and: [assoc value first = model selectionOop]]
 				ifNone: [].
@@ -464,7 +464,7 @@ saveDictionaryElement
 	model
 		command: #saveKey:value:;
 		commandArgs: (Array with: keyOop with: documentPresenter value).
-	self issueCommand: (Array with: model).
+	self issueCommand: model.
 	self displayObjectSelecting: instVarListPresenter selectionByIndex!
 
 saveDocument

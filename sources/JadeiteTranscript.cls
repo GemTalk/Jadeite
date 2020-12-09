@@ -256,7 +256,7 @@ remoteAutoCommit
 	answeringService
 		command: #autoCommit;
 		commandArgs: Array new.
-	self issueCommand: (Array with: answeringService).
+	self issueCommand: answeringService.
 	^answeringService answer!
 
 toolbarPresenter

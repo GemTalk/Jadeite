@@ -197,7 +197,7 @@ executeSelectionOrLine: contextObject
 	oop := (contextObject isKindOf: ExternalInteger)
 				ifTrue: [contextObject value]
 				ifFalse: [contextObject].	"services wants a local special as a context"
-	oop ifNil: [oop := 20]. 
+	oop ifNil: [oop := 20].
 	answeringService := RowanAnsweringService new.
 	answeringService
 		command: #exec:inFrame:ofProcess:context:;
@@ -206,9 +206,10 @@ executeSelectionOrLine: contextObject
 					with: frameListPresenter selectionByIndex
 					with: gsProcess oop
 					with: oop).
-	self issueCommand: (Array with: answeringService).
+	self issueCommand: answeringService.
 	theAnswer := answeringService answer.
-	theAnswer ifNotNil: [theAnswer key ifTrue: [theAnswer value: (OopType64 fromInteger: theAnswer value)]].
+	theAnswer
+		ifNotNil: [theAnswer key ifTrue: [theAnswer value: (OopType64 fromInteger: theAnswer value)]].
 	^theAnswer!
 
 frameListPresenter

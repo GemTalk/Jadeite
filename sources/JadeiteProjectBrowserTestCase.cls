@@ -1075,31 +1075,19 @@ test_changeVariableWithModifiedMethodSource
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_checkoutTagRefresh
-	| projectService workingBranch |
+	"for now just test the list of tags and that the selector is called.
+	Should build infrastructure to create a new project with a couple
+	tags that is independent of the Rowan project ... someday"
+
+	| projectService tags |
 	self testsIssue: #issue425
 		withTitle: 'Jadeite should be able to check out a git tag not just branch'.
-	projectService := self projectListPresenter list detect: [:service | service name = 'Rowan'].
-	workingBranch := projectService branch.
-	self projectsPresenter basicCheckoutTagAndRefresh: 'Oscar-3.0.93' for: projectService.
-	self assert: projectService branch equals: '(HEAD detached at Oscar-3.0.93)'.
-	self assert: projectService isSkew.
-	self rowanDependentProjectNames do: 
-			[:projectName |
-			| dependentService |
-			dependentService := transcript projectListPresenter projectListPresenter list
-						detect: [:service | service name = projectName].	"the transcript will display the tag. Make sure it's updated"
-			self assert: dependentService branch equals: 'oscarV2.0Component'.
-			self assert: dependentService isSkew].
-	projectService basicCheckout: workingBranch using: self projectsPresenter.
-	self assert: projectService branch equals: workingBranch.
-	self deny: projectService isSkew.
-	self rowanDependentProjectNames do: 
-			[:projectName |
-			| dependentService |
-			dependentService := transcript projectListPresenter projectListPresenter list
-						detect: [:service | service name = projectName].	"the transcript will display the branch. Make sure it's updated"
-			self assert: dependentService branch equals: workingBranch.
-			self deny: dependentService isSkew]!
+	projectService := self projectsPresenter selectProjectNamed: 'Rowan'.
+	tags := projectService gitTags: session.
+	self assert: (tags includes: 'Oscar-3.0.93').	"An internal working release tag that should not go away"
+	self
+		assert: (self projectsPresenter projectMenuStrings includes: 'Checkout Git Tag ...//checkoutTag').
+	self assert: (self projectsPresenter class canUnderstand: #checkoutTag)!
 
 test_classDefinitionUpdatesAcrossTabs
 	| source firstTab secondTab newSource |
