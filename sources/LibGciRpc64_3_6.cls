@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 LibGciRpc64 subclass: #LibGciRpc64_3_6
 	instanceVariableNames: ''
@@ -61,7 +61,7 @@ specialFromOop: anOop
 
 displayName
 
-	^'64-bit 3.6.0 unreleased'.
+	^'64-bit 3.6.0'.
 !
 
 fileNameSearch

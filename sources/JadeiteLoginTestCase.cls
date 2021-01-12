@@ -68,8 +68,18 @@ test_351Libraries
 test_360Libraries
 	self testsIssue: #issue728 withTitle: 'Add 3.6.0 client libs to Jadeite'.
 	self assert: LibGciRpc64_3_6 superclass equals: LibGciRpc64.
-	self assert: LibGciRpc64_3_6 displayName equals: '64-bit 3.6.0 unreleased'.
+	self assert: LibGciRpc64_3_6 displayName equals: '64-bit 3.6.0'.
 	self assert: (File exists: File workingDirectory , 'bin\' , LibGciRpc64_3_6 fileNameSearch)!
+
+test_361Libraries
+	self assert: LibGciRpc64_3_6_1 superclass equals: LibGciRpc64.
+	self assert: LibGciRpc64_3_6_1 displayName equals: '64-bit 3.6.1 unreleased'.
+	self assert: (File exists: File workingDirectory , 'bin\' , LibGciRpc64_3_6_1 fileNameSearch)!
+
+test_370Libraries
+	self assert: LibGciRpc64_3_7 superclass equals: LibGciRpc64.
+	self assert: LibGciRpc64_3_7 displayName equals: '64-bit 3.7.0 unreleased'.
+	self assert: (File exists: File workingDirectory , 'bin\' , LibGciRpc64_3_7 fileNameSearch)!
 
 test_debugLoginDumpsParameters
 	self testsIssue: #issue681 withTitle: 'Write out login values if "Debug GCI" is enabled'.
@@ -176,6 +186,8 @@ testsIssue: aSymbol withTitle: anObject! !
 !JadeiteLoginTestCase categoriesFor: #tearDown!public!setup teardown! !
 !JadeiteLoginTestCase categoriesFor: #test_351Libraries!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #test_360Libraries!public!tests! !
+!JadeiteLoginTestCase categoriesFor: #test_361Libraries!public!tests! !
+!JadeiteLoginTestCase categoriesFor: #test_370Libraries!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #test_debugLoginDumpsParameters!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #test_gemTask!public!tests! !
 !JadeiteLoginTestCase categoriesFor: #test_loginButtonEnablement!public!tests! !
