@@ -1,4 +1,16 @@
+﻿
+Update 1/7/21 - Better receiver
+Update 12/28/20 - Add line about starting RSR connection receiver
 Update 9/3/20 - Use this topaz script which should be kept update to date by Dale: 
+
+| spec connection |
+spec := RsrAcceptConnection port: 29299. 
+connection := spec waitForConnection. 
+connection waitUntilClose
+
+.ston file location (RSR): 
+.ston file location (Sparkle): 
+
 
 $ROWAN_PROJECTS_HOME/Rowan/platforms/gemstone/topaz/3.6.0/newRowanRepositoryTestsRootV2.tpz
 
@@ -95,4 +107,10 @@ loadProjectFromFile: fileString projectsHome: projectsHomePath
 	RowanBrowserService new updateProjects
 
 
+
+(RwProject newNamed: 'Sparkle') currentBranchName 'ericPlay'
+(RwProject newNamed: 'Sparkle') loadedCommitId  'b4a4e4b'
+
+(RwProject newNamed: 'RemoteServiceReplication') currentBranchName 'development'
+(RwProject newNamed: 'RemoteServiceReplication') loadedCommitId  '5a46b59'
 
