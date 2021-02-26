@@ -1,0 +1,209 @@
+﻿| package |
+package := Package name: 'Rowan Client Services 2'.
+package paxVersion: 1;
+	basicComment: ''.
+
+
+package classNames
+	add: #BrowserUpdate;
+	add: #JadeiteTreeModel;
+	add: #JadeiteTreeNode;
+	add: #RowanAnsweringService;
+	add: #RowanAutoCommitService;
+	add: #RowanBrowserService;
+	add: #RowanClassService;
+	add: #RowanComponentService;
+	add: #RowanDebuggerService;
+	add: #RowanDefinedProjectService;
+	add: #RowanDictionaryService;
+	add: #RowanFrameService;
+	add: #RowanInspectorService;
+	add: #RowanLoadedProjectService;
+	add: #RowanLoggingService;
+	add: #RowanMethodService;
+	add: #RowanPackageService;
+	add: #RowanProcessService;
+	add: #RowanProjectService;
+	add: #RowanQueryService;
+	add: #RowanResolvedProjectService;
+	add: #RowanSemaphore;
+	add: #RowanService;
+	add: #RowanSpecificationService;
+	add: #RowanTestService;
+	add: #RowanVariableService;
+	yourself.
+
+package methodNames
+	add: #Object -> #isService;
+	yourself.
+
+package binaryGlobalNames: (Set new
+	yourself).
+
+package globalAliases: (Set new
+	yourself).
+
+package setPrerequisites: #(
+	'..\Core\Object Arts\Dolphin\Base\Dolphin'
+	'..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Choice Prompter'
+	'..\Core\Object Arts\Dolphin\Base\Dolphin Legacy Date & Time'
+	'..\Core\Object Arts\Dolphin\MVP\Models\List\Dolphin List Models'
+	'..\Core\Object Arts\Dolphin\Base\Dolphin Message Box'
+	'..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base'
+	'..\Core\Object Arts\Dolphin\MVP\Presenters\Text\Dolphin Rich Text Presenter'
+	'..\Core\Object Arts\Dolphin\MVP\Models\Tree\Dolphin Tree Models'
+	'..\Core\Object Arts\Dolphin\MVP\Presenters\Tree\Dolphin Tree Presenter'
+	'GemStone C Interface'
+	'GemStone Session'
+	'Jade UI Base'
+	'..\..\..\..\RemoteServiceReplication\src-dolphin\RemoteServiceReplication'
+	'..\Core\Contributions\svenc\STON\STON-Core').
+
+package!
+
+"Class Definitions"!
+
+Semaphore subclass: #RowanSemaphore
+	instanceVariableNames: 'lockingProcess'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+Model subclass: #BrowserUpdate
+	instanceVariableNames: 'updates debug inUpdate logger applyingUpdates breakpointsEnabled returnedServices'
+	classVariableNames: 'Current'
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+TreeModel subclass: #JadeiteTreeModel
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RsrService subclass: #RowanService
+	instanceVariableNames: 'command commandArgs updateType organizer updates wasUpdated'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanAnsweringService
+	instanceVariableNames: 'answer'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanAutoCommitService
+	instanceVariableNames: 'autoCommit postUpdateBlock'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanBrowserService
+	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount dictionaries selectedClass newCachedSelectors newCachedClasses name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanClassService
+	instanceVariableNames: 'name comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions oop template filters filterType methods selectedPackageServices packageName definedPackageName selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand isInSymbolList dictionaryName wasRemoved renamedName'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanComponentService
+	instanceVariableNames: 'name componentServices packageServices projectService basename'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanDebuggerService
+	instanceVariableNames: 'initialProcessOop processes name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanDictionaryService
+	instanceVariableNames: 'classes hierarchyServices globals defaultTemplate name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanFrameService
+	instanceVariableNames: 'label method stepPoint vars oop homeMethodSelector homeMethodClassName classIsResolvable name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanInspectorService
+	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray isOop instVarNames instVarsAreRemovable isDictionary isVariable selectionOop isUnordered statusText name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanLoggingService
+	instanceVariableNames: 'fileName id groupId date time comment services mode location isLogging name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanMethodService
+	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName isMethodForBlock homeMethodOop hasMethodHistory searchString definedClassName name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanPackageService
+	instanceVariableNames: 'classes defaultTemplate projectName classCompilationFailures testClasses hierarchyServices selectedClass name isDirty'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanProcessService
+	instanceVariableNames: 'frames oop status name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanProjectService
+	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop name isDirty specService componentServices'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanQueryService
+	instanceVariableNames: 'queryResults name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanTestService
+	instanceVariableNames: 'name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanService subclass: #RowanVariableService
+	instanceVariableNames: 'oop key value className name'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanInspectorService subclass: #RowanSpecificationService
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanProjectService subclass: #RowanDefinedProjectService
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanProjectService subclass: #RowanLoadedProjectService
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanProjectService subclass: #RowanResolvedProjectService
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+TreeNode subclass: #JadeiteTreeNode
+	instanceVariableNames: 'visited'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+
+"Global Aliases"!
+
+
+"Loose Methods"!
+
+!Object methodsFor!
+
+isService
+	^false! !
+!Object categoriesFor: #isService!public!testing! !
+
+"End of package definition"!
+
