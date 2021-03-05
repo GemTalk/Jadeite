@@ -7,7 +7,8 @@ package basicScriptAt: #preinstall put: ' "custom methods will be readded in Row
 ProcessorScheduler removeSelector: #userBreak:. 
 Association removeSelector: #stonOn:.
 Time removeSelector: #stonOn:.
-
+DolphinSureCertificateStore class removeSelector: #clearTemporaryTrustStore.
+SocketAbstract class removeSelector: #onShutdown
 '.
 
 package binaryGlobalNames: (Set new

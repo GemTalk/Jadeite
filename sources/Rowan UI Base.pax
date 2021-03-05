@@ -452,6 +452,7 @@ package methodNames
 	add: #TreeModel -> #removeWithoutNotification:ifAbsent:;
 	add: 'CodeSourcePresenter class' -> #resource_Default_view;
 	add: 'DiffBrowser class' -> #defaultModel;
+	add: 'DolphinSureCertificateStore class' -> #clearTemporaryTrustStore;
 	add: 'JadeDebugger class' -> #resource_Default_view;
 	add: 'JadeInspector class' -> #defaultInspectorClass;
 	add: 'JadeInspector class' -> #resource_Default_view;
@@ -515,6 +516,7 @@ package methodNames
 	add: 'JadeSessionManager class' -> #setVersion;
 	add: 'JadeSystemBrowserPresenter class' -> #resource_Default_view;
 	add: 'Prompter class' -> #createOn:;
+	add: 'SocketAbstract class' -> #onShutdown;
 	add: 'TranscriptPresenter class' -> #resource_Default_view;
 	yourself.
 
@@ -557,6 +559,7 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Tree\Dolphin Tree Presenter'
 	'..\Core\Object Arts\Dolphin\MVP\Type Converters\Dolphin Type Converters'
 	'..\Core\Object Arts\Dolphin\MVP\Models\Value\Dolphin Value Models'
+	'..\Core\Object Arts\Dolphin\DolphinSure\DolphinSure'
 	'..\Core\Contributions\Burning River\ExternalProcess\ExternalProcess'
 	'GemStone C Interface'
 	'GemStone Objects'
@@ -576,9 +579,10 @@ package setPrerequisites: #(
 	'Jade UI Base'
 	'Monticello'
 	'Object Log Browser'
-	'..\..\RowanClientServices\Rowan Client Services'
+	'Rowan Client Services 2'
 	'Rowan UI Base PreInstall'
 	'..\Core\Object Arts\Dolphin\System\Compiler\Smalltalk Parser'
+	'..\Core\Object Arts\Dolphin\Sockets\Sockets Connection'
 	'..\Core\Contributions\Solutions Software\SSW EditableListView'
 	'..\Core\Contributions\svenc\STON\STON-Core'
 	'..\Core\Contributions\Camp Smalltalk\SUnit\SUnit'
@@ -1149,6 +1153,16 @@ defaultModel
 
 	^nil! !
 !DiffBrowser class categoriesFor: #defaultModel!public! !
+
+!DolphinSureCertificateStore class methodsFor!
+
+clearTemporaryTrustStore
+	"Private - Clear the temporary trust store"
+	"Moved to Jadeite package so category can be changed to 'must not strip'"
+
+	self temporaryTrust removeAllCertificates
+! !
+!DolphinSureCertificateStore class categoriesFor: #clearTemporaryTrustStore!must not strip!private! !
 
 !Float methodsFor!
 
@@ -5572,6 +5586,14 @@ _digitsAsString
 	self < 10 ifTrue: [aString := '0' , self printString] ifFalse: [aString := self printString].
 	^aString! !
 !SmallInteger categoriesFor: #_digitsAsString!Jadeite!public! !
+
+!SocketAbstract class methodsFor!
+
+onShutdown
+	"Private - Perform any image shutdown operations."
+
+	AllSockets ifNotNil: [:all | all values do: [:each | each onShutdown]]! !
+!SocketAbstract class categoriesFor: #onShutdown!event handling!must not strip!private! !
 
 !Time methodsFor!
 
