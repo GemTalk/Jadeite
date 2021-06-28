@@ -79,6 +79,7 @@ package methodNames
 	add: #LibGciRpc64_3_3 -> #jadeServerClass;
 	add: #LibGciRpc64_3_4 -> #jadeServerClass;
 	add: #LibGciRpc64_3_5 -> #jadeServerClass;
+	add: #LibGciRpc64_3_6 -> #jadeServerClass;
 	add: #LibGciTs_3_3 -> #jadeServerClass;
 	yourself.
 
@@ -481,6 +482,14 @@ jadeServerClass
 	^JadeServer64bit34
 ! !
 !LibGciRpc64_3_5 categoriesFor: #jadeServerClass!public! !
+
+!LibGciRpc64_3_6 methodsFor!
+
+jadeServerClass
+
+	^JadeServer64bit34
+! !
+!LibGciRpc64_3_6 categoriesFor: #jadeServerClass!public! !
 
 !LibGciTs_3_3 methodsFor!
 
