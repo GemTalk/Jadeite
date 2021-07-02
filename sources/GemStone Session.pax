@@ -47,6 +47,7 @@ package classNames
 	add: #JadeServerTestCase;
 	add: #LibGciRpc64_3_6;
 	add: #LibGciRpc64_3_6_1;
+	add: #LibGciRpc64_3_6_2;
 	add: #LibGciRpc64_3_7;
 	add: #MCAddition;
 	add: #MCDictionaryRepository;
@@ -221,6 +222,11 @@ LibGciRpc64 subclass: #LibGciRpc64_3_7
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 LibGciRpc64_3_6 subclass: #LibGciRpc64_3_6_1
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+LibGciRpc64_3_6 subclass: #LibGciRpc64_3_6_2
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
