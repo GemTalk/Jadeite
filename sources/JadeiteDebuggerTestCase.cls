@@ -507,8 +507,10 @@ test_breakpointHighlightingInBlocks
 	self openDebuggerOn: 'RowanSample1Test new test_highlightBreaks'.
 	
 	[self assert: debugger frameListPresenter selection
-		equals: '[] in  ExecBlock0 (RowanSample1Test) >> test_highlightBreaks @5 line 14'.
+		equals: '[] in RowanSample1Test >> test_highlightBreaks @20 line 14'.
 	sourcePresenter := debugger methodSourcePresenter documentPresenter.
+	debugger stepOver. 
+	debugger stepOver. 
 	self assert: sourcePresenter selectionRange equals: (245 to: 248).
 	self assert: sourcePresenter selection equals: 'add:'.
 	self assert: (sourcePresenter view styleIdAt: 244) equals: 0.	"no breakpoint indicator + blue text"

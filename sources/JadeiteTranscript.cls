@@ -238,7 +238,7 @@ openGitHubRowanProject
 
 openJadeiteProjectsBrowser
 	projectListPresenter hasSelection
-		ifTrue: [^projectListPresenter browseProject]
+		ifTrue: [^projectListPresenter browseProject topShell]
 		ifFalse: 
 			[gciSession hasServer ifTrue: [^(JadeiteBrowser showOnSession: gciSession)].
 			MessageBox warning: 'Cannot open Jadeite Projects browser'
