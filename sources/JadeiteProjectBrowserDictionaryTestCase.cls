@@ -1040,7 +1040,7 @@ test_unicodeValueInUserGlobals
 	self projectsPresenter globalsTab selection: selection.
 	self assert: (selection at: 2) equals: #Symbol.
 	self assert: ((selection at: 3) isKindOf: Integer).
-	self assert: (selection at: 4) equals: '#''£¥š''']
+	self assert: (selection at: 4) equals: '#''Â£Â¥Âš''']
 			ensure: [session executeString: 'RowanServicesTest new removeUnicodeSymbolsFromUserGlobals']! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #assertDictionaryInList:!private!support! !
 !JadeiteProjectBrowserDictionaryTestCase categoriesFor: #assertDictionaryNotInList:!private!support! !

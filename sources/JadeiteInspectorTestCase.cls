@@ -114,7 +114,7 @@ test_adHocInspectComplexObject
 	workspace setDocumentData: 'RowanSample1Test new setTestSelector: #test1'.
 	workspace setFocus.
 	inspector := workspace codePane jadeInspect.
-	self assert: inspector documentPresenter model value equals: 'RowanSample1Test>>#test1'.
+	self assert: inspector documentPresenter model value equals: 'RowanSample1Test debug: #test1'.
 	self assert: inspector instVarListPresenter selection key equals: 'self']
 			ensure: 
 				[workspace isModified: false.
@@ -622,7 +622,7 @@ test_openNavigationInspectorOnSymbol
 	self assert: (inspector isKindOf: JadeNavigationInspector).
 	self assert: inspector documentPresenter model value equals: '#abc'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
-	self assert: inspector documentPresenter model value equals: '14351873'!
+	self assert: inspector documentPresenter model value equals: '11620865'!
 
 test_openProjectsBrowser
 	| remoteObject shell |

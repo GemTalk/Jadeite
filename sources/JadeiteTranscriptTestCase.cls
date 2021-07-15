@@ -495,7 +495,7 @@ test_menuBarBrowseProjectsHonorsSelection
 				detect: [:command | '*Browse*Projects*' match: command text]
 				ifNone: [].
 	self assert: browseProjectsMenuItem command equals: #openJadeiteProjectsBrowser.
-	projectsPresenter := transcript openJadeiteProjectsBrowser.
+	projectsPresenter := transcript projectListPresenter browseProject.
 	[self assert: projectsPresenter projectListPresenter selection name equals: projectName]
 		ensure: [projectsPresenter topShell view close].
 	transcript projectListPresenter projectListPresenter selectionByIndex: 0.
@@ -529,8 +529,14 @@ test_multiSelectProject
 test_openChangesBrowser
 	| changesBrowser changesItem projectService |
 	self testsIssue: #issue384
-		withTitle: '(3.0.53) sort by `type` in changes view does not do complete job'.
-	projectService := transcript projectListPresenter projectListPresenter list first.
+		withTitle: '(3.0.53) sort by `type` in changes view does not do complete job'.  
+	projectsBrowser := transcript projectListPresenter browseProject topShell.
+	self
+		saveClass: 'AddedClass'
+		superclass: 'RowanSample1'
+		instVars: #()
+		package: 'RowanSample1-Core'.
+	projectService := transcript projectListPresenter projectListPresenter list detect:[:service | service name = 'RowanSample1'].
 	transcript projectListPresenter projectListPresenter selection: projectService.
 	changesItem := transcript projectListPresenter projectListPresenter view queryContextMenu items
 				detect: [:menuItem | menuItem command == #projectChanges].
@@ -622,7 +628,7 @@ test_raiseConsole
 	browser := transcript browseJadeitePrefs.
 	browser raiseConsole.
 	[self assert: transcript view hasFocus] ensure: [browser view close].
-	browser := transcript openJadeiteProjectsBrowser.
+	browser := transcript projectListPresenter browseProject.
 	browser raiseConsole.
 	[self assert: transcript view hasFocus] ensure: [browser topShell view close].
 	browser := JadePresenter browseImplementorsOf: #size session: session.

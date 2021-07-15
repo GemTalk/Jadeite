@@ -603,7 +603,7 @@ test_adHocInspectComplexObjectInProjectBrowser
 	[inspector := self projectsPresenter jadeInspect.
 	self assert: (inspector model value isKindOf: Integer).	"the oop"
 	self assert: inspector instVarListPresenter selection key equals: 'self'.
-	self assert: inspector instVarListPresenter selection value equals: 'RowanSample1Test>>#test1'.
+	self assert: inspector instVarListPresenter selection value equals: 'RowanSample1Test debug: #test1'.
 	inspector instVarListPresenter selectionByIndex: 2.
 	self assert: inspector instVarListPresenter selection key equals: '-.asOop'.
 	self assert: inspector instVarListPresenter selection value
@@ -2226,6 +2226,11 @@ test_dropNonSelectedMethod
 	self selectRowanSample1Class.
 	dragDropSession := self classHierarchyPresenter view dragDropSessionClass new.
 	self projectsPresenter onDragMethod: dragDropSession.
+	self selectServiceNamed: 'RowanSubClass' in: self classListPresenter.
+	self
+		saveMethod: 'foo'
+		in: 'RowanSubClass'
+		category: 'methods'.
 	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSubClass' in: self classListPresenter).
 	dragDropSession dragObjects add: (InternalDragDropObject object: (self serviceNamed: 'foo' in: self methodListPresenter)).
 	self projectsPresenter onDropOnClassList: dragDropSession.
@@ -2417,7 +2422,7 @@ test_failMethodCompile
 	self selectRowanSample1Test.
 	self projectsPresenter basicAddMethodCategory: 'newCategory'.
 	
-	[source := 'failCompile  aaaaa'.
+	[source := 'failCompile  ^#('.
 	self methodSourcePresenter value: source.
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #ok.
@@ -2738,20 +2743,18 @@ test_getClassCommentWithDeprecationsOn
 			ensure: [session executeString: 'Deprecated doNothingOnDeprecated']!
 
 test_gitBranchesDoesNotShowHead
-	"this may be a brittle test because it assumes RowanSample1 has only the master branch.
-	But it's based on the local checkout so the test runner can control this. "
-
+	"a fairly brittle test. good enough for this older release" 
 	| branchesString branches |
 	self testsIssue: #issue311
 		withTitle: 'improper `checkout list` display, when any tag is checked out (walkback in 3.0.56)'.
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	branchesString := session
 				executeString: 'Rowan gitTools gitbranchIn: (RwProject newNamed: ''RowanSample1'') repositoryRootPath with: '''''.
-	self assert: (branchesString copyWithout: Character lf) equals: '* master'.
+	self assert: (branchesString copyWithout: Character lf) equals: '  master* sample'.  "probably should clean the branches up" 
 	branches := (RowanProjectService new name: 'RowanSample1')
 				basicCheckoutUsing: self projectsPresenter.
 	self assert: branches isKindOf: Collection.
-	self assert: branches first equals: '*master'!
+	self assert: branches first equals: 'master'!
 
 test_goToDefinedClassFromClassList
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
@@ -2928,7 +2931,7 @@ test_hierarchyFindsAllSubclassImplementors
 	
 	self assert: ('Hierarchy Implementors of ''initialize'' for *' match: methodListBrowser caption).
 	listPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter. 
-	self assert: listPresenter list size equals: 6.	
+	self assert: listPresenter list size equals: 7.	
 	listPresenter list do:[:methodService | self assert: methodService selector equals: #initialize]. 
 	listPresenter list do:[:methodService |
 		| classService | 

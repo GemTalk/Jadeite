@@ -92,13 +92,13 @@ test_comparisonTabMultimethod
 	self projectsPresenter selectComparisonTab.
 	self assert: self projectsPresenter comparisonPresenter beforeTitlePresenter value
 		equals: 'RowanAnsweringService>>answer'.
-	self assert: self projectsPresenter comparisonPresenter beforePresenter value
+	self assert: self projectsPresenter comparisonPresenter beforePresenter value trimBlanks
 		equals: 'answer
 
 	^answer' replaceCrLfWithLf.
 	self assert: self projectsPresenter comparisonPresenter afterTitlePresenter value
 		equals: 'RowanAnsweringService>>answer:'.
-	self assert: self projectsPresenter comparisonPresenter afterPresenter value
+	self assert: self projectsPresenter comparisonPresenter afterPresenter value trimBlanks
 		equals: 'answer: anObject
 
 	answer := anObject' replaceCrLfWithLf!

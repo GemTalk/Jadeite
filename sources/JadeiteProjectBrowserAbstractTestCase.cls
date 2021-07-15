@@ -61,7 +61,9 @@ selectSUnitTab
 setUp
 	super setUp.
 	self disableTranscriptWrites.	"turn off gemstone transcript writes for performance"
-	self setupProjectBrowser!
+	self setupProjectBrowser.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.!
 
 tearDown
 	super tearDown.

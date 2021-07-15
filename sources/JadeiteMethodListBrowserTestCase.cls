@@ -654,22 +654,27 @@ test_comparisonTabMultimethod
 	methodListBrowser primaryPresenter selectComparisonTab.
 	self assert: methodListBrowser primaryPresenter comparisonPresenter beforeTitlePresenter value
 		equals: 'RowanAnsweringService>>answer'.
-	self assert: methodListBrowser primaryPresenter comparisonPresenter beforePresenter value
+	self assert: methodListBrowser primaryPresenter comparisonPresenter beforePresenter value trimBlanks
 		equals: 'answer
 
 	^answer' replaceCrLfWithLf.
-	self assert: methodListBrowser primaryPresenter comparisonPresenter afterTitlePresenter value
+	self assert: methodListBrowser primaryPresenter comparisonPresenter afterTitlePresenter value 
 		equals: 'RowanAnsweringService>>answer:'.
-	self assert: methodListBrowser primaryPresenter comparisonPresenter afterPresenter value
+	self assert: methodListBrowser primaryPresenter comparisonPresenter afterPresenter value trimBlanks
 		equals: 'answer: anObject
 
 	answer := anObject' replaceCrLfWithLf!
 
 test_comparisonTabMultimethod2
+	| boolean booleanIndex binaryFloat binaryFloatIndex |
 	self testsIssue: #issue264
 		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
 	methodListBrowser := JadePresenter browseImplementorsOf: 'asString' session: session.
-	self methodListMethodListPresenter view selectionsByIndex: #(5 6).	"Boolean & BinaryFloat"
+	boolean := self methodListMethodListPresenter view list detect:[:item | 'Boolean' = item className]. 
+	booleanIndex := self methodListMethodListPresenter view list indexOf: boolean. 
+	binaryFloat := self methodListMethodListPresenter view list detect:[:item | 'BinaryFloat' = item className]. 
+	binaryFloatIndex :=  self methodListMethodListPresenter view list indexOf: binaryFloat. 
+	self methodListMethodListPresenter view selectionsByIndex: (Array with: binaryFloatIndex with: booleanIndex).	
 	methodListBrowser primaryPresenter selectComparisonTab.
 	self assert: methodListBrowser primaryPresenter comparisonPresenter beforeTitlePresenter value
 		equals: 'BinaryFloat>>asString'.
@@ -781,7 +786,7 @@ test_doSearch
 			[:index |
 			self methodListMethodListPresenter selectionByIndex: index.
 			(self methodListSourcePresenter documentPresenter value subStrings includes: 'nil')
-				ifTrue: [self assert: self methodListSourcePresenter documentPresenter selection equals: 'nil']]!
+				ifTrue: [self assert: ('*nil*' match: self methodListSourcePresenter documentPresenter selection)]]!
 
 test_doubleClickActionClassMethod
 	| methodServices methodListPresenter |
