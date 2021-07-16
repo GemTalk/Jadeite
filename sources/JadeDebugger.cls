@@ -228,6 +228,7 @@ stackInitialSelectionData
 		'(AbstractException) >> _signalAsync @7 line 21'
 		'(Object) >> _doesNotUnderstand:args:envId:reason: @7 line 12'
 		'(Object) >> _doesNotUnderstand:args:envId:reason: @8 line 13'
+		'(Object) >> _doesNotUnderstand:args:envId:reason: @8 line 14'
 		'(Object) >> error: @6 line 7'
 		'(Object) >> error: (envId 0) @6 line 7'
 		'(Object) >> error: @6 line 7'

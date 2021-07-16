@@ -557,9 +557,10 @@ test_browseClass
 test_browseClassVariablePane
 	self testsIssue: #issue192
 		withTitle: 'Oscar-3.0.40: `browse object class` menu item in inspector (debugger) opens dictionary browser...'.
-	self openDebuggerOn: 'nil halt. Array with: RowanClassService new'.
+	self openDebuggerOn: 'nil halt. Array withAll: (Array with: RowanClassService new)'.
 	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepOver].	"on with:"
+	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepInto].
 	debugger variableListPresenter selectionByIndex: 1.
 	self assert: debugger variableDataPresenter value equals: 'Array'.
@@ -569,12 +570,12 @@ test_browseClassVariablePane
 	self assert: projectsBrowser currentCard classListPresenter selection name equals: 'Array'	"receiver is Array class"]
 			ensure: [projectsBrowser view close].
 	debugger variableListPresenter selectionByIndex: 2.
-	self assert: debugger variableDataPresenter value equals: 'aRowanClassService:nil'.
+	self assert: debugger variableDataPresenter value equals: 'anArray( aRowanClassService:nil)'.
 	projectsBrowser := debugger browseObjectClass.
 	
 	[self assert: (projectsBrowser isKindOf: JadeiteBrowser).
 	self assert: projectsBrowser currentCard classListPresenter selection name
-		equals: 'RowanClassService'	"receiver is Array class"]
+		equals: 'Array']
 			ensure: [self destroy: projectsBrowser]!
 
 test_browseFrameMethod
@@ -663,12 +664,12 @@ test_compileInExecutedBlockFailsWhenNoHomeMethod
 	
 	[self openDebuggerOn: '#(1 2 3) do:[:idx | self halt].'.
 	self assert: debugger frameListPresenter selectionByIndex equals: 4.
-	self assert: (debugger frameListPresenter list at: 4) equals: '[] in  Executed Code  @2 line 1'.
+	self assert: (debugger frameListPresenter list at: 4) equals: '[] in Executed Code  @6 line 1'.
 	debugger documentPresenter value: '#(1 2 3) do:[:idx | self].'.
 	TestMessageBox plannedResult: 'ok'.
 	debugger saveMethod.
 	self assert: debugger frameListPresenter selectionByIndex equals: 4.
-	self assert: (debugger frameListPresenter list at: 4) equals: '[] in  Executed Code  @2 line 1']
+	self assert: (debugger frameListPresenter list at: 4) equals: '[] in Executed Code  @6 line 1']
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_compileInExecutedBlockSameSelectorOnStack
@@ -696,7 +697,7 @@ test_compileInExecutedBlockSameSelectorOnStack
 	[self openDebuggerOn: 'RowanSample1Test new doSomething'.
 	self assert: debugger frameListPresenter selectionByIndex equals: 4.
 	self assert: (debugger frameListPresenter list at: 4)
-		equals: '[] in  ExecBlock1 (RowanSample1) >> doSomething @2 line 4'.
+		equals: '[] in RowanSample1 >> doSomething @6 line 4'.
 	self assert: (debugger frameListPresenter list at: 9)
 		equals: 'RowanSample1Test >> doSomething @2 line 3'.
 	debugger documentPresenter value: 'doSomething
@@ -1300,8 +1301,7 @@ test_restartInBlock
 	[self getSecondDebugger.
 	self denyIsNil: secondDebugger.
 	self deny: debugger == secondDebugger.
-	self deny: debugger gsProcess oop = secondDebugger gsProcess oop.
-	self deny: debugger frameListPresenter list size = secondDebugger frameListPresenter list size]
+	self deny: debugger gsProcess oop = secondDebugger gsProcess oop.]
 			ensure: [restartProcess terminate]]
 			ensure: 
 				[self projectsPresenter clearBreakPointAt: 8 in: self projectsPresenter.	"inside the block"
@@ -1407,13 +1407,13 @@ test_selectAfterDiveNoStepPoint
 	self openProjectBrowser.
 	self selectRowanSample1Class.
 	self saveInterestingLoopMethod.
-	self projectsPresenter setBreakPointAt: 8 in: self projectsPresenter.	"inside the block"
+	self projectsPresenter setBreakPointAt: 9 in: self projectsPresenter.	"inside the block"
 	
 	[self openDebuggerOn: 'RowanSample1 new interestingLoop'.
 	self debuggerDo: [debugger stepInto].
 	self assert: debugger frameListPresenter list first equals: 'RowanSample1 >> test @1 line 1'.
 	self assert: (debugger frameListPresenter list at: 2)
-		equals: '[] in  ExecBlock1 (RowanSample1) >> interestingLoop @2 line 8'.
+		equals: '[] in RowanSample1 >> interestingLoop @9 line 8'.
 	[self selectFrameAt: 2] fork.	"<<< Walkback occurred here"	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
 	(Delay forMilliseconds: 100) wait.
 	[debugger documentPresenter value replaceLfWithCrLf isEmpty]
@@ -1517,7 +1517,7 @@ test_stepOutMethod
 	self
 		openDebuggerOn: '| abc |
 self halt.
-abc := Array with: 1 with: 2 with: 3. 
+abc := Array withAll: (OrderedCollection with: 1). 
 abc do:[:int |
 	| array |
 	array := Array with: $a with: $b with: $c. 
@@ -1527,16 +1527,18 @@ abc do:[:int |
 	int size. 
 	int printString. 
 	int - 1]. 
-abc'.
+abc'. 
 	self assert: debugger documentPresenter view selection equals: 'halt'.
 	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: 'with:'.
+	self debuggerDo: [debugger stepOver].
+	self assert: debugger documentPresenter view selection equals: 'withAll:'.
 	self debuggerDo: [debugger stepInto].
-	self assert: debugger documentPresenter view selection equals: 'new:'.
+	self assert: debugger documentPresenter view selection equals: 'withAll:'.
 	self assert: debugger frameListPresenter selection
-		equals: 'Array class (SequenceableCollection class) >> with:with:with: @2 line 9'.
+		equals: 'Array class (Collection class) >> withAll: @1 line 1'.
 	self debuggerDo: [debugger stepOut].
-	self assert: debugger frameListPresenter selection equals: 'Executed Code  @4 line 3'.	"on the top frame so should step one frame up"
+	self assert: debugger frameListPresenter selection equals: 'Executed Code  @5 line 3'.	"on the top frame so should step one frame up"
 	self assert: debugger documentPresenter view selection equals: ':='!
 
 test_stepOutSelectedFrame1
@@ -1546,7 +1548,7 @@ self halt.
 abc := Array with: 1 with: 2 with: 3. 
 abc do:[:int |
 	| array |
-	array := Array with: $a with: $b with: $c. 
+	array := Array withAll: (Array with: $a with: $b with: $c). 
 	array do: [:char | 
 		char size. 
 		char printString].
@@ -1564,12 +1566,13 @@ abc'.
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].
+	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepInto].
+	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: 'with:'.	"inner #with:with:with:"
 	debugger frameListPresenter selectionByIndex: 3.
 	self debuggerDo: [debugger stepOut].
-	self assert: ('Executed Code*' match: debugger frameListPresenter selection).	"on the top frame so should step one frame up"
-	self assert: debugger documentPresenter view selection equals: '[:'!
+	self assert: ('Executed Code*' match: debugger frameListPresenter selection).	"should be out of block" !
 
 test_stepOutSelectedFrame2
 	self
@@ -1597,6 +1600,8 @@ abc'.
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepInto].
+	self debuggerDo: [debugger stepInto].
+	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: 'with:'.	"inner #with:with:with:"
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].
@@ -1606,12 +1611,13 @@ abc'.
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepInto].
+	self debuggerDo: [debugger stepInto].
 	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: 'size'.	"innermost `size`"
 	debugger frameListPresenter selectionByIndex: 5.	"Executed code `home frame`"
 	self debuggerDo: [debugger stepOut].
 	self assert: ('Executed Code*' match: debugger frameListPresenter selection).	"on the top frame so should step one frame up"
-	self assert: debugger documentPresenter view selection equals: '[:'!
+!
 
 test_stepOutTopFrame
 	self
@@ -1639,11 +1645,13 @@ abc'.
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepInto].
+	self debuggerDo: [debugger stepInto].
+	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: 'with:'.	"inner #with:with:with:"
 	self assert: debugger frameListPresenter selectionByIndex equals: 1.
 	self debuggerDo: [debugger stepOut].
-	self assert: debugger frameListPresenter selection equals: 'Array (Collection) >> do: @6 line 9'.	"on the top frame so should step one frame up"
-	self assert: debugger documentPresenter view selection equals: 'to:'.
+	self assert: debugger frameListPresenter selection equals: 'Array (Collection) >> do: @2 line 9'.	"on the top frame so should step one frame up"
+	self assert: debugger documentPresenter view selection equals: 'size'.
 	self debuggerDo: [debugger resumeProcess]!
 
 test_stepThrough
@@ -1662,10 +1670,10 @@ array'.
 	self assert: debugger documentPresenter view selection equals: 'do:'.
 	self debuggerDo: [debugger stepThrough].
 	self assert: debugger documentPresenter view selection equals: ', '.	"inside block"
-	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @2 line 6'.
+	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @11 line 6'.
 	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: ':='.
-	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @3 line 6'.
+	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @12 line 6'.
 	self debuggerDo: [debugger resumeProcess]!
 
 test_switchProcesses
@@ -1680,7 +1688,7 @@ test_switchProcesses
 	longRunningProcess := debugger processListPresenter list
 				detect: [:processService | processService oop = gsProcess].
 	self debuggerDo: [debugger processListPresenter selection: longRunningProcess].
-	self debuggerDo: [self selectFrameAt: 6].
+	self debuggerDo: [self selectFrameAt: 8].
 	self
 		assert: debugger methodSourcePresenter documentPresenter value
 			equals: '[(Delay forSeconds: 9999) wait] fork asOop.';
@@ -1765,7 +1773,7 @@ test_unsavedChangesActionChangeToHomeFrame
 	[| originalSource |
 	originalSource := '(Array with: 1) do:[:obj | self halt. obj size]'.
 	self openDebuggerOn: originalSource.
-	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @2 line 1'.
+	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @7 line 1'.
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
 	TestMessageBox plannedResult: #no.
@@ -1849,7 +1857,7 @@ x yourself';
 		debuggerDo: [debugger stepOver];
 		assert: (debugger documentPresenter view selection) equals: 'value'; 
 		debuggerDo: [debugger stepInto];
-		assert: (debugger documentPresenter view selection) equals: ':=';
+		assert: (debugger documentPresenter view selection) equals: 'x';
 		debuggerDo: [debugger stepOver];
 		debuggerDo: [debugger stepOut];
 		assert: (debugger documentPresenter view selection) equals: 'yourself';
