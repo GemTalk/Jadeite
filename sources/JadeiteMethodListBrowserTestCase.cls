@@ -812,7 +812,7 @@ test_doubleClickActionInstanceMethod
 	self testsIssue: #issue403
 		withTitle: 'Double click in method browser change class to show instance methods'.
 	methodListBrowser := JadePresenter browseImplementorsOf: #foo session: session.
-	self assert: self methodListMethodListPresenter list size equals: 1.
+	self assert: self methodListMethodListPresenter list size equals: 2.
 	self deny: self methodListMethodListPresenter selection meta.
 	projectsBrowser := methodListBrowser primaryPresenter methodListPresenter browseClass.
 	
