@@ -622,7 +622,7 @@ test_openNavigationInspectorOnSymbol
 	self assert: (inspector isKindOf: JadeNavigationInspector).
 	self assert: inspector documentPresenter model value equals: '#abc'.
 	inspector instVarListPresenter selectionByIndex: 2.	"asOop"
-	self assert: inspector documentPresenter model value equals: '11620865'!
+	self assert: inspector documentPresenter model value asNumber printString equals:  inspector documentPresenter model value.  "because oops change, we can't rely on the oop to be consistent from server to server. But we should get a number which can be converted to a number whose print string is equal to our string"!
 
 test_openProjectsBrowser
 	| remoteObject shell |
