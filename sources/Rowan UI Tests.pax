@@ -63,7 +63,6 @@ package methodNames
 	add: #MCModification -> #modification;
 	add: #MCModification -> #obsoletion;
 	add: #MCRemoval -> #definition;
-	add: #MethodHistoryBrowser -> #history;
 	add: #MethodHistoryBrowser -> #history:;
 	add: #MethodHistoryBrowser -> #slider;
 	add: #MethodHistoryBrowser -> #slider:;
@@ -108,7 +107,7 @@ package setPrerequisites: #(
 	'Jade Test Browser'
 	'Jade UI'
 	'Jade UI Base'
-	'..\..\RowanClientServices\Rowan Client Services'
+	'Rowan Client Services 2'
 	'Rowan UI Base'
 	'..\Core\Contributions\Solutions Software\SSW EditableListView'
 	'..\Core\Contributions\svenc\STON\STON-Core'
@@ -485,9 +484,6 @@ new
 
 !MethodHistoryBrowser methodsFor!
 
-history
-	^history!
-
 history: anObject
 	history := anObject!
 
@@ -496,7 +492,6 @@ slider
 
 slider: anObject
 	slider := anObject! !
-!MethodHistoryBrowser categoriesFor: #history!public! !
 !MethodHistoryBrowser categoriesFor: #history:!public! !
 !MethodHistoryBrowser categoriesFor: #slider!public! !
 !MethodHistoryBrowser categoriesFor: #slider:!public! !

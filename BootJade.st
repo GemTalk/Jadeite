@@ -30,7 +30,6 @@ list := #(
 	'Rowan Client Services 2'
 	'Rowan UI Base'
 	'Rowan UI Tests'
-	'RSR Support'
 ).
 
 (Delay forMilliseconds: 200) wait.
