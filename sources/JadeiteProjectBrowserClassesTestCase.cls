@@ -201,18 +201,26 @@ test_classColoring
 test_classColoringExtension
 	| classService sunitBrowser |
 	self testsIssue: #issue426 withTitle: 'Strange case of classes turning purple'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self
+		saveClass: 'ExtendedTestClass'
+		superclass: 'RowanSample1Test'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	self
+		saveMethod: 'testInExtended'
+		in: 'ExtendedTestClass'
+		category: '*rowansample1-core'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
 	sunitBrowser := self openWindow: [transcript jadeBrowseTests].
 	
-	[sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'.
-	sunitBrowser primaryPresenter selectClassNamed: 'RwRowanProjectIssuesTest'.
-	classService := self classListPresenter list
-				detect: [:service | service name = 'RwRowanProjectIssuesTest'].
+	[sunitBrowser primaryPresenter selectPackageNamed: 'RowanSample1-Core'.
+	sunitBrowser primaryPresenter selectClassNamed: 'ExtendedTestClass'.
+	classService := self classListPresenter list detect: [:service | service name = 'ExtendedTestClass'].
 	self assert: (classService shouldColorAsExtension: self projectsPresenter).
 	self selectHierarchyTab.
 	classService := self classHierarchyPresenter model asBag
-				detect: [:service | service name = 'RwRowanProjectIssuesTest'].
+				detect: [:service | service name = 'ExtendedTestClass'].
 	self assert: (classService shouldColorAsExtension: self projectsPresenter)]
 			ensure: [self destroy: sunitBrowser]!
 
@@ -683,9 +691,7 @@ test_dragClassInHierarchyDoesNotWalkback
 	self projectsPresenter onDragClass: dragDropSession.	"walkback occurred here"
 	dragDropSession suggestedTarget: (self serviceNamed: 'TestClass' in: self classListPresenter).
 	dragDropSession suggestedSource: (self serviceNamed: 'RowanSample1' in: self classListPresenter).
-	"right now, this is testing the early-out condition. Just make sure it doesn't walkback."
-	self assert: (self projectsPresenter onDragClassHierarchy: dragDropSession)
-		equals: self projectsPresenter!
+!
 
 test_dragDropMethodFailCompile
 	| dragDropSession source |
@@ -748,10 +754,10 @@ test_dragDropMultipleMethods
 	self selectMethodsNamed: #(#dragMe1 #dragMe2 #dragMe3).
 	dragDropSession := self classHierarchyPresenter view dragDropSessionClass new.
 	self projectsPresenter onDragMethod: dragDropSession.
-	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSubClass' in: self classListPresenter).
+	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSample1' in: self classListPresenter).
 	dragDropSession suggestedSource: self methodListPresenter selections. 
 	self projectsPresenter onDropOnClassList: dragDropSession.
-	self assert: self projectsPresenter selectedClass name equals: 'RowanSubClass'.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1'.
 	self assert: self methodListPresenter selections size equals: 3. 
 	self assert: self methodListPresenter selections first selector equals: #dragMe1. 
 	self assert: self methodListPresenter selections second selector equals: #dragMe2. 
@@ -778,10 +784,10 @@ test_dragDropMultipleMethodsHierarchy
 	self selectMethodsNamed: #(#dragMe1 #dragMe2 #dragMe3).
 	dragDropSession := self classHierarchyPresenter view dragDropSessionClass new.
 	self projectsPresenter onDragMethod: dragDropSession.
-	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSubClass' in: self classListPresenter).
+	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSample1' in: self classListPresenter).
 	dragDropSession suggestedSource: self methodListPresenter selections. 
 	self projectsPresenter onDropMethodsOnClassHierarchy: dragDropSession.
-	self assert: self projectsPresenter selectedClass name equals: 'RowanSubClass'.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1'.
 	self assert: self methodListPresenter selections size equals: 3. 
 	self assert: self methodListPresenter selections first selector equals: #dragMe1. 
 	self assert: self methodListPresenter selections second selector equals: #dragMe2. 
@@ -800,10 +806,10 @@ test_dropMethodOnClassHierarchy
 	self selectMethodNamed: #foo.
 	dragDropSession := self classHierarchyPresenter view dragDropSessionClass new.
 	self projectsPresenter onDragMethod: dragDropSession.
-	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSubClass' in: self classListPresenter).
+	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSample1' in: self classListPresenter).
 	dragDropSession suggestedSource: (self serviceNamed: 'foo' in: self methodListPresenter).
 	self projectsPresenter onDropMethodsOnClassHierarchy: dragDropSession.
-	self assert: self projectsPresenter selectedClass name equals: 'RowanSubClass'.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1'.
 	newMethodService :=  self methodListPresenter selections first.
 	self assert: newMethodService selector equals: #foo.
 	self deny: newMethodService meta. !
@@ -820,10 +826,10 @@ test_dropMethodOnClassList
 	self selectMethodNamed: #foo.
 	dragDropSession := self classHierarchyPresenter view dragDropSessionClass new.
 	self projectsPresenter onDragMethod: dragDropSession.
-	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSubClass' in: self classListPresenter).
+	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSample1' in: self classListPresenter).
 	dragDropSession suggestedSource: (self serviceNamed: 'foo' in: self methodListPresenter).
 	self projectsPresenter onDropMethodsOnClassHierarchy: dragDropSession.
-	self assert: self projectsPresenter selectedClass name equals: 'RowanSubClass'.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1'.
 	newMethodService :=  self methodListPresenter selections first.
 	self assert: newMethodService selector equals: #foo.
 	self deny: newMethodService meta. !
@@ -836,10 +842,10 @@ test_dropNonSelectedMethod
 	self selectRowanSample1Class.
 	dragDropSession := self classHierarchyPresenter view dragDropSessionClass new.
 	self projectsPresenter onDragMethod: dragDropSession.
-	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSubClass' in: self classListPresenter).
+	dragDropSession suggestedTarget: (self serviceNamed: 'RowanSample1' in: self classListPresenter).
 	dragDropSession dragObjects add: (InternalDragDropObject object: (self serviceNamed: 'foo' in: self methodListPresenter)).
 	self projectsPresenter onDropOnClassList: dragDropSession.
-	self assert: self projectsPresenter selectedClass name equals: 'RowanSubClass'.
+	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1'.
 	newMethodService := self methodListPresenter selections first.
 	self assert: newMethodService selector equals: #foo.
 	self deny: newMethodService meta!
