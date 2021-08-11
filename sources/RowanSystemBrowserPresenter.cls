@@ -21,17 +21,6 @@ addPackageDictionaryInfoTo: aStream
 				tab].
 	aStream lf!
 
-addSubclass
-	| answeringService |
-	answeringService := RowanAnsweringService new.
-	answeringService
-		command: #subclassCreationTemplate:;
-		commandArgs: (Array with: self selectedClassNameWithoutVersion).
-	self issueCommand: answeringService.
-	classDefinitionPresenter
-		ensureVisible;
-		value: answeringService answer!
-
 browseClassReferencesOf: className
 	
 	| string |
@@ -488,7 +477,6 @@ updateTabLabel
 	self view arrangement: cardNumber printString , ' ' , newLabel.
 	self parentPresenter view updateTabs! !
 !RowanSystemBrowserPresenter categoriesFor: #addPackageDictionaryInfoTo:!create schemantic wiring!public! !
-!RowanSystemBrowserPresenter categoriesFor: #addSubclass!menu handlers!public! !
 !RowanSystemBrowserPresenter categoriesFor: #browseClassReferencesOf:!public! !
 !RowanSystemBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !
 !RowanSystemBrowserPresenter categoriesFor: #classesMenuStrings!menus!public! !

@@ -130,16 +130,7 @@ test_addSubclass
 	self selectClassInHierarchyNamed: 'TestCase'.
 	
 	[self projectsPresenter addSubclass.
-	self assert: self projectsPresenter classDefinitionPresenter value
-		equals: 'TestCase rwSubclass: ''NewSubclass''
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	category: ''Superclass is not packaged. Enter the desired package name''
-	options: #()
-'
-				replaceCrLfWithLf]
+	self assertClassDefinitionPaneMatches: 'TestCase rwSubclass: ''NewSubclass''']
 			ensure: [self projectsPresenter classDefinitionPresenter view isModified: false]!
 
 test_allClassesAutoCommitOn
@@ -250,16 +241,7 @@ test_classDefinitionTemplateAfterRemove
 		package: 'RowanSample1-Tests'.
 	self assert: self projectsPresenter selectedClass name equals: 'Gnoofle'.
 	self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
-	self assert: self projectsPresenter classDefinitionPresenter value replaceCrLfWithLf
-		equals: 'Object rwSubclass: ''NameOfSubclass''
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	category: ''RowanSample1-Tests''
-	options: #()
-'
-				replaceCrLfWithLf	"show the typical default template"!
+	self assertClassDefinitionPaneMatches: 'Object rwSubclass: ''NameOfSubclass'''	"show the typical default template"!
 
 test_classDefinitionTemplateAfterRemoveInHierarchy
 	self testsIssue: #issue449 withTitle: '(3.0.63) missing class definition template in empty package'.
@@ -271,27 +253,9 @@ test_classDefinitionTemplateAfterRemoveInHierarchy
 	self selectHierarchyTab.
 	self assert: self projectsPresenter selectedClass name equals: 'Gnoofle'.
 	self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
-	self assert: self projectsPresenter classDefinitionPresenter value replaceCrLfWithLf
-		equals: 'nil subclass: ''Object''
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Globals
-	options: #()
-'
-				replaceCrLfWithLf.	"leave the class template for convenience"
+	self assertClassDefinitionPaneMatches:  'nil rwSubclass: ''Object'''.
 	self selectClassListTab.
-	self assert: self projectsPresenter classDefinitionPresenter value replaceCrLfWithLf
-		equals: 'Object rwSubclass: ''NameOfSubclass''
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	category: ''RowanSample1-Tests''
-	options: #()
-'
-				replaceCrLfWithLf	"show the typical default template"!
+	self assertClassDefinitionPaneMatches:  'Object rwSubclass: ''NameOfSubclass'''. "show typical default template" !
 
 test_classDeselection
 	| packageClassDefinition |
@@ -309,16 +273,7 @@ test_classDeselection
 				replaceCrLfWithLf.
 	self assert: self projectsPresenter classDefinitionPresenter value equals: packageClassDefinition.
 	self selectServiceNamed: 'RwDefinition' in: self classListPresenter.	"extension class"
-	self assert: self projectsPresenter classDefinitionPresenter value
-		equals: 'Object rwSubclass: ''RwDefinition''
-	instVarNames: #( properties)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	category: ''Rowan-Definitions''
-	options: #()
-'
-				replaceCrLfWithLf.
+	self assertClassDefinitionPaneMatches: 'Object rwSubclass: ''RwDefinition'''.
 	self selectServicesNamed: #() in: self classListPresenter.
 	self assert: self projectsPresenter classDefinitionPresenter value equals: packageClassDefinition!
 
@@ -1807,16 +1762,7 @@ test_updateHierarchyAfterClassRecompile
 	self assert: selection version equals: 2.
 	self assert: selection versions equals: 2.
 	self classHierarchyPresenter selection displayString equals: 'RowanSample1Test (2/2)'.
-	self assert: self projectsPresenter classDefinitionPresenter value
-		equals: 'TestCase rwSubclass: ''RowanSample1Test''
-	instVarNames: #( ab)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	category: ''RowanSample1-Tests''
-	options: #()
-'
-				replaceCrLfWithLf]
+	self assertClassDefinitionPaneMatches: 'TestCase rwSubclass: ''RowanSample1Test''']
 			ensure: 
 				["restore the class"
 				self

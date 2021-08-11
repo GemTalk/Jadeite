@@ -10,6 +10,10 @@ JadeiteProjectBrowserAbstractTestCase comment: ''!
 !JadeiteProjectBrowserAbstractTestCase categoriesForClass!Unclassified! !
 !JadeiteProjectBrowserAbstractTestCase methodsFor!
 
+assertClassDefinitionPaneMatches: matchString
+	self assert: ('*', matchString, '*' match: self projectsPresenter classDefinitionPresenter value)
+		description: 'Class definition pane did not match expected'!
+
 assertLinearAncestry: family in: presenter
 	"given a collection of class names in order from root to leaf,
 	test that each subsequent element of the collection is a child
@@ -102,6 +106,7 @@ tearDown
 		ifNotNil: 
 			[self destroy: secondBrowser.
 			secondBrowser := nil]! !
+!JadeiteProjectBrowserAbstractTestCase categoriesFor: #assertClassDefinitionPaneMatches:!private!support! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #assertLinearAncestry:in:!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #disableTranscriptWrites!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #isAbstract!private!testing! !

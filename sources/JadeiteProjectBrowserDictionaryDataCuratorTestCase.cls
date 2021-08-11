@@ -67,21 +67,11 @@ test_addSubclassNoSuperclassPackage
 	self selectNoneProject.
 	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
 	self projectsPresenter selectClassNamed: 'Dictionary'.
-	self assert: self projectsPresenter selectedClass packageName
-		equals: 'Filein1C'.
+	self assert: self projectsPresenter selectedClass packageName equals: 'Filein1C'.
 	self projectsPresenter addSubclass.
 	
 	[self assert: self projectsPresenter classDefinitionPresenter view isModified.
-	self assert: self projectsPresenter classDefinitionPresenter value
-		equals: 'Dictionary rwSubclass: ''NewSubclass''
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	category: ''Superclass is not packaged. Enter the desired package name''
-	options: #()
-'
-				replaceCrLfWithLf]
+	self assertClassDefinitionPaneMatches: 'Dictionary rwSubclass: ''NewSubclass''']
 			ensure: [self projectsPresenter classDefinitionPresenter view isModified: false]!
 
 test_addSubclassNoSuperclassPackageGoesToNewClass
@@ -93,16 +83,7 @@ test_addSubclassNoSuperclassPackageGoesToNewClass
 		equals: 'Filein1C'.
 	self projectsPresenter addSubclass.
 	self assert: self projectsPresenter classDefinitionPresenter view isModified.
-	self assert: self projectsPresenter classDefinitionPresenter value
-		equals: 'Dictionary rwSubclass: ''NewSubclass''
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	category: ''Superclass is not packaged. Enter the desired package name''
-	options: #()
-'
-				replaceCrLfWithLf.
+	self assertClassDefinitionPaneMatches: 'Dictionary rwSubclass: ''NewSubclass'''.
 	self projectsPresenter classDefinitionPresenter
 		value: 'Dictionary rwSubclass: ''NewSubclassAbc''
 	instVarNames: #()
@@ -124,16 +105,7 @@ test_addSubclassWithPackage
 	self projectsPresenter addSubclass.
 	
 	[self assert: self projectsPresenter classDefinitionPresenter view isModified.
-	self assert: self projectsPresenter classDefinitionPresenter value
-		equals: 'RowanSample1Test rwSubclass: ''NewSubclass''
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	category: ''RowanSample1-Tests''
-	options: #()
-'
-				replaceCrLfWithLf]
+	self assertClassDefinitionPaneMatches: 'RowanSample1Test rwSubclass: ''NewSubclass''']
 			ensure: [self projectsPresenter classDefinitionPresenter view isModified: false]!
 
 test_allClassesBlackInDictionaryView
