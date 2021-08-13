@@ -22,8 +22,7 @@ test_abstractTestsShown
 	| commandQuery methodService |
 	self testsIssue: #issue336
 		withTitle: 'S-Unit Tests In an abstract class and its subclasses are not managed properly'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectRowanServicesTestsPackage.
 	self selectServiceNamed: 'RowanServicesTest' in: self classListPresenter.
 	self assert: (session executeString: 'RowanServicesTest isAbstract').
 	self selectCategoryNamed: 'tests'.
@@ -239,8 +238,7 @@ test_browseSendersEnablement
 test_browseTestSelectorsInSUnitTab
 	self testsIssue: #issue565
 		withTitle: 'Would like "browse selected" in the SUnit tab of the Project Browser (3.0.79)'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectRowanServicesTestsPackage.
 	self selectServiceNamed: 'RowanTestClassServiceTest' in: self classListPresenter.
 	self selectSUnitTab.
 	self projectsPresenter sunitPresenter editSelectAll.
@@ -279,8 +277,7 @@ test_comparisonPresenterEvents
 test_comparisonTabMultimethod
 	self testsIssue: #issue264
 		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanAnsweringService' in: self classListPresenter.
 	self selectMethodsNamed: #(#answer #answer:).
 	self projectsPresenter selectComparisonTab.
@@ -702,8 +699,7 @@ test_okayToChangeBeforeFindClass
 
 test_openComparisonTabWhenTwoMethodsSelected
 	self testsIssue: #issue752 withTitle: '(3.0.93) nice if I could compare two arbitrary methods'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanAnsweringService' in: self classListPresenter.
 	self selectMethodsNamed: #().
 	self projectsPresenter selectMethodSourceTab.
@@ -717,8 +713,7 @@ test_openComparisonTabWhenTwoMethodsSelected
 
 test_openMethodTabWhenOneMethodsSelected
 	self testsIssue: #issue752 withTitle: '(3.0.93) nice if I could compare two arbitrary methods'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanAnsweringService' in: self classListPresenter.
 	self selectMethodsNamed: #().
 	self projectsPresenter selectMethodSourceTab.
@@ -1011,8 +1006,7 @@ test_saveMethodResetsIndicators
 
 test_sortedTestSelectorsInSUnitTab
 	| sortedSelectors selectors |
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectRowanServicesTestsPackage.
 	self selectServiceNamed: 'RowanTestClassServiceTest' in: self classListPresenter.
 	self selectSUnitTab. 
 	selectors := self projectsPresenter sunitPresenter methodListPresenter list collect:[:methodService | methodService selector]. 
@@ -1146,8 +1140,7 @@ test_sunitInheritedTests
 	| classTestSelectors testClassTestSelectors |
 	self testsIssue: #issue211
 		withTitle: 'SUnit browser and SUnit tab in Project browser missing inherited test cases'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectRowanServicesTestsPackage.
 	self selectServiceNamed: 'RowanClassServiceTest' in: self classListPresenter.
 	self selectSUnitTab.
 	classTestSelectors := self projectsPresenter sunitPresenter methodListPresenter list
@@ -1178,8 +1171,7 @@ test_sunitOnlyRunTestMethods
 test_sunitResetTestResultOnClassChange
 	"reset test results when classes changed"
 
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectRowanServicesTestsPackage.
 	self projectsPresenter selectClassNamed: 'RowanDictionaryServiceTest'.
 	self projectsPresenter selectSUnitTab.
 	self projectsPresenter sunitPresenter methodListPresenter list
@@ -1324,8 +1316,7 @@ test_sunitTabCanRefresh
 
 test_sUnitTabHandlesShortSelector
 	self testsIssue: #issue173 withTitle: 'new SUnit browser code walksback on short selector'.
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
+	self selectRowanServicesTestsPackage.
 	self selectServiceNamed: 'RowanTestClassServiceTest' in: self classListPresenter.
 	self selectHierarchyTab.
 	self selectClassInHierarchyNamed: 'TestCase'.	"<<< bug occurred here"
@@ -1334,8 +1325,7 @@ test_sUnitTabHandlesShortSelector
 test_sUnitTabRefresh
 	| jadeiteMenu refreshItem |
 	self testsIssue: #issue263 withTitle: 'With class selected, but not method selected, in SUnit tab, project refresh gets error'.
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
+	self selectRowanServicesTestsPackage. 
 	self selectServiceNamed: 'RowanServicesTest' in: self classListPresenter.
 	self projectsPresenter selectSUnitTab.
 	jadeiteMenu := self itemNamed: 'Jadeite' in: projectsBrowser view menuBar. 

@@ -784,8 +784,7 @@ test_comparisonTabMultimethod
 	self testsIssue: #issue264
 		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
 	self openProjectBrowser.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanAnsweringService' in: self classListPresenter.
 	super selectMethodsNamed: #(#answer #answer:).
 	methodListBrowser := self projectsPresenter browseSelectedMethods.

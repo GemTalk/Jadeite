@@ -35,6 +35,12 @@ disableTranscriptWrites
 	(transcriptWritesWereEnabled := transcript isTranscriptInstalled)
 		ifTrue: [transcript flipTranscript]	"turn off gemstone transcript writes for performance"!
 
+findClassNamed: className
+	| classService |
+	classService := RowanClassService named: className.
+	self projectsPresenter updateService: classService.
+	self projectsPresenter updateAfterFindClass: classService!
+
 isAbstract
 
 	^self == JadeiteProjectBrowserAbstractTestCase!
@@ -86,6 +92,14 @@ selectLowerTabsThenDo: aBlock
 			tab := self projectsPresenter selectSourceTabNamed: tabName.
 			aBlock value: tab]!
 
+selectRowanServicesPackage
+	self selectServiceNamed: 'RowanClientServices' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter!
+
+selectRowanServicesTestsPackage
+	self selectServiceNamed: 'RowanClientServices' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter!
+
 selectSUnitTab
 	self projectsPresenter sunitPresenter ensureVisible!
 
@@ -109,6 +123,7 @@ tearDown
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #assertClassDefinitionPaneMatches:!private!support! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #assertLinearAncestry:in:!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #disableTranscriptWrites!private! !
+!JadeiteProjectBrowserAbstractTestCase categoriesFor: #findClassNamed:!private!support! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #isAbstract!private!testing! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #loadProjectNamed:!private!project support! !
@@ -116,6 +131,8 @@ tearDown
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #primaryTestWindow!accessing!public! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #saveMethodWithUniqueString!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectLowerTabsThenDo:!private!support! !
+!JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectRowanServicesPackage!private!test rename class!testing! !
+!JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectRowanServicesTestsPackage!private!test class hierarchy!tests! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectSUnitTab!private!selection! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #tearDown!private!setup teardown! !

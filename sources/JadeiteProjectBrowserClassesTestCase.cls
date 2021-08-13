@@ -155,8 +155,7 @@ test_browseClassReferencesFromClassesMenu
 
 	| classesMenu browseReferencesMenuItem |
 	self testsIssue: #issue640 withTitle: 'Error dialogs from PB menu items when on Sunit tab'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self projectsPresenter isHierarchyTabSelected
 		ifTrue: 
 			[self selectTreeServicesNamed: (Array with: 'RowanClassService') in: self classHierarchyPresenter]
@@ -176,8 +175,7 @@ test_browseClassReferencesFromClassesMenu
 test_classColoring
 	| classService sunitBrowser |
 	self testsIssue: #issue426 withTitle: 'Strange case of classes turning purple'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectRowanServicesTestsPackage.
 	sunitBrowser := self openWindow: [transcript jadeBrowseTests].
 	
 	[sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'.
@@ -317,12 +315,12 @@ test_classHierarchyDeselection
 
 test_classListNotBlank
 	| rowanClass |
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServicesNamed: (Array with: 'RowanClassService') in: self classListPresenter.
 	self selectHierarchyTabIn: self projectsPresenter.
 	self assert: self projectsPresenter classHierarchyPresenter selection name = 'RowanClassService'.
-	self selectServicesNamed: #('Rowan-Kernel') in: self packageListPresenter.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Kernel' in: self packageListPresenter.
 	self selectClassListTab.
 	self assert: self projectsPresenter classListPresenter list notEmpty. 
 	rowanClass := self projectsPresenter classListPresenter list detect:[:classService | classService name = 'Rowan'] ifNone:[].
@@ -540,8 +538,7 @@ test_classRenameWithReferencesSimilarNameButNoFailCompile
 			ensure: [self projectsPresenter basicRemoveClass: self classListPresenter selection]!
 
 test_classSideSelection
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServicesNamed: (Array with: 'RowanService') in: self classListPresenter.
 	"select methods in class list view"
 	self selectMethodsNamed: (Array with: #stonStringFor:).	"pick some methods that hopefully won't go away someday"
@@ -940,8 +937,7 @@ test_failMethodCompile
 test_filtersUpdatedInHierarchyView
 	| selectedClass browserServiceCategories |
 	self testsIssue: #issue343 withTitle: 'Category/Variables tab not updating correctly'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanBrowserService' in: self classListPresenter.
 	self selectHierarchyTab.
 	self assert: self projectsPresenter isCategoryTabSelected.
@@ -1000,8 +996,7 @@ test_findClassDialog
 test_fullHierarchyExpansion
 	| hierarchyClassNames |
 	self testsIssue: #issue640 withTitle: 'Double click no longer expands hierarchy view'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectClassListTab. 
 	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
 	self selectHierarchyTab.
@@ -1024,8 +1019,7 @@ test_fullHierarchyExpansion
 test_fullHierarchyExpansionDoubleClock
 	| hierarchyClassNames |
 	self testsIssue: #issue640 withTitle: 'Double click no longer expands hierarchy view'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectClassListTab. 
 	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
 	self selectHierarchyTab.
@@ -1307,8 +1301,7 @@ test_newBrowserRetainsClassAndMethodClassSide
 test_noSelectionHierarchy
 	| roots children childrensNames grandchildren grandchildrensNames |
 	self testsIssue: #issue125 withTitle: 'Hierarchy view empty if class not selected'.
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self assertIsNil: self projectsPresenter selectedClass.
 	self selectHierarchyTab.
 	self assert: self classHierarchyPresenter model notEmpty.
@@ -1343,8 +1336,7 @@ test_noSelectionHierarchy
 !
 
 test_refreshFromServer
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServicesNamed: (Array with: 'RowanPackageService') in: self classListPresenter.
 	self selectCategoryNamed: 'client commands'.
 	self selectServiceNamed: 'classHierarchy' in: self methodListPresenter.
@@ -1353,7 +1345,7 @@ test_refreshFromServer
 	self assert: self projectsPresenter categoryListPresenter selection equals: 'client commands'.
 	self assert: self projectsPresenter selectedClass name equals: 'RowanPackageService'.
 	self assert: self projectsPresenter packageListPresenter selection name equals: 'Rowan-Services-Core'.
-	self assert: self projectsPresenter projectListPresenter selection name equals: 'Rowan'.
+	self assert: self projectsPresenter projectListPresenter selection name equals: 'RowanClientServices'.
 	"hierarchy tab" 
 	self selectHierarchyTab. "selections remain" 
 	self projectsPresenter refreshFromServer.
@@ -1657,8 +1649,7 @@ test_saveClassCommentInHierarchy
 
 test_selectionsRetainedFromClassListToHierarchy
 	self testsIssue: #issue448 withTitle: 'Class selection not retained from Hierarchy->Class view'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanAnsweringService' in: self classListPresenter.
 	self selectCategoryNamed: 'accessing'. 
 	self selectMethodNamed: #answer.
@@ -1678,8 +1669,7 @@ test_selectionsRetainedFromClassListToHierarchy
 
 test_selectionsRetainedFromHierarchyToClassList
 	self testsIssue: #issue448 withTitle: 'Class selection not retained from Hierarchy->Class view'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanService' in: self classListPresenter.
 	self selectHierarchyTab.
 	self selectClassInHierarchyNamed: 'RowanAnsweringService'.
@@ -1740,8 +1730,7 @@ test_showMethodsFailingClassRecompilation
 test_simpleHierarchyTest
 	"just make sure that we can select different classes and the hierarchy browser updates"
 
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServicesNamed: (Array with: 'RowanService') in: self classListPresenter.
 	self selectHierarchyTab.
 	self assert: self projectsPresenter classHierarchyPresenter selection name = 'RowanService'.
@@ -1781,8 +1770,7 @@ test_variablesTab
 	"at least do something with the variables tab"
 
 	| selectedMethod methodListSize dictionaryBrowser variableSize |
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
 	self projectsPresenter selectVariableTab.
 	self projectsPresenter variableListPresenter selection: 'variables'.

@@ -90,7 +90,7 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: (selector isNil or: [selector source ~= self source]).
 			^true].
-	^super queryCommand: aCommandQuery!
+	^false!
 
 registerPresentersForUpdates
 	BrowserUpdate current register: self selector: #methodHistoryUpdated:!
@@ -126,6 +126,10 @@ setCaption
 				print: history size;
 				nextPut: $);
 				contents)!
+
+setLoadedMarker
+
+	"no op for now" !
 
 systemModel
 	^nil!
@@ -166,6 +170,7 @@ updateHistory
 !JadeiteMethodHistoryBrowser categoriesFor: #session!accessing!private! !
 !JadeiteMethodHistoryBrowser categoriesFor: #session:!accessing!private! !
 !JadeiteMethodHistoryBrowser categoriesFor: #setCaption!operations!public! !
+!JadeiteMethodHistoryBrowser categoriesFor: #setLoadedMarker!commands!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #systemModel!accessing!private! !
 !JadeiteMethodHistoryBrowser categoriesFor: #updateHistory!public!updating! !
 

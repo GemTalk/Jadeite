@@ -121,8 +121,8 @@ test_allClassesBlackInDictionaryView
 test_baseClassPurpleInPackageView
 	self testsIssue: #issue497
 		withTitle: 'Base classes with extension methods should be purple in the package containing the method'.
-	self selectServiceNamed: 'Cypress' in: self projectListPresenter.
-	self selectServiceNamed: 'Cypress-Environmental-Tools' in: self packageListPresenter.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-GemStone-Kernel' in: self packageListPresenter.
 	self selectServiceNamed: 'Behavior' in: self classListPresenter.
 	self assert: (self classListPresenter selection shouldColorAsExtension: self projectsPresenter)!
 

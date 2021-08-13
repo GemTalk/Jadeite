@@ -935,11 +935,10 @@ test_browseSameClassCategoriesCorrect
 			ensure: [self destroy: newBrowser]!
 
 test_browseSelectedMethods
-	| methodListPresenter  commandQuery |
+	| methodListPresenter commandQuery |
 	self testsIssue: #issue388
 		withTitle: '(3.0.53) useful to be able to open method browser on selected methods in project browser'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
 	self selectCategoryNamed: 'client commands'.
 	commandQuery := self
@@ -962,8 +961,7 @@ test_browseSelectedMethods
 				queryCommand: #browseSelectedMethods
 				inPresenter: self projectsPresenter
 				view: self methodListPresenter view.
-	self assert: commandQuery isEnabled.
-!
+	self assert: commandQuery isEnabled!
 
 test_cannotSelectMultipleProjects
 	self selectServicesNamed: #() in: self projectListPresenter.
@@ -974,8 +972,7 @@ test_cannotSelectMultipleProjects
 
 test_categoryTextDisplay
 	self testsIssue: #issue232 withTitle: 'cannot tell which `category` a method is in (Oscar-3.0.41)'.
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServicesNamed: (Array with: 'RowanClassService') in: self classListPresenter.
 	self assert: self projectsPresenter methodCategoryText value equals: String new.
 	self selectCategoryNamed: 'client commands'.
@@ -1048,9 +1045,9 @@ test_changeListSortOrder
 			ensure: [self destroy: changesBrowser]!
 
 test_changeVariableWithModifiedMethodSource
-	self testsIssue: #issue454 withTitle: 'Variables tab, change variable selection, are not prompted to save method'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self testsIssue: #issue454
+		withTitle: 'Variables tab, change variable selection, are not prompted to save method'.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
 	self projectsPresenter selectVariableTab.
 	self projectsPresenter variableListPresenter selection: 'instVarNames'.
@@ -1259,6 +1256,7 @@ test_closeConsoleValidSession
 
 test_confirmOverrideExistingAccessorMethods
 	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
+	self halt. 
 	self selectRowanSample1Class.
 	self
 		saveClass: 'TestClass'
@@ -1322,8 +1320,7 @@ test_definedClassMenuItem
 	self assert: classMenuItem description equals: menuLabel!
 
 test_deselectAllVariables
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
 	self projectsPresenter selectVariableTab.
 	self assert: self methodListPresenter list size
@@ -1640,25 +1637,24 @@ test_findDialogBasic
 			ensure: [findView view close]!
 
 test_findMethodChangesCategories
-	| methodService | 
+	| methodService |
 	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
-	self assertMethodInList: #behavior. 
-	self assert: self methodListPresenter selections isEmpty. 
-	methodService  := self projectsPresenter methodListPresenter list detect:[:svc | svc selector = #behavior].
-	self selectCategoryNamed: 'client commands'. 
-	self denyMethodInList: #behavior. 
+	self assertMethodInList: #behavior.
+	self assert: self methodListPresenter selections isEmpty.
+	methodService := self projectsPresenter methodListPresenter list
+				detect: [:svc | svc selector = #behavior].
+	self selectCategoryNamed: 'client commands'.
+	self denyMethodInList: #behavior.
 	JadePresenter basicBrowseMethod: methodService presenter: self projectsPresenter.
-	self assert: self categoryListPresenter selection equals: 'Accessing'. 
-	self assert: self methodListPresenter selection selector equals: #behavior. !
+	self assert: self categoryListPresenter selection equals: 'Accessing'.
+	self assert: self methodListPresenter selection selector equals: #behavior!
 
 test_findMethodDoesNotChangeCategories
 	| methodService | 
 	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
 	self assertMethodInList: #behavior. 
 	self assert: self methodListPresenter selections isEmpty. 
@@ -1671,15 +1667,13 @@ test_findMethodDoesNotChangeCategories
 
 test_findMethodDoesNothingWhenClassNotSelected
 	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self assert: self projectsPresenter findMethod equals: self projectsPresenter. "would normally raise a dialog" !
 
 test_findMethodShowsAllMethods
 	| methodListSize unopenedDialog |
 	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
 	self selectCategoryNamed: 'other'.
 	methodListSize := self methodListPresenter list size.
@@ -1692,8 +1686,7 @@ test_findMethodShowsAllMethods
 test_findMethodShowsOnlyOneSide
 	| unopenedDialog |
 	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanService' in: self classListPresenter.
 	unopenedDialog := JadeiteFindMethodDialog create: 'DefaultView'
 				on: self projectsPresenter selectedClass.
@@ -1716,8 +1709,7 @@ test_findMethodShowsOnlyOneSide
 test_findMethodSUnitBrowser
 	"make sure find method works when sunit is open" 
 	self testsIssue: #issue420 withTitle: 'Customer requests "Find Method" feature'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectSUnitTab.
 	self assert: self projectsPresenter findMethod equals: self projectsPresenter. "error occurred just calling the method" !
 
@@ -1923,8 +1915,7 @@ test_hierarchyImplementorsFromMethodList
 
 test_hierarchyImplementorsSendersCaption
 	self testsIssue: #issue209 withTitle: 'MethodListBrowser needs the token in the title bar'.
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServicesNamed: (Array with: 'RowanProjectService') in: self classListPresenter.
 	self selectMethodNamed: #branch.
 	methodListBrowser := self projectsPresenter browseHierarchyImplementors.
@@ -1981,8 +1972,7 @@ test_hierarchySendersFromMethodList
 
 test_implementorsSendersCaption
 	self testsIssue: #issue209 withTitle: 'MethodListBrowser needs the token in the title bar'.
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServicesNamed: (Array with: 'RowanProjectService') in: self classListPresenter.
 	self selectMethodNamed: #branch.
 	methodListBrowser := self projectsPresenter browseImplementors.
@@ -2179,8 +2169,7 @@ test_multiplePackageSelection
 	"verify package selection shows packages in both packages and alphabetizes them"
 
 	| coreClassNames testClassNames sortedClassNames |
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	coreClassNames := self classListPresenter list collect: [:classService | classService name].
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
 	testClassNames := self classListPresenter list collect: [:classService | classService name].
@@ -2249,7 +2238,7 @@ test_openProjectsBrowserFromMethodList
 		ensure: [self destroy: secondProjectsBrowser]!
 
 test_packagesShownInMultipleProjects
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: (Array with: 'RowanClientServes') in: self projectListPresenter.
 	self assertIsNil: (self serviceNamed: 'RowanService' in: self classListPresenter).
 	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
 	self denyIsNil: (self serviceNamed: 'RowanService' in: self classListPresenter).
@@ -2346,8 +2335,7 @@ test_refreshAfterAbortMethodList
 	| projectListPresenter abortItem |
 	self testsIssue: #issue284
 		withTitle: '(3.0.49 and 3.0.50) project browser not updated properly on reload of project.'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanBrowserService' in: self classListPresenter.
 	self methodSourcePresenter value: 'five  ^5'.
 	self projectsPresenter editSaveMethod: self classListPresenter selection.
@@ -2377,8 +2365,7 @@ test_refreshAfterAbortMethodListLeaveCommitted
 	| abortItem beforeSize afterSize list |
 	self testsIssue: #issue284
 		withTitle: '(3.0.49 and 3.0.50) project browser not updated properly on reload of project.'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanMethodService' in: self classListPresenter.
 	self selectMethodNamed: #classFromName.
 	methodListBrowser := self projectsPresenter browseImplementors.
@@ -2491,8 +2478,7 @@ test_registeredPresentersInProjectBrowserCleanedUp
 test_removeAbortedClass
 	"make sure we can safely remove an aborted class during post-abort refresh"
 
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
+	self selectRowanServicesTestsPackage.
 	self selectServicesNamed: (Array with: 'RowanServicesTest') in: self classListPresenter.
 	self saveTestClass.
 	[self assert: self projectsPresenter selectedClass name = 'TestClass']
@@ -2601,15 +2587,14 @@ test_selectMultiplePackages
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	self selectServicesNamed: #() in: self projectListPresenter.
 	self assert: self packageListPresenter list isEmpty.
-	self selectServicesNamed: #('Rowan') in: self projectListPresenter.
+	self selectServicesNamed: #('RowanClientServices') in: self projectListPresenter.
 	self deny: self packageListPresenter list isEmpty.
 	self serviceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
 	self serviceNamed: 'Rowan-JadeServer' in: self packageListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Core' 'Rowan-JadeServer') in: self packageListPresenter!
 
 test_selectVariable
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
 	self projectsPresenter selectVariableTab.
 	self projectsPresenter variableListPresenter selection: 'instVarNames'.
@@ -3272,8 +3257,7 @@ test_unicodeDisplayMethod
 		withTitle: '(3.0.65) browse methods containing `%` yields "Can''t hold $\x3B1" Dollphin error'.
 	session executeString: 'RowanServicesTest new compileUnicodeMethod'.
 	
-	[self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	[self selectRowanServicesTestsPackage.
 	self selectServiceNamed: 'RowanServicesTest' in: self classListPresenter.
 	self selectMethodNamed: #iAmAUnicodeMethod.
 	self assert: ('*METHOD SOURCE CANNOT BE DISPLAYED*' match: self methodSourcePresenter value).
@@ -3305,8 +3289,7 @@ test_unicodeSpecialMethodNotRed
 		withTitle: '(3.0.65) browse methods containing `%` yields "Can''t hold $\x3B1" Dollphin error'.
 	session executeString: 'RowanServicesTest new compileUnicodeMethod'.
 	
-	[self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	[self selectRowanServicesPackage.
 	self selectServiceNamed: 'RowanMethodService' in: self classListPresenter.
 	self selectClassTab.
 	self selectMethodNamed: #removeUnicode:.

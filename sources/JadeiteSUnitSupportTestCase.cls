@@ -854,8 +854,7 @@ test_projectBrowserRunSelectedTests
 
 	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
 	self openProjectBrowser.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectRowanServicesTestsPackage.
 	self selectServiceNamed: 'RowanClassServiceTest' in: self classListPresenter.
 	self selecProjectBrowserMethodNamed: #test_addCategory.
 	self projectsPresenter runSelected.
