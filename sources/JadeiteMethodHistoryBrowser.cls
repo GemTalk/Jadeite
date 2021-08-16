@@ -88,9 +88,11 @@ onViewOpened
 queryCommand: aCommandQuery
 	#restoreMethod == aCommandQuery command
 		ifTrue: 
-			[aCommandQuery isEnabled: (selector isNil or: [selector source ~= self source]).
+			[aCommandQuery isEnabled: self source ~= self serviceSource.
 			^true].
-	^false!
+	(#(#diff #moveToLoaded) includes: aCommandQuery command)
+		ifTrue: [^false	"Jadeite does not support these menu options yet"].
+	^super queryCommand: aCommandQuery!
 
 registerPresentersForUpdates
 	BrowserUpdate current register: self selector: #methodHistoryUpdated:!
@@ -102,6 +104,9 @@ restoreMethod
 				category: self methodService category
 				session: session.
 			self updateHistory]!
+
+serviceSource
+	^selector ifNil: [nil] ifNotNil: [:service | service source]!
 
 session
 	^session!
@@ -130,6 +135,9 @@ setCaption
 setLoadedMarker
 
 	"no op for now" !
+
+source
+	^self selectedMethodVersion ifNil: [String new] ifNotNil: [:array | array at: 3]!
 
 systemModel
 	^nil!
@@ -167,10 +175,12 @@ updateHistory
 !JadeiteMethodHistoryBrowser categoriesFor: #queryCommand:!commands!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #registerPresentersForUpdates!initialization!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #restoreMethod!commands!public! !
+!JadeiteMethodHistoryBrowser categoriesFor: #serviceSource!commands!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #session!accessing!private! !
 !JadeiteMethodHistoryBrowser categoriesFor: #session:!accessing!private! !
 !JadeiteMethodHistoryBrowser categoriesFor: #setCaption!operations!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #setLoadedMarker!commands!public! !
+!JadeiteMethodHistoryBrowser categoriesFor: #source!operations!public! !
 !JadeiteMethodHistoryBrowser categoriesFor: #systemModel!accessing!private! !
 !JadeiteMethodHistoryBrowser categoriesFor: #updateHistory!public!updating! !
 

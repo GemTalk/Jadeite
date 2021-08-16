@@ -103,6 +103,7 @@ package methodNames
 	add: #CodeSourcePresenter -> #showResult:;
 	add: #Collection -> #basicPrepareForReplication;
 	add: #Collection -> #prepareForReplication;
+	add: #Date -> #stonOn:;
 	add: #DiffBrowser -> #diffsPresenter;
 	add: #Float -> #asString;
 	add: #GciSession -> #_executeString:fromContextOop:environment:;
@@ -451,6 +452,7 @@ package methodNames
 	add: #TreeModel -> #getNodeFor:ifAbsent:;
 	add: #TreeModel -> #removeWithoutNotification:ifAbsent:;
 	add: 'CodeSourcePresenter class' -> #resource_Default_view;
+	add: 'Date class' -> #fromSton:;
 	add: 'DiffBrowser class' -> #defaultModel;
 	add: 'DolphinSureCertificateStore class' -> #clearTemporaryTrustStore;
 	add: 'JadeDebugger class' -> #resource_Default_view;
@@ -1136,6 +1138,54 @@ prepareForReplication
 	self do: [:element | element prepareForReplication]! !
 !Collection categoriesFor: #basicPrepareForReplication!Jadeite!public! !
 !Collection categoriesFor: #prepareForReplication!Jadeite!public! !
+
+!Date methodsFor!
+
+stonOn: stonWriter
+	"Use an ISO style YYYY-MM-DD representation.
+	Since my current implementation is time zone offset sensitive, the offset has to be included."
+
+	"Custom implementation for Dolphin replacing the Pharo implementation in STON-Core"
+
+	"Updated for GemStone compatibility"
+
+	| stream  |
+	stream := String writeStream: 15.
+	Locale invariant
+		printDate: self
+		on: stream
+		format: 'yyyy-MM-dd'.
+	"offset := Locale timeZoneInformation offsetSeconds.
+	offset = 0
+		ifTrue: [stream nextPut: $Z]
+		ifFalse: 
+			[Locale invariant
+				printDuration: offset seconds
+				on: stream
+				format: '+hh:mm']."
+	stonWriter writeObject: self listSingleton: stream grabContents! !
+!Date categoriesFor: #stonOn:!public!ston! !
+
+!Date class methodsFor!
+
+fromSton: stonReader
+	"Read a ISO YYYY-MM-DD format.
+	Since my current implementation is time zone offset sensitive, the offset has to be taken into account.
+	A missing offset results in the local timezone offset to be used"
+
+	"Customised for Dolphin from the STON-Core original"
+
+	| readStream date | 
+	readStream := stonReader parseListSingleton readStream.
+	date := self readFrom: readStream format: 'yyyy-MM-dd'.
+	"readStream atEnd
+		ifFalse: 
+			[| offset dt |
+			offset := DateAndTime readOffsetFrom: readStream sign: readStream next.
+			dt := DateAndTime year: date year day: date dayOfYear offset: offset.
+			date := dt asLocal asDate]."
+	^date! !
+!Date class categoriesFor: #fromSton:!instance creation!public! !
 
 !DiffBrowser methodsFor!
 

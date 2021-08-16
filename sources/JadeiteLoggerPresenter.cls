@@ -59,6 +59,7 @@ inspectService
 	SessionManager current isRuntime ifFalse: [logListPresenter selections inspect]!
 
 onViewOpened
+	self rowanFixMe.  "Need to re-enable the log browser & fix it" 
 	super onViewOpened.
 	self inputFiles!
 

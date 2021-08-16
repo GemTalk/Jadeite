@@ -1256,7 +1256,6 @@ test_closeConsoleValidSession
 
 test_confirmOverrideExistingAccessorMethods
 	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
-	self halt. 
 	self selectRowanSample1Class.
 	self
 		saveClass: 'TestClass'
