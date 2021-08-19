@@ -12,16 +12,30 @@ It''s recommended to run this set of tests with a fresh login to avoid counting 
 !JadeiteDebuggerTestCase categoriesForClass!SUnit! !
 !JadeiteDebuggerTestCase methodsFor!
 
+firstFrameStartingWith: className
+	^debugger frameListPresenter list detect: [:stackFrame | className , '*' match: stackFrame]
+		ifNone: [self error: 'Frame with class named ' , className , ' not found']!
+
 indexOfVariableNamed: aSymbol
 	| variable |
 	variable := debugger variableListPresenter list detect: [:var | aSymbol = var key value] ifNone: [].
 	^debugger variableListPresenter list indexOf: variable!
 
-selectFirstFrameInClassNamed: className
+lastFrameStartingWith: className
+	| selections |
+	selections := debugger frameListPresenter list
+				select: [:stackFrame | className , '*' match: stackFrame].
+	^selections last!
+
+selectFirstFrameStartingWith: className
 	| frame |
-	frame := debugger frameListPresenter list detect: [:frame | className , '*' match: frame]
-		ifNone: [self error: 'Frame with class named ' , className , ' not found'].
-	debugger frameListPresenter selection: frame.!
+	frame := self firstFrameStartingWith: className.
+	debugger frameListPresenter selection: frame!
+
+selectLastFrameStartingWith: className
+	| frame |
+	frame := self lastFrameStartingWith: className.
+	debugger frameListPresenter selection: frame!
 
 selectVariableNamed: aSymbol
 	| variable |
@@ -117,7 +131,7 @@ test_adHocExecutionEvaluatesTemp
 
 test_adHocExecutionSelf
 	self openDebuggerOn: '''gloop'' halt'.
-	self selectFirstFrameInClassNamed: 'String'. 
+	self selectFirstFrameStartingWith: 'String'.
 	debugger methodSourcePresenter documentPresenter value: 'self'.
 	debugger methodSourcePresenter documentPresenter view setFocus.
 	self debuggerDo: 
@@ -371,7 +385,7 @@ test_browseFrameMethod
 	| browser |
 	self saveMethodWithHalt.
 	self openDebuggerOn: 'RowanSample1 new sampleMethodWithHalt'.
-	self selectFirstFrameInClassNamed: 'Array'. "#halt sent to Array but actually implemented by Object, hence the test for Object later"
+	self selectFirstFrameStartingWith: 'Array'.	"#halt sent to Array but actually implemented by Object, hence the test for Object later"
 	browser := debugger browseFrameMethod.
 	
 	[self assert: browser isKindOf: JadeiteBrowser.
@@ -403,7 +417,7 @@ test_browseFrameMethodInBlock
 	self assert: browser currentCard classListPresenter selection name equals: 'RowanSample1Test'.
 	self assert: browser currentCard methodListPresenter selection selector equals: #testBlockMenuItems]
 			ensure: [browser view close].
-	self selectFirstFrameInClassNamed: 'RowanSample1Test'. 
+	self selectFirstFrameStartingWith: 'RowanSample1Test'.
 	self
 		assert: ('RowanSample1Test >> testBlockMenuItems*' match: debugger frameListPresenter selection).
 	browser := debugger browseFrameMethod.
@@ -438,7 +452,7 @@ test_browseImplementorsInBlock
 		equals: #testBlockMenuItems.
 	self assert: ('Implementors *' match: browser topShell view caption)]
 			ensure: [browser view close].
-	self selectFirstFrameInClassNamed: 'RowanSample1Test'.
+	self selectFirstFrameStartingWith: 'RowanSample1Test'.
 	self
 		assert: ('RowanSample1Test >> testBlockMenuItems*' match: debugger frameListPresenter selection).
 	browser := debugger browseImplementors.
@@ -470,13 +484,15 @@ test_browseSelectedFrameClassMethod
 			ensure: [methodListBrowser view close]!
 
 test_browseSelectedFrameMethod
-	|  methodListBrowser |
+	| methodListBrowser |
 	self testsIssue: #issue740
 		withTitle: 'nice to have `Browse selected method` menu item in debugger, too'.
 	self openDebuggerOn: 'self halt'.
-	self selectFirstFrameInClassNamed: 'UndefinedObject'.
-	methodListBrowser := debugger browseSelectedMethod .
-	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter selection selector equals: #halt!
+	self selectFirstFrameStartingWith: 'UndefinedObject'.
+	methodListBrowser := debugger browseSelectedMethod.
+	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter selection
+				selector
+		equals: #halt!
 
 test_browseSelectedFrameMethodClassSide
 	|  methodListBrowser |
@@ -521,7 +537,7 @@ test_browseSendersInBlock
 		equals: #test1.
 	self assert: ('Senders *' match: browser topShell view caption)]
 			ensure: [browser view close].
-	self selectFirstFrameInClassNamed: 'RowanSample1Test'.
+	self selectFirstFrameStartingWith: 'RowanSample1Test'.
 	self
 		assert: ('RowanSample1Test >> testBlockMenuItems*' match: debugger frameListPresenter selection).
 	browser := debugger browseSenders.
@@ -635,10 +651,9 @@ test_compileInExecutedBlockSameSelectorOnStack
 		category: 'other'.
 	
 	[self openDebuggerOn: 'RowanSample1Test new doSomething'.
-	self assert: debugger frameListPresenter selectionByIndex equals: 4.
-	self assert: (debugger frameListPresenter list at: 4)
-				equals: '[] in RowanSample1 >> doSomething @6 line 4'.
-	self assert: (debugger frameListPresenter list at: 9)
+	self assert: debugger frameListPresenter selection
+		equals: '[] in RowanSample1 >> doSomething @6 line 4'.
+	self assert: (self firstFrameStartingWith: 'RowanSample1Test')
 		equals: 'RowanSample1Test >> doSomething @2 line 3'.
 	debugger documentPresenter value: 'doSomething
 	#(1 2 3) do:[:idx |
@@ -828,7 +843,7 @@ test_debuggerModifiedSourcePaneStayOnFrame
 	debugger methodSourcePresenter documentPresenter view isModified: true.
 	TestMessageBox plannedResult: #yes.	"answer that we want to stay on frame"
 	[self selectFrameAt: 2] forkAt: Processor activePriority + 1.	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
-	self assert: debugger frameListPresenter selectionByIndex equals: 4. "did not change frames"]
+	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'. "did not change frames"]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_disablebreakpointHighlighting
@@ -1003,7 +1018,6 @@ test_duplicateInstVarsInHierarchy
 				self destroy: projectsBrowser]!
 
 test_errorInPrintString
-
 	self testsIssue: #issue49
 		withTitle: 'Error during printString in debugger (inspector) makes debugger unusable'.
 	self
@@ -1013,7 +1027,7 @@ test_errorInPrintString
 		assert: debugger frameListPresenter selection
 			equals: 'SmallInteger (Number) >> _retry:coercing: @4 line 15';
 		assert: (debugger frameListPresenter selectionByIndex: 6) notNil.
-	debugger frameListPresenter selectionByIndex: 8.	"select ScaledDecimal frame"
+	self selectFirstFrameStartingWith: 'ScaledDecimal'.
 	self
 		assert: debugger variableListPresenter list first value
 			equals: '(ScaledDecimal printString error: a MessageNotUnderstood occurred (error 2010), a UndefinedObject does not understand  #''_generality'')';
@@ -1042,7 +1056,6 @@ test_frameDoubleClickNoActionInBlockContext
 	self testsIssue: #issue238
 		withTitle: '"RowanDebugger does not understand #browseClass" from double click on frame selection (3.0.41)'.
 	self openDebuggerOn: '[RowanClassService new halt; classHierarchy] value'.
-	self assert: debugger frameListPresenter selectionByIndex equals: 4.
 	self assert: (debugger frameListPresenter selection copyFrom: 1 to: 2) equals: '[]'.
 	projectPresenter := debugger frameListPresenter trigger: #actionPerformed.	"simulates double click on the block context"
 	self assert: projectPresenter equals: debugger	"no browser opened and no walkback"!
@@ -1292,6 +1305,7 @@ test_reformatSource
 			ensure: [debugger documentPresenter view isModified: false]!
 
 test_reformatSourceDoesNotStick
+	| selectionIndex |
 	self testsIssue: #issue609
 		withTitle: 'Debugger problems with unsaved reformat and breakpoint in block'.
 	self
@@ -1315,8 +1329,9 @@ self halt. ^#test'.
 	^ #''test''' replaceCrLfWithLf.	"different formatting code in 3.6"
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #no.
-	self selectFrameAt: 6.
-	self selectFrameAt: 4.
+	selectionIndex := debugger frameListPresenter selectionByIndex.
+	self selectFirstFrameStartingWith: 'Halt'.	"click away and back"
+	self selectFrameAt: selectionIndex.
 	self assert: debugger documentPresenter value
 		equals: 'reformatSourceTemporaryMethod 
 
@@ -1767,8 +1782,8 @@ abc'.
 	self assert: debugger documentPresenter view selection equals: 'with:'.	"inner #with:with:with:"
 	self assert: debugger frameListPresenter selectionByIndex equals: 1.
 	self debuggerDo: [debugger stepOut].
-	self assert: debugger frameListPresenter selection equals: 'Array (Collection) >> do: @2 line 9'.	"on the top frame so should step one frame up"
-	self assert: debugger documentPresenter view selection equals: 'size'.
+	self assert: (('Array (Collection) >> do: @* line 9') match: debugger frameListPresenter selection). "on the top frame so should step one frame up"
+	self assert: debugger documentPresenter view selection equals: 'to:'.
 	self debuggerDo: [debugger resumeProcess]!
 
 test_stepThrough
@@ -1796,19 +1811,21 @@ array'.
 test_terminateDoesNotWalkback
 	"Terminate a process other than the primary one"
 
-	| terminateProcess allProcesses |
+	| terminateProcess allProcesses processTerminated |
 	self testsIssue: #issue82 withTitle: 'Pressing Terminate button gives walkback'.
 	allProcesses := session executeString: 'ProcessorScheduler scheduler allProcesses size'.
 	TestMessageBox enableJadeiteTestMessageBox.
 	
-	[gsProcess := session executeString: '[(Delay forSeconds: 9999) wait] fork asOop'.
+	[gsProcess := session executeString: '[9999 timesRepeat:[(Delay forSeconds: 1) wait]] fork asOop'.
 	self
 		openDebuggerOn: 'nil halt';
 		assert: debugger processListPresenter list size equals: allProcesses + 1;
 		assert: (debugger processListPresenter selectionByIndex: allProcesses + 1) notNil.
 	TestMessageBox plannedResult: #yes.	"confirm we want to terminate process"
+	processTerminated := false. 
 	terminateProcess := 
-			[self assert: debugger terminateProcess notNil.
+			[processTerminated := debugger  terminateProcess notNil.
+			self assert: processTerminated.
 			
 			[self
 				assert: debugger _processList size = allProcesses
@@ -1821,10 +1838,12 @@ test_terminateDoesNotWalkback
 						"the debugger may be gone already"
 						]]
 					fork.
+	[processTerminated] whileFalse:[(Delay forMilliseconds: 10) wait]. 
 	self debuggerDo: [debugger resumeProcess]]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
-				terminateProcess terminate]!
+				terminateProcess terminate.
+				gsProcess := nil]!
 
 test_unicodeMethod
 	self testsIssue: #issue
@@ -1838,7 +1857,7 @@ test_unicodeMethod
 	self selectFrameAt: 1.
 	self deny: debugger methodSourcePresenter documentPresenter view backcolor
 		equals: JadeiteTextStyles default colorForUndisplayableSource.
-	self selectFrameAt: 4.
+	self selectLastFrameStartingWith: 'RowanServicesTest'.
 	self assert: debugger frameListPresenter selection
 		equals: 'RowanServicesTest >> iAmAUnicodeMethod @3 line 5'.
 	self assert: debugger methodSourcePresenter documentPresenter view backcolor
@@ -1851,7 +1870,6 @@ test_unsavedChangesActionChangeFrame
 	
 	[self openDebuggerOn: 'nil halt'.
 	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
-	self assert: debugger frameListPresenter selectionByIndex equals: 4.
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
 	TestMessageBox plannedResult: #no.	"ignore changes"
@@ -1875,7 +1893,7 @@ test_unsavedChangesActionChangeToHomeFrame
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
 	TestMessageBox plannedResult: #no.
-	debugger frameListPresenter selectionByIndex: 6.	"Executed Code home frame"
+	self selectFirstFrameStartingWith:  'Executed Code'. 
 	self assert: debugger methodSourcePresenter documentPresenter value equals: originalSource]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
@@ -1938,14 +1956,14 @@ test_variableDisplayLabels
 	self
 		assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
 		equals: #(#receiver '' #abc #def #ghi #uvw #xyz) asOrderedCollection.
-	self selectFrameAt: 5.
+	self selectFirstFrameStartingWith: 'RowanSample1Test'. 
 	self assert: (debugger variableListPresenter list at: 2) value equals: 'instance variables'.
 	self assert: (debugger variableListPresenter list at: 8) value equals: 'args and temps'.
 	self
 		assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
 		equals: #(#receiver '' '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' '' #block)
 				asOrderedCollection.
-	self selectFrameAt: 6.
+	self selectLastFrameStartingWith: 'RowanSample1Test'.
 	self assert: (debugger variableListPresenter list at: 2) value equals: 'instance variables'.
 	self assert: (debugger variableListPresenter list at: 8) value equals: 'args and temps'.
 	self
@@ -1993,7 +2011,7 @@ test_variableDynamicInstVarLabels
 	self
 		assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
 		equals: #(#receiver '' #abc #def #ghi #uvw #xyz) asOrderedCollection.
-	self selectFrameAt: 5.
+	self selectFirstFrameStartingWith: 'RowanSample1Test'. 
 	self assert: (debugger variableListPresenter list at: 2) value equals: 'instance variables'.
 	self assert: (debugger variableListPresenter list at: 8) value equals: 'dynamic instance variables'.
 	self assert: (debugger variableListPresenter list at: 10) value equals: 'args and temps'.
@@ -2001,7 +2019,7 @@ test_variableDynamicInstVarLabels
 		assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
 		equals: #(#receiver '' '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' '' '.dynamic' '' #block)
 				asOrderedCollection.
-	self selectFrameAt: 6.
+	self selectLastFrameStartingWith: 'RowanSample1Test'.
 	self assert: (debugger variableListPresenter list at: 2) value equals: 'instance variables'.
 	self assert: (debugger variableListPresenter list at: 8) value equals: 'dynamic instance variables'.
 	self assert: (debugger variableListPresenter list at: 10) value equals: 'args and temps'.
@@ -2084,12 +2102,12 @@ test_variablesSorted
 	self
 		assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
 		equals: #(#receiver '' #abc #def #ghi #uvw #xyz) asOrderedCollection.
-	self selectFrameAt: 5.
+	self selectFirstFrameStartingWith: 'RowanSample1Test'.
 	self
 		assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
 		equals: #(#receiver '' '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' '' #block)
 				asOrderedCollection.
-	self selectFrameAt: 6.
+	self selectLastFrameStartingWith: 'RowanSample1Test'.
 	self
 		assert: (debugger variableListPresenter list collect: [:variableService | variableService _key])
 		equals: #(#receiver '' '-achoo' '-testSelector' '-ulp' '-vooey' '-wahoo' '' #uvw #xyz)
@@ -2103,7 +2121,7 @@ test1
 		openDebuggerOn: 'nil halt';
 		assert: (x := debugger errorMessagePresenter value) = 'a Halt occurred (error 2709)';
 		assert: (x := debugger processListPresenter list size) == 1;
-		assert: (x := debugger frameListPresenter list size) == 5;
+		assert: (x := debugger frameListPresenter list size) == 8;
 		assert: (x := debugger frameListPresenter selection) = 'Executed Code  @2 line 1';
 		assert: (x := debugger variableListPresenter list size) == 1;
 		assert: (x := debugger variableListPresenter list first) class == RowanVariableService;		assert: x oop == 20;
@@ -2320,8 +2338,11 @@ x halt.
 		halt;"
 		yourself.
 ! !
+!JadeiteDebuggerTestCase categoriesFor: #firstFrameStartingWith:!public!support! !
 !JadeiteDebuggerTestCase categoriesFor: #indexOfVariableNamed:!public!support! !
-!JadeiteDebuggerTestCase categoriesFor: #selectFirstFrameInClassNamed:!public!support! !
+!JadeiteDebuggerTestCase categoriesFor: #lastFrameStartingWith:!public!support! !
+!JadeiteDebuggerTestCase categoriesFor: #selectFirstFrameStartingWith:!public!support! !
+!JadeiteDebuggerTestCase categoriesFor: #selectLastFrameStartingWith:!public!support! !
 !JadeiteDebuggerTestCase categoriesFor: #selectVariableNamed:!public!support! !
 !JadeiteDebuggerTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteDebuggerTestCase categoriesFor: #test_additionalAccelerators!public!test menus! !

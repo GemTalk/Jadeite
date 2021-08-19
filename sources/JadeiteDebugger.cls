@@ -407,7 +407,7 @@ reformatSource
 		source: documentPresenter value;
 		command: #reformatSource;
 		commandArgs: Array new.
-	[self issueCommand: (Array with: methodService)] on: Error
+	[self issueCommand: methodService] on: Error
 		do: 
 			[:ex |
 			self setCompileErrorColor.
