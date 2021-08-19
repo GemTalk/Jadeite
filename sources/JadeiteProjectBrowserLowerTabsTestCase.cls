@@ -828,16 +828,9 @@ test_reformatSource
 	self assert: self methodSourcePresenter value equals: 'reformatSourceTemporaryMethod ^#test'.
 	self projectsPresenter reformatSource.
 	self assert: self methodSourcePresenter view isModified.
-	self isServerVersion36
-		ifTrue: 
-			[self assert: self methodSourcePresenter value
+	self assert: self methodSourcePresenter value
 				equals: 'reformatSourceTemporaryMethod
 	^ #''test''' replaceCrLfWithLf]
-		ifFalse: 
-			["no tab, server formatting change"
-			self assert: self methodSourcePresenter value
-				equals: 'reformatSourceTemporaryMethod
-^ #''test''' replaceCrLfWithLf]]
 			ensure: [self projectsPresenter removeMethods: self classListPresenter selections]!
 
 test_reformatSourceAppliesOnlyToCurrentBrowser
@@ -863,16 +856,9 @@ test_reformatSourceAppliesOnlyToCurrentBrowser
 		equals: 'reformatSourceTemporaryMethod ^#test'.
 	self projectsPresenter reformatSource.
 	self assert: self methodSourcePresenter view isModified.
-	self isServerVersion36
-		ifTrue: 
-			[self assert: self methodSourcePresenter value
-				equals: 'reformatSourceTemporaryMethod
-	^ #''test''' replaceCrLfWithLf]
-		ifFalse: 
-			["no tab, server formatting change"
-			self assert: self methodSourcePresenter value
-				equals: 'reformatSourceTemporaryMethod
-^ #''test''' replaceCrLfWithLf].
+	self assert: self methodSourcePresenter value
+		equals: 'reformatSourceTemporaryMethod
+	^ #''test''' replaceCrLfWithLf.
 	self assert: secondPresenter methodSourcePresenter value
 		equals: 'reformatSourceTemporaryMethod ^#test'.
 	self methodSourcePresenter isModified: false.
@@ -892,23 +878,11 @@ test_reformatSourceIsUndoable
 		equals: 'reformatSourceTemporaryMethod | abc | abc := #abc. ^abc'.
 	self projectsPresenter reformatSource.
 	self assert: self methodSourcePresenter view isModified.
-
-	self isServerVersion36
-		ifTrue: 
-			[self assert: self methodSourcePresenter value
+	self assert: self methodSourcePresenter value
 		equals: 'reformatSourceTemporaryMethod
 	| abc |
 	abc := #''abc''.
-	^ abc' replaceCrLfWithLf.]
-		ifFalse: 
-			["no tab, server formatting change in 3.6"
-				self assert: self methodSourcePresenter value
-		equals: 'reformatSourceTemporaryMethod
-  | abc |
-  abc := #''abc''.
-  ^ abc' replaceCrLfWithLf.].
-
-
+	^ abc' replaceCrLfWithLf.
 	self methodSourcePresenter view undo.
 	self assert: self methodSourcePresenter value
 		equals: 'reformatSourceTemporaryMethod | abc | abc := #abc. ^abc']

@@ -467,6 +467,15 @@ updatedClassInHierarchy: aPresenter browser: projectBrowser!
 updateDictionarySelectionsFor: presenter
 	!
 
+updateForSession: session
+
+	"will not work for some services but does for many"
+	
+	self
+		command: #update;
+		commandArgs: Array new. 
+	BrowserUpdate current issueCommands: (Array with: self) session: session!
+
 updateList: presenter whilePreservingSelections: updates browser: anObject
 	| replicate bag |
 	bag := presenter list asBag.
@@ -614,6 +623,7 @@ wasUpdated: anObject
 !RowanService categoriesFor: #updatedClassDefinition:browser:!public!updating! !
 !RowanService categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !
 !RowanService categoriesFor: #updateDictionarySelectionsFor:!public!updating! !
+!RowanService categoriesFor: #updateForSession:!actions!public! !
 !RowanService categoriesFor: #updateList:whilePreservingSelections:browser:!private! !
 !RowanService categoriesFor: #updateMethodFilterSelectionFor:!public!updating! !
 !RowanService categoriesFor: #updateMethodSelectionFor:!public!updating! !

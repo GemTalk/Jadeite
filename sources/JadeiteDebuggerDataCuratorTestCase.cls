@@ -86,7 +86,7 @@ createTestMethodWithBreakpoints
 		in: 'RowanSample1Test'
 		category: 'tests'.
 	self selectMethodNamed: #test_highlightBreaks.
-	self isServerVersion36 ifTrue: [self setBreakAt: 22] ifFalse: [self setBreakAt: 20	"first add:"].
+	self setBreakAt: 22. "first add:"
 	self setBreakAt: 25.
 	self setBreakAt: 28!
 
@@ -184,7 +184,8 @@ removeMethodNamed: aSymbol
 				selector: aSymbol;
 				className: 'RowanSample1Test';
 				meta: false.
-	classService := RowanClassService new name: 'RowanSample1Test'.
+	classService := RowanClassService named: 'RowanSample1Test'.
+	classService updateForSession: session. 
 	classService
 		command: #removeMethods:;
 		commandArgs: (Array with: (Array with: methodService)).

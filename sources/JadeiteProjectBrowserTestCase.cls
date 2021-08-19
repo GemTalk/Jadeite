@@ -1776,7 +1776,6 @@ test_goToDefinedClassFromClassListViaButton
 	self assert: self packageListPresenter selection name = 'Rowan-GemStone-Core'!
 
 test_goToDefinedMethodFromClassListClassSide
-	self isServerVersion36 ifFalse: [^self].
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-GemStone-Core' in: self packageListPresenter.
 	self selectServiceNamed: 'Rowan' in: self classListPresenter.
@@ -1789,24 +1788,6 @@ test_goToDefinedMethodFromClassListClassSide
 	self assert: self classListPresenter selection name = 'Rowan'.
 	self assert: self categoryListPresenter selection = '*rowan-core'.
 	self assert: self methodListPresenter selection selector = #initialize.
-	self assert: self projectsPresenter isClassListTabSelected.
-	self assert: self projectsPresenter isClassSideSelected!
-
-test_goToDefinedMethodFromClassListClassSide3215
-	"should still work against a 3.2.15 server. I hope" 
-	self isServerVersion36 ifTrue:[^self]. 
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-GemStone-Loader-Extensions' in: self packageListPresenter.
-	self selectServiceNamed: 'RwGsImage' in: self classListPresenter.
-	self selectClassTab.
-	self selectCategoryNamed: '*rowan-gemstone-loader-extensions'.
-	self selectMethodNamed: #_shouldCloneRowanLoader:.
-	self assert: self projectsPresenter isClassListTabSelected.
-	self projectsPresenter gotoMethodDefinedPackage.
-	self assert: self packageListPresenter selection name = 'Rowan-GemStone-Loader-Extensions'.
-	self assert: self classListPresenter selection name = 'RwGsImage'.
-	self assert: self categoryListPresenter selection = '*rowan-gemstone-loader-extensions'.
-	self assert: self methodListPresenter selection selector = #_shouldCloneRowanLoader:.
 	self assert: self projectsPresenter isClassListTabSelected.
 	self assert: self projectsPresenter isClassSideSelected!
 
@@ -1836,10 +1817,6 @@ test_gotoDefinedPackage
 	self selectServiceNamed: 'Rowan-GemStone-Kernel' in: self packageListPresenter.
 	self selectServiceNamed: 'ByteArray' in: self classListPresenter.
 	self projectsPresenter gotoClassDefinedPackage.
-	self isServerVersion36
-		ifFalse: 
-			["ByteArray is packaged in 3.6 (+?)"
-			self assert: self dictionaryPresenter selection name = 'Globals'].
 	self assert: self classListPresenter selection name = 'ByteArray'!
 
 test_goToDefinedPackageNoClassSelected
@@ -3544,7 +3521,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassListViaButton!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromClassListClassSide!public!test defined package!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromClassListClassSide3215!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedMethodNotSameAsClass!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedPackage!public!test defined package!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedPackageNoClassSelected!public!test defined package!tests! !
