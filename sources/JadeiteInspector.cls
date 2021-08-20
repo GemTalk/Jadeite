@@ -59,7 +59,7 @@ basicAddObject: string
 	model
 		command: #addObject:after:;
 		commandArgs: (Array with: string with: additionIndex).
-	self issueCommand: (Array with: model).
+	self issueCommand: model.
 	addedObject := model objects detect: [:assoc | assoc value = model selectionOop] ifNone: [].
 	newSelectionIndex := model objects indexOf: addedObject.
 	newSelectionIndex := newSelectionIndex = 0
@@ -485,7 +485,7 @@ saveDynamicInstVar
 	model
 		command: #save:dynamicInstVar:;
 		commandArgs: (Array with: documentPresenter value with: instVarName).
-	self issueCommand: (Array with: model).
+	self issueCommand: model. 
 	self displayObjectSelecting: instVarListPresenter selectionByIndex!
 
 saveIndexedElement
@@ -494,7 +494,7 @@ saveIndexedElement
 	model
 		command: #save:indexedVarAt:;
 		commandArgs: (Array with: documentPresenter value with: indices first).
-	self issueCommand: (Array with: model).
+	self issueCommand: model.
 	self displayObjectSelecting: (self instVarListIndexFromIndexedOffset: indices first)!
 
 saveNamedInstVar
@@ -503,7 +503,7 @@ saveNamedInstVar
 	model
 		command: #save:namedInstVar:;
 		commandArgs: (Array with: documentPresenter value with: instVarName).
-	self issueCommand: (Array with: model).
+	self issueCommand: model. 
 	index := model instVarNames indexOf: instVarName.
 	self displayObjectSelecting: index + 2!
 
@@ -513,7 +513,7 @@ saveUnorderedElement
 	model
 		command: #replaceElement:with:;
 		commandArgs: (Array with: oop with: documentPresenter value).
-	self issueCommand: (Array with: model).
+	self issueCommand: model. 
 	addedObject := model objects detect: [:assoc | assoc value = model selectionOop] ifNone: [].
 	newSelectionIndex := model objects indexOf: addedObject.
 	self displayObjectSelecting: newSelectionIndex + 2!

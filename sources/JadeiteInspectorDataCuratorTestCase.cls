@@ -335,7 +335,7 @@ test_adHocInspectComplexObject
 	workspace setDocumentData: 'RowanSample1Test new setTestSelector: #test1'.
 	workspace setFocus.
 	inspector := workspace codePane jadeInspect.
-	self assert: inspector documentPresenter model value equals: 'RowanSample1Test>>#test1'.
+	self assert: inspector documentPresenter model value equals: 'RowanSample1Test debug: #test1'.
 	self assert: inspector instVarListPresenter selection first key equals: 'self']
 			ensure: 
 				[workspace isModified: false.
@@ -1436,7 +1436,7 @@ test_openNavigationInspectorOnFloat
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	self assert: (inspector isKindOf: JadeiteInspector).
-	self assert: inspector documentPresenter model value equals: '1.2334500000000000E02'.
+	self assert: inspector documentPresenter model value equals: '123.345'.
 	inspector instVarListPresenter selectionByIndex: #(2).	"asOop"
 	self assert: inspector documentPresenter model value equals: '9650476537015991014'!
 
@@ -1477,7 +1477,7 @@ test_openNavigationInspectorOnSymbol
 	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: '#''abc'''.
 	inspector instVarListPresenter selectionByIndex: #(2).	"asOop"
-	self assert: inspector documentPresenter model value equals: '14351873'!
+	self assert: inspector documentPresenter model value equals: '11607041'!
 
 test_registeredPresentersInInspectorCleanedUp
 	"we don't register any yet, but this test will fail if we add any. 
