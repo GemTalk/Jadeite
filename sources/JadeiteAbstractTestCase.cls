@@ -187,10 +187,6 @@ isSampleProjectLoaded
 		detect: [:projectService | projectService name = self sampleProjectName]
 		ifNone: []) notNil!
 
-isServerVersion37
-	self halt.
-	^'64-bit 3.7.0*' match: session libraryVersion!
-
 issueCommand: service
 
 	^self issueCommands: (Array with: service)!
@@ -388,7 +384,8 @@ saveMethod: source in: className category: category
 	classService
 		saveMethod: source
 		category: category
-		session: session!
+		session: session.
+	^classService!
 
 saveSampleMethod
 
@@ -683,7 +680,6 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #fail:!asserting!public! !
 !JadeiteAbstractTestCase categoriesFor: #interestingLoopMethodSource!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #isSampleProjectLoaded!private!private testing!project support! !
-!JadeiteAbstractTestCase categoriesFor: #isServerVersion37!public!testing! !
 !JadeiteAbstractTestCase categoriesFor: #issueCommand:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #issueCommands:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #itemNamed:in:!issue test support!private! !

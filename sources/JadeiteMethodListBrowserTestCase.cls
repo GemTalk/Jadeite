@@ -51,22 +51,30 @@ removeMethods: methodServices in: className
 					with: (methodServices asArray select: [:service | service className asString = className])).
 	self issueCommand: classService!
 
+removeMethods: methodServices inClassService: classService
+	classService
+		command: #removeMethods:;
+		commandArgs: (Array
+					with: (methodServices select: [:methodService | methodService className = classService name])).
+	self issueCommand: classService!
+
 removeMultiKeywordSenderAndSendee
 	#('jadeiteSender' 'jadeiteSendeeWith:keyword:' 'jadeiteSender2') do: 
 			[:selector |
 			self selectServiceNamed: selector in: self projectsPresenter methodListPresenter.
-			self removeMethods: self methodListPresenter selections in: self projectsPresenter selectedClassName]!
+			self removeMethods: self methodListPresenter selections inClassService: self projectsPresenter selectedClass]!
 
 removeMultipleReferencesToStringMethods
 	self projectsPresenter categoryListPresenter selections: #('other' 'tests').
 	#('flub1' 'flub2' 'flub3') do: 
 			[:selector |
 			self selectServiceNamed: selector in: self projectsPresenter methodListPresenter.
-			self removeMethods: self methodListPresenter selections in: self projectsPresenter selectedClassName]!
+			self removeMethods: self methodListPresenter selections
+				inClassService: self projectsPresenter selectedClass]!
 
 removeTestMethodAndCloseProjectBrowser
 	self removeMethods: (Array with: self projectsPresenter methodListPresenter selection)
-		in: self projectsPresenter selectedClassName.
+		inClassService: self projectsPresenter selectedClass. 
 	^projectsBrowser view close!
 
 sampleMethodSource
@@ -82,6 +90,7 @@ saveMethod: source in: className category: category
 	classService command: #saveMethodSource:category:; 
 			commandArgs: (Array with: source with: category). 
 	self issueCommand: classService. 
+	^classService
 	!
 
 selectListAt: integer
@@ -236,7 +245,7 @@ test_adHocContextClassSide
 	self assert: self methodSourcePresenter documentPresenter value equals: 'self fnoodle #''fnoodle''']
 			ensure: 
 				[self methodSourcePresenter documentPresenter view isModified: false.
-				self removeMethods: self methodListMethodListPresenter selections in: 'RowanSample1Test']!
+				self removeMethods: self methodListMethodListPresenter selections inClassService: classService]!
 
 test_adHocContextInstanceSide
 	| classService |
@@ -258,7 +267,7 @@ test_adHocContextInstanceSide
 		equals: 'self new fnoodle #''fnoodle''']
 			ensure: 
 				[self methodSourcePresenter documentPresenter view isModified: false.
-				self removeMethods: self methodListMethodListPresenter selections in: 'RowanSample1Test']!
+				self removeMethods: self methodListMethodListPresenter selections inClassService: classService]!
 
 test_browseBreakpoints
 	| methodService |
@@ -1007,7 +1016,7 @@ test_firstReferenceRemovedAfterRecompile
 	self assertIsNil: self methodListMethodListPresenter selection firstReference]
 			ensure: 
 				[self methodListMethodListPresenter view selectAll.
-				self removeMethods: self methodListMethodListPresenter selections in: 'RowanSample1Test']!
+				self removeMethods: self methodListMethodListPresenter selections inClassService: classService]!
 
 test_firstReferenceRetained
 	| fooBrowser barBrowser |
@@ -1328,19 +1337,19 @@ test_symbolsInitialized
 	symbols do: [:symbol | self assert: (symbol beginsWith: 'Rowan')]!
 
 test_UnsavedChangesActionChangeSelectionIgnoreChanges
-	| methodListPresenter |
+	| methodListPresenter rowanSample1ClassService rowanSample1TestClassService |
 	self testsIssue: #issue386
 		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
 	TestMessageBox enableJadeiteTestMessageBox.
 	
-	[self
-		saveMethod: self sampleMethodSource
-		in: 'RowanSample1'
-		category: 'other'.
-	self
-		saveMethod: self sampleMethodSource
-		in: 'RowanSample1Test'
-		category: 'other'.
+	[rowanSample1ClassService := self
+				saveMethod: self sampleMethodSource
+				in: 'RowanSample1'
+				category: 'other'.
+	rowanSample1TestClassService := self
+				saveMethod: self sampleMethodSource
+				in: 'RowanSample1Test'
+				category: 'other'.
 	methodListBrowser := JadePresenter browseImplementorsOf: #sampleMethod session: session.
 	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
 	self assert: methodListPresenter selectionByIndex equals: 1.
@@ -1351,20 +1360,20 @@ test_UnsavedChangesActionChangeSelectionIgnoreChanges
 	self assert: methodListPresenter selectionByIndex equals: 2]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
-				self removeMethods: methodListPresenter model asBag in: 'RowanSample1'.
-				self removeMethods: methodListPresenter model asBag in: 'RowanSample1Test']!
+				self removeMethods: methodListPresenter model asBag inClassService: rowanSample1ClassService.
+				self removeMethods: methodListPresenter model asBag inClassService: rowanSample1TestClassService]!
 
 test_UnsavedChangesActionChangeSelectionStayOnMethod
-	| methodListPresenter |
+	| methodListPresenter rowanSample1ClassService rowanSample1TestClassService |
 	self testsIssue: #issue386
 		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
 	TestMessageBox enableJadeiteTestMessageBox.
 	
-	[self
+	[rowanSample1ClassService := self
 		saveMethod: self sampleMethodSource
 		in: 'RowanSample1'
 		category: 'other'.
-	self
+	rowanSample1TestClassService := self
 		saveMethod: self sampleMethodSource
 		in: 'RowanSample1Test'
 		category: 'other'.
@@ -1379,20 +1388,20 @@ test_UnsavedChangesActionChangeSelectionStayOnMethod
 	self assert: methodListPresenter selectionByIndex equals: 1]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
-				self removeMethods: methodListPresenter model asBag in: 'RowanSample1'.
-				self removeMethods: methodListPresenter model asBag in: 'RowanSample1Test']!
+				self removeMethods: methodListPresenter model asBag inClassService: rowanSample1ClassService.
+				self removeMethods: methodListPresenter model asBag inClassService: rowanSample1TestClassService]!
 
 test_UnsavedChangesActionCloseWindow
-	| methodListPresenter |
+	| methodListPresenter rowanSample1ClassService rowanSample1TestClassService |
 	self testsIssue: #issue386
 		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
 	TestMessageBox enableJadeiteTestMessageBox.
 	
-	[self
+	[rowanSample1ClassService := self
 		saveMethod: self sampleMethodSource
 		in: 'RowanSample1'
 		category: 'other'.
-	self
+	rowanSample1TestClassService := self
 		saveMethod: self sampleMethodSource
 		in: 'RowanSample1Test'
 		category: 'other'.
@@ -1406,23 +1415,23 @@ test_UnsavedChangesActionCloseWindow
 	self deny: methodListBrowser isOpen]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
-				self removeMethods: methodListPresenter model asBag in: 'RowanSample1'.
-				self removeMethods: methodListPresenter model asBag in: 'RowanSample1Test']!
+				self removeMethods: methodListPresenter model asBag inClassService: rowanSample1ClassService.
+				self removeMethods: methodListPresenter model asBag inClassService: rowanSample1TestClassService]!
 
 test_UnsavedChangesActionCloseWindowStayOnMethod
-	| methodListPresenter |
+	| methodListPresenter rowanSample1ClassService rowanSample1TestClassService |
 	self testsIssue: #issue386
 		withTitle: '(3.0.53) no warning about unsaved changes in method browser when clicking on different method'.
 	TestMessageBox enableJadeiteTestMessageBox.
 	
-	[self
-		saveMethod: self sampleMethodSource
-		in: 'RowanSample1'
-		category: 'other'.
-	self
-		saveMethod: self sampleMethodSource
-		in: 'RowanSample1Test'
-		category: 'other'.
+	[rowanSample1ClassService := self
+				saveMethod: self sampleMethodSource
+				in: 'RowanSample1'
+				category: 'other'.
+	rowanSample1TestClassService := self
+				saveMethod: self sampleMethodSource
+				in: 'RowanSample1Test'
+				category: 'other'.
 	methodListBrowser := JadePresenter browseImplementorsOf: #sampleMethod session: session.
 	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
 	self assert: methodListPresenter selectionByIndex equals: 1.
@@ -1435,8 +1444,8 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 	self assert: methodListPresenter selectionByIndex equals: 1]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
-				self removeMethods: methodListPresenter model asBag in: 'RowanSample1'.
-				self removeMethods: methodListPresenter model asBag in: 'RowanSample1Test']!
+				self removeMethods: methodListPresenter model asBag inClassService: rowanSample1ClassService.
+				self removeMethods: methodListPresenter model asBag inClassService: rowanSample1TestClassService]!
 
 test_wildCardSearch
 	"a little faked up to avoid messy dialogs and returns within the method. 
@@ -1467,6 +1476,7 @@ test_wildCardSearchNotCaseSensitive
 !JadeiteMethodListBrowserTestCase categoriesFor: #methodSourcePresenter!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #primaryTestWindow!accessing!public! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #removeMethods:in:!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #removeMethods:inClassService:!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #removeMultiKeywordSenderAndSendee!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #removeMultipleReferencesToStringMethods!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #removeTestMethodAndCloseProjectBrowser!private!support! !
