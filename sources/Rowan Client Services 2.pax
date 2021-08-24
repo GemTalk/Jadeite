@@ -56,13 +56,17 @@ package setPrerequisites: #(
 	'GemStone C Interface'
 	'GemStone Session'
 	'Jade UI Base'
-	'..\..\..\..\RemoteServiceReplication\src-dolphin\RemoteServiceReplication'
 	'..\Core\Contributions\svenc\STON\STON-Core').
 
 package!
 
 "Class Definitions"!
 
+Object subclass: #RowanService
+	instanceVariableNames: 'command commandArgs updateType organizer updates wasUpdated'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 Semaphore subclass: #RowanSemaphore
 	instanceVariableNames: 'lockingProcess'
 	classVariableNames: ''
@@ -75,11 +79,6 @@ Model subclass: #BrowserUpdate
 	classInstanceVariableNames: ''!
 TreeModel subclass: #JadeiteTreeModel
 	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RsrService subclass: #RowanService
-	instanceVariableNames: 'command commandArgs updateType organizer updates wasUpdated'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

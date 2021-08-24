@@ -870,19 +870,19 @@ test_expansion
 
 test_extensionColoringInHierarchy
 	| testClass |
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Specifications') in: self packageListPresenter.
-	self selectServicesNamed: (Array with: 'RwPlatformSpecification') in: self classListPresenter.
+	self selectServicesNamed: (Array with: 'RowanClientServices') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
+	self selectServicesNamed: (Array with: 'TestLoggingService') in: self classListPresenter.
 	testClass := self classListPresenter list
-				detect: [:classService | classService name = 'RwGemStoneSpecification']
+				detect: [:classService | classService name = 'RowanLoggingService']
 				ifNone: [].
-	self assertIsNil: testClass.	"Our guy is an extension"
+	self assertIsNil: testClass.	"Our class is an extension so we don't see him in Classes view"
 	self selectHierarchyTab.
 	self
-		assert: self projectsPresenter classHierarchyPresenter selection name = 'RwPlatformSpecification'.
+		assert: self projectsPresenter classHierarchyPresenter selection name = 'TestLoggingService'.
 	self deny: (self projectsPresenter classHierarchyPresenter selection
 				shouldColorAsExtension: self projectsPresenter).
-	self selectClassInHierarchyNamed: 'RwGemStoneSpecification'.
+	self selectClassInHierarchyNamed: 'RowanLoggingService'.
 	self assert: (self projectsPresenter classHierarchyPresenter selection
 				shouldColorAsExtension: self projectsPresenter)!
 
@@ -891,7 +891,7 @@ test_extensionMethodSelection
 	self testsIssue: #issue352
 		withTitle: 'Create method on class not in selected package, method disappears'.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-GemStone-Loader-Extensions' in: self packageListPresenter.
+	self selectServiceNamed: 'Rowan-Core' in: self packageListPresenter.
 	self selectServiceNamed: 'RwClassMove' in: self classListPresenter.
 	self selectMethodNamed: #addMovedClassToPatchSet:.
 	self assert: self classListPresenter selection name equals: 'RwClassMove'.
@@ -906,12 +906,12 @@ test_extensionMethodSelection
 				detect: [:methodService | methodService selector = #addMovedClassToPatchSet:]
 				ifNone: []).
 	self assert: self methodListPresenter selection selector equals: #addMovedClassToPatchSet2.
-	self assert: self categoryListPresenter selection equals: '*rowan-gemstone-loader-extensions'.
+	self assert: self categoryListPresenter selection equals: '*rowan-gemstone-loader-extensions-onlyv2'.
 	self assert: self classListPresenter selection name equals: 'RwClassMove'.
 	self assert: self projectsPresenter definedMethodPackageText view text
-		equals: 'Defined Package: Rowan-GemStone-Loader-Extensions'.
+		equals: 'Defined Package: Rowan-GemStone-Loader-Extensions-OnlyV2'.
 	self assert: self projectsPresenter methodCategoryText value
-		equals: 'Category: *rowan-gemstone-loader-extensions'.
+		equals: 'Category: *rowan-gemstone-loader-extensions-onlyv2'.
 	transcript projectListPresenter abortTransaction.	"clean up Rowan project"
 	[] ensure: 
 			[self cloneRowanSample1.

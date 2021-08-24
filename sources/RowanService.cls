@@ -1,6 +1,6 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
-RsrService subclass: #RowanService
+Object subclass: #RowanService
 	instanceVariableNames: 'command commandArgs updateType organizer updates wasUpdated'
 	classVariableNames: ''
 	poolDictionaries: ''

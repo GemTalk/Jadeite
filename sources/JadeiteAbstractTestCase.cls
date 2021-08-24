@@ -489,6 +489,10 @@ selectRowanSample1Test
 			[self selectTreeServicesNamed: (Array with: 'RowanSample1Test') in: self classHierarchyPresenter]
 		ifFalse: [self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter]!
 
+selectRowanServicesPackage
+	self selectServiceNamed: 'RowanClientServices' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter!
+
 selectServiceNamed: aString in: presenter
 	self selectServicesNamed: (Array with: aString) in: presenter!
 
@@ -728,6 +732,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #selectNoneProject!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #selectRowanSample1Class!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectRowanSample1Test!private!selection! !
+!JadeiteAbstractTestCase categoriesFor: #selectRowanServicesPackage!private!test rename class!testing! !
 !JadeiteAbstractTestCase categoriesFor: #selectServiceNamed:in:!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectServicesNamed:in:!private!project browser support!selection! !
 !JadeiteAbstractTestCase categoriesFor: #selectTreeServicesNamed:in:!private!selection! !

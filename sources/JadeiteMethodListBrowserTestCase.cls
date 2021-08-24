@@ -131,6 +131,19 @@ selectMethodsNamed: selectors in: browser
 	methodListPresenter selections: methodServices.
 	^methodServices!
 
+selectMethodsWithClassNamed: classNames
+	^self selectMethodsWithClassNamed: classNames in: methodListBrowser!
+
+selectMethodsWithClassNamed: classNames in: browser
+	| methodServices methodListPresenter |
+	methodListPresenter := browser primaryPresenter methodListPresenter methodListPresenter.
+	methodListPresenter resetSelection.
+	methodServices := OrderedCollection new.
+	classNames
+		do: [:className | methodServices addAll: (methodListPresenter list select: [:svc | svc className = className])].
+	methodListPresenter selections: methodServices.
+	^methodServices!
+
 setUp
 	super setUp.
 	cachedSymbols := JadeiteSearch allSelectorSymbols!
@@ -816,13 +829,13 @@ test_comparisonTabMultimethod2
 	self testsIssue: #issue264
 		withTitle: 'Method List Browser Comparison tab contents are sticky (3.0.74)'.
 	methodListBrowser := JadePresenter browseImplementorsOf: 'asString' session: session.
-	self methodListMethodListPresenter view selectionsByIndex: #(5 6).	"Boolean & BinaryFloat"
+	self selectMethodsWithClassNamed: (Array with: 'Boolean' with: 'BinaryFloat').  
 	methodListBrowser primaryPresenter selectComparisonTab.
 	self assert: methodListBrowser primaryPresenter comparisonPresenter beforeTitlePresenter value
 		equals: 'BinaryFloat>>asString'.
 	self assert: methodListBrowser primaryPresenter comparisonPresenter afterTitlePresenter value
 		equals: 'Boolean>>asString'.
-	self methodListMethodListPresenter view selectionsByIndex: #(1).	"AbstractException"
+	self selectMethodsWithClassNamed: (Array with: 'AbstractException').
 	methodListBrowser primaryPresenter selectComparisonTab.
 	self assert: methodListBrowser primaryPresenter comparisonPresenter beforeTitlePresenter value
 		equals: 'AbstractException>>asString'.
@@ -1487,6 +1500,8 @@ test_wildCardSearchNotCaseSensitive
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodNamed:in:!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsNamed:!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsNamed:in:!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsWithClassNamed:!private!support! !
+!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsWithClassNamed:in:!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #setUp!public!setup teardown! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #setupMultiKeywordSenderAndSendee!private!support! !
 !JadeiteMethodListBrowserTestCase categoriesFor: #setupMultipleReferencesToString!private!support! !

@@ -207,7 +207,8 @@ selecting: stringOrIndex string: searchString
 			selectionStop := searchString
 						ifNil: [stream position]
 						ifNotNil: [searchString size + stringOrIndex].
-			range := Interval from: stringOrIndex to: selectionStop - 1.
+			selectionStop := stream atEnd ifTrue:[selectionStop] ifFalse:[selectionStop -1]. "If the stream selects up to the end, it will not be positioned one ahead of the end of the string" 
+			range := Interval from: stringOrIndex to: selectionStop.
 			methodSourcePresenter documentPresenter selectionRange: range]
 		ifFalse: 
 			[searchBlock := [self searchFor: stringOrIndex].
