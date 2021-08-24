@@ -1119,38 +1119,38 @@ test_getClassCommentWithDeprecationsOn
 
 test_goToDefinedClassFromHierarchy
 	| gotoClass |
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Specifications') in: self packageListPresenter.
-	self selectServicesNamed: (Array with: 'RwPlatformSpecification') in: self classListPresenter.
+	self selectServicesNamed: (Array with: 'RowanClientServices') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
+	self selectServicesNamed: (Array with: 'TestLoggingService') in: self classListPresenter.
 	gotoClass := self classListPresenter list
-				detect: [:classService | classService name = 'RwGemStoneSpecification']
+				detect: [:classService | classService name = 'RowanLoggingService']
 				ifNone: [].
-	self assertIsNil: gotoClass.	"Our guy is an extension"
+	self assertIsNil: gotoClass.	"Our class is an extension so we don't see him in Classes view"
 	self selectHierarchyTab.
 	self deny: self projectsPresenter isClassListTabSelected.
-	self selectClassInHierarchyNamed: 'RwGemStoneSpecification'.
+	self selectClassInHierarchyNamed: 'RowanLoggingService'.
 	self projectsPresenter gotoClassDefinedPackage.
-	self assert: self packageListPresenter selection name = 'Rowan-GemStone-Specifications'!
+	self assert: self packageListPresenter selection name = 'Rowan-Services-Core'!
 
 test_goToDefinedClassFromHierarchyViaButton
 	| gotoClass |
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Specifications') in: self packageListPresenter.
-	self selectServicesNamed: (Array with: 'RwPlatformSpecification') in: self classListPresenter.
+	self selectServicesNamed: (Array with: 'RowanClientServices') in: self projectListPresenter.
+	self selectServicesNamed: #('Rowan-Services-Tests') in: self packageListPresenter.
+	self selectServicesNamed: (Array with: 'TestLoggingService') in: self classListPresenter.
 	gotoClass := self classListPresenter list
-				detect: [:classService | classService name = 'RwGemStoneSpecification']
+				detect: [:classService | classService name = 'RowanLoggingService']
 				ifNone: [].
-	self assertIsNil: gotoClass.	"Our guy is an extension"
+	self assertIsNil: gotoClass.	"Our class is an extension so we don't see him in Classes view"
 	self selectHierarchyTab.
 	self deny: self projectsPresenter isClassListTabSelected.
-	self selectClassInHierarchyNamed: 'RwGemStoneSpecification'.
+	self selectClassInHierarchyNamed: 'RowanLoggingService'.
 	self assert: self projectsPresenter definedClassPackageText view command
 		equals: #gotoClassDefinedPackageViaButton.
 	self projectsPresenter gotoClassDefinedPackageViaButton.
-	self assert: self packageListPresenter selection name = 'Rowan-GemStone-Specifications'!
+	self assert: self packageListPresenter selection name = 'Rowan-Services-Core'!
 
 test_goToDefinedMethodFromClassList
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanClientServices' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Extensions' in: self packageListPresenter.
 	self selectServiceNamed: 'RwGsPlatform' in: self classListPresenter.
 	self selectCategoryNamed: '*rowan-services-extensions'.
@@ -1164,7 +1164,7 @@ test_goToDefinedMethodFromClassList
 	self assert: self projectsPresenter isClassListTabSelected!
 
 test_goToDefinedMethodFromHierarchy
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanClientServices' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Extensions' in: self packageListPresenter.
 	self selectServiceNamed: 'RwGsPlatform' in: self classListPresenter.
 	self selectHierarchyTab.
@@ -1179,7 +1179,7 @@ test_goToDefinedMethodFromHierarchy
 	self assert: self projectsPresenter isClassListTabSelected	"make my life easier by forcing the class side to be seleted"!
 
 test_goToDefinedMethodFromHierarchyViaButton
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanClientServices' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Extensions' in: self packageListPresenter.
 	self selectServiceNamed: 'RwGsPlatform' in: self classListPresenter.
 	self selectHierarchyTab.
@@ -1269,7 +1269,9 @@ test_hierarchyWithNonResolvableClass
 	| unresolvableClassService |
 	self testsIssue: #issue442
 		withTitle: '(3.0.62) odd (but legal) class hierarchy causes trouble for Project Browser'.
-	session executeString: 'RowanClassServiceTest new createHierarchyWithNonResolvableClass'.
+	session
+		executeString: 'Rowan platform _alternateImageClass: Rowan image testImageClass.
+		RowanClassServiceTest new createHierarchyWithNonResolvableClass.'.
 	
 	[self projectsPresenter refreshFromServer.
 	self selectServiceNamed: 'Issue470' in: self projectListPresenter.
@@ -1281,7 +1283,9 @@ test_hierarchyWithNonResolvableClass
 	self assert: unresolvableClassService name equals: 'Issue470Class2'.
 	self assert: ('Issue470Class2 {*}' match: unresolvableClassService displayString).
 	self deny: unresolvableClassService isInSymbolList]
-			ensure: [self projectsPresenter basicUnloadProjects: #('Issue470')]!
+			ensure: 
+				[self projectsPresenter basicUnloadProjects: #('Issue470').
+				session executeString: ' Rowan platform _alternateImageClass: nil.']!
 
 test_newBrowserRetainsClassAndMethod
 	self selectRowanSample1Test.
@@ -1353,7 +1357,7 @@ test_refreshFromServer
 	self assert: self projectsPresenter categoryListPresenter selection equals: 'client commands'.
 	self assert: self projectsPresenter selectedClass name equals: 'RowanPackageService'.
 	self assert: self projectsPresenter packageListPresenter selection name equals: 'Rowan-Services-Core'.
-	self assert: self projectsPresenter projectListPresenter selection name equals: 'Rowan'
+	self assert: self projectsPresenter projectListPresenter selection name equals: 'RowanClientServices'
 	!
 
 test_removeClassFromHierarchy
