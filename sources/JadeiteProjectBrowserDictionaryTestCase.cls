@@ -141,24 +141,26 @@ test_mutliSelectDictionaryHierarchy
 	self selectNoneProject.
 	self selectServicesNamed: #('UserGlobals' 'Published') in: self dictionaryPresenter.
 	self assert: (self classListPresenter list collect: [:classService | classService name]) asArray
-		equals: #('JadeServer' 'JadeServer64bit' 'JadeServer64bit24' 'JadeServer64bit32' 'JadeServer64bit35' 'JadeServer64bit3x' 'Rowan' 'RowanSample1' 'RowanSample1Test' 'RowanSubClass').
+		equals: #('JadeServer' 'JadeServer64bit' 'JadeServer64bit24' 'JadeServer64bit32' 'JadeServer64bit35' 'JadeServer64bit3x' 'Rowan').
 	self selectHierarchyTab.
-	self
-		assert: (self classHierarchyPresenter model asArray collect: [:classService | classService name])
-		equals: #('Object' 'JadeServer' 'JadeServer64bit' 'JadeServer64bit24' 'JadeServer64bit3x' 'JadeServer64bit32' 'JadeServer64bit35' 'Rowan' 'RowanSample1' 'RowanSubClass' 'TestAsserter' 'TestCase' 'RowanSample1Test')!
+	#('Object' 'JadeServer' 'JadeServer64bit' 'JadeServer64bit24' 'JadeServer64bit3x' 'JadeServer64bit32' 'JadeServer64bit35' 'Rowan')
+		do: 
+			[:className |
+			self assert: ((self classHierarchyPresenter model asArray collect: [:service | service name])
+						includes: className)]!
 
 test_mutliSelectPackageHierarchy
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self testsIssue: #issue489 withTitle: '(3.0.73) package multi-select is not functional'.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Kernel' 'Rowan-Services-Extensions')
-		in: self packageListPresenter.
+	self selectServicesNamed: #('Rowan-Kernel' 'Rowan-Specifications') in: self packageListPresenter.
 	self assert: (self classListPresenter list collect: [:classService | classService name]) asArray
-		equals: #('Rowan' 'RwGsPlatform' 'RwPlatform').
+		equals: #('Rowan' 'RwPlatform' 'RwSpecification').
 	self selectHierarchyTab.
-	self
-		assert: (self classHierarchyPresenter model asArray collect: [:classService | classService name])
-		equals: #('Object' 'Rowan' 'RwPlatform' 'RwGsPlatform')!
+	#('Object' 'Rowan' 'RwPlatform' 'RwSpecification') do: 
+			[:className |
+			self assert: ((self classHierarchyPresenter model asArray collect: [:service | service name])
+						includes: className)]!
 
 test_packageAndDictionaryViewClass
 	"test for the same view for a consistent look and feel.

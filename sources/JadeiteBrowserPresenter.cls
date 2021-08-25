@@ -1726,7 +1726,8 @@ updateAfterFindClassInDictionary: classService
 			self isClassListTabSelected
 				ifTrue: [self selectClassNamed: classService name asString]
 				ifFalse: 
-					[self selectClassInClassListNamed: classService name.
+					[self updateClass: classService.  "It's legal for the classService to not be filled in yet. That would break the hierarchy update" 
+					self selectClassInClassListNamed: classService name.
 					self updateHierarchy]]!
 
 updateAfterFindClassInPackage: classService

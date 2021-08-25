@@ -20,6 +20,9 @@ assertDictionaryNotInList: dictionaryName
 				detect: [:dictionaryService | dictionaryService name = dictionaryName]
 				ifNone: [])!
 
+rowanSample1Dictionary
+	^'SampleSymbolDict'!
+
 setUp
 	user ifNil: [user := 'DataCurator'].
 	super setUp!
@@ -379,7 +382,7 @@ test_globalsTabHandlesBadPrintString
 				detect: [:array | array first = 'UserGlobals.badPrint'].
 	self assert: ('*unprintable string*' match: (badPrintEntry at: 4)).
 	session executeString: 'UserGlobals removeKey: #badPrint'.
-	self selectServiceNamed: 'BadPrintString' in: self classListPresenter.
+	self findClassNamed: 'BadPrintString'. 
 	self projectsPresenter basicRemoveClass: self classListPresenter selection!
 
 test_globalsTabHeaders
@@ -425,9 +428,9 @@ test_gotoDictionary
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self testsIssue: #issue491 withTitle: '(Oscar 3.0.73) need a way to find class in the dictionary '.
 	self selectRowanSample1Class.
-	self assert: self projectsPresenter selectedClass dictionaryName equals: 'UserGlobals'.
+	self assert: self projectsPresenter selectedClass dictionaryName equals: self rowanSample1Dictionary.
 	self projectsPresenter gotoDictionary.
-	self assert: self dictionaryPresenter selection name equals: 'UserGlobals'.
+	self assert: self dictionaryPresenter selection name equals: self rowanSample1Dictionary.
 	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1'.
 	self projectsPresenter gotoClassDefinedPackage.
 	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
@@ -437,11 +440,11 @@ test_gotoDictionary
 test_gotoDictionaryClassTab
 	self testsIssue: #issue530 withTitle: '(3.0.77) Go to containing dictionary ... doesn''t'.
 	self selectRowanSample1Class.
-	self selectClassTab. 
 	self selectClassTab.
-	self assert: self projectsPresenter selectedClass dictionaryName equals: 'UserGlobals'.
+	self selectClassTab.
+	self assert: self projectsPresenter selectedClass dictionaryName equals: self rowanSample1Dictionary.
 	self projectsPresenter gotoDictionary.
-	self assert: self dictionaryPresenter selection name equals: 'UserGlobals'.
+	self assert: self dictionaryPresenter selection name equals: self rowanSample1Dictionary.
 	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1'.
 	self projectsPresenter gotoClassDefinedPackage.
 	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
@@ -451,11 +454,11 @@ test_gotoDictionaryClassTab
 test_gotoDictionaryHierarchyView
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self testsIssue: #issue491 withTitle: '(Oscar 3.0.73) need a way to find class in the dictionary '.
-	self selectRowanSample1Class.
+	self selectRowanSample1Class. 
 	self selectHierarchyTab.
-	self assert: self projectsPresenter selectedClass dictionaryName equals: 'UserGlobals'.
+	self assert: self projectsPresenter selectedClass dictionaryName equals: self rowanSample1Dictionary.
 	self projectsPresenter gotoDictionary.
-	self assert: self dictionaryPresenter selection name equals: 'UserGlobals'.
+	self assert: self dictionaryPresenter selection name equals: self rowanSample1Dictionary.
 	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1'.
 	self projectsPresenter gotoClassDefinedPackage.
 	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
@@ -467,9 +470,9 @@ test_gotoDictionaryHierarchyViewClassTab
 	self selectRowanSample1Class.
 	self selectClassTab. 
 	self selectHierarchyTab.
-	self assert: self projectsPresenter selectedClass dictionaryName equals: 'UserGlobals'.
+	self assert: self projectsPresenter selectedClass dictionaryName equals: self rowanSample1Dictionary.
 	self projectsPresenter gotoDictionary.
-	self assert: self dictionaryPresenter selection name equals: 'UserGlobals'.
+	self assert: self dictionaryPresenter selection name equals: self rowanSample1Dictionary.
 	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1'.
 	self projectsPresenter gotoClassDefinedPackage.
 	self assert: self projectListPresenter selection name equals: 'RowanSample1'.
@@ -489,7 +492,7 @@ test_gotoDictionaryMenuItem
 	self projectsPresenter updateClassMenu: self classListPresenter view queryContextMenu.
 	gotoItem := self classListPresenter view queryContextMenu items
 				detect: [:menuItem | menuItem command == #gotoDictionary].
-	self assert: gotoItem description equals: 'Go To Containing Dictionary (UserGlobals)'.
+	self assert: gotoItem description equals: 'Go To Containing Dictionary (SampleSymbolDict)'.
 	gotoItem commandDescription performAgainst: self projectsPresenter.
 	commandQuery := self
 				queryCommand: #gotoDictionary
@@ -510,7 +513,7 @@ test_gotoDictionaryMenuItemClassTab
 	self projectsPresenter updateClassMenu: self classListPresenter view queryContextMenu.
 	gotoItem := self classListPresenter view queryContextMenu items
 				detect: [:menuItem | menuItem command == #gotoDictionary].
-	self assert: gotoItem description equals: 'Go To Containing Dictionary (UserGlobals)'.
+	self assert: gotoItem description equals: 'Go To Containing Dictionary (SampleSymbolDict)'.
 	gotoItem commandDescription performAgainst: self projectsPresenter.
 	commandQuery := self
 				queryCommand: #gotoDictionary
@@ -591,8 +594,7 @@ test_minimumProjectList
 	self assert: (projectNames includes: RowanProjectService noneProject name).
 	self assert: (projectNames includes: 'Cypress').
 	self assert: (projectNames includes: 'Rowan').
-	self assert: (projectNames includes: 'STON').
-	self assert: (projectNames includes: 'Tonel')!
+	self assert: (projectNames includes: 'STON').!
 
 test_noneProjectNotRemovedOnUpdate
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
@@ -612,17 +614,19 @@ test_noneProjectRetainsSelectionWhenNewTabAdded
 test_packageDictionaryCardsTabName
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectRowanSample1Class.
-	self assert: self projectsPresenter packageDictionaryCards view currentCard arrangement equals: 'Packages'.
-	self projectsPresenter updateAfterFindClass: (RowanClassService new name: 'Array').
-	self assert: self projectsPresenter packageDictionaryCards view currentCard arrangement equals: 'Dictionaries'!
+	self assert: self projectsPresenter packageDictionaryCards view currentCard arrangement
+		equals: 'Packages'.
+	self selectServiceNamed: '(NONE)' in: self projectListPresenter.
+	self assert: self projectsPresenter packageDictionaryCards view currentCard arrangement
+		equals: 'Dictionaries'!
 
 test_projectInfoTabMenuCopy
 	| copyItem |
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectServiceNamed: 'Tonel' in: self projectListPresenter.
+	self selectServiceNamed: 'STON' in: self projectListPresenter.
 	copyItem := self projectsPresenter projectInfoTab view contextMenu items
 				detect: [:item | item text = 'Copy'].
-	self assert: copyItem command equals: #copyProjectInfo.
+	self assert: copyItem command equals: #copyInfo.
 	self projectsPresenter projectInfoTab selectionByIndex: 1.
 	self projectsPresenter copyProjectInfo.
 	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'rowanProjectsHome'.
@@ -635,7 +639,7 @@ test_projectInfoTabMenuCopy
 
 test_projectInfoTabMenuItemNames
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
-	self selectServiceNamed: 'Tonel' in: self projectListPresenter.
+	self selectServiceNamed: 'STON' in: self projectListPresenter.
 	self projectsPresenter projectInfoTab selectionByIndex: 1.
 	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'rowanProjectsHome'.
 	self projectsPresenter projectInfoTab selectionByIndex: 2.
@@ -668,18 +672,20 @@ test_projectListMenuItemsEnabled
 			| query |
 			query := CommandQuery commandDescription: item source: self projectListPresenter view.
 			self projectsPresenter queryCommand: query.
-			(('*Refresh*' match: item text) or: ['*Clone Git Project*' match: item text])
-				ifTrue: [self assert: query isEnabled]
-				ifFalse: [self deny: query isEnabled]].
+			(('*Refresh*' match: item text)
+				or: [('*Load Git Project*' match: item text) or: ['*Create*' match: item text]])
+					ifTrue: [self assert: query isEnabled]
+					ifFalse: [self deny: query isEnabled]].
 	self projectListPresenter resetSelection.
 	self projectListPresenter view contextMenu itemsDo: 
 			[:item |
 			| query |
 			query := CommandQuery commandDescription: item source: self projectListPresenter view.
 			self projectsPresenter queryCommand: query.
-			(('*Refresh*' match: item text) or: ['*Clone Git Project*' match: item text])
-				ifTrue: [self assert: query isEnabled]
-				ifFalse: [self deny: query isEnabled]]!
+			(('*Refresh*' match: item text)
+				or: [('*Load Git Project*' match: item text) or: ['*Create*' match: item text]])
+					ifTrue: [self assert: query isEnabled]
+					ifFalse: [self deny: query isEnabled]]!
 
 test_projectSingleSelection
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
@@ -730,7 +736,7 @@ test_removeDictionaryNoSelection
 test_renameClassInDictionaryView
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectNoneProject.
-	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
+	self selectServiceNamed: self rowanSample1Dictionary in: self dictionaryPresenter.
 	self projectsPresenter selectClassNamed: 'RowanSample1Test'.
 	self assert: self projectsPresenter selectedClass name equals: 'RowanSample1Test'.
 	self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
@@ -762,7 +768,7 @@ test_textTabsChange
 	tabNames := (self projectsPresenter textAreaTabs cards
 				collect: [:card | card arrangement displayString]) asArray.
 	self assert: tabNames
-		equals: #('Class Definition' 'Class Documentation' 'Method Source' 'SUnit' 'Comparison' 'Project').
+		equals: #('Class Definition' 'Class Documentation' 'Method Source' 'SUnit' 'Comparison' 'Project' 'Load Spec').
 	self selectNoneProject.
 	tabNames := (self projectsPresenter textAreaTabs cards
 				collect: [:card | card arrangement displayString]) asArray.
@@ -777,6 +783,7 @@ test_textTabSelectedWithProjectChange
 	self assert: self projectsPresenter textAreaTabs currentCard displayString equals: 'globalsTab'! !
 !JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #assertDictionaryInList:!private!support! !
 !JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #assertDictionaryNotInList:!private!support! !
+!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #rowanSample1Dictionary!constants!public! !
 !JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #setUp!public!setup teardown! !
 !JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_abortInTranscriptRemovesDictionaryInBrowser!public!test issue 217! !
 !JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_addDictionary!public!test issue 217! !
