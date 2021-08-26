@@ -552,7 +552,12 @@ test_browseLiteralReferences
 		withTitle: '(3.0.50) I would have thought that the literal string ''filetree'' would have been found'.
 	self setupTestMethodInProjectBrowser.
 	
-	[self browseLiteralTest: 'foot'.	"expect this to fail (at least in 3.2.15). The index given by the server is off by 1"
+	[methodListBrowser := JadePresenter browseLiteralReferences: 'foot' printString session: session.
+	
+	[self selectMethodNamed: #literalRefTest.
+	self assert: self methodListSelector equals: #literalRefTest.
+	self assert: self sourcePresenter selection equals: 'foot']
+			ensure: [methodListBrowser view close].
 	self browseLiteralTest: #foot.
 	self browseLiteralTest: 123.
 	self browseLiteralTest: nil.

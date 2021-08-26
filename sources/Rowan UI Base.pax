@@ -445,6 +445,7 @@ package methodNames
 	add: #RowanProjectService -> #projectLogUsing:session:;
 	add: #SequencedGrowableCollection -> #removeAtIndexWithoutNotification:;
 	add: #SequencedGrowableCollection -> #removeWithoutNotification:ifAbsent:;
+	add: #SequencedStream -> #nextWordWithoutPunctuation;
 	add: #SmallInteger -> #_digitsAsString;
 	add: #Time -> #asStringUsingFormat:;
 	add: #Time -> #stonOn:;
@@ -5624,6 +5625,24 @@ removeWithoutNotification: oldElement ifAbsent: exceptionHandler
 		ifFalse: [self removeAtIndexWithoutNotification: index]! !
 !SequencedGrowableCollection categoriesFor: #removeAtIndexWithoutNotification:!public!removing! !
 !SequencedGrowableCollection categoriesFor: #removeWithoutNotification:ifAbsent:!public!removing! !
+
+!SequencedStream methodsFor!
+
+nextWordWithoutPunctuation
+	"adapted from #nextWord but extended to stop at punctuation marks, too.
+	If we encounter a separator, punctuation, or line feed we don't want to advance the position hence the peek"
+
+	| wordStream element |
+	self skipSeparators ifFalse: [^nil].
+	wordStream := self contentsSpecies writeStream: 32.
+	[self atEnd] whileFalse: 
+			[element := self peek.
+			(element ~= $: and: [element isSeparator or: [element isPunctuation or: [element isLinefeed]]])
+				ifTrue: [^wordStream contents].
+			self next.
+			wordStream nextPut: element].
+	^wordStream contents! !
+!SequencedStream categoriesFor: #nextWordWithoutPunctuation!accessing!public! !
 
 !SmallInteger methodsFor!
 

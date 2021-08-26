@@ -203,11 +203,10 @@ selecting: stringOrIndex string: searchString
 			[| range stream selectionStop |
 			stream := ReadStream on: methodSourcePresenter documentPresenter value.
 			stream position: stringOrIndex.
-			stream nextWord.
+			stream nextWordWithoutPunctuation.
 			selectionStop := searchString
 						ifNil: [stream position]
-						ifNotNil: [searchString size + stringOrIndex].
-			selectionStop := stream atEnd ifTrue:[selectionStop] ifFalse:[selectionStop -1]. "If the stream selects up to the end, it will not be positioned one ahead of the end of the string" 
+						ifNotNil: [searchString size + stringOrIndex - 1].
 			range := Interval from: stringOrIndex to: selectionStop.
 			methodSourcePresenter documentPresenter selectionRange: range]
 		ifFalse: 
