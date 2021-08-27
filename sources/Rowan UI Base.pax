@@ -5366,7 +5366,6 @@ displayTransactionConflicts: browser
 
 addCachedSymbols: unused
 	"only add new symbols if auto complete was turned on (symbol collections are empty)"
-
 	newCachedSelectors
 		ifNotNil: 
 			[JadeiteSearch allSelectorSymbols isEmpty ifTrue: [^self].

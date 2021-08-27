@@ -2214,7 +2214,7 @@ test_openProjectsBrowserFromMethodList
 		ensure: [self destroy: secondProjectsBrowser]!
 
 test_packagesShownInMultipleProjects
-	self selectServicesNamed: (Array with: 'RowanClientServes') in: self projectListPresenter.
+	self selectServicesNamed: (Array with: 'RowanClientServices') in: self projectListPresenter.
 	self assertIsNil: (self serviceNamed: 'RowanService' in: self classListPresenter).
 	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
 	self denyIsNil: (self serviceNamed: 'RowanService' in: self classListPresenter).
@@ -2748,7 +2748,7 @@ test_tabNames_projectsBrowserNotLost
 	projectTabs := self projectsPresenter parentPresenter view cards.
 	index := 2.
 	self assert: (projectTabs at: index) arrangement text equals: index printString , ' Projects'.
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: (Array with: 'RowanClientServices') in: self projectListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Core') in: self packageListPresenter.
 	self selectServicesNamed: (Array with: 'RowanAnsweringService') in: self classListPresenter.
 	self assert: (projectTabs at: index) arrangement text equals: index printString , ' RowanAnsweringService'.

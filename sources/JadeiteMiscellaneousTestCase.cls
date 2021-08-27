@@ -356,11 +356,19 @@ test_setResetTextPaneFontSize
 	self testsIssue: #issue805 withTitle: 'Preference to adjust font size (3.1.0)'.
 	self openProjectBrowser.
 	self projectsPresenter setFontSizeTo: 20.
-	JadeiteScintillaView allInstances
-		do: [:scintillaView | scintillaView textStyles do: [:textStyle | self assert: textStyle pointSize equals: 20]].
+	JadeiteScintillaView allInstances do: 
+			[:scintillaView |
+			scintillaView textStyles do: 
+					[:textStyle |
+					(JadeiteTextStyles default textStyles includes: textStyle)
+						ifTrue: [self assert: textStyle pointSize equals: 20]]].
 	self projectsPresenter resetFontSize.
-	JadeiteScintillaView allInstances
-		do: [:scintillaView | scintillaView textStyles do: [:textStyle | self assert: textStyle pointSize equals: nil]]!
+	JadeiteScintillaView allInstances do: 
+			[:scintillaView |
+			scintillaView textStyles do: 
+					[:textStyle |
+					(JadeiteTextStyles default textStyles includes: textStyle)
+						ifTrue: [self assert: textStyle pointSize equals: nil]]]!
 
 test_versionMatches
 	"to prevent invalid logins, make sure internal server
