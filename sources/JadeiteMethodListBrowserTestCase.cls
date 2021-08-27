@@ -44,6 +44,7 @@ removeMethods: methodServices in: className
 
 	| classService |
 	classService := RowanClassService named: className.
+	self updateService:  classService.
 	classService meta: methodServices anyOne meta.	" assume for now that methods all have save meta"
 	classService
 		command: #removeMethods:;
@@ -551,7 +552,6 @@ test_browseLiteralReferences
 	self testsIssue: #issue328
 		withTitle: '(3.0.50) I would have thought that the literal string ''filetree'' would have been found'.
 	self setupTestMethodInProjectBrowser.
-	
 	[methodListBrowser := JadePresenter browseLiteralReferences: 'foot' printString session: session.
 	
 	[self selectMethodNamed: #literalRefTest.
@@ -1197,7 +1197,7 @@ test_reformatSource
 	self assert: self methodSourcePresenter documentPresenter view isModified.
 	self assert: self methodSourcePresenter documentPresenter value
 		equals: 'reformatSourceTemporaryMethod
-  ^ #''test''' replaceCrLfWithLf!
+	^ #''test''' replaceCrLfWithLf!
 
 test_reformatSourceIsUndoable
 	self testsIssue: #issue550
@@ -1217,9 +1217,9 @@ test_reformatSourceIsUndoable
 	self assert: self methodSourcePresenter documentPresenter view isModified.
 	self assert: self methodSourcePresenter documentPresenter value
 		equals: 'reformatSourceTemporaryMethod
-  | abc |
-  abc := #''abc''.
-  ^ abc' replaceCrLfWithLf.
+	| abc |
+	abc := #''abc''.
+	^ abc' replaceCrLfWithLf.
 	self methodSourcePresenter documentPresenter view undo.
 	self assert: self methodSourcePresenter documentPresenter value
 		equals: 'reformatSourceTemporaryMethod | abc | abc := #abc. ^abc']
@@ -1378,8 +1378,8 @@ test_UnsavedChangesActionChangeSelectionIgnoreChanges
 	self assert: methodListPresenter selectionByIndex equals: 2]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
-				self removeMethods: methodListPresenter model asBag inClassService: rowanSample1ClassService.
-				self removeMethods: methodListPresenter model asBag inClassService: rowanSample1TestClassService]!
+				self removeMethods: methodListPresenter model asBag asArray inClassService: rowanSample1ClassService.
+				self removeMethods: methodListPresenter model asBag asArray inClassService: rowanSample1TestClassService]!
 
 test_UnsavedChangesActionChangeSelectionStayOnMethod
 	| methodListPresenter rowanSample1ClassService rowanSample1TestClassService |
@@ -1388,26 +1388,27 @@ test_UnsavedChangesActionChangeSelectionStayOnMethod
 	TestMessageBox enableJadeiteTestMessageBox.
 	
 	[rowanSample1ClassService := self
-		saveMethod: self sampleMethodSource
-		in: 'RowanSample1'
-		category: 'other'.
+				saveMethod: self sampleMethodSource
+				in: 'RowanSample1'
+				category: 'other'.
 	rowanSample1TestClassService := self
-		saveMethod: self sampleMethodSource
-		in: 'RowanSample1Test'
-		category: 'other'.
+				saveMethod: self sampleMethodSource
+				in: 'RowanSample1Test'
+				category: 'other'.
 	methodListBrowser := JadePresenter browseImplementorsOf: #sampleMethod session: session.
 	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
 	self assert: methodListPresenter selectionByIndex equals: 1.
 	self assert: methodListPresenter list size equals: 2.
 	methodListBrowser primaryPresenter methodSourcePresenter documentPresenter value: 'new text'.
-	self methodListSourcePresenter documentPresenter isModified: true. "needed for tests" 
+	self methodListSourcePresenter documentPresenter isModified: true.	"needed for tests"
 	TestMessageBox plannedResult: #yes.	"answer that we want to stay on frame"
 	self selectListAt: 2.
 	self assert: methodListPresenter selectionByIndex equals: 1]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
-				self removeMethods: methodListPresenter model asBag inClassService: rowanSample1ClassService.
-				self removeMethods: methodListPresenter model asBag inClassService: rowanSample1TestClassService]!
+				self removeMethods: methodListPresenter model asBag asArray inClassService: rowanSample1ClassService.
+				self removeMethods: methodListPresenter model asBag asArray
+					inClassService: rowanSample1TestClassService]!
 
 test_UnsavedChangesActionCloseWindow
 	| methodListPresenter rowanSample1ClassService rowanSample1TestClassService |
@@ -1416,13 +1417,13 @@ test_UnsavedChangesActionCloseWindow
 	TestMessageBox enableJadeiteTestMessageBox.
 	
 	[rowanSample1ClassService := self
-		saveMethod: self sampleMethodSource
-		in: 'RowanSample1'
-		category: 'other'.
+				saveMethod: self sampleMethodSource
+				in: 'RowanSample1'
+				category: 'other'.
 	rowanSample1TestClassService := self
-		saveMethod: self sampleMethodSource
-		in: 'RowanSample1Test'
-		category: 'other'.
+				saveMethod: self sampleMethodSource
+				in: 'RowanSample1Test'
+				category: 'other'.
 	methodListBrowser := JadePresenter browseImplementorsOf: #sampleMethod session: session.
 	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
 	self assert: methodListPresenter selectionByIndex equals: 1.
@@ -1433,8 +1434,9 @@ test_UnsavedChangesActionCloseWindow
 	self deny: methodListBrowser isOpen]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
-				self removeMethods: methodListPresenter model asBag inClassService: rowanSample1ClassService.
-				self removeMethods: methodListPresenter model asBag inClassService: rowanSample1TestClassService]!
+				self removeMethods: methodListPresenter model asBag asArray inClassService: rowanSample1ClassService.
+				self removeMethods: methodListPresenter model asBag asArray
+					inClassService: rowanSample1TestClassService]!
 
 test_UnsavedChangesActionCloseWindowStayOnMethod
 	| methodListPresenter rowanSample1ClassService rowanSample1TestClassService |
@@ -1462,8 +1464,9 @@ test_UnsavedChangesActionCloseWindowStayOnMethod
 	self assert: methodListPresenter selectionByIndex equals: 1]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
-				self removeMethods: methodListPresenter model asBag inClassService: rowanSample1ClassService.
-				self removeMethods: methodListPresenter model asBag inClassService: rowanSample1TestClassService]!
+				self removeMethods: methodListPresenter model asBag asArray inClassService: rowanSample1ClassService.
+				self removeMethods: methodListPresenter model asBag asArray
+					inClassService: rowanSample1TestClassService]!
 
 test_wildCardSearch
 	"a little faked up to avoid messy dialogs and returns within the method. 
