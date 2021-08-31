@@ -92,10 +92,6 @@ selectLowerTabsThenDo: aBlock
 			tab := self projectsPresenter selectSourceTabNamed: tabName.
 			aBlock value: tab]!
 
-selectRowanServicesTestsPackage
-	self selectServiceNamed: 'RowanClientServices' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter!
-
 selectSUnitTab
 	self projectsPresenter sunitPresenter ensureVisible!
 
@@ -127,7 +123,6 @@ tearDown
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #primaryTestWindow!accessing!public! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #saveMethodWithUniqueString!private! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectLowerTabsThenDo:!private!support! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectRowanServicesTestsPackage!private!test class hierarchy!tests! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectSUnitTab!private!selection! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteProjectBrowserAbstractTestCase categoriesFor: #tearDown!private!setup teardown! !

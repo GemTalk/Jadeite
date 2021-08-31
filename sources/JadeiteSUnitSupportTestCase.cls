@@ -40,9 +40,6 @@ methodListPresenter
 projectsPresenter
 	^projectsBrowser currentCard!
 
-selecProjectBrowserMethodNamed: selector
-	^self selecProjectBrowserMethodsNamed: (Array with: selector)!
-
 selecProjectBrowserMethodsNamed: selectors
 	| methodServices methodPresenter |
 	methodPresenter := self projectsPresenter methodListPresenter.
@@ -51,6 +48,9 @@ selecProjectBrowserMethodsNamed: selectors
 				collect: [:selector | methodPresenter list detect: [:svc | svc selector = selector]].
 	methodPresenter selections: methodServices.
 	^methodServices!
+
+selectProjectBrowserMethodNamed: selector
+	^self selecProjectBrowserMethodsNamed: (Array with: selector)!
 
 selectSUnitBrowserMethodNamed: selector
 	^self selectSUnitBrowserMethodsNamed: (Array with: selector)!
@@ -507,10 +507,7 @@ test_extensionTestShowsUpInSUnitBrowser
 		instVars: #()
 		package: 'RowanSample1-Tests'.
 	
-	[self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
-	self selectServiceNamed: 'RowanSample1-Tests' in: self packageListPresenter.
-	self selectServiceNamed: 'TestTestClass' in: self classListPresenter.
-	self projectsPresenter basicAddMethodCategory: '*rowansample1-core'.	"will put method in RowanSample1-Core package"
+	[self projectsPresenter basicAddMethodCategory: '*rowansample1-core'.	"will put method in RowanSample1-Core package"
 	source := 'test_inExtensionMethod  
 		| aaa | 
 		aaa := 123. 
@@ -636,7 +633,7 @@ test_maintainColumnSortChangeFromProjectBrowser
 	firstSortedMethods := self sunitPresenter methodListPresenter list
 				collect: [:methodService | methodService className].
 	self openProjectBrowser.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanClientServices' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
 	self selectServicesNamed: #('RowanTestSubClassServiceTest') in: self classListPresenter.
 	secondSortedMethods := self sunitPresenter methodListPresenter list
@@ -651,7 +648,7 @@ test_maintainColumnSortChangeFromProjectBrowser
 		ifTrue: [self sunitPresenter methodListPresenter view columnClicked: 1	"resort if necessary"].
 	firstSortedMethods := self sunitPresenter methodListPresenter list
 				collect: [:methodService | methodService selector].
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanClientServices' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
 	self selectServicesNamed: #('RowanTestClassServiceTest') in: self classListPresenter.
 	secondSortedMethods := self sunitPresenter methodListPresenter list
@@ -841,8 +838,7 @@ test_projectBrowserRunAllTests
 
 	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
 	self openProjectBrowser.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectRowanServicesTestsPackage.
 	self selectServiceNamed: 'JadeServerTest' in: self classListPresenter.
 	self projectsPresenter runAll.
 	self assert: self projectsPresenter isSunitTabSelected.
@@ -856,7 +852,7 @@ test_projectBrowserRunSelectedTests
 	self openProjectBrowser.
 	self selectRowanServicesTestsPackage.
 	self selectServiceNamed: 'RowanClassServiceTest' in: self classListPresenter.
-	self selecProjectBrowserMethodNamed: #test_addCategory.
+	self selectProjectBrowserMethodNamed: #test_addCategory.
 	self projectsPresenter runSelected.
 	self assert: self projectsPresenter isSunitTabSelected.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter selection size equals: 1.
@@ -870,17 +866,16 @@ test_projectBrowserTestRunningMenuItemEnablement
 
 	self testsIssue: #issue218 withTitle: 'Ctl-B does not `debug` selected test in SUnit browser'.
 	self openProjectBrowser.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
-	self selectServiceNamed: 'RowanTestClassServiceTest' in: self classListPresenter.
+	self selectRowanServicesTestsPackage.
+	self selectServiceNamed: 'RowanClassServiceTest' in: self classListPresenter.
 	self assertMenuItem: #runMethodTests isEnabled: false.
 	self assertMenuItem: #runAll isEnabled: true.
 	self assertMenuItem: #runSelected isEnabled: false.
-	self selecProjectBrowserMethodNamed: #test_addCategory.
+	self selectProjectBrowserMethodNamed: #test_addCategory.
 	self assertMenuItem: #runMethodTests isEnabled: true.
 	self assertMenuItem: #runAll isEnabled: true.
 	self assertMenuItem: #runSelected isEnabled: true.
-	self selecProjectBrowserMethodNamed: #setUp.
+	self selectProjectBrowserMethodNamed: #setUp.
 	self assertMenuItem: #runMethodTests isEnabled: false.
 	self assertMenuItem: #runAll isEnabled: true.
 	self assertMenuItem: #runSelected isEnabled: false!
@@ -910,13 +905,14 @@ test_refresh
 	self assert: self sunitPresenter methodListPresenter list size equals: 5!
 
 test_registeredPresentersInSUnitBrowserCleanedUp
-	| registeredPresenters secondBrowser |
-	registeredPresenters := BrowserUpdate current registeredPresenters size.
+	| registeredPresentersSize secondBrowser |
+	registeredPresentersSize := BrowserUpdate current registeredPresenters size.
 	secondBrowser := self openWindow: [transcript jadeBrowseTests].
-	self assert: BrowserUpdate current registeredPresenters size > registeredPresenters.
+	self assert: BrowserUpdate current registeredPresenters size > registeredPresentersSize.
 	self destroy: secondBrowser.
 	secondBrowser := nil.
-	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters!
+	MemoryManager current collectGarbage.
+	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresentersSize!
 
 test_resetMenuItemsNamedProperly
 	"https://github.com/GemTalk/Jadeite/issues/218#issuecomment-445919980"
@@ -966,8 +962,7 @@ test_runClassTests
 			[:ex |
 			self assert: ex messageText
 				equals: 'a MessageNotUnderstood occurred (error 2010), a RowanSample1 does not understand  #''bar'''].
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectRowanServicesTestsPackage.
 	self selectServiceNamed: 'RowanAnsweringServiceTest' in: self classListPresenter.
 	self projectsPresenter selectSUnitTab.
 	self projectsPresenter runClassTests.
@@ -1086,8 +1081,7 @@ test_selectCategoryInProjectBrowserDoesNotUpdateSunitBrowser
 	sunitDisplaySelectors := self sunitPresenter methodListPresenter list
 				collect: [:methodService | methodService selector].
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectRowanServicesTestsPackage. 
 	self selectServiceNamed: 'RowanTestClassServiceTest' in: self classListPresenter.
 	self selectCategoryNamed: 'support'.
 	self assert: self sunitPresenter methodListPresenter list size equals: sunitDisplayedMethodCount.	"no changes"
@@ -1137,8 +1131,7 @@ test_selectInProjectBrowserDoesNotUpdateSunitBrowser
 	sunitDisplaySelectors := self sunitPresenter methodListPresenter list
 				collect: [:methodService | methodService selector].
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-Services-Tests' in: self packageListPresenter.
+	self selectRowanServicesTestsPackage. 
 	self selectServiceNamed: 'RowanTestClassServiceTest' in: self classListPresenter.
 	self assert: self sunitPresenter methodListPresenter list size equals: sunitDisplayedMethodCount.	"no changes"
 	self assert: (self sunitPresenter methodListPresenter list
@@ -1158,14 +1151,14 @@ test_selectionRemainsVisible
 	self selectServiceNamed: 'Rowan-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'RwRowanProjectIssuesTest' in: self sunitPresenter classListPresenter.
 	methodListPresenter := self sunitPresenter methodListPresenter.
-	self selectServiceNamed: 'testIssue217' in: methodListPresenter.
+	self selectServiceNamed: 'testIssue263' in: methodListPresenter.
 	self assert: self sunitPresenter runSelected isKindOf: JadeTestResult.	"runSelected sends back the result of the last test"
 	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color darkGreen.
 	self assert: self sunitPresenter textResultPresenter value
 		equals: '1 run, 1 passed, 0 failures, 0 errors'.
-	self assert: methodListPresenter selections first selector equals: #testIssue217.
-	position := methodListPresenter view itemRect:  methodListPresenter selectionByIndex first. 
-	self assert: ((0@0 extent: methodListPresenter view rectangle extent) contains: position)!
+	self assert: methodListPresenter selections first selector equals: #testIssue263.
+	position := methodListPresenter view itemRect: methodListPresenter selectionByIndex first.
+	self assert: ((0 @ 0 extent: methodListPresenter view rectangle extent) contains: position)!
 
 test_selectMethodFromProjectBrowser
 	self testsIssue: #issue395 withTitle: '(3.0.54) Sunit can display non-test methods'.
@@ -1174,7 +1167,7 @@ test_selectMethodFromProjectBrowser
 	self selectSUnitBrowserMethodsNamed: (Array with: #test1).
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
 	self selectRowanSample1Test.
-	self selecProjectBrowserMethodNamed: #test1.
+	self selectProjectBrowserMethodNamed: #test1.
 	self assert: sunitBrowser primaryPresenter methodListPresenter selections first selector
 		equals: #test1.
 	self assert: sunitBrowser primaryPresenter methodListPresenter selections size equals: 1.
@@ -1186,7 +1179,7 @@ test_selectMethodFromProjectBrowser
 	self assert: sunitBrowser primaryPresenter methodListPresenter selections size equals: 1.
 	self assert: self projectsPresenter methodListPresenter selections first selector equals: #test1.
 	self assert: self projectsPresenter methodListPresenter selections size equals: 1.
-	self selecProjectBrowserMethodNamed: #test2.
+	self selectProjectBrowserMethodNamed: #test2.
 	self assert: sunitBrowser primaryPresenter methodListPresenter selections first selector
 		equals: #test2.
 	self assert: sunitBrowser primaryPresenter methodListPresenter selections size equals: 1.
@@ -1241,14 +1234,14 @@ test_sunitBrowserHasRowanPackages
 test_sunitBrowserHasRowanTestClasses
 	self assert: self sunitPresenter classListPresenter list size = 0.
 	self selectServiceNamed: 'Rowan-Tests' in: self sunitPresenter packageListPresenter.
-	self denyIsNil: (self serviceNamed: 'RwMoveTest' in: self sunitPresenter classListPresenter).
+	self denyIsNil: (self serviceNamed: 'RwEditToolTest' in: self sunitPresenter classListPresenter).
 	self assert: self sunitPresenter classListPresenter list size > 0.
-	self denyIsNil: (self serviceNamed: 'RwBrowserToolApiTest' in: self sunitPresenter classListPresenter).!
+	self denyIsNil: (self serviceNamed: 'RwSymbolDictionaryTest' in: self sunitPresenter classListPresenter).!
 
 test_sunitBrowserHasRowanTestMethods
 	self selectServiceNamed: 'Rowan-Tests' in: self sunitPresenter packageListPresenter.
 	self assert: self sunitPresenter methodListPresenter list size = 0.
-	self selectServiceNamed: 'RwMoveTest' in: self sunitPresenter classListPresenter.
+	self selectServiceNamed: 'RwEditToolTest' in: self sunitPresenter classListPresenter.
 	self assert: self sunitPresenter methodListPresenter list size > 0.!
 
 test_sunitBrowserPassingDebugTestShowsResult
@@ -1434,7 +1427,7 @@ test_testCountBar
 		equals: 'Test Cases:' , self sunitPresenter methodListPresenter model size printString.
 	self assert: self sunitPresenter testClassesSize
 		equals: 'Test Classes:'
-				, ((session executeString: 'RowanServicesTest allSubclasses size') + 1 + 1) printString	"RwRowanProjectIssuesTest extension now shows up. Hence the other +1"!
+				, ((session executeString: 'RowanServicesTest allSubclasses size') + 1) printString!
 
 test_testsRunInSelectedTestClass
 	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
@@ -1480,8 +1473,8 @@ test_testsRunInSelectedTestClass
 !JadeiteSUnitSupportTestCase categoriesFor: #isSampleProjectLoaded!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #methodListPresenter!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #projectsPresenter!private!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #selecProjectBrowserMethodNamed:!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #selecProjectBrowserMethodsNamed:!public!support! !
+!JadeiteSUnitSupportTestCase categoriesFor: #selectProjectBrowserMethodNamed:!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #selectSUnitBrowserMethodNamed:!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #selectSUnitBrowserMethodsNamed:!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #setUp!public!support! !

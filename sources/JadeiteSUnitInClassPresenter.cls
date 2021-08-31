@@ -103,7 +103,6 @@ newBrowser
 	^parentPresenter newBrowser!
 
 onViewOpened
-
 	super onViewOpened. 
 	self registerPresentersForUpdates.
 	!
