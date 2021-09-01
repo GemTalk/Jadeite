@@ -379,6 +379,8 @@ test_checkoutTagRefresh
 	| projectService |
 	self testsIssue: #issue425
 		withTitle: 'Jadeite should be able to check out a git tag not just branch'.
+	self rowanFixMe.
+	true ifTrue:[^self].  "Checking out different versions of a critical project is not a good idea. Need sample project with tag" 
 	projectService := transcript projectListPresenter projectListPresenter list
 				detect: [:service | service name = 'Rowan'].
 	transcript projectListPresenter basicCheckoutTagAndRefresh: 'Oscar-3.0.93' for: projectService.

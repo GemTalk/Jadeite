@@ -12,7 +12,7 @@ LibGciRpc64_3_6_1 comment: ''!
 
 displayName
 
-	^'64-bit 3.6.1 unreleased'.
+	^'64-bit 3.6.1'.
 !
 
 fileNameSearch

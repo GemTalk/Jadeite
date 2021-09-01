@@ -10,6 +10,17 @@ JadeiteSUnitSupportTestCase comment: ''!
 !JadeiteSUnitSupportTestCase categoriesForClass!Unclassified! !
 !JadeiteSUnitSupportTestCase methodsFor!
 
+aggressivelyCleanupRowanProject: projectName
+	"use this if you need to run a rowan test and it's leaving crufty projects laying around.
+	Save this method just in case it's needed."
+
+	RowanAnsweringService new
+		exec: 'RwAbstractTest cleanup.
+		(Rowan image loadedProjectNamed: ''' , projectName
+				, ''' ifAbsent: [  ])
+			ifNotNil: [ :proj | Rowan image _removeLoadedProject: proj ]'
+		in: session!
+
 assertMenuItem: command isEnabled: boolean
 	| commandQuery |
 	commandQuery := self
@@ -1148,15 +1159,15 @@ test_selectionRemainsVisible
 	| position methodListPresenter |
 	self testsIssue: #issue467
 		withTitle: '(3.0.68) nice to have selected test remain visible aftr pressing the `run selected` button'.
-	self selectServiceNamed: 'Rowan-Tests' in: self sunitPresenter packageListPresenter.
-	self selectServiceNamed: 'RwRowanProjectIssuesTest' in: self sunitPresenter classListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
+	self selectServiceNamed: 'RowanClassServiceTest' in: self sunitPresenter classListPresenter.
 	methodListPresenter := self sunitPresenter methodListPresenter.
-	self selectServiceNamed: 'testIssue263' in: methodListPresenter.
+	self selectServiceNamed: 'test_zzz' in: methodListPresenter.
 	self assert: self sunitPresenter runSelected isKindOf: JadeTestResult.	"runSelected sends back the result of the last test"
 	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color darkGreen.
 	self assert: self sunitPresenter textResultPresenter value
 		equals: '1 run, 1 passed, 0 failures, 0 errors'.
-	self assert: methodListPresenter selections first selector equals: #testIssue263.
+	self assert: methodListPresenter selections first selector equals: #test_zzz.
 	position := methodListPresenter view itemRect: methodListPresenter selectionByIndex first.
 	self assert: ((0 @ 0 extent: methodListPresenter view rectangle extent) contains: position)!
 
@@ -1467,6 +1478,7 @@ test_testsRunInSelectedTestClass
 	self assert: self sunitPresenter runAll isKindOf: JadeTestResult.	"runSelected sends back the result of the last test"
 	self assert: (session executeString: 'RowanSample1Test testClassVar')
 		equals: #RowanSample1SubClassTest! !
+!JadeiteSUnitSupportTestCase categoriesFor: #aggressivelyCleanupRowanProject:!private!support!tests! !
 !JadeiteSUnitSupportTestCase categoriesFor: #assertMenuItem:isEnabled:!public!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #assertPackageInList:!private!support! !
 !JadeiteSUnitSupportTestCase categoriesFor: #denyPackageInList:!private!support! !

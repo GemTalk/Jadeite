@@ -72,8 +72,8 @@ test_360Libraries
 	self assert: (File exists: File workingDirectory , 'bin\' , LibGciRpc64_3_6 fileNameSearch)!
 
 test_361Libraries
-	self assert: LibGciRpc64_3_6_1 superclass equals: LibGciRpc64.
-	self assert: LibGciRpc64_3_6_1 displayName equals: '64-bit 3.6.1 unreleased'.
+	self assert: LibGciRpc64_3_6_1 superclass equals: LibGciRpc64_3_6.
+	self assert: LibGciRpc64_3_6_1 displayName equals: '64-bit 3.6.1'.
 	self assert: (File exists: File workingDirectory , 'bin\' , LibGciRpc64_3_6_1 fileNameSearch)!
 
 test_370Libraries
