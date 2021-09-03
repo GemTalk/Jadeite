@@ -1477,7 +1477,7 @@ test_openNavigationInspectorOnSymbol
 	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter model value equals: '#''abc'''.
 	inspector instVarListPresenter selectionByIndex: #(2).	"asOop"
-	self assert: inspector documentPresenter model value equals: '11607041'!
+	self assert: inspector documentPresenter model value equals: '11603713'!
 
 test_registeredPresentersInInspectorCleanedUp
 	"we don't register any yet, but this test will fail if we add any. 

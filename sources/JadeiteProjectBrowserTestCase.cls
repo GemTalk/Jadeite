@@ -68,7 +68,7 @@ dirtyProjectForChangeBrowser
 
 executeStringInOtherSession: string
 	| executionString |
-	executionString := '(UserGlobals at: #otherSession) '.
+	executionString := '(SessionTemps current at: #otherSession) '.
 	executionString := executionString , string.
 	session executeString: executionString!
 
@@ -138,13 +138,13 @@ issue284methodCreation
 loginOtherSession
 	(Delay forSeconds: 1) wait.	"not sure if this is necessary"
 	session
-		executeString: 'UserGlobals at: #otherSession put: (GsExternalSession gemNRS: ''' , session gemNRS
+		executeString: 'SessionTemps current at: #otherSession put: (GsTsExternalSession gemNRS: ''' , session gemNRS
 				, ''' stoneNRS: ''' , session stoneName
 				, ''' username: ''SystemUser'' password: ''swordfish'') login'!
 
 logoutOtherSession
 	^session executeString: '
-				(UserGlobals at: #otherSession) logout.'!
+				(SessionTemps current at: #otherSession) logout.'!
 
 logoutOtherSystemUsersSessions
 	^session
