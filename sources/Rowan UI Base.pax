@@ -456,6 +456,7 @@ package methodNames
 	add: 'Date class' -> #fromSton:;
 	add: 'DiffBrowser class' -> #defaultModel;
 	add: 'DolphinSureCertificateStore class' -> #clearTemporaryTrustStore;
+	add: 'ExternalStructure class' -> #canUnderstand:;
 	add: 'JadeDebugger class' -> #resource_Default_view;
 	add: 'JadeInspector class' -> #defaultInspectorClass;
 	add: 'JadeInspector class' -> #resource_Default_view;
@@ -1215,6 +1216,22 @@ clearTemporaryTrustStore
 ! !
 !DolphinSureCertificateStore class categoriesFor: #clearTemporaryTrustStore!must not strip!private! !
 
+!ExternalStructure class methodsFor!
+
+canUnderstand: aSymbol
+	self template ifNil: [^false].	"<<<< added by GemTalk. Without it, method will error later sending #lookup: to nil"
+	^(super canUnderstand: aSymbol) or: 
+			[| size field |
+			size := aSymbol size.
+			(aSymbol at: size) == $:
+				ifTrue: 
+					[field := self template lookup: (aSymbol copyFrom: 1 to: size - 1).
+					field notNil and: [field isWriteable]]
+				ifFalse: 
+					[field := self template lookup: aSymbol.
+					field notNil and: [field isReadable]]]! !
+!ExternalStructure class categoriesFor: #canUnderstand:!methods-testing!public! !
+
 !Float methodsFor!
 
 asString
@@ -1823,7 +1840,7 @@ createVersionResource
 				at: 'FileDescription' 		put: 'IDE for GemStoneS/64 with Rowan Source Code Control';
 				at: 'FileVersion' 			put: versionString;
 				at: 'InternalName' 		put: 'Jadeite';
-				at: 'LegalCopyright' 		put: 'Copyright � GemTalk Systems 2020';
+				at: 'LegalCopyright' 		put: 'Copyright © GemTalk Systems 2021';
 				at: 'OriginalFilename' 		put: 'Jadeite.exe';
 				at: 'ProductName' 		put: 'Jadeite';
 				at: 'ProductVersion' 		put: versionString;

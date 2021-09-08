@@ -9,6 +9,7 @@ Association removeSelector: #stonOn:.
 Time removeSelector: #stonOn:.
 Date class removeSelector: #fromSton:.
 Date removeSelector: #stonOn:. 
+ExternalStructure class removeSelector: #canUnderstand:.
 DolphinSureCertificateStore class removeSelector: #clearTemporaryTrustStore.
 SocketAbstract class removeSelector: #onShutdown
 '.
