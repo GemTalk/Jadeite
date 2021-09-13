@@ -89,9 +89,7 @@ basicRemoveClass: theClassService
 	| service parentNode |
 	self isHierarchyTabSelected
 		ifTrue: [parentNode := classHierarchyPresenter model parentNodeOf: theClassService].
-	service := self isNoneProjectSelected
-				ifTrue: [dictionaryPresenter selection]
-				ifFalse: [packageListPresenter selection].
+	service := self selectedDictionaryOrPackage.
 	service
 		command: #removeClass:;
 		commandArgs: (Array with: theClassService).
@@ -1483,6 +1481,26 @@ removeAppropriateTab
 				removeLoadSpecTab]
 		ifFalse: [self removeGlobalsTab]!
 
+removeClass
+	| classService answeringService classReferenceBrowser queryService |
+	classService := self selectedClass ifNil: [^self].
+	answeringService := RowanAnsweringService new.
+	answeringService
+		command: #classHasSubclasses:;
+		commandArgs: (Array with: classService oop).
+	self issueCommand: answeringService.
+	answeringService answer ifTrue: [^MessageBox notify: 'Cannot remove class with subclasses'].
+	(self selectedDictionaryOrPackage confirmClassRemoval: classService) ifFalse: [^self].
+	queryService := JadePresenter basicBrowseClassReferences: classService name session: self gciSession.
+	queryService hasResults
+		ifTrue: [classReferenceBrowser := self browseClassReferences: classService name].
+	self basicRemoveClass: classService.
+	queryService hasResults
+		ifTrue: 
+			[MessageBox notify: classService name
+						, ' was removed. You will need to remove references to the class or your code may not load in the future.'].
+	^classReferenceBrowser!
+
 removeDictionaries
 	| dictionaryNames |
 	dictionaryPresenter selections isEmpty ifTrue: [^self].
@@ -1558,6 +1576,11 @@ selectDictionaryNamed: dictionaryName
 
 selectedDictionaryNames
 	^dictionaryPresenter selections collect: [:dictionaryService | dictionaryService name]!
+
+selectedDictionaryOrPackage
+	^self isNoneProjectSelected
+		ifTrue: [dictionaryPresenter selection]
+		ifFalse: [packageListPresenter selection]!
 
 selectedGlobalName: selection
 	| string rs |
@@ -2110,6 +2133,7 @@ writeProject
 !JadeiteBrowserPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteBrowserPresenter categoriesFor: #reloadV2Project!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #removeAppropriateTab!private!tabs! !
+!JadeiteBrowserPresenter categoriesFor: #removeClass!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #removeDictionaries!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #removeGlobal!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #removeGlobalsTab!private!tabs! !
@@ -2122,6 +2146,7 @@ writeProject
 !JadeiteBrowserPresenter categoriesFor: #search!accessing!public! !
 !JadeiteBrowserPresenter categoriesFor: #selectDictionaryNamed:!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #selectedDictionaryNames!public!selection! !
+!JadeiteBrowserPresenter categoriesFor: #selectedDictionaryOrPackage!private!selection! !
 !JadeiteBrowserPresenter categoriesFor: #selectedGlobalName:!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #selectedPackageNames!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #selectedPackageServices!public!selection! !

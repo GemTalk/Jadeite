@@ -83,6 +83,9 @@ condenseExtensions: presenter
 	dictionary removeAllKeys: rejections. 
 	^dictionary!
 
+confirmClassRemoval: classService
+	^MessageBox confirm: 'Really delete class ' , classService name , '?'!
+
 defaultTemplate
 	^defaultTemplate!
 
@@ -219,6 +222,7 @@ updateList: presenter whilePreservingSelections: updates browser: browser
 !RowanPackageService categoriesFor: #classesUpdate:browser:!public!updating! !
 !RowanPackageService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
 !RowanPackageService categoriesFor: #condenseExtensions:!private!updating! !
+!RowanPackageService categoriesFor: #confirmClassRemoval:!accessing!public! !
 !RowanPackageService categoriesFor: #defaultTemplate!accessing!private! !
 !RowanPackageService categoriesFor: #defaultTemplate:!accessing!private! !
 !RowanPackageService categoriesFor: #displayName!displaying!public! !

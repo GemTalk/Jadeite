@@ -55,6 +55,20 @@ classHierarchyUpdate: presenter browser: browser
 		browser: browser
 		hierarchyServices: hierarchyServices!
 
+confirmClassRemoval: classService
+	| messageStream |
+	messageStream := WriteStream on: String new.
+	messageStream
+		nextPutAll: 'Really delete class ';
+		nextPutAll: classService name;
+		nextPut: $?.
+	classService packageName = RowanService notRowanizedPackageName
+		ifTrue: 
+			[messageStream
+				cr;
+				nextPutAll: 'Note that removal of unpackaged classes will not be tracked by Rowan'].
+	^MessageBox confirm: messageStream contents!
+
 defaultTemplate
 	^defaultTemplate!
 
@@ -140,6 +154,7 @@ sortAspect
 !RowanDictionaryService categoriesFor: #classes:!accessing!public! !
 !RowanDictionaryService categoriesFor: #classesUpdate:browser:!public!updating! !
 !RowanDictionaryService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
+!RowanDictionaryService categoriesFor: #confirmClassRemoval:!accessing!public! !
 !RowanDictionaryService categoriesFor: #defaultTemplate!accessing!private! !
 !RowanDictionaryService categoriesFor: #defaultTemplate:!accessing!private! !
 !RowanDictionaryService categoriesFor: #displayName!displaying!public! !

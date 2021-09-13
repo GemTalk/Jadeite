@@ -135,27 +135,6 @@ basicProjectTabLabel
 	label := packageListPresenter selection name.
 	^self selectedClass ifNil: [label] ifNotNil: [self selectedClass name]!
 
-basicRemoveClass: selection
-	| packageService parentNode |
-	self isHierarchyTabSelected
-		ifTrue: [parentNode := classHierarchyPresenter model parentNodeOf: selection].
-	packageService := packageListPresenter selection.
-	packageService
-		command: #removeClass:;
-		commandArgs: (Array with: selection).
-	self issueCommand: packageService.
-	classListPresenter model: classListPresenter model.	"force a gui update"
-	self isHierarchyTabSelected
-		ifTrue: 
-			[classHierarchyPresenter model: classHierarchyPresenter model.
-			classHierarchyPresenter selection: (classHierarchyPresenter model asBag
-						detect: [:classService | classService name = parentNode object name])].
-	self selectedClass
-		ifNil: [self resetClassTemplate	"just emptied the last class in the package"]
-		ifNotNil: 
-			[classDefinitionPresenter value: self selectedClass template.
-			self resetClassDefinitionPane]!
-
 basicRemoveMethodCategories
 	| service |
 	service := self selectedClass
@@ -1166,26 +1145,6 @@ registerPresentersForUpdates
 releasedReferencedServices: selectionChangingEvent
 	selectionChangingEvent window presenter selectionOrNil ifNotNil: [:service | service postUpdate]!
 
-removeClass
-	| classService answeringService classReferenceBrowser queryService |
-	classService := self selectedClass ifNil: [^self].
-	answeringService := RowanAnsweringService new.
-	answeringService
-		command: #classHasSubclasses:;
-		commandArgs: (Array with: classService oop).
-	self issueCommand: answeringService.
-	answeringService answer ifTrue: [^MessageBox notify: 'Cannot remove class with subclasses'].
-	(MessageBox confirm: 'Really delete class ' , classService name , '?') ifFalse: [^self].
-	queryService := JadePresenter basicBrowseClassReferences: classService name session: self gciSession.
-	queryService hasResults
-		ifTrue: [classReferenceBrowser := self browseClassReferences: classService name].
-	self basicRemoveClass: classService.
-	queryService hasResults
-		ifTrue: 
-			[MessageBox notify: classService name
-						, ' was removed. You will need to remove references to the class or your code may not load in the future.'].
-	^classReferenceBrowser!
-
 removeMethodCategories
 	| selections |
 	selections := categoryListPresenter selections.
@@ -1754,7 +1713,6 @@ updateSUnitTab: service
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicAddMethodCategory:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicOnDropClassList:!drag & drop!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicProjectTabLabel!displaying!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveClass:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethodCategories!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethods!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #basicRenameCategoryFrom:to:!menu handlers!public! !
@@ -1844,7 +1802,6 @@ updateSUnitTab: service
 !JadeiteProjectsBrowserPresenter categoriesFor: #registerClassData!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #registerPresentersForUpdates!event handlers!initialize/release!private!register presenters! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #releasedReferencedServices:!event handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #removeClass!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #removeMethodCategories!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #removeMethods:!private!services! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #removeMethodSelector:!private!services! !
