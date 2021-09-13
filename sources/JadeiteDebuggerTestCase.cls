@@ -1159,7 +1159,7 @@ test_loginButtonEnablementAfterDebug
 	self deny: query isEnabled.
 	sunitPresenter := (JadeiteSUnitBrowser showOnSession: session) primaryPresenter.
 	"reproduce scenario in bug"
-	sunitPresenter selectPackageNamed: 'Rowan-Services-Tests'.
+	sunitPresenter selectPackageOrDictionaryNamed: 'Rowan-Services-Tests' for: nil.
 	sunitPresenter selectClassNamed: 'RowanMethodServiceTest'.
 	sunitPresenter runAll.
 	self openDebuggerOn: 'RowanMethodServiceTest new test_noStepPoints'.

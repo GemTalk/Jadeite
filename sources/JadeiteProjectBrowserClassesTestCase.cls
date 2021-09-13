@@ -178,7 +178,7 @@ test_classColoring
 	self selectRowanServicesTestsPackage.
 	sunitBrowser := self openWindow: [transcript jadeBrowseTests].
 	
-	[sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'.
+	[sunitBrowser primaryPresenter selectPackageOrDictionaryNamed: 'Rowan-Services-Tests' for: nil.
 	sunitBrowser primaryPresenter selectClassNamed: 'RowanClassServiceTest'.
 	classService := self classListPresenter list
 				detect: [:service | service name = 'RowanClassServiceTest'].
@@ -212,7 +212,7 @@ test_classColoringExtension
 	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
 	sunitBrowser := self openWindow: [transcript jadeBrowseTests].
 	
-	[sunitBrowser primaryPresenter selectPackageNamed: 'RowanSample1-Core'.
+	[sunitBrowser primaryPresenter selectPackageOrDictionaryNamed: 'RowanSample1-Core' for: nil.
 	sunitBrowser primaryPresenter selectClassNamed: 'ExtendedTestClass'.
 	classService := self classListPresenter list detect: [:service | service name = 'ExtendedTestClass'].
 	self assert: (classService shouldColorAsExtension: self projectsPresenter).

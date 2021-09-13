@@ -1576,18 +1576,25 @@ selectNoneProject
 	projectListPresenter selection: (projectListPresenter list
 				detect: [:projectService | projectService name = RowanProjectService noneProject name])!
 
-selectPackageNamed: packageName
-	| answeringService packageService selectedPackage |
+selectPackageOrDictionaryFor: classService
+	| answeringService service |
 	answeringService := RowanAnsweringService new.
 	answeringService
-		command: #newPackageNamed:;
-		commandArgs: (Array with: packageName).
+		command: #packageOrDictionaryFor:;
+		commandArgs: (Array with: classService).
 	self issueCommand: answeringService.
-	packageService := answeringService answer.
-	self selectProjectNamed: packageService projectName.
-	selectedPackage := packageListPresenter list detect: [:pkgService | pkgService name = packageName]
-				ifNone: [^self].
-	packageListPresenter selections: (Array with: selectedPackage).!
+	service := answeringService answer.
+	service selectIn: self!
+
+selectPackageOrDictionaryNamed: thingName for: classService
+	| answeringService service |
+	answeringService := RowanAnsweringService new.
+	answeringService
+		command: #packageOrDictionaryNamed:;
+		commandArgs: (Array with: thingName).
+	self issueCommand: answeringService.
+	service := answeringService answer.
+	service selectIn: self!
 
 selectProjectNamed: projectName
 	| projectService |
@@ -1733,7 +1740,7 @@ updateAfterFindClassInDictionary: classService
 updateAfterFindClassInPackage: classService
 	packageListPresenter list detect: [:service | service name = classService definedPackageName]
 		ifNone: [self projectListPresenter selectionByIndex: 0	"display full list of packages"].
-	self selectPackageNamed: classService packageName.
+	self selectPackageOrDictionaryFor: classService.
 	classService meta == true ifTrue: [self selectClassTab].
 	self isClassListTabSelected
 		ifTrue: [self selectClassNamed: classService name asString]
@@ -2119,7 +2126,8 @@ writeProject
 !JadeiteBrowserPresenter categoriesFor: #selectedPackageNames!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #selectedPackageServices!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #selectNoneProject!public!selection! !
-!JadeiteBrowserPresenter categoriesFor: #selectPackageNamed:!public!selection! !
+!JadeiteBrowserPresenter categoriesFor: #selectPackageOrDictionaryFor:!public!selection! !
+!JadeiteBrowserPresenter categoriesFor: #selectPackageOrDictionaryNamed:for:!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #selectProjectNamed:!public!selection! !
 !JadeiteBrowserPresenter categoriesFor: #setCompileErrorColor!compile support!public! !
 !JadeiteBrowserPresenter categoriesFor: #setCompileWarningColor!compile support!public! !

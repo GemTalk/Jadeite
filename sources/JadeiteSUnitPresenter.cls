@@ -213,12 +213,6 @@ selectMethodsNamed: selectors
 	methodServices := methodListPresenter list select: [:service | selectors includes: service selector].
 	methodListPresenter selections: (Array with: methodServices)!
 
-selectPackageNamed: name
-	"for testing at the moment" 
-	| packageService |
-	packageService := packageListPresenter list detect: [:service | service name = name] ifNone: [^self].
-	packageListPresenter selection: packageService!
-
 selectPackageNamed: packageName classNamed: className
 	| packageService classService |
 	packageService := packageListPresenter list detect: [:service | service name = packageName]
@@ -227,6 +221,13 @@ selectPackageNamed: packageName classNamed: className
 	classService := classListPresenter list detect: [:service | service name asString = className]
 				ifNone: [^self].
 	classListPresenter selection: classService!
+
+selectPackageOrDictionaryNamed: name for: anObject
+	"for testing at the moment"
+
+	| packageService |
+	packageService := packageListPresenter list detect: [:service | service name = name] ifNone: [^self].
+	packageListPresenter selection: packageService!
 
 status
 	^status!
@@ -331,8 +332,8 @@ updateMethodsFrom: classServices
 !JadeiteSUnitPresenter categoriesFor: #selectedPackageServices!public!selection! !
 !JadeiteSUnitPresenter categoriesFor: #selectMethodNamed:!public!selection! !
 !JadeiteSUnitPresenter categoriesFor: #selectMethodsNamed:!public!selection! !
-!JadeiteSUnitPresenter categoriesFor: #selectPackageNamed:!public!selection! !
 !JadeiteSUnitPresenter categoriesFor: #selectPackageNamed:classNamed:!public! !
+!JadeiteSUnitPresenter categoriesFor: #selectPackageOrDictionaryNamed:for:!public!selection! !
 !JadeiteSUnitPresenter categoriesFor: #status!accessing!private! !
 !JadeiteSUnitPresenter categoriesFor: #status:!accessing!private! !
 !JadeiteSUnitPresenter categoriesFor: #testCasesSize!public! !

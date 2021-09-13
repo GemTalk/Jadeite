@@ -119,6 +119,18 @@ removeDeletedClassesIn: presenter browser: browser
 		browser: browser
 		classes: classes!
 
+selectIn: presenter
+	| selection |
+	presenter selectProjectNamed: self class notRowanizedPackageName.
+	selection := presenter dictionaryPresenter list detect:[:dictionaryService | dictionaryService name = self name]. 
+	presenter dictionaryPresenter selection: selection!
+
+selectPackageOrDictionaryService: service in: presenter 
+	presenter  selectProjectNamed: service projectName. 
+	presenter dictionaryPresenter selection: service
+
+	!
+
 sortAspect
 
 	^name! !
@@ -143,6 +155,8 @@ sortAspect
 !RowanDictionaryService categoriesFor: #postUpdate!Init / Release!public! !
 !RowanDictionaryService categoriesFor: #prepareForReplication!public!replication! !
 !RowanDictionaryService categoriesFor: #removeDeletedClassesIn:browser:!private! !
+!RowanDictionaryService categoriesFor: #selectIn:!public!selection! !
+!RowanDictionaryService categoriesFor: #selectPackageOrDictionaryService:in:!public!selection! !
 !RowanDictionaryService categoriesFor: #sortAspect!accessing!public! !
 
 !RowanDictionaryService class methodsFor!

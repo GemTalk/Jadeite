@@ -174,6 +174,13 @@ selectedClass
 selectedClass: anObject
 	selectedClass := anObject!
 
+selectIn: presenter
+	| selection |
+	presenter selectProjectNamed: projectName.
+	selection := presenter packageListPresenter list
+				detect: [:packageService | packageService name = self name].
+	presenter packageListPresenter selection: selection!
+
 sortAspect
 
 	^name!
@@ -235,6 +242,7 @@ updateList: presenter whilePreservingSelections: updates browser: browser
 !RowanPackageService categoriesFor: #replicateFrom:!public!replication! !
 !RowanPackageService categoriesFor: #selectedClass!accessing!public! !
 !RowanPackageService categoriesFor: #selectedClass:!accessing!public! !
+!RowanPackageService categoriesFor: #selectIn:!public!selection! !
 !RowanPackageService categoriesFor: #sortAspect!accessing!public! !
 !RowanPackageService categoriesFor: #testClasses:browser:!public!updating! !
 !RowanPackageService categoriesFor: #updateList:whilePreservingSelections:browser:!private!updating! !
