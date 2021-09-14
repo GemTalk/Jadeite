@@ -370,9 +370,6 @@ comparisonPresenter
 componentListPresenter
 	^componentListPresenter!
 
-componentListPresenter: anObject
-	componentListPresenter := anObject!
-
 contextObject
 	^self selectedClass ifNil: [^gciSession oopNil value] ifNotNil: [:classService | classService oop]!
 
@@ -2017,7 +2014,6 @@ writeProject
 !JadeiteBrowserPresenter categoriesFor: #clearComponentList!initialize/release!public! !
 !JadeiteBrowserPresenter categoriesFor: #comparisonPresenter!accessing!public! !
 !JadeiteBrowserPresenter categoriesFor: #componentListPresenter!accessing!private! !
-!JadeiteBrowserPresenter categoriesFor: #componentListPresenter:!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #contextObject!menu handlers support!private! !
 !JadeiteBrowserPresenter categoriesFor: #copyInfo!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #copyLoadSpecInfo!menu handlers!public! !

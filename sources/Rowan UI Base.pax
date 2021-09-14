@@ -22,6 +22,7 @@ package classNames
 	add: #JadeiteCommandLinePresenter;
 	add: #JadeiteCommandPresenter;
 	add: #JadeiteCommandShell;
+	add: #JadeiteComponentBrowser;
 	add: #JadeiteDebugger;
 	add: #JadeiteDebuggerMethodSourcePresenter;
 	add: #JadeiteDiffBrowser;
@@ -882,6 +883,11 @@ JadeShell subclass: #JadeiteBreakpointBrowser
 	classInstanceVariableNames: ''!
 JadeShell subclass: #JadeiteCommandShell
 	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeShell subclass: #JadeiteComponentBrowser
+	instanceVariableNames: 'componentTreePresenter componentPropertyPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
