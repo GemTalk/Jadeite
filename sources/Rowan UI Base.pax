@@ -23,6 +23,7 @@ package classNames
 	add: #JadeiteCommandPresenter;
 	add: #JadeiteCommandShell;
 	add: #JadeiteComponentBrowser;
+	add: #JadeiteComponentPresenter;
 	add: #JadeiteDebugger;
 	add: #JadeiteDebuggerMethodSourcePresenter;
 	add: #JadeiteDiffBrowser;
@@ -701,6 +702,11 @@ JadePresenterA subclass: #JadeiteCommandPresenter
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+JadePresenterA subclass: #JadeiteComponentPresenter
+	instanceVariableNames: 'projectListPresenter componentTreePresenter componentPropertyPresenter'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 JadePresenterA subclass: #RowanPresenter
 	instanceVariableNames: 'projectToolsOop'
 	classVariableNames: ''
@@ -887,7 +893,7 @@ JadeShell subclass: #JadeiteCommandShell
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeShell subclass: #JadeiteComponentBrowser
-	instanceVariableNames: 'componentTreePresenter componentPropertyPresenter'
+	instanceVariableNames: 'projectListPresenter componentTreePresenter componentPropertyPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

@@ -1139,7 +1139,7 @@ onViewOpened
 	| inspectorService specModel |
 	super onViewOpened.
 	self showPackageList.
-	self rowanFixMe.  "Have code to show spec service that needs to be finished"
+	self rowanFixMe.  "Have code to show spec service that needs to be finished -- maybe?"
 	"specEditor isRootAspectVisible: false.
 	inspectorService := RowanSpecificationService new
 				executeThenInspect: 'RwSpecification fromUrl: ''file:/export//korea2/users/ewinger/shared/repos/Rowan/rowan/v2/proposed_specs/Rowan_proposed_2.ston'''
