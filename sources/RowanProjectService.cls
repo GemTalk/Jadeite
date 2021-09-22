@@ -95,7 +95,7 @@ componentServices
 	^componentServices!
 
 componentsUpdate: presenter browser: browser
-	"component services will be a dictionary. 
+	"componentServices will be a dictionary. 
 	The key is the parent component.
 	The value is an array of the children components.
 
