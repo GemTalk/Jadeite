@@ -29,7 +29,7 @@ componentPackagesUpdate: presenter browser: browser
 		parentPresenter: browser componentListPresenter!
 
 displayString
-	^basename!
+	^name!
 
 hash
 	^self name hash!
@@ -39,6 +39,9 @@ isComponentService
 
 name
 	^name!
+
+name: aString
+	name := aString!
 
 packageServices
 	^packageServices!
@@ -56,6 +59,7 @@ printOn: stream
 !RowanComponentService categoriesFor: #hash!comparing!public! !
 !RowanComponentService categoriesFor: #isComponentService!public!testing! !
 !RowanComponentService categoriesFor: #name!accessing!public! !
+!RowanComponentService categoriesFor: #name:!accessing!public! !
 !RowanComponentService categoriesFor: #packageServices!accessing!private! !
 !RowanComponentService categoriesFor: #printOn:!displaying!public! !
 
