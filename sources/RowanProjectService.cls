@@ -126,6 +126,8 @@ componentsUpdate: presenter browser: browser
 				hierarchyServices: componentServices].
 	removals := treeModel asBag reject: [:service | (treeModel getNodeFor: service) visited].
 	removals do: [:service | treeModel remove: service ifAbsent: []].
+	topLevelComponents do:[:component | 
+		presenter view expand: component]. 
 	presenter view ensureSelectionVisible!
 
 displayName
