@@ -29,7 +29,7 @@ componentPackagesUpdate: presenter browser: browser
 		parentPresenter: browser componentListPresenter!
 
 displayString
-	^name!
+	^basename!
 
 hash
 	^self name hash!
