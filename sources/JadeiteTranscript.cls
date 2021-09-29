@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadeTranscript subclass: #JadeiteTranscript
-	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsEnabled autoCompleteEnabled'
+	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsEnabled autoCompleteEnabled transactionModePresenter transactionMode'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -77,7 +77,9 @@ commitTransaction
 
 createComponents
 	super createComponents.
-	projectListPresenter := self add: JadeiteProjectListPresenter new name: 'Projects'!
+	projectListPresenter := self add: JadeiteProjectListPresenter new name: 'Projects'.
+	transactionModePresenter := self add: RadioButtonSetPresenter new name: 'transactionMode'.
+	transactionModePresenter model: (self aspectValue: #transactionMode)!
 
 createNewProject
 	projectListPresenter createNewProject!
@@ -152,7 +154,9 @@ initialize
 	super initialize.
 	isTranscriptInstalled := ValueHolder with: true.
 	areBreakpointsEnabled := ValueHolder with: true.
-	autoCompleteEnabled := ValueHolder with: JadeiteSearch autoCompleteEnabled!
+	autoCompleteEnabled := ValueHolder with: JadeiteSearch autoCompleteEnabled.
+	transactionMode
+		ifNil: [transactionMode := #autoBegin	"should have already been set when window was created"]!
 
 isTranscriptInstalled
 	^isTranscriptInstalled value!
@@ -286,6 +290,9 @@ remoteAutoCommit
 	self issueCommand: answeringService.
 	^answeringService answer!
 
+setTransactionModeFromServer
+	transactionMode := gciSession executeString: 'System transactionMode'!
+
 toolbarPresenter
 	^toolbarPresenter! !
 !JadeiteTranscript categoriesForMethods!
@@ -338,6 +345,56 @@ remoteAutoCommit!accessing!private! !
 toolbarPresenter!accessing!public! !
 !
 
+transactionMode
+	^transactionMode!
+
+transactionMode: aSymbol
+	transactionMode := aSymbol! !
+!JadeiteTranscript categoriesFor: #abortTransaction!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #additionalAccelerators!public! !
+!JadeiteTranscript categoriesFor: #areBreakpointsEnabled!accessing!private! !
+!JadeiteTranscript categoriesFor: #autoCommit!accessing!private! !
+!JadeiteTranscript categoriesFor: #autoCommit:!accessing!private! !
+!JadeiteTranscript categoriesFor: #autoCompleteEnabled!accessing!private! !
+!JadeiteTranscript categoriesFor: #autoCompleteEnabled:!accessing!private! !
+!JadeiteTranscript categoriesFor: #browseBreakpoints!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #browseClass!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #browseClassReferences!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #browseImplementorsOf!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #browseJadeiteLogs!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #browseJadeitePrefs!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #browseLiteralReferences!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #browseMethodsContaining!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #browseSendersOf!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #commitTransaction!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #createComponents!initialization!public! !
+!JadeiteTranscript categoriesFor: #flipAutoCommit!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #flipAutocomplete!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #flipBreakpointsEnabled!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #flipDebugger!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #flipLogging!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #flipTranscript!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #gciSession:!public! !
+!JadeiteTranscript categoriesFor: #initialize!initialization!public! !
+!JadeiteTranscript categoriesFor: #isTranscriptInstalled!public! !
+!JadeiteTranscript categoriesFor: #isTranscriptInstalledValueHolder!private! !
+!JadeiteTranscript categoriesFor: #onCloseRequested:!event handling!public! !
+!JadeiteTranscript categoriesFor: #onViewClosed!event handling!public! !
+!JadeiteTranscript categoriesFor: #onViewOpened!event handling!public! !
+!JadeiteTranscript categoriesFor: #openCommitInGitHub!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #openDictionaryBrowser!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #openGitHubJadeiteProject!event handling!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #openGitHubRowanProject!event handling!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #openJadeiteProjectsBrowser!menu handlers!public! !
+!JadeiteTranscript categoriesFor: #projectListPresenter!accessing!public! !
+!JadeiteTranscript categoriesFor: #queryCommand:!private! !
+!JadeiteTranscript categoriesFor: #registerPresentersForUpdates!public!register presenters! !
+!JadeiteTranscript categoriesFor: #remoteAutoCommit!accessing!private! !
+!JadeiteTranscript categoriesFor: #setTransactionModeFromServer!actions!public! !
+!JadeiteTranscript categoriesFor: #toolbarPresenter!accessing!public! !
+!JadeiteTranscript categoriesFor: #transactionMode!accessing!public! !
+!JadeiteTranscript categoriesFor: #transactionMode:!accessing!public! !
+
 !JadeiteTranscript class methodsFor!
 
 defaultAdditionalAccelerators
@@ -358,4 +415,12 @@ resource_Default_view
 defaultAdditionalAccelerators!constants!private! !
 resource_Default_view!public!resources-views! !
 !
+
+showOnSession: aGciSession
+	| theTranscript |
+	theTranscript := super showOnSession: aGciSession.
+	theTranscript setTransactionModeFromServer.
+	^theTranscript! !
+!JadeiteTranscript class categoriesFor: #resource_Default_view!public!resources-views! !
+!JadeiteTranscript class categoriesFor: #showOnSession:!instance creation!public! !
 

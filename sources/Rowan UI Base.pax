@@ -907,6 +907,8 @@ JadeShell subclass: #JadeiteComponentEditor
 	classInstanceVariableNames: ''!
 JadeShell subclass: #JadeiteLoadSpecEditor
 	instanceVariableNames: ''
+JadeTranscript subclass: #JadeiteTranscript
+	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsEnabled autoCompleteEnabled transactionModePresenter transactionMode'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
