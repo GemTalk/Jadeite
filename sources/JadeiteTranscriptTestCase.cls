@@ -35,6 +35,17 @@ menuItemIsEnabledInAllPresenters: aSymbol
 						view: presenter view.
 			self assert: commandQuery isEnabled]!
 
+removePreferencesFile
+	| path prefsExist |
+	path := SessionManager current imageBase , 'Jadeite.prefs'.
+	prefsExist := File exists: path.
+	prefsExist
+		ifTrue: 
+			[self savePrefsBackup.
+			(File open: path) delete].
+	self deny: (File exists: path).
+	^prefsExist!
+
 restoreBackupPrefsFile: prefsExisted
 	| backupStream fileStream backupPath |
 	prefsExisted
@@ -552,15 +563,9 @@ test_openPreferencesFile
 !
 
 test_openPreferencesFileCreatePrefsFile
-	| prefsWorkspace prefsItem path prefsExists |
+	| prefsWorkspace prefsItem path prefsExist |
 	self testsIssue: #issue522 withTitle: 'hook to open desired set of windows at startup'.
-	path := SessionManager current imageBase , 'Jadeite.prefs'.
-	prefsExists := File exists: path.
-	prefsExists
-		ifTrue: 
-			[self savePrefsBackup.
-			(File open: path) delete].
-	self deny: (File exists: path).
+	prefsExist := self removePreferencesFile.
 	
 	[prefsItem := self browseMenu items detect: [:menuItem | menuItem command == #browseJadeitePrefs].
 	TestMessageBox enableJadeiteTestMessageBox.
@@ -570,8 +575,8 @@ test_openPreferencesFileCreatePrefsFile
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
 				prefsWorkspace view close.
-				self restoreBackupPrefsFile: prefsExists.
-				self assert: (File exists: path) equals: prefsExists]!
+				self restoreBackupPrefsFile: prefsExist.
+				self assert: (File exists: path) equals: prefsExist]!
 
 test_popupMenuHasBrowseClass
 	| browseClassItem |
@@ -667,6 +672,14 @@ test_selectorsList
 				trailingWildcard: false.
 	list do: [:symbol | self assert: ('siz*' match: symbol)]!
 
+test_transactionModeDefault
+	| prefsExist |
+	prefsExist := self removePreferencesFile.
+	
+	[self logoutThenLoginAs: 'SystemUser'.	"ensure we have reset the transaction mode on the login to auto"
+	self assert: transcript transactionMode equals: #autoBegin]
+			ensure: [self restoreBackupPrefsFile: prefsExist]!
+
 test_transcriptNamedConsole
 	| clearTranscriptMenuItem wasInstalled |
 	(wasInstalled := transcript isTranscriptInstalled) ifFalse: [transcript flipTranscript].
@@ -690,6 +703,7 @@ writeToPrefsFile: string
 !JadeiteTranscriptTestCase categoriesFor: #allTranscriptPresenters!private!support! !
 !JadeiteTranscriptTestCase categoriesFor: #browseMenu!private!support!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #menuItemIsEnabledInAllPresenters:!private!support! !
+!JadeiteTranscriptTestCase categoriesFor: #removePreferencesFile!private!support! !
 !JadeiteTranscriptTestCase categoriesFor: #restoreBackupPrefsFile:!private!support!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #savePrefsBackup!private!support!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_abortRemovesProjectsInAllBrowsers!public!test menus! !
@@ -729,6 +743,7 @@ writeToPrefsFile: string
 !JadeiteTranscriptTestCase categoriesFor: #test_projectMenuGitCommitMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_raiseConsole!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_selectorsList!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_transactionModeDefault!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_transcriptNamedConsole!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #writeToPrefsFile:!private!support!tests! !
 

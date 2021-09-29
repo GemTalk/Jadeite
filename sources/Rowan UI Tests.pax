@@ -127,7 +127,7 @@ SUnitBrowserModel subclass: #JadeiteDevelopmentSUnitBrowserModel
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 TestCase subclass: #JadeiteAbstractTestCase
-	instanceVariableNames: 'session transcript projectsBrowser'
+	instanceVariableNames: 'session transcript projectsBrowser jadeiteShell'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -142,7 +142,7 @@ JadeiteAbstractTestCase subclass: #JadeiteChangesBrowserTestCase
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteAbstractTestCase subclass: #JadeiteDataCuratorTestCase
-	instanceVariableNames: 'jadeiteShell'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

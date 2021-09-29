@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 TestCase subclass: #JadeiteAbstractTestCase
-	instanceVariableNames: 'session transcript projectsBrowser'
+	instanceVariableNames: 'session transcript projectsBrowser jadeiteShell'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -196,6 +196,17 @@ loginWithRetry: loginShell
 			[loginShell loginWithoutErrorHandling.
 			loginError := false] on: Error
 					do: [:ex | (Delay forMilliseconds: 100) wait]]!
+
+logoutThenLoginAs: user
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.	"closing the transcript will logout the session. don't commit"
+	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == GciSession current]
+				ifNone: [].
+	[transcript view close] ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	JadeiteLoginShell allInstances do: [:shell | shell view close].	"should save to the remote JadeDefaultConnection.gss file"
+	jadeiteShell := JadeiteLoginShell show.
+	jadeiteShell userIDPresenter value: user.
+	self loginWithRetry: jadeiteShell!
 
 methodListPresenter
 	^self projectsPresenter methodListPresenter!
@@ -608,6 +619,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #loadProjectNamed:!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #loadRowanSample1InProjectList!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #loginWithRetry:!private!support! !
+!JadeiteAbstractTestCase categoriesFor: #logoutThenLoginAs:!private!setup teardown!support! !
 !JadeiteAbstractTestCase categoriesFor: #methodListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #methodSourceForTest!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #methodSourcePresenter!private!project browser support! !
