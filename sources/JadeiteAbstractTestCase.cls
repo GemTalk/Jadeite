@@ -282,6 +282,17 @@ logoutThenLoginAs: userName
 	self loginWithRetry: jadeiteShell.
 	GciSession current ifNil:[self halt]. !
 
+logoutThenLoginAs: user
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.	"closing the transcript will logout the session. don't commit"
+	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == GciSession current]
+				ifNone: [].
+	[transcript view close] ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	JadeiteLoginShell allInstances do: [:shell | shell view close].	"should save to the remote JadeDefaultConnection.gss file"
+	jadeiteShell := JadeiteLoginShell show.
+	jadeiteShell userIDPresenter value: user.
+	self loginWithRetry: jadeiteShell!
+
 methodListPresenter
 	^self projectsPresenter methodListPresenter!
 

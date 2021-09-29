@@ -43,6 +43,17 @@ menuItemIsEnabledInAllPresenters: aSymbol
 						view: presenter view.
 			self assert: commandQuery isEnabled]!
 
+removePreferencesFile
+	| path prefsExist |
+	path := SessionManager current imageBase , 'Jadeite.prefs'.
+	prefsExist := File exists: path.
+	prefsExist
+		ifTrue: 
+			[self savePrefsBackup.
+			(File open: path) delete].
+	self deny: (File exists: path).
+	^prefsExist!
+
 restoreBackupPrefsFile: prefsExisted
 	| backupStream fileStream backupPath |
 	prefsExisted
@@ -800,6 +811,14 @@ test_selectorsList
 				trailingWildcard: false.
 	list do: [:symbol | self assert: ('siz*' match: symbol)]!
 
+test_transactionModeDefault
+	| prefsExist |
+	prefsExist := self removePreferencesFile.
+	
+	[self logoutThenLoginAs: 'SystemUser'.	"ensure we have reset the transaction mode on the login to auto"
+	self assert: transcript transactionMode equals: #autoBegin]
+			ensure: [self restoreBackupPrefsFile: prefsExist]!
+
 test_transcriptNamedConsole
 	| clearTranscriptMenuItem wasInstalled |
 	(wasInstalled := transcript isTranscriptInstalled) ifFalse: [transcript flipTranscript].
@@ -820,6 +839,7 @@ writeToPrefsFile: string
 	| fileStream |
 	fileStream := FileStream read: SessionManager current imageBase , 'Jadeite.prefs'.
 	[fileStream nextPutAll: string] ensure: [fileStream close]! !
+
 !JadeiteTranscriptTestCase categoriesForMethods!
 allTranscriptPresenters!private!support! !
 browseMenu!private!support!tests! !
@@ -873,4 +893,5 @@ test_selectorsList!public!tests! !
 test_transcriptNamedConsole!public!tests! !
 writeToPrefsFile:!private!support!tests! !
 !
+
 
