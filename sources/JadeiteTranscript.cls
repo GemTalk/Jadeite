@@ -349,6 +349,7 @@ transactionMode
 	^transactionMode!
 
 transactionMode: aSymbol
+	gciSession executeString: 'System transactionMode: ' , aSymbol printString.
 	transactionMode := aSymbol! !
 !JadeiteTranscript categoriesFor: #abortTransaction!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #additionalAccelerators!public! !
