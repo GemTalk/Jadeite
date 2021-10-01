@@ -672,10 +672,23 @@ test_selectorsList
 				trailingWildcard: false.
 	list do: [:symbol | self assert: ('siz*' match: symbol)]!
 
+test_setTransactionModeChangesServer
+	| previousTransactionMode |
+	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
+	previousTransactionMode := transcript transactionMode.
+	
+	[transcript transactionMode: #manualBegin.	"this will cause an abort requiring a clone/reload of RowanSample1 later"
+	self assert: (session executeString: 'System transactionMode') equals: #manualBegin]
+			ensure: 
+				[transcript transactionMode: previousTransactionMode.
+				self assert: (session executeString: 'System transactionMode') equals: previousTransactionMode.
+				self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
+
 test_transactionModeDefault
 	| prefsExist |
+	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
 	prefsExist := self removePreferencesFile.
-	
 	[self logoutThenLoginAs: 'SystemUser'.	"ensure we have reset the transaction mode on the login to auto"
 	self assert: transcript transactionMode equals: #autoBegin]
 			ensure: [self restoreBackupPrefsFile: prefsExist]!
@@ -743,7 +756,8 @@ writeToPrefsFile: string
 !JadeiteTranscriptTestCase categoriesFor: #test_projectMenuGitCommitMenuItem!public!test menus! !
 !JadeiteTranscriptTestCase categoriesFor: #test_raiseConsole!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #test_selectorsList!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_transactionModeDefault!public!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #test_setTransactionModeChangesServer!public!tests!transaction mode! !
+!JadeiteTranscriptTestCase categoriesFor: #test_transactionModeDefault!public!tests!transaction mode! !
 !JadeiteTranscriptTestCase categoriesFor: #test_transcriptNamedConsole!public!tests! !
 !JadeiteTranscriptTestCase categoriesFor: #writeToPrefsFile:!private!support!tests! !
 
