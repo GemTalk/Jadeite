@@ -45,6 +45,12 @@ autoCompleteEnabled: boolean
 	JadeiteSearch autoCompleteEnabled: boolean.
 	autoCompleteEnabled value: boolean!
 
+basicTransactionMode: aSymbol
+	self setTransactionModeOnServer: aSymbol.
+	transactionMode := aSymbol.
+	gciSession stopListeningForSigAborts.
+	transactionMode == #manualBegin ifTrue: [gciSession listenForSigAborts]!
+
 browseBreakpoints
 	^JadePresenter browseBreakpointsIn: self gciSession!
 
@@ -106,6 +112,9 @@ createComponents
 	transactionModePresenter := self add: RadioButtonSetPresenter new name: 'transactionMode'.
 	transactionModePresenter model: (self aspectValue: #transactionMode)!
 
+createSchematicWiring
+	super createSchematicWiring!
+
 flipAutoCommit
 	| browserService |
 	browserService := RowanAutoCommitService new.
@@ -158,6 +167,11 @@ gciSession: aGciSession
 	toolbarPresenter gciSession: aGciSession.
 	transcriptPresenter gciSession: aGciSession.
 	autoCommit := ValueHolder with: aGciSession autoCommit!
+
+getTransactionModeFromServer
+	"Only run this when opening the transcript.  We don't use the service mutex and don't want to get our server execution mixed up"
+
+	transactionMode := gciSession executeString: 'System transactionMode'!
 
 initialize
 	super initialize.
@@ -293,8 +307,9 @@ remoteAutoCommit
 	self issueCommand: (Array with: answeringService).
 	^answeringService answer!
 
-setTransactionModeFromServer
-	transactionMode := gciSession executeString: 'System transactionMode'!
+setTransactionModeOnServer: aSymbol
+	RowanAnsweringService new exec: 'System transactionMode: ' , aSymbol printString
+		session: self gciSession.!
 
 toolbarPresenter
 	^toolbarPresenter!
@@ -303,8 +318,13 @@ transactionMode
 	^transactionMode!
 
 transactionMode: aSymbol
-	gciSession executeString: 'System transactionMode: ' , aSymbol printString.
-	transactionMode := aSymbol! !
+	"It seems Dolphin should have an event like 'aboutToChangeRadioButton' to avoid having to muck with the low level view"
+
+	(MessageBox confirm: 'Switching transaction modes will cause an abort. Continue?')
+		ifTrue: [self basicTransactionMode: aSymbol]
+		ifFalse: 
+			[(transactionModePresenter view viewNamed: aSymbol asString) displayValue: false.
+			(transactionModePresenter view viewNamed: transactionMode asString) displayValue: true]! !
 !JadeiteTranscript categoriesFor: #abortTransaction!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #additionalAccelerators!public! !
 !JadeiteTranscript categoriesFor: #areBreakpointsEnabled!accessing!private! !
@@ -312,6 +332,7 @@ transactionMode: aSymbol
 !JadeiteTranscript categoriesFor: #autoCommit:!accessing!private! !
 !JadeiteTranscript categoriesFor: #autoCompleteEnabled!accessing!private! !
 !JadeiteTranscript categoriesFor: #autoCompleteEnabled:!accessing!private! !
+!JadeiteTranscript categoriesFor: #basicTransactionMode:!accessing!public!transaction mode! !
 !JadeiteTranscript categoriesFor: #browseBreakpoints!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #browseClass!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #browseClassReferences!menu handlers!public! !
@@ -323,6 +344,7 @@ transactionMode: aSymbol
 !JadeiteTranscript categoriesFor: #browseSendersOf!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #commitTransaction!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #createComponents!initialization!public! !
+!JadeiteTranscript categoriesFor: #createSchematicWiring!initialization!public! !
 !JadeiteTranscript categoriesFor: #flipAutoCommit!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #flipAutocomplete!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #flipBreakpointsEnabled!menu handlers!public! !
@@ -330,6 +352,7 @@ transactionMode: aSymbol
 !JadeiteTranscript categoriesFor: #flipLogging!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #flipTranscript!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #gciSession:!public! !
+!JadeiteTranscript categoriesFor: #getTransactionModeFromServer!actions!public!transaction mode! !
 !JadeiteTranscript categoriesFor: #initialize!initialization!public! !
 !JadeiteTranscript categoriesFor: #isTranscriptInstalled!public! !
 !JadeiteTranscript categoriesFor: #isTranscriptInstalledValueHolder!private! !
@@ -345,10 +368,10 @@ transactionMode: aSymbol
 !JadeiteTranscript categoriesFor: #queryCommand:!private! !
 !JadeiteTranscript categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteTranscript categoriesFor: #remoteAutoCommit!accessing!private! !
-!JadeiteTranscript categoriesFor: #setTransactionModeFromServer!actions!public! !
+!JadeiteTranscript categoriesFor: #setTransactionModeOnServer:!accessing!actions!public!transaction mode! !
 !JadeiteTranscript categoriesFor: #toolbarPresenter!accessing!public! !
-!JadeiteTranscript categoriesFor: #transactionMode!accessing!public! !
-!JadeiteTranscript categoriesFor: #transactionMode:!accessing!public! !
+!JadeiteTranscript categoriesFor: #transactionMode!accessing!public!transaction mode! !
+!JadeiteTranscript categoriesFor: #transactionMode:!accessing!public!transaction mode! !
 
 !JadeiteTranscript class methodsFor!
 
@@ -366,7 +389,7 @@ Transaction Mode:' 7760 1074 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 25
 showOnSession: aGciSession
 	| theTranscript |
 	theTranscript := super showOnSession: aGciSession.
-	theTranscript setTransactionModeFromServer.
+	theTranscript getTransactionModeFromServer.
 	^theTranscript! !
 !JadeiteTranscript class categoriesFor: #resource_Default_view!public!resources-views! !
 !JadeiteTranscript class categoriesFor: #showOnSession:!instance creation!public! !
