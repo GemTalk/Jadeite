@@ -167,4 +167,7 @@ symbolDictionaryNames:!commands!public! !
 symbolExists:session:!commands!public!testing! !
 symbolsMatching:session:!commands!public!testing! !
 !
-
+updateSymbols: unused
+	updateType = #updateSymbols: ifFalse: [^self].
+	JadeiteSearch allClassNames addAll: answer first.
+	JadeiteSearch allSelectors addAll: answer last! !

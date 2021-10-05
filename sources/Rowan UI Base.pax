@@ -128,6 +128,7 @@ package methodNames
 	add: #GciSession -> #informMessageBox:;
 	add: #GciSession -> #initializeServer;
 	add: #GciSession -> #inspectServerObject:;
+	add: #GciSession -> #listenForSigAborts;
 	add: #GciSession -> #oopTypeFor:;
 	add: #GciSession -> #postLoadClientPreferences;
 	add: #GciSession -> #postLoadServerPreferences;
@@ -1410,6 +1411,18 @@ inspectServerObject: oop
 	oopType := OopType64 fromInteger: oop.
 	JadeInspector showOn: oopType session: self.
 	^oopType!
+
+listenForSigAborts
+	"Every second execute a GciPollForSignal and handle the error if applicable'"
+
+	sigAbortsProcess := 
+			[
+			[BrowserUpdate current
+				inUpdateWhile: [[library pollForSignalSession: gciSessionId] on: Error do: [:ex | self abort]].
+			(Delay forSeconds: 1) wait]
+					repeat]
+					forkAt: Processor userBackgroundPriority.
+	sigAbortsProcess name: 'SigAbort Listening Process'. !
 
 oopTypeFor: anObject 
 

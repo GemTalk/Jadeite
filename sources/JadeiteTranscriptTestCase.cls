@@ -811,15 +811,30 @@ test_selectorsList
 				trailingWildcard: false.
 	list do: [:symbol | self assert: ('siz*' match: symbol)]!
 
+test_setTransactionlessMode
+	| previousTransactionMode |
+	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
+	previousTransactionMode := transcript transactionMode.
+	self assert: (session executeString: 'System transactionMode') equals: previousTransactionMode.
+	
+	[transcript basicTransactionMode: #transactionless.	"this will cause an abort requiring a clone/reload of RowanSample1 later"
+	self assert: (session executeString: 'System transactionMode') equals: #transactionless]
+			ensure: 
+				[transcript basicTransactionMode: previousTransactionMode.
+				self assert: (session executeString: 'System transactionMode') equals: previousTransactionMode.
+				self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
+
 test_setTransactionModeChangesServer
 	| previousTransactionMode |
 	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
 	previousTransactionMode := transcript transactionMode.
+	self assert: (session executeString: 'System transactionMode') equals: previousTransactionMode.
 	
-	[transcript transactionMode: #manualBegin.	"this will cause an abort requiring a clone/reload of RowanSample1 later"
+	[transcript basicTransactionMode: #manualBegin.	"this will cause an abort requiring a clone/reload of RowanSample1 later"
 	self assert: (session executeString: 'System transactionMode') equals: #manualBegin]
 			ensure: 
-				[transcript transactionMode: previousTransactionMode.
+				[transcript basicTransactionMode: previousTransactionMode.
 				self assert: (session executeString: 'System transactionMode') equals: previousTransactionMode.
 				self cloneRowanSample1.
 				self ensureRowanSample1Loaded]!
@@ -831,6 +846,41 @@ test_transactionModeDefault
 	[self logoutThenLoginAs: 'SystemUser'.	"ensure we have reset the transaction mode on the login to auto"
 	self assert: transcript transactionMode equals: #autoBegin]
 			ensure: [self restoreBackupPrefsFile: prefsExist]!
+
+test_transactionModeManualTurnsOnSigAbortListener
+	| previousTransactionMode sigAbortListener count |
+	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
+	previousTransactionMode := transcript transactionMode.
+	
+	[transcript basicTransactionMode: #manualBegin.	"changing transaction modes will cause an abort requiring a clone/reload of RowanSample1 later"
+	sigAbortListener := Processor allProcesses
+				detect: [:process | process name = 'SigAbort Listening Process' and: [process isAlive]]
+				ifNone: [].
+	self denyIsNil: sigAbortListener.
+	transcript basicTransactionMode: #autoBegin.
+	count := 0.
+	[sigAbortListener isDead or: [count > 100]] whileFalse: 
+			[count := count + 1.
+			(Delay forMilliseconds: 10) wait	"might take a sec to terminate"].
+	self assert: sigAbortListener isDead.
+	self
+		assertIsNil: (Processor allProcesses detect: 
+					[:process |
+					process name = 'SigAbort Listening Process'
+						and: [process ~~ sigAbortListener and: [process isAlive]]]
+				ifNone: []).
+	transcript basicTransactionMode: #transactionless.
+	self
+		assertIsNil: (Processor allProcesses detect: 
+					[:process |
+					process name = 'SigAbort Listening Process'
+						and: [process ~~ sigAbortListener and: [process isAlive]]]
+				ifNone: [])]
+			ensure: 
+				[transcript basicTransactionMode: previousTransactionMode.
+				self assert: (session executeString: 'System transactionMode') equals: previousTransactionMode.
+				self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
 
 test_transcriptNamedConsole
 	| clearTranscriptMenuItem wasInstalled |
@@ -906,5 +956,4 @@ test_selectorsList!public!tests! !
 test_transcriptNamedConsole!public!tests! !
 writeToPrefsFile:!private!support!tests! !
 !
-
 
