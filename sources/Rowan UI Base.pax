@@ -1422,7 +1422,7 @@ listenForSigAborts
 			(Delay forSeconds: 1) wait]
 					repeat]
 					forkAt: Processor userBackgroundPriority.
-	sigAbortsProcess name: 'SigAbort Listening Process'. !
+	sigAbortsProcess name: 'SigAbort Listening Process'!
 
 oopTypeFor: anObject 
 
