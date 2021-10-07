@@ -89,6 +89,20 @@ openOn: session project: projectService
 	browser currentCard selectProjectNamed: projectService name.
 	browser currentCard projectListPresenter setFocus.
 	^browser! !
+
+
+queryCommand: aCommandQuery
+	| command |
+	command := aCommandQuery command.
+	(command = #abortTransaction or: [command = #commitTransaction])
+		ifTrue: 
+			[aCommandQuery isEnabled: JadePresenter areAbortCommitEnabled.
+			^true].
+	^super queryCommand: aCommandQuery!
+
+systemBrowserPresenter
+	^JadeiteBrowserPresenter! !
+
 !JadeiteBrowser class categoriesForMethods!
 defaultAdditionalAccelerators!constants!public! !
 onSession:!instance creation!public! !

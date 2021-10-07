@@ -1330,9 +1330,15 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: true.
 	aCommandQuery commandSymbol = #beginTransaction
+	command = #beginTransaction
 		ifTrue: 
 			[aCommandQuery isEnabled: self isBeginTransactionEnabled.
 			^true].
+	(command = #abortTransaction
+		or: [command = #commitTransaction])
+			ifTrue: 
+				[aCommandQuery isEnabled: self areAbortCommitEnabled.
+				^true].
 	(#(#inspectGlobal #browseGlobalClass #browseGlobalReferences) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: globalsTab selections isEmpty not.

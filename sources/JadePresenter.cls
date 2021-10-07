@@ -25,6 +25,9 @@ commitTransaction
 	commitResult ifTrue: [Sound informationBeep] ifFalse: [MessageBox warning: 'Commit failed!!'].
 	^commitResult!
 
+areAbortCommitEnabled
+	^self class areAbortCommitEnabled!
+
 gciSession
 
 	^gciSession
@@ -208,6 +211,11 @@ loadViewResource2: aString inContext: contextView
 maxPrintStringSize
 	^100000!
 
+areAbortCommitEnabled
+	^self transactionMode == #autoBegin
+		or: [self transactionMode == #manualBegin and: [self inTransaction]]!
+
+
 inTransaction
 
 	^InTransaction!
@@ -252,5 +260,3 @@ rowanProjectsHomeEnvVarString!constants!public! !
 rowanSample1Path!constants!public! !
 rowanSample9Path!constants!public! !
 !
-
-
