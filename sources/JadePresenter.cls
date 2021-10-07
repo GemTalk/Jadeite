@@ -2,7 +2,7 @@
 
 Presenter subclass: #JadePresenter
 	instanceVariableNames: 'gciSession'
-	classVariableNames: 'InTransaction TransactionMode'
+	classVariableNames: 'InTransaction SigAbortsProcess TransactionMode'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenter guid: (GUID fromString: '{b55f33eb-59fb-46d6-8fec-7df1571c7d45}')!
@@ -62,8 +62,8 @@ inTransaction
 
 	^self class inTransaction!
 
-inTransaction: aSymbol
-	self class inTransaction: aSymbol!
+inTransaction: aBoolean
+	self class inTransaction: aBoolean!
 
 isBeginTransactionEnabled
 	^self class isBeginTransactionEnabled!
@@ -111,7 +111,9 @@ transactionMode: aSymbol
 	self class transactionMode: aSymbol!
 
 transactionMode: aSymbol session: session
-	self class transactionMode: aSymbol session: session!
+	self class transactionMode: aSymbol session: session.
+	self stopListeningForSigAborts.
+	self transactionMode == #manualBegin ifTrue: [self listenForSigAborts: session]!
 
 updateMenuBar: aMenuBar
 
@@ -206,8 +208,6 @@ loadViewResource2: aString inContext: contextView
 maxPrintStringSize
 	^100000!
 
-!JadePresenter class methodsFor!
-
 inTransaction
 
 	^InTransaction!
@@ -226,6 +226,18 @@ rowanSample1Path
 
 rowanSample9Path
 	^'file:$ROWAN_PROJECTS_HOME/RowanSample9/rowan/specs/spec_0061.ston'! !
+
+sigAbortsProcess
+
+	^SigAbortsProcess!
+
+sigAbortsProcess: aProcess
+
+	SigAbortsProcess := aProcess!
+
+stopListeningForSigAborts
+	self sigAbortsProcess ifNotNil: [:proc | proc terminate].
+	self sigAbortsProcess: nil!
 
 transactionMode
 

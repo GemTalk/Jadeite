@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 Object subclass: #GciSession
-	instanceVariableNames: 'briefDescription clientForwarders eventCount gciSessionId gemHost gemNRS heartbeatProcess isHandlingClientForwarderSend isPackagePolicyEnabled library netPort netTask server stoneHost stoneName stoneNRS stoneSerial stoneSessionID userID blocking autoCommit sigAbortsProcess'
+	instanceVariableNames: 'briefDescription clientForwarders eventCount gciSessionId gemHost gemNRS heartbeatProcess isHandlingClientForwarderSend isPackagePolicyEnabled library netPort netTask server stoneHost stoneName stoneNRS stoneSerial stoneSessionID userID blocking autoCommit'
 	classVariableNames: 'Current GemCursor'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -747,10 +747,6 @@ stopHeartbeat
 		heartbeatProcess := nil.
 	].
 !
-
-stopListeningForSigAborts
-	sigAbortsProcess ifNotNil: [:proc | proc terminate].
-	sigAbortsProcess := nil!
 
 userID
 

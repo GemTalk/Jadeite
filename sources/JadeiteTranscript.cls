@@ -201,7 +201,7 @@ onCloseRequested: boolValueHolder
 	gciSession notNil
 		ifTrue: 
 			[| temp |
-			gciSession stopListeningForSigAborts.
+			JadePresenter stopListeningForSigAborts.
 			gciSession trigger: #forceJadeiteWindowClose.	"close all windows except me and debugger"
 			temp := gciSession.	"I'm getting closed so make sure session gets logged out"
 			gciSession := nil.
@@ -306,10 +306,15 @@ remoteAutoCommit
 	self issueCommand: answeringService.
 	^answeringService answer!
 
+resetTransactionModeRadioButtons
+	#(#autoBegin #manualBegin #transactionless)
+		do: [:aSymbol | (transactionModePresenter view viewNamed: aSymbol asString) displayValue: false].
+	(transactionModePresenter view viewNamed: self transactionMode asString) displayValue: true!
+
 setTransactionModeFromServer
 	"Only run this when opening the transcript.  We don't use the service mutex so it's mildly dangerous."
-
 	self parentPresenter transactionMode: (gciSession executeString: 'System transactionMode').
+	self resetTransactionModeRadioButtons.
 	self parentPresenter inTransaction: (gciSession executeString: 'System inTransaction')!
 
 toolbarPresenter
@@ -372,9 +377,7 @@ transactionMode: aSymbol
 
 	(MessageBox confirm: 'Switching transaction modes will cause an abort. Continue?')
 		ifTrue: [self basicTransactionMode: aSymbol]
-		ifFalse: 
-			[(transactionModePresenter view viewNamed: aSymbol asString) displayValue: false.
-			(transactionModePresenter view viewNamed: self transactionMode asString) displayValue: true]! !
+		ifFalse: [self resetTransactionModeRadioButtons]! !
 !JadeiteTranscript categoriesFor: #abortTransaction!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #additionalAccelerators!public! !
 !JadeiteTranscript categoriesFor: #areBreakpointsEnabled!accessing!private! !
@@ -418,6 +421,7 @@ transactionMode: aSymbol
 !JadeiteTranscript categoriesFor: #queryCommand:!private! !
 !JadeiteTranscript categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteTranscript categoriesFor: #remoteAutoCommit!accessing!private! !
+!JadeiteTranscript categoriesFor: #resetTransactionModeRadioButtons!accessing!public!transaction mode! !
 !JadeiteTranscript categoriesFor: #setTransactionModeFromServer!actions!public!transaction mode! !
 !JadeiteTranscript categoriesFor: #toolbarPresenter!accessing!public! !
 !JadeiteTranscript categoriesFor: #transactionMode!accessing!public!transaction mode! !
