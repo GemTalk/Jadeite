@@ -2,11 +2,14 @@
 
 Presenter subclass: #JadePresenter
 	instanceVariableNames: 'gciSession'
-	classVariableNames: ''
+	classVariableNames: 'InTransaction TransactionMode'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenter guid: (GUID fromString: '{b55f33eb-59fb-46d6-8fec-7df1571c7d45}')!
-JadePresenter comment: ''!
+JadePresenter comment: 'Abstract class for Jadeite''s presenters. 
+
+We''re storing TransactionMode here for global access.
+However, it might be better to move it to session state on the server and access via a service. '!
 !JadePresenter categoriesForClass!MVP-Presenters! !
 !JadePresenter methodsFor!
 
@@ -51,6 +54,16 @@ insertIfTrue: methodSourcePresenter
 	methodSourcePresenter view replaceSelection: 'ifTrue:[]'.
 	methodSourcePresenter selectionRange: selectionRange + 8!
 
+inTransaction
+
+	^self class inTransaction!
+
+inTransaction: aSymbol
+	self class inTransaction: aSymbol!
+
+isBeginTransactionEnabled
+	^self class isBeginTransactionEnabled!
+
 postEditSaveMethod!
 
 refreshFromServer
@@ -81,6 +94,16 @@ subMenuPresenter
 
 	^nil.
 !
+
+transactionMode
+
+	^self class transactionMode!
+
+transactionMode: aSymbol
+	self class transactionMode: aSymbol!
+
+transactionMode: aSymbol session: session
+	self class transactionMode: aSymbol session: session!
 
 updateMenuBar: aMenuBar
 
@@ -130,6 +153,9 @@ updateService: service
 !JadePresenter categoriesFor: #gciSession:!public! !
 !JadePresenter categoriesFor: #insertIfFalse:!displaying!public! !
 !JadePresenter categoriesFor: #insertIfTrue:!displaying!public! !
+!JadePresenter categoriesFor: #inTransaction!accessing!public!transaction management! !
+!JadePresenter categoriesFor: #inTransaction:!accessing!public!transaction management! !
+!JadePresenter categoriesFor: #isBeginTransactionEnabled!accessing!public!transaction management! !
 !JadePresenter categoriesFor: #postEditSaveMethod!menu handlers support!public! !
 !JadePresenter categoriesFor: #refreshFromServer!public! !
 !JadePresenter categoriesFor: #resetCursor!public! !
@@ -137,13 +163,30 @@ updateService: service
 !JadePresenter categoriesFor: #statusBarText:!public! !
 !JadePresenter categoriesFor: #subMenuName!menus!public! !
 !JadePresenter categoriesFor: #subMenuPresenter!menus!public! !
+!JadePresenter categoriesFor: #transactionMode!accessing!public!transaction management! !
+!JadePresenter categoriesFor: #transactionMode:!accessing!public!transaction management! !
+!JadePresenter categoriesFor: #transactionMode:session:!accessing!public!transaction management! !
 !JadePresenter categoriesFor: #updateMenuBar:!menus!public! !
 !JadePresenter categoriesFor: #updateMenuBar:withName:itemsFrom:!menus!public! !
 !JadePresenter categoriesFor: #updateService:!public!services! !
 
 !JadePresenter class methodsFor!
 
+inTransaction
+
+	^InTransaction!
+
+isBeginTransactionEnabled
+	^self transactionMode = #manualBegin and: [self inTransaction not]!
+
 openCommit: sha inGitHub: projectService
-	^ShellLibrary default shellOpen: projectService projectUrl , '/commit/' , sha directory: ''! !
+	^ShellLibrary default shellOpen: projectService projectUrl , '/commit/' , sha directory: ''!
+
+transactionMode
+
+	^TransactionMode! !
+!JadePresenter class categoriesFor: #inTransaction!public!transaction mode! !
+!JadePresenter class categoriesFor: #isBeginTransactionEnabled!public!testing!transaction mode! !
 !JadePresenter class categoriesFor: #openCommit:inGitHub:!browsing!public! !
+!JadePresenter class categoriesFor: #transactionMode!public!transaction mode! !
 

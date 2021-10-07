@@ -496,6 +496,10 @@ protectedDictionaries
 queryCommand: aCommandQuery
 	| command |
 	command := aCommandQuery command.
+	aCommandQuery commandSymbol = #beginTransaction
+		ifTrue: 
+			[aCommandQuery isEnabled: self isBeginTransactionEnabled.
+			^true].
 	(#(#inspectGlobal #browseGlobalClass #browseGlobalReferences) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: globalsTab selections isEmpty not.

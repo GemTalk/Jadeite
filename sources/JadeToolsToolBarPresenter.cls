@@ -15,6 +15,10 @@ abort
 		ifTrue: [^parentPresenter abortTransaction	"include tool post-abort behavior"].
 	super abortTransaction!
 
+begin
+	(parentPresenter class canUnderstand: #beginTransaction)
+		ifTrue: [^parentPresenter beginTransaction]!
+
 commit
 	^super commitTransaction!
 
@@ -26,11 +30,20 @@ fileNew
 fileOpen
 
 	JadeWorkspace openOnSession: gciSession.
-! !
+!
+
+queryCommand: query
+	super queryCommand: query.
+	query commandSymbol = #begin
+		ifTrue: 
+			[query isEnabled: self isBeginTransactionEnabled.
+			^true]! !
 !JadeToolsToolBarPresenter categoriesFor: #abort!Jade!public! !
+!JadeToolsToolBarPresenter categoriesFor: #begin!Jade!public! !
 !JadeToolsToolBarPresenter categoriesFor: #commit!public! !
 !JadeToolsToolBarPresenter categoriesFor: #fileNew!public! !
 !JadeToolsToolBarPresenter categoriesFor: #fileOpen!public! !
+!JadeToolsToolBarPresenter categoriesFor: #queryCommand:!public! !
 
 !JadeToolsToolBarPresenter class methodsFor!
 

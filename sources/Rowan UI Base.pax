@@ -190,6 +190,7 @@ package methodNames
 	add: #JadePresenter -> #abortTransaction;
 	add: #JadePresenter -> #autoCommitExecutionString;
 	add: #JadePresenter -> #basicCloneProject:root:;
+	add: #JadePresenter -> #beginTransaction;
 	add: #JadePresenter -> #browseBreakpoints;
 	add: #JadePresenter -> #browseClassReferences:;
 	add: #JadePresenter -> #browseHierarchyImplementorsOf:className:;
@@ -427,6 +428,7 @@ package methodNames
 	add: 'JadePresenter class' -> #clearMethodBreakpoints:in:;
 	add: 'JadePresenter class' -> #convertToPattern:;
 	add: 'JadePresenter class' -> #findMethodIn:class:presenter:;
+	add: 'JadePresenter class' -> #inTransaction:;
 	add: 'JadePresenter class' -> #issueCommand:session:;
 	add: 'JadePresenter class' -> #openGitHubJadeiteProject;
 	add: 'JadePresenter class' -> #openGitHubRowanProject;
@@ -435,6 +437,8 @@ package methodNames
 	add: 'JadePresenter class' -> #promptFor:withCaption:;
 	add: 'JadePresenter class' -> #promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:;
 	add: 'JadePresenter class' -> #runMethodTests:in:;
+	add: 'JadePresenter class' -> #transactionMode:;
+	add: 'JadePresenter class' -> #transactionMode:session:;
 	add: 'JadeServer class' -> #gsString;
 	add: 'JadeServer64bit32 class' -> #gsClassDefinitionStringFor:;
 	add: 'JadeSessionManager class' -> #getUrl;
@@ -2115,6 +2119,13 @@ basicCloneProject: path root: root
 					with: true).
 	self issueCommand: (Array with: service)!
 
+beginTransaction
+	"Even if it takes a windy path, try to make sure
+	all begin transaction in Jadeite pass through here"
+
+	(MessageBox confirm: 'Abort the current transaction and begin a new transaction?')
+		ifTrue: [RowanAnsweringService new exec: 'System beginTransaction' session: gciSession]!
+
 browseBreakpoints
 	^self class browseBreakpointsIn: self gciSession!
 
@@ -2381,6 +2392,7 @@ updateServices: services
 !JadePresenter categoriesFor: #abortTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #autoCommitExecutionString!menu handlers support!public! !
 !JadePresenter categoriesFor: #basicCloneProject:root:!menu handlers!private! !
+!JadePresenter categoriesFor: #beginTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #browseBreakpoints!menu handlers!public! !
 !JadePresenter categoriesFor: #browseClassReferences:!menu handlers!public! !
 !JadePresenter categoriesFor: #browseHierarchyImplementorsOf:className:!browsing!public! !
@@ -2654,6 +2666,9 @@ findMethodIn: session class: classService presenter: browser
 	methodService := JadeiteFindMethodDialog showModal: 'DefaultView' on: classService.
 	^self basicBrowseMethod: methodService presenter: browser!
 
+inTransaction: aBoolean
+	InTransaction := aBoolean!
+
 issueCommand: services session: session
 	^BrowserUpdate current issueCommand: services session: session!
 
@@ -2709,7 +2724,22 @@ runMethodTests: methodServices in: session
 		command: #runMethodTests:;
 		commandArgs: (Array with: methodServices).
 	answeringService := (self issueCommand: (Array with: answeringService) session: session) first.
-	^answeringService answer! !
+	^answeringService answer!
+
+transactionMode: aSymbol
+	TransactionMode := aSymbol!
+
+transactionMode: aSymbol session: session
+	| executionStringStream answeringService |
+	executionStringStream := WriteStream on: String new.
+	executionStringStream nextPutAll: 'System transactionMode: ' , aSymbol printString , '. '.
+	executionStringStream nextPutAll: 'System inTransaction'.
+	answeringService := RowanAnsweringService new.
+	answeringService exec: executionStringStream contents session: session.
+	self inTransaction: answeringService answer asBoolean.
+	self transactionMode: aSymbol.
+	session stopListeningForSigAborts.
+	self transactionMode == #manualBegin ifTrue: [session listenForSigAborts]! !
 !JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
 !JadePresenter class categoriesFor: #basicBrowseClassReferences:session:!browsing!browsing support!public! !
 !JadePresenter class categoriesFor: #basicBrowseMethod:presenter:!browsing!public! !
@@ -2735,6 +2765,7 @@ runMethodTests: methodServices in: session
 !JadePresenter class categoriesFor: #clearMethodBreakpoints:in:!browsing!public! !
 !JadePresenter class categoriesFor: #convertToPattern:!browsing support!private! !
 !JadePresenter class categoriesFor: #findMethodIn:class:presenter:!browsing!public! !
+!JadePresenter class categoriesFor: #inTransaction:!public!transaction mode! !
 !JadePresenter class categoriesFor: #issueCommand:session:!public! !
 !JadePresenter class categoriesFor: #openGitHubJadeiteProject!browsing!public! !
 !JadePresenter class categoriesFor: #openGitHubRowanProject!browsing!public! !
@@ -2743,6 +2774,8 @@ runMethodTests: methodServices in: session
 !JadePresenter class categoriesFor: #promptFor:withCaption:!browsing support!private! !
 !JadePresenter class categoriesFor: #promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:!browsing support!private! !
 !JadePresenter class categoriesFor: #runMethodTests:in:!public! !
+!JadePresenter class categoriesFor: #transactionMode:!public!transaction mode! !
+!JadePresenter class categoriesFor: #transactionMode:session:!public!transaction mode! !
 
 !JadePresenterA methodsFor!
 
