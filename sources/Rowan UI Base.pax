@@ -109,8 +109,8 @@ package methodNames
 	add: #GciSession -> #informMessageBox:;
 	add: #GciSession -> #initializeServer;
 	add: #GciSession -> #inspectServerObject:;
-	add: #GciSession -> #listenForSigAborts;
 	add: #GciSession -> #oopTypeFor:;
+	add: #GciSession -> #pollForSignal;
 	add: #GciSession -> #postLoadClientPreferences;
 	add: #GciSession -> #postLoadServerPreferences;
 	add: #GciSession -> #postLoginAs:useSocket:;
@@ -204,6 +204,7 @@ package methodNames
 	add: #JadePresenter -> #browseSendersOf:;
 	add: #JadePresenter -> #clearAllBreaks;
 	add: #JadePresenter -> #clearMethodBreakpoints:;
+	add: #JadePresenter -> #commitTransaction;
 	add: #JadePresenter -> #compilationWarningFrom:;
 	add: #JadePresenter -> #currentMethodSourceFrom:;
 	add: #JadePresenter -> #currentSelectionOrLine;
@@ -214,6 +215,7 @@ package methodNames
 	add: #JadePresenter -> #flipAutoCommit;
 	add: #JadePresenter -> #insertCompileErrorText:into:;
 	add: #JadePresenter -> #issueCommand:;
+	add: #JadePresenter -> #listenForSigAborts:;
 	add: #JadePresenter -> #openBrowserInNewTab:on:;
 	add: #JadePresenter -> #openProjectBrowserOn:selector:;
 	add: #JadePresenter -> #raiseConsole;
@@ -224,6 +226,10 @@ package methodNames
 	add: #JadePresenter -> #serviceFromSelection:;
 	add: #JadePresenter -> #setCompileErrorColor;
 	add: #JadePresenter -> #setCompileWarningColor;
+	add: #JadePresenter -> #setInTransaction:session:;
+	add: #JadePresenter -> #sigAbortsProcess;
+	add: #JadePresenter -> #sigAbortsProcess:;
+	add: #JadePresenter -> #stopListeningForSigAborts;
 	add: #JadePresenter -> #update:afterStonReplication:;
 	add: #JadePresenter -> #updateServices:;
 	add: #JadePresenterA -> #clearBreakPointAt:in:;
@@ -437,6 +443,7 @@ package methodNames
 	add: 'JadePresenter class' -> #promptFor:withCaption:;
 	add: 'JadePresenter class' -> #promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:;
 	add: 'JadePresenter class' -> #runMethodTests:in:;
+	add: 'JadePresenter class' -> #setInTransaction:session:;
 	add: 'JadePresenter class' -> #transactionMode:;
 	add: 'JadePresenter class' -> #transactionMode:session:;
 	add: 'JadeServer class' -> #gsString;
@@ -1122,18 +1129,6 @@ inspectServerObject: oop
 	JadeInspector showOn: oopType session: self.
 	^oopType!
 
-listenForSigAborts
-	"Every second execute a GciPollForSignal and handle the error if applicable'"
-
-	sigAbortsProcess := 
-			[
-			[BrowserUpdate current
-				inUpdateWhile: [[library pollForSignalSession: gciSessionId] on: Error do: [:ex | self abort]].
-			(Delay forSeconds: 1) wait]
-					repeat]
-					forkAt: Processor userBackgroundPriority.
-	sigAbortsProcess name: 'SigAbort Listening Process'!
-
 oopTypeFor: anObject 
 
 	anObject isNil 					ifTrue: [^library oopNil].
@@ -1144,6 +1139,9 @@ oopTypeFor: anObject
 	self error: 'Sorry, we are not yet prepared to convert ' , anObject printString , ' to an OOP!!'.
 	SessionManager current pause.
 !
+
+pollForSignal
+	library pollForSignalSession: gciSessionId!
 
 postLoadClientPreferences
 	| path file stream nextLine prefs |
@@ -1286,8 +1284,8 @@ withExplanation: aString doA: aBlock
 !GciSession categoriesFor: #informMessageBox:!must not strip!public!server interactions! !
 !GciSession categoriesFor: #initializeServer!private! !
 !GciSession categoriesFor: #inspectServerObject:!must not strip!public!server interactions! !
-!GciSession categoriesFor: #listenForSigAborts!heartbeat!public! !
 !GciSession categoriesFor: #oopTypeFor:!public! !
+!GciSession categoriesFor: #pollForSignal!heartbeat!public! !
 !GciSession categoriesFor: #postLoadClientPreferences!private! !
 !GciSession categoriesFor: #postLoadServerPreferences!private! !
 !GciSession categoriesFor: #postLoginAs:useSocket:!private! !
@@ -2103,6 +2101,7 @@ abortTransaction
 				command: #abortTransactionAndUpdateServices:;
 				commandArgs: (Array with: services).
 	self issueCommand: (Array with: browserService).
+	self setInTransaction: RowanAnsweringService new session: gciSession.
 	Sound informationBeep!
 
 autoCommitExecutionString
@@ -2124,7 +2123,11 @@ beginTransaction
 	all begin transaction in Jadeite pass through here"
 
 	(MessageBox confirm: 'Abort the current transaction and begin a new transaction?')
-		ifTrue: [RowanAnsweringService new exec: 'System beginTransaction' session: gciSession]!
+		ifTrue: 
+			[| answeringService |
+			answeringService := RowanAnsweringService new.
+			answeringService exec: 'System beginTransaction' session: gciSession.
+			self setInTransaction: answeringService session: gciSession]!
 
 browseBreakpoints
 	^self class browseBreakpointsIn: self gciSession!
@@ -2177,6 +2180,19 @@ clearAllBreaks
 
 clearMethodBreakpoints: methodServices
 	^self class clearMethodBreakpoints: methodServices in: self gciSession!
+
+commitTransaction
+	"Even if it takes a windy path, try to make sure
+	all commits in Jadeite pass through here"
+
+	| commitResult |
+	commitResult := gciSession commit.
+	commitResult
+		ifTrue: 
+			[Sound informationBeep.
+			self setInTransaction: RowanAnsweringService new session: gciSession]
+		ifFalse: [MessageBox warning: 'Commit failed!!'].
+	^commitResult!
 
 compilationWarningFrom: methodServices
 	methodServices do: 
@@ -2290,6 +2306,22 @@ insertCompileErrorText: string into: methodSourcePresenter
 issueCommand: service
 	^self class issueCommand: service session: self gciSession!
 
+listenForSigAborts: session
+	self
+		sigAbortsProcess: (
+			[
+			[[BrowserUpdate current inUpdateWhile: [session pollForSignal]] on: Error
+				do: 
+					[:ex |
+					session isValidSession
+						ifTrue: 
+							[self abortTransaction.
+							self class setInTransaction: RowanAnsweringService new session: self]].
+			(Delay forSeconds: 1) wait]
+					repeat]
+					forkAt: Processor userBackgroundPriority).
+	self sigAbortsProcess name: 'SigAbort Listening Process'!
+
 openBrowserInNewTab: openNewTab on: classService
 	| shell |
 	shell := openNewTab
@@ -2384,6 +2416,18 @@ setCompileErrorColor
 setCompileWarningColor
 	(self topShell view viewNamed: 'statusBarField') backcolor: Color yellow faded!
 
+setInTransaction: answeringService session: gciSession
+	^self class setInTransaction: answeringService session: gciSession!
+
+sigAbortsProcess 
+	^self class sigAbortsProcess!
+
+sigAbortsProcess: aProcess
+	self class sigAbortsProcess: aProcess!
+
+stopListeningForSigAborts
+	self class stopListeningForSigAborts!
+
 update: services afterStonReplication: stonResults
 	^BrowserUpdate current update: services afterStonReplication: stonResults!
 
@@ -2406,6 +2450,7 @@ updateServices: services
 !JadePresenter categoriesFor: #browseSendersOf:!browsing!menu handlers!public! !
 !JadePresenter categoriesFor: #clearAllBreaks!menu handlers!public! !
 !JadePresenter categoriesFor: #clearMethodBreakpoints:!menu handlers!public! !
+!JadePresenter categoriesFor: #commitTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #compilationWarningFrom:!public! !
 !JadePresenter categoriesFor: #currentMethodSourceFrom:!compile support!public! !
 !JadePresenter categoriesFor: #currentSelectionOrLine!menu handlers support!public! !
@@ -2416,6 +2461,7 @@ updateServices: services
 !JadePresenter categoriesFor: #flipAutoCommit!menu handlers!public! !
 !JadePresenter categoriesFor: #insertCompileErrorText:into:!compile support!public! !
 !JadePresenter categoriesFor: #issueCommand:!browsing support!public! !
+!JadePresenter categoriesFor: #listenForSigAborts:!accessing!public!transaction management! !
 !JadePresenter categoriesFor: #openBrowserInNewTab:on:!Jade!public! !
 !JadePresenter categoriesFor: #openProjectBrowserOn:selector:!browsing!public! !
 !JadePresenter categoriesFor: #raiseConsole!menu handlers!public! !
@@ -2426,6 +2472,10 @@ updateServices: services
 !JadePresenter categoriesFor: #serviceFromSelection:!menu handlers!menu handlers support!private! !
 !JadePresenter categoriesFor: #setCompileErrorColor!compile support!public! !
 !JadePresenter categoriesFor: #setCompileWarningColor!compile support!public! !
+!JadePresenter categoriesFor: #setInTransaction:session:!public!transaction management! !
+!JadePresenter categoriesFor: #sigAbortsProcess!accessing!public!transaction management! !
+!JadePresenter categoriesFor: #sigAbortsProcess:!accessing!public!transaction management! !
+!JadePresenter categoriesFor: #stopListeningForSigAborts!accessing!public!transaction management! !
 !JadePresenter categoriesFor: #update:afterStonReplication:!browsing support!public! !
 !JadePresenter categoriesFor: #updateServices:!private!services! !
 
@@ -2726,20 +2776,19 @@ runMethodTests: methodServices in: session
 	answeringService := (self issueCommand: (Array with: answeringService) session: session) first.
 	^answeringService answer!
 
+setInTransaction: answeringService session: session
+	answeringService exec: 'System inTransaction' session: session.
+	self inTransaction: answeringService answer = 'true'!
+
 transactionMode: aSymbol
 	TransactionMode := aSymbol!
 
 transactionMode: aSymbol session: session
-	| executionStringStream answeringService |
-	executionStringStream := WriteStream on: String new.
-	executionStringStream nextPutAll: 'System transactionMode: ' , aSymbol printString , '. '.
-	executionStringStream nextPutAll: 'System inTransaction'.
+	| answeringService |
 	answeringService := RowanAnsweringService new.
-	answeringService exec: executionStringStream contents session: session.
-	self inTransaction: answeringService answer asBoolean.
-	self transactionMode: aSymbol.
-	session stopListeningForSigAborts.
-	self transactionMode == #manualBegin ifTrue: [session listenForSigAborts]! !
+	answeringService exec: 'System transactionMode: ' , aSymbol printString session: session.
+	self setInTransaction: answeringService session: session.
+	self transactionMode: aSymbol! !
 !JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
 !JadePresenter class categoriesFor: #basicBrowseClassReferences:session:!browsing!browsing support!public! !
 !JadePresenter class categoriesFor: #basicBrowseMethod:presenter:!browsing!public! !
@@ -2774,6 +2823,7 @@ transactionMode: aSymbol session: session
 !JadePresenter class categoriesFor: #promptFor:withCaption:!browsing support!private! !
 !JadePresenter class categoriesFor: #promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:!browsing support!private! !
 !JadePresenter class categoriesFor: #runMethodTests:in:!public! !
+!JadePresenter class categoriesFor: #setInTransaction:session:!public!transaction mode! !
 !JadePresenter class categoriesFor: #transactionMode:!public!transaction mode! !
 !JadePresenter class categoriesFor: #transactionMode:session:!public!transaction mode! !
 

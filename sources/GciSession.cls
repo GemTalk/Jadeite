@@ -1,7 +1,7 @@
 "Filed out from Dolphin Smalltalk 7"!
 
 Object subclass: #GciSession
-	instanceVariableNames: 'briefDescription clientForwarders eventCount gciSessionId gemHost gemNRS heartbeatProcess isHandlingClientForwarderSend isPackagePolicyEnabled library netPort netTask server stoneHost stoneName stoneNRS stoneSerial stoneSessionID userID blocking autoCommit sigAbortsProcess'
+	instanceVariableNames: 'briefDescription clientForwarders eventCount gciSessionId gemHost gemNRS heartbeatProcess isHandlingClientForwarderSend isPackagePolicyEnabled library netPort netTask server stoneHost stoneName stoneNRS stoneSerial stoneSessionID userID blocking autoCommit'
 	classVariableNames: 'Current GemCursor'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -751,10 +751,6 @@ stopHeartbeat
 	].
 !
 
-stopListeningForSigAborts
-	sigAbortsProcess ifNotNil: [:proc | proc terminate].
-	sigAbortsProcess := nil!
-
 userID
 
 	^userID.
@@ -851,7 +847,6 @@ valueOfOop: anOopType
 !GciSession categoriesFor: #stoneSerial!private! !
 !GciSession categoriesFor: #stoneSessionID!public! !
 !GciSession categoriesFor: #stopHeartbeat!Jade!public! !
-!GciSession categoriesFor: #stopListeningForSigAborts!heartbeat!private! !
 !GciSession categoriesFor: #userID!public! !
 !GciSession categoriesFor: #valueOfArrayOop:!Jade convenience!public! !
 !GciSession categoriesFor: #valueOfOop:!Jade convenience!public! !

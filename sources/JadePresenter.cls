@@ -2,7 +2,7 @@
 
 Presenter subclass: #JadePresenter
 	instanceVariableNames: 'gciSession'
-	classVariableNames: 'InTransaction TransactionMode'
+	classVariableNames: 'InTransaction SigAbortsProcess TransactionMode'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenter guid: (GUID fromString: '{b55f33eb-59fb-46d6-8fec-7df1571c7d45}')!
@@ -18,15 +18,6 @@ addSystemBrowser
 	Not implemented in all subclasses"
 
 	self subclassResponsibility!
-
-commitTransaction
-	"Even if it takes a windy path, try to make sure
-	all commits in Jadeite pass through here"
-
-	| commitResult |
-	commitResult := gciSession commit.
-	commitResult ifTrue: [Sound informationBeep] ifFalse: [MessageBox warning: 'Commit failed!!'].
-	^commitResult!
 
 gciSession
 
@@ -58,8 +49,8 @@ inTransaction
 
 	^self class inTransaction!
 
-inTransaction: aSymbol
-	self class inTransaction: aSymbol!
+inTransaction: aBoolean
+	self class inTransaction: aBoolean!
 
 isBeginTransactionEnabled
 	^self class isBeginTransactionEnabled!
@@ -103,7 +94,9 @@ transactionMode: aSymbol
 	self class transactionMode: aSymbol!
 
 transactionMode: aSymbol session: session
-	self class transactionMode: aSymbol session: session!
+	self class transactionMode: aSymbol session: session.
+	self stopListeningForSigAborts.
+	self transactionMode == #manualBegin ifTrue: [self listenForSigAborts: session]!
 
 updateMenuBar: aMenuBar
 
@@ -148,7 +141,6 @@ updateService: service
 
 	^self updateServices: (Array with: service) ! !
 !JadePresenter categoriesFor: #addSystemBrowser!private! !
-!JadePresenter categoriesFor: #commitTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #gciSession!public! !
 !JadePresenter categoriesFor: #gciSession:!public! !
 !JadePresenter categoriesFor: #insertIfFalse:!displaying!public! !
@@ -182,11 +174,26 @@ isBeginTransactionEnabled
 openCommit: sha inGitHub: projectService
 	^ShellLibrary default shellOpen: projectService projectUrl , '/commit/' , sha directory: ''!
 
+sigAbortsProcess
+
+	^SigAbortsProcess!
+
+sigAbortsProcess: aProcess
+
+	SigAbortsProcess := aProcess!
+
+stopListeningForSigAborts
+	self sigAbortsProcess ifNotNil: [:proc | proc terminate].
+	self sigAbortsProcess: nil!
+
 transactionMode
 
 	^TransactionMode! !
 !JadePresenter class categoriesFor: #inTransaction!public!transaction mode! !
 !JadePresenter class categoriesFor: #isBeginTransactionEnabled!public!testing!transaction mode! !
 !JadePresenter class categoriesFor: #openCommit:inGitHub:!browsing!public! !
+!JadePresenter class categoriesFor: #sigAbortsProcess!public!transaction mode! !
+!JadePresenter class categoriesFor: #sigAbortsProcess:!public!transaction mode! !
+!JadePresenter class categoriesFor: #stopListeningForSigAborts!public!transaction mode! !
 !JadePresenter class categoriesFor: #transactionMode!public!transaction mode! !
 
