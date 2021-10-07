@@ -10,7 +10,17 @@ JadeiteBrowser comment: ''!
 !JadeiteBrowser categoriesForClass!Unclassified! !
 !JadeiteBrowser methodsFor!
 
+queryCommand: aCommandQuery
+	| command |
+	command := aCommandQuery command.
+	(command = #abortTransaction or: [command = #commitTransaction])
+		ifTrue: 
+			[aCommandQuery isEnabled: JadePresenter areAbortCommitEnabled.
+			^true].
+	^super queryCommand: aCommandQuery!
+
 systemBrowserPresenter
 	^JadeiteBrowserPresenter! !
+!JadeiteBrowser categoriesFor: #queryCommand:!menu handlers support!public! !
 !JadeiteBrowser categoriesFor: #systemBrowserPresenter!public! !
 

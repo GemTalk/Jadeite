@@ -19,6 +19,9 @@ addSystemBrowser
 
 	self subclassResponsibility!
 
+areAbortCommitEnabled
+	^self class areAbortCommitEnabled!
+
 gciSession
 
 	^gciSession
@@ -141,6 +144,7 @@ updateService: service
 
 	^self updateServices: (Array with: service) ! !
 !JadePresenter categoriesFor: #addSystemBrowser!private! !
+!JadePresenter categoriesFor: #areAbortCommitEnabled!accessing!public!transaction management! !
 !JadePresenter categoriesFor: #gciSession!public! !
 !JadePresenter categoriesFor: #gciSession:!public! !
 !JadePresenter categoriesFor: #insertIfFalse:!displaying!public! !
@@ -163,6 +167,10 @@ updateService: service
 !JadePresenter categoriesFor: #updateService:!public!services! !
 
 !JadePresenter class methodsFor!
+
+areAbortCommitEnabled
+	^self transactionMode == #autoBegin
+		or: [self transactionMode == #manualBegin and: [self inTransaction]]!
 
 inTransaction
 
@@ -189,6 +197,7 @@ stopListeningForSigAborts
 transactionMode
 
 	^TransactionMode! !
+!JadePresenter class categoriesFor: #areAbortCommitEnabled!public!transaction mode! !
 !JadePresenter class categoriesFor: #inTransaction!public!transaction mode! !
 !JadePresenter class categoriesFor: #isBeginTransactionEnabled!public!testing!transaction mode! !
 !JadePresenter class categoriesFor: #openCommit:inGitHub:!browsing!public! !
