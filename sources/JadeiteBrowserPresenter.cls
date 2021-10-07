@@ -1329,6 +1329,9 @@ queryCommand: aCommandQuery
 	#loadProjects = command
 		ifTrue: 
 			[aCommandQuery isEnabled: true.
+	aCommandQuery commandSymbol = #beginTransaction
+		ifTrue: 
+			[aCommandQuery isEnabled: self isBeginTransactionEnabled.
 			^true].
 	(#(#inspectGlobal #browseGlobalClass #browseGlobalReferences) includes: command)
 		ifTrue: 

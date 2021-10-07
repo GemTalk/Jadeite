@@ -208,6 +208,9 @@ package methodNames
 	add: #JadePresenter -> #basicLoadV2Project:projectsHome:;
 	add: #JadePresenter -> #basicWriteProject:;
 	add: #JadePresenter -> #browseBreakpointList;
+	add: #JadePresenter -> #basicCloneProject:root:;
+	add: #JadePresenter -> #beginTransaction;
+	add: #JadePresenter -> #browseBreakpoints;
 	add: #JadePresenter -> #browseClassReferences:;
 	add: #JadePresenter -> #browseHierarchyImplementorsOf:className:;
 	add: #JadePresenter -> #browseHierarchySendersOf:className:;
@@ -481,6 +484,8 @@ package methodNames
 	add: 'JadePresenter class' -> #enableMethodBreakpoints:in:;
 	add: 'JadePresenter class' -> #findMethodIn:class:presenter:;
 	add: 'JadePresenter class' -> #issueCommands:session:;
+	add: 'JadePresenter class' -> #inTransaction:;
+	add: 'JadePresenter class' -> #issueCommand:session:;
 	add: 'JadePresenter class' -> #openGitHubJadeiteProject;
 	add: 'JadePresenter class' -> #openGitHubRowanProject;
 	add: 'JadePresenter class' -> #openMethodListOn:selecting:session:;
@@ -493,6 +498,8 @@ package methodNames
 	add: 'JadePresenter class' -> #unsavedChangesInvalidSessionDialogIn:text:;
 	add: 'JadePresenter class' -> #unsavedChangesValidSessionDialogIn:;
 	add: 'JadePresenter class' -> #unsavedChangesValidSessionDialogIn:text:;
+	add: 'JadePresenter class' -> #transactionMode:;
+	add: 'JadePresenter class' -> #transactionMode:session:;
 	add: 'JadeServer class' -> #gsString;
 	add: 'JadeServer64bit32 class' -> #gsClassDefinitionStringFor:;
 	add: 'JadeSessionManager class' -> #dump:toFileNamed:andStop:;
@@ -2454,6 +2461,13 @@ basicWriteProject: projectServices
 browseBreakpointList
 	^self class browseBreakpointsIn: self gciSession!
 
+beginTransaction
+	"Even if it takes a windy path, try to make sure
+	all begin transaction in Jadeite pass through here"
+
+	(MessageBox confirm: 'Abort the current transaction and begin a new transaction?')
+		ifTrue: [RowanAnsweringService new exec: 'System beginTransaction' session: gciSession]!	
+
 browseClassReferences: className
 	^self class browseClassReferences: className session: self gciSession!
 
@@ -2751,6 +2765,7 @@ updateProjects
 
 updateServices: services
 	BrowserUpdate current updateServices: services asSet asArray session: gciSession! !
+
 !JadePresenter categoriesForMethods!
 abortTransaction!public!transaction management! !
 autoCommitExecutionString!menu handlers support!public! !
@@ -3104,8 +3119,14 @@ findMethodIn: session class: classService presenter: browser
 	methodService := JadeiteFindMethodDialog showModal: 'DefaultView' on: classService.
 	^self basicBrowseMethod: methodService presenter: browser!
 
+issueCommand: services session: session
+	^BrowserUpdate current issueCommand: services session: session!
+
 issueCommands: services session: session
 	^BrowserUpdate current issueCommands: services session: session!
+
+inTransaction: aBoolean
+	InTransaction := aBoolean!
 
 openGitHubJadeiteProject
 	ShellLibrary default shellOpen: 'https://github.com/GemTalk/Jadeite' directory: ''!
@@ -3178,7 +3199,23 @@ unsavedChangesValidSessionDialogIn: presenter text: text
 	^MessageBox new
 		owner: presenter view;
 		caption: 'Unsaved changes warning in ' , presenter view topShell caption , '!!';
-		confirm: text! !
+		confirm: text!
+
+transactionMode: aSymbol
+	TransactionMode := aSymbol!
+
+transactionMode: aSymbol session: session
+	| executionStringStream answeringService |
+	executionStringStream := WriteStream on: String new.
+	executionStringStream nextPutAll: 'System transactionMode: ' , aSymbol printString , '. '.
+	executionStringStream nextPutAll: 'System inTransaction'.
+	answeringService := RowanAnsweringService new.
+	answeringService exec: executionStringStream contents session: session.
+	self inTransaction: answeringService answer asBoolean.
+	self transactionMode: aSymbol.
+	session stopListeningForSigAborts.
+	self transactionMode == #manualBegin ifTrue: [session listenForSigAborts]! !
+
 !JadePresenter class categoriesForMethods!
 abortTransaction:!browsing support!public! !
 allClassesIn:!browsing support!private! !

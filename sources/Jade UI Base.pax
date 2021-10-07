@@ -70,7 +70,7 @@ Notification subclass: #ShortcutMenuStatus
 	classInstanceVariableNames: ''!
 Presenter subclass: #JadePresenter
 	instanceVariableNames: 'gciSession'
-	classVariableNames: ''
+	classVariableNames: 'InTransaction TransactionMode'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenter subclass: #JadePresenterA

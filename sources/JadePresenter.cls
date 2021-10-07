@@ -2,11 +2,14 @@
 
 Presenter subclass: #JadePresenter
 	instanceVariableNames: 'gciSession'
-	classVariableNames: ''
+	classVariableNames: 'InTransaction TransactionMode'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenter guid: (GUID fromString: '{b55f33eb-59fb-46d6-8fec-7df1571c7d45}')!
-JadePresenter comment: ''!
+JadePresenter comment: 'Abstract class for Jadeite''s presenters. 
+
+We''re storing TransactionMode here for global access.
+However, it might be better to move it to session state on the server and access via a service. '!
 !JadePresenter categoriesForClass!MVP-Presenters! !
 !JadePresenter methodsFor!
 
@@ -55,6 +58,16 @@ onViewOpened
 positionToDefaultLocation
 	self topShell position: JadePresenter defaultWindowPosition!
 
+inTransaction
+
+	^self class inTransaction!
+
+inTransaction: aSymbol
+	self class inTransaction: aSymbol!
+
+isBeginTransactionEnabled
+	^self class isBeginTransactionEnabled!
+
 postEditSaveMethod!
 
 refresh
@@ -89,6 +102,16 @@ subMenuPresenter
 
 	^nil.
 !
+
+transactionMode
+
+	^self class transactionMode!
+
+transactionMode: aSymbol
+	self class transactionMode: aSymbol!
+
+transactionMode: aSymbol session: session
+	self class transactionMode: aSymbol session: session!
 
 updateMenuBar: aMenuBar
 
@@ -131,6 +154,7 @@ updateMenuBar: aMenuBar withName: aString itemsFrom: aPresenter
 
 updateService: service
 	^self updateServices: (Array with: service) ! !
+
 !JadePresenter categoriesForMethods!
 additionalAccelerators!constants!public! !
 commitTransaction!public!transaction management! !
@@ -182,6 +206,15 @@ loadViewResource2: aString inContext: contextView
 maxPrintStringSize
 	^100000!
 
+!JadePresenter class methodsFor!
+
+inTransaction
+
+	^InTransaction!
+
+isBeginTransactionEnabled
+	^self transactionMode = #manualBegin and: [self inTransaction not]!
+
 openCommit: sha inGitHub: projectService
 	^ShellLibrary default shellOpen: projectService projectUrl , '/commit/' , sha directory: ''!
 
@@ -193,6 +226,11 @@ rowanSample1Path
 
 rowanSample9Path
 	^'file:$ROWAN_PROJECTS_HOME/RowanSample9/rowan/specs/spec_0061.ston'! !
+
+transactionMode
+
+	^TransactionMode! !
+
 !JadePresenter class categoriesForMethods!
 defaultAdditionalAccelerators!constants!public! !
 loadViewResource2:inContext:!operations!public! !
@@ -202,4 +240,5 @@ rowanProjectsHomeEnvVarString!constants!public! !
 rowanSample1Path!constants!public! !
 rowanSample9Path!constants!public! !
 !
+
 
