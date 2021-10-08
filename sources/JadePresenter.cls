@@ -195,6 +195,18 @@ isBeginTransactionEnabled
 openCommit: sha inGitHub: projectService
 	^ShellLibrary default shellOpen: projectService projectUrl , '/commit/' , sha directory: ''!
 
+resetSigAbortProcessEnablement
+	"Sent during logout process. 
+	Enablement control is done in the Jadeite.prefs file"
+
+	self sigAbortsProcessEnabled: true!
+
+resetSigAbortProcessInterval
+	"Sent during logout process. 
+	Interval control is done in the Jadeite.prefs file"
+
+	self sigAbortProcessInterval: self defaultSigAbortProcessInterval!
+
 sigAbortProcessInterval
 	^SigAbortProcessInterval ifNil: [SigAbortProcessInterval := self defaultSigAbortProcessInterval]!
 
@@ -229,6 +241,8 @@ transactionMode
 !JadePresenter class categoriesFor: #inTransaction!public!transaction management! !
 !JadePresenter class categoriesFor: #isBeginTransactionEnabled!public!testing!transaction management! !
 !JadePresenter class categoriesFor: #openCommit:inGitHub:!browsing!public! !
+!JadePresenter class categoriesFor: #resetSigAbortProcessEnablement!public!transaction management! !
+!JadePresenter class categoriesFor: #resetSigAbortProcessInterval!public!transaction management! !
 !JadePresenter class categoriesFor: #sigAbortProcessInterval!public!transaction management! !
 !JadePresenter class categoriesFor: #sigAbortProcessInterval:!public!transaction management! !
 !JadePresenter class categoriesFor: #sigAbortsProcess!public!transaction management! !

@@ -181,7 +181,7 @@ preferencesFile
 
 preferencesFileDefaultContents
 	^'#Remove # to uncomment option. 
-#legal values are either a boolean or a name
+#legal values are either a boolean, name, or an integer
 
 #autocommitEnabled: false
 #autocompleteEnabled: false
@@ -194,7 +194,7 @@ preferencesFileDefaultContents
 #openWorkspace: <file path without quotes or nil> 
 #transcriptEnabled: true
 
-#sigAbortProcessInterval: 10
+#sigAbortProcessInterval: <# of seconds with default 10>
 #sigAbortsProcessEnabled: true
 #transactionMode: <autoBegin manualBegin transactionless>
 '! !

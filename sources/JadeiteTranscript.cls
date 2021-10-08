@@ -175,6 +175,12 @@ initialize
 	autoCompleteEnabled := ValueHolder with: JadeiteSearch autoCompleteEnabled.
 !
 
+initializeTransactionModeSettings
+	self transactionMode
+		ifNil: 
+			[self basicTransactionMode: #autoBegin	"should have already been set when window was created ... but just in case"].
+	!
+
 isTranscriptInstalled
 	^isTranscriptInstalled value!
 
@@ -206,7 +212,10 @@ onCloseRequested: boolValueHolder
 	gciSession notNil
 		ifTrue: 
 			[| temp |
-			JadePresenter stopListeningForSigAborts.
+			JadePresenter
+				stopListeningForSigAborts;
+				resetSigAbortProcessEnablement;
+				resetSigAbortProcessInterval.
 			gciSession trigger: #forceJadeiteWindowClose.	"close all windows except me and debugger"
 			temp := gciSession.	"I'm getting closed so make sure session gets logged out"
 			gciSession := nil.
@@ -222,9 +231,7 @@ onViewClosed
 onViewOpened
 	| answeringService installed breakPointsEnabled |
 	super onViewOpened.
-	self transactionMode
-		ifNil: 
-			[self basicTransactionMode: #autoBegin	"should have already been set when window was created ... but just in case"].
+	self initializeTransactionModeSettings.	"should have already been set when window was created ... but just in case"
 	projectListPresenter
 		gciSession: gciSession;
 		refreshProjects.
@@ -357,6 +364,7 @@ transactionMode: aSymbol
 !JadeiteTranscript categoriesFor: #flipTranscript!menu handlers!public! !
 !JadeiteTranscript categoriesFor: #gciSession:!public! !
 !JadeiteTranscript categoriesFor: #initialize!initialization!public! !
+!JadeiteTranscript categoriesFor: #initializeTransactionModeSettings!event handling!public!transaction mode! !
 !JadeiteTranscript categoriesFor: #isTranscriptInstalled!public! !
 !JadeiteTranscript categoriesFor: #isTranscriptInstalledValueHolder!private! !
 !JadeiteTranscript categoriesFor: #onCloseRequested:!event handling!public! !
