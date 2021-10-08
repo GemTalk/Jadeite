@@ -847,6 +847,27 @@ test_transactionModeDefault
 	self assert: transcript transactionMode equals: #autoBegin]
 			ensure: [self restoreBackupPrefsFile: prefsExist]!
 
+test_transactionModeLogoffRestoresDefaultSettings
+	"logging off should reset the transaction mode settings"
+
+	| prefsExist |
+	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
+	prefsExist := self removePreferencesFile.	"don't let preferences muck up the test"
+	JadePresenter
+		sigAbortProcessInterval: JadePresenter defaultSigAbortProcessInterval + 50;
+		sigAbortsProcessEnabled: false;
+		transactionMode: #transactionless session: session.
+	self assert: JadePresenter sigAbortProcessInterval equals: JadePresenter defaultSigAbortProcessInterval + 50.
+	self assert: JadePresenter sigAbortsProcessEnabled equals: false.
+	self assert: JadePresenter transactionMode equals: #transactionless.
+	
+	[self logoutThenLoginAs: 'SystemUser'.	"ensure we have reset the transaction mode on the login to auto"
+	self assert: JadePresenter sigAbortProcessInterval
+		equals: JadePresenter defaultSigAbortProcessInterval.
+	self assert: JadePresenter sigAbortsProcessEnabled equals: true.
+	self assert: JadePresenter transactionMode equals: #autoBegin]
+			ensure: [self restoreBackupPrefsFile: prefsExist]!
+
 test_transactionModeManualTurnsOnSigAbortListener
 	| previousTransactionMode sigAbortListener count |
 	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
@@ -956,4 +977,5 @@ test_selectorsList!public!tests! !
 test_transcriptNamedConsole!public!tests! !
 writeToPrefsFile:!private!support!tests! !
 !
+
 

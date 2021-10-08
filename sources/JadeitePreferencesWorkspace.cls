@@ -25,7 +25,8 @@ openPreferencesOptionsWorkspace
 
 resetPreferences
 	(MessageBox confirm: 'Really reset jadeite.prefs file to default settings?') ifFalse: [^self].
-	self basicResetPreferences! !
+	self basicResetPreferences.
+	self isModified: true. ! !
 !JadeitePreferencesWorkspace categoriesForMethods!
 basicResetPreferences!menu handlers!private! !
 openPreferencesOptionsWorkspace!menu handlers!public! !

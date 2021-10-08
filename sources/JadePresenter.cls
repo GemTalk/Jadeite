@@ -245,6 +245,18 @@ rowanSample1Path
 rowanSample9Path
 	^'file:$ROWAN_PROJECTS_HOME/RowanSample9/rowan/specs/spec_0061.ston'!
 
+resetSigAbortProcessEnablement
+	"Sent during logout process. 
+	Enablement control is done in the Jadeite.prefs file"
+
+	self sigAbortsProcessEnabled: true!
+
+resetSigAbortProcessInterval
+	"Sent during logout process. 
+	Interval control is done in the Jadeite.prefs file"
+
+	self sigAbortProcessInterval: self defaultSigAbortProcessInterval!
+
 sigAbortProcessInterval
 	^SigAbortProcessInterval ifNil: [SigAbortProcessInterval := self defaultSigAbortProcessInterval]!
 

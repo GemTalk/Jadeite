@@ -265,6 +265,26 @@ test_preferencesSettingTranscript
 	self deny: (RowanAnsweringService new isTranscriptInstalledIn: session)]
 			ensure: [transcriptInstalled ifTrue: [RowanAnsweringService new flipTranscriptIn: session]]!
 
+test_preferencesSigAbortsProcessEnabled
+	| prefs previousSigAbortsProcessEnabled |
+	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
+	previousSigAbortsProcessEnabled := JadePresenter sigAbortsProcessEnabled.
+	
+	[prefs := JadeitePreferences new session: session.
+	prefs sigAbortsProcessEnabled: false.
+	self assert: JadePresenter sigAbortsProcessEnabled equals: false]
+			ensure: [JadePresenter sigAbortsProcessEnabled: previousSigAbortsProcessEnabled]!
+
+test_preferencesSigAbortsProcessInterval
+	| prefs previousSigAbortsProcessInterval |
+	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
+	previousSigAbortsProcessInterval := JadePresenter sigAbortProcessInterval.
+	
+	[prefs := JadeitePreferences new session: session.
+	prefs sigAbortProcessInterval: '500'.
+	self assert: JadePresenter sigAbortProcessInterval equals: 500]
+			ensure: [JadePresenter sigAbortProcessInterval: previousSigAbortsProcessInterval]!
+
 test_preferencesSUnitOpenBrowser
 	| prefs browser |
 	prefs := JadeitePreferences new session: session.
@@ -274,6 +294,16 @@ test_preferencesSUnitOpenBrowser
 	self assert: browser primaryPresenter packageListPresenter selection name
 		equals: 'Rowan-Services-Tests']
 			ensure: [browser view close]!
+
+test_preferencesTransactionModeSet
+	| prefs previousTransactionMode |
+	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
+	previousTransactionMode := JadePresenter transactionMode.
+	
+	[prefs := JadeitePreferences new session: session.
+	prefs transactionMode: #transactionless.
+	self assert: JadePresenter transactionMode = #transactionless]
+			ensure: [JadePresenter transactionMode: previousTransactionMode session: session]!
 
 test_resetPreferences
 	self testsIssue: #issue553 withTitle: 'Jadeite settings in preferences file (3.0.78)'.
@@ -288,6 +318,7 @@ test_validPreferences
 	validPreferences := #(#transcriptEnabled: #openBrowserOnClass: #openBrowserOnPackage: #openSUnitBrowserOnPackage: #autocommitEnabled: #autocompleteEnabled: #breakpointsEnabled: #loggingEnabled:).
 	prefs := JadeitePreferences new session: session.
 	validPreferences do: [:symbol | self assert: (prefs class canUnderstand: symbol)]! !
+
 !JadeitePreferencesTestCase categoriesForMethods!
 closeWorkspace!public!support! !
 primaryTestWindow!accessing!public! !
@@ -312,4 +343,3 @@ test_preferencesSUnitOpenBrowser!public!tests! !
 test_resetPreferences!public!tests! !
 test_validPreferences!public!tests! !
 !
-

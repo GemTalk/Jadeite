@@ -194,7 +194,8 @@ preferencesFile
 preferencesFileDefaultContents
 	^'#Remove # to uncomment option. 
 
-#legal values are a boolean
+#legal values are either a boolean
+
 #autocommitEnabled: false
 #autocompleteEnabled: false
 #breakpointsEnabled: true
@@ -211,7 +212,7 @@ preferencesFileDefaultContents
 #openSUnitBrowserOnPackage: <package name>
 #openWorkspace: <file path without quotes or nil> 
 #transcriptEnabled: true
-#sigAbortProcessInterval: 10
+#sigAbortProcessInterval: <# of seconds with default 10>
 #sigAbortsProcessEnabled: true
 #transactionMode: <autoBegin manualBegin transactionless>
 !JadeitePreferences class categoriesForMethods!
