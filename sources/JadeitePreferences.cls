@@ -6,7 +6,12 @@ Object subclass: #JadeitePreferences
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeitePreferences guid: (GUID fromString: '{80b64814-9abd-4128-b728-ba94645715b1}')!
-JadeitePreferences comment: ''!
+JadeitePreferences comment: 'Client preferences are applied on startup. 
+See GciSession>>postLoadClientPreferences.
+
+Server preferences are stored in #JadeitePreferences in UserGlobals 
+on the server. If the value is a block, it gets run on login after 
+client preferences. See GciSession>>postLoadServerPreferences'!
 !JadeitePreferences categoriesForClass!Unclassified! !
 !JadeitePreferences methodsFor!
 
@@ -139,6 +144,15 @@ performCommand: message allowSpacesInArgs: preferencesString
 session: anObject
 	session := anObject!
 
+sigAbortProcessInterval: anIntegerString
+	JadePresenter sigAbortProcessInterval: anIntegerString asNumber!
+
+sigAbortsProcessEnabled: booleanString
+	JadePresenter sigAbortsProcessEnabled: booleanString = 'true'!
+
+transactionMode: transactionMode
+	JadePresenter transactionMode: transactionMode asSymbol session: session!
+
 transcriptEnabled: booleanString
 	"file syntax - transcriptEnabled false"
 
@@ -147,6 +161,7 @@ transcriptEnabled: booleanString
 	answeringService := RowanAnsweringService new.
 	(answeringService isTranscriptInstalledIn: session) == boolean
 		ifFalse: [answeringService flipTranscriptIn: session]! !
+
 !JadeitePreferences categoriesForMethods!
 allowsSpacesInArgument:!private!testing! !
 applyPreference:!accessing!must not strip!public! !
@@ -194,10 +209,13 @@ preferencesFileDefaultContents
 #openBrowserOnPackage: <package name>
 #openBrowserOnProject: <project name> 
 #openSUnitBrowserOnPackage: <package name>
-#openWorkspace: <file path without quotes or nil> '! !
+#openWorkspace: <file path without quotes or nil> 
+#transcriptEnabled: true
+#sigAbortProcessInterval: 10
+#sigAbortsProcessEnabled: true
+#transactionMode: <autoBegin manualBegin transactionless>
 !JadeitePreferences class categoriesForMethods!
 onSession:!instance creation!public! !
 preferencesFile!constants!public! !
 preferencesFileDefaultContents!constants!public! !
 !
-

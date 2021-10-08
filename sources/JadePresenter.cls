@@ -2,7 +2,7 @@
 
 Presenter subclass: #JadePresenter
 	instanceVariableNames: 'gciSession'
-	classVariableNames: 'InTransaction SigAbortsProcess TransactionMode'
+	classVariableNames: 'InTransaction SigAbortProcessInterval SigAbortsProcess SigAbortsProcessEnabled TransactionMode'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenter guid: (GUID fromString: '{b55f33eb-59fb-46d6-8fec-7df1571c7d45}')!
@@ -90,6 +90,12 @@ setStatusBarDefault
 	| statusBarView |
 	statusBarView := self topShell view viewNamed: 'statusBarField'.
 	statusBarView backcolor: statusBarView defaultBackcolor!
+
+sigAbortsProcessEnabled
+	^self class sigAbortsProcessEnabled!
+
+sigAbortsProcessEnabled: aBoolean
+	self class sigAbortsProcessEnabled: aBoolean!
 
 statusBarText: aString
 	self topShell statusBarText: aString.
@@ -215,6 +221,10 @@ areAbortCommitEnabled
 	^self transactionMode == #autoBegin
 		or: [self transactionMode == #manualBegin and: [self inTransaction]]!
 
+defaultSigAbortProcessInterval
+	"in seconds"
+
+	^10!
 
 inTransaction
 
@@ -233,7 +243,15 @@ rowanSample1Path
 	^'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1_resolved_v2.ston'!
 
 rowanSample9Path
-	^'file:$ROWAN_PROJECTS_HOME/RowanSample9/rowan/specs/spec_0061.ston'! !
+	^'file:$ROWAN_PROJECTS_HOME/RowanSample9/rowan/specs/spec_0061.ston'!
+
+sigAbortProcessInterval
+	^SigAbortProcessInterval ifNil: [SigAbortProcessInterval := self defaultSigAbortProcessInterval]!
+
+sigAbortProcessInterval: anInteger
+	"can be set from preferences file to be applied on startup"
+
+	SigAbortProcessInterval := anInteger!
 
 sigAbortsProcess
 
@@ -242,6 +260,12 @@ sigAbortsProcess
 sigAbortsProcess: aProcess
 
 	SigAbortsProcess := aProcess!
+
+sigAbortsProcessEnabled
+	^SigAbortsProcessEnabled ifNil: [SigAbortsProcessEnabled := true]!
+
+sigAbortsProcessEnabled: aBoolean
+	SigAbortsProcessEnabled := aBoolean!
 
 stopListeningForSigAborts
 	self sigAbortsProcess ifNotNil: [:proc | proc terminate].

@@ -250,6 +250,7 @@ package methodNames
 	add: #JadePresenter -> #setCompileErrorColor;
 	add: #JadePresenter -> #setCompileWarningColor;
 	add: #JadePresenter -> #setInTransaction:session:;
+	add: #JadePresenter -> #sigAbortProcessInterval;
 	add: #JadePresenter -> #sigAbortsProcess;
 	add: #JadePresenter -> #sigAbortsProcess:;
 	add: #JadePresenter -> #stopListeningForSigAborts;
@@ -923,7 +924,7 @@ JadeShell subclass: #JadeiteComponentEditor
 JadeShell subclass: #JadeiteLoadSpecEditor
 	instanceVariableNames: ''
 JadeTranscript subclass: #JadeiteTranscript
-	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsEnabled autoCompleteEnabled transactionModePresenter transactionMode'
+	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsEnabled autoCompleteEnabled transactionModePresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -2677,6 +2678,7 @@ onViewClosed
 					RowanBrowserService new releaseWindow: window view handle value session: self gciSession]]!
 
 listenForSigAborts: session
+	self sigAbortsProcessEnabled ifFalse:[^self]. 
 	self
 		sigAbortsProcess: (
 			[
@@ -2687,7 +2689,7 @@ listenForSigAborts: session
 						ifTrue: 
 							[self abortTransaction.
 							self class setInTransaction: RowanAnsweringService new session: self]].
-			(Delay forSeconds: 1) wait]
+			(Delay forSeconds: self sigAbortProcessInterval) wait]
 					repeat]
 					forkAt: Processor userBackgroundPriority).
 	self sigAbortsProcess name: 'SigAbort Listening Process'!
@@ -2788,6 +2790,9 @@ setCompileWarningColor
 
 setInTransaction: answeringService session: gciSession
 	^self class setInTransaction: answeringService session: gciSession!
+
+sigAbortProcessInterval
+	^self class sigAbortProcessInterval!
 
 sigAbortsProcess 
 	^self class sigAbortsProcess!
