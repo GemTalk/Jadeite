@@ -2,7 +2,7 @@
 
 Presenter subclass: #JadePresenter
 	instanceVariableNames: 'gciSession'
-	classVariableNames: 'InTransaction SigAbortsProcess TransactionMode'
+	classVariableNames: 'InTransaction SigAbortProcessInterval SigAbortsProcess SigAbortsProcessEnabled TransactionMode'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenter guid: (GUID fromString: '{b55f33eb-59fb-46d6-8fec-7df1571c7d45}')!
@@ -73,6 +73,12 @@ setStatusBarDefault
 	| statusBarView |
 	statusBarView := self topShell view viewNamed: 'statusBarField'.
 	statusBarView backcolor: statusBarView defaultBackcolor!
+
+sigAbortsProcessEnabled
+	^self class sigAbortsProcessEnabled!
+
+sigAbortsProcessEnabled: aBoolean
+	self class sigAbortsProcessEnabled: aBoolean!
 
 statusBarText: aString
 	self topShell statusBarText: aString.
@@ -156,6 +162,8 @@ updateService: service
 !JadePresenter categoriesFor: #refreshFromServer!public! !
 !JadePresenter categoriesFor: #resetCursor!public! !
 !JadePresenter categoriesFor: #setStatusBarDefault!displaying!public! !
+!JadePresenter categoriesFor: #sigAbortsProcessEnabled!public!transaction management! !
+!JadePresenter categoriesFor: #sigAbortsProcessEnabled:!public!transaction management! !
 !JadePresenter categoriesFor: #statusBarText:!public! !
 !JadePresenter categoriesFor: #subMenuName!menus!public! !
 !JadePresenter categoriesFor: #subMenuPresenter!menus!public! !
@@ -172,6 +180,11 @@ areAbortCommitEnabled
 	^self transactionMode == #autoBegin
 		or: [self transactionMode == #manualBegin and: [self inTransaction]]!
 
+defaultSigAbortProcessInterval
+	"in seconds"
+
+	^10!
+
 inTransaction
 
 	^InTransaction!
@@ -182,6 +195,14 @@ isBeginTransactionEnabled
 openCommit: sha inGitHub: projectService
 	^ShellLibrary default shellOpen: projectService projectUrl , '/commit/' , sha directory: ''!
 
+sigAbortProcessInterval
+	^SigAbortProcessInterval ifNil: [SigAbortProcessInterval := self defaultSigAbortProcessInterval]!
+
+sigAbortProcessInterval: anInteger
+	"can be set from preferences file to be applied on startup"
+
+	SigAbortProcessInterval := anInteger!
+
 sigAbortsProcess
 
 	^SigAbortsProcess!
@@ -190,6 +211,12 @@ sigAbortsProcess: aProcess
 
 	SigAbortsProcess := aProcess!
 
+sigAbortsProcessEnabled
+	^SigAbortsProcessEnabled ifNil: [SigAbortsProcessEnabled := true]!
+
+sigAbortsProcessEnabled: aBoolean
+	SigAbortsProcessEnabled := aBoolean!
+
 stopListeningForSigAborts
 	self sigAbortsProcess ifNotNil: [:proc | proc terminate].
 	self sigAbortsProcess: nil!
@@ -197,12 +224,17 @@ stopListeningForSigAborts
 transactionMode
 
 	^TransactionMode! !
-!JadePresenter class categoriesFor: #areAbortCommitEnabled!public!transaction mode! !
-!JadePresenter class categoriesFor: #inTransaction!public!transaction mode! !
-!JadePresenter class categoriesFor: #isBeginTransactionEnabled!public!testing!transaction mode! !
+!JadePresenter class categoriesFor: #areAbortCommitEnabled!public!transaction management! !
+!JadePresenter class categoriesFor: #defaultSigAbortProcessInterval!public!transaction management! !
+!JadePresenter class categoriesFor: #inTransaction!public!transaction management! !
+!JadePresenter class categoriesFor: #isBeginTransactionEnabled!public!testing!transaction management! !
 !JadePresenter class categoriesFor: #openCommit:inGitHub:!browsing!public! !
-!JadePresenter class categoriesFor: #sigAbortsProcess!public!transaction mode! !
-!JadePresenter class categoriesFor: #sigAbortsProcess:!public!transaction mode! !
-!JadePresenter class categoriesFor: #stopListeningForSigAborts!public!transaction mode! !
-!JadePresenter class categoriesFor: #transactionMode!public!transaction mode! !
+!JadePresenter class categoriesFor: #sigAbortProcessInterval!public!transaction management! !
+!JadePresenter class categoriesFor: #sigAbortProcessInterval:!public!transaction management! !
+!JadePresenter class categoriesFor: #sigAbortsProcess!public!transaction management! !
+!JadePresenter class categoriesFor: #sigAbortsProcess:!public!transaction management! !
+!JadePresenter class categoriesFor: #sigAbortsProcessEnabled!public!transaction management! !
+!JadePresenter class categoriesFor: #sigAbortsProcessEnabled:!public!transaction management! !
+!JadePresenter class categoriesFor: #stopListeningForSigAborts!public!transaction management! !
+!JadePresenter class categoriesFor: #transactionMode!public!transaction management! !
 

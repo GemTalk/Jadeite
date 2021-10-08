@@ -6,7 +6,12 @@ Object subclass: #JadeitePreferences
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeitePreferences guid: (GUID fromString: '{80b64814-9abd-4128-b728-ba94645715b1}')!
-JadeitePreferences comment: ''!
+JadeitePreferences comment: 'Client preferences are applied on startup. 
+See GciSession>>postLoadClientPreferences.
+
+Server preferences are stored in #JadeitePreferences in UserGlobals 
+on the server. If the value is a block, it gets run on login after 
+client preferences. See GciSession>>postLoadServerPreferences'!
 !JadeitePreferences categoriesForClass!Unclassified! !
 !JadeitePreferences methodsFor!
 
@@ -128,6 +133,15 @@ performCommand: message allowSpacesInArgs: preferencesString
 session: anObject
 	session := anObject!
 
+sigAbortProcessInterval: anIntegerString
+	JadePresenter sigAbortProcessInterval: anIntegerString asNumber!
+
+sigAbortsProcessEnabled: booleanString
+	JadePresenter sigAbortsProcessEnabled: booleanString = 'true'!
+
+transactionMode: transactionMode
+	JadePresenter transactionMode: transactionMode asSymbol session: session!
+
 transcriptEnabled: booleanString
 	"file syntax - transcriptEnabled false"
 
@@ -151,6 +165,9 @@ transcriptEnabled: booleanString
 !JadeitePreferences categoriesFor: #openWorkspace:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #performCommand:allowSpacesInArgs:!accessing!must not strip!public! !
 !JadeitePreferences categoriesFor: #session:!accessing!private! !
+!JadeitePreferences categoriesFor: #sigAbortProcessInterval:!must not strip!preferences!public! !
+!JadeitePreferences categoriesFor: #sigAbortsProcessEnabled:!must not strip!preferences!public! !
+!JadeitePreferences categoriesFor: #transactionMode:!must not strip!preferences!public! !
 !JadeitePreferences categoriesFor: #transcriptEnabled:!must not strip!preferences!public! !
 
 !JadeitePreferences class methodsFor!
@@ -175,7 +192,12 @@ preferencesFileDefaultContents
 #openBrowserOnProject: <project name> 
 #openSUnitBrowserOnPackage: <package name>
 #openWorkspace: <file path without quotes or nil> 
-#transcriptEnabled: true'! !
+#transcriptEnabled: true
+
+#sigAbortProcessInterval: 10
+#sigAbortsProcessEnabled: true
+#transactionMode: <autoBegin manualBegin transactionless>
+'! !
 !JadeitePreferences class categoriesFor: #onSession:!instance creation!public! !
 !JadeitePreferences class categoriesFor: #preferencesFile!constants!public! !
 !JadeitePreferences class categoriesFor: #preferencesFileDefaultContents!constants!public! !

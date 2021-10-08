@@ -227,6 +227,7 @@ package methodNames
 	add: #JadePresenter -> #setCompileErrorColor;
 	add: #JadePresenter -> #setCompileWarningColor;
 	add: #JadePresenter -> #setInTransaction:session:;
+	add: #JadePresenter -> #sigAbortProcessInterval;
 	add: #JadePresenter -> #sigAbortsProcess;
 	add: #JadePresenter -> #sigAbortsProcess:;
 	add: #JadePresenter -> #stopListeningForSigAborts;
@@ -842,7 +843,7 @@ JadeWorkspace subclass: #JadeitePreferencesWorkspace
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeTranscript subclass: #JadeiteTranscript
-	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsEnabled autoCompleteEnabled transactionModePresenter transactionMode'
+	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsEnabled autoCompleteEnabled transactionModePresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -2307,6 +2308,7 @@ issueCommand: service
 	^self class issueCommand: service session: self gciSession!
 
 listenForSigAborts: session
+	self sigAbortsProcessEnabled ifFalse:[^self]. 
 	self
 		sigAbortsProcess: (
 			[
@@ -2317,7 +2319,7 @@ listenForSigAborts: session
 						ifTrue: 
 							[self abortTransaction.
 							self class setInTransaction: RowanAnsweringService new session: self]].
-			(Delay forSeconds: 1) wait]
+			(Delay forSeconds: self sigAbortProcessInterval) wait]
 					repeat]
 					forkAt: Processor userBackgroundPriority).
 	self sigAbortsProcess name: 'SigAbort Listening Process'!
@@ -2419,6 +2421,9 @@ setCompileWarningColor
 setInTransaction: answeringService session: gciSession
 	^self class setInTransaction: answeringService session: gciSession!
 
+sigAbortProcessInterval
+	^self class sigAbortProcessInterval!
+
 sigAbortsProcess 
 	^self class sigAbortsProcess!
 
@@ -2473,6 +2478,7 @@ updateServices: services
 !JadePresenter categoriesFor: #setCompileErrorColor!compile support!public! !
 !JadePresenter categoriesFor: #setCompileWarningColor!compile support!public! !
 !JadePresenter categoriesFor: #setInTransaction:session:!public!transaction management! !
+!JadePresenter categoriesFor: #sigAbortProcessInterval!accessing!public!transaction management! !
 !JadePresenter categoriesFor: #sigAbortsProcess!accessing!public!transaction management! !
 !JadePresenter categoriesFor: #sigAbortsProcess:!accessing!public!transaction management! !
 !JadePresenter categoriesFor: #stopListeningForSigAborts!accessing!public!transaction management! !
@@ -2814,7 +2820,7 @@ transactionMode: aSymbol session: session
 !JadePresenter class categoriesFor: #clearMethodBreakpoints:in:!browsing!public! !
 !JadePresenter class categoriesFor: #convertToPattern:!browsing support!private! !
 !JadePresenter class categoriesFor: #findMethodIn:class:presenter:!browsing!public! !
-!JadePresenter class categoriesFor: #inTransaction:!public!transaction mode! !
+!JadePresenter class categoriesFor: #inTransaction:!public!transaction management! !
 !JadePresenter class categoriesFor: #issueCommand:session:!public! !
 !JadePresenter class categoriesFor: #openGitHubJadeiteProject!browsing!public! !
 !JadePresenter class categoriesFor: #openGitHubRowanProject!browsing!public! !
@@ -2823,9 +2829,9 @@ transactionMode: aSymbol session: session
 !JadePresenter class categoriesFor: #promptFor:withCaption:!browsing support!private! !
 !JadePresenter class categoriesFor: #promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:!browsing support!private! !
 !JadePresenter class categoriesFor: #runMethodTests:in:!public! !
-!JadePresenter class categoriesFor: #setInTransaction:session:!public!transaction mode! !
-!JadePresenter class categoriesFor: #transactionMode:!public!transaction mode! !
-!JadePresenter class categoriesFor: #transactionMode:session:!public!transaction mode! !
+!JadePresenter class categoriesFor: #setInTransaction:session:!public!transaction management! !
+!JadePresenter class categoriesFor: #transactionMode:!public!transaction management! !
+!JadePresenter class categoriesFor: #transactionMode:session:!public!transaction management! !
 
 !JadePresenterA methodsFor!
 
