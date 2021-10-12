@@ -33,6 +33,9 @@ checkAutoCommitMenuItemCheckmark: commandQuery
 	transcript queryCommand: commandQuery.
 	self deny: commandQuery isChecked!
 
+jadeitePrefsFilePath
+	^SessionManager current imageBase , 'Jadeite.prefs'!
+
 menuItemIsEnabledInAllPresenters: aSymbol
 	| commandQuery |
 	self allTranscriptPresenters do: 
@@ -45,7 +48,7 @@ menuItemIsEnabledInAllPresenters: aSymbol
 
 removePreferencesFile
 	| path prefsExist |
-	path := SessionManager current imageBase , 'Jadeite.prefs'.
+	path := self jadeitePrefsFilePath.
 	prefsExist := File exists: path.
 	prefsExist
 		ifTrue: 
@@ -652,7 +655,7 @@ test_openPreferencesFileCreatePrefsFile
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #yes.
 	prefsWorkspace := prefsItem commandDescription performAgainst: transcript.
-	self assert: (File exists: path)]
+	self assert: (File exists: self jadeitePrefsFilePath)]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
 				prefsWorkspace view close.
@@ -977,5 +980,6 @@ test_selectorsList!public!tests! !
 test_transcriptNamedConsole!public!tests! !
 writeToPrefsFile:!private!support!tests! !
 !
+
 
 

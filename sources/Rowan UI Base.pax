@@ -206,6 +206,7 @@ package methodNames
 	add: #JadePresenter -> #basicAllSelectedProjectsDirty:;
 	add: #JadePresenter -> #basicCheckoutTagAndRefresh:for:;
 	add: #JadePresenter -> #basicLoadV2Project:projectsHome:;
+	add: #JadePresenter -> #basicBeginTransaction;
 	add: #JadePresenter -> #basicWriteProject:;
 	add: #JadePresenter -> #browseBreakpointList;
 	add: #JadePresenter -> #basicCloneProject:root:;
@@ -2426,6 +2427,12 @@ basicAllSelectedProjectsDirty: aProjectListPresenter
 		ifNone: [^true].
 	^false!
 
+basicBeginTransaction
+	| answeringService |
+	answeringService := RowanAnsweringService new.
+	answeringService exec: 'System beginTransaction' session: gciSession.
+	self setInTransaction: answeringService session: gciSession!
+
 basicCheckoutTagAndRefresh: choice for: projectService
 	projectService basicCheckoutTag: choice using: self gciSession.
 	self refresh. !
@@ -2466,11 +2473,7 @@ beginTransaction
 	all begin transaction in Jadeite pass through here"
 
 	(MessageBox confirm: 'Abort the current transaction and begin a new transaction?')
-		ifTrue: 
-			[| answeringService |
-			answeringService := RowanAnsweringService new.
-			answeringService exec: 'System beginTransaction' session: gciSession.
-			self setInTransaction: answeringService session: gciSession]!
+		ifTrue: [self basicBeginTransaction]!
 
 browseClassReferences: className
 	^self class browseClassReferences: className session: self gciSession!
@@ -2678,7 +2681,7 @@ onViewClosed
 					RowanBrowserService new releaseWindow: window view handle value session: self gciSession]]!
 
 listenForSigAborts: session
-	self sigAbortsProcessEnabled ifFalse:[^self]. 
+	self sigAbortsProcessEnabled ifFalse: [^self].
 	self
 		sigAbortsProcess: (
 			[
@@ -2688,7 +2691,7 @@ listenForSigAborts: session
 					session isValidSession
 						ifTrue: 
 							[self abortTransaction.
-							self class setInTransaction: RowanAnsweringService new session: self]].
+							self class setInTransaction: RowanAnsweringService new session: session]].
 			(Delay forSeconds: self sigAbortProcessInterval) wait]
 					repeat]
 					forkAt: Processor userBackgroundPriority).
