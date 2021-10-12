@@ -70,7 +70,7 @@ executeStringInOtherSession: string
 	| executionString |
 	executionString := '(UserGlobals at: #otherSession) '.
 	executionString := executionString , string.
-	session executeString: executionString!
+	^session executeString: executionString!
 
 family: family ofNodesIn: presenter
 	| nodeFamily services |
@@ -122,11 +122,11 @@ loginOtherSession
 	session
 		executeString: 'UserGlobals at: #otherSession put: (GsExternalSession gemNRS: ''' , session gemNRS
 				, ''' stoneNRS: ''' , session stoneName
-				, ''' username: ''SystemUser'' password: ''swordfish'') login'!
+				, ''' username: ''SystemUser'' password: ''swordfish'') login'.!
 
 logoutOtherSession
 	^session executeString: '
-				(UserGlobals at: #otherSession) logout.'!
+				(UserGlobals at: #otherSession) ifNotNil: [:sess | sess logout]'!
 
 modifySampleMethodFoo
 
@@ -141,6 +141,14 @@ modifySampleMethodFoo
 
 nextTabView
 	self projectsPresenter topShell cardsPresenter view cardLayout cycleNextCard!
+
+nonSystemSessionCount
+	^session
+		executeString: '
+(System currentSessions select:[:i |
+	| username |
+	username := ((System descriptionOfSession: i) at: 1) userId. 
+	((username ~= ''GcUser'') and:[username ~=''SymbolUser''])]) size'!
 
 packageNamed: aString
 	^self packageListPresenter list
@@ -212,6 +220,17 @@ selectVariableListEntryForcingEvent: variable
 	self variableListPresenter onSelectionChanging: event.
 	event value
 		ifTrue: [self variableListPresenter selection: (self variableListPresenter list at: index)]!
+
+stopOtherSessions
+	session
+		executeString: '	
+
+	| sessionsToStop |
+sessionsToStop :=  System currentSessions select:[:i |
+	| username |
+	username := ((System descriptionOfSession: i) at: 1) userId. 
+	((username ~= ''GcUser'') and:[(username ~=''SymbolUser'' and:[System session ~= i])])].
+sessionsToStop do:[:i | System stopSession: i]'!
 
 test_abortOnVariablesTab
 	self unloadSampleProject.
@@ -4628,6 +4647,46 @@ test_tabNames_projectsBrowserNotLost
 	index := 1.
 	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1'	"not affected by other tab"!
 
+test_transactionModeSigAbortsListener
+	| previousTransactionMode previousSigAbortProcessInterval count secondSession |
+	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
+	[self nonSystemSessionCount = 1] whileFalse: 
+			[self stopOtherSessions.
+			(Delay forMilliseconds: 10) wait].
+	self assert: self nonSystemSessionCount equals: 1.
+	previousTransactionMode := transcript transactionMode.
+	previousSigAbortProcessInterval := JadePresenter sigAbortProcessInterval.
+	JadePresenter sigAbortProcessInterval: 1.
+	
+	[secondSession := JadeLogin allInstances first login.	"should always be only one ... I hope"
+	self assert: secondSession ~~ session.
+	transcript basicTransactionMode: #manualBegin.	"this will abort the current session and turn on the listener process"
+	self deny: JadePresenter inTransaction.
+	self deny: (session executeString: 'System inTransaction').
+	session executeString: 'UserGlobals at: #willBeRemovedOnAbort put: 1'.
+	count := 0.
+	[count < 750] whileTrue: 
+			[secondSession
+				executeString: 'UserGlobals at: #ulp put: ((1 to: 50) collect:[:ea | Object new]). System commit'.
+			(Delay forMilliseconds: 20) wait.
+			count := count + 1].
+	count := 0.
+	[count > 2000] whileFalse: 
+			[count := count + 1.
+			(Delay forMilliseconds: 10) wait].
+	self assertIsNil: (session executeString: 'UserGlobals at: #willBeRemovedOnAbort ifAbsent:[]')]
+			ensure: 
+				[secondSession _library ifNotNil: [:lib | lib logoutSession: secondSession gciSessionId].
+				secondSession
+					gciSessionId: nil;
+					library: nil.	"logout without triggering events"
+				GciSession current: session. "Jadeite isn't really setup for two sessions. Make sure our global session is the right one" 
+				transcript basicTransactionMode: previousTransactionMode.
+				JadePresenter sigAbortProcessInterval: previousSigAbortProcessInterval.
+				self assert: (session executeString: 'System transactionMode') equals: previousTransactionMode.
+				self cloneRowanSample1.
+				self ensureRowanSample1Loaded]!
+
 test_twoBrowsersAddedClassAppears
 	"if the same package is selected, a new class appears but the existing
 	class selection doesn't change"
@@ -5359,6 +5418,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #logoutOtherSession!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #modifySampleMethodFoo!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #nextTabView!public!views! !
+!JadeiteProjectBrowserTestCase categoriesFor: #nonSystemSessionCount!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #packageNamed:!private!project support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #previousTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #projectList!private!project support! !
@@ -5370,6 +5430,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #saveTestClass!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectCommentTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectVariableListEntryForcingEvent:!private! !
+!JadeiteProjectBrowserTestCase categoriesFor: #stopOtherSessions!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abortOnVariablesTab!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abortRemovesClassAndMethod!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abortRemovesProjectAndPackage!public!test class list! !
@@ -5583,6 +5644,7 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!tests! !
+!JadeiteProjectBrowserTestCase categoriesFor: #test_transactionModeSigAbortsListener!public!test transaction mode! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassAppears!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassAppearsInHierarchy1!public!test two browsers!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassAppearsInHierarchy2!public!test two browsers!tests! !

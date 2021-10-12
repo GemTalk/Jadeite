@@ -189,6 +189,7 @@ package methodNames
 	add: #JadeNavigationInspector -> #setNewInspectedObject;
 	add: #JadePresenter -> #abortTransaction;
 	add: #JadePresenter -> #autoCommitExecutionString;
+	add: #JadePresenter -> #basicBeginTransaction;
 	add: #JadePresenter -> #basicCloneProject:root:;
 	add: #JadePresenter -> #beginTransaction;
 	add: #JadePresenter -> #browseBreakpoints;
@@ -2108,6 +2109,12 @@ abortTransaction
 autoCommitExecutionString
 	^'RowanService autoCommit ifTrue:[System commitTransaction].'!
 
+basicBeginTransaction
+	| answeringService |
+	answeringService := RowanAnsweringService new.
+	answeringService exec: 'System beginTransaction' session: gciSession.
+	self setInTransaction: answeringService session: gciSession!
+
 basicCloneProject: path root: root
 	| service |
 	service := RowanProjectService new.
@@ -2124,11 +2131,7 @@ beginTransaction
 	all begin transaction in Jadeite pass through here"
 
 	(MessageBox confirm: 'Abort the current transaction and begin a new transaction?')
-		ifTrue: 
-			[| answeringService |
-			answeringService := RowanAnsweringService new.
-			answeringService exec: 'System beginTransaction' session: gciSession.
-			self setInTransaction: answeringService session: gciSession]!
+		ifTrue: [self basicBeginTransaction]!
 
 browseBreakpoints
 	^self class browseBreakpointsIn: self gciSession!
@@ -2308,7 +2311,7 @@ issueCommand: service
 	^self class issueCommand: service session: self gciSession!
 
 listenForSigAborts: session
-	self sigAbortsProcessEnabled ifFalse:[^self]. 
+	self sigAbortsProcessEnabled ifFalse: [^self].
 	self
 		sigAbortsProcess: (
 			[
@@ -2318,7 +2321,7 @@ listenForSigAborts: session
 					session isValidSession
 						ifTrue: 
 							[self abortTransaction.
-							self class setInTransaction: RowanAnsweringService new session: self]].
+							self class setInTransaction: RowanAnsweringService new session: session]].
 			(Delay forSeconds: self sigAbortProcessInterval) wait]
 					repeat]
 					forkAt: Processor userBackgroundPriority).
@@ -2440,6 +2443,7 @@ updateServices: services
 	BrowserUpdate current updateServices: services asSet asArray session: gciSession! !
 !JadePresenter categoriesFor: #abortTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #autoCommitExecutionString!menu handlers support!public! !
+!JadePresenter categoriesFor: #basicBeginTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #basicCloneProject:root:!menu handlers!private! !
 !JadePresenter categoriesFor: #beginTransaction!public!transaction management! !
 !JadePresenter categoriesFor: #browseBreakpoints!menu handlers!public! !

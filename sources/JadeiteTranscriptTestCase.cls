@@ -25,6 +25,9 @@ allTranscriptPresenters
 browseMenu
 	^transcript view menuBar items detect: [:menu | '*Browse*' match: menu text] ifNone: []!
 
+jadeitePrefsFilePath
+	^SessionManager current imageBase , 'Jadeite.prefs'!
+
 menuItemIsEnabledInAllPresenters: aSymbol
 	| commandQuery |
 	self allTranscriptPresenters do: 
@@ -37,7 +40,7 @@ menuItemIsEnabledInAllPresenters: aSymbol
 
 removePreferencesFile
 	| path prefsExist |
-	path := SessionManager current imageBase , 'Jadeite.prefs'.
+	path := self jadeitePrefsFilePath.
 	prefsExist := File exists: path.
 	prefsExist
 		ifTrue: 
@@ -571,12 +574,12 @@ test_openPreferencesFileCreatePrefsFile
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #yes.
 	prefsWorkspace := prefsItem commandDescription performAgainst: transcript.
-	self assert: (File exists: path)]
+	self assert: (File exists: self jadeitePrefsFilePath)]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
 				prefsWorkspace view close.
 				self restoreBackupPrefsFile: prefsExist.
-				self assert: (File exists: path) equals: prefsExist]!
+				self assert: (File exists: self jadeitePrefsFilePath) equals: prefsExist]!
 
 test_popupMenuHasBrowseClass
 	| browseClassItem |
@@ -786,6 +789,7 @@ writeToPrefsFile: string
 	[fileStream nextPutAll: string] ensure: [fileStream close]! !
 !JadeiteTranscriptTestCase categoriesFor: #allTranscriptPresenters!private!support! !
 !JadeiteTranscriptTestCase categoriesFor: #browseMenu!private!support!tests! !
+!JadeiteTranscriptTestCase categoriesFor: #jadeitePrefsFilePath!private!support! !
 !JadeiteTranscriptTestCase categoriesFor: #menuItemIsEnabledInAllPresenters:!private!support! !
 !JadeiteTranscriptTestCase categoriesFor: #removePreferencesFile!private!support! !
 !JadeiteTranscriptTestCase categoriesFor: #restoreBackupPrefsFile:!private!support!tests! !
