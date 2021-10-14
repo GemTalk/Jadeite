@@ -234,8 +234,11 @@ stopListeningForSigAborts
 	self sigAbortsProcess: nil!
 
 transactionMode
+	TransactionMode ifNil: [self initializeTransactionMode].
+	^TransactionMode value!
 
-	^TransactionMode! !
+transactionModeValueHolder
+	^TransactionMode ifNil:[self initializeTransactionMode]! !
 !JadePresenter class categoriesFor: #areAbortCommitEnabled!public!transaction management! !
 !JadePresenter class categoriesFor: #defaultSigAbortProcessInterval!public!transaction management! !
 !JadePresenter class categoriesFor: #inTransaction!public!transaction management! !
@@ -251,4 +254,5 @@ transactionMode
 !JadePresenter class categoriesFor: #sigAbortsProcessEnabled:!public!transaction management! !
 !JadePresenter class categoriesFor: #stopListeningForSigAborts!public!transaction management! !
 !JadePresenter class categoriesFor: #transactionMode!public!transaction management! !
+!JadePresenter class categoriesFor: #transactionModeValueHolder!public!transaction management! !
 

@@ -247,11 +247,7 @@ createComponents
 	super createComponents.
 	dictionaryPresenter := self add: ListPresenter new name: 'dictionariesList'.
 	packageDictionaryCards := self add: Presenter new name: 'packageDictionaryCards'.
-	autoCommitButton := self add: Presenter new name: 'autoCommitButton'
-	"searchPresenter := self
-				add: SmalltalkSearchPresenter new
-				name: 'search'
-				helpId: 10510."!
+	autoCommitButton := self add: Presenter new name: 'autoCommitButton'!
 
 createListViewFor: newCard
 	"Editable because creating the desired ListView gave 
@@ -496,15 +492,18 @@ protectedDictionaries
 queryCommand: aCommandQuery
 	| command |
 	command := aCommandQuery command.
+	command = #flipAutoCommit
+		ifTrue: 
+			[aCommandQuery isEnabled: self transactionMode = #autoBegin.
+			^true].
 	command = #beginTransaction
 		ifTrue: 
 			[aCommandQuery isEnabled: self isBeginTransactionEnabled.
 			^true].
-	(command = #abortTransaction
-		or: [command = #commitTransaction])
-			ifTrue: 
-				[aCommandQuery isEnabled: self areAbortCommitEnabled.
-				^true].
+	(command = #abortTransaction or: [command = #commitTransaction])
+		ifTrue: 
+			[aCommandQuery isEnabled: self areAbortCommitEnabled.
+			^true].
 	(#(#inspectGlobal #browseGlobalClass #browseGlobalReferences) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: globalsTab selections isEmpty not.
@@ -806,11 +805,11 @@ updateAfterFindClassInPackage: classService
 
 updateAutoCommit
 	| autoCommitButtonView |
-	autoCommitButtonView := autoCommitButton view. 
+	autoCommitButtonView := autoCommitButton view.
 	autoCommit value == #failed ifTrue: [^autoCommitButtonView backcolor: Color red].
 	autoCommit value
 		ifTrue: [autoCommitButtonView backcolor: Color green]
-		ifFalse: [autoCommitButtonView backcolor: Color default]!
+		ifFalse: [autoCommitButtonView backcolor: Color default].!
 
 updateClasses
 	self isNoneProjectSelected

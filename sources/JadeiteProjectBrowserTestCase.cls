@@ -4648,8 +4648,9 @@ test_tabNames_projectsBrowserNotLost
 	self assert: (projectTabs at: index) arrangement equals: index printString , ' RowanSample1'	"not affected by other tab"!
 
 test_transactionModeSigAbortsListener
-	| previousTransactionMode previousSigAbortProcessInterval count secondSession |
+	| previousTransactionMode previousSigAbortProcessInterval count secondSession lastKnown |
 	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
+	lastKnown := transcript lastKnownTransaction value.
 	[self nonSystemSessionCount = 1] whileFalse: 
 			[self stopOtherSessions.
 			(Delay forMilliseconds: 10) wait].
@@ -4674,13 +4675,14 @@ test_transactionModeSigAbortsListener
 	[count > 2000] whileFalse: 
 			[count := count + 1.
 			(Delay forMilliseconds: 10) wait].
-	self assertIsNil: (session executeString: 'UserGlobals at: #willBeRemovedOnAbort ifAbsent:[]')]
+	self assertIsNil: (session executeString: 'UserGlobals at: #willBeRemovedOnAbort ifAbsent:[]').
+	self deny: transcript lastKnownTransaction equals: transcript lastKnownTransaction value]
 			ensure: 
 				[secondSession _library ifNotNil: [:lib | lib logoutSession: secondSession gciSessionId].
 				secondSession
 					gciSessionId: nil;
 					library: nil.	"logout without triggering events"
-				GciSession current: session. "Jadeite isn't really setup for two sessions. Make sure our global session is the right one" 
+				GciSession current: session.	"Jadeite isn't really setup for two sessions. Make sure our global session is the right one"
 				transcript basicTransactionMode: previousTransactionMode.
 				JadePresenter sigAbortProcessInterval: previousSigAbortProcessInterval.
 				self assert: (session executeString: 'System transactionMode') equals: previousTransactionMode.

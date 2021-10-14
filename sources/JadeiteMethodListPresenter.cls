@@ -67,6 +67,10 @@ createSchematicWiring
 		when: #valueChanged
 		send: #updateAutoCommit
 		to: self.
+	JadePresenter transactionModeValueHolder
+		when: #valueChanged
+		send: #updateAutoCommit
+		to: self.
 	methodSourcePresenter documentPresenter
 		when: #autoComplete:startingAt:accept:
 			send: #onAutoComplete:startingAt:accept:
@@ -133,6 +137,10 @@ postEditSaveMethod
 queryCommand: aCommandQuery
 	| command |
 	command := aCommandQuery command.
+	command = #flipAutoCommit
+		ifTrue: 
+			[aCommandQuery isEnabled: self transactionMode = #autoBegin.
+			^true].
 	(#(#clearMethodBreakpoints) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: methodListPresenter selections notEmpty.
@@ -189,7 +197,8 @@ updateAutoCommit
 	autoCommit value == #failed ifTrue: [^autoCommitButtonView backcolor: Color red].
 	autoCommit value
 		ifTrue: [autoCommitButtonView backcolor: Color green]
-		ifFalse: [autoCommitButtonView backcolor: Color default]!
+		ifFalse: [autoCommitButtonView backcolor: Color default].
+	autoCommitButtonView isEnabled: self transactionMode = #autoBegin!
 
 updateMethodSource
 	methodListPresenter selections isEmpty
