@@ -1,0 +1,26 @@
+
+Last updated: 10/14/2021
+For Latest Rowan V3.0 development work (components)
+
+Git checkout Rowan branch oscarV3.0Component_eric
+Git checkout Rowan branch oscarV3.0Component_eric
+export $ROWAN_PROJECTS_HOME=/uffda2/users/ewinger/shared/repos
+
+Right now, we're using a special build Dale put together at 
+/export/foos2/users/dhenrich/ROWAN_370_GEMSTONE_ee22848e0/
+
+Copy Dale's special build to a local directory
+
+export GEMSTONE=product directory  (. gshere)
+chmod 755 product/sys
+Copy gemstone.key from hidden/sys -> product/sys
+Copy hidden/bin/extent0.rowan.dbf -> product/data
+mv product/data/extent0.rowan.dbf -> extent0.dbf
+
+
+startstone & startnetldi as usual
+
+remove references to ARCHBASE in installRowan.tpz
+from topaz run the installRowan.tpz script
+
+login to Jadeite (hopefully?)
