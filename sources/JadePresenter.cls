@@ -284,8 +284,11 @@ stopListeningForSigAborts
 	self sigAbortsProcess: nil!
 
 transactionMode
+	TransactionMode ifNil: [self initializeTransactionMode].
+	^TransactionMode value!
 
-	^TransactionMode! !
+transactionModeValueHolder
+	^TransactionMode ifNil:[self initializeTransactionMode]! !
 
 !JadePresenter class categoriesForMethods!
 defaultAdditionalAccelerators!constants!public! !

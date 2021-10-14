@@ -1329,16 +1329,20 @@ queryCommand: aCommandQuery
 	#loadProjects = command
 		ifTrue: 
 			[aCommandQuery isEnabled: true.
+			^true].
 	aCommandQuery commandSymbol = #beginTransaction
+	command = #flipAutoCommit
+		ifTrue: 
+			[aCommandQuery isEnabled: self transactionMode = #autoBegin.
+			^true].
 	command = #beginTransaction
 		ifTrue: 
 			[aCommandQuery isEnabled: self isBeginTransactionEnabled.
 			^true].
-	(command = #abortTransaction
-		or: [command = #commitTransaction])
-			ifTrue: 
-				[aCommandQuery isEnabled: self areAbortCommitEnabled.
-				^true].
+	(command = #abortTransaction or: [command = #commitTransaction])
+		ifTrue: 
+			[aCommandQuery isEnabled: self areAbortCommitEnabled.
+			^true].
 	(#(#inspectGlobal #browseGlobalClass #browseGlobalReferences) includes: command)
 		ifTrue: 
 			[aCommandQuery isEnabled: globalsTab selections isEmpty not.
@@ -1841,11 +1845,11 @@ updateAfterFindClassInPackage: classService
 
 updateAutoCommit
 	| autoCommitButtonView |
-	autoCommitButtonView := autoCommitButton view. 
+	autoCommitButtonView := autoCommitButton view.
 	autoCommit value == #failed ifTrue: [^autoCommitButtonView backcolor: Color red].
 	autoCommit value
 		ifTrue: [autoCommitButtonView backcolor: Color green]
-		ifFalse: [autoCommitButtonView backcolor: Color default]!
+		ifFalse: [autoCommitButtonView backcolor: Color default].!
 
 updateClass: classService
 	" a class service was updated, refresh our display"

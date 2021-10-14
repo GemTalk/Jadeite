@@ -492,6 +492,7 @@ package methodNames
 	add: 'JadePresenter class' -> #enableMethodBreakpoints:in:;
 	add: 'JadePresenter class' -> #findMethodIn:class:presenter:;
 	add: 'JadePresenter class' -> #issueCommands:session:;
+	add: 'JadePresenter class' -> #initializeTransactionMode;
 	add: 'JadePresenter class' -> #inTransaction:;
 	add: 'JadePresenter class' -> #issueCommand:session:;
 	add: 'JadePresenter class' -> #openGitHubJadeiteProject;
@@ -509,6 +510,7 @@ package methodNames
 	add: 'JadePresenter class' -> #setInTransaction:session:;
 	add: 'JadePresenter class' -> #transactionMode:;
 	add: 'JadePresenter class' -> #transactionMode:session:;
+	add: 'JadePresenter class' -> #turnOffAutoCommitIn:;
 	add: 'JadeServer class' -> #gsString;
 	add: 'JadeServer64bit32 class' -> #gsClassDefinitionStringFor:;
 	add: 'JadeSessionManager class' -> #dump:toFileNamed:andStop:;
@@ -925,7 +927,7 @@ JadeShell subclass: #JadeiteComponentEditor
 JadeShell subclass: #JadeiteLoadSpecEditor
 	instanceVariableNames: ''
 JadeTranscript subclass: #JadeiteTranscript
-	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsEnabled autoCompleteEnabled transactionModePresenter'
+	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsEnabled autoCompleteEnabled transactionModePresenter lastKnownTransaction'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -2540,7 +2542,8 @@ commitTransaction
 	commitResult
 		ifTrue: 
 			[Sound informationBeep.
-			self setInTransaction: RowanAnsweringService new session: gciSession]
+			self setInTransaction: RowanAnsweringService new session: gciSession.
+			JadePresenter trigger: #committedTransaction]
 		ifFalse: [MessageBox warning: 'Commit failed!!'].
 	^commitResult!
 
@@ -2649,11 +2652,12 @@ executeSelectionOrLine: contextObject
 	^answer!
 
 flipAutoCommit
-	| browserService |
-	browserService := RowanAutoCommitService new.
-	browserService command: #flipAutoCommit; commandArgs: Array new. 
-	self issueCommand: browserService
-	!
+	| autoCommitService |
+	autoCommitService := RowanAutoCommitService new.
+	autoCommitService
+		command: #flipAutoCommit;
+		commandArgs: Array new.
+	self issueCommand: (Array with: autoCommitService)!
 
 insertCompileErrorText: string into: methodSourcePresenter
 	methodSourcePresenter view topShell statusBarText: (string copyFrom: 1 to: string size - 2)!
@@ -3171,6 +3175,12 @@ findMethodIn: session class: classService presenter: browser
 	methodService := JadeiteFindMethodDialog showModal: 'DefaultView' on: classService.
 	^self basicBrowseMethod: methodService presenter: browser!
 
+initializeTransactionMode
+	TransactionMode := ValueHolder new!
+
+inTransaction: aBoolean
+	InTransaction := aBoolean!
+
 issueCommand: services session: session
 	^BrowserUpdate current issueCommand: services session: session!
 
@@ -3258,14 +3268,26 @@ unsavedChangesValidSessionDialogIn: presenter text: text
 		confirm: text!
 
 transactionMode: aSymbol
-	TransactionMode := aSymbol!
+	TransactionMode ifNil: [self initializeTransactionMode].
+	TransactionMode value: aSymbol!
 
 transactionMode: aSymbol session: session
 	| answeringService |
+	aSymbol = #autoBegin ifFalse: [self turnOffAutoCommitIn: session].
 	answeringService := RowanAnsweringService new.
 	answeringService exec: 'System transactionMode: ' , aSymbol printString session: session.
 	self setInTransaction: answeringService session: session.
-	self transactionMode: aSymbol! !
+	self transactionMode: aSymbol!
+
+turnOffAutoCommitIn: session
+	"in transaction management category for now - only place sent"
+
+	| autoCommitService |
+	autoCommitService := RowanAutoCommitService new.
+	autoCommitService
+		command: #autoCommit:;
+		commandArgs: (Array with: false).
+	self issueCommand: (Array with: autoCommitService) session: session! !
 
 !JadePresenter class categoriesForMethods!
 abortTransaction:!browsing support!public! !

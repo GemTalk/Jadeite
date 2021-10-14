@@ -338,6 +338,10 @@ createSchematicWiring
 	autoCommit
 		when: #valueChanged
 		send: #updateAutoCommit
+		to: self.
+	JadePresenter transactionModeValueHolder
+		when: #valueChanged
+		send: #updateAutoCommit
 		to: self!
 
 createSchematicWiringForClassHierarchyTabs
@@ -783,7 +787,8 @@ onViewClosed
 	super onViewClosed.
 	BrowserUpdate current logComment: 'Closing Projects Browser {' , self identityHash printString, '}'.
 	BrowserUpdate current removeEventsTriggeredFor: sunitPresenter methodListPresenter.
-	BrowserUpdate current removeEventsTriggeredFor: self!
+	BrowserUpdate current removeEventsTriggeredFor: self.
+	JadePresenter transactionModeValueHolder removeEventsTriggeredFor: self. !
 
 pkgsMenuStrings
 	0 == 1
@@ -1681,6 +1686,7 @@ updateSUnitTab
 
 updateSUnitTab: service
 	service ifNil: [sunitPresenter testClassService: nil] ifNotNil: [self setTestClass: service]! !
+
 !JadeiteProjectsBrowserPresenter categoriesForMethods!
 aboutToChange:!event handlers!public! !
 addNoneProject!private! !
@@ -1854,6 +1860,31 @@ updateSingleMethodSource!event handlers support!private! !
 updateSUnitTab!event handlers!public!updating! !
 updateSUnitTab:!event handlers!public!updating! !
 !
+
+updateSystemTab
+	| projectTabLabel |
+	projectTabLabel := self projectTabLabel.
+	self topShell cardsPresenter view currentCard arrangement: projectTabLabel.
+	self parentPresenter view updateTabs!
+
+updateTabLabel
+	self updateSystemTab!
+
+writeProject
+	| projectServices ws |
+	projectServices := projectListPresenter selections.
+	ws := WriteStream on: String new.
+	projectServices do: 
+			[:service |
+			ws
+				nextPutAll: service name;
+				space].
+	(MessageBox confirm: 'Write projects - ' , ws contents , '- to disk without committing?')
+		ifFalse: [^false].
+	projectServices do: [:service | service command: #write].
+	self issueCommand: projectServices.
+	MessageBox notify: 'Projects ' ,  ws contents  , ' written to disk'.
+	self refreshFromServer. ! !
 
 !JadeiteProjectsBrowserPresenter class methodsFor!
 

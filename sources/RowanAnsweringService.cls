@@ -17,7 +17,7 @@ answer
 answer: anObject
 	answer := anObject!
 
-autoCommitIn: session
+autoCommitIn: session 
 	command := #autoCommit.
 	BrowserUpdate current issueCommands: (Array with: self) session: session.
 	^answer!
