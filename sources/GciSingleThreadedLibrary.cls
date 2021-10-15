@@ -334,6 +334,9 @@ gciReleaseOops: args _: numArgs
 
 	self subclassResponsibility!
 
+gciSaveObjs: theOops _: numOops
+	self subclassResponsibility!
+
 gciSetNet: stoneName _: hostUserID _: hostPassword _: gemService
 
 	<cdecl: void GciSetNet lpstr lpstr lpstr lpstr>
@@ -548,12 +551,16 @@ session: session oopForInteger: anInteger
 !
 
 session: session oopForString: aString
-
-	self critical: [
-		self gciSetSessionId: session.
-		^self gciNewString: aString.
-	].
-!
+	| newStringOop array |
+	self critical: 
+			[self gciSetSessionId: session.
+			newStringOop := self gciNewString: aString.
+			Transcript cr; show: 'STRING: '; show: aString; flush. 
+			Transcript cr; print: newStringOop; flush. 
+			array := self oopTypeArrayClass new: 1.
+			array at: 1 put: newStringOop.
+			self gciSaveObjs: array _: 1. 
+			^newStringOop]!
 
 session: anInteger releaseOops: anArray
 
@@ -677,6 +684,7 @@ version
 !GciSingleThreadedLibrary categoriesFor: #gciPollForSignal!private! !
 !GciSingleThreadedLibrary categoriesFor: #gciReleaseAllOops!private! !
 !GciSingleThreadedLibrary categoriesFor: #gciReleaseOops:_:!private! !
+!GciSingleThreadedLibrary categoriesFor: #gciSaveObjs:_:!private! !
 !GciSingleThreadedLibrary categoriesFor: #gciSetNet:_:_:_:!private! !
 !GciSingleThreadedLibrary categoriesFor: #gciSetSessionId:!private! !
 !GciSingleThreadedLibrary categoriesFor: #gciShutdown!private! !

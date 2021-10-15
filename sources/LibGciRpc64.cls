@@ -198,6 +198,12 @@ gciReleaseOops: args _: numArgs
 	^self invalidCall
 !
 
+gciSaveObjs: theOops _: numOops
+
+	<cdecl: void GciSaveObjs OopType64* dword>
+	^self invalidCall
+!
+
 oopAsciiNul
 
 	^OopType64 fromInteger: 28. "16r1C"
@@ -400,6 +406,7 @@ specialFromOop: anOop
 !LibGciRpc64 categoriesFor: #gciNewString:!private! !
 !LibGciRpc64 categoriesFor: #gciOopToChr:!private! !
 !LibGciRpc64 categoriesFor: #gciReleaseOops:_:!private! !
+!LibGciRpc64 categoriesFor: #gciSaveObjs:_:!private! !
 !LibGciRpc64 categoriesFor: #oopAsciiNul!public!Reserved OOPs! !
 !LibGciRpc64 categoriesFor: #oopAt:!private! !
 !LibGciRpc64 categoriesFor: #oopClassArray!public!Reserved OOPs! !

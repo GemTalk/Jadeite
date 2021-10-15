@@ -25,22 +25,29 @@ _library
 !
 
 _send: aSymbol to: anObject withAll: anArray
-
 	| arguments oops result |
 	oops := OrderedCollection new.
-	arguments := anArray collect: [:each | 
-		(each isKindOf: Integer) ifTrue: [library session: gciSessionId oopForInteger: each] ifFalse: [
-		(each isKindOf: String) ifTrue: [oops add: (self oopForString: each)] ifFalse: [
-		each]].
-	].  
-	result := library 
-		session: gciSessionId
-		send: aSymbol 
-		to: (self oopTypeFor: anObject) 
-		with: (self serverArrayFor: arguments).
-	self releaseOops: oops.
-	^result.
-!
+	arguments := anArray collect: 
+					[:each |
+					(each isKindOf: Integer)
+						ifTrue: [library session: gciSessionId oopForInteger: each]
+						ifFalse: [(each isKindOf: String) ifTrue: [oops add: (self oopForString: each)] ifFalse: [each]]].
+	Transcript
+		cr;
+		show: '_send:to:withAll: | ';
+		show: aSymbol;
+		show: ' | ';
+		print: anObject;
+		show: ' | ';
+		print: anArray;
+		flush.
+	result := library
+				session: gciSessionId
+				send: aSymbol
+				to: (self oopTypeFor: anObject)
+				with: (self serverArrayFor: arguments).
+	(result isKindOf: GsError) ifFalse: [self releaseOops: oops].
+	^result!
 
 _server
 
@@ -399,7 +406,6 @@ netTask
 	^netTask!
 
 oopForString: aString
-
 	aString isNil ifTrue: [^library oopNil].
 	^library session: gciSessionId oopForString: aString
 !

@@ -1023,6 +1023,15 @@ prepareForReplication
 !GciSession methodsFor!
 
 _executeString: aString fromContextOop: anOopType environment: anInteger
+	Transcript
+		cr;
+		show: '_executeString:fromContextOop:environment: | ';
+		show: aString;
+		show: ' | ';
+		print: anOopType;
+		show: ' | ';
+		print: anInteger;
+		flush.
 	^library
 		session: gciSessionId
 		execute: (aString copyWithout: Character cr)

@@ -2,7 +2,7 @@
 Last updated: 9/28/2021
 For Customer work
 
-git checkout Rowan v1.2.10
+git checkout Rowan branch v1.2.10
 (git fetch --all)
 
 start 3.2.15 server
@@ -10,3 +10,5 @@ cd server installation directory
 . gshere
 export $ROWAN_PROJECTS_HOME=/uffda2/users/ewinger/shared/repos
 run /home/ewinger/Scripts/installRowan3215_Oscar_3.0.91.sh <stone> <netldi>
+
+
