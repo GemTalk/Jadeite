@@ -334,6 +334,9 @@ gciReleaseOops: args _: numArgs
 
 	self subclassResponsibility!
 
+gciSaveObjs: theOops _: numOops
+	self subclassResponsibility!
+
 gciSetNet: stoneName _: hostUserID _: hostPassword _: gemService
 
 	<cdecl: void GciSetNet lpstr lpstr lpstr lpstr>
@@ -553,7 +556,6 @@ session: session oopForString: aString
 		self gciSetSessionId: session.
 		^self gciNewString: aString.
 	].
-!
 
 session: anInteger releaseOops: anArray
 
@@ -637,6 +639,7 @@ version
 
 	^self gciVersion.
 ! !
+
 !GciSingleThreadedLibrary categoriesForMethods!
 _semaphore!private! !
 abortSession:!public!required! !
@@ -712,4 +715,5 @@ specialFromOop:!private! !
 valueOfOop:!private! !
 version!public! !
 !
+
 

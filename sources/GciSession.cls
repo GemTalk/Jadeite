@@ -393,7 +393,6 @@ netTask
 	^netTask!
 
 oopForString: aString
-
 	aString isNil ifTrue: [^library oopNil].
 	^library session: gciSessionId oopForString: aString
 !
