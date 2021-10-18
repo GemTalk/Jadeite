@@ -32,15 +32,6 @@ _send: aSymbol to: anObject withAll: anArray
 					(each isKindOf: Integer)
 						ifTrue: [library session: gciSessionId oopForInteger: each]
 						ifFalse: [(each isKindOf: String) ifTrue: [oops add: (self oopForString: each)] ifFalse: [each]]].
-	Transcript
-		cr;
-		show: '_send:to:withAll: | ';
-		show: aSymbol;
-		show: ' | ';
-		print: anObject;
-		show: ' | ';
-		print: anArray;
-		flush.
 	result := library
 				session: gciSessionId
 				send: aSymbol
@@ -55,6 +46,7 @@ _server
 !
 
 abort
+	"Should this go through JadePresenter class>>abortTransactionInSession: too?"
 	self serverPerform: #'abort'.
 !
 

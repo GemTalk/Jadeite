@@ -551,16 +551,12 @@ session: session oopForInteger: anInteger
 !
 
 session: session oopForString: aString
-	| newStringOop array |
 	self critical: 
-			[self gciSetSessionId: session.
-			newStringOop := self gciNewString: aString.
-			Transcript cr; show: 'STRING: '; show: aString; flush. 
-			Transcript cr; print: newStringOop; flush. 
-			array := self oopTypeArrayClass new: 1.
-			array at: 1 put: newStringOop.
-			self gciSaveObjs: array _: 1. 
-			^newStringOop]!
+			[| result |
+			self gciSetSessionId: session.
+			result := self gciNewString: aString.
+			self signalIfError.	"Might have gotten a transaction backlog error "
+			^result]!
 
 session: anInteger releaseOops: anArray
 
