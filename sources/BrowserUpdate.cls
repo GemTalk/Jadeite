@@ -89,7 +89,10 @@ inUpdate
 inUpdateWhile: block
 	| result |
 	BrowserUpdate current logComment: 'About to execute inUpdate block - ' , block printString.
-	result := inUpdate critical: [Cursor wait showWhile: block].
+	result := inUpdate critical: 
+					[[Cursor wait showWhile: block] ensure: 
+							[GciSession current
+								ifNotNil: [:session | session autoCommit ifTrue: [JadePresenter trigger: #committedTransaction]]]].
 	^result!
 
 isApplyingUpdates

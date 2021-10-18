@@ -105,7 +105,7 @@ transactionMode: aSymbol
 transactionMode: aSymbol session: session
 	self class transactionMode: aSymbol session: session.
 	self stopListeningForSigAborts.
-	(self transactionMode == #manualBegin "or: [self transactionMode == #transactionless]")
+	(self transactionMode == #manualBegin or: [self transactionMode == #transactionless])
 		ifTrue: [self listenForSigAborts: session]!
 
 updateMenuBar: aMenuBar
