@@ -124,6 +124,7 @@ package methodNames
 	add: #GciSession -> #executeString:;
 	add: #GciSession -> #executeString:fromContext:environment:;
 	add: #GciSession -> #gemNRS;
+	add: #GciSession -> #handleTransactionBacklogError:;
 	add: #GciSession -> #hasServer;
 	add: #GciSession -> #informMessageBox:;
 	add: #GciSession -> #initializeServer;
@@ -456,6 +457,7 @@ package methodNames
 	add: 'JadeInspector class' -> #showOn:session:;
 	add: 'JadeNavigationInspector class' -> #resource_Default_view;
 	add: 'JadePresenter class' -> #abortTransaction:;
+	add: 'JadePresenter class' -> #abortTransactionInSession:;
 	add: 'JadePresenter class' -> #allClassesIn:;
 	add: 'JadePresenter class' -> #allPackagesIn:;
 	add: 'JadePresenter class' -> #basicBrowseClassReferences:session:;
@@ -1378,6 +1380,14 @@ gemNRS
 
 	^gemNRS!
 
+handleTransactionBacklogError: error
+	JadePresenter sigAbortsProcessEnabled
+		ifTrue: [JadePresenter abortTransactionInSession: self]
+		ifFalse: 
+			[MessageBox
+				notify: 'Your session has been requested to abort, by a transaction backlog error (#3007) while executing a GCI command in manual transaction mode and not in transaction.  You must abort your transaction and retry the operation.'].
+	error abort	"Shutdown this process. An abort happened or needs to happen"!
+
 hasServer
 
 	^server notNil.
@@ -1555,7 +1565,9 @@ withExplanation: aString do: aBlock
 			self isCallInProgress] whileTrue: [].
 			result := self withExplanation: aString doA: aBlock.
 			self incrementEventCount.
-			(result isKindOf: GsError) ifFalse: [^result].
+			(result isKindOf: GsError)
+				ifTrue: [result errorReport number = 3007 ifTrue: [self handleTransactionBacklogError: result]]
+				ifFalse: [^result].
 			error := result.
 			[result := error signal] ensure: [self releaseAllOops].
 			result = #resume ifFalse: [self error: 'Unrecognized response of ' , result printString]].
@@ -2417,7 +2429,7 @@ resource_Default_view!public!resources-views! !
 !JadePresenter methodsFor!
 
 abortTransaction
-	^self class abortTransaction: self gciSession!
+	self class abortTransactionInSession: gciSession!
 
 autoCommitExecutionString
 	^'RowanService autoCommit ifTrue:[System commitTransaction].'!
@@ -2873,7 +2885,7 @@ updateServices:!private!services! !
 
 !JadePresenter class methodsFor!
 
-abortTransaction: session
+abortTransactionInSession: session
 	"Even if it takes a windy path, try to make sure
 	all aborts in Jadeite pass through here"
 
@@ -2883,6 +2895,8 @@ abortTransaction: session
 				command: #abortTransactionAndUpdateServices:;
 				commandArgs: (Array with: services).
 	self issueCommands: (Array with: browserService) session: session.
+	self setInTransaction: RowanAnsweringService new session: session.
+	self trigger: #abortedTransaction.
 	Sound informationBeep!
 
 allClassesIn: session
@@ -3340,6 +3354,7 @@ unsavedChangesInvalidSessionDialogIn:text:!public!unsaved changes support! !
 unsavedChangesValidSessionDialogIn:!public!unsaved changes support! !
 unsavedChangesValidSessionDialogIn:text:!public!unsaved changes support! !
 !
+
 
 !JadePresenterA methodsFor!
 

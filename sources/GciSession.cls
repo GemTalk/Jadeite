@@ -46,6 +46,7 @@ _server
 !
 
 abort
+	"Should this go through JadePresenter class>>abortTransactionInSession: too?"
 	self serverPerform: #'abort'.
 !
 
