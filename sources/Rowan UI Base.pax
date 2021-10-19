@@ -2898,7 +2898,7 @@ abortTransactionInSession: session
 				commandArgs: (Array with: services).
 	self issueCommands: (Array with: browserService) session: session.
 	self setInTransaction: RowanAnsweringService new session: session.
-	self trigger: #abortedTransaction.
+	JadePresenter trigger: #abortedTransaction.
 	Sound informationBeep!
 
 allClassesIn: session
