@@ -177,6 +177,14 @@ forceLogout
 
 !
 
+gciAbort
+	"Only send in limited circumstances like aborting after a transaction backlog error.
+	Guaranteed to run (I hope) but won't update browsers afterward. See JadePresenter>>abortTransaction" 
+	library abortSession: gciSessionId
+
+	
+!
+
 gciSessionId
 
 	^gciSessionId
@@ -784,6 +792,7 @@ valueOfOop: anOopType
 !GciSession categoriesFor: #eventCount!public! !
 !GciSession categoriesFor: #fetchBytes:!private! !
 !GciSession categoriesFor: #forceLogout!Jade!public! !
+!GciSession categoriesFor: #gciAbort!Jade convenience!public! !
 !GciSession categoriesFor: #gciSessionId!public! !
 !GciSession categoriesFor: #gciSessionId:!private! !
 !GciSession categoriesFor: #gciVersion!public! !
