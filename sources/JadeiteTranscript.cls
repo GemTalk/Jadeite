@@ -357,7 +357,9 @@ transactionMode: aSymbol
 	"It seems Dolphin should have an event like 'aboutToChangeRadioButton' to avoid having to muck with the low level view"
 
 	(MessageBox confirm: 'Switching transaction modes will cause an abort. Continue?')
-		ifTrue: [self basicTransactionMode: aSymbol]
+		ifTrue: 
+			[self basicTransactionMode: aSymbol.
+			JadePresenter trigger: #abortedTransaction]
 		ifFalse: [self resetTransactionModeRadioButtons]! !
 !JadeiteTranscript categoriesFor: #abortedTransaction!event handling!public! !
 !JadeiteTranscript categoriesFor: #abortTransaction!menu handlers!public! !
