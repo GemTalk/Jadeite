@@ -1098,7 +1098,7 @@ handleTransactionBacklogError: error
 		ifTrue: [JadePresenter abortTransactionInSession: self]
 		ifFalse: 
 			[MessageBox
-				notify: 'Your session has been requested to abort, by a transaction backlog error (#3007) while executing a GCI command in manual transaction mode and not in transaction.  You must abort your transaction and retry the operation.'].
+				notify: 'Your session has been requested to abort, by a transaction backlog error (#3007) while executing a GCI command when not in transaction.  You must abort your transaction and retry the operation.'].
 	error abort	"Shutdown this process. An abort happened or needs to happen"!
 
 hasServer
