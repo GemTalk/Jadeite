@@ -231,11 +231,13 @@ onCloseRequested: boolValueHolder
 			^self].
 	(RowanAnsweringService new needsCommit: self gciSession)
 		ifTrue: 
-			[answer := MessageBox new
-						caption: 'Close Requested';
-						confirmOrCancel: 'Commit current transaction?'.
-			boolValueHolder value: (#(#yes #no) includes: answer).
-			answer = #yes ifTrue: [gciSession commit]].
+			[self shouldAskToCommitOnLogout
+				ifTrue: 
+					[answer := MessageBox new
+								caption: 'Close Requested';
+								confirmOrCancel: 'Commit current transaction?'.
+					boolValueHolder value: (#(#yes #no) includes: answer).
+					answer = #yes ifTrue: [gciSession commit]]].
 	boolValueHolder value ifFalse: [^self].
 	allSessionsPresenter aboutToClose.
 	gciSession notNil
@@ -359,6 +361,10 @@ setTransactionModeFromServer
 	self resetTransactionModeRadioButtons.
 	self parentPresenter inTransaction: (gciSession executeString: 'System inTransaction')!
 
+shouldAskToCommitOnLogout
+	^self transactionMode = #autoBegin
+		or: [self transactionMode = #manualBegin and: [self parentPresenter inTransaction]]!
+
 toolbarPresenter
 	^toolbarPresenter! !
 !JadeiteTranscript categoriesForMethods!
@@ -472,6 +478,7 @@ transactionMode: aSymbol
 !JadeiteTranscript categoriesFor: #remoteAutoCommit!accessing!private! !
 !JadeiteTranscript categoriesFor: #resetTransactionModeRadioButtons!accessing!public!transaction mode! !
 !JadeiteTranscript categoriesFor: #setTransactionModeFromServer!actions!public!transaction mode! !
+!JadeiteTranscript categoriesFor: #shouldAskToCommitOnLogout!public!testing! !
 !JadeiteTranscript categoriesFor: #toolbarPresenter!accessing!public! !
 !JadeiteTranscript categoriesFor: #transactionMode!accessing!public!transaction mode! !
 !JadeiteTranscript categoriesFor: #transactionMode:!accessing!public!transaction mode! !
