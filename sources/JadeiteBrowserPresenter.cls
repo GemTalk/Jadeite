@@ -1339,9 +1339,9 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: self isBeginTransactionEnabled.
 			^true].
-	(command = #abortTransaction or: [command = #commitTransaction])
+	command = #commitTransaction
 		ifTrue: 
-			[aCommandQuery isEnabled: self areAbortCommitEnabled.
+			[aCommandQuery isEnabled: self isCommitEnabled.
 			^true].
 	(#(#inspectGlobal #browseGlobalClass #browseGlobalReferences) includes: command)
 		ifTrue: 

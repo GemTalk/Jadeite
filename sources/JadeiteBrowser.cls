@@ -94,9 +94,9 @@ openOn: session project: projectService
 queryCommand: aCommandQuery
 	| command |
 	command := aCommandQuery command.
-	(command = #abortTransaction or: [command = #commitTransaction])
+	command = #commitTransaction
 		ifTrue: 
-			[aCommandQuery isEnabled: JadePresenter areAbortCommitEnabled.
+			[aCommandQuery isEnabled: JadePresenter isCommitEnabled.
 			^true].
 	^super queryCommand: aCommandQuery!
 

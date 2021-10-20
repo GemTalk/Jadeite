@@ -25,9 +25,6 @@ commitTransaction
 	commitResult ifTrue: [Sound informationBeep] ifFalse: [MessageBox warning: 'Commit failed!!'].
 	^commitResult!
 
-areAbortCommitEnabled
-	^self class areAbortCommitEnabled!
-
 gciSession
 
 	^gciSession
@@ -70,6 +67,9 @@ inTransaction: aBoolean
 
 isBeginTransactionEnabled
 	^self class isBeginTransactionEnabled!
+
+isCommitEnabled
+	^self class isCommitEnabled!
 
 postEditSaveMethod!
 
@@ -233,6 +233,10 @@ inTransaction
 
 isBeginTransactionEnabled
 	^self transactionMode = #manualBegin and: [self inTransaction not]!
+
+isCommitEnabled
+	^self transactionMode == #autoBegin
+		or: [self transactionMode == #manualBegin and: [self inTransaction]]!
 
 openCommit: sha inGitHub: projectService
 	^ShellLibrary default shellOpen: projectService projectUrl , '/commit/' , sha directory: ''!
