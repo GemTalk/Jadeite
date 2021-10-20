@@ -19,9 +19,6 @@ addSystemBrowser
 
 	self subclassResponsibility!
 
-areAbortCommitEnabled
-	^self class areAbortCommitEnabled!
-
 gciSession
 
 	^gciSession
@@ -57,6 +54,9 @@ inTransaction: aBoolean
 
 isBeginTransactionEnabled
 	^self class isBeginTransactionEnabled!
+
+isCommitEnabled
+	^self class isCommitEnabled!
 
 postEditSaveMethod!
 
@@ -151,7 +151,6 @@ updateService: service
 
 	^self updateServices: (Array with: service) ! !
 !JadePresenter categoriesFor: #addSystemBrowser!private! !
-!JadePresenter categoriesFor: #areAbortCommitEnabled!accessing!public!transaction management! !
 !JadePresenter categoriesFor: #gciSession!public! !
 !JadePresenter categoriesFor: #gciSession:!public! !
 !JadePresenter categoriesFor: #insertIfFalse:!displaying!public! !
@@ -159,6 +158,7 @@ updateService: service
 !JadePresenter categoriesFor: #inTransaction!accessing!public!transaction management! !
 !JadePresenter categoriesFor: #inTransaction:!accessing!public!transaction management! !
 !JadePresenter categoriesFor: #isBeginTransactionEnabled!accessing!public!transaction management! !
+!JadePresenter categoriesFor: #isCommitEnabled!accessing!public!transaction management! !
 !JadePresenter categoriesFor: #postEditSaveMethod!menu handlers support!public! !
 !JadePresenter categoriesFor: #refreshFromServer!public! !
 !JadePresenter categoriesFor: #resetCursor!public! !
@@ -177,10 +177,6 @@ updateService: service
 
 !JadePresenter class methodsFor!
 
-areAbortCommitEnabled
-	^self transactionMode == #autoBegin
-		or: [self transactionMode == #manualBegin and: [self inTransaction]]!
-
 defaultSigAbortProcessInterval
 	"in seconds"
 
@@ -192,6 +188,10 @@ inTransaction
 
 isBeginTransactionEnabled
 	^self transactionMode = #manualBegin and: [self inTransaction not]!
+
+isCommitEnabled
+	^self transactionMode == #autoBegin
+		or: [self transactionMode == #manualBegin and: [self inTransaction]]!
 
 openCommit: sha inGitHub: projectService
 	^ShellLibrary default shellOpen: projectService projectUrl , '/commit/' , sha directory: ''!
@@ -240,10 +240,10 @@ transactionMode
 
 transactionModeValueHolder
 	^TransactionMode ifNil:[self initializeTransactionMode]! !
-!JadePresenter class categoriesFor: #areAbortCommitEnabled!public!transaction management! !
 !JadePresenter class categoriesFor: #defaultSigAbortProcessInterval!public!transaction management! !
 !JadePresenter class categoriesFor: #inTransaction!public!transaction management! !
 !JadePresenter class categoriesFor: #isBeginTransactionEnabled!public!testing!transaction management! !
+!JadePresenter class categoriesFor: #isCommitEnabled!public!transaction management! !
 !JadePresenter class categoriesFor: #openCommit:inGitHub:!browsing!public! !
 !JadePresenter class categoriesFor: #resetSigAbortProcessEnablement!public!transaction management! !
 !JadePresenter class categoriesFor: #resetSigAbortProcessInterval!public!transaction management! !

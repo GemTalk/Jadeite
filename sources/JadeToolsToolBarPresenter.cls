@@ -38,9 +38,9 @@ queryCommand: query
 		ifTrue: 
 			[query isEnabled: self isBeginTransactionEnabled.
 			^true].
-	(query commandSymbol = #abort or: [query commandSymbol = #commit])
+	query commandSymbol = #commit
 		ifTrue: 
-			[query isEnabled: self areAbortCommitEnabled.
+			[query isEnabled: self isCommitEnabled.
 			^true]! !
 !JadeToolsToolBarPresenter categoriesFor: #abort!Jade!public! !
 !JadeToolsToolBarPresenter categoriesFor: #begin!Jade!public! !
