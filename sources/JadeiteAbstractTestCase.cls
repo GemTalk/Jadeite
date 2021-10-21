@@ -232,6 +232,9 @@ issueCommands: services
 itemNamed: menuName in: menuBar
 	^menuBar items detect: [:item | '*' , menuName , '*' match: item text]!
 
+jadeitePrefsFilePath
+	^SessionManager current imageBase , 'Jadeite.prefs'!
+
 loadProjectNamed: projectName
 	| projectService |
 	projectService := RowanProjectService new name: projectName.
@@ -311,6 +314,14 @@ noBreakIn: aMenu
 						and: [(command text = 'Browse Breakpoints') not and: [(command text = 'Clear Method Breakpoints') not]]]
 				ifNone: [])!
 
+nonSystemSessionCount
+	^session
+		executeString: '
+(System currentSessions select:[:i |
+	| username |
+	username := ((System descriptionOfSession: i) at: 1) userId. 
+	((username ~= ''GcUser'') and:[username ~=''SymbolUser''])]) size'!
+
 openProjectBrowser
 	projectsBrowser
 		ifNil: [projectsBrowser := self openWindow: [JadeiteBrowser showOnSession: session]]!
@@ -366,6 +377,33 @@ routeCommandWithId: id inVisual: windowLikeThing
 	| commandDescription |
 	commandDescription := CommandDescription withId: id ifAbsent: [].
 	windowLikeThing commandPolicy route: commandDescription!
+
+removePreferencesFile
+	| path prefsExist |
+	path := self jadeitePrefsFilePath.
+	prefsExist := File exists: path.
+	prefsExist
+		ifTrue: 
+			[self savePrefsBackup.
+			(File open: path) delete].
+	self deny: (File exists: path).
+	^prefsExist!
+
+restoreBackupPrefsFile: prefsExisted
+	| backupStream fileStream backupPath |
+	prefsExisted
+		ifFalse: 
+			[(File open: SessionManager current imageBase , 'Jadeite.prefs')
+				close;
+				delete].
+	backupPath := SessionManager current imageBase , 'Jadeite.prefs.testbkp'.
+	(File exists: backupPath) ifFalse: [^self].
+	backupStream := FileStream read: SessionManager current imageBase , 'Jadeite.prefs.testbkp'.
+	fileStream := FileStream write: SessionManager current imageBase , 'Jadeite.prefs'.
+	[fileStream nextPutAll: backupStream contents] ensure: 
+			[backupStream close.
+			(File open: backupPath) delete.
+			fileStream close]!
 
 rowanProjectsHome
 	^JadePresenter rowanProjectsHomeEnvVarString!
@@ -458,6 +496,14 @@ saveMethod: source in: className category: category
 		category: category
 		session: session.
 	^classService!
+
+savePrefsBackup
+	| backupStream fileStream |
+	backupStream := FileStream write: SessionManager current imageBase , 'Jadeite.prefs.testbkp'.
+	fileStream := FileStream read: SessionManager current imageBase , 'Jadeite.prefs'.
+	[backupStream nextPutAll: fileStream contents] ensure: 
+			[backupStream close.
+			fileStream close]!
 
 saveSampleMethod
 
@@ -753,6 +799,7 @@ verifyWindowClosed: presenter
 			[presenter isOpen ifTrue: [count := count + 1] ifFalse: [^true].
 			(Delay forMilliseconds: 10) wait].
 	self deny: presenter isOpen! !
+
 !JadeiteAbstractTestCase categoriesForMethods!
 abortTransaction!private!setup teardown! !
 anotherNumberMethodSource!constants!private! !

@@ -46,41 +46,6 @@ menuItemIsEnabledInAllPresenters: aSymbol
 						view: presenter view.
 			self assert: commandQuery isEnabled]!
 
-removePreferencesFile
-	| path prefsExist |
-	path := self jadeitePrefsFilePath.
-	prefsExist := File exists: path.
-	prefsExist
-		ifTrue: 
-			[self savePrefsBackup.
-			(File open: path) delete].
-	self deny: (File exists: path).
-	^prefsExist!
-
-restoreBackupPrefsFile: prefsExisted
-	| backupStream fileStream backupPath |
-	prefsExisted
-		ifFalse: 
-			[(File open: SessionManager current imageBase , 'Jadeite.prefs')
-				close;
-				delete].
-	backupPath := SessionManager current imageBase , 'Jadeite.prefs.testbkp'.
-	(File exists: backupPath) ifFalse: [^self].
-	backupStream := FileStream read: SessionManager current imageBase , 'Jadeite.prefs.testbkp'.
-	fileStream := FileStream write: SessionManager current imageBase , 'Jadeite.prefs'.
-	[fileStream nextPutAll: backupStream contents] ensure: 
-			[backupStream close.
-			(File open: backupPath) delete.
-			fileStream close]!
-
-savePrefsBackup
-	| backupStream fileStream |
-	backupStream := FileStream write: SessionManager current imageBase , 'Jadeite.prefs.testbkp'.
-	fileStream := FileStream read: SessionManager current imageBase , 'Jadeite.prefs'.
-	[backupStream nextPutAll: fileStream contents] ensure: 
-			[backupStream close.
-			fileStream close]!
-
 test_abortRemovesProjectsInAllBrowsers
 	| sunitBrowser |
 	projectsBrowser := self openWindow: [JadeiteBrowser showOnSession: session].
@@ -814,98 +779,6 @@ test_selectorsList
 				trailingWildcard: false.
 	list do: [:symbol | self assert: ('siz*' match: symbol)]!
 
-test_setTransactionlessMode
-	| previousTransactionMode |
-	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
-	previousTransactionMode := transcript transactionMode.
-	self assert: (session executeString: 'System transactionMode') equals: previousTransactionMode.
-	
-	[transcript basicTransactionMode: #transactionless.	"this will cause an abort requiring a clone/reload of RowanSample1 later"
-	self assert: (session executeString: 'System transactionMode') equals: #transactionless]
-			ensure: 
-				[transcript basicTransactionMode: previousTransactionMode.
-				self assert: (session executeString: 'System transactionMode') equals: previousTransactionMode.
-				self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
-
-test_setTransactionModeChangesServer
-	| previousTransactionMode |
-	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
-	previousTransactionMode := transcript transactionMode.
-	self assert: (session executeString: 'System transactionMode') equals: previousTransactionMode.
-	
-	[transcript basicTransactionMode: #manualBegin.	"this will cause an abort requiring a clone/reload of RowanSample1 later"
-	self assert: (session executeString: 'System transactionMode') equals: #manualBegin]
-			ensure: 
-				[transcript basicTransactionMode: previousTransactionMode.
-				self assert: (session executeString: 'System transactionMode') equals: previousTransactionMode.
-				self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
-
-test_transactionModeDefault
-	| prefsExist |
-	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
-	prefsExist := self removePreferencesFile.
-	[self logoutThenLoginAs: 'SystemUser'.	"ensure we have reset the transaction mode on the login to auto"
-	self assert: transcript transactionMode equals: #autoBegin]
-			ensure: [self restoreBackupPrefsFile: prefsExist]!
-
-test_transactionModeLogoffRestoresDefaultSettings
-	"logging off should reset the transaction mode settings"
-
-	| prefsExist |
-	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
-	prefsExist := self removePreferencesFile.	"don't let preferences muck up the test"
-	JadePresenter
-		sigAbortProcessInterval: JadePresenter defaultSigAbortProcessInterval + 50;
-		sigAbortsProcessEnabled: false;
-		transactionMode: #transactionless session: session.
-	self assert: JadePresenter sigAbortProcessInterval equals: JadePresenter defaultSigAbortProcessInterval + 50.
-	self assert: JadePresenter sigAbortsProcessEnabled equals: false.
-	self assert: JadePresenter transactionMode equals: #transactionless.
-	
-	[self logoutThenLoginAs: 'SystemUser'.	"ensure we have reset the transaction mode on the login to auto"
-	self assert: JadePresenter sigAbortProcessInterval
-		equals: JadePresenter defaultSigAbortProcessInterval.
-	self assert: JadePresenter sigAbortsProcessEnabled equals: true.
-	self assert: JadePresenter transactionMode equals: #autoBegin]
-			ensure: [self restoreBackupPrefsFile: prefsExist]!
-
-test_transactionModeManualTurnsOnSigAbortListener
-	| previousTransactionMode sigAbortListener count |
-	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
-	previousTransactionMode := transcript transactionMode.
-	
-	[transcript basicTransactionMode: #manualBegin.	"changing transaction modes will cause an abort requiring a clone/reload of RowanSample1 later"
-	sigAbortListener := Processor allProcesses
-				detect: [:process | process name = 'SigAbort Listening Process' and: [process isAlive]]
-				ifNone: [].
-	self denyIsNil: sigAbortListener.
-	transcript basicTransactionMode: #autoBegin.
-	count := 0.
-	[sigAbortListener isDead or: [count > 100]] whileFalse: 
-			[count := count + 1.
-			(Delay forMilliseconds: 10) wait	"might take a sec to terminate"].
-	self assert: sigAbortListener isDead.
-	self
-		assertIsNil: (Processor allProcesses detect: 
-					[:process |
-					process name = 'SigAbort Listening Process'
-						and: [process ~~ sigAbortListener and: [process isAlive]]]
-				ifNone: []).
-	transcript basicTransactionMode: #transactionless.
-	self
-		assertIsNil: (Processor allProcesses detect: 
-					[:process |
-					process name = 'SigAbort Listening Process'
-						and: [process ~~ sigAbortListener and: [process isAlive]]]
-				ifNone: [])]
-			ensure: 
-				[transcript basicTransactionMode: previousTransactionMode.
-				self assert: (session executeString: 'System transactionMode') equals: previousTransactionMode.
-				self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
-
 test_transcriptNamedConsole
 	| clearTranscriptMenuItem wasInstalled |
 	(wasInstalled := transcript isTranscriptInstalled) ifFalse: [transcript flipTranscript].
@@ -980,6 +853,3 @@ test_selectorsList!public!tests! !
 test_transcriptNamedConsole!public!tests! !
 writeToPrefsFile:!private!support!tests! !
 !
-
-
-
