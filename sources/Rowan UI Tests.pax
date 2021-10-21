@@ -25,6 +25,7 @@ package classNames
 	add: #JadeiteProjectBrowserTestCase;
 	add: #JadeiteSUnitSupportTestCase;
 	add: #JadeiteTestResource;
+	add: #JadeiteTransactionModeTestCase;
 	add: #JadeiteTranscriptTestCase;
 	add: #RowanTestService;
 	add: #TestLoggingService;
@@ -188,6 +189,11 @@ JadeiteAbstractTestCase subclass: #JadeiteProjectBrowserAbstractTestCase
 	classInstanceVariableNames: ''!
 JadeiteAbstractTestCase subclass: #JadeiteSUnitSupportTestCase
 	instanceVariableNames: 'sunitBrowser'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteAbstractTestCase subclass: #JadeiteTransactionModeTestCase
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

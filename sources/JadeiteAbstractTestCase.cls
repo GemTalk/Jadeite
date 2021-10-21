@@ -168,6 +168,9 @@ issueCommands: services
 itemNamed: menuName in: menuBar
 	^menuBar items detect: [:item | '*' , menuName , '*' match: item text]!
 
+jadeitePrefsFilePath
+	^SessionManager current imageBase , 'Jadeite.prefs'!
+
 loadProjectNamed: projectName
 	| projectService |
 	projectService := RowanProjectService new name: projectName.
@@ -226,6 +229,14 @@ noBreakIn: aMenu
 						and: [(command text = 'Browse Breakpoints') not and: [(command text = 'Clear Method Breakpoints') not]]]
 				ifNone: [])!
 
+nonSystemSessionCount
+	^session
+		executeString: '
+(System currentSessions select:[:i |
+	| username |
+	username := ((System descriptionOfSession: i) at: 1) userId. 
+	((username ~= ''GcUser'') and:[username ~=''SymbolUser''])]) size'!
+
 openProjectBrowser
 	projectsBrowser
 		ifNil: [projectsBrowser := self openWindow: [JadeiteBrowser showOnSession: session]]!
@@ -258,6 +269,33 @@ queryCommand: commandSymbol inPresenter: presenter view: view
 				source: view.
 	presenter queryCommand: commandQuery.
 	^commandQuery!
+
+removePreferencesFile
+	| path prefsExist |
+	path := self jadeitePrefsFilePath.
+	prefsExist := File exists: path.
+	prefsExist
+		ifTrue: 
+			[self savePrefsBackup.
+			(File open: path) delete].
+	self deny: (File exists: path).
+	^prefsExist!
+
+restoreBackupPrefsFile: prefsExisted
+	| backupStream fileStream backupPath |
+	prefsExisted
+		ifFalse: 
+			[(File open: SessionManager current imageBase , 'Jadeite.prefs')
+				close;
+				delete].
+	backupPath := SessionManager current imageBase , 'Jadeite.prefs.testbkp'.
+	(File exists: backupPath) ifFalse: [^self].
+	backupStream := FileStream read: SessionManager current imageBase , 'Jadeite.prefs.testbkp'.
+	fileStream := FileStream write: SessionManager current imageBase , 'Jadeite.prefs'.
+	[fileStream nextPutAll: backupStream contents] ensure: 
+			[backupStream close.
+			(File open: backupPath) delete.
+			fileStream close]!
 
 rowanProjectsHome
 	^'$ROWAN_PROJECTS_HOME'!
@@ -349,6 +387,14 @@ saveMethod: source in: className category: category
 		saveMethod: source
 		category: category
 		session: session!
+
+savePrefsBackup
+	| backupStream fileStream |
+	backupStream := FileStream write: SessionManager current imageBase , 'Jadeite.prefs.testbkp'.
+	fileStream := FileStream read: SessionManager current imageBase , 'Jadeite.prefs'.
+	[backupStream nextPutAll: fileStream contents] ensure: 
+			[backupStream close.
+			fileStream close]!
 
 saveSampleMethod
 
@@ -616,6 +662,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #issueCommand:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #issueCommands:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #itemNamed:in:!issue test support!private! !
+!JadeiteAbstractTestCase categoriesFor: #jadeitePrefsFilePath!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #loadProjectNamed:!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #loadRowanSample1InProjectList!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #loginWithRetry:!private!support! !
@@ -624,12 +671,15 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #methodSourceForTest!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #methodSourcePresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #noBreakIn:!issue test support!private! !
+!JadeiteAbstractTestCase categoriesFor: #nonSystemSessionCount!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #openProjectBrowser!private!support!test methods! !
 !JadeiteAbstractTestCase categoriesFor: #openWindow:!browser test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #packageListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #projectListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #projectsPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #queryCommand:inPresenter:view:!private! !
+!JadeiteAbstractTestCase categoriesFor: #removePreferencesFile!private!support! !
+!JadeiteAbstractTestCase categoriesFor: #restoreBackupPrefsFile:!private!support!tests! !
 !JadeiteAbstractTestCase categoriesFor: #rowanProjectsHome!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #rowanSample1Path!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #sampleClassName!private!project browser support! !
@@ -641,6 +691,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #saveIssue169Method!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveIssue216Method!issue test support!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveMethod:in:category:!private!support! !
+!JadeiteAbstractTestCase categoriesFor: #savePrefsBackup!private!support!tests! !
 !JadeiteAbstractTestCase categoriesFor: #saveSampleMethod!private! !
 !JadeiteAbstractTestCase categoriesFor: #saveTestClassWithInstVars:package:!private! !
 !JadeiteAbstractTestCase categoriesFor: #selectCategoriesNamed:!private!project browser support!selection! !
