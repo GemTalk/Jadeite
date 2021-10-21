@@ -2,7 +2,7 @@
 Last updated: 9/28/2021
 For Customer work
 
-git checkout Rowan branch v1.2.10
+git checkout Rowan tag  v1.2.10
 (git fetch --all)
 
 start 3.2.15 server
