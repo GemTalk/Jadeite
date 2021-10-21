@@ -136,6 +136,7 @@ package methodNames
 	add: #GciSession -> #postLoginAs:useSocket:;
 	add: #GciSession -> #preferencesFile;
 	add: #GciSession -> #serverPerform:withArguments:;
+	add: #GciSession -> #shouldHandleTransactionBacklogError:;
 	add: #GciSession -> #terminate:;
 	add: #GciSession -> #titleBarFor:;
 	add: #GciSession -> #verifyRowanLoaded;
@@ -233,6 +234,7 @@ package methodNames
 	add: #JadePresenter -> #displayNoMods:;
 	add: #JadePresenter -> #displayUncompilableSourceIn:;
 	add: #JadePresenter -> #editSaveMethod:in:category:;
+	add: #JadePresenter -> #enableSigAbortError;
 	add: #JadePresenter -> #executeSelectionOrLine:;
 	add: #JadePresenter -> #flipAutoCommit;
 	add: #JadePresenter -> #insertCompileErrorText:into:;
@@ -1384,8 +1386,13 @@ handleTransactionBacklogError: error
 	JadePresenter sigAbortsProcessEnabled
 		ifTrue: [JadePresenter abortTransactionInSession: self]
 		ifFalse: 
-			[MessageBox
-				notify: 'Your session has been requested to abort, by a transaction backlog error (#3007) while executing a GCI command when not in transaction.  You must abort your transaction and retry the operation.'].
+			[
+			[(MessageBox
+				confirm: 'Your session has been requested to abort, by a transaction backlog error (#3007 or #6009) while executing a GCI command when not in transaction.
+You must abort your transaction before retrying the operation.
+Would you like to abort now?')
+					ifTrue: [JadePresenter abortTransactionInSession: self]]
+					ensure: [self enableSignaledAbortError	"must reenable each time a sig abort error is received"]].
 	error abort	"Shutdown this process. An abort happened or needs to happen"!
 
 hasServer
@@ -1512,6 +1519,10 @@ serverPerform: aSymbol withArguments: anArray
 				withAll: anArray.
 	^answer!
 
+shouldHandleTransactionBacklogError: result
+	^(result isKindOf: GsError)
+		and: [result errorReport number = 3007 or: [result errorReport number = 6009]]!
+
 terminate: anOopType
 	
 	[| processService |
@@ -1563,10 +1574,14 @@ withExplanation: aString do: aBlock
 			[
 			[(Delay forMilliseconds: 10) wait.
 			self isCallInProgress] whileTrue: [].
+			[library gciPollForSignal] on: Error
+				do: [:ex | (self shouldHandleTransactionBacklogError: ex) ifTrue: [self handleTransactionBacklogError: ex]].
 			result := self withExplanation: aString doA: aBlock.
 			self incrementEventCount.
 			(result isKindOf: GsError)
-				ifTrue: [result errorReport number = 3007 ifTrue: [self handleTransactionBacklogError: result]]
+				ifTrue: 
+					[(self shouldHandleTransactionBacklogError: result)
+						ifTrue: [self handleTransactionBacklogError: result]]
 				ifFalse: [^result].
 			error := result.
 			[result := error signal] ensure: [self releaseAllOops].
@@ -2645,6 +2660,9 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 			self statusBarText: warning].
 	self refreshBreakPointsIn: methodSourcePresenter!
 
+enableSigAbortError
+	gciSession enableSignaledAbortError!
+
 executeSelectionOrLine: contextObject
 	| answeringService answer oop window |
 	oop := (contextObject isKindOf: ExternalInteger)
@@ -2698,7 +2716,10 @@ onViewClosed
 					RowanBrowserService new releaseWindow: window view handle value session: self gciSession]]!
 
 listenForSigAborts: session
-	self sigAbortsProcessEnabled ifFalse: [^self].
+	self sigAbortsProcessEnabled
+		ifFalse: 
+			[self transactionMode == #manualBegin ifTrue: [self enableSigAbortError].
+			^self].
 	self
 		sigAbortsProcess: (
 			[
@@ -2708,7 +2729,7 @@ listenForSigAborts: session
 					session isValidSession
 						ifTrue: 
 							[gciSession gciAbort.	"to guarantee an abort gets done and doesn't get interrupted by another gci error do this"
-							self abortTransaction ."Yes, the second abort is redundant but this will also do some more complicated browser updating."
+							self abortTransaction.	"Yes, the second abort is redundant but this will also do some more complicated browser updating."
 							self class setInTransaction: RowanAnsweringService new session: session]].
 			(Delay forSeconds: self sigAbortProcessInterval) wait]
 					repeat]

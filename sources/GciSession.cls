@@ -155,6 +155,9 @@ debugToFilePath: aString
 	^library gciDbgEstablishToFile: aString
 !
 
+enableSignaledAbortError
+	self executeString: 'System enableSignaledAbortError'!
+
 eventCount
 
 	^eventCount.
