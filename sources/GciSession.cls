@@ -155,6 +155,9 @@ debugToFilePath: aString
 	^library gciDbgEstablishToFile: aString
 !
 
+enableSignaledAbortError
+	self executeString: 'System enableSignaledAbortError'!
+
 eventCount
 
 	^eventCount.
@@ -789,6 +792,7 @@ valueOfOop: anOopType
 !GciSession categoriesFor: #commit!Jade convenience!public! !
 !GciSession categoriesFor: #debugString:fromContext:environment:!long running!public! !
 !GciSession categoriesFor: #debugToFilePath:!Jade convenience!public! !
+!GciSession categoriesFor: #enableSignaledAbortError!public! !
 !GciSession categoriesFor: #eventCount!public! !
 !GciSession categoriesFor: #fetchBytes:!private! !
 !GciSession categoriesFor: #forceLogout!Jade!public! !
