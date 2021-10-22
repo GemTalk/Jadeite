@@ -442,7 +442,8 @@ privateLogout
 
 releaseAllOops
 	library ifNil: [^self].
-	library releaseAllOopsForSession: gciSessionId!
+	library releaseAllOopsForSession: gciSessionId.
+	library signalIfError!
 
 releaseOop: anOopType
 
