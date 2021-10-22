@@ -543,12 +543,12 @@ session: anInteger fetchObjects: anOopType
 !
 
 session: session oopForInteger: anInteger
-
-	self critical: [
-		self gciSetSessionId: session.
-		^self oopForInteger: anInteger.
-	].
-!
+	| result |
+	self critical: 
+			[self gciSetSessionId: session.
+			result := self oopForInteger: anInteger.
+			self signalIfError.	"Might have gotten a transaction backlog error "
+			^result]!
 
 session: session oopForString: aString
 
@@ -567,6 +567,7 @@ session: anInteger releaseOops: anArray
 			array at: i put: (anArray at: i).
 		].
 		self gciReleaseOops: array _: array size.
+		self signalIfError.	"Might have gotten a transaction backlog error "
 	].
 !
 
