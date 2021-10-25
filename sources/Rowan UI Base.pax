@@ -2050,6 +2050,42 @@ displayError: ex
 displayInstVarError: ex instVar: anObject
 	^'Error inspecting object ' , anObject printString , '. Error text: ' , ex printString!
 
+displayObject
+	| result stream theClassName oop size instVarNames |
+	((model isKindOf: Character) or: [(model isKindOf: Float) or: [model isKindOf: Symbol]])
+		ifTrue: 
+			[instVarNames := self displaySpecials.
+			^self].
+	result := 
+			[gciSession
+				serverPerform: #inspect:windowHandle:
+				with: model
+				with: self view handle value]
+					on: Error
+					do: [:ex | ^self displayError: ex].
+	(result isKindOf: ByteArray) ifTrue: [result := result asString].
+	(result isKindOf: String)
+		ifFalse: 
+			[self error: 'Result of #inspect: on ' , model printString , ' should be a String but is '
+						, model class name].
+	stream := ReadStream on: result.
+	theClassName := stream upTo: Character tab.
+	self setLastGsShape: theClassName.
+	oop := stream nextLine.
+	size := stream nextLine asNumber.
+	instVarNames := OrderedCollection with: '-.asOop' -> oop.
+	size timesRepeat: 
+			[| name |
+			name := '-' , (stream upTo: Character tab).
+			oop := stream upTo: Character lf.
+			instVarNames add: name -> (gciSession oopTypeWithOop: oop asNumber)].
+	instVarNames addFirst: 'self' -> stream upToEnd.
+	instVarListPresenter
+		list: instVarNames;
+		selection: instVarNames first;
+		yourself.
+	className := theClassName!
+
 displaySpecials
 	| instVarNames |
 	((model isKindOf: Character) and: [model asInteger > 255])
