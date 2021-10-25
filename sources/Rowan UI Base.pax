@@ -1680,8 +1680,13 @@ displayObject
 		ifTrue: 
 			[instVarNames := self displaySpecials.
 			^self].
-	result := [gciSession serverPerform: #inspect: with: model] on: Error
-				do: [:ex | ^self displayError: ex].
+	result := 
+			[gciSession
+				serverPerform: #inspect:windowHandle:
+				with: model
+				with: self view handle value]
+					on: Error
+					do: [:ex | ^self displayError: ex].
 	(result isKindOf: ByteArray) ifTrue: [result := result asString].
 	(result isKindOf: String)
 		ifFalse: 
