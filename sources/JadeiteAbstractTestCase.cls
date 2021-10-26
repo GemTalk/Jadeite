@@ -714,6 +714,17 @@ setupSupclassComparisonMethods
 		in: 'RowanSubClass'
 		category: 'test support'!
 
+stopOtherSessions
+	session
+		executeString: '	
+
+	| sessionsToStop |
+sessionsToStop :=  System currentSessions select:[:i |
+	| username |
+	username := ((System descriptionOfSession: i) at: 1) userId. 
+	((username ~= ''GcUser'') and:[(username ~=''SymbolUser'' and:[System session ~= i])])].
+sessionsToStop do:[:i | System stopSession: i]'!
+
 tearDown
 	| answeringService |
 	super tearDown.

@@ -236,17 +236,6 @@ selectVariableListEntryForcingEvent: variable
 	event value
 		ifTrue: [self variableListPresenter selection: (self variableListPresenter list at: index)]!
 
-stopOtherSessions
-	session
-		executeString: '	
-
-	| sessionsToStop |
-sessionsToStop :=  System currentSessions select:[:i |
-	| username |
-	username := ((System descriptionOfSession: i) at: 1) userId. 
-	((username ~= ''GcUser'') and:[(username ~=''SymbolUser'' and:[System session ~= i])])].
-sessionsToStop do:[:i | System stopSession: i]'!
-
 test_abortOnVariablesTab
 	self unloadSampleProject1.
 	self commitTransaction.	"if sample project was loaded and committed outside test, test will fail"

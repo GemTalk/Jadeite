@@ -96,7 +96,10 @@ inUpdateWhile: block
 	result := inUpdate critical: 
 					[[Cursor wait showWhile: block] ensure: 
 							[GciSession current
-								ifNotNil: [:session | session autoCommit ifTrue: [JadePresenter trigger: #committedTransaction]]]].
+								ifNotNil: 
+									[:session |
+									session autoCommit == true
+										ifTrue: [JadePresenter trigger: #committedTransaction	"autoCommit could be a symbol #failed"]]]].
 	^result!
 
 isApplyingUpdates
