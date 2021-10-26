@@ -111,7 +111,10 @@ setUp
 		ifNil: 
 			[MessageBox notify: 'GciSession current is nil. Login again.'.
 			Processor activeProcess terminate	"There's not a good way to safely return without many subsequent errors. Just kill the test process."].
-	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: [self halt].
+	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session]
+				ifNone: 
+					[MessageBox notify: 'Current session is not associated with any console. Aborting test.'.
+					Processor activeProcess terminate].
 	self unloadSampleProject.
 	self cloneRowanSample1.
 	self ensureRowanSample1Loaded!

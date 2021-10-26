@@ -114,7 +114,7 @@ test_adHocInspectComplexObject
 	workspace setDocumentData: 'RowanSample1Test new setTestSelector: #test1'.
 	workspace setFocus.
 	inspector := workspace codePane jadeInspect.
-	self assert: inspector documentPresenter model value equals: 'RowanSample1Test debug: #test1'.
+	self assert: ('RowanSample1Test*#test1' match: inspector documentPresenter model value ).
 	self assert: inspector instVarListPresenter selection key equals: 'self']
 			ensure: 
 				[workspace isModified: false.

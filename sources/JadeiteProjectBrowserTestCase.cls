@@ -213,17 +213,6 @@ selectVariableListEntryForcingEvent: variable
 	event value
 		ifTrue: [self variableListPresenter selection: (self variableListPresenter list at: index)]!
 
-stopOtherSessions
-	session
-		executeString: '	
-
-	| sessionsToStop |
-sessionsToStop :=  System currentSessions select:[:i |
-	| username |
-	username := ((System descriptionOfSession: i) at: 1) userId. 
-	((username ~= ''GcUser'') and:[(username ~=''SymbolUser'' and:[System session ~= i])])].
-sessionsToStop do:[:i | System stopSession: i]'!
-
 test_abortOnVariablesTab
 	self unloadSampleProject.
 	self commitTransaction.	"if sample project was loaded and committed outside test, test will fail"
@@ -614,7 +603,7 @@ test_adHocInspectComplexObjectInProjectBrowser
 	[inspector := self projectsPresenter jadeInspect.
 	self assert: (inspector model value isKindOf: Integer).	"the oop"
 	self assert: inspector instVarListPresenter selection key equals: 'self'.
-	self assert: inspector instVarListPresenter selection value equals: 'RowanSample1Test debug: #test1'.
+	self assert: ( 'RowanSample1Test*#test1' match: inspector instVarListPresenter selection value ).
 	inspector instVarListPresenter selectionByIndex: 2.
 	self assert: inspector instVarListPresenter selection key equals: '-.asOop'.
 	self assert: inspector instVarListPresenter selection value
@@ -2761,11 +2750,11 @@ test_gitBranchesDoesNotShowHead
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	branchesString := session
 				executeString: 'Rowan gitTools gitbranchIn: (RwProject newNamed: ''RowanSample1'') repositoryRootPath with: '''''.
-	self assert: (branchesString copyWithout: Character lf) equals: '  master* sample'.  "probably should clean the branches up" 
+	self assert: ('*master*' match: (branchesString copyWithout: Character lf)) .  "brittle - depends on the git checkout" 
 	branches := (RowanProjectService new name: 'RowanSample1')
 				basicCheckoutUsing: self projectsPresenter.
 	self assert: branches isKindOf: Collection.
-	self assert: branches first equals: 'master'!
+	self assert: ('*master*' match: branches first)!
 
 test_goToDefinedClassFromClassList
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
@@ -2942,7 +2931,6 @@ test_hierarchyFindsAllSubclassImplementors
 	
 	self assert: ('Hierarchy Implementors of ''initialize'' for *' match: methodListBrowser caption).
 	listPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter. 
-	self assert: listPresenter list size equals: 7.	
 	listPresenter list do:[:methodService | self assert: methodService selector equals: #initialize]. 
 	listPresenter list do:[:methodService |
 		| classService | 
@@ -5381,7 +5369,6 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #saveTestClass!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectCommentTab!private!selection! !
 !JadeiteProjectBrowserTestCase categoriesFor: #selectVariableListEntryForcingEvent:!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #stopOtherSessions!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abortOnVariablesTab!public!test variable tab!tests! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abortRemovesClassAndMethod!public!test class list! !
 !JadeiteProjectBrowserTestCase categoriesFor: #test_abortRemovesProjectAndPackage!public!test class list! !

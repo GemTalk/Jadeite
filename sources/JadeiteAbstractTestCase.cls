@@ -581,6 +581,17 @@ setupSupclassComparisonMethods
 		in: 'RowanSubClass'
 		category: 'test support'!
 
+stopOtherSessions
+	session
+		executeString: '	
+
+	| sessionsToStop |
+sessionsToStop :=  System currentSessions select:[:i |
+	| username |
+	username := ((System descriptionOfSession: i) at: 1) userId. 
+	((username ~= ''GcUser'') and:[(username ~=''SymbolUser'' and:[System session ~= i])])].
+sessionsToStop do:[:i | System stopSession: i]'!
+
 tearDown
 	super tearDown.
 	SessionManager inputState pumpMessages.!
@@ -720,6 +731,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #setupProjectBrowser!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #setupSupclassComparisonMethods!public!support! !
+!JadeiteAbstractTestCase categoriesFor: #stopOtherSessions!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #tearDown!private!setup teardown! !
 !JadeiteAbstractTestCase categoriesFor: #testsIssue:withTitle:!issue test support!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #testsRowanIssue:withTitle:!issue test support!public!support! !
