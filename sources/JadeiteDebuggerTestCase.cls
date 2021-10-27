@@ -17,8 +17,14 @@ cleanupProcesses
 		ifNotNil: 
 			[debugger debuggerService processes do: 
 					[:processService |
-					session executeString: '[(Object _objectForOop: ' , processService oop printString
-								, ') terminate] on: Error do:[:ex | "ignore"]']]!
+					
+					[session executeString: '[(Object _objectForOop: ' , processService oop printString
+								, ') terminate] on: Error do:[:ex | "ignore"]']
+							on: Error
+							do: 
+								[:ex |
+								"debuggers who close too slowly might get errors. Just ignore in this old version"
+								]]]!
 
 closeDebuggers
 	| list semaphore |
@@ -246,6 +252,7 @@ tearDown
 		yourself.
 	JadeiteDebugger debuggerClass: nil.
 	JadeiteDebugger semaphore: nil.
+	TestMessageBox disableJadeiteTestMessageBox.	"in case the test has gotten stuck while enabled"
 	super tearDown!
 
 terminateGsProcess
@@ -665,12 +672,12 @@ test_compileInExecutedBlockFailsWhenNoHomeMethod
 	
 	[self openDebuggerOn: '#(1 2 3) do:[:idx | self halt].'.
 	self assert: debugger frameListPresenter selectionByIndex equals: 4.
-	self assert: (debugger frameListPresenter list at: 4) equals: '[] in Executed Code  @6 line 1'.
+	self assert: ('[] in  Executed Code  @* line *' match: (debugger frameListPresenter list at: 4)).
 	debugger documentPresenter value: '#(1 2 3) do:[:idx | self].'.
 	TestMessageBox plannedResult: 'ok'.
 	debugger saveMethod.
 	self assert: debugger frameListPresenter selectionByIndex equals: 4.
-	self assert: (debugger frameListPresenter list at: 4) equals: '[] in Executed Code  @6 line 1']
+	self assert: ('[] in  Executed Code  @* line *' match: (debugger frameListPresenter list at: 4))]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_compileInExecutedBlockSameSelectorOnStack
@@ -697,8 +704,8 @@ test_compileInExecutedBlockSameSelectorOnStack
 	
 	[self openDebuggerOn: 'RowanSample1Test new doSomething'.
 	self assert: debugger frameListPresenter selectionByIndex equals: 4.
-	self assert: (debugger frameListPresenter list at: 4)
-		equals: '[] in RowanSample1 >> doSomething @6 line 4'.
+	self assert: ('[] in  ExecBlock1 (RowanSample1) >> doSomething @* line *' match:(debugger frameListPresenter list at: 4)
+		).
 	self assert: (debugger frameListPresenter list at: 9)
 		equals: 'RowanSample1Test >> doSomething @2 line 3'.
 	debugger documentPresenter value: 'doSomething
@@ -1774,7 +1781,7 @@ test_unsavedChangesActionChangeToHomeFrame
 	[| originalSource |
 	originalSource := '(Array with: 1) do:[:obj | self halt. obj size]'.
 	self openDebuggerOn: originalSource.
-	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @7 line 1'.
+	self assert: ( '[] in  Executed Code  @* line *' match: debugger frameListPresenter selection).
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
 	TestMessageBox plannedResult: #no.
@@ -1789,7 +1796,7 @@ test_unsavedChangesActionStepping
 	originalSource := 'nil halt. Array new. Array new. Array new.'.
 	
 	[self openDebuggerOn: originalSource.
-	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
+	self assert: ( 'Executed Code  @* line *' match: debugger frameListPresenter selection).
 	debugger methodSourcePresenter documentPresenter value: 'step over'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
 	TestMessageBox plannedResult: #no.	"don't save changes"
