@@ -1539,15 +1539,13 @@ abc'.
 	self assert: debugger documentPresenter view selection equals: 'halt'.
 	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: 'with:'.
-	self debuggerDo: [debugger stepOver].
-	self assert: debugger documentPresenter view selection equals: 'withAll:'.
 	self debuggerDo: [debugger stepInto].
-	self assert: debugger documentPresenter view selection equals: 'withAll:'.
+	self assert: debugger documentPresenter view selection equals: 'new:'.
 	self assert: debugger frameListPresenter selection
-		equals: 'Array class (Collection class) >> withAll: @1 line 1'.
+		equals: 'OrderedCollection class (SequenceableCollection class) >> with: @2 line 7'.
 	self debuggerDo: [debugger stepOut].
-	self assert: debugger frameListPresenter selection equals: 'Executed Code  @5 line 3'.	"on the top frame so should step one frame up"
-	self assert: debugger documentPresenter view selection equals: ':='!
+	self assert: debugger frameListPresenter selection equals: 'Executed Code  @4 line 3'.	"on the top frame so should step one frame up"
+	self assert: debugger documentPresenter view selection equals: 'withAll:'!
 
 test_stepOutSelectedFrame1
 	self
@@ -1556,7 +1554,7 @@ self halt.
 abc := Array with: 1 with: 2 with: 3. 
 abc do:[:int |
 	| array |
-	array := Array withAll: (Array with: $a with: $b with: $c). 
+	array := Array with: $a with: $b with: $c. 
 	array do: [:char | 
 		char size. 
 		char printString].
@@ -1574,13 +1572,12 @@ abc'.
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].
-	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepInto].
-	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: 'with:'.	"inner #with:with:with:"
 	debugger frameListPresenter selectionByIndex: 3.
 	self debuggerDo: [debugger stepOut].
-	self assert: ('Executed Code*' match: debugger frameListPresenter selection).	"should be out of block" !
+	self assert: ('Executed Code*' match: debugger frameListPresenter selection).	"on the top frame so should step one frame up"
+	self assert: debugger documentPresenter view selection equals: '[:'!
 
 test_stepOutSelectedFrame2
 	self
@@ -1608,8 +1605,6 @@ abc'.
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepInto].
-	self debuggerDo: [debugger stepInto].
-	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: 'with:'.	"inner #with:with:with:"
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].
@@ -1619,13 +1614,12 @@ abc'.
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepInto].
-	self debuggerDo: [debugger stepInto].
 	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: 'size'.	"innermost `size`"
 	debugger frameListPresenter selectionByIndex: 5.	"Executed code `home frame`"
 	self debuggerDo: [debugger stepOut].
 	self assert: ('Executed Code*' match: debugger frameListPresenter selection).	"on the top frame so should step one frame up"
-!
+	self assert: debugger documentPresenter view selection equals: '[:'!
 
 test_stepOutTopFrame
 	self
@@ -1653,13 +1647,11 @@ abc'.
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepOver].
 	self debuggerDo: [debugger stepInto].
-	self debuggerDo: [debugger stepInto].
-	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: 'with:'.	"inner #with:with:with:"
 	self assert: debugger frameListPresenter selectionByIndex equals: 1.
 	self debuggerDo: [debugger stepOut].
-	self assert: debugger frameListPresenter selection equals: 'Array (Collection) >> do: @2 line 9'.	"on the top frame so should step one frame up"
-	self assert: debugger documentPresenter view selection equals: 'size'.
+	self assert: debugger frameListPresenter selection equals: 'Array (Collection) >> do: @6 line 9'.	"on the top frame so should step one frame up"
+	self assert: debugger documentPresenter view selection equals: 'to:'.
 	self debuggerDo: [debugger resumeProcess]!
 
 test_stepThrough
@@ -1678,10 +1670,10 @@ array'.
 	self assert: debugger documentPresenter view selection equals: 'do:'.
 	self debuggerDo: [debugger stepThrough].
 	self assert: debugger documentPresenter view selection equals: ', '.	"inside block"
-	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @11 line 6'.
+	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @2 line 6'.
 	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: ':='.
-	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @12 line 6'.
+	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @3 line 6'.
 	self debuggerDo: [debugger resumeProcess]!
 
 test_switchProcesses
@@ -1865,7 +1857,7 @@ x yourself';
 		debuggerDo: [debugger stepOver];
 		assert: (debugger documentPresenter view selection) equals: 'value'; 
 		debuggerDo: [debugger stepInto];
-		assert: (debugger documentPresenter view selection) equals: 'x';
+		assert: (debugger documentPresenter view selection) equals: ':=';
 		debuggerDo: [debugger stepOver];
 		debuggerDo: [debugger stepOut];
 		assert: (debugger documentPresenter view selection) equals: 'yourself';
