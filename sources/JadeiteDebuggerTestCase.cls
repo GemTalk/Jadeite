@@ -61,6 +61,7 @@ setUp
 			["Running tests will not stop on assert. (Debugging tests does) Need to do a hard halt to determine how a test can login as the wrong user"
 			self haltTestForHardToCatchErrors: 'Multiple JadeiteLoginShells found']!
 
+
 test_additionalAccelerators
 	"No way yet to adequately test accelerators function
 	but we can assert that we tell Dolphin to set them up"
@@ -1951,7 +1952,7 @@ test_unsavedChangesActionChangeToHomeFrame
 	[| originalSource |
 	originalSource := '(Array with: 1) do:[:obj | self halt. obj size]'.
 	self openDebuggerOn: originalSource.
-	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @7 line 1'.
+	self assert: ( '[] in  Executed Code  @* line *' match: debugger frameListPresenter selection).
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
 	TestMessageBox plannedResult: #no.
@@ -1966,7 +1967,7 @@ test_unsavedChangesActionStepping
 	originalSource := 'nil halt. Array new. Array new. Array new.'.
 	
 	[self openDebuggerOn: originalSource.
-	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
+	self assert: ( 'Executed Code  @* line *' match: debugger frameListPresenter selection).
 	debugger methodSourcePresenter documentPresenter value: 'step over'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
 	TestMessageBox plannedResult: #no.	"don't save changes"
