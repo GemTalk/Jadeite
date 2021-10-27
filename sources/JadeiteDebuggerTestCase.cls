@@ -1846,10 +1846,10 @@ array'.
 	self assert: debugger documentPresenter view selection equals: 'do:'.
 	self debuggerDo: [debugger stepThrough].
 	self assert: debugger documentPresenter view selection equals: ', '.	"inside block"
-	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @11 line 6'.
+	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @2 line 6'.
 	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: ':='.
-	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @12 line 6'.
+	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @3 line 6'.
 	self debuggerDo: [debugger resumeProcess]!
 
 test_tempNamedReceiver
@@ -2232,7 +2232,7 @@ x yourself';
 		debuggerDo: [debugger stepOver];
 		assert: (debugger documentPresenter view selection) equals: 'value'; 
 		debuggerDo: [debugger stepInto];
-		assert: (debugger documentPresenter view selection) equals: 'x';
+		assert: (debugger documentPresenter view selection) equals: ':=';
 		debuggerDo: [debugger stepOver];
 		debuggerDo: [debugger stepOut];
 		assert: (debugger documentPresenter view selection) equals: 'yourself';
