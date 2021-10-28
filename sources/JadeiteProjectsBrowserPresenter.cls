@@ -1029,12 +1029,13 @@ jadeInspect
 
 jadeMenuStrings
 	false ifTrue: [
-		self abortTransaction; commitTransaction; newBrowser; addSystemBrowser; maximizeCode; findClass; gotoClass; refreshFromServer; exit.
+		self abortTransaction; commitTransaction; beginTransaction; newBrowser; addSystemBrowser; maximizeCode; findClass; gotoClass; refreshFromServer; exit.
 	]. 
 	^#(
 		'&Jadeite'
 		'&Abort Transaction//abortTransaction'
 		'&Commit Transaction//commitTransaction' 
+		'&Begin Transaction//beginTransaction'
 		'-'
 		'&New Projects Browser/Ctrl+N/newBrowser'
 		'&New Projects Tab/Ctrl+T/addSystemBrowser'

@@ -17,6 +17,10 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: JadePresenter isCommitEnabled.
 			^true].
+	command = #beginTransaction
+		ifTrue: 
+			[aCommandQuery isEnabled: JadePresenter isBeginTransactionEnabled.
+			^true].
 	^super queryCommand: aCommandQuery!
 
 systemBrowserPresenter
