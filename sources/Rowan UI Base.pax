@@ -1962,6 +1962,14 @@ packageListPresenter
 
 queryCommand: commandQuery
 	commandQuery isEnabled: true.
+	commandQuery command = #beginTransaction
+		ifTrue: 
+			[commandQuery isEnabled: self isBeginTransactionEnabled.
+			^true].
+	commandQuery command = #commitTransaction
+		ifTrue: 
+			[commandQuery isEnabled: self isCommitEnabled.
+			^true].
 	(#(#browseMethods #debug #runSelected) includes: commandQuery command)
 		ifTrue: 
 			[methodListPresenter selections isEmpty ifTrue: [commandQuery isEnabled: false].
