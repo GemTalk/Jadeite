@@ -41,7 +41,7 @@ queryCommand: query
 	query commandSymbol = #commit
 		ifTrue: 
 			[query isEnabled: self isCommitEnabled.
-			^true]! !
+			^true].! !
 !JadeToolsToolBarPresenter categoriesFor: #abort!Jade!public! !
 !JadeToolsToolBarPresenter categoriesFor: #begin!Jade!public! !
 !JadeToolsToolBarPresenter categoriesFor: #commit!public! !
