@@ -60,6 +60,20 @@ isCommitEnabled
 
 postEditSaveMethod!
 
+queryCommand: query
+	"this seems dumb but if JadePresenter can perform a symbol it will enable 
+	the command regardless of what it's subclasses do."
+
+	super queryCommand: query.
+	query commandSymbol = #beginTransaction
+		ifTrue: 
+			[query isEnabled: self isBeginTransactionEnabled.
+			^true].
+	query commandSymbol = #commitTransaction
+		ifTrue: 
+			[query isEnabled: self isCommitEnabled.
+			^true]!
+
 refreshFromServer
 	parentPresenter refreshFromServer!
 
@@ -160,6 +174,7 @@ updateService: service
 !JadePresenter categoriesFor: #isBeginTransactionEnabled!accessing!public!transaction management! !
 !JadePresenter categoriesFor: #isCommitEnabled!accessing!public!transaction management! !
 !JadePresenter categoriesFor: #postEditSaveMethod!menu handlers support!public! !
+!JadePresenter categoriesFor: #queryCommand:!menu handlers!public! !
 !JadePresenter categoriesFor: #refreshFromServer!public! !
 !JadePresenter categoriesFor: #resetCursor!public! !
 !JadePresenter categoriesFor: #setStatusBarDefault!displaying!public! !
