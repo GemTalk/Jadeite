@@ -2370,6 +2370,43 @@ onViewOpened
 	methodColumns := methodListPresenter view columnsList.	"columns will be selectively displayed based on class selections"
 	methodListPresenter view columnsList: (Array with: methodColumns second)!
 
+packageListPresenter
+	^packageListPresenter!
+
+queryCommand: commandQuery
+	commandQuery isEnabled: true.
+	commandQuery command = #beginTransaction
+		ifTrue: 
+			[commandQuery isEnabled: self isBeginTransactionEnabled.
+			^true].
+	commandQuery command = #commitTransaction
+		ifTrue: 
+			[commandQuery isEnabled: self isCommitEnabled.
+			^true].
+	(#(#browseMethods #debug #runSelected) includes: commandQuery command)
+		ifTrue: 
+			[methodListPresenter selections isEmpty ifTrue: [commandQuery isEnabled: false].
+			^true].
+	(#(#browseClass) includes: commandQuery command)
+		ifTrue: 
+			[classListPresenter selections isEmpty ifTrue: [commandQuery isEnabled: false].
+			^true].
+	^true!
+
+refresh
+	| packageSelections classSelections methodSelections |
+	packageSelections := packageListPresenter selections.
+	classSelections := classListPresenter selections.
+	methodSelections := methodListPresenter selections.
+	self updatePackages.
+	packageListPresenter selections: (packageListPresenter list
+				select: [:packageService | packageSelections includes: packageService]).
+	classListPresenter selections: (classListPresenter list
+				select: [:packageService | classSelections includes: packageService]).
+	methodListPresenter selections: (methodListPresenter list
+				select: [:packageService | methodSelections includes: packageService]).
+	self reset!
+
 registerPresentersForUpdates
 	BrowserUpdate current register: packageListPresenter selector: #testPackages:.
 	BrowserUpdate current
