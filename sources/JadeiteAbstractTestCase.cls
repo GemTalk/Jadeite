@@ -189,6 +189,12 @@ ensureTestIsSetUpAfterLogout
 				setUp].
 	self setUp!
 
+executeStringInOtherSession: string
+	| executionString |
+	executionString := '(UserGlobals at: #otherSession) '.
+	executionString := executionString , string.
+	^session executeString: executionString!
+
 fail: aString
 	TestMessageBox disableJadeiteTestMessageBox.
 	^super fail: aString
@@ -255,6 +261,13 @@ loadRowanSample1InProjectList
 	RowanBrowserService new reloadProjects: selections presenter: self transcriptTab.
 	self transcriptTab refresh!
 
+loginOtherSession
+	(Delay forSeconds: 1) wait.	"not sure if this is necessary"
+	session
+		executeString: 'UserGlobals at: #otherSession put: (GsExternalSession gemNRS: ''' , session gemNRS
+				, ''' stoneNRS: ''' , session stoneName
+				, ''' username: ''SystemUser'' password: ''swordfish'') login'.!
+
 loginWithRetry: loginShell
 	| loginError maxTries count |
 	loginError := true.
@@ -284,6 +297,10 @@ logoutThenLoginAs: userName
 	jadeiteShell userIDPresenter value: userName.
 	self loginWithRetry: jadeiteShell.
 	GciSession current ifNil:[self halt]. !
+
+logoutOtherSession
+	^session executeString: '
+				(UserGlobals at: #otherSession) ifNotNil: [:sess | sess logout]'!
 
 logoutThenLoginAs: user
 	TestMessageBox enableJadeiteTestMessageBox.
@@ -925,6 +942,7 @@ updateService:!issue test support!public!support! !
 variableListPresenter!private!project browser support! !
 verifyWindowClosed:!private!support!tests! !
 !
+
 
 !JadeiteAbstractTestCase class methodsFor!
 

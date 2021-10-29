@@ -124,6 +124,10 @@ queryCommand: aCommandQuery
 systemBrowserPresenter
 	^JadeiteBrowserPresenter! !
 
+toolbarPresenter
+	"for tests" 
+	^toolbarPresenter! !
+
 !JadeiteBrowser class categoriesForMethods!
 defaultAdditionalAccelerators!constants!public! !
 onSession:!instance creation!public! !

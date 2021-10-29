@@ -3394,7 +3394,6 @@ test_verifyValidCategory
 waitForPresenter: presenter
 	[presenter list isEmpty] whileTrue: [(Delay forMilliseconds: 50) wait]! !
 
-
 !JadeiteProjectBrowserTestCase categoriesForMethods!
 addSampleMethodGoo!dirty project!private! !
 addSampleMethodHoo!dirty project!private! !

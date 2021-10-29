@@ -10,19 +10,34 @@ JadeiteTransactionModeTestCase comment: ''!
 !JadeiteTransactionModeTestCase categoriesForClass!Unclassified! !
 !JadeiteTransactionModeTestCase methodsFor!
 
+assertButton: aSymbol enabled: aBoolean
+	| query |
+	query := CommandQuery commandDescription: (CommandDescription command: aSymbol)
+				source: transcript toolbarPresenter view.
+	transcript toolbarPresenter queryCommand: query.
+	aBoolean ifTrue: [self assert: query isEnabled] ifFalse: [self deny: query isEnabled]!
+
 assertProjectBrowserAbortButtonEnabled
 	| query |
 	query := CommandQuery commandDescription: (CommandDescription command: #abortTransaction)
 				source: projectsBrowser.
-	transcript toolbarPresenter queryCommand: query.
+	projectsBrowser toolbarPresenter queryCommand: query.
 	self assert: query isEnabled!
 
 assertTranscriptAbortButtonEnabled
-	| query |
-	query := CommandQuery commandDescription: (CommandDescription command: #abort)
-				source: transcript toolbarPresenter view.
-	transcript toolbarPresenter queryCommand: query.
-	self assert: query isEnabled!
+	self assertButton: #abort enabled: true!
+
+assertTranscriptBeginButtonDisabled
+	self assertButton: #begin enabled: false!
+
+assertTranscriptBeginButtonEnabled
+	self assertButton: #begin enabled: true!
+
+assertTranscriptCommitButtonDisabled
+	self assertButton: #commit enabled: false!
+
+assertTranscriptCommitButtonEnabled
+	self assertButton: #commit enabled: true!
 
 switchTransactionModeTo: aSymbol
 	TestMessageBox enableJadeiteTestMessageBox.
@@ -48,6 +63,66 @@ test_abortButtonAlwaysEnabled
 	self assertProjectBrowserAbortButtonEnabled]
 			ensure: 
 				[transcript transactionMode == #autoBegin ifFalse: [self switchTransactionModeTo: #autoBegin].
+				projectsBrowser view close.
+				self cloneRowanSample1.
+				self ensureRowanSample1Loaded	"this is needed because changing transaction mode does an abort"]!
+
+test_beginTransactionEnablement
+	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
+	self assert: transcript transactionMode equals: #autoBegin.	"should be the default mode for the test"
+	
+	[self switchTransactionModeTo: #manualBegin.
+	self assertTranscriptBeginButtonEnabled.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #yes.
+	[transcript beginTransaction] ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self assertTranscriptBeginButtonDisabled.
+	self assertTranscriptCommitButtonEnabled.
+	self abortTransaction.
+	self assertTranscriptBeginButtonEnabled.
+	self assertTranscriptCommitButtonDisabled.
+	self switchTransactionModeTo: #transactionless.
+	self assertTranscriptBeginButtonDisabled.
+	self abortTransaction.
+	self assertTranscriptBeginButtonDisabled.
+	self switchTransactionModeTo: #autoBegin.
+	self assertTranscriptBeginButtonDisabled.
+	self abortTransaction.
+	self assertTranscriptBeginButtonDisabled]
+			ensure: 
+				[transcript transactionMode == #autoBegin ifFalse: [self switchTransactionModeTo: #autoBegin].
+				self cloneRowanSample1.
+				self ensureRowanSample1Loaded	"this is needed because changing transaction mode does an abort"]!
+
+test_changeTransactionModeWithFailedCommit
+	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
+	self assert: transcript transactionMode equals: #autoBegin.	"should be the default mode for the test"
+	session executeString: 'UserGlobals at: #autoCommitTest put: (#key -> #value)'.
+	self commitTransaction.
+	self loginOtherSession.
+	self openProjectBrowser.
+	self projectsPresenter remoteAutoCommit ifFalse: [self projectsPresenter flipAutoCommit].
+	self assert: self projectsPresenter remoteAutoCommit.
+	
+	[self
+		executeStringInOtherSession: 'abort;
+			executeString: ''(UserGlobals at: #autoCommitTest) value: #newValue'';
+			commit'.
+	session executeString: '(UserGlobals at: #autoCommitTest) value: #stillAnotherNewValue'.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self
+		saveMethod: 'test1 ^123'
+		in: 'RowanSample1Test'
+		category: 'tests'.
+	self switchTransactionModeTo: #manualBegin	"lose the changes but no bad things will happen"]
+			ensure: 
+				[self logoutOtherSession.
+				self abortTransaction.
+				session executeString: 'UserGlobals removeKey: #autoCommitTest'.
+				transcript transactionMode == #autoBegin ifFalse: [self switchTransactionModeTo: #autoBegin].
+				RowanAnsweringService new setAutoCommit: false for: session.
+				self commitTransaction.
 				projectsBrowser view close.
 				self cloneRowanSample1.
 				self ensureRowanSample1Loaded	"this is needed because changing transaction mode does an abort"]!
@@ -185,10 +260,17 @@ test_transactionModeSigAbortsListener
 				self assert: (session executeString: 'System transactionMode') equals: previousTransactionMode.
 				self cloneRowanSample1.
 				self ensureRowanSample1Loaded]! !
+!JadeiteTransactionModeTestCase categoriesFor: #assertButton:enabled:!private!support!tests! !
 !JadeiteTransactionModeTestCase categoriesFor: #assertProjectBrowserAbortButtonEnabled!private!support!tests! !
 !JadeiteTransactionModeTestCase categoriesFor: #assertTranscriptAbortButtonEnabled!private!support!tests! !
+!JadeiteTransactionModeTestCase categoriesFor: #assertTranscriptBeginButtonDisabled!private!support!tests! !
+!JadeiteTransactionModeTestCase categoriesFor: #assertTranscriptBeginButtonEnabled!private!support!tests! !
+!JadeiteTransactionModeTestCase categoriesFor: #assertTranscriptCommitButtonDisabled!private!support!tests! !
+!JadeiteTransactionModeTestCase categoriesFor: #assertTranscriptCommitButtonEnabled!private!support!tests! !
 !JadeiteTransactionModeTestCase categoriesFor: #switchTransactionModeTo:!private!support!tests! !
 !JadeiteTransactionModeTestCase categoriesFor: #test_abortButtonAlwaysEnabled!public!tests! !
+!JadeiteTransactionModeTestCase categoriesFor: #test_beginTransactionEnablement!public!tests! !
+!JadeiteTransactionModeTestCase categoriesFor: #test_changeTransactionModeWithFailedCommit!public!tests! !
 !JadeiteTransactionModeTestCase categoriesFor: #test_setTransactionlessMode!public!tests! !
 !JadeiteTransactionModeTestCase categoriesFor: #test_setTransactionModeChangesServer!public!tests! !
 !JadeiteTransactionModeTestCase categoriesFor: #test_transactionModeDefault!public!tests! !
