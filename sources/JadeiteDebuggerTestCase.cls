@@ -1606,13 +1606,12 @@ test_selectAfterDiveNoStepPoint
 	self selectRowanSample1Class.
 	self saveInterestingLoopMethod.
 	breakpoint := 9.
-	self projectsPresenter setBreakPointAt: breakpoint in: self projectsPresenter.	"inside the block"
-	
+	self projectsPresenter setBreakPointAt: breakpoint in: self projectsPresenter.	"inside the block"	
 	[self openDebuggerOn: 'RowanSample1 new interestingLoop'.
 	self debuggerDo: [debugger stepInto].
 	self assert: debugger frameListPresenter list first equals: 'RowanSample1 >> test @1 line 1'.
 	self assert: (debugger frameListPresenter list at: 2)
-		equals: '[] in RowanSample1 >> interestingLoop @9 line 8'.
+		equals: '[] in  ExecBlock1 (RowanSample1) >> interestingLoop @2 line 8'.
 	[self selectFrameAt: 2] fork.	"<<< Walkback occurred here"	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
 	(Delay forMilliseconds: 100) wait.
 	[debugger documentPresenter value replaceLfWithCrLf isEmpty]
@@ -1864,6 +1863,24 @@ self halt.'.
 	self assert: debugger variableListPresenter list first key value equals: 'receiver'.
 	self assert: debugger variableListPresenter list last value equals: '''fnoodle'''.
 	self assert: debugger variableListPresenter list last key value = 'receiver'!
+
+test_switchProcesses
+	| activeProcesses longRunningProcess |
+	activeProcesses := session executeString: 'ProcessorScheduler scheduler allProcesses size'.
+	gsProcess := session executeString: '[(Delay forSeconds: 9999) wait] fork asOop.'.
+	session executeString: '(Delay forSeconds: 1) wait'.	"let forked process start"
+	self
+		openDebuggerOn: 'nil halt';
+		assert: debugger _processList size equals: activeProcesses + 1;
+		assert: debugger processListPresenter list size equals: activeProcesses + 1.
+	longRunningProcess := debugger processListPresenter list
+				detect: [:processService | processService oop = gsProcess].
+	self debuggerDo: [debugger processListPresenter selection: longRunningProcess].
+	self debuggerDo: [self selectFrameAt: 6].
+	self
+		assert: debugger methodSourcePresenter documentPresenter value
+			equals: '[(Delay forSeconds: 9999) wait] fork asOop.';
+		assert: longRunningProcess oop equals: gsProcess!
 
 test_terminateDoesNotWalkback
 	"Terminate a process other than the primary one"
