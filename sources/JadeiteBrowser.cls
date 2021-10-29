@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteProjectsSystemBrowser subclass: #JadeiteBrowser
-	instanceVariableNames: ''
+	instanceVariableNames: 'toolbarPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -90,6 +90,23 @@ openOn: session project: projectService
 	browser currentCard projectListPresenter setFocus.
 	^browser! !
 
+abortedTransaction
+	toolbarPresenter view validateUserInterface!
+
+createComponents
+	super createComponents.
+	toolbarPresenter := self add: JadeToolsToolBarPresenter new name: 'leftToolbar'!
+
+createSchematicWiring
+	super createSchematicWiring.
+	JadePresenter
+		when: #abortedTransaction
+		send: #abortedTransaction
+		to: self!
+
+onViewClosed
+	super onViewClosed.
+	JadePresenter removeEventsTriggeredFor: self!
 
 queryCommand: aCommandQuery
 	| command |
@@ -115,4 +132,3 @@ openOn:dictionary:!instance creation!public! !
 openOn:package:!instance creation!public! !
 openOn:project:!instance creation!public! !
 !
-

@@ -10,6 +10,9 @@ JadeiteBrowserPresenter comment: ''!
 !JadeiteBrowserPresenter categoriesForClass!Unclassified! !
 !JadeiteBrowserPresenter methodsFor!
 
+abortedTransaction
+	self toolbarPresenter view validateUserInterface!
+
 abortTransaction
 	super abortTransaction.
 	self autoCommit: (autoCommit value == #failed ifTrue: [true] ifFalse: [autoCommit value])!

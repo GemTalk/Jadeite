@@ -11,7 +11,8 @@ JadeiteTranscript comment: ''!
 !JadeiteTranscript methodsFor!
 
 abortedTransaction
-	self displayLastKnownCommitOrAbort!
+	self displayLastKnownCommitOrAbort.
+	self toolbarPresenter view validateUserInterface!
 
 abortTransaction
 	super abortTransaction.
