@@ -1415,13 +1415,12 @@ test_selectAfterDiveNoStepPoint
 	self openProjectBrowser.
 	self selectRowanSample1Class.
 	self saveInterestingLoopMethod.
-	self projectsPresenter setBreakPointAt: 9 in: self projectsPresenter.	"inside the block"
-	
+	self projectsPresenter setBreakPointAt: 8 in: self projectsPresenter.	"inside the block"
 	[self openDebuggerOn: 'RowanSample1 new interestingLoop'.
 	self debuggerDo: [debugger stepInto].
 	self assert: debugger frameListPresenter list first equals: 'RowanSample1 >> test @1 line 1'.
 	self assert: (debugger frameListPresenter list at: 2)
-		equals: '[] in RowanSample1 >> interestingLoop @9 line 8'.
+		equals: '[] in  ExecBlock1 (RowanSample1) >> interestingLoop @2 line 8'.
 	[self selectFrameAt: 2] fork.	"<<< Walkback occurred here"	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
 	(Delay forMilliseconds: 100) wait.
 	[debugger documentPresenter value replaceLfWithCrLf isEmpty]
@@ -1688,7 +1687,7 @@ test_switchProcesses
 	longRunningProcess := debugger processListPresenter list
 				detect: [:processService | processService oop = gsProcess].
 	self debuggerDo: [debugger processListPresenter selection: longRunningProcess].
-	self debuggerDo: [self selectFrameAt: 8].
+	self debuggerDo: [self selectFrameAt: 6].
 	self
 		assert: debugger methodSourcePresenter documentPresenter value
 			equals: '[(Delay forSeconds: 9999) wait] fork asOop.';
