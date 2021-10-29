@@ -130,6 +130,12 @@ ensureOneTab
 ensureRowanSample1Loaded
 	JadeiteTestResource current ensureRowanSample1Loaded!
 
+executeStringInOtherSession: string
+	| executionString |
+	executionString := '(UserGlobals at: #otherSession) '.
+	executionString := executionString , string.
+	^session executeString: executionString!
+
 fail: aString
 	TestMessageBox disableJadeiteTestMessageBox.
 	^super fail: aString
@@ -191,6 +197,13 @@ loadRowanSample1InProjectList
 	RowanBrowserService new reloadProjects: selections presenter: self transcriptTab.
 	self transcriptTab refresh!
 
+loginOtherSession
+	(Delay forSeconds: 1) wait.	"not sure if this is necessary"
+	session
+		executeString: 'UserGlobals at: #otherSession put: (GsExternalSession gemNRS: ''' , session gemNRS
+				, ''' stoneNRS: ''' , session stoneName
+				, ''' username: ''SystemUser'' password: ''swordfish'') login'.!
+
 loginWithRetry: loginShell
 	| loginError |
 	loginError := true.
@@ -199,6 +212,10 @@ loginWithRetry: loginShell
 			[loginShell loginWithoutErrorHandling.
 			loginError := false] on: Error
 					do: [:ex | (Delay forMilliseconds: 100) wait]]!
+
+logoutOtherSession
+	^session executeString: '
+				(UserGlobals at: #otherSession) ifNotNil: [:sess | sess logout]'!
 
 logoutThenLoginAs: user
 	TestMessageBox enableJadeiteTestMessageBox.
@@ -667,6 +684,7 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #enableBreakpoints!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #ensureOneTab!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Loaded!private!project support! !
+!JadeiteAbstractTestCase categoriesFor: #executeStringInOtherSession:!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #fail:!asserting!public! !
 !JadeiteAbstractTestCase categoriesFor: #interestingLoopMethodSource!constants!private! !
 !JadeiteAbstractTestCase categoriesFor: #isSampleProjectLoaded!private!private testing!project support! !
@@ -676,7 +694,9 @@ variableListPresenter
 !JadeiteAbstractTestCase categoriesFor: #jadeitePrefsFilePath!private!support! !
 !JadeiteAbstractTestCase categoriesFor: #loadProjectNamed:!private!project support! !
 !JadeiteAbstractTestCase categoriesFor: #loadRowanSample1InProjectList!private!project support! !
+!JadeiteAbstractTestCase categoriesFor: #loginOtherSession!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #loginWithRetry:!private!support! !
+!JadeiteAbstractTestCase categoriesFor: #logoutOtherSession!public!support! !
 !JadeiteAbstractTestCase categoriesFor: #logoutThenLoginAs:!private!setup teardown!support! !
 !JadeiteAbstractTestCase categoriesFor: #methodListPresenter!private!project browser support! !
 !JadeiteAbstractTestCase categoriesFor: #methodSourceForTest!constants!private! !

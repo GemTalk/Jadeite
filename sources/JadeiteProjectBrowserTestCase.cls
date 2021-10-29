@@ -66,12 +66,6 @@ dirtyProjectForChangeBrowser
 	self selectMethodNamed: #test1.
 	self projectsPresenter basicRemoveMethods!
 
-executeStringInOtherSession: string
-	| executionString |
-	executionString := '(UserGlobals at: #otherSession) '.
-	executionString := executionString , string.
-	^session executeString: executionString!
-
 family: family ofNodesIn: presenter
 	| nodeFamily services |
 	nodeFamily := Dictionary new. 
@@ -116,17 +110,6 @@ loadProjectNamed: projectName
 	| projectService |
 	projectService := RowanProjectService new name: projectName.
 	RowanBrowserService new reloadProjects: (Array with: projectService) presenter: self projectsPresenter!
-
-loginOtherSession
-	(Delay forSeconds: 1) wait.	"not sure if this is necessary"
-	session
-		executeString: 'UserGlobals at: #otherSession put: (GsExternalSession gemNRS: ''' , session gemNRS
-				, ''' stoneNRS: ''' , session stoneName
-				, ''' username: ''SystemUser'' password: ''swordfish'') login'.!
-
-logoutOtherSession
-	^session executeString: '
-				(UserGlobals at: #otherSession) ifNotNil: [:sess | sess logout]'!
 
 modifySampleMethodFoo
 
@@ -5348,14 +5331,11 @@ waitForPresenter: presenter
 !JadeiteProjectBrowserTestCase categoriesFor: #assertVariableTabSorted!private!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #currentTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #dirtyProjectForChangeBrowser!dirty project!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #executeStringInOtherSession:!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #family:ofNodesIn:!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue261createTestProject!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #issue284methodCreation!issue test support!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #loadProjectNamed:!private!project support! !
-!JadeiteProjectBrowserTestCase categoriesFor: #loginOtherSession!public!support! !
-!JadeiteProjectBrowserTestCase categoriesFor: #logoutOtherSession!public!support! !
 !JadeiteProjectBrowserTestCase categoriesFor: #modifySampleMethodFoo!dirty project!private! !
 !JadeiteProjectBrowserTestCase categoriesFor: #nextTabView!public!views! !
 !JadeiteProjectBrowserTestCase categoriesFor: #packageNamed:!private!project support! !

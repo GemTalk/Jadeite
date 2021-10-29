@@ -42,11 +42,16 @@ queryCommand: aCommandQuery
 	^super queryCommand: aCommandQuery!
 
 systemBrowserPresenter
-	^JadeiteBrowserPresenter! !
+	^JadeiteBrowserPresenter!
+
+toolbarPresenter
+	"for tests" 
+	^toolbarPresenter! !
 !JadeiteBrowser categoriesFor: #abortedTransaction!event handlers!public! !
 !JadeiteBrowser categoriesFor: #createComponents!initialize!public! !
 !JadeiteBrowser categoriesFor: #createSchematicWiring!initialize!public! !
 !JadeiteBrowser categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteBrowser categoriesFor: #queryCommand:!menu handlers support!public! !
 !JadeiteBrowser categoriesFor: #systemBrowserPresenter!public! !
+!JadeiteBrowser categoriesFor: #toolbarPresenter!accessing!private! !
 
