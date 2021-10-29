@@ -10,6 +10,9 @@ JadeiteBrowserPresenter comment: ''!
 !JadeiteBrowserPresenter categoriesForClass!Unclassified! !
 !JadeiteBrowserPresenter methodsFor!
 
+abortedTransaction
+	self toolbarPresenter view validateUserInterface!
+
 abortTransaction
 	super abortTransaction.
 	self autoCommit: (autoCommit value == #failed ifTrue: [true] ifFalse: [autoCommit value])!
@@ -927,6 +930,7 @@ variablesMenuStrings
 				browseInstVarReaders;
 				browseInstVarWriters].
 	^#('&Variables' '&Add Accessors//addVariableAccessors' '&Browse Inst Var Readers//browseInstVarReaders' '&Browse Inst Var Writers//browseInstVarWriters')! !
+!JadeiteBrowserPresenter categoriesFor: #abortedTransaction!event handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #abortTransaction!public!transaction management! !
 !JadeiteBrowserPresenter categoriesFor: #addDictionary!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #additionalAccelerators!constants!public! !

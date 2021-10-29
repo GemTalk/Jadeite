@@ -155,12 +155,13 @@ insertIfTrue
 jadeMenuStrings
 
 	false ifTrue: [
-		self abortTransaction; commitTransaction; newWorkspace; newProjectsBrowser; exit
+		self abortTransaction; commitTransaction; beginTransaction; newWorkspace; newProjectsBrowser; exit
 	]. 
 	^#(
 		'&Jadeite'
 		'&Abort Transaction//abortTransaction'
 		'&Commit Transaction//commitTransaction'
+		'&Begin Transaction//beginTransaction'
 		'-'
 		'&New Worspace/Ctrl+N/newWorkspace'
 		'&Open Projects Browser/Ctrl+P/newProjectsBrowser'
@@ -291,7 +292,7 @@ updateSource
 !JadeMethodListPresenter categoriesFor: #getSelectedMethodName!public! !
 !JadeMethodListPresenter categoriesFor: #insertIfFalse!menu handlers!must not strip!public! !
 !JadeMethodListPresenter categoriesFor: #insertIfTrue!menu handlers!must not strip!public! !
-!JadeMethodListPresenter categoriesFor: #jadeMenuStrings!public! !
+!JadeMethodListPresenter categoriesFor: #jadeMenuStrings!menus!public! !
 !JadeMethodListPresenter categoriesFor: #methodListPresenter!public! !
 !JadeMethodListPresenter categoriesFor: #onLeftButtonPressed:!public! !
 !JadeMethodListPresenter categoriesFor: #searchFor:!public! !

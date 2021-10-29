@@ -896,7 +896,7 @@ RowanSystemBrowser subclass: #JadeiteProjectsSystemBrowser
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteProjectsSystemBrowser subclass: #JadeiteBrowser
-	instanceVariableNames: ''
+	instanceVariableNames: 'toolbarPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1681,16 +1681,20 @@ displayInstVarError: ex instVar: anObject
 	^'Error inspecting object ' , anObject printString , '. Error text: ' , ex printString!
 
 displayObject
-	| result stream theClassName oop size instVarNames |
+	| result stream theClassName oop size instVarNames passWindowHandle |
 	((model isKindOf: Character) or: [(model isKindOf: Float) or: [model isKindOf: Symbol]])
 		ifTrue: 
 			[instVarNames := self displaySpecials.
 			^self].
 	result := 
-			[gciSession
-				serverPerform: #inspect:windowHandle:
-				with: model
-				with: self view handle value]
+			[passWindowHandle := gciSession executeString: 'JadeServer canUnderstand: #inspect:windowHandle:'.	"support for older versions"
+			passWindowHandle
+				ifTrue: 
+					[gciSession
+						serverPerform: #inspect:windowHandle:
+						with: model
+						with: self view handle value]
+				ifFalse: [gciSession serverPerform: #inspect: with: model]]
 					on: Error
 					do: [:ex | ^self displayError: ex].
 	(result isKindOf: ByteArray) ifTrue: [result := result asString].
