@@ -1425,7 +1425,7 @@ Server initialization failed. Most functionality will be broken!!'.
 	(server isKindOf: String) ifTrue: [
 		self logout.
 		GciLoginFailed
-			signal: 'JadeServer compile error:
+			signal: '(Rowan jadeServerClassNamed: #JadeServer) compile error:
 ' , server
 			with: self.
 	].
@@ -2057,7 +2057,7 @@ displayObject
 			[instVarNames := self displaySpecials.
 			^self].
 	result := 
-			[passWindowHandle := gciSession executeString: 'JadeServer canUnderstand: #inspect:windowHandle:'.	"support for older versions"
+			[passWindowHandle := gciSession executeString: '(Rowan jadeServerClassNamed: #JadeServer) canUnderstand: #inspect:windowHandle:'.	"support for older versions"
 			passWindowHandle
 				ifTrue: 
 					[gciSession
