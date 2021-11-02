@@ -199,8 +199,7 @@ initialize
 initializeTransactionModeSettings
 	self transactionMode
 		ifNil: 
-			[self basicTransactionMode: #autoBegin	"should have already been set when window was created ... but just in case"].
-	!
+			[self setTransactionModeFromServer	"should have already been set when window was created ... but just in case"]!
 
 isBeginTransactionEnabled
 	^self parentPresenter isBeginTransactionEnabled!
