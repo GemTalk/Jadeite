@@ -1393,7 +1393,7 @@ You must abort your transaction before retrying the operation.
 Would you like to abort now?')
 					ifTrue: [JadePresenter abortTransactionInSession: self]]]
 			ensure: [self enableSignaledAbortError	"must reenable each time a sig abort error is received"].
-	error abort	"Shutdown this process. An abort happened or needs to happen"!
+	Processor activeProcess terminate  "this should run exception handlers" !
 
 hasServer
 
@@ -2538,10 +2538,13 @@ basicAllSelectedProjectsDirty: aProjectListPresenter
 
 basicBeginTransaction
 	| answeringService |
-	answeringService := RowanAnsweringService new.
-	answeringService exec: 'System beginTransaction' session: gciSession.
-	self setInTransaction: answeringService session: gciSession.
-	JadePresenter trigger: #abortedTransaction!
+	
+	[answeringService := RowanAnsweringService new.
+	answeringService exec: 'System beginTransaction' session: gciSession]
+			ensure: 
+				[self setInTransaction: answeringService session: gciSession.
+				JadePresenter trigger: #abortedTransaction.
+				self inTransaction ifFalse: [MessageBox notify: 'Begin transaction failed. Please try again.']]!
 
 basicCheckoutTagAndRefresh: choice for: projectService
 	projectService basicCheckoutTag: choice using: self gciSession.
