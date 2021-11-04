@@ -2,9 +2,11 @@
 Last updated: 9/28/2021
 For Customer work
 
-git checkout Rowan tag  v1.2.10
+git checkout Rowan tag  v1.2.10 (This will be v1.2.13 for 3.6.2) 
+tag name- Oscar-3.0.91.2 (last branch used oscar30912_issue_889)
 (git fetch --all)
 
+11/4/21 NOTE - Eventually 3.2.15 will no longer be used. Use 3.6.2)
 start 3.2.15 server
 cd server installation directory
 . gshere
