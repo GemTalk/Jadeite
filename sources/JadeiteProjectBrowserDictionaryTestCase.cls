@@ -193,8 +193,6 @@ test_commitAfterDictionaryAddOrRemove
 	dictionaryName := 'Test_CommitAfterAdd'.
 	self projectsPresenter basicAddDictionaryNamed: dictionaryName.
 	self assertDictionaryInList: dictionaryName.
-	transcript toolbarPresenter abort.
-	self assertDictionaryInList: dictionaryName.
 	self projectsPresenter basicRemoveDictionaries: (Array with: dictionaryName).
 	self assertDictionaryNotInList: dictionaryName.
 	transcript toolbarPresenter abort.
