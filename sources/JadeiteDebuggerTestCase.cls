@@ -1492,8 +1492,10 @@ test_restartInBlock
 						environment: 0] fork]]
 					fork.
 	
+	[
 	[self getSecondDebugger.
-	self denyIsNil: secondDebugger.
+	self denyIsNil: secondDebugger]
+			ensure: [self restoreTrimStackMethod: originalTrimStackSource].
 	self deny: debugger == secondDebugger.
 	self deny: debugger gsProcess oop = secondDebugger gsProcess oop.
 	self deny: debugger frameListPresenter list size = secondDebugger frameListPresenter list size.
@@ -1611,7 +1613,7 @@ test_selectAfterDiveNoStepPoint
 	self debuggerDo: [debugger stepInto].
 	self assert: debugger frameListPresenter list first equals: 'RowanSample1 >> test @1 line 1'.
 	self assert: (debugger frameListPresenter list at: 2)
-		equals: '[] in  ExecBlock1 (RowanSample1) >> interestingLoop @2 line 8'.
+		equals: '[] in RowanSample1 >> interestingLoop @9 line 8'.
 	[self selectFrameAt: 2] fork.	"<<< Walkback occurred here"	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
 	(Delay forMilliseconds: 100) wait.
 	[debugger documentPresenter value replaceLfWithCrLf isEmpty]
@@ -1845,10 +1847,10 @@ array'.
 	self assert: debugger documentPresenter view selection equals: 'do:'.
 	self debuggerDo: [debugger stepThrough].
 	self assert: debugger documentPresenter view selection equals: ', '.	"inside block"
-	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @2 line 6'.
+	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @11 line 6'.
 	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: ':='.
-	self assert: debugger frameListPresenter selection equals: '[] in  Executed Code  @3 line 6'.
+	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @12 line 6'.
 	self debuggerDo: [debugger resumeProcess]!
 
 test_tempNamedReceiver
@@ -1876,7 +1878,7 @@ test_switchProcesses
 	longRunningProcess := debugger processListPresenter list
 				detect: [:processService | processService oop = gsProcess].
 	self debuggerDo: [debugger processListPresenter selection: longRunningProcess].
-	self debuggerDo: [self selectFrameAt: 6].
+	self debuggerDo: [self selectFrameAt: 8].
 	self
 		assert: debugger methodSourcePresenter documentPresenter value
 			equals: '[(Delay forSeconds: 9999) wait] fork asOop.';
@@ -1969,7 +1971,7 @@ test_unsavedChangesActionChangeToHomeFrame
 	[| originalSource |
 	originalSource := '(Array with: 1) do:[:obj | self halt. obj size]'.
 	self openDebuggerOn: originalSource.
-	self assert: ( '[] in  Executed Code  @* line *' match: debugger frameListPresenter selection).
+	self assert: ( '[] in Executed Code  @* line *' match: debugger frameListPresenter selection).
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
 	TestMessageBox plannedResult: #no.
@@ -2249,7 +2251,7 @@ x yourself';
 		debuggerDo: [debugger stepOver];
 		assert: (debugger documentPresenter view selection) equals: 'value'; 
 		debuggerDo: [debugger stepInto];
-		assert: (debugger documentPresenter view selection) equals: ':=';
+		assert: (debugger documentPresenter view selection) equals: 'x';
 		debuggerDo: [debugger stepOver];
 		debuggerDo: [debugger stepOut];
 		assert: (debugger documentPresenter view selection) equals: 'yourself';
@@ -2408,6 +2410,7 @@ x halt.
 		halt;"
 		yourself.
 ! !
+
 !JadeiteDebuggerTestCase categoriesForMethods!
 firstFrameStartingWith:!public!support! !
 indexOfVariableNamed:!public!support! !
@@ -2516,4 +2519,3 @@ test7!public!tests! !
 test8!public!tests! !
 testBug77!public! !
 !
-

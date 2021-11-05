@@ -14,6 +14,7 @@ setUp
 	user := 'SystemUser'.
 	super setUp!
 
+
 test_compileMethodInNonPackagedClass
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self testsRowanIssue: #issue499
