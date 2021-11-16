@@ -220,9 +220,8 @@ test_transactionModeManualTurnsOnSigAbortListener
 				self ensureRowanSample1Loaded]!
 
 test_transactionModeSigAbortsListener
-	| previousTransactionMode previousSigAbortProcessInterval count secondSession lastKnown |
+	| previousTransactionMode previousSigAbortProcessInterval count secondSession |
 	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
-	lastKnown := transcript lastKnownTransaction value.
 	[self nonSystemSessionCount = 1] whileFalse: 
 			[self stopOtherSessions.
 			(Delay forMilliseconds: 10) wait].

@@ -99,6 +99,11 @@ resetCursor
 	[Cursor current: nil] forkAt: Processor userBackgroundPriority.
 !
 
+resetListeningForSigAborts: session
+	self stopListeningForSigAborts.
+	(self transactionMode == #manualBegin or: [self transactionMode == #transactionless])
+		ifTrue: [self listenForSigAborts: session]!
+
 setStatusBarDefault
 	| statusBarView |
 	statusBarView := self topShell view viewNamed: 'statusBarField'.
@@ -134,9 +139,7 @@ transactionMode: aSymbol
 
 transactionMode: aSymbol session: session
 	self class transactionMode: aSymbol session: session.
-	self stopListeningForSigAborts.
-	(self transactionMode == #manualBegin or: [self transactionMode == #transactionless])
-		ifTrue: [self listenForSigAborts: session]!
+	self resetListeningForSigAborts: session!
 
 updateMenuBar: aMenuBar
 
