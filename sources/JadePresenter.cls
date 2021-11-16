@@ -83,6 +83,11 @@ resetCursor
 	[Cursor current: nil] forkAt: Processor userBackgroundPriority.
 !
 
+resetListeningForSigAborts: session
+	self stopListeningForSigAborts.
+	(self transactionMode == #manualBegin or: [self transactionMode == #transactionless])
+		ifTrue: [self listenForSigAborts: session]!
+
 setStatusBarDefault
 	| statusBarView |
 	statusBarView := self topShell view viewNamed: 'statusBarField'.
@@ -118,9 +123,7 @@ transactionMode: aSymbol
 
 transactionMode: aSymbol session: session
 	self class transactionMode: aSymbol session: session.
-	self stopListeningForSigAborts.
-	(self transactionMode == #manualBegin or: [self transactionMode == #transactionless])
-		ifTrue: [self listenForSigAborts: session]!
+	self resetListeningForSigAborts: session!
 
 updateMenuBar: aMenuBar
 
@@ -177,6 +180,7 @@ updateService: service
 !JadePresenter categoriesFor: #queryCommand:!menu handlers!public! !
 !JadePresenter categoriesFor: #refreshFromServer!public! !
 !JadePresenter categoriesFor: #resetCursor!public! !
+!JadePresenter categoriesFor: #resetListeningForSigAborts:!accessing!public!transaction management! !
 !JadePresenter categoriesFor: #setStatusBarDefault!displaying!public! !
 !JadePresenter categoriesFor: #sigAbortsProcessEnabled!public!transaction management! !
 !JadePresenter categoriesFor: #sigAbortsProcessEnabled:!public!transaction management! !

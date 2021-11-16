@@ -361,7 +361,8 @@ setTransactionModeFromServer
 	"Only run this when opening the transcript.  We don't use the service mutex so it's mildly dangerous."
 	self parentPresenter transactionMode: (gciSession executeString: 'System transactionMode').
 	self resetTransactionModeRadioButtons.
-	self parentPresenter inTransaction: (gciSession executeString: 'System inTransaction')!
+	self parentPresenter inTransaction: (gciSession executeString: 'System inTransaction').
+	self parentPresenter resetListeningForSigAborts: gciSession!
 
 shouldAskToCommitOnLogout
 	^self transactionMode = #autoBegin
