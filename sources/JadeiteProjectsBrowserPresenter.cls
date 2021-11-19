@@ -500,7 +500,8 @@ editSaveClassComment
 
 expandHierarchyOneLevelAt: classService
 	Cursor wait showWhile: 
-			[classService command: #oneLevelClassHierarchy.
+			[classHierarchyPresenter model removeChildrenOf: classService.
+			classService command: #oneLevelClassHierarchy.
 			self issueCommand: classService.
 			self selectClassNamed: classService name.
 			self classHierarchyPresenter view expandAll]!

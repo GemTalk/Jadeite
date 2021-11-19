@@ -15,9 +15,27 @@ nodeClass
 
 	^JadeiteTreeNode!
 
+removeChildrenOf: anObject
+	"Jadeite - remove all children but don't trigger events to avoid trips to the server"
+
+	(self childrenOf: anObject) do: [:child | self remove: child ifAbsent: []]!
+
+removeWithoutNotification: anObject ifAbsent: aNiladicValuable
+	"Jadeite - remove but don't trigger events to avoid trips to the server"
+
+	| node parentNode |
+	node := self getNodeFor: anObject ifAbsent: [].
+	node isNil ifTrue: [^aNiladicValuable value].
+	parentNode := node parent.
+	parentNode removeChildNode: node.
+	self forgetNode: node.
+	^anObject!
+
 resetVisited
 	self asBag do: [:object | (self lookupNode: object) resetVisited]! !
 !JadeiteTreeModel categoriesFor: #nodeClass!constants!public! !
+!JadeiteTreeModel categoriesFor: #removeChildrenOf:!public! !
+!JadeiteTreeModel categoriesFor: #removeWithoutNotification:ifAbsent:!public! !
 !JadeiteTreeModel categoriesFor: #resetVisited!constants!public! !
 
 !JadeiteTreeModel class methodsFor!

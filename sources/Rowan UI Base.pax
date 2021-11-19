@@ -453,7 +453,6 @@ package methodNames
 	add: #Time -> #stonOn:;
 	add: #TranscriptPresenter -> #clearTranscript;
 	add: #TreeModel -> #getNodeFor:ifAbsent:;
-	add: #TreeModel -> #removeWithoutNotification:ifAbsent:;
 	add: 'CodeSourcePresenter class' -> #resource_Default_view;
 	add: 'Date class' -> #fromSton:;
 	add: 'DiffBrowser class' -> #defaultModel;
@@ -5761,20 +5760,8 @@ getNodeFor: anObject ifAbsent: aNiladicValuable
 	does not exist in the tree answer the result of evaluating the <niladicValuable> argument.
 	If anObject is nil it is treated as being the anchorNode"
 
-	^objectNodeMap at: anObject ifAbsent: aNiladicValuable!
-
-removeWithoutNotification: anObject ifAbsent: aNiladicValuable
-	"Jadeite - remove but don't trigger events to avoid trips to the server"
-
-	| node parentNode |
-	node := self getNodeFor: anObject ifAbsent: [].
-	node isNil ifTrue: [^aNiladicValuable value].
-	parentNode := node parent.
-	parentNode removeChildNode: node.
-	self forgetNode: node.
-	^anObject! !
+	^objectNodeMap at: anObject ifAbsent: aNiladicValuable! !
 !TreeModel categoriesFor: #getNodeFor:ifAbsent:!hierarchy!private! !
-!TreeModel categoriesFor: #removeWithoutNotification:ifAbsent:!public!removing! !
 
 "End of package definition"!
 

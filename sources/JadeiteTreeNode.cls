@@ -6,8 +6,8 @@ TreeNode subclass: #JadeiteTreeNode
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteTreeNode guid: (GUID fromString: '{94ece110-8aca-4f84-9f75-546040c70901}')!
-JadeiteTreeNode comment: 'The inst var `marked` is used when updating a JadeiteTreeModel. 
-After a node is added, it is marked.  Nodes that are not marked are subsequently removed. '!
+JadeiteTreeNode comment: 'The inst var `visited` is used when updating a JadeiteTreeModel. 
+After a node is added, it is visited.  Nodes that are not visited are subsequently removed. '!
 !JadeiteTreeNode categoriesForClass!MVP-Models-Support! !
 !JadeiteTreeNode methodsFor!
 

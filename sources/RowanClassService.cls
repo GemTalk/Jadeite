@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 RowanService subclass: #RowanClassService
-	instanceVariableNames: 'name comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions oop template filters filterType methods selectedPackageServices packageName definedPackageName selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand isInSymbolList dictionaryName wasRemoved renamedName'
+	instanceVariableNames: 'name comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions oop template filters filterType methods selectedPackageServices packageName definedPackageName selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand isInSymbolList dictionaryName wasRemoved renamedName hasSubclasses'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -17,7 +17,7 @@ constant methods for performance.
 
 = classService
 	^classService isClassService
-		ifTrue: [name asString = classService name asString and: [meta isNil or: [classService meta = meta]]]
+		ifTrue: [self name asString = classService name asString and: [meta isNil or: [classService meta = meta]]]
 		ifFalse: [^false]!
 
 addHierarchyService: service to: treeModel withParent: parentService
@@ -172,7 +172,7 @@ displayString
 
 displayStringFor: displayThing browser: browser
 	(self shouldColorAsExtension: browser) ifTrue: [displayThing forecolor: Color darkMagenta].
-	isInSymbolList ifFalse: [displayThing forecolor: Color darkRed].
+	self isInSymbolList ifFalse: [displayThing forecolor: Color darkRed].
 	^self displayString!
 
 equalBeforeRename: aClassService
@@ -188,6 +188,17 @@ expand
 
 expand: anObject
 	expand := anObject!
+
+expandHierarchyOneLevel: treeView
+	| presenter |
+	presenter := treeView presenter.
+	Cursor wait showWhile: 
+			[| selection |
+			treeView model removeChildrenOf: self.
+			self command: #oneLevelClassHierarchy.
+			BrowserUpdate current issueCommand: self session: GciSession current.
+			selection := treeView model asBag detect: [:classService | classService name = self name] ifNone: [].
+			selection ifNotNil: [presenter selection: selection]]!
 
 filterMethods: browser
 	| visibleMethods |
@@ -218,6 +229,12 @@ filterUpdate: presenter browser: browser
 
 hash
 	^self name hash!
+
+hasSubclasses
+	^hasSubclasses!
+
+hasSubclasses: anObject
+	hasSubclasses := anObject!
 
 hierarchyClassServiceNames
 	^self hierarchyClassServices collect: [:service | service name]!
@@ -256,7 +273,8 @@ initialize
 	selectedPackageServices := Array new. "method list browser will not have packages to select"
 	isTestCase := false. 
 	isNewClass := false. 
-	wasRemoved := false. !
+	wasRemoved := false. 
+	hasSubclasses := false. !
 
 instVarNames
 	^instVarNames!
@@ -533,7 +551,7 @@ updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
 				detect: [:classService | classService name = superclassName]
 				ifNone: [^self].
 	(classNode notNil and: [classNode object isNewClass not])
-		ifTrue: [^self moveNodeToBeChildOf: superclassService in: classHierarchyPresenter].
+		ifTrue: [self moveNodeToBeChildOf: superclassService in: classHierarchyPresenter].
 	projectBrowser packageListPresenter selections isEmpty ifTrue: [^self].
 	selectedPackageNames := projectBrowser packageListPresenter selections
 				collect: [:packageService | packageService name].
@@ -620,11 +638,14 @@ wasRenamed
 !RowanClassService categoriesFor: #excludedInstVars!public!ston! !
 !RowanClassService categoriesFor: #expand!accessing!private! !
 !RowanClassService categoriesFor: #expand:!accessing!private! !
+!RowanClassService categoriesFor: #expandHierarchyOneLevel:!public! !
 !RowanClassService categoriesFor: #filterMethods:!private!updating support! !
 !RowanClassService categoriesFor: #filters!accessing!public! !
 !RowanClassService categoriesFor: #filters:!accessing!public! !
 !RowanClassService categoriesFor: #filterUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #hash!comparing!public! !
+!RowanClassService categoriesFor: #hasSubclasses!accessing!private! !
+!RowanClassService categoriesFor: #hasSubclasses:!accessing!private! !
 !RowanClassService categoriesFor: #hierarchyClassServiceNames!public! !
 !RowanClassService categoriesFor: #hierarchyClassServices!public! !
 !RowanClassService categoriesFor: #hierarchyServices!accessing!private! !

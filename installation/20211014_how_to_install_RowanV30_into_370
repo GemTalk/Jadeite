@@ -1,9 +1,9 @@
 
-Last updated: 10/14/2021
+Last updated: 11/16/2021 - fix duplication of project
 For Latest Rowan V3.0 development work (components)
 
 Git checkout Rowan branch oscarV3.0Component_eric
-Git checkout Rowan branch oscarV3.0Component_eric
+Git checkout Rowan Client Services branch oscarV3.0Component_eric
 export $ROWAN_PROJECTS_HOME=/uffda2/users/ewinger/shared/repos
 
 Right now, we're using a special build Dale put together at 

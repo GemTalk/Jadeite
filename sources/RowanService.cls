@@ -101,7 +101,11 @@ classHierarchyUpdate: presenter browser: browser hierarchyServices: hierarchySer
 	[treeModel preOrderDo: 
 			[:classService |
 			classService selectedPackageServices: browser packageListPresenter selections browser: browser.
-			classService expand == true ifTrue: [presenter view expand: classService]]]
+			classService expand == true
+				ifTrue: [presenter view expand: classService]
+				ifFalse: 
+					[classService hasSubclasses
+						ifTrue: [treeModel add: RowanFillerClassService new asChildOf: classService]]]]
 			ensure: [presenter view enableRedraw].
 	presenter selectionIfNone: [^presenter view ensureItemVisible: treeModel roots first].
 	presenter view ensureSelectionVisible.
@@ -174,6 +178,9 @@ excludedInstVars
 
 	^#( 'events' )
 !
+
+expandHierarchyOneLevel: treeView
+	!
 
 filterUpdate: presenter browser: anObject
 	!
@@ -553,6 +560,7 @@ wasUpdated: anObject
 !RowanService categoriesFor: #dictionaryUpdate:!public!updating! !
 !RowanService categoriesFor: #emptyFilterListsIn:!Init / Release!private! !
 !RowanService categoriesFor: #excludedInstVars!public!ston! !
+!RowanService categoriesFor: #expandHierarchyOneLevel:!double dispatch!public! !
 !RowanService categoriesFor: #filterUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #frameListUpdate:!Debugger!public!updating! !
 !RowanService categoriesFor: #globalsUpdate:!public!updating! !

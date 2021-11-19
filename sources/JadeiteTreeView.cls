@@ -8,6 +8,17 @@ TreeView subclass: #JadeiteTreeView
 JadeiteTreeView guid: (GUID fromString: '{3dd705c5-e522-4b7a-ae54-bbcfc4a3ab71}')!
 JadeiteTreeView comment: ''!
 !JadeiteTreeView categoriesForClass!MVP-Views! !
+!JadeiteTreeView methodsFor!
+
+tvnItemExpanding: pNMHDR
+	| object nmtv |
+	nmtv := self notificationClass fromAddress: pNMHDR.
+	nmtv action = TVE_EXPAND ifFalse: [^nil].	"See if we have been expanded before"
+	object := self objectFromHandle: nmtv itemNew hItem ifAbsent: [].
+	object expandHierarchyOneLevel: self.
+	super tvnItemExpanding: pNMHDR! !
+!JadeiteTreeView categoriesFor: #tvnItemExpanding:!event handling-win32!private! !
+
 !JadeiteTreeView class methodsFor!
 
 defaultModel

@@ -16,6 +16,7 @@ package classNames
 	add: #RowanDebuggerService;
 	add: #RowanDefinedProjectService;
 	add: #RowanDictionaryService;
+	add: #RowanFillerClassService;
 	add: #RowanFrameService;
 	add: #RowanInspectorService;
 	add: #RowanLoadedProjectService;
@@ -50,6 +51,7 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Models\List\Dolphin List Models'
 	'..\Core\Object Arts\Dolphin\Base\Dolphin Message Box'
 	'..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base'
+	'..\Core\Object Arts\Dolphin\System\Random\Dolphin Random Stream'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Text\Dolphin Rich Text Presenter'
 	'..\Core\Object Arts\Dolphin\MVP\Models\Tree\Dolphin Tree Models'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Tree\Dolphin Tree Presenter'
@@ -98,7 +100,7 @@ RowanService subclass: #RowanBrowserService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanClassService
-	instanceVariableNames: 'name comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions oop template filters filterType methods selectedPackageServices packageName definedPackageName selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand isInSymbolList dictionaryName wasRemoved renamedName'
+	instanceVariableNames: 'name comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions oop template filters filterType methods selectedPackageServices packageName definedPackageName selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand isInSymbolList dictionaryName wasRemoved renamedName hasSubclasses'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -165,6 +167,11 @@ RowanService subclass: #RowanTestService
 RowanService subclass: #RowanVariableService
 	instanceVariableNames: 'oop key value className name'
 	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanClassService subclass: #RowanFillerClassService
+	instanceVariableNames: ''
+	classVariableNames: 'RandomNumber'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanInspectorService subclass: #RowanSpecificationService
