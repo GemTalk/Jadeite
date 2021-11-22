@@ -179,9 +179,6 @@ excludedInstVars
 	^#( 'events' )
 !
 
-expandHierarchyOneLevel: treeView
-	!
-
 filterUpdate: presenter browser: anObject
 	!
 
@@ -421,6 +418,9 @@ rsrCommand: symbol withArguments: arguments
 shouldReplicateInstVarAtIndex: index newService: anObject
 	^true!
 
+silentlyExpandHierarchyOneLevel: treeView
+	!
+
 stonOn: stonWriter
 	| instanceVariableNames |
 	(instanceVariableNames := self class allInstVarNames
@@ -473,6 +473,8 @@ updatedClassInHierarchy: aPresenter browser: projectBrowser!
 
 updateDictionarySelectionsFor: presenter
 	!
+
+updatedOneLevelInClassHierarchy: classHierarchyPresenter browser: projectBrowser!
 
 updateForSession: session
 
@@ -560,7 +562,6 @@ wasUpdated: anObject
 !RowanService categoriesFor: #dictionaryUpdate:!public!updating! !
 !RowanService categoriesFor: #emptyFilterListsIn:!Init / Release!private! !
 !RowanService categoriesFor: #excludedInstVars!public!ston! !
-!RowanService categoriesFor: #expandHierarchyOneLevel:!double dispatch!public! !
 !RowanService categoriesFor: #filterUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #frameListUpdate:!Debugger!public!updating! !
 !RowanService categoriesFor: #globalsUpdate:!public!updating! !
@@ -616,6 +617,7 @@ wasUpdated: anObject
 !RowanService categoriesFor: #rsrCommand:!public!rsr! !
 !RowanService categoriesFor: #rsrCommand:withArguments:!public!rsr! !
 !RowanService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
+!RowanService categoriesFor: #silentlyExpandHierarchyOneLevel:!double dispatch!public! !
 !RowanService categoriesFor: #stonOn:!must not strip!public!ston! !
 !RowanService categoriesFor: #sunitMethodsUpdate:browser:!public!updating! !
 !RowanService categoriesFor: #superclassListUpdate:!public!updating! !
@@ -631,6 +633,7 @@ wasUpdated: anObject
 !RowanService categoriesFor: #updatedClassDefinition:browser:!public!updating! !
 !RowanService categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !
 !RowanService categoriesFor: #updateDictionarySelectionsFor:!public!updating! !
+!RowanService categoriesFor: #updatedOneLevelInClassHierarchy:browser:!public!updating! !
 !RowanService categoriesFor: #updateForSession:!actions!public! !
 !RowanService categoriesFor: #updateList:whilePreservingSelections:browser:!private! !
 !RowanService categoriesFor: #updateMethodFilterSelectionFor:!public!updating! !

@@ -1002,7 +1002,7 @@ ScintillaStyler subclass: #DiffsScintillaStyler
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 TreeView subclass: #JadeiteTreeView
-	instanceVariableNames: ''
+	instanceVariableNames: 'toldToExpand'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

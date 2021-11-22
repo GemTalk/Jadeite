@@ -16,8 +16,6 @@ nodeClass
 	^JadeiteTreeNode!
 
 removeChildrenOf: anObject
-	"Jadeite - remove all children but don't trigger events to avoid trips to the server"
-
 	(self childrenOf: anObject) do: [:child | self remove: child ifAbsent: []]!
 
 removeWithoutNotification: anObject ifAbsent: aNiladicValuable

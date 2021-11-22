@@ -21,14 +21,17 @@ constant methods for performance.
 		ifFalse: [^false]!
 
 addHierarchyService: service to: treeModel withParent: parentService
-	treeModel getNodeFor: service ifAbsent: [treeModel add: service asChildOf: parentService].
+	treeModel getNodeFor: service
+		ifAbsent: 
+			[treeModel add: service asChildOf: parentService.
+			hasSubclasses ifTrue: [treeModel add: RowanFillerClassService new asChildOf: service]].
 	(hierarchyServices at: service ifAbsent: [Array new]) do: 
 			[:classService |
 			self
 				addHierarchyService: classService
 				to: treeModel
 				withParent: service].
-	service hierarchyServices ifNil:[^self].
+	service hierarchyServices ifNil: [^self].
 	(service hierarchyServices at: #expand ifAbsent: [^self]) do: 
 			[:classService |
 			self
@@ -188,17 +191,6 @@ expand
 
 expand: anObject
 	expand := anObject!
-
-expandHierarchyOneLevel: treeView
-	| presenter |
-	presenter := treeView presenter.
-	Cursor wait showWhile: 
-			[| selection |
-			treeView model removeChildrenOf: self.
-			self command: #oneLevelClassHierarchy.
-			BrowserUpdate current issueCommand: self session: GciSession current.
-			selection := treeView model asBag detect: [:classService | classService name = self name] ifNone: [].
-			selection ifNotNil: [presenter selection: selection]]!
 
 filterMethods: browser
 	| visibleMethods |
@@ -488,6 +480,17 @@ shouldReplicateInstVarAtIndex: index newService: newService
 	self indexOfMethodsInstVar = index ifTrue: [newService meta = meta ifFalse: [^false]].
 	^true!
 
+silentlyExpandHierarchyOneLevel: treeView
+	| presenter |
+	presenter := treeView presenter.
+	Cursor wait showWhile: 
+			[| selection |
+			treeView model removeChildrenOf: self.
+			self command: #oneLevelClassHierarchy.
+			BrowserUpdate current issueCommand: self session: GciSession current.
+			selection := treeView model asBag detect: [:classService | classService name = self name] ifNone: [].
+			selection ifNotNil: [presenter selection: selection]]!
+
 sortAspect
 
 	^name!
@@ -550,8 +553,9 @@ updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
 	superclassService := classHierarchyPresenter model asBag
 				detect: [:classService | classService name = superclassName]
 				ifNone: [^self].
-	(classNode notNil and: [classNode object isNewClass not])
-		ifTrue: [self moveNodeToBeChildOf: superclassService in: classHierarchyPresenter].
+	(classNode notNil
+		and: [classNode object isNewClass not and: [classNode parent object ~= superclassService]])
+			ifTrue: [self moveNodeToBeChildOf: superclassService in: classHierarchyPresenter].
 	projectBrowser packageListPresenter selections isEmpty ifTrue: [^self].
 	selectedPackageNames := projectBrowser packageListPresenter selections
 				collect: [:packageService | packageService name].
@@ -561,7 +565,17 @@ updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
 		ifNotNil: 
 			[:node |
 			node object replicateFrom: self.
-			classHierarchyPresenter model move: node object asChildOf: superclassService]!
+			classNode parent object = superclassService
+				ifFalse: [classHierarchyPresenter model move: node object asChildOf: superclassService]]!
+
+updatedOneLevelInClassHierarchy: classHierarchyPresenter browser: projectBrowser
+	updateType = #updatedOneLevelInClassHierarchy:browser: ifFalse: [^self].
+	classHierarchyPresenter view invalidate.
+	(hierarchyServices at: #expand) do: 
+			[:subclassService |
+			classHierarchyPresenter model add: subclassService asChildOf: self.
+			subclassService hasSubclasses
+				ifTrue: [classHierarchyPresenter model add: RowanFillerClassService new asChildOf: subclassService]]!
 
 updateListIn: presenter from: visibleMethods
 	| updated theModel toRemove toAdd |
@@ -638,7 +652,6 @@ wasRenamed
 !RowanClassService categoriesFor: #excludedInstVars!public!ston! !
 !RowanClassService categoriesFor: #expand!accessing!private! !
 !RowanClassService categoriesFor: #expand:!accessing!private! !
-!RowanClassService categoriesFor: #expandHierarchyOneLevel:!public! !
 !RowanClassService categoriesFor: #filterMethods:!private!updating support! !
 !RowanClassService categoriesFor: #filters!accessing!public! !
 !RowanClassService categoriesFor: #filters:!accessing!public! !
@@ -695,6 +708,7 @@ wasRenamed
 !RowanClassService categoriesFor: #selectedPackageServices:browser:!accessing!private! !
 !RowanClassService categoriesFor: #shouldColorAsExtension:!public!testing! !
 !RowanClassService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
+!RowanClassService categoriesFor: #silentlyExpandHierarchyOneLevel:!public! !
 !RowanClassService categoriesFor: #sortAspect!accessing!public! !
 !RowanClassService categoriesFor: #sunitMethodsUpdate:browser:!public!updating! !
 !RowanClassService categoriesFor: #template!accessing!private! !
@@ -705,6 +719,7 @@ wasRenamed
 !RowanClassService categoriesFor: #updatedClass:browser:!public!updating! !
 !RowanClassService categoriesFor: #updatedClassDefinition:browser:!public!updating! !
 !RowanClassService categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !
+!RowanClassService categoriesFor: #updatedOneLevelInClassHierarchy:browser:!public!updating! !
 !RowanClassService categoriesFor: #updateListIn:from:!private!updating support! !
 !RowanClassService categoriesFor: #updateVariables:!private!updating support! !
 !RowanClassService categoriesFor: #variables!accessing!private! !
