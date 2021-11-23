@@ -21,10 +21,7 @@ constant methods for performance.
 		ifFalse: [^false]!
 
 addHierarchyService: service to: treeModel withParent: parentService
-	treeModel getNodeFor: service
-		ifAbsent: 
-			[treeModel add: service asChildOf: parentService.
-			hasSubclasses ifTrue: [treeModel add: RowanFillerClassService new asChildOf: service]].
+	treeModel getNodeFor: service ifAbsent: [treeModel add: service asChildOf: parentService].
 	(hierarchyServices at: service ifAbsent: [Array new]) do: 
 			[:classService |
 			self
@@ -79,7 +76,7 @@ classHierarchyUpdate: presenter browser: browser
 	(browser classHierarchyPresenter model notEmpty
 		and: [(browser classHierarchyPresenter model includes: self) not]) ifTrue: [^self].
 	presenter selections notEmpty ifTrue: [(presenter selections includes: self) ifFalse: [^self]].
-	treeModel := TreeModel new
+	treeModel := JadeiteTreeModel new
 				searchPolicy: SearchPolicy equality;
 				reset.
 	parent := nil.
@@ -108,12 +105,14 @@ classHierarchyUpdate: presenter browser: browser
 				to: treeModel
 				withParent: parent].
 	presenter model asArray = treeModel asArray ifTrue: [^self].	"no need for update"
-	treeModel asBag
-		do: [:classService | classService selectedPackageServices: browser packageListPresenter selections browser: browser].
+	treeModel asBag do: 
+			[:classService |
+			| node |
+			classService selectedPackageServices: browser packageListPresenter selections browser: browser.
+			node := treeModel getNodeFor: classService.
+			(node children isEmpty and: [node object hasSubclasses])
+				ifTrue: [treeModel add: RowanFillerClassService new asChildOf: classService]].
 	presenter model: treeModel.
-	presenter view updateMode: #lazy.	"for big hierarchies, faster display"
-	presenter view disableRedraw.
-	[presenter view expandAll] ensure: [presenter view enableRedraw].
 	presenter selectionIfNone: [^presenter view ensureItemVisible: treeModel roots first].
 	presenter view ensureSelectionVisible.
 	presenter view updateMode: #dynamic!
