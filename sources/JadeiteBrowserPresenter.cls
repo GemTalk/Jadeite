@@ -688,10 +688,11 @@ editSaveMethod: classService
 
 expandFullAt: classService
 	Cursor wait showWhile: 
-			[classService command: #fullHierarchy.
+			[classHierarchyPresenter model removeChildrenOf: classService.
+			classService command: #fullHierarchy.
 			self issueCommand: classService.
 			self selectClassNamed: classService name.
-			classHierarchyPresenter view expandAll]!
+			classHierarchyPresenter view expandAll: classService ]!
 
 expandFullHierarchy
 	self expandFullAt: self selectedClass!
@@ -1668,7 +1669,7 @@ showDictionaryList
 			packageDictionaryCards view cards first arrangement: 'Dictionaries'.
 			dictionaryPresenter view contextMenu: self dictionaryMenu.
 			classListPresenter list: ListModel new.
-			classHierarchyPresenter model: TreeModel new].
+			classHierarchyPresenter model: JadeiteTreeModel new].
 	self updateDictionaries.
 	self clearComponentList!
 
@@ -1685,7 +1686,7 @@ showPackageList
 			packageDictionaryCards view cards first arrangement: 'Packages'.
 			self setupPackageMenu.
 			classListPresenter list: ListModel new.
-			classHierarchyPresenter model: TreeModel new].
+			classHierarchyPresenter model: JadeiteTreeModel new].
 	packageListPresenter view isDropTarget: true. !
 
 statusBarText
@@ -1808,7 +1809,7 @@ updateDictionaries
 
 updateDictionary
 	classListPresenter model: ListModel new.
-	classHierarchyPresenter model: TreeModel new.
+	classHierarchyPresenter model: JadeiteTreeModel new.
 	self updateServices: dictionaryPresenter selections.
 	self isClassListTabSelected ifFalse: [self updateHierarchy].
 	self updateTabLabel.
@@ -1833,7 +1834,7 @@ updateGlobalsTab
 
 updateHierarchy
 	| service |
-	classHierarchyPresenter model: TreeModel new.
+	classHierarchyPresenter model: JadeiteTreeModel new.
 	projectListPresenter selectionOrNil ifNil: [^self].
 	self isNoneProjectSelected
 		ifTrue: [dictionaryPresenter selections isEmpty ifTrue: [^self]]
@@ -1844,7 +1845,7 @@ updateHierarchy
 					[service
 						updateAfterCommand: false;
 						command: #classHierarchy.
-					self issueCommand: service.
+					self issueCommand: service. 
 					self selectClassNamed: service name]]!
 
 updateHierarchyForPacktionaries
@@ -1915,7 +1916,7 @@ updateProject
 			self possiblyClearProjectInfoTab.
 			self updateTabLabel.
 			^self].
-	classHierarchyPresenter model: TreeModel new.
+	classHierarchyPresenter model: JadeiteTreeModel new.
 	self isNoneProjectSelected
 		ifTrue: 
 			[self showDictionaryList.

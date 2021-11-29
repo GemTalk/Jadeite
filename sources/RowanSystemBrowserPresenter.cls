@@ -40,22 +40,6 @@ categoriesMenuStrings
 	).
 !
 
-classesMenuStrings
-
-	false ifTrue: [
-		self browseClassReferences; fileOutClass; addSubclass; removeClass;  runClassTests.
-	].
-	^#(
-		'&Classes'
-		'&Browse References//browseClassReferences'
-		'&File Out Class//fileOutClass'
-		'Add &Subclass//addSubclass'
-		'&Remove//removeClass'
-		'-'
-		'Run &Tests//runClassTests'
-	).
-!
-
 classService
 	^RowanClassService new
 		name: self selectedClassNameWithoutVersion;
@@ -479,7 +463,6 @@ updateTabLabel
 !RowanSystemBrowserPresenter categoriesFor: #addPackageDictionaryInfoTo:!create schemantic wiring!public! !
 !RowanSystemBrowserPresenter categoriesFor: #browseClassReferencesOf:!public! !
 !RowanSystemBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !
-!RowanSystemBrowserPresenter categoriesFor: #classesMenuStrings!menus!public! !
 !RowanSystemBrowserPresenter categoriesFor: #classService!private!rowan! !
 !RowanSystemBrowserPresenter categoriesFor: #createSchematicWiringForClassHierarchyTabs!create schemantic wiring!public! !
 !RowanSystemBrowserPresenter categoriesFor: #createSchematicWiringForPackageDictionaryTabs!create schemantic wiring!public! !

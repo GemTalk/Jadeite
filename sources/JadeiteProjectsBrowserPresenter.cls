@@ -242,29 +242,6 @@ classDefinitionPresenter
 
 	^classDefinitionPresenter!
 
-classesMenuStrings
-	| definedLabel containedDictionaryLabel menuStrings |
-	false
-		ifTrue: 
-			[self
-				browseClassReferences;
-				fileOutClass;
-				addSubclass;
-				copyClass;
-				renameClass;
-				removeClass;
-				removePriorVersions;
-				showSUnitBrowserOnClass].
-	definedLabel := self definedClassMenuItemLabel.
-	containedDictionaryLabel := self containedDictionaryLabel.
-	menuStrings := #('&Classes' '&Browse Class References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' '&File Out Class//fileOutClass' 'Add &Subclass//addSubclass' '&Rename ... //renameClass' 'Copy ...//copyClass' '&Remove//removeClass' '-')
-				asOrderedCollection.
-	menuStrings add: '&Expand Full Hierarchy//expandFullHierarchy'.
-	menuStrings add: '-'.
-	menuStrings addLast: definedLabel , '//gotoClassDefinedPackage'.
-	menuStrings addLast: containedDictionaryLabel , '//gotoDictionary'.
-	^menuStrings!
-
 classHierarchyTabs
 	^classHierarchyTabs!
 
@@ -504,7 +481,7 @@ expandHierarchyOneLevelAt: classService
 			classService command: #oneLevelClassHierarchy.
 			self issueCommand: classService.
 			self selectClassNamed: classService name.
-			self classHierarchyPresenter view expandAll]!
+			self classHierarchyPresenter view expand: classService]!
 
 fileOutCategories
 	| path suggestedFileName classSide |
@@ -1304,6 +1281,7 @@ selectClassInClassHierarchyNamed: className
 				detect: [:classService | classService name = className]
 				ifNone: [].
 	selection ifNotNil: [classHierarchyPresenter selection: selection].
+	classHierarchyPresenter view expand: selection. 
 	^selection!
 
 selectClassInClassListNamed: className
@@ -1649,7 +1627,7 @@ updateMultiMethodComparison
 
 updatePackage
 	classListPresenter model: ListModel new.
-	classHierarchyPresenter model: TreeModel new.
+	classHierarchyPresenter model: JadeiteTreeModel new.
 	self updateClasses.
 	self isClassListTabSelected ifFalse: [self updateHierarchy].
 	self updatePackageInfo.
@@ -1728,7 +1706,6 @@ updateSUnitTab: service
 !JadeiteProjectsBrowserPresenter categoriesFor: #categoryListPresenter!accessing!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #classCommentPresenter!accessing!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #classDefinitionPresenter!accessing!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #classesMenuStrings!menus!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #classHierarchyTabs!accessing!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #cleanupComparisonBrowser!initialize/release!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #clearFilterLists!event handlers support!private!updating! !

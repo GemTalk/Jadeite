@@ -105,7 +105,12 @@ classHierarchyUpdate: presenter browser: browser hierarchyServices: hierarchySer
 				ifTrue: [presenter view expand: classService]
 				ifFalse: 
 					[classService hasSubclasses
-						ifTrue: [treeModel add: RowanFillerClassService new asChildOf: classService]]]]
+						ifTrue: 
+							[| node |
+							node := treeModel getNodeFor: classService ifAbsent: [].
+							node
+								ifNotNil: 
+									[node children isEmpty ifTrue: [treeModel add: RowanFillerClassService new asChildOf: classService]]]]]]
 			ensure: [presenter view enableRedraw].
 	presenter selectionIfNone: [^presenter view ensureItemVisible: treeModel roots first].
 	presenter view ensureSelectionVisible.

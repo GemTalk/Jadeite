@@ -300,25 +300,6 @@ classDefChanged
 				isModified: true;
 				yourself]!
 
-classesMenuStrings
-
-	false ifTrue: [
-		self browseClassReferences; fileOutClass; addSubclass; addMissingAccessors; removeClass; removePriorVersions; runClassTests.
-	].
-	^#(
-		'&Classes'
-		'&Browse References//browseClassReferences'
-		'&File Out Class//fileOutClass'
-		'Add &Subclass//addSubclass'
-		'Add &Missing Accessors//addMissingAccessors'
-		'&Remove//removeClass'
-		'Remove Prior &Versions//removePriorVersions'
-		'-'
-		'Set Compiler &Environment ...//setEnvironment'
-		'Run &Tests//runClassTests'
-	).
-!
-
 classHierarchyPresenter
 
 	^classHierarchyPresenter!
@@ -2499,7 +2480,6 @@ viewActivated
 !JadeSystemBrowserPresenter categoriesFor: #categoryListPresenter!accessing!public! !
 !JadeSystemBrowserPresenter categoriesFor: #classCategoryPresenter!accessing!public! !
 !JadeSystemBrowserPresenter categoriesFor: #classDefChanged!event handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #classesMenuStrings!menus!public! !
 !JadeSystemBrowserPresenter categoriesFor: #classHierarchyPresenter!accessing!public! !
 !JadeSystemBrowserPresenter categoriesFor: #classHierarchyTabs!public! !
 !JadeSystemBrowserPresenter categoriesFor: #classListPresenter!accessing!public! !

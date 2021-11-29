@@ -348,7 +348,7 @@ saveDocument
 
 sendRequiredMessages
 	"The ImageStripper seems to think these messages aren't needed, but we die during runtime packaging with a MessageNotUnderstood."
-
+	
 	'string1' equals: 'string2'.
 	1 isImmediate.
 !

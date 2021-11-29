@@ -1002,7 +1002,7 @@ test_fullHierarchyExpansion
 	self selectHierarchyTab.
 	hierarchyClassNames := self classHierarchyPresenter model asArray
 				collect: [:classService | classService name].
-	self assert: hierarchyClassNames equals: #('Object' 'RowanService' 'RowanClassService').
+	self assert: hierarchyClassNames equals: #('Object' 'RowanService' 'RowanClassService' 'RowanFillerClassService').
 	self selectClassInHierarchyNamed: 'RowanService'.
 	self projectsPresenter expandFullHierarchy.
 	hierarchyClassNames := self classHierarchyPresenter model asArray do: 
@@ -1016,82 +1016,78 @@ test_fullHierarchyExpansion
 							hierarchy includes: '
 										, classService name asSymbol printString)]!
 
-test_fullHierarchyExpansionDoubleClock
+test_fullHierarchyExpansionDoubleClick
 	| hierarchyClassNames |
 	self testsIssue: #issue640 withTitle: 'Double click no longer expands hierarchy view'.
 	self selectRowanServicesPackage.
-	self selectClassListTab. 
+	self selectClassListTab.
 	self selectServiceNamed: 'RowanClassService' in: self classListPresenter.
 	self selectHierarchyTab.
 	hierarchyClassNames := self classHierarchyPresenter model asArray
 				collect: [:classService | classService name].
-	self assert: hierarchyClassNames equals: #('Object' 'RowanService' 'RowanClassService').
+	self assert: hierarchyClassNames
+		equals: #('Object' 'RowanService' 'RowanClassService' 'RowanFillerClassService').
 	self selectClassInHierarchyNamed: 'RowanService'.
-	self classHierarchyPresenter trigger: #actionPerformed. "double click" 
-	hierarchyClassNames := self classHierarchyPresenter model asArray do: 
-					[:classService |
-					self assert: (session
-								executeString: '
+	self classHierarchyPresenter trigger: #actionPerformed.	"double click"
+	hierarchyClassNames := (self classHierarchyPresenter model
+				getChildrenOf: self classHierarchyPresenter selection) do: 
+						[:classService |
+						self assert: (session
+									executeString: '
 							| hierarchy |
 							hierarchy := (RowanService allSuperclasses collect: [:cls | cls name]) asArray. 
 							hierarchy add: #RowanService. 
 							hierarchy addAll: (RowanService allSubclasses collect: [:cls | cls name]) asArray. 
 							hierarchy includes: '
-										, classService name asSymbol printString)]!
+											, classService name asSymbol printString)]!
 
 test_fullHierarchyExpansionManyLevels
 	"JadeServer has a subclass that's many levels deep"
 
-	| hierarchyClassNames |
 	self testsIssue: #issue640 withTitle: 'Double click no longer expands hierarchy view'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self selectServiceNamed: 'Rowan-JadeServer' in: self packageListPresenter.
-	self selectClassListTab. 
-	self selectServiceNamed: 'JadeServer64bit' in: self classListPresenter.
-	self selectHierarchyTab.
-	hierarchyClassNames := self classHierarchyPresenter model asArray
-				collect: [:classService | classService name].
-	self assert: hierarchyClassNames
-		equals: #('Object' 'JadeServer' 'JadeServer64bit' 'JadeServer64bit24').
-	self selectClassInHierarchyNamed: 'JadeServer'.
-	self projectsPresenter expandFullHierarchy.
-	hierarchyClassNames := self classHierarchyPresenter model asArray do: 
-					[:classService |
-					self assert: (session
-								executeString: '
-							| hierarchy |
-							hierarchy := (JadeServer allSuperclasses collect: [:cls | cls name]) asArray. 
-							hierarchy add: #JadeServer. 
-							hierarchy addAll: (JadeServer allSubclasses collect: [:cls | cls name]) asArray. 
-							hierarchy includes: '
-										, classService name asSymbol printString)]!
-
-test_fullHierarchyExpansionManyLevelsDoubleClick
-	"JadeServer has a subclass that's many levels deep"
-
-	| hierarchyClassNames |
-	self testsIssue: #issue640 withTitle: 'Double click no longer expands hierarchy view'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanClientServices' in: self projectListPresenter.
 	self selectServiceNamed: 'Rowan-JadeServer' in: self packageListPresenter.
 	self selectClassListTab.
 	self selectServiceNamed: 'JadeServer64bit' in: self classListPresenter.
 	self selectHierarchyTab.
-	hierarchyClassNames := self classHierarchyPresenter model asArray
-				collect: [:classService | classService name].
-	self assert: hierarchyClassNames
-		equals: #('Object' 'JadeServer' 'JadeServer64bit' 'JadeServer64bit24').
+	self assertLinearAncestry: #('Object' 'JadeServer' 'JadeServer64bit' 'JadeServer64bit24')
+		in: self classHierarchyPresenter.
 	self selectClassInHierarchyNamed: 'JadeServer'.
-	self classHierarchyPresenter trigger: #actionPerformed.	"double click"
-	hierarchyClassNames := self classHierarchyPresenter model asArray do: 
-					[:classService |
-					self assert: (session
-								executeString: '
+	self projectsPresenter expandFullHierarchy.
+	(self classHierarchyPresenter model getChildrenOf: self classHierarchyPresenter selection) do: 
+			[:classService |
+			self assert: (session
+						executeString: '
 							| hierarchy |
 							hierarchy := (JadeServer allSuperclasses collect: [:cls | cls name]) asArray. 
 							hierarchy add: #JadeServer. 
 							hierarchy addAll: (JadeServer allSubclasses collect: [:cls | cls name]) asArray. 
 							hierarchy includes: '
-										, classService name asSymbol printString)]!
+								, classService name asSymbol printString)]!
+
+test_fullHierarchyExpansionManyLevelsDoubleClick
+	"JadeServer has a subclass that's many levels deep"
+
+	self testsIssue: #issue640 withTitle: 'Double click no longer expands hierarchy view'.
+	self selectServiceNamed: 'RowanClientServices' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-JadeServer' in: self packageListPresenter.
+	self selectClassListTab.
+	self selectServiceNamed: 'JadeServer64bit' in: self classListPresenter.
+	self selectHierarchyTab.
+	self assertLinearAncestry: #('Object' 'JadeServer' 'JadeServer64bit' 'JadeServer64bit24')
+		in: self classHierarchyPresenter.
+	self selectClassInHierarchyNamed: 'JadeServer'.
+	self classHierarchyPresenter trigger: #actionPerformed.	"double click"
+	(self classHierarchyPresenter model getChildrenOf: self classHierarchyPresenter selection) do: 
+			[:classService |
+			self assert: (session
+						executeString: '
+							| hierarchy |
+							hierarchy := (JadeServer allSuperclasses collect: [:cls | cls name]) asArray. 
+							hierarchy add: #JadeServer. 
+							hierarchy addAll: (JadeServer allSubclasses collect: [:cls | cls name]) asArray. 
+							hierarchy includes: '
+								, classService name asSymbol printString)]!
 
 test_getClassCommentWithDeprecationsOn
 	"code was trying to use deprecated method #description"
@@ -1317,27 +1313,27 @@ test_noSelectionHierarchy
 	self assert: (childrensNames includes: 'RowanCommandResult').
 	self assert: (childrensNames includes: 'RowanService').
 	self deny: (childrensNames includes: 'RowanClassService').
-	grandchildren := self classHierarchyPresenter model getChildrenOf: (children detect: [:classService | classService name = 'RowanService']).
-	self assert: grandchildren size equals: 16. "this will probably change but it's a nice test to ensure all the expected services are present"
+	grandchildren := self classHierarchyPresenter model
+				getChildrenOf: (children detect: [:classService | classService name = 'RowanService']).
+	self assert: grandchildren size equals: 17.	"this will probably change but it's a nice test to ensure all the expected services are present"
 	grandchildrensNames := grandchildren collect: [:classService | classService name].
 	self assert: (grandchildrensNames at: 1) equals: 'RowanAnsweringService'.
 	self assert: (grandchildrensNames at: 2) equals: 'RowanAutoCommitService'.
 	self assert: (grandchildrensNames at: 3) equals: 'RowanBrowserService'.
 	self assert: (grandchildrensNames at: 4) equals: 'RowanClassService'.
-	self assert: (grandchildrensNames at: 5) equals: 'RowanDebuggerService'.
-	self assert: (grandchildrensNames at: 6) equals: 'RowanDictionaryService'.
-	self assert: (grandchildrensNames at: 7) equals: 'RowanFrameService'.
-	self assert: (grandchildrensNames at: 8) equals: 'RowanInspectorService'.
-	self assert: (grandchildrensNames at: 9) equals: 'RowanLoggingService'.
-	self assert: (grandchildrensNames at: 10) equals: 'RowanMethodService'.
-	self assert: (grandchildrensNames at: 11) equals: 'RowanPackageService'.
-	self assert: (grandchildrensNames at: 12) equals: 'RowanProcessService'.
-	self assert: (grandchildrensNames at: 13) equals: 'RowanProjectService'.
-	self assert: (grandchildrensNames at: 14) equals: 'RowanQueryService'.
-	self assert: (grandchildrensNames at: 15) equals: 'RowanTestService'.
-	self assert: (grandchildrensNames at: 16) equals: 'RowanVariableService'.
-
-!
+	self assert: (grandchildrensNames at: 5) equals: 'RowanComponentService'.
+	self assert: (grandchildrensNames at: 6) equals: 'RowanDebuggerService'.
+	self assert: (grandchildrensNames at: 7) equals: 'RowanDictionaryService'.
+	self assert: (grandchildrensNames at: 8) equals: 'RowanFrameService'.
+	self assert: (grandchildrensNames at: 9) equals: 'RowanInspectorService'.
+	self assert: (grandchildrensNames at: 10) equals: 'RowanLoggingService'.
+	self assert: (grandchildrensNames at: 11) equals: 'RowanMethodService'.
+	self assert: (grandchildrensNames at: 12) equals: 'RowanPackageService'.
+	self assert: (grandchildrensNames at: 13) equals: 'RowanProcessService'.
+	self assert: (grandchildrensNames at: 14) equals: 'RowanProjectService'.
+	self assert: (grandchildrensNames at: 15) equals: 'RowanQueryService'.
+	self assert: (grandchildrensNames at: 16) equals: 'RowanTestService'.
+	self assert: (grandchildrensNames at: 17) equals: 'RowanVariableService'!
 
 test_refreshFromServer
 	self selectRowanServicesPackage.
@@ -1889,7 +1885,7 @@ test_variablesUpdatedOnClassSaveInHierarchy
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_findClass!public!test class list!test find!tests! !
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_findClassDialog!public!test class list!test find!tests! !
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_fullHierarchyExpansion!public!test class hierarchy! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_fullHierarchyExpansionDoubleClock!public!test class hierarchy! !
+!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_fullHierarchyExpansionDoubleClick!public!test class hierarchy! !
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_fullHierarchyExpansionManyLevels!public!test class hierarchy! !
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_fullHierarchyExpansionManyLevelsDoubleClick!public!test class hierarchy! !
 !JadeiteProjectBrowserClassesTestCase categoriesFor: #test_getClassCommentWithDeprecationsOn!public!test class list!test deprecated!tests! !

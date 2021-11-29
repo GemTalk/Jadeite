@@ -1756,7 +1756,7 @@ test_gitBranchesDoesNotShowHead
 	self assert: ('*master*' match: branches first)!
 
 test_goToDefinedClassFromClassList
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: (Array with: 'RowanClientServices') in: self projectListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Extensions') in: self packageListPresenter.
 	self selectServicesNamed: (Array with: 'RwGsPlatform') in: self classListPresenter.
 	self assert: self projectsPresenter isClassListTabSelected.
@@ -1765,7 +1765,7 @@ test_goToDefinedClassFromClassList
 	self assert: self packageListPresenter selection name = 'Rowan-GemStone-Core'!
 
 test_goToDefinedClassFromClassListViaButton
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: (Array with: 'RowanClientServices') in: self projectListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Extensions') in: self packageListPresenter.
 	self selectServicesNamed: (Array with: 'RwGsPlatform') in: self classListPresenter.
 	self assert: self projectsPresenter isClassListTabSelected.
@@ -1821,7 +1821,7 @@ test_gotoDefinedPackage
 
 test_goToDefinedPackageNoClassSelected
 	self testsIssue: #issue501 withTitle: 'Make defined package text into a clickable button'.
-	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	self selectServicesNamed: (Array with: 'RowanClientServices') in: self projectListPresenter.
 	self selectServicesNamed: #('Rowan-Services-Extensions') in: self packageListPresenter.
 	self assertIsNil: (self classListPresenter selectionIfNone: []).
 	self projectsPresenter gotoClassDefinedPackage.	"walkback occurred here"
@@ -1832,14 +1832,13 @@ test_hierarchyFindsAllSubclassImplementors
 	self testsIssue: #issue242 withTitle: '`implementors in hierarchy` doesn''t include method in the currently selected class?'.
 
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
-	self selectServicesNamed: #('Rowan-Core') in: self packageListPresenter.
+	self selectServicesNamed: #('Rowan-Loader') in: self packageListPresenter.
 	self selectServicesNamed: (Array with: 'RwLoadedThing') in: self classListPresenter.
 	self selectMethodNamed: #initialize.
 	methodListBrowser := self projectsPresenter browseHierarchyImplementors.
 	
 	self assert: ('Hierarchy Implementors of ''initialize'' for *' match: methodListBrowser caption).
 	listPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter. 
-	self assert: listPresenter list size equals: 6.	
 	listPresenter list do:[:methodService | self assert: methodService selector equals: #initialize]. 
 	listPresenter list do:[:methodService |
 		| classService | 

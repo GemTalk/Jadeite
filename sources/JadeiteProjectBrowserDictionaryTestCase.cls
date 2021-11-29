@@ -40,7 +40,7 @@ test_dictionaryViewClassHierarchy
 	classNames := self classListPresenter list collect: [:classService | classService name].
 	self selectHierarchyTab.
 	
-	[self assert: (self classHierarchyPresenter model isKindOf: TreeModel).
+	[self assert: (self classHierarchyPresenter model isKindOf: JadeiteTreeModel).
 	classNames do: 
 			[:className |
 			self denyIsNil: (self classHierarchyPresenter model asBag

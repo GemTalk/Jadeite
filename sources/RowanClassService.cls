@@ -31,10 +31,12 @@ addHierarchyService: service to: treeModel withParent: parentService
 	service hierarchyServices ifNil: [^self].
 	(service hierarchyServices at: #expand ifAbsent: [^self]) do: 
 			[:classService |
-			self
-				addHierarchyService: classService
-				to: treeModel
-				withParent: service]!
+			classService == service
+				ifFalse: 
+					[self
+						addHierarchyService: classService
+						to: treeModel
+						withParent: service]]!
 
 addSorted: sortedAdditions to: theModel
 	theModel beSorted addAll: sortedAdditions!
@@ -76,28 +78,12 @@ classHierarchyUpdate: presenter browser: browser
 	(browser classHierarchyPresenter model notEmpty
 		and: [(browser classHierarchyPresenter model includes: self) not]) ifTrue: [^self].
 	presenter selections notEmpty ifTrue: [(presenter selections includes: self) ifFalse: [^self]].
-	treeModel := JadeiteTreeModel new
-				searchPolicy: SearchPolicy equality;
-				reset.
+	treeModel := presenter model. 
 	parent := nil.
-	subclasses := hierarchyServices at: #nil ifAbsent: [].
-	subclasses
-		ifNil: 
-			[| subs |
-			parent := self.
-			treeModel := presenter model.
-			subs := hierarchyServices at: #expand.
-			1 to: subs size
-				do: 
-					[:index |
-					| classService node |
-					classService := subs at: index.
-					node := treeModel getNodeFor: classService ifAbsent: [].
-					node
-						ifNotNil: 
-							[treeModel remove: node object ifAbsent: [].
-							subs at: index put: classService]].
-			subclasses := subs].
+	subclasses := hierarchyServices at: #nil
+				ifAbsent: 
+					[parent := presenter model parentOf: self.
+					hierarchyServices at: #expand].
 	subclasses do: 
 			[:classService |
 			self
@@ -114,8 +100,8 @@ classHierarchyUpdate: presenter browser: browser
 				ifTrue: [treeModel add: RowanFillerClassService new asChildOf: classService]].
 	presenter model: treeModel.
 	presenter selectionIfNone: [^presenter view ensureItemVisible: treeModel roots first].
-	presenter view ensureSelectionVisible.
-	presenter view updateMode: #dynamic!
+	presenter selection: self.
+	presenter view ensureSelectionVisible!
 
 classMethodsUpdate: presenter browser: browser
 	self = browser selectedClass ifFalse: [^self].
@@ -548,27 +534,21 @@ updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
 
 	| classNode superclassService selectedPackageNames |
 	classHierarchyPresenter view invalidate.
-	classNode := classHierarchyPresenter model getNodeFor: self ifAbsent: [isNewClass ifFalse: [^self]].
-	superclassService := classHierarchyPresenter model asBag
-				detect: [:classService | classService name = superclassName]
-				ifNone: [^self].
-	(classNode notNil
-		and: [classNode object isNewClass not and: [classNode parent object ~= superclassService]])
-			ifTrue: [self moveNodeToBeChildOf: superclassService in: classHierarchyPresenter].
+	classNode := classHierarchyPresenter model getNodeFor: self ifAbsent: [^self].
+	superclassService := classHierarchyPresenter model parentOf: self.
+	(self isNewClass not and: [classNode parent object ~= superclassService])
+		ifTrue: [self moveNodeToBeChildOf: superclassService in: classHierarchyPresenter].
 	projectBrowser packageListPresenter selections isEmpty ifTrue: [^self].
 	selectedPackageNames := projectBrowser packageListPresenter selections
 				collect: [:packageService | packageService name].
 	(selectedPackageNames includes: packageName) ifFalse: [^self].
-	classNode
-		ifNil: [classHierarchyPresenter model add: self asChildOf: superclassService]
-		ifNotNil: 
-			[:node |
-			node object replicateFrom: self.
-			classNode parent object = superclassService
-				ifFalse: [classHierarchyPresenter model move: node object asChildOf: superclassService]]!
+	classNode object replicateFrom: self.
+	classNode parent object = superclassService
+		ifFalse: [classHierarchyPresenter model move: self asChildOf: superclassService]!
 
 updatedOneLevelInClassHierarchy: classHierarchyPresenter browser: projectBrowser
 	updateType = #updatedOneLevelInClassHierarchy:browser: ifFalse: [^self].
+	(classHierarchyPresenter model asArray includes: self) ifFalse: [^self].
 	classHierarchyPresenter view invalidate.
 	(hierarchyServices at: #expand) do: 
 			[:subclassService |

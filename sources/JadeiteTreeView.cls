@@ -18,7 +18,7 @@ hasPlaceholderChild: object
 	| children |
 	children := self model childrenOf: object.
 	children isEmpty ifTrue: [^false].
-	^children first isKindOf: RowanFillerClassService!
+	^children anyOne isKindOf: RowanFillerClassService!
 
 tvnItemExpanding: pNMHDR
 	| object nmtv |

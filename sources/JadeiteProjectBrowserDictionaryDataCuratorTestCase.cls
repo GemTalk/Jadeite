@@ -346,7 +346,7 @@ test_globalsInspectMenuItem
 	
 	[self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
 	selection := self projectsPresenter globalsTab list
-				detect: [:array | (array at: 1) equals: 'UserGlobals.test_globalsContextMenu'].
+				detect: [:array | (array at: 1) = 'UserGlobals.test_globalsContextMenu'].
 	self projectsPresenter globalsTab selection: selection.
 	inspector := self projectsPresenter inspectGlobal.
 	self assert: inspector documentPresenter value equals: 'true'.

@@ -2460,7 +2460,7 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 			self setCompileErrorColor.
 			self reportCompileError: ex list in: methodSourcePresenter.
 			^false].
-	methodSourcePresenter view firstVisibleLine: firstVisibleLine.
+	methodSourcePresenter view lineScroll: firstVisibleLine.
 	methodSourcePresenter view goto: caretPosition.
 	methodSourcePresenter value: methodSource1.
 	self setStatusBarDefault.

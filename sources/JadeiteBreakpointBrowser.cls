@@ -76,7 +76,7 @@ clearBreakpoints
 	^JadePresenter clearMethodBreakpoints: methodServices in: self gciSession!
 
 createComponents
-	breakpointListPresenter := self add: TreePresenter new name: 'breakpointListPresenter'.
+	breakpointListPresenter := self add: JadeiteTreePresenter new name: 'breakpointListPresenter'.
 	methodSourcePresenter := self add: JadeiteBreakpointBrowserSourcePresenter new
 				name: 'methodSourcePresenter'!
 
@@ -272,7 +272,7 @@ removeMethodServicesWithoutBreakpoints
 	breakpointListPresenter selections: updatedSelections!
 
 resetBreakpointList
-	breakpointListPresenter model: (TreeModel new
+	breakpointListPresenter model: (JadeiteTreeModel new
 				searchPolicy: SearchPolicy equality;
 				reset)!
 
