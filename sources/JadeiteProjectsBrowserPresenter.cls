@@ -475,14 +475,6 @@ editSaveClassComment
 		isModified: false;
 		backcolor: JadeiteTextStyles default colorForNoEdits!
 
-expandHierarchyOneLevelAt: classService
-	Cursor wait showWhile: 
-			[classHierarchyPresenter model removeChildrenOf: classService.
-			classService command: #oneLevelClassHierarchy.
-			self issueCommand: classService.
-			self selectClassNamed: classService name.
-			self classHierarchyPresenter view expand: classService]!
-
 fileOutCategories
 	| path suggestedFileName classSide |
 	MessageBox notify: 'Filein/fileout are not Rowan-ready in this version'
@@ -663,9 +655,6 @@ gotoProjectNamed: projectName
 					[^self].
 	projectListPresenter selections: (Array with: projectService).
 	!
-
-hierarchyClassDoubleClicked
-	self expandHierarchyOneLevelAt: classHierarchyPresenter selection!
 
 initialize
 	super initialize.
@@ -1731,7 +1720,6 @@ updateSUnitTab: service
 !JadeiteProjectsBrowserPresenter categoriesFor: #editFind!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editReplace!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #editSaveClassComment!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #expandHierarchyOneLevelAt:!event handlers!public!updating! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #fileOutCategories!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #fileOutCategoriesOnPath:!menu handlers support!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #fileOutClass!menu handlers!public! !
@@ -1750,7 +1738,6 @@ updateSUnitTab: service
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoMethodDefinedPackageViaButton!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoPackageNamed:!menu handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #gotoProjectNamed:!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #hierarchyClassDoubleClicked!event handlers!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #initialize!initialize/release!public! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeDebug!menu handlers!private! !
 !JadeiteProjectsBrowserPresenter categoriesFor: #jadeDisplay!menu handlers!private! !

@@ -406,14 +406,15 @@ saveTestClassWithInstVars: instVars package: aString
 		package: aString!
 
 selectCategoriesNamed: categories
+	self categoryListPresenter selections: Array new. 
 	categories do: 
 			[:category |
-			| service |
-			service := self categoryListPresenter list
+			| categoryString |
+			categoryString := self categoryListPresenter list
 						detect: [:listCategory | categories includes: listCategory]
 						ifNone: [self error: 'Category ''' , category , ''' not found'].
 			self categoryListPresenter selections: (self categoryListPresenter selections asOrderedCollection
-						add: service;
+						add: categoryString;
 						yourself)]!
 
 selectCategoryNamed: category

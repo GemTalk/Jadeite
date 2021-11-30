@@ -784,6 +784,9 @@ hasExactlyOneCategorySelected
 
 	^categoryListPresenter selections size = 1!
 
+hierarchyClassDoubleClicked
+	self expandFullHierarchy!
+
 insertCompileErrorText: string into: presenter
 	"parameters ignored in this presenter"
 
@@ -2052,6 +2055,7 @@ writeProject
 !JadeiteBrowserPresenter categoriesFor: #gotoDictionaryNamed:!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #hasCategorySelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #hasExactlyOneCategorySelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #hierarchyClassDoubleClicked!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertCompileErrorText:into:!compile support!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertIfFalse!menu handlers!must not strip!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertIfTrue!menu handlers!must not strip!public! !

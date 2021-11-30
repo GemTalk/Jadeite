@@ -239,13 +239,13 @@ test_fullHierarchyExpansion
 	self testsIssue: #issue640 withTitle: 'Double click no longer expands hierarchy view'.
 	self selectNoneProject.
 	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
-	self selectClassListTab. 
+	self selectClassListTab.
 	self selectServiceNamed: 'AbstractException' in: self classListPresenter.
 	self selectHierarchyTab.
 	hierarchyClassNames := self classHierarchyPresenter model asArray
-				collect: [:classService | classService name].
-	self assert: hierarchyClassNames
-		equals: #('Object' 'AbstractException' 'Exception' 'RubyBreakException' 'RubyThrowException').
+				select: [:classService | self classHierarchyPresenter view isExpanded: classService]
+				thenCollect: [:classService | classService name].
+	self assert: hierarchyClassNames equals: #('Object' 'AbstractException').
 	self selectClassInHierarchyNamed: 'AbstractException'.
 	self projectsPresenter expandFullHierarchy.
 	hierarchyClassNames := self classHierarchyPresenter model asArray do: 

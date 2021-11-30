@@ -69,8 +69,9 @@ categories
 
 classHierarchyUpdate: presenter browser: browser
 	| treeModel subclasses parent |
-	hierarchyServices ifNil: [^self].
 	browser isClassListTabSelected ifTrue: [^self].
+	(self possiblyAdjustChildServiceIn: presenter) ifTrue: [^self].
+	hierarchyServices isNil ifTrue: [^self].
 	(browser isNoneProjectSelected not and: [browser packageListPresenter selections isEmpty])
 		ifTrue: [^self].
 	(browser isNoneProjectSelected and: [browser dictionaryPresenter selections isEmpty])
@@ -78,7 +79,7 @@ classHierarchyUpdate: presenter browser: browser
 	(browser classHierarchyPresenter model notEmpty
 		and: [(browser classHierarchyPresenter model includes: self) not]) ifTrue: [^self].
 	presenter selections notEmpty ifTrue: [(presenter selections includes: self) ifFalse: [^self]].
-	treeModel := presenter model. 
+	treeModel := presenter model.
 	parent := nil.
 	subclasses := hierarchyServices at: #nil
 				ifAbsent: 
@@ -336,6 +337,20 @@ packageName
 
 packageName: anObject
 	packageName := anObject!
+
+possiblyAdjustChildServiceIn: presenter
+	| superclassService |
+	superclassService := presenter model asArray detect: [:service | service name = superclassName]
+				ifNone: [^false].
+	(presenter model asArray includes: self)
+		ifTrue: 
+			[(presenter model parentOf: self) = superclassService
+				ifFalse: 
+					[presenter model move: self asChildOf: superclassService.
+					^true].
+			^false].
+	presenter model add: self asChildOf: superclassService.
+	^true!
 
 postReload
 	" don't retain reference to (possibly) different version of class"
@@ -667,6 +682,7 @@ wasRenamed
 !RowanClassService categoriesFor: #oop:!accessing!private! !
 !RowanClassService categoriesFor: #packageName!accessing!private! !
 !RowanClassService categoriesFor: #packageName:!accessing!private! !
+!RowanClassService categoriesFor: #possiblyAdjustChildServiceIn:!private!updating support! !
 !RowanClassService categoriesFor: #postReload!public!replication! !
 !RowanClassService categoriesFor: #postUpdate!Init / Release!public! !
 !RowanClassService categoriesFor: #prepareForReplication!public!replication! !
