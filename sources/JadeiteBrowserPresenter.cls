@@ -784,6 +784,9 @@ hasExactlyOneCategorySelected
 
 	^categoryListPresenter selections size = 1!
 
+hasMethods
+	^true!
+
 hierarchyClassDoubleClicked
 	self expandFullHierarchy!
 
@@ -2055,6 +2058,7 @@ writeProject
 !JadeiteBrowserPresenter categoriesFor: #gotoDictionaryNamed:!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #hasCategorySelected!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #hasExactlyOneCategorySelected!public!testing! !
+!JadeiteBrowserPresenter categoriesFor: #hasMethods!public!testing! !
 !JadeiteBrowserPresenter categoriesFor: #hierarchyClassDoubleClicked!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertCompileErrorText:into:!compile support!public! !
 !JadeiteBrowserPresenter categoriesFor: #insertIfFalse!menu handlers!must not strip!public! !

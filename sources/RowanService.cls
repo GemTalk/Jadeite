@@ -176,8 +176,10 @@ dictionaryUpdate: presenter
 	!
 
 emptyFilterListsIn: browser
-	browser categoryListPresenter sortBlock: [:x :y | x < y].
-	browser variableListPresenter sortBlock: [:x :y | x < y].!
+	browser hasMethods
+		ifTrue: 
+			[browser categoryListPresenter sortBlock: [:x :y | x < y].
+			browser variableListPresenter sortBlock: [:x :y | x < y]]!
 
 excludedInstVars
 

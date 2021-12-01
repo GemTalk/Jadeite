@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'projectListPresenter componentTreePresenter componentPropertyPresenter'
+	instanceVariableNames: 'projectListPresenter componentTreePresenter componentPropertyPresenter packageListPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -14,10 +14,14 @@ addNoneProject
 
 	"we don't add the (NONE) project in the component editor"!
 
+componentListPresenter
+	^componentTreePresenter!
+
 createComponents
 	componentTreePresenter := self add: JadeiteTreePresenter new name: 'componentTreePresenter'.
 	componentPropertyPresenter := self add: ListPresenter new name: 'componentPropertyPresenter'.
-	projectListPresenter := self add: ListPresenter new name: 'projectListPresenter'!
+	projectListPresenter := self add: ListPresenter new name: 'projectListPresenter'.
+	packageListPresenter := self add: ListPresenter new name: 'packageListPresenter'. !
 
 createSchematicWiring
 	projectListPresenter
@@ -28,12 +32,23 @@ createSchematicWiring
 	componentTreePresenter
 		when: #labelOf:changedTo:
 		send: #labelOf:changedTo:
-		to: self!
+		to: self.
+	componentTreePresenter
+		when: #selectionChanged
+		send: #updateComponentPackages
+		to: self.!
+
+hasMethods
+	^false!
 
 initialize
 	super initialize. 
 	self resetComponentList
 	!
+
+isClassSelected
+	"no classes in component browser" 
+	^false!
 
 labelOf: object changedTo: value
 	componentTreePresenter view update.
@@ -73,6 +88,9 @@ registerPresentersForUpdates
 		register: projectListPresenter selector: #projectsUpdate:;
 		register: projectListPresenter
 			selector: #projectsUpdate:browser:
+			browser: self;
+		register: packageListPresenter
+			selector: #componentPackagesUpdate:browser:
 			browser: self!
 
 renameComponent
@@ -83,9 +101,15 @@ resetComponentList
 				searchPolicy: SearchPolicy equality;
 				reset)!
 
-updateProject
+updateComponentPackages
+	packageListPresenter clear.
+	componentTreePresenter selections isEmpty ifTrue: [^self].
+	self updateServices: componentTreePresenter selections.
+	packageListPresenter selections: packageListPresenter list.
+	self updateServices: packageListPresenter selections!
 
-	self updateService: projectListPresenter selection!
+updateProject
+	self updateService: (projectListPresenter selectionIfNone: [^self])!
 
 updateProjectPackages
 
@@ -97,9 +121,12 @@ updateProjects
 	browserService command: #updateProjects.
 	self issueCommand: browserService! !
 !JadeiteComponentPresenter categoriesFor: #addNoneProject!public!updating! !
+!JadeiteComponentPresenter categoriesFor: #componentListPresenter!accessing!public! !
 !JadeiteComponentPresenter categoriesFor: #createComponents!initialization!public! !
 !JadeiteComponentPresenter categoriesFor: #createSchematicWiring!initialization!public! !
+!JadeiteComponentPresenter categoriesFor: #hasMethods!public!testing! !
 !JadeiteComponentPresenter categoriesFor: #initialize!initialization!public! !
+!JadeiteComponentPresenter categoriesFor: #isClassSelected!public!testing! !
 !JadeiteComponentPresenter categoriesFor: #labelOf:changedTo:!event handlers!public! !
 !JadeiteComponentPresenter categoriesFor: #labelOfClass:editedTo:accept:!event handlers!public! !
 !JadeiteComponentPresenter categoriesFor: #onViewClosed!event handlers!public! !
@@ -110,6 +137,7 @@ updateProjects
 !JadeiteComponentPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteComponentPresenter categoriesFor: #renameComponent!menu handlers!public! !
 !JadeiteComponentPresenter categoriesFor: #resetComponentList!initialization!public! !
+!JadeiteComponentPresenter categoriesFor: #updateComponentPackages!public!updating! !
 !JadeiteComponentPresenter categoriesFor: #updateProject!public!updating! !
 !JadeiteComponentPresenter categoriesFor: #updateProjectPackages!public!updating! !
 !JadeiteComponentPresenter categoriesFor: #updateProjects!actions!public! !
