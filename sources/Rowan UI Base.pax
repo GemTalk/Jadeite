@@ -702,7 +702,7 @@ JadePresenterA subclass: #JadeiteCommandPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'projectListPresenter componentTreePresenter componentPropertyPresenter packageListPresenter'
+	instanceVariableNames: 'projectListPresenter componentListPresenter componentPropertyPresenter packageListPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
