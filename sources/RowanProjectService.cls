@@ -130,6 +130,10 @@ componentsUpdate: presenter browser: browser
 		presenter view expand: component]. 
 	presenter view ensureSelectionVisible!
 
+definition
+
+	"send back a copy of the definition"!
+
 displayName
 	| displayName |
 	name ifNil: [^String new].
@@ -140,7 +144,7 @@ displayName
 
 displayStringFor: displayThing
 	name ifNil: [^self].
-	self isDirty
+	self isDirty == true 
 		ifTrue: 
 			[displayThing font
 				beItalic;
@@ -317,6 +321,7 @@ specService: anObject
 !RowanProjectService categoriesFor: #checkoutUsing:!presenter support!public! !
 !RowanProjectService categoriesFor: #componentServices!public! !
 !RowanProjectService categoriesFor: #componentsUpdate:browser:!public!updating! !
+!RowanProjectService categoriesFor: #definition!accessing!public! !
 !RowanProjectService categoriesFor: #displayName!accessing!displaying!public! !
 !RowanProjectService categoriesFor: #displayStringFor:!displaying!public! !
 !RowanProjectService categoriesFor: #gitTags:!presenter support!public! !

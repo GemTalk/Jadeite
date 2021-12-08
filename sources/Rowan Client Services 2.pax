@@ -11,19 +11,25 @@ package classNames
 	add: #RowanAnsweringService;
 	add: #RowanAutoCommitService;
 	add: #RowanBrowserService;
+	add: #RowanClassDefinitionService;
 	add: #RowanClassService;
+	add: #RowanComponentDefinitionService;
 	add: #RowanComponentService;
 	add: #RowanDebuggerService;
 	add: #RowanDefinedProjectService;
+	add: #RowanDefinitionService;
 	add: #RowanDictionaryService;
 	add: #RowanFillerClassService;
 	add: #RowanFrameService;
 	add: #RowanInspectorService;
 	add: #RowanLoadedProjectService;
 	add: #RowanLoggingService;
+	add: #RowanMethodDefinitionService;
 	add: #RowanMethodService;
+	add: #RowanPackageDefinitionService;
 	add: #RowanPackageService;
 	add: #RowanProcessService;
+	add: #RowanProjectDefinitionService;
 	add: #RowanProjectService;
 	add: #RowanQueryService;
 	add: #RowanResolvedProjectService;
@@ -114,6 +120,11 @@ RowanService subclass: #RowanDebuggerService
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+RowanService subclass: #RowanDefinitionService
+	instanceVariableNames: 'name properties'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 RowanService subclass: #RowanDictionaryService
 	instanceVariableNames: 'classes hierarchyServices globals defaultTemplate name'
 	classVariableNames: ''
@@ -172,6 +183,31 @@ RowanService subclass: #RowanVariableService
 RowanClassService subclass: #RowanFillerClassService
 	instanceVariableNames: ''
 	classVariableNames: 'RandomNumber'
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanDefinitionService subclass: #RowanClassDefinitionService
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanDefinitionService subclass: #RowanComponentDefinitionService
+	instanceVariableNames: 'subcomponentDefinitions'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanDefinitionService subclass: #RowanMethodDefinitionService
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanDefinitionService subclass: #RowanPackageDefinitionService
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanDefinitionService subclass: #RowanProjectDefinitionService
+	instanceVariableNames: 'componentDefinitions packageDefinitions loadSpecification'
+	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanInspectorService subclass: #RowanSpecificationService

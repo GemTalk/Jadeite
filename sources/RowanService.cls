@@ -246,6 +246,12 @@ isProjectService
 isService
 	^true!
 
+issueCommand: service session: session
+	^self issueCommands: (Array with: service) session: session!
+
+issueCommands: services session: session
+	^BrowserUpdate current issueCommands: services session: session!
+
 isTestCase
 
 	^false!
@@ -586,6 +592,8 @@ wasUpdated: anObject
 !RowanService categoriesFor: #isPackageService!public!testing! !
 !RowanService categoriesFor: #isProjectService!public!testing! !
 !RowanService categoriesFor: #isService!public!testing! !
+!RowanService categoriesFor: #issueCommand:session:!commands!public! !
+!RowanService categoriesFor: #issueCommands:session:!commands!public! !
 !RowanService categoriesFor: #isTestCase!public!testing! !
 !RowanService categoriesFor: #isUpdatableService!public!testing! !
 !RowanService categoriesFor: #methodFilterUpdate:!public!updating! !

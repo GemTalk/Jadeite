@@ -420,7 +420,7 @@ createListViewFor: newCard
 	^listView!
 
 createNewProject
-	| projectName |
+	| projectName | self halt. 
 	projectName := Prompter prompt: 'Enter Project Name' caption: 'Create new Rowan project'.
 	projectName
 		ifNotNil: 
