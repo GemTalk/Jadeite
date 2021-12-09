@@ -13,28 +13,33 @@ JadeiteComponentEditor comment: ''!
 displayComponents!
 
 editProject: projectName
-
-	| service |
 	self createView: self class defaultView.
-	service :=(RowanProjectDefinitionService new name: projectName)
-				editInSession: gciSession
-				window: self view handle value. 
-	^self showOn: service!
+	model := (RowanProjectDefinitionService new name: projectName) editInSession: gciSession
+				window: self view handle value.
+	^self show!
+
+onViewClosed
+	super onViewClosed.
+	self gciSession
+		ifNotNil: 
+			[:sess |
+			sess isValidSession
+				ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: self gciSession]]!
 
 presenterClass
 	^JadeiteComponentPresenter!
 
-showOn: service
-	model := service.
-	self showShell.
+show
+	super show.
 	self displayComponents. !
 
 updateCaption
 	self caption: (gciSession titleBarFor: 'Project Component Editor')! !
 !JadeiteComponentEditor categoriesFor: #displayComponents!displaying!public! !
 !JadeiteComponentEditor categoriesFor: #editProject:!displaying!public! !
+!JadeiteComponentEditor categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteComponentEditor categoriesFor: #presenterClass!public! !
-!JadeiteComponentEditor categoriesFor: #showOn:!displaying!public! !
+!JadeiteComponentEditor categoriesFor: #show!displaying!public! !
 !JadeiteComponentEditor categoriesFor: #updateCaption!public! !
 
 !JadeiteComponentEditor class methodsFor!

@@ -616,6 +616,13 @@ displayVariable: displayThing
 				ifTrue: [displayThing font beBold]].
 	^displayThing!
 
+editComponents
+	| projectName |
+	projectName := self projectListPresenter selectionOrNil
+				ifNil: [^self]
+				ifNotNil: [:projectService | projectService name].
+	^JadeiteComponentEditor showOn: projectName session: self gciSession!
+
 editDelete
 
 	View focus clearSelection.
@@ -1261,7 +1268,7 @@ projectMenuStrings
 				auditProject;
 				projectLog;
 				refresh].
-	^#('Projects' 'Create ...//createNewProject' 'Load Git Project ...//loadV2Project' 'Reload Project //reloadV2Project' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' '&Add Package...//addPackage' '-' 'Audit//auditProject' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
+	^#('Projects' 'Create ...//createNewProject' 'Load Git Project ...//loadV2Project' 'Reload Project //reloadV2Project' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' '&Add Package...//addPackage' '-' 'Edit Components...//editComponents' '-'  'Audit//auditProject' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
 
 projectTabLabel
 	"Selections get mixed up switching between system presenters unless the tabs
@@ -2040,6 +2047,7 @@ writeProject
 !JadeiteBrowserPresenter categoriesFor: #dictionaryPresenter!accessing!private! !
 !JadeiteBrowserPresenter categoriesFor: #displayStringFor:in:!double dispatch!public! !
 !JadeiteBrowserPresenter categoriesFor: #displayVariable:!displaying!private! !
+!JadeiteBrowserPresenter categoriesFor: #editComponents!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #editDelete!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #editRevert!menu handlers!public! !
 !JadeiteBrowserPresenter categoriesFor: #editSaveClass!menu handlers!public! !

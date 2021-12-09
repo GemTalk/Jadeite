@@ -107,12 +107,14 @@ componentsUpdate: presenter browser: browser
 	D -> nil - neither C nor D have children"
 
 	| treeModel parent topLevelComponents removals |
-	wasUpdated ifFalse:[^self].
+	wasUpdated ifFalse: [^self].
 	presenter model class = TreeModel
 		ifTrue: [^self	"not sure why the model starts out as a TreeModel, not a JadeiteTreeModel"].
-	browser projectListPresenter selectionOrNil
+	browser projectListPresenter
 		ifNil: [^self]
-		ifNotNil: [:service | service name = name ifFalse: [^self]].
+		ifNotNil: 
+			[:list |
+			list selectionOrNil ifNil: [^self] ifNotNil: [:service | service name = name ifFalse: [^self]]].
 	treeModel := self chooseModel: presenter using: browser.
 	topLevelComponents := componentServices at: #nil ifAbsent: [^self].
 	treeModel resetVisited.
@@ -126,8 +128,7 @@ componentsUpdate: presenter browser: browser
 				hierarchyServices: componentServices].
 	removals := treeModel asBag reject: [:service | (treeModel getNodeFor: service) visited].
 	removals do: [:service | treeModel remove: service ifAbsent: []].
-	topLevelComponents do:[:component | 
-		presenter view expand: component]. 
+	topLevelComponents do: [:component | presenter view expand: component].
 	presenter view ensureSelectionVisible!
 
 definition

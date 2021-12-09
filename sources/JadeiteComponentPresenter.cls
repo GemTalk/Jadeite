@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk 7"!
 
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'projectListPresenter componentListPresenter componentPropertyPresenter packageListPresenter'
+	instanceVariableNames: 'componentListPresenter componentPropertyPresenter packageListPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -10,24 +10,15 @@ JadeiteComponentPresenter comment: ''!
 !JadeiteComponentPresenter categoriesForClass!Unclassified! !
 !JadeiteComponentPresenter methodsFor!
 
-addNoneProject
-
-	"we don't add the (NONE) project in the component editor"!
-
 componentListPresenter
 	^componentListPresenter!
 
 createComponents
 	componentListPresenter := self add: JadeiteTreePresenter new name: 'componentListPresenter'.
 	componentPropertyPresenter := self add: ListPresenter new name: 'componentPropertyPresenter'.
-	projectListPresenter := self add: ListPresenter new name: 'projectListPresenter'.
 	packageListPresenter := self add: ListPresenter new name: 'packageListPresenter'!
 
 createSchematicWiring
-	projectListPresenter
-		when: #selectionChanged
-		send: #updateProject
-		to: self.
 	componentListPresenter
 		when: #labelOf:editedTo:accept:
 		send: #labelOfClass:editedTo:accept:
@@ -40,9 +31,6 @@ createSchematicWiring
 		when: #selectionChanged
 		send: #updateComponentPackages
 		to: self!
-
-hasMethods
-	^false!
 
 initialize
 	super initialize. 
@@ -65,32 +53,20 @@ labelOfClass: componentService editedTo: value accept: accept
 
 onViewClosed
 	super onViewClosed.
-	BrowserUpdate current removeEventsTriggeredFor: componentListPresenter.
-	BrowserUpdate current removeEventsTriggeredFor: projectListPresenter!
+	BrowserUpdate current removeEventsTriggeredFor: componentListPresenter.!
 
 onViewOpened
 	super onViewOpened.
-	self registerPresentersForUpdates.
-	self updateProjects!
-
-possiblyClearProjectInfoTab
-
-	"No project info tab" !
+	self registerPresentersForUpdates.!
 
 projectListPresenter
-	^projectListPresenter!
 
-projectListPresenter: anObject
-	projectListPresenter := anObject!
+	^nil!
 
 registerPresentersForUpdates
 	BrowserUpdate current
 		register: componentListPresenter
 			selector: #componentsUpdate:browser:
-			browser: self;
-		register: projectListPresenter selector: #projectsUpdate:;
-		register: projectListPresenter
-			selector: #projectsUpdate:browser:
 			browser: self;
 		register: packageListPresenter
 			selector: #componentPackagesUpdate:browser:
@@ -109,39 +85,19 @@ updateComponentPackages
 	componentListPresenter selections isEmpty ifTrue: [^self].
 	self updateServices: componentListPresenter selections.
 	packageListPresenter selections: packageListPresenter list.
-	self updateServices: packageListPresenter selections!
-
-updateProject
-	self updateService: (projectListPresenter selectionIfNone: [^self])!
-
-updateProjectPackages
-
-	"no packages to update yet"!
-
-updateProjects
-	| browserService |
-	browserService := RowanBrowserService new.
-	browserService command: #updateProjects.
-	self issueCommand: browserService! !
-!JadeiteComponentPresenter categoriesFor: #addNoneProject!public!updating! !
+	self updateServices: packageListPresenter selections! !
 !JadeiteComponentPresenter categoriesFor: #componentListPresenter!accessing!public! !
 !JadeiteComponentPresenter categoriesFor: #createComponents!initialization!public! !
 !JadeiteComponentPresenter categoriesFor: #createSchematicWiring!initialization!public! !
-!JadeiteComponentPresenter categoriesFor: #hasMethods!public!testing! !
 !JadeiteComponentPresenter categoriesFor: #initialize!initialization!public! !
 !JadeiteComponentPresenter categoriesFor: #isClassSelected!public!testing! !
 !JadeiteComponentPresenter categoriesFor: #labelOf:changedTo:!event handlers!public! !
 !JadeiteComponentPresenter categoriesFor: #labelOfClass:editedTo:accept:!event handlers!public! !
 !JadeiteComponentPresenter categoriesFor: #onViewClosed!event handlers!public! !
 !JadeiteComponentPresenter categoriesFor: #onViewOpened!event handlers!public! !
-!JadeiteComponentPresenter categoriesFor: #possiblyClearProjectInfoTab!public!updating! !
-!JadeiteComponentPresenter categoriesFor: #projectListPresenter!accessing!private! !
-!JadeiteComponentPresenter categoriesFor: #projectListPresenter:!accessing!private! !
+!JadeiteComponentPresenter categoriesFor: #projectListPresenter!accessing!public! !
 !JadeiteComponentPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
 !JadeiteComponentPresenter categoriesFor: #renameComponent!menu handlers!public! !
 !JadeiteComponentPresenter categoriesFor: #resetComponentList!initialization!public! !
 !JadeiteComponentPresenter categoriesFor: #updateComponentPackages!public!updating! !
-!JadeiteComponentPresenter categoriesFor: #updateProject!public!updating! !
-!JadeiteComponentPresenter categoriesFor: #updateProjectPackages!public!updating! !
-!JadeiteComponentPresenter categoriesFor: #updateProjects!actions!public! !
 

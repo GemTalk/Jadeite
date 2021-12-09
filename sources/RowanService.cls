@@ -420,14 +420,6 @@ replicateFrom: newService
 	(newService class = self class and: [newService name = self name])
 		ifTrue: [self basicReplicateFrom: newService]!
 
-rsrCommand: symbol
-	^self rsrCommand: symbol withArguments: Array new!
-
-rsrCommand: symbol withArguments: arguments
-	command := symbol.
-	commandArgs := arguments.
-	^remoteSelf perform: #executeCommand !
-
 shouldReplicateInstVarAtIndex: index newService: anObject
 	^true!
 
@@ -629,8 +621,6 @@ wasUpdated: anObject
 !RowanService categoriesFor: #renamedClass:browser:!public!updating! !
 !RowanService categoriesFor: #renamedClassInHierarchy:browser:!public!updating! !
 !RowanService categoriesFor: #replicateFrom:!public!replication! !
-!RowanService categoriesFor: #rsrCommand:!public!rsr! !
-!RowanService categoriesFor: #rsrCommand:withArguments:!public!rsr! !
 !RowanService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
 !RowanService categoriesFor: #silentlyExpandHierarchyOneLevel:!double dispatch!public! !
 !RowanService categoriesFor: #stonOn:!must not strip!public!ston! !
