@@ -1023,7 +1023,9 @@ immediateActionBlock: aBlock
 	"Jadeite - allow for unsetting of immediate actions"
 
 	immediateActionBlock := aBlock! !
-!Aspect categoriesFor: #immediateActionBlock:!accessing!private! !
+!Aspect categoriesForMethods!
+immediateActionBlock:!accessing!private! !
+!
 
 !Association methodsFor!
 
@@ -1031,7 +1033,9 @@ stonOn: stonWriter
 	"overriden by Jadeite. Need key value format for gemstone.
 	Code loaded from BootJade.st" 
 	^super stonOn: stonWriter! !
-!Association categoriesFor: #stonOn:!public!writing! !
+!Association categoriesForMethods!
+stonOn:!public!writing! !
+!
 
 !BrowserUpdate methodsFor!
 
@@ -1041,7 +1045,9 @@ initialize
 	inUpdate := RowanSemaphore forMutualExclusion.
 	logger := JadeiteLogger new.
 	breakpointsEnabled := false! !
-!BrowserUpdate categoriesFor: #initialize!initialization!public! !
+!BrowserUpdate categoriesForMethods!
+initialize!initialization!public! !
+!
 
 !CodeSourcePresenter methodsFor!
 
@@ -1121,13 +1127,15 @@ showResult: anObject
 	(textView := documentPresenter view)
 		replaceSelection: result;
 		selectionStart: textView caretPosition - result size length: result size! !
-!CodeSourcePresenter categoriesFor: #browseSelectedClass!Jade!public! !
-!CodeSourcePresenter categoriesFor: #currentSelection!public! !
-!CodeSourcePresenter categoriesFor: #executeSelectionOrLine!Jade!private! !
-!CodeSourcePresenter categoriesFor: #inspectorContextObject!Jade!private! !
-!CodeSourcePresenter categoriesFor: #jadeInspect!Jade!private! !
-!CodeSourcePresenter categoriesFor: #methodMenuBreak:!menus!public! !
-!CodeSourcePresenter categoriesFor: #showResult:!Jade!private! !
+!CodeSourcePresenter categoriesForMethods!
+browseSelectedClass!Jade!public! !
+currentSelection!public! !
+executeSelectionOrLine!Jade!private! !
+inspectorContextObject!Jade!private! !
+jadeInspect!Jade!private! !
+methodMenuBreak:!menus!public! !
+showResult:!Jade!private! !
+!
 
 !CodeSourcePresenter class methodsFor!
 
@@ -1140,7 +1148,9 @@ resource_Default_view
 	"
 
 	^#(#'!!STL' 4 788558 10 ##(Smalltalk.STBViewProxy) ##(Smalltalk.ContainerView) 34 15 nil nil 34 2 8 1409286144 131073 416 nil nil nil 1029 nil nil nil 416 852230 ##(Smalltalk.FramingLayout) 170 176 34 4 410 ##(Smalltalk.Toolbar) 34 25 nil 416 34 2 8 1140851500 131137 544 nil 327686 ##(Smalltalk.Color) #default nil 517 nil 263174 ##(Smalltalk.Font) nil true 459014 ##(Smalltalk.LOGFONT) 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 65 114 105 97 108 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 328198 ##(Smalltalk.Point) 193 193 nil 544 624 8 1650109728 170 192 8 #() 170 192 34 24 42699 1246790 1 ##(Smalltalk.ToolbarSystemButton) 544 1 1180998 4 ##(Smalltalk.CommandDescription) #redo 8 'Redo' 1 1 nil 42699 1 9 42683 1246790 1 ##(Smalltalk.ToolbarBitmapButton) 544 1 866 #jadeExecute 8 'Execute' 1 1 nil 42683 395334 3 ##(Smalltalk.Bitmap) nil true 1572870 ##(Smalltalk.ImageRelativeFileLocator) 8 'Tools.bmp' 2032142 ##(Smalltalk.STBExternalResourceLibraryProxy) 8 'dolphindr7.dll' nil nil 7 722 1857 33 57 42693 834 544 1 866 #editPaste 8 'Paste' 1 1 nil 42693 1 5 42703 834 544 1 866 #editReplace 8 'Replace' 1 1 nil 42703 1 27 42687 834 544 1 866 #fileSave 8 'Save' 1 1 nil 42687 1 17 42697 834 544 1 866 #undo 8 'Undo' 1 1 nil 42697 1 7 42681 914 544 1 866 #jadeDisplay 8 'Display' 1 1 nil 42681 992 55 42691 834 544 1 866 #copySelection 8 'Copy' 1 1 nil 42691 1 3 42701 834 544 1 866 #editFind 8 'Find' 1 1 nil 42701 1 25 42685 914 544 1 866 #jadeInspect 8 'Inspect' 1 1 nil 42685 992 59 42695 834 544 1 866 #editDelete 8 'Delete' 1 1 nil 42695 1 11 42689 834 544 1 866 #editCut 8 'Cut' 1 1 nil 42689 1 1 34 15 1312 928 1456 1049158 1 ##(Smalltalk.ToolbarSeparator) 544 1 1216 1618 544 1 1552 1360 1120 1504 1264 848 1618 544 1 1408 1168 nil nil 1 nil 722 33 33 722 45 45 nil nil 983302 ##(Smalltalk.MessageSequence) 138 144 34 2 721670 ##(Smalltalk.MessageSend) #createAt:extent: 34 2 722 1 1 722 1001 51 544 1778 #updateSizePosted 784 544 983302 ##(Smalltalk.WINDOWPLACEMENT) 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 244 1 0 0 25 0 0 0] 8 #() 722 193 193 nil 27 1181766 2 ##(Smalltalk.FramingConstraints) 1180678 ##(Smalltalk.FramingCalculation) #fixedParentLeft 1 1986 #fixedParentRight 1 1986 #fixedParentTop 1 1986 #fixedViewTop 51 410 ##(Smalltalk.JadeiteScintillaView) 34 50 nil 416 34 2 8 1445007428 1025 2064 721990 2 ##(Smalltalk.ValueHolder) nil false 1310726 ##(Smalltalk.EqualitySearchPolicy) nil 624 nil 5 265030 4 ##(Smalltalk.Menu) nil true 34 27 984134 2 ##(Smalltalk.CommandMenuItem) 1 866 #fileSave 8 '&Save' 9383 1 nil nil nil 983366 1 ##(Smalltalk.DividerMenuItem) 4097 2242 1 866 #undo 8 '&Undo' 9397 1 nil nil nil 2242 1 866 #redo 8 'R&edo' 9395 1 nil nil nil 2242 1 866 #editRevert 8 'Revert' 1 1 nil nil nil 2306 4097 2242 1 866 #editCut 8 'Cu&t' 9393 1 nil nil nil 2242 1 866 #editCopy 8 '&Copy' 9351 1 nil nil nil 2242 1 866 #editPaste 8 '&Paste' 9389 1 nil nil nil 2242 1 866 #editDelete 8 'De&lete' 1629 1 nil nil nil 2242 1 866 #editSelectAll 8 'Select &All' 9347 1 nil nil nil 2306 4097 2242 1 866 #editFind 8 '&Find...' 9357 1 nil nil nil 2242 1 866 #editFindNext 8 'Find &Next' 9359 1 nil nil nil 2242 1 866 #editReplace 8 '&Replace...' 9361 1 nil nil nil 2306 4097 2242 1 866 #jadeInspect 8 '&Inspect' 9379 1 nil nil nil 2242 1 866 #jadeDisplay 8 '&Display' 9353 1 nil nil nil 2242 1 866 #jadeExecute 8 'Execute' 9355 1 nil nil nil 2242 1 866 #jadeDebug 8 'De&bug' 9349 1 nil nil nil 2306 4097 2242 1 866 #addQuotesToSelection 8 'Add &Quotes' 1 1 nil nil nil 2242 1 866 #removeQuotesFromSelection 8 'Re&move Quotes' 1 1 nil nil nil 2306 4097 2242 1 866 #browseSelectedClass 8 'Browse Class' 1 1 nil nil nil 2306 4097 2242 1 866 #fileIn 8 'File In' 1 1 nil nil nil 8 '' nil 1 nil nil nil nil nil 642 nil true 674 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 86 101 114 100 97 110 97 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 722 193 193 nil 2064 nil 8 1527370175 852486 ##(Smalltalk.NullConverter) nil nil 9 nil 170 192 34 4 #normal 1182790 1 ##(Smalltalk.ScintillaTextStyle) 1 nil nil 1 nil nil nil nil #normal nil nil nil #callTip 3506 77 610 #gray 610 #white 1 nil nil nil nil #callTip nil nil nil 34 256 3520 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 3536 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1639686 ##(Smalltalk.SmalltalkExpressionStyler) 1 nil nil false 138 144 784 170 192 34 2 #default 1641542 2 ##(Smalltalk.ScintillaMarkerDefinition) 1 nil nil nil 2064 #circle nil nil nil nil nil nil 138 ##(Smalltalk.IdentitySet) 784 nil 170 176 784 9215 nil nil nil nil 610 #silver nil nil 65 nil nil 170 192 34 6 #literalBytes 8 '[]' #specialCharacter 8 '()[]<>' #literalArray 8 '()' 8 '' 3 170 192 34 2 #container 170 192 34 4 #normal 3520 #callTip 3536 nil nil nil nil 1 nil 170 192 34 12 1 1510470 3 ##(Smalltalk.ScintillaIndicatorStyle) 1 2064 196934 1 ##(Smalltalk.RGB) 65025 3 false 1 nil nil nil nil nil nil 5 3954 5 2064 610 #red 1 false 5 nil nil nil nil nil nil 8 'indicator10' 3954 21 2064 4032 3 nil nil nil nil nil nil nil nil 3 3954 3 2064 610 #blue 5 false 3 nil nil nil nil nil nil 8 'indicator9' 3954 19 2064 4032 13 nil nil nil nil nil nil nil nil 8 'indicator8' 3954 17 2064 3744 1 nil nil nil nil nil nil nil nil nil nil 170 192 34 6 #Warning 3506 1027 3986 60239 3986 31326207 1 nil nil nil nil #Warning nil nil nil #Error 3506 1031 3986 335 3986 31317503 1 nil nil nil nil #Error nil nil nil #Notification 3506 1029 nil 3986 31185883 1 nil nil nil nil #Notification nil nil nil nil 1714 138 144 34 10 1778 #createAt:extent: 34 2 722 1 51 722 1001 551 2064 1778 #contextMenu: 34 1 2208 2064 1778 #textLimit: 8 #(1073741823) 2064 1778 #hoverTime: 8 #(200) 2064 1778 #caretPeriod: 8 #(530) 2064 1778 #wordWrap: 8 #(true) 2064 1778 #margins: 34 1 34 3 985158 3 ##(Smalltalk.ScintillaMargin) 1 2064 61 3 nil nil nil nil 4658 3 2064 1 nil 3 67108863 nil nil 4658 5 2064 1 nil 3 -67108863 nil nil 2064 1778 #tabWidth: 8 #(4) 2064 1778 #maxCompletionListHeight: 8 #(9) 2064 1778 #edgeColumn: 8 #(1) 2064 1874 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 25 0 0 0 244 1 0 0 44 1 0 0] 8 #() 1936 nil 29 1954 2000 1 2016 1 1986 #fixedPreviousBottom 1 1986 #fixedParentBottom 1 170 192 34 2 2064 8 'document' nil 1714 138 144 34 1 1778 #createAt:extent: 34 2 722 7679 21 722 1001 601 416 1874 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 14 0 0 10 0 0 0 243 16 0 0 54 1 0 0] 34 2 544 2064 1936 nil 27 )! !
-!CodeSourcePresenter class categoriesFor: #resource_Default_view!public!resources-views! !
+!CodeSourcePresenter class categoriesForMethods!
+resource_Default_view!public!resources-views! !
+!
 
 !Collection methodsFor!
 
@@ -1149,8 +1159,10 @@ basicPrepareForReplication
 
 prepareForReplication
 	self do: [:element | element prepareForReplication]! !
-!Collection categoriesFor: #basicPrepareForReplication!Jadeite!public! !
-!Collection categoriesFor: #prepareForReplication!Jadeite!public! !
+!Collection categoriesForMethods!
+basicPrepareForReplication!Jadeite!public! !
+prepareForReplication!Jadeite!public! !
+!
 
 !Date methodsFor!
 
@@ -1177,7 +1189,9 @@ stonOn: stonWriter
 				on: stream
 				format: '+hh:mm']."
 	stonWriter writeObject: self listSingleton: stream grabContents! !
-!Date categoriesFor: #stonOn:!public!ston! !
+!Date categoriesForMethods!
+stonOn:!public!ston! !
+!
 
 !Date class methodsFor!
 
@@ -1198,14 +1212,18 @@ fromSton: stonReader
 			dt := DateAndTime year: date year day: date dayOfYear offset: offset.
 			date := dt asLocal asDate]."
 	^date! !
-!Date class categoriesFor: #fromSton:!instance creation!public! !
+!Date class categoriesForMethods!
+fromSton:!instance creation!public! !
+!
 
 !DiffBrowser methodsFor!
 
 diffsPresenter
 
 	^diffsPresenter! !
-!DiffBrowser categoriesFor: #diffsPresenter!public! !
+!DiffBrowser categoriesForMethods!
+diffsPresenter!public! !
+!
 
 !DiffBrowser class methodsFor!
 
@@ -1215,7 +1233,9 @@ defaultModel
 	initialize a system which is not present"
 
 	^nil! !
-!DiffBrowser class categoriesFor: #defaultModel!public! !
+!DiffBrowser class categoriesForMethods!
+defaultModel!public! !
+!
 
 !DolphinSureCertificateStore class methodsFor!
 
@@ -1225,7 +1245,9 @@ clearTemporaryTrustStore
 
 	self temporaryTrust removeAllCertificates
 ! !
-!DolphinSureCertificateStore class categoriesFor: #clearTemporaryTrustStore!must not strip!private! !
+!DolphinSureCertificateStore class categoriesForMethods!
+clearTemporaryTrustStore!must not strip!private! !
+!
 
 !ExternalStructure class methodsFor!
 
@@ -1241,14 +1263,18 @@ canUnderstand: aSymbol
 				ifFalse: 
 					[field := self template lookup: aSymbol.
 					field notNil and: [field isReadable]]]! !
-!ExternalStructure class categoriesFor: #canUnderstand:!methods-testing!public! !
+!ExternalStructure class categoriesForMethods!
+canUnderstand:!methods-testing!public! !
+!
 
 !Float methodsFor!
 
 asString
 
 	^self printString! !
-!Float categoriesFor: #asString!converting!public! !
+!Float categoriesForMethods!
+asString!converting!public! !
+!
 
 !GciSession methodsFor!
 
@@ -1510,35 +1536,39 @@ withExplanation: aString doA: aBlock
 	an improved monitoring solution"
 
 	^self handlingClientForwarderSendDo: aBlock! !
-!GciSession categoriesFor: #_executeString:fromContextOop:environment:!private! !
-!GciSession categoriesFor: #clientServerVersionRelationship!private! !
-!GciSession categoriesFor: #computeGemHost!public!title bar! !
-!GciSession categoriesFor: #computeStoneHost!public!title bar! !
-!GciSession categoriesFor: #confirmMessageBox:!must not strip!public!server interactions! !
-!GciSession categoriesFor: #executeString:!Jade convenience!public! !
-!GciSession categoriesFor: #executeString:fromContext:environment:!long running!public! !
-!GciSession categoriesFor: #gemNRS!public!title bar! !
-!GciSession categoriesFor: #hasServer!public! !
-!GciSession categoriesFor: #informMessageBox:!must not strip!public!server interactions! !
-!GciSession categoriesFor: #initializeServer!private! !
-!GciSession categoriesFor: #inspectServerObject:!must not strip!public!server interactions! !
-!GciSession categoriesFor: #oopTypeFor:!public! !
-!GciSession categoriesFor: #postLoadClientPreferences!private! !
-!GciSession categoriesFor: #postLoadServerPreferences!private! !
-!GciSession categoriesFor: #postLoginAs:useSocket:!private! !
-!GciSession categoriesFor: #preferencesFile!constants!private! !
-!GciSession categoriesFor: #serverPerform:withArguments:!Jade convenience!public! !
-!GciSession categoriesFor: #terminate:!public! !
-!GciSession categoriesFor: #titleBarFor:!public!title bar! !
-!GciSession categoriesFor: #verifyRowanLoaded!private! !
-!GciSession categoriesFor: #withExplanation:do:!long running!private! !
-!GciSession categoriesFor: #withExplanation:doA:!long running!private! !
+!GciSession categoriesForMethods!
+_executeString:fromContextOop:environment:!private! !
+clientServerVersionRelationship!private! !
+computeGemHost!public!title bar! !
+computeStoneHost!public!title bar! !
+confirmMessageBox:!must not strip!public!server interactions! !
+executeString:!Jade convenience!public! !
+executeString:fromContext:environment:!long running!public! !
+gemNRS!public!title bar! !
+hasServer!public! !
+informMessageBox:!must not strip!public!server interactions! !
+initializeServer!private! !
+inspectServerObject:!must not strip!public!server interactions! !
+oopTypeFor:!public! !
+postLoadClientPreferences!private! !
+postLoadServerPreferences!private! !
+postLoginAs:useSocket:!private! !
+preferencesFile!constants!private! !
+serverPerform:withArguments:!Jade convenience!public! !
+terminate:!public! !
+titleBarFor:!public!title bar! !
+verifyRowanLoaded!private! !
+withExplanation:do:!long running!private! !
+withExplanation:doA:!long running!private! !
+!
 
 !GsError methodsFor!
 
 debugError
 	^JadeiteDebugger debuggerClass reportError: self! !
-!GsError categoriesFor: #debugError!public! !
+!GsError categoriesForMethods!
+debugError!public! !
+!
 
 !GsMethod methodsFor!
 
@@ -1552,9 +1582,11 @@ meta
 
 methodService
 	^RowanMethodService new! !
-!GsMethod categoriesFor: #className!public! !
-!GsMethod categoriesFor: #meta!accessing!public! !
-!GsMethod categoriesFor: #methodService!public!rowan! !
+!GsMethod categoriesForMethods!
+className!public! !
+meta!accessing!public! !
+methodService!public!rowan! !
+!
 
 !GsProcess methodsFor!
 
@@ -1562,7 +1594,9 @@ oop
 
 	^oopType value
 	! !
-!GsProcess categoriesFor: #oop!accessing!public! !
+!GsProcess categoriesForMethods!
+oop!accessing!public! !
+!
 
 !Integer methodsFor!
 
@@ -1577,7 +1611,9 @@ printStringRadix: base showRadix: flag
 	self printOn: aStream base: base showRadix: flag.
 	^aStream contents
 ! !
-!Integer categoriesFor: #printStringRadix:showRadix:!Jadeite!public! !
+!Integer categoriesForMethods!
+printStringRadix:showRadix:!Jadeite!public! !
+!
 
 !JadeAutoSystemBrowserPresenter methodsFor!
 
@@ -1593,7 +1629,9 @@ methodMenuBreak: aMenu
 				meta: self isClassSideSelected.
 	self updateService: service.
 	service appendToSourceMenu: aMenu presenter: methodSourcePresenter! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #methodMenuBreak:!menus!public! !
+!JadeAutoSystemBrowserPresenter categoriesForMethods!
+methodMenuBreak:!menus!public! !
+!
 
 !JadeAutoTextPresenter3 methodsFor!
 
@@ -1614,8 +1652,10 @@ setDefaultMethod
 		isModified: false;
 		isReadOnly: false;
 		yourself.! !
-!JadeAutoTextPresenter3 categoriesFor: #defaultMethod!public! !
-!JadeAutoTextPresenter3 categoriesFor: #setDefaultMethod!public! !
+!JadeAutoTextPresenter3 categoriesForMethods!
+defaultMethod!public! !
+setDefaultMethod!public! !
+!
 
 !JadeDebugger methodsFor!
 
@@ -1716,17 +1756,19 @@ update
 
 updateCaption
 	self caption: (gciSession titleBarFor: 'Debugger')! !
-!JadeDebugger categoriesFor: #getProcessList!public! !
-!JadeDebugger categoriesFor: #gsProcess!accessing!private! !
-!JadeDebugger categoriesFor: #gsProcess:!accessing!private! !
-!JadeDebugger categoriesFor: #initializeProcess:message:terminateOnClose:!public! !
-!JadeDebugger categoriesFor: #onViewClosed!event handlers!public! !
-!JadeDebugger categoriesFor: #resumeProcess!menu handlers!private! !
-!JadeDebugger categoriesFor: #selectedFrameWithErrorHandling!public! !
-!JadeDebugger categoriesFor: #selectedProcess!public! !
-!JadeDebugger categoriesFor: #stack:!public! !
-!JadeDebugger categoriesFor: #update!public! !
-!JadeDebugger categoriesFor: #updateCaption!public! !
+!JadeDebugger categoriesForMethods!
+getProcessList!public! !
+gsProcess!accessing!private! !
+gsProcess:!accessing!private! !
+initializeProcess:message:terminateOnClose:!public! !
+onViewClosed!event handlers!public! !
+resumeProcess!menu handlers!private! !
+selectedFrameWithErrorHandling!public! !
+selectedProcess!public! !
+stack:!public! !
+update!public! !
+updateCaption!public! !
+!
 
 !JadeDebugger class methodsFor!
 
@@ -1739,7 +1781,9 @@ resource_Default_view
 	"
 
 	^#(#'!!STL' 4 788558 10 ##(Smalltalk.STBViewProxy) ##(Smalltalk.ShellView) 34 27 nil nil 8 #(13565952 65536) 416 nil 524550 ##(Smalltalk.ColorRef) 8 4278190080 328198 ##(Smalltalk.Point) 1601 1201 551 nil nil nil 416 852230 ##(Smalltalk.FramingLayout) 170 176 34 6 410 ##(Smalltalk.ToolbarA) 34 25 nil 416 34 2 8 1140853580 131137 608 nil 466 8 4278190080 nil 519 nil nil nil 608 466 8 4278190080 8 4294906995 nil 170 192 34 12 16501 1115910 ##(Smalltalk.ToolbarIconButton) 16501 nil 608 1 1180998 4 ##(Smalltalk.CommandDescription) #showNextStatement 8 'Show Next Statement' 1 1 263494 3 ##(Smalltalk.Icon) nil true 1572870 ##(Smalltalk.ImageRelativeFileLocator) 8 'ShowNextStatement.ico' 2032142 ##(Smalltalk.STBExternalResourceLibraryProxy) 8 'dolphindr7.dll' nil 395334 3 ##(Smalltalk.Bitmap) nil true nil nil nil nil 3 514 33 33 1 16503 786 16503 nil 608 1 818 #stepInto 8 'Step Into' 1 1 866 nil true 912 8 'StepInto.ico' 960 994 nil true nil nil nil nil 3 514 33 33 1 16505 786 16505 nil 608 1 818 #stepOver 8 'Step Over' 1 1 866 nil true 912 8 'StepOver.ico' 960 994 nil true nil nil nil nil 3 514 33 33 1 16507 786 16507 nil 608 1 818 #stepOut 8 'Step Out' 1 1 866 nil true 912 8 'StepOut.ico' 960 994 nil true nil nil nil nil 3 514 33 33 1 16509 786 16509 nil 608 1 818 #runToCursor 8 'Run to Cursor' 1 1 866 nil true 912 8 'RunToCursor.ico' 960 994 nil true nil nil nil nil 3 514 33 33 1 16511 786 16511 nil 608 1 818 #resumeProcess 8 'Go' 1 1 866 nil true 912 8 'Run.ico' 960 994 nil true nil nil nil nil 3 514 33 33 1 34 7 800 1040 1152 1264 1376 1488 1050118 ##(Smalltalk.ToolbarSeparator) nil nil 608 3 nil 1 170 176 34 12 1120 3 1232 5 1344 7 1008 1 1456 9 1568 11 nil 1 nil 514 33 33 514 45 45 nil nil 983302 ##(Smalltalk.MessageSequence) 138 144 34 2 721670 ##(Smalltalk.MessageSend) #createAt:extent: 34 2 514 1 1 514 291 51 608 1778 #updateSizePosted 8 #() 608 983302 ##(Smalltalk.WINDOWPLACEMENT) 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 145 0 0 0 25 0 0 0] 8 #() 514 193 193 nil 27 1181766 2 ##(Smalltalk.FramingConstraints) 1180678 ##(Smalltalk.FramingCalculation) #fixedParentLeft 1 2002 #fixedViewLeft 291 2002 #fixedParentTop 1 2002 #fixedViewTop 51 410 ##(Smalltalk.ContainerView) 34 15 nil 416 34 2 8 1140850688 131073 2080 nil nil nil 7 nil nil nil 2080 1180166 ##(Smalltalk.ProportionalLayout) 170 176 1872 true 170 192 34 2 410 ##(Smalltalk.ReferenceView) 34 14 nil 2080 34 2 8 1140850688 131073 2224 nil 466 8 4278190080 nil 7 nil nil nil 2224 1180166 ##(Smalltalk.ResourceIdentifier) ##(Smalltalk.MethodSourcePresenter) #resource_Default_view nil 1714 138 144 34 1 1778 #createAt:extent: 34 2 514 1 521 514 1569 513 2224 1890 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 4 1 0 0 16 3 0 0 4 2 0 0] 1872 1952 nil 27 8 'codePane' nil 1714 138 144 34 1 1778 #createAt:extent: 34 2 514 1 51 514 1569 1033 2080 1890 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 25 0 0 0 16 3 0 0 29 2 0 0] 34 3 410 ##(Smalltalk.ContainerView) 34 15 nil 2080 34 2 8 1140850688 131073 2672 nil 466 496 nil 7 nil nil nil 2672 2146 170 176 34 4 410 ##(Smalltalk.ContainerView) 34 15 nil 2672 34 2 8 1140850688 131073 2800 nil nil nil 7 nil nil nil 2800 546 170 176 34 6 410 ##(Smalltalk.ListBox) 34 17 nil 2800 34 2 8 1144062209 1025 2912 590662 2 ##(Smalltalk.ListModel) 138 144 1872 nil 1310726 ##(Smalltalk.IdentitySearchPolicy) 466 496 nil 7 265030 4 ##(Smalltalk.Menu) nil true 34 3 984134 2 ##(Smalltalk.CommandMenuItem) 1 818 #browseFrameMethod 8 '&Browse Frame Method' 1 1 nil nil nil 3122 1 818 #browseImplementors 8 'Browse &Implementors' 1 1 nil nil nil 3122 1 818 #browseSenders 8 'Browse &Senders' 1 1 nil nil nil 8 '' nil 134217729 nil nil nil nil nil nil nil 2912 nil 8 4294905715 ##(Smalltalk.BasicListAbstract) 1872 false 1714 138 144 34 3 1778 #createAt:extent: 34 2 514 1 51 514 859 461 2912 1778 #contextMenu: 34 1 3088 2912 1778 #horizontalExtent: 8 #(0) 2912 1890 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 25 0 0 0 173 1 0 0 255 0 0 0] 8 #() 1952 nil 27 1970 2016 1 2002 #fixedParentRight 1 2002 #fixedPreviousBottom 1 2002 #fixedParentBottom 1 410 ##(Smalltalk.PushButton) 34 20 nil 2800 34 2 8 1140924416 1 3600 nil nil nil 7 nil nil nil 3600 nil 8 4294906643 818 #terminateProcess 8 'Terminate' 1 1 nil nil false nil nil nil 1714 138 144 34 3 1778 #createAt:extent: 34 2 514 719 1 514 141 51 3600 1778 #isEnabled: 8 #(false) 3600 1778 #text: 34 1 8 'Terminate' 3600 1890 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 103 1 0 0 0 0 0 0 173 1 0 0 25 0 0 0] 8 #() 1952 nil 29 1970 2002 #fixedPreviousRight 1 3552 1 2048 1 2064 51 410 ##(Smalltalk.ComboBox) 34 17 nil 2800 34 2 8 1412498947 1025 3984 2978 138 144 1872 nil 3040 466 8 4278190080 nil 7 nil nil nil 3984 nil 8 4294904591 787814 3 ##(Smalltalk.BlockClosure) 0 nil 1180966 ##(Smalltalk.CompiledExpression) 2 1 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each printString]' 8 #[30 105 226 0 106] #printString 4144 7 257 nil 1872 401 1714 138 144 34 1 1778 #createAt:extent: 34 2 514 1 1 514 719 53 3984 1890 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 103 1 0 0 26 0 0 0] 8 #() 1952 nil 27 1970 2016 1 3552 -139 2048 1 2064 47 170 192 34 4 2912 8 'frameList' 3984 8 'processList' nil 1714 138 144 34 1 1778 #createAt:extent: 34 2 514 1 1 514 859 511 2800 1890 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 173 1 0 0 255 0 0 0] 34 3 3984 3600 2912 1952 nil 27 3 410 ##(Smalltalk.ContainerView) 34 15 nil 2672 34 2 8 1140850688 131073 4640 nil 466 496 nil 7 nil nil nil 4640 2146 170 176 34 4 410 ##(Smalltalk.ListView) 34 30 nil 4640 34 2 8 1140920397 1025 4768 2978 138 144 1872 nil 3040 466 496 nil 7 3074 nil true 34 1 3122 1 818 #browseObjectClass 8 '&Browse Object Class' 1 1 nil nil nil 8 '' nil 134217729 nil nil nil nil nil nil nil 4768 nil 8 4294906975 ##(Smalltalk.BasicListAbstract) nil 1049926 1 ##(Smalltalk.IconImageManager) nil nil nil nil nil nil 138 144 34 3 920646 5 ##(Smalltalk.ListViewColumn) 8 'Variable' 201 #left ##(Smalltalk.BasicListAbstract) ##(Smalltalk.SortedCollection) 4130 0 nil 4162 2 1 4128 8 'doIt' 8 '[:each | each key value]' 8 #[30 105 226 0 142 106] #key 5104 7 257 nil nil 4768 nil 1 nil nil 5058 8 'Value' 313 #left ##(Smalltalk.BasicListAbstract) ##(Smalltalk.SortedCollection) 4130 0 459302 ##(Smalltalk.Context) 1 1 nil nil 4162 0 9 ##(Smalltalk.UndefinedObject) 8 'doIt' 34 2 8 '[:each | each value]' 34 1 138 ##(Smalltalk.PoolDictionary) 1872 8 #[252 1 0 1 1 5 0 17 229 32 142 106 105] 17 257 nil nil 4768 nil 3 nil nil 5058 8 'OOP' 181 #right 459270 ##(Smalltalk.Message) #displayString 8 #() 5410 #<= 5440 4130 0 nil 4162 3 1 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each key key asNumber]' 8 #[31 105 226 0 158 159 106] #key #asNumber 5472 7 257 nil nil 4768 nil 1 nil nil #report 1872 nil 131169 nil 34 4 nil nil 514 1 1 nil 1714 138 144 34 3 1778 #createAt:extent: 34 2 514 1 1 514 701 333 4768 1778 #contextMenu: 34 1 4880 4768 1778 #text: 34 1 8 'Variable' 4768 1890 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 94 1 0 0 166 0 0 0] 8 #() 1952 nil 27 5 410 ##(Smalltalk.JadeiteScintillaView) 34 50 nil 4640 34 2 8 1174475012 1025 5824 721990 2 ##(Smalltalk.ValueHolder) nil false 1310726 ##(Smalltalk.EqualitySearchPolicy) nil 466 8 4278190080 nil 7 nil nil nil 5824 nil 8 4294906983 852486 ##(Smalltalk.NullConverter) nil nil 9 nil 170 192 34 8 #callTip 1182790 1 ##(Smalltalk.ScintillaTextStyle) 77 786694 ##(Smalltalk.IndexedColor) 33554457 6098 33554471 1 nil nil nil nil #callTip nil nil nil #indentGuide 6066 75 nil nil 1 nil nil nil nil #indentGuide nil nil nil #lineNumber 6066 67 nil nil 1 nil nil nil nil #lineNumber nil nil nil #normal 6066 1 nil nil 1 nil nil nil nil #normal nil nil nil 34 256 6176 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 6160 nil nil nil 6144 6080 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1245510 1 ##(Smalltalk.NullScintillaStyler) #normal 170 192 34 2 #default 1641542 1 ##(Smalltalk.ScintillaMarkerDefinition) nil nil nil nil 5824 #circle nil nil nil nil nil nil 138 ##(Smalltalk.IdentitySet) 1872 nil 170 176 1872 nil nil nil nil nil 6098 33554447 nil nil nil nil nil nil nil 1 170 192 1872 nil nil nil nil nil nil nil nil nil 170 192 34 6 #Notification 6066 1027 nil 196934 1 ##(Smalltalk.RGB) 31185883 1 nil nil nil nil #Notification nil nil nil #Warning 6066 1029 6418 60239 6418 31326207 1 nil nil nil nil #Warning nil nil nil #Error 6066 1031 6418 335 6418 31317503 1 nil nil nil nil #Error nil nil nil nil 1714 138 144 34 7 1778 #createAt:extent: 34 2 514 1 343 514 701 169 5824 1778 #modificationEventMask: 8 #(3912191) 5824 1778 #caretPeriod: 8 #(530) 5824 1778 #wordWrap: 8 #(true) 5824 1778 #margins: 34 1 34 5 985158 2 ##(Smalltalk.ScintillaMargin) 1 5824 1 3 nil nil nil nil 6802 3 5824 33 nil nil 67108863 nil nil 6802 5 5824 1 nil nil nil nil nil 6802 7 5824 1 nil nil nil nil nil 6802 9 5824 1 nil nil nil nil nil 5824 1778 #canHScroll: 8 #(false) 5824 1778 #maxCompletionListHeight: 8 #(9) 5824 1890 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 171 0 0 0 94 1 0 0 255 0 0 0] 8 #() 1952 nil 29 3 true 170 192 34 4 4768 8 'variableList' 5824 8 'variableData' nil 1714 138 144 34 1 1778 #createAt:extent: 34 2 514 869 1 514 701 511 4640 1890 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 178 1 0 0 0 0 0 0 16 3 0 0 255 0 0 0] 34 3 4768 410 ##(Smalltalk.Splitter) 34 12 nil 4640 34 2 8 1140850688 1 7232 nil 466 496 nil 519 nil nil nil 7232 1714 138 144 34 1 1778 #createAt:extent: 34 2 514 1 333 514 701 11 7232 1890 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 166 0 0 0 94 1 0 0 171 0 0 0] 8 #() 1952 nil 27 5824 1952 nil 27 524806 ##(Smalltalk.Fraction) 253 311 false 170 192 1872 nil 1714 138 144 34 1 1778 #createAt:extent: 34 2 514 1 1 514 1569 511 2672 1890 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 16 3 0 0 255 0 0 0] 34 3 2800 410 ##(Smalltalk.Splitter) 34 12 nil 2672 34 2 8 1140850688 1 7680 nil 466 496 nil 519 nil nil nil 7680 1714 138 144 34 1 1778 #createAt:extent: 34 2 514 859 1 514 11 511 7680 1890 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 173 1 0 0 0 0 0 0 178 1 0 0 255 0 0 0] 8 #() 1952 nil 27 4640 1952 nil 27 410 ##(Smalltalk.Splitter) 34 12 nil 2080 34 2 8 1140850688 1 7920 nil 466 496 nil 519 nil nil nil 7920 1714 138 144 34 1 1778 #createAt:extent: 34 2 514 1 511 514 1569 11 7920 1890 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 255 0 0 0 16 3 0 0 4 1 0 0] 8 #() 1952 nil 27 2224 1952 nil 27 1970 2016 1 3552 1 2048 51 3584 1 410 ##(Smalltalk.TextEdit) 34 16 nil 416 34 2 8 1140850816 1 8176 5890 nil false 5936 nil nil nil 7 nil nil nil 8176 nil 8 4294904509 6002 nil nil 3 1714 138 144 34 3 1778 #createAt:extent: 34 2 514 291 7 514 1275 39 8176 1778 #text: 34 1 8 'Static Text' 8176 1778 #setMarginWidths: 34 1 8 #(3 3) 8176 1890 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 145 0 0 0 3 0 0 0 14 3 0 0 22 0 0 0] 8 #() 1952 nil 27 1970 2016 291 3552 -3 2048 7 2064 39 170 192 34 4 608 8 'toolbar' 8176 8 'errorMessage' nil 461638 4 ##(Smalltalk.MenuBar) nil true 34 3 3074 nil true 34 1 3122 1 818 #saveMethod 8 '&Save' 9383 1 nil nil nil 8 '&File' nil 134217729 nil nil 16483 nil nil 3074 nil true 34 1 3122 1 818 #copyStack nil 1 1 nil nil nil 8 '&Edit' nil 134217729 nil nil 16487 nil nil 3074 nil true 34 6 3122 1 818 #jadeInspect 8 '&Inspect' 9379 1 nil nil nil 3122 1 818 #jadeDisplay 8 '&Display' 9353 1 nil nil nil 3122 1 818 #jadeExecute 8 '&Execute' 9355 1 nil nil nil 3122 1 818 #jadeDebug 8 'Debu&g' 9359 1 nil nil nil 983366 1 ##(Smalltalk.DividerMenuItem) 4097 3122 1 818 #implement 8 'Implement Method In ...' 1 1 nil nil nil 8 '&Debug' nil 134217729 nil nil 16499 nil nil 8 '' nil 134217729 nil nil nil nil nil nil nil nil 1 866 nil true 912 8 'icons\GS32.ico' nil 866 nil true 912 8 'icons\GS16.ico' nil nil nil 1 nil nil 1714 138 144 34 3 1778 #createAt:extent: 34 2 514 7679 21 514 1601 1201 416 1778 #text: 34 1 8 'Jade Debugger' 416 1778 #updateMenuBar 1872 416 1890 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 14 0 0 10 0 0 0 31 18 0 0 98 2 0 0] 34 3 8176 608 2080 1952 nil 27 )! !
-!JadeDebugger class categoriesFor: #resource_Default_view!public!resources-views! !
+!JadeDebugger class categoriesForMethods!
+resource_Default_view!public!resources-views! !
+!
 
 !JadeErrorShell methodsFor!
 
@@ -1798,10 +1842,12 @@ registerWindow: handle rootObject: oop session: session
 		registerWindow: handle value
 		rootObject: oop value
 		session: session! !
-!JadeErrorShell categoriesFor: #doCopy!public! !
-!JadeErrorShell categoriesFor: #onViewClosed!event handlers!public! !
-!JadeErrorShell categoriesFor: #onViewOpened!event handlers!public! !
-!JadeErrorShell categoriesFor: #registerWindow:rootObject:session:!private! !
+!JadeErrorShell categoriesForMethods!
+doCopy!public! !
+onViewClosed!event handlers!public! !
+onViewOpened!event handlers!public! !
+registerWindow:rootObject:session:!private! !
+!
 
 !JadeFileIn methodsFor!
 
@@ -1826,7 +1872,9 @@ defineMethod: methodString inClassNamed: className inPackageNamed: aPackageName 
 		caption: 'Jade Workspace - Compile Error on ' , className;
 		showError: result on: methodString.
 ! !
-!JadeFileIn categoriesFor: #defineMethod:inClassNamed:inPackageNamed:inCategory:!public! !
+!JadeFileIn categoriesForMethods!
+defineMethod:inClassNamed:inPackageNamed:inCategory:!public! !
+!
 
 !JadeImageStripper methodsFor!
 
@@ -1906,10 +1954,12 @@ requiredPackageNames
 		"add: 'Rowan STON';"
 		add: 'Dolphin Announcements';
 		yourself! !
-!JadeImageStripper categoriesFor: #closeLoginShells!public! !
-!JadeImageStripper categoriesFor: #createVersionResource!public! !
-!JadeImageStripper categoriesFor: #requiredClasses!public! !
-!JadeImageStripper categoriesFor: #requiredPackageNames!public! !
+!JadeImageStripper categoriesForMethods!
+closeLoginShells!public! !
+createVersionResource!public! !
+requiredClasses!public! !
+requiredPackageNames!public! !
+!
 
 !JadeInspector methodsFor!
 
@@ -2054,20 +2104,22 @@ shellNameExtraInfo
 
 updateCaption
 	self caption: (gciSession titleBarFor: self shellName).! !
-!JadeInspector categoriesFor: #displayError:!accessing!private! !
-!JadeInspector categoriesFor: #displayInstVarError:instVar:!accessing!private! !
-!JadeInspector categoriesFor: #displaySpecials!accessing!private! !
-!JadeInspector categoriesFor: #displayUndisplayableCharacter!accessing!private! !
-!JadeInspector categoriesFor: #onViewClosed!event handling!public! !
-!JadeInspector categoriesFor: #onViewOpened!event handling!private! !
-!JadeInspector categoriesFor: #printInstVar!accessing!private! !
-!JadeInspector categoriesFor: #saveDocument!menu handlers!public! !
-!JadeInspector categoriesFor: #selectedInstVar!accessing!private! !
-!JadeInspector categoriesFor: #setDocumentPresenterLabel!displaying!private! !
-!JadeInspector categoriesFor: #setLastGsShape:!accessing!private! !
-!JadeInspector categoriesFor: #shellName!displaying!private! !
-!JadeInspector categoriesFor: #shellNameExtraInfo!displaying!private! !
-!JadeInspector categoriesFor: #updateCaption!displaying!private! !
+!JadeInspector categoriesForMethods!
+displayError:!accessing!private! !
+displayInstVarError:instVar:!accessing!private! !
+displaySpecials!accessing!private! !
+displayUndisplayableCharacter!accessing!private! !
+onViewClosed!event handling!public! !
+onViewOpened!event handling!private! !
+printInstVar!accessing!private! !
+saveDocument!menu handlers!public! !
+selectedInstVar!accessing!private! !
+setDocumentPresenterLabel!displaying!private! !
+setLastGsShape:!accessing!private! !
+shellName!displaying!private! !
+shellNameExtraInfo!displaying!private! !
+updateCaption!displaying!private! !
+!
 
 !JadeInspector class methodsFor!
 
@@ -2100,11 +2152,13 @@ setNavigationInspector
 
 showOn: anObject session: aGciSession
 	^JadeiteInspector showOn: anObject session: aGciSession! !
-!JadeInspector class categoriesFor: #defaultInspectorClass!public! !
-!JadeInspector class categoriesFor: #resource_Default_view!public!resources-views! !
-!JadeInspector class categoriesFor: #resource_Special_view!public!resources-views! !
-!JadeInspector class categoriesFor: #setNavigationInspector!public! !
-!JadeInspector class categoriesFor: #showOn:session:!public! !
+!JadeInspector class categoriesForMethods!
+defaultInspectorClass!public! !
+resource_Default_view!public!resources-views! !
+resource_Special_view!public!resources-views! !
+setNavigationInspector!public! !
+showOn:session:!public! !
+!
 
 !JadeiteSUnitAbstractPresenter methodsFor!
 
@@ -2143,10 +2197,12 @@ inspectSelected
 step
 
 	^self debugTestAsFailureMethodServices: methodListPresenter selections className: self selectedClass name! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #browseSelectedMethods!menu handlers!public! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #delete!menu handlers!public! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #inspectSelected!menu handlers support!public! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #step!menu handlers!private! !
+!JadeiteSUnitAbstractPresenter categoriesForMethods!
+browseSelectedMethods!menu handlers!public! !
+delete!menu handlers!public! !
+inspectSelected!menu handlers support!public! !
+step!menu handlers!private! !
+!
 
 !JadeiteSUnitInClassPresenter methodsFor!
 
@@ -2166,9 +2222,11 @@ testClassService: classService
 	classService updateListIn: methodListPresenter from: classService visibleTests.
 	methodListPresenter list sortBlock: [:x :y | x selector < y selector].
 	methodListPresenter list do: [:methodService | methodService testResult: nil]! !
-!JadeiteSUnitInClassPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
-!JadeiteSUnitInClassPresenter categoriesFor: #testClassService!accessing!public! !
-!JadeiteSUnitInClassPresenter categoriesFor: #testClassService:!accessing!public! !
+!JadeiteSUnitInClassPresenter categoriesForMethods!
+registerPresentersForUpdates!public!register presenters! !
+testClassService!accessing!public! !
+testClassService:!accessing!public! !
+!
 
 !JadeiteSUnitPresenter methodsFor!
 
@@ -2227,11 +2285,13 @@ updateProjectPackages
 	browserService command: #packagesWithTests.
 	self issueCommand: browserService.
 	testCounter at: 1 put: browserService testCount! !
-!JadeiteSUnitPresenter categoriesFor: #browseClass!event handlers!public! !
-!JadeiteSUnitPresenter categoriesFor: #onViewClosed!event handlers!public! !
-!JadeiteSUnitPresenter categoriesFor: #onViewOpened!event handlers!public! !
-!JadeiteSUnitPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
-!JadeiteSUnitPresenter categoriesFor: #updateProjectPackages!event handlers!public! !
+!JadeiteSUnitPresenter categoriesForMethods!
+browseClass!event handlers!public! !
+onViewClosed!event handlers!public! !
+onViewOpened!event handlers!public! !
+registerPresentersForUpdates!public!register presenters! !
+updateProjectPackages!event handlers!public! !
+!
 
 !JadeLoginShell methodsFor!
 
@@ -2239,7 +2299,9 @@ aboutJadeite
 	"See also JadeTextDocument>>#'aboutJadeite'"
 
 	self class aboutJadeite! !
-!JadeLoginShell categoriesFor: #aboutJadeite!public! !
+!JadeLoginShell categoriesForMethods!
+aboutJadeite!public! !
+!
 
 !JadeMethodListPresenter methodsFor!
 
@@ -2268,9 +2330,11 @@ searchForAnyTextMatching: aString
 		sourceView ensureVisible: found stop.
 	].
 ! !
-!JadeMethodListPresenter categoriesFor: #newProjectsBrowser!menu handlers!public! !
-!JadeMethodListPresenter categoriesFor: #newWorkspace!menu handlers!public! !
-!JadeMethodListPresenter categoriesFor: #searchForAnyTextMatching:!public! !
+!JadeMethodListPresenter categoriesForMethods!
+newProjectsBrowser!menu handlers!public! !
+newWorkspace!menu handlers!public! !
+searchForAnyTextMatching:!public! !
+!
 
 !JadeNavigationInspector methodsFor!
 
@@ -2286,8 +2350,10 @@ setNewInspectedObject
 	self model: (self gciSession oopTypeWithOop: (oopsCollection at: objectIndex)).
 	self displayObjectSelecting: nil.
 	self updateCaption! !
-!JadeNavigationInspector categoriesFor: #browseClass!menu handlers support!private! !
-!JadeNavigationInspector categoriesFor: #setNewInspectedObject!public! !
+!JadeNavigationInspector categoriesForMethods!
+browseClass!menu handlers support!private! !
+setNewInspectedObject!public! !
+!
 
 !JadeNavigationInspector class methodsFor!
 
@@ -2300,7 +2366,9 @@ resource_Default_view
 	"
 
 	^#(#'!!STL' 4 788558 10 ##(Smalltalk.STBViewProxy) ##(Smalltalk.ShellView) 34 27 nil nil 8 #(13565952 65536) 416 nil 524550 ##(Smalltalk.ColorRef) 8 4278190080 328198 ##(Smalltalk.Point) 1201 901 551 nil nil nil 416 788230 ##(Smalltalk.BorderLayout) 1 1 410 ##(Smalltalk.ContainerView) 34 15 nil 416 34 2 8 1140850688 131073 576 nil 721158 ##(Smalltalk.SystemColor) 31 nil 7 nil nil nil 576 1180166 ##(Smalltalk.ProportionalLayout) 170 176 8 #() false 170 192 720 nil 983302 ##(Smalltalk.MessageSequence) 138 144 34 1 721670 ##(Smalltalk.MessageSend) #createAt:extent: 34 2 514 1 1 514 1169 49 576 983302 ##(Smalltalk.WINDOWPLACEMENT) 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 72 2 0 0 24 0 0 0] 34 1 410 ##(Smalltalk.Toolbar) 34 25 nil 576 34 2 8 1409288972 131137 960 nil 466 8 4278190080 nil 519 nil 263174 ##(Smalltalk.Font) nil true 459014 ##(Smalltalk.LOGFONT) 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 65 114 105 97 108 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 514 193 193 nil 960 466 1040 8 4294911349 170 192 720 170 192 34 8 10121 1115910 ##(Smalltalk.ToolbarIconButton) 10121 nil 960 1 1180998 4 ##(Smalltalk.CommandDescription) #getNextObject 8 'Next Object' 1 1 263494 3 ##(Smalltalk.Icon) nil true 1572870 ##(Smalltalk.ImageRelativeFileLocator) 8 'HistoryForward.ico' 2032142 ##(Smalltalk.STBExternalResourceLibraryProxy) 8 'dolphindr7.dll' nil 395334 3 ##(Smalltalk.Bitmap) nil true nil nil nil nil 3 514 33 33 1 10123 1234 10123 nil 960 1 1266 #removeObject 8 'Remove Object' 1 1 1314 nil true 1360 8 'False.ico' 1408 1442 nil true nil nil nil nil 3 514 33 33 1 10125 1234 10125 nil 960 1 1266 #openNavigationInspector 8 'Open Navigation Inspector' 1 1 1314 nil true 1360 8 'BasicInspector.ico' 1408 1442 nil true nil nil nil nil 3 514 33 33 1 10119 1234 10119 nil 960 1 1266 #getPreviousObject 8 'Previous Object' 1 1 1314 nil true 1360 8 'HistoryBack.ico' 1408 1442 nil true nil nil nil nil 3 514 33 33 1 34 6 1712 1248 1050118 ##(Smalltalk.ToolbarSeparator) nil nil 960 3 nil 1 1488 1842 nil nil 960 3 nil 1 1600 170 176 34 8 1456 3 1568 5 1680 7 1792 1 nil 1 nil 514 33 33 514 45 45 nil 656198 1 ##(Smalltalk.FlowLayout) 1 1 1 754 138 144 34 2 818 #createAt:extent: 34 2 514 1 1 514 1169 49 960 818 #updateSizePosted 720 960 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 72 2 0 0 24 0 0 0] 8 #() 514 193 193 nil 27 2160 nil 27 nil nil nil 410 ##(Smalltalk.ContainerView) 34 15 nil 416 34 2 8 1140850688 131073 2176 nil 642 31 nil 7 nil nil nil 2176 674 170 176 34 2 410 ##(Smalltalk.ReferenceView) 34 14 nil 2176 34 2 8 1140850688 131073 2304 nil 466 8 4278190080 nil 7 nil nil nil 2304 1180166 ##(Smalltalk.ResourceIdentifier) ##(Smalltalk.CodeSourcePresenter) #resource_Default_view nil 754 138 144 34 1 818 #createAt:extent: 34 2 514 397 1 514 773 735 2304 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 198 0 0 0 0 0 0 0 72 2 0 0 111 1 0 0] 720 2160 nil 27 5 false 170 192 34 4 2304 8 'codePane' 410 ##(Smalltalk.ListBox) 34 17 nil 2176 34 2 8 1144062209 1025 2624 590662 2 ##(Smalltalk.ListModel) 138 144 720 nil 1310726 ##(Smalltalk.IdentitySearchPolicy) 466 8 4278190080 nil 7 nil nil nil 2624 nil 8 4294912081 459270 ##(Smalltalk.Message) #key 8 #() 720 false 754 138 144 34 2 818 #createAt:extent: 34 2 514 1 1 514 387 735 2624 818 #horizontalExtent: 8 #(0) 2624 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 193 0 0 0 111 1 0 0] 8 #() 2160 nil 27 8 'instVarList' nil 754 138 144 34 1 818 #createAt:extent: 34 2 514 1 49 514 1169 735 2176 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 24 0 0 0 72 2 0 0 135 1 0 0] 34 3 2624 410 ##(Smalltalk.Splitter) 34 12 nil 2176 34 2 8 1140850688 1 3232 nil 466 8 4278190080 nil 519 nil nil nil 3232 754 138 144 34 1 818 #createAt:extent: 34 2 514 387 1 514 11 735 3232 898 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 193 0 0 0 0 0 0 0 198 0 0 0 111 1 0 0] 8 #() 2160 nil 27 2304 2160 nil 27 170 192 720 nil 461638 4 ##(Smalltalk.MenuBar) nil true 34 3 265030 4 ##(Smalltalk.Menu) nil true 34 1 984134 2 ##(Smalltalk.CommandMenuItem) 1 1266 #exit 8 'E&xit' 17639 1 nil nil nil 8 '&File' nil 1 nil nil 10075 nil nil 3554 nil true 34 15 3602 1 1266 #undo 8 '&Undo' 9397 1 nil nil nil 3602 1 1266 #redo 8 'R&edo' 9395 1 nil nil nil 983366 1 ##(Smalltalk.DividerMenuItem) 4097 3602 1 1266 #editCut 8 'Cu&t' 9393 1 nil nil nil 3602 1 1266 #editCopy 8 '&Copy' 9351 1 nil nil nil 3602 1 1266 #editPaste 8 '&Paste' 9389 1 nil nil nil 3602 1 1266 #editSelectAll 8 'Select &All' 9347 1 nil nil nil 3602 1 1266 #editDelete 8 '&Delete' 1629 1 nil nil nil 3810 4097 3602 1 1266 #editFind 8 '&Find...' 9357 1 nil nil nil 3602 1 1266 #editFindNext 8 'Find &Next' 9359 1 nil nil nil 3602 1 1266 #editReplace 8 '&Replace...' 9361 1 nil nil nil 3810 4097 3602 1 1266 #addQuotesToSelection 8 'Add &Quotes' 1 1 nil nil nil 3602 1 1266 #removeQuotesFromSelection 8 'Re&move Quotes' 1 1 nil nil nil 8 '&Edit' nil 1 nil nil 10101 nil nil 3554 nil true 34 9 3602 1 1266 #abortTransaction 8 '&Abort Transaction' 1 1 nil nil nil 3602 1 1266 #commitTransaction 8 '&Commit Transaction' 1 1 nil nil nil 3810 4097 3602 1 1266 #jadeInspect 8 '&Inspect' 9379 1 nil nil nil 3602 1 1266 #jadeDisplay 8 '&Display' 9353 1 nil nil nil 3602 1 1266 #jadeExecute 8 '&Execute' 9355 1 nil nil nil 3602 1 1266 #fileIn 8 'Fi&le In' 1 1 nil nil nil 3810 4097 3602 1 1266 #browseClass 8 '&Browse Class' 9377 1 nil nil nil 8 '&Jadeite' nil 1 nil nil 10117 nil nil 8 '' nil 1 nil nil nil nil nil nil nil nil 1 nil nil nil nil 1 nil nil 754 138 144 34 3 818 #createAt:extent: 34 2 514 7679 21 514 1201 901 416 818 #text: 34 1 8 'Jade Object Navigation Inspector' 416 818 #updateMenuBar 720 416 898 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 14 0 0 10 0 0 0 87 17 0 0 204 1 0 0] 34 2 576 2176 2160 nil 27 )! !
-!JadeNavigationInspector class categoriesFor: #resource_Default_view!public!resources-views! !
+!JadeNavigationInspector class categoriesForMethods!
+resource_Default_view!public!resources-views! !
+!
 
 !JadePresenter methodsFor!
 
@@ -2615,49 +2683,51 @@ updateProjects
 
 updateServices: services
 	BrowserUpdate current updateServices: services asSet asArray session: gciSession! !
-!JadePresenter categoriesFor: #abortTransaction!public!transaction management! !
-!JadePresenter categoriesFor: #autoCommitExecutionString!menu handlers support!public! !
-!JadePresenter categoriesFor: #basicAllSelectedProjectsDirty:!private!testing! !
-!JadePresenter categoriesFor: #basicCheckoutTagAndRefresh:for:!menu handlers support!private! !
-!JadePresenter categoriesFor: #basicLoadV2Project:projectsHome:!menu handlers!private! !
-!JadePresenter categoriesFor: #browseBreakpointList!menu handlers!public! !
-!JadePresenter categoriesFor: #browseClassReferences:!menu handlers!public! !
-!JadePresenter categoriesFor: #browseHierarchyImplementorsOf:className:!browsing!public! !
-!JadePresenter categoriesFor: #browseHierarchySendersOf:className:!browsing!public! !
-!JadePresenter categoriesFor: #browseImplementorsOf!browsing!public! !
-!JadePresenter categoriesFor: #browseImplementorsOf:!browsing!public! !
-!JadePresenter categoriesFor: #browseLiteralReferences!browsing!public! !
-!JadePresenter categoriesFor: #browseMethodsContaining!browsing!public! !
-!JadePresenter categoriesFor: #browseSelectedClassIn:newTab:!Jade!public! !
-!JadePresenter categoriesFor: #browseSendersOf!browsing!public! !
-!JadePresenter categoriesFor: #browseSendersOf:!browsing!menu handlers!public! !
-!JadePresenter categoriesFor: #checkoutTag:!menu handlers!public! !
-!JadePresenter categoriesFor: #clearAllBreaks!menu handlers!public! !
-!JadePresenter categoriesFor: #clearMethodBreakpoints:!menu handlers!public! !
-!JadePresenter categoriesFor: #compilationWarningFrom:!public! !
-!JadePresenter categoriesFor: #currentMethodSourceFrom:!compile support!public! !
-!JadePresenter categoriesFor: #currentSelectionOrLine!menu handlers support!public! !
-!JadePresenter categoriesFor: #displayNoMods:!compile support!displaying!public! !
-!JadePresenter categoriesFor: #displayUncompilableSourceIn:!event handlers!public!text tabs!updating! !
-!JadePresenter categoriesFor: #editSaveMethod:in:category:!compile support!public! !
-!JadePresenter categoriesFor: #executeSelectionOrLine:!menu handlers!private! !
-!JadePresenter categoriesFor: #flipAutoCommit!menu handlers!public! !
-!JadePresenter categoriesFor: #insertCompileErrorText:into:!compile support!public! !
-!JadePresenter categoriesFor: #issueCommand:!browsing support!public! !
-!JadePresenter categoriesFor: #issueCommands:!browsing support!public! !
-!JadePresenter categoriesFor: #openBrowserInNewTab:on:!Jade!public! !
-!JadePresenter categoriesFor: #openProjectBrowserOn:selector:!browsing!public! !
-!JadePresenter categoriesFor: #raiseConsole!menu handlers!public! !
-!JadePresenter categoriesFor: #refreshGlobalSelections!menu handlers!public! !
-!JadePresenter categoriesFor: #remoteAutoCommit!browsing support!public! !
-!JadePresenter categoriesFor: #reportCompileError:in:!compile support!public! !
-!JadePresenter categoriesFor: #selectionRangeFrom:source:!compile support!private! !
-!JadePresenter categoriesFor: #serviceFromSelection:!menu handlers!menu handlers support!private! !
-!JadePresenter categoriesFor: #setCompileErrorColor!compile support!public! !
-!JadePresenter categoriesFor: #setCompileWarningColor!compile support!public! !
-!JadePresenter categoriesFor: #update:afterStonReplication:!browsing support!public! !
-!JadePresenter categoriesFor: #updateProjects!public! !
-!JadePresenter categoriesFor: #updateServices:!private!services! !
+!JadePresenter categoriesForMethods!
+abortTransaction!public!transaction management! !
+autoCommitExecutionString!menu handlers support!public! !
+basicAllSelectedProjectsDirty:!private!testing! !
+basicCheckoutTagAndRefresh:for:!menu handlers support!private! !
+basicLoadV2Project:projectsHome:!menu handlers!private! !
+browseBreakpointList!menu handlers!public! !
+browseClassReferences:!menu handlers!public! !
+browseHierarchyImplementorsOf:className:!browsing!public! !
+browseHierarchySendersOf:className:!browsing!public! !
+browseImplementorsOf!browsing!public! !
+browseImplementorsOf:!browsing!public! !
+browseLiteralReferences!browsing!public! !
+browseMethodsContaining!browsing!public! !
+browseSelectedClassIn:newTab:!Jade!public! !
+browseSendersOf!browsing!public! !
+browseSendersOf:!browsing!menu handlers!public! !
+checkoutTag:!menu handlers!public! !
+clearAllBreaks!menu handlers!public! !
+clearMethodBreakpoints:!menu handlers!public! !
+compilationWarningFrom:!public! !
+currentMethodSourceFrom:!compile support!public! !
+currentSelectionOrLine!menu handlers support!public! !
+displayNoMods:!compile support!displaying!public! !
+displayUncompilableSourceIn:!event handlers!public!text tabs!updating! !
+editSaveMethod:in:category:!compile support!public! !
+executeSelectionOrLine:!menu handlers!private! !
+flipAutoCommit!menu handlers!public! !
+insertCompileErrorText:into:!compile support!public! !
+issueCommand:!browsing support!public! !
+issueCommands:!browsing support!public! !
+openBrowserInNewTab:on:!Jade!public! !
+openProjectBrowserOn:selector:!browsing!public! !
+raiseConsole!menu handlers!public! !
+refreshGlobalSelections!menu handlers!public! !
+remoteAutoCommit!browsing support!public! !
+reportCompileError:in:!compile support!public! !
+selectionRangeFrom:source:!compile support!private! !
+serviceFromSelection:!menu handlers!menu handlers support!private! !
+setCompileErrorColor!compile support!public! !
+setCompileWarningColor!compile support!public! !
+update:afterStonReplication:!browsing support!public! !
+updateProjects!public! !
+updateServices:!private!services! !
+!
 
 !JadePresenter class methodsFor!
 
@@ -3038,55 +3108,57 @@ unsavedChangesValidSessionDialogIn: presenter text: text
 		owner: presenter view;
 		caption: 'Unsaved changes warning in ' , presenter view topShell caption , '!!';
 		confirm: text! !
-!JadePresenter class categoriesFor: #abortTransaction:!browsing support!public! !
-!JadePresenter class categoriesFor: #allClassesIn:!browsing support!private! !
-!JadePresenter class categoriesFor: #allPackagesIn:!browsing support!private! !
-!JadePresenter class categoriesFor: #basicBrowseClassReferences:session:!browsing!browsing support!public! !
-!JadePresenter class categoriesFor: #basicBrowseMethod:presenter:!browsing!public! !
-!JadePresenter class categoriesFor: #browseBreakpointsIn:!browsing!public! !
-!JadePresenter class categoriesFor: #browseClassIn:!browsing!public! !
-!JadePresenter class categoriesFor: #browseClassReferences:session:!browsing!public! !
-!JadePresenter class categoriesFor: #browseClassReferencesInSession:!browsing!public! !
-!JadePresenter class categoriesFor: #browseHierarchyImplementorsOf:className:session:!browsing!public! !
-!JadePresenter class categoriesFor: #browseHierarchySendersOf:className:session:!browsing!public! !
-!JadePresenter class categoriesFor: #browseImplementorsIn:!browsing!public! !
-!JadePresenter class categoriesFor: #browseImplementorsOf:session:!browsing!public! !
-!JadePresenter class categoriesFor: #browseInstVarReaders:in:session:!browsing!public! !
-!JadePresenter class categoriesFor: #browseInstVarWriters:in:session:!browsing!public! !
-!JadePresenter class categoriesFor: #browseLiteralReferences:!browsing!public! !
-!JadePresenter class categoriesFor: #browseLiteralReferences:initialSuggestion:!browsing!public! !
-!JadePresenter class categoriesFor: #browseLiteralReferences:session:!browsing!public! !
-!JadePresenter class categoriesFor: #browseMethodsContaining:!browsing!public! !
-!JadePresenter class categoriesFor: #browseMethodsContaining:session:!browsing!public! !
-!JadePresenter class categoriesFor: #browseSendersIn:!browsing!public! !
-!JadePresenter class categoriesFor: #browseSendersOf:session:!browsing!public! !
-!JadePresenter class categoriesFor: #browseSymbolReferencesTo:session:!browsing!public! !
-!JadePresenter class categoriesFor: #clearAllBreakpointsIn:!browsing!public! !
-!JadePresenter class categoriesFor: #clearAllBreaksIn:!browsing!public! !
-!JadePresenter class categoriesFor: #clearMethodBreakpoints:in:!browsing!public! !
-!JadePresenter class categoriesFor: #convertToPattern:!browsing support!private! !
-!JadePresenter class categoriesFor: #defaultCaptionText:!public!unsaved changes support! !
-!JadePresenter class categoriesFor: #defaultUnsavedChangesText!public!unsaved changes support! !
-!JadePresenter class categoriesFor: #defaultWindowOffset!browsing support!private! !
-!JadePresenter class categoriesFor: #defaultWindowPosition!browsing support!public! !
-!JadePresenter class categoriesFor: #disableAllBreakpointsIn:!browsing!public! !
-!JadePresenter class categoriesFor: #disableMethodBreakpoints:in:!browsing!public! !
-!JadePresenter class categoriesFor: #enableAllBreakpointsIn:!browsing!public! !
-!JadePresenter class categoriesFor: #enableMethodBreakpoints:in:!browsing!public! !
-!JadePresenter class categoriesFor: #findMethodIn:class:presenter:!browsing!public! !
-!JadePresenter class categoriesFor: #issueCommands:session:!public! !
-!JadePresenter class categoriesFor: #openGitHubJadeiteProject!browsing!public! !
-!JadePresenter class categoriesFor: #openGitHubRowanProject!browsing!public! !
-!JadePresenter class categoriesFor: #openMethodListOn:selecting:session:!public! !
-!JadePresenter class categoriesFor: #openMethodListOn:selectingAnyMatch:session:!public! !
-!JadePresenter class categoriesFor: #promptFor:withCaption:!browsing support!private! !
-!JadePresenter class categoriesFor: #promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:searchString:!browsing support!private! !
-!JadePresenter class categoriesFor: #runMethodTests:in:!public! !
-!JadePresenter class categoriesFor: #selectorsFrom:session:!browsing support!private! !
-!JadePresenter class categoriesFor: #unsavedChangesInvalidSessionDialogIn:!public!unsaved changes support! !
-!JadePresenter class categoriesFor: #unsavedChangesInvalidSessionDialogIn:text:!public!unsaved changes support! !
-!JadePresenter class categoriesFor: #unsavedChangesValidSessionDialogIn:!public!unsaved changes support! !
-!JadePresenter class categoriesFor: #unsavedChangesValidSessionDialogIn:text:!public!unsaved changes support! !
+!JadePresenter class categoriesForMethods!
+abortTransaction:!browsing support!public! !
+allClassesIn:!browsing support!private! !
+allPackagesIn:!browsing support!private! !
+basicBrowseClassReferences:session:!browsing!browsing support!public! !
+basicBrowseMethod:presenter:!browsing!public! !
+browseBreakpointsIn:!browsing!public! !
+browseClassIn:!browsing!public! !
+browseClassReferences:session:!browsing!public! !
+browseClassReferencesInSession:!browsing!public! !
+browseHierarchyImplementorsOf:className:session:!browsing!public! !
+browseHierarchySendersOf:className:session:!browsing!public! !
+browseImplementorsIn:!browsing!public! !
+browseImplementorsOf:session:!browsing!public! !
+browseInstVarReaders:in:session:!browsing!public! !
+browseInstVarWriters:in:session:!browsing!public! !
+browseLiteralReferences:!browsing!public! !
+browseLiteralReferences:initialSuggestion:!browsing!public! !
+browseLiteralReferences:session:!browsing!public! !
+browseMethodsContaining:!browsing!public! !
+browseMethodsContaining:session:!browsing!public! !
+browseSendersIn:!browsing!public! !
+browseSendersOf:session:!browsing!public! !
+browseSymbolReferencesTo:session:!browsing!public! !
+clearAllBreakpointsIn:!browsing!public! !
+clearAllBreaksIn:!browsing!public! !
+clearMethodBreakpoints:in:!browsing!public! !
+convertToPattern:!browsing support!private! !
+defaultCaptionText:!public!unsaved changes support! !
+defaultUnsavedChangesText!public!unsaved changes support! !
+defaultWindowOffset!browsing support!private! !
+defaultWindowPosition!browsing support!public! !
+disableAllBreakpointsIn:!browsing!public! !
+disableMethodBreakpoints:in:!browsing!public! !
+enableAllBreakpointsIn:!browsing!public! !
+enableMethodBreakpoints:in:!browsing!public! !
+findMethodIn:class:presenter:!browsing!public! !
+issueCommands:session:!public! !
+openGitHubJadeiteProject!browsing!public! !
+openGitHubRowanProject!browsing!public! !
+openMethodListOn:selecting:session:!public! !
+openMethodListOn:selectingAnyMatch:session:!public! !
+promptFor:withCaption:!browsing support!private! !
+promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:searchString:!browsing support!private! !
+runMethodTests:in:!public! !
+selectorsFrom:session:!browsing support!private! !
+unsavedChangesInvalidSessionDialogIn:!public!unsaved changes support! !
+unsavedChangesInvalidSessionDialogIn:text:!public!unsaved changes support! !
+unsavedChangesValidSessionDialogIn:!public!unsaved changes support! !
+unsavedChangesValidSessionDialogIn:text:!public!unsaved changes support! !
+!
 
 !JadePresenterA methodsFor!
 
@@ -3258,22 +3330,24 @@ updateMethodReferences: services
 	services do: [:service | service command: #allReferences].
 	self issueCommands: services.
 	^services! !
-!JadePresenterA categoriesFor: #basicRefreshBreakpointsIn:selection:!Jadeite!public! !
-!JadePresenterA categoriesFor: #clearBreakPointAt:in:!Jadeite!public! !
-!JadePresenterA categoriesFor: #confirmReloadProjects:!Jadeite!public! !
-!JadePresenterA categoriesFor: #disableBreakPointAt:in:!Jadeite!public! !
-!JadePresenterA categoriesFor: #enableBreakPointAt:in:!Jadeite!public! !
-!JadePresenterA categoriesFor: #isOkayToChangeSource:!Jadeite!public! !
-!JadePresenterA categoriesFor: #loadProjectsFrom:!Jadeite!public! !
-!JadePresenterA categoriesFor: #loadV2Project!Jadeite!public! !
-!JadePresenterA categoriesFor: #methodListSelection!Jadeite!public! !
-!JadePresenterA categoriesFor: #openMethodListOn:selecting:!menu handlers support!private!queries! !
-!JadePresenterA categoriesFor: #openMethodListOn:selectingAnyMatch:!menu handlers support!private!queries! !
-!JadePresenterA categoriesFor: #queryCommand:!public! !
-!JadePresenterA categoriesFor: #refreshBreakPointsIn:!Jadeite!public! !
-!JadePresenterA categoriesFor: #removeSelectorsString:!Jadeite!public! !
-!JadePresenterA categoriesFor: #setBreakPointAt:in:!Jadeite!public! !
-!JadePresenterA categoriesFor: #updateMethodReferences:!Jadeite!public! !
+!JadePresenterA categoriesForMethods!
+basicRefreshBreakpointsIn:selection:!Jadeite!public! !
+clearBreakPointAt:in:!Jadeite!public! !
+confirmReloadProjects:!Jadeite!public! !
+disableBreakPointAt:in:!Jadeite!public! !
+enableBreakPointAt:in:!Jadeite!public! !
+isOkayToChangeSource:!Jadeite!public! !
+loadProjectsFrom:!Jadeite!public! !
+loadV2Project!Jadeite!public! !
+methodListSelection!Jadeite!public! !
+openMethodListOn:selecting:!menu handlers support!private!queries! !
+openMethodListOn:selectingAnyMatch:!menu handlers support!private!queries! !
+queryCommand:!public! !
+refreshBreakPointsIn:!Jadeite!public! !
+removeSelectorsString:!Jadeite!public! !
+setBreakPointAt:in:!Jadeite!public! !
+updateMethodReferences:!Jadeite!public! !
+!
 
 !JadeProcessBrowser methodsFor!
 
@@ -3285,7 +3359,9 @@ debugProcess
 		openOn: (GsProcess session: gciSession oopType: oopType)
 		message: 'background process'
 		terminateOnClose: false! !
-!JadeProcessBrowser categoriesFor: #debugProcess!private! !
+!JadeProcessBrowser categoriesForMethods!
+debugProcess!private! !
+!
 
 !JadeServer methodsFor!
 
@@ -3696,24 +3772,26 @@ systemBrowserSTONA: aString
 	].
 	^STON toString: RowanCommandResult results
 ! !
-!JadeServer categoriesFor: #_describeMethod:!Debugger!GsObject!public!System Browser! !
-!JadeServer categoriesFor: #sbAddPackage:!public!System Browser! !
-!JadeServer categoriesFor: #sbChangesInPackage:!public!System Browser! !
-!JadeServer categoriesFor: #sbClassTemplate!public!System Browser! !
-!JadeServer categoriesFor: #sbRemoveClasses!public!System Browser! !
-!JadeServer categoriesFor: #sbRemoveMethods:!public!System Browser! !
-!JadeServer categoriesFor: #sbUnloadPackage:!public!System Browser! !
-!JadeServer categoriesFor: #sbUpdateClassCategories!public!System Browser! !
-!JadeServer categoriesFor: #sbUpdateClassHierarchy!public!System Browser! !
-!JadeServer categoriesFor: #sbUpdateClassInfo!public!System Browser! !
-!JadeServer categoriesFor: #sbUpdateClassList!public!System Browser! !
-!JadeServer categoriesFor: #sbUpdateDictionaries!public!System Browser! !
-!JadeServer categoriesFor: #sbUpdateMethodCategories!public!System Browser! !
-!JadeServer categoriesFor: #sbUpdateMethods!public!System Browser! !
-!JadeServer categoriesFor: #sbUpdateMethodVariables!public!System Browser! !
-!JadeServer categoriesFor: #sbUpdatePackages!public!System Browser! !
-!JadeServer categoriesFor: #sbUpdateSuperclass!public!System Browser! !
-!JadeServer categoriesFor: #systemBrowserSTONA:!public!System Browser! !
+!JadeServer categoriesForMethods!
+_describeMethod:!Debugger!GsObject!public!System Browser! !
+sbAddPackage:!public!System Browser! !
+sbChangesInPackage:!public!System Browser! !
+sbClassTemplate!public!System Browser! !
+sbRemoveClasses!public!System Browser! !
+sbRemoveMethods:!public!System Browser! !
+sbUnloadPackage:!public!System Browser! !
+sbUpdateClassCategories!public!System Browser! !
+sbUpdateClassHierarchy!public!System Browser! !
+sbUpdateClassInfo!public!System Browser! !
+sbUpdateClassList!public!System Browser! !
+sbUpdateDictionaries!public!System Browser! !
+sbUpdateMethodCategories!public!System Browser! !
+sbUpdateMethods!public!System Browser! !
+sbUpdateMethodVariables!public!System Browser! !
+sbUpdatePackages!public!System Browser! !
+sbUpdateSuperclass!public!System Browser! !
+systemBrowserSTONA:!public!System Browser! !
+!
 
 !JadeServer class methodsFor!
 
@@ -3748,7 +3826,9 @@ gsString
 	gsString := stream contents.
 	^gsString.
 ! !
-!JadeServer class categoriesFor: #gsString!public! !
+!JadeServer class categoriesForMethods!
+gsString!public! !
+!
 
 !JadeServer64bit methodsFor!
 
@@ -3775,8 +3855,10 @@ systemBrowserSTON: aString
 		ex pass.
 	].
 ! !
-!JadeServer64bit categoriesFor: #recompile:withSource:!Debugger!public! !
-!JadeServer64bit categoriesFor: #systemBrowserSTON:!public!System Browser! !
+!JadeServer64bit categoriesForMethods!
+recompile:withSource:!Debugger!public! !
+systemBrowserSTON:!public!System Browser! !
+!
 
 !JadeServer64bit32 class methodsFor!
 
@@ -3790,7 +3872,9 @@ gsClassDefinitionStringFor: aClass
 		poolDictionaries: (#() class withAll: symbolList)
 		inDictionary: UserGlobals.'
 ! !
-!JadeServer64bit32 class categoriesFor: #gsClassDefinitionStringFor:!public! !
+!JadeServer64bit32 class categoriesForMethods!
+gsClassDefinitionStringFor:!public! !
+!
 
 !JadeServer64bit3x methodsFor!
 
@@ -3840,9 +3924,11 @@ sbUpdateMethodPragmas
 	methodUpdate writeSelectionsTo: writeStream. 
 
 ! !
-!JadeServer64bit3x categoriesFor: #compileMethod:behavior:symbolList:inCategory:!Methods!public!System Browser! !
-!JadeServer64bit3x categoriesFor: #sbClassComment:!public!System Browser! !
-!JadeServer64bit3x categoriesFor: #sbUpdateMethodPragmas!public!System Browser! !
+!JadeServer64bit3x categoriesForMethods!
+compileMethod:behavior:symbolList:inCategory:!Methods!public!System Browser! !
+sbClassComment:!public!System Browser! !
+sbUpdateMethodPragmas!public!System Browser! !
+!
 
 !JadeSessionManager class methodsFor!
 
@@ -3861,9 +3947,11 @@ mainShellClass
 setVersion
 
 	Version := self getVersion.! !
-!JadeSessionManager class categoriesFor: #getUrl!public! !
-!JadeSessionManager class categoriesFor: #mainShellClass!public! !
-!JadeSessionManager class categoriesFor: #setVersion!public! !
+!JadeSessionManager class categoriesForMethods!
+getUrl!public! !
+mainShellClass!public! !
+setVersion!public! !
+!
 
 !JadeShell methodsFor!
 
@@ -3878,14 +3966,18 @@ updateCaptionFromSearchString: searchString
 
 	self caption: (gciSession titleBarFor: searchString).
 ! !
-!JadeShell categoriesFor: #raiseConsole!menu handlers!public! !
-!JadeShell categoriesFor: #updateCaptionFromSearchString:!overrides!private! !
+!JadeShell categoriesForMethods!
+raiseConsole!menu handlers!public! !
+updateCaptionFromSearchString:!overrides!private! !
+!
 
 !JadeSystemBrowser methodsFor!
 
 jadeBrowseTests
 	JadeiteSUnitBrowser showOnSession: gciSession! !
-!JadeSystemBrowser categoriesFor: #jadeBrowseTests!public! !
+!JadeSystemBrowser categoriesForMethods!
+jadeBrowseTests!public! !
+!
 
 !JadeSystemBrowserPresenter methodsFor!
 
@@ -4500,35 +4592,37 @@ verifyValidCategory: category
 				commandArgs: (Array with: packageName).
 	self issueCommand: service.
 	^service answer! !
-!JadeSystemBrowserPresenter categoriesFor: #basicAddMethodCategory:!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #basicRemoveMethods!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #browseMethodsAndSelect:!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #browseMethodsAndSelect:type:!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createComponents!overrides!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!overrides!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForClassHierarchyTabs!create schemantic wiring!public! !
-!JadeSystemBrowserPresenter categoriesFor: #currentMethodSource!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #editSaveClass!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #findClass!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #handleClassCompileError:!compiling!public! !
-!JadeSystemBrowserPresenter categoriesFor: #instanceClassTabs!accessing!private! !
-!JadeSystemBrowserPresenter categoriesFor: #instanceClassTabs:!accessing!private! !
-!JadeSystemBrowserPresenter categoriesFor: #methodsMenuStrings!menus!public! !
-!JadeSystemBrowserPresenter categoriesFor: #methodSourceEqual!private!testing! !
-!JadeSystemBrowserPresenter categoriesFor: #onViewOpened!menus!overrides!public! !
-!JadeSystemBrowserPresenter categoriesFor: #packageTabName!menus!overrides!public! !
-!JadeSystemBrowserPresenter categoriesFor: #postOkToChangeEvent!event handlers!private! !
-!JadeSystemBrowserPresenter categoriesFor: #preRemoveMethods!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #queryCommand:!event handlers!overrides!public! !
-!JadeSystemBrowserPresenter categoriesFor: #removeMethods!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #runClassTests!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #savePackage!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #selectorsString!menu handlers!private! !
-!JadeSystemBrowserPresenter categoriesFor: #updateClassHierarchy!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateClassList!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateMethod!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateSelector!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #verifyValidCategory:!menu handlers support!private! !
+!JadeSystemBrowserPresenter categoriesForMethods!
+basicAddMethodCategory:!menu handlers!public! !
+basicRemoveMethods!menu handlers!public! !
+browseMethodsAndSelect:!menu handlers!public! !
+browseMethodsAndSelect:type:!menu handlers!public! !
+createComponents!overrides!public! !
+createSchematicWiring!create schemantic wiring!overrides!public! !
+createSchematicWiringForClassHierarchyTabs!create schemantic wiring!public! !
+currentMethodSource!menu handlers!public! !
+editSaveClass!menu handlers!public! !
+findClass!menu handlers!public! !
+handleClassCompileError:!compiling!public! !
+instanceClassTabs!accessing!private! !
+instanceClassTabs:!accessing!private! !
+methodsMenuStrings!menus!public! !
+methodSourceEqual!private!testing! !
+onViewOpened!menus!overrides!public! !
+packageTabName!menus!overrides!public! !
+postOkToChangeEvent!event handlers!private! !
+preRemoveMethods!menu handlers!public! !
+queryCommand:!event handlers!overrides!public! !
+removeMethods!menu handlers!public! !
+runClassTests!menu handlers!public! !
+savePackage!menu handlers!public! !
+selectorsString!menu handlers!private! !
+updateClassHierarchy!public!updating! !
+updateClassList!public!updating! !
+updateMethod!public!updating! !
+updateSelector!public!updating! !
+verifyValidCategory:!menu handlers support!private! !
+!
 
 !JadeSystemBrowserPresenter class methodsFor!
 
@@ -4544,7 +4638,9 @@ resource_Default_view
 	index := each indexOf: Character space.
 	0 < index ifTrue: [each copyFrom: index + 2 to: each size - 1] ifFalse: ['''']]' 8 #[34 105 17 29 159 178 90 62 18 128 221 9 233 1 64 126 17 145 99 193 106 33 106] ##(Smalltalk.Character) #space #indexOf: #copyFrom:to: 6432 6448 7 65793 0 1666 #<= 8 #() 0 0 6112 0 1 0 0 #report 1568 0 131169 0 8 #(nil) 2018 138 144 34 3 2082 #createAt:extent: 34 2 2130 9 55 2130 435 433 6112 2082 #text: 34 1 8 'Column 1' 6112 2082 #columnOrder: 34 1 8 #(2 1) 6112 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 27 0 0 0 221 0 0 0 243 0 0 0] 8 #() 2288 0 27 1090 1122 8 'Hierarchy' 1170 0 0 1202 7 1 16 8 'doIt' 8 '(CardLabel text: ''Hierarchy'' iconBlock: [Icon fromId: ''ClassHierarchyDiagram.ico''])' 8 #[29 30 35 113 31 32 180 106 195 105] 1120 6864 ##(Smalltalk.Icon) 8 'ClassHierarchyDiagram.ico' #fromId: #text:iconBlock: 6880 11 1 0 0 410 ##(Smalltalk.TreeView) 34 27 0 5824 34 2 8 1409352231 1025 6976 590918 3 ##(Smalltalk.TreeModel) 0 1600 525062 ##(Smalltalk.TreeNode) 0 0 0 170 192 1568 978 8 4278190080 0 29 0 0 0 6976 0 8 4294903039 1170 0 0 1202 2 1 1664 8 'doIt' 8 '[:each | each last]' 8 #[30 105 226 0 106] #last 7168 7 257 0 ##(Smalltalk.IconicListAbstract) 1728 0 0 0 0 0 170 176 1568 17 #noIcons 1 170 ##(Smalltalk.PluggableLookupTable) 1568 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 9 55 2130 435 433 6976 2226 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 27 0 0 0 221 0 0 0 243 0 0 0] 8 #() 2288 0 27 6112 170 192 34 4 6976 8 'classHierarchy' 6112 8 'classList' 0 410 ##(Smalltalk.TabViewXP) 34 28 0 5824 34 2 8 1140916736 1 7504 1522 138 144 34 2 5984 6848 0 1600 0 0 1 0 0 0 7504 0 8 4294904615 1170 0 0 5218 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 7632 7 257 0 1170 0 0 5218 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 7680 7 257 0 1728 0 0 0 0 0 #smallIcons 0 0 0 0 0 2018 138 144 34 3 2082 #createAt:extent: 34 2 2130 1 1 2130 451 495 7504 2082 #basicSelectionsByIndex: 34 1 8 #(1) 7504 2082 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 7504 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 225 0 0 0 247 0 0 0] 8 #() 2288 0 27 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 1 1 2130 451 495 5824 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 225 0 0 0 247 0 0 0] 34 3 6112 6976 7504 2288 0 27 5714 5760 1 5776 1 5746 #fixedParentTop 1 5792 -43 170 192 34 4 4096 8 'instanceClassTabs' 5824 8 'classHierarchyTabs' 0 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 615 1 2130 451 539 3968 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 51 1 0 0 0 0 0 0 20 2 0 0 13 1 0 0] 34 2 5824 4096 2288 0 27 13 410 ##(Smalltalk.ContainerView) 34 15 0 800 34 2 8 1140850688 131073 8384 0 0 0 5 0 0 0 8384 626 170 176 1568 false 170 192 34 2 410 ##(Smalltalk.TreeView) 34 27 0 8384 34 2 8 1409352231 1025 8512 7042 0 1600 7074 0 0 0 170 192 1568 978 8 4278190080 0 21 0 0 0 8512 0 8 4294903039 1170 0 0 1202 5 1 1168 8 'doIt' 8 '[:each | each key isEmpty ifTrue: [''--All Categories--''] ifFalse: [each key last]].' 8 #[33 105 226 0 159 119 31 106 226 0 161 106] #key #isEmpty 8 '--All Categories--' #last 8672 7 257 0 ##(Smalltalk.IconicListAbstract) 1728 0 0 0 0 0 170 176 1568 17 #noIcons 1 170 ##(Smalltalk.PluggableLookupTable) 1568 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 1 1 2130 223 539 8512 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 111 0 0 0 13 1 0 0] 8 #() 2288 0 27 8 'classCategoryList' 0 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 383 1 2130 223 539 8384 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 191 0 0 0 0 0 0 0 46 1 0 0 13 1 0 0] 34 1 8512 2288 0 27 7 false 170 192 1568 0 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 1 1 2130 1065 539 800 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 20 2 0 0 13 1 0 0] 34 5 912 410 ##(Smalltalk.Splitter) 34 12 0 800 34 2 8 1140850688 1 9312 0 978 8 4278190080 0 517 0 0 0 9312 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 373 1 2130 11 539 9312 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 186 0 0 0 0 0 0 0 191 0 0 0 13 1 0 0] 8 #() 2288 0 27 8384 410 ##(Smalltalk.Splitter) 34 12 0 800 34 2 8 1140850688 1 9568 0 978 9392 0 517 0 0 0 9568 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 605 1 2130 11 539 9568 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 46 1 0 0 0 0 0 0 51 1 0 0 13 1 0 0] 8 #() 2288 0 27 3968 2288 0 27 7 410 ##(Smalltalk.ContainerView) 34 15 0 688 34 2 8 1140850688 131073 9808 0 0 0 5 0 0 0 9808 626 170 176 1568 false 170 192 1568 0 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 1075 1 2130 711 539 9808 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 25 2 0 0 0 0 0 0 124 3 0 0 13 1 0 0] 34 3 410 ##(Smalltalk.SlideyInneyOuteyThing) 34 23 0 9808 34 2 8 1409286144 131073 10080 0 978 8 4278190080 0 517 0 0 0 10080 1026 138 144 34 3 1090 8 'Categories' 410 ##(Smalltalk.ListView) 34 30 0 410 ##(Smalltalk.SlidingCardTray) 34 22 0 10080 34 2 8 1140850688 131073 10288 0 978 10160 0 5 0 0 0 10288 10176 170 192 34 6 410 ##(Smalltalk.ListView) 34 30 0 10288 34 2 8 1409372233 1025 10400 1522 138 144 1568 0 1600 978 8 4278190080 0 21 0 0 0 10400 0 8 4294903071 1666 #displayString 8 #() 0 1728 0 0 0 0 0 0 138 144 34 1 1778 8 'Column 1' 283 #left 1666 #displayString 10560 ##(Smalltalk.SortedCollection) 0 0 10400 0 3 0 1170 0 0 1202 9 1 1168 8 'doIt' 8 '[:each | each item first = Character space ifTrue: [each font: (each font beBold; beItalic)]]' 8 #[37 105 226 0 159 31 161 132 221 9 17 226 4 100 163 97 164 183 106 60 106] #item #first ##(Smalltalk.Character) #space #font #beBold #beItalic #font: 10656 7 257 0 #report 1568 0 131169 0 34 4 0 0 2130 1 1 0 2018 138 144 34 2 2082 #createAt:extent: 34 2 2130 1 37 2130 291 487 10400 2082 #text: 34 1 8 'Column 1' 10400 2226 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 18 0 0 0 145 0 0 0 5 1 0 0] 8 #() 2288 0 27 8 'variableList' 10256 8 'categoryList' 410 ##(Smalltalk.ListView) 34 30 0 10288 34 2 8 1409372233 1025 11008 1522 138 144 1568 0 1600 978 10512 0 21 0 0 0 11008 0 8 4294903071 1666 #displayString 10560 0 1728 0 0 0 0 0 0 138 144 34 1 1778 8 'Column 1' 283 #left 1666 #displayString 10560 ##(Smalltalk.SortedCollection) 0 0 11008 0 3 0 1170 0 0 1202 9 1 1168 10688 10704 10720 #item #first ##(Smalltalk.Character) #space #font #beBold #beItalic #font: 11232 7 257 0 #report 1568 0 131169 0 34 4 0 0 2130 1 1 0 2018 138 144 34 2 2082 #createAt:extent: 34 2 2130 1 37 2130 291 487 11008 2082 #text: 34 1 8 'Column 1' 11008 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 18 0 0 0 145 0 0 0 5 1 0 0] 8 #() 2288 0 27 8 'pragmaList' 0 410 ##(Smalltalk.TabViewXP) 34 28 0 10080 34 2 8 1140916864 1 11520 1522 138 144 34 3 10240 8 'Variables' 8 'Pragmas' 0 1600 978 10160 0 1 0 0 0 11520 0 8 4294904615 ##(Smalltalk.BasicListAbstract) ##(Smalltalk.IconicListAbstract) 1728 0 0 0 0 0 #noIcons 0 0 0 0 0 2018 138 144 34 3 2082 #createAt:extent: 34 2 2130 1 1 2130 351 539 11520 2082 #basicSelectionsByIndex: 34 1 8 #(3) 11520 2082 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 11520 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 175 0 0 0 13 1 0 0] 8 #() 2288 0 27 0 10080 2130 33 33 2850 10288 0 2882 2130 255 3 2130 287 35 1 562 #togglePin 8 'Pin or Unpin the tray' 1 1 0 0 0 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 53 9 2130 291 523 10288 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 26 0 0 0 4 0 0 0 171 0 0 0 9 1 0 0] 34 3 10256 10400 11008 2288 0 27 34 2 8 1409372233 1025 10256 1522 138 144 1568 0 1600 978 10512 0 21 0 0 0 10256 0 8 4294903071 1666 #displayString 8 #() 0 1728 0 0 0 0 0 0 138 144 34 1 1778 8 'Column 1' 283 #left 1666 #displayString 12320 ##(Smalltalk.SortedCollection) 0 0 10256 0 3 0 1170 0 0 1202 9 1 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each item first = Character space ifTrue: [each font: (each font beBold; beItalic)]]' 8 #[37 105 226 0 159 31 161 132 221 9 17 226 4 100 163 97 164 183 106 60 106] #item #first ##(Smalltalk.Character) #space #font #beBold #beItalic #font: 12416 7 257 0 #report 1568 0 131169 0 34 4 0 0 2130 1 1 0 2018 138 144 34 2 2082 #createAt:extent: 34 2 2130 1 37 2130 291 487 10256 2082 #text: 34 1 8 'Column 1' 10256 2226 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 18 0 0 0 145 0 0 0 5 1 0 0] 8 #() 2288 0 27 1090 11632 10400 1090 11648 11008 11008 170 192 34 2 10288 8 'methodFilterTabs' 0 11520 10288 2130 201 201 401 1 31 0 0 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 1 1 2130 351 539 10080 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 175 0 0 0 13 1 0 0] 34 2 10288 11520 2288 0 27 410 ##(Smalltalk.Splitter) 34 12 0 9808 34 2 8 1140850688 1 12992 0 978 9392 0 517 0 0 0 12992 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 351 1 2130 11 539 12992 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 175 0 0 0 0 0 0 0 180 0 0 0 13 1 0 0] 8 #() 2288 0 27 410 ##(Smalltalk.ContainerView) 34 15 0 9808 34 2 8 1140850688 131073 13232 0 0 0 5 0 0 0 13232 4034 170 176 34 6 410 ##(Smalltalk.ListView) 34 30 0 13232 34 2 8 1409372233 1025 13344 1522 138 144 1568 0 1600 978 10512 0 13 0 0 0 13344 0 8 4294903071 1666 #displayString 8 #() ##(Smalltalk.IconicListAbstract) 1728 0 0 0 0 0 0 138 144 34 2 1778 8 'Column 1' 311 #left 1666 #displayString 13488 ##(Smalltalk.SortedCollection) 1170 0 0 1202 1 83886081 1168 8 'doIt' 8 '[:each | each at: 5]' 8 #[29 105 17 214 5 148 106] 13584 7 257 0 0 13344 0 3 0 1170 0 0 1202 5 1 1168 8 'doIt' 8 '[:each | (each item at: 4) ifTrue: [each font: each font beItalic]]' 8 #[33 105 226 0 214 4 148 123 17 226 1 160 179 106 60 106] #item #font #beItalic #font: 13664 7 257 0 1778 8 '' 33 #center 2082 #empty 8 #() 16 1666 #<= 8 #() 0 0 13344 1170 0 0 1202 6 1 1168 8 'doIt' 8 '[:each | ((each at: 2) ifTrue: [JadeSystemBrowserPresenter overriddenIcon] ifFalse: [Icon blank]) 
 	imageIndex]' 8 #[34 105 17 64 148 120 29 159 111 31 161 162 106] ##(Smalltalk.JadeSystemBrowserPresenter) #overriddenIcon ##(Smalltalk.Icon) #blank #imageIndex 13840 7 257 0 1 0 0 #report 1568 0 131173 0 8 #(nil) 2018 138 144 34 3 2082 #createAt:extent: 34 2 2130 1 47 2130 351 447 13344 2082 #text: 34 1 8 'Column 1' 13344 2082 #columnOrder: 34 1 8 #(2 1) 13344 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 23 0 0 0 175 0 0 0 246 0 0 0] 8 #() 2288 0 27 5714 5760 1 5776 1 8144 47 5792 -45 410 ##(Smalltalk.ComboBox) 34 17 0 13232 34 2 8 1412498947 1025 14208 1522 138 144 1568 0 1600 978 8 4278190080 0 5 0 0 0 14208 0 8 4294903143 1666 #displayString 8 #() 1568 401 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 1 493 2130 351 53 14208 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 246 0 0 0 175 0 0 0 16 1 0 0] 8 #() 2288 0 27 5714 5760 1 5776 1 5792 -45 5808 47 410 ##(Smalltalk.ComboBox) 34 17 0 13232 34 2 8 1412498947 1025 14560 1522 138 144 1568 0 1600 978 14320 0 5 0 0 0 14560 0 8 4294903143 1666 #displayString 8 #() 1568 401 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 1 1 2130 351 53 14560 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 175 0 0 0 26 0 0 0] 8 #() 2288 0 27 5714 5760 1 5776 1 8144 1 5808 47 170 192 34 6 13344 8 'methodList' 14208 8 'overrideList' 14560 8 'superclassList' 0 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 361 1 2130 351 539 13232 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 180 0 0 0 0 0 0 0 99 1 0 0 13 1 0 0] 34 3 14560 13344 14208 2288 0 27 2288 0 27 5 false 170 192 1568 0 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 1 1 2130 1785 539 688 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 124 3 0 0 13 1 0 0] 34 3 800 410 ##(Smalltalk.Splitter) 34 12 0 688 34 2 8 1140850688 1 15312 0 978 9392 0 517 0 0 0 15312 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 1065 1 2130 11 539 15312 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 20 2 0 0 0 0 0 0 25 2 0 0 13 1 0 0] 8 #() 2288 0 27 9808 2288 0 27 524806 ##(Smalltalk.Fraction) 3 5 410 ##(Smalltalk.CardContainer) 34 16 0 416 34 2 8 1409286144 131073 15584 0 978 5904 0 5 0 0 0 15584 1026 138 144 34 7 1090 1122 8 'Package' 1170 0 0 1202 7 1 1120 8 'doIt' 8 '(CardLabel text: ''Package'' iconBlock: [Icon fromId: ''Package.ico''])' 8 #[29 30 35 113 31 32 180 106 195 105] 1120 15744 ##(Smalltalk.Icon) 8 'Package.ico' #fromId: #text:iconBlock: 15760 11 1 0 0 410 ##(Smalltalk.ContainerView) 34 15 0 15584 34 2 8 1140850688 131073 15856 0 0 0 5 0 0 0 15856 626 170 176 34 4 410 ##(Smalltalk.ListView) 34 30 0 15856 34 2 8 1409355853 1025 15968 1522 138 144 1568 0 1600 978 8 4278190080 0 5 482 0 true 34 5 530 1 562 #addRepository 8 'Add &Repository' 1 1 0 0 0 530 1 562 #removeRepository 8 'Remo&ve Repository' 1025 1 0 0 0 983366 1 ##(Smalltalk.DividerMenuItem) 4097 530 1 562 #savePackage 8 '&Save Package' 1 1 0 0 0 530 1 562 #showPackageChanges 8 'Show &Changes' 1 1 0 0 0 8 '' 0 134217729 0 0 0 0 0 0 0 15968 0 8 4294903071 1666 #displayString 8 #() 0 1728 0 0 0 0 0 0 138 144 34 4 1778 8 'Repository Type' 211 #left 1666 #displayString 16400 ##(Smalltalk.SortedCollection) 1170 0 0 1202 2 1 1168 8 'doIt' 8 '[:each | (each at: 1) copyFrom: 3 to: (each at: 1) size - 10]' 8 #[30 105 17 63 148 214 3 17 63 148 145 214 10 127 190 106] #copyFrom:to: 16496 7 257 0 0 15968 0 1 0 0 1778 8 'Description' 1161 #left 1666 #displayString 8 #() 1666 #<= 16624 1170 0 0 1202 1 83886081 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each at: 2]' 8 #[29 105 17 64 148 106] 16656 7 257 0 0 15968 0 3 0 0 1778 8 'User' 201 #left 1666 #displayString 8 #() 1666 #<= 16784 1170 0 0 1202 1 83886081 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each at: 3]' 8 #[29 105 17 214 3 148 106] 16816 7 257 0 0 15968 0 1 0 0 1778 8 'Password' 201 #left 1666 #displayString 16784 1666 #<= 16784 1170 0 0 1202 3 1 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | (each at: 4) collect: [:char | $*]]' 8 #[30 105 17 214 4 148 31 112 215 42 106 176 106] #collect: 16960 1170 0 0 16976 19 257 0 7 257 0 0 15968 0 1 0 0 #report 1568 0 131169 0 34 4 0 0 2130 1 1 0 2018 138 144 34 3 2082 #createAt:extent: 34 2 2130 1 263 2130 1769 217 15968 2082 #contextMenu: 34 1 16096 15968 2082 #text: 34 1 8 'Repository Type' 15968 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 131 0 0 0 116 3 0 0 239 0 0 0] 8 #() 2288 0 27 19 410 ##(Smalltalk.ListView) 34 30 0 15856 34 2 8 1409355853 1025 17328 1522 138 144 1568 0 1600 978 16080 0 5 482 0 true 34 1 530 1 562 #compareAncestor 8 '&Compare' 1 1 0 0 0 8 '' 0 134217729 0 0 0 0 0 0 0 17328 0 8 4294903071 1666 #displayString 8 #() 0 1728 0 0 0 0 0 0 138 144 34 4 1778 8 'Ancestor' 131 #left 1666 #displayString 16784 1666 #<= 16784 1170 0 0 1202 1 83886081 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each at: 1]' 8 #[29 105 17 63 148 106] 17680 7 257 0 0 17328 0 1 0 0 1778 8 'Name' 401 #left 1666 #displayString 17568 ##(Smalltalk.SortedCollection) 1170 0 0 1202 1 83886081 1168 8 'doIt' 8 '[:each | each at: 2]' 8 #[29 105 17 64 148 106] 17808 7 257 0 0 17328 0 1 0 0 1778 8 'Timestamp' 301 #left 1666 #displayString 16624 1666 #<= 16624 1170 0 0 1202 1 83886081 1168 8 'doIt' 8 '[:each | each at: 3]' 8 #[29 105 17 214 3 148 106] 17952 7 257 0 0 17328 0 1 0 0 1778 8 'Message' 941 #left 1666 #displayString 16624 1666 #<= 16624 1170 0 0 1202 1 83886081 1168 8 'doIt' 8 '[:each | each at: 4]' 8 #[29 105 17 214 4 148 106] 18096 7 257 0 0 17328 0 3 0 0 #report 1568 0 131169 0 34 4 0 0 2130 1 1 0 2018 138 144 34 3 2082 #createAt:extent: 34 2 2130 1 1 2130 1769 263 17328 2082 #contextMenu: 34 1 17440 17328 2082 #text: 34 1 8 'Ancestor' 17328 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 116 3 0 0 131 0 0 0] 8 #() 2288 0 27 23 true 170 192 34 4 15968 8 'repositoryList' 17328 8 'ancestorList' 0 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 9 55 2130 1769 479 15856 2226 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 27 0 0 0 120 3 0 0 10 1 0 0] 34 2 17328 15968 2288 0 27 1090 1122 8 'Globals' 1170 0 0 1202 7 1 16 8 'doIt' 8 '(CardLabel text: ''Globals'' iconBlock: [Icon fromId: ''Dictionary.ico''])' 8 #[29 30 35 113 31 32 180 106 195 105] 1120 18704 ##(Smalltalk.Icon) 8 'Dictionary.ico' #fromId: #text:iconBlock: 18720 11 1 0 0 410 ##(Smalltalk.ListView) 34 30 0 15584 34 2 8 1409355853 1025 18816 1522 138 144 1568 0 1600 978 16080 0 5 0 0 0 18816 0 8 4294903071 1666 #displayString 8 #() 0 1728 0 0 0 0 0 0 138 144 34 3 1778 8 'Name' 587 #left 1666 #displayString 18960 ##(Smalltalk.SortedCollection) 1170 0 0 1202 1 83886081 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each at: 1]' 8 #[29 105 17 63 148 106] 19056 7 257 0 0 18816 0 3 0 0 1778 8 'Class' 589 #left 1666 #displayString 16624 1666 #<= 16624 1170 0 0 1202 1 83886081 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each at: 2]' 8 #[29 105 17 64 148 106] 19200 7 257 0 0 18816 0 3 0 0 1778 8 'Value' 587 #left 1666 #displayString 16624 1666 #<= 16624 1170 0 0 1202 1 83886081 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each at: 3]' 8 #[29 105 17 214 3 148 106] 19344 7 257 0 0 18816 0 3 0 0 #report 1568 0 131169 0 34 4 0 0 2130 1 1 0 2018 138 144 34 2 2082 #createAt:extent: 34 2 2130 9 55 2130 1769 479 18816 2082 #text: 34 1 8 'Name' 18816 2226 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 27 0 0 0 120 3 0 0 10 1 0 0] 8 #() 2288 0 27 1090 1122 8 'Original Source' 1170 0 0 1202 7 1 16 8 'doIt' 8 '(CardLabel text: ''Original Source'' iconBlock: [Icon fromId: ''COMPILEDMETHOD_PRIVATE.ico''])' 8 #[29 30 35 113 31 32 180 106 195 105] 1120 19696 ##(Smalltalk.Icon) 8 'COMPILEDMETHOD_PRIVATE.ico' #fromId: #text:iconBlock: 19712 11 1 0 0 410 ##(Smalltalk.ScintillaView) 34 50 0 15584 34 2 8 1445007428 1025 19808 721990 2 ##(Smalltalk.ValueHolder) 0 false 1310726 ##(Smalltalk.EqualitySearchPolicy) 0 978 8 4278190080 0 5 0 263174 ##(Smalltalk.Font) 0 true 459014 ##(Smalltalk.LOGFONT) 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 86 101 114 100 97 110 97 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 2130 193 193 0 19808 0 8 4294903287 852486 ##(Smalltalk.NullConverter) 0 0 11 0 170 192 34 4 #normal 1182790 1 ##(Smalltalk.ScintillaTextStyle) 1 0 0 1 0 0 0 0 #normal 0 0 0 #callTip 20146 77 786694 ##(Smalltalk.IndexedColor) 33554457 20194 33554471 1 0 0 0 0 #callTip 0 0 0 34 256 20160 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 20176 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1377542 ##(Smalltalk.SmalltalkMethodStyler) 1 0 0 false 138 144 1568 170 192 34 2 #default 1641542 1 ##(Smalltalk.ScintillaMarkerDefinition) 1 0 0 0 19808 #circle 0 0 0 0 0 0 138 ##(Smalltalk.IdentitySet) 1568 0 170 176 1568 9215 0 0 0 0 20194 33554447 0 0 65 0 0 170 192 34 6 #specialCharacter 8 '()[]<>' #literalArray 8 '()' #literalBytes 8 '[]' 8 '' 3 170 192 34 2 #container 170 192 34 2 #normal 20160 0 0 0 0 1 0 170 192 34 6 1 1510470 2 ##(Smalltalk.ScintillaIndicatorStyle) 1 19808 65025 3 false 1 0 0 0 0 0 0 3 20610 3 19808 33423361 5 false 3 0 0 0 0 0 0 5 20610 5 19808 511 1 false 5 0 0 0 0 0 0 0 0 170 192 34 6 #Notification 20146 1029 0 196934 1 ##(Smalltalk.RGB) 31185883 1 0 0 0 0 #Notification 0 0 0 #Warning 20146 1027 20722 60239 20722 31326207 1 0 0 0 0 #Warning 0 0 0 #Error 20146 1031 20722 335 20722 31317503 1 0 0 0 0 #Error 0 0 0 0 2018 138 144 34 6 2082 #createAt:extent: 34 2 2130 9 55 2130 1769 479 19808 2082 #modificationEventMask: 8 #(4607) 19808 2082 #caretPeriod: 8 #(530) 19808 2082 #wordWrap: 8 #(true) 19808 2082 #margins: 34 1 34 3 985158 2 ##(Smalltalk.ScintillaMargin) 1 19808 61 3 0 0 5 0 21106 3 19808 1 0 3 67108863 5 0 21106 5 19808 1 0 3 -67108863 5 0 19808 2082 #tabWidth: 8 #(4) 19808 2226 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 27 0 0 0 120 3 0 0 10 1 0 0] 8 #() 2288 0 29 1090 1122 8 'SUnit' 1170 0 0 1202 4 1 1168 8 'doIt' 8 '[Icon fromId: ''icons\UnitTestPlugin.ico'']' 8 #[32 105 45 30 178 106] 983558 ##(Smalltalk.VariableBinding) #Icon ##(Smalltalk.Icon) 8 'icons\UnitTestPlugin.ico' #fromId: 21296 7 1 0 0 410 ##(Smalltalk.ReferenceView) 34 14 0 15584 34 2 8 1140850688 131073 21424 0 978 8 4278190080 0 5 0 0 0 21424 1180166 ##(Smalltalk.ResourceIdentifier) ##(Smalltalk.JadeiteSUnitInClassPresenter) #resource_Default_view 0 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 9 55 2130 1769 479 21424 2226 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 27 0 0 0 120 3 0 0 10 1 0 0] 1568 2288 0 27 1090 1122 8 'Class Definition' 0 0 410 ##(Smalltalk.ScintillaView) 34 50 0 15584 34 2 8 1445007428 1025 21744 19874 0 false 19920 0 978 8 4278190080 0 5 482 0 true 34 11 530 1 562 #editSave 8 '&Save' 9383 1 0 0 0 16226 4097 530 1 562 #editUndo 8 '&Undo' 9397 1 0 0 0 530 1 562 #editRedo 8 '&Redo' 9395 1 0 0 0 16226 4097 530 1 562 #editCut 8 'Cu&t' 9393 1 0 0 0 530 1 562 #editCopy 8 '&Copy' 9351 1 0 0 0 530 1 562 #editPaste 8 '&Paste' 9389 1 0 0 0 530 1 562 #editDelete 8 '&Delete' 1629 1 0 0 0 16226 4097 530 1 562 #editSelectAll 8 'Select &All' 9347 1 0 0 0 8 '' 0 134217729 0 0 0 0 0 19970 0 true 20002 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 86 101 114 100 97 110 97 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 2130 193 193 0 21744 0 8 4294903287 20082 0 0 13 0 170 192 34 4 #normal 20146 1 0 0 1 0 0 0 0 #normal 0 0 0 #callTip 20146 77 20208 20224 1 0 0 0 0 #callTip 0 0 0 34 256 22464 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 22480 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1639686 ##(Smalltalk.SmalltalkExpressionStyler) 1 0 0 false 138 144 1568 170 192 34 2 #default 20338 1 0 0 0 21744 #circle 0 0 0 0 0 0 138 ##(Smalltalk.IdentitySet) 1568 0 170 176 1568 9215 0 0 0 0 20400 0 0 65 0 0 170 192 34 6 #specialCharacter 8 '()[]<>' #literalArray 8 '()' #literalBytes 8 '[]' 8 '' 3 170 192 34 2 #container 170 192 34 2 #normal 22464 0 0 0 0 1 0 170 192 34 6 1 20610 1 21744 65025 3 false 1 0 0 0 0 0 0 3 20610 3 21744 33423361 5 false 3 0 0 0 0 0 0 5 20610 5 21744 511 1 false 5 0 0 0 0 0 0 0 0 170 192 34 6 #Notification 20146 1029 0 20722 31185883 1 0 0 0 0 #Notification 0 0 0 #Warning 20146 1027 20722 60239 20722 31326207 1 0 0 0 0 #Warning 0 0 0 #Error 20146 1031 20722 335 20722 31317503 1 0 0 0 0 #Error 0 0 0 0 2018 138 144 34 7 2082 #createAt:extent: 34 2 2130 9 55 2130 1769 479 21744 2082 #contextMenu: 34 1 21856 21744 2082 #modificationEventMask: 8 #(4607) 21744 2082 #caretPeriod: 8 #(530) 21744 2082 #wordWrap: 8 #(true) 21744 2082 #margins: 34 1 34 3 21106 1 21744 1 3 0 0 5 0 21106 3 21744 33 0 3 67108863 5 0 21106 5 21744 1 0 3 -67108863 5 0 21744 2082 #tabWidth: 8 #(4) 21744 2226 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 27 0 0 0 120 3 0 0 10 1 0 0] 8 #() 2288 0 29 1090 1122 8 'Class Documentation' 0 0 410 ##(Smalltalk.ScintillaView) 34 50 0 15584 34 2 8 1445007428 1025 23504 19874 0 false 19920 0 978 21840 0 5 0 19970 0 true 20002 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 86 101 114 100 97 110 97 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 2130 193 193 0 23504 0 8 4294903287 20082 0 0 11 0 170 192 34 4 #normal 20146 1 0 0 1 0 0 0 0 #normal 0 0 0 #callTip 20146 77 20208 20224 1 0 0 0 0 #callTip 0 0 0 34 256 23728 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 23744 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1245510 1 ##(Smalltalk.NullScintillaStyler) #normal 170 192 34 2 #default 20338 1 0 0 0 23504 #circle 0 0 0 0 0 0 138 ##(Smalltalk.IdentitySet) 1568 0 170 176 1568 9215 0 0 0 0 20400 0 0 65 0 0 0 8 '' 3 170 192 34 2 #container 170 192 34 2 #normal 23728 0 0 0 0 1 0 170 192 34 6 1 20610 1 23504 65025 3 false 1 0 0 0 0 0 0 3 20610 3 23504 33423361 5 false 3 0 0 0 0 0 0 5 20610 5 23504 511 1 false 5 0 0 0 0 0 0 0 0 170 192 34 6 #Notification 20146 1029 0 20722 31185883 1 0 0 0 0 #Notification 0 0 0 #Warning 20146 1027 20722 60239 20722 31326207 1 0 0 0 0 #Warning 0 0 0 #Error 20146 1031 20722 335 20722 31317503 1 0 0 0 0 #Error 0 0 0 0 2018 138 144 34 6 2082 #createAt:extent: 34 2 2130 9 55 2130 1769 479 23504 2082 #modificationEventMask: 8 #(4607) 23504 2082 #caretPeriod: 8 #(530) 23504 2082 #wordWrap: 8 #(true) 23504 2082 #margins: 34 1 34 3 21106 1 23504 1 3 0 0 5 0 21106 3 23504 33 0 3 67108863 5 0 21106 5 23504 1 0 3 -67108863 5 0 23504 2082 #tabWidth: 8 #(4) 23504 2226 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 27 0 0 0 120 3 0 0 10 1 0 0] 8 #() 2288 0 29 1090 1122 8 'Method Source' 0 0 410 ##(Smalltalk.ScintillaView) 34 50 0 15584 34 2 8 1445007428 1025 24640 19874 0 false 19920 0 978 8 4278190080 0 5 0 19970 0 true 20002 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 86 101 114 100 97 110 97 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 2130 193 193 0 24640 0 8 4294903287 20082 0 0 13 0 170 192 34 4 #normal 20146 1 0 0 1 0 0 0 0 #normal 0 0 0 #callTip 20146 77 20208 20224 1 0 0 0 0 #callTip 0 0 0 34 256 24880 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 24896 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 20258 1 0 0 false 138 144 1568 170 192 34 2 #default 20338 1 0 0 0 24640 #circle 0 0 0 0 0 0 138 ##(Smalltalk.IdentitySet) 1568 0 170 176 1568 9215 0 0 0 0 20400 0 0 65 0 0 22640 8 '' 3 170 192 34 2 #container 170 192 34 4 #normal 24880 #callTip 24896 0 0 0 0 1 0 170 192 34 12 1 20610 1 24640 65025 3 false 1 0 0 0 0 0 0 3 20610 3 24640 33423361 5 false 3 0 0 0 0 0 0 5 20610 5 24640 511 1 false 5 0 0 0 0 0 0 8 'indicator9' 20610 19 24640 33554459 13 0 0 0 0 0 0 0 0 8 'indicator10' 20610 21 24640 33554459 3 0 0 0 0 0 0 0 0 8 'indicator8' 20610 17 24640 33554447 1 0 0 0 0 0 0 0 0 0 0 170 192 34 6 #Notification 20146 1029 0 20722 31185883 1 0 0 0 0 #Notification 0 0 0 #Warning 20146 1027 20722 60239 20722 31326207 1 0 0 0 0 #Warning 0 0 0 #Error 20146 1031 20722 335 20722 31317503 1 0 0 0 0 #Error 0 0 0 0 2018 138 144 34 6 2082 #createAt:extent: 34 2 2130 9 55 2130 1769 479 24640 2082 #modificationEventMask: 8 #(4607) 24640 2082 #hoverTime: 8 #(200) 24640 2082 #caretPeriod: 8 #(530) 24640 2082 #margins: 34 1 34 3 21106 1 24640 61 3 0 0 5 0 21106 3 24640 1 0 3 67108863 0 0 21106 5 24640 1 0 3 -67108863 0 0 24640 2082 #tabWidth: 8 #(4) 24640 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 27 0 0 0 120 3 0 0 10 1 0 0] 8 #() 2288 0 29 24640 170 192 34 14 18816 8 'globals' 19808 8 'originalSource' 15856 8 'packageInfo' 24640 8 'methodSource' 23504 8 'classDocumentation' 21424 8 'sunit' 21744 8 'classDefinition' 0 410 ##(Smalltalk.TabViewXP) 34 28 0 15584 34 2 8 1140916736 1 25984 1522 138 144 34 7 15728 18688 21712 23472 19680 24608 21264 0 1600 0 0 1 0 0 0 25984 0 8 4294904615 1170 0 0 5218 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 26112 7 257 0 1170 0 0 5218 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 26160 7 257 0 1728 0 0 0 0 0 #smallIcons 0 0 0 0 0 2018 138 144 34 3 2082 #createAt:extent: 34 2 2130 1 1 2130 1785 541 25984 2082 #basicSelectionsByIndex: 34 1 8 #(6) 25984 2082 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 25984 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 124 3 0 0 14 1 0 0] 8 #() 2288 0 27 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 1 549 2130 1785 541 15584 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 18 1 0 0 124 3 0 0 32 2 0 0] 34 8 15856 18816 21744 23504 19808 24640 21424 25984 2288 0 27 15554 3 5 true 170 192 34 4 410 ##(Smalltalk.Splitter) 34 12 0 416 34 2 8 1140850688 1 26656 0 978 9392 0 517 0 0 0 26656 2018 138 144 34 1 2082 #createAt:extent: 34 2 2130 1 539 2130 1785 11 26656 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 13 1 0 0 124 3 0 0 18 1 0 0] 8 #() 2288 0 27 8 'splitter' 15584 8 'textAreaTabs' 0 2018 138 144 34 2 2082 #createAt:extent: 34 2 2130 2559 21 2130 1785 1089 416 2082 #contextMenu: 34 1 496 416 2226 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 10 0 0 0 123 8 0 0 42 2 0 0] 34 3 688 26656 15584 2288 0 27)! !
-!JadeSystemBrowserPresenter class categoriesFor: #resource_Default_view!private!resources-views! !
+!JadeSystemBrowserPresenter class categoriesForMethods!
+resource_Default_view!private!resources-views! !
+!
 
 !JadeTextDocument methodsFor!
 
@@ -4653,21 +4749,23 @@ update: services afterStonReplication: stonResults
 
 updateServices: services
 	BrowserUpdate current updateServices: services asSet asArray session: gciSession! !
-!JadeTextDocument categoriesFor: #aboutJadeite!private! !
-!JadeTextDocument categoriesFor: #executeSelectionOrLine:!Jade!private! !
-!JadeTextDocument categoriesFor: #issueCommand:!public!services! !
-!JadeTextDocument categoriesFor: #issueCommands:!public!services! !
-!JadeTextDocument categoriesFor: #jadeBrowseTests!Jade!public! !
-!JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:!Jade!private! !
-!JadeTextDocument categoriesFor: #jadeExecuteAndDisplay:view:!Jade!private! !
-!JadeTextDocument categoriesFor: #jadeInspect!menu handlers!private! !
-!JadeTextDocument categoriesFor: #onPromptToSaveChanges:!event handlers!private! !
-!JadeTextDocument categoriesFor: #openDictionaryBrowser!Jade!private! !
-!JadeTextDocument categoriesFor: #openProjectsBrowser!Jade!private! !
-!JadeTextDocument categoriesFor: #raiseConsole!public! !
-!JadeTextDocument categoriesFor: #registerWindow:rootObject:!private! !
-!JadeTextDocument categoriesFor: #update:afterStonReplication:!public!services! !
-!JadeTextDocument categoriesFor: #updateServices:!public!services! !
+!JadeTextDocument categoriesForMethods!
+aboutJadeite!private! !
+executeSelectionOrLine:!Jade!private! !
+issueCommand:!public!services! !
+issueCommands:!public!services! !
+jadeBrowseTests!Jade!public! !
+jadeExecuteAndDisplay:!Jade!private! !
+jadeExecuteAndDisplay:view:!Jade!private! !
+jadeInspect!menu handlers!private! !
+onPromptToSaveChanges:!event handlers!private! !
+openDictionaryBrowser!Jade!private! !
+openProjectsBrowser!Jade!private! !
+raiseConsole!public! !
+registerWindow:rootObject:!private! !
+update:afterStonReplication:!public!services! !
+updateServices:!public!services! !
+!
 
 !JadeToolsToolBarPresenter methodsFor!
 
@@ -4679,9 +4777,11 @@ browseTests
 
 jadePreferences
 	^JadeitePreferencesWorkspace browseJadeitePrefs: gciSession! !
-!JadeToolsToolBarPresenter categoriesFor: #browseClasses!public! !
-!JadeToolsToolBarPresenter categoriesFor: #browseTests!public! !
-!JadeToolsToolBarPresenter categoriesFor: #jadePreferences!public! !
+!JadeToolsToolBarPresenter categoriesForMethods!
+browseClasses!public! !
+browseTests!public! !
+jadePreferences!public! !
+!
 
 !JadeTranscript methodsFor!
 
@@ -4724,10 +4824,12 @@ updateCaption
 
 	self caption: (gciSession titleBarFor: 'Console').
 ! !
-!JadeTranscript categoriesFor: #methodsChanged24!event handling!public! !
-!JadeTranscript categoriesFor: #methodsChangedDays!event handling!public! !
-!JadeTranscript categoriesFor: #openRowanProjectList!public!rowan! !
-!JadeTranscript categoriesFor: #updateCaption!public! !
+!JadeTranscript categoriesForMethods!
+methodsChanged24!event handling!public! !
+methodsChangedDays!event handling!public! !
+openRowanProjectList!public!rowan! !
+updateCaption!public! !
+!
 
 !JadeTreeMethodListPresenter methodsFor!
 
@@ -4790,10 +4892,12 @@ onDropMethodsTree: aDragDropSession
 
 	^self dropNode: aDragDropSession
 ! !
-!JadeTreeMethodListPresenter categoriesFor: #browseMethodsFromString:!public! !
-!JadeTreeMethodListPresenter categoriesFor: #browseMethodsFromString:methodName:!public! !
-!JadeTreeMethodListPresenter categoriesFor: #browseMethodsFromString:methodName:type:!public! !
-!JadeTreeMethodListPresenter categoriesFor: #onDropMethodsTree:!public! !
+!JadeTreeMethodListPresenter categoriesForMethods!
+browseMethodsFromString:!public! !
+browseMethodsFromString:methodName:!public! !
+browseMethodsFromString:methodName:type:!public! !
+onDropMethodsTree:!public! !
+!
 
 !JadeWorkspace methodsFor!
 
@@ -4807,8 +4911,10 @@ onViewOpened
 	super onViewOpened.
 	BrowserUpdate current
 		logComment: 'Opening ' , self class name asString , ' {' , self identityHash printString , '}'! !
-!JadeWorkspace categoriesFor: #onViewClosed!private! !
-!JadeWorkspace categoriesFor: #onViewOpened!private! !
+!JadeWorkspace categoriesForMethods!
+onViewClosed!private! !
+onViewOpened!private! !
+!
 
 !ListModel methodsFor!
 
@@ -4816,7 +4922,9 @@ removeAtIndexWithoutNotification: anInteger
 	"Jadeite - Remove but don't trigger events"
 
 	^self list removeAtIndex: anInteger! !
-!ListModel categoriesFor: #removeAtIndexWithoutNotification:!public!removing! !
+!ListModel categoriesForMethods!
+removeAtIndexWithoutNotification:!public!removing! !
+!
 
 !ListPresenter methodsFor!
 
@@ -4834,7 +4942,9 @@ selectServiceStartingWith: aKeyPressEvent
 					^self]].
 	nearestElement := self list detect: [:service | service name first = character] ifNone: [].
 	nearestElement ifNotNil: [self selection: nearestElement]! !
-!ListPresenter categoriesFor: #selectServiceStartingWith:!Jadeite!public! !
+!ListPresenter categoriesForMethods!
+selectServiceStartingWith:!Jadeite!public! !
+!
 
 !ListView methodsFor!
 
@@ -4845,7 +4955,9 @@ resortOnLastColumnClicked
 	column := self columnAtIndex: lastClickedColIndex.
 	self sortOnColumn: column.
 	self selections: selections! !
-!ListView categoriesFor: #resortOnLastColumnClicked!helpers!public! !
+!ListView categoriesForMethods!
+resortOnLastColumnClicked!helpers!public! !
+!
 
 !MCAddition methodsFor!
 
@@ -4864,7 +4976,9 @@ revert: session
 	BrowserUpdate current issueCommands: (Array with: classService) session: self gciSession.
 	('*(removed)*' match: definition selector)
 		ifFalse: [definition selector: definition selector , ' (removed)']! !
-!MCAddition categoriesFor: #revert:!public! !
+!MCAddition categoriesForMethods!
+revert:!public! !
+!
 
 !MCClassDefinition methodsFor!
 
@@ -4878,7 +4992,9 @@ initialize: aStream
 					[i := definition indexOf: $#.
 					j := definition indexOf: Character cr.
 					definition copyFrom: i + 1 to: j - 1]! !
-!MCClassDefinition categoriesFor: #initialize:!public! !
+!MCClassDefinition categoriesForMethods!
+initialize:!public! !
+!
 
 !MCDefinition methodsFor!
 
@@ -4895,11 +5011,13 @@ isMethodRemoval
 	^false!
 
 revert: session! !
-!MCDefinition categoriesFor: #isMethodAddition!public!testing! !
-!MCDefinition categoriesFor: #isMethodDefinition!public!testing! !
-!MCDefinition categoriesFor: #isMethodModification!public!testing! !
-!MCDefinition categoriesFor: #isMethodRemoval!public!testing! !
-!MCDefinition categoriesFor: #revert:!public! !
+!MCDefinition categoriesForMethods!
+isMethodAddition!public!testing! !
+isMethodDefinition!public!testing! !
+isMethodModification!public!testing! !
+isMethodRemoval!public!testing! !
+revert:!public! !
+!
 
 !MCMethodDefinition methodsFor!
 
@@ -4928,13 +5046,15 @@ revert: session
 
 selector: anObject
 	selector := anObject! !
-!MCMethodDefinition categoriesFor: #basicClassName!accessing!public! !
-!MCMethodDefinition categoriesFor: #isMethodAddition!public!testing! !
-!MCMethodDefinition categoriesFor: #isMethodDefinition!public!testing! !
-!MCMethodDefinition categoriesFor: #isMethodModification!public!testing! !
-!MCMethodDefinition categoriesFor: #isMethodRemoval!public!testing! !
-!MCMethodDefinition categoriesFor: #revert:!public! !
-!MCMethodDefinition categoriesFor: #selector:!accessing!public! !
+!MCMethodDefinition categoriesForMethods!
+basicClassName!accessing!public! !
+isMethodAddition!public!testing! !
+isMethodDefinition!public!testing! !
+isMethodModification!public!testing! !
+isMethodRemoval!public!testing! !
+revert:!public! !
+selector:!accessing!public! !
+!
 
 !MCModification methodsFor!
 
@@ -4954,10 +5074,12 @@ revert: session
 		category: obsoletion category.
 	('*(reverted)*' match: modification selector)
 		ifFalse: [modification selector: modification selector , ' (reverted)']! !
-!MCModification categoriesFor: #clearObsoletionMemo!public! !
-!MCModification categoriesFor: #isMethod!public!testing! !
-!MCModification categoriesFor: #isMethodModification!public!testing! !
-!MCModification categoriesFor: #revert:!public! !
+!MCModification categoriesForMethods!
+clearObsoletionMemo!public! !
+isMethod!public!testing! !
+isMethodModification!public!testing! !
+revert:!public! !
+!
 
 !MCPatchBrowser methodsFor!
 
@@ -4981,7 +5103,9 @@ operationSelected
 		rightMemoPresenter view addMarkerType: each key at: each value.
 	].
 ! !
-!MCPatchBrowser categoriesFor: #operationSelected!public! !
+!MCPatchBrowser categoriesForMethods!
+operationSelected!public! !
+!
 
 !MCPatchOperation methodsFor!
 
@@ -5004,13 +5128,15 @@ isMethodRemoval
 	^false!
 
 revert: session! !
-!MCPatchOperation categoriesFor: #canBeReverted!public!testing! !
-!MCPatchOperation categoriesFor: #clearObsoletionMemo!public! !
-!MCPatchOperation categoriesFor: #isMethod!public!testing! !
-!MCPatchOperation categoriesFor: #isMethodAddition!public!testing! !
-!MCPatchOperation categoriesFor: #isMethodModification!public!testing! !
-!MCPatchOperation categoriesFor: #isMethodRemoval!public!testing! !
-!MCPatchOperation categoriesFor: #revert:!public! !
+!MCPatchOperation categoriesForMethods!
+canBeReverted!public!testing! !
+clearObsoletionMemo!public! !
+isMethod!public!testing! !
+isMethodAddition!public!testing! !
+isMethodModification!public!testing! !
+isMethodRemoval!public!testing! !
+revert:!public! !
+!
 
 !MCRemoval methodsFor!
 
@@ -5024,9 +5150,11 @@ revert: session
 	definition revert: session.
 	('*(restored)*' match: definition selector)
 		ifFalse: [definition selector: definition selector , ' (restored)']! !
-!MCRemoval categoriesFor: #isMethod!public!testing! !
-!MCRemoval categoriesFor: #isMethodRemoval!public!testing! !
-!MCRemoval categoriesFor: #revert:!public! !
+!MCRemoval categoriesForMethods!
+isMethod!public!testing! !
+isMethodRemoval!public!testing! !
+revert:!public! !
+!
 
 !Menu methodsFor!
 
@@ -5035,7 +5163,9 @@ addJadeiteSeparator
 	Answer that separator."
 
 	^self addItem: JadeiteDividerMenuItem separator! !
-!Menu categoriesFor: #addJadeiteSeparator!adding!public! !
+!Menu categoriesForMethods!
+addJadeiteSeparator!adding!public! !
+!
 
 !MethodListPresenter methodsFor!
 
@@ -5052,8 +5182,10 @@ browseClass
 selectedMethodsAreTestCases
 	^(methodListPresenter selections collect: [:methodService | methodService isTestMethod]) asSet
 		asArray = #(true)! !
-!MethodListPresenter categoriesFor: #browseClass!public! !
-!MethodListPresenter categoriesFor: #selectedMethodsAreTestCases!public!testing! !
+!MethodListPresenter categoriesForMethods!
+browseClass!public! !
+selectedMethodsAreTestCases!public!testing! !
+!
 
 !MethodSourcePresenter methodsFor!
 
@@ -5228,13 +5360,15 @@ updateMethodStepPoints
 						range: updatedRange
 						tag: string)].
 	documentPresenter view indicators: indicators! !
-!MethodSourcePresenter categoriesFor: #editMenuStrings!Jade!private! !
-!MethodSourcePresenter categoriesFor: #editSaveMethod!menu handlers!public! !
-!MethodSourcePresenter categoriesFor: #fileSave!public! !
-!MethodSourcePresenter categoriesFor: #isOkayToChange!Jade!public!testing! !
-!MethodSourcePresenter categoriesFor: #methodMenuBreak:!Jade!public! !
-!MethodSourcePresenter categoriesFor: #updateMethodSource!public! !
-!MethodSourcePresenter categoriesFor: #updateMethodStepPoints!public! !
+!MethodSourcePresenter categoriesForMethods!
+editMenuStrings!Jade!private! !
+editSaveMethod!menu handlers!public! !
+fileSave!public! !
+isOkayToChange!Jade!public!testing! !
+methodMenuBreak:!Jade!public! !
+updateMethodSource!public! !
+updateMethodStepPoints!public! !
+!
 
 !MultipleSelectionListBox methodsFor!
 
@@ -5253,7 +5387,9 @@ wmRButtonDown: message wParam: wParam lParam: lParam
 				message: message
 				wParam: wParam
 				lParam: lParam)! !
-!MultipleSelectionListBox categoriesFor: #wmRButtonDown:wParam:lParam:!event handlers!public! !
+!MultipleSelectionListBox categoriesForMethods!
+wmRButtonDown:wParam:lParam:!event handlers!public! !
+!
 
 !Object methodsFor!
 
@@ -5288,14 +5424,16 @@ rowanFixMe
 
 	"do nothing. Used for marking to-do items 
 	during Rowan Development"! !
-!Object categoriesFor: #basicPrepareForReplication!Jadeite!public! !
-!Object categoriesFor: #isClassService!public!testing! !
-!Object categoriesFor: #isMethodService!public!testing! !
-!Object categoriesFor: #isPackageService!public!testing! !
-!Object categoriesFor: #isProjectService!public!testing! !
-!Object categoriesFor: #isUpdatableService!public!testing! !
-!Object categoriesFor: #prepareForReplication!Jadeite!public! !
-!Object categoriesFor: #rowanFixMe!public!testing! !
+!Object categoriesForMethods!
+basicPrepareForReplication!Jadeite!public! !
+isClassService!public!testing! !
+isMethodService!public!testing! !
+isPackageService!public!testing! !
+isProjectService!public!testing! !
+isUpdatableService!public!testing! !
+prepareForReplication!Jadeite!public! !
+rowanFixMe!public!testing! !
+!
 
 !ObjectLogBrowser methodsFor!
 
@@ -5306,7 +5444,9 @@ debug: anArray
 		openOn: (GsProcess session: gciSession oopType: oopType)
 		message: (anArray at: 8)
 		terminateOnClose: false! !
-!ObjectLogBrowser categoriesFor: #debug:!public! !
+!ObjectLogBrowser categoriesForMethods!
+debug:!public! !
+!
 
 !Presenter methodsFor!
 
@@ -5339,12 +5479,14 @@ updateSelectionsForUpdate: update
 	"do nothing for most presenters"
 
 	! !
-!Presenter categoriesFor: #redrawAllViews!Jadeite!public! !
-!Presenter categoriesFor: #update:withSelector:!Jadeite!public! !
-!Presenter categoriesFor: #update:withSelector:browser:!Jadeite!public! !
-!Presenter categoriesFor: #updateReady:!public!rowan! !
-!Presenter categoriesFor: #updateSelectionsFor:!public!rowan! !
-!Presenter categoriesFor: #updateSelectionsForUpdate:!public!rowan! !
+!Presenter categoriesForMethods!
+redrawAllViews!Jadeite!public! !
+update:withSelector:!Jadeite!public! !
+update:withSelector:browser:!Jadeite!public! !
+updateReady:!public!rowan! !
+updateSelectionsFor:!public!rowan! !
+updateSelectionsForUpdate:!public!rowan! !
+!
 
 !ProcessorScheduler methodsFor!
 
@@ -5357,7 +5499,9 @@ requirements."
 	self enableInterrupts.
 	[SessionManager current onUserBreak]
 		ensure: [[GciSession current ifNotNil: [:session | session executeString: '3+4']] fork]	"do something to trigger the softBreak handling"! !
-!ProcessorScheduler categoriesFor: #userBreak:!private! !
+!ProcessorScheduler categoriesForMethods!
+userBreak:!private! !
+!
 
 !Prompter class methodsFor!
 
@@ -5368,7 +5512,9 @@ createOn: aValueModel
 		ifTrue: [(Smalltalk at: #TestPrompter) basicNew]
 		ifFalse: 
 			[super createOn: aValueModel]! !
-!Prompter class categoriesFor: #createOn:!instance creation!public! !
+!Prompter class categoriesForMethods!
+createOn:!instance creation!public! !
+!
 
 !RowanAnsweringService methodsFor!
 
@@ -5376,7 +5522,9 @@ updateSymbols: unused
 	updateType = #updateSymbols: ifFalse: [^self].
 	JadeiteSearch allClassNames addAll: answer first.
 	JadeiteSearch allSelectors addAll: answer last! !
-!RowanAnsweringService categoriesFor: #updateSymbols:!public!updating! !
+!RowanAnsweringService categoriesForMethods!
+updateSymbols:!public!updating! !
+!
 
 !RowanAutoCommitService methodsFor!
 
@@ -5388,7 +5536,9 @@ displayTransactionConflicts: browser
 				thenInspectInContext: session oopNil value.
 	inspector showOn: service.
 	inspector updateCaption: 'Transaction Conflicts'. ! !
-!RowanAutoCommitService categoriesFor: #displayTransactionConflicts:!private!transaction management! !
+!RowanAutoCommitService categoriesForMethods!
+displayTransactionConflicts:!private!transaction management! !
+!
 
 !RowanBrowserService methodsFor!
 
@@ -5408,7 +5558,9 @@ addCachedSymbols: unused
 					[:className |
 					(JadeiteSearch allClassNames includes: className)
 						ifFalse: [JadeiteSearch allClassNames add: className]]]! !
-!RowanBrowserService categoriesFor: #addCachedSymbols:!public!updating! !
+!RowanBrowserService categoriesForMethods!
+addCachedSymbols:!public!updating! !
+!
 
 !RowanCommandResult methodsFor!
 
@@ -5524,46 +5676,48 @@ updateType
 	"old-style command results don't use updateType"
 
 	^nil! !
-!RowanCommandResult categoriesFor: #autoCommitUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #basicPrepareForReplication!public!replication! !
-!RowanCommandResult categoriesFor: #classCategoryUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #classCommentUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #classDefinitionUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #classesHierarchyUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #classesUpdate:browser:!public!updating! !
-!RowanCommandResult categoriesFor: #classHierarchyUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
-!RowanCommandResult categoriesFor: #classUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #dictionaryListUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #dictionaryUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #filterUpdate:browser:!public!updating! !
-!RowanCommandResult categoriesFor: #globalsUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #methodFilterUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #methodSourceUpdate:browser:!public!updating! !
-!RowanCommandResult categoriesFor: #methodsUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #packagesUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #packageUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #projectPackagesUpdate:browser:!public!updating! !
-!RowanCommandResult categoriesFor: #projectSelectionUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #projectsUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #projectsUpdate:browser:!public!updating! !
-!RowanCommandResult categoriesFor: #removed:!public!updating! !
-!RowanCommandResult categoriesFor: #removedClass:!public!updating! !
-!RowanCommandResult categoriesFor: #removedProject:!public!updating! !
-!RowanCommandResult categoriesFor: #superclassListUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #testPackages:!public!updating! !
-!RowanCommandResult categoriesFor: #updateClassCategorySelectionsFor:!public!updating! !
-!RowanCommandResult categoriesFor: #updateClassHierarchySelectionFor:!public!updating! !
-!RowanCommandResult categoriesFor: #updateClassSelectionFor:!public!updating! !
-!RowanCommandResult categoriesFor: #updatedClassDefinition:browser:!public!updating! !
-!RowanCommandResult categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !
-!RowanCommandResult categoriesFor: #updateDictionarySelectionsFor:!public!updating! !
-!RowanCommandResult categoriesFor: #updateMethodFilterSelectionFor:!public!updating! !
-!RowanCommandResult categoriesFor: #updateMethodSelectionFor:!public!updating! !
-!RowanCommandResult categoriesFor: #updatePackageSelectionsFor:!public!updating! !
-!RowanCommandResult categoriesFor: #updateSelectorFor:!public!updating! !
-!RowanCommandResult categoriesFor: #updateSuperclassSelectionFor:!public!updating! !
-!RowanCommandResult categoriesFor: #updateType!accessing!public! !
+!RowanCommandResult categoriesForMethods!
+autoCommitUpdate:!public!updating! !
+basicPrepareForReplication!public!replication! !
+classCategoryUpdate:!public!updating! !
+classCommentUpdate:!public!updating! !
+classDefinitionUpdate:!public!updating! !
+classesHierarchyUpdate:!public!updating! !
+classesUpdate:browser:!public!updating! !
+classHierarchyUpdate:!public!updating! !
+classHierarchyUpdate:browser:!public!updating! !
+classUpdate:!public!updating! !
+dictionaryListUpdate:!public!updating! !
+dictionaryUpdate:!public!updating! !
+filterUpdate:browser:!public!updating! !
+globalsUpdate:!public!updating! !
+methodFilterUpdate:!public!updating! !
+methodSourceUpdate:browser:!public!updating! !
+methodsUpdate:!public!updating! !
+packagesUpdate:!public!updating! !
+packageUpdate:!public!updating! !
+projectPackagesUpdate:browser:!public!updating! !
+projectSelectionUpdate:!public!updating! !
+projectsUpdate:!public!updating! !
+projectsUpdate:browser:!public!updating! !
+removed:!public!updating! !
+removedClass:!public!updating! !
+removedProject:!public!updating! !
+superclassListUpdate:!public!updating! !
+testPackages:!public!updating! !
+updateClassCategorySelectionsFor:!public!updating! !
+updateClassHierarchySelectionFor:!public!updating! !
+updateClassSelectionFor:!public!updating! !
+updatedClassDefinition:browser:!public!updating! !
+updatedClassInHierarchy:browser:!public!updating! !
+updateDictionarySelectionsFor:!public!updating! !
+updateMethodFilterSelectionFor:!public!updating! !
+updateMethodSelectionFor:!public!updating! !
+updatePackageSelectionsFor:!public!updating! !
+updateSelectorFor:!public!updating! !
+updateSuperclassSelectionFor:!public!updating! !
+updateType!accessing!public! !
+!
 
 !RowanGsMethod methodsFor!
 
@@ -5577,13 +5731,17 @@ printOn: aStream
 				nextPutAll: ' - ';
 				nextPutAll: (self instVarNamed: instVarName) printString;
 				cr]! !
-!RowanGsMethod categoriesFor: #printOn:!printing!public! !
+!RowanGsMethod categoriesForMethods!
+printOn:!printing!public! !
+!
 
 !RowanMethodDefinition methodsFor!
 
 methodService
 	^methodDefinitionService ifNil: [methodDefinitionService := RowanMethodService on: gciSession]! !
-!RowanMethodDefinition categoriesFor: #methodService!public!services! !
+!RowanMethodDefinition categoriesForMethods!
+methodService!public!services! !
+!
 
 !RowanMethodService methodsFor!
 
@@ -5598,8 +5756,10 @@ removeTrailingMenuItemsFrom: aMenu
 				ifNone: [aMenu addItem: JadeiteDividerMenuItem separator].
 	[aMenu items size > (aMenu items indexOf: jadeiteSeparator)]
 		whileTrue: [aMenu removeItemAt: (aMenu items indexOf: jadeiteSeparator) + 1]! !
-!RowanMethodService categoriesFor: #basicSubSuperIcon!displaying!public! !
-!RowanMethodService categoriesFor: #removeTrailingMenuItemsFrom:!method menu support!private! !
+!RowanMethodService categoriesForMethods!
+basicSubSuperIcon!displaying!public! !
+removeTrailingMenuItemsFrom:!method menu support!private! !
+!
 
 !RowanPatch methodsFor!
 
@@ -5610,8 +5770,10 @@ operations: aCollection
 session: aCollection 
 
 	gciSession := aCollection! !
-!RowanPatch categoriesFor: #operations:!public! !
-!RowanPatch categoriesFor: #session:!public! !
+!RowanPatch categoriesForMethods!
+operations:!public! !
+session:!public! !
+!
 
 !RowanProjectService methodsFor!
 
@@ -5634,8 +5796,10 @@ projectLogUsing: parentPresenter session: session
 	queryService := RowanQueryService command: #projectLog: withArgs: (Array with: projectName).
 	parentPresenter issueCommand: queryService.
 	gitLog codePane documentPresenter value: queryService queryResults! !
-!RowanProjectService categoriesFor: #changesUsing:!presenter support!public! !
-!RowanProjectService categoriesFor: #projectLogUsing:session:!presenter support!public! !
+!RowanProjectService categoriesForMethods!
+changesUsing:!presenter support!public! !
+projectLogUsing:session:!presenter support!public! !
+!
 
 !SequencedGrowableCollection methodsFor!
 
@@ -5650,8 +5814,10 @@ removeWithoutNotification: oldElement ifAbsent: exceptionHandler
 	^(index := self indexOf: oldElement) == 0
 		ifTrue: [exceptionHandler value]
 		ifFalse: [self removeAtIndexWithoutNotification: index]! !
-!SequencedGrowableCollection categoriesFor: #removeAtIndexWithoutNotification:!public!removing! !
-!SequencedGrowableCollection categoriesFor: #removeWithoutNotification:ifAbsent:!public!removing! !
+!SequencedGrowableCollection categoriesForMethods!
+removeAtIndexWithoutNotification:!public!removing! !
+removeWithoutNotification:ifAbsent:!public!removing! !
+!
 
 !SequencedStream methodsFor!
 
@@ -5669,7 +5835,9 @@ nextWordWithoutPunctuation
 			self next.
 			wordStream nextPut: element].
 	^wordStream contents! !
-!SequencedStream categoriesFor: #nextWordWithoutPunctuation!accessing!public! !
+!SequencedStream categoriesForMethods!
+nextWordWithoutPunctuation!accessing!public! !
+!
 
 !SmallInteger methodsFor!
 
@@ -5681,7 +5849,9 @@ _digitsAsString
 	| aString |
 	self < 10 ifTrue: [aString := '0' , self printString] ifFalse: [aString := self printString].
 	^aString! !
-!SmallInteger categoriesFor: #_digitsAsString!Jadeite!public! !
+!SmallInteger categoriesForMethods!
+_digitsAsString!Jadeite!public! !
+!
 
 !SocketAbstract class methodsFor!
 
@@ -5689,7 +5859,9 @@ onShutdown
 	"Private - Perform any image shutdown operations."
 
 	AllSockets ifNotNil: [:all | all values do: [:each | each onShutdown]]! !
-!SocketAbstract class categoriesFor: #onShutdown!event handling!must not strip!private! !
+!SocketAbstract class categoriesForMethods!
+onShutdown!event handling!must not strip!private! !
+!
 
 !Time methodsFor!
 
@@ -5730,15 +5902,19 @@ stonOn: stonWriter
 	"Use an ISO style HH:MM:SS representation
 	Code loaded from BootJade.st"
 	stonWriter writeObject: self listSingleton: (self asStringUsingFormat: #($: true false))! !
-!Time categoriesFor: #asStringUsingFormat:!converting!public! !
-!Time categoriesFor: #stonOn:!public!ston! !
+!Time categoriesForMethods!
+asStringUsingFormat:!converting!public! !
+stonOn:!public!ston! !
+!
 
 !TranscriptPresenter methodsFor!
 
 clearTranscript
 	documentPresenter value: String new.
 	documentPresenter view displayValue: String new. "force it now!!"! !
-!TranscriptPresenter categoriesFor: #clearTranscript!public! !
+!TranscriptPresenter categoriesForMethods!
+clearTranscript!public! !
+!
 
 !TranscriptPresenter class methodsFor!
 
@@ -5751,7 +5927,9 @@ resource_Default_view
 	"
 
 	^#(#'!!STL' 4 788558 10 ##(Smalltalk.STBViewProxy) ##(Smalltalk.ContainerView) 34 15 nil nil 34 2 8 1409286144 131073 416 nil nil nil 5 nil nil nil 416 852230 ##(Smalltalk.FramingLayout) 170 176 34 4 410 ##(Smalltalk.Toolbar) 34 25 nil 416 34 2 8 1140851500 131137 544 nil 524550 ##(Smalltalk.ColorRef) 8 4278190080 nil 517 nil 263174 ##(Smalltalk.Font) nil true 459014 ##(Smalltalk.LOGFONT) 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 65 114 105 97 108 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 328198 ##(Smalltalk.Point) 193 193 nil 544 610 640 8 4294904337 170 192 8 #() 170 192 34 24 31005 1246982 ##(Smalltalk.ToolbarSystemButton) 31005 nil 544 1 1180998 4 ##(Smalltalk.CommandDescription) #editDelete 8 'Delete' 1 1 nil 1 11 31007 866 31007 nil 544 1 898 #undo 8 'Undo' 1 1 nil 1 7 31009 866 31009 nil 544 1 898 #redo 8 'Redo' 1 1 nil 1 9 31011 866 31011 nil 544 1 898 #editFind 8 'Find' 1 1 nil 1 25 31013 866 31013 nil 544 1 898 #editReplace 8 'Replace' 1 1 nil 1 27 30991 853766 ##(Smalltalk.ToolbarButton) 30991 nil 544 1 898 #jadeDisplay 8 'Print Result of Selection or Line' 1 1 nil 395334 3 ##(Smalltalk.Bitmap) nil true 1572870 ##(Smalltalk.ImageRelativeFileLocator) 8 'Tools.bmp' 2032142 ##(Smalltalk.STBExternalResourceLibraryProxy) 8 'dolphindr7.dll' nil nil 7 738 1857 33 55 30993 1138 30993 nil 544 1 898 #jadeExecute 8 'Evaluate Selection or Line' 1 1 nil 1216 57 30995 1138 30995 nil 544 1 898 #jadeInspect 8 'Inspect Selection or Line' 1 1 nil 1216 59 30997 866 30997 nil 544 1 898 #fileSave 8 'Save' 1 1 nil 1 17 30999 866 30999 nil 544 1 898 #editCut 8 'Cut' 1 1 nil 1 1 31001 866 31001 nil 544 1 898 #copySelection 8 'Copy' 1 1 nil 1 3 31003 866 31003 nil 544 1 898 #editPaste 8 'Paste' 1 1 nil 1 5 34 15 1152 1344 1392 1050118 ##(Smalltalk.ToolbarSeparator) nil nil 544 3 nil 1 1440 1650 nil nil 544 3 nil 1 1488 1536 1584 880 944 992 1650 nil nil 544 3 nil 1 1040 1088 170 176 34 4 1 117 1216 1 nil 1 nil 738 33 33 738 45 45 nil nil 983302 ##(Smalltalk.MessageSequence) 138 144 34 2 721670 ##(Smalltalk.MessageSend) #createAt:extent: 34 2 738 1 1 738 1001 51 544 1842 #updateSizePosted 816 544 983302 ##(Smalltalk.WINDOWPLACEMENT) 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 244 1 0 0 25 0 0 0] 8 #() 738 193 193 nil 27 1181766 2 ##(Smalltalk.FramingConstraints) 1180678 ##(Smalltalk.FramingCalculation) #fixedParentLeft 1 2050 #fixedParentRight 1 2050 #fixedParentTop 1 2050 #fixedViewTop 51 410 ##(Smalltalk.JadeiteScintillaView) 34 50 nil 416 34 2 8 1445007428 1025 2128 721990 2 ##(Smalltalk.ValueHolder) nil false 1310726 ##(Smalltalk.EqualitySearchPolicy) nil 610 8 4278190080 nil 5 265030 4 ##(Smalltalk.Menu) nil true 34 29 984134 2 ##(Smalltalk.CommandMenuItem) 1 898 #fileSave 8 '&Save' 9383 1 nil nil nil 983366 1 ##(Smalltalk.DividerMenuItem) 4097 2338 1 898 #undo 8 '&Undo' 9397 1 nil nil nil 2338 1 898 #redo 8 'R&edo' 9395 1 nil nil nil 2402 4097 2338 1 898 #editCut 8 'Cu&t' 9393 1 nil nil nil 2338 1 898 #editCopy 8 '&Copy' 9351 1 nil nil nil 2338 1 898 #editPaste 8 '&Paste' 9389 1 nil nil nil 2338 1 898 #editDelete 8 'De&lete' 1629 1 nil nil nil 2338 1 898 #editSelectAll 8 'Select &All' 9347 1 nil nil nil 2402 4097 2338 1 898 #editFind 8 '&Find...' 9357 1 nil nil nil 2338 1 898 #editFindNext 8 'Find &Next' 9359 1 nil nil nil 2338 1 898 #editReplace 8 '&Replace...' 9361 1 nil nil nil 2402 4097 2338 1 898 #jadeInspect 8 '&Inspect' 9379 1 nil nil nil 2338 1 898 #jadeDisplay 8 '&Display' 9353 1 nil nil nil 2338 1 898 #jadeExecute 8 'Execute' 9355 1 nil nil nil 2338 1 898 #jadeDebug 8 'De&bug' 9349 1 nil nil nil 2402 4097 2338 1 898 #addQuotesToSelection 8 'Add &Quotes' 1 1 nil nil nil 2338 1 898 #removeQuotesFromSelection 8 'Re&move Quotes' 1 1 nil nil nil 2402 4097 2338 1 898 #browseSelectedClass 8 'Browse Class' 1 1 nil nil nil 2338 1 898 #browseImplementors 8 'Browse Implementors' 1 1 nil nil nil 2338 1 898 #browseSenders 8 'Browse Senders' 1 1 nil nil nil 2402 4097 2338 1 898 #fileIn 8 'File In' 1 1 nil nil nil 2338 1 898 #clearTranscript 8 'Clear' 1 1 nil nil nil 8 '' nil 1 nil nil nil nil nil 658 nil true 690 8 #[243 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 144 1 0 0 0 0 0 0 3 2 1 34 86 101 114 100 97 110 97 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 738 193 193 nil 2128 nil 8 4294902891 852486 ##(Smalltalk.NullConverter) nil nil 9 nil 170 192 34 4 #callTip 1182790 1 ##(Smalltalk.ScintillaTextStyle) 77 786694 ##(Smalltalk.IndexedColor) 33554457 3730 33554471 1 nil nil nil nil #callTip nil nil nil #normal 3698 1 nil nil 1 nil nil nil nil #normal nil nil nil 34 256 3776 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 3712 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1639686 ##(Smalltalk.SmalltalkExpressionStyler) 1 nil nil false 138 144 816 170 192 34 2 #default 1641542 1 ##(Smalltalk.ScintillaMarkerDefinition) 1 nil nil nil 2128 #circle nil nil nil nil nil nil 138 ##(Smalltalk.IdentitySet) 816 nil 170 176 816 9215 nil nil nil nil 3730 33554447 nil nil 65 nil nil 170 192 34 6 #literalBytes 8 '[]' #specialCharacter 8 '()[]<>' #literalArray 8 '()' 8 '' 3 170 192 34 2 #container 170 192 34 4 #callTip 3712 #normal 3776 nil nil nil nil 1 nil 170 192 34 12 1 1510470 2 ##(Smalltalk.ScintillaIndicatorStyle) 1 2128 65025 3 false 1 nil nil nil nil nil nil 3 4162 3 2128 33423361 5 false 3 nil nil nil nil nil nil 5 4162 5 2128 511 1 false 5 nil nil nil nil nil nil 8 'indicator9' 4162 19 2128 33554459 13 nil nil nil nil nil nil nil nil 8 'indicator10' 4162 21 2128 33554459 3 nil nil nil nil nil nil nil nil 8 'indicator8' 4162 17 2128 33554447 1 nil nil nil nil nil nil nil nil nil nil 170 192 34 6 #Notification 3698 1029 nil 196934 1 ##(Smalltalk.RGB) 31185883 1 nil nil nil nil #Notification nil nil nil #Warning 3698 1027 4370 60239 4370 31326207 1 nil nil nil nil #Warning nil nil nil #Error 3698 1031 4370 335 4370 31317503 1 nil nil nil nil #Error nil nil nil nil 1778 138 144 34 8 1842 #createAt:extent: 34 2 738 1 51 738 1001 551 2128 1842 #contextMenu: 34 1 2304 2128 1842 #modificationEventMask: 8 #(4607) 2128 1842 #hoverTime: 8 #(200) 2128 1842 #caretPeriod: 8 #(530) 2128 1842 #margins: 34 1 34 3 985158 2 ##(Smalltalk.ScintillaMargin) 1 2128 61 3 nil nil nil nil 4786 3 2128 1 nil 3 67108863 nil nil 4786 5 2128 1 nil 3 -67108863 nil nil 2128 1842 #tabWidth: 8 #(4) 2128 1842 #maxCompletionListHeight: 8 #(9) 2128 1938 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 25 0 0 0 244 1 0 0 44 1 0 0] 8 #() 2000 nil 29 2018 2064 1 2080 1 2050 #fixedPreviousBottom 1 2050 #fixedParentBottom 1 170 192 34 2 2128 8 'document' nil 1778 138 144 34 1 1842 #createAt:extent: 34 2 738 7679 21 738 1001 601 416 1938 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 14 0 0 10 0 0 0 243 16 0 0 54 1 0 0] 34 2 544 2128 2000 nil 27 )! !
-!TranscriptPresenter class categoriesFor: #resource_Default_view!public!resources-views! !
+!TranscriptPresenter class categoriesForMethods!
+resource_Default_view!public!resources-views! !
+!
 
 !TreeModel methodsFor!
 
@@ -5761,7 +5939,9 @@ getNodeFor: anObject ifAbsent: aNiladicValuable
 	If anObject is nil it is treated as being the anchorNode"
 
 	^objectNodeMap at: anObject ifAbsent: aNiladicValuable! !
-!TreeModel categoriesFor: #getNodeFor:ifAbsent:!hierarchy!private! !
+!TreeModel categoriesForMethods!
+getNodeFor:ifAbsent:!hierarchy!private! !
+!
 
 "End of package definition"!
 
