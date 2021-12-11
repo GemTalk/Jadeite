@@ -245,7 +245,9 @@ TreeNode subclass: #JadeiteTreeNode
 
 isService
 	^false! !
-!Object categoriesFor: #isService!public!testing! !
+!Object categoriesForMethods!
+isService!public!testing! !
+!
 
 "End of package definition"!
 

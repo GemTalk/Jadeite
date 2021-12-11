@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
 	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement specEditor componentListPresenter componentPackageContainer packageDictionaryContainer loadSpecTab'
@@ -1990,219 +1990,221 @@ writeProject
 	projectServices := projectListPresenter selections.
 	projectServices isEmpty ifTrue: [^MessageBox notify: 'No project selected'].
 	^self basicWriteProject: projectServices! !
-!JadeiteBrowserPresenter categoriesFor: #abortTransaction!public!transaction management! !
-!JadeiteBrowserPresenter categoriesFor: #addDictionary!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #additionalAccelerators!constants!public! !
-!JadeiteBrowserPresenter categoriesFor: #addNoneProject!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #addSystemBrowser!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #allSelectedProjectsDirty!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #auditProject!project menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #basicAddDictionaryNamed:!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #basicCopyClass:to:!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #basicDictionaryTabLabel!displaying!private! !
-!JadeiteBrowserPresenter categoriesFor: #basicProjectTabLabel!displaying!private!tabs! !
-!JadeiteBrowserPresenter categoriesFor: #basicRemoveClass:!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #basicRemoveDictionaries:!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #basicRemoveGlobal:!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #basicUnloadProjects:!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #basicUpdateProject!private!updating! !
-!JadeiteBrowserPresenter categoriesFor: #browseBreakpoints!public! !
-!JadeiteBrowserPresenter categoriesFor: #browseClassReferences!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #browseGlobalClass!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #browseGlobalReferences!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #browseInstVarReaders!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #browseInstVarWriters!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #browseMethodHistory!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #browseSelectedCategoryMethods!menu handlers!public!queries! !
-!JadeiteBrowserPresenter categoriesFor: #browseSelectedMethods!menu handlers!public!queries! !
-!JadeiteBrowserPresenter categoriesFor: #buildGlobalsTab!private!tabs! !
-!JadeiteBrowserPresenter categoriesFor: #buildInfoTab:!private!tabs! !
-!JadeiteBrowserPresenter categoriesFor: #buildLoadSpecTabIfNecessary!private!tabs! !
-!JadeiteBrowserPresenter categoriesFor: #buildPreferencesMenu!menus!private!updating! !
-!JadeiteBrowserPresenter categoriesFor: #buildProjectTabIfNecessary!private!tabs! !
-!JadeiteBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #checkout!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #checkoutTag!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #classCommentChanged!event handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #classesMenuStrings!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #clearComponentList!initialize/release!public! !
-!JadeiteBrowserPresenter categoriesFor: #comparisonPresenter!accessing!public! !
-!JadeiteBrowserPresenter categoriesFor: #componentListPresenter!accessing!private! !
-!JadeiteBrowserPresenter categoriesFor: #contextObject!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #copyInfo!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #copyLoadSpecInfo!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #copyProjectInfo!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
-!JadeiteBrowserPresenter categoriesFor: #createListViewFor:!private! !
-!JadeiteBrowserPresenter categoriesFor: #createNewProject!menu handlers!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #createSchematicWiring!initialize/release!public! !
-!JadeiteBrowserPresenter categoriesFor: #createSchematicWiringForClassHierarchy!create schemantic wiring!public! !
-!JadeiteBrowserPresenter categoriesFor: #createSchematicWiringForClassList!create schemantic wiring!public! !
-!JadeiteBrowserPresenter categoriesFor: #createSchematicWiringForMethodList!create schemantic wiring!public! !
-!JadeiteBrowserPresenter categoriesFor: #createSchematicWiringForMethodSource!initialize/release!public! !
-!JadeiteBrowserPresenter categoriesFor: #createSchematicWiringForProjectList!create schemantic wiring!public! !
-!JadeiteBrowserPresenter categoriesFor: #debug!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #dictionaryMenu!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #dictionaryMenuStrings!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #dictionaryPresenter!accessing!private! !
-!JadeiteBrowserPresenter categoriesFor: #displayStringFor:in:!double dispatch!public! !
-!JadeiteBrowserPresenter categoriesFor: #displayVariable:!displaying!private! !
-!JadeiteBrowserPresenter categoriesFor: #editComponents!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #editDelete!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #editRevert!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #editSaveClass!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #editSaveMethod!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #editSaveMethod:!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #expandFullAt:!menu handlers support!private!updating! !
-!JadeiteBrowserPresenter categoriesFor: #expandFullHierarchy!menu handlers!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #findClass!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #findRemovedServices!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #gitCommit!project menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #globalsMenu!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #globalsMenuStrings!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #globalsTab!accessing!private! !
-!JadeiteBrowserPresenter categoriesFor: #gotoClassDefinedPackage!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #gotoDictionary!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #gotoDictionaryNamed:!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #hasCategorySelected!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #hasExactlyOneCategorySelected!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #hasMethods!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #hierarchyClassDoubleClicked!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #insertCompileErrorText:into:!compile support!public! !
-!JadeiteBrowserPresenter categoriesFor: #insertIfFalse!menu handlers!must not strip!public! !
-!JadeiteBrowserPresenter categoriesFor: #insertIfTrue!menu handlers!must not strip!public! !
-!JadeiteBrowserPresenter categoriesFor: #inspectGlobal!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #inspectMethod!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #inspectorContextObject!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #isClassDefinitionTabSelected!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #isClassSelected!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #isComparisonTabSelected!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #isDictionariesTabSelected!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #isHierarchyTabSelected!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #isLoadSpecTabSelected!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #isMethodSourceTabSelected!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #isNoneProjectSelected!event handlers!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #isOkayToChange!event handlers!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #isProjectInfoTabSelected!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #isProjectItemEnabled:!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #isRowanProjectSelected!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #isSourceTabSelected!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #isSunitTabSelected!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #jadeInspect!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #loadProjects!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #loadSpecMenu!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #loadSpecMenuStrings!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #makeSameSelectionsIn:as:!menu handlers!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #maxAutoCompleteListSize!constants!public! !
-!JadeiteBrowserPresenter categoriesFor: #methodMenu:!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #methodSelectionChanged!event handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #methodsMenuStrings!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #methodsUpdate:!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #methodToReformat!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #methodValueChanged!event handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #moveClassToPackage!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #moveClassToPackageNamed:!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #moveMethodsToPackageNamed:!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #moveMethodToPackage!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #newProjectNamed:!menu handlers!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #noClassSelectedInEitherPresenter!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #onDragClass:!drag & drop!public! !
-!JadeiteBrowserPresenter categoriesFor: #onDragMethod:!drag & drop!public! !
-!JadeiteBrowserPresenter categoriesFor: #onDragOverPackageList:!drag & drop!public! !
-!JadeiteBrowserPresenter categoriesFor: #onDropClassesOnPackage:session:!drag & drop!public! !
-!JadeiteBrowserPresenter categoriesFor: #onDropClassesOnPackageList:!drag & drop!public! !
-!JadeiteBrowserPresenter categoriesFor: #onDropMethodsOnPackageList:!drag & drop!public! !
-!JadeiteBrowserPresenter categoriesFor: #onDropMethodsOnPackageList:session:!drag & drop!public! !
-!JadeiteBrowserPresenter categoriesFor: #onDropOnPackageList:!drag & drop!public! !
-!JadeiteBrowserPresenter categoriesFor: #onViewClosed!event handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #openSourceStyler!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #openSpecFile!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #packageDictionaryCards!accessing!private! !
-!JadeiteBrowserPresenter categoriesFor: #possiblyClearProjectInfoTab!event handlers!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #preferencesMenuStrings!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #previousTabViewArrangement!accessing!private! !
-!JadeiteBrowserPresenter categoriesFor: #previousTabViewArrangement:!accessing!private! !
-!JadeiteBrowserPresenter categoriesFor: #previousTopViewArrangement!accessing!private! !
-!JadeiteBrowserPresenter categoriesFor: #previousTopViewArrangement:!accessing!private! !
-!JadeiteBrowserPresenter categoriesFor: #projectChanges!project menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #projectInfoMenu!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #projectInfoMenuStrings!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #projectInfoTab!accessing!public! !
-!JadeiteBrowserPresenter categoriesFor: #projectLog!project menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #projectMenu!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #projectMenuCommands!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #projectMenuStrings!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #projectTabLabel!displaying!private! !
-!JadeiteBrowserPresenter categoriesFor: #protectedDictionaries!constants!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #pullFromGit!project menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #pushToGit!project menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #reformatSource!menu handlers!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #refresh!event handlers!menu handlers!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #refreshClass!event handlers!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #refreshFromServer!event handlers!menu handlers!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #refreshFromServerAfterAbort:!public! !
-!JadeiteBrowserPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
-!JadeiteBrowserPresenter categoriesFor: #reloadV2Project!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #removeAppropriateTab!private!tabs! !
-!JadeiteBrowserPresenter categoriesFor: #removeClass!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #removeDictionaries!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #removeGlobal!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #removeGlobalsTab!private!tabs! !
-!JadeiteBrowserPresenter categoriesFor: #removeLoadSpecTab!private!tabs! !
-!JadeiteBrowserPresenter categoriesFor: #removeProjectTab!private!tabs! !
-!JadeiteBrowserPresenter categoriesFor: #resetClassTemplate!private! !
-!JadeiteBrowserPresenter categoriesFor: #resetFontSize!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #runAll!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #runSelected!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #search!accessing!public! !
-!JadeiteBrowserPresenter categoriesFor: #selectDictionaryNamed:!public!selection! !
-!JadeiteBrowserPresenter categoriesFor: #selectedDictionaryNames!public!selection! !
-!JadeiteBrowserPresenter categoriesFor: #selectedDictionaryOrPackage!private!selection! !
-!JadeiteBrowserPresenter categoriesFor: #selectedGlobalName:!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #selectedPackageNames!public!selection! !
-!JadeiteBrowserPresenter categoriesFor: #selectedPackageServices!public!selection! !
-!JadeiteBrowserPresenter categoriesFor: #selectNoneProject!public!selection! !
-!JadeiteBrowserPresenter categoriesFor: #selectPackageOrDictionaryFor:!public!selection! !
-!JadeiteBrowserPresenter categoriesFor: #selectPackageOrDictionaryNamed:for:!public!selection! !
-!JadeiteBrowserPresenter categoriesFor: #selectProjectNamed:!public!selection! !
-!JadeiteBrowserPresenter categoriesFor: #setCompileErrorColor!compile support!public! !
-!JadeiteBrowserPresenter categoriesFor: #setCompileWarningColor!compile support!public! !
-!JadeiteBrowserPresenter categoriesFor: #setFontSize!menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #setFontSizeTo:!menu handlers support!private! !
-!JadeiteBrowserPresenter categoriesFor: #setStatusBarDefault!compile support!public! !
-!JadeiteBrowserPresenter categoriesFor: #shouldShowNoneTabLabel!displaying!private!testing! !
-!JadeiteBrowserPresenter categoriesFor: #showDictionaryList!event handlers!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #showPackageList!event handlers!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #statusBarText!accessing!public! !
-!JadeiteBrowserPresenter categoriesFor: #statusBarText:!accessing!public! !
-!JadeiteBrowserPresenter categoriesFor: #symbolExists:!public!testing! !
-!JadeiteBrowserPresenter categoriesFor: #textTabChanged!event handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #togglePackageDictionaryColumn!event handlers!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #unloadProjects!project menu handlers!public! !
-!JadeiteBrowserPresenter categoriesFor: #updateAfterFindClass:!menu handlers!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #updateAfterFindClassInDictionary:!menu handlers!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #updateAfterFindClassInPackage:!menu handlers!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #updateAutoCommit!public!register presenters!updating! !
-!JadeiteBrowserPresenter categoriesFor: #updateClass:!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #updateClasses!event handlers!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #updateComponentPackages!event handlers!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #updateDictionaries!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #updateDictionary!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #updateGlobalsTab!private!tabs! !
-!JadeiteBrowserPresenter categoriesFor: #updateHierarchy!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #updateHierarchyForPacktionaries!private!updating! !
-!JadeiteBrowserPresenter categoriesFor: #updateLoadSpecInfoTabFor:!private!tabs! !
-!JadeiteBrowserPresenter categoriesFor: #updateMenuBar!menus!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #updateMethodSourceColor!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #updateProject!event handlers!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #updateProjectInfo!private!tabs! !
-!JadeiteBrowserPresenter categoriesFor: #updateProjectInfoTabFor:!private!tabs! !
-!JadeiteBrowserPresenter categoriesFor: #updateSystemTab!event handlers support!private!updating! !
-!JadeiteBrowserPresenter categoriesFor: #updateTabLabel!public!updating! !
-!JadeiteBrowserPresenter categoriesFor: #variablesMenuStrings!menus!public! !
-!JadeiteBrowserPresenter categoriesFor: #writeProject!project menu handlers!public! !
+!JadeiteBrowserPresenter categoriesForMethods!
+abortTransaction!public!transaction management! !
+addDictionary!menu handlers!public! !
+additionalAccelerators!constants!public! !
+addNoneProject!public!updating! !
+addSystemBrowser!menu handlers!public! !
+allSelectedProjectsDirty!public!testing! !
+auditProject!project menu handlers!public! !
+basicAddDictionaryNamed:!menu handlers support!private! !
+basicCopyClass:to:!menu handlers support!private! !
+basicDictionaryTabLabel!displaying!private! !
+basicProjectTabLabel!displaying!private!tabs! !
+basicRemoveClass:!menu handlers support!private! !
+basicRemoveDictionaries:!menu handlers support!private! !
+basicRemoveGlobal:!menu handlers support!private! !
+basicUnloadProjects:!menu handlers support!private! !
+basicUpdateProject!private!updating! !
+browseBreakpoints!public! !
+browseClassReferences!menu handlers!public! !
+browseGlobalClass!menu handlers!public! !
+browseGlobalReferences!menu handlers!public! !
+browseInstVarReaders!menu handlers!public! !
+browseInstVarWriters!menu handlers!public! !
+browseMethodHistory!menu handlers!public! !
+browseSelectedCategoryMethods!menu handlers!public!queries! !
+browseSelectedMethods!menu handlers!public!queries! !
+buildGlobalsTab!private!tabs! !
+buildInfoTab:!private!tabs! !
+buildLoadSpecTabIfNecessary!private!tabs! !
+buildPreferencesMenu!menus!private!updating! !
+buildProjectTabIfNecessary!private!tabs! !
+categoriesMenuStrings!menus!public! !
+checkout!menu handlers!public! !
+checkoutTag!menu handlers!public! !
+classCommentChanged!event handlers!public! !
+classesMenuStrings!menus!public! !
+clearComponentList!initialize/release!public! !
+comparisonPresenter!accessing!public! !
+componentListPresenter!accessing!private! !
+contextObject!menu handlers support!private! !
+copyInfo!menu handlers!public! !
+copyLoadSpecInfo!menu handlers!public! !
+copyProjectInfo!menu handlers!public! !
+createComponents!initialize/release!public! !
+createListViewFor:!private! !
+createNewProject!menu handlers!menu handlers support!private! !
+createSchematicWiring!initialize/release!public! !
+createSchematicWiringForClassHierarchy!create schemantic wiring!public! !
+createSchematicWiringForClassList!create schemantic wiring!public! !
+createSchematicWiringForMethodList!create schemantic wiring!public! !
+createSchematicWiringForMethodSource!initialize/release!public! !
+createSchematicWiringForProjectList!create schemantic wiring!public! !
+debug!menu handlers!public! !
+dictionaryMenu!menus!public! !
+dictionaryMenuStrings!menus!public! !
+dictionaryPresenter!accessing!private! !
+displayStringFor:in:!double dispatch!public! !
+displayVariable:!displaying!private! !
+editComponents!menu handlers!public! !
+editDelete!menu handlers!public! !
+editRevert!menu handlers!public! !
+editSaveClass!menu handlers!public! !
+editSaveMethod!menu handlers!public! !
+editSaveMethod:!menu handlers support!private! !
+expandFullAt:!menu handlers support!private!updating! !
+expandFullHierarchy!menu handlers!public!updating! !
+findClass!menu handlers!public! !
+findRemovedServices!menu handlers support!private! !
+gitCommit!project menu handlers!public! !
+globalsMenu!menus!public! !
+globalsMenuStrings!menus!public! !
+globalsTab!accessing!private! !
+gotoClassDefinedPackage!menu handlers!public! !
+gotoDictionary!menu handlers!public! !
+gotoDictionaryNamed:!menu handlers!public! !
+hasCategorySelected!public!testing! !
+hasExactlyOneCategorySelected!public!testing! !
+hasMethods!public!testing! !
+hierarchyClassDoubleClicked!menu handlers!public! !
+insertCompileErrorText:into:!compile support!public! !
+insertIfFalse!menu handlers!must not strip!public! !
+insertIfTrue!menu handlers!must not strip!public! !
+inspectGlobal!menu handlers!public! !
+inspectMethod!menu handlers!public! !
+inspectorContextObject!menu handlers support!private! !
+isClassDefinitionTabSelected!public!testing! !
+isClassSelected!public!testing! !
+isComparisonTabSelected!public!testing! !
+isDictionariesTabSelected!public!testing! !
+isHierarchyTabSelected!public!testing! !
+isLoadSpecTabSelected!public!testing! !
+isMethodSourceTabSelected!public!testing! !
+isNoneProjectSelected!event handlers!public!updating! !
+isOkayToChange!event handlers!public!testing! !
+isProjectInfoTabSelected!public!testing! !
+isProjectItemEnabled:!menu handlers support!private! !
+isRowanProjectSelected!public!testing! !
+isSourceTabSelected!public!testing! !
+isSunitTabSelected!public!testing! !
+jadeInspect!menu handlers!public! !
+loadProjects!menu handlers support!private! !
+loadSpecMenu!menus!public! !
+loadSpecMenuStrings!menus!public! !
+makeSameSelectionsIn:as:!menu handlers!menu handlers support!private! !
+maxAutoCompleteListSize!constants!public! !
+methodMenu:!menu handlers support!private! !
+methodSelectionChanged!event handlers!public! !
+methodsMenuStrings!menus!public! !
+methodsUpdate:!public!updating! !
+methodToReformat!menu handlers support!private! !
+methodValueChanged!event handlers!public! !
+moveClassToPackage!menu handlers!public! !
+moveClassToPackageNamed:!menu handlers!public! !
+moveMethodsToPackageNamed:!menu handlers!public! !
+moveMethodToPackage!menu handlers!public! !
+newProjectNamed:!menu handlers!menu handlers support!private! !
+noClassSelectedInEitherPresenter!public!testing! !
+onDragClass:!drag & drop!public! !
+onDragMethod:!drag & drop!public! !
+onDragOverPackageList:!drag & drop!public! !
+onDropClassesOnPackage:session:!drag & drop!public! !
+onDropClassesOnPackageList:!drag & drop!public! !
+onDropMethodsOnPackageList:!drag & drop!public! !
+onDropMethodsOnPackageList:session:!drag & drop!public! !
+onDropOnPackageList:!drag & drop!public! !
+onViewClosed!event handlers!public! !
+onViewOpened!event handlers!public! !
+openSourceStyler!menu handlers!public! !
+openSpecFile!menu handlers!public! !
+packageDictionaryCards!accessing!private! !
+possiblyClearProjectInfoTab!event handlers!public!updating! !
+preferencesMenuStrings!menus!public! !
+previousTabViewArrangement!accessing!private! !
+previousTabViewArrangement:!accessing!private! !
+previousTopViewArrangement!accessing!private! !
+previousTopViewArrangement:!accessing!private! !
+projectChanges!project menu handlers!public! !
+projectInfoMenu!menus!public! !
+projectInfoMenuStrings!menus!public! !
+projectInfoTab!accessing!public! !
+projectLog!project menu handlers!public! !
+projectMenu!menus!public! !
+projectMenuCommands!menus!public! !
+projectMenuStrings!menus!public! !
+projectTabLabel!displaying!private! !
+protectedDictionaries!constants!menu handlers!public! !
+pullFromGit!project menu handlers!public! !
+pushToGit!project menu handlers!public! !
+queryCommand:!menu handlers support!private! !
+reformatSource!menu handlers!menu handlers support!private! !
+refresh!event handlers!menu handlers!public!updating! !
+refreshClass!event handlers!public!updating! !
+refreshFromServer!event handlers!menu handlers!public!updating! !
+refreshFromServerAfterAbort:!public! !
+registerPresentersForUpdates!public!register presenters! !
+reloadV2Project!menu handlers!public! !
+removeAppropriateTab!private!tabs! !
+removeClass!menu handlers!public! !
+removeDictionaries!menu handlers!public! !
+removeGlobal!menu handlers!public! !
+removeGlobalsTab!private!tabs! !
+removeLoadSpecTab!private!tabs! !
+removeProjectTab!private!tabs! !
+resetClassTemplate!private! !
+resetFontSize!menu handlers!public! !
+runAll!menu handlers!public! !
+runSelected!menu handlers!public! !
+search!accessing!public! !
+selectDictionaryNamed:!public!selection! !
+selectedDictionaryNames!public!selection! !
+selectedDictionaryOrPackage!private!selection! !
+selectedGlobalName:!menu handlers support!private! !
+selectedPackageNames!public!selection! !
+selectedPackageServices!public!selection! !
+selectNoneProject!public!selection! !
+selectPackageOrDictionaryFor:!public!selection! !
+selectPackageOrDictionaryNamed:for:!public!selection! !
+selectProjectNamed:!public!selection! !
+setCompileErrorColor!compile support!public! !
+setCompileWarningColor!compile support!public! !
+setFontSize!menu handlers!public! !
+setFontSizeTo:!menu handlers support!private! !
+setStatusBarDefault!compile support!public! !
+shouldShowNoneTabLabel!displaying!private!testing! !
+showDictionaryList!event handlers!public!updating! !
+showPackageList!event handlers!public!updating! !
+statusBarText!accessing!public! !
+statusBarText:!accessing!public! !
+symbolExists:!public!testing! !
+textTabChanged!event handlers!public! !
+togglePackageDictionaryColumn!event handlers!public!updating! !
+unloadProjects!project menu handlers!public! !
+updateAfterFindClass:!menu handlers!public!updating! !
+updateAfterFindClassInDictionary:!menu handlers!public!updating! !
+updateAfterFindClassInPackage:!menu handlers!public!updating! !
+updateAutoCommit!public!register presenters!updating! !
+updateClass:!public!updating! !
+updateClasses!event handlers!public!updating! !
+updateComponentPackages!event handlers!public!updating! !
+updateDictionaries!public!updating! !
+updateDictionary!public!updating! !
+updateGlobalsTab!private!tabs! !
+updateHierarchy!public!updating! !
+updateHierarchyForPacktionaries!private!updating! !
+updateLoadSpecInfoTabFor:!private!tabs! !
+updateMenuBar!menus!public!updating! !
+updateMethodSourceColor!public!updating! !
+updateProject!event handlers!public!updating! !
+updateProjectInfo!private!tabs! !
+updateProjectInfoTabFor:!private!tabs! !
+updateSystemTab!event handlers support!private!updating! !
+updateTabLabel!public!updating! !
+variablesMenuStrings!menus!public! !
+writeProject!project menu handlers!public! !
+!
 
 !JadeiteBrowserPresenter class methodsFor!
 
@@ -2219,5 +2221,7 @@ resource_Default_view
 ' 11024 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 56 1 0 0 224 2 0 0 76 1 0 0] 8 #() 1440 nil 27 nil nil 410 ##(Smalltalk.JadeiteScintillaView) 34 65 nil 10944 34 2 8 1140920580 1025 11328 3266 nil false 3312 nil 2930 26337781 nil 21 nil nil nil 11328 nil 8 1585462760 1970 nil nil 13 1442645697 170 192 34 12 #normal 4002 1 nil nil 1 nil nil nil nil #normal nil nil nil #callTip 4002 77 4032 4048 1 nil nil nil nil #callTip nil nil nil #indentGuide 4002 75 nil nil 1 nil nil nil nil #indentGuide nil nil nil #whitespace 4002 3 9408 nil 1 nil nil nil nil #whitespace nil nil nil #lineNumber 4002 67 nil nil 1 nil nil nil nil #lineNumber nil nil nil #diff 4002 5 nil 2930 16908287 3 nil nil nil nil #diff nil 1401 nil nil 9474 9504 170 192 34 2 #default 4162 1 nil nil nil 11328 #circle nil nil nil nil nil nil 138 ##(Smalltalk.IdentitySet) 3136 nil 170 176 3136 9215 nil nil nil nil 4224 nil nil 65 nil nil 9600 9680 3 170 192 34 2 #container 11456 nil nil nil nil 16 nil 170 192 34 2 #diff 4434 1 11328 9776 33 false #diff 201 nil nil nil 171 nil nil nil 170 192 34 6 #Warning 4002 1027 2930 60239 2930 31326207 1 nil nil nil nil #Warning nil nil nil #Error 4002 1031 2930 335 2930 31317503 1 nil nil nil nil #Error nil nil nil #Notification 4002 1029 nil 2930 31185883 1 nil nil nil nil #Notification nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1234 138 144 34 8 1298 #createAt:extent: 34 2 482 1 1 482 1473 625 11328 1298 #caretPeriod: 8 #(530) 11328 1298 #wordWrap: 8 #(true) 11328 1298 #margins: 34 1 34 3 4962 1 11328 49 3 nil nil nil nil 4962 3 11328 1 nil nil 67108863 nil nil 4962 5 11328 1 nil nil nil nil nil 11328 1298 #canHScroll: 8 #(false) 11328 1298 #targetRange: 34 1 5090 1 -1 3 11328 1298 #maxCompletionListHeight: 8 #(9) 11328 1298 #edgeColumn: 8 #(1) 11328 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 224 2 0 0 56 1 0 0] 8 #() 1440 nil 33 170 192 34 4 11328 8 'after' 11024 8 'afterTitle' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1481 1 482 1473 665 10944 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 228 2 0 0 0 0 0 0 196 5 0 0 76 1 0 0] 34 2 11328 11024 1440 nil 27 1440 nil 27 170 192 34 2 8192 8 'diffs' nil 461638 4 ##(Smalltalk.MenuBar) nil true 34 3 3346 nil true 34 4 3394 1 1058 #selectUpper 8 'Select &upper' 1 1 nil nil nil 3394 1 1058 #selectLower 8 'Select &lower' 1 1 nil nil nil 3458 4097 3394 1 1058 #exit 8 '&Close' 1 1 nil nil nil 8 '&File' nil 1 nil nil 48687 nil nil 3346 nil true 34 3 3394 1 1058 #character 8 '&Character' 1 1 nil nil nil 3394 1 1058 #word 8 '&Word' 1 1 nil nil nil 3394 1 1058 #line 8 '&Line' 1 1 nil nil nil 8 '&Mode' nil 1 nil nil 48689 nil nil 3346 nil true 34 1 3394 1 1058 #about 8 '&About' 1 1 nil nil nil 8 '&Help' nil 134217729 nil nil 48691 nil nil 8 '' nil 1 nil nil nil nil nil nil nil nil 1 nil nil nil nil 1 nil nil 1234 138 144 34 2 1298 #createAt:extent: 34 2 482 9 53 482 2985 697 8096 1298 #text: 34 1 8 'Comparison' 8096 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 216 5 0 0 118 1 0 0] 34 1 8192 1440 nil 27 8096 nil nil nil 170 192 34 10 2864 8 'sunit' 8096 8 'comparisonTab' 6656 8 'methodSource' 5280 8 'classDocumentation' 3200 8 'classDefinition' nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 2496 34 2 8 1140916736 1 13552 590662 2 ##(Smalltalk.ListModel) 138 144 34 5 3168 5248 6624 2672 8064 nil 1310726 ##(Smalltalk.IdentitySearchPolicy) nil nil 1 nil nil nil 13552 nil 8 1715211760 2706 0 nil 918822 ##(Smalltalk.CompiledMethod) 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 13728 7 257 nil 2706 0 nil 13746 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 13792 7 257 nil 1049926 1 ##(Smalltalk.IconImageManager) nil nil nil nil nil #smallIcons nil nil nil nil nil 1234 138 144 34 3 1298 #createAt:extent: 34 2 482 1 1 482 3001 757 13552 1298 #setSingleSelection: 8 #(5) 13552 1298 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 13552 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 220 5 0 0 122 1 0 0] 8 #() 1440 nil 27 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 3001 757 2496 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 220 5 0 0 122 1 0 0] 34 6 3200 5280 6656 2864 8096 13552 1440 nil 27 1618 1664 1 2224 1 1696 1 2240 -39 170 192 34 2 2496 8 'textAreaTabs' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 805 482 3001 797 576 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 146 1 0 0 220 5 0 0 32 3 0 0] 34 2 2496 704 1440 nil 27 25 410 ##(Smalltalk.ContainerView) 34 15 nil 416 34 2 8 1140850688 131073 14480 nil nil nil 5 nil nil nil 14480 514 170 176 34 8 410 ##(Smalltalk.ContainerView) 34 15 nil 14480 34 2 8 1140850688 131073 14592 nil nil nil 5 nil nil nil 14592 514 170 176 34 4 410 ##(Smalltalk.ContainerView) 34 15 nil 14592 34 2 8 1140850688 131073 14704 nil nil nil 5 nil nil nil 14704 642 170 176 34 6 410 ##(Smalltalk.TextEdit) 34 16 nil 14704 34 2 8 1140916352 1025 14816 nil 1808 nil 5 nil nil nil 14816 nil 8 1714822656 1970 nil nil 3 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 629 51 14816 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 58 1 0 0 25 0 0 0] 8 #() 1440 nil 27 1618 1664 1 2224 1 1696 1 1696 51 410 ##(Smalltalk.ListView) 34 45 nil 14704 34 2 8 1409372233 1025 15088 13618 138 144 3136 nil 13696 1808 nil 13 nil nil nil 15088 nil 8 1714874480 459270 ##(Smalltalk.Message) #displayString 8 #() ##(Smalltalk.IconicListAbstract) 13856 nil nil nil nil nil nil 138 144 34 2 920646 5 ##(Smalltalk.ListViewColumn) 8 '' 41 #left 1298 #empty 8 #() 16 15202 #<= 8 #() nil nil 15088 2706 0 nil 2738 2 1 2704 8 'doIt' 8 '[:each | each subSuperIcon]' 8 #[30 105 226 0 106] #subSuperIcon 15392 7 257 nil 1 nil nil 15282 8 'Selector' 581 #left 15202 #displayString 15232 ##(Smalltalk.SortedCollection) nil nil 15088 nil 3 nil 2706 0 nil 2738 5 1 2704 8 'doIt' 8 '[:each | each item displayStringFor: each browser: each view parentPresenter]' 8 #[33 105 226 0 17 226 1 160 193 106] #item #view #parentPresenter #displayStringFor:browser: 15520 7 257 nil #report 8 #() nil 133221 nil 1 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 55 482 629 691 15088 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 27 0 0 0 58 1 0 0 116 1 0 0] 8 #() 1440 nil 35 1618 1664 1 2224 1 1696 55 2240 -49 410 ##(Smalltalk.PushButton) 34 20 nil 14704 34 2 8 1140858880 1 15792 nil 1808 nil 5 nil nil nil 15792 nil 8 1714984000 1058 #gotoMethodDefinedPackageViaButton nil 1 1 nil nil false nil nil nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 745 482 629 51 15792 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 116 1 0 0 58 1 0 0 141 1 0 0] 8 #() 1440 nil 29 1618 1664 1 2224 1 2240 -49 2240 1 170 192 34 6 14816 8 'categoryMethodText' 15088 8 'methodList' 15792 8 'definedPackageMethodText' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 385 1 482 629 795 14704 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 192 0 0 0 0 0 0 0 250 1 0 0 141 1 0 0] 34 3 15088 15792 14816 1440 nil 27 327734 ##(Smalltalk.Float) 8 0 0 0 0 0 0 244 63 410 ##(Smalltalk.CardContainer) 34 16 nil 14592 34 2 8 1409286144 131073 16336 nil 1808 nil 5 nil nil nil 16336 2562 138 144 34 2 2626 8 'Category' 410 ##(Smalltalk.ListView) 34 45 nil 16336 34 2 8 1409372233 1025 16480 13618 138 144 3136 nil 13696 1808 nil 21 nil nil nil 16480 nil 8 1714874480 15202 #displayString 8 #() nil 13856 nil nil nil nil nil nil 138 144 34 1 15282 8 'Column 1' 351 #left 15202 #displayString 8 #() ##(Smalltalk.SortedCollection) 2706 0 nil 2738 1 83886081 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each]' 1779525917 16720 7 257 nil nil 16480 nil 3 nil nil #report 15600 nil 131169 nil 1 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1234 138 144 34 2 1298 #createAt:extent: 34 2 482 9 53 482 359 735 16480 1298 #text: 34 1 8 'Column 1' 16480 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 183 0 0 0 137 1 0 0] 8 #() 1440 nil 35 2626 8 'Variables' 410 ##(Smalltalk.ListView) 34 45 nil 16336 34 2 8 1409372233 1025 17024 13618 138 144 3136 nil 13696 1808 nil 21 nil nil nil 17024 nil 8 1714874480 15202 #displayString 8 #() nil 13856 nil nil 2706 0 nil 2738 4 1 2704 8 'doIt' 8 '[:each | 
 each view parentPresenter possiblyBoldVariable: each]' 8 #[32 105 226 0 159 17 178 106] #view #parentPresenter #displayVariable: 17168 7 257 nil nil nil nil 138 144 34 1 15282 8 'Column 1' 351 #left 15202 #displayString 17152 ##(Smalltalk.SortedCollection) nil nil 17024 nil 3 nil 2706 0 nil 2738 4 1 2704 8 'doIt' 8 '[:each | 
 each view parentPresenter possiblyBoldVariable: each]' 8 #[32 105 226 0 159 17 178 106] #view #parentPresenter #displayVariable: 17328 7 257 nil #report 15600 nil 131169 nil 1 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1234 138 144 34 2 1298 #createAt:extent: 34 2 482 9 53 482 359 735 17024 1298 #text: 34 1 8 'Column 1' 17024 1378 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 183 0 0 0 137 1 0 0] 8 #() 1440 nil 35 16480 nil nil nil 170 192 34 4 16480 8 'categoryList' 17024 8 'variableList' nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 16336 34 2 8 1140916736 1 17680 13618 138 144 34 2 16464 17008 nil 13696 nil nil 1 nil nil nil 17680 nil 8 1715211760 2706 0 nil 13746 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 17808 7 257 nil 2706 0 nil 13746 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 17856 7 257 nil 13856 nil nil nil nil nil #noIcons nil nil nil nil nil 1234 138 144 34 3 1298 #createAt:extent: 34 2 482 1 1 482 375 795 17680 1298 #setSingleSelection: 8 #(1) 17680 1298 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 17680 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 187 0 0 0 141 1 0 0] 8 #() 1440 nil 27 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 375 795 16336 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 187 0 0 0 141 1 0 0] 34 3 16480 17024 17680 1440 nil 27 16306 8 0 0 0 0 0 0 232 63 false 170 192 34 2 16336 8 'methodFilterTabs' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1989 1 482 1013 795 14592 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 226 3 0 0 0 0 0 0 220 5 0 0 141 1 0 0] 34 3 16336 410 ##(Smalltalk.Splitter) 34 12 nil 14592 34 2 8 1140850688 1 18512 nil 1808 nil 517 nil nil nil 10722 18512 nil 1 #left nil nil nil 10752 10768 nil 10752 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 375 1 482 11 795 18512 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 187 0 0 0 0 0 0 0 192 0 0 0 141 1 0 0] 8 #() 1440 nil 27 14704 1440 nil 27 524806 ##(Smalltalk.Fraction) 15 41 410 ##(Smalltalk.ContainerView) 34 15 nil 14480 34 2 8 1140850688 131073 18784 nil nil nil 5 nil nil nil 18784 514 170 176 3136 false 170 192 34 2 410 ##(Smalltalk.ContainerView) 34 15 nil 18784 34 2 8 1140850688 131073 18912 nil nil nil 5 nil nil nil 18912 514 170 176 34 2 410 ##(Smalltalk.CardContainer) 34 16 nil 18912 34 2 8 1409286144 131073 19024 nil 1808 nil 21 nil nil nil 19024 2562 138 144 3136 nil nil nil nil 170 192 3136 nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 19024 34 2 8 1140916736 1 19136 13618 138 144 3136 nil 13696 nil nil 17 nil nil nil 19136 nil 8 1715211760 2706 0 nil 13746 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 19248 7 257 nil 2706 0 nil 13746 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 19296 7 257 nil 13856 nil nil nil nil nil #noIcons nil nil nil nil nil 1234 138 144 34 2 1298 #createAt:extent: 34 2 482 1 1 482 477 795 19136 1298 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 19136 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 238 0 0 0 141 1 0 0] 8 #() 1440 nil 27 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 477 795 19024 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 238 0 0 0 141 1 0 0] 34 1 19136 1440 nil 27 3 false 170 192 34 2 19024 8 'packageDictionaryCards' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 485 1 482 477 795 18912 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 242 0 0 0 0 0 0 0 224 1 0 0 141 1 0 0] 34 1 19024 1440 nil 27 8 'packageDictionaryContainer' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 433 1 482 961 795 18784 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 216 0 0 0 0 0 0 0 184 2 0 0 141 1 0 0] 34 3 410 ##(Smalltalk.ContainerView) 34 15 nil 18784 34 2 8 1140850688 131073 20080 nil nil nil 5 nil nil nil 20080 514 170 176 3136 false 170 192 3136 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 475 795 20080 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 237 0 0 0 141 1 0 0] 34 1 410 ##(Smalltalk.CardContainer) 34 16 nil 20080 34 2 8 1409286144 131073 20352 nil 1808 nil 5 nil nil nil 20352 2562 138 144 34 1 2626 8 'Components' 410 ##(Smalltalk.JadeiteTreeView) 34 27 nil 20352 34 2 8 1140916775 1025 20496 1049670 3 ##(Smalltalk.JadeiteTreeModel) nil 13696 984070 ##(Smalltalk.JadeiteTreeNode) nil nil nil nil 170 192 3136 1808 nil 5 nil nil nil 20496 nil 8 1715445824 2706 0 nil 2738 2 1 15200 8 'doIt' 8 '[:service | service displayString]' 8 #[30 105 226 0 106] #displayString 20656 7 257 nil ##(Smalltalk.IconicListAbstract) 13856 nil nil nil nil nil 170 176 3136 33 #noIcons 1 170 ##(Smalltalk.PluggableLookupTable) 3136 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 9 53 482 459 735 20496 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 233 0 0 0 137 1 0 0] 8 #() 1440 nil 27 20496 nil nil nil 170 192 34 2 20496 8 'componentTree' nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 20352 34 2 8 1140916736 1 20976 13618 138 144 34 1 20480 nil 13696 nil nil 1 nil nil nil 20976 nil 8 1715211760 2706 0 nil 13746 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 21104 7 257 nil 2706 0 nil 13746 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 21152 7 257 nil 13856 nil nil nil nil nil #noIcons nil nil nil nil nil 1234 138 144 34 3 1298 #createAt:extent: 34 2 482 1 1 482 475 795 20976 1298 #setSingleSelection: 8 #(1) 20976 1298 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 20976 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 237 0 0 0 141 1 0 0] 8 #() 1440 nil 27 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 475 795 20352 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 237 0 0 0 141 1 0 0] 34 2 20496 20976 1440 nil 27 1440 nil 27 410 ##(Smalltalk.Splitter) 34 12 nil 18784 34 2 8 1140850688 1 21584 nil 1808 nil 517 nil nil nil 10722 21584 nil 1 #left nil nil nil 10752 10768 nil 10752 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 475 1 482 11 795 21584 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 237 0 0 0 0 0 0 0 242 0 0 0 141 1 0 0] 8 #() 1440 nil 27 18912 1440 nil 27 18754 3 7 410 ##(Smalltalk.ContainerView) 34 15 nil 14480 34 2 8 1140850688 131073 21840 nil nil nil 5 nil nil nil 21840 514 170 176 3136 false 170 192 34 2 410 ##(Smalltalk.ListView) 34 45 nil 21840 34 2 8 1409405261 1025 21968 13618 138 144 3136 nil 13696 1808 nil 5 nil nil nil 21968 nil 8 1714874480 15202 #displayString 8 #() ##(Smalltalk.IconicListAbstract) 13856 nil nil nil nil nil nil 138 144 34 1 15282 8 'Column 1' 425 #left 2706 0 nil 2738 2 1 2704 8 'doIt' 8 '[:each | each displayName]' 8 #[30 105 226 0 106] #displayName 22176 7 257 nil ##(Smalltalk.SortedCollection) nil nil 21968 nil 3 2706 0 nil 2738 2 1 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each toolTip]' 8 #[30 105 226 0 106] #toolTip 22256 7 257 nil 2706 0 nil 2738 3 1 2704 8 'doIt' 8 '[:each | each item displayStringFor: each]' 8 #[31 105 226 0 17 177 106] #item #displayStringFor: 22336 7 257 nil #report 15600 nil 133217 nil 1 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1234 138 144 34 2 1298 #createAt:extent: 34 2 482 1 1 482 433 795 21968 1298 #text: 34 1 8 'Column 1' 21968 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 216 0 0 0 141 1 0 0] 8 #() 1440 nil 35 8 'projectList' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 433 795 21840 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 216 0 0 0 141 1 0 0] 34 1 21968 1440 nil 27 18754 7 41 410 ##(Smalltalk.ContainerView) 34 15 nil 14480 34 2 8 1140850688 131073 22816 nil nil nil 5 nil nil nil 22816 642 170 176 34 6 410 ##(Smalltalk.CardContainer) 34 16 nil 22816 34 2 8 1409286144 131073 22928 nil 1808 nil 5 nil nil nil 22928 2562 138 144 34 2 2626 2658 8 'Classes' nil nil 410 ##(Smalltalk.ListView) 34 45 nil 22928 34 2 8 1409372237 1025 23088 13618 138 144 3136 nil 13696 1808 nil 29 nil nil nil 23088 nil 8 1714874480 15202 #displayString 8 #() nil 13856 nil nil nil nil nil nil 138 144 34 1 15282 8 '' 553 #left 15202 #displayString 8 #() 15202 #<= 8 #() nil nil 23088 nil 3 nil 2706 0 nil 2738 5 1 2704 8 'doIt' 8 '[:each | each item displayStringFor: each browser: each view parentPresenter]' 8 #[33 105 226 0 17 226 1 160 193 106] #item #view #parentPresenter #displayStringFor:browser: 23360 7 257 nil #report 15600 nil 131169 nil 1 nil nil nil nil nil nil nil nil nil nil nil nil nil nil nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 9 53 482 561 635 23088 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 28 1 0 0 87 1 0 0] 8 #() 1440 nil 35 2626 2658 8 'Hierarchy' nil nil 410 ##(Smalltalk.JadeiteTreeView) 34 27 nil 22928 34 2 8 1140920871 1025 23648 20562 nil 3312 20594 nil nil nil nil 170 176 3136 1808 nil 29 nil nil nil 23648 nil 8 1715445824 2706 0 nil 2738 2 1 2704 8 'doIt' 8 '[:each | each displayString]' 8 #[30 105 226 0 106] #displayString 23776 7 257 nil ##(Smalltalk.IconicListAbstract) 13856 nil 2706 0 nil 2738 2 1 ##(Smalltalk.UndefinedObject) 8 'doIt' 8 '[:each | each toolTip]' 8 #[30 105 226 0 106] #toolTip 23856 7 257 nil 2706 0 nil 2738 5 1 2704 8 'doIt' 8 '[:each | each item displayStringFor: each browser: each view parentPresenter]' 8 #[33 105 226 0 17 226 1 160 193 106] #item #view #parentPresenter #displayStringFor:browser: 23936 7 257 nil nil nil 170 176 3136 33 #noIcons 1 170 ##(Smalltalk.PluggableLookupTable) 3136 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 9 53 482 561 635 23648 1378 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 26 0 0 0 28 1 0 0 87 1 0 0] 8 #() 1440 nil 27 23088 nil nil nil 170 192 34 4 23088 8 'classList' 23648 8 'classHierarchy' nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 22928 34 2 8 1140916736 1 24272 13618 138 144 34 2 23056 23616 nil 13696 nil nil 1 nil nil nil 24272 nil 8 1715211760 2706 0 nil 13746 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 24400 7 257 nil 2706 0 nil 13746 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 24448 7 257 nil 13856 nil nil nil nil nil #smallIcons nil nil nil nil nil 1234 138 144 34 3 1298 #createAt:extent: 34 2 482 1 1 482 577 695 24272 1298 #setSingleSelection: 8 #(1) 24272 1298 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 24272 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 32 1 0 0 91 1 0 0] 8 #() 1440 nil 27 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 577 695 22928 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 32 1 0 0 91 1 0 0] 34 3 23088 23648 24272 1440 nil 27 1618 1664 1 2224 1 1696 1 2240 -99 410 ##(Smalltalk.PushButton) 34 20 nil 22816 34 2 8 1140858880 1 24896 nil 4224 nil 5 nil nil nil 24896 nil 8 1714984000 1058 #gotoClassDefinedPackageViaButton nil 1 1 nil nil false nil nil nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 745 482 577 51 24896 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 116 1 0 0 32 1 0 0 141 1 0 0] 8 #() 1440 nil 29 1618 1664 1 2224 1 2240 -49 2240 1 410 ##(Smalltalk.CardContainer) 34 16 nil 22816 34 2 8 1409286144 131073 25168 nil 1808 nil 5 nil 1842 nil true 524550 ##(Smalltalk.LOGFONTW) 8 #[240 255 255 255 0 0 0 0 0 0 0 0 0 0 0 0 188 2 0 0 0 0 0 0 1 2 1 34 83 0 121 0 115 0 116 0 101 0 109 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 482 193 193 nil 25168 2562 138 144 34 2 2626 2658 8 'Class' nil nil 410 ##(Smalltalk.ContainerView) 34 15 nil 25168 34 2 8 1140850688 131073 25408 nil nil nil 5 nil nil nil 25408 nil 170 192 3136 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 9 9 482 561 1 25408 1378 8 #[44 0 0 0 0 0 0 0 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 4 0 0 0 28 1 0 0 4 0 0 0] 8 #() 1440 nil 27 2626 2658 8 'Instance' nil nil 410 ##(Smalltalk.ContainerView) 34 15 nil 25168 34 2 8 1140850688 131073 25696 nil nil nil 5 nil nil nil 25696 nil 170 192 3136 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 9 9 482 561 1 25696 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 4 0 0 0 4 0 0 0 28 1 0 0 4 0 0 0] 8 #() 1440 nil 27 25696 nil nil nil 170 192 34 4 25408 8 'classTab' 25696 8 'instanceTab' nil 410 ##(Smalltalk.TabViewXP) 34 28 nil 25168 34 2 8 1140916738 1 26000 13618 138 144 34 2 25664 25376 nil 13696 nil nil 1 nil nil nil 26000 nil 8 1715211760 2706 0 nil 13746 2 3 ##(Smalltalk.ListControlView) #defaultGetTextBlock 575230339 8 #[30 105 226 0 106] #displayString 26128 7 257 nil 2706 0 nil 13746 2 3 ##(Smalltalk.IconicListAbstract) #defaultGetImageBlock 579598755 8 #[30 105 226 0 106] #iconImageIndex 26176 7 257 nil 13856 nil nil nil nil nil #smallIcons nil nil nil nil nil 1234 138 144 34 3 1298 #createAt:extent: 34 2 482 1 1 482 577 51 26000 1298 #setSingleSelection: 8 #(1) 26000 1298 #tcmSetExtendedStyle:dwExStyle: 8 #(-1 0) 26000 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 32 1 0 0 25 0 0 0] 8 #() 1440 nil 27 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 695 482 577 51 25168 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 91 1 0 0 32 1 0 0 116 1 0 0] 34 3 25696 25408 26000 1440 nil 27 1618 1664 1 2224 1 2240 -99 1712 51 170 192 34 6 22928 8 'classHierarchyTabs' 24896 8 'definedPackageClassText' 25168 8 'instanceClassTabs' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1403 1 482 577 795 22816 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 189 2 0 0 0 0 0 0 221 3 0 0 141 1 0 0] 34 3 22928 25168 24896 1440 nil 27 18754 3 11 false 170 192 34 2 18784 8 'componentPackageContainer' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 1 482 3001 795 14480 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 220 5 0 0 141 1 0 0] 34 6 21840 18784 410 ##(Smalltalk.Splitter) 34 12 nil 14480 34 2 8 1140850688 1 27088 nil 1808 nil 517 nil nil nil 10722 27088 nil 1 #left nil nil nil 10752 10768 nil 10752 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1393 1 482 11 795 27088 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 184 2 0 0 0 0 0 0 189 2 0 0 141 1 0 0] 8 #() 1440 nil 27 22816 410 ##(Smalltalk.Splitter) 34 12 nil 14480 34 2 8 1140850688 1 27328 nil 1808 nil 517 nil nil nil 10722 27328 nil 1 #left nil nil nil 10752 10768 nil 10752 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1979 1 482 11 795 27328 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 221 3 0 0 0 0 0 0 226 3 0 0 141 1 0 0] 8 #() 1440 nil 27 14592 1440 nil 27 25 true 170 192 34 2 410 ##(Smalltalk.Splitter) 34 12 nil 416 34 2 8 1140850688 1 27600 nil 1808 nil 517 nil nil nil 10722 27600 nil 1 #left nil nil nil 10752 10768 nil 10752 nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 1 795 482 3001 11 27600 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 141 1 0 0 220 5 0 0 146 1 0 0] 8 #() 1440 nil 27 8 'splitter' nil 1234 138 144 34 1 1298 #createAt:extent: 34 2 482 6835 21 482 3001 1601 416 1378 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 89 13 0 0 10 0 0 0 53 19 0 0 42 3 0 0] 34 3 14480 27600 576 1440 nil 27 )! !
-!JadeiteBrowserPresenter class categoriesFor: #resource_Default_view!public!resources-views! !
+!JadeiteBrowserPresenter class categoriesForMethods!
+resource_Default_view!public!resources-views! !
+!
 

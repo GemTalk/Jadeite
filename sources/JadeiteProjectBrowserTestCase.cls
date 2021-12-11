@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserTestCase
 	instanceVariableNames: ''
@@ -513,11 +513,11 @@ test_adHocInspectComplexObjectInProjectBrowser
 	self assert: inspector instVarListPresenter selections first key equals: 'self'.
 	self assert: inspector instVarListPresenter selections first value
 		equals: 'RowanSample1Test debug: #test1'.
-	inspector instVarListPresenter selectionByIndex: #(2).
+	inspector instVarListPresenter selectionByIndex: 2.
 	self assert: inspector instVarListPresenter selections first key equals: '-.asOop'.
 	self assert: inspector instVarListPresenter selections first value
 		equals: inspector model oop printString.
-	inspector instVarListPresenter selectionByIndex: #(3).
+	inspector instVarListPresenter selectionByIndex: 3.
 	self assert: inspector instVarListPresenter selections first key equals: '-testSelector'.
 	self assert: (inspector instVarListPresenter selections first value isKindOf: Integer)]
 			ensure: 
@@ -535,23 +535,23 @@ test_adHocInspectComplexObjectInProjectBrowser2
 	self assert: (inspector model oop isKindOf: Integer).	"the oop"
 	self assert: inspector instVarListPresenter selections first key equals: 'self'.
 	self assert: inspector instVarListPresenter selections first value equals: 'aClassOrganizer'.
-	inspector instVarListPresenter selectionByIndex: #(2).
+	inspector instVarListPresenter selectionByIndex: 2.
 	self assert: inspector instVarListPresenter selections first key equals: '-.asOop'.
 	self assert: inspector instVarListPresenter selections first value
 		equals: inspector model oop printString.
-	inspector instVarListPresenter selectionByIndex: #(3).
+	inspector instVarListPresenter selectionByIndex: 3.
 	self assert: inspector instVarListPresenter selections first key equals: '-classes'.
 	self assert: (inspector instVarListPresenter selections first value isKindOf: Integer).
 	self assert: ('aClassSet(*' match: inspector documentPresenter value).
-	inspector instVarListPresenter selectionByIndex: #(4).
+	inspector instVarListPresenter selectionByIndex: 4.
 	self assert: inspector instVarListPresenter selections first key equals: '-classNames'.
 	self assert: inspector instVarListPresenter selections first value equals: 20.
 	self assert: inspector documentPresenter value equals: 'nil'.
-	inspector instVarListPresenter selectionByIndex: #(5).
+	inspector instVarListPresenter selectionByIndex: 5.
 	self assert: inspector instVarListPresenter selections first key equals: '-user'.
 	self assert: (inspector instVarListPresenter selections first value isKindOf: Integer).
 	self assert: ('aSymbolList( aSymbolDictionary(*' match: inspector documentPresenter value).
-	inspector instVarListPresenter selectionByIndex: #(8).
+	inspector instVarListPresenter selectionByIndex: 8.
 	self assert: inspector instVarListPresenter selections first key equals: '-rootClass'.
 	self assert: (inspector instVarListPresenter selections first value isKindOf: Integer).
 	self assert: inspector documentPresenter value equals: 'Object']
@@ -3425,178 +3425,180 @@ test_verifyValidCategory
 
 waitForPresenter: presenter
 	[presenter list isEmpty] whileTrue: [(Delay forMilliseconds: 50) wait]! !
-!JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodGoo!dirty project!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #addSampleMethodHoo!dirty project!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #assertAncestry:in:!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #assertVariableTabSorted!private!support! !
-!JadeiteProjectBrowserTestCase categoriesFor: #currentTabView!public!views! !
-!JadeiteProjectBrowserTestCase categoriesFor: #dirtyProjectForChangeBrowser!dirty project!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #executeStringInOtherSession:!public!support! !
-!JadeiteProjectBrowserTestCase categoriesFor: #family:ofNodesIn:!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #issue261createTestProject!issue test support!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #issue261DeleteTestProjectPath!issue test support!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #issue261TestProjectName!constants!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #issue261TestProjectPath!constants!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #issue284methodCreation!issue test support!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #loginOtherSession!public!support! !
-!JadeiteProjectBrowserTestCase categoriesFor: #logoutOtherSession!public!support! !
-!JadeiteProjectBrowserTestCase categoriesFor: #logoutOtherSystemUsersSessions!public!support! !
-!JadeiteProjectBrowserTestCase categoriesFor: #modifySampleMethodFoo!dirty project!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #nextTabView!public!views! !
-!JadeiteProjectBrowserTestCase categoriesFor: #packageNamed:!private!project support! !
-!JadeiteProjectBrowserTestCase categoriesFor: #previousTabView!public!views! !
-!JadeiteProjectBrowserTestCase categoriesFor: #projectList!private!project support! !
-!JadeiteProjectBrowserTestCase categoriesFor: #projectNamed:!private!project support! !
-!JadeiteProjectBrowserTestCase categoriesFor: #rowanDependentProjectNames!constants!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #rowanProjectNames!constants!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #saveHooMethod!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #saveMethodWithUnimplementedSelector!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #saveTestClass!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #selectCommentTab!private!selection! !
-!JadeiteProjectBrowserTestCase categoriesFor: #selectVariableListEntryForcingEvent:!private! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_abortOnVariablesTab!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_acceptDefinedMethodInExtensionClass!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessors!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsClassTab!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsVariablesStaySelected!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_addAccessorsVerifySource!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_addDuplicatePackage!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_addInstVarVariablesStaySorted!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_addInstVarWithVariablesTabOpen!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_additionalAccelerators!public!test menus! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_addPackageReloadProject!public!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_addRemoveCategory!public!test categories!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_adHocContextClassSide!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_adHocContextInstanceSide!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_adHocInspectComplexObjectInProjectBrowser!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_adHocInspectComplexObjectInProjectBrowser2!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_allSpacesCategory!public!test categories!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_auditProject!public!test menus!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommit!public!test auto commit!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitButtonFailureResetOnAbort!public!test auto commit!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitClickButtonAfterFailure!public!test auto commit!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitFailure!public!test auto commit!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_autoCommitFailureAndAbort!public!test auto commit!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayMoveMethodsToCategory!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_autoDirtyDisplayRemoveMethod!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_blankCategoryRenameInvalid!public!test categories!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_browseCategoryMethodsMenuEnablement!public!test categories! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_browseLiteralReferences!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_browseSameClassCategoriesCorrect!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_browseSelectedMethods!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_cannotSelectMultipleProjects!public!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_categoryTextDisplay!public!test categories!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_changeClassComment!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_changeListSortOrder!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_changeVariableWithModifiedMethodSource!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_checkoutTagRefresh!public!test projects! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_classDefinitionUpdatesAcrossTabs!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_classListSelectionShouldNotUpdateOtherHierarchy!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleInvalidSession!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_closeConsoleValidSession!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_confirmOverrideExistingAccessorMethods!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_copyClassEnablement!public!test menus!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_definedClassMenuItem!public!test defined package!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_deselectAllVariables!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_dirtyPackages!public!test packages! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_dirtyProjectOnDisk!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_dontChangeTabOnMethodSave!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_dontOverrideExistingAccessorMethods!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_dontUpdateWithDifferentMeta!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_dragClassDoesNotWalkback!public!test drag drop!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_emptyStringCategory!public!test categories!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_exitJadeiteInvalidSession!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_exitJadeiteValidSession!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_findDialogBasic!public!test find! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodChangesCategories!public!test categories!test find!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodDoesNotChangeCategories!public!test categories!test find!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodDoesNothingWhenClassNotSelected!public!test find!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodShowsAllMethods!public!test find!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodShowsOnlyOneSide!public!test find!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_findMethodSUnitBrowser!public!test find!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_findUsedEverywhere!public!test find! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_gitBranchesDoesNotShowHead!public!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassList!public!test defined package!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedClassFromClassListViaButton!public!test defined package!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedMethodFromClassListClassSide!public!test defined package!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedMethodNotSameAsClass!public!test defined package!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_gotoDefinedPackage!public!test defined package!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_goToDefinedPackageNoClassSelected!public!test defined package!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyFindsAllSubclassImplementors!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementors!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementorsFromMethodList!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchyImplementorsSendersCaption!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySenders!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_hierarchySendersFromMethodList!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_instVarReaders!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_instVarWriters!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_issue261!public!test menus!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_loadProjectRemovingClass!public!test projects! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_maximizeCode!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_menuAddPackageOnProjectMenu!public!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_menuEnablementDoesNotBreak!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_menusDontAddBreaks!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_multiplePackageSelection!public!test packages!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_openChangesBrowser!public!test menus!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectBrowser!public!test menus!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_openNewProjectTab!public!test menus!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_openProjectsBrowser!public!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_openProjectsBrowserFromMethodList!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_packagesShownInMultipleProjects!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_projectDisplaysSync!public!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_projectInfoTab!public!test menus!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_projectMenuGitCommitMenuItem!public!test menus! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_projectRemoved!public!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodList!public!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterAbortMethodListLeaveCommitted!public!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterReloadInProjectsBrowserWithAddedMethod!public!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_refreshAfterReloadWithAddedMethod!public!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_registeredPresentersInMethodBrowserCleanedUp!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_removeAbortedClass!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_removeInstVarVariablesStaySorted!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_removeProject!public!test projects!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_renameCategory!public!test categories!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_renameDisabledWithMultipleCategoriesSelected!public!test categories!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_selectMultiplePackages!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_selectVariable!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_separationOfClassAndInstance!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_setAndClearBreakpoint!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitPresenterResetAfterPackageSelection!public!test packages!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_sunitPresenterResetAfterProjectSelection!public!test projects! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_switchToVariableWithUnsavedChanges!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsLowerCaseMatch!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_symbolsWithoutImplementorsFound!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowser!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_tabNames_projectsBrowserNotLost!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassAppears!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassAppearsInHierarchy1!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassAppearsInHierarchy2!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassDoesNotAppearInDifferentHierarchy!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddedClassRearrangesItselfInHierarchy!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersAddSameCategoryToClassAndInstance!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersDontClearMethodList!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersNoUpdateWithoutPackageSelection!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersRemoveMethod!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdate!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateClassHierarchyDifferentDictionarySelected!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateClassHierarchyDifferentPackageSelected!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateClassHierarchyNoDictionarySelected!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateClassHierarchyNoPackageSelected!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateClassHierarchyNoProjectSelected!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoBrowsersUpdateHierarchy!public!test two browsers!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_twoTabsHaveIndependentCompileErrors!public!test two browsers! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_unicodeDisplayMethod!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_unicodeSpecialMethodNotRed!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindow!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindowStayOnMethod!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_variableTabSortOrder!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_variableTabSortOrder2!public!test variable tab!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #test_verifyValidCategory!public!tests! !
-!JadeiteProjectBrowserTestCase categoriesFor: #waitForPresenter:!private!selection! !
+!JadeiteProjectBrowserTestCase categoriesForMethods!
+addSampleMethodGoo!dirty project!private! !
+addSampleMethodHoo!dirty project!private! !
+assertAncestry:in:!private! !
+assertVariableTabSorted!private!support! !
+currentTabView!public!views! !
+dirtyProjectForChangeBrowser!dirty project!private! !
+executeStringInOtherSession:!public!support! !
+family:ofNodesIn:!private! !
+issue261createTestProject!issue test support!private! !
+issue261DeleteTestProjectPath!issue test support!private! !
+issue261TestProjectName!constants!private! !
+issue261TestProjectPath!constants!private! !
+issue284methodCreation!issue test support!private! !
+loginOtherSession!public!support! !
+logoutOtherSession!public!support! !
+logoutOtherSystemUsersSessions!public!support! !
+modifySampleMethodFoo!dirty project!private! !
+nextTabView!public!views! !
+packageNamed:!private!project support! !
+previousTabView!public!views! !
+projectList!private!project support! !
+projectNamed:!private!project support! !
+rowanDependentProjectNames!constants!private! !
+rowanProjectNames!constants!private! !
+saveHooMethod!private! !
+saveMethodWithUnimplementedSelector!private! !
+saveTestClass!private! !
+selectCommentTab!private!selection! !
+selectVariableListEntryForcingEvent:!private! !
+test_abortOnVariablesTab!public!test variable tab!tests! !
+test_acceptDefinedMethodInExtensionClass!public!tests! !
+test_addAccessors!public!test variable tab!tests! !
+test_addAccessorsClassTab!public!test variable tab!tests! !
+test_addAccessorsVariablesStaySelected!public!test variable tab!tests! !
+test_addAccessorsVerifySource!public!test variable tab!tests! !
+test_addDuplicatePackage!public!tests! !
+test_addInstVarVariablesStaySorted!public!test variable tab!tests! !
+test_addInstVarWithVariablesTabOpen!public!test variable tab!tests! !
+test_additionalAccelerators!public!test menus! !
+test_addPackageReloadProject!public!test projects!tests! !
+test_addRemoveCategory!public!test categories!tests! !
+test_adHocContextClassSide!public!tests! !
+test_adHocContextInstanceSide!public!tests! !
+test_adHocInspectComplexObjectInProjectBrowser!public!tests! !
+test_adHocInspectComplexObjectInProjectBrowser2!public!tests! !
+test_allSpacesCategory!public!test categories!tests! !
+test_auditProject!public!test menus!test projects!tests! !
+test_autoCommit!public!test auto commit!tests! !
+test_autoCommitButtonFailureResetOnAbort!public!test auto commit!tests! !
+test_autoCommitClickButtonAfterFailure!public!test auto commit!tests! !
+test_autoCommitFailure!public!test auto commit!tests! !
+test_autoCommitFailureAndAbort!public!test auto commit!tests! !
+test_autoDirtyDisplayMoveMethodsToCategory!public!tests! !
+test_autoDirtyDisplayRemoveMethod!public!tests! !
+test_blankCategoryRenameInvalid!public!test categories!tests! !
+test_browseCategoryMethodsMenuEnablement!public!test categories! !
+test_browseClass!public!tests! !
+test_browseLiteralReferences!public!tests! !
+test_browseSameClassCategoriesCorrect!public!tests! !
+test_browseSelectedMethods!public!tests! !
+test_cannotSelectMultipleProjects!public!test projects!tests! !
+test_categoryTextDisplay!public!test categories!tests! !
+test_changeClassComment!public!test two browsers!tests! !
+test_changeListSortOrder!public!tests! !
+test_changeVariableWithModifiedMethodSource!public!test variable tab!tests! !
+test_checkoutTagRefresh!public!test projects! !
+test_classDefinitionUpdatesAcrossTabs!public!test two browsers!tests! !
+test_classListSelectionShouldNotUpdateOtherHierarchy!public!test two browsers!tests! !
+test_closeConsoleInvalidSession!public!tests! !
+test_closeConsoleValidSession!public!tests! !
+test_confirmOverrideExistingAccessorMethods!public!test variable tab!tests! !
+test_copyClassEnablement!public!test menus!tests! !
+test_definedClassMenuItem!public!test defined package!tests! !
+test_deselectAllVariables!public!test variable tab!tests! !
+test_dirtyPackages!public!test packages! !
+test_dirtyProjectOnDisk!public!tests! !
+test_dontChangeTabOnMethodSave!public!test two browsers!tests! !
+test_dontOverrideExistingAccessorMethods!public!test variable tab!tests! !
+test_dontUpdateWithDifferentMeta!public!test two browsers!tests! !
+test_dragClassDoesNotWalkback!public!test drag drop!tests! !
+test_emptyStringCategory!public!test categories!tests! !
+test_exitJadeiteInvalidSession!public!tests! !
+test_exitJadeiteValidSession!public!tests! !
+test_findDialogBasic!public!test find! !
+test_findMethodChangesCategories!public!test categories!test find!tests! !
+test_findMethodDoesNotChangeCategories!public!test categories!test find!tests! !
+test_findMethodDoesNothingWhenClassNotSelected!public!test find!tests! !
+test_findMethodShowsAllMethods!public!test find!tests! !
+test_findMethodShowsOnlyOneSide!public!test find!tests! !
+test_findMethodSUnitBrowser!public!test find!tests! !
+test_findUsedEverywhere!public!test find! !
+test_gitBranchesDoesNotShowHead!public!test projects!tests! !
+test_goToDefinedClassFromClassList!public!test defined package!tests! !
+test_goToDefinedClassFromClassListViaButton!public!test defined package!tests! !
+test_goToDefinedMethodFromClassListClassSide!public!test defined package!tests! !
+test_gotoDefinedMethodNotSameAsClass!public!test defined package!tests! !
+test_gotoDefinedPackage!public!test defined package!tests! !
+test_goToDefinedPackageNoClassSelected!public!test defined package!tests! !
+test_hierarchyFindsAllSubclassImplementors!public!tests! !
+test_hierarchyImplementors!public!tests! !
+test_hierarchyImplementorsFromMethodList!public!tests! !
+test_hierarchyImplementorsSendersCaption!public!tests! !
+test_hierarchySenders!public!tests! !
+test_hierarchySendersFromMethodList!public!tests! !
+test_implementorsSendersCaption!public!tests! !
+test_instVarReaders!public!test variable tab!tests! !
+test_instVarWriters!public!test variable tab!tests! !
+test_issue261!public!test menus!test projects!tests! !
+test_loadProjectRemovingClass!public!test projects! !
+test_maximizeCode!public!tests! !
+test_menuAddPackageOnProjectMenu!public!test projects!tests! !
+test_menuEnablementDoesNotBreak!public!tests! !
+test_menusDontAddBreaks!public!tests! !
+test_multiplePackageSelection!public!test packages!tests! !
+test_openChangesBrowser!public!test menus!tests! !
+test_openNewProjectBrowser!public!test menus!test projects!tests! !
+test_openNewProjectTab!public!test menus!test projects!tests! !
+test_openProjectsBrowser!public!test projects!tests! !
+test_openProjectsBrowserFromMethodList!public!tests! !
+test_packagesShownInMultipleProjects!public!tests! !
+test_projectDisplaysSync!public!test projects!tests! !
+test_projectInfoTab!public!test menus!test projects!tests! !
+test_projectMenuGitCommitMenuItem!public!test menus! !
+test_projectRemoved!public!test projects!tests! !
+test_refreshAfterAbortMethodList!public!test projects!tests! !
+test_refreshAfterAbortMethodListLeaveCommitted!public!test projects!tests! !
+test_refreshAfterReloadInProjectsBrowserWithAddedMethod!public!test projects!tests! !
+test_refreshAfterReloadWithAddedMethod!public!test projects!tests! !
+test_registeredPresentersInMethodBrowserCleanedUp!public!tests! !
+test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
+test_removeAbortedClass!public!tests! !
+test_removeInstVarVariablesStaySorted!public!test variable tab!tests! !
+test_removeProject!public!test projects!tests! !
+test_renameCategory!public!test categories!tests! !
+test_renameDisabledWithMultipleCategoriesSelected!public!test categories!tests! !
+test_selectMultiplePackages!public!tests! !
+test_selectVariable!public!test variable tab!tests! !
+test_separationOfClassAndInstance!public!test two browsers!tests! !
+test_setAndClearBreakpoint!public!tests! !
+test_sunitPresenterResetAfterPackageSelection!public!test packages!tests! !
+test_sunitPresenterResetAfterProjectSelection!public!test projects! !
+test_switchToVariableWithUnsavedChanges!public!test variable tab!tests! !
+test_symbolsLowerCaseMatch!public!tests! !
+test_symbolsWithoutImplementorsFound!public!tests! !
+test_tabNames!public!tests! !
+test_tabNames_projectsBrowser!public!tests! !
+test_tabNames_projectsBrowserNotLost!public!tests! !
+test_twoBrowsersAddedClassAppears!public!test two browsers!tests! !
+test_twoBrowsersAddedClassAppearsInHierarchy1!public!test two browsers!tests! !
+test_twoBrowsersAddedClassAppearsInHierarchy2!public!test two browsers!tests! !
+test_twoBrowsersAddedClassDoesNotAppearInDifferentHierarchy!public!test two browsers!tests! !
+test_twoBrowsersAddedClassRearrangesItselfInHierarchy!public!test two browsers!tests! !
+test_twoBrowsersAddSameCategoryToClassAndInstance!public!test two browsers!tests! !
+test_twoBrowsersDontClearMethodList!public!test two browsers!tests! !
+test_twoBrowsersNoUpdateWithoutPackageSelection!public!test two browsers!tests! !
+test_twoBrowsersRemoveMethod!public!test two browsers!tests! !
+test_twoBrowsersUpdate!public!test two browsers!tests! !
+test_twoBrowsersUpdateClassHierarchyDifferentDictionarySelected!public!test two browsers!tests! !
+test_twoBrowsersUpdateClassHierarchyDifferentPackageSelected!public!test two browsers!tests! !
+test_twoBrowsersUpdateClassHierarchyNoDictionarySelected!public!test two browsers!tests! !
+test_twoBrowsersUpdateClassHierarchyNoPackageSelected!public!test two browsers!tests! !
+test_twoBrowsersUpdateClassHierarchyNoProjectSelected!public!test two browsers!tests! !
+test_twoBrowsersUpdateHierarchy!public!test two browsers!tests! !
+test_twoTabsHaveIndependentCompileErrors!public!test two browsers! !
+test_unicodeDisplayMethod!public!tests! !
+test_unicodeSpecialMethodNotRed!public!tests! !
+test_UnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
+test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
+test_UnsavedChangesActionCloseWindow!public!tests! !
+test_UnsavedChangesActionCloseWindowStayOnMethod!public!tests! !
+test_variableTabSortOrder!public!test variable tab!tests! !
+test_variableTabSortOrder2!public!test variable tab!tests! !
+test_verifyValidCategory!public!tests! !
+waitForPresenter:!private!selection! !
+!
 

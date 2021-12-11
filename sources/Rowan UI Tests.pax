@@ -285,7 +285,9 @@ TestResource subclass: #JadeiteTestResource
 returnedServices
 
 	^returnedServices! !
-!BrowserUpdate categoriesFor: #returnedServices!public!updating! !
+!BrowserUpdate categoriesForMethods!
+returnedServices!public!updating! !
+!
 
 !ChoicePrompter class methodsFor!
 
@@ -295,7 +297,9 @@ create: viewName
 	^testsActive
 		ifTrue: [(Smalltalk at: #TestChoicePrompter) basicNew]
 		ifFalse: [super create: viewName]! !
-!ChoicePrompter class categoriesFor: #create:!instance creation!public! !
+!ChoicePrompter class categoriesForMethods!
+create:!instance creation!public! !
+!
 
 !DifferencesPresenter methodsFor!
 
@@ -312,10 +316,12 @@ beforePresenter
 
 beforeTitlePresenter
 	^beforeTitlePresenter! !
-!DifferencesPresenter categoriesFor: #afterPresenter!accessing!public! !
-!DifferencesPresenter categoriesFor: #afterTitlePresenter!accessing!public! !
-!DifferencesPresenter categoriesFor: #beforePresenter!accessing!public! !
-!DifferencesPresenter categoriesFor: #beforeTitlePresenter!accessing!public! !
+!DifferencesPresenter categoriesForMethods!
+afterPresenter!accessing!public! !
+afterTitlePresenter!accessing!public! !
+beforePresenter!accessing!public! !
+beforeTitlePresenter!accessing!public! !
+!
 
 !EventMessageSequence methodsFor!
 
@@ -323,7 +329,9 @@ messages
 	"for jadeite testing"
 
 	^messages! !
-!EventMessageSequence categoriesFor: #messages!private! !
+!EventMessageSequence categoriesForMethods!
+messages!private! !
+!
 
 !GciSession methodsFor!
 
@@ -331,7 +339,9 @@ userID: anObject
 
 	^userID := anObject
 ! !
-!GciSession categoriesFor: #userID:!public! !
+!GciSession categoriesForMethods!
+userID:!public! !
+!
 
 !JadeInspector methodsFor!
 
@@ -340,7 +350,9 @@ documentPresenter
 	"for testing"
 
 	^documentPresenter! !
-!JadeInspector categoriesFor: #documentPresenter!public! !
+!JadeInspector categoriesForMethods!
+documentPresenter!public! !
+!
 
 !JadeiteChangesBrowser methodsFor!
 
@@ -352,15 +364,19 @@ operationListPresenter
 	"for tests"
 
 	^operationListPresenter! !
-!JadeiteChangesBrowser categoriesFor: #diffsPresenter!accessing!private! !
-!JadeiteChangesBrowser categoriesFor: #operationListPresenter!public! !
+!JadeiteChangesBrowser categoriesForMethods!
+diffsPresenter!accessing!private! !
+operationListPresenter!public! !
+!
 
 !JadeiteMethodHistoryBrowser methodsFor!
 
 selection 
 	"for testing" 
 	^selection! !
-!JadeiteMethodHistoryBrowser categoriesFor: #selection!accessing!public! !
+!JadeiteMethodHistoryBrowser categoriesForMethods!
+selection!accessing!public! !
+!
 
 !JadeiteMethodListBrowser methodsFor!
 
@@ -368,14 +384,18 @@ listPresenter
 	"return the basic ListPresenter"
 
 	^self primaryPresenter listPresenter! !
-!JadeiteMethodListBrowser categoriesFor: #listPresenter!public!testing support! !
+!JadeiteMethodListBrowser categoriesForMethods!
+listPresenter!public!testing support! !
+!
 
 !JadeiteMethodListPresenter methodsFor!
 
 listPresenter
 	"return the basic ListPresenter"
 	^methodListPresenter methodListPresenter! !
-!JadeiteMethodListPresenter categoriesFor: #listPresenter!public!testing support! !
+!JadeiteMethodListPresenter categoriesForMethods!
+listPresenter!public!testing support! !
+!
 
 !JadeiteProjectsBrowserPresenter methodsFor!
 
@@ -385,8 +405,10 @@ definedClassPackageText
 
 definedMethodPackageText
 	^definedMethodPackageText! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #definedClassPackageText!initialize/release!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #definedMethodPackageText!initialize/release!public! !
+!JadeiteProjectsBrowserPresenter categoriesForMethods!
+definedClassPackageText!initialize/release!public! !
+definedMethodPackageText!initialize/release!public! !
+!
 
 !JadeiteSearch class methodsFor!
 
@@ -399,8 +421,10 @@ allSelectorSymbols: anObject
 	"for testing"
 
 	^AllSelectors := anObject! !
-!JadeiteSearch class categoriesFor: #allClassNames:!accessing!public! !
-!JadeiteSearch class categoriesFor: #allSelectorSymbols:!accessing!public! !
+!JadeiteSearch class categoriesForMethods!
+allClassNames:!accessing!public! !
+allSelectorSymbols:!accessing!public! !
+!
 
 !JadeiteTranscript methodsFor!
 
@@ -409,7 +433,9 @@ autoCompleteEnabled: boolean
 
 	JadeiteSearch autoCompleteEnabled: boolean.
 	autoCompleteEnabled value: boolean! !
-!JadeiteTranscript categoriesFor: #autoCompleteEnabled:!accessing!private! !
+!JadeiteTranscript categoriesForMethods!
+autoCompleteEnabled:!accessing!private! !
+!
 
 !JadeLoginShell methodsFor!
 
@@ -429,15 +455,19 @@ userIDPresenter: string
 	"for testing"
 
 	userIDPresenter := string! !
-!JadeLoginShell categoriesFor: #loginButtonPresenter!accessing!private! !
-!JadeLoginShell categoriesFor: #loginWithoutErrorHandling!public! !
-!JadeLoginShell categoriesFor: #userIDPresenter:!accessing!private! !
+!JadeLoginShell categoriesForMethods!
+loginButtonPresenter!accessing!private! !
+loginWithoutErrorHandling!public! !
+userIDPresenter:!accessing!private! !
+!
 
 !JadePresenter methodsFor!
 
 browseClassReferences
 	^JadePresenter browseClassReferencesInSession: self gciSession! !
-!JadePresenter categoriesFor: #browseClassReferences!menu handlers!public! !
+!JadePresenter categoriesForMethods!
+browseClassReferences!menu handlers!public! !
+!
 
 !MCAddition methodsFor!
 
@@ -445,7 +475,9 @@ definition
 	"for testing"
 
 	^definition! !
-!MCAddition categoriesFor: #definition!accessing!public! !
+!MCAddition categoriesForMethods!
+definition!accessing!public! !
+!
 
 !MCModification methodsFor!
 
@@ -458,8 +490,10 @@ obsoletion
 	"for testing"
 
 	^obsoletion! !
-!MCModification categoriesFor: #modification!accessing!public! !
-!MCModification categoriesFor: #obsoletion!accessing!public! !
+!MCModification categoriesForMethods!
+modification!accessing!public! !
+obsoletion!accessing!public! !
+!
 
 !MCRemoval methodsFor!
 
@@ -467,7 +501,9 @@ definition
 	"for testing"
 
 	^definition! !
-!MCRemoval categoriesFor: #definition!accessing!public! !
+!MCRemoval categoriesForMethods!
+definition!accessing!public! !
+!
 
 !MessageBox class methodsFor!
 
@@ -479,7 +515,9 @@ new
 	^testsActive
 		ifTrue: [(Smalltalk at: #TestMessageBox) basicNew initialize]
 		ifFalse: [self basicNew initialize] ! !
-!MessageBox class categoriesFor: #new!instance creation!public! !
+!MessageBox class categoriesForMethods!
+new!instance creation!public! !
+!
 
 !MethodHistoryBrowser methodsFor!
 
@@ -491,9 +529,11 @@ slider
 
 slider: anObject
 	slider := anObject! !
-!MethodHistoryBrowser categoriesFor: #history:!public! !
-!MethodHistoryBrowser categoriesFor: #slider!public! !
-!MethodHistoryBrowser categoriesFor: #slider:!public! !
+!MethodHistoryBrowser categoriesForMethods!
+history:!public! !
+slider!public! !
+slider:!public! !
+!
 
 !SUnitBrowserModel methodsFor!
 
@@ -506,7 +546,9 @@ debugIndividualTestsWithResources: tests
 		startResources: resources;
 		debugIndividualTests: tests]
 			ensure: [self stopResources: resources]! !
-!SUnitBrowserModel categoriesFor: #debugIndividualTestsWithResources:!actions!private! !
+!SUnitBrowserModel categoriesForMethods!
+debugIndividualTestsWithResources:!actions!private! !
+!
 
 "End of package definition"!
 

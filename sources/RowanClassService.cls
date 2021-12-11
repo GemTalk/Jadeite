@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanClassService
 	instanceVariableNames: 'name comment instVarNames classVarNames classInstVarNames superclassName subclassType poolDictionaryNames classType meta isExtension version versions oop template filters filterType methods selectedPackageServices packageName definedPackageName selectedMethods projectName hierarchyServices variables categories isTestCase expand visibleTests isNewClass updateAfterCommand isInSymbolList dictionaryName wasRemoved renamedName hasSubclasses'
@@ -44,7 +44,7 @@ addSorted: sortedAdditions to: theModel
 basicPrepareForReplication
 	"don't call anything potentially recursive here.
 	method & package services don't iterate over subcollections"
-	methods := Array new. 
+	"methods := Array new. "
 	hierarchyServices := Array new.
 	selectedMethods := Array new. 
 	visibleTests := Array new. 
@@ -622,108 +622,110 @@ wasRemoved: anObject
 wasRenamed
 
 	^renamedName notNil! !
-!RowanClassService categoriesFor: #=!comparing!public! !
-!RowanClassService categoriesFor: #addHierarchyService:to:withParent:!private!updating support! !
-!RowanClassService categoriesFor: #addSorted:to:!private!updating support! !
-!RowanClassService categoriesFor: #basicPrepareForReplication!public!replication! !
-!RowanClassService categoriesFor: #behaviorIdentifier!accessing!public! !
-!RowanClassService categoriesFor: #categories!accessing!private! !
-!RowanClassService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
-!RowanClassService categoriesFor: #classMethodsUpdate:browser:!public!updating! !
-!RowanClassService categoriesFor: #classOrHierarchyPresenter:!private!updating support! !
-!RowanClassService categoriesFor: #comment!accessing!public! !
-!RowanClassService categoriesFor: #comment:!accessing!public! !
-!RowanClassService categoriesFor: #computeVisibleMethods:browser:!private!updating support! !
-!RowanClassService categoriesFor: #definedClass!accessing!private! !
-!RowanClassService categoriesFor: #definedPackageName!accessing!private! !
-!RowanClassService categoriesFor: #definedPackageName:!accessing!private! !
-!RowanClassService categoriesFor: #dictionaryName!accessing!private! !
-!RowanClassService categoriesFor: #displayMethodsOn:browser:!public!updating! !
-!RowanClassService categoriesFor: #displayName!displaying!public! !
-!RowanClassService categoriesFor: #displayString!displaying!public! !
-!RowanClassService categoriesFor: #displayStringFor:browser:!displaying!public! !
-!RowanClassService categoriesFor: #equalBeforeRename:!comparing!public! !
-!RowanClassService categoriesFor: #excludedInstVars!public!ston! !
-!RowanClassService categoriesFor: #expand!accessing!private! !
-!RowanClassService categoriesFor: #expand:!accessing!private! !
-!RowanClassService categoriesFor: #filterMethods:!private!updating support! !
-!RowanClassService categoriesFor: #filters!accessing!public! !
-!RowanClassService categoriesFor: #filters:!accessing!public! !
-!RowanClassService categoriesFor: #filterUpdate:browser:!public!updating! !
-!RowanClassService categoriesFor: #hash!comparing!public! !
-!RowanClassService categoriesFor: #hasSubclasses!accessing!private! !
-!RowanClassService categoriesFor: #hasSubclasses:!accessing!private! !
-!RowanClassService categoriesFor: #hierarchyClassServiceNames!public! !
-!RowanClassService categoriesFor: #hierarchyClassServices!public! !
-!RowanClassService categoriesFor: #hierarchyServices!accessing!private! !
-!RowanClassService categoriesFor: #hierarchyServices:!accessing!private! !
-!RowanClassService categoriesFor: #indexOfMetaInstVar!constants!public! !
-!RowanClassService categoriesFor: #indexOfMethodsInstVar!constants!public! !
-!RowanClassService categoriesFor: #initialize!Init / Release!public! !
-!RowanClassService categoriesFor: #instVarNames!accessing!public! !
-!RowanClassService categoriesFor: #isClassService!public!testing! !
-!RowanClassService categoriesFor: #isDefined!public!testing! !
-!RowanClassService categoriesFor: #isExtension!public!testing! !
-!RowanClassService categoriesFor: #isExtension:!accessing!public! !
-!RowanClassService categoriesFor: #isInSymbolList!accessing!private! !
-!RowanClassService categoriesFor: #isNewClass!accessing!private! !
-!RowanClassService categoriesFor: #isNewClass:!accessing!private! !
-!RowanClassService categoriesFor: #isTestCase!public!testing! !
-!RowanClassService categoriesFor: #meta!accessing!private! !
-!RowanClassService categoriesFor: #meta:!accessing!private! !
-!RowanClassService categoriesFor: #methods!accessing!private! !
-!RowanClassService categoriesFor: #methods:!accessing!private! !
-!RowanClassService categoriesFor: #methodsWithBreakpoints!public!testing! !
-!RowanClassService categoriesFor: #methodUpdate:browser:!public!updating! !
-!RowanClassService categoriesFor: #moveNodeToBeChildOf:in:!private!updating support! !
-!RowanClassService categoriesFor: #name!accessing!public! !
-!RowanClassService categoriesFor: #name:!accessing!public! !
-!RowanClassService categoriesFor: #oop!accessing!private! !
-!RowanClassService categoriesFor: #oop:!accessing!private! !
-!RowanClassService categoriesFor: #packageName!accessing!private! !
-!RowanClassService categoriesFor: #packageName:!accessing!private! !
-!RowanClassService categoriesFor: #possiblyAdjustChildServiceIn:!private!updating support! !
-!RowanClassService categoriesFor: #postReload!public!replication! !
-!RowanClassService categoriesFor: #postUpdate!Init / Release!public! !
-!RowanClassService categoriesFor: #prepareForReplication!public!replication! !
-!RowanClassService categoriesFor: #projectName!accessing!private! !
-!RowanClassService categoriesFor: #remoteServiceName!must not strip!public! !
-!RowanClassService categoriesFor: #removedClass:!public!updating! !
-!RowanClassService categoriesFor: #renamedClass:browser:!public!updating! !
-!RowanClassService categoriesFor: #renamedClassInHierarchy:browser:!public!updating! !
-!RowanClassService categoriesFor: #renamedName!accessing!private! !
-!RowanClassService categoriesFor: #renamedName:!accessing!private! !
-!RowanClassService categoriesFor: #replicateFrom:!public!replication! !
-!RowanClassService categoriesFor: #saveMethod:category:session:!actions!public! !
-!RowanClassService categoriesFor: #selectedMethods!accessing!private! !
-!RowanClassService categoriesFor: #selectedPackageNames!private! !
-!RowanClassService categoriesFor: #selectedPackageServiceNames!private!updating support! !
-!RowanClassService categoriesFor: #selectedPackageServices!accessing!private! !
-!RowanClassService categoriesFor: #selectedPackageServices:!accessing!private! !
-!RowanClassService categoriesFor: #selectedPackageServices:browser:!accessing!private! !
-!RowanClassService categoriesFor: #shouldColorAsExtension:!public!testing! !
-!RowanClassService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
-!RowanClassService categoriesFor: #silentlyExpandHierarchyOneLevel:!public! !
-!RowanClassService categoriesFor: #sortAspect!accessing!public! !
-!RowanClassService categoriesFor: #sunitMethodsUpdate:browser:!public!updating! !
-!RowanClassService categoriesFor: #template!accessing!private! !
-!RowanClassService categoriesFor: #template:!accessing!private! !
-!RowanClassService categoriesFor: #toolTip!public! !
-!RowanClassService categoriesFor: #updateAfterCommand:!accessing!public! !
-!RowanClassService categoriesFor: #updateCategories:browser:!private!updating support! !
-!RowanClassService categoriesFor: #updatedClass:browser:!public!updating! !
-!RowanClassService categoriesFor: #updatedClassDefinition:browser:!public!updating! !
-!RowanClassService categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !
-!RowanClassService categoriesFor: #updatedOneLevelInClassHierarchy:browser:!public!updating! !
-!RowanClassService categoriesFor: #updateListIn:from:!private!updating support! !
-!RowanClassService categoriesFor: #updateVariables:!private!updating support! !
-!RowanClassService categoriesFor: #variables!accessing!private! !
-!RowanClassService categoriesFor: #version!accessing!private! !
-!RowanClassService categoriesFor: #versions!accessing!private! !
-!RowanClassService categoriesFor: #visibleTests!accessing!private! !
-!RowanClassService categoriesFor: #wasRemoved!accessing!private! !
-!RowanClassService categoriesFor: #wasRemoved:!accessing!private! !
-!RowanClassService categoriesFor: #wasRenamed!public!testing! !
+!RowanClassService categoriesForMethods!
+=!comparing!public! !
+addHierarchyService:to:withParent:!private!updating support! !
+addSorted:to:!private!updating support! !
+basicPrepareForReplication!public!replication! !
+behaviorIdentifier!accessing!public! !
+categories!accessing!private! !
+classHierarchyUpdate:browser:!public!updating! !
+classMethodsUpdate:browser:!public!updating! !
+classOrHierarchyPresenter:!private!updating support! !
+comment!accessing!public! !
+comment:!accessing!public! !
+computeVisibleMethods:browser:!private!updating support! !
+definedClass!accessing!private! !
+definedPackageName!accessing!private! !
+definedPackageName:!accessing!private! !
+dictionaryName!accessing!private! !
+displayMethodsOn:browser:!public!updating! !
+displayName!displaying!public! !
+displayString!displaying!public! !
+displayStringFor:browser:!displaying!public! !
+equalBeforeRename:!comparing!public! !
+excludedInstVars!public!ston! !
+expand!accessing!private! !
+expand:!accessing!private! !
+filterMethods:!private!updating support! !
+filters!accessing!public! !
+filters:!accessing!public! !
+filterUpdate:browser:!public!updating! !
+hash!comparing!public! !
+hasSubclasses!accessing!private! !
+hasSubclasses:!accessing!private! !
+hierarchyClassServiceNames!public! !
+hierarchyClassServices!public! !
+hierarchyServices!accessing!private! !
+hierarchyServices:!accessing!private! !
+indexOfMetaInstVar!constants!public! !
+indexOfMethodsInstVar!constants!public! !
+initialize!Init / Release!public! !
+instVarNames!accessing!public! !
+isClassService!public!testing! !
+isDefined!public!testing! !
+isExtension!public!testing! !
+isExtension:!accessing!public! !
+isInSymbolList!accessing!private! !
+isNewClass!accessing!private! !
+isNewClass:!accessing!private! !
+isTestCase!public!testing! !
+meta!accessing!private! !
+meta:!accessing!private! !
+methods!accessing!private! !
+methods:!accessing!private! !
+methodsWithBreakpoints!public!testing! !
+methodUpdate:browser:!public!updating! !
+moveNodeToBeChildOf:in:!private!updating support! !
+name!accessing!public! !
+name:!accessing!public! !
+oop!accessing!private! !
+oop:!accessing!private! !
+packageName!accessing!private! !
+packageName:!accessing!private! !
+possiblyAdjustChildServiceIn:!private!updating support! !
+postReload!public!replication! !
+postUpdate!Init / Release!public! !
+prepareForReplication!public!replication! !
+projectName!accessing!private! !
+remoteServiceName!must not strip!public! !
+removedClass:!public!updating! !
+renamedClass:browser:!public!updating! !
+renamedClassInHierarchy:browser:!public!updating! !
+renamedName!accessing!private! !
+renamedName:!accessing!private! !
+replicateFrom:!public!replication! !
+saveMethod:category:session:!actions!public! !
+selectedMethods!accessing!private! !
+selectedPackageNames!private! !
+selectedPackageServiceNames!private!updating support! !
+selectedPackageServices!accessing!private! !
+selectedPackageServices:!accessing!private! !
+selectedPackageServices:browser:!accessing!private! !
+shouldColorAsExtension:!public!testing! !
+shouldReplicateInstVarAtIndex:newService:!public!testing! !
+silentlyExpandHierarchyOneLevel:!public! !
+sortAspect!accessing!public! !
+sunitMethodsUpdate:browser:!public!updating! !
+template!accessing!private! !
+template:!accessing!private! !
+toolTip!public! !
+updateAfterCommand:!accessing!public! !
+updateCategories:browser:!private!updating support! !
+updatedClass:browser:!public!updating! !
+updatedClassDefinition:browser:!public!updating! !
+updatedClassInHierarchy:browser:!public!updating! !
+updatedOneLevelInClassHierarchy:browser:!public!updating! !
+updateListIn:from:!private!updating support! !
+updateVariables:!private!updating support! !
+variables!accessing!private! !
+version!accessing!private! !
+versions!accessing!private! !
+visibleTests!accessing!private! !
+wasRemoved!accessing!private! !
+wasRemoved:!accessing!private! !
+wasRenamed!public!testing! !
+!
 
 !RowanClassService class methodsFor!
 
@@ -741,7 +743,9 @@ named: theName
 	| inst |
 	inst := self new name: theName.
 	^inst! !
-!RowanClassService class categoriesFor: #defaultIconName!private! !
-!RowanClassService class categoriesFor: #icon!private! !
-!RowanClassService class categoriesFor: #named:!instance creation!public! !
+!RowanClassService class categoriesForMethods!
+defaultIconName!private! !
+icon!private! !
+named:!instance creation!public! !
+!
 
