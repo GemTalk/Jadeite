@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
 	instanceVariableNames: 'projectListPresenter stonCritical projectInfoTab projectLabel projectDictionaryTabs comparisonPresenter comparisonTab definedClassPackageText definedMethodPackageText methodCategoryText autoCommit statusBarText'
@@ -1353,7 +1353,9 @@ selectMethodsFrom: classService
 	selections := OrderedCollection new.
 	self selectClassNamed: classService selectedMethods first className asString.
 	(classService selectedMethods size = 1 and: [self isCategoryTabSelected])
-		ifTrue: [categoryListPresenter selection: classService selectedMethods first category].
+		ifTrue: [| category | category := classService selectedMethods first category. 
+			(categoryListPresenter model includes: categoryListPresenter) ifFalse: [categoryListPresenter model add: category]. 
+			categoryListPresenter selection: category].
 	classService selectedMethods do: 
 			[:methodService |
 			| selection |
@@ -1670,186 +1672,190 @@ updateSUnitTab
 
 updateSUnitTab: service
 	service ifNil: [sunitPresenter testClassService: nil] ifNotNil: [self setTestClass: service]! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #aboutToChange:!event handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #addNoneProject!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #addPackage!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #addPackageDictionaryInfoTo:!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #addSubclass!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #addVariableAccessors!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #allClasses!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #autoCommit!accessing!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #autoCommit:!initialize/release!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #basicAddMethodCategory:!menu handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #basicOnDropClassList:!drag & drop!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #basicProjectTabLabel!displaying!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethodCategories!menu handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #basicRemoveMethods!menu handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #basicRenameCategoryFrom:to:!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #basicRenameClass:to:!menu handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #basicUnloadProjects:!menu handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #behaviorIdentifier!private!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #browseHierarchyImplementors!menu handlers!public!queries! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #browseHierarchySenders!public!queries! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #browseSelectedClass!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #categoryListPresenter!accessing!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #classCommentPresenter!accessing!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #classDefinitionPresenter!accessing!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #classHierarchyTabs!accessing!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #cleanupComparisonBrowser!initialize/release!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #clearFilterLists!event handlers support!private!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #clearMethodBreakpoints!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #comparisonTab!private!text tabs! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #confirmCategoryRemoval:!menu handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #confirmOverwriteAccessor!menu handlers support!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #containedDictionaryLabel!menus!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #copyClass!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #createComponents!initialize/release!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiring!create schemantic wiring!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForClassHierarchyTabs!create schemantic wiring!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForInstanceClassTabs!create schemantic wiring!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForMethodCategoryList!create schemantic wiring!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForMethodFilterTabs!create schemantic wiring!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForPackageDictionaryTabs!create schemantic wiring!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForPackageList!create schemantic wiring!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #createSchematicWiringForVariableList!create schemantic wiring!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #createStateEntry!accessing!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #definedClassMenuItemLabel!menus!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #definedMethodMenuItemLabel!menus!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #displayMultipleCategories!displaying!private!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #editFind!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #editReplace!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #editSaveClassComment!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #fileOutCategories!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #fileOutCategoriesOnPath:!menu handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #fileOutClass!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #fileOutClassOnPath:!menu handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #fileOutMethods!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #fileOutMethodsOnPath:!menu handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #filterTabChanged!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #findMethod!event handlers!menu handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #findMethod:!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #gciSession:!accessing!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #getterMethodSourceFor:!menu handlers support!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #getViews!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #gotoClass!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #gotoClassDefinedPackageViaButton!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #gotoMethodDefinedPackage!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #gotoMethodDefinedPackageViaButton!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #gotoPackageNamed:!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #gotoProjectNamed:!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #initialize!initialize/release!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #jadeDebug!menu handlers!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #jadeDisplay!menu handlers!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #jadeExecute!menu handlers!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #jadeMenuStrings!menus!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #methodCategoryText!accessing!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #methodListPresenter!accessing!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #methodListSelection!accessing!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #methodMenuBreak:!menus!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #methodsMenuStrings!menus!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #methodSourcePresenter:!accessing!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #moveMethods:toCategory:!drag & drop!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #newBrowser!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #onDropMethodsOnClassHierarchy:!drag & drop!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #onDropOnClassList:!drag & drop!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #onDropOnMethodCategory:!drag & drop!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #onSetFocus:stack:!event handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #onViewClosed!event handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #onViewOpened!event handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #pkgsMenuStrings!menus!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #populateFilterList!event handlers support!private!services!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #postOkToChangeEvent!event handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #projectListPresenter!accessing!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #queryCommand:!menu handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #redrawAllViews!displaying!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #refreshClassListOrHierarchy!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #refreshMethodsOn:!event handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #registerClassData!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #registerPresentersForUpdates!event handlers!initialize/release!private!register presenters! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #releasedReferencedServices:!event handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #removeMethodCategories!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #removeMethods:!private!services! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #removeMethodSelector:!private!services! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #removeMethodSelectors:!private!services! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #renameClass!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #renameMethodCategory!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #resetCategoryText!event handlers support!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #resetClassDefinitionPane!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #resetClassTemplate!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #resetDefinedClassPackage!event handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #resetSunitTestList!initialize/release!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #runAndMesureTime!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #runClassTests!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #runMethodTests!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #savePackage!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoriesNamed:!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoryFrom:!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoryNamed:!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectCategoryTab!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectClassDefinitionTab!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectClassInClassHierarchyNamed:!private!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectClassInClassListNamed:!private!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectClassListTab!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectClassNamed:!private!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectClassTab!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectCommentTab!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectComparisonTab!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectedClass!private!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectedClasses!private!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectedClassName!private!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectedFilters!accessing!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectedMethodCategory!menu handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectedMethodName!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectedPackageNames!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectGlobalsTab!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectionMethod:!private!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectMethods:!private!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectMethodsFrom:!private!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectMethodSourceTab!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectPackage:!private!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectProjectTab!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectSourceTabNamed:!private!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectSUnitTab!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #selectVariableTab!public!selection! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #setDefaultProjectTablLabel!event handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #setDefaultProjectTablLabel:!event handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #setMethodFilterFor:!event handlers support!private!services!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #setterMethodSourceFor:!menu handlers support!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #setTestClass:!event handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #setupPackageMenu!event handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #showMethodRecompilationError:!menu handlers support!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #showSUnitBrowserOnClass!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #showSuperClassComparison!private!text tabs! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #sundryCleanup!initialize/release!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #sunitPresenter!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #targetCategory!menu handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #textAreaTabs!private!text tabs! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #textTabs!private!text tabs! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #unloadPackage!menu handlers!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #update:afterStonReplication:!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateAndSelectA:!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateClasses!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateClassInfo!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateClassMenu:!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateCommand:onSuccessDo:!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateMethodMenu:!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateMethodReferences:!private!services! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateMethodSource!event handlers!public!text tabs!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateMultiMethodComparison!event handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updatePackage!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updatePackageInfo!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updatePresenter:selections:!event handlers support!public! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateProjectPackages!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateSelectionsForUpdate:!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateSingleMethodSource!event handlers support!private! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateSUnitTab!event handlers!public!updating! !
-!JadeiteProjectsBrowserPresenter categoriesFor: #updateSUnitTab:!event handlers!public!updating! !
+!JadeiteProjectsBrowserPresenter categoriesForMethods!
+aboutToChange:!event handlers!public! !
+addNoneProject!private! !
+addPackage!menu handlers!public! !
+addPackageDictionaryInfoTo:!private! !
+addSubclass!menu handlers!public! !
+addVariableAccessors!menu handlers!public! !
+allClasses!menu handlers!public! !
+autoCommit!accessing!private! !
+autoCommit:!initialize/release!public! !
+basicAddMethodCategory:!menu handlers support!private! !
+basicOnDropClassList:!drag & drop!public! !
+basicProjectTabLabel!displaying!private! !
+basicRemoveMethodCategories!menu handlers support!private! !
+basicRemoveMethods!menu handlers support!private! !
+basicRenameCategoryFrom:to:!menu handlers!public! !
+basicRenameClass:to:!menu handlers support!private! !
+basicUnloadProjects:!menu handlers support!private! !
+behaviorIdentifier!private!selection! !
+browseHierarchyImplementors!menu handlers!public!queries! !
+browseHierarchySenders!public!queries! !
+browseSelectedClass!menu handlers!public! !
+categoriesMenuStrings!menus!public! !
+categoryListPresenter!accessing!public! !
+classCommentPresenter!accessing!menu handlers!public! !
+classDefinitionPresenter!accessing!public! !
+classHierarchyTabs!accessing!private! !
+cleanupComparisonBrowser!initialize/release!private! !
+clearFilterLists!event handlers support!private!updating! !
+clearMethodBreakpoints!menu handlers!public! !
+comparisonTab!private!text tabs! !
+confirmCategoryRemoval:!menu handlers support!private! !
+confirmOverwriteAccessor!menu handlers support!public! !
+containedDictionaryLabel!menus!private! !
+copyClass!menu handlers!public! !
+createComponents!initialize/release!public! !
+createSchematicWiring!create schemantic wiring!public! !
+createSchematicWiringForClassHierarchyTabs!create schemantic wiring!public! !
+createSchematicWiringForInstanceClassTabs!create schemantic wiring!public! !
+createSchematicWiringForMethodCategoryList!create schemantic wiring!public! !
+createSchematicWiringForMethodFilterTabs!create schemantic wiring!public! !
+createSchematicWiringForPackageDictionaryTabs!create schemantic wiring!public! !
+createSchematicWiringForPackageList!create schemantic wiring!public! !
+createSchematicWiringForVariableList!create schemantic wiring!public! !
+createStateEntry!accessing!public!updating! !
+definedClassMenuItemLabel!menus!private! !
+definedMethodMenuItemLabel!menus!private! !
+displayMultipleCategories!displaying!private!updating! !
+editFind!menu handlers!public! !
+editReplace!menu handlers!public! !
+editSaveClassComment!menu handlers!public! !
+fileOutCategories!menu handlers!public! !
+fileOutCategoriesOnPath:!menu handlers support!private! !
+fileOutClass!menu handlers!public! !
+fileOutClassOnPath:!menu handlers support!private! !
+fileOutMethods!menu handlers!public! !
+fileOutMethodsOnPath:!menu handlers support!private! !
+filterTabChanged!event handlers!public!updating! !
+findMethod!event handlers!menu handlers!public!updating! !
+findMethod:!menu handlers!public! !
+gciSession:!accessing!public! !
+getterMethodSourceFor:!menu handlers support!public! !
+getViews!public! !
+gotoClass!menu handlers!public! !
+gotoClassDefinedPackageViaButton!menu handlers!public! !
+gotoMethodDefinedPackage!menu handlers!public! !
+gotoMethodDefinedPackageViaButton!menu handlers!public! !
+gotoPackageNamed:!menu handlers!public! !
+gotoProjectNamed:!menu handlers!public! !
+initialize!initialize/release!public! !
+jadeDebug!menu handlers!private! !
+jadeDisplay!menu handlers!private! !
+jadeExecute!menu handlers!private! !
+jadeMenuStrings!menus!public! !
+methodCategoryText!accessing!private! !
+methodListPresenter!accessing!public! !
+methodListSelection!accessing!public! !
+methodMenuBreak:!menus!public! !
+methodsMenuStrings!menus!public! !
+methodSourcePresenter:!accessing!private! !
+moveMethods:toCategory:!drag & drop!private! !
+newBrowser!menu handlers!public! !
+onDropMethodsOnClassHierarchy:!drag & drop!public! !
+onDropOnClassList:!drag & drop!public! !
+onDropOnMethodCategory:!drag & drop!public! !
+onSetFocus:stack:!event handlers!public! !
+onViewClosed!event handlers!public! !
+onViewOpened!event handlers!public! !
+pkgsMenuStrings!menus!public! !
+populateFilterList!event handlers support!private!services!updating! !
+postOkToChangeEvent!event handlers!public! !
+projectListPresenter!accessing!public! !
+queryCommand:!menu handlers support!private! !
+redrawAllViews!displaying!public! !
+refreshClassListOrHierarchy!event handlers!public!updating! !
+refreshMethodsOn:!event handlers!public! !
+registerClassData!public!updating! !
+registerPresentersForUpdates!event handlers!initialize/release!private!register presenters! !
+releasedReferencedServices:!event handlers!public! !
+removeMethodCategories!menu handlers!public! !
+removeMethods:!private!services! !
+removeMethodSelector:!private!services! !
+removeMethodSelectors:!private!services! !
+renameClass!menu handlers!public! !
+renameMethodCategory!menu handlers!public! !
+resetCategoryText!event handlers support!public! !
+resetClassDefinitionPane!menu handlers!public! !
+resetClassTemplate!private! !
+resetDefinedClassPackage!event handlers support!private! !
+resetSunitTestList!initialize/release!private! !
+runAndMesureTime!menu handlers!public! !
+runClassTests!menu handlers!public! !
+runMethodTests!menu handlers!public! !
+savePackage!menu handlers!public! !
+selectCategoriesNamed:!public!selection! !
+selectCategoryFrom:!public!selection! !
+selectCategoryNamed:!public!selection! !
+selectCategoryTab!public!selection! !
+selectClassDefinitionTab!public!selection! !
+selectClassInClassHierarchyNamed:!private!selection! !
+selectClassInClassListNamed:!private!selection! !
+selectClassListTab!public!selection! !
+selectClassNamed:!private!selection! !
+selectClassTab!public!selection! !
+selectCommentTab!public!selection! !
+selectComparisonTab!public!selection! !
+selectedClass!private!selection! !
+selectedClasses!private!selection! !
+selectedClassName!private!selection! !
+selectedFilters!accessing!public! !
+selectedMethodCategory!menu handlers support!private! !
+selectedMethodName!menu handlers!public! !
+selectedPackageNames!public!selection! !
+selectGlobalsTab!public!selection! !
+selectionMethod:!private!selection! !
+selectMethods:!private!selection! !
+selectMethodsFrom:!private!selection! !
+selectMethodSourceTab!public!selection! !
+selectPackage:!private!selection! !
+selectProjectTab!public!selection! !
+selectSourceTabNamed:!private!selection! !
+selectSUnitTab!public!selection! !
+selectVariableTab!public!selection! !
+setDefaultProjectTablLabel!event handlers!public! !
+setDefaultProjectTablLabel:!event handlers!public! !
+setMethodFilterFor:!event handlers support!private!services!updating! !
+setterMethodSourceFor:!menu handlers support!public! !
+setTestClass:!event handlers support!private! !
+setupPackageMenu!event handlers!public! !
+showMethodRecompilationError:!menu handlers support!public! !
+showSUnitBrowserOnClass!menu handlers!public! !
+showSuperClassComparison!private!text tabs! !
+sundryCleanup!initialize/release!private! !
+sunitPresenter!menu handlers!public! !
+targetCategory!menu handlers support!private! !
+textAreaTabs!private!text tabs! !
+textTabs!private!text tabs! !
+unloadPackage!menu handlers!public! !
+update:afterStonReplication:!public!updating! !
+updateAndSelectA:!public!updating! !
+updateClasses!event handlers!public!updating! !
+updateClassInfo!event handlers!public!updating! !
+updateClassMenu:!event handlers!public!updating! !
+updateCommand:onSuccessDo:!public!updating! !
+updateMethodMenu:!event handlers!public!updating! !
+updateMethodReferences:!private!services! !
+updateMethodSource!event handlers!public!text tabs!updating! !
+updateMultiMethodComparison!event handlers support!private! !
+updatePackage!event handlers!public!updating! !
+updatePackageInfo!event handlers!public!updating! !
+updatePresenter:selections:!event handlers support!public! !
+updateProjectPackages!event handlers!public!updating! !
+updateSelectionsForUpdate:!public!updating! !
+updateSingleMethodSource!event handlers support!private! !
+updateSUnitTab!event handlers!public!updating! !
+updateSUnitTab:!event handlers!public!updating! !
+!
 
 !JadeiteProjectsBrowserPresenter class methodsFor!
 
 downArrowIcon
 	^Icon fromFile: 'icons\DownArrow.ico'
 ! !
-!JadeiteProjectsBrowserPresenter class categoriesFor: #downArrowIcon!public! !
+!JadeiteProjectsBrowserPresenter class categoriesForMethods!
+downArrowIcon!public! !
+!
 
