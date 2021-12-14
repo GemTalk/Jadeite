@@ -1,7 +1,7 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanDefinitionService subclass: #RowanProjectDefinitionService
-	instanceVariableNames: 'componentDefinitions packageDefinitions loadSpecification'
+	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions loadSpecification'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -13,11 +13,13 @@ RowanProjectDefinitionService comment: ''!
 editInSession: session window: handle
 	command := #editInWindow:.
 	commandArgs := Array with: handle.
-	^self issueCommand: self session: session!
+	self issueCommand: self session: session!
 
 updateInSession: session
 	command := #update.
 	^self issueCommand: self session: session! !
-!RowanProjectDefinitionService categoriesFor: #editInSession:window:!commands!public! !
-!RowanProjectDefinitionService categoriesFor: #updateInSession:!commands!public! !
+!RowanProjectDefinitionService categoriesForMethods!
+editInSession:window:!commands!public! !
+updateInSession:!commands!public! !
+!
 

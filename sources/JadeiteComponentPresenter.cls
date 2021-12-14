@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteComponentPresenter
 	instanceVariableNames: 'componentListPresenter componentPropertyPresenter packageListPresenter'
@@ -29,12 +29,44 @@ createSchematicWiring
 		to: self.
 	componentListPresenter
 		when: #selectionChanged
-		send: #updateComponentPackages
+		send: #displayPackages
 		to: self!
+
+displayComponents
+	"The fake dictionary will be replaced by an argument to the method with the actual hierarchy from the server"
+
+	| treeModel fakeHierarchy flattenedHierarchy |
+	fakeHierarchy := Dictionary new.
+	fakeHierarchy at: #nil put: #('Component').
+	fakeHierarchy at: 'Component' put: #('SubComponent1' 'SubComponent2').
+	flattenedHierarchy := fakeHierarchy.	"flattenedHierarchy will become the argument"
+	treeModel := componentListPresenter model.
+	flattenedHierarchy keysAndValuesDo: 
+			[:parent :children |
+			| theParent |
+			theParent := parent == #nil ifTrue: [nil] ifFalse: [parent].
+			children do: [:child | treeModel add: child asChildOf: theParent]].
+	componentListPresenter view  expandAll.!
+
+displayPackages
+	| packageNames |
+	componentListPresenter selections isEmpty ifTrue: [^self].
+	packageListPresenter clear.
+	packageNames := SortedCollection new.
+	componentListPresenter selections do: 
+			[:componentName |
+			| componentService |
+			componentService := RowanComponentDefinitionService new
+						name: componentName; 
+						projectDefinitionService: model.
+			componentService command: #packageNames.
+			self issueCommand: componentService.
+			packageNames addAll: componentService packageNames].
+	packageListPresenter list addAll: packageNames!
 
 initialize
 	super initialize. 
-	self resetComponentList
+	self resetComponentList.
 	!
 
 isClassSelected
@@ -57,20 +89,11 @@ onViewClosed
 
 onViewOpened
 	super onViewOpened.
-	self registerPresentersForUpdates.!
+	self displayComponents.!
 
 projectListPresenter
 
 	^nil!
-
-registerPresentersForUpdates
-	BrowserUpdate current
-		register: componentListPresenter
-			selector: #componentsUpdate:browser:
-			browser: self;
-		register: packageListPresenter
-			selector: #componentPackagesUpdate:browser:
-			browser: self!
 
 renameComponent
 	componentListPresenter view editSelectionLabel!
@@ -78,26 +101,21 @@ renameComponent
 resetComponentList
 	componentListPresenter model: (JadeiteTreeModel new
 				searchPolicy: SearchPolicy equality;
-				reset)!
-
-updateComponentPackages
-	packageListPresenter clear.
-	componentListPresenter selections isEmpty ifTrue: [^self].
-	self updateServices: componentListPresenter selections.
-	packageListPresenter selections: packageListPresenter list.
-	self updateServices: packageListPresenter selections! !
-!JadeiteComponentPresenter categoriesFor: #componentListPresenter!accessing!public! !
-!JadeiteComponentPresenter categoriesFor: #createComponents!initialization!public! !
-!JadeiteComponentPresenter categoriesFor: #createSchematicWiring!initialization!public! !
-!JadeiteComponentPresenter categoriesFor: #initialize!initialization!public! !
-!JadeiteComponentPresenter categoriesFor: #isClassSelected!public!testing! !
-!JadeiteComponentPresenter categoriesFor: #labelOf:changedTo:!event handlers!public! !
-!JadeiteComponentPresenter categoriesFor: #labelOfClass:editedTo:accept:!event handlers!public! !
-!JadeiteComponentPresenter categoriesFor: #onViewClosed!event handlers!public! !
-!JadeiteComponentPresenter categoriesFor: #onViewOpened!event handlers!public! !
-!JadeiteComponentPresenter categoriesFor: #projectListPresenter!accessing!public! !
-!JadeiteComponentPresenter categoriesFor: #registerPresentersForUpdates!public!register presenters! !
-!JadeiteComponentPresenter categoriesFor: #renameComponent!menu handlers!public! !
-!JadeiteComponentPresenter categoriesFor: #resetComponentList!initialization!public! !
-!JadeiteComponentPresenter categoriesFor: #updateComponentPackages!public!updating! !
+				reset)! !
+!JadeiteComponentPresenter categoriesForMethods!
+componentListPresenter!accessing!public! !
+createComponents!initialization!public! !
+createSchematicWiring!initialization!public! !
+displayComponents!displaying!public! !
+displayPackages!displaying!public! !
+initialize!initialization!public! !
+isClassSelected!public!testing! !
+labelOf:changedTo:!event handlers!public! !
+labelOfClass:editedTo:accept:!event handlers!public! !
+onViewClosed!event handlers!public! !
+onViewOpened!event handlers!public! !
+projectListPresenter!accessing!public! !
+renameComponent!menu handlers!public! !
+resetComponentList!initialization!public! !
+!
 

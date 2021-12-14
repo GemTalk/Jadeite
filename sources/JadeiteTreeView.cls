@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 TreeView subclass: #JadeiteTreeView
 	instanceVariableNames: 'toldToExpand'
@@ -25,12 +25,14 @@ tvnItemExpanding: pNMHDR
 	nmtv := self notificationClass fromAddress: pNMHDR.
 	nmtv action = TVE_EXPAND ifFalse: [^nil].	"See if we have been expanded before"
 	object := self objectFromHandle: nmtv itemNew hItem ifAbsent: [].
-	toldToExpand
+	toldToExpand == true "can legitimately be nil" 
 		ifFalse: [(self hasPlaceholderChild: object) ifTrue: [object silentlyExpandHierarchyOneLevel: self]].
 	super tvnItemExpanding: pNMHDR! !
-!JadeiteTreeView categoriesFor: #expand:!event handling-win32!private! !
-!JadeiteTreeView categoriesFor: #hasPlaceholderChild:!private!testing! !
-!JadeiteTreeView categoriesFor: #tvnItemExpanding:!event handling-win32!private! !
+!JadeiteTreeView categoriesForMethods!
+expand:!event handling-win32!private! !
+hasPlaceholderChild:!private!testing! !
+tvnItemExpanding:!event handling-win32!private! !
+!
 
 !JadeiteTreeView class methodsFor!
 
@@ -38,5 +40,7 @@ defaultModel
 	"Answer a default model to be assigned to the receiver when it is initialized."
 
 	^JadeiteTreeModel new! !
-!JadeiteTreeView class categoriesFor: #defaultModel!models!public! !
+!JadeiteTreeView class categoriesForMethods!
+defaultModel!models!public! !
+!
 

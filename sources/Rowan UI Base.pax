@@ -2712,19 +2712,19 @@ editSaveMethod:in:category:!compile support!public! !
 executeSelectionOrLine:!menu handlers!private! !
 flipAutoCommit!menu handlers!public! !
 insertCompileErrorText:into:!compile support!public! !
-issueCommand:!browsing support!public! !
-issueCommands:!browsing support!public! !
+issueCommand:!browsing support!public!services! !
+issueCommands:!browsing support!public!services! !
 openBrowserInNewTab:on:!Jade!public! !
 openProjectBrowserOn:selector:!browsing!public! !
 raiseConsole!menu handlers!public! !
 refreshGlobalSelections!menu handlers!public! !
-remoteAutoCommit!browsing support!public! !
+remoteAutoCommit!browsing support!public!services! !
 reportCompileError:in:!compile support!public! !
 selectionRangeFrom:source:!compile support!private! !
 serviceFromSelection:!menu handlers!menu handlers support!private! !
 setCompileErrorColor!compile support!public! !
 setCompileWarningColor!compile support!public! !
-update:afterStonReplication:!browsing support!public! !
+update:afterStonReplication:!browsing support!public!services! !
 updateProjects!public! !
 updateServices:!private!services! !
 !

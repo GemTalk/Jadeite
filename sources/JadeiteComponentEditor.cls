@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeShell subclass: #JadeiteComponentEditor
 	instanceVariableNames: 'projectListPresenter componentTreePresenter componentPropertyPresenter'
@@ -10,12 +10,11 @@ JadeiteComponentEditor comment: ''!
 !JadeiteComponentEditor categoriesForClass!Unclassified! !
 !JadeiteComponentEditor methodsFor!
 
-displayComponents!
-
 editProject: projectName
 	self createView: self class defaultView.
 	model := (RowanProjectDefinitionService new name: projectName) editInSession: gciSession
 				window: self view handle value.
+	myPresenter model: model. 
 	^self show!
 
 onViewClosed
@@ -29,18 +28,14 @@ onViewClosed
 presenterClass
 	^JadeiteComponentPresenter!
 
-show
-	super show.
-	self displayComponents. !
-
 updateCaption
 	self caption: (gciSession titleBarFor: 'Project Component Editor')! !
-!JadeiteComponentEditor categoriesFor: #displayComponents!displaying!public! !
-!JadeiteComponentEditor categoriesFor: #editProject:!displaying!public! !
-!JadeiteComponentEditor categoriesFor: #onViewClosed!event handlers!public! !
-!JadeiteComponentEditor categoriesFor: #presenterClass!public! !
-!JadeiteComponentEditor categoriesFor: #show!displaying!public! !
-!JadeiteComponentEditor categoriesFor: #updateCaption!public! !
+!JadeiteComponentEditor categoriesForMethods!
+editProject:!displaying!public! !
+onViewClosed!event handlers!public! !
+presenterClass!public! !
+updateCaption!public! !
+!
 
 !JadeiteComponentEditor class methodsFor!
 
@@ -59,6 +54,8 @@ showOn: projectName session: aGciSession
 	| editor |
 	editor := self new gciSession: aGciSession.
 	^editor editProject: projectName! !
-!JadeiteComponentEditor class categoriesFor: #resource_Default_view!public!resources-views! !
-!JadeiteComponentEditor class categoriesFor: #showOn:session:!public! !
+!JadeiteComponentEditor class categoriesForMethods!
+resource_Default_view!public!resources-views! !
+showOn:session:!public! !
+!
 

@@ -1268,7 +1268,7 @@ projectMenuStrings
 				auditProject;
 				projectLog;
 				refresh].
-	^#('Projects' 'Create ...//createNewProject' 'Load Git Project ...//loadV2Project' 'Reload Project //reloadV2Project' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' '&Add Package...//addPackage' '-' 'Edit Components...//editComponents' '-'  'Audit//auditProject' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
+	^#('Projects' 'Create ...//createNewProject' 'Load Git Project ...//loadV2Project' 'Reload Project //reloadV2Project' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' '&Add Package...//addPackage'  'Edit Components//editComponents' '-'  'Audit//auditProject' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
 
 projectTabLabel
 	"Selections get mixed up switching between system presenters unless the tabs
