@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 Object subclass: #RowanService
 	instanceVariableNames: 'command commandArgs updateType organizer updates wasUpdated'
@@ -218,6 +218,10 @@ isComponentService
 isDefinedProject
 
 	^true!
+
+isDefinitionService
+
+	^false!
 
 isDictionaryService
 
@@ -536,125 +540,128 @@ wasUpdated
 
 wasUpdated: anObject
 	wasUpdated := anObject! !
-!RowanService categoriesFor: #addCachedSymbols:!public!updating! !
-!RowanService categoriesFor: #autoCommitUpdate:!public!updating! !
-!RowanService categoriesFor: #basicPrepareForReplication!public!replication! !
-!RowanService categoriesFor: #basicReplicateFrom:!public!replication! !
-!RowanService categoriesFor: #breakpointSettingChanged:!public!updating! !
-!RowanService categoriesFor: #chooseModel:using:!private!updating! !
-!RowanService categoriesFor: #classCategoryUpdate:!public!updating! !
-!RowanService categoriesFor: #classCommentUpdate:!public!updating! !
-!RowanService categoriesFor: #classDefinitionUpdate:!public!updating! !
-!RowanService categoriesFor: #classesHierarchyUpdate:!public!updating! !
-!RowanService categoriesFor: #classesUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #classHierarchyUpdate:!public!updating! !
-!RowanService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #classHierarchyUpdate:browser:hierarchyServices:!public!updating! !
-!RowanService categoriesFor: #classMethodsUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #classUpdate:!public!updating! !
-!RowanService categoriesFor: #clearCommand!Init / Release!public! !
-!RowanService categoriesFor: #clientDefinitionClass!public! !
-!RowanService categoriesFor: #command!accessing!public! !
-!RowanService categoriesFor: #command:!accessing!public! !
-!RowanService categoriesFor: #commandArgs!accessing!public! !
-!RowanService categoriesFor: #commandArgs:!accessing!public! !
-!RowanService categoriesFor: #componentPackagesUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #componentsUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #debuggerMethodSourceUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #debugPrintOn:!printing!public! !
-!RowanService categoriesFor: #debugPrintString!printing!public! !
-!RowanService categoriesFor: #dictionaryListUpdate:!public!updating! !
-!RowanService categoriesFor: #dictionaryUpdate:!public!updating! !
-!RowanService categoriesFor: #emptyFilterListsIn:!Init / Release!private! !
-!RowanService categoriesFor: #excludedInstVars!public!ston! !
-!RowanService categoriesFor: #filterUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #frameListUpdate:!Debugger!public!updating! !
-!RowanService categoriesFor: #globalsUpdate:!public!updating! !
-!RowanService categoriesFor: #initialize!Init / Release!public! !
-!RowanService categoriesFor: #initializePresenterList:!Init / Release!private! !
-!RowanService categoriesFor: #isAnsweringService!public!testing! !
-!RowanService categoriesFor: #isBrowserService!public!testing! !
-!RowanService categoriesFor: #isClassService!public!testing! !
-!RowanService categoriesFor: #isComponentService!public!testing! !
-!RowanService categoriesFor: #isDefinedProject!public!testing! !
-!RowanService categoriesFor: #isDictionaryService!public!testing! !
-!RowanService categoriesFor: #isInspectorService!public!testing! !
-!RowanService categoriesFor: #isLoggingService!public!testing! !
-!RowanService categoriesFor: #isMethodService!public!testing! !
-!RowanService categoriesFor: #isPackageService!public!testing! !
-!RowanService categoriesFor: #isProjectService!public!testing! !
-!RowanService categoriesFor: #isService!public!testing! !
-!RowanService categoriesFor: #issueCommand:session:!commands!public! !
-!RowanService categoriesFor: #issueCommands:session:!commands!public! !
-!RowanService categoriesFor: #isTestCase!public!testing! !
-!RowanService categoriesFor: #isUpdatableService!public!testing! !
-!RowanService categoriesFor: #methodFilterUpdate:!public!updating! !
-!RowanService categoriesFor: #methodHistoryUpdated:!must not strip!public!updating! !
-!RowanService categoriesFor: #methodListUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #methodSourceUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #methodsUpdate:!public!updating! !
-!RowanService categoriesFor: #methodUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #name!accessing!public! !
-!RowanService categoriesFor: #newProject:!public!updating! !
-!RowanService categoriesFor: #notRowanizedPackageName!displaying!public! !
-!RowanService categoriesFor: #packageServices!accessing!public! !
-!RowanService categoriesFor: #packagesUpdate:!public!updating! !
-!RowanService categoriesFor: #packagesUpdate:browser:parentPresenter:!public!updating! !
-!RowanService categoriesFor: #packageUpdate:!public!updating! !
-!RowanService categoriesFor: #possiblyAddComponent:to:withParent:hierarchyServices:!private!updating! !
-!RowanService categoriesFor: #possiblyAddHierarchyService:to:withParent:hierarchyServices:!private! !
-!RowanService categoriesFor: #postReload!public!replication! !
-!RowanService categoriesFor: #postUpdate!Init / Release!public! !
-!RowanService categoriesFor: #postUpdateBlock!accessing!private! !
-!RowanService categoriesFor: #prepareForReplication!public!replication! !
-!RowanService categoriesFor: #printOn:!printing!public! !
-!RowanService categoriesFor: #processListUpdate:!Debugger!public!updating! !
-!RowanService categoriesFor: #projectPackagesUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #projectSelectionUpdate:!public!updating! !
-!RowanService categoriesFor: #projectsUpdate:!public!updating! !
-!RowanService categoriesFor: #projectsUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #remoteServiceName!must not strip!public! !
-!RowanService categoriesFor: #removed:!public!updating! !
-!RowanService categoriesFor: #removedClass:!public!updating! !
-!RowanService categoriesFor: #removeDeletedClassesIn:browser:classes:!private!updating! !
-!RowanService categoriesFor: #removedProject:!public!updating! !
-!RowanService categoriesFor: #renamedClass:browser:!public!updating! !
-!RowanService categoriesFor: #renamedClassInHierarchy:browser:!public!updating! !
-!RowanService categoriesFor: #replicateFrom:!public!replication! !
-!RowanService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!testing! !
-!RowanService categoriesFor: #silentlyExpandHierarchyOneLevel:!double dispatch!public! !
-!RowanService categoriesFor: #stonOn:!must not strip!public!ston! !
-!RowanService categoriesFor: #sunitMethodsUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #superclassListUpdate:!public!updating! !
-!RowanService categoriesFor: #testClasses:browser:!public!updating! !
-!RowanService categoriesFor: #testPackages:!public!updating! !
-!RowanService categoriesFor: #testResultUpdate:browser:!public!updating! !
-!RowanService categoriesFor: #toolTip!printing!public! !
-!RowanService categoriesFor: #updateBreakPoints:browser:!public!updating! !
-!RowanService categoriesFor: #updateClassCategorySelectionsFor:!public!updating! !
-!RowanService categoriesFor: #updateClassHierarchySelectionFor:!public!updating! !
-!RowanService categoriesFor: #updateClassSelectionFor:!public!updating! !
-!RowanService categoriesFor: #updatedClass:browser:!public!updating! !
-!RowanService categoriesFor: #updatedClassDefinition:browser:!public!updating! !
-!RowanService categoriesFor: #updatedClassInHierarchy:browser:!public!updating! !
-!RowanService categoriesFor: #updateDictionarySelectionsFor:!public!updating! !
-!RowanService categoriesFor: #updatedOneLevelInClassHierarchy:browser:!public!updating! !
-!RowanService categoriesFor: #updateForSession:!actions!public! !
-!RowanService categoriesFor: #updateList:whilePreservingSelections:browser:!private! !
-!RowanService categoriesFor: #updateMethodFilterSelectionFor:!public!updating! !
-!RowanService categoriesFor: #updateMethodSelectionFor:!public!updating! !
-!RowanService categoriesFor: #updatePackageSelectionsFor:!public!updating! !
-!RowanService categoriesFor: #updateSelectorFor:!public!updating! !
-!RowanService categoriesFor: #updateSuperclassSelectionFor:!public!updating! !
-!RowanService categoriesFor: #updateSymbols:!public!updating! !
-!RowanService categoriesFor: #updateType!accessing!public! !
-!RowanService categoriesFor: #updateType:!accessing!public! !
-!RowanService categoriesFor: #updateVariable:debugger:!public!updating! !
-!RowanService categoriesFor: #variableDataUpdate:!Debugger!public!updating! !
-!RowanService categoriesFor: #variableListUpdate:!Debugger!public!updating! !
-!RowanService categoriesFor: #wasRenamed!public!testing! !
-!RowanService categoriesFor: #wasUpdated!accessing!private! !
-!RowanService categoriesFor: #wasUpdated:!accessing!private! !
+!RowanService categoriesForMethods!
+addCachedSymbols:!public!updating! !
+autoCommitUpdate:!public!updating! !
+basicPrepareForReplication!public!replication! !
+basicReplicateFrom:!public!replication! !
+breakpointSettingChanged:!public!updating! !
+chooseModel:using:!private!updating! !
+classCategoryUpdate:!public!updating! !
+classCommentUpdate:!public!updating! !
+classDefinitionUpdate:!public!updating! !
+classesHierarchyUpdate:!public!updating! !
+classesUpdate:browser:!public!updating! !
+classHierarchyUpdate:!public!updating! !
+classHierarchyUpdate:browser:!public!updating! !
+classHierarchyUpdate:browser:hierarchyServices:!public!updating! !
+classMethodsUpdate:browser:!public!updating! !
+classUpdate:!public!updating! !
+clearCommand!Init / Release!public! !
+clientDefinitionClass!public! !
+command!accessing!public! !
+command:!accessing!public! !
+commandArgs!accessing!public! !
+commandArgs:!accessing!public! !
+componentPackagesUpdate:browser:!public!updating! !
+componentsUpdate:browser:!public!updating! !
+debuggerMethodSourceUpdate:browser:!public!updating! !
+debugPrintOn:!printing!public! !
+debugPrintString!printing!public! !
+dictionaryListUpdate:!public!updating! !
+dictionaryUpdate:!public!updating! !
+emptyFilterListsIn:!Init / Release!private! !
+excludedInstVars!public!ston! !
+filterUpdate:browser:!public!updating! !
+frameListUpdate:!Debugger!public!updating! !
+globalsUpdate:!public!updating! !
+initialize!Init / Release!public! !
+initializePresenterList:!Init / Release!private! !
+isAnsweringService!public!testing! !
+isBrowserService!public!testing! !
+isClassService!public!testing! !
+isComponentService!public!testing! !
+isDefinedProject!public!testing! !
+isDefinitionService!public!testing! !
+isDictionaryService!public!testing! !
+isInspectorService!public!testing! !
+isLoggingService!public!testing! !
+isMethodService!public!testing! !
+isPackageService!public!testing! !
+isProjectService!public!testing! !
+isService!public!testing! !
+issueCommand:session:!commands!public! !
+issueCommands:session:!commands!public! !
+isTestCase!public!testing! !
+isUpdatableService!public!testing! !
+methodFilterUpdate:!public!updating! !
+methodHistoryUpdated:!must not strip!public!updating! !
+methodListUpdate:browser:!public!updating! !
+methodSourceUpdate:browser:!public!updating! !
+methodsUpdate:!public!updating! !
+methodUpdate:browser:!public!updating! !
+name!accessing!public! !
+newProject:!public!updating! !
+notRowanizedPackageName!displaying!public! !
+packageServices!accessing!public! !
+packagesUpdate:!public!updating! !
+packagesUpdate:browser:parentPresenter:!public!updating! !
+packageUpdate:!public!updating! !
+possiblyAddComponent:to:withParent:hierarchyServices:!private!updating! !
+possiblyAddHierarchyService:to:withParent:hierarchyServices:!private! !
+postReload!public!replication! !
+postUpdate!Init / Release!public! !
+postUpdateBlock!accessing!private! !
+prepareForReplication!public!replication! !
+printOn:!printing!public! !
+processListUpdate:!Debugger!public!updating! !
+projectPackagesUpdate:browser:!public!updating! !
+projectSelectionUpdate:!public!updating! !
+projectsUpdate:!public!updating! !
+projectsUpdate:browser:!public!updating! !
+remoteServiceName!must not strip!public! !
+removed:!public!updating! !
+removedClass:!public!updating! !
+removeDeletedClassesIn:browser:classes:!private!updating! !
+removedProject:!public!updating! !
+renamedClass:browser:!public!updating! !
+renamedClassInHierarchy:browser:!public!updating! !
+replicateFrom:!public!replication! !
+shouldReplicateInstVarAtIndex:newService:!public!testing! !
+silentlyExpandHierarchyOneLevel:!double dispatch!public! !
+stonOn:!must not strip!public!ston! !
+sunitMethodsUpdate:browser:!public!updating! !
+superclassListUpdate:!public!updating! !
+testClasses:browser:!public!updating! !
+testPackages:!public!updating! !
+testResultUpdate:browser:!public!updating! !
+toolTip!printing!public! !
+updateBreakPoints:browser:!public!updating! !
+updateClassCategorySelectionsFor:!public!updating! !
+updateClassHierarchySelectionFor:!public!updating! !
+updateClassSelectionFor:!public!updating! !
+updatedClass:browser:!public!updating! !
+updatedClassDefinition:browser:!public!updating! !
+updatedClassInHierarchy:browser:!public!updating! !
+updateDictionarySelectionsFor:!public!updating! !
+updatedOneLevelInClassHierarchy:browser:!public!updating! !
+updateForSession:!actions!public! !
+updateList:whilePreservingSelections:browser:!private! !
+updateMethodFilterSelectionFor:!public!updating! !
+updateMethodSelectionFor:!public!updating! !
+updatePackageSelectionsFor:!public!updating! !
+updateSelectorFor:!public!updating! !
+updateSuperclassSelectionFor:!public!updating! !
+updateSymbols:!public!updating! !
+updateType!accessing!public! !
+updateType:!accessing!public! !
+updateVariable:debugger:!public!updating! !
+variableDataUpdate:!Debugger!public!updating! !
+variableListUpdate:!Debugger!public!updating! !
+wasRenamed!public!testing! !
+wasUpdated!accessing!private! !
+wasUpdated:!accessing!private! !
+!
 
 !RowanService class methodsFor!
 
@@ -697,12 +704,14 @@ version
 	Failure to do so may prevent logins"
 
 	^3200! !
-!RowanService class categoriesFor: #command:withArgs:!instance creation!public! !
-!RowanService class categoriesFor: #defaultIcon!private! !
-!RowanService class categoriesFor: #defaultIconName!private! !
-!RowanService class categoriesFor: #icon!private! !
-!RowanService class categoriesFor: #new!initialization!public! !
-!RowanService class categoriesFor: #notRowanizedPackageName!constants!public! !
-!RowanService class categoriesFor: #templateClassName!public! !
-!RowanService class categoriesFor: #version!public!version actions! !
+!RowanService class categoriesForMethods!
+command:withArgs:!instance creation!public! !
+defaultIcon!private! !
+defaultIconName!private! !
+icon!private! !
+new!initialization!public! !
+notRowanizedPackageName!constants!public! !
+templateClassName!public! !
+version!public!version actions! !
+!
 

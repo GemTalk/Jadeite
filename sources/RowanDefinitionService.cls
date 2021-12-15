@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanDefinitionService
 	instanceVariableNames: 'name properties'
@@ -9,6 +9,17 @@ RowanDefinitionService guid: (GUID fromString: '{0b5e75f1-b946-476e-a2e0-7d358db
 RowanDefinitionService comment: ''!
 !RowanDefinitionService categoriesForClass!Unclassified! !
 !RowanDefinitionService methodsFor!
+
+= definitionService
+	^definitionService isService
+		and: [definitionService isDefinitionService and: [name = definitionService name]]!
+
+hash
+	^self name hash!
+
+isDefinitionService
+
+	^true!
 
 name
 	^name!
@@ -21,8 +32,13 @@ properties
 
 properties: anObject
 	properties := anObject! !
-!RowanDefinitionService categoriesFor: #name!accessing!private! !
-!RowanDefinitionService categoriesFor: #name:!accessing!private! !
-!RowanDefinitionService categoriesFor: #properties!accessing!private! !
-!RowanDefinitionService categoriesFor: #properties:!accessing!private! !
+!RowanDefinitionService categoriesForMethods!
+=!comparing!public! !
+hash!comparing!public! !
+isDefinitionService!public!testing! !
+name!accessing!private! !
+name:!accessing!private! !
+properties!accessing!private! !
+properties:!accessing!private! !
+!
 
