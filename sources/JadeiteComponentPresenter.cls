@@ -91,6 +91,14 @@ initialize
 	self resetComponentList.
 	!
 
+installPropertyPresenter
+	"propertyPresenter createView: 'JadeiteComponentPresenter.Component Properties View'"
+	"newCard := packageDictionaryCards add: dictionaryPresenter.
+			packageDictionaryCards view cards first arrangement: 'Dictionaries'.
+			dictionaryPresenter view contextMenu: self dictionaryMenu.
+			classListPresenter list: ListModel new.
+			classHierarchyPresenter model: JadeiteTreeModel new"!
+
 isClassSelected
 	"no classes in component browser" 
 	^false!
@@ -111,7 +119,7 @@ onViewClosed
 
 onViewOpened
 	super onViewOpened.
-	self displayComponents.!
+	self displayComponents!
 
 projectListPresenter
 
@@ -133,6 +141,7 @@ displayComponentProperties!displaying!public! !
 displayComponents!displaying!public! !
 displayPackages!displaying!public! !
 initialize!initialization!public! !
+installPropertyPresenter!private! !
 isClassSelected!public!testing! !
 labelOf:changedTo:!event handlers!public! !
 labelOfClass:editedTo:accept:!event handlers!public! !
