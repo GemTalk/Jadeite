@@ -11,10 +11,9 @@ LibGciRpc64_3_6_2 comment: ''!
 !LibGciRpc64_3_6_2 class methodsFor!
 
 displayName
-	^'64-bit 3.6.2 unreleased'!
+	^'64-bit 3.6.2'!
 
-fileNameSearch
-	^'libgcirpc-3.6.2-32.dll'! !
+fileNameSearch   ^'libgcirpc-3.6.2-32.dll'! !
 !LibGciRpc64_3_6_2 class categoriesFor: #displayName!public! !
 !LibGciRpc64_3_6_2 class categoriesFor: #fileNameSearch!public! !
 

@@ -334,10 +334,6 @@ queryCommand: query
 			^true].
 	^super queryCommand: query!
 
-rowanReadyLibraries
-	^GciLibrary allSubclasses select: [:library | library isRowanReady]
-		thenCollect: [:library | library displayName]!
-
 saveDocument
 
 	| result |
@@ -466,7 +462,6 @@ userIDPresenter
 !JadeLoginShell categoriesFor: #openHomePage!public! !
 !JadeLoginShell categoriesFor: #postLogin:!public! !
 !JadeLoginShell categoriesFor: #queryCommand:!menu handlers support!private! !
-!JadeLoginShell categoriesFor: #rowanReadyLibraries!gci!private! !
 !JadeLoginShell categoriesFor: #saveDocument!public! !
 !JadeLoginShell categoriesFor: #sendRequiredMessages!public! !
 !JadeLoginShell categoriesFor: #setDocumentData:!accessing!public! !

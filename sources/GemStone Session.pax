@@ -46,9 +46,12 @@ package classNames
 	add: #JadeServer64bit3x;
 	add: #JadeServerTestCase;
 	add: #LibGciRpc64_3_6;
+	add: #LibGciRpc64_3_6_0;
 	add: #LibGciRpc64_3_6_1;
 	add: #LibGciRpc64_3_6_2;
+	add: #LibGciRpc64_3_6_3;
 	add: #LibGciRpc64_3_7;
+	add: #LibGciRpc64_3_7_0;
 	add: #MCAddition;
 	add: #MCDictionaryRepository;
 	add: #MCDirectoryRepository;
@@ -221,12 +224,27 @@ LibGciRpc64 subclass: #LibGciRpc64_3_7
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+LibGciRpc64_3_6 subclass: #LibGciRpc64_3_6_0
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 LibGciRpc64_3_6 subclass: #LibGciRpc64_3_6_1
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 LibGciRpc64_3_6 subclass: #LibGciRpc64_3_6_2
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+LibGciRpc64_3_6 subclass: #LibGciRpc64_3_6_3
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+LibGciRpc64_3_7 subclass: #LibGciRpc64_3_7_0
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
