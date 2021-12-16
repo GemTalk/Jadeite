@@ -1,0 +1,22 @@
+
+Last updated: 12/15/2021 - wrote instructions
+
+
+For Oscar_3.1.1_prereleaseX development work (released to non-paying customers)
+
+Jadeite - Git checkout Rowan branch Oscar-3.1.1-pre-release* (last pre-release)
+Install 3.6.3 server but use /bin/extent.rowan.dbf instead
+export GEMSTONE=product directory  (. gshere)
+chmod 755 product/sys
+Copy gemstone.key from hidden/sys -> product/sys
+Copy hidden/bin/extent0.rowan.dbf -> product/data
+mv product/data/extent0.rowan.dbf -> extent0.dbf
+
+startstone & startnetldi as usual
+
+
+Note - To run against 3.6.3 server, you don't need to run one of the /home/ewinger/Scripts/install*! 
+
+Git checkout Rowan branch Master2.2
+
+login to Jadeite (hopefully?)

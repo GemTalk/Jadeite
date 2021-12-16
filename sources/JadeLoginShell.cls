@@ -334,10 +334,6 @@ queryCommand: query
 			^true].
 	^super queryCommand: query!
 
-rowanReadyLibraries
-	^GciLibrary allSubclasses select: [:library | library isRowanReady]
-		thenCollect: [:library | library displayName]!
-
 saveDocument
 
 	| result |

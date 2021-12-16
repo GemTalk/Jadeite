@@ -111,7 +111,7 @@ stringClassOop!private!required! !
 
 displayName
 
-	^'64-bit 3.7.0 unreleased'.
+	^'64-bit 3.7.0'.
 !
 
 fileNameSearch

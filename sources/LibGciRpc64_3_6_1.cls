@@ -15,10 +15,7 @@ displayName
 	^'64-bit 3.6.1'.
 !
 
-fileNameSearch
-
-	^'libgcirpc-3.6.1-32.dll'.
-! !
+fileNameSearch   ^'libgcirpc-3.6.1-32.dll'! !
 !LibGciRpc64_3_6_1 class categoriesFor: #displayName!public! !
 !LibGciRpc64_3_6_1 class categoriesFor: #fileNameSearch!public! !
 

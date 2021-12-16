@@ -16,8 +16,46 @@ additionalAccelerators
 basicCaption
 	^'Jadeite Login Version: ' , self class jadeiteVersionString!
 
+buildSmalltalkClassesForNewSharedLibraries
+	"Private - Search the <working directory>/bin directory for windows client gci libraries
+	that don't already have an associated Smalltalk class. Create a class if necessary"
+
+	| binDir libraryFiles |
+	binDir := SessionManager current imageBase , 'bin\'.
+	(File exists: binDir) ifFalse: [^self].
+	libraryFiles := OrderedCollection new.
+	File
+		for: 'libgcirpc*dll'
+		in: SessionManager current imageBase , 'bin\'
+		do: [:s | libraryFiles add: s fileName].
+	libraryFiles do: [:fileName | self createNewClassIfNotInSystem: fileName]!
+
+createNewClassIfNotInSystem: fileName
+	| version theClass libraryName |
+	version := (fileName subStrings: $-) second.
+	libraryName := 'LibGciRpc64_' , (version copyReplaceAll: '.' with: '_').
+	theClass := Smalltalk at: libraryName ifAbsent: [].
+	^theClass
+		ifNil: 
+			[| parentLibraryName parentLibrary |
+			parentLibraryName := 'LibGciRpc64_' , ((fileName subStrings: $-) second first: 3)
+						copyReplaceAll: '.'
+						with: '_'.
+			parentLibrary := Smalltalk at: parentLibraryName ifAbsent: [].
+			parentLibrary
+				ifNotNil: 
+					[theClass := parentLibrary
+								subclass: libraryName asSymbol
+								instanceVariableNames: ''
+								classVariableNames: ''
+								poolDictionaries: ''
+								classInstanceVariableNames: ''.
+					theClass class compile: 'fileNameSearch   ^''' , fileName , ''''.
+					theClass class compile: 'displayName   ^''64-bit ' , version , '''']]!
+
 fillVersionList
 	| list |
+	self buildSmalltalkClassesForNewSharedLibraries. 
 	list := self rowanReadyLibraries.
 	list := list asSortedCollection: [:a :b | self isVersion: a lessThanOrEqualTo: b].
 	versionListPresenter list: list!
@@ -44,8 +82,13 @@ raiseConsole
 	transcript := self class defaultTranscript.
 	transcript ifNotNil: [transcript view setFocus]!
 
+rowanReadyLibraries
+	^(GciLibrary allSubclasses select: [:library | library isRowanReady]
+		thenCollect: [:library | library displayName]) asSet!
+
 updateCaption
 	self caption: 'Jadeite Login Version: ', self class jadeiteVersionString! !
+
 !JadeiteLoginShell categoriesForMethods!
 additionalAccelerators!accessing!public! !
 basicCaption!accessing!public! !
