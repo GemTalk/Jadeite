@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk 7"!
 
 LibGciRpc64_3_5 subclass: #LibGciRpc64_3_5_1
 	instanceVariableNames: ''
@@ -15,10 +15,7 @@ displayName
 	^'64-bit 3.5.1'.
 !
 
-fileNameSearch
-
-	^'libgcirpc-3.5.1-32.dll'.
-! !
+fileNameSearch   ^'libgcirpc-3.5.1-32.dll'! !
 !LibGciRpc64_3_5_1 class categoriesFor: #displayName!public! !
 !LibGciRpc64_3_5_1 class categoriesFor: #fileNameSearch!public! !
 

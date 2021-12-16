@@ -19,6 +19,7 @@ fileNameSearch
 
 	^'libgcirpc-3.6.2-32.dll'.
 ! !
+
 !LibGciRpc64_3_6_2 class categoriesFor: #displayName!public! !
 !LibGciRpc64_3_6_2 class categoriesFor: #fileNameSearch!public! !
 

@@ -15,10 +15,7 @@ displayName
 	^'64-bit 3.2.15'.
 !
 
-fileNameSearch
-
-	^'libgcirpc-3.2.15-32.dll'.
-!
+fileNameSearch   ^'libgcirpc-3.2.15-32.dll'!
 
 isRowanReady
 
