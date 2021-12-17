@@ -162,7 +162,7 @@ ExternalLibrary subclass: #GciLibrary
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	classInstanceVariableNames: ''!
+	classInstanceVariableNames: 'fileNameSearch displayName'!
 GciLibrary subclass: #GciMultiThreadedLibrary
 	instanceVariableNames: ''
 	classVariableNames: 'OOP_ILLEGAL OOP_NIL'

@@ -4,7 +4,7 @@ ExternalLibrary subclass: #GciLibrary
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	classInstanceVariableNames: ''!
+	classInstanceVariableNames: 'fileNameSearch displayName'!
 GciLibrary guid: (GUID fromString: '{ad9a79e0-d6ef-4d77-83fc-015b118b2331}')!
 GciLibrary comment: ''!
 !GciLibrary categoriesForClass!Unclassified! !
@@ -337,9 +337,10 @@ addMissingMethods
 	].!
 
 displayName
+	^displayName!
 
-	^nil.
-!
+displayName: aString
+	displayName := aString !
 
 fileName
 
@@ -356,7 +357,12 @@ fileName
 
 fileNameSearch
 
-	self subclassResponsibility.
+	^fileNameSearch
+!
+
+fileNameSearch: aString
+
+	fileNameSearch := aString
 !
 
 isRowanReady
@@ -405,8 +411,10 @@ withDisplayName: aString
 ! !
 !GciLibrary class categoriesFor: #addMissingMethods!public! !
 !GciLibrary class categoriesFor: #displayName!public! !
+!GciLibrary class categoriesFor: #displayName:!public! !
 !GciLibrary class categoriesFor: #fileName!public! !
 !GciLibrary class categoriesFor: #fileNameSearch!public! !
+!GciLibrary class categoriesFor: #fileNameSearch:!public! !
 !GciLibrary class categoriesFor: #isRowanReady!public!testing! !
 !GciLibrary class categoriesFor: #onStartup2!public! !
 !GciLibrary class categoriesFor: #open:!public! !

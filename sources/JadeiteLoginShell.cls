@@ -50,8 +50,8 @@ createNewClassIfNotInSystem: fileName
 								classVariableNames: ''
 								poolDictionaries: ''
 								classInstanceVariableNames: ''.
-					theClass class compile: 'fileNameSearch   ^''' , fileName , ''''.
-					theClass class compile: 'displayName   ^''64-bit ' , version , '''']]!
+					theClass fileNameSearch: fileName.
+					theClass displayName: '64-bit ' , version]]!
 
 fillVersionList
 	| list |

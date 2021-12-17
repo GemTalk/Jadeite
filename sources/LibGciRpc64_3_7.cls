@@ -60,14 +60,14 @@ specialFromOop: anOop
 !LibGciRpc64_3_7 class methodsFor!
 
 displayName
+	"if a subclass was dynamically created, it's displayName will be non nil"
 
-	^'64-bit 3.7.0'.
-!
+	^displayName ifNil: [^'64-bit 3.7.0']!
 
 fileNameSearch
+	"if a subclass was dynamically created, it's fileNameSearch will be non nil"
 
-	^'libgcirpc-3.7.0-32.dll'.
-!
+	^fileNameSearch ifNil: ['libgcirpc-3.7.0-32.dll']!
 
 isRowanReady
 
