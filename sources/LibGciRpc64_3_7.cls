@@ -66,7 +66,6 @@ displayName
 
 fileNameSearch
 	"if a subclass was dynamically created, it's fileNameSearch will be non nil"
-
 	^fileNameSearch ifNil: ['libgcirpc-3.7.0-32.dll']!
 
 isRowanReady

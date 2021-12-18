@@ -118,7 +118,7 @@ oopTypeClass
 reason
 	"Answer the receiver's reason field as a Smalltalk object."
 
-	^String fromAddress: (bytes yourAddress + 1138)!
+	^AnsiString fromAddress: (bytes yourAddress + 1138)!
 
 reason: anObject
 	"Set the receiver's reason field to the value of anObject."
