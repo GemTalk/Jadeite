@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter propertyPresenter'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter propertyListPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -17,12 +17,14 @@ componentPropertiesDictionary
 	| dictionary |
 	dictionary := Dictionary new.
 	#(#preloadDoitName #postloadDoitName #projectNames)
-		do: [:instVarName | dictionary at: instVarName put: (model perform: instVarName)]!
+		do: [:instVarName | dictionary at: instVarName put: (componentListPresenter selection perform: instVarName)].
+	^dictionary!
 
 createComponents
 	componentListPresenter := self add: JadeiteTreePresenter new name: 'componentListPresenter'.
 	packageListPresenter := self add: ListPresenter new name: 'packageListPresenter'.
-	propertyPresenter := self add: Presenter new name: 'propertyPresenter'!
+	componentPropertyPresenter := self add: JadeitePropertyPresenter new name: 'componentPropertyPresenter'.
+	propertyListPresenter := self add: ListPresenter new name: 'propertyListPresenter'.!
 
 createSchematicWiring
 	componentListPresenter
@@ -45,7 +47,7 @@ createSchematicWiring
 displayComponentProperties
 
 	componentListPresenter selectionOrNil ifNil:[^self]. 
-	componentListPresenter list:  self componentPropertiesDictionary
+	propertyListPresenter list:  self componentPropertiesDictionary
 
 	
 	!
@@ -53,7 +55,7 @@ displayComponentProperties
 displayComponents
 	"The fake dictionary will be replaced by an argument to the method with the actual hierarchy from the server"
 
-	| treeModel fakeHierarchy flattenedHierarchy |
+	| treeModel fakeHierarchy flattenedHierarchy | 
 	fakeHierarchy := Dictionary new.
 	fakeHierarchy at: #nil put: #('common/Core').
 	fakeHierarchy at: 'common/Core' put: #('SubComponent1' 'SubComponent2').
@@ -81,15 +83,16 @@ displayPackages
 	packageNames := SortedCollection new.
 	componentListPresenter selections do: 
 			[:componentDefinitionService |
-			componentDefinitionService command: #packageNames.
+			componentDefinitionService
+				command: #packageNames;
+				projectDefinitionService: model.
 			self issueCommand: componentDefinitionService.
 			packageNames addAll: componentDefinitionService packageNames].
 	packageListPresenter list: packageNames!
 
 initialize
 	super initialize. 
-	self resetComponentList.
-	!
+	self resetComponentList.!
 
 installPropertyPresenter
 	"propertyPresenter createView: 'JadeiteComponentPresenter.Component Properties View'"

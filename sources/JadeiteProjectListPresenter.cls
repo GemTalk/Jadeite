@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanPresenter subclass: #JadeiteProjectListPresenter
 	instanceVariableNames: 'projectListPresenter'
@@ -248,35 +248,37 @@ writeProject
 	projectServices := projectListPresenter selections.
 	projectServices isEmpty ifTrue: [^MessageBox notify: 'No project selected'].
 	^self basicWriteProject: projectServices! !
-!JadeiteProjectListPresenter categoriesFor: #abortTransaction!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #addNoneProject!public!updating! !
-!JadeiteProjectListPresenter categoriesFor: #allSelectedProjectsDirty!public!testing! !
-!JadeiteProjectListPresenter categoriesFor: #basicUnloadProjects:!menu handlers!private! !
-!JadeiteProjectListPresenter categoriesFor: #browseProject!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #checkout!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #checkoutTag!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #createComponents!public! !
-!JadeiteProjectListPresenter categoriesFor: #createSchematicWiring!initialization!public! !
-!JadeiteProjectListPresenter categoriesFor: #gitCommit!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #hasSelection!public!testing! !
-!JadeiteProjectListPresenter categoriesFor: #list:!public! !
-!JadeiteProjectListPresenter categoriesFor: #loadProjects!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #onViewClosed!event handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #onViewOpened!event handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #openChangesShell:!menu handlers!private! !
-!JadeiteProjectListPresenter categoriesFor: #possiblyClearProjectInfoTab!public!updating! !
-!JadeiteProjectListPresenter categoriesFor: #primaryPresenter!public! !
-!JadeiteProjectListPresenter categoriesFor: #projectChanges!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #projectListPresenter!public! !
-!JadeiteProjectListPresenter categoriesFor: #projectLog!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #pullFromGit!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #pushToGit!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #queryCommand:!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #refresh!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #refreshFromServerAfterAbort:!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #registerPresentersForUpdates!private!register presenters! !
-!JadeiteProjectListPresenter categoriesFor: #unloadProjects!menu handlers!public! !
-!JadeiteProjectListPresenter categoriesFor: #updateProject!public!updating! !
-!JadeiteProjectListPresenter categoriesFor: #updateProjectPackages!public!updating! !
-!JadeiteProjectListPresenter categoriesFor: #writeProject!menu handlers!public! !
+!JadeiteProjectListPresenter categoriesForMethods!
+abortTransaction!menu handlers!public! !
+addNoneProject!public!updating! !
+allSelectedProjectsDirty!public!testing! !
+basicUnloadProjects:!menu handlers!private! !
+browseProject!public! !
+checkout!menu handlers!public! !
+checkoutTag!menu handlers!public! !
+createComponents!public! !
+createSchematicWiring!initialization!public! !
+gitCommit!menu handlers!public! !
+hasSelection!public!testing! !
+list:!public! !
+loadProjects!menu handlers!public! !
+onViewClosed!event handlers!public! !
+onViewOpened!event handlers!public! !
+openChangesShell:!menu handlers!private! !
+possiblyClearProjectInfoTab!public!updating! !
+primaryPresenter!public! !
+projectChanges!menu handlers!public! !
+projectListPresenter!public! !
+projectLog!menu handlers!public! !
+pullFromGit!menu handlers!public! !
+pushToGit!menu handlers!public! !
+queryCommand:!menu handlers!public! !
+refresh!menu handlers!public! !
+refreshFromServerAfterAbort:!menu handlers!public! !
+registerPresentersForUpdates!private!register presenters! !
+unloadProjects!menu handlers!public! !
+updateProject!public!updating! !
+updateProjectPackages!public!updating! !
+writeProject!menu handlers!public! !
+!
 

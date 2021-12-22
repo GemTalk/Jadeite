@@ -52,6 +52,7 @@ package classNames
 	add: #JadeiteProjectsBrowserPresenter;
 	add: #JadeiteProjectsSystemBrowser;
 	add: #JadeitePropertyInspector;
+	add: #JadeitePropertyPresenter;
 	add: #JadeiteRenameClassMethodListBrowser;
 	add: #JadeiteRenameClassMethodListPresenter;
 	add: #JadeiteScintillaView;
@@ -702,7 +703,12 @@ JadePresenterA subclass: #JadeiteCommandPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter propertyPresenter'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter propertyListPresenter'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadePresenterA subclass: #JadeitePropertyPresenter
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
