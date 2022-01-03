@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 LibGciRpc64 subclass: #LibGciRpc64_3_7
 	instanceVariableNames: ''
@@ -21,6 +21,11 @@ gciErr: errorReport
 	^self invalidCall
 !
 
+gciNbExecuteStrContextDbg_: string _: sourceSize _: sourceClass _: context _: symbolList _: flags
+	"In 3.7, GciNbExecuteStrContextDbg_ supports client user actions, but GciNbExecuteStrFromContext does not" 
+	<cdecl: OopType64 GciNbExecuteStrContextDbg_ lpstr dword OopType64 OopType64 OopType64 word>
+	^self invalidCall!
+
 gsHasPragmas
 
 	^true!
@@ -30,18 +35,45 @@ jadeServerClass
 	^JadeServer64bit34
 !
 
-session: session execute: stringOrOop context: contextOop environment: anInteger
+session: session execute: string context: contextOop environment: anInteger
+	"environment in Jadeite is always 0" 
+	^self
+		session: session
+		execute: string
+		context: contextOop
+		symbolList: self oopNil!
 
-	self critical: [
-		self gciSetSessionId: session.
-		self
-			gciNbExecuteStrFromContext_: stringOrOop
-			_: contextOop
-			_: self oopNil
-			_: anInteger.
-		^self nbResult.
-	].
-!
+session: session execute: string context: contextOop symbolList: symbolList
+	^self
+		session: session
+		execute: string
+		context: contextOop
+		symbolList: symbolList
+		flags: 1	"GCI_PERFORM_FLAG_ENABLE_DEBUG = 1"!
+
+session: session execute: string context: contextOop symbolList: symbolList flags: flags
+	self critical: 
+			[self gciSetSessionId: session.
+			self
+				gciNbExecuteStrContextDbg_: string
+				_: string size
+				_: self stringClassOop
+				_: contextOop
+				_: symbolList
+				_: flags.
+			^self nbResult]!
+
+session: anInteger send: aString to: anOopType with: anArray
+	"GciNbPerformNoDebug supports client user actions in 3.7. GciNbPerform does not"
+	self critical: 
+			[self gciSetSessionId: anInteger.
+			self
+				gciNbPerformNoDebug: anOopType
+				_: aString
+				_: anArray
+				_: 1
+				_: anArray size.	"GCI_PERFORM_FLAG_ENABLE_DEBUG = 1"
+			^self nbResult]!
 
 specialFromOop: anOop
 
@@ -49,13 +81,23 @@ specialFromOop: anOop
 		^anOop asFraction.
 	].
 	^super specialFromOop: anOop
-! !
-!LibGciRpc64_3_7 categoriesFor: #errorStructureClass!private! !
-!LibGciRpc64_3_7 categoriesFor: #gciErr:!private! !
-!LibGciRpc64_3_7 categoriesFor: #gsHasPragmas!public! !
-!LibGciRpc64_3_7 categoriesFor: #jadeServerClass!public! !
-!LibGciRpc64_3_7 categoriesFor: #session:execute:context:environment:!public!required! !
-!LibGciRpc64_3_7 categoriesFor: #specialFromOop:!public! !
+!
+
+stringClassOop
+	^74753! !
+!LibGciRpc64_3_7 categoriesForMethods!
+errorStructureClass!private! !
+gciErr:!private! !
+gciNbExecuteStrContextDbg_:_:_:_:_:_:!public! !
+gsHasPragmas!public! !
+jadeServerClass!public! !
+session:execute:context:environment:!public!required! !
+session:execute:context:symbolList:!public!required! !
+session:execute:context:symbolList:flags:!public!required! !
+session:send:to:with:!public!required! !
+specialFromOop:!public! !
+stringClassOop!private!required! !
+!
 
 !LibGciRpc64_3_7 class methodsFor!
 
@@ -72,7 +114,9 @@ fileNameSearch
 isRowanReady
 
 	^true! !
-!LibGciRpc64_3_7 class categoriesFor: #displayName!public! !
-!LibGciRpc64_3_7 class categoriesFor: #fileNameSearch!public! !
-!LibGciRpc64_3_7 class categoriesFor: #isRowanReady!public!testing! !
+!LibGciRpc64_3_7 class categoriesForMethods!
+displayName!public! !
+fileNameSearch!public! !
+isRowanReady!public!testing! !
+!
 

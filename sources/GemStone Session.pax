@@ -437,7 +437,9 @@ jadeServerClass
 
 	^JadeServer32bit
 ! !
-!Gcilw6x categoriesFor: #jadeServerClass!public! !
+!Gcilw6x categoriesForMethods!
+jadeServerClass!public! !
+!
 
 !LibGciMt_3_3 methodsFor!
 
@@ -445,7 +447,9 @@ jadeServerClass
 
 	^JadeServer64bit33
 ! !
-!LibGciMt_3_3 categoriesFor: #jadeServerClass!public! !
+!LibGciMt_3_3 categoriesForMethods!
+jadeServerClass!public! !
+!
 
 !LibGciRpc64 methodsFor!
 
@@ -453,7 +457,9 @@ jadeServerClass
 
 	^JadeServer64bit
 ! !
-!LibGciRpc64 categoriesFor: #jadeServerClass!public! !
+!LibGciRpc64 categoriesForMethods!
+jadeServerClass!public! !
+!
 
 !LibGciRpc64_3_0 methodsFor!
 
@@ -461,7 +467,9 @@ jadeServerClass
 
 	^JadeServer64bit3x
 ! !
-!LibGciRpc64_3_0 categoriesFor: #jadeServerClass!public! !
+!LibGciRpc64_3_0 categoriesForMethods!
+jadeServerClass!public! !
+!
 
 !LibGciRpc64_3_1 methodsFor!
 
@@ -469,7 +477,9 @@ jadeServerClass
 
 	^JadeServer64bit3x
 ! !
-!LibGciRpc64_3_1 categoriesFor: #jadeServerClass!public! !
+!LibGciRpc64_3_1 categoriesForMethods!
+jadeServerClass!public! !
+!
 
 !LibGciRpc64_3_2 methodsFor!
 
@@ -477,7 +487,9 @@ jadeServerClass
 
 	^JadeServer64bit32
 ! !
-!LibGciRpc64_3_2 categoriesFor: #jadeServerClass!public! !
+!LibGciRpc64_3_2 categoriesForMethods!
+jadeServerClass!public! !
+!
 
 !LibGciRpc64_3_3 methodsFor!
 
@@ -485,7 +497,9 @@ jadeServerClass
 
 	^JadeServer64bit33
 ! !
-!LibGciRpc64_3_3 categoriesFor: #jadeServerClass!public! !
+!LibGciRpc64_3_3 categoriesForMethods!
+jadeServerClass!public! !
+!
 
 !LibGciRpc64_3_4 methodsFor!
 
@@ -493,7 +507,9 @@ jadeServerClass
 
 	^JadeServer64bit34
 ! !
-!LibGciRpc64_3_4 categoriesFor: #jadeServerClass!public! !
+!LibGciRpc64_3_4 categoriesForMethods!
+jadeServerClass!public! !
+!
 
 !LibGciRpc64_3_5 methodsFor!
 
@@ -501,7 +517,9 @@ jadeServerClass
 
 	^JadeServer64bit34
 ! !
-!LibGciRpc64_3_5 categoriesFor: #jadeServerClass!public! !
+!LibGciRpc64_3_5 categoriesForMethods!
+jadeServerClass!public! !
+!
 
 !LibGciTs_3_3 methodsFor!
 
@@ -509,7 +527,9 @@ jadeServerClass
 
 	^JadeServer64bit33
 ! !
-!LibGciTs_3_3 categoriesFor: #jadeServerClass!public! !
+!LibGciTs_3_3 categoriesForMethods!
+jadeServerClass!public! !
+!
 
 "End of package definition"!
 
