@@ -21,9 +21,14 @@ gciErr: errorReport
 	^self invalidCall
 !
 
-gciNbExecuteStrContextDbg_: string _: sourceSize _: sourceClass _: context _: symbolList _: flags
+gciNbExecuteStrContextDbg: string _: sourceSize _: sourceClass _: context _: symbolList _: flags
 	"In 3.7, GciNbExecuteStrContextDbg_ supports client user actions, but GciNbExecuteStrFromContext does not" 
-	<cdecl: OopType64 GciNbExecuteStrContextDbg_ lpstr dword OopType64 OopType64 OopType64 word>
+	<cdecl: void GciNbExecuteStrFromContextDbg lpstr sqword OopType64 OopType64 OopType64 word>
+	^self invalidCall!
+
+gciNbExecuteStrContextDbg_: string _: sourceSize _: sourceClass _: context _: symbolList _: flags _: environmentId
+	"In 3.7, GciNbExecuteStrContextDbg_ supports client user actions, but GciNbExecuteStrFromContext does not" 
+	<cdecl: void GciNbExecuteStrFromContextDbg_ lpstr dword OopType64  OopType64  OopType64  sdword  word>
 	^self invalidCall!
 
 gsHasPragmas
@@ -53,9 +58,9 @@ session: session execute: string context: contextOop symbolList: symbolList
 
 session: session execute: string context: contextOop symbolList: symbolList flags: flags
 	self critical: 
-			[self gciSetSessionId: session.
+			[self gciSetSessionId: session. 
 			self
-				gciNbExecuteStrContextDbg_: string
+				gciNbExecuteStrContextDbg: string
 				_: string size
 				_: self stringClassOop
 				_: contextOop
@@ -84,11 +89,12 @@ specialFromOop: anOop
 !
 
 stringClassOop
-	^74753! !
+	^OopType64 fromInteger: 74753 "16r12401"! !
 !LibGciRpc64_3_7 categoriesForMethods!
 errorStructureClass!private! !
 gciErr:!private! !
-gciNbExecuteStrContextDbg_:_:_:_:_:_:!public! !
+gciNbExecuteStrContextDbg:_:_:_:_:_:!public! !
+gciNbExecuteStrContextDbg_:_:_:_:_:_:_:!public! !
 gsHasPragmas!public! !
 jadeServerClass!public! !
 session:execute:context:environment:!public!required! !

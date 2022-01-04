@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeLoginShell subclass: #JadeiteLoginShell
 	instanceVariableNames: ''
@@ -46,15 +46,17 @@ raiseConsole
 
 updateCaption
 	self caption: 'Jadeite Login Version: ', self class jadeiteVersionString! !
-!JadeiteLoginShell categoriesFor: #additionalAccelerators!accessing!public! !
-!JadeiteLoginShell categoriesFor: #basicCaption!accessing!public! !
-!JadeiteLoginShell categoriesFor: #fillVersionList!public! !
-!JadeiteLoginShell categoriesFor: #loginFailureCaption!private! !
-!JadeiteLoginShell categoriesFor: #openGitHubJadeiteProject!public! !
-!JadeiteLoginShell categoriesFor: #openGitHubRowanProject!public! !
-!JadeiteLoginShell categoriesFor: #postLogin:!public! !
-!JadeiteLoginShell categoriesFor: #raiseConsole!menu handlers!public! !
-!JadeiteLoginShell categoriesFor: #updateCaption!public! !
+!JadeiteLoginShell categoriesForMethods!
+additionalAccelerators!accessing!public! !
+basicCaption!accessing!public! !
+fillVersionList!public! !
+loginFailureCaption!private! !
+openGitHubJadeiteProject!public! !
+openGitHubRowanProject!public! !
+postLogin:!public! !
+raiseConsole!menu handlers!public! !
+updateCaption!public! !
+!
 
 !JadeiteLoginShell class methodsFor!
 
@@ -88,8 +90,10 @@ toolsFolderIcon
 		description: 'Jadeite Login for GemStone/64'
 		openBlock: [:folder :item | self show].
 ! !
-!JadeiteLoginShell class categoriesFor: #addToDevelopmentTools!Development Image!public! !
-!JadeiteLoginShell class categoriesFor: #defaultTranscript!public! !
-!JadeiteLoginShell class categoriesFor: #resource_Default_view!public!resources-views! !
-!JadeiteLoginShell class categoriesFor: #toolsFolderIcon!public! !
+!JadeiteLoginShell class categoriesForMethods!
+addToDevelopmentTools!Development Image!public! !
+defaultTranscript!public! !
+resource_Default_view!public!resources-views! !
+toolsFolderIcon!public! !
+!
 

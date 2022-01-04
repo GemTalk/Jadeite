@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 DocumentShell subclass: #JadeLoginShell
 	instanceVariableNames: 'debugPathPresenter gemHostPresenter gemServicePresenter gemTaskPresenter gemTypePresenter hostPasswordPresenter hostUserIDPresenter initialsPresenter isModified loginTypePresenter passwordPresenter stoneHostPresenter stoneNamePresenter userIDPresenter useSocketPresenter versionListPresenter loginButtonPresenter'
@@ -432,50 +432,52 @@ updateView
 
 userIDPresenter
 	^userIDPresenter! !
-!JadeLoginShell categoriesFor: #basicCaption!accessing!public! !
-!JadeLoginShell categoriesFor: #checkScintillaVersion!public! !
-!JadeLoginShell categoriesFor: #createComponents!public! !
-!JadeLoginShell categoriesFor: #createSchematicWiring!public! !
-!JadeLoginShell categoriesFor: #debugGCI!commands!public! !
-!JadeLoginShell categoriesFor: #debugPathPresenter!accessing!private! !
-!JadeLoginShell categoriesFor: #debugPathPresenter:!accessing!private! !
-!JadeLoginShell categoriesFor: #dumpLoginInfoToFile!menu handlers support!private! !
-!JadeLoginShell categoriesFor: #editCopy!public! !
-!JadeLoginShell categoriesFor: #editCut!public! !
-!JadeLoginShell categoriesFor: #editDelete!public! !
-!JadeLoginShell categoriesFor: #editPaste!public! !
-!JadeLoginShell categoriesFor: #editRedo!public! !
-!JadeLoginShell categoriesFor: #editSelectAll!public! !
-!JadeLoginShell categoriesFor: #editUndo!public! !
-!JadeLoginShell categoriesFor: #fileNew!commands!public! !
-!JadeLoginShell categoriesFor: #fileOpen!commands!public! !
-!JadeLoginShell categoriesFor: #fillVersionList!public! !
-!JadeLoginShell categoriesFor: #gemTaskPresenter:!public! !
-!JadeLoginShell categoriesFor: #getDocumentData!accessing!public! !
-!JadeLoginShell categoriesFor: #invalidateLoginButton!displaying!public! !
-!JadeLoginShell categoriesFor: #isModified!public! !
-!JadeLoginShell categoriesFor: #isModified:!public! !
-!JadeLoginShell categoriesFor: #isText!public!testing! !
-!JadeLoginShell categoriesFor: #isVersion:lessThanOrEqualTo:!public! !
-!JadeLoginShell categoriesFor: #login!public! !
-!JadeLoginShell categoriesFor: #loginFailureCaption!private! !
-!JadeLoginShell categoriesFor: #model:!accessing!public! !
-!JadeLoginShell categoriesFor: #onCloseRequested:!public! !
-!JadeLoginShell categoriesFor: #onViewClosed!public! !
-!JadeLoginShell categoriesFor: #onViewOpened!public! !
-!JadeLoginShell categoriesFor: #openHomePage!public! !
-!JadeLoginShell categoriesFor: #postLogin:!public! !
-!JadeLoginShell categoriesFor: #queryCommand:!menu handlers support!private! !
-!JadeLoginShell categoriesFor: #rowanReadyLibraries!gci!private! !
-!JadeLoginShell categoriesFor: #saveDocument!public! !
-!JadeLoginShell categoriesFor: #sendRequiredMessages!public! !
-!JadeLoginShell categoriesFor: #setDocumentData:!accessing!public! !
-!JadeLoginShell categoriesFor: #setWorkingDirectory!public! !
-!JadeLoginShell categoriesFor: #shouldEnableLoginButton!private!testing! !
-!JadeLoginShell categoriesFor: #updateCaption!public! !
-!JadeLoginShell categoriesFor: #updateModel!public! !
-!JadeLoginShell categoriesFor: #updateView!public! !
-!JadeLoginShell categoriesFor: #userIDPresenter!accessing!private! !
+!JadeLoginShell categoriesForMethods!
+basicCaption!accessing!public! !
+checkScintillaVersion!public! !
+createComponents!public! !
+createSchematicWiring!public! !
+debugGCI!commands!public! !
+debugPathPresenter!accessing!private! !
+debugPathPresenter:!accessing!private! !
+dumpLoginInfoToFile!menu handlers support!private! !
+editCopy!public! !
+editCut!public! !
+editDelete!public! !
+editPaste!public! !
+editRedo!public! !
+editSelectAll!public! !
+editUndo!public! !
+fileNew!commands!public! !
+fileOpen!commands!public! !
+fillVersionList!public! !
+gemTaskPresenter:!public! !
+getDocumentData!accessing!public! !
+invalidateLoginButton!displaying!public! !
+isModified!public! !
+isModified:!public! !
+isText!public!testing! !
+isVersion:lessThanOrEqualTo:!public! !
+login!public! !
+loginFailureCaption!private! !
+model:!accessing!public! !
+onCloseRequested:!public! !
+onViewClosed!public! !
+onViewOpened!public! !
+openHomePage!public! !
+postLogin:!public! !
+queryCommand:!menu handlers support!private! !
+rowanReadyLibraries!gci!private! !
+saveDocument!public! !
+sendRequiredMessages!public! !
+setDocumentData:!accessing!public! !
+setWorkingDirectory!public! !
+shouldEnableLoginButton!private!testing! !
+updateCaption!public! !
+updateModel!public! !
+updateView!public! !
+userIDPresenter!accessing!private! !
+!
 
 !JadeLoginShell class methodsFor!
 
@@ -542,13 +544,15 @@ showOnSample
 
 	^self showOn: JadeLogin sample.
 ! !
-!JadeLoginShell class categoriesFor: #aboutJadeite!public! !
-!JadeLoginShell class categoriesFor: #defaultFileExtension!constants!public! !
-!JadeLoginShell class categoriesFor: #defaultModel!public! !
-!JadeLoginShell class categoriesFor: #fileTypes!constants!public! !
-!JadeLoginShell class categoriesFor: #icon!constants!public! !
-!JadeLoginShell class categoriesFor: #jadeiteVersionString!private! !
-!JadeLoginShell class categoriesFor: #resource_Compact_view!public!resources-views! !
-!JadeLoginShell class categoriesFor: #resource_Default_view!public!resources-views! !
-!JadeLoginShell class categoriesFor: #showOnSample!public! !
+!JadeLoginShell class categoriesForMethods!
+aboutJadeite!public! !
+defaultFileExtension!constants!public! !
+defaultModel!public! !
+fileTypes!constants!public! !
+icon!constants!public! !
+jadeiteVersionString!private! !
+resource_Compact_view!public!resources-views! !
+resource_Default_view!public!resources-views! !
+showOnSample!public! !
+!
 

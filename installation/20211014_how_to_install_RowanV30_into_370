@@ -1,10 +1,18 @@
 
-Last updated: 11/16/2021 - fix duplication of project
+Last updated: 
+1/4/2022 - 
+Formatting changes to this document
+added merge of masterV3.0 before checking out eric branch
+changed branch name to eric_component_V3.0
+11/16/2021 - 
+fix duplication of project
+
 For Latest Rowan V3.0 development work (components)
 
-Git checkout Rowan branch oscarV3.0Component_eric
-Git checkout Rowan Client Services branch oscarV3.0Component_eric
 export $ROWAN_PROJECTS_HOME=/uffda2/users/ewinger/shared/repos
+Git checkout Rowan branch eric_component_V3.0
+Git checkout Rowan Client Services branch eric_component_V3.0
+Merge masterV3.0 branch into eric_component_V3.0
 
 Right now, we're using a special build Dale put together at 
 /export/foos2/users/dhenrich/ROWAN_370_GEMSTONE_ee22848e0/
@@ -16,11 +24,12 @@ chmod 755 product/sys
 Copy gemstone.key from hidden/sys -> product/sys
 Copy hidden/bin/extent0.rowan.dbf -> product/data
 mv product/data/extent0.rowan.dbf -> extent0.dbf
+chmod 755 product/data/extent0.dbf
 
-
-startstone & startnetldi as usual
+startstone & startnetldi as usual (I've been naming them after the name of Dale's sha for easier communication)
 
 remove references to ARCHBASE in installRowan.tpz
-from topaz run the installRowan.tpz script
+from topaz run the installRowan.tpz script - 
+input installRowan.tpz 
 
-login to Jadeite (hopefully?)
+login to Jadeite (hopefully!)
