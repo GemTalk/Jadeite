@@ -14,11 +14,11 @@ componentListPresenter
 	^componentListPresenter!
 
 componentPropertiesDictionary
-	| dictionary |
-	dictionary := Dictionary new.
+	| collection |
+	collection := OrderedCollection new.
 	#(#preloadDoitName #postloadDoitName #projectNames)
-		do: [:instVarName | dictionary at: instVarName put: (componentListPresenter selection perform: instVarName)].
-	^dictionary!
+		do: [:instVarName | collection add: instVarName -> (componentListPresenter selection perform: instVarName)].
+	^collection!
 
 createComponents
 	componentListPresenter := self add: JadeiteTreePresenter new name: 'componentListPresenter'.
@@ -45,12 +45,8 @@ createSchematicWiring
 		to: self!
 
 displayComponentProperties
-
-	componentListPresenter selectionOrNil ifNil:[^self]. 
-	propertyListPresenter list:  self componentPropertiesDictionary
-
-	
-	!
+	componentListPresenter selectionOrNil ifNil: [^self].
+	propertyListPresenter list: self componentPropertiesDictionary!
 
 displayComponents
 	"The fake dictionary will be replaced by an argument to the method with the actual hierarchy from the server"
@@ -140,9 +136,9 @@ componentListPresenter!accessing!public! !
 componentPropertiesDictionary!accessing!public! !
 createComponents!initialization!public! !
 createSchematicWiring!initialization!public! !
-displayComponentProperties!displaying!public! !
-displayComponents!displaying!public! !
-displayPackages!displaying!public! !
+displayComponentProperties!displaying!event handlers!public! !
+displayComponents!displaying!event handlers!public! !
+displayPackages!displaying!event handlers!public! !
 initialize!initialization!public! !
 installPropertyPresenter!private! !
 isClassSelected!public!testing! !
