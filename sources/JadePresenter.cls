@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 Presenter subclass: #JadePresenter
 	instanceVariableNames: 'gciSession'
@@ -37,7 +37,7 @@ commitTransaction
 	"Even if it takes a windy path, try to make sure
 	all commits in Jadeite pass through here"
 
-	| commitResult |
+	| commitResult | 
 	commitResult := gciSession commit.
 	commitResult ifTrue: [Sound informationBeep] ifFalse: [MessageBox warning: 'Commit failed!!'].
 	^commitResult!
@@ -152,27 +152,29 @@ updateMenuBar: aMenuBar withName: aString itemsFrom: aPresenter
 updateService: service
 
 	^self updateServices: (Array with: service) ! !
-!JadePresenter categoriesFor: #additionalAccelerators!constants!public! !
-!JadePresenter categoriesFor: #addSystemBrowser!private! !
-!JadePresenter categoriesFor: #basicWriteProject:!menu handlers!public! !
-!JadePresenter categoriesFor: #commitTransaction!public!transaction management! !
-!JadePresenter categoriesFor: #gciSession!public! !
-!JadePresenter categoriesFor: #gciSession:!public! !
-!JadePresenter categoriesFor: #insertIfFalse:!displaying!public! !
-!JadePresenter categoriesFor: #insertIfTrue:!displaying!public! !
-!JadePresenter categoriesFor: #onViewOpened!event handlers!public! !
-!JadePresenter categoriesFor: #positionToDefaultLocation!event handlers!event handlers support!public! !
-!JadePresenter categoriesFor: #postEditSaveMethod!menu handlers support!public! !
-!JadePresenter categoriesFor: #refresh!menu handlers!public! !
-!JadePresenter categoriesFor: #refreshFromServer!public! !
-!JadePresenter categoriesFor: #resetCursor!public! !
-!JadePresenter categoriesFor: #setStatusBarDefault!displaying!public! !
-!JadePresenter categoriesFor: #statusBarText:!public! !
-!JadePresenter categoriesFor: #subMenuName!menus!public! !
-!JadePresenter categoriesFor: #subMenuPresenter!menus!public! !
-!JadePresenter categoriesFor: #updateMenuBar:!menus!public! !
-!JadePresenter categoriesFor: #updateMenuBar:withName:itemsFrom:!menus!public! !
-!JadePresenter categoriesFor: #updateService:!public!services! !
+!JadePresenter categoriesForMethods!
+additionalAccelerators!constants!public! !
+addSystemBrowser!private! !
+basicWriteProject:!menu handlers!public! !
+commitTransaction!public!transaction management! !
+gciSession!public! !
+gciSession:!public! !
+insertIfFalse:!displaying!public! !
+insertIfTrue:!displaying!public! !
+onViewOpened!event handlers!public! !
+positionToDefaultLocation!event handlers!event handlers support!public! !
+postEditSaveMethod!menu handlers support!public! !
+refresh!menu handlers!public! !
+refreshFromServer!public! !
+resetCursor!public! !
+setStatusBarDefault!displaying!public! !
+statusBarText:!public! !
+subMenuName!menus!public! !
+subMenuPresenter!menus!public! !
+updateMenuBar:!menus!public! !
+updateMenuBar:withName:itemsFrom:!menus!public! !
+updateService:!public!services! !
+!
 
 !JadePresenter class methodsFor!
 
@@ -208,9 +210,11 @@ rowanProjectsHomeEnvVarString
 
 rowanSample1Path
 	^'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1_resolved_v2.ston'! !
-!JadePresenter class categoriesFor: #loadViewResource2:inContext:!operations!public! !
-!JadePresenter class categoriesFor: #maxPrintStringSize!constants!public! !
-!JadePresenter class categoriesFor: #openCommit:inGitHub:!browsing!public! !
-!JadePresenter class categoriesFor: #rowanProjectsHomeEnvVarString!constants!public! !
-!JadePresenter class categoriesFor: #rowanSample1Path!constants!public! !
+!JadePresenter class categoriesForMethods!
+loadViewResource2:inContext:!operations!public! !
+maxPrintStringSize!constants!public! !
+openCommit:inGitHub:!browsing!public! !
+rowanProjectsHomeEnvVarString!constants!public! !
+rowanSample1Path!constants!public! !
+!
 

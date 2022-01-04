@@ -70,15 +70,17 @@ session: session execute: string context: contextOop symbolList: symbolList flag
 
 session: anInteger send: aString to: anOopType with: anArray
 	"GciNbPerformNoDebug supports client user actions in 3.7. GciNbPerform does not"
-	self critical: 
-			[self gciSetSessionId: anInteger.
-			self
-				gciNbPerformNoDebug: anOopType
-				_: aString
-				_: anArray
-				_: 1
-				_: anArray size.	"GCI_PERFORM_FLAG_ENABLE_DEBUG = 1"
-			^self nbResult]!
+	self critical: [
+		self gciSetSessionId: anInteger.
+		self
+			gciNbPerformNoDebug: anOopType 
+			_: aString 
+			_: anArray 
+			_: anArray size
+			_: 16r21.		"GCI_PERFORM_FLAG_ENABLE_DEBUG + GCI_PERFORM_FLAG_INTERPRETED"
+		^self nbResult.
+	].
+!
 
 specialFromOop: anOop
 

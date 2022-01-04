@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 GciSingleThreadedLibrary subclass: #LibGciRpc64
 	instanceVariableNames: ''
@@ -377,57 +377,59 @@ specialFromOop: anOop
 	].
 	^nil.
 ! !
-!LibGciRpc64 categoriesFor: #errorStructureClass!private! !
-!LibGciRpc64 categoriesFor: #gciClearStack:!private! !
-!LibGciRpc64 categoriesFor: #gciDbgEstablishToFile:!private! !
-!LibGciRpc64 categoriesFor: #gciErr:!private! !
-!LibGciRpc64 categoriesFor: #gciExecuteStr:_:!private! !
-!LibGciRpc64 categoriesFor: #gciExecuteStr_:_:_:!private! !
-!LibGciRpc64 categoriesFor: #gciFetchBytes:_:_:_:!private! !
-!LibGciRpc64 categoriesFor: #gciFetchChars:_:_:_:!private! !
-!LibGciRpc64 categoriesFor: #gciFetchClass:!private! !
-!LibGciRpc64 categoriesFor: #gciFetchObjImpl:!private! !
-!LibGciRpc64 categoriesFor: #gciFetchSize:!private! !
-!LibGciRpc64 categoriesFor: #gciFetchVaryingOops:_:_:_:!private! !
-!LibGciRpc64 categoriesFor: #gciFltToOop:!private! !
-!LibGciRpc64 categoriesFor: #gciI64ToOop:!private! !
-!LibGciRpc64 categoriesFor: #gciNbContinueWith:_:_:_:!private! !
-!LibGciRpc64 categoriesFor: #gciNbExecuteStrFromContext:_:_:!private! !
-!LibGciRpc64 categoriesFor: #gciNbExecuteStrFromContext_:_:_:_:!private! !
-!LibGciRpc64 categoriesFor: #gciNbPerform:_:_:_:!private! !
-!LibGciRpc64 categoriesFor: #gciNbPerformNoDebug:_:_:_:!private! !
-!LibGciRpc64 categoriesFor: #gciNbPerformNoDebug:_:_:_:_:!private! !
-!LibGciRpc64 categoriesFor: #gciNewString:!private! !
-!LibGciRpc64 categoriesFor: #gciOopToChr:!private! !
-!LibGciRpc64 categoriesFor: #gciReleaseOops:_:!private! !
-!LibGciRpc64 categoriesFor: #oopAsciiNul!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopAt:!private! !
-!LibGciRpc64 categoriesFor: #oopClassArray!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopClassByteArray!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopClassDoubleByteString!public! !
-!LibGciRpc64 categoriesFor: #oopClassQuadByteString!public! !
-!LibGciRpc64 categoriesFor: #oopClassString!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopClassSymbol!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopClassSystem!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopClassUnicode16!public! !
-!LibGciRpc64 categoriesFor: #oopClassUnicode32!public! !
-!LibGciRpc64 categoriesFor: #oopClassUnicode7!public! !
-!LibGciRpc64 categoriesFor: #oopFalse!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopForInteger:!public! !
-!LibGciRpc64 categoriesFor: #oopGemStoneError!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopIllegal!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopMaxSmallInteger!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopMinSmallInteger!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopMinusOne!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopNil!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopOne!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopRemoteNil!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopTrue!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopTwo!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #oopTypeArrayClass!public! !
-!LibGciRpc64 categoriesFor: #oopTypeClass!public! !
-!LibGciRpc64 categoriesFor: #oopTypeWithOop:!public! !
-!LibGciRpc64 categoriesFor: #oopZero!public!Reserved OOPs! !
-!LibGciRpc64 categoriesFor: #sendInterpreted:to:with:session:!public! !
-!LibGciRpc64 categoriesFor: #specialFromOop:!public! !
+!LibGciRpc64 categoriesForMethods!
+errorStructureClass!private! !
+gciClearStack:!private! !
+gciDbgEstablishToFile:!private! !
+gciErr:!private! !
+gciExecuteStr:_:!private! !
+gciExecuteStr_:_:_:!private! !
+gciFetchBytes:_:_:_:!private! !
+gciFetchChars:_:_:_:!private! !
+gciFetchClass:!private! !
+gciFetchObjImpl:!private! !
+gciFetchSize:!private! !
+gciFetchVaryingOops:_:_:_:!private! !
+gciFltToOop:!private! !
+gciI64ToOop:!private! !
+gciNbContinueWith:_:_:_:!private! !
+gciNbExecuteStrFromContext:_:_:!private! !
+gciNbExecuteStrFromContext_:_:_:_:!private! !
+gciNbPerform:_:_:_:!private! !
+gciNbPerformNoDebug:_:_:_:!private! !
+gciNbPerformNoDebug:_:_:_:_:!private! !
+gciNewString:!private! !
+gciOopToChr:!private! !
+gciReleaseOops:_:!private! !
+oopAsciiNul!public!Reserved OOPs! !
+oopAt:!private! !
+oopClassArray!public!Reserved OOPs! !
+oopClassByteArray!public!Reserved OOPs! !
+oopClassDoubleByteString!public! !
+oopClassQuadByteString!public! !
+oopClassString!public!Reserved OOPs! !
+oopClassSymbol!public!Reserved OOPs! !
+oopClassSystem!public!Reserved OOPs! !
+oopClassUnicode16!public! !
+oopClassUnicode32!public! !
+oopClassUnicode7!public! !
+oopFalse!public!Reserved OOPs! !
+oopForInteger:!public! !
+oopGemStoneError!public!Reserved OOPs! !
+oopIllegal!public!Reserved OOPs! !
+oopMaxSmallInteger!public!Reserved OOPs! !
+oopMinSmallInteger!public!Reserved OOPs! !
+oopMinusOne!public!Reserved OOPs! !
+oopNil!public!Reserved OOPs! !
+oopOne!public!Reserved OOPs! !
+oopRemoteNil!public!Reserved OOPs! !
+oopTrue!public!Reserved OOPs! !
+oopTwo!public!Reserved OOPs! !
+oopTypeArrayClass!public! !
+oopTypeClass!public! !
+oopTypeWithOop:!public! !
+oopZero!public!Reserved OOPs! !
+sendInterpreted:to:with:session:!public! !
+specialFromOop:!public! !
+!
 

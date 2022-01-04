@@ -160,7 +160,9 @@ trackContextMenu: aPointEvent
 			menu showIn: self position: pos.
 			ShortcutMenuStatus stop.
 			true]! !
-!ScintillaView categoriesFor: #trackContextMenu:!menus!private! !
+!ScintillaView categoriesForMethods!
+trackContextMenu:!menus!private! !
+!
 
 "End of package definition"!
 
