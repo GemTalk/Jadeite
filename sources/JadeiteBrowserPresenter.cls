@@ -2036,11 +2036,11 @@ copyProjectInfo!menu handlers!public! !
 createComponents!initialize/release!public! !
 createListViewFor:!private! !
 createNewProject!menu handlers!menu handlers support!private! !
-createSchematicWiring!initialize/release!public! !
+createSchematicWiring!create schemantic wiring!initialize/release!public! !
 createSchematicWiringForClassHierarchy!create schemantic wiring!public! !
 createSchematicWiringForClassList!create schemantic wiring!public! !
 createSchematicWiringForMethodList!create schemantic wiring!public! !
-createSchematicWiringForMethodSource!initialize/release!public! !
+createSchematicWiringForMethodSource!create schemantic wiring!initialize/release!public! !
 createSchematicWiringForProjectList!create schemantic wiring!public! !
 debug!menu handlers!public! !
 dictionaryMenu!menus!public! !

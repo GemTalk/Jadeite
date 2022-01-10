@@ -52,6 +52,7 @@ displayComponents
 	"The fake dictionary will be replaced by an argument to the method with the actual hierarchy from the server"
 
 	| treeModel fakeHierarchy flattenedHierarchy | 
+	self halt. 
 	fakeHierarchy := Dictionary new.
 	fakeHierarchy at: #nil put: #('common/Core').
 	fakeHierarchy at: 'common/Core' put: #('SubComponent1' 'SubComponent2').
@@ -118,11 +119,19 @@ onViewClosed
 
 onViewOpened
 	super onViewOpened.
-	self displayComponents!
+	self registerPresentersForUpdates.
+	self updateService: model.
+	"self halt; displayComponents"!
 
 projectListPresenter
 
 	^nil!
+
+registerPresentersForUpdates
+	BrowserUpdate current
+		register: componentListPresenter
+		selector: #componentsUpdate:browser:
+		browser: self!
 
 renameComponent
 	componentListPresenter view editSelectionLabel!
@@ -147,6 +156,7 @@ labelOfClass:editedTo:accept:!event handlers!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
 projectListPresenter!accessing!public! !
+registerPresentersForUpdates!public!register presenters! !
 renameComponent!menu handlers!public! !
 resetComponentList!initialization!public! !
 !

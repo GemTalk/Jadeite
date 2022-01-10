@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanProjectService
 	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop name isDirty specService componentServices'
@@ -107,6 +107,7 @@ componentsUpdate: presenter browser: browser
 	D -> nil - neither C nor D have children"
 
 	| treeModel parent topLevelComponents removals |
+	
 	wasUpdated ifFalse: [^self].
 	presenter model class = TreeModel
 		ifTrue: [^self	"not sure why the model starts out as a TreeModel, not a JadeiteTreeModel"].
@@ -309,54 +310,56 @@ specService
 
 specService: anObject
 	specService := anObject! !
-!RowanProjectService categoriesFor: #=!comparing!public! !
-!RowanProjectService categoriesFor: #addPackageNamed:using:!presenter support!public! !
-!RowanProjectService categoriesFor: #allClasses!accessing!public! !
-!RowanProjectService categoriesFor: #basicChangesUsing:!presenter support!public! !
-!RowanProjectService categoriesFor: #basicCheckout:using:!presenter support!public! !
-!RowanProjectService categoriesFor: #basicCheckoutTag:using:!presenter support!public! !
-!RowanProjectService categoriesFor: #basicCheckoutUsing:!presenter support!private! !
-!RowanProjectService categoriesFor: #basicName:!accessing!public! !
-!RowanProjectService categoriesFor: #branch!accessing!public! !
-!RowanProjectService categoriesFor: #branch:!accessing!public! !
-!RowanProjectService categoriesFor: #checkoutUsing:!presenter support!public! !
-!RowanProjectService categoriesFor: #componentServices!public! !
-!RowanProjectService categoriesFor: #componentsUpdate:browser:!public!updating! !
-!RowanProjectService categoriesFor: #definition!accessing!public! !
-!RowanProjectService categoriesFor: #displayName!accessing!displaying!public! !
-!RowanProjectService categoriesFor: #displayStringFor:!displaying!public! !
-!RowanProjectService categoriesFor: #gitTags:!presenter support!public! !
-!RowanProjectService categoriesFor: #hash!comparing!public! !
-!RowanProjectService categoriesFor: #initialize!Init / Release!public! !
-!RowanProjectService categoriesFor: #isDirty!accessing!public! !
-!RowanProjectService categoriesFor: #isDirty:!accessing!public! !
-!RowanProjectService categoriesFor: #isDiskDirty!accessing!public! !
-!RowanProjectService categoriesFor: #isLoaded!public!testing! !
-!RowanProjectService categoriesFor: #isProjectService!public!testing! !
-!RowanProjectService categoriesFor: #isSkew!accessing!private! !
-!RowanProjectService categoriesFor: #isSkew:!accessing!private! !
-!RowanProjectService categoriesFor: #name!accessing!public! !
-!RowanProjectService categoriesFor: #name:!accessing!public! !
-!RowanProjectService categoriesFor: #newTextView:using:!displaying!private! !
-!RowanProjectService categoriesFor: #packages!accessing!public! !
-!RowanProjectService categoriesFor: #packageServices!accessing!public! !
-!RowanProjectService categoriesFor: #performGitCommand:with:in:!presenter support!public! !
-!RowanProjectService categoriesFor: #postUpdate!Init / Release!public! !
-!RowanProjectService categoriesFor: #prepareForReplication!public!replication! !
-!RowanProjectService categoriesFor: #projectPackagesUpdate:browser:!public!updating! !
-!RowanProjectService categoriesFor: #projectSelectionUpdate:!public!updating! !
-!RowanProjectService categoriesFor: #projectsUpdate:!public!updating! !
-!RowanProjectService categoriesFor: #projectUrl!accessing!public! !
-!RowanProjectService categoriesFor: #remoteServiceName!must not strip!public! !
-!RowanProjectService categoriesFor: #removed:!public!updating! !
-!RowanProjectService categoriesFor: #removedProject:!public!updating! !
-!RowanProjectService categoriesFor: #replicateFrom:!public!replication! !
-!RowanProjectService categoriesFor: #rowanProjectsHome!accessing!public! !
-!RowanProjectService categoriesFor: #sha!accessing!public! !
-!RowanProjectService categoriesFor: #sha:!accessing!public! !
-!RowanProjectService categoriesFor: #sortAspect!accessing!public! !
-!RowanProjectService categoriesFor: #specService!accessing!private! !
-!RowanProjectService categoriesFor: #specService:!accessing!private! !
+!RowanProjectService categoriesForMethods!
+=!comparing!public! !
+addPackageNamed:using:!presenter support!public! !
+allClasses!accessing!public! !
+basicChangesUsing:!presenter support!public! !
+basicCheckout:using:!presenter support!public! !
+basicCheckoutTag:using:!presenter support!public! !
+basicCheckoutUsing:!presenter support!private! !
+basicName:!accessing!public! !
+branch!accessing!public! !
+branch:!accessing!public! !
+checkoutUsing:!presenter support!public! !
+componentServices!public! !
+componentsUpdate:browser:!public!updating! !
+definition!accessing!public! !
+displayName!accessing!displaying!public! !
+displayStringFor:!displaying!public! !
+gitTags:!presenter support!public! !
+hash!comparing!public! !
+initialize!Init / Release!public! !
+isDirty!accessing!public! !
+isDirty:!accessing!public! !
+isDiskDirty!accessing!public! !
+isLoaded!public!testing! !
+isProjectService!public!testing! !
+isSkew!accessing!private! !
+isSkew:!accessing!private! !
+name!accessing!public! !
+name:!accessing!public! !
+newTextView:using:!displaying!private! !
+packages!accessing!public! !
+packageServices!accessing!public! !
+performGitCommand:with:in:!presenter support!public! !
+postUpdate!Init / Release!public! !
+prepareForReplication!public!replication! !
+projectPackagesUpdate:browser:!public!updating! !
+projectSelectionUpdate:!public!updating! !
+projectsUpdate:!public!updating! !
+projectUrl!accessing!public! !
+remoteServiceName!must not strip!public! !
+removed:!public!updating! !
+removedProject:!public!updating! !
+replicateFrom:!public!replication! !
+rowanProjectsHome!accessing!public! !
+sha!accessing!public! !
+sha:!accessing!public! !
+sortAspect!accessing!public! !
+specService!accessing!private! !
+specService:!accessing!private! !
+!
 
 !RowanProjectService class methodsFor!
 
@@ -379,7 +382,9 @@ noneProject
 		isSkew: false;
 		sha: 'not a project'.
 	^inst! !
-!RowanProjectService class categoriesFor: #defaultIconName!private! !
-!RowanProjectService class categoriesFor: #icon!private! !
-!RowanProjectService class categoriesFor: #noneProject!instance creation!public! !
+!RowanProjectService class categoriesForMethods!
+defaultIconName!private! !
+icon!private! !
+noneProject!instance creation!public! !
+!
 
