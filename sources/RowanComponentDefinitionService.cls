@@ -28,6 +28,9 @@ preloadDoitName
 preloadDoitName: anObject
 	preloadDoitName := anObject!
 
+printOn: aStream
+	aStream nextPutAll: name!
+
 projectDefinitionService
 	^projectDefinitionService!
 
@@ -46,6 +49,7 @@ postloadDoitName!accessing!private! !
 postloadDoitName:!accessing!private! !
 preloadDoitName!accessing!private! !
 preloadDoitName:!accessing!private! !
+printOn:!printing!public! !
 projectDefinitionService!accessing!private! !
 projectDefinitionService:!accessing!private! !
 projectNames!accessing!private! !

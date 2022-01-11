@@ -10,6 +10,12 @@ JadeiteComponentPresenter comment: ''!
 !JadeiteComponentPresenter categoriesForClass!Unclassified! !
 !JadeiteComponentPresenter methodsFor!
 
+addComponent
+	| componentName |
+	componentName := Prompter prompt: 'Please enter a component name ...' caption: 'Add Component'.
+	model addComponentNamed: componentName session: self gciSession.
+	self displayComponents!
+
 componentListPresenter
 	^componentListPresenter!
 
@@ -49,26 +55,23 @@ displayComponentProperties
 	propertyListPresenter list: self componentPropertiesDictionary!
 
 displayComponents
-	"The fake dictionary will be replaced by an argument to the method with the actual hierarchy from the server"
 
-	| treeModel fakeHierarchy flattenedHierarchy | 
-	self halt. 
-	fakeHierarchy := Dictionary new.
-	fakeHierarchy at: #nil put: #('common/Core').
-	fakeHierarchy at: 'common/Core' put: #('SubComponent1' 'SubComponent2').
-	flattenedHierarchy := fakeHierarchy.	"flattenedHierarchy will become the argument"
+	| treeModel |
 	treeModel := componentListPresenter model.
-	flattenedHierarchy keysAndValuesDo: 
+	model componentDefinitions keysAndValuesDo: 
 			[:parent :children |
 			| parentDefinitionService |
-			parentDefinitionService := treeModel asBag
-						detect: [:definitionService | definitionService name = parent]
-						ifNone: [nil].
+			parent == #nil
+				ifTrue: [parentDefinitionService := nil]
+				ifFalse: 
+					[parentDefinitionService := treeModel asBag
+								detect: [:definitionService | definitionService name = parent name]
+								ifNone: [nil]].
 			children do: 
 					[:child |
 					| componentDefinitionService |
 					componentDefinitionService := RowanComponentDefinitionService new
-								name: child;
+								name: child name;
 								projectDefinitionService: model.
 					treeModel add: componentDefinitionService asChildOf: parentDefinitionService]].
 	componentListPresenter view expandAll!
@@ -120,8 +123,7 @@ onViewClosed
 onViewOpened
 	super onViewOpened.
 	self registerPresentersForUpdates.
-	self updateService: model.
-	"self halt; displayComponents"!
+	self updateService: model.!
 
 projectListPresenter
 
@@ -141,6 +143,7 @@ resetComponentList
 				searchPolicy: SearchPolicy equality;
 				reset)! !
 !JadeiteComponentPresenter categoriesForMethods!
+addComponent!menu handlers!public! !
 componentListPresenter!accessing!public! !
 componentPropertiesDictionary!accessing!public! !
 createComponents!initialization!public! !
