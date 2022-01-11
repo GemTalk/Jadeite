@@ -10,9 +10,14 @@ RowanProjectDefinitionService comment: ''!
 !RowanProjectDefinitionService categoriesForClass!Unclassified! !
 !RowanProjectDefinitionService methodsFor!
 
-addComponentNamed: componentName session: session
+addComponentNamed: componentName
 	command := #addComponent:.
 	commandArgs := Array with: componentName.
+	self issueCommand: self session: session!
+
+addPackageNamed: packageName toComponentNamed: componentName
+	command := #addPackageNamed:toComponentNamed:.
+	commandArgs := Array with: packageName with: componentName.
 	self issueCommand: self session: session!
 
 componentDefinitions
@@ -26,14 +31,21 @@ editInSession: session window: handle
 	commandArgs := Array with: handle.
 	self issueCommand: self session: session!
 
+renameComponentNamed: componentPath to: newName
+	command := #renameComponent:to:.
+	commandArgs := Array with: componentPath with: newName.
+	self issueCommand: self session: session!
+
 updateInSession: session
 	command := #update.
 	^self issueCommand: self session: session! !
 !RowanProjectDefinitionService categoriesForMethods!
-addComponentNamed:session:!commands!public! !
+addComponentNamed:!commands!public! !
+addPackageNamed:toComponentNamed:!commands!public! !
 componentDefinitions!accessing!private! !
 componentDefinitions:!accessing!private! !
 editInSession:window:!commands!public! !
+renameComponentNamed:to:!commands!public! !
 updateInSession:!commands!public! !
 !
 

@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanDefinitionService
-	instanceVariableNames: 'name properties'
+	instanceVariableNames: 'name properties session'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -14,8 +14,22 @@ RowanDefinitionService comment: ''!
 	^definitionService isService
 		and: [definitionService isDefinitionService and: [name = definitionService name]]!
 
+basicReplicateFrom: newService
+	1 to: self class instSize
+		do: 
+			[:index |
+			(self shouldReplicateInstVarAtIndex: index newService: newService)
+				ifTrue: [self instVarAt: index put: (newService instVarAt: index)]]!
+
+excludedInstVars
+
+	^super excludedInstVars , #('session')!
+
 hash
 	^self name hash!
+
+indexOfSessionInstVar
+	^9!
 
 isDefinitionService
 
@@ -31,14 +45,30 @@ properties
 	^properties!
 
 properties: anObject
-	properties := anObject! !
+	properties := anObject!
+
+session
+	^session!
+
+session: anObject
+	session := anObject!
+
+shouldReplicateInstVarAtIndex: index newService: newService
+	self indexOfSessionInstVar = index ifTrue: [^false].
+	^true! !
 !RowanDefinitionService categoriesForMethods!
 =!comparing!public! !
+basicReplicateFrom:!public! !
+excludedInstVars!public!ston! !
 hash!comparing!public! !
+indexOfSessionInstVar!public!replication! !
 isDefinitionService!public!testing! !
 name!accessing!private! !
 name:!accessing!private! !
 properties!accessing!private! !
 properties:!accessing!private! !
+session!accessing!private! !
+session:!accessing!private! !
+shouldReplicateInstVarAtIndex:newService:!public!replication! !
 !
 

@@ -121,7 +121,7 @@ RowanService subclass: #RowanDebuggerService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanDefinitionService
-	instanceVariableNames: 'name properties'
+	instanceVariableNames: 'name properties session'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -191,7 +191,7 @@ RowanDefinitionService subclass: #RowanClassDefinitionService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanDefinitionService subclass: #RowanComponentDefinitionService
-	instanceVariableNames: 'subcomponentDefinitions packageNames projectDefinitionService preloadDoitName postloadDoitName projectNames'
+	instanceVariableNames: 'subcomponentDefinitions packageNames projectDefinitionService preloadDoitName postloadDoitName projectNames comment'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

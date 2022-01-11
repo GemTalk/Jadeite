@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanDefinitionService subclass: #RowanComponentDefinitionService
-	instanceVariableNames: 'subcomponentDefinitions packageNames projectDefinitionService preloadDoitName postloadDoitName projectNames'
+	instanceVariableNames: 'subcomponentDefinitions packageNames projectDefinitionService preloadDoitName postloadDoitName projectNames comment'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -9,6 +9,12 @@ RowanComponentDefinitionService guid: (GUID fromString: '{5843d4f0-ef18-48bc-bb4
 RowanComponentDefinitionService comment: ''!
 !RowanComponentDefinitionService categoriesForClass!Unclassified! !
 !RowanComponentDefinitionService methodsFor!
+
+comment
+	^comment!
+
+comment: anObject
+	comment := anObject!
 
 packageNames
 	^packageNames!
@@ -43,6 +49,8 @@ projectNames
 projectNames: anObject
 	projectNames := anObject! !
 !RowanComponentDefinitionService categoriesForMethods!
+comment!accessing!private! !
+comment:!accessing!private! !
 packageNames!accessing!private! !
 packageNames:!accessing!private! !
 postloadDoitName!accessing!private! !

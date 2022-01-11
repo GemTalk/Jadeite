@@ -13,8 +13,19 @@ JadeiteComponentPresenter comment: ''!
 addComponent
 	| componentName |
 	componentName := Prompter prompt: 'Please enter a component name ...' caption: 'Add Component'.
-	model addComponentNamed: componentName session: self gciSession.
+	componentName ifNil:[^self].
+	model addComponentNamed: componentName.
 	self displayComponents!
+
+addPackage
+	| packageName |
+	componentListPresenter selectionOrNil ifNil: [^MessageBox notify: 'Please select a component'].
+	packageName := Prompter prompt: 'Please enter a package name ...'
+				caption: 'Add Package to ' , componentListPresenter selection name.
+	packageName ifNil: [^self].
+	model addPackageNamed: packageName toComponentNamed: componentListPresenter selection name.
+	self displayPackages.
+	packageListPresenter selection: (packageListPresenter list detect: [:name | name = packageName])!
 
 componentListPresenter
 	^componentListPresenter!
@@ -35,11 +46,7 @@ createComponents
 createSchematicWiring
 	componentListPresenter
 		when: #labelOf:editedTo:accept:
-		send: #labelOfClass:editedTo:accept:
-		to: self.
-	componentListPresenter
-		when: #labelOf:changedTo:
-		send: #labelOf:changedTo:
+		send: #labelOf:editedTo:accept:
 		to: self.
 	componentListPresenter
 		when: #selectionChanged
@@ -106,15 +113,15 @@ isClassSelected
 	"no classes in component browser" 
 	^false!
 
-labelOf: object changedTo: value
-	componentListPresenter view update.
-	self rowanFixMe	"write the change to the server"!
-
-labelOfClass: componentService editedTo: value accept: accept
-	value isEmpty
-		ifFalse: 
-			[componentService name: value.
-			accept value: true]!
+labelOf: componentService editedTo: value accept: accept
+	value isEmpty ifTrue: [^self].
+	componentService name = value ifTrue: [^self].
+	self projectDefinitionService
+		command: #renameComponent:to:;
+		commandArgs: (Array with: componentService name with: value).
+	self issueCommand: self projectDefinitionService.
+	componentService name: value.
+	accept value: true!
 
 onViewClosed
 	super onViewClosed.
@@ -124,6 +131,9 @@ onViewOpened
 	super onViewOpened.
 	self registerPresentersForUpdates.
 	self updateService: model.!
+
+projectDefinitionService
+	^model!
 
 projectListPresenter
 
@@ -136,7 +146,7 @@ registerPresentersForUpdates
 		browser: self!
 
 renameComponent
-	componentListPresenter view editSelectionLabel!
+	componentListPresenter view editSelectionLabel.!
 
 resetComponentList
 	componentListPresenter model: (JadeiteTreeModel new
@@ -144,6 +154,7 @@ resetComponentList
 				reset)! !
 !JadeiteComponentPresenter categoriesForMethods!
 addComponent!menu handlers!public! !
+addPackage!menu handlers!public! !
 componentListPresenter!accessing!public! !
 componentPropertiesDictionary!accessing!public! !
 createComponents!initialization!public! !
@@ -154,10 +165,10 @@ displayPackages!displaying!event handlers!public! !
 initialize!initialization!public! !
 installPropertyPresenter!private! !
 isClassSelected!public!testing! !
-labelOf:changedTo:!event handlers!public! !
-labelOfClass:editedTo:accept:!event handlers!public! !
+labelOf:editedTo:accept:!event handlers!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
+projectDefinitionService!accessing!public! !
 projectListPresenter!accessing!public! !
 registerPresentersForUpdates!public!register presenters! !
 renameComponent!menu handlers!public! !
