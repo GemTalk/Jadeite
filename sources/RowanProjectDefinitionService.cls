@@ -20,6 +20,11 @@ addPackageNamed: packageName toComponentNamed: componentName
 	commandArgs := Array with: packageName with: componentName.
 	self issueCommand: self session: session!
 
+addSubcomponentNamed: subcomponentName toComponentNamed: componentName
+	command := #addSubcomponentNamed:toComponentNamed:.
+	commandArgs := Array with: subcomponentName with: componentName.
+	self issueCommand: self session: session!
+
 componentDefinitions
 	^componentDefinitions!
 
@@ -29,6 +34,11 @@ componentDefinitions: anObject
 editInSession: session window: handle
 	command := #editInWindow:.
 	commandArgs := Array with: handle.
+	self issueCommand: self session: session!
+
+removeComponentNamed: componentName
+	command := #removeComponentNamed:.
+	commandArgs := Array with: componentName.
 	self issueCommand: self session: session!
 
 renameComponentNamed: componentPath to: newName
@@ -42,9 +52,11 @@ updateInSession: session
 !RowanProjectDefinitionService categoriesForMethods!
 addComponentNamed:!commands!public! !
 addPackageNamed:toComponentNamed:!commands!public! !
+addSubcomponentNamed:toComponentNamed:!commands!public! !
 componentDefinitions!accessing!private! !
 componentDefinitions:!accessing!private! !
 editInSession:window:!commands!public! !
+removeComponentNamed:!commands!public! !
 renameComponentNamed:to:!commands!public! !
 updateInSession:!commands!public! !
 !

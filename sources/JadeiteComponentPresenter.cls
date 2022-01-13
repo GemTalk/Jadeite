@@ -13,9 +13,13 @@ JadeiteComponentPresenter comment: ''!
 addComponent
 	| componentName |
 	componentName := Prompter prompt: 'Please enter a component name ...' caption: 'Add Component'.
-	componentName ifNil:[^self].
-	model addComponentNamed: componentName.
-	self displayComponents!
+	componentName ifNil: [^self].
+	componentListPresenter selectionOrNil
+		ifNil: [model addComponentNamed: componentName]
+		ifNotNil: [:sel | model addSubcomponentNamed: componentName toComponentNamed: sel name].
+	self displayComponents.
+	componentListPresenter selection: (componentListPresenter model asBag
+				detect: [:componentDefinitionService | componentDefinitionService name = componentName])!
 
 addPackage
 	| packageName |
@@ -145,6 +149,15 @@ registerPresentersForUpdates
 		selector: #componentsUpdate:browser:
 		browser: self!
 
+removeComponent
+	componentListPresenter selections isEmpty
+		ifTrue: [^MessageBox notify: 'Select component before removing it'].
+	MessageBox confirm: 'Really remove component ' , componentListPresenter selection name.
+	model removeComponentNamed: componentListPresenter selection name.
+	self resetComponentList.
+	self halt. 
+	self displayComponents!
+
 renameComponent
 	componentListPresenter view editSelectionLabel.!
 
@@ -171,6 +184,7 @@ onViewOpened!event handlers!public! !
 projectDefinitionService!accessing!public! !
 projectListPresenter!accessing!public! !
 registerPresentersForUpdates!public!register presenters! !
+removeComponent!menu handlers!public! !
 renameComponent!menu handlers!public! !
 resetComponentList!initialization!public! !
 !
