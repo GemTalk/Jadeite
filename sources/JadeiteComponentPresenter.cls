@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter propertyListPresenter'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter propertyListPresenter loadSpecPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -45,7 +45,8 @@ createComponents
 	componentListPresenter := self add: JadeiteTreePresenter new name: 'componentListPresenter'.
 	packageListPresenter := self add: ListPresenter new name: 'packageListPresenter'.
 	componentPropertyPresenter := self add: JadeitePropertyPresenter new name: 'componentPropertyPresenter'.
-	propertyListPresenter := self add: ListPresenter new name: 'propertyListPresenter'.!
+	propertyListPresenter := self add: ListPresenter new name: 'propertyListPresenter'.
+	loadSpecPresenter := self add: ListPresenter new name: 'loadSpecPresenter'. !
 
 createSchematicWiring
 	componentListPresenter
@@ -59,7 +60,11 @@ createSchematicWiring
 	componentListPresenter
 		when: #selectionChanged
 		send: #displayComponentProperties
-		to: self!
+		to: self.
+	loadSpecPresenter
+		when: #labelOf:editedTo:accept:
+		send: #loadSpecLabelOf:editedTo:accept:
+		to: self.!
 
 displayComponentProperties
 	componentListPresenter selectionOrNil ifNil: [^self].
@@ -86,6 +91,10 @@ displayComponents
 								projectDefinitionService: model.
 					treeModel add: componentDefinitionService asChildOf: parentDefinitionService]].
 	componentListPresenter view expandAll!
+
+displayLoadSpecification
+	loadSpecPresenter
+		list: (model specService objects collect: [:assoc | Array with: assoc key with: assoc value])!
 
 displayPackages
 	| packageNames |
@@ -118,6 +127,17 @@ isClassSelected
 	^false!
 
 labelOf: componentService editedTo: value accept: accept
+	value isEmpty ifTrue: [^self].
+	componentService name = value ifTrue: [^self].
+	self projectDefinitionService
+		command: #renameComponent:to:;
+		commandArgs: (Array with: componentService name with: value).
+	self issueCommand: self projectDefinitionService.
+	componentService name: value.
+	accept value: true!
+
+loadSpecLabelOf: componentService editedTo: value accept: accept
+	self halt. 
 	value isEmpty ifTrue: [^self].
 	componentService name = value ifTrue: [^self].
 	self projectDefinitionService
@@ -174,11 +194,13 @@ createComponents!initialization!public! !
 createSchematicWiring!initialization!public! !
 displayComponentProperties!displaying!event handlers!public! !
 displayComponents!displaying!event handlers!public! !
+displayLoadSpecification!displaying!event handlers!public! !
 displayPackages!displaying!event handlers!public! !
 initialize!initialization!public! !
 installPropertyPresenter!private! !
 isClassSelected!public!testing! !
 labelOf:editedTo:accept:!event handlers!public! !
+loadSpecLabelOf:editedTo:accept:!event handlers!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
 projectDefinitionService!accessing!public! !

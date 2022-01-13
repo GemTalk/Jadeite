@@ -206,7 +206,7 @@ RowanDefinitionService subclass: #RowanPackageDefinitionService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanDefinitionService subclass: #RowanProjectDefinitionService
-	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions loadSpecification'
+	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions loadSpecification specService'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
