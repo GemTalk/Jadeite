@@ -1354,7 +1354,7 @@ selectMethodsFrom: classService
 	self selectClassNamed: classService selectedMethods first className asString.
 	(classService selectedMethods size = 1 and: [self isCategoryTabSelected])
 		ifTrue: [| category | category := classService selectedMethods first category. 
-			(categoryListPresenter model includes: categoryListPresenter) ifFalse: [categoryListPresenter model add: category]. 
+			(categoryListPresenter model includes: category) ifFalse: [categoryListPresenter model add: category]. 
 			categoryListPresenter selection: category].
 	classService selectedMethods do: 
 			[:methodService |

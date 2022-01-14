@@ -61,10 +61,10 @@ createSchematicWiring
 		when: #selectionChanged
 		send: #displayComponentProperties
 		to: self.
-	loadSpecPresenter
-		when: #labelOf:editedTo:accept:
-		send: #loadSpecLabelOf:editedTo:accept:
-		to: self.!
+	loadSpecPresenter model
+		when: #item:updatedAtIndex:
+		send: #loadSpecItem:updatedAtIndex:
+		to: self!
 
 displayComponentProperties
 	componentListPresenter selectionOrNil ifNil: [^self].
@@ -94,7 +94,7 @@ displayComponents
 
 displayLoadSpecification
 	loadSpecPresenter
-		list: (model specService objects collect: [:assoc | Array with: assoc key with: assoc value])!
+		list: (model specService objects collect: [:assoc | Array with: assoc key with: assoc value asString])!
 
 displayPackages
 	| packageNames |
@@ -136,16 +136,11 @@ labelOf: componentService editedTo: value accept: accept
 	componentService name: value.
 	accept value: true!
 
-loadSpecLabelOf: componentService editedTo: value accept: accept
-	self halt. 
-	value isEmpty ifTrue: [^self].
-	componentService name = value ifTrue: [^self].
-	self projectDefinitionService
-		command: #renameComponent:to:;
-		commandArgs: (Array with: componentService name with: value).
-	self issueCommand: self projectDefinitionService.
-	componentService name: value.
-	accept value: true!
+loadSpecItem: specPropertyArray updatedAtIndex: index
+	model
+		command: #setLoadSpecProperty:to:;
+		commandArgs: (Array with: specPropertyArray first with: specPropertyArray last).
+	self issueCommand: model!
 
 onViewClosed
 	super onViewClosed.
@@ -200,7 +195,7 @@ initialize!initialization!public! !
 installPropertyPresenter!private! !
 isClassSelected!public!testing! !
 labelOf:editedTo:accept:!event handlers!public! !
-loadSpecLabelOf:editedTo:accept:!event handlers!public! !
+loadSpecItem:updatedAtIndex:!event handlers!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
 projectDefinitionService!accessing!public! !
