@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanDefinitionService subclass: #RowanProjectDefinitionService
-	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions loadSpecification specService'
+	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions loadSpecification specService comment conditionalAttributes'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -25,11 +25,23 @@ addSubcomponentNamed: subcomponentName toComponentNamed: componentName
 	commandArgs := Array with: subcomponentName with: componentName.
 	self issueCommand: self session: session!
 
+comment
+	^comment!
+
+comment: anObject
+	comment := anObject!
+
 componentDefinitions
 	^componentDefinitions!
 
 componentDefinitions: anObject
 	componentDefinitions := anObject!
+
+conditionalAttributes
+	^conditionalAttributes!
+
+conditionalAttributes: anObject
+	conditionalAttributes := anObject!
 
 editInSession: session window: handle
 	command := #editInWindow:.
@@ -59,8 +71,12 @@ updateInSession: session
 addComponentNamed:!commands!public! !
 addPackageNamed:toComponentNamed:!commands!public! !
 addSubcomponentNamed:toComponentNamed:!commands!public! !
+comment!accessing!private! !
+comment:!accessing!private! !
 componentDefinitions!accessing!private! !
 componentDefinitions:!accessing!private! !
+conditionalAttributes!accessing!private! !
+conditionalAttributes:!accessing!private! !
 editInSession:window:!commands!public! !
 removeComponentNamed:!commands!public! !
 renameComponentNamed:to:!commands!public! !

@@ -703,7 +703,7 @@ JadePresenterA subclass: #JadeiteCommandPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter propertyListPresenter loadSpecPresenter'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter propertyListPresenter loadSpecPresenter commentPresenter conditionalAttributesPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -898,7 +898,7 @@ JadeShell subclass: #JadeiteCommandShell
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeShell subclass: #JadeiteComponentEditor
-	instanceVariableNames: 'projectListPresenter componentTreePresenter componentPropertyPresenter'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

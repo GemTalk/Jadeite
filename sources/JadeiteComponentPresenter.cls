@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter propertyListPresenter loadSpecPresenter'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter propertyListPresenter loadSpecPresenter commentPresenter conditionalAttributesPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -44,9 +44,12 @@ componentPropertiesDictionary
 createComponents
 	componentListPresenter := self add: JadeiteTreePresenter new name: 'componentListPresenter'.
 	packageListPresenter := self add: ListPresenter new name: 'packageListPresenter'.
-	componentPropertyPresenter := self add: JadeitePropertyPresenter new name: 'componentPropertyPresenter'.
+	componentPropertyPresenter := self add: JadeitePropertyPresenter new
+				name: 'componentPropertyPresenter'.
 	propertyListPresenter := self add: ListPresenter new name: 'propertyListPresenter'.
-	loadSpecPresenter := self add: ListPresenter new name: 'loadSpecPresenter'. !
+	loadSpecPresenter := self add: ListPresenter new name: 'loadSpecPresenter'.
+	commentPresenter := self add: TextPresenter new name: 'commentPresenter'.
+	conditionalAttributesPresenter := self add: ListPresenter new name: 'conditionalAttributesPresenter'!
 
 createSchematicWiring
 	componentListPresenter
@@ -109,6 +112,10 @@ displayPackages
 			self issueCommand: componentDefinitionService.
 			packageNames addAll: componentDefinitionService packageNames].
 	packageListPresenter list: packageNames!
+
+displayTabs
+	commentPresenter value: model comment.
+	conditionalAttributesPresenter list: model conditionalAttributes!
 
 initialize
 	super initialize. 
@@ -191,6 +198,7 @@ displayComponentProperties!displaying!event handlers!public! !
 displayComponents!displaying!event handlers!public! !
 displayLoadSpecification!displaying!event handlers!public! !
 displayPackages!displaying!event handlers!public! !
+displayTabs!displaying!event handlers!public! !
 initialize!initialization!public! !
 installPropertyPresenter!private! !
 isClassSelected!public!testing! !
