@@ -41,6 +41,12 @@ componentPropertiesDictionary
 		do: [:instVarName | collection add: instVarName -> (componentListPresenter selection perform: instVarName)].
 	^collection!
 
+conditionalAttributeItem: new updatedAtIndex: index
+	model
+		command: #setConditionalAttributes:;
+		commandArgs: (Array with: model conditionalAttributes).
+	self issueCommand: model!
+
 createComponents
 	componentListPresenter := self add: JadeiteTreePresenter new name: 'componentListPresenter'.
 	packageListPresenter := self add: ListPresenter new name: 'packageListPresenter'.
@@ -67,6 +73,10 @@ createSchematicWiring
 	loadSpecPresenter model
 		when: #item:updatedAtIndex:
 		send: #loadSpecItem:updatedAtIndex:
+		to: self.
+	conditionalAttributesPresenter model
+		when: #item:updatedAtIndex:
+		send: #conditionalAttributeItem:updatedAtIndex:
 		to: self!
 
 displayComponentProperties
@@ -115,7 +125,7 @@ displayPackages
 
 displayTabs
 	commentPresenter value: model comment.
-	conditionalAttributesPresenter list: model conditionalAttributes!
+	conditionalAttributesPresenter list: (model conditionalAttributes collect:[:attribute | model conditionalAttributes -> attribute])!
 
 initialize
 	super initialize. 
@@ -192,6 +202,7 @@ addComponent!menu handlers!public! !
 addPackage!menu handlers!public! !
 componentListPresenter!accessing!public! !
 componentPropertiesDictionary!accessing!public! !
+conditionalAttributeItem:updatedAtIndex:!event handlers!public! !
 createComponents!initialization!public! !
 createSchematicWiring!initialization!public! !
 displayComponentProperties!displaying!event handlers!public! !
