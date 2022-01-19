@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter propertyListPresenter loadSpecPresenter commentPresenter conditionalAttributesPresenter'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter propertyListPresenter loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -55,7 +55,8 @@ createComponents
 	propertyListPresenter := self add: ListPresenter new name: 'propertyListPresenter'.
 	loadSpecPresenter := self add: ListPresenter new name: 'loadSpecPresenter'.
 	commentPresenter := self add: TextPresenter new name: 'commentPresenter'.
-	conditionalAttributesPresenter := self add: ListPresenter new name: 'conditionalAttributesPresenter'!
+	conditionalAttributesPresenter := self add: ListPresenter new name: 'conditionalAttributesPresenter'.
+	platformPropertiesPresenter := self add: ListPresenter new name: 'platformPropertiesPresenter'!
 
 createSchematicWiring
 	componentListPresenter
@@ -77,6 +78,10 @@ createSchematicWiring
 	conditionalAttributesPresenter model
 		when: #item:updatedAtIndex:
 		send: #conditionalAttributeItem:updatedAtIndex:
+		to: self.
+	platformPropertiesPresenter model
+		when: #item:updatedAtIndex:
+		send: #platformPropertyItem:updatedAtIndex:
 		to: self!
 
 displayComponentProperties
@@ -106,8 +111,11 @@ displayComponents
 	componentListPresenter view expandAll!
 
 displayLoadSpecification
-	loadSpecPresenter
-		list: (model specService objects collect: [:assoc | Array with: assoc key with: assoc value asString])!
+	| assocs |
+	assocs := model specService objects
+				collect: [:assoc | Array with: assoc key with: assoc value asString].
+	assocs := assocs asSortedCollection: [:x :y | x first < y first].
+	loadSpecPresenter list: assocs asArray!
 
 displayPackages
 	| packageNames |
@@ -124,8 +132,13 @@ displayPackages
 	packageListPresenter list: packageNames!
 
 displayTabs
+	| propertiesArray |
 	commentPresenter value: model comment.
-	conditionalAttributesPresenter list: (model conditionalAttributes collect:[:attribute | model conditionalAttributes -> attribute])!
+	conditionalAttributesPresenter
+		list: (model conditionalAttributes collect: [:attribute | model conditionalAttributes -> attribute]).
+	propertiesArray := OrderedCollection new.
+	model platformProperties keysAndValuesDo: [:key :value | propertiesArray add: key -> value].
+	platformPropertiesPresenter list: propertiesArray!
 
 initialize
 	super initialize. 
@@ -187,7 +200,6 @@ removeComponent
 	MessageBox confirm: 'Really remove component ' , componentListPresenter selection name.
 	model removeComponentNamed: componentListPresenter selection name.
 	self resetComponentList.
-	self halt. 
 	self displayComponents!
 
 renameComponent

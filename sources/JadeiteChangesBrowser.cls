@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 MCPatchBrowser subclass: #JadeiteChangesBrowser
 	instanceVariableNames: 'name diffsPresenter session'
@@ -189,26 +189,28 @@ showNoComparison
 		beforeTitle: 'Disk';
 		afterTitle: 'Image';
 		compare: String new with: String new! !
-!JadeiteChangesBrowser categoriesFor: #additionalAccelerators!accessing!constants!public! !
-!JadeiteChangesBrowser categoriesFor: #afterTitle:!public! !
-!JadeiteChangesBrowser categoriesFor: #browseChangedThing!menu handlers!public! !
-!JadeiteChangesBrowser categoriesFor: #browseImplementors!menu handlers!public! !
-!JadeiteChangesBrowser categoriesFor: #browseSenders!menu handlers!public! !
-!JadeiteChangesBrowser categoriesFor: #createComponents!public! !
-!JadeiteChangesBrowser categoriesFor: #createSchematicWiring!initialization!public! !
-!JadeiteChangesBrowser categoriesFor: #flipIdenticalSource!initialization!public! !
-!JadeiteChangesBrowser categoriesFor: #initialize!initialization!public! !
-!JadeiteChangesBrowser categoriesFor: #modifiedSelectorForBrowsing:!menu handlers support!public! !
-!JadeiteChangesBrowser categoriesFor: #name!accessing!public! !
-!JadeiteChangesBrowser categoriesFor: #name:!accessing!public! !
-!JadeiteChangesBrowser categoriesFor: #operationSelected!public! !
-!JadeiteChangesBrowser categoriesFor: #operationsList!public! !
-!JadeiteChangesBrowser categoriesFor: #queryCommand:!menu handlers!public! !
-!JadeiteChangesBrowser categoriesFor: #refresh!menu handlers!public! !
-!JadeiteChangesBrowser categoriesFor: #refreshIdenticalSource!menu handlers!public! !
-!JadeiteChangesBrowser categoriesFor: #revert!menu handlers!public! !
-!JadeiteChangesBrowser categoriesFor: #shellName!overrides!private! !
-!JadeiteChangesBrowser categoriesFor: #showNoComparison!public! !
+!JadeiteChangesBrowser categoriesForMethods!
+additionalAccelerators!accessing!constants!public! !
+afterTitle:!public! !
+browseChangedThing!menu handlers!public! !
+browseImplementors!menu handlers!public! !
+browseSenders!menu handlers!public! !
+createComponents!public! !
+createSchematicWiring!initialization!public! !
+flipIdenticalSource!initialization!public! !
+initialize!initialization!public! !
+modifiedSelectorForBrowsing:!menu handlers support!public! !
+name!accessing!public! !
+name:!accessing!public! !
+operationSelected!public! !
+operationsList!public! !
+queryCommand:!menu handlers!public! !
+refresh!menu handlers!public! !
+refreshIdenticalSource!menu handlers!public! !
+revert!menu handlers!public! !
+shellName!overrides!private! !
+showNoComparison!public! !
+!
 
 !JadeiteChangesBrowser class methodsFor!
 
@@ -232,6 +234,8 @@ showOn: aModel name: aString
 		createView: self defaultView;
 		showShell;
 		yourself! !
-!JadeiteChangesBrowser class categoriesFor: #resource_Default_view!public!resources-views! !
-!JadeiteChangesBrowser class categoriesFor: #showOn:name:!public! !
+!JadeiteChangesBrowser class categoriesForMethods!
+resource_Default_view!public!resources-views! !
+showOn:name:!public! !
+!
 
