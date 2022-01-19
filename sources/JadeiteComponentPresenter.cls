@@ -181,6 +181,12 @@ onViewOpened
 	self registerPresentersForUpdates.
 	self updateService: model.!
 
+platformPropertyItem: association updatedAtIndex: value
+	model
+		command: #setPlatformProperty:to:;
+		commandArgs: (Array with: association key with: value).
+	self issueCommand: model!
+
 projectDefinitionService
 	^model!
 
@@ -229,6 +235,7 @@ labelOf:editedTo:accept:!event handlers!public! !
 loadSpecItem:updatedAtIndex:!event handlers!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
+platformPropertyItem:updatedAtIndex:!event handlers!public! !
 projectDefinitionService!accessing!public! !
 projectListPresenter!accessing!public! !
 registerPresentersForUpdates!public!register presenters! !
