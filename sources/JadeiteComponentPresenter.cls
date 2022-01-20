@@ -82,6 +82,20 @@ createSchematicWiring
 	platformPropertiesPresenter model
 		when: #item:updatedAtIndex:
 		send: #platformPropertyItem:updatedAtIndex:
+		to: self.
+	componentListPresenter
+		when: #drop:
+			send: #onDropPackageToComponent:
+			to: self;
+		when: #dragOver:
+			send: #onDragOverComponentTree:
+			to: self;
+		when: #dragEnter
+			send: #onDragOverComponentTree:
+			to: self.
+	packageListPresenter
+		when: #drag:
+		send: #onDragPackageToComponent:
 		to: self!
 
 displayComponentProperties
@@ -172,6 +186,29 @@ loadSpecItem: specPropertyArray updatedAtIndex: index
 		commandArgs: (Array with: specPropertyArray first with: specPropertyArray last).
 	self issueCommand: model!
 
+onDragOverComponentTree: dragDropSession
+	| newDragObjects |
+	newDragObjects := packageListPresenter selections
+				collect: [:packageName | dragDropSession newDragObject: packageName].
+	dragDropSession supportedOperations: #(#move).
+	dragDropSession operation: #move.
+	dragDropSession dragObjects: newDragObjects.
+	dragDropSession dropTarget: componentListPresenter view!
+
+onDragPackageToComponent: dragDropSession
+	| newDragObjects |
+	newDragObjects := packageListPresenter selections
+				collect: [:packageName | dragDropSession newDragObject: packageName].
+	dragDropSession supportedOperations: #(#move).
+	dragDropSession operation: #move.
+	dragDropSession dragObjects: newDragObjects.
+	dragDropSession dropTarget: componentListPresenter view!
+
+onDropPackageToComponent: dragDropSession
+	dragDropSession dragObjects
+		do: [:dragObject | model movePackageNamed: dragObject object toComponentNamed: dragDropSession suggestedTarget name].
+	self displayPackages!
+
 onViewClosed
 	super onViewClosed.
 	BrowserUpdate current removeEventsTriggeredFor: componentListPresenter.!
@@ -233,6 +270,9 @@ installPropertyPresenter!private! !
 isClassSelected!public!testing! !
 labelOf:editedTo:accept:!event handlers!public! !
 loadSpecItem:updatedAtIndex:!event handlers!public! !
+onDragOverComponentTree:!drag & drop!public! !
+onDragPackageToComponent:!drag & drop!event handlers!public! !
+onDropPackageToComponent:!drag & drop!event handlers!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
 platformPropertyItem:updatedAtIndex:!event handlers!public! !

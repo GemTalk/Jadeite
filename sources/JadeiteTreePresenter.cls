@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 TreePresenter subclass: #JadeiteTreePresenter
 	instanceVariableNames: ''
@@ -15,5 +15,7 @@ defaultModel
 	is initialized."
 
 	^JadeiteTreeModel new! !
-!JadeiteTreePresenter class categoriesFor: #defaultModel!models!public! !
+!JadeiteTreePresenter class categoriesForMethods!
+defaultModel!models!public! !
+!
 

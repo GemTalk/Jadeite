@@ -48,6 +48,11 @@ editInSession: session window: handle
 	commandArgs := Array with: handle.
 	self issueCommand: self session: session!
 
+movePackageNamed: packageName toComponentNamed: componentName
+	command := #movePackageNamed:toComponentNamed:.
+	commandArgs := Array with: packageName with: componentName.
+	self issueCommand: self session: session!
+
 platformProperties
 	^platformProperties!
 
@@ -84,6 +89,7 @@ componentDefinitions:!accessing!private! !
 conditionalAttributes!accessing!private! !
 conditionalAttributes:!accessing!private! !
 editInSession:window:!commands!public! !
+movePackageNamed:toComponentNamed:!commands!public! !
 platformProperties!accessing!private! !
 platformProperties:!accessing!private! !
 removeComponentNamed:!commands!public! !
