@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter propertyListPresenter loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -34,13 +34,6 @@ addPackage
 componentListPresenter
 	^componentListPresenter!
 
-componentPropertiesDictionary
-	| collection |
-	collection := OrderedCollection new.
-	#(#preloadDoitName #postloadDoitName #projectNames)
-		do: [:instVarName | collection add: instVarName -> (componentListPresenter selection perform: instVarName)].
-	^collection!
-
 conditionalAttributeItem: new updatedAtIndex: index
 	model
 		command: #setConditionalAttributes:;
@@ -52,7 +45,7 @@ createComponents
 	packageListPresenter := self add: ListPresenter new name: 'packageListPresenter'.
 	componentPropertyPresenter := self add: JadeitePropertyPresenter new
 				name: 'componentPropertyPresenter'.
-	propertyListPresenter := self add: ListPresenter new name: 'propertyListPresenter'.
+	prePostLoadListPresenter := self add: ListPresenter new name: 'prePostLoadListPresenter'.
 	loadSpecPresenter := self add: ListPresenter new name: 'loadSpecPresenter'.
 	commentPresenter := self add: TextPresenter new name: 'commentPresenter'.
 	conditionalAttributesPresenter := self add: ListPresenter new name: 'conditionalAttributesPresenter'.
@@ -69,7 +62,7 @@ createSchematicWiring
 		to: self.
 	componentListPresenter
 		when: #selectionChanged
-		send: #displayComponentProperties
+		send: #displayPrePostLoadSources
 		to: self.
 	loadSpecPresenter model
 		when: #item:updatedAtIndex:
@@ -97,10 +90,6 @@ createSchematicWiring
 		when: #drag:
 		send: #onDragPackageToComponent:
 		to: self!
-
-displayComponentProperties
-	componentListPresenter selectionOrNil ifNil: [^self].
-	propertyListPresenter list: self componentPropertiesDictionary!
 
 displayComponents
 
@@ -145,6 +134,9 @@ displayPackages
 			packageNames addAll: componentDefinitionService packageNames].
 	packageListPresenter list: packageNames!
 
+displayPrePostLoadSources
+	self halt. !
+
 displayTabs
 	| propertiesArray |
 	commentPresenter value: model comment.
@@ -187,6 +179,8 @@ loadSpecItem: specPropertyArray updatedAtIndex: index
 	self issueCommand: model!
 
 onDragOverComponentTree: dragDropSession
+	"this duplication of code with the drag event itself seems necessary as Dolphin not-so-wittingly clears a lot of state from the session at the drag entry event"
+
 	| newDragObjects |
 	newDragObjects := packageListPresenter selections
 				collect: [:packageName | dragDropSession newDragObject: packageName].
@@ -256,14 +250,13 @@ resetComponentList
 addComponent!menu handlers!public! !
 addPackage!menu handlers!public! !
 componentListPresenter!accessing!public! !
-componentPropertiesDictionary!accessing!public! !
 conditionalAttributeItem:updatedAtIndex:!event handlers!public! !
 createComponents!initialization!public! !
 createSchematicWiring!initialization!public! !
-displayComponentProperties!displaying!event handlers!public! !
 displayComponents!displaying!event handlers!public! !
 displayLoadSpecification!displaying!event handlers!public! !
 displayPackages!displaying!event handlers!public! !
+displayPrePostLoadSources!displaying!event handlers!public! !
 displayTabs!displaying!event handlers!public! !
 initialize!initialization!public! !
 installPropertyPresenter!private! !
