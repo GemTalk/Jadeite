@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -31,6 +31,32 @@ addPackage
 	self displayPackages.
 	packageListPresenter selection: (packageListPresenter list detect: [:name | name = packageName])!
 
+addPostLoadSelector
+	| selector |
+	selector := (Prompter prompt: 'Enter postLoad selector' caption: 'Enter PostLoad Selector')
+				ifNil: [^self].
+	model
+		command: #addPostloadDoitName:withSource:toComponentNamed:;
+		commandArgs: (Array
+					with: selector
+					with: '[tempSource]'
+					with: componentListPresenter selection name).
+	self issueProjectDefinitionCommand.
+	self displayPrePostLoadSources!
+
+addPreLoadSelector
+	| selector |
+	selector := (Prompter prompt: 'Enter preLoad selector' caption: 'Enter PreLoad Selector')
+				ifNil: [^self].
+	model
+		command: #addPreloadDoitName:withSource:toComponentNamed:;
+		commandArgs: (Array
+					with: selector
+					with: '[tempSource]'
+					with: componentListPresenter selection name).
+	self issueProjectDefinitionCommand.
+	self displayPrePostLoadSources!
+
 componentListPresenter
 	^componentListPresenter!
 
@@ -38,7 +64,7 @@ conditionalAttributeItem: new updatedAtIndex: index
 	model
 		command: #setConditionalAttributes:;
 		commandArgs: (Array with: model conditionalAttributes).
-	self issueCommand: model!
+	self issueProjectDefinitionCommand!
 
 createComponents
 	componentListPresenter := self add: JadeiteTreePresenter new name: 'componentListPresenter'.
@@ -49,7 +75,8 @@ createComponents
 	loadSpecPresenter := self add: ListPresenter new name: 'loadSpecPresenter'.
 	commentPresenter := self add: TextPresenter new name: 'commentPresenter'.
 	conditionalAttributesPresenter := self add: ListPresenter new name: 'conditionalAttributesPresenter'.
-	platformPropertiesPresenter := self add: ListPresenter new name: 'platformPropertiesPresenter'!
+	platformPropertiesPresenter := self add: ListPresenter new name: 'platformPropertiesPresenter'.
+	prePostLoadSource := self add: TextPresenter new name: 'prePostLoadSource'!
 
 createSchematicWiring
 	componentListPresenter
@@ -89,6 +116,18 @@ createSchematicWiring
 	packageListPresenter
 		when: #drag:
 		send: #onDragPackageToComponent:
+		to: self.
+	prePostLoadListPresenter
+		when: #selectionChanged
+		send: #updatePrePostSource
+		to: self.
+	prePostLoadListPresenter model
+		when: #item:updatedAtIndex:
+		send: #prePostLoadChanged
+		to: self.
+	prePostLoadSource
+		when: #focusLost
+		send: #prePostLoadChanged
 		to: self!
 
 displayComponents
@@ -135,7 +174,13 @@ displayPackages
 	packageListPresenter list: packageNames!
 
 displayPrePostLoadSources
-	self halt. !
+	| list |
+	list := OrderedCollection new.
+	list add: (OrderedCollection with: #preloadDoitName
+				with: (componentListPresenter selection preloadDoitName ifNotNil: [:nm | nm key])).
+	list add: (OrderedCollection with: #postloadDoitName
+				with: (componentListPresenter selection postloadDoitName ifNotNil: [:nm | nm key])).
+	prePostLoadListPresenter list: list!
 
 displayTabs
 	| propertiesArray |
@@ -150,17 +195,20 @@ initialize
 	super initialize. 
 	self resetComponentList.!
 
-installPropertyPresenter
-	"propertyPresenter createView: 'JadeiteComponentPresenter.Component Properties View'"
-	"newCard := packageDictionaryCards add: dictionaryPresenter.
-			packageDictionaryCards view cards first arrangement: 'Dictionaries'.
-			dictionaryPresenter view contextMenu: self dictionaryMenu.
-			classListPresenter list: ListModel new.
-			classHierarchyPresenter model: JadeiteTreeModel new"!
-
 isClassSelected
 	"no classes in component browser" 
 	^false!
+
+issueProjectDefinitionCommand
+	| componentSelection |
+	self issueCommand: model.
+	componentSelection := componentListPresenter selection.
+	self nonNilComponentDefinitionRoots do: 
+			[:new |
+			| old |
+			old := componentListPresenter model asBag detect: [:oldDef | oldDef name = new name] ifNone: [].
+			old ifNotNil: [old replicateFrom: new]].
+	componentListPresenter selection: componentSelection!
 
 labelOf: componentService editedTo: value accept: accept
 	value isEmpty ifTrue: [^self].
@@ -168,7 +216,7 @@ labelOf: componentService editedTo: value accept: accept
 	self projectDefinitionService
 		command: #renameComponent:to:;
 		commandArgs: (Array with: componentService name with: value).
-	self issueCommand: self projectDefinitionService.
+	self issueProjectDefinitionCommand.
 	componentService name: value.
 	accept value: true!
 
@@ -176,7 +224,10 @@ loadSpecItem: specPropertyArray updatedAtIndex: index
 	model
 		command: #setLoadSpecProperty:to:;
 		commandArgs: (Array with: specPropertyArray first with: specPropertyArray last).
-	self issueCommand: model!
+	self issueProjectDefinitionCommand!
+
+nonNilComponentDefinitionRoots
+	^model componentDefinitions keys select: [:def | (def == #nil) not]!
 
 onDragOverComponentTree: dragDropSession
 	"this duplication of code with the drag event itself seems necessary as Dolphin not-so-wittingly clears a lot of state from the session at the drag entry event"
@@ -216,7 +267,23 @@ platformPropertyItem: association updatedAtIndex: value
 	model
 		command: #setPlatformProperty:to:;
 		commandArgs: (Array with: association key with: value).
-	self issueCommand: model!
+	self issueProjectDefinitionCommand!
+
+prePostLoadChanged
+	| command |
+	prePostLoadListPresenter selectionOrNil ifNil: [^self]. 
+	prePostLoadListPresenter selection last ifNil:[^self]. 
+	command := prePostLoadListPresenter selection first = #preloadDoitName
+				ifTrue: [#addPreloadDoitName:withSource:toComponentNamed:]
+				ifFalse: [#addPostloadDoitName:withSource:toComponentNamed:].
+	model
+		command: command;
+		commandArgs: (Array
+					with: prePostLoadListPresenter selection last
+					with: prePostLoadSource value
+					with: componentListPresenter selection name).
+	self issueProjectDefinitionCommand.
+	self displayPrePostLoadSources!
 
 projectDefinitionService
 	^model!
@@ -245,10 +312,20 @@ renameComponent
 resetComponentList
 	componentListPresenter model: (JadeiteTreeModel new
 				searchPolicy: SearchPolicy equality;
-				reset)! !
+				reset)!
+
+updatePrePostSource
+	prePostLoadListPresenter selectionOrNil
+		ifNotNil: 
+			[:selection |
+			| loadAssoc |
+			loadAssoc := componentListPresenter selection perform: selection first.
+			prePostLoadSource value: (loadAssoc ifNotNil: [loadAssoc value])]! !
 !JadeiteComponentPresenter categoriesForMethods!
 addComponent!menu handlers!public! !
 addPackage!menu handlers!public! !
+addPostLoadSelector!menu handlers!public! !
+addPreLoadSelector!menu handlers!public! !
 componentListPresenter!accessing!public! !
 conditionalAttributeItem:updatedAtIndex:!event handlers!public! !
 createComponents!initialization!public! !
@@ -259,22 +336,25 @@ displayPackages!displaying!event handlers!public! !
 displayPrePostLoadSources!displaying!event handlers!public! !
 displayTabs!displaying!event handlers!public! !
 initialize!initialization!public! !
-installPropertyPresenter!private! !
 isClassSelected!public!testing! !
+issueProjectDefinitionCommand!private! !
 labelOf:editedTo:accept:!event handlers!public! !
 loadSpecItem:updatedAtIndex:!event handlers!public! !
+nonNilComponentDefinitionRoots!private! !
 onDragOverComponentTree:!drag & drop!public! !
 onDragPackageToComponent:!drag & drop!event handlers!public! !
 onDropPackageToComponent:!drag & drop!event handlers!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
 platformPropertyItem:updatedAtIndex:!event handlers!public! !
+prePostLoadChanged!event handlers!public! !
 projectDefinitionService!accessing!public! !
 projectListPresenter!accessing!public! !
 registerPresentersForUpdates!public!register presenters! !
 removeComponent!menu handlers!public! !
 renameComponent!menu handlers!public! !
 resetComponentList!initialization!public! !
+updatePrePostSource!event handlers!public! !
 !
 
 !JadeiteComponentPresenter class methodsFor!
