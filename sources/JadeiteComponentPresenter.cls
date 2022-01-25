@@ -112,6 +112,12 @@ createSchematicWiring
 			to: self;
 		when: #dragEnter
 			send: #onDragOverComponentTree:
+			to: self;
+		when: #selectionChanging: 
+			send: #isOkayToChange
+			to: self; 
+		when: #selectionChanged
+			send: #resetPrePostLoadSource
 			to: self.
 	packageListPresenter
 		when: #drag:
@@ -199,6 +205,11 @@ isClassSelected
 	"no classes in component browser" 
 	^false!
 
+isOkayToChange
+	prePostLoadSource view isModified
+		ifTrue: [(JadePresenter unsavedChangesValidSessionDialogIn: self topShell) ifTrue: [^false]].
+	^true!
+
 issueProjectDefinitionCommand
 	| componentSelection |
 	self issueCommand: model.
@@ -271,11 +282,17 @@ platformPropertyItem: association updatedAtIndex: value
 
 prePostLoadChanged
 	| command |
-	prePostLoadListPresenter selectionOrNil ifNil: [^self]. 
-	prePostLoadListPresenter selection last ifNil:[^self]. 
-	command := prePostLoadListPresenter selection first = #preloadDoitName
-				ifTrue: [#addPreloadDoitName:withSource:toComponentNamed:]
-				ifFalse: [#addPostloadDoitName:withSource:toComponentNamed:].
+	prePostLoadListPresenter selectionOrNil ifNil: [^self].
+	prePostLoadListPresenter selection last ifNil: [^self].
+	prePostLoadListPresenter selection first = #preloadDoitName
+		ifTrue: 
+			[command := #addPreloadDoitName:withSource:toComponentNamed:.
+			componentListPresenter selection
+				preloadDoitName: prePostLoadListPresenter selection last -> prePostLoadSource value]
+		ifFalse: 
+			[command := #addPostloadDoitName:withSource:toComponentNamed:.
+			componentListPresenter selection
+				postloadDoitName: prePostLoadListPresenter selection last -> prePostLoadSource value].
 	model
 		command: command;
 		commandArgs: (Array
@@ -314,11 +331,18 @@ resetComponentList
 				searchPolicy: SearchPolicy equality;
 				reset)!
 
+resetPrePostLoadSource
+	prePostLoadSource value: String new.
+	prePostLoadSource view
+		isModified: false;
+		isReadOnly: true!
+
 updatePrePostSource
 	prePostLoadListPresenter selectionOrNil
 		ifNotNil: 
 			[:selection |
 			| loadAssoc |
+			prePostLoadSource view isReadOnly: false. 
 			loadAssoc := componentListPresenter selection perform: selection first.
 			prePostLoadSource value: (loadAssoc ifNotNil: [loadAssoc value])]! !
 !JadeiteComponentPresenter categoriesForMethods!
@@ -337,6 +361,7 @@ displayPrePostLoadSources!displaying!event handlers!public! !
 displayTabs!displaying!event handlers!public! !
 initialize!initialization!public! !
 isClassSelected!public!testing! !
+isOkayToChange!event handlers!public! !
 issueProjectDefinitionCommand!private! !
 labelOf:editedTo:accept:!event handlers!public! !
 loadSpecItem:updatedAtIndex:!event handlers!public! !
@@ -354,6 +379,7 @@ registerPresentersForUpdates!public!register presenters! !
 removeComponent!menu handlers!public! !
 renameComponent!menu handlers!public! !
 resetComponentList!initialization!public! !
+resetPrePostLoadSource!event handlers!public! !
 updatePrePostSource!event handlers!public! !
 !
 
