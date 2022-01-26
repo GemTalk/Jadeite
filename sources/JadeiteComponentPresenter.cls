@@ -194,12 +194,14 @@ displayPackages
 
 displayPrePostLoadSources
 	| list |
-	list := OrderedCollection new.
-	list add: (OrderedCollection with: #preloadDoitName
-				with: (componentListPresenter selection preloadDoitName ifNotNil: [:nm | nm key])).
-	list add: (OrderedCollection with: #postloadDoitName
-				with: (componentListPresenter selection postloadDoitName ifNotNil: [:nm | nm key])).
-	prePostLoadListPresenter list: list!
+	componentListPresenter selectionOrNil
+		ifNotNil: 
+			[list := OrderedCollection new.
+			list add: (OrderedCollection with: #preloadDoitName
+						with: (componentListPresenter selection preloadDoitName ifNotNil: [:nm | nm key])).
+			list add: (OrderedCollection with: #postloadDoitName
+						with: (componentListPresenter selection postloadDoitName ifNotNil: [:nm | nm key])).
+			prePostLoadListPresenter list: list]!
 
 displayTabs
 	| propertiesArray |
@@ -373,6 +375,7 @@ resetPrePostLoadSource
 		isReadOnly: true!
 
 updatePrePostSource
+	componentListPresenter selectionOrNil ifNil:[^self]. 
 	prePostLoadListPresenter selectionOrNil
 		ifNotNil: 
 			[:selection |
