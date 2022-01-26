@@ -21,6 +21,15 @@ addComponent
 	componentListPresenter selection: (componentListPresenter model asBag
 				detect: [:componentDefinitionService | componentDefinitionService name = componentName])!
 
+addConditionalAttribute
+	| attribute |
+	attribute := Prompter prompt: 'Please enter new conditional attribute ...'
+				caption: 'Add Conditional Attribute'.
+	model conditionalAttributes add: attribute.
+	self displayConditionalAttributes.
+	conditionalAttributesPresenter selectionByIndex: model conditionalAttributes size.
+	self conditionalAttributeItem: attribute updatedAtIndex: model conditionalAttributes size!
+
 addPackage
 	| packageName |
 	componentListPresenter selectionOrNil ifNil: [^MessageBox notify: 'Please select a component'].
@@ -158,6 +167,10 @@ displayComponents
 					treeModel add: componentDefinitionService asChildOf: parentDefinitionService]].
 	componentListPresenter view expandAll!
 
+displayConditionalAttributes
+	conditionalAttributesPresenter
+		list: (model conditionalAttributes collect: [:attribute | model conditionalAttributes -> attribute])!
+
 displayLoadSpecification
 	| assocs |
 	assocs := model specService objects
@@ -191,11 +204,22 @@ displayPrePostLoadSources
 displayTabs
 	| propertiesArray |
 	commentPresenter value: model comment.
-	conditionalAttributesPresenter
-		list: (model conditionalAttributes collect: [:attribute | model conditionalAttributes -> attribute]).
+	self displayConditionalAttributes.
 	propertiesArray := OrderedCollection new.
 	model platformProperties keysAndValuesDo: [:key :value | propertiesArray add: key -> value].
 	platformPropertiesPresenter list: propertiesArray!
+
+exportLoadSpec
+	model
+		command: #exportLoadSpecification;
+		commandArgs: Array new.
+	self issueProjectDefinitionCommand!
+
+exportProjectDefinition
+	model
+		command: #export;
+		commandArgs: Array new.
+	self issueProjectDefinitionCommand!
 
 initialize
 	super initialize. 
@@ -213,13 +237,15 @@ isOkayToChange
 issueProjectDefinitionCommand
 	| componentSelection |
 	self issueCommand: model.
-	componentSelection := componentListPresenter selection.
-	self nonNilComponentDefinitionRoots do: 
-			[:new |
-			| old |
-			old := componentListPresenter model asBag detect: [:oldDef | oldDef name = new name] ifNone: [].
-			old ifNotNil: [old replicateFrom: new]].
-	componentListPresenter selection: componentSelection!
+	componentListPresenter selectionOrNil
+		ifNotNil: 
+			[componentSelection := componentListPresenter selection.
+			self nonNilComponentDefinitionRoots do: 
+					[:new |
+					| old |
+					old := componentListPresenter model asBag detect: [:oldDef | oldDef name = new name] ifNone: [].
+					old ifNotNil: [old replicateFrom: new]].
+			componentListPresenter selection: componentSelection]!
 
 labelOf: componentService editedTo: value accept: accept
 	value isEmpty ifTrue: [^self].
@@ -323,6 +349,15 @@ removeComponent
 	self resetComponentList.
 	self displayComponents!
 
+removeConditionalAttribute
+	(MessageBox
+		confirm: 'Really remove conditional attribute ''' , conditionalAttributesPresenter selection value
+				, '''?')
+			ifTrue: 
+				[model conditionalAttributes removeAtIndex: conditionalAttributesPresenter selectionByIndex.
+				self displayConditionalAttributes.
+				self conditionalAttributeItem: nil updatedAtIndex: model conditionalAttributes size]!
+
 renameComponent
 	componentListPresenter view editSelectionLabel.!
 
@@ -347,6 +382,7 @@ updatePrePostSource
 			prePostLoadSource value: (loadAssoc ifNotNil: [loadAssoc value])]! !
 !JadeiteComponentPresenter categoriesForMethods!
 addComponent!menu handlers!public! !
+addConditionalAttribute!menu handlers!public! !
 addPackage!menu handlers!public! !
 addPostLoadSelector!menu handlers!public! !
 addPreLoadSelector!menu handlers!public! !
@@ -355,10 +391,13 @@ conditionalAttributeItem:updatedAtIndex:!event handlers!public! !
 createComponents!initialization!public! !
 createSchematicWiring!initialization!public! !
 displayComponents!displaying!event handlers!public! !
+displayConditionalAttributes!displaying!event handlers!public! !
 displayLoadSpecification!displaying!event handlers!public! !
 displayPackages!displaying!event handlers!public! !
 displayPrePostLoadSources!displaying!event handlers!public! !
 displayTabs!displaying!event handlers!public! !
+exportLoadSpec!menu handlers!public! !
+exportProjectDefinition!menu handlers!public! !
 initialize!initialization!public! !
 isClassSelected!public!testing! !
 isOkayToChange!event handlers!public! !
@@ -377,6 +416,7 @@ projectDefinitionService!accessing!public! !
 projectListPresenter!accessing!public! !
 registerPresentersForUpdates!public!register presenters! !
 removeComponent!menu handlers!public! !
+removeConditionalAttribute!menu handlers!public! !
 renameComponent!menu handlers!public! !
 resetComponentList!initialization!public! !
 resetPrePostLoadSource!event handlers!public! !
