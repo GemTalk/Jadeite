@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanComponentDefinitionService subclass: #RowanPackageGroupService
-	instanceVariableNames: ''
+	instanceVariableNames: 'condition'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

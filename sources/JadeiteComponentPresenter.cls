@@ -222,8 +222,7 @@ displayPackageGroupPackages
 	packageListPresenter list: packageNames!
 
 displayPackageGroups
-
-!
+	packageGroupPresenter list: model packageGroups!
 
 displayPrePostLoadSources
 	| list |

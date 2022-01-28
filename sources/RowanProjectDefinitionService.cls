@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanDefinitionService subclass: #RowanProjectDefinitionService
-	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions loadSpecification specService comment conditionalAttributes platformProperties'
+	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions loadSpecification specService comment conditionalAttributes platformProperties packageGroups'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -48,10 +48,21 @@ editInSession: session window: handle
 	commandArgs := Array with: handle.
 	self issueCommand: self session: session!
 
+excludedInstVars
+	"I'm not sure this is the right thing but since packageGroups does not need to be used on the server, we'll try it"
+
+	^super excludedInstVars , #('packageGroups')!
+
 movePackageNamed: packageName toComponentNamed: componentName
 	command := #movePackageNamed:toComponentNamed:.
 	commandArgs := Array with: packageName with: componentName.
 	self issueCommand: self session: session!
+
+packageGroups
+	^packageGroups!
+
+packageGroups: anObject
+	packageGroups := anObject!
 
 platformProperties
 	^platformProperties!
@@ -89,7 +100,10 @@ componentDefinitions:!accessing!private! !
 conditionalAttributes!accessing!private! !
 conditionalAttributes:!accessing!private! !
 editInSession:window:!commands!public! !
+excludedInstVars!public!ston! !
 movePackageNamed:toComponentNamed:!commands!public! !
+packageGroups!accessing!private! !
+packageGroups:!accessing!private! !
 platformProperties!accessing!private! !
 platformProperties:!accessing!private! !
 removeComponentNamed:!commands!public! !
