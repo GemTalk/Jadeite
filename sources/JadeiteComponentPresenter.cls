@@ -69,6 +69,10 @@ addPreLoadSelector
 componentListPresenter
 	^componentListPresenter!
 
+componentSelectionChanged
+	packageGroupPresenter resetSelection.
+	self resetPrePostLoadSource!
+
 conditionalAttributeItem: new updatedAtIndex: index
 	model
 		command: #setConditionalAttributes:;
@@ -127,7 +131,7 @@ createSchematicWiring
 			send: #isOkayToChange
 			to: self;
 		when: #selectionChanged
-			send: #resetPrePostLoadSource
+			send: #componentSelectionChanged
 			to: self.
 	packageListPresenter
 		when: #drag:
@@ -147,9 +151,8 @@ createSchematicWiring
 		to: self.
 	packageGroupPresenter
 		when: #selectionChanged
-		send: #displayPackageGroupPackages
-		to: self.
-	packageGroupPresenter
+			send: #packageGroupSelectionChanged
+			to: self;
 		when: #drop:
 			send: #onDropPackageToPackageGroup:
 			to: self;
@@ -308,11 +311,15 @@ onDragOverComponentTree: dragDropSession
 				collect: [:packageName | dragDropSession newDragObject: packageName].
 	dragDropSession supportedOperations: #(#move).
 	dragDropSession operation: #move.
-	dragDropSession dragObjects: newDragObjects.
-	dragDropSession dropTarget: componentListPresenter view!
+	dragDropSession dragObjects: newDragObjects.!
 
 onDragOverPackageGroup: dragDropSession
-	!
+		| newDragObjects |
+	newDragObjects := packageListPresenter selections
+				collect: [:packageName | dragDropSession newDragObject: packageName].
+	dragDropSession supportedOperations: #(#copy).
+	dragDropSession operation: #copy.
+	dragDropSession dragObjects: newDragObjects.!
 
 onDragPackageToComponent: dragDropSession
 	| newDragObjects |
@@ -320,16 +327,18 @@ onDragPackageToComponent: dragDropSession
 				collect: [:packageName | dragDropSession newDragObject: packageName].
 	dragDropSession supportedOperations: #(#move).
 	dragDropSession operation: #move.
-	dragDropSession dragObjects: newDragObjects.
-	dragDropSession dropTarget: componentListPresenter view!
+	dragDropSession dragObjects: newDragObjects.!
 
 onDropPackageToComponent: dragDropSession
 	dragDropSession dragObjects
 		do: [:dragObject | model movePackageNamed: dragObject object toComponentNamed: dragDropSession suggestedTarget name].
-	self displayComponentPackages!
+	self displayPackageGroupPackages!
 
 onDropPackageToPackageGroup: dragDropSession
-		!
+	model addPackagesNamed: (dragDropSession dragObjects collect: [:ea | ea object])
+		toPackageGroup: dragDropSession suggestedTarget name.
+	packageGroupPresenter selection: dragDropSession suggestedTarget.
+	self displayPackageGroupPackages!
 
 onViewClosed
 	super onViewClosed.
@@ -339,6 +348,10 @@ onViewOpened
 	super onViewOpened.
 	self registerPresentersForUpdates.
 	self updateService: model.!
+
+packageGroupSelectionChanged
+	componentListPresenter resetSelection.
+	self displayPackageGroupPackages!
 
 platformPropertyItem: association updatedAtIndex: value
 	model
@@ -428,16 +441,17 @@ addPackage!menu handlers!public! !
 addPostLoadSelector!menu handlers!public! !
 addPreLoadSelector!menu handlers!public! !
 componentListPresenter!accessing!public! !
+componentSelectionChanged!event handlers!public! !
 conditionalAttributeItem:updatedAtIndex:!event handlers!public! !
 createComponents!initialization!public! !
 createSchematicWiring!initialization!public! !
-displayComponentPackages!displaying!event handlers!public! !
-displayComponents!displaying!event handlers!public! !
-displayConditionalAttributes!displaying!event handlers!public! !
-displayLoadSpecification!displaying!event handlers!public! !
-displayPackageGroupPackages!displaying!event handlers!public! !
-displayPackageGroups!displaying!event handlers!public! !
-displayPrePostLoadSources!displaying!event handlers!public! !
+displayComponentPackages!displaying!public! !
+displayComponents!displaying!public! !
+displayConditionalAttributes!displaying!public! !
+displayLoadSpecification!displaying!public! !
+displayPackageGroupPackages!displaying!public! !
+displayPackageGroups!displaying!public! !
+displayPrePostLoadSources!displaying!public! !
 displayTabs!displaying!event handlers!public! !
 exportLoadSpec!menu handlers!public! !
 exportProjectDefinition!menu handlers!public! !
@@ -455,6 +469,7 @@ onDropPackageToComponent:!drag & drop!event handlers!public! !
 onDropPackageToPackageGroup:!drag & drop!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
+packageGroupSelectionChanged!event handlers!public! !
 platformPropertyItem:updatedAtIndex:!event handlers!public! !
 prePostLoadChanged!event handlers!public! !
 projectDefinitionService!accessing!public! !

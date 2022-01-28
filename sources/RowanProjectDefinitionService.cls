@@ -20,6 +20,11 @@ addPackageNamed: packageName toComponentNamed: componentName
 	commandArgs := Array with: packageName with: componentName.
 	self issueCommand: self session: session!
 
+addPackagesNamed: packageNames toPackageGroup: packageGroupName
+	command := #addPackagesNamed:toPackageGroupNamed:.
+	commandArgs := Array with: packageNames with: packageGroupName.
+	self issueCommand: self session: session.!
+
 addSubcomponentNamed: subcomponentName toComponentNamed: componentName
 	command := #addSubcomponentNamed:toComponentNamed:.
 	commandArgs := Array with: subcomponentName with: componentName.
@@ -92,6 +97,7 @@ updateInSession: session
 !RowanProjectDefinitionService categoriesForMethods!
 addComponentNamed:!commands!public! !
 addPackageNamed:toComponentNamed:!commands!public! !
+addPackagesNamed:toPackageGroup:!commands!public! !
 addSubcomponentNamed:toComponentNamed:!commands!public! !
 comment!accessing!private! !
 comment:!accessing!private! !
