@@ -27,6 +27,7 @@ package classNames
 	add: #RowanMethodDefinitionService;
 	add: #RowanMethodService;
 	add: #RowanPackageDefinitionService;
+	add: #RowanPackageGroupService;
 	add: #RowanPackageService;
 	add: #RowanProcessService;
 	add: #RowanProjectDefinitionService;
@@ -207,6 +208,11 @@ RowanDefinitionService subclass: #RowanPackageDefinitionService
 	classInstanceVariableNames: ''!
 RowanDefinitionService subclass: #RowanProjectDefinitionService
 	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions loadSpecification specService comment conditionalAttributes platformProperties'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanComponentDefinitionService subclass: #RowanPackageGroupService
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

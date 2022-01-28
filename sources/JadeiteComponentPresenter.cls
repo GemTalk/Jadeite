@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource packageGroupPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -37,7 +37,7 @@ addPackage
 				caption: 'Add Package to ' , componentListPresenter selection name.
 	packageName ifNil: [^self].
 	model addPackageNamed: packageName toComponentNamed: componentListPresenter selection name.
-	self displayPackages.
+	self displayComponentPackages.
 	packageListPresenter selection: (packageListPresenter list detect: [:name | name = packageName])!
 
 addPostLoadSelector
@@ -85,7 +85,8 @@ createComponents
 	commentPresenter := self add: TextPresenter new name: 'commentPresenter'.
 	conditionalAttributesPresenter := self add: ListPresenter new name: 'conditionalAttributesPresenter'.
 	platformPropertiesPresenter := self add: ListPresenter new name: 'platformPropertiesPresenter'.
-	prePostLoadSource := self add: TextPresenter new name: 'prePostLoadSource'!
+	prePostLoadSource := self add: TextPresenter new name: 'prePostLoadSource'.
+	packageGroupPresenter := self add: ListPresenter new name: 'packageGroupPresenter'!
 
 createSchematicWiring
 	componentListPresenter
@@ -94,7 +95,7 @@ createSchematicWiring
 		to: self.
 	componentListPresenter
 		when: #selectionChanged
-		send: #displayPackages
+		send: #displayComponentPackages
 		to: self.
 	componentListPresenter
 		when: #selectionChanged
@@ -122,9 +123,9 @@ createSchematicWiring
 		when: #dragEnter
 			send: #onDragOverComponentTree:
 			to: self;
-		when: #selectionChanging: 
+		when: #selectionChanging:
 			send: #isOkayToChange
-			to: self; 
+			to: self;
 		when: #selectionChanged
 			send: #resetPrePostLoadSource
 			to: self.
@@ -143,7 +144,35 @@ createSchematicWiring
 	prePostLoadSource
 		when: #focusLost
 		send: #prePostLoadChanged
-		to: self!
+		to: self.
+	packageGroupPresenter
+		when: #selectionChanged
+		send: #displayPackageGroupPackages
+		to: self.
+	packageGroupPresenter
+		when: #drop:
+			send: #onDropPackageToPackageGroup:
+			to: self;
+		when: #dragOver:
+			send: #onDragOverPackageGroup:
+			to: self;
+		when: #dragEnter
+			send: #onDragOverPackageGroup:
+			to: self!
+
+displayComponentPackages
+	| packageNames |
+	componentListPresenter selections isEmpty ifTrue: [^self].
+	packageListPresenter clear.
+	packageNames := SortedCollection new.
+	componentListPresenter selections do: 
+			[:componentDefinitionService |
+			componentDefinitionService
+				command: #packageNames;
+				projectDefinitionService: model.
+			self issueCommand: componentDefinitionService.
+			packageNames addAll: componentDefinitionService packageNames].
+	packageListPresenter list: packageNames!
 
 displayComponents
 
@@ -178,19 +207,23 @@ displayLoadSpecification
 	assocs := assocs asSortedCollection: [:x :y | x first < y first].
 	loadSpecPresenter list: assocs asArray!
 
-displayPackages
+displayPackageGroupPackages
 	| packageNames |
-	componentListPresenter selections isEmpty ifTrue: [^self].
+	packageGroupPresenter selections isEmpty ifTrue: [^self].
 	packageListPresenter clear.
 	packageNames := SortedCollection new.
-	componentListPresenter selections do: 
-			[:componentDefinitionService |
-			componentDefinitionService
+	packageGroupPresenter selections do: 
+			[:packageGroupService |
+			packageGroupService
 				command: #packageNames;
 				projectDefinitionService: model.
-			self issueCommand: componentDefinitionService.
-			packageNames addAll: componentDefinitionService packageNames].
+			self issueCommand: packageGroupService.
+			packageNames addAll: packageGroupService packageNames].
 	packageListPresenter list: packageNames!
+
+displayPackageGroups
+
+!
 
 displayPrePostLoadSources
 	| list |
@@ -279,6 +312,9 @@ onDragOverComponentTree: dragDropSession
 	dragDropSession dragObjects: newDragObjects.
 	dragDropSession dropTarget: componentListPresenter view!
 
+onDragOverPackageGroup: dragDropSession
+	!
+
 onDragPackageToComponent: dragDropSession
 	| newDragObjects |
 	newDragObjects := packageListPresenter selections
@@ -291,7 +327,10 @@ onDragPackageToComponent: dragDropSession
 onDropPackageToComponent: dragDropSession
 	dragDropSession dragObjects
 		do: [:dragObject | model movePackageNamed: dragObject object toComponentNamed: dragDropSession suggestedTarget name].
-	self displayPackages!
+	self displayComponentPackages!
+
+onDropPackageToPackageGroup: dragDropSession
+		!
 
 onViewClosed
 	super onViewClosed.
@@ -393,10 +432,12 @@ componentListPresenter!accessing!public! !
 conditionalAttributeItem:updatedAtIndex:!event handlers!public! !
 createComponents!initialization!public! !
 createSchematicWiring!initialization!public! !
+displayComponentPackages!displaying!event handlers!public! !
 displayComponents!displaying!event handlers!public! !
 displayConditionalAttributes!displaying!event handlers!public! !
 displayLoadSpecification!displaying!event handlers!public! !
-displayPackages!displaying!event handlers!public! !
+displayPackageGroupPackages!displaying!event handlers!public! !
+displayPackageGroups!displaying!event handlers!public! !
 displayPrePostLoadSources!displaying!event handlers!public! !
 displayTabs!displaying!event handlers!public! !
 exportLoadSpec!menu handlers!public! !
@@ -409,8 +450,10 @@ labelOf:editedTo:accept:!event handlers!public! !
 loadSpecItem:updatedAtIndex:!event handlers!public! !
 nonNilComponentDefinitionRoots!private! !
 onDragOverComponentTree:!drag & drop!public! !
+onDragOverPackageGroup:!drag & drop!public! !
 onDragPackageToComponent:!drag & drop!event handlers!public! !
 onDropPackageToComponent:!drag & drop!event handlers!public! !
+onDropPackageToPackageGroup:!drag & drop!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
 platformPropertyItem:updatedAtIndex:!event handlers!public! !
