@@ -80,6 +80,12 @@ removeComponentNamed: componentName
 	commandArgs := Array with: componentName.
 	self issueCommand: self session: session!
 
+removePackageGroups: packageGroupServices
+	command := #removePackageGroupsNamed:.
+	commandArgs := Array
+				with: (packageGroupServices collect: [:packageGroupService | packageGroupService name]).
+	self issueCommand: self session: session!
+
 renameComponentNamed: componentPath to: newName
 	command := #renameComponent:to:.
 	commandArgs := Array with: componentPath with: newName.
@@ -113,6 +119,7 @@ packageGroups:!accessing!private! !
 platformProperties!accessing!private! !
 platformProperties:!accessing!private! !
 removeComponentNamed:!commands!public! !
+removePackageGroups:!commands!public! !
 renameComponentNamed:to:!commands!public! !
 specService!accessing!private! !
 specService:!accessing!private! !

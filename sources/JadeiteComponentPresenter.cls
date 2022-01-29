@@ -40,6 +40,12 @@ addPackage
 	self displayComponentPackages.
 	packageListPresenter selection: (packageListPresenter list detect: [:name | name = packageName])!
 
+addPackageGroup
+	| packageGroupName |
+	packageGroupName := Prompter prompt: 'Please enter a package group name ...'
+				caption: 'Add Package Group to ' , componentListPresenter selection name.
+	packageGroupName ifNil: [^self]!
+
 addPostLoadSelector
 	| selector |
 	selector := (Prompter prompt: 'Enter postLoad selector' caption: 'Enter PostLoad Selector')
@@ -397,10 +403,11 @@ registerPresentersForUpdates
 removeComponent
 	componentListPresenter selections isEmpty
 		ifTrue: [^MessageBox notify: 'Select component before removing it'].
-	MessageBox confirm: 'Really remove component ' , componentListPresenter selection name.
-	model removeComponentNamed: componentListPresenter selection name.
-	self resetComponentList.
-	self displayComponents!
+	(MessageBox confirm: 'Really remove component ' , componentListPresenter selection name)
+		ifTrue: 
+			[model removeComponentNamed: componentListPresenter selection name.
+			self resetComponentList.
+			self displayComponents]!
 
 removeConditionalAttribute
 	(MessageBox
@@ -410,6 +417,12 @@ removeConditionalAttribute
 				[model conditionalAttributes removeAtIndex: conditionalAttributesPresenter selectionByIndex.
 				self displayConditionalAttributes.
 				self conditionalAttributeItem: nil updatedAtIndex: model conditionalAttributes size]!
+
+removePackageGroups
+	(MessageBox confirm: 'Really remove package group(s)?' , '''?')
+		ifTrue: 
+			[model removePackageGroupsNamed: packageGroupPresenter selections.
+			self displayPackageGroupPackages]!
 
 renameComponent
 	componentListPresenter view editSelectionLabel.!
@@ -438,6 +451,7 @@ updatePrePostSource
 addComponent!menu handlers!public! !
 addConditionalAttribute!menu handlers!public! !
 addPackage!menu handlers!public! !
+addPackageGroup!menu handlers!public! !
 addPostLoadSelector!menu handlers!public! !
 addPreLoadSelector!menu handlers!public! !
 componentListPresenter!accessing!public! !
@@ -477,6 +491,7 @@ projectListPresenter!accessing!public! !
 registerPresentersForUpdates!public!register presenters! !
 removeComponent!menu handlers!public! !
 removeConditionalAttribute!menu handlers!public! !
+removePackageGroups!menu handlers!public! !
 renameComponent!menu handlers!public! !
 resetComponentList!initialization!public! !
 resetPrePostLoadSource!event handlers!public! !
