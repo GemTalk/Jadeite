@@ -86,6 +86,25 @@ removePackageGroups: packageGroupServices
 				with: (packageGroupServices collect: [:packageGroupService | packageGroupService name]).
 	self issueCommand: self session: session!
 
+removePackageGroupsNamed: packageGroupNames
+	command := #removePackageGroupsNamed:.
+	commandArgs := Array with: packageGroupNames.
+	self issueCommand: self session: session!
+
+removePackagesFromProjectDefinition: packageNames
+	"package groups and component names are treated similarly in some cases, hence the oddly named command"
+
+	command := #removePackagesFromProjectDefinition:.
+	commandArgs := Array with: packageNames.
+	self issueCommand: self session: session!
+
+removePackagesNamed: packageNames fromPackageGroupNamed: packageGroupName
+	"package groups and component names are treated similarly in some cases, hence the oddly named command"
+
+	command := #removePackagesNamed:fromPackageGroupNamed:.
+	commandArgs := Array with: packageNames with: packageGroupName.
+	self issueCommand: self session: session!
+
 renameComponentNamed: componentPath to: newName
 	command := #renameComponent:to:.
 	commandArgs := Array with: componentPath with: newName.
@@ -120,6 +139,9 @@ platformProperties!accessing!private! !
 platformProperties:!accessing!private! !
 removeComponentNamed:!commands!public! !
 removePackageGroups:!commands!public! !
+removePackageGroupsNamed:!commands!public! !
+removePackagesFromProjectDefinition:!commands!public! !
+removePackagesNamed:fromPackageGroupNamed:!commands!public! !
 renameComponentNamed:to:!commands!public! !
 specService!accessing!private! !
 specService:!accessing!private! !

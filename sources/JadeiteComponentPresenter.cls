@@ -30,6 +30,15 @@ addConditionalAttribute
 	conditionalAttributesPresenter selectionByIndex: model conditionalAttributes size.
 	self conditionalAttributeItem: attribute updatedAtIndex: model conditionalAttributes size!
 
+addNewPackageToPackageGroup
+	| packageName |
+	packageName := Prompter prompt: 'Please enter a package name ...'
+				caption: 'Add Package to ' , packageGroupPresenter selection name.
+	packageName ifNil: [^self].
+	model addPackagesNamed: (Array with: packageName)
+		toPackageGroup: packageGroupPresenter selections first name.
+	self displayPackageGroupPackages!
+
 addPackage
 	| packageName |
 	componentListPresenter selectionOrNil ifNil: [^MessageBox notify: 'Please select a component'].
@@ -394,6 +403,17 @@ projectListPresenter
 
 	^nil!
 
+queryCommand: query
+	query command = #removePackageFromPackageGroup
+		ifTrue: 
+			[query isEnabled: packageGroupPresenter selections size = 1.
+			^true].
+	query command = #removePackagesFromProjectDefinition
+		ifTrue: 
+			[query isEnabled: componentListPresenter selections notEmpty.
+			^true].
+	^super queryCommand: query!
+
 registerPresentersForUpdates
 	BrowserUpdate current
 		register: componentListPresenter
@@ -418,11 +438,30 @@ removeConditionalAttribute
 				self displayConditionalAttributes.
 				self conditionalAttributeItem: nil updatedAtIndex: model conditionalAttributes size]!
 
+removePackageFromPackageGroup
+	packageGroupPresenter selections size = 1
+		ifFalse: [^MessageBox notify: 'Must have only one package group selected'].
+	(MessageBox
+		confirm: 'Really remove ' , packageListPresenter selections printString , ' from package group '
+				, packageListPresenter selection , '?')
+			ifFalse: [^self].
+	model removePackagesNamed: packageListPresenter selections
+		fromPackageGroupNamed: packageGroupPresenter selection name.
+	self displayPackageGroupPackages!
+
 removePackageGroups
 	(MessageBox confirm: 'Really remove package group(s)?' , '''?')
 		ifTrue: 
 			[model removePackageGroupsNamed: packageGroupPresenter selections.
-			self displayPackageGroupPackages]!
+			self displayPackageGroups]!
+
+removePackagesFromProjectDefinition
+	packageListPresenter selectionOrNil ifNil: [^self].
+	(MessageBox
+		confirm: 'Really remove ' , packageListPresenter selections printString , ' from project definition?')
+			ifFalse: [^self].
+	model removePackagesFromProjectDefinition: packageListPresenter selections.
+	self displayPackageGroupPackages!
 
 renameComponent
 	componentListPresenter view editSelectionLabel.!
@@ -450,6 +489,7 @@ updatePrePostSource
 !JadeiteComponentPresenter categoriesForMethods!
 addComponent!menu handlers!public! !
 addConditionalAttribute!menu handlers!public! !
+addNewPackageToPackageGroup!menu handlers!public! !
 addPackage!menu handlers!public! !
 addPackageGroup!menu handlers!public! !
 addPostLoadSelector!menu handlers!public! !
@@ -488,10 +528,13 @@ platformPropertyItem:updatedAtIndex:!event handlers!public! !
 prePostLoadChanged!event handlers!public! !
 projectDefinitionService!accessing!public! !
 projectListPresenter!accessing!public! !
+queryCommand:!menu handlers!public! !
 registerPresentersForUpdates!public!register presenters! !
 removeComponent!menu handlers!public! !
 removeConditionalAttribute!menu handlers!public! !
+removePackageFromPackageGroup!menu handlers!public! !
 removePackageGroups!menu handlers!public! !
+removePackagesFromProjectDefinition!menu handlers!public! !
 renameComponent!menu handlers!public! !
 resetComponentList!initialization!public! !
 resetPrePostLoadSource!event handlers!public! !
