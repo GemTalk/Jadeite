@@ -15,6 +15,14 @@ addComponentNamed: componentName
 	commandArgs := Array with: componentName.
 	self issueCommand: self session: session!
 
+addPackageGroupNamed: packageGroupName condition: newCondition
+	command := #addPackageGroupNamed:condition:comment:.
+	commandArgs := Array
+				with: packageGroupName
+				with: newCondition
+				with: comment.
+	self issueCommand: self session: session!
+
 addPackageNamed: packageName toComponentNamed: componentName
 	command := #addPackageNamed:toComponentNamed:.
 	commandArgs := Array with: packageName with: componentName.
@@ -110,6 +118,11 @@ renameComponentNamed: componentPath to: newName
 	commandArgs := Array with: componentPath with: newName.
 	self issueCommand: self session: session!
 
+renamePackageGroup: packageGroupName to: newPackageGroupName
+	command := #renamePackageGroup:to:.
+	commandArgs := Array with: packageGroupName with: newPackageGroupName.
+	self issueCommand: self session: session!
+
 specService
 	^specService!
 
@@ -121,6 +134,7 @@ updateInSession: session
 	^self issueCommand: self session: session! !
 !RowanProjectDefinitionService categoriesForMethods!
 addComponentNamed:!commands!public! !
+addPackageGroupNamed:condition:!commands!public! !
 addPackageNamed:toComponentNamed:!commands!public! !
 addPackagesNamed:toPackageGroup:!commands!public! !
 addSubcomponentNamed:toComponentNamed:!commands!public! !
@@ -143,6 +157,7 @@ removePackageGroupsNamed:!commands!public! !
 removePackagesFromProjectDefinition:!commands!public! !
 removePackagesNamed:fromPackageGroupNamed:!commands!public! !
 renameComponentNamed:to:!commands!public! !
+renamePackageGroup:to:!commands!public! !
 specService!accessing!private! !
 specService:!accessing!private! !
 updateInSession:!commands!public! !

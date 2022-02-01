@@ -315,6 +315,14 @@ loadSpecItem: specPropertyArray updatedAtIndex: index
 		commandArgs: (Array with: specPropertyArray first with: specPropertyArray last).
 	self issueProjectDefinitionCommand!
 
+model: projectDefinitionService
+	super model: projectDefinitionService.
+	projectDefinitionService packageGroups do: 
+			[:packageGroup | 
+			packageGroup
+				projectDefinitionService: projectDefinitionService;
+				session: projectDefinitionService session]!
+
 nonNilComponentDefinitionRoots
 	^model componentDefinitions keys select: [:def | (def == #nil) not]!
 
@@ -515,6 +523,7 @@ isOkayToChange!event handlers!public! !
 issueProjectDefinitionCommand!private! !
 labelOf:editedTo:accept:!event handlers!public! !
 loadSpecItem:updatedAtIndex:!event handlers!public! !
+model:!accessing!public! !
 nonNilComponentDefinitionRoots!private! !
 onDragOverComponentTree:!drag & drop!public! !
 onDragOverPackageGroup:!drag & drop!public! !
