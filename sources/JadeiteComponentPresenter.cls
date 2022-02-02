@@ -81,6 +81,9 @@ addPreLoadSelector
 	self issueProjectDefinitionCommand.
 	self displayPrePostLoadSources!
 
+commentChanged
+	model comment: commentPresenter value!
+
 componentListPresenter
 	^componentListPresenter!
 
@@ -108,6 +111,10 @@ createComponents
 	packageGroupPresenter := self add: ListPresenter new name: 'packageGroupPresenter'!
 
 createSchematicWiring
+	commentPresenter 
+		when: #valueChanged 
+		send: #commentChanged
+		to: self. 
 	componentListPresenter
 		when: #labelOf:editedTo:accept:
 		send: #labelOf:editedTo:accept:
@@ -520,6 +527,7 @@ addPackage!menu handlers!public! !
 addPackageGroup!menu handlers!public! !
 addPostLoadSelector!menu handlers!public! !
 addPreLoadSelector!menu handlers!public! !
+commentChanged!event handlers!public! !
 componentListPresenter!accessing!public! !
 componentSelectionChanged!event handlers!public! !
 conditionalAttributeItem:updatedAtIndex:!event handlers!public! !

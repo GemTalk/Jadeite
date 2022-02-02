@@ -41,8 +41,10 @@ addSubcomponentNamed: subcomponentName toComponentNamed: componentName
 comment
 	^comment!
 
-comment: anObject
-	comment := anObject!
+comment: proejctComment
+	command := #comment:.
+	commandArgs := Array with: proejctComment.
+	self issueCommand: self session: session!
 
 componentDefinitions
 	^componentDefinitions!
@@ -144,7 +146,7 @@ addPackageNamed:toComponentNamed:!commands!public! !
 addPackagesNamed:toPackageGroup:!commands!public! !
 addSubcomponentNamed:toComponentNamed:!commands!public! !
 comment!accessing!private! !
-comment:!accessing!private! !
+comment:!commands!public! !
 componentDefinitions!accessing!private! !
 componentDefinitions:!accessing!private! !
 conditionalAttributes!accessing!private! !
