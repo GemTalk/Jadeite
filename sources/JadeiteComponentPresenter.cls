@@ -176,6 +176,10 @@ createSchematicWiring
 			to: self;
 		when: #dragEnter
 			send: #onDragOverPackageGroup:
+			to: self.
+	packageListPresenter
+		when: #labelOf:editedTo:accept:
+			send: #packageLabelOf:editedTo:accept:
 			to: self!
 
 displayComponentPackages
@@ -376,6 +380,15 @@ packageGroupSelectionChanged
 	componentListPresenter resetSelection.
 	self displayPackageGroupPackages!
 
+packageLabelOf: packageName editedTo: value accept: accept
+	packageName = value ifTrue: [^self].
+	model renamePackage: packageName to: value.
+	componentListPresenter selections isEmpty
+		ifTrue: [self displayPackageGroupPackages]
+		ifFalse: [self displayComponentPackages].
+	accept value: true. 
+!
+
 platformPropertyItem: association updatedAtIndex: value
 	model
 		command: #setPlatformProperty:to:;
@@ -474,6 +487,11 @@ removePackagesFromProjectDefinition
 renameComponent
 	componentListPresenter view editSelectionLabel.!
 
+renamePackage
+	| result |
+	result := packageListPresenter view editSelectionLabel.
+	Transcript cr; show: result printString. !
+
 resetComponentList
 	componentListPresenter model: (JadeiteTreeModel new
 				searchPolicy: SearchPolicy equality;
@@ -533,6 +551,7 @@ onDropPackageToPackageGroup:!drag & drop!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
 packageGroupSelectionChanged!event handlers!public! !
+packageLabelOf:editedTo:accept:!event handlers!public! !
 platformPropertyItem:updatedAtIndex:!event handlers!public! !
 prePostLoadChanged!event handlers!public! !
 projectDefinitionService!accessing!public! !
@@ -545,6 +564,7 @@ removePackageFromPackageGroup!menu handlers!public! !
 removePackageGroups!menu handlers!public! !
 removePackagesFromProjectDefinition!menu handlers!public! !
 renameComponent!menu handlers!public! !
+renamePackage!menu handlers!public! !
 resetComponentList!initialization!public! !
 resetPrePostLoadSource!event handlers!public! !
 updatePrePostSource!event handlers!public! !

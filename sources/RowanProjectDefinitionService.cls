@@ -118,6 +118,11 @@ renameComponentNamed: componentPath to: newName
 	commandArgs := Array with: componentPath with: newName.
 	self issueCommand: self session: session!
 
+renamePackage: packageName to: newPackageName
+	command := #renamePackageNamed:to:.
+	commandArgs := Array with: packageName with: newPackageName.
+	self issueCommand: self session: session!
+
 renamePackageGroup: packageGroupName to: newPackageGroupName
 	command := #renamePackageGroup:to:.
 	commandArgs := Array with: packageGroupName with: newPackageGroupName.
@@ -157,6 +162,7 @@ removePackageGroupsNamed:!commands!public! !
 removePackagesFromProjectDefinition:!commands!public! !
 removePackagesNamed:fromPackageGroupNamed:!commands!public! !
 renameComponentNamed:to:!commands!public! !
+renamePackage:to:!commands!public! !
 renamePackageGroup:to:!commands!public! !
 specService!accessing!private! !
 specService:!accessing!private! !
