@@ -33,3 +33,5 @@ from topaz run the installRowan.tpz script -
 input installRowan.tpz 
 
 login to Jadeite (hopefully!)
+
+(optional - Load RowanSample9/rowan/specs/spec_0061.ston)

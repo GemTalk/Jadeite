@@ -58,11 +58,6 @@ conditionalAttributes
 conditionalAttributes: anObject
 	conditionalAttributes := anObject!
 
-editInSession: session window: handle
-	command := #editInWindow:.
-	commandArgs := Array with: handle.
-	self issueCommand: self session: session!
-
 excludedInstVars
 	"I'm not sure this is the right thing but since packageGroups does not need to be used on the server, we'll try it"
 
@@ -151,7 +146,6 @@ componentDefinitions!accessing!private! !
 componentDefinitions:!accessing!private! !
 conditionalAttributes!accessing!private! !
 conditionalAttributes:!accessing!private! !
-editInSession:window:!commands!public! !
 excludedInstVars!public!ston! !
 movePackageNamed:toComponentNamed:!commands!public! !
 packageGroups!accessing!private! !

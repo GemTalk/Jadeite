@@ -175,6 +175,13 @@ dictionaryListUpdate: presenter
 dictionaryUpdate: presenter
 	!
 
+editInSession: aSession window: handle
+	"api for opening an editor window on a service and putting the oop in the export set for the life of the window"
+
+	command := #editInWindow:.
+	commandArgs := Array with: handle.
+	self issueCommand: self session: aSession!
+
 emptyFilterListsIn: browser
 	browser hasMethods
 		ifTrue: 
@@ -570,6 +577,7 @@ debugPrintOn:!printing!public! !
 debugPrintString!printing!public! !
 dictionaryListUpdate:!public!updating! !
 dictionaryUpdate:!public!updating! !
+editInSession:window:!commands!public! !
 emptyFilterListsIn:!Init / Release!private! !
 excludedInstVars!public!ston! !
 filterUpdate:browser:!public!updating! !

@@ -33,6 +33,8 @@ package classNames
 	add: #JadeiteFindMethodDialog;
 	add: #JadeiteGitLog;
 	add: #JadeiteInspector;
+	add: #JadeiteLoadSpecEditor;
+	add: #JadeiteLoadSpecPresenter;
 	add: #JadeiteLogger;
 	add: #JadeiteLoggerPresenter;
 	add: #JadeiteLoggerShell;
@@ -57,6 +59,8 @@ package classNames
 	add: #JadeiteRenameClassMethodListPresenter;
 	add: #JadeiteScintillaView;
 	add: #JadeiteSearch;
+	add: #JadeiteServerFileBrowser;
+	add: #JadeiteServerFilePresenter;
 	add: #JadeiteSmalltalkSearchPresenter;
 	add: #JadeiteSmalltalkWorkspace;
 	add: #JadeiteSUnitBrowser;
@@ -707,7 +711,17 @@ JadePresenterA subclass: #JadeiteComponentPresenter
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+JadePresenterA subclass: #JadeiteLoadSpecPresenter
+	instanceVariableNames: 'loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 JadePresenterA subclass: #JadeitePropertyPresenter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadePresenterA subclass: #JadeiteServerFilePresenter
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -902,8 +916,18 @@ JadeShell subclass: #JadeiteComponentEditor
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+JadeShell subclass: #JadeiteLoadSpecEditor
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 JadeShell subclass: #JadeiteLoggerShell
 	instanceVariableNames: 'clientFilenameText serverFilenameText'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeShell subclass: #JadeiteServerFileBrowser
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
