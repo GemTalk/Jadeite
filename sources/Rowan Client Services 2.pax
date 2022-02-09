@@ -24,7 +24,6 @@ package classNames
 	add: #RowanFrameService;
 	add: #RowanInspectorService;
 	add: #RowanLoadedProjectService;
-	add: #RowanLoadSpecService;
 	add: #RowanLoggingService;
 	add: #RowanMethodDefinitionService;
 	add: #RowanMethodService;
@@ -143,11 +142,6 @@ RowanService subclass: #RowanInspectorService
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-RowanService subclass: #RowanLoadSpecService
-	instanceVariableNames: 'loadSpecOop loadSpecPath'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
 RowanService subclass: #RowanLoggingService
 	instanceVariableNames: 'fileName id groupId date time comment services mode location isLogging name'
 	classVariableNames: ''
@@ -229,7 +223,7 @@ RowanComponentDefinitionService subclass: #RowanPackageGroupService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanInspectorService subclass: #RowanSpecificationService
-	instanceVariableNames: ''
+	instanceVariableNames: 'loadSpecOop loadSpecPath session'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

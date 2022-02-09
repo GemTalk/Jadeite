@@ -40,12 +40,24 @@ createSchematicWiring
 		send: #commentChanged
 		to: self. !
 
+displayConditionalAttributes
+	conditionalAttributesPresenter
+		list: (model conditionalAttributes collect: [:attribute | model conditionalAttributes -> attribute])!
+
 displayLoadSpecification
 	| assocs |
 	assocs := model specService objects
 				collect: [:assoc | Array with: assoc key with: assoc value asString].
 	assocs := assocs asSortedCollection: [:x :y | x first < y first].
 	loadSpecPresenter list: assocs asArray!
+
+displayTabs
+	| propertiesArray |
+	commentPresenter value: model comment.
+	self displayConditionalAttributes.
+	propertiesArray := OrderedCollection new.
+	model platformProperties keysAndValuesDo: [:key :value | propertiesArray add: key -> value].
+	platformPropertiesPresenter list: propertiesArray!
 
 loadSpecItem: item updatedAtIndex: index
 	!
@@ -56,7 +68,9 @@ commentChanged!event handlers!public! !
 conditionalAttributeItem:updatedAtIndex:!event handlers!public! !
 createComponents!initialization!public! !
 createSchematicWiring!initialization!public! !
+displayConditionalAttributes!displaying!public! !
 displayLoadSpecification!displaying!public! !
+displayTabs!displaying!event handlers!public! !
 loadSpecItem:updatedAtIndex:!event handlers!public! !
 platformPropertyItem:updatedAtIndex:!event handlers!public! !
 !

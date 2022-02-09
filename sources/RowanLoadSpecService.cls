@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanLoadSpecService
-	instanceVariableNames: 'loadSpecOop loadSpecPath'
+	instanceVariableNames: 'loadSpecOop loadSpecPath session'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -14,9 +14,17 @@ loadSpecPath
 	^loadSpecPath!
 
 loadSpecPath: anObject
-	loadSpecPath := anObject! !
+	loadSpecPath := anObject!
+
+session
+	^session!
+
+session: anObject
+	session := anObject! !
 !RowanLoadSpecService categoriesForMethods!
 loadSpecPath!accessing!private! !
 loadSpecPath:!accessing!private! !
+session!accessing!private! !
+session:!accessing!private! !
 !
 

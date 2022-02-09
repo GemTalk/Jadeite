@@ -12,21 +12,22 @@ JadeiteLoadSpecEditor comment: ''!
 
 editLoadSpecFromFile
 	| path |
-	path := FileOpenDialog new showModal ifNil: [^self].
+	"path := FileOpenDialog new showModal ifNil: [^self]."  "would like a server file browser someday" 
+	path := '/uffda2/users/ewinger/shared/repos/RowanSample9/rowan/specs/spec_0061.ston'.
 	self createView: self class defaultView.
-	model := (RowanLoadSpecService new loadSpecPath: path) editInSession: gciSession
+	model := (RowanSpecificationService new loadSpecPath: path) editInSession: gciSession
 				window: self view handle value.
 	self updateCaption.
 	model session: self gciSession.
 	myPresenter
 		model: model;
-		displayLoadSpecification.
+		displayLoadSpecification;
+		displayTabs. 
 	^self show!
 
 editLoadSpecOnProjectNamed: projectName
 	self createView: self class defaultView.
-	model := (RowanLoadSpecService new ) editInSession: gciSession
-				window: self view handle value.
+	model := RowanSpecificationService new editInSession: gciSession window: self view handle value.
 	self updateCaption.
 	model session: self gciSession.
 	myPresenter model: model.
