@@ -91,6 +91,7 @@ package classNames
 	add: #RowanProjectsUpdate;
 	add: #RowanSavePackageDialog;
 	add: #RowanShell;
+	add: #RowanSpecificationService;
 	add: #RowanSuperclassUpdate;
 	add: #RowanSystemBrowser;
 	add: #RowanSystemBrowserPresenter;
@@ -443,6 +444,8 @@ package methodNames
 	add: #RowanCommandResult -> #updateSuperclassSelectionFor:;
 	add: #RowanCommandResult -> #updateType;
 	add: #RowanGsMethod -> #printOn:;
+	add: #RowanLoadSpecService -> #platformProperties;
+	add: #RowanLoadSpecService -> #platformProperties:;
 	add: #RowanMethodDefinition -> #methodService;
 	add: #RowanMethodService -> #basicSubSuperIcon;
 	add: #RowanMethodService -> #removeTrailingMenuItemsFrom:;
@@ -1018,6 +1021,11 @@ PropertyInspector subclass: #JadeitePropertyInspector
 	classInstanceVariableNames: ''!
 TextPresenter subclass: #JadeiteCommandLinePresenter
 	instanceVariableNames: 'history historyIndex'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanInspectorService subclass: #RowanSpecificationService
+	instanceVariableNames: 'loadSpecOop loadSpecPath session comment conditionalAttributes platformProperties'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -5763,6 +5771,18 @@ printOn: aStream
 				cr]! !
 !RowanGsMethod categoriesForMethods!
 printOn:!printing!public! !
+!
+
+!RowanLoadSpecService methodsFor!
+
+platformProperties
+	^platformProperties!
+
+platformProperties: anObject
+	platformProperties := anObject! !
+!RowanLoadSpecService categoriesForMethods!
+platformProperties!accessing!private! !
+platformProperties:!accessing!private! !
 !
 
 !RowanMethodDefinition methodsFor!

@@ -46,7 +46,7 @@ displayConditionalAttributes
 
 displayLoadSpecification
 	| assocs |
-	assocs := model specService objects
+	assocs := model objects
 				collect: [:assoc | Array with: assoc key with: assoc value asString].
 	assocs := assocs asSortedCollection: [:x :y | x first < y first].
 	loadSpecPresenter list: assocs asArray!

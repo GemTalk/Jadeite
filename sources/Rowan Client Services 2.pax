@@ -24,6 +24,7 @@ package classNames
 	add: #RowanFrameService;
 	add: #RowanInspectorService;
 	add: #RowanLoadedProjectService;
+	add: #RowanLoadSpecService;
 	add: #RowanLoggingService;
 	add: #RowanMethodDefinitionService;
 	add: #RowanMethodService;
@@ -37,7 +38,6 @@ package classNames
 	add: #RowanResolvedProjectService;
 	add: #RowanSemaphore;
 	add: #RowanService;
-	add: #RowanSpecificationService;
 	add: #RowanTestService;
 	add: #RowanVariableService;
 	yourself.
@@ -222,8 +222,8 @@ RowanComponentDefinitionService subclass: #RowanPackageGroupService
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-RowanInspectorService subclass: #RowanSpecificationService
-	instanceVariableNames: 'loadSpecOop loadSpecPath session'
+RowanInspectorService subclass: #RowanLoadSpecService
+	instanceVariableNames: 'loadSpecOop loadSpecPath session comment conditionalAttributes platformProperties'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
