@@ -53,7 +53,6 @@ package classNames
 	add: #JadeiteProjectListPresenter;
 	add: #JadeiteProjectsBrowserPresenter;
 	add: #JadeiteProjectsSystemBrowser;
-	add: #JadeitePropertyInspector;
 	add: #JadeitePropertyPresenter;
 	add: #JadeiteRenameClassMethodListBrowser;
 	add: #JadeiteRenameClassMethodListPresenter;
@@ -777,7 +776,7 @@ RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement specEditor componentListPresenter componentPackageContainer packageDictionaryContainer loadSpecTab'
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement componentListPresenter componentPackageContainer packageDictionaryContainer loadSpecTab'
 	classVariableNames: ''
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
@@ -1007,11 +1006,6 @@ SmalltalkSearchPresenter subclass: #JadeiteSmalltalkSearchPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 SmalltalkWorkspace subclass: #JadeiteSmalltalkWorkspace
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-PropertyInspector subclass: #JadeitePropertyInspector
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

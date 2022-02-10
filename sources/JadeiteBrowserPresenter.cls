@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement specEditor componentListPresenter componentPackageContainer packageDictionaryContainer loadSpecTab'
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement componentListPresenter componentPackageContainer packageDictionaryContainer loadSpecTab'
 	classVariableNames: ''
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
@@ -397,7 +397,6 @@ createComponents
 	dictionaryPresenter := self add: ListPresenter new name: 'dictionariesList'.
 	packageDictionaryCards := self add: Presenter new name: 'packageDictionaryCards'.
 	autoCommitButton := self add: Presenter new name: 'autoCommitButton'.
-	specEditor := self add: JadeitePropertyInspector new name: 'specEditor'.
 	componentListPresenter := self add: JadeiteTreePresenter new name: 'componentTree'.
 	componentPackageContainer := self add: Presenter new name: 'componentPackageContainer'. 
 	packageDictionaryContainer := self add: Presenter new name: 'packageDictionaryContainer'.!
@@ -1169,13 +1168,6 @@ openSourceStyler
 	textStyles := super openSourceStyler.
 	comparisonPresenter afterPresenter view textStyles: textStyles.
 	comparisonPresenter beforePresenter view textStyles: textStyles!
-
-openSpecFile
-	specEditor model: (Array
-				with: 1
-				with: #abc
-				with: $a
-				with: true)!
 
 packageDictionaryCards
 	"for testing"
@@ -2118,7 +2110,6 @@ onDropOnPackageList:!drag & drop!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
 openSourceStyler!menu handlers!public! !
-openSpecFile!menu handlers!public! !
 packageDictionaryCards!accessing!private! !
 possiblyClearProjectInfoTab!event handlers!public!updating! !
 preferencesMenuStrings!menus!public! !

@@ -23,7 +23,7 @@ createComponents
 
 createSchematicWiring
 	super createSchematicWiring.
-	"loadSpecPresenter model
+	" needed? loadSpecPresenter model
 		when: #item:updatedAtIndex:
 		send: #loadSpecItem:updatedAtIndex:
 		to: self."
@@ -63,16 +63,15 @@ displayTabs
 	platformPropertiesPresenter list: propertiesArray!
 
 exportLoadSpec
-	model
-		command: #exportLoadSpecification;
-		commandArgs: Array new.
-	self issueCommand: model!
+	model export!
 
-loadSpecItem: item updatedAtIndex: index
-	!
+loadLoadSpec
+	model load!
 
 onLoadSpecPropertyChanged
-	self popupEdit. !
+	| selection |
+	selection := loadSpecPresenter selectionOrNil ifNil: [^self].
+	self popupEdit ifNotNil: [model setLoadSpecProperty: selection first to: selection last value]!
 
 platformPropertyItem: item updatedAtIndex: index!
 
@@ -87,7 +86,7 @@ popupEdit
 	aspectDialog createAspectPresenters: (AspectAccessor subject: loadSpecPresenter selection
 				aspect: (Aspect string: #last))
 		for: loadSpecPresenter selection last.
-	aspectDialog showModal! !
+	^aspectDialog showModal! !
 !JadeiteLoadSpecPresenter categoriesForMethods!
 commentChanged!event handlers!public! !
 conditionalAttributeItem:updatedAtIndex:!event handlers!public! !
@@ -97,7 +96,7 @@ displayConditionalAttributes!displaying!public! !
 displayLoadSpecification!displaying!public! !
 displayTabs!displaying!event handlers!public! !
 exportLoadSpec!menu handlers!public! !
-loadSpecItem:updatedAtIndex:!event handlers!public! !
+loadLoadSpec!menu handlers!public! !
 onLoadSpecPropertyChanged!event handlers!public! !
 platformPropertyItem:updatedAtIndex:!event handlers!public! !
 popupEdit!private! !
