@@ -32,6 +32,12 @@ loadSpecPath
 loadSpecPath: anObject
 	loadSpecPath := anObject!
 
+platformProperties
+	^platformProperties!
+
+platformProperties: anObject
+	platformProperties := anObject!
+
 session
 	^session!
 
@@ -45,6 +51,8 @@ conditionalAttributes:!accessing!private! !
 excludedInstVars!private!ston! !
 loadSpecPath!accessing!private! !
 loadSpecPath:!accessing!private! !
+platformProperties!accessing!private! !
+platformProperties:!accessing!private! !
 session!accessing!private! !
 session:!accessing!private! !
 !

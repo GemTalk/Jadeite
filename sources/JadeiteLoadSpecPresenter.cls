@@ -23,9 +23,13 @@ createComponents
 
 createSchematicWiring
 	super createSchematicWiring.
-	loadSpecPresenter model
+	"loadSpecPresenter model
 		when: #item:updatedAtIndex:
 		send: #loadSpecItem:updatedAtIndex:
+		to: self."
+	loadSpecPresenter
+		when: #selectionChanged
+		send: #onLoadSpecPropertyChanged
 		to: self.
 	conditionalAttributesPresenter model
 		when: #item:updatedAtIndex:
@@ -35,10 +39,10 @@ createSchematicWiring
 		when: #item:updatedAtIndex:
 		send: #platformPropertyItem:updatedAtIndex:
 		to: self.
-	commentPresenter 
-		when: #valueChanged 
+	commentPresenter
+		when: #valueChanged
 		send: #commentChanged
-		to: self. !
+		to: self!
 
 displayConditionalAttributes
 	conditionalAttributesPresenter
@@ -46,8 +50,7 @@ displayConditionalAttributes
 
 displayLoadSpecification
 	| assocs |
-	assocs := model objects
-				collect: [:assoc | Array with: assoc key with: assoc value asString].
+	assocs := model objects collect: [:assoc | Array with: assoc key with: assoc value asString asValue].
 	assocs := assocs asSortedCollection: [:x :y | x first < y first].
 	loadSpecPresenter list: assocs asArray!
 
@@ -59,10 +62,32 @@ displayTabs
 	model platformProperties keysAndValuesDo: [:key :value | propertiesArray add: key -> value].
 	platformPropertiesPresenter list: propertiesArray!
 
+exportLoadSpec
+	model
+		command: #exportLoadSpecification;
+		commandArgs: Array new.
+	self issueCommand: model!
+
 loadSpecItem: item updatedAtIndex: index
 	!
 
-platformPropertyItem: item updatedAtIndex: index! !
+onLoadSpecPropertyChanged
+	self popupEdit. !
+
+platformPropertyItem: item updatedAtIndex: index!
+
+popupEdit
+	| aspectDialog |
+	loadSpecPresenter selectionOrNil ifNil:[^self]. 
+	aspectDialog := AspectEditorDialog createOn: nil asValue.
+	aspectDialog recommendedRectangle: (View
+				mapRectangle: (loadSpecPresenter view subItemRectRow: loadSpecPresenter view selectionByIndex column: 2)
+				from: loadSpecPresenter
+				to: View desktop).
+	aspectDialog createAspectPresenters: (AspectAccessor subject: loadSpecPresenter selection
+				aspect: (Aspect string: #last))
+		for: loadSpecPresenter selection last.
+	aspectDialog showModal! !
 !JadeiteLoadSpecPresenter categoriesForMethods!
 commentChanged!event handlers!public! !
 conditionalAttributeItem:updatedAtIndex:!event handlers!public! !
@@ -71,7 +96,10 @@ createSchematicWiring!initialization!public! !
 displayConditionalAttributes!displaying!public! !
 displayLoadSpecification!displaying!public! !
 displayTabs!displaying!event handlers!public! !
+exportLoadSpec!menu handlers!public! !
 loadSpecItem:updatedAtIndex:!event handlers!public! !
+onLoadSpecPropertyChanged!event handlers!public! !
 platformPropertyItem:updatedAtIndex:!event handlers!public! !
+popupEdit!private! !
 !
 
