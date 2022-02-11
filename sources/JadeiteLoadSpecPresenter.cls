@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteLoadSpecPresenter
-	instanceVariableNames: 'loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter shouldAskToClose'
+	instanceVariableNames: 'loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter hasUnwrittenChanges'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -19,14 +19,20 @@ addConditionalAttribute
 	conditionalAttributesPresenter selectionByIndex: model conditionalAttributes size.
 	self conditionalAttributeItem: attribute updatedAtIndex: model conditionalAttributes size!
 
+changePlatformPropertyItem: aMouseEvent
+	(self popupEdit: platformPropertiesPresenter) ifNil: [^self].
+	model setPlatformProperty: platformPropertiesPresenter selection first
+		to: platformPropertiesPresenter selection last value.
+	hasUnwrittenChanges := true!
+
 commentChanged
 	commentPresenter value = model comment ifTrue: [^self].
 	model setComment: commentPresenter value.
-	shouldAskToClose := true!
+	hasUnwrittenChanges := true!
 
 conditionalAttributeItem: item updatedAtIndex: index
 	model conditionalAttributeItem: item updatedAtIndex: index.
-	shouldAskToClose := true!
+	hasUnwrittenChanges := true!
 
 createComponents
 	super createComponents.
@@ -38,16 +44,16 @@ createComponents
 createSchematicWiring
 	super createSchematicWiring.
 	loadSpecPresenter
-		when: #selectionChanged
-		send: #onLoadSpecPropertyChanged
-		to: self.
+		when: #leftButtonDoubleClicked:
+			send: #onLoadSpecPropertyClicked:
+			to: self.
 	conditionalAttributesPresenter model
 		when: #item:updatedAtIndex:
 		send: #conditionalAttributeItem:updatedAtIndex:
 		to: self.
-	platformPropertiesPresenter model
-		when: #item:updatedAtIndex:
-		send: #platformPropertyItem:updatedAtIndex:
+	platformPropertiesPresenter
+		when: #leftButtonDoubleClicked:
+		send: #changePlatformPropertyItem:
 		to: self.
 	commentPresenter
 		when: #valueChanged
@@ -69,23 +75,28 @@ displayTabs
 	commentPresenter value: model comment.
 	self displayConditionalAttributes.
 	propertiesArray := OrderedCollection new.
-	model platformProperties keysAndValuesDo: [:key :value | propertiesArray add: key -> value].
+	model platformProperties
+		keysAndValuesDo: [:key :value | propertiesArray add: (Array with: key with: value asValue)].
 	platformPropertiesPresenter list: propertiesArray!
 
 exportLoadSpec
 	model export.
-	shouldAskToClose := false!
+	hasUnwrittenChanges := false!
 
 initialize
 	super initialize.
-	shouldAskToClose := false!
+	hasUnwrittenChanges := false!
 
 isOkayToClose
-	^shouldAskToClose
+	^hasUnwrittenChanges
 		ifTrue: [MessageBox confirm: 'There are unwritten changes. Exit anyway?']
 		ifFalse: [true]!
 
 loadLoadSpec
+	hasUnwrittenChanges
+		ifTrue: 
+			[(MessageBox confirm: 'There are unwritten changes which will not be loaded. Load anyway?')
+				ifFalse: [^self]].
 	model load!
 
 onCloseRequested: aCloseEvent
@@ -94,24 +105,26 @@ onCloseRequested: aCloseEvent
 onLoadSpecPropertyChanged
 	| selection |
 	selection := loadSpecPresenter selectionOrNil ifNil: [^self].
-	self popupEdit ifNotNil: [model setLoadSpecProperty: selection first to: selection last value].
-	shouldAskToClose := true. !
+	(self popupEdit: loadSpecPresenter)
+		ifNotNil: [model setLoadSpecProperty: selection first to: selection last value].
+	hasUnwrittenChanges := true!
 
-platformPropertyItem: item updatedAtIndex: index
-	model platformPropertyItem: item updatedAtIndex: index.
-	shouldAskToClose := true!
+onLoadSpecPropertyClicked: aMouseEvent
+	loadSpecPresenter selectionOrNil ifNil: [^self]. 
+	self popupEdit: loadSpecPresenter
+!
 
-popupEdit
-	| aspectDialog |
-	loadSpecPresenter selectionOrNil ifNil:[^self]. 
+popupEdit: presenter
+	| aspectDialog  |
+	presenter selectionOrNil ifNil: [^self].
 	aspectDialog := AspectEditorDialog createOn: nil asValue.
 	aspectDialog recommendedRectangle: (View
-				mapRectangle: (loadSpecPresenter view subItemRectRow: loadSpecPresenter view selectionByIndex column: 2)
-				from: loadSpecPresenter
+				mapRectangle: (presenter view subItemRectRow: presenter view selectionByIndex column: 2)
+				from: presenter
 				to: View desktop).
-	aspectDialog createAspectPresenters: (AspectAccessor subject: loadSpecPresenter selection
-				aspect: (Aspect string: #last))
-		for: loadSpecPresenter selection last.
+	aspectDialog
+		createAspectPresenters: (AspectAccessor subject: presenter selection aspect: (Aspect string: #last))
+		for: presenter selection last.
 	^aspectDialog showModal!
 
 removeConditionalAttribute
@@ -124,6 +137,7 @@ removeConditionalAttribute
 				self conditionalAttributeItem: nil updatedAtIndex: model conditionalAttributes size]! !
 !JadeiteLoadSpecPresenter categoriesForMethods!
 addConditionalAttribute!menu handlers!public! !
+changePlatformPropertyItem:!event handlers!public! !
 commentChanged!event handlers!public! !
 conditionalAttributeItem:updatedAtIndex:!event handlers!public! !
 createComponents!initialization!public! !
@@ -137,8 +151,8 @@ isOkayToClose!public!testing! !
 loadLoadSpec!menu handlers!public! !
 onCloseRequested:!event handlers!public! !
 onLoadSpecPropertyChanged!event handlers!public! !
-platformPropertyItem:updatedAtIndex:!event handlers!public! !
-popupEdit!private! !
+onLoadSpecPropertyClicked:!event handlers!public! !
+popupEdit:!private! !
 removeConditionalAttribute!menu handlers!public! !
 !
 

@@ -60,6 +60,7 @@ platformProperties: anObject
 	platformProperties := anObject!
 
 platformPropertyItem: association updatedAtIndex: value
+	self halt. 
 	self
 		command: #setPlatformProperty:to:;
 		commandArgs: (Array with: association key with: value).
@@ -80,6 +81,12 @@ setComment: aString
 setLoadSpecProperty: property to: value
 	self
 		command: #setLoadSpecProperty:to:;
+		commandArgs: (Array with: property with: value).
+	self issueCommand: self session: session!
+
+setPlatformProperty: property to: value
+	self
+		command: #setPlatformProperty:to:;
 		commandArgs: (Array with: property with: value).
 	self issueCommand: self session: session!
 
@@ -105,6 +112,7 @@ session!accessing!private! !
 session:!accessing!private! !
 setComment:!commands!public! !
 setLoadSpecProperty:to:!commands!public! !
+setPlatformProperty:to:!commands!public! !
 shouldReplicateInstVarAtIndex:newService:!public!ston! !
 !
 
