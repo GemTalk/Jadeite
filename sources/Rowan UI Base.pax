@@ -711,7 +711,7 @@ JadePresenterA subclass: #JadeiteComponentPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenterA subclass: #JadeiteLoadSpecPresenter
-	instanceVariableNames: 'loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter'
+	instanceVariableNames: 'loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter shouldAskToClose'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

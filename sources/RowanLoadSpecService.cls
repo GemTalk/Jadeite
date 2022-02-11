@@ -16,6 +16,12 @@ comment
 comment: anObject
 	comment := anObject!
 
+conditionalAttributeItem: new updatedAtIndex: index
+	self
+		command: #setConditionalAttributes:;
+		commandArgs: (Array with: self conditionalAttributes).
+	self issueCommand: self session: session!
+
 conditionalAttributes
 	^conditionalAttributes!
 
@@ -53,11 +59,23 @@ platformProperties
 platformProperties: anObject
 	platformProperties := anObject!
 
+platformPropertyItem: association updatedAtIndex: value
+	self
+		command: #setPlatformProperty:to:;
+		commandArgs: (Array with: association key with: value).
+	self issueCommand: self session: session!
+
 session
 	^session!
 
 session: anObject
 	session := anObject!
+
+setComment: aString
+	self
+		command: #setComment:;
+		commandArgs: (Array with: aString).
+	self issueCommand: self session: session!
 
 setLoadSpecProperty: property to: value
 	self
@@ -71,6 +89,7 @@ shouldReplicateInstVarAtIndex: index newService: newService
 !RowanLoadSpecService categoriesForMethods!
 comment!accessing!private! !
 comment:!accessing!private! !
+conditionalAttributeItem:updatedAtIndex:!commands!public! !
 conditionalAttributes!accessing!private! !
 conditionalAttributes:!accessing!private! !
 excludedInstVars!private!ston! !
@@ -81,8 +100,10 @@ loadSpecPath!accessing!private! !
 loadSpecPath:!accessing!private! !
 platformProperties!accessing!private! !
 platformProperties:!accessing!private! !
+platformPropertyItem:updatedAtIndex:!commands!public! !
 session!accessing!private! !
 session:!accessing!private! !
+setComment:!commands!public! !
 setLoadSpecProperty:to:!commands!public! !
 shouldReplicateInstVarAtIndex:newService:!public!ston! !
 !

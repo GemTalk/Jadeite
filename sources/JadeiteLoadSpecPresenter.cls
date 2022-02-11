@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteLoadSpecPresenter
-	instanceVariableNames: 'loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter'
+	instanceVariableNames: 'loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter shouldAskToClose'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -10,9 +10,23 @@ JadeiteLoadSpecPresenter comment: ''!
 !JadeiteLoadSpecPresenter categoriesForClass!Unclassified! !
 !JadeiteLoadSpecPresenter methodsFor!
 
-commentChanged!
+addConditionalAttribute
+	| attribute |
+	attribute := Prompter prompt: 'Please enter new conditional attribute ...'
+				caption: 'Add Conditional Attribute'.
+	model conditionalAttributes add: attribute.
+	self displayConditionalAttributes.
+	conditionalAttributesPresenter selectionByIndex: model conditionalAttributes size.
+	self conditionalAttributeItem: attribute updatedAtIndex: model conditionalAttributes size!
 
-conditionalAttributeItem: item updatedAtIndex: index!
+commentChanged
+	commentPresenter value = model comment ifTrue: [^self].
+	model setComment: commentPresenter value.
+	shouldAskToClose := true!
+
+conditionalAttributeItem: item updatedAtIndex: index
+	model conditionalAttributeItem: item updatedAtIndex: index.
+	shouldAskToClose := true!
 
 createComponents
 	super createComponents.
@@ -23,10 +37,6 @@ createComponents
 
 createSchematicWiring
 	super createSchematicWiring.
-	" needed? loadSpecPresenter model
-		when: #item:updatedAtIndex:
-		send: #loadSpecItem:updatedAtIndex:
-		to: self."
 	loadSpecPresenter
 		when: #selectionChanged
 		send: #onLoadSpecPropertyChanged
@@ -63,17 +73,33 @@ displayTabs
 	platformPropertiesPresenter list: propertiesArray!
 
 exportLoadSpec
-	model export!
+	model export.
+	shouldAskToClose := false!
+
+initialize
+	super initialize.
+	shouldAskToClose := false!
+
+isOkayToClose
+	^shouldAskToClose
+		ifTrue: [MessageBox confirm: 'There are unwritten changes. Exit anyway?']
+		ifFalse: [true]!
 
 loadLoadSpec
 	model load!
 
+onCloseRequested: aCloseEvent
+	aCloseEvent value: self isOkayToClose!
+
 onLoadSpecPropertyChanged
 	| selection |
 	selection := loadSpecPresenter selectionOrNil ifNil: [^self].
-	self popupEdit ifNotNil: [model setLoadSpecProperty: selection first to: selection last value]!
+	self popupEdit ifNotNil: [model setLoadSpecProperty: selection first to: selection last value].
+	shouldAskToClose := true. !
 
-platformPropertyItem: item updatedAtIndex: index!
+platformPropertyItem: item updatedAtIndex: index
+	model platformPropertyItem: item updatedAtIndex: index.
+	shouldAskToClose := true!
 
 popupEdit
 	| aspectDialog |
@@ -86,8 +112,18 @@ popupEdit
 	aspectDialog createAspectPresenters: (AspectAccessor subject: loadSpecPresenter selection
 				aspect: (Aspect string: #last))
 		for: loadSpecPresenter selection last.
-	^aspectDialog showModal! !
+	^aspectDialog showModal!
+
+removeConditionalAttribute
+	(MessageBox
+		confirm: 'Really remove conditional attribute ''' , conditionalAttributesPresenter selection value
+				, '''?')
+			ifTrue: 
+				[model conditionalAttributes removeAtIndex: conditionalAttributesPresenter selectionByIndex.
+				self displayConditionalAttributes.
+				self conditionalAttributeItem: nil updatedAtIndex: model conditionalAttributes size]! !
 !JadeiteLoadSpecPresenter categoriesForMethods!
+addConditionalAttribute!menu handlers!public! !
 commentChanged!event handlers!public! !
 conditionalAttributeItem:updatedAtIndex:!event handlers!public! !
 createComponents!initialization!public! !
@@ -96,9 +132,13 @@ displayConditionalAttributes!displaying!public! !
 displayLoadSpecification!displaying!public! !
 displayTabs!displaying!event handlers!public! !
 exportLoadSpec!menu handlers!public! !
+initialize!initialization!public! !
+isOkayToClose!public!testing! !
 loadLoadSpec!menu handlers!public! !
+onCloseRequested:!event handlers!public! !
 onLoadSpecPropertyChanged!event handlers!public! !
 platformPropertyItem:updatedAtIndex:!event handlers!public! !
 popupEdit!private! !
+removeConditionalAttribute!menu handlers!public! !
 !
 
