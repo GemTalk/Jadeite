@@ -115,13 +115,16 @@ onLoadSpecPropertyClicked: aMouseEvent
 !
 
 popupEdit: presenter
-	| aspectDialog  |
+	| aspectDialog |
 	presenter selectionOrNil ifNil: [^self].
 	aspectDialog := AspectEditorDialog createOn: nil asValue.
 	aspectDialog recommendedRectangle: (View
 				mapRectangle: (presenter view subItemRectRow: presenter view selectionByIndex column: 2)
 				from: presenter
 				to: View desktop).
+	aspectDialog subPresenters first view
+		extent: aspectDialog view extent;
+		arrangement: #center.
 	aspectDialog
 		createAspectPresenters: (AspectAccessor subject: presenter selection aspect: (Aspect string: #last))
 		for: presenter selection last.
