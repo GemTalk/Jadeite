@@ -84,7 +84,7 @@ editComponents
 	^JadeiteComponentEditor showOn: projectName session: self gciSession!
 
 editLoadSpecFromFile
-	^JadeiteLoadSpecEditor showOnSession: gciSession!
+	^JadeiteLoadSpecEditor editLoadSpecFromFileInSession: gciSession!
 
 flipAutoCommit
 	| browserService |

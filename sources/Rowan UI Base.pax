@@ -442,6 +442,8 @@ package methodNames
 	add: #RowanCommandResult -> #updateSuperclassSelectionFor:;
 	add: #RowanCommandResult -> #updateType;
 	add: #RowanGsMethod -> #printOn:;
+	add: #RowanLoadSpecService -> #loadSpecOop;
+	add: #RowanLoadSpecService -> #loadSpecOop:;
 	add: #RowanMethodDefinition -> #methodService;
 	add: #RowanMethodService -> #basicSubSuperIcon;
 	add: #RowanMethodService -> #removeTrailingMenuItemsFrom:;
@@ -706,7 +708,7 @@ JadePresenterA subclass: #JadeiteCommandPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource packageGroupPresenter'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource packageGroupPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -5757,6 +5759,18 @@ printOn: aStream
 				cr]! !
 !RowanGsMethod categoriesForMethods!
 printOn:!printing!public! !
+!
+
+!RowanLoadSpecService methodsFor!
+
+loadSpecOop
+	^loadSpecOop!
+
+loadSpecOop: anObject
+	loadSpecOop := anObject! !
+!RowanLoadSpecService categoriesForMethods!
+loadSpecOop!accessing!private! !
+loadSpecOop:!accessing!private! !
 !
 
 !RowanMethodDefinition methodsFor!

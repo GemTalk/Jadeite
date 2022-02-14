@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanDefinitionService subclass: #RowanProjectDefinitionService
-	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions loadSpecification specService comment conditionalAttributes platformProperties packageGroups'
+	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions specService comment conditionalAttributes platformProperties packageGroups'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
