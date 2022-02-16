@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanPackageService
 	instanceVariableNames: 'classes defaultTemplate projectName classCompilationFailures testClasses hierarchyServices selectedClass name isDirty'
@@ -213,43 +213,45 @@ updateList: presenter whilePreservingSelections: updates browser: browser
 			| existing |
 			existing := presenter model detect: [:service | service name = update name] ifNone: [].
 			existing ifNil: [update wasRenamed ifFalse: [presenter model add: update]]]! !
-!RowanPackageService categoriesFor: #<=!comparing!public! !
-!RowanPackageService categoriesFor: #=!comparing!public! !
-!RowanPackageService categoriesFor: #addHierarchyService:to:withParent:!private!updating! !
-!RowanPackageService categoriesFor: #basicPrepareForReplication!public!replication! !
-!RowanPackageService categoriesFor: #classes!accessing!public! !
-!RowanPackageService categoriesFor: #classes:!accessing!public! !
-!RowanPackageService categoriesFor: #classesUpdate:browser:!public!updating! !
-!RowanPackageService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
-!RowanPackageService categoriesFor: #condenseExtensions:!private!updating! !
-!RowanPackageService categoriesFor: #confirmClassRemoval:!accessing!public! !
-!RowanPackageService categoriesFor: #defaultTemplate!accessing!private! !
-!RowanPackageService categoriesFor: #defaultTemplate:!accessing!private! !
-!RowanPackageService categoriesFor: #displayName!displaying!public! !
-!RowanPackageService categoriesFor: #displayString!displaying!public! !
-!RowanPackageService categoriesFor: #displayStringFor:!displaying!public! !
-!RowanPackageService categoriesFor: #doesUpdateApply:!private!testing! !
-!RowanPackageService categoriesFor: #hash!comparing!public! !
-!RowanPackageService categoriesFor: #hierarchyServices:!public!updating! !
-!RowanPackageService categoriesFor: #isDirty!accessing!public! !
-!RowanPackageService categoriesFor: #isDirty:!accessing!public! !
-!RowanPackageService categoriesFor: #isPackageService!public!testing! !
-!RowanPackageService categoriesFor: #name!accessing!public! !
-!RowanPackageService categoriesFor: #name:!accessing!public! !
-!RowanPackageService categoriesFor: #packageUpdate:!public!updating! !
-!RowanPackageService categoriesFor: #postUpdate!Init / Release!public! !
-!RowanPackageService categoriesFor: #prepareForReplication!public!replication! !
-!RowanPackageService categoriesFor: #projectName!accessing!private! !
-!RowanPackageService categoriesFor: #projectName:!accessing!private! !
-!RowanPackageService categoriesFor: #remoteServiceName!must not strip!public! !
-!RowanPackageService categoriesFor: #removeDeletedClassesIn:browser:!private!updating! !
-!RowanPackageService categoriesFor: #replicateFrom:!public!replication! !
-!RowanPackageService categoriesFor: #selectedClass!accessing!public! !
-!RowanPackageService categoriesFor: #selectedClass:!accessing!public! !
-!RowanPackageService categoriesFor: #selectIn:!public!selection! !
-!RowanPackageService categoriesFor: #sortAspect!accessing!public! !
-!RowanPackageService categoriesFor: #testClasses:browser:!public!updating! !
-!RowanPackageService categoriesFor: #updateList:whilePreservingSelections:browser:!private!updating! !
+!RowanPackageService categoriesForMethods!
+<=!comparing!public! !
+=!comparing!public! !
+addHierarchyService:to:withParent:!private!updating! !
+basicPrepareForReplication!public!replication! !
+classes!accessing!public! !
+classes:!accessing!public! !
+classesUpdate:browser:!public!updating! !
+classHierarchyUpdate:browser:!public!updating! !
+condenseExtensions:!private!updating! !
+confirmClassRemoval:!accessing!public! !
+defaultTemplate!accessing!private! !
+defaultTemplate:!accessing!private! !
+displayName!displaying!public! !
+displayString!displaying!public! !
+displayStringFor:!displaying!public! !
+doesUpdateApply:!private!testing! !
+hash!comparing!public! !
+hierarchyServices:!public!updating! !
+isDirty!accessing!public! !
+isDirty:!accessing!public! !
+isPackageService!public!testing! !
+name!accessing!public! !
+name:!accessing!public! !
+packageUpdate:!public!updating! !
+postUpdate!Init / Release!public! !
+prepareForReplication!public!replication! !
+projectName!accessing!private! !
+projectName:!accessing!private! !
+remoteServiceName!must not strip!public! !
+removeDeletedClassesIn:browser:!private!updating! !
+replicateFrom:!public!replication! !
+selectedClass!accessing!public! !
+selectedClass:!accessing!public! !
+selectIn:!public!selection! !
+sortAspect!accessing!public! !
+testClasses:browser:!public!updating! !
+updateList:whilePreservingSelections:browser:!private!updating! !
+!
 
 !RowanPackageService class methodsFor!
 
@@ -262,6 +264,8 @@ icon
 	"Answers an Icon that can be used to represent this class"
 
 	^##(self) defaultIcon! !
-!RowanPackageService class categoriesFor: #defaultIconName!private! !
-!RowanPackageService class categoriesFor: #icon!private! !
+!RowanPackageService class categoriesForMethods!
+defaultIconName!private! !
+icon!private! !
+!
 

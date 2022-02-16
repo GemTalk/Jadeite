@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 SmalltalkSearchPresenter subclass: #JadeiteSmalltalkSearchPresenter
 	instanceVariableNames: ''
@@ -15,5 +15,7 @@ applyOptions
 	view maxCompletionListHeight: 10.
 	view maxCompletionListWidth: 40.
 	view autoCompletionSeparator: $\x7F! !
-!JadeiteSmalltalkSearchPresenter categoriesFor: #applyOptions!private! !
+!JadeiteSmalltalkSearchPresenter categoriesForMethods!
+applyOptions!private! !
+!
 

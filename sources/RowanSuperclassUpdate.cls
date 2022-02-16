@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanClassesUpdate subclass: #RowanSuperclassUpdate
 	instanceVariableNames: 'tabName'
@@ -21,8 +21,10 @@ updateClassSelectionFor: presenter!
 updateSuperclassSelectionFor: presenter
 	
 	presenter selections: (selectionNames collect: [:name | name asSymbol])! !
-!RowanSuperclassUpdate categoriesFor: #classesUpdate:browser:!public!updating! !
-!RowanSuperclassUpdate categoriesFor: #superclassListUpdate:!public!updating! !
-!RowanSuperclassUpdate categoriesFor: #updateClassSelectionFor:!public!updating! !
-!RowanSuperclassUpdate categoriesFor: #updateSuperclassSelectionFor:!public!updating! !
+!RowanSuperclassUpdate categoriesForMethods!
+classesUpdate:browser:!public!updating! !
+superclassListUpdate:!public!updating! !
+updateClassSelectionFor:!public!updating! !
+updateSuperclassSelectionFor:!public!updating! !
+!
 

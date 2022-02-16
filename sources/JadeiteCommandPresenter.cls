@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteCommandPresenter
 	instanceVariableNames: 'commandLine codePane'
@@ -193,31 +193,33 @@ switches
 
 switchesFrom: substrings
 	^substrings select: [:substring | substring first = $-]! !
-!JadeiteCommandPresenter categoriesFor: #are:legalIn:!public!testing! !
-!JadeiteCommandPresenter categoriesFor: #basicBrowse:!operations!private! !
-!JadeiteCommandPresenter categoriesFor: #basicSubmitCommand:!commands!private! !
-!JadeiteCommandPresenter categoriesFor: #browse:!operations!public! !
-!JadeiteCommandPresenter categoriesFor: #commandFrom:!commands!private! !
-!JadeiteCommandPresenter categoriesFor: #commandHelpStrings!accessing!command registry!private! !
-!JadeiteCommandPresenter categoriesFor: #commandHelpText!accessing!command registry!private! !
-!JadeiteCommandPresenter categoriesFor: #commands!command registry!private! !
-!JadeiteCommandPresenter categoriesFor: #commandSelectors!accessing!command registry!private! !
-!JadeiteCommandPresenter categoriesFor: #commandStrings!accessing!command registry!private! !
-!JadeiteCommandPresenter categoriesFor: #createComponents!initialization!public! !
-!JadeiteCommandPresenter categoriesFor: #documentPresenter!accessing!private! !
-!JadeiteCommandPresenter categoriesFor: #fileSave!operations!public! !
-!JadeiteCommandPresenter categoriesFor: #help:!operations!public! !
-!JadeiteCommandPresenter categoriesFor: #implementors:!operations!public! !
-!JadeiteCommandPresenter categoriesFor: #is:legalIn:!public!testing! !
-!JadeiteCommandPresenter categoriesFor: #isJadeiteCommand:!public!testing! !
-!JadeiteCommandPresenter categoriesFor: #onViewOpened!event handlers!public! !
-!JadeiteCommandPresenter categoriesFor: #selectorFromCommand:!command registry!private! !
-!JadeiteCommandPresenter categoriesFor: #senders:!operations!public! !
-!JadeiteCommandPresenter categoriesFor: #submitCommand!commands!public! !
-!JadeiteCommandPresenter categoriesFor: #submitJadeiteCommand:!commands!public! !
-!JadeiteCommandPresenter categoriesFor: #switchArgumentPairsFrom:!private!switches! !
-!JadeiteCommandPresenter categoriesFor: #switches!private!switches! !
-!JadeiteCommandPresenter categoriesFor: #switchesFrom:!private!switches! !
+!JadeiteCommandPresenter categoriesForMethods!
+are:legalIn:!public!testing! !
+basicBrowse:!operations!private! !
+basicSubmitCommand:!commands!private! !
+browse:!operations!public! !
+commandFrom:!commands!private! !
+commandHelpStrings!accessing!command registry!private! !
+commandHelpText!accessing!command registry!private! !
+commands!command registry!private! !
+commandSelectors!accessing!command registry!private! !
+commandStrings!accessing!command registry!private! !
+createComponents!initialization!public! !
+documentPresenter!accessing!private! !
+fileSave!operations!public! !
+help:!operations!public! !
+implementors:!operations!public! !
+is:legalIn:!public!testing! !
+isJadeiteCommand:!public!testing! !
+onViewOpened!event handlers!public! !
+selectorFromCommand:!command registry!private! !
+senders:!operations!public! !
+submitCommand!commands!public! !
+submitJadeiteCommand:!commands!public! !
+switchArgumentPairsFrom:!private!switches! !
+switches!private!switches! !
+switchesFrom:!private!switches! !
+!
 
 !JadeiteCommandPresenter class methodsFor!
 
@@ -230,5 +232,7 @@ resource_Default_view
 	"
 
 	^#(#'!!STL' 4 788558 10 ##(Smalltalk.STBViewProxy) ##(Smalltalk.ContainerView) 34 15 nil nil 34 2 8 1409286144 131073 416 nil nil nil 5 nil nil nil 416 852230 ##(Smalltalk.FramingLayout) 170 176 34 4 410 ##(Smalltalk.ReferenceView) 34 14 nil 416 34 2 8 1140850688 131073 544 nil 327686 ##(Smalltalk.Color) #default nil 5 nil nil nil 544 1180230 1 ##(Smalltalk.ResourceIdentifier) ##(Smalltalk.CodeSourcePresenter) #resource_Default_view nil 983302 ##(Smalltalk.MessageSequence) 138 144 34 1 721670 ##(Smalltalk.MessageSend) #createAt:extent: 34 2 328198 ##(Smalltalk.Point) 1 1 786 701 451 544 983302 ##(Smalltalk.WINDOWPLACEMENT) 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 0 0 0 0 94 1 0 0 225 0 0 0] 8 #() 786 193 193 nil 27 1181766 2 ##(Smalltalk.FramingConstraints) 1180678 ##(Smalltalk.FramingCalculation) #fixedParentLeft 1 946 #fixedParentRight 1 946 #fixedParentTop 1 946 #fixedParentBottom -49 410 ##(Smalltalk.TextEdit) 34 16 nil 416 34 2 8 1140916480 1025 1024 721990 2 ##(Smalltalk.ValueHolder) nil false 1310726 ##(Smalltalk.EqualitySearchPolicy) nil 624 nil 5 nil nil nil 1024 nil 8 1650007552 852486 ##(Smalltalk.NullConverter) nil nil 5 674 138 144 34 2 738 #createAt:extent: 34 2 786 1 451 786 701 51 1024 738 #setMarginWidths: 34 1 8 #(3 3) 1024 834 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 225 0 0 0 94 1 0 0 250 0 0 0] 8 #() 896 nil 27 914 960 1 976 1 1008 -49 1008 1 170 192 34 4 544 8 'codePane' 1024 8 'commandLine' nil 674 138 144 34 1 738 #createAt:extent: 34 2 786 2879 21 786 701 501 416 834 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 159 5 0 0 10 0 0 0 253 6 0 0 4 1 0 0] 34 2 1024 544 896 nil 27 )! !
-!JadeiteCommandPresenter class categoriesFor: #resource_Default_view!public!resources-views! !
+!JadeiteCommandPresenter class categoriesForMethods!
+resource_Default_view!public!resources-views! !
+!
 

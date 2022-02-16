@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 Object subclass: #JadeitePreferences
 	instanceVariableNames: 'session lastWindowPosition'
@@ -147,23 +147,25 @@ transcriptEnabled: booleanString
 	answeringService := RowanAnsweringService new.
 	(answeringService isTranscriptInstalledIn: session) == boolean
 		ifFalse: [answeringService flipTranscriptIn: session]! !
-!JadeitePreferences categoriesFor: #allowsSpacesInArgument:!private!testing! !
-!JadeitePreferences categoriesFor: #applyPreference:!accessing!must not strip!public! !
-!JadeitePreferences categoriesFor: #autocommitEnabled:!must not strip!preferences!public! !
-!JadeitePreferences categoriesFor: #autocompleteEnabled:!must not strip!preferences!public! !
-!JadeitePreferences categoriesFor: #breakpointsEnabled:!must not strip!preferences!public! !
-!JadeitePreferences categoriesFor: #fontSize:!must not strip!preferences!public! !
-!JadeitePreferences categoriesFor: #loggingEnabled:!must not strip!preferences!public! !
-!JadeitePreferences categoriesFor: #openBrowserOnClass:!must not strip!preferences!public! !
-!JadeitePreferences categoriesFor: #openBrowserOnPackage:!must not strip!preferences!public! !
-!JadeitePreferences categoriesFor: #openBrowserOnProject:!must not strip!preferences!public! !
-!JadeitePreferences categoriesFor: #openProjectBrowser!preferences!private! !
-!JadeitePreferences categoriesFor: #openSUnitBrowser!preferences!private! !
-!JadeitePreferences categoriesFor: #openSUnitBrowserOnPackage:!must not strip!preferences!public! !
-!JadeitePreferences categoriesFor: #openWorkspace:!must not strip!preferences!public! !
-!JadeitePreferences categoriesFor: #performCommand:allowSpacesInArgs:!accessing!must not strip!public! !
-!JadeitePreferences categoriesFor: #session:!accessing!private! !
-!JadeitePreferences categoriesFor: #transcriptEnabled:!must not strip!preferences!public! !
+!JadeitePreferences categoriesForMethods!
+allowsSpacesInArgument:!private!testing! !
+applyPreference:!accessing!must not strip!public! !
+autocommitEnabled:!must not strip!preferences!public! !
+autocompleteEnabled:!must not strip!preferences!public! !
+breakpointsEnabled:!must not strip!preferences!public! !
+fontSize:!must not strip!preferences!public! !
+loggingEnabled:!must not strip!preferences!public! !
+openBrowserOnClass:!must not strip!preferences!public! !
+openBrowserOnPackage:!must not strip!preferences!public! !
+openBrowserOnProject:!must not strip!preferences!public! !
+openProjectBrowser!preferences!private! !
+openSUnitBrowser!preferences!private! !
+openSUnitBrowserOnPackage:!must not strip!preferences!public! !
+openWorkspace:!must not strip!preferences!public! !
+performCommand:allowSpacesInArgs:!accessing!must not strip!public! !
+session:!accessing!private! !
+transcriptEnabled:!must not strip!preferences!public! !
+!
 
 !JadeitePreferences class methodsFor!
 
@@ -193,7 +195,9 @@ preferencesFileDefaultContents
 #openBrowserOnProject: <project name> 
 #openSUnitBrowserOnPackage: <package name>
 #openWorkspace: <file path without quotes or nil> '! !
-!JadeitePreferences class categoriesFor: #onSession:!instance creation!public! !
-!JadeitePreferences class categoriesFor: #preferencesFile!constants!public! !
-!JadeitePreferences class categoriesFor: #preferencesFileDefaultContents!constants!public! !
+!JadeitePreferences class categoriesForMethods!
+onSession:!instance creation!public! !
+preferencesFile!constants!public! !
+preferencesFileDefaultContents!constants!public! !
+!
 

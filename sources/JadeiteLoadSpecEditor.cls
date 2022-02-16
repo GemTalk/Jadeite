@@ -19,10 +19,8 @@ createSchematicWiring
 
 editLoadSpecFromFile
 	| path |
-	"path := FileOpenDialog new showModal ifNil: [^self]."
-
-	"would like a server file browser someday"
-	path := '/uffda2/users/ewinger/shared/repos/RowanSample9/rowan/specs/spec_0061.ston'.
+	"path := '/uffda2/users/ewinger/shared/repos/RowanSample9/rowan/specs/spec_0061.ston'."
+	path := JadeiteServerFileSelector showOnSession: gciSession. 
 	^self editLoadSpecFromFile: path!
 
 editLoadSpecFromFile: path

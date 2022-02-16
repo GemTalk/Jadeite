@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanCommandResult subclass: #RowanPackageUpdate
 	instanceVariableNames: 'packages modifiedPackages selections'
@@ -23,6 +23,8 @@ updatePackageSelectionsFor: presenter
 		selAssoc ifNotNil: [:value | selectionAssociations  add: value]
 		].
 	presenter selections: selectionAssociations! !
-!RowanPackageUpdate categoriesFor: #packagesUpdate:!public!updating! !
-!RowanPackageUpdate categoriesFor: #updatePackageSelectionsFor:!public!updating! !
+!RowanPackageUpdate categoriesForMethods!
+packagesUpdate:!public!updating! !
+updatePackageSelectionsFor:!public!updating! !
+!
 

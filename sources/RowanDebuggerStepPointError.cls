@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 Error subclass: #RowanDebuggerStepPointError
 	instanceVariableNames: ''
@@ -34,6 +34,8 @@ isResumable
 	
 
 	^true! !
-!RowanDebuggerStepPointError categoriesFor: #isNested!public!testing! !
-!RowanDebuggerStepPointError categoriesFor: #isResumable!public!testing! !
+!RowanDebuggerStepPointError categoriesForMethods!
+isNested!public!testing! !
+isResumable!public!testing! !
+!
 

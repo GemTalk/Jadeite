@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 Model subclass: #JadeiteLogger
 	instanceVariableNames: 'loggingService isLogging nextGroupId logFileName shouldGetNewLoggerGroup'
@@ -93,23 +93,25 @@ startLogging
 stopLogging
 	nextGroupId := nil.
 	self isLogging: false! !
-!JadeiteLogger categoriesFor: #defaultLogFileName!operations!private! !
-!JadeiteLogger categoriesFor: #initialize!initialization!private! !
-!JadeiteLogger categoriesFor: #isLogging!accessing!private! !
-!JadeiteLogger categoriesFor: #isLogging:!accessing!private! !
-!JadeiteLogger categoriesFor: #logComment:!accessing!logging!public! !
-!JadeiteLogger categoriesFor: #logFileName!public! !
-!JadeiteLogger categoriesFor: #logFileName:!public! !
-!JadeiteLogger categoriesFor: #loggingService!accessing!private! !
-!JadeiteLogger categoriesFor: #loggingService:!accessing!private! !
-!JadeiteLogger categoriesFor: #logReceivedServices:!accessing!logging!public! !
-!JadeiteLogger categoriesFor: #logSentServices:!accessing!logging!public! !
-!JadeiteLogger categoriesFor: #newLoggingService!accessing!logging!private! !
-!JadeiteLogger categoriesFor: #newServiceLoggingService!accessing!logging!public! !
-!JadeiteLogger categoriesFor: #newWithGroupId:logger:!double dispatch!public! !
-!JadeiteLogger categoriesFor: #nextGroupId!accessing!public! !
-!JadeiteLogger categoriesFor: #shouldGetNewLoggerGroup!accessing!private! !
-!JadeiteLogger categoriesFor: #shouldGetNewLoggerGroup:!accessing!private! !
-!JadeiteLogger categoriesFor: #startLogging!operations!public! !
-!JadeiteLogger categoriesFor: #stopLogging!operations!public! !
+!JadeiteLogger categoriesForMethods!
+defaultLogFileName!operations!private! !
+initialize!initialization!private! !
+isLogging!accessing!private! !
+isLogging:!accessing!private! !
+logComment:!accessing!logging!public! !
+logFileName!public! !
+logFileName:!public! !
+loggingService!accessing!private! !
+loggingService:!accessing!private! !
+logReceivedServices:!accessing!logging!public! !
+logSentServices:!accessing!logging!public! !
+newLoggingService!accessing!logging!private! !
+newServiceLoggingService!accessing!logging!public! !
+newWithGroupId:logger:!double dispatch!public! !
+nextGroupId!accessing!public! !
+shouldGetNewLoggerGroup!accessing!private! !
+shouldGetNewLoggerGroup:!accessing!private! !
+startLogging!operations!public! !
+stopLogging!operations!public! !
+!
 

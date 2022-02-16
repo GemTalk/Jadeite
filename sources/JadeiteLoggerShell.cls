@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeShell subclass: #JadeiteLoggerShell
 	instanceVariableNames: 'clientFilenameText serverFilenameText'
@@ -56,18 +56,20 @@ serverFilenameText: anObject
 
 shellName
 	^'Jadeite Log Browser'! !
-!JadeiteLoggerShell categoriesFor: #clientFilenameText!accessing!private! !
-!JadeiteLoggerShell categoriesFor: #clientFilenameText:!accessing!private! !
-!JadeiteLoggerShell categoriesFor: #createComponents!initialization!public! !
-!JadeiteLoggerShell categoriesFor: #inputFiles!menu handlers!public! !
-!JadeiteLoggerShell categoriesFor: #onViewClosed!event handlers!public! !
-!JadeiteLoggerShell categoriesFor: #onViewOpened!event handlers!public! !
-!JadeiteLoggerShell categoriesFor: #presenterClass!overrides!private! !
-!JadeiteLoggerShell categoriesFor: #selectClientFile!menu handlers!public! !
-!JadeiteLoggerShell categoriesFor: #selectServerFile!menu handlers!public! !
-!JadeiteLoggerShell categoriesFor: #serverFilenameText!accessing!private! !
-!JadeiteLoggerShell categoriesFor: #serverFilenameText:!accessing!private! !
-!JadeiteLoggerShell categoriesFor: #shellName!overrides!private! !
+!JadeiteLoggerShell categoriesForMethods!
+clientFilenameText!accessing!private! !
+clientFilenameText:!accessing!private! !
+createComponents!initialization!public! !
+inputFiles!menu handlers!public! !
+onViewClosed!event handlers!public! !
+onViewOpened!event handlers!public! !
+presenterClass!overrides!private! !
+selectClientFile!menu handlers!public! !
+selectServerFile!menu handlers!public! !
+serverFilenameText!accessing!private! !
+serverFilenameText:!accessing!private! !
+shellName!overrides!private! !
+!
 
 !JadeiteLoggerShell class methodsFor!
 
@@ -87,6 +89,8 @@ showOnSession: session
 		ifFalse: 
 			[MessageBox
 				notify: 'Unable to view logs. Need access to Rowan service classes. Try logging in as SystemUser']! !
-!JadeiteLoggerShell class categoriesFor: #resource_Default_view!public!resources-views! !
-!JadeiteLoggerShell class categoriesFor: #showOnSession:!instance creation!public! !
+!JadeiteLoggerShell class categoriesForMethods!
+resource_Default_view!public!resources-views! !
+showOnSession:!instance creation!public! !
+!
 

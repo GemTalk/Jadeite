@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 Object subclass: #JadeiteSearch
 	instanceVariableNames: 'view session stop start'
@@ -107,21 +107,23 @@ tokenStartAt: anInteger
 view: aView
 
 	view := aView! !
-!JadeiteSearch categoriesFor: #allClassesStartingWith:!accessing!public! !
-!JadeiteSearch categoriesFor: #autocompleteSymbolsFrom:!accessing!public! !
-!JadeiteSearch categoriesFor: #completionListSortBlock!accessing!public! !
-!JadeiteSearch categoriesFor: #insertCompletion:at:!autocompletion!private! !
-!JadeiteSearch categoriesFor: #killAutocompleteTimer!autocompletion!private! !
-!JadeiteSearch categoriesFor: #onAutoComplete:startingAt:accept:!autocompletion!event handlers!private! !
-!JadeiteSearch categoriesFor: #onCharAdded:!autocompletion!event handlers!private! !
-!JadeiteSearch categoriesFor: #onTimerTick:!autocompletion!event handlers!private! !
-!JadeiteSearch categoriesFor: #session:!accessing!public! !
-!JadeiteSearch categoriesFor: #showCompletionList!autocompletion!private! !
-!JadeiteSearch categoriesFor: #showCompletionList:prefixLength:!autocompletion!private! !
-!JadeiteSearch categoriesFor: #sortForAutoCompletion:!autocompletion!private! !
-!JadeiteSearch categoriesFor: #startAutocompleteTimer!autocompletion!private! !
-!JadeiteSearch categoriesFor: #tokenStartAt:!autocompletion!private! !
-!JadeiteSearch categoriesFor: #view:!accessing!public! !
+!JadeiteSearch categoriesForMethods!
+allClassesStartingWith:!accessing!public! !
+autocompleteSymbolsFrom:!accessing!public! !
+completionListSortBlock!accessing!public! !
+insertCompletion:at:!autocompletion!private! !
+killAutocompleteTimer!autocompletion!private! !
+onAutoComplete:startingAt:accept:!autocompletion!event handlers!private! !
+onCharAdded:!autocompletion!event handlers!private! !
+onTimerTick:!autocompletion!event handlers!private! !
+session:!accessing!public! !
+showCompletionList!autocompletion!private! !
+showCompletionList:prefixLength:!autocompletion!private! !
+sortForAutoCompletion:!autocompletion!private! !
+startAutocompleteTimer!autocompletion!private! !
+tokenStartAt:!autocompletion!private! !
+view:!accessing!public! !
+!
 
 !JadeiteSearch class methodsFor!
 
@@ -207,16 +209,18 @@ updateAutocompleteSymbolsIn: session
 	BrowserUpdate current issueCommands: (Array with: service) session: session.
 	AllClassNames addAll: service answer first.
 	AllSelectors addAll: service answer last! !
-!JadeiteSearch class categoriesFor: #allClassNames!accessing!public! !
-!JadeiteSearch class categoriesFor: #allSelectorSymbols!accessing!public! !
-!JadeiteSearch class categoriesFor: #autoCompleteEnabled!accessing!public! !
-!JadeiteSearch class categoriesFor: #autoCompleteEnabled:!accessing!public! !
-!JadeiteSearch class categoriesFor: #confirmAutoCompleteEnabled:in:!accessing!public! !
-!JadeiteSearch class categoriesFor: #initializeAutocompleteSymbolsIn:!public!utilities! !
-!JadeiteSearch class categoriesFor: #initializeClassNamesIn:!public!utilities! !
-!JadeiteSearch class categoriesFor: #initializeSelectorsIn:!public!utilities! !
-!JadeiteSearch class categoriesFor: #on:session:!instance creation!public! !
-!JadeiteSearch class categoriesFor: #selectorsFrom:session:trailingWildcard:!accessing!public! !
-!JadeiteSearch class categoriesFor: #symbolsFrom:session:trailingWildcard:!accessing!public! !
-!JadeiteSearch class categoriesFor: #updateAutocompleteSymbolsIn:!public!utilities! !
+!JadeiteSearch class categoriesForMethods!
+allClassNames!accessing!public! !
+allSelectorSymbols!accessing!public! !
+autoCompleteEnabled!accessing!public! !
+autoCompleteEnabled:!accessing!public! !
+confirmAutoCompleteEnabled:in:!accessing!public! !
+initializeAutocompleteSymbolsIn:!public!utilities! !
+initializeClassNamesIn:!public!utilities! !
+initializeSelectorsIn:!public!utilities! !
+on:session:!instance creation!public! !
+selectorsFrom:session:trailingWildcard:!accessing!public! !
+symbolsFrom:session:trailingWildcard:!accessing!public! !
+updateAutocompleteSymbolsIn:!public!utilities! !
+!
 

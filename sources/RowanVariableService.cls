@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanVariableService
 	instanceVariableNames: 'oop key value className name'
@@ -74,19 +74,21 @@ updateVariable: listPresenter debugger: debugger
 value
 
 	^value! !
-!RowanVariableService categoriesFor: #_key!public! !
-!RowanVariableService categoriesFor: #className!public! !
-!RowanVariableService categoriesFor: #displayName!displaying!public! !
-!RowanVariableService categoriesFor: #displayOop!printing!public! !
-!RowanVariableService categoriesFor: #displayStringOn:!printing!public! !
-!RowanVariableService categoriesFor: #isDisplayLabel!public!testing! !
-!RowanVariableService categoriesFor: #isUpdatableService!public!testing! !
-!RowanVariableService categoriesFor: #key!public! !
-!RowanVariableService categoriesFor: #name!accessing!public! !
-!RowanVariableService categoriesFor: #name:!accessing!public! !
-!RowanVariableService categoriesFor: #oop!public! !
-!RowanVariableService categoriesFor: #printOn:!printing!public! !
-!RowanVariableService categoriesFor: #sortAspect!accessing!public! !
-!RowanVariableService categoriesFor: #updateVariable:debugger:!public!updating! !
-!RowanVariableService categoriesFor: #value!public! !
+!RowanVariableService categoriesForMethods!
+_key!public! !
+className!public! !
+displayName!displaying!public! !
+displayOop!printing!public! !
+displayStringOn:!printing!public! !
+isDisplayLabel!public!testing! !
+isUpdatableService!public!testing! !
+key!public! !
+name!accessing!public! !
+name:!accessing!public! !
+oop!public! !
+printOn:!printing!public! !
+sortAspect!accessing!public! !
+updateVariable:debugger:!public!updating! !
+value!public! !
+!
 

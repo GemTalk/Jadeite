@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanCommandResult subclass: #RowanDictionaryUpdate
 	instanceVariableNames: 'dictionaries selections'
@@ -17,6 +17,8 @@ updateDictionarySelectionsFor: presenter
 	| sels |
 	sels := presenter list select:[:sel | selections includes: sel key].
 	presenter selections: sels! !
-!RowanDictionaryUpdate categoriesFor: #dictionaryUpdate:!public!updating! !
-!RowanDictionaryUpdate categoriesFor: #updateDictionarySelectionsFor:!public!updating! !
+!RowanDictionaryUpdate categoriesForMethods!
+dictionaryUpdate:!public!updating! !
+updateDictionarySelectionsFor:!public!updating! !
+!
 

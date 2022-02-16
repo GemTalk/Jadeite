@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 SmalltalkWorkspace subclass: #JadeiteSmalltalkWorkspace
 	instanceVariableNames: ''
@@ -36,5 +36,7 @@ applyOptions
 	"#2137"
 	view annotationMode: self class annotationMode.
 	view wrapIndentMode: self class wrapIndentMode.! !
-!JadeiteSmalltalkWorkspace categoriesFor: #applyOptions!operations!options!private! !
+!JadeiteSmalltalkWorkspace categoriesForMethods!
+applyOptions!operations!options!private! !
+!
 

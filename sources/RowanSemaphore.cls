@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 Semaphore subclass: #RowanSemaphore
 	instanceVariableNames: 'lockingProcess'
@@ -18,6 +18,8 @@ lockingProcess
 	"Private - for testing"
 
 	^lockingProcess! !
-!RowanSemaphore categoriesFor: #critical:!process synchronisation!public! !
-!RowanSemaphore categoriesFor: #lockingProcess!accessing!private! !
+!RowanSemaphore categoriesForMethods!
+critical:!process synchronisation!public! !
+lockingProcess!accessing!private! !
+!
 

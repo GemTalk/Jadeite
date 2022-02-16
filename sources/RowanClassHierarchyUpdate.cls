@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanClassesUpdate subclass: #RowanClassHierarchyUpdate
 	instanceVariableNames: ''
@@ -66,8 +66,10 @@ updateClassHierarchySelectionFor: presenter
 updateClassSelectionFor: presenter
 
 	! !
-!RowanClassHierarchyUpdate categoriesFor: #classesHierarchyUpdate:!public!updating! !
-!RowanClassHierarchyUpdate categoriesFor: #classesUpdate:browser:!public!updating! !
-!RowanClassHierarchyUpdate categoriesFor: #updateClassHierarchySelectionFor:!public!updating! !
-!RowanClassHierarchyUpdate categoriesFor: #updateClassSelectionFor:!public!updating! !
+!RowanClassHierarchyUpdate categoriesForMethods!
+classesHierarchyUpdate:!public!updating! !
+classesUpdate:browser:!public!updating! !
+updateClassHierarchySelectionFor:!public!updating! !
+updateClassSelectionFor:!public!updating! !
+!
 

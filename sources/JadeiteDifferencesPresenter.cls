@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 DifferencesPresenter subclass: #JadeiteDifferencesPresenter
 	instanceVariableNames: ''
@@ -84,12 +84,14 @@ setDragOperationsFor: aDragDropSession
 				supportedOperations: #(#copy #move);
 				operation: #copy;
 				yourself]! !
-!JadeiteDifferencesPresenter categoriesFor: #comparisonValueChanged!event handlers!public! !
-!JadeiteDifferencesPresenter categoriesFor: #createComponents!initializing!private! !
-!JadeiteDifferencesPresenter categoriesFor: #createSchematicWiring!initialize/release!public! !
-!JadeiteDifferencesPresenter categoriesFor: #onDragOverSource:!event handlers!public! !
-!JadeiteDifferencesPresenter categoriesFor: #onDropOnAfter:!event handlers!public! !
-!JadeiteDifferencesPresenter categoriesFor: #onDropOnBefore:!event handlers!public! !
-!JadeiteDifferencesPresenter categoriesFor: #set:to:andReset:!public! !
-!JadeiteDifferencesPresenter categoriesFor: #setDragOperationsFor:!event handlers support!private! !
+!JadeiteDifferencesPresenter categoriesForMethods!
+comparisonValueChanged!event handlers!public! !
+createComponents!initializing!private! !
+createSchematicWiring!initialize/release!public! !
+onDragOverSource:!event handlers!public! !
+onDropOnAfter:!event handlers!public! !
+onDropOnBefore:!event handlers!public! !
+set:to:andReset:!public! !
+setDragOperationsFor:!event handlers support!private! !
+!
 

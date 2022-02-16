@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanDictionaryService
 	instanceVariableNames: 'classes hierarchyServices globals defaultTemplate name'
@@ -148,31 +148,33 @@ selectPackageOrDictionaryService: service in: presenter
 sortAspect
 
 	^name! !
-!RowanDictionaryService categoriesFor: #=!comparing!public! !
-!RowanDictionaryService categoriesFor: #basicPrepareForReplication!public!replication! !
-!RowanDictionaryService categoriesFor: #classes!accessing!public! !
-!RowanDictionaryService categoriesFor: #classes:!accessing!public! !
-!RowanDictionaryService categoriesFor: #classesUpdate:browser:!public!updating! !
-!RowanDictionaryService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
-!RowanDictionaryService categoriesFor: #confirmClassRemoval:!accessing!public! !
-!RowanDictionaryService categoriesFor: #defaultTemplate!accessing!private! !
-!RowanDictionaryService categoriesFor: #defaultTemplate:!accessing!private! !
-!RowanDictionaryService categoriesFor: #displayName!displaying!public! !
-!RowanDictionaryService categoriesFor: #displayString!displaying!public! !
-!RowanDictionaryService categoriesFor: #displayStringFor:!displaying!public! !
-!RowanDictionaryService categoriesFor: #doesUpdateApply:!private!testing! !
-!RowanDictionaryService categoriesFor: #globals!accessing!public! !
-!RowanDictionaryService categoriesFor: #globals:!accessing!public! !
-!RowanDictionaryService categoriesFor: #hash!comparing!public! !
-!RowanDictionaryService categoriesFor: #isDictionaryService!public!testing! !
-!RowanDictionaryService categoriesFor: #name!accessing!public! !
-!RowanDictionaryService categoriesFor: #name:!accessing!public! !
-!RowanDictionaryService categoriesFor: #postUpdate!Init / Release!public! !
-!RowanDictionaryService categoriesFor: #prepareForReplication!public!replication! !
-!RowanDictionaryService categoriesFor: #removeDeletedClassesIn:browser:!private! !
-!RowanDictionaryService categoriesFor: #selectIn:!public!selection! !
-!RowanDictionaryService categoriesFor: #selectPackageOrDictionaryService:in:!public!selection! !
-!RowanDictionaryService categoriesFor: #sortAspect!accessing!public! !
+!RowanDictionaryService categoriesForMethods!
+=!comparing!public! !
+basicPrepareForReplication!public!replication! !
+classes!accessing!public! !
+classes:!accessing!public! !
+classesUpdate:browser:!public!updating! !
+classHierarchyUpdate:browser:!public!updating! !
+confirmClassRemoval:!accessing!public! !
+defaultTemplate!accessing!private! !
+defaultTemplate:!accessing!private! !
+displayName!displaying!public! !
+displayString!displaying!public! !
+displayStringFor:!displaying!public! !
+doesUpdateApply:!private!testing! !
+globals!accessing!public! !
+globals:!accessing!public! !
+hash!comparing!public! !
+isDictionaryService!public!testing! !
+name!accessing!public! !
+name:!accessing!public! !
+postUpdate!Init / Release!public! !
+prepareForReplication!public!replication! !
+removeDeletedClassesIn:browser:!private! !
+selectIn:!public!selection! !
+selectPackageOrDictionaryService:in:!public!selection! !
+sortAspect!accessing!public! !
+!
 
 !RowanDictionaryService class methodsFor!
 
@@ -185,6 +187,8 @@ icon
 	"Answers an Icon that can be used to represent this class"
 
 	^##(self) defaultIcon! !
-!RowanDictionaryService class categoriesFor: #defaultIconName!private! !
-!RowanDictionaryService class categoriesFor: #icon!private! !
+!RowanDictionaryService class categoriesForMethods!
+defaultIconName!private! !
+icon!private! !
+!
 

@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeShell subclass: #RowanShell
 	instanceVariableNames: ''
@@ -14,5 +14,7 @@ shellName
 
 	^'Rowan Shell'.
 ! !
-!RowanShell categoriesFor: #shellName!private! !
+!RowanShell categoriesForMethods!
+shellName!private! !
+!
 

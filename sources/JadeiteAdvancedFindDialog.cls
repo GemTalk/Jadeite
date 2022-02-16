@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 AdvancedFindDialog subclass: #JadeiteAdvancedFindDialog
 	instanceVariableNames: ''
@@ -46,15 +46,17 @@ wrapPresenter
 	"for testing"
 
 	^wrapPresenter! !
-!JadeiteAdvancedFindDialog categoriesFor: #findNext!commands!public! !
-!JadeiteAdvancedFindDialog categoriesFor: #initialize!initializing!public! !
-!JadeiteAdvancedFindDialog categoriesFor: #isRegExpEnabled!public!testing! !
-!JadeiteAdvancedFindDialog categoriesFor: #isRegExpEnabled:!accessing!public! !
-!JadeiteAdvancedFindDialog categoriesFor: #isWildCardEnabled!public!testing! !
-!JadeiteAdvancedFindDialog categoriesFor: #isWildCardEnabled:!accessing!public! !
-!JadeiteAdvancedFindDialog categoriesFor: #modePresenter!accessing!public! !
-!JadeiteAdvancedFindDialog categoriesFor: #patternPresenter!accessing!public! !
-!JadeiteAdvancedFindDialog categoriesFor: #wrapPresenter!accessing!public! !
+!JadeiteAdvancedFindDialog categoriesForMethods!
+findNext!commands!public! !
+initialize!initializing!public! !
+isRegExpEnabled!public!testing! !
+isRegExpEnabled:!accessing!public! !
+isWildCardEnabled!public!testing! !
+isWildCardEnabled:!accessing!public! !
+modePresenter!accessing!public! !
+patternPresenter!accessing!public! !
+wrapPresenter!accessing!public! !
+!
 
 !JadeiteAdvancedFindDialog class methodsFor!
 
@@ -72,6 +74,8 @@ showModeless: aView on: aFindDetails
 	^(self createOn: aFindDetails)
 		ownerView: aView;
 		show! !
-!JadeiteAdvancedFindDialog class categoriesFor: #resource_Default_view!public!resources-views! !
-!JadeiteAdvancedFindDialog class categoriesFor: #showModeless:on:!instance creation!public! !
+!JadeiteAdvancedFindDialog class categoriesForMethods!
+resource_Default_view!public!resources-views! !
+showModeless:on:!instance creation!public! !
+!
 

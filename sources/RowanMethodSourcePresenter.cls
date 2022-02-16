@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 MethodSourcePresenter subclass: #RowanMethodSourcePresenter
 	instanceVariableNames: ''
@@ -14,5 +14,7 @@ updateMethodStepPoints
 
 	super updateMethodStepPoints
 	! !
-!RowanMethodSourcePresenter categoriesFor: #updateMethodStepPoints!public! !
+!RowanMethodSourcePresenter categoriesForMethods!
+updateMethodStepPoints!public! !
+!
 

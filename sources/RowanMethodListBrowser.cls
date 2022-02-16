@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeMethodListBrowser subclass: #RowanMethodListBrowser
 	instanceVariableNames: ''
@@ -18,8 +18,10 @@ shellName
 
 	^'Rowan Method List Browser'.
 ! !
-!RowanMethodListBrowser categoriesFor: #presenterClass!private! !
-!RowanMethodListBrowser categoriesFor: #shellName!private! !
+!RowanMethodListBrowser categoriesForMethods!
+presenterClass!private! !
+shellName!private! !
+!
 
 !RowanMethodListBrowser class methodsFor!
 
@@ -45,6 +47,8 @@ showOnSession: aGciSession
 		createView: self defaultView;
 		showShell;
 		yourself.! !
-!RowanMethodListBrowser class categoriesFor: #resource_Default_view!public!resources-views! !
-!RowanMethodListBrowser class categoriesFor: #showOnSession:!public! !
+!RowanMethodListBrowser class categoriesForMethods!
+resource_Default_view!public!resources-views! !
+showOnSession:!public! !
+!
 

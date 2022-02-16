@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanCommandResult subclass: #RowanClassInfoUpdate
 	instanceVariableNames: 'oop template category comment'
@@ -52,15 +52,17 @@ template: anObject
 
 update: aPresenter
 	aPresenter updateFromCommand: self! !
-!RowanClassInfoUpdate categoriesFor: #category!accessing!public! !
-!RowanClassInfoUpdate categoriesFor: #category:!accessing!public! !
-!RowanClassInfoUpdate categoriesFor: #classCommentUpdate:!public!updating! !
-!RowanClassInfoUpdate categoriesFor: #classDefinitionUpdate:!public!updating! !
-!RowanClassInfoUpdate categoriesFor: #comment!accessing!public! !
-!RowanClassInfoUpdate categoriesFor: #comment:!accessing!public! !
-!RowanClassInfoUpdate categoriesFor: #oop!accessing!public! !
-!RowanClassInfoUpdate categoriesFor: #oop:!accessing!public! !
-!RowanClassInfoUpdate categoriesFor: #template!accessing!public! !
-!RowanClassInfoUpdate categoriesFor: #template:!accessing!public! !
-!RowanClassInfoUpdate categoriesFor: #update:!public! !
+!RowanClassInfoUpdate categoriesForMethods!
+category!accessing!public! !
+category:!accessing!public! !
+classCommentUpdate:!public!updating! !
+classDefinitionUpdate:!public!updating! !
+comment!accessing!public! !
+comment:!accessing!public! !
+oop!accessing!public! !
+oop:!accessing!public! !
+template!accessing!public! !
+template:!accessing!public! !
+update:!public! !
+!
 

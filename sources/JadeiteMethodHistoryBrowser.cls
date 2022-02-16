@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 MethodHistoryBrowser subclass: #JadeiteMethodHistoryBrowser
 	instanceVariableNames: 'session'
@@ -162,27 +162,29 @@ updateHistory
 						with: changedMethodService source)].
 	self setCaption.
 	self moveToLast! !
-!JadeiteMethodHistoryBrowser categoriesFor: #about!commands!public! !
-!JadeiteMethodHistoryBrowser categoriesFor: #applyOptions!initialization!public! !
-!JadeiteMethodHistoryBrowser categoriesFor: #classService!accessing!public! !
-!JadeiteMethodHistoryBrowser categoriesFor: #createComponents!initialization!public! !
-!JadeiteMethodHistoryBrowser categoriesFor: #createSchematicWiring!initialization!public! !
-!JadeiteMethodHistoryBrowser categoriesFor: #diff!commands!public! !
-!JadeiteMethodHistoryBrowser categoriesFor: #methodHistoryUpdated:!public!updating! !
-!JadeiteMethodHistoryBrowser categoriesFor: #methodService!accessing!public! !
-!JadeiteMethodHistoryBrowser categoriesFor: #onViewClosed!event handlers!public! !
-!JadeiteMethodHistoryBrowser categoriesFor: #onViewOpened!event handlers!public! !
-!JadeiteMethodHistoryBrowser categoriesFor: #queryCommand:!commands!public! !
-!JadeiteMethodHistoryBrowser categoriesFor: #registerPresentersForUpdates!initialization!public! !
-!JadeiteMethodHistoryBrowser categoriesFor: #restoreMethod!commands!public! !
-!JadeiteMethodHistoryBrowser categoriesFor: #serviceSource!commands!public! !
-!JadeiteMethodHistoryBrowser categoriesFor: #session!accessing!private! !
-!JadeiteMethodHistoryBrowser categoriesFor: #session:!accessing!private! !
-!JadeiteMethodHistoryBrowser categoriesFor: #setCaption!operations!public! !
-!JadeiteMethodHistoryBrowser categoriesFor: #setLoadedMarker!commands!public! !
-!JadeiteMethodHistoryBrowser categoriesFor: #source!operations!public! !
-!JadeiteMethodHistoryBrowser categoriesFor: #systemModel!accessing!private! !
-!JadeiteMethodHistoryBrowser categoriesFor: #updateHistory!public!updating! !
+!JadeiteMethodHistoryBrowser categoriesForMethods!
+about!commands!public! !
+applyOptions!initialization!public! !
+classService!accessing!public! !
+createComponents!initialization!public! !
+createSchematicWiring!initialization!public! !
+diff!commands!public! !
+methodHistoryUpdated:!public!updating! !
+methodService!accessing!public! !
+onViewClosed!event handlers!public! !
+onViewOpened!event handlers!public! !
+queryCommand:!commands!public! !
+registerPresentersForUpdates!initialization!public! !
+restoreMethod!commands!public! !
+serviceSource!commands!public! !
+session!accessing!private! !
+session:!accessing!private! !
+setCaption!operations!public! !
+setLoadedMarker!commands!public! !
+source!operations!public! !
+systemModel!accessing!private! !
+updateHistory!public!updating! !
+!
 
 !JadeiteMethodHistoryBrowser class methodsFor!
 
@@ -225,10 +227,12 @@ showOnClass: aClass selector: aSymbol debugger: aDebuggerOrNil
 				debugger: aDebuggerOrNil.
 	inst session: GciSession current.
 	^inst! !
-!JadeiteMethodHistoryBrowser class categoriesFor: #canUseIdeaSpace!public!testing! !
-!JadeiteMethodHistoryBrowser class categoriesFor: #defaultModel!public! !
-!JadeiteMethodHistoryBrowser class categoriesFor: #resource_Default_view!public!resources-views! !
-!JadeiteMethodHistoryBrowser class categoriesFor: #reuseIfOpen!public!testing! !
-!JadeiteMethodHistoryBrowser class categoriesFor: #showOnClass:selector:!instance creation!public! !
-!JadeiteMethodHistoryBrowser class categoriesFor: #showOnClass:selector:debugger:!instance creation!private! !
+!JadeiteMethodHistoryBrowser class categoriesForMethods!
+canUseIdeaSpace!public!testing! !
+defaultModel!public! !
+resource_Default_view!public!resources-views! !
+reuseIfOpen!public!testing! !
+showOnClass:selector:!instance creation!public! !
+showOnClass:selector:debugger:!instance creation!private! !
+!
 

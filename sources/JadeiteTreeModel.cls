@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 TreeModel subclass: #JadeiteTreeModel
 	instanceVariableNames: ''
@@ -31,10 +31,12 @@ removeWithoutNotification: anObject ifAbsent: aNiladicValuable
 
 resetVisited
 	self asBag do: [:object | (self lookupNode: object) resetVisited]! !
-!JadeiteTreeModel categoriesFor: #nodeClass!constants!public! !
-!JadeiteTreeModel categoriesFor: #removeChildrenOf:!public! !
-!JadeiteTreeModel categoriesFor: #removeWithoutNotification:ifAbsent:!public! !
-!JadeiteTreeModel categoriesFor: #resetVisited!constants!public! !
+!JadeiteTreeModel categoriesForMethods!
+nodeClass!constants!public! !
+removeChildrenOf:!public! !
+removeWithoutNotification:ifAbsent:!public! !
+resetVisited!constants!public! !
+!
 
 !JadeiteTreeModel class methodsFor!
 
@@ -42,5 +44,7 @@ defaultSearchPolicy
 	"Answer the default <searchPolicy> used by instances of the receiver."
 
 	^SearchPolicy equality! !
-!JadeiteTreeModel class categoriesFor: #defaultSearchPolicy!constants!public! !
+!JadeiteTreeModel class categoriesForMethods!
+defaultSearchPolicy!constants!public! !
+!
 

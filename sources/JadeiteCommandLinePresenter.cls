@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 TextPresenter subclass: #JadeiteCommandLinePresenter
 	instanceVariableNames: 'history historyIndex'
@@ -37,6 +37,8 @@ onKeyPressed: aKeyEvent
 					^self value: String new].
 			historyIndex := historyIndex - 1 max: 1.
 			self value: (history at: historyIndex)]! !
-!JadeiteCommandLinePresenter categoriesFor: #initialize!initialization!public! !
-!JadeiteCommandLinePresenter categoriesFor: #onKeyPressed:!event handlers!public! !
+!JadeiteCommandLinePresenter categoriesForMethods!
+initialize!initialization!public! !
+onKeyPressed:!event handlers!public! !
+!
 

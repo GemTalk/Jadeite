@@ -58,8 +58,8 @@ package classNames
 	add: #JadeiteRenameClassMethodListPresenter;
 	add: #JadeiteScintillaView;
 	add: #JadeiteSearch;
-	add: #JadeiteServerFileBrowser;
-	add: #JadeiteServerFilePresenter;
+	add: #JadeiteServerFileSelector;
+	add: #JadeiteServerFileSelectorPresenter;
 	add: #JadeiteSmalltalkSearchPresenter;
 	add: #JadeiteSmalltalkWorkspace;
 	add: #JadeiteSUnitBrowser;
@@ -722,8 +722,8 @@ JadePresenterA subclass: #JadeitePropertyPresenter
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadePresenterA subclass: #JadeiteServerFilePresenter
-	instanceVariableNames: ''
+JadePresenterA subclass: #JadeiteServerFileSelectorPresenter
+	instanceVariableNames: 'directoryContentsList pathText'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -927,7 +927,7 @@ JadeShell subclass: #JadeiteLoggerShell
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeShell subclass: #JadeiteServerFileBrowser
+JadeShell subclass: #JadeiteServerFileSelector
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

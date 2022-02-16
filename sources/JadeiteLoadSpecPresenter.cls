@@ -80,6 +80,8 @@ displayTabs
 	platformPropertiesPresenter list: propertiesArray!
 
 exportLoadSpec
+	model loadSpecPath
+		ifNil: [^MessageBox notify: 'Need to be able to save a load spec if no path specified'].
 	model export.
 	hasUnwrittenChanges := false!
 

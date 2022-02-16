@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanAutoCommitService
 	instanceVariableNames: 'autoCommit postUpdateBlock'
@@ -37,8 +37,10 @@ postUpdateBlock
 sortAspect
 	"don't think this is used"
 	^self printString ! !
-!RowanAutoCommitService categoriesFor: #autoCommitUpdate:!public!updating! !
-!RowanAutoCommitService categoriesFor: #displayName!displaying!public! !
-!RowanAutoCommitService categoriesFor: #postUpdateBlock!accessing!public! !
-!RowanAutoCommitService categoriesFor: #sortAspect!accessing!public! !
+!RowanAutoCommitService categoriesForMethods!
+autoCommitUpdate:!public!updating! !
+displayName!displaying!public! !
+postUpdateBlock!accessing!public! !
+sortAspect!accessing!public! !
+!
 

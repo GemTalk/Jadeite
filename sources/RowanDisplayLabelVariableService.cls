@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanVariableService subclass: #RowanDisplayLabelVariableService
 	instanceVariableNames: ''
@@ -33,10 +33,12 @@ isDisplayLabel
 
 value: aString
 	value := aString! !
-!RowanDisplayLabelVariableService categoriesFor: #_key!accessing!public! !
-!RowanDisplayLabelVariableService categoriesFor: #displayOop!printing!public! !
-!RowanDisplayLabelVariableService categoriesFor: #displayStringOn:!printing!public! !
-!RowanDisplayLabelVariableService categoriesFor: #initialize!initialization!public! !
-!RowanDisplayLabelVariableService categoriesFor: #isDisplayLabel!public!testing! !
-!RowanDisplayLabelVariableService categoriesFor: #value:!accessing!public! !
+!RowanDisplayLabelVariableService categoriesForMethods!
+_key!accessing!public! !
+displayOop!printing!public! !
+displayStringOn:!printing!public! !
+initialize!initialization!public! !
+isDisplayLabel!public!testing! !
+value:!accessing!public! !
+!
 

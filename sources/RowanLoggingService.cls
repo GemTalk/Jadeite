@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanLoggingService
 	instanceVariableNames: 'fileName id groupId date time comment services mode location isLogging name'
@@ -188,45 +188,47 @@ time
 
 time: anObject
 	time := anObject! !
-!RowanLoggingService categoriesFor: #=!comparing!public! !
-!RowanLoggingService categoriesFor: #addServices:!accessing!public! !
-!RowanLoggingService categoriesFor: #clientDisplayString!displaying!public! !
-!RowanLoggingService categoriesFor: #clientGroupIdDisplayString!displaying!public! !
-!RowanLoggingService categoriesFor: #clientIdDisplayString!displaying!public! !
-!RowanLoggingService categoriesFor: #comment!accessing!private! !
-!RowanLoggingService categoriesFor: #comment:!accessing!private! !
-!RowanLoggingService categoriesFor: #date!accessing!private! !
-!RowanLoggingService categoriesFor: #date:!accessing!private! !
-!RowanLoggingService categoriesFor: #displayCommand!displaying!public! !
-!RowanLoggingService categoriesFor: #displayName!displaying!public! !
-!RowanLoggingService categoriesFor: #displayString!displaying!public! !
-!RowanLoggingService categoriesFor: #fileName!accessing!private! !
-!RowanLoggingService categoriesFor: #fileName:!accessing!private! !
-!RowanLoggingService categoriesFor: #groupId!accessing!private! !
-!RowanLoggingService categoriesFor: #groupId:!accessing!private! !
-!RowanLoggingService categoriesFor: #hash!comparing!public! !
-!RowanLoggingService categoriesFor: #id!accessing!private! !
-!RowanLoggingService categoriesFor: #id:!accessing!private! !
-!RowanLoggingService categoriesFor: #initialize!initialization!public! !
-!RowanLoggingService categoriesFor: #isLogging!accessing!public! !
-!RowanLoggingService categoriesFor: #isLogging:!public! !
-!RowanLoggingService categoriesFor: #isLoggingService!public!testing! !
-!RowanLoggingService categoriesFor: #isTestLoggingService!public!testing! !
-!RowanLoggingService categoriesFor: #location!accessing!private! !
-!RowanLoggingService categoriesFor: #location:!accessing!private! !
-!RowanLoggingService categoriesFor: #logComment:!logging!public! !
-!RowanLoggingService categoriesFor: #logReceivedServices:!logging!public! !
-!RowanLoggingService categoriesFor: #logSentServices:!logging!public! !
-!RowanLoggingService categoriesFor: #logServices:!logging!public! !
-!RowanLoggingService categoriesFor: #mode!accessing!public! !
-!RowanLoggingService categoriesFor: #name!accessing!public! !
-!RowanLoggingService categoriesFor: #name:!accessing!public! !
-!RowanLoggingService categoriesFor: #printString!displaying!public! !
-!RowanLoggingService categoriesFor: #serverDisplayString!displaying!public! !
-!RowanLoggingService categoriesFor: #services!accessing!public! !
-!RowanLoggingService categoriesFor: #sortAspect!accessing!public! !
-!RowanLoggingService categoriesFor: #time!accessing!private! !
-!RowanLoggingService categoriesFor: #time:!accessing!private! !
+!RowanLoggingService categoriesForMethods!
+=!comparing!public! !
+addServices:!accessing!public! !
+clientDisplayString!displaying!public! !
+clientGroupIdDisplayString!displaying!public! !
+clientIdDisplayString!displaying!public! !
+comment!accessing!private! !
+comment:!accessing!private! !
+date!accessing!private! !
+date:!accessing!private! !
+displayCommand!displaying!public! !
+displayName!displaying!public! !
+displayString!displaying!public! !
+fileName!accessing!private! !
+fileName:!accessing!private! !
+groupId!accessing!private! !
+groupId:!accessing!private! !
+hash!comparing!public! !
+id!accessing!private! !
+id:!accessing!private! !
+initialize!initialization!public! !
+isLogging!accessing!public! !
+isLogging:!public! !
+isLoggingService!public!testing! !
+isTestLoggingService!public!testing! !
+location!accessing!private! !
+location:!accessing!private! !
+logComment:!logging!public! !
+logReceivedServices:!logging!public! !
+logSentServices:!logging!public! !
+logServices:!logging!public! !
+mode!accessing!public! !
+name!accessing!public! !
+name:!accessing!public! !
+printString!displaying!public! !
+serverDisplayString!displaying!public! !
+services!accessing!public! !
+sortAspect!accessing!public! !
+time!accessing!private! !
+time:!accessing!private! !
+!
 
 !RowanLoggingService class methodsFor!
 
@@ -243,7 +245,9 @@ loggingServiceClass
 
 newWithGroupId: integer logger: logger
 	^self basicNewWithGroupId: integer logger: logger! !
-!RowanLoggingService class categoriesFor: #basicNewWithGroupId:logger:!instance creation!public! !
-!RowanLoggingService class categoriesFor: #loggingServiceClass!accessing!public! !
-!RowanLoggingService class categoriesFor: #newWithGroupId:logger:!instance creation!public! !
+!RowanLoggingService class categoriesForMethods!
+basicNewWithGroupId:logger:!instance creation!public! !
+loggingServiceClass!accessing!public! !
+newWithGroupId:logger:!instance creation!public! !
+!
 

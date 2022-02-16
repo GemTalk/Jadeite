@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanProcessService
 	instanceVariableNames: 'frames oop status name'
@@ -68,18 +68,20 @@ terminate
 		terminate.
 	
 	! !
-!RowanProcessService categoriesFor: #displayName!displaying!public! !
-!RowanProcessService categoriesFor: #frameForLevel:!public! !
-!RowanProcessService categoriesFor: #frames!public! !
-!RowanProcessService categoriesFor: #gsProcessForSession:!public! !
-!RowanProcessService categoriesFor: #isUpdatableService!public!testing! !
-!RowanProcessService categoriesFor: #name!accessing!public! !
-!RowanProcessService categoriesFor: #name:!accessing!public! !
-!RowanProcessService categoriesFor: #oop!public! !
-!RowanProcessService categoriesFor: #oop:!public! !
-!RowanProcessService categoriesFor: #oopType!public! !
-!RowanProcessService categoriesFor: #printOn:!printing!public! !
-!RowanProcessService categoriesFor: #sortAspect!accessing!public! !
-!RowanProcessService categoriesFor: #stack!public! !
-!RowanProcessService categoriesFor: #terminate!operations!public! !
+!RowanProcessService categoriesForMethods!
+displayName!displaying!public! !
+frameForLevel:!public! !
+frames!public! !
+gsProcessForSession:!public! !
+isUpdatableService!public!testing! !
+name!accessing!public! !
+name:!accessing!public! !
+oop!public! !
+oop:!public! !
+oopType!public! !
+printOn:!printing!public! !
+sortAspect!accessing!public! !
+stack!public! !
+terminate!operations!public! !
+!
 

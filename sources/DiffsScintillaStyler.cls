@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 ScintillaStyler subclass: #DiffsScintillaStyler
 	instanceVariableNames: 'diffs'
@@ -57,10 +57,12 @@ onStyleNeeded: aScintillaView from: startInteger to: stopInteger
 
 whitespaceStyleName
 	^#whitespace! !
-!DiffsScintillaStyler categoriesFor: #colorNormal:from:to:!public! !
-!DiffsScintillaStyler categoriesFor: #diffs:!accessing!public! !
-!DiffsScintillaStyler categoriesFor: #initialize!initializing!private! !
-!DiffsScintillaStyler categoriesFor: #lookupStyle:in:!helpers!private! !
-!DiffsScintillaStyler categoriesFor: #onStyleNeeded:from:to:!event handling!public! !
-!DiffsScintillaStyler categoriesFor: #whitespaceStyleName!constants!private! !
+!DiffsScintillaStyler categoriesForMethods!
+colorNormal:from:to:!public! !
+diffs:!accessing!public! !
+initialize!initializing!private! !
+lookupStyle:in:!helpers!private! !
+onStyleNeeded:from:to:!event handling!public! !
+whitespaceStyleName!constants!private! !
+!
 

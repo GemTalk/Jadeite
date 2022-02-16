@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanBrowserService
 	instanceVariableNames: 'projects removedMethods allClasses hierarchyServices testPackages testCount dictionaries selectedClass newCachedSelectors newCachedClasses name'
@@ -191,35 +191,37 @@ testPackages: presenter
 	presenter model addAll: additions.
 	presenter model copy do:[:oldPackageService |
 		(testPackages includes: oldPackageService) ifFalse:[presenter model remove: oldPackageService]]. ! !
-!RowanBrowserService categoriesFor: #=!comparing!public! !
-!RowanBrowserService categoriesFor: #allClasses!accessing!private! !
-!RowanBrowserService categoriesFor: #allClasses:!accessing!private! !
-!RowanBrowserService categoriesFor: #basicPrepareForReplication!public!replication! !
-!RowanBrowserService categoriesFor: #classHierarchyUpdate:browser:!public!updating! !
-!RowanBrowserService categoriesFor: #dictionaryListUpdate:!public!updating! !
-!RowanBrowserService categoriesFor: #displayName!displaying!public! !
-!RowanBrowserService categoriesFor: #excludedInstVars!public!ston! !
-!RowanBrowserService categoriesFor: #hash!comparing!public! !
-!RowanBrowserService categoriesFor: #initialize!initialization!public! !
-!RowanBrowserService categoriesFor: #isBrowserService!public!testing! !
-!RowanBrowserService categoriesFor: #name!accessing!public! !
-!RowanBrowserService categoriesFor: #name:!accessing!public! !
-!RowanBrowserService categoriesFor: #newProjectNamed:session:windowHandle:!commands!public!registering windows! !
-!RowanBrowserService categoriesFor: #prepareForReplication!public!replication! !
-!RowanBrowserService categoriesFor: #printOn:!printing!public! !
-!RowanBrowserService categoriesFor: #projects!accessing!public! !
-!RowanBrowserService categoriesFor: #projectsUpdate:!public!updating! !
-!RowanBrowserService categoriesFor: #projectsUpdate:browser:!public!updating! !
-!RowanBrowserService categoriesFor: #registerWindow:rootObject:session:!commands!public!registering windows! !
-!RowanBrowserService categoriesFor: #releaseWindow:session:!commands!public!registering windows! !
-!RowanBrowserService categoriesFor: #reloadProjects:presenter:!commands!public! !
-!RowanBrowserService categoriesFor: #removedMethods!accessing!private! !
-!RowanBrowserService categoriesFor: #removedMethods:!accessing!private! !
-!RowanBrowserService categoriesFor: #replicateFrom:!public!replication! !
-!RowanBrowserService categoriesFor: #selectedClass!accessing!public! !
-!RowanBrowserService categoriesFor: #selectedClass:!accessing!public! !
-!RowanBrowserService categoriesFor: #sortAspect!accessing!public! !
-!RowanBrowserService categoriesFor: #testCount!accessing!private! !
-!RowanBrowserService categoriesFor: #testCount:!accessing!private! !
-!RowanBrowserService categoriesFor: #testPackages:!public!updating! !
+!RowanBrowserService categoriesForMethods!
+=!comparing!public! !
+allClasses!accessing!private! !
+allClasses:!accessing!private! !
+basicPrepareForReplication!public!replication! !
+classHierarchyUpdate:browser:!public!updating! !
+dictionaryListUpdate:!public!updating! !
+displayName!displaying!public! !
+excludedInstVars!public!ston! !
+hash!comparing!public! !
+initialize!initialization!public! !
+isBrowserService!public!testing! !
+name!accessing!public! !
+name:!accessing!public! !
+newProjectNamed:session:windowHandle:!commands!public!registering windows! !
+prepareForReplication!public!replication! !
+printOn:!printing!public! !
+projects!accessing!public! !
+projectsUpdate:!public!updating! !
+projectsUpdate:browser:!public!updating! !
+registerWindow:rootObject:session:!commands!public!registering windows! !
+releaseWindow:session:!commands!public!registering windows! !
+reloadProjects:presenter:!commands!public! !
+removedMethods!accessing!private! !
+removedMethods:!accessing!private! !
+replicateFrom:!public!replication! !
+selectedClass!accessing!public! !
+selectedClass:!accessing!public! !
+sortAspect!accessing!public! !
+testCount!accessing!private! !
+testCount:!accessing!private! !
+testPackages:!public!updating! !
+!
 

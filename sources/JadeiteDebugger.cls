@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeDebugger subclass: #JadeiteDebugger
 	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore search debuggerService'
@@ -622,75 +622,77 @@ variableDataPresenter
 
 variableListPresenter
 	^variableListPresenter! !
-!JadeiteDebugger categoriesFor: #_processList!public! !
-!JadeiteDebugger categoriesFor: #_terminateProcess:!public! !
-!JadeiteDebugger categoriesFor: #aboutToChangeFrame:!event handlers!public! !
-!JadeiteDebugger categoriesFor: #additionalAccelerators!accessing!public! !
-!JadeiteDebugger categoriesFor: #basicSelectedFrame!public! !
-!JadeiteDebugger categoriesFor: #browseFrameMethod!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #browseImplementors!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #browseObjectClass!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #browseSelectedMethod!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #browseSenders!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #classServiceFromFrame!menu handlers support!public! !
-!JadeiteDebugger categoriesFor: #clearBreakPointsAt:!menu handlers support!public! !
-!JadeiteDebugger categoriesFor: #codeSourcePresenterClass!private! !
-!JadeiteDebugger categoriesFor: #contextObject!public! !
-!JadeiteDebugger categoriesFor: #copyFrameString!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #createComponents!public! !
-!JadeiteDebugger categoriesFor: #createSchematicWiring!public! !
-!JadeiteDebugger categoriesFor: #debuggerService!accessing!private! !
-!JadeiteDebugger categoriesFor: #disableBreakpointsWhile:!private! !
-!JadeiteDebugger categoriesFor: #displayUncompilableSourceIn:!private! !
-!JadeiteDebugger categoriesFor: #displayVariables!frames!private! !
-!JadeiteDebugger categoriesFor: #documentPresenter!accessing!public! !
-!JadeiteDebugger categoriesFor: #errorMessagePresenter!accessing!public! !
-!JadeiteDebugger categoriesFor: #executeSelectionOrLine:!Jade!private! !
-!JadeiteDebugger categoriesFor: #frameListPresenter!accessing!frames!public! !
-!JadeiteDebugger categoriesFor: #gciSession:!public! !
-!JadeiteDebugger categoriesFor: #getProcessList!public! !
-!JadeiteDebugger categoriesFor: #homeFrame!compiling!frames!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #homeFrameOf:!frames!public! !
-!JadeiteDebugger categoriesFor: #initialize!initialization!public! !
-!JadeiteDebugger categoriesFor: #initializeIdleProcess!initialization!public! !
-!JadeiteDebugger categoriesFor: #initializeProcess:message:terminateOnClose:!initialization!public! !
-!JadeiteDebugger categoriesFor: #isOkayToChangeFrame!public!testing! !
-!JadeiteDebugger categoriesFor: #jadeInspect!menu handlers!public! !
-!JadeiteDebugger categoriesFor: #methodListSelection!accessing!public! !
-!JadeiteDebugger categoriesFor: #methodSourcePresenter!public! !
-!JadeiteDebugger categoriesFor: #methodValueChanged!event handlers!public! !
-!JadeiteDebugger categoriesFor: #onCloseRequested:!event handlers!private! !
-!JadeiteDebugger categoriesFor: #onIdleEntered!event handlers!private! !
-!JadeiteDebugger categoriesFor: #onViewClosed!event handlers!private! !
-!JadeiteDebugger categoriesFor: #onViewDestroyed!event handlers!private! !
-!JadeiteDebugger categoriesFor: #onViewOpened!event handlers!private! !
-!JadeiteDebugger categoriesFor: #printOn:!accessing!public! !
-!JadeiteDebugger categoriesFor: #processListPresenter!accessing!public! !
-!JadeiteDebugger categoriesFor: #queryCommand:!menu handlers support!public! !
-!JadeiteDebugger categoriesFor: #reformatSource!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #refreshBreakPointsIn:!public!updating! !
-!JadeiteDebugger categoriesFor: #registerPresentersForUpdates!public!register presenters! !
-!JadeiteDebugger categoriesFor: #restart!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #resumeProcess!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #saveMethod!compiling!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #search!accessing!public! !
-!JadeiteDebugger categoriesFor: #selectedFrame!frames!public! !
-!JadeiteDebugger categoriesFor: #selectedProcess!public! !
-!JadeiteDebugger categoriesFor: #selectHomeMethod!compiling!frames!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #setCompileErrorColor!compiling!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #setCompileWarningColor!compiling!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #statusBarText!accessing!public! !
-!JadeiteDebugger categoriesFor: #statusBarText:!accessing!public! !
-!JadeiteDebugger categoriesFor: #statusTextPresenter!accessing!private! !
-!JadeiteDebugger categoriesFor: #stepInto!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #stepOut!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #stepOver!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #stepThrough!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #terminateIdleProcess!private! !
-!JadeiteDebugger categoriesFor: #terminateProcess!menu handlers!private! !
-!JadeiteDebugger categoriesFor: #updateMethodSource!public! !
-!JadeiteDebugger categoriesFor: #variableDataPresenter!accessing!public! !
-!JadeiteDebugger categoriesFor: #variableListPresenter!accessing!public! !
+!JadeiteDebugger categoriesForMethods!
+_processList!public! !
+_terminateProcess:!public! !
+aboutToChangeFrame:!event handlers!public! !
+additionalAccelerators!accessing!public! !
+basicSelectedFrame!public! !
+browseFrameMethod!menu handlers!private! !
+browseImplementors!menu handlers!private! !
+browseObjectClass!menu handlers!private! !
+browseSelectedMethod!menu handlers!private! !
+browseSenders!menu handlers!private! !
+classServiceFromFrame!menu handlers support!public! !
+clearBreakPointsAt:!menu handlers support!public! !
+codeSourcePresenterClass!private! !
+contextObject!public! !
+copyFrameString!menu handlers!private! !
+createComponents!public! !
+createSchematicWiring!public! !
+debuggerService!accessing!private! !
+disableBreakpointsWhile:!private! !
+displayUncompilableSourceIn:!private! !
+displayVariables!frames!private! !
+documentPresenter!accessing!public! !
+errorMessagePresenter!accessing!public! !
+executeSelectionOrLine:!Jade!private! !
+frameListPresenter!accessing!frames!public! !
+gciSession:!public! !
+getProcessList!public! !
+homeFrame!compiling!frames!menu handlers!private! !
+homeFrameOf:!frames!public! !
+initialize!initialization!public! !
+initializeIdleProcess!initialization!public! !
+initializeProcess:message:terminateOnClose:!initialization!public! !
+isOkayToChangeFrame!public!testing! !
+jadeInspect!menu handlers!public! !
+methodListSelection!accessing!public! !
+methodSourcePresenter!public! !
+methodValueChanged!event handlers!public! !
+onCloseRequested:!event handlers!private! !
+onIdleEntered!event handlers!private! !
+onViewClosed!event handlers!private! !
+onViewDestroyed!event handlers!private! !
+onViewOpened!event handlers!private! !
+printOn:!accessing!public! !
+processListPresenter!accessing!public! !
+queryCommand:!menu handlers support!public! !
+reformatSource!menu handlers!private! !
+refreshBreakPointsIn:!public!updating! !
+registerPresentersForUpdates!public!register presenters! !
+restart!menu handlers!private! !
+resumeProcess!menu handlers!private! !
+saveMethod!compiling!menu handlers!private! !
+search!accessing!public! !
+selectedFrame!frames!public! !
+selectedProcess!public! !
+selectHomeMethod!compiling!frames!menu handlers!private! !
+setCompileErrorColor!compiling!menu handlers!private! !
+setCompileWarningColor!compiling!menu handlers!private! !
+statusBarText!accessing!public! !
+statusBarText:!accessing!public! !
+statusTextPresenter!accessing!private! !
+stepInto!menu handlers!private! !
+stepOut!menu handlers!private! !
+stepOver!menu handlers!private! !
+stepThrough!menu handlers!private! !
+terminateIdleProcess!private! !
+terminateProcess!menu handlers!private! !
+updateMethodSource!public! !
+variableDataPresenter!accessing!public! !
+variableListPresenter!accessing!public! !
+!
 
 !JadeiteDebugger class methodsFor!
 
@@ -772,17 +774,19 @@ signalSemaphore
 			
 			[sem signal.
 			SessionManager inputState prod] forkAt: Processor userBackgroundPriority]! !
-!JadeiteDebugger class categoriesFor: #aboutToShowErrorShellOn:!public! !
-!JadeiteDebugger class categoriesFor: #debuggerClass!public! !
-!JadeiteDebugger class categoriesFor: #debuggerClass:!public! !
-!JadeiteDebugger class categoriesFor: #disableBreakpointsWhile:session:!private! !
-!JadeiteDebugger class categoriesFor: #lastExtent!accessing!private! !
-!JadeiteDebugger class categoriesFor: #lastExtent:!accessing!private! !
-!JadeiteDebugger class categoriesFor: #lastPosition!accessing!private! !
-!JadeiteDebugger class categoriesFor: #lastPosition:!accessing!private! !
-!JadeiteDebugger class categoriesFor: #openOn:message:terminateOnClose:!public! !
-!JadeiteDebugger class categoriesFor: #resource_Default_view!public!resources-views! !
-!JadeiteDebugger class categoriesFor: #semaphore!public! !
-!JadeiteDebugger class categoriesFor: #semaphore:!public! !
-!JadeiteDebugger class categoriesFor: #signalSemaphore!public! !
+!JadeiteDebugger class categoriesForMethods!
+aboutToShowErrorShellOn:!public! !
+debuggerClass!public! !
+debuggerClass:!public! !
+disableBreakpointsWhile:session:!private! !
+lastExtent!accessing!private! !
+lastExtent:!accessing!private! !
+lastPosition!accessing!private! !
+lastPosition:!accessing!private! !
+openOn:message:terminateOnClose:!public! !
+resource_Default_view!public!resources-views! !
+semaphore!public! !
+semaphore:!public! !
+signalSemaphore!public! !
+!
 

@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 Model subclass: #BrowserUpdate
 	instanceVariableNames: 'updates debug inUpdate logger applyingUpdates breakpointsEnabled returnedServices'
@@ -300,56 +300,58 @@ updatesPerform: selector presenter: presenter browser: browser
 						with: browser]]]
 			on: Error
 			do: [:ex | self halt]! !
-!BrowserUpdate categoriesFor: #activeClassServices!accessing!public! !
-!BrowserUpdate categoriesFor: #activeMethodServices!accessing!public! !
-!BrowserUpdate categoriesFor: #activePackageServices!accessing!public! !
-!BrowserUpdate categoriesFor: #activeServices!accessing!public! !
-!BrowserUpdate categoriesFor: #applyUpdateWhile:!public!updating! !
-!BrowserUpdate categoriesFor: #basicIssueCommand:session:!commands!private! !
-!BrowserUpdate categoriesFor: #basicUpdateServices:session:!private!updating! !
-!BrowserUpdate categoriesFor: #breakpointsEnabled!accessing!private! !
-!BrowserUpdate categoriesFor: #breakpointsEnabled:!accessing!private! !
-!BrowserUpdate categoriesFor: #debug!accessing!private! !
-!BrowserUpdate categoriesFor: #debug:!accessing!private! !
-!BrowserUpdate categoriesFor: #initializeUpdates!initialization!public! !
-!BrowserUpdate categoriesFor: #inUpdate!private! !
-!BrowserUpdate categoriesFor: #inUpdateWhile:!commands!public! !
-!BrowserUpdate categoriesFor: #isApplyingUpdates!public!testing! !
-!BrowserUpdate categoriesFor: #isLogging!logging!public!testing! !
-!BrowserUpdate categoriesFor: #isLogging:!logging!public!testing! !
-!BrowserUpdate categoriesFor: #issueCommand:session:!commands!public! !
-!BrowserUpdate categoriesFor: #issueCommands:session:!commands!public! !
-!BrowserUpdate categoriesFor: #logComment:!logging!public! !
-!BrowserUpdate categoriesFor: #logFileName!accessing!public! !
-!BrowserUpdate categoriesFor: #logFileName:!accessing!public! !
-!BrowserUpdate categoriesFor: #logger!accessing!private! !
-!BrowserUpdate categoriesFor: #logger:!accessing!private! !
-!BrowserUpdate categoriesFor: #loggingService!accessing!public! !
-!BrowserUpdate categoriesFor: #logReceivedServices:!logging!public! !
-!BrowserUpdate categoriesFor: #logSentServices:!logging!public! !
-!BrowserUpdate categoriesFor: #performUpdate:with:!private!updating! !
-!BrowserUpdate categoriesFor: #postUpdate!public!updating! !
-!BrowserUpdate categoriesFor: #register:selector:!public!registeringPresenters! !
-!BrowserUpdate categoriesFor: #register:selector:browser:!public!registeringPresenters! !
-!BrowserUpdate categoriesFor: #registeredListPresenters!private!registeringPresenters! !
-!BrowserUpdate categoriesFor: #registeredListServices!private!registeringPresenters! !
-!BrowserUpdate categoriesFor: #registeredPresenters!public!registeringPresenters! !
-!BrowserUpdate categoriesFor: #registeredTreePresenters!private!registeringPresenters! !
-!BrowserUpdate categoriesFor: #removeEventsTriggeredFor:!public!registeringPresenters! !
-!BrowserUpdate categoriesFor: #resetLoggingService!initialization!public! !
-!BrowserUpdate categoriesFor: #selectedServices!accessing!public! !
-!BrowserUpdate categoriesFor: #shouldApply:forSelector:!private!testing! !
-!BrowserUpdate categoriesFor: #shouldGetNewLoggerGroup:!accessing!public! !
-!BrowserUpdate categoriesFor: #startLogging!logging!public! !
-!BrowserUpdate categoriesFor: #stopLogging!logging!public! !
-!BrowserUpdate categoriesFor: #update:afterStonReplication:!public!updating! !
-!BrowserUpdate categoriesFor: #updateReady!public!updating! !
-!BrowserUpdate categoriesFor: #updates!accessing!public! !
-!BrowserUpdate categoriesFor: #updates:!accessing!public! !
-!BrowserUpdate categoriesFor: #updateService:session:!public!updating! !
-!BrowserUpdate categoriesFor: #updateServices:session:!public!updating! !
-!BrowserUpdate categoriesFor: #updatesPerform:presenter:!public!updating! !
-!BrowserUpdate categoriesFor: #updatesPerform:presenter:browser:!public!updating! !
+!BrowserUpdate categoriesForMethods!
+activeClassServices!accessing!public! !
+activeMethodServices!accessing!public! !
+activePackageServices!accessing!public! !
+activeServices!accessing!public! !
+applyUpdateWhile:!public!updating! !
+basicIssueCommand:session:!commands!private! !
+basicUpdateServices:session:!private!updating! !
+breakpointsEnabled!accessing!private! !
+breakpointsEnabled:!accessing!private! !
+debug!accessing!private! !
+debug:!accessing!private! !
+initializeUpdates!initialization!public! !
+inUpdate!private! !
+inUpdateWhile:!commands!public! !
+isApplyingUpdates!public!testing! !
+isLogging!logging!public!testing! !
+isLogging:!logging!public!testing! !
+issueCommand:session:!commands!public! !
+issueCommands:session:!commands!public! !
+logComment:!logging!public! !
+logFileName!accessing!public! !
+logFileName:!accessing!public! !
+logger!accessing!private! !
+logger:!accessing!private! !
+loggingService!accessing!public! !
+logReceivedServices:!logging!public! !
+logSentServices:!logging!public! !
+performUpdate:with:!private!updating! !
+postUpdate!public!updating! !
+register:selector:!public!registeringPresenters! !
+register:selector:browser:!public!registeringPresenters! !
+registeredListPresenters!private!registeringPresenters! !
+registeredListServices!private!registeringPresenters! !
+registeredPresenters!public!registeringPresenters! !
+registeredTreePresenters!private!registeringPresenters! !
+removeEventsTriggeredFor:!public!registeringPresenters! !
+resetLoggingService!initialization!public! !
+selectedServices!accessing!public! !
+shouldApply:forSelector:!private!testing! !
+shouldGetNewLoggerGroup:!accessing!public! !
+startLogging!logging!public! !
+stopLogging!logging!public! !
+update:afterStonReplication:!public!updating! !
+updateReady!public!updating! !
+updates!accessing!public! !
+updates:!accessing!public! !
+updateService:session:!public!updating! !
+updateServices:session:!public!updating! !
+updatesPerform:presenter:!public!updating! !
+updatesPerform:presenter:browser:!public!updating! !
+!
 
 !BrowserUpdate class methodsFor!
 
@@ -367,8 +369,10 @@ startLogging
 
 stopLogging
 	Current stopLogging! !
-!BrowserUpdate class categoriesFor: #clearCurrent!accessing!public! !
-!BrowserUpdate class categoriesFor: #current!accessing!public! !
-!BrowserUpdate class categoriesFor: #startLogging!logging!public! !
-!BrowserUpdate class categoriesFor: #stopLogging!logging!public! !
+!BrowserUpdate class categoriesForMethods!
+clearCurrent!accessing!public! !
+current!accessing!public! !
+startLogging!logging!public! !
+stopLogging!logging!public! !
+!
 

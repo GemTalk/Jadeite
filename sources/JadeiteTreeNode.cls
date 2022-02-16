@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 TreeNode subclass: #JadeiteTreeNode
 	instanceVariableNames: 'visited'
@@ -24,8 +24,10 @@ visited
 
 visited: anObject
 	visited := anObject! !
-!JadeiteTreeNode categoriesFor: #initialize!initialization!public! !
-!JadeiteTreeNode categoriesFor: #resetVisited!public! !
-!JadeiteTreeNode categoriesFor: #visited!accessing!private! !
-!JadeiteTreeNode categoriesFor: #visited:!accessing!private! !
+!JadeiteTreeNode categoriesForMethods!
+initialize!initialization!public! !
+resetVisited!public! !
+visited!accessing!private! !
+visited:!accessing!private! !
+!
 

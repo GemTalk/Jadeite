@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanQueryService
 	instanceVariableNames: 'queryResults name'
@@ -37,12 +37,14 @@ queryResults: anObject
 sortAspect
 
 	^name! !
-!RowanQueryService categoriesFor: #answer!accessing!private! !
-!RowanQueryService categoriesFor: #displayName!displaying!public! !
-!RowanQueryService categoriesFor: #hasResults!public!testing! !
-!RowanQueryService categoriesFor: #name!accessing!public! !
-!RowanQueryService categoriesFor: #name:!accessing!public! !
-!RowanQueryService categoriesFor: #queryResults!accessing!private! !
-!RowanQueryService categoriesFor: #queryResults:!accessing!private! !
-!RowanQueryService categoriesFor: #sortAspect!accessing!public! !
+!RowanQueryService categoriesForMethods!
+answer!accessing!private! !
+displayName!displaying!public! !
+hasResults!public!testing! !
+name!accessing!public! !
+name:!accessing!public! !
+queryResults!accessing!private! !
+queryResults:!accessing!private! !
+sortAspect!accessing!public! !
+!
 

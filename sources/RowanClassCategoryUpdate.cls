@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanCommandResult subclass: #RowanClassCategoryUpdate
 	instanceVariableNames: 'categories selection treeModel'
@@ -55,8 +55,10 @@ updateClassCategorySelectionsFor: presenter
 			(assoc key first: newSelection size) = newSelection ifTrue: [presenter expand: assoc].
 			assoc key = newSelection ifTrue: [presenter selection: assoc]].
 	presenter view ensureSelectionVisible! !
-!RowanClassCategoryUpdate categoriesFor: #classCategoryUpdate:!public!updating! !
-!RowanClassCategoryUpdate categoriesFor: #newTreeModel!private! !
-!RowanClassCategoryUpdate categoriesFor: #root!private! !
-!RowanClassCategoryUpdate categoriesFor: #updateClassCategorySelectionsFor:!public!updating! !
+!RowanClassCategoryUpdate categoriesForMethods!
+classCategoryUpdate:!public!updating! !
+newTreeModel!private! !
+root!private! !
+updateClassCategorySelectionsFor:!public!updating! !
+!
 

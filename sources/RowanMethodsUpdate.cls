@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanClassesUpdate subclass: #RowanMethodsUpdate
 	instanceVariableNames: 'methods methodFilters selectors selectedClass selectedSelectors inheritedClasses inheritedClass type'
@@ -101,27 +101,29 @@ updateMethodSelectionFor: presenter
 	| selections |
 	selections := presenter list select: [:item | selectedSelectors includes: item first asSymbol].
 	presenter selections: selections! !
-!RowanMethodsUpdate categoriesFor: #classesUpdate:browser:!public!updating! !
-!RowanMethodsUpdate categoriesFor: #inheritedClass!accessing!public! !
-!RowanMethodsUpdate categoriesFor: #inheritedClass:!accessing!public! !
-!RowanMethodsUpdate categoriesFor: #inheritedClasses!accessing!public! !
-!RowanMethodsUpdate categoriesFor: #inheritedClasses:!accessing!public! !
-!RowanMethodsUpdate categoriesFor: #methodFilters!accessing!public! !
-!RowanMethodsUpdate categoriesFor: #methodFilters:!accessing!public! !
-!RowanMethodsUpdate categoriesFor: #methodFilterUpdate:!public!updating! !
-!RowanMethodsUpdate categoriesFor: #methods!accessing!public! !
-!RowanMethodsUpdate categoriesFor: #methods:!accessing!public! !
-!RowanMethodsUpdate categoriesFor: #methodsUpdate:!public!updating! !
-!RowanMethodsUpdate categoriesFor: #selectedClass!accessing!public! !
-!RowanMethodsUpdate categoriesFor: #selectedClass:!accessing!public! !
-!RowanMethodsUpdate categoriesFor: #selectedSelectors!accessing!public! !
-!RowanMethodsUpdate categoriesFor: #selectedSelectors:!accessing!public! !
-!RowanMethodsUpdate categoriesFor: #selectors!accessing!public! !
-!RowanMethodsUpdate categoriesFor: #selectors:!accessing!public! !
-!RowanMethodsUpdate categoriesFor: #type!accessing!private! !
-!RowanMethodsUpdate categoriesFor: #type:!accessing!private! !
-!RowanMethodsUpdate categoriesFor: #update:!public!updating! !
-!RowanMethodsUpdate categoriesFor: #updateClassSelectionFor:!public!updating! !
-!RowanMethodsUpdate categoriesFor: #updateMethodFilterSelectionFor:!public!updating! !
-!RowanMethodsUpdate categoriesFor: #updateMethodSelectionFor:!public!updating! !
+!RowanMethodsUpdate categoriesForMethods!
+classesUpdate:browser:!public!updating! !
+inheritedClass!accessing!public! !
+inheritedClass:!accessing!public! !
+inheritedClasses!accessing!public! !
+inheritedClasses:!accessing!public! !
+methodFilters!accessing!public! !
+methodFilters:!accessing!public! !
+methodFilterUpdate:!public!updating! !
+methods!accessing!public! !
+methods:!accessing!public! !
+methodsUpdate:!public!updating! !
+selectedClass!accessing!public! !
+selectedClass:!accessing!public! !
+selectedSelectors!accessing!public! !
+selectedSelectors:!accessing!public! !
+selectors!accessing!public! !
+selectors:!accessing!public! !
+type!accessing!private! !
+type:!accessing!private! !
+update:!public!updating! !
+updateClassSelectionFor:!public!updating! !
+updateMethodFilterSelectionFor:!public!updating! !
+updateMethodSelectionFor:!public!updating! !
+!
 

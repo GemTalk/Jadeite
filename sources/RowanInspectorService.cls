@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanInspectorService
 	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray isOop instVarNames instVarsAreRemovable isDictionary isVariable selectionOop isUnordered statusText name'
@@ -210,52 +210,54 @@ visibleIndices
 
 visibleIndices: anObject
 	visibleIndices := anObject! !
-!RowanInspectorService categoriesFor: #=!comparison!public! !
-!RowanInspectorService categoriesFor: #className!accessing!private! !
-!RowanInspectorService categoriesFor: #className:!accessing!private! !
-!RowanInspectorService categoriesFor: #compileErrorArray!accessing!private! !
-!RowanInspectorService categoriesFor: #compileErrorArray:!accessing!private! !
-!RowanInspectorService categoriesFor: #defaultIndexedSize!constants!public! !
-!RowanInspectorService categoriesFor: #displayName!displaying!public! !
-!RowanInspectorService categoriesFor: #executeThenInspect:context:session:windowHandle:!inspecting!public! !
-!RowanInspectorService categoriesFor: #executeThenInspect:context:session:windowHandle:debugger:!inspecting!public! !
-!RowanInspectorService categoriesFor: #hash!comparison!private! !
-!RowanInspectorService categoriesFor: #indexedSize!accessing!private! !
-!RowanInspectorService categoriesFor: #indexedSize:!accessing!private! !
-!RowanInspectorService categoriesFor: #initialize!initialization!public! !
-!RowanInspectorService categoriesFor: #inspect:session:!inspecting!public! !
-!RowanInspectorService categoriesFor: #inspect:session:inWindow:!inspecting!public! !
-!RowanInspectorService categoriesFor: #instVarNames!accessing!private! !
-!RowanInspectorService categoriesFor: #instVarNames:!accessing!private! !
-!RowanInspectorService categoriesFor: #instVarsAreRemovable!accessing!private! !
-!RowanInspectorService categoriesFor: #instVarsAreRemovable:!accessing!private! !
-!RowanInspectorService categoriesFor: #isDictionary!accessing!public! !
-!RowanInspectorService categoriesFor: #isInspectorService!public!testing! !
-!RowanInspectorService categoriesFor: #isShowingAllIndexedVars!public!testing! !
-!RowanInspectorService categoriesFor: #isUnordered!accessing!private! !
-!RowanInspectorService categoriesFor: #isUnordered:!accessing!private! !
-!RowanInspectorService categoriesFor: #isVariable!accessing!private! !
-!RowanInspectorService categoriesFor: #maxIndexedVars!accessing!private! !
-!RowanInspectorService categoriesFor: #maxIndexedVars:!accessing!private! !
-!RowanInspectorService categoriesFor: #myself!accessing!private! !
-!RowanInspectorService categoriesFor: #myself:!accessing!private! !
-!RowanInspectorService categoriesFor: #name!accessing!public! !
-!RowanInspectorService categoriesFor: #name:!accessing!public! !
-!RowanInspectorService categoriesFor: #nextIndexedVarsFrom:to:session:!inspecting!public! !
-!RowanInspectorService categoriesFor: #nextIndices!accessing!private! !
-!RowanInspectorService categoriesFor: #nextIndices:!accessing!private! !
-!RowanInspectorService categoriesFor: #objects!accessing!private! !
-!RowanInspectorService categoriesFor: #objects:!accessing!private! !
-!RowanInspectorService categoriesFor: #oop!accessing!private! !
-!RowanInspectorService categoriesFor: #oop:!accessing!private! !
-!RowanInspectorService categoriesFor: #removeDynamicInstVarsNamed:session:!operations!public! !
-!RowanInspectorService categoriesFor: #removeIndexedInstVarsAt:session:!operations!public! !
-!RowanInspectorService categoriesFor: #removeKeys:session:!operations!public! !
-!RowanInspectorService categoriesFor: #removeOop:session:!operations!public! !
-!RowanInspectorService categoriesFor: #selectionOop!accessing!private! !
-!RowanInspectorService categoriesFor: #sortAspect!accessing!public! !
-!RowanInspectorService categoriesFor: #statusText!accessing!private! !
-!RowanInspectorService categoriesFor: #statusText:!accessing!private! !
-!RowanInspectorService categoriesFor: #visibleIndices!accessing!private! !
-!RowanInspectorService categoriesFor: #visibleIndices:!accessing!private! !
+!RowanInspectorService categoriesForMethods!
+=!comparison!public! !
+className!accessing!private! !
+className:!accessing!private! !
+compileErrorArray!accessing!private! !
+compileErrorArray:!accessing!private! !
+defaultIndexedSize!constants!public! !
+displayName!displaying!public! !
+executeThenInspect:context:session:windowHandle:!inspecting!public! !
+executeThenInspect:context:session:windowHandle:debugger:!inspecting!public! !
+hash!comparison!private! !
+indexedSize!accessing!private! !
+indexedSize:!accessing!private! !
+initialize!initialization!public! !
+inspect:session:!inspecting!public! !
+inspect:session:inWindow:!inspecting!public! !
+instVarNames!accessing!private! !
+instVarNames:!accessing!private! !
+instVarsAreRemovable!accessing!private! !
+instVarsAreRemovable:!accessing!private! !
+isDictionary!accessing!public! !
+isInspectorService!public!testing! !
+isShowingAllIndexedVars!public!testing! !
+isUnordered!accessing!private! !
+isUnordered:!accessing!private! !
+isVariable!accessing!private! !
+maxIndexedVars!accessing!private! !
+maxIndexedVars:!accessing!private! !
+myself!accessing!private! !
+myself:!accessing!private! !
+name!accessing!public! !
+name:!accessing!public! !
+nextIndexedVarsFrom:to:session:!inspecting!public! !
+nextIndices!accessing!private! !
+nextIndices:!accessing!private! !
+objects!accessing!private! !
+objects:!accessing!private! !
+oop!accessing!private! !
+oop:!accessing!private! !
+removeDynamicInstVarsNamed:session:!operations!public! !
+removeIndexedInstVarsAt:session:!operations!public! !
+removeKeys:session:!operations!public! !
+removeOop:session:!operations!public! !
+selectionOop!accessing!private! !
+sortAspect!accessing!public! !
+statusText!accessing!private! !
+statusText:!accessing!private! !
+visibleIndices!accessing!private! !
+visibleIndices:!accessing!private! !
+!
 

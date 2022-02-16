@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanFrameService
 	instanceVariableNames: 'label method stepPoint vars oop homeMethodSelector homeMethodClassName classIsResolvable name'
@@ -91,26 +91,28 @@ stepPoint
 
 vars
 	^vars! !
-!RowanFrameService categoriesFor: #breaks!public! !
-!RowanFrameService categoriesFor: #classIsResolvable!accessing!private! !
-!RowanFrameService categoriesFor: #copyBasicsFrom:!public! !
-!RowanFrameService categoriesFor: #displayName!displaying!public! !
-!RowanFrameService categoriesFor: #gsMethod!public! !
-!RowanFrameService categoriesFor: #homeMethodClassName!accessing!public! !
-!RowanFrameService categoriesFor: #homeMethodSelector!accessing!public! !
-!RowanFrameService categoriesFor: #indexOfSubCollection:!public! !
-!RowanFrameService categoriesFor: #isExecutedBlockContext!public!testing! !
-!RowanFrameService categoriesFor: #isUpdatableService!public!testing! !
-!RowanFrameService categoriesFor: #label!accessing!public! !
-!RowanFrameService categoriesFor: #method!public! !
-!RowanFrameService categoriesFor: #name!accessing!public! !
-!RowanFrameService categoriesFor: #name:!accessing!public! !
-!RowanFrameService categoriesFor: #offsets!public! !
-!RowanFrameService categoriesFor: #oop!accessing!private! !
-!RowanFrameService categoriesFor: #oop:!accessing!private! !
-!RowanFrameService categoriesFor: #printOn:!public! !
-!RowanFrameService categoriesFor: #sortAspect!accessing!public! !
-!RowanFrameService categoriesFor: #source!public! !
-!RowanFrameService categoriesFor: #stepPoint!public! !
-!RowanFrameService categoriesFor: #vars!public! !
+!RowanFrameService categoriesForMethods!
+breaks!public! !
+classIsResolvable!accessing!private! !
+copyBasicsFrom:!public! !
+displayName!displaying!public! !
+gsMethod!public! !
+homeMethodClassName!accessing!public! !
+homeMethodSelector!accessing!public! !
+indexOfSubCollection:!public! !
+isExecutedBlockContext!public!testing! !
+isUpdatableService!public!testing! !
+label!accessing!public! !
+method!public! !
+name!accessing!public! !
+name:!accessing!public! !
+offsets!public! !
+oop!accessing!private! !
+oop:!accessing!private! !
+printOn:!public! !
+sortAspect!accessing!public! !
+source!public! !
+stepPoint!public! !
+vars!public! !
+!
 

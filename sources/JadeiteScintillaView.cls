@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 ScintillaView subclass: #JadeiteScintillaView
 	instanceVariableNames: ''
@@ -92,12 +92,14 @@ searchFor: matchString in: text from: pos length: matchLen details: findDetails
 	^findDetails isWildcard
 		ifTrue: [matchString match: (text midString: matchLen from: pos) ignoreCase: findDetails isCaseSensitive not]
 		ifFalse: [matchString = (text midString: matchLen from: pos)]! !
-!JadeiteScintillaView categoriesFor: #editCopy!constants!private! !
-!JadeiteScintillaView categoriesFor: #editCut!constants!private! !
-!JadeiteScintillaView categoriesFor: #editDelete!constants!private! !
-!JadeiteScintillaView categoriesFor: #editFind!constants!private! !
-!JadeiteScintillaView categoriesFor: #find:range:!private!searching & replacing! !
-!JadeiteScintillaView categoriesFor: #findDialogClass!constants!private! !
-!JadeiteScintillaView categoriesFor: #queryCommand:!menu handlers support!public! !
-!JadeiteScintillaView categoriesFor: #searchFor:in:from:length:details:!private!searching & replacing! !
+!JadeiteScintillaView categoriesForMethods!
+editCopy!constants!private! !
+editCut!constants!private! !
+editDelete!constants!private! !
+editFind!constants!private! !
+find:range:!private!searching & replacing! !
+findDialogClass!constants!private! !
+queryCommand:!menu handlers support!public! !
+searchFor:in:from:length:details:!private!searching & replacing! !
+!
 

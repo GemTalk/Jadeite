@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanProjectService subclass: #RowanDefinedProjectService
 	instanceVariableNames: ''
@@ -19,6 +19,8 @@ newProject: presenter
 		ifNone: 
 			[presenter list add: self.
 			presenter view invalidate]! !
-!RowanDefinedProjectService categoriesFor: #isDefinedProject!public!testing! !
-!RowanDefinedProjectService categoriesFor: #newProject:!public!updating! !
+!RowanDefinedProjectService categoriesForMethods!
+isDefinedProject!public!testing! !
+newProject:!public!updating! !
+!
 

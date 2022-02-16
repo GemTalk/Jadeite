@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanComponentService
 	instanceVariableNames: 'name componentServices packageServices projectService basename'
@@ -51,15 +51,17 @@ printOn: stream
 		nextPutAll: self class name;
 		nextPutAll: '->';
 		nextPutAll: basename! !
-!RowanComponentService categoriesFor: #=!comparing!public! !
-!RowanComponentService categoriesFor: #basename!accessing!private! !
-!RowanComponentService categoriesFor: #basename:!accessing!private! !
-!RowanComponentService categoriesFor: #componentPackagesUpdate:browser:!public!updating! !
-!RowanComponentService categoriesFor: #displayString!displaying!public! !
-!RowanComponentService categoriesFor: #hash!comparing!public! !
-!RowanComponentService categoriesFor: #isComponentService!public!testing! !
-!RowanComponentService categoriesFor: #name!accessing!public! !
-!RowanComponentService categoriesFor: #name:!accessing!public! !
-!RowanComponentService categoriesFor: #packageServices!accessing!private! !
-!RowanComponentService categoriesFor: #printOn:!displaying!public! !
+!RowanComponentService categoriesForMethods!
+=!comparing!public! !
+basename!accessing!private! !
+basename:!accessing!private! !
+componentPackagesUpdate:browser:!public!updating! !
+displayString!displaying!public! !
+hash!comparing!public! !
+isComponentService!public!testing! !
+name!accessing!public! !
+name:!accessing!public! !
+packageServices!accessing!private! !
+printOn:!displaying!public! !
+!
 

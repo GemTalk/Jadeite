@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanClassService subclass: #RowanFillerClassService
 	instanceVariableNames: ''
@@ -25,14 +25,18 @@ initialize
 
 isInSymbolList
 	^true! !
-!RowanFillerClassService categoriesFor: #hasSubclasses!public! !
-!RowanFillerClassService categoriesFor: #initialize!initialize!public! !
-!RowanFillerClassService categoriesFor: #isInSymbolList!public! !
+!RowanFillerClassService categoriesForMethods!
+hasSubclasses!public! !
+initialize!initialize!public! !
+isInSymbolList!public! !
+!
 
 !RowanFillerClassService class methodsFor!
 
 random
 	RandomNumber ifNil: [RandomNumber := Random new].
 	^RandomNumber! !
-!RowanFillerClassService class categoriesFor: #random!public! !
+!RowanFillerClassService class categoriesForMethods!
+random!public! !
+!
 

@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanCommandResult subclass: #RowanProjectsUpdate
 	instanceVariableNames: 'projects modifiedProjects selection'
@@ -21,12 +21,16 @@ projectsUpdate: presenter
 	presenter list isEmpty ifTrue: [^presenter list: projects].
 	presenter list addAll: (projects difference: presenter list).
 	presenter list removeAll: (presenter list difference: projects)! !
-!RowanProjectsUpdate categoriesFor: #projectSelectionUpdate:!public!updating! !
-!RowanProjectsUpdate categoriesFor: #projectsUpdate:!public!updating! !
+!RowanProjectsUpdate categoriesForMethods!
+projectSelectionUpdate:!public!updating! !
+projectsUpdate:!public!updating! !
+!
 
 !RowanProjectsUpdate class methodsFor!
 
 new
 	^super new! !
-!RowanProjectsUpdate class categoriesFor: #new!instance creation!public! !
+!RowanProjectsUpdate class categoriesForMethods!
+new!instance creation!public! !
+!
 

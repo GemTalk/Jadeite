@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanCommandResult subclass: #RowanGlobalsUpdate
 	instanceVariableNames: 'globals'
@@ -12,5 +12,7 @@ RowanGlobalsUpdate comment: ''!
 
 globalsUpdate: aPresenter
 	aPresenter list: globals.! !
-!RowanGlobalsUpdate categoriesFor: #globalsUpdate:!public! !
+!RowanGlobalsUpdate categoriesForMethods!
+globalsUpdate:!public! !
+!
 

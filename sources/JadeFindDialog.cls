@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeValueDialog subclass: #JadeFindDialog
 	instanceVariableNames: 'nameEntryPresenter'
@@ -25,7 +25,9 @@ createSchematicWiring
 onViewOpened
 	super onViewOpened. 
 	nameEntryPresenter value: '*'! !
-!JadeFindDialog categoriesFor: #createComponents!private! !
-!JadeFindDialog categoriesFor: #createSchematicWiring!private! !
-!JadeFindDialog categoriesFor: #onViewOpened!event handlers!public! !
+!JadeFindDialog categoriesForMethods!
+createComponents!private! !
+createSchematicWiring!private! !
+onViewOpened!event handlers!public! !
+!
 

@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanPresenter subclass: #RowanPackagePresenter
 	instanceVariableNames: ''
@@ -11,5 +11,7 @@ RowanPackagePresenter comment: ''!
 !RowanPackagePresenter methodsFor!
 
 createNewPackage! !
-!RowanPackagePresenter categoriesFor: #createNewPackage!public! !
+!RowanPackagePresenter categoriesForMethods!
+createNewPackage!public! !
+!
 

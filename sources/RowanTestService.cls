@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanTestService
 	instanceVariableNames: 'name'
@@ -53,10 +53,12 @@ remoteServiceClassNamesOop: session
 sortAspect
 
 	^name! !
-!RowanTestService categoriesFor: #displayName!displaying!public! !
-!RowanTestService categoriesFor: #execute:overArrayOop:session:!public! !
-!RowanTestService categoriesFor: #name!accessing!public! !
-!RowanTestService categoriesFor: #name:!accessing!public! !
-!RowanTestService categoriesFor: #remoteServiceClassNamesOop:!public! !
-!RowanTestService categoriesFor: #sortAspect!accessing!public! !
+!RowanTestService categoriesForMethods!
+displayName!displaying!public! !
+execute:overArrayOop:session:!public! !
+name!accessing!public! !
+name:!accessing!public! !
+remoteServiceClassNamesOop:!public! !
+sortAspect!accessing!public! !
+!
 

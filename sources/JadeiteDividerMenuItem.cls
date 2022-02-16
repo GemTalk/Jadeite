@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 DividerMenuItem subclass: #JadeiteDividerMenuItem
 	instanceVariableNames: ''
@@ -13,7 +13,9 @@ JadeiteDividerMenuItem comment: 'Used as a marker for dynamic menus. Should only
 id
 	"special identifier for building custom menus" 
 	^#jadeiteDivider! !
-!JadeiteDividerMenuItem categoriesFor: #id!accessing!public! !
+!JadeiteDividerMenuItem categoriesForMethods!
+id!accessing!public! !
+!
 
 !JadeiteDividerMenuItem class methodsFor!
 
@@ -21,5 +23,7 @@ separator
 	^self basicNew
 		flags: MFT_SEPARATOR;
 		yourself! !
-!JadeiteDividerMenuItem class categoriesFor: #separator!instance creation!public! !
+!JadeiteDividerMenuItem class categoriesForMethods!
+separator!instance creation!public! !
+!
 

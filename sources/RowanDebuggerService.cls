@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanDebuggerService
 	instanceVariableNames: 'initialProcessOop processes name'
@@ -37,13 +37,15 @@ processListUpdate: aPresenter
 sortAspect
 
 	^name! !
-!RowanDebuggerService categoriesFor: #displayName!displaying!public! !
-!RowanDebuggerService categoriesFor: #initialize:!public! !
-!RowanDebuggerService categoriesFor: #name!accessing!public! !
-!RowanDebuggerService categoriesFor: #name:!accessing!public! !
-!RowanDebuggerService categoriesFor: #processes!accessing!public! !
-!RowanDebuggerService categoriesFor: #processListUpdate:!Debugger!public!updating! !
-!RowanDebuggerService categoriesFor: #sortAspect!accessing!public! !
+!RowanDebuggerService categoriesForMethods!
+displayName!displaying!public! !
+initialize:!public! !
+name!accessing!public! !
+name:!accessing!public! !
+processes!accessing!public! !
+processListUpdate:!Debugger!public!updating! !
+sortAspect!accessing!public! !
+!
 
 !RowanDebuggerService class methodsFor!
 
@@ -52,5 +54,7 @@ onProcess: aGsProcess
 	^self basicNew
 		initialize: aGsProcess;
 		yourself! !
-!RowanDebuggerService class categoriesFor: #onProcess:!public! !
+!RowanDebuggerService class categoriesForMethods!
+onProcess:!public! !
+!
 

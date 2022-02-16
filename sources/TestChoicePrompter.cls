@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 ChoicePrompter subclass: #TestChoicePrompter
 	instanceVariableNames: ''
@@ -34,14 +34,16 @@ prompt: ignore!
 showModalView
 
 	"avoid raising the dialog window"! !
-!TestChoicePrompter categoriesFor: #answer!public! !
-!TestChoicePrompter categoriesFor: #caption:!public! !
-!TestChoicePrompter categoriesFor: #choices:!public! !
-!TestChoicePrompter categoriesFor: #model:!public! !
-!TestChoicePrompter categoriesFor: #newChoice!public! !
-!TestChoicePrompter categoriesFor: #newPrompt!public! !
-!TestChoicePrompter categoriesFor: #prompt:!public! !
-!TestChoicePrompter categoriesFor: #showModalView!public! !
+!TestChoicePrompter categoriesForMethods!
+answer!public! !
+caption:!public! !
+choices:!public! !
+model:!public! !
+newChoice!public! !
+newPrompt!public! !
+prompt:!public! !
+showModalView!public! !
+!
 
 !TestChoicePrompter class methodsFor!
 
@@ -57,6 +59,8 @@ plannedResult: answer
 	(answer isKindOf: OrderedCollection)
 		ifTrue: [PlannedResult := answer]
 		ifFalse: [PlannedResult := OrderedCollection with: answer]! !
-!TestChoicePrompter class categoriesFor: #plannedResult!public! !
-!TestChoicePrompter class categoriesFor: #plannedResult:!public! !
+!TestChoicePrompter class categoriesForMethods!
+plannedResult!public! !
+plannedResult:!public! !
+!
 

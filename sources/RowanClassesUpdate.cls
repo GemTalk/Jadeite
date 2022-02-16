@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanCommandResult subclass: #RowanClassesUpdate
 	instanceVariableNames: 'classNames selectionNames'
@@ -17,6 +17,8 @@ updateClassSelectionFor: presenter
 	| symbols |
 	symbols := selectionNames collect:[:name | name asSymbol].
 	presenter selections: symbols! !
-!RowanClassesUpdate categoriesFor: #classesUpdate:browser:!public!updating! !
-!RowanClassesUpdate categoriesFor: #updateClassSelectionFor:!public!updating! !
+!RowanClassesUpdate categoriesForMethods!
+classesUpdate:browser:!public!updating! !
+updateClassSelectionFor:!public!updating! !
+!
 

@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteProjectsSystemBrowser subclass: #JadeiteBrowser
 	instanceVariableNames: ''
@@ -36,9 +36,11 @@ position: aPoint
 
 systemBrowserPresenter
 	^JadeiteBrowserPresenter! !
-!JadeiteBrowser categoriesFor: #maximizeCode!public! !
-!JadeiteBrowser categoriesFor: #position:!public! !
-!JadeiteBrowser categoriesFor: #systemBrowserPresenter!public! !
+!JadeiteBrowser categoriesForMethods!
+maximizeCode!public! !
+position:!public! !
+systemBrowserPresenter!public! !
+!
 
 !JadeiteBrowser class methodsFor!
 
@@ -80,9 +82,11 @@ openOn: session project: projectService
 	browser currentCard selectProjectNamed: projectService name.
 	browser currentCard projectListPresenter setFocus.
 	^browser! !
-!JadeiteBrowser class categoriesFor: #onSession:!instance creation!public! !
-!JadeiteBrowser class categoriesFor: #openOn:class:!instance creation!public! !
-!JadeiteBrowser class categoriesFor: #openOn:dictionary:!instance creation!public! !
-!JadeiteBrowser class categoriesFor: #openOn:package:!instance creation!public! !
-!JadeiteBrowser class categoriesFor: #openOn:project:!instance creation!public! !
+!JadeiteBrowser class categoriesForMethods!
+onSession:!instance creation!public! !
+openOn:class:!instance creation!public! !
+openOn:dictionary:!instance creation!public! !
+openOn:package:!instance creation!public! !
+openOn:project:!instance creation!public! !
+!
 

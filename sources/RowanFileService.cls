@@ -20,11 +20,20 @@ excludedInstVars
 
 	^super excludedInstVars , #('session')!
 
+indexOfSessionInstVar
+	^9!
+
 path
 	^path!
 
 path: anObject
 	path := anObject!
+
+pop
+	command := #pop.
+	commandArgs := Array new.
+	self issueCommand: self session: session. 
+	^answer ifNotNil: [self shortNames]!
 
 session
 	^session!
@@ -40,14 +49,21 @@ shortNames
 			
 			[string := readStream upTo: $/.
 			readStream atEnd] whileFalse: [].
-			string]! !
+			string]!
+
+shouldReplicateInstVarAtIndex: index newService: newService
+	self indexOfSessionInstVar = index ifTrue: [^false].
+	^true! !
 !RowanFileService categoriesForMethods!
 directoryContents!commands!public! !
 excludedInstVars!private!ston! !
+indexOfSessionInstVar!public!ston! !
 path!accessing!private! !
 path:!accessing!public! !
+pop!commands!public! !
 session!accessing!private! !
 session:!accessing!private! !
 shortNames!accessing!private! !
+shouldReplicateInstVarAtIndex:newService:!public!ston! !
 !
 

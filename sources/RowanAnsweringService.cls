@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanAnsweringService
 	instanceVariableNames: 'answer'
@@ -115,23 +115,25 @@ symbolsMatching: string session: session
 	commandArgs := Array with: string.
 	BrowserUpdate current issueCommands: (Array with: self) session: session.
 	^answer! !
-!RowanAnsweringService categoriesFor: #answer!accessing!private! !
-!RowanAnsweringService categoriesFor: #answer:!accessing!private! !
-!RowanAnsweringService categoriesFor: #autoCommitIn:!commands!public! !
-!RowanAnsweringService categoriesFor: #breakPointsAreEnabled:!commands!public! !
-!RowanAnsweringService categoriesFor: #breakpointSettingChanged:!public!updating! !
-!RowanAnsweringService categoriesFor: #canAccessServiceClasses:!commands!public! !
-!RowanAnsweringService categoriesFor: #exec:in:!commands!public! !
-!RowanAnsweringService categoriesFor: #expressionSelector:session:!commands!public! !
-!RowanAnsweringService categoriesFor: #flipAutoCommitFor:!commands!public! !
-!RowanAnsweringService categoriesFor: #flipTranscriptIn:!commands!public! !
-!RowanAnsweringService categoriesFor: #isAnsweringService!public!testing! !
-!RowanAnsweringService categoriesFor: #isTranscriptInstalledIn:!commands!public! !
-!RowanAnsweringService categoriesFor: #lowercaseSelectorsMatching:session:!commands!public!testing! !
-!RowanAnsweringService categoriesFor: #needsCommit:!commands!public! !
-!RowanAnsweringService categoriesFor: #printOn:!printing!public! !
-!RowanAnsweringService categoriesFor: #setAutoCommit:for:!commands!public! !
-!RowanAnsweringService categoriesFor: #setBreakpointsEnabled:session:!commands!public! !
-!RowanAnsweringService categoriesFor: #symbolExists:session:!commands!public!testing! !
-!RowanAnsweringService categoriesFor: #symbolsMatching:session:!commands!public!testing! !
+!RowanAnsweringService categoriesForMethods!
+answer!accessing!private! !
+answer:!accessing!private! !
+autoCommitIn:!commands!public! !
+breakPointsAreEnabled:!commands!public! !
+breakpointSettingChanged:!public!updating! !
+canAccessServiceClasses:!commands!public! !
+exec:in:!commands!public! !
+expressionSelector:session:!commands!public! !
+flipAutoCommitFor:!commands!public! !
+flipTranscriptIn:!commands!public! !
+isAnsweringService!public!testing! !
+isTranscriptInstalledIn:!commands!public! !
+lowercaseSelectorsMatching:session:!commands!public!testing! !
+needsCommit:!commands!public! !
+printOn:!printing!public! !
+setAutoCommit:for:!commands!public! !
+setBreakpointsEnabled:session:!commands!public! !
+symbolExists:session:!commands!public!testing! !
+symbolsMatching:session:!commands!public!testing! !
+!
 

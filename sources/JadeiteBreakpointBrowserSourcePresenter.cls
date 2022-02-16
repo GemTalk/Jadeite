@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteMethodSourcePresenter subclass: #JadeiteBreakpointBrowserSourcePresenter
 	instanceVariableNames: ''
@@ -16,5 +16,7 @@ setDefaultMethod
 		isModified: false;
 		isReadOnly: false;
 		yourself! !
-!JadeiteBreakpointBrowserSourcePresenter categoriesFor: #setDefaultMethod!public! !
+!JadeiteBreakpointBrowserSourcePresenter categoriesForMethods!
+setDefaultMethod!public! !
+!
 

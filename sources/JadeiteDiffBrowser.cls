@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 DiffBrowser subclass: #JadeiteDiffBrowser
 	instanceVariableNames: ''
@@ -32,7 +32,9 @@ onViewOpened
 
 systemModel
 	^nil! !
-!JadeiteDiffBrowser categoriesFor: #createComponents!initializing!public! !
-!JadeiteDiffBrowser categoriesFor: #onViewOpened!event handlers!public! !
-!JadeiteDiffBrowser categoriesFor: #systemModel!accessing!private! !
+!JadeiteDiffBrowser categoriesForMethods!
+createComponents!initializing!public! !
+onViewOpened!event handlers!public! !
+systemModel!accessing!private! !
+!
 

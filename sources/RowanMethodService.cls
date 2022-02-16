@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanMethodService
 	instanceVariableNames: 'source selector methodDefinitions category packageName projectName className meta user hasSupers hasSubs isExtension inSelectedPackage references stepPoints selectedPackageServices superDisplayString accessedInstVars breakPoints oop compilationWarnings testResult definedPackage isTestMethod testRunClassName failedCompile comparisonSource firstReference renamedName isMethodForBlock homeMethodOop hasMethodHistory searchString definedClassName name'
@@ -567,117 +567,119 @@ user
 
 user: anObject
 	user := anObject! !
-!RowanMethodService categoriesFor: #<=!comparing!public! !
-!RowanMethodService categoriesFor: #=!comparing!public! !
-!RowanMethodService categoriesFor: #>=!comparing!public! !
-!RowanMethodService categoriesFor: #accessedInstVars!accessing!private! !
-!RowanMethodService categoriesFor: #accessedInstVars:!accessing!private! !
-!RowanMethodService categoriesFor: #addBreakPointMenuAt:to:presenter:!method menu support!private! !
-!RowanMethodService categoriesFor: #appendToSourceMenu:presenter:!method menu support!public! !
-!RowanMethodService categoriesFor: #basicPrepareForReplication!public!replication! !
-!RowanMethodService categoriesFor: #breakpointDisplayString!displaying!public! !
-!RowanMethodService categoriesFor: #breakPoints!public! !
-!RowanMethodService categoriesFor: #breakPoints:!accessing!public! !
-!RowanMethodService categoriesFor: #category!accessing!private! !
-!RowanMethodService categoriesFor: #category:!accessing!private! !
-!RowanMethodService categoriesFor: #classMethodDisplayString!displaying!public! !
-!RowanMethodService categoriesFor: #className!accessing!private! !
-!RowanMethodService categoriesFor: #className:!accessing!private! !
-!RowanMethodService categoriesFor: #classService!public! !
-!RowanMethodService categoriesFor: #comparisonSource!accessing!private! !
-!RowanMethodService categoriesFor: #comparisonSource:!accessing!private! !
-!RowanMethodService categoriesFor: #compilationWarnings!accessing!private! !
-!RowanMethodService categoriesFor: #copyBasicsFrom:!public!updating! !
-!RowanMethodService categoriesFor: #debuggerMethodSourceUpdate:browser:!public!updating! !
-!RowanMethodService categoriesFor: #definedClassName!accessing!private! !
-!RowanMethodService categoriesFor: #definedClassName:!accessing!private! !
-!RowanMethodService categoriesFor: #definedPackage!accessing!private! !
-!RowanMethodService categoriesFor: #displayClassName!displaying!public! !
-!RowanMethodService categoriesFor: #displayName!displaying!public! !
-!RowanMethodService categoriesFor: #displayOn:!displaying!public! !
-!RowanMethodService categoriesFor: #displayString!displaying!public! !
-!RowanMethodService categoriesFor: #displayStringFor:!displaying!public! !
-!RowanMethodService categoriesFor: #displayStringFor:browser:!displaying!public! !
-!RowanMethodService categoriesFor: #equalBeforeRename:!comparing!public! !
-!RowanMethodService categoriesFor: #failedCompile!accessing!public! !
-!RowanMethodService categoriesFor: #firstReference!accessing!private! !
-!RowanMethodService categoriesFor: #firstReference:!accessing!private! !
-!RowanMethodService categoriesFor: #hash!comparing!public! !
-!RowanMethodService categoriesFor: #hasMethodHistory!accessing!private! !
-!RowanMethodService categoriesFor: #hasSubs!accessing!private! !
-!RowanMethodService categoriesFor: #hasSubs:!accessing!private! !
-!RowanMethodService categoriesFor: #hasSupers!accessing!private! !
-!RowanMethodService categoriesFor: #hasSupers:!accessing!private! !
-!RowanMethodService categoriesFor: #homeMethodOop!accessing!private! !
-!RowanMethodService categoriesFor: #icon!public!sunit! !
-!RowanMethodService categoriesFor: #implementorsOf:!method accessing!public! !
-!RowanMethodService categoriesFor: #indexOfFirstReferenceInstVar!constants!public! !
-!RowanMethodService categoriesFor: #indexOfTestResultInstVar!constants!public! !
-!RowanMethodService categoriesFor: #initialize!initialization!public! !
-!RowanMethodService categoriesFor: #inSelectedPackage!public!testing! !
-!RowanMethodService categoriesFor: #inSelectedPackage:!accessing!public! !
-!RowanMethodService categoriesFor: #isExtension!accessing!public! !
-!RowanMethodService categoriesFor: #isExtension:!accessing!public! !
-!RowanMethodService categoriesFor: #isMethodService!public!testing! !
-!RowanMethodService categoriesFor: #isReadOnly!public!testing! !
-!RowanMethodService categoriesFor: #isTestMethod!public!testing! !
-!RowanMethodService categoriesFor: #meta!accessing!private! !
-!RowanMethodService categoriesFor: #meta:!accessing!private! !
-!RowanMethodService categoriesFor: #methodDefinitions!accessing!private! !
-!RowanMethodService categoriesFor: #methodDefinitions:!accessing!private! !
-!RowanMethodService categoriesFor: #methodHistoryUpdated:!public!updating! !
-!RowanMethodService categoriesFor: #methodListUpdate:browser:!public!updating! !
-!RowanMethodService categoriesFor: #methodName!accessing!private! !
-!RowanMethodService categoriesFor: #methodSourceUpdate:browser:!public!updating! !
-!RowanMethodService categoriesFor: #methodUpdate:browser:!public!updating! !
-!RowanMethodService categoriesFor: #name!accessing!public! !
-!RowanMethodService categoriesFor: #name:!accessing!public! !
-!RowanMethodService categoriesFor: #oop!public! !
-!RowanMethodService categoriesFor: #oopType!public! !
-!RowanMethodService categoriesFor: #packageName!accessing!private! !
-!RowanMethodService categoriesFor: #packageName:!accessing!private! !
-!RowanMethodService categoriesFor: #positiveBreakpoints!accessing!public! !
-!RowanMethodService categoriesFor: #postUpdate!public!updating! !
-!RowanMethodService categoriesFor: #prepareForReplication!public!replication! !
-!RowanMethodService categoriesFor: #printOn:!printing!public! !
-!RowanMethodService categoriesFor: #projectName!accessing!private! !
-!RowanMethodService categoriesFor: #projectName:!accessing!private! !
-!RowanMethodService categoriesFor: #references!accessing!private! !
-!RowanMethodService categoriesFor: #references:!accessing!private! !
-!RowanMethodService categoriesFor: #remoteServiceName!must not strip!public! !
-!RowanMethodService categoriesFor: #removeJadeiteSeparatorFrom:!method menu support!private! !
-!RowanMethodService categoriesFor: #renamedName!accessing!private! !
-!RowanMethodService categoriesFor: #renamedName:!accessing!private! !
-!RowanMethodService categoriesFor: #replicateFrom:!public!replication! !
-!RowanMethodService categoriesFor: #searchString!accessing!private! !
-!RowanMethodService categoriesFor: #searchString:!accessing!private! !
-!RowanMethodService categoriesFor: #selectedPackageServices!accessing!private! !
-!RowanMethodService categoriesFor: #selectedPackageServices:browser:!accessing!private! !
-!RowanMethodService categoriesFor: #selector!accessing!private! !
-!RowanMethodService categoriesFor: #selector:!accessing!private! !
-!RowanMethodService categoriesFor: #selectorsDisplayString!displaying!public! !
-!RowanMethodService categoriesFor: #setError!public!sunit! !
-!RowanMethodService categoriesFor: #setFailure!public!sunit! !
-!RowanMethodService categoriesFor: #setPassed!public!sunit! !
-!RowanMethodService categoriesFor: #shouldReplicateInstVarAtIndex:newService:!public!replication!testing! !
-!RowanMethodService categoriesFor: #sortAspect!accessing!public! !
-!RowanMethodService categoriesFor: #source!accessing!private! !
-!RowanMethodService categoriesFor: #source:!accessing!private! !
-!RowanMethodService categoriesFor: #stepPointFromCursorIn:!presenter support!private! !
-!RowanMethodService categoriesFor: #stepPointFromCursorIn:charIndex:!presenter support!private! !
-!RowanMethodService categoriesFor: #stepPoints!public! !
-!RowanMethodService categoriesFor: #subSuperIcon!displaying!public! !
-!RowanMethodService categoriesFor: #superDisplayString!accessing!private! !
-!RowanMethodService categoriesFor: #superDisplayString:!accessing!private! !
-!RowanMethodService categoriesFor: #testResult!accessing!public! !
-!RowanMethodService categoriesFor: #testResult:!accessing!public! !
-!RowanMethodService categoriesFor: #testResultUpdate:browser:!public!updating! !
-!RowanMethodService categoriesFor: #toolTip!accessing!displaying!private! !
-!RowanMethodService categoriesFor: #unimplementedSelectors!public! !
-!RowanMethodService categoriesFor: #updateBreakPoints:browser:!public!updating! !
-!RowanMethodService categoriesFor: #updateSelectorFromCompiledMethod:!private! !
-!RowanMethodService categoriesFor: #user!accessing!private! !
-!RowanMethodService categoriesFor: #user:!accessing!private! !
+!RowanMethodService categoriesForMethods!
+<=!comparing!public! !
+=!comparing!public! !
+>=!comparing!public! !
+accessedInstVars!accessing!private! !
+accessedInstVars:!accessing!private! !
+addBreakPointMenuAt:to:presenter:!method menu support!private! !
+appendToSourceMenu:presenter:!method menu support!public! !
+basicPrepareForReplication!public!replication! !
+breakpointDisplayString!displaying!public! !
+breakPoints!public! !
+breakPoints:!accessing!public! !
+category!accessing!private! !
+category:!accessing!private! !
+classMethodDisplayString!displaying!public! !
+className!accessing!private! !
+className:!accessing!private! !
+classService!public! !
+comparisonSource!accessing!private! !
+comparisonSource:!accessing!private! !
+compilationWarnings!accessing!private! !
+copyBasicsFrom:!public!updating! !
+debuggerMethodSourceUpdate:browser:!public!updating! !
+definedClassName!accessing!private! !
+definedClassName:!accessing!private! !
+definedPackage!accessing!private! !
+displayClassName!displaying!public! !
+displayName!displaying!public! !
+displayOn:!displaying!public! !
+displayString!displaying!public! !
+displayStringFor:!displaying!public! !
+displayStringFor:browser:!displaying!public! !
+equalBeforeRename:!comparing!public! !
+failedCompile!accessing!public! !
+firstReference!accessing!private! !
+firstReference:!accessing!private! !
+hash!comparing!public! !
+hasMethodHistory!accessing!private! !
+hasSubs!accessing!private! !
+hasSubs:!accessing!private! !
+hasSupers!accessing!private! !
+hasSupers:!accessing!private! !
+homeMethodOop!accessing!private! !
+icon!public!sunit! !
+implementorsOf:!method accessing!public! !
+indexOfFirstReferenceInstVar!constants!public! !
+indexOfTestResultInstVar!constants!public! !
+initialize!initialization!public! !
+inSelectedPackage!public!testing! !
+inSelectedPackage:!accessing!public! !
+isExtension!accessing!public! !
+isExtension:!accessing!public! !
+isMethodService!public!testing! !
+isReadOnly!public!testing! !
+isTestMethod!public!testing! !
+meta!accessing!private! !
+meta:!accessing!private! !
+methodDefinitions!accessing!private! !
+methodDefinitions:!accessing!private! !
+methodHistoryUpdated:!public!updating! !
+methodListUpdate:browser:!public!updating! !
+methodName!accessing!private! !
+methodSourceUpdate:browser:!public!updating! !
+methodUpdate:browser:!public!updating! !
+name!accessing!public! !
+name:!accessing!public! !
+oop!public! !
+oopType!public! !
+packageName!accessing!private! !
+packageName:!accessing!private! !
+positiveBreakpoints!accessing!public! !
+postUpdate!public!updating! !
+prepareForReplication!public!replication! !
+printOn:!printing!public! !
+projectName!accessing!private! !
+projectName:!accessing!private! !
+references!accessing!private! !
+references:!accessing!private! !
+remoteServiceName!must not strip!public! !
+removeJadeiteSeparatorFrom:!method menu support!private! !
+renamedName!accessing!private! !
+renamedName:!accessing!private! !
+replicateFrom:!public!replication! !
+searchString!accessing!private! !
+searchString:!accessing!private! !
+selectedPackageServices!accessing!private! !
+selectedPackageServices:browser:!accessing!private! !
+selector!accessing!private! !
+selector:!accessing!private! !
+selectorsDisplayString!displaying!public! !
+setError!public!sunit! !
+setFailure!public!sunit! !
+setPassed!public!sunit! !
+shouldReplicateInstVarAtIndex:newService:!public!replication!testing! !
+sortAspect!accessing!public! !
+source!accessing!private! !
+source:!accessing!private! !
+stepPointFromCursorIn:!presenter support!private! !
+stepPointFromCursorIn:charIndex:!presenter support!private! !
+stepPoints!public! !
+subSuperIcon!displaying!public! !
+superDisplayString!accessing!private! !
+superDisplayString:!accessing!private! !
+testResult!accessing!public! !
+testResult:!accessing!public! !
+testResultUpdate:browser:!public!updating! !
+toolTip!accessing!displaying!private! !
+unimplementedSelectors!public! !
+updateBreakPoints:browser:!public!updating! !
+updateSelectorFromCompiledMethod:!private! !
+user!accessing!private! !
+user:!accessing!private! !
+!
 
 !RowanMethodService class methodsFor!
 
@@ -699,7 +701,9 @@ icon
 	"Answers an Icon that can be used to represent this class"
 
 	^##(self) defaultIcon ! !
-!RowanMethodService class categoriesFor: #defaultIconName!private! !
-!RowanMethodService class categoriesFor: #fakeMethodFor:selector:source:!instance creation!public! !
-!RowanMethodService class categoriesFor: #icon!private! !
+!RowanMethodService class categoriesForMethods!
+defaultIconName!private! !
+fakeMethodFor:selector:source:!instance creation!public! !
+icon!private! !
+!
 

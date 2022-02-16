@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 MethodSourcePresenter subclass: #JadeiteDebuggerMethodSourcePresenter
 	instanceVariableNames: ''
@@ -66,10 +66,12 @@ jadeInspect
 		evaluateSelectedTextIn: self
 		thenInspectInContext: self inspectorContextObject
 		debugger: self parentPresenter! !
-!JadeiteDebuggerMethodSourcePresenter categoriesFor: #clearBreakPointAt:in:!menu handlers!public! !
-!JadeiteDebuggerMethodSourcePresenter categoriesFor: #editMenuStrings!Jade!private! !
-!JadeiteDebuggerMethodSourcePresenter categoriesFor: #editRevert!edit!private! !
-!JadeiteDebuggerMethodSourcePresenter categoriesFor: #executeSelectionOrLine:!menu handlers!public! !
-!JadeiteDebuggerMethodSourcePresenter categoriesFor: #inspectorContextObject!private! !
-!JadeiteDebuggerMethodSourcePresenter categoriesFor: #jadeInspect!Jade!private! !
+!JadeiteDebuggerMethodSourcePresenter categoriesForMethods!
+clearBreakPointAt:in:!menu handlers!public! !
+editMenuStrings!Jade!private! !
+editRevert!edit!private! !
+executeSelectionOrLine:!menu handlers!public! !
+inspectorContextObject!private! !
+jadeInspect!Jade!private! !
+!
 

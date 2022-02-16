@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanPresenter subclass: #RowanMethodSelectionPresenter
 	instanceVariableNames: 'methodListPresenter methodSourcePresenter'
@@ -22,9 +22,11 @@ methodListPresenter
 
 methodSourcePresenter
 	^methodSourcePresenter! !
-!RowanMethodSelectionPresenter categoriesFor: #createComponents!public! !
-!RowanMethodSelectionPresenter categoriesFor: #methodListPresenter!accessing!private! !
-!RowanMethodSelectionPresenter categoriesFor: #methodSourcePresenter!accessing!private! !
+!RowanMethodSelectionPresenter categoriesForMethods!
+createComponents!public! !
+methodListPresenter!accessing!private! !
+methodSourcePresenter!accessing!private! !
+!
 
 !RowanMethodSelectionPresenter class methodsFor!
 
@@ -40,5 +42,7 @@ resource_Default_view
 \viewkind4\uc1\pard\f0\fs22 
 \par }
 ' 1520 578 #resetCharFormat 496 1520 674 8 #[44 0 0 0 0 0 0 0 1 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 0 0 0 0 44 1 0 0 132 3 0 0 88 2 0 0] 8 #() 1504 nil 27 1504 nil 27 )! !
-!RowanMethodSelectionPresenter class categoriesFor: #resource_Default_view!public!resources-views! !
+!RowanMethodSelectionPresenter class categoriesForMethods!
+resource_Default_view!public!resources-views! !
+!
 

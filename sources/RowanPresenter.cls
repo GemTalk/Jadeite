@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #RowanPresenter
 	instanceVariableNames: 'projectToolsOop'
@@ -28,8 +28,10 @@ projectSpecOop
 projectToolsOop
 	
 	^projectToolsOop ifNil:[projectToolsOop := gciSession executeString: 'Rowan projectTools']! !
-!RowanPresenter categoriesFor: #defaultProjectName!private! !
-!RowanPresenter categoriesFor: #defaultSymbolDictionaryName!private! !
-!RowanPresenter categoriesFor: #projectSpecOop!private! !
-!RowanPresenter categoriesFor: #projectToolsOop!private! !
+!RowanPresenter categoriesForMethods!
+defaultProjectName!private! !
+defaultSymbolDictionaryName!private! !
+projectSpecOop!private! !
+projectToolsOop!private! !
+!
 

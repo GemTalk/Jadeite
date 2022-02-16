@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanCommandResult subclass: #RowanMethodUpdate
 	instanceVariableNames: 'classOop className methodOop selector category editable source firstSendOffsets stepPoints breakPoints originalMethodSource compilationWarnings isTestClass isOverride gsMethod selected'
@@ -123,37 +123,39 @@ updateSelectedSelectorFor: presenter
 updateSelectorFor: presenter
 
 	selected ifTrue:[self updateSelectedSelectorFor: presenter].! !
-!RowanMethodUpdate categoriesFor: #breakPoints!accessing!private! !
-!RowanMethodUpdate categoriesFor: #breakPoints:!accessing!private! !
-!RowanMethodUpdate categoriesFor: #category!accessing!private! !
-!RowanMethodUpdate categoriesFor: #category:!accessing!private! !
-!RowanMethodUpdate categoriesFor: #className!accessing!private! !
-!RowanMethodUpdate categoriesFor: #className:!accessing!private! !
-!RowanMethodUpdate categoriesFor: #classOop!accessing!private! !
-!RowanMethodUpdate categoriesFor: #classOop:!accessing!private! !
-!RowanMethodUpdate categoriesFor: #compilationWarnings!accessing!private! !
-!RowanMethodUpdate categoriesFor: #compilationWarnings:!accessing!private! !
-!RowanMethodUpdate categoriesFor: #editable!accessing!private! !
-!RowanMethodUpdate categoriesFor: #editable:!accessing!private! !
-!RowanMethodUpdate categoriesFor: #firstSendOffsets!accessing!private! !
-!RowanMethodUpdate categoriesFor: #firstSendOffsets:!accessing!private! !
-!RowanMethodUpdate categoriesFor: #initialize!initialization!public! !
-!RowanMethodUpdate categoriesFor: #isOverride!accessing!private! !
-!RowanMethodUpdate categoriesFor: #isOverride:!accessing!private! !
-!RowanMethodUpdate categoriesFor: #isTestClass!accessing!private! !
-!RowanMethodUpdate categoriesFor: #isTestClass:!accessing!private! !
-!RowanMethodUpdate categoriesFor: #methodOop!accessing!private! !
-!RowanMethodUpdate categoriesFor: #methodOop:!accessing!private! !
-!RowanMethodUpdate categoriesFor: #originalMethodSource!accessing!private! !
-!RowanMethodUpdate categoriesFor: #originalMethodSource:!accessing!private! !
-!RowanMethodUpdate categoriesFor: #selected!accessing!private! !
-!RowanMethodUpdate categoriesFor: #selected:!accessing!private! !
-!RowanMethodUpdate categoriesFor: #selector!accessing!private! !
-!RowanMethodUpdate categoriesFor: #selector:!accessing!private! !
-!RowanMethodUpdate categoriesFor: #source!accessing!private! !
-!RowanMethodUpdate categoriesFor: #source:!accessing!private! !
-!RowanMethodUpdate categoriesFor: #stepPoints!accessing!private! !
-!RowanMethodUpdate categoriesFor: #stepPoints:!accessing!private! !
-!RowanMethodUpdate categoriesFor: #updateSelectedSelectorFor:!public!updating! !
-!RowanMethodUpdate categoriesFor: #updateSelectorFor:!public!updating! !
+!RowanMethodUpdate categoriesForMethods!
+breakPoints!accessing!private! !
+breakPoints:!accessing!private! !
+category!accessing!private! !
+category:!accessing!private! !
+className!accessing!private! !
+className:!accessing!private! !
+classOop!accessing!private! !
+classOop:!accessing!private! !
+compilationWarnings!accessing!private! !
+compilationWarnings:!accessing!private! !
+editable!accessing!private! !
+editable:!accessing!private! !
+firstSendOffsets!accessing!private! !
+firstSendOffsets:!accessing!private! !
+initialize!initialization!public! !
+isOverride!accessing!private! !
+isOverride:!accessing!private! !
+isTestClass!accessing!private! !
+isTestClass:!accessing!private! !
+methodOop!accessing!private! !
+methodOop:!accessing!private! !
+originalMethodSource!accessing!private! !
+originalMethodSource:!accessing!private! !
+selected!accessing!private! !
+selected:!accessing!private! !
+selector!accessing!private! !
+selector:!accessing!private! !
+source!accessing!private! !
+source:!accessing!private! !
+stepPoints!accessing!private! !
+stepPoints:!accessing!private! !
+updateSelectedSelectorFor:!public!updating! !
+updateSelectorFor:!public!updating! !
+!
 
