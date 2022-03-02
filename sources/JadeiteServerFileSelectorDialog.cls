@@ -31,7 +31,8 @@ dive
 		ifTrue: 
 			[pathText value: pathText value , '/' , directoryContentsList selection key.
 			model value path: pathText value.
-			self showDirectoryContents]!
+			self showDirectoryContents]
+		ifFalse: [self select]!
 
 logoutRequested: aValueHolder
 	"Private - Opportunity to save changes."
@@ -51,7 +52,7 @@ pop
 
 select
 	| folder |
-	folder := directoryContentsList selectionOrNil ifNil: [String new] ifNotNil: [:sel | sel].
+	folder := directoryContentsList selectionOrNil ifNil: [String new] ifNotNil: [:sel | sel key].
 	pathText value: pathText value , '/' , folder.
 	self ok.
 	^pathText value!

@@ -35,6 +35,7 @@ editLoadSpecFromOop: oop
 editLoadSpecService: loadSpecService
 	self createView: self class defaultView.
 	model := loadSpecService editInSession: gciSession window: self view handle value.
+	model loadSpecOop ifNil: [^self].	"Did not succeed in creating a load spec"
 	self updateCaption.
 	model session: self gciSession.
 	myPresenter
