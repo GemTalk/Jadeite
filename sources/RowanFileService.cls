@@ -23,6 +23,12 @@ excludedInstVars
 indexOfSessionInstVar
 	^9!
 
+isDirectory: directory
+	command := #isDirectory:.
+	commandArgs := Array with: path, '/', directory.
+	self issueCommand: self session: session. 
+	^answer!
+
 path
 	^path!
 
@@ -49,7 +55,7 @@ shortNames
 			
 			[string := readStream upTo: $/.
 			readStream atEnd] whileFalse: [].
-			string]!
+			string -> assoc value]!
 
 shouldReplicateInstVarAtIndex: index newService: newService
 	self indexOfSessionInstVar = index ifTrue: [^false].
@@ -58,6 +64,7 @@ shouldReplicateInstVarAtIndex: index newService: newService
 directoryContents!commands!public! !
 excludedInstVars!private!ston! !
 indexOfSessionInstVar!public!ston! !
+isDirectory:!commands!public! !
 path!accessing!private! !
 path:!accessing!public! !
 pop!commands!public! !

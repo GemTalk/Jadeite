@@ -101,7 +101,7 @@ conditionalAttributes!accessing!private! !
 conditionalAttributes:!accessing!private! !
 excludedInstVars!private!ston! !
 export!commands!public! !
-indexOfSessionInstVar!public!replication! !
+indexOfSessionInstVar!constants!public! !
 load!commands!public! !
 loadSpecPath!accessing!private! !
 loadSpecPath:!accessing!private! !

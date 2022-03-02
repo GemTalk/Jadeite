@@ -19,9 +19,8 @@ createSchematicWiring
 
 editLoadSpecFromFile
 	| path |
-	"path := '/uffda2/users/ewinger/shared/repos/RowanSample9/rowan/specs/spec_0061.ston'."
-	path := JadeiteServerFileSelector showOnSession: gciSession. 
-	^self editLoadSpecFromFile: path!
+	path := JadeiteServerFileSelectorDialog showOnSession: gciSession.
+	path ifNotNil: [^self editLoadSpecFromFile: path]!
 
 editLoadSpecFromFile: path
 	| loadSpecService |

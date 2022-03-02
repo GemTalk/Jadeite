@@ -10,29 +10,9 @@ JadeiteServerFileSelectorPresenter comment: ''!
 !JadeiteServerFileSelectorPresenter categoriesForClass!Unclassified! !
 !JadeiteServerFileSelectorPresenter methodsFor!
 
-createComponents
-	super createComponents.
-	directoryContentsList := self add: ListPresenter new name: 'directoryContentsList'.
-	pathText := self add: TextPresenter new name: 'pathText'!
-
-createSchematicWiring
-	super createSchematicWiring.
-	directoryContentsList
-		when: #selectionChanged
-		send: #entitySelected
-		to: self.
-	directoryContentsList
-		when: #actionPerformed
-		send: #dive
-		to: self.!
-
 dive
 	model path: pathText value. 
 	self showDirectoryContents. !
-
-entitySelected
-	directoryContentsList selectionOrNil ifNil:[^self]. 
-	pathText value: model path , '/' , directoryContentsList selection!
 
 pop
 	model path: pathText value. 
@@ -68,13 +48,10 @@ select
 
 showDirectoryContents
 	| directoryContents |
-	directoryContents := model directoryContents.
+	directoryContents := model value directoryContents.
 	directoryContentsList list: directoryContents! !
 !JadeiteServerFileSelectorPresenter categoriesForMethods!
-createComponents!initialization!public! !
-createSchematicWiring!initialization!public! !
 dive!actions!public! !
-entitySelected!event handlers!public! !
 pop!actions!public! !
 popBkp!actions!public! !
 postOpen!initialization!public! !

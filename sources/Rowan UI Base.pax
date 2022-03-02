@@ -58,8 +58,7 @@ package classNames
 	add: #JadeiteRenameClassMethodListPresenter;
 	add: #JadeiteScintillaView;
 	add: #JadeiteSearch;
-	add: #JadeiteServerFileSelector;
-	add: #JadeiteServerFileSelectorPresenter;
+	add: #JadeiteServerFileSelectorDialog;
 	add: #JadeiteSmalltalkSearchPresenter;
 	add: #JadeiteSmalltalkWorkspace;
 	add: #JadeiteSUnitBrowser;
@@ -722,11 +721,6 @@ JadePresenterA subclass: #JadeitePropertyPresenter
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadePresenterA subclass: #JadeiteServerFileSelectorPresenter
-	instanceVariableNames: 'directoryContentsList pathText'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
 JadePresenterA subclass: #RowanPresenter
 	instanceVariableNames: 'projectToolsOop'
 	classVariableNames: ''
@@ -852,6 +846,11 @@ JadeTranscript subclass: #JadeiteTranscript
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+Dialog subclass: #JadeiteServerFileSelectorDialog
+	instanceVariableNames: 'directoryContentsList pathText'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 AdvancedFindDialog subclass: #JadeiteAdvancedFindDialog
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -924,11 +923,6 @@ JadeShell subclass: #JadeiteLoadSpecEditor
 	classInstanceVariableNames: ''!
 JadeShell subclass: #JadeiteLoggerShell
 	instanceVariableNames: 'clientFilenameText serverFilenameText'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-JadeShell subclass: #JadeiteServerFileSelector
-	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
