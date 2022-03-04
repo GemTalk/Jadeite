@@ -295,6 +295,8 @@ newProject: presenter!
 notRowanizedPackageName
 	^self class notRowanizedPackageName!
 
+packageGroupUpdate: presenter browser: browser!
+
 packageServices
 	"most services do not have packages"
 
@@ -611,6 +613,7 @@ methodUpdate:browser:!public!updating! !
 name!accessing!public! !
 newProject:!public!updating! !
 notRowanizedPackageName!displaying!public! !
+packageGroupUpdate:browser:!public!updating! !
 packageServices!accessing!public! !
 packagesUpdate:!public!updating! !
 packagesUpdate:browser:parentPresenter:!public!updating! !

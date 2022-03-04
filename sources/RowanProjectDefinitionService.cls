@@ -74,6 +74,27 @@ packageGroups
 packageGroups: anObject
 	packageGroups := anObject!
 
+packageGroupUpdate: presenter browser: browser
+	| treeModel allService |
+	wasUpdated ifFalse: [^self].
+	browser selectedProjectName = name ifFalse: [^self].
+	treeModel := self chooseModel: presenter using: browser.
+	treeModel isEmpty
+		ifTrue: 
+			[allService := RowanPackageGroupService all.
+			treeModel add: allService asChildOf: nil.
+			packageGroups do: [:packageGroupService | treeModel add: packageGroupService asChildOf: allService]]
+		ifFalse: 
+			[allService := treeModel roots first.
+			(treeModel childrenOf: allService)
+				do: [:displayedGroup | (packageGroups includes: displayedGroup) ifFalse: [treeModel remove: displayedGroup ifAbsent: []]].
+			packageGroups do: 
+					[:packageGroupService |
+					((treeModel childrenOf: allService) includes: packageGroupService)
+						ifFalse: [treeModel add: packageGroupService asChildOf: allService]]].
+	presenter view ensureSelectionVisible.
+	presenter view expandAll!
+
 platformProperties
 	^platformProperties!
 
@@ -150,6 +171,7 @@ excludedInstVars!public!ston! !
 movePackageNamed:toComponentNamed:!commands!public! !
 packageGroups!accessing!private! !
 packageGroups:!accessing!private! !
+packageGroupUpdate:browser:!public!updating! !
 platformProperties!accessing!private! !
 platformProperties:!accessing!private! !
 removeComponentNamed:!commands!public! !

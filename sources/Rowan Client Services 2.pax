@@ -23,7 +23,6 @@ package classNames
 	add: #RowanFillerClassService;
 	add: #RowanFrameService;
 	add: #RowanInspectorService;
-	add: #RowanLoadedProjectService;
 	add: #RowanLoadSpecService;
 	add: #RowanLoggingService;
 	add: #RowanMethodDefinitionService;
@@ -35,7 +34,6 @@ package classNames
 	add: #RowanProjectDefinitionService;
 	add: #RowanProjectService;
 	add: #RowanQueryService;
-	add: #RowanResolvedProjectService;
 	add: #RowanSemaphore;
 	add: #RowanService;
 	add: #RowanTestService;
@@ -218,7 +216,7 @@ RowanDefinitionService subclass: #RowanProjectDefinitionService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanComponentDefinitionService subclass: #RowanPackageGroupService
-	instanceVariableNames: 'condition'
+	instanceVariableNames: 'condition packageServices'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -228,16 +226,6 @@ RowanInspectorService subclass: #RowanLoadSpecService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanProjectService subclass: #RowanDefinedProjectService
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanProjectService subclass: #RowanLoadedProjectService
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-RowanProjectService subclass: #RowanResolvedProjectService
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
