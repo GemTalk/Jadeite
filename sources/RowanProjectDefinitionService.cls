@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanDefinitionService subclass: #RowanProjectDefinitionService
-	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions specService comment conditionalAttributes platformProperties packageGroups'
+	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions specService comment conditionalAttributes platformProperties packageGroups allPackagesGroupService'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -38,6 +38,19 @@ addSubcomponentNamed: subcomponentName toComponentNamed: componentName
 	commandArgs := Array with: subcomponentName with: componentName.
 	self issueCommand: self session: session!
 
+allPackagesGroupName
+	^'All Packages'!
+
+allPackagesGroupService
+	"special package group to display all packages"
+
+	^allPackagesGroupService
+		ifNil: 
+			[allPackagesGroupService := RowanPackageGroupService new
+						name: self allPackagesGroupName;
+						condition: String new;
+						projectDefinitionService: self]!
+
 comment
 	^comment!
 
@@ -61,7 +74,7 @@ conditionalAttributes: anObject
 excludedInstVars
 	"I'm not sure this is the right thing but since packageGroups does not need to be used on the server, we'll try it"
 
-	^super excludedInstVars , #('packageGroups')!
+	^super excludedInstVars , #('packageGroups' 'allPackagesGroupService')!
 
 movePackageNamed: packageName toComponentNamed: componentName
 	command := #movePackageNamed:toComponentNamed:.
@@ -79,14 +92,14 @@ packageGroupUpdate: presenter browser: browser
 	wasUpdated ifFalse: [^self].
 	browser selectedProjectName = name ifFalse: [^self].
 	treeModel := self chooseModel: presenter using: browser.
+	session := browser gciSession.
+	allService := self allPackagesGroupService.
 	treeModel isEmpty
 		ifTrue: 
-			[allService := RowanPackageGroupService all.
-			treeModel add: allService asChildOf: nil.
+			[treeModel add: allService asChildOf: nil.
 			packageGroups do: [:packageGroupService | treeModel add: packageGroupService asChildOf: allService]]
 		ifFalse: 
-			[allService := treeModel roots first.
-			(treeModel childrenOf: allService)
+			[(treeModel childrenOf: allService)
 				do: [:displayedGroup | (packageGroups includes: displayedGroup) ifFalse: [treeModel remove: displayedGroup ifAbsent: []]].
 			packageGroups do: 
 					[:packageGroupService |
@@ -161,6 +174,8 @@ addPackageGroupNamed:condition:!commands!public! !
 addPackageNamed:toComponentNamed:!commands!public! !
 addPackagesNamed:toPackageGroup:!commands!public! !
 addSubcomponentNamed:toComponentNamed:!commands!public! !
+allPackagesGroupName!constants!public! !
+allPackagesGroupService!accessing!public! !
 comment!accessing!private! !
 comment:!commands!public! !
 componentDefinitions!accessing!private! !

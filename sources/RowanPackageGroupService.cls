@@ -10,6 +10,11 @@ RowanPackageGroupService comment: ''!
 !RowanPackageGroupService categoriesForClass!Unclassified! !
 !RowanPackageGroupService methodsFor!
 
+allPackageGroupForProjectDefinition: projectDef
+	command := #computePackageNames.
+	commandArgs := Array new.
+	self issueCommand: self session: session!
+
 componentPackagesUpdate: presenter browser: browser
 	wasUpdated ifFalse:[^self].
 	packageServices isEmpty ifTrue:[^self]. 
@@ -43,6 +48,7 @@ shouldReplicateInstVarAtIndex: index newService: newService
 	self indexOfProjectDefinitionService = index ifTrue: [^false].
 	^true! !
 !RowanPackageGroupService categoriesForMethods!
+allPackageGroupForProjectDefinition:!instance creation!public! !
 componentPackagesUpdate:browser:!public!updating! !
 condition!accessing!private! !
 condition:!accessing!private! !
@@ -55,13 +61,10 @@ shouldReplicateInstVarAtIndex:newService:!public!replication! !
 
 !RowanPackageGroupService class methodsFor!
 
-all 
+allPackageGroupForProjectDefinition: projectDef 
 	"special package group for displaying all packages in the project" 
-	| inst | 
-	inst := self new. 
-	inst name: 'All Packages'. 
-	^inst! !
+	^self new allPackageGroupForProjectDefinition: projectDef ! !
 !RowanPackageGroupService class categoriesForMethods!
-all!instance creation!public! !
+allPackageGroupForProjectDefinition:!instance creation!public! !
 !
 
