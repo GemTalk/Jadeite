@@ -45,6 +45,8 @@ package classNames
 	add: #JadeiteMethodSourcePresenter;
 	add: #JadeiteMultilinePrompter;
 	add: #JadeitePackageDialog;
+	add: #JadeitePackageGroupEditor;
+	add: #JadeitePackageGroupPresenter;
 	add: #JadeitePreferences;
 	add: #JadeitePreferencesPresenter;
 	add: #JadeitePreferencesShell;
@@ -82,6 +84,7 @@ package classNames
 	add: #RowanMethodSourcePresenter;
 	add: #RowanMethodsUpdate;
 	add: #RowanMethodUpdate;
+	add: #RowanPackageGroupDefinitionService;
 	add: #RowanPackagePresenter;
 	add: #RowanPackageShell;
 	add: #RowanPackageUpdate;
@@ -225,6 +228,8 @@ package methodNames
 	add: #JadePresenter -> #insertCompileErrorText:into:;
 	add: #JadePresenter -> #issueCommand:;
 	add: #JadePresenter -> #issueCommands:;
+	add: #JadePresenter -> #myTopShell;
+	add: #JadePresenter -> #onViewClosed;
 	add: #JadePresenter -> #openBrowserInNewTab:on:;
 	add: #JadePresenter -> #openProjectBrowserOn:selector:;
 	add: #JadePresenter -> #raiseConsole;
@@ -707,12 +712,17 @@ JadePresenterA subclass: #JadeiteCommandPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource packageGroupPresenter'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenterA subclass: #JadeiteLoadSpecPresenter
 	instanceVariableNames: 'loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter hasUnwrittenChanges'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadePresenterA subclass: #JadeitePackageGroupPresenter
+	instanceVariableNames: 'packageListPresenter packageGroupPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -926,6 +936,11 @@ JadeShell subclass: #JadeiteLoggerShell
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+JadeShell subclass: #JadeitePackageGroupEditor
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 JadeShell subclass: #JadeiteSUnitBrowser
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -1008,6 +1023,11 @@ SmalltalkWorkspace subclass: #JadeiteSmalltalkWorkspace
 	classInstanceVariableNames: ''!
 TextPresenter subclass: #JadeiteCommandLinePresenter
 	instanceVariableNames: 'history historyIndex'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanPackageGroupService subclass: #RowanPackageGroupDefinitionService
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -2568,9 +2588,7 @@ executeSelectionOrLine: contextObject
 				ifFalse: [contextObject].	"services wants a local special as a context"
 	oop ifNil: [oop := 20].
 	answeringService := RowanAnsweringService new.
-	window := (self topShell isKindOf: DeafObject)
-				ifTrue: [self parentPresenter view]
-				ifFalse: [self topShell].	"must be a better way"
+	window := self myTopShell. 
 	answeringService
 		command: #exec:context:inWindow:;
 		commandArgs: (Array
@@ -2597,6 +2615,22 @@ issueCommand: service
 
 issueCommands: services
 	^self class issueCommands: services session: self gciSession!
+
+myTopShell
+	" must be a better way"
+
+	^(self topShell isKindOf: DeafObject) ifTrue: [self parentPresenter view] ifFalse: [self topShell]!
+
+onViewClosed
+	super onViewClosed.
+	self gciSession
+		ifNotNil: 
+			[:sess |
+			sess isValidSession
+				ifTrue: 
+					[| window |
+					window := self myTopShell.
+					RowanBrowserService new releaseWindow: window view handle value session: self gciSession]]!
 
 openBrowserInNewTab: openNewTab on: classService
 	| shell |
@@ -2734,6 +2768,8 @@ flipAutoCommit!menu handlers!public! !
 insertCompileErrorText:into:!compile support!public! !
 issueCommand:!browsing support!public!services! !
 issueCommands:!browsing support!public!services! !
+myTopShell!event handlers!public! !
+onViewClosed!event handlers!public! !
 openBrowserInNewTab:on:!Jade!public! !
 openProjectBrowserOn:selector:!browsing!public! !
 raiseConsole!menu handlers!public! !

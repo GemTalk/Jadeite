@@ -810,7 +810,8 @@ pkgsMenuStrings
 				unloadPackage].
 	^#('&Packages' 
 	'&Write Package...//savePackage'
-	'&Unload Package...//unloadPackage')!
+	'&Unload Package...//unloadPackage'
+	'&Edit Package Groups...//editPackageGroups')!
 
 populateFilterList
 	| listModel |

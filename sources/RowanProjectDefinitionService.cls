@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanDefinitionService subclass: #RowanProjectDefinitionService
-	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions specService comment conditionalAttributes platformProperties packageGroups allPackagesGroupService'
+	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions specService comment conditionalAttributes platformProperties packageGroups showLoadedPackageGroupsOnly allPackagesGroupService'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -75,6 +75,10 @@ excludedInstVars
 	"I'm not sure this is the right thing but since packageGroups does not need to be used on the server, we'll try it"
 
 	^super excludedInstVars , #('packageGroups' 'allPackagesGroupService')!
+
+initialize
+	super initialize.
+	showLoadedPackageGroupsOnly := true!
 
 movePackageNamed: packageName toComponentNamed: componentName
 	command := #movePackageNamed:toComponentNamed:.
@@ -159,6 +163,12 @@ renamePackageGroup: packageGroupName to: newPackageGroupName
 	commandArgs := Array with: packageGroupName with: newPackageGroupName.
 	self issueCommand: self session: session!
 
+showLoadedPackageGroupsOnly
+	^showLoadedPackageGroupsOnly!
+
+showLoadedPackageGroupsOnly: anObject
+	showLoadedPackageGroupsOnly := anObject!
+
 specService
 	^specService!
 
@@ -183,6 +193,7 @@ componentDefinitions:!accessing!private! !
 conditionalAttributes!accessing!private! !
 conditionalAttributes:!accessing!private! !
 excludedInstVars!public!ston! !
+initialize!initialization!public! !
 movePackageNamed:toComponentNamed:!commands!public! !
 packageGroups!accessing!private! !
 packageGroups:!accessing!private! !
@@ -197,6 +208,8 @@ removePackagesNamed:fromPackageGroupNamed:!commands!public! !
 renameComponentNamed:to:!commands!public! !
 renamePackage:to:!commands!public! !
 renamePackageGroup:to:!commands!public! !
+showLoadedPackageGroupsOnly!accessing!private! !
+showLoadedPackageGroupsOnly:!accessing!private! !
 specService!accessing!private! !
 specService:!accessing!private! !
 updateInSession:!commands!public! !

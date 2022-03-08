@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource packageGroupPresenter'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -29,15 +29,6 @@ addConditionalAttribute
 	self displayConditionalAttributes.
 	conditionalAttributesPresenter selectionByIndex: model conditionalAttributes size.
 	self conditionalAttributeItem: attribute updatedAtIndex: model conditionalAttributes size!
-
-addNewPackageToPackageGroup
-	| packageName |
-	packageName := Prompter prompt: 'Please enter a package name ...'
-				caption: 'Add Package to ' , packageGroupPresenter selection name.
-	packageName ifNil: [^self].
-	model addPackagesNamed: (Array with: packageName)
-		toPackageGroup: packageGroupPresenter selections first name.
-	self displayPackageGroupPackages!
 
 addPackage
 	| packageName |
@@ -88,7 +79,6 @@ componentListPresenter
 	^componentListPresenter!
 
 componentSelectionChanged
-	packageGroupPresenter resetSelection.
 	self resetPrePostLoadSource!
 
 conditionalAttributeItem: new updatedAtIndex: index
@@ -98,6 +88,7 @@ conditionalAttributeItem: new updatedAtIndex: index
 	self issueProjectDefinitionCommand!
 
 createComponents
+	super createComponents.
 	componentListPresenter := self add: JadeiteTreePresenter new name: 'componentListPresenter'.
 	packageListPresenter := self add: ListPresenter new name: 'packageListPresenter'.
 	componentPropertyPresenter := self add: JadeitePropertyPresenter new
@@ -106,8 +97,7 @@ createComponents
 	commentPresenter := self add: TextPresenter new name: 'commentPresenter'.
 	conditionalAttributesPresenter := self add: ListPresenter new name: 'conditionalAttributesPresenter'.
 	platformPropertiesPresenter := self add: ListPresenter new name: 'platformPropertiesPresenter'.
-	prePostLoadSource := self add: TextPresenter new name: 'prePostLoadSource'.
-	packageGroupPresenter := self add: ListPresenter new name: 'packageGroupPresenter'.!
+	prePostLoadSource := self add: TextPresenter new name: 'prePostLoadSource'!
 
 createSchematicWiring
 	commentPresenter
@@ -158,19 +148,6 @@ createSchematicWiring
 		when: #focusLost
 		send: #prePostLoadChanged
 		to: self.
-	packageGroupPresenter
-		when: #selectionChanged
-			send: #packageGroupSelectionChanged
-			to: self;
-		when: #drop:
-			send: #onDropPackageToPackageGroup:
-			to: self;
-		when: #dragOver:
-			send: #onDragOverPackageGroup:
-			to: self;
-		when: #dragEnter
-			send: #onDragOverPackageGroup:
-			to: self.
 	packageListPresenter
 		when: #labelOf:editedTo:accept:
 		send: #packageLabelOf:editedTo:accept:
@@ -222,23 +199,6 @@ displayLoadSpecification
 				collect: [:assoc | Array with: assoc key with: assoc value asString].
 	assocs := assocs asSortedCollection: [:x :y | x first < y first].
 	loadSpecPresenter list: assocs asArray"!
-
-displayPackageGroupPackages
-	| packageNames |
-	packageGroupPresenter selections isEmpty ifTrue: [^self].
-	packageListPresenter clear.
-	packageNames := SortedCollection new.
-	packageGroupPresenter selections do: 
-			[:packageGroupService |
-			packageGroupService
-				command: #packageNames;
-				projectDefinitionService: model.
-			self issueCommand: packageGroupService.
-			packageNames addAll: packageGroupService packageNames].
-	packageListPresenter list: packageNames!
-
-displayPackageGroups
-	packageGroupPresenter list: model packageGroups!
 
 displayPrePostLoadSources
 	| list |
@@ -331,14 +291,6 @@ onDragOverComponentTree: dragDropSession
 	dragDropSession operation: #move.
 	dragDropSession dragObjects: newDragObjects.!
 
-onDragOverPackageGroup: dragDropSession
-		| newDragObjects |
-	newDragObjects := packageListPresenter selections
-				collect: [:packageName | dragDropSession newDragObject: packageName].
-	dragDropSession supportedOperations: #(#copy).
-	dragDropSession operation: #copy.
-	dragDropSession dragObjects: newDragObjects.!
-
 onDragPackageToComponent: dragDropSession
 	| newDragObjects |
 	newDragObjects := packageListPresenter selections
@@ -352,12 +304,6 @@ onDropPackageToComponent: dragDropSession
 		do: [:dragObject | model movePackageNamed: dragObject object toComponentNamed: dragDropSession suggestedTarget name].
 	self displayPackageGroupPackages!
 
-onDropPackageToPackageGroup: dragDropSession
-	model addPackagesNamed: (dragDropSession dragObjects collect: [:ea | ea object])
-		toPackageGroup: dragDropSession suggestedTarget name.
-	packageGroupPresenter selection: dragDropSession suggestedTarget.
-	self displayPackageGroupPackages!
-
 onViewClosed
 	super onViewClosed.
 	BrowserUpdate current removeEventsTriggeredFor: componentListPresenter.!
@@ -366,10 +312,6 @@ onViewOpened
 	super onViewOpened.
 	self registerPresentersForUpdates.
 	self updateService: model.!
-
-packageGroupSelectionChanged
-	componentListPresenter resetSelection.
-	self displayPackageGroupPackages!
 
 packageLabelOf: packageName editedTo: value accept: accept
 	packageName = value ifTrue: [^self].
@@ -416,10 +358,6 @@ projectListPresenter
 	^nil!
 
 queryCommand: query
-	query command = #removePackageFromPackageGroup
-		ifTrue: 
-			[query isEnabled: packageGroupPresenter selections size = 1.
-			^true].
 	query command = #removePackagesFromProjectDefinition
 		ifTrue: 
 			[query isEnabled: componentListPresenter selections notEmpty.
@@ -449,23 +387,6 @@ removeConditionalAttribute
 				[model conditionalAttributes removeAtIndex: conditionalAttributesPresenter selectionByIndex.
 				self displayConditionalAttributes.
 				self conditionalAttributeItem: nil updatedAtIndex: model conditionalAttributes size]!
-
-removePackageFromPackageGroup
-	packageGroupPresenter selections size = 1
-		ifFalse: [^MessageBox notify: 'Must have only one package group selected'].
-	(MessageBox
-		confirm: 'Really remove ' , packageListPresenter selections printString , ' from package group '
-				, packageListPresenter selection , '?')
-			ifFalse: [^self].
-	model removePackagesNamed: packageListPresenter selections
-		fromPackageGroupNamed: packageGroupPresenter selection name.
-	self displayPackageGroupPackages!
-
-removePackageGroups
-	(MessageBox confirm: 'Really remove package group(s)?' , '''?')
-		ifTrue: 
-			[model removePackageGroupsNamed: packageGroupPresenter selections.
-			self displayPackageGroups]!
 
 removePackagesFromProjectDefinition
 	packageListPresenter selectionOrNil ifNil: [^self].
@@ -506,7 +427,6 @@ updatePrePostSource
 !JadeiteComponentPresenter categoriesForMethods!
 addComponent!menu handlers!public! !
 addConditionalAttribute!menu handlers!public! !
-addNewPackageToPackageGroup!menu handlers!public! !
 addPackage!menu handlers!public! !
 addPackageGroup!menu handlers!public! !
 addPostLoadSelector!menu handlers!public! !
@@ -521,8 +441,6 @@ displayComponentPackages!displaying!public! !
 displayComponents!displaying!public! !
 displayConditionalAttributes!displaying!public! !
 displayLoadSpecification!displaying!public! !
-displayPackageGroupPackages!displaying!public! !
-displayPackageGroups!displaying!public! !
 displayPrePostLoadSources!displaying!public! !
 displayTabs!displaying!event handlers!public! !
 editLoadSpec!menu handlers!public! !
@@ -536,13 +454,10 @@ loadSpecItem:updatedAtIndex:!event handlers!public! !
 model:!accessing!public! !
 nonNilComponentDefinitionRoots!private! !
 onDragOverComponentTree:!drag & drop!public! !
-onDragOverPackageGroup:!drag & drop!public! !
 onDragPackageToComponent:!drag & drop!event handlers!public! !
 onDropPackageToComponent:!drag & drop!event handlers!public! !
-onDropPackageToPackageGroup:!drag & drop!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
-packageGroupSelectionChanged!event handlers!public! !
 packageLabelOf:editedTo:accept:!event handlers!public! !
 platformPropertyItem:updatedAtIndex:!event handlers!public! !
 prePostLoadChanged!event handlers!public! !
@@ -552,8 +467,6 @@ queryCommand:!menu handlers!public! !
 registerPresentersForUpdates!public!register presenters! !
 removeComponent!menu handlers!public! !
 removeConditionalAttribute!menu handlers!public! !
-removePackageFromPackageGroup!menu handlers!public! !
-removePackageGroups!menu handlers!public! !
 removePackagesFromProjectDefinition!menu handlers!public! !
 renameComponent!menu handlers!public! !
 renamePackage!menu handlers!public! !
