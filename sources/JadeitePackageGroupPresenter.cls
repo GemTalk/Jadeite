@@ -12,6 +12,7 @@ JadeitePackageGroupPresenter comment: ''!
 
 addNewPackageToPackageGroup
 	| packageName |
+	packageGroupPresenter selectionOrNil ifNil: [^MessageBox notify: 'Must select a package group'].
 	packageName := Prompter prompt: 'Please enter a package name ...'
 				caption: 'Add Package to ' , packageGroupPresenter selection name.
 	packageName ifNil: [^self].
@@ -60,6 +61,11 @@ displayPackageGroupPackages
 
 displayPackageGroups
 	packageGroupPresenter list: model packageGroups!
+
+export
+	model export!
+
+load!
 
 onDragOverPackageGroup: dragDropSession
 		| newDragObjects |
@@ -124,6 +130,8 @@ createComponents!initialization!public! !
 createSchematicWiring!initialization!public! !
 displayPackageGroupPackages!displaying!public! !
 displayPackageGroups!displaying!public! !
+export!public! !
+load!public! !
 onDragOverPackageGroup:!drag & drop!public! !
 onDragPackageToComponent:!drag & drop!event handlers!public! !
 onDropPackageToComponent:!drag & drop!event handlers!public! !

@@ -76,6 +76,11 @@ excludedInstVars
 
 	^super excludedInstVars , #('packageGroups' 'allPackagesGroupService')!
 
+export
+	command := #export.
+	commandArgs := Array new.
+	self issueCommand: self session: session!
+
 initialize
 	super initialize.
 	showLoadedPackageGroupsOnly := true!
@@ -193,6 +198,7 @@ componentDefinitions:!accessing!private! !
 conditionalAttributes!accessing!private! !
 conditionalAttributes:!accessing!private! !
 excludedInstVars!public!ston! !
+export!commands!public! !
 initialize!initialization!public! !
 movePackageNamed:toComponentNamed:!commands!public! !
 packageGroups!accessing!private! !
