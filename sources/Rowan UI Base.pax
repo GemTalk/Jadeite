@@ -782,7 +782,7 @@ RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement componentListPresenter componentPackageContainer packageDictionaryContainer loadSpecTab'
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement componentListPresenter componentPackageContainer packageDictionaryContainer'
 	classVariableNames: ''
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!

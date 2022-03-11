@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement componentListPresenter componentPackageContainer packageDictionaryContainer loadSpecTab'
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement componentListPresenter componentPackageContainer packageDictionaryContainer'
 	classVariableNames: ''
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
@@ -250,24 +250,6 @@ buildInfoTab: infoTab
 		getContentsBlock: [:each | (each at: 2) ifNil: [String new] ifNotNil: [:iv | (each at: 1) instVarNamed: iv]].
 	^infoTabView!
 
-buildLoadSpecTabIfNecessary
-	| loadSpecTabView cardLabel |
-	loadSpecTab
-		ifNil: 
-			[loadSpecTab := ListPresenter new.
-			loadSpecTabView := self buildInfoTab: loadSpecTab]
-		ifNotNil: [loadSpecTabView := loadSpecTab view].
-	loadSpecTabView contextMenu: self loadSpecMenu.
-	(loadSpecTabView allColumns at: 1) getContentsBlock: [:each | each first].
-	(loadSpecTabView allColumns at: 2) getContentsBlock: [:each | each last].
-	cardLabel := CardLabel text: 'Load Spec'.
-	cardLabel iconBlock: [Icon fromId: (File composeStem: 'Collection' extension: 'ico')].
-	loadSpecTabView
-		arrangement: cardLabel;
-		getImageBlock: nil;
-		name: 'loadSpecTab'.
-	^loadSpecTabView!
-
 buildPreferencesMenu
 	| preferencesMenu showPackageItem |
 	preferencesMenu := Menu fromStrings: self preferencesMenuStrings.
@@ -374,15 +356,8 @@ contextObject
 	^self selectedClass ifNil: [^gciSession oopNil value] ifNotNil: [:classService | classService oop]!
 
 copyInfo
-	self isProjectInfoTabSelected ifTrue: [self copyProjectInfo].
-	self isLoadSpecTabSelected ifTrue: [self copyLoadSpecInfo]!
-
-copyLoadSpecInfo
-	loadSpecTab selectionIfNone: 
-			[MessageBox notify: 'No selection to copy'.
-			^self].
-	loadSpecTab selection last ifNil: [^self].
-	loadSpecTab selection last copyToClipboard!
+	self copyProjectInfo
+	!
 
 copyProjectInfo
 	projectInfoTab selectionIfNone: 
@@ -921,20 +896,6 @@ jadeInspect
 loadProjects
 	self loadProjectsFrom: self.
 	self findRemovedServices!
-
-loadSpecMenu
-	^Menu fromStrings: self loadSpecMenuStrings!
-
-loadSpecMenuStrings
-	self rowanFixMe.	"this really is a cumbersome way to build a menu."
-	0 == 1
-		ifTrue: 
-			[self
-				copyLoadSpecInfo
-				].
-	^#('Dictionaries' 
-	'Copy//copyLoadSpecInfo'
-	'Browse Commit In GitHub//openCommitInGitHub')!
 
 makeSameSelectionsIn: newPresenter as: previousPresenter
 	| projectService packageService dictionaryService classService isMeta methodService |
@@ -1484,12 +1445,7 @@ reloadV2Project
 	^self loadProjects!
 
 removeAppropriateTab
-	self isNoneProjectSelected
-		ifTrue: 
-			[self
-				removeProjectTab;
-				removeLoadSpecTab]
-		ifFalse: [self removeGlobalsTab]!
+	self isNoneProjectSelected ifTrue: [self removeProjectTab] ifFalse: [self removeGlobalsTab]!
 
 removeClass
 	| classService answeringService classReferenceBrowser queryService |
@@ -1537,12 +1493,6 @@ removeGlobalsTab
 	globalsTabView := self view viewNamed: 'globalsTab' ifNone: [nil].
 	globalsTabView ifNotNil: [self textAreaTabs removeSubView: globalsTabView].
 	globalsTab := nil!
-
-removeLoadSpecTab
-	| loadSpecTabView |
-	loadSpecTabView := self view viewNamed: 'loadSpecTab' ifNone: [nil].
-	loadSpecTabView ifNotNil: [self textAreaTabs removeSubView: loadSpecTabView].
-	loadSpecTab := nil!
 
 removeProjectTab
 	| projectInfoView |
@@ -1869,13 +1819,6 @@ updateHierarchyForPacktionaries
 				commandArgs: (Array with: self selectedPackageNames)].
 	self issueCommand: service!
 
-updateLoadSpecInfoTabFor: service
-	| ws |
-	ws := Array writeStream: 1.
-	service specService objects
-		do: [:assoc | ws nextPut: (Array with: assoc key with: assoc value)].
-	loadSpecTab list: ws contents!
-
 updateMenuBar
 	| shellView menuBar methodFilterMenu textAreaMenu methodMenu |
 	methodFilterMenu := Menu fromStrings: (self isCategoryTabSelected
@@ -1947,11 +1890,9 @@ updateProjectInfo
 	self removeAppropriateTab.
 	self isNoneProjectSelected ifTrue: [^self buildGlobalsTab].
 	self buildProjectTabIfNecessary.
-	self buildLoadSpecTabIfNecessary.
 	service := projectListPresenter selectionIfNone: [^projectInfoTab list: ListModel new].
 	self updateTabLabel.
-	self updateProjectInfoTabFor: service.
-	self updateLoadSpecInfoTabFor: service.!
+	self updateProjectInfoTabFor: service!
 
 updateProjectInfoTabFor: service
 	| array |
@@ -2020,7 +1961,6 @@ browseSelectedCategoryMethods!menu handlers!public!queries! !
 browseSelectedMethods!menu handlers!public!queries! !
 buildGlobalsTab!private!tabs! !
 buildInfoTab:!private!tabs! !
-buildLoadSpecTabIfNecessary!private!tabs! !
 buildPreferencesMenu!menus!private!updating! !
 buildProjectTabIfNecessary!private!tabs! !
 categoriesMenuStrings!menus!public! !
@@ -2033,7 +1973,6 @@ comparisonPresenter!accessing!public! !
 componentListPresenter!accessing!private! !
 contextObject!menu handlers support!private! !
 copyInfo!menu handlers!public! !
-copyLoadSpecInfo!menu handlers!public! !
 copyProjectInfo!menu handlers!public! !
 createComponents!initialize/release!public! !
 createListViewFor:!private! !
@@ -2094,8 +2033,6 @@ isSourceTabSelected!public!testing! !
 isSunitTabSelected!public!testing! !
 jadeInspect!menu handlers!public! !
 loadProjects!menu handlers support!private! !
-loadSpecMenu!menus!public! !
-loadSpecMenuStrings!menus!public! !
 makeSameSelectionsIn:as:!menu handlers!menu handlers support!private! !
 maxAutoCompleteListSize!constants!public! !
 methodMenu:!menu handlers support!private! !
@@ -2153,7 +2090,6 @@ removeClass!menu handlers!public! !
 removeDictionaries!menu handlers!public! !
 removeGlobal!menu handlers!public! !
 removeGlobalsTab!private!tabs! !
-removeLoadSpecTab!private!tabs! !
 removeProjectTab!private!tabs! !
 resetClassTemplate!private! !
 resetFontSize!menu handlers!public! !
@@ -2196,7 +2132,6 @@ updateDictionary!public!updating! !
 updateGlobalsTab!private!tabs! !
 updateHierarchy!public!updating! !
 updateHierarchyForPacktionaries!private!updating! !
-updateLoadSpecInfoTabFor:!private!tabs! !
 updateMenuBar!menus!public!updating! !
 updateMethodSourceColor!public!updating! !
 updatePackageGroupPackages!event handlers!public!updating! !
