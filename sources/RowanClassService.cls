@@ -178,14 +178,14 @@ expand
 expand: anObject
 	expand := anObject!
 
-filterMethods: browser
-	| visibleMethods |
-	browser isCategoryTabSelected
-		ifTrue: [visibleMethods := methods select: [:methodService | filters includes: methodService category]]
+filterMethods: browser 
+	^browser isCategoryTabSelected
+		ifTrue: [methods select: [:methodService | filters includes: methodService category]]
 		ifFalse: 
-			[visibleMethods := methods
-						select: [:methodService | (filters intersection: methodService accessedInstVars) notEmpty]].
-	^visibleMethods!
+			[browser isVariablesTabSelected
+				ifTrue: 
+					[methods select: [:methodService | (filters intersection: methodService accessedInstVars) notEmpty]]
+				ifFalse: [methods select: [:methodService | filters includes: methodService definedPackage]]]!
 
 filters
 	^filters!
@@ -195,15 +195,20 @@ filters: anObject
 
 filterUpdate: presenter browser: browser
 	browser selectedClass ifNil: [^self].
-	browser selectedClass name asString = name asString ifFalse: [^self]. 
+	browser selectedClass name asString = name asString ifFalse: [^self].
 	presenter model isEmpty ifTrue: [presenter list: SortedCollection new].
 	browser isCategoryTabSelected
 		ifTrue: 
 			[presenter list = categories ifTrue: [^self].
 			self updateCategories: presenter browser: browser]
 		ifFalse: 
-			[presenter list = variables ifTrue: [^self].
-			self updateVariables: presenter]!
+			[browser isVariablesTabSelected
+				ifTrue: 
+					[presenter list = variables ifTrue: [^self].
+					self updateVariables: presenter]
+				ifFalse: 
+					[presenter list = self methodPackages ifTrue: [^self].
+					self updateMethodPackages: presenter]]!
 
 hash
 	^self name hash!
@@ -289,6 +294,9 @@ meta
 
 meta: anObject
 	meta := anObject!
+
+methodPackages
+	^(methods collect: [:methodService | methodService definedPackage]) asSet asOrderedCollection!
 
 methods
 	^methods!
@@ -525,9 +533,10 @@ updateCategories: presenter browser: browser
 
 	| theModel |
 	meta = browser isClassSideSelected ifFalse: [^self].
+	browser isCategoryTabSelected ifFalse:[^self].
 	theModel := presenter hasSelection ifTrue: [presenter model] ifFalse: [presenter model copy].
 	presenter list copy
-		do: [:category | (categories includes: category) ifFalse: [theModel remove: category]].
+		do: [:category | (categories includes: category) ifFalse: [theModel remove: category ifAbsent:[]]].
 	categories do: [:category | (presenter list includes: category) ifFalse: [theModel add: category]].
 	presenter hasSelection ifFalse: [presenter model: theModel]!
 
@@ -594,6 +603,9 @@ updateListIn: presenter from: visibleMethods
 	(presenter parentPresenter class canUnderstand: #updateSUnitTab)
 		ifTrue: [presenter parentPresenter updateSUnitTab].
 	theModel == presenter model ifFalse: [presenter model: theModel]!
+
+updateMethodPackages: presenter
+	presenter list: self methodPackages!
 
 updateVariables: presenter
 	variables ifNil: [^self].
@@ -672,6 +684,7 @@ isNewClass:!accessing!private! !
 isTestCase!public!testing! !
 meta!accessing!private! !
 meta:!accessing!private! !
+methodPackages!accessing!public! !
 methods!accessing!private! !
 methods:!accessing!private! !
 methodsWithBreakpoints!public!testing! !
@@ -717,6 +730,7 @@ updatedClassDefinition:browser:!public!updating! !
 updatedClassInHierarchy:browser:!public!updating! !
 updatedOneLevelInClassHierarchy:browser:!public!updating! !
 updateListIn:from:!private!updating support! !
+updateMethodPackages:!private!updating support! !
 updateVariables:!private!updating support! !
 variables!accessing!private! !
 version!accessing!private! !

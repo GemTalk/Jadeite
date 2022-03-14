@@ -1070,46 +1070,78 @@ refreshClassListOrHierarchy
 					["No selection if in the refreshing after rename. Done later"
 					self selectMethods: selectedMethods]]!
 
-refreshMethodsOn: presenter
-	| classService |
-	classService := self selectedClass ifNil:[^self].
-	classService meta: self isClassSideSelected. 
-	self isCategoryTabSelected
-		ifTrue: [classService filters: categoryListPresenter selections]
-		ifFalse: [classService filters: variableListPresenter selections].
-	classService displayMethodsOn: presenter browser: self!
-
 registerClassData
 	"temporarily disabled"!
 
 registerPresentersForUpdates
-
-	BrowserUpdate current register: projectListPresenter 		selector: #projectsUpdate:browser: browser: self.
-	BrowserUpdate current register: projectListPresenter 		selector: #removedProject:.
-	BrowserUpdate current register: projectListPresenter 		selector: #newProject:.
-	BrowserUpdate current register: projectListPresenter 		selector: #projectsUpdate:.
-	BrowserUpdate current register: projectListPresenter 		selector: #removed:.
-	BrowserUpdate current register: classListPresenter 		selector: #classesUpdate:browser: browser: self.
-	BrowserUpdate current register: classListPresenter 		selector: #removedClass:.
-	BrowserUpdate current register: classListPresenter 		selector: #updatedClass:browser: browser: self.
-	BrowserUpdate current register: classDefinitionPresenter 	selector: #updatedClassDefinition:browser: browser: self.
-	BrowserUpdate current register: classListPresenter 		selector: #removed:.
-	BrowserUpdate current register: packageListPresenter 		selector: #projectPackagesUpdate:browser: browser: self.
-	BrowserUpdate current register: packageListPresenter 		selector: #removed:.
-	BrowserUpdate current register: packageListPresenter 		selector: #packageUpdate:.
-	BrowserUpdate current register: categoryListPresenter 	selector: #filterUpdate:browser: browser: self.
-	BrowserUpdate current register: classHierarchyPresenter 	selector: #classHierarchyUpdate:browser: browser: self.
-	BrowserUpdate current register: classListPresenter 		selector: #updatedClass:browser: browser: self.
-	BrowserUpdate current register: classHierarchyPresenter 	selector: #removedClass:.
-	BrowserUpdate current register: classHierarchyPresenter 	selector: #updatedClass:browser: browser: self.
-	BrowserUpdate current register: classHierarchyPresenter 	selector: #updatedClassInHierarchy:browser: browser: self.
-	BrowserUpdate current register: classHierarchyPresenter      selector: #updatedOneLevelInClassHierarchy:browser: browser: self. 
-	BrowserUpdate current register: classHierarchyPresenter 	selector: #removed:.
-	BrowserUpdate current register: variableListPresenter 	selector: #filterUpdate:browser: browser: self.
-	BrowserUpdate current register: methodListPresenter 	selector: #classMethodsUpdate:browser: browser: self.
-	BrowserUpdate current register: methodListPresenter 	selector: #removed:.
-	BrowserUpdate current register: methodSourcePresenter 	selector: #methodSourceUpdate:browser: browser: self. 
-	BrowserUpdate current register: self 					selector: #autoCommitUpdate:.!
+	BrowserUpdate current
+		register: projectListPresenter
+		selector: #projectsUpdate:browser:
+		browser: self.
+	BrowserUpdate current register: projectListPresenter selector: #removedProject:.
+	BrowserUpdate current register: projectListPresenter selector: #newProject:.
+	BrowserUpdate current register: projectListPresenter selector: #projectsUpdate:.
+	BrowserUpdate current register: projectListPresenter selector: #removed:.
+	BrowserUpdate current
+		register: classListPresenter
+		selector: #classesUpdate:browser:
+		browser: self.
+	BrowserUpdate current register: classListPresenter selector: #removedClass:.
+	BrowserUpdate current
+		register: classListPresenter
+		selector: #updatedClass:browser:
+		browser: self.
+	BrowserUpdate current
+		register: classDefinitionPresenter
+		selector: #updatedClassDefinition:browser:
+		browser: self.
+	BrowserUpdate current register: classListPresenter selector: #removed:.
+	BrowserUpdate current
+		register: packageListPresenter
+		selector: #projectPackagesUpdate:browser:
+		browser: self.
+	BrowserUpdate current register: packageListPresenter selector: #removed:.
+	BrowserUpdate current register: packageListPresenter selector: #packageUpdate:.
+	BrowserUpdate current
+		register: categoryListPresenter
+		selector: #filterUpdate:browser:
+		browser: self.
+	BrowserUpdate current
+		register: variableListPresenter
+		selector: #filterUpdate:browser:
+		browser: self.
+	BrowserUpdate current
+		register: classHierarchyPresenter
+		selector: #classHierarchyUpdate:browser:
+		browser: self.
+	BrowserUpdate current
+		register: classListPresenter
+		selector: #updatedClass:browser:
+		browser: self.
+	BrowserUpdate current register: classHierarchyPresenter selector: #removedClass:.
+	BrowserUpdate current
+		register: classHierarchyPresenter
+		selector: #updatedClass:browser:
+		browser: self.
+	BrowserUpdate current
+		register: classHierarchyPresenter
+		selector: #updatedClassInHierarchy:browser:
+		browser: self.
+	BrowserUpdate current
+		register: classHierarchyPresenter
+		selector: #updatedOneLevelInClassHierarchy:browser:
+		browser: self.
+	BrowserUpdate current register: classHierarchyPresenter selector: #removed:.
+	BrowserUpdate current
+		register: methodListPresenter
+		selector: #classMethodsUpdate:browser:
+		browser: self.
+	BrowserUpdate current register: methodListPresenter selector: #removed:.
+	BrowserUpdate current
+		register: methodSourcePresenter
+		selector: #methodSourceUpdate:browser:
+		browser: self.
+	BrowserUpdate current register: self selector: #autoCommitUpdate:!
 
 releasedReferencedServices: selectionChangingEvent
 	selectionChangingEvent window presenter selectionOrNil ifNotNil: [:service | service postUpdate]!
@@ -1310,11 +1342,6 @@ selectedClasses
 
 selectedClassName
 	^self selectedClass name!
-
-selectedFilters
-	^self isCategoryTabSelected
-		ifTrue: [categoryListPresenter selections]
-		ifFalse: [variableListPresenter selections]!
 
 selectedMethodCategory
 	^methodListPresenter selectionOrNil ifNotNil: [:methodService | methodService category]!
@@ -1768,7 +1795,6 @@ projectListPresenter!accessing!public! !
 queryCommand:!menu handlers support!private! !
 redrawAllViews!displaying!public! !
 refreshClassListOrHierarchy!event handlers!public!updating! !
-refreshMethodsOn:!event handlers!public! !
 registerClassData!public!updating! !
 registerPresentersForUpdates!event handlers!initialize/release!private!register presenters! !
 releasedReferencedServices:!event handlers!public! !
@@ -1802,7 +1828,6 @@ selectComparisonTab!public!selection! !
 selectedClass!private!selection! !
 selectedClasses!private!selection! !
 selectedClassName!private!selection! !
-selectedFilters!accessing!public! !
 selectedMethodCategory!menu handlers support!private! !
 selectedMethodName!menu handlers!public! !
 selectedPackageNames!public!selection! !
