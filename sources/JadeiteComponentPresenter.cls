@@ -252,7 +252,7 @@ issueProjectDefinitionCommand
 					| old |
 					old := componentListPresenter model asBag detect: [:oldDef | oldDef name = new name] ifNone: [].
 					old ifNotNil: [old replicateFrom: new]].
-			componentListPresenter selection: componentSelection]!
+			componentListPresenter selection: componentSelection ifAbsent:[]]!
 
 labelOf: componentService editedTo: value accept: accept
 	value isEmpty ifTrue: [^self].
@@ -301,8 +301,7 @@ onDragPackageToComponent: dragDropSession
 
 onDropPackageToComponent: dragDropSession
 	dragDropSession dragObjects
-		do: [:dragObject | model movePackageNamed: dragObject object toComponentNamed: dragDropSession suggestedTarget name].
-	self displayPackageGroupPackages!
+		do: [:dragObject | model movePackageNamed: dragObject object toComponentNamed: dragDropSession suggestedTarget name].!
 
 onViewClosed
 	super onViewClosed.
