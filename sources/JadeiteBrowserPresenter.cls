@@ -439,9 +439,15 @@ createSchematicWiring
 			to: self.
 	packageMethodListPresenter
 		when: #selectionChanged
-		send: #refreshMethodsOn:
-		to: self
-		with: methodListPresenter!
+			send: #refreshMethodsOn:
+			to: self
+			with: methodListPresenter;
+		when: #dragOver:
+			send: #onDragOverPackageList:
+			to: self;
+		when: #drop:
+			send: #onDropOnPackageList:
+			to: self!
 
 createSchematicWiringForClassHierarchy
 		
@@ -1115,7 +1121,11 @@ onDropMethodsOnPackageList: aSession
 onDropMethodsOnPackageList: packageService session: aSession
 	| methods |
 	methods := aSession dragObjects collect: [:each | each format: #method].
-	methods isEmpty ifFalse: [^self moveMethodsToPackageNamed: packageService name].
+	methods isEmpty
+		ifFalse: 
+			[^self moveMethodsToPackageNamed: ((packageService class canUnderstand: #name)
+						ifTrue: [packageService name]
+						ifFalse: [packageService])].
 	MessageBox notify: 'Sorry, we are not yet prepared to handle ' , aSession printString , '!!'.
 	SessionManager current pause!
 
