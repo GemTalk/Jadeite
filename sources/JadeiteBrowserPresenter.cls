@@ -1037,7 +1037,7 @@ moveClassToPackageNamed: packageName
 				yourself)!
 
 moveMethodsToPackageNamed: packageName
-	| packageServiceToSelect selectedClass selectedMethods |
+	| packageServiceToSelect selectedClass selectedMethods newSelectedMethods |
 	methodListPresenter selections isEmpty ifTrue: [^self].
 	selectedClass := self selectedClass.
 	selectedMethods := methodListPresenter selections.
@@ -1052,8 +1052,8 @@ moveMethodsToPackageNamed: packageName
 				add: packageServiceToSelect;
 				yourself).
 	self selectClassNamed: selectedClass name.
-	(methodListPresenter list includes: selectedMethods)
-		ifTrue: [methodListPresenter selections: selectedMethods].
+	newSelectedMethods := selectedMethods select:[:oldSelMethod | methodListPresenter list includes: oldSelMethod]. 
+	methodListPresenter selections: newSelectedMethods.
 	self view invalidate!
 
 moveMethodToPackage
@@ -1118,14 +1118,14 @@ onDropClassesOnPackageList: aSession
 onDropMethodsOnPackageList: aSession
 	self onDropMethodsOnPackageList: aSession suggestedTarget session: aSession!
 
-onDropMethodsOnPackageList: packageService session: aSession
+onDropMethodsOnPackageList: packageServiceOrName session: aSession
 	| methods |
 	methods := aSession dragObjects collect: [:each | each format: #method].
 	methods isEmpty
 		ifFalse: 
-			[^self moveMethodsToPackageNamed: ((packageService class canUnderstand: #name)
-						ifTrue: [packageService name]
-						ifFalse: [packageService])].
+			[^self moveMethodsToPackageNamed: ((packageServiceOrName class canUnderstand: #name)
+						ifTrue: [packageServiceOrName name]
+						ifFalse: [packageServiceOrName])].
 	MessageBox notify: 'Sorry, we are not yet prepared to handle ' , aSession printString , '!!'.
 	SessionManager current pause!
 
