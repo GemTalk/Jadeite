@@ -21,7 +21,7 @@ componentPackagesUpdate: presenter browser: browser
 	self
 		packagesUpdate: presenter
 		browser: browser
-		parentPresenter: browser componentListPresenter!
+		parentPresenter: browser packageGroupPresenter!
 
 condition
 	^condition!

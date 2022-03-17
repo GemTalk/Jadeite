@@ -309,7 +309,7 @@ packagesUpdate: presenter browser: browser parentPresenter: parentPresenter
 	(presenter class canUnderstand: #list) ifFalse: [^self].
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	parentPresenter selections detect: [:service | service name = self name] ifNone: [^self].
-	selectedComponentPackages := (browser componentListPresenter selectionIfNone: [])
+	selectedComponentPackages := (browser packageGroupPresenter selectionIfNone: [])
 				ifNil: [self packageServices]
 				ifNotNil: [:componentService | componentService packageServices].
 	packageServices := self packageServices intersection: selectedComponentPackages.
