@@ -300,8 +300,15 @@ onDragPackageToComponent: dragDropSession
 	dragDropSession dragObjects: newDragObjects.!
 
 onDropPackageToComponent: dragDropSession
+	| componentName componentToSelect packageNames |
+	componentName := dragDropSession suggestedTarget name.
 	dragDropSession dragObjects
-		do: [:dragObject | model movePackageNamed: dragObject object toComponentNamed: dragDropSession suggestedTarget name].!
+		do: [:dragObject | model movePackageNamed: dragObject object toComponentNamed: componentName].
+	componentToSelect := componentListPresenter model asBag
+				detect: [:componentService | componentService name = componentName].
+	componentListPresenter selection: componentToSelect.
+	packageNames := dragDropSession dragObjects collect: [:obj | packageListPresenter list detect:[:pkgName | pkgName = obj object]].
+	packageListPresenter selections: packageNames asArray!
 
 onViewClosed
 	super onViewClosed.
@@ -388,12 +395,12 @@ removeConditionalAttribute
 				self conditionalAttributeItem: nil updatedAtIndex: model conditionalAttributes size]!
 
 removePackagesFromProjectDefinition
-	packageListPresenter selectionOrNil ifNil: [^self].
+	packageListPresenter selections isEmpty ifTrue: [^self].
 	(MessageBox
 		confirm: 'Really remove ' , packageListPresenter selections printString , ' from project definition?')
 			ifFalse: [^self].
 	model removePackagesFromProjectDefinition: packageListPresenter selections.
-	self displayPackageGroupPackages!
+	self displayComponentPackages!
 
 renameComponent
 	componentListPresenter view editSelectionLabel.!
