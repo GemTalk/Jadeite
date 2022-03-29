@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource conditionPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -79,13 +79,23 @@ componentListPresenter
 	^componentListPresenter!
 
 componentSelectionChanged
-	self resetPrePostLoadSource!
+	conditionPresenter value: nil. 
+	self resetPrePostLoadSource.
+	self displayComponentPackages.
+	self displayPrePostLoadSources.
+	conditionPresenter view isEnabled: componentListPresenter selection isSubcomponent!
 
 conditionalAttributeItem: new updatedAtIndex: index
 	model
 		command: #setConditionalAttributes:;
 		commandArgs: (Array with: model conditionalAttributes).
 	self issueProjectDefinitionCommand!
+
+conditionChanged
+	componentListPresenter selectionOrNil ifNil: [^self].
+	conditionPresenter value ifNil:[^self]. 
+	model subcomponentNamed: componentListPresenter selection name condition: conditionPresenter value.
+	self halt. !
 
 createComponents
 	super createComponents.
@@ -97,24 +107,17 @@ createComponents
 	commentPresenter := self add: TextPresenter new name: 'commentPresenter'.
 	conditionalAttributesPresenter := self add: ListPresenter new name: 'conditionalAttributesPresenter'.
 	platformPropertiesPresenter := self add: ListPresenter new name: 'platformPropertiesPresenter'.
-	prePostLoadSource := self add: TextPresenter new name: 'prePostLoadSource'!
+	prePostLoadSource := self add: TextPresenter new name: 'prePostLoadSource'.
+	conditionPresenter := self add: TextPresenter new name: 'conditionPresenter'!
 
 createSchematicWiring
-	commentPresenter
+	conditionPresenter
 		when: #valueChanged
-		send: #commentChanged
+		send: #conditionChanged
 		to: self.
 	componentListPresenter
 		when: #labelOf:editedTo:accept:
 		send: #labelOf:editedTo:accept:
-		to: self.
-	componentListPresenter
-		when: #selectionChanged
-		send: #displayComponentPackages
-		to: self.
-	componentListPresenter
-		when: #selectionChanged
-		send: #displayPrePostLoadSources
 		to: self.
 	componentListPresenter
 		when: #drop:
@@ -168,7 +171,6 @@ displayComponentPackages
 	packageListPresenter list: packageNames!
 
 displayComponents
-
 	| treeModel |
 	treeModel := componentListPresenter model.
 	model componentDefinitions keysAndValuesDo: 
@@ -182,8 +184,11 @@ displayComponents
 								ifNone: [nil]].
 			children do: 
 					[:child |
-					| componentDefinitionService |
-					componentDefinitionService := RowanComponentDefinitionService new
+					| componentDefinitionService componentDefinitionClass |
+					componentDefinitionClass := child isSubcomponent
+								ifTrue: [RowanSubcomponentDefinitionService]
+								ifFalse: [RowanComponentDefinitionService].
+					componentDefinitionService := componentDefinitionClass new
 								name: child name;
 								projectDefinitionService: model.
 					treeModel add: componentDefinitionService asChildOf: parentDefinitionService]].
@@ -441,6 +446,7 @@ commentChanged!event handlers!public! !
 componentListPresenter!accessing!public! !
 componentSelectionChanged!event handlers!public! !
 conditionalAttributeItem:updatedAtIndex:!event handlers!public! !
+conditionChanged!event handlers!public! !
 createComponents!initialization!public! !
 createSchematicWiring!initialization!public! !
 displayComponentPackages!displaying!public! !

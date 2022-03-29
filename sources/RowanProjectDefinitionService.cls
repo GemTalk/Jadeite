@@ -180,6 +180,11 @@ specService
 specService: anObject
 	specService := anObject!
 
+subcomponentNamed: subcomponentName condition: condition
+	command := #subcomponentNamed:condition:.
+	commandArgs := Array with: subcomponentName with: condition.
+	self issueCommand: self session: session!
+
 updateInSession: session
 	command := #update.
 	^self issueCommand: self session: session! !
@@ -218,6 +223,7 @@ showLoadedPackageGroupsOnly!accessing!private! !
 showLoadedPackageGroupsOnly:!accessing!private! !
 specService!accessing!private! !
 specService:!accessing!private! !
+subcomponentNamed:condition:!commands!public! !
 updateInSession:!commands!public! !
 !
 

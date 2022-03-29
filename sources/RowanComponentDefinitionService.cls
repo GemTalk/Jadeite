@@ -16,6 +16,10 @@ comment
 comment: anObject
 	comment := anObject!
 
+isSubcomponent
+
+	^false!
+
 packageNames
 	^packageNames!
 
@@ -51,6 +55,7 @@ projectNames: anObject
 !RowanComponentDefinitionService categoriesForMethods!
 comment!accessing!private! !
 comment:!accessing!private! !
+isSubcomponent!public!testing! !
 packageNames!accessing!private! !
 packageNames:!accessing!private! !
 postloadDoitName!accessing!private! !

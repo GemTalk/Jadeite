@@ -36,6 +36,7 @@ package classNames
 	add: #RowanQueryService;
 	add: #RowanSemaphore;
 	add: #RowanService;
+	add: #RowanSubcomponentDefinitionService;
 	add: #RowanTestService;
 	add: #RowanVariableService;
 	yourself.
@@ -217,6 +218,11 @@ RowanDefinitionService subclass: #RowanProjectDefinitionService
 	classInstanceVariableNames: ''!
 RowanComponentDefinitionService subclass: #RowanPackageGroupService
 	instanceVariableNames: 'condition packageServices'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanComponentDefinitionService subclass: #RowanSubcomponentDefinitionService
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
