@@ -20,6 +20,11 @@ hasPlaceholderChild: object
 	children isEmpty ifTrue: [^false].
 	^children anyOne isKindOf: RowanFillerClassService!
 
+selectAll
+	"can't select all in a tree view" 
+
+	!
+
 tvnItemExpanding: pNMHDR
 	| object nmtv |
 	nmtv := self notificationClass fromAddress: pNMHDR.
@@ -31,6 +36,7 @@ tvnItemExpanding: pNMHDR
 !JadeiteTreeView categoriesForMethods!
 expand:!event handling-win32!private! !
 hasPlaceholderChild:!private!testing! !
+selectAll!public!selection! !
 tvnItemExpanding:!event handling-win32!private! !
 !
 

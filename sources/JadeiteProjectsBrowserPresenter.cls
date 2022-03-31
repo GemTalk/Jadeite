@@ -809,6 +809,7 @@ pkgsMenuStrings
 				savePackage;
 				unloadPackage].
 	^#('&Packages' 
+	'&Add Package...//addPackage'
 	'&Write Package...//savePackage'
 	'&Unload Package...//unloadPackage'
 	'&Edit Package Groups...//editPackageGroups')!

@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement packageGroupPresenter componentPackageContainer packageDictionaryContainer packageMethodListPresenter projectListContainer packageGroupsContainer classContainer'
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement packageGroupPresenter componentPackageContainer packageDictionaryContainer packageMethodListPresenter projectListContainer packageGroupsContainer classContainer projectInfoList'
 	classVariableNames: ''
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
@@ -30,6 +30,16 @@ additionalAccelerators
 addNoneProject
 	(projectListPresenter list includes: RowanProjectService noneProject)
 		ifFalse: [projectListPresenter model add: RowanProjectService noneProject]!
+
+addPackage
+	| newDictionaryName |
+	(newDictionaryName := Prompter prompt: 'Enter new dictionary name:') isNil ifTrue: [^self].
+	newDictionaryName isEmpty ifTrue: [^MessageBox notify: 'Blank dictionary names not allowed'].
+	(dictionaryPresenter list detect: [:service | service name = newDictionaryName] ifNone: [])
+		ifNotNil: [^MessageBox notify: 'Dictionary ' , newDictionaryName , ' already exists'].
+	(MessageBox
+		confirm: 'Really add package ' , newDictionaryName , '? This will commit the transaction')
+			ifTrue: [^self basicAddDictionaryNamed: newDictionaryName]!
 
 addSystemBrowser
 	| browser position |
@@ -197,6 +207,14 @@ browseSelectedMethods
 	browser updateCaption: 'Selected Methods'.
 	^browser!
 
+buildAddPackageTab
+	| addPackagePresenter addPackageView |
+	addPackagePresenter := JadeiteAddPackagePresenter new.
+	addPackagePresenter parentPresenter: projectInfoTab.
+	addPackageView := addPackagePresenter createView: 'Default view'.
+	projectInfoTab view addSubView: addPackageView.
+	^addPackageView!
+
 buildGlobalsTab
 	| globalsTabView cardLabel |
 	globalsTab
@@ -232,7 +250,6 @@ buildGlobalsTab
 
 buildInfoTab: infoTab
 	| infoTabView |
-	infoTab parentPresenter: self textAreaTabs.
 	infoTabView := infoTab createView: 'Editable list view'.
 	infoTabView backcolor: JadeiteTextStyles default colorForNoEdits.
 	infoTabView
@@ -263,18 +280,24 @@ buildPreferencesMenu
 	^preferencesMenu!
 
 buildProjectTabIfNecessary
-	| projectInfoView cardLabel |
+	| projectInfoView cardLabel listView |
 	projectInfoTab
 		ifNil: 
-			[projectInfoTab := ListPresenter new.
-			projectInfoView := self buildInfoTab: projectInfoTab]
-		ifNotNil: [projectInfoView := projectInfoTab view].
+			[projectInfoTab := Presenter new.
+			projectInfoTab parentPresenter: self textAreaTabs.
+			projectInfoTab createView: 'Default view'.
+			projectInfoList := ListPresenter new.
+			projectInfoList parentPresenter: projectInfoTab.
+			listView := self buildInfoTab: projectInfoList.
+			projectInfoTab view addSubView: listView.
+			self buildAddPackageTab].
+	projectInfoView := projectInfoTab view.
 	projectInfoView contextMenu: self projectInfoMenu.
 	cardLabel := CardLabel text: 'Project'.
 	cardLabel iconBlock: [Icon fromId: (File composeStem: 'Collection' extension: 'ico')].
-	projectInfoView
+	projectInfoView 
 		arrangement: cardLabel;
-		getImageBlock: nil;
+		"getImageBlock: nil;"
 		name: 'projectInfoTab'.
 	^projectInfoView!
 
@@ -1963,7 +1986,7 @@ updateProjectInfoTabFor: service
 			array nextPut: (Array with: service with: 'isDirty').
 			array nextPut: (Array with: service with: 'projectUrl').
 			service == service ifFalse: [array nextPut: (Array with: RowanProjectService new with: nil)]].
-	projectInfoTab list: array contents!
+	projectInfoList list: array contents!
 
 updateSystemTab
 	| projectTabLabel | 
@@ -1993,6 +2016,7 @@ abortTransaction!public!transaction management! !
 addDictionary!menu handlers!public! !
 additionalAccelerators!constants!public! !
 addNoneProject!public!updating! !
+addPackage!menu handlers!public! !
 addSystemBrowser!menu handlers!public! !
 allSelectedProjectsDirty!public!testing! !
 auditProject!project menu handlers!public! !
@@ -2014,6 +2038,7 @@ browseInstVarWriters!menu handlers!public! !
 browseMethodHistory!menu handlers!public! !
 browseSelectedCategoryMethods!menu handlers!public!queries! !
 browseSelectedMethods!menu handlers!public!queries! !
+buildAddPackageTab!private!tabs! !
 buildGlobalsTab!private!tabs! !
 buildInfoTab:!private!tabs! !
 buildPreferencesMenu!menus!private!updating! !

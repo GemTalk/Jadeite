@@ -94,8 +94,7 @@ conditionalAttributeItem: new updatedAtIndex: index
 conditionChanged
 	componentListPresenter selectionOrNil ifNil: [^self].
 	conditionPresenter value ifNil:[^self]. 
-	model subcomponentNamed: componentListPresenter selection name condition: conditionPresenter value.
-	self halt. !
+	model subcomponentNamed: componentListPresenter selection name condition: conditionPresenter value.!
 
 createComponents
 	super createComponents.

@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeBrowserPresenter subclass: #JadeSystemBrowserPresenter
 	instanceVariableNames: 'ancestorListPresenter breakPoints categoryListPresenter classCategoryPresenter classCommentPresenter classDefinition classDefinitionPresenter classHierarchyPresenter classHierarchyTabs classListPresenter dictionaryListPresenter environment eventCount globalsPresenter globalsLabel historyList historyIndex ignoreNextSetFocusEvent instanceClassTabs inUpdate keystrokeTime methodCategory methodFilterTabs methodListPresenter methodSource methodSourcePresenter originalSourceLabel originalSourcePresenter overrideListPresenter packageDictionaryTabs packageInfoTab packageLabel packageListPresenter pragmaListPresenter readStream repositoryListPresenter selectedClassChanged selectedClassesAreTestCases selectedClassName selectedClassOop stepPoints sunitPresenter superclassListPresenter textAreaTabs unimplementedSelectors updateCount updateProcess variableListPresenter'
@@ -1581,20 +1581,6 @@ pkgDictChanged
 	].
 !
 
-pkgsMenuStrings
-	0 == 1
-		ifTrue: 
-			[self
-				findClass;
-				addPackage;
-				loadLatestVersion;
-				addRepository;
-				removeRepository;
-				savePackage;
-				showPackageChanges;
-				deletePackage].
-	^#('&Packages' '&Find Class.../Ctrl+Shift+F/findClass' '&Add Package...//addPackage' '-' '&Load Latest Version//loadLatestVersion' 'Add &Repository...//addRepository' 'Remo&ve Repository...//removeRepository' '&Write Package..//savePackage' 'Show &Changes//showPackageChanges' '&Unload Package...//unloadPackage')!
-
 promptForSelector
 
 	| string list stream |
@@ -2456,213 +2442,214 @@ viewActivated
 
 	"self update."
 ! !
-!JadeSystemBrowserPresenter categoriesFor: #aboutToChange:!event handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #aboutToEditClassLabel:accept:!event handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #addClassCategoryInfoTo:!public!request string! !
-!JadeSystemBrowserPresenter categoriesFor: #addClassHierarchyInfoTo:!public!request string! !
-!JadeSystemBrowserPresenter categoriesFor: #addMethodCategory!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #addMethodInfoTo:!public!request string! !
-!JadeSystemBrowserPresenter categoriesFor: #addMissingAccessors!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #addPackage!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #addPackageDictionaryInfoTo:!public!request string! !
-!JadeSystemBrowserPresenter categoriesFor: #addRepository!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #addSubclass!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #behaviorIdentifier!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #breakAt:operation:!event handlers!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #browseGlobalReferences!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #browseImplementors!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #browseMethodHistory!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #browseMethodPragmas!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #browseSelectedClass!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #browseSenders!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #buildHistoryMenuNamed:from:to:by:!history!public! !
-!JadeSystemBrowserPresenter categoriesFor: #categoriesMenuStrings!menus!public! !
-!JadeSystemBrowserPresenter categoriesFor: #categoryListPresenter!accessing!public! !
-!JadeSystemBrowserPresenter categoriesFor: #classCategoryPresenter!accessing!public! !
-!JadeSystemBrowserPresenter categoriesFor: #classDefChanged!event handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #classHierarchyPresenter!accessing!public! !
-!JadeSystemBrowserPresenter categoriesFor: #classHierarchyTabs!public! !
-!JadeSystemBrowserPresenter categoriesFor: #classListPresenter!accessing!public! !
-!JadeSystemBrowserPresenter categoriesFor: #clearPackageInfo!public! !
-!JadeSystemBrowserPresenter categoriesFor: #closeRequested:!event handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #compareAncestor!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #contextObject!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForClassCategoryList!create schemantic wiring!overrides!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForClassDefinition!create schemantic wiring!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForClassHierarchy!create schemantic wiring!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForClassList!create schemantic wiring!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForDictionaryList!create schemantic wiring!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForInstanceClassTabs!create schemantic wiring!overrides!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForMethodCategoryList!create schemantic wiring!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForMethodList!create schemantic wiring!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForMethodSource!create schemantic wiring!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForOverrideList!create schemantic wiring!overrides!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForPackageDictionaryTabs!create schemantic wiring!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForPackageList!create schemantic wiring!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForPragmaList!create schemantic wiring!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForSuperClassList!create schemantic wiring!overrides!public! !
-!JadeSystemBrowserPresenter categoriesFor: #createSchematicWiringForVariableList!create schemantic wiring!public! !
-!JadeSystemBrowserPresenter categoriesFor: #currentSelectionOrLine!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #defaultFileExtension!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #delayUpdate!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #deletePackage!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #dictionaryListPresenter!accessing!public! !
-!JadeSystemBrowserPresenter categoriesFor: #dictsMenuStrings!menus!public! !
-!JadeSystemBrowserPresenter categoriesFor: #editCopy!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #editCut!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #editFind!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #editFindNext!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #editMenuStrings!menus!public! !
-!JadeSystemBrowserPresenter categoriesFor: #editPaste!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #editRedo!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #editReplace!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #editSave!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #editSaveClassA!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #editSaveClassComment!public! !
-!JadeSystemBrowserPresenter categoriesFor: #editSaveMethod!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #editSelectAll!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #editUndo!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #executeSelectionOrLine!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #fileInCode!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #fileOutClass!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #fileOutClassOnPath:!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #fileOutDictionary!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #fileOutMethod!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #fileOutMethodOnPath:!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #fileTypes!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #findClassList!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #gciSession:!overrides!public! !
-!JadeSystemBrowserPresenter categoriesFor: #getSelectedMethod!public! !
-!JadeSystemBrowserPresenter categoriesFor: #getViews!public! !
-!JadeSystemBrowserPresenter categoriesFor: #globalsMenuStrings!menus!public! !
-!JadeSystemBrowserPresenter categoriesFor: #handleInvalidSession!public! !
-!JadeSystemBrowserPresenter categoriesFor: #hasCommandHistoryBack!history!public! !
-!JadeSystemBrowserPresenter categoriesFor: #hasCommandHistoryForward!history!public! !
-!JadeSystemBrowserPresenter categoriesFor: #historyBack!history!public! !
-!JadeSystemBrowserPresenter categoriesFor: #historyBackMenu!history!public! !
-!JadeSystemBrowserPresenter categoriesFor: #historyForward!history!public! !
-!JadeSystemBrowserPresenter categoriesFor: #historyForwardMenu!history!public! !
-!JadeSystemBrowserPresenter categoriesFor: #horizontalSplitter!public! !
-!JadeSystemBrowserPresenter categoriesFor: #initialize!history!public! !
-!JadeSystemBrowserPresenter categoriesFor: #insertDictionary!public! !
-!JadeSystemBrowserPresenter categoriesFor: #inspectGlobal!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #isCategoryTabSelected!public!testing! !
-!JadeSystemBrowserPresenter categoriesFor: #isClassListTabSelected!public!request string! !
-!JadeSystemBrowserPresenter categoriesFor: #isClassSelectedInEditor!public! !
-!JadeSystemBrowserPresenter categoriesFor: #isClassSideSelected!accessing!public!request string! !
-!JadeSystemBrowserPresenter categoriesFor: #isDictionariesTabSelected!public!testing! !
-!JadeSystemBrowserPresenter categoriesFor: #isGlobalsTabSelected!public!testing! !
-!JadeSystemBrowserPresenter categoriesFor: #isPackageListTabSelected!public!testing! !
-!JadeSystemBrowserPresenter categoriesFor: #isPragmasTabSelected!public!testing! !
-!JadeSystemBrowserPresenter categoriesFor: #isTreeModel:equivalentTo:!public! !
-!JadeSystemBrowserPresenter categoriesFor: #isVariablesTabSelected!public!testing! !
-!JadeSystemBrowserPresenter categoriesFor: #jadeDebug!menu handlers!private! !
-!JadeSystemBrowserPresenter categoriesFor: #jadeDisplay!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #jadeExecute!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #jadeExecuteAndDisplay:!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #jadeMenuStrings!menus!public! !
-!JadeSystemBrowserPresenter categoriesFor: #jumpToHistoryIndex:!history!public! !
-!JadeSystemBrowserPresenter categoriesFor: #labelOfClass:changedTo:!event handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #labelOfClass:editedTo:accept:!event handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #layoutInfo!public! !
-!JadeSystemBrowserPresenter categoriesFor: #layoutInfo:!public! !
-!JadeSystemBrowserPresenter categoriesFor: #loadLatestVersion!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #methodDoubleClicked:!event handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #methodFilterListPresenter!public!request string! !
-!JadeSystemBrowserPresenter categoriesFor: #methodHoverEnd:!event handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #methodHoverStart:!event handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #methodListPresenter!accessing!public! !
-!JadeSystemBrowserPresenter categoriesFor: #methodsIdentifier!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #methodSourcePresenter!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragClassesOverDictionary:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragClassHierarchy:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragClassList:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragClassOrMethodOverPackageList:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragCutClassHierarchy:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragCutClassList:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragCutMethod:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragMethodsOverClassHierarchy:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragMethodsOverClassList:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragOverClassCategory:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragOverClassHierarchy:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragOverClassList:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragOverDictionary:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDragOverMethodCategory:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDropClassesOnDictionary:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDropMethodsOnClass:session:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDropMethodsOnClassHierarchy:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDropMethodsOnClassList:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDropOnClassCategory:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDropOnClassHierarchy:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDropOnClassList:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDropOnDictionary:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onDropOnMethodCategory:!drag & drop!public! !
-!JadeSystemBrowserPresenter categoriesFor: #onSetFocus:stack:!public! !
-!JadeSystemBrowserPresenter categoriesFor: #openSourceStyler!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #packageListPresenter!accessing!public! !
-!JadeSystemBrowserPresenter categoriesFor: #parseContext!public! !
-!JadeSystemBrowserPresenter categoriesFor: #pkgDictChanged!event handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #pkgsMenuStrings!menus!public! !
-!JadeSystemBrowserPresenter categoriesFor: #promptForSelector!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #removeClass!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #removeDictionary!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #removeGlobals!public! !
-!JadeSystemBrowserPresenter categoriesFor: #removeMethodCategories!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #removePriorVersions!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #removeRepository!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #reportCompileError:!menu handlers support!public! !
-!JadeSystemBrowserPresenter categoriesFor: #requestString!public!request string! !
-!JadeSystemBrowserPresenter categoriesFor: #requestStringForUpdate!public!request string! !
-!JadeSystemBrowserPresenter categoriesFor: #resetColors!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #revertNewClass!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #runMethodTests!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #selectClass:selector:!public! !
-!JadeSystemBrowserPresenter categoriesFor: #selectedClassChanged:!public! !
-!JadeSystemBrowserPresenter categoriesFor: #selectedClasses!public! !
-!JadeSystemBrowserPresenter categoriesFor: #selectedClassName!private! !
-!JadeSystemBrowserPresenter categoriesFor: #selectedClassName:!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #selectedClassNameWithoutVersion!public! !
-!JadeSystemBrowserPresenter categoriesFor: #selectedMethodChanged!event handlers!history!public! !
-!JadeSystemBrowserPresenter categoriesFor: #selectedMethodName!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #setColorForCompileErrors!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #setColorForNoEdits!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #setColorForUnsavedEdits!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #setEnvironment:!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #setEnvironment0!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #setEnvironment1!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #setEnvironment2!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #setHomeDictionary!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #setSearchPolicy!overrides!public! !
-!JadeSystemBrowserPresenter categoriesFor: #showPackageChanges!menu handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #splitterPosition:!public! !
-!JadeSystemBrowserPresenter categoriesFor: #statusBarServerRequestText:!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #statusBarText:!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #stepPointAt:!event handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #stuffToKeepFromPath:andAddTo:!public! !
-!JadeSystemBrowserPresenter categoriesFor: #sunitPresenter!overrides!private! !
-!JadeSystemBrowserPresenter categoriesFor: #textTabChanged!event handlers!public! !
-!JadeSystemBrowserPresenter categoriesFor: #updateAfterFindClass:isMeta:selector:!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateAndSelect:!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateAndSelectA:!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateAndSelectB:!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateClassCategoryTree!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateClassInfo!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateClassListOrHierarchy!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateCommand:!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateCommand:onSuccessDo:!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateDictionaryList!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateMethodFilter!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateMethodList!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateMethodStepPoints!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateOverrideList!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updatePackageDictionaryList!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updatePackageInfo!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updatePackageList!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updatePresenters!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateSuperclassList!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #updateTabLabel!public!updating! !
-!JadeSystemBrowserPresenter categoriesFor: #variableListPresenter!accessing!public! !
-!JadeSystemBrowserPresenter categoriesFor: #viewActivated!event handlers!public! !
+!JadeSystemBrowserPresenter categoriesForMethods!
+aboutToChange:!event handlers!public! !
+aboutToEditClassLabel:accept:!event handlers!public! !
+addClassCategoryInfoTo:!public!request string! !
+addClassHierarchyInfoTo:!public!request string! !
+addMethodCategory!menu handlers!public! !
+addMethodInfoTo:!public!request string! !
+addMissingAccessors!menu handlers!public! !
+addPackage!menu handlers!public! !
+addPackageDictionaryInfoTo:!public!request string! !
+addRepository!menu handlers!public! !
+addSubclass!menu handlers!public! !
+behaviorIdentifier!menu handlers!public! !
+breakAt:operation:!event handlers!menu handlers!public! !
+browseGlobalReferences!menu handlers!public! !
+browseImplementors!menu handlers!public! !
+browseMethodHistory!menu handlers!public! !
+browseMethodPragmas!menu handlers!public! !
+browseSelectedClass!menu handlers!public! !
+browseSenders!menu handlers!public! !
+buildHistoryMenuNamed:from:to:by:!history!public! !
+categoriesMenuStrings!menus!public! !
+categoryListPresenter!accessing!public! !
+classCategoryPresenter!accessing!public! !
+classDefChanged!event handlers!public! !
+classHierarchyPresenter!accessing!public! !
+classHierarchyTabs!public! !
+classListPresenter!accessing!public! !
+clearPackageInfo!public! !
+closeRequested:!event handlers!public! !
+compareAncestor!menu handlers!public! !
+contextObject!menu handlers!public! !
+createSchematicWiringForClassCategoryList!create schemantic wiring!overrides!public! !
+createSchematicWiringForClassDefinition!create schemantic wiring!public! !
+createSchematicWiringForClassHierarchy!create schemantic wiring!public! !
+createSchematicWiringForClassList!create schemantic wiring!public! !
+createSchematicWiringForDictionaryList!create schemantic wiring!public! !
+createSchematicWiringForInstanceClassTabs!create schemantic wiring!overrides!public! !
+createSchematicWiringForMethodCategoryList!create schemantic wiring!public! !
+createSchematicWiringForMethodList!create schemantic wiring!public! !
+createSchematicWiringForMethodSource!create schemantic wiring!public! !
+createSchematicWiringForOverrideList!create schemantic wiring!overrides!public! !
+createSchematicWiringForPackageDictionaryTabs!create schemantic wiring!public! !
+createSchematicWiringForPackageList!create schemantic wiring!public! !
+createSchematicWiringForPragmaList!create schemantic wiring!public! !
+createSchematicWiringForSuperClassList!create schemantic wiring!overrides!public! !
+createSchematicWiringForVariableList!create schemantic wiring!public! !
+currentSelectionOrLine!menu handlers!public! !
+defaultFileExtension!menu handlers!public! !
+delayUpdate!public!updating! !
+deletePackage!menu handlers!public! !
+dictionaryListPresenter!accessing!public! !
+dictsMenuStrings!menus!public! !
+editCopy!menu handlers!public! !
+editCut!menu handlers!public! !
+editFind!menu handlers!public! !
+editFindNext!menu handlers!public! !
+editMenuStrings!menus!public! !
+editPaste!menu handlers!public! !
+editRedo!menu handlers!public! !
+editReplace!menu handlers!public! !
+editSave!menu handlers!public! !
+editSaveClassA!menu handlers!public! !
+editSaveClassComment!public! !
+editSaveMethod!menu handlers!public! !
+editSelectAll!menu handlers!public! !
+editUndo!menu handlers!public! !
+executeSelectionOrLine!menu handlers!public! !
+fileInCode!menu handlers!public! !
+fileOutClass!menu handlers!public! !
+fileOutClassOnPath:!menu handlers!public! !
+fileOutDictionary!menu handlers!public! !
+fileOutMethod!menu handlers!public! !
+fileOutMethodOnPath:!menu handlers!public! !
+fileTypes!menu handlers!public! !
+findClassList!menu handlers!public! !
+gciSession:!overrides!public! !
+getSelectedMethod!public! !
+getViews!public! !
+globalsMenuStrings!menus!public! !
+handleInvalidSession!public! !
+hasCommandHistoryBack!history!public! !
+hasCommandHistoryForward!history!public! !
+historyBack!history!public! !
+historyBackMenu!history!public! !
+historyForward!history!public! !
+historyForwardMenu!history!public! !
+horizontalSplitter!public! !
+initialize!history!public! !
+insertDictionary!public! !
+inspectGlobal!menu handlers!public! !
+isCategoryTabSelected!public!testing! !
+isClassListTabSelected!public!request string! !
+isClassSelectedInEditor!public! !
+isClassSideSelected!accessing!public!request string! !
+isDictionariesTabSelected!public!testing! !
+isGlobalsTabSelected!public!testing! !
+isPackageListTabSelected!public!testing! !
+isPragmasTabSelected!public!testing! !
+isTreeModel:equivalentTo:!public! !
+isVariablesTabSelected!public!testing! !
+jadeDebug!menu handlers!private! !
+jadeDisplay!menu handlers!public! !
+jadeExecute!menu handlers!public! !
+jadeExecuteAndDisplay:!menu handlers!public! !
+jadeMenuStrings!menus!public! !
+jumpToHistoryIndex:!history!public! !
+labelOfClass:changedTo:!event handlers!public! !
+labelOfClass:editedTo:accept:!event handlers!public! !
+layoutInfo!public! !
+layoutInfo:!public! !
+loadLatestVersion!menu handlers!public! !
+methodDoubleClicked:!event handlers!public! !
+methodFilterListPresenter!public!request string! !
+methodHoverEnd:!event handlers!public! !
+methodHoverStart:!event handlers!public! !
+methodListPresenter!accessing!public! !
+methodsIdentifier!menu handlers!public! !
+methodSourcePresenter!public!updating! !
+onDragClassesOverDictionary:!drag & drop!public! !
+onDragClassHierarchy:!drag & drop!public! !
+onDragClassList:!drag & drop!public! !
+onDragClassOrMethodOverPackageList:!drag & drop!public! !
+onDragCutClassHierarchy:!drag & drop!public! !
+onDragCutClassList:!drag & drop!public! !
+onDragCutMethod:!drag & drop!public! !
+onDragMethodsOverClassHierarchy:!drag & drop!public! !
+onDragMethodsOverClassList:!drag & drop!public! !
+onDragOverClassCategory:!drag & drop!public! !
+onDragOverClassHierarchy:!drag & drop!public! !
+onDragOverClassList:!drag & drop!public! !
+onDragOverDictionary:!drag & drop!public! !
+onDragOverMethodCategory:!drag & drop!public! !
+onDropClassesOnDictionary:!drag & drop!public! !
+onDropMethodsOnClass:session:!drag & drop!public! !
+onDropMethodsOnClassHierarchy:!drag & drop!public! !
+onDropMethodsOnClassList:!drag & drop!public! !
+onDropOnClassCategory:!drag & drop!public! !
+onDropOnClassHierarchy:!drag & drop!public! !
+onDropOnClassList:!drag & drop!public! !
+onDropOnDictionary:!drag & drop!public! !
+onDropOnMethodCategory:!drag & drop!public! !
+onSetFocus:stack:!public! !
+openSourceStyler!menu handlers!public! !
+packageListPresenter!accessing!public! !
+parseContext!public! !
+pkgDictChanged!event handlers!public! !
+promptForSelector!menu handlers!public! !
+removeClass!menu handlers!public! !
+removeDictionary!menu handlers!public! !
+removeGlobals!public! !
+removeMethodCategories!menu handlers!public! !
+removePriorVersions!menu handlers!public! !
+removeRepository!menu handlers!public! !
+reportCompileError:!menu handlers support!public! !
+requestString!public!request string! !
+requestStringForUpdate!public!request string! !
+resetColors!menu handlers!public! !
+revertNewClass!menu handlers!public! !
+runMethodTests!menu handlers!public! !
+selectClass:selector:!public! !
+selectedClassChanged:!public! !
+selectedClasses!public! !
+selectedClassName!private! !
+selectedClassName:!public!updating! !
+selectedClassNameWithoutVersion!public! !
+selectedMethodChanged!event handlers!history!public! !
+selectedMethodName!menu handlers!public! !
+setColorForCompileErrors!menu handlers!public! !
+setColorForNoEdits!menu handlers!public! !
+setColorForUnsavedEdits!menu handlers!public! !
+setEnvironment:!menu handlers!public! !
+setEnvironment0!menu handlers!public! !
+setEnvironment1!menu handlers!public! !
+setEnvironment2!menu handlers!public! !
+setHomeDictionary!menu handlers!public! !
+setSearchPolicy!overrides!public! !
+showPackageChanges!menu handlers!public! !
+splitterPosition:!public! !
+statusBarServerRequestText:!public!updating! !
+statusBarText:!public!updating! !
+stepPointAt:!event handlers!public! !
+stuffToKeepFromPath:andAddTo:!public! !
+sunitPresenter!overrides!private! !
+textTabChanged!event handlers!public! !
+updateAfterFindClass:isMeta:selector:!public!updating! !
+updateAndSelect:!public!updating! !
+updateAndSelectA:!public!updating! !
+updateAndSelectB:!public!updating! !
+updateClassCategoryTree!public!updating! !
+updateClassInfo!public!updating! !
+updateClassListOrHierarchy!public!updating! !
+updateCommand:!public!updating! !
+updateCommand:onSuccessDo:!public!updating! !
+updateDictionaryList!public!updating! !
+updateMethodFilter!public!updating! !
+updateMethodList!public!updating! !
+updateMethodStepPoints!public!updating! !
+updateOverrideList!public!updating! !
+updatePackageDictionaryList!public!updating! !
+updatePackageInfo!public!updating! !
+updatePackageList!public!updating! !
+updatePresenters!public!updating! !
+updateSuperclassList!public!updating! !
+updateTabLabel!public!updating! !
+variableListPresenter!accessing!public! !
+viewActivated!event handlers!public! !
+!
 
 !JadeSystemBrowserPresenter class methodsFor!
 
@@ -2670,5 +2657,7 @@ overriddenIcon
 
 	^Icon fromId: 'icons\OVERRIDDEN.ICO'.
 ! !
-!JadeSystemBrowserPresenter class categoriesFor: #overriddenIcon!public! !
+!JadeSystemBrowserPresenter class categoriesForMethods!
+overriddenIcon!public! !
+!
 

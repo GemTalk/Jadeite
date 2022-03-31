@@ -11,6 +11,7 @@ package classNames
 	add: #DiffsScintillaStyler;
 	add: #JadeFindClassDialog;
 	add: #JadeFindDialog;
+	add: #JadeiteAddPackagePresenter;
 	add: #JadeiteAdvancedFindDialog;
 	add: #JadeiteBasicMethodListPresenter;
 	add: #JadeiteBasicRenameClassMethodListPresenter;
@@ -701,6 +702,11 @@ DifferencesPresenter subclass: #JadeiteDifferencesPresenter
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+JadePresenter subclass: #JadeiteAddPackagePresenter
+	instanceVariableNames: 'packageName symbolDictionaryName componentName'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 JadePresenter subclass: #JadeiteLoggerPresenter
 	instanceVariableNames: 'logListPresenter clientFilename serverFilename'
 	classVariableNames: ''
@@ -782,7 +788,7 @@ RowanSystemBrowserPresenter subclass: #JadeiteProjectsBrowserPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement packageGroupPresenter componentPackageContainer packageDictionaryContainer packageMethodListPresenter projectListContainer packageGroupsContainer classContainer'
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement packageGroupPresenter componentPackageContainer packageDictionaryContainer packageMethodListPresenter projectListContainer packageGroupsContainer classContainer projectInfoList'
 	classVariableNames: ''
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
