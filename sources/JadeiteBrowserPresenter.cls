@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement packageGroupPresenter componentPackageContainer packageDictionaryContainer packageMethodListPresenter projectListContainer packageGroupsContainer classContainer projectInfoList'
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement packageGroupPresenter componentPackageContainer packageDictionaryContainer packageMethodListPresenter projectListContainer packageGroupsContainer classContainer projectInfoList addPackagePresenter'
 	classVariableNames: ''
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
@@ -207,11 +207,16 @@ browseSelectedMethods
 	browser updateCaption: 'Selected Methods'.
 	^browser!
 
-buildAddPackageTab
-	| addPackagePresenter addPackageView |
-	addPackagePresenter := JadeiteAddPackagePresenter new.
+buildAddPackageView
+	| addPackageView |
+	addPackagePresenter := JadeiteAddPackagePresenter new
+				gciSession: gciSession;
+				projectService: projectListPresenter selection.
 	addPackagePresenter parentPresenter: projectInfoTab.
 	addPackageView := addPackagePresenter createView: 'Default view'.
+	addPackageView
+		arrangement: 1;
+		backcolor: JadeiteTextStyles default colorForNoEdits.
 	projectInfoTab view addSubView: addPackageView.
 	^addPackageView!
 
@@ -265,6 +270,7 @@ buildInfoTab: infoTab
 		isEditable: false;
 		isAutoResize: true;
 		getContentsBlock: [:each | (each at: 2) ifNil: [String new] ifNotNil: [:iv | (each at: 1) instVarNamed: iv]].
+	infoTabView getImageBlock: nil.
 	^infoTabView!
 
 buildPreferencesMenu
@@ -279,27 +285,33 @@ buildPreferencesMenu
 	showPackageGroupItem isRadioButtonStyle: true.
 	^preferencesMenu!
 
+buildProjectListView
+	| listView |
+	projectInfoList := ListPresenter new.
+	projectInfoList parentPresenter: projectInfoTab.
+	listView := self buildInfoTab: projectInfoList. 
+	listView arrangement: 2. 
+	projectInfoTab view addSubView: listView!
+
+buildProjectTab
+	projectInfoTab := Presenter new.
+	projectInfoTab parentPresenter: self textAreaTabs.
+	projectInfoTab createView: 'Default view'.
+	projectInfoTab view layoutManager: ProportionalLayout new.
+	self buildProjectListView.
+	self buildAddPackageView!
+
 buildProjectTabIfNecessary
-	| projectInfoView cardLabel listView |
 	projectInfoTab
 		ifNil: 
-			[projectInfoTab := Presenter new.
-			projectInfoTab parentPresenter: self textAreaTabs.
-			projectInfoTab createView: 'Default view'.
-			projectInfoList := ListPresenter new.
-			projectInfoList parentPresenter: projectInfoTab.
-			listView := self buildInfoTab: projectInfoList.
-			projectInfoTab view addSubView: listView.
-			self buildAddPackageTab].
-	projectInfoView := projectInfoTab view.
-	projectInfoView contextMenu: self projectInfoMenu.
-	cardLabel := CardLabel text: 'Project'.
-	cardLabel iconBlock: [Icon fromId: (File composeStem: 'Collection' extension: 'ico')].
-	projectInfoView 
-		arrangement: cardLabel;
-		"getImageBlock: nil;"
-		name: 'projectInfoTab'.
-	^projectInfoView!
+			[| cardLabel |
+			self buildProjectTab.
+			projectInfoTab view contextMenu: self projectInfoMenu.
+			cardLabel := CardLabel text: 'Project'.
+			cardLabel iconBlock: nil.
+			projectInfoTab view
+				arrangement: cardLabel;
+				name: 'projectInfoTab']!
 
 categoriesMenuStrings
 
@@ -407,7 +419,7 @@ createComponents
 	packageGroupsContainer := self add: Presenter new name: 'packageGroupsContainer'.
 	projectListContainer := self add: Presenter new name: 'projectListContainer'.
 	packageMethodListPresenter := self add: ListPresenter new name: 'packageMethodList'.
-	classContainer := self add: Presenter new name: 'classContainer'!
+	classContainer := self add: Presenter new name: 'classContainer'.!
 
 createListViewFor: newCard
 	"Editable because creating the desired ListView gave 
@@ -473,7 +485,12 @@ createSchematicWiring
 			to: self;
 		when: #drop:
 			send: #onDropOnPackageList:
-			to: self!
+			to: self.
+	projectListPresenter 
+		when: #selectionChanged
+			send: #updateAddPackageLists
+			to: self
+			!
 
 createSchematicWiringForClassHierarchy
 		
@@ -1011,7 +1028,7 @@ methodsMenuStrings
 				gotoMethodDefinedPackage;
 				runAll;
 				runSelected].
-	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods' 'Browse Method History//browseMethodHistory' 'Inspect//inspectMethod' '-' 'Browse Breakpoints//browseBreakpoints' 'Clear Method Breakpoints//clearMethodBreakpoints' '-' 'Find Method .../Ctrl+Shift+M/findMethod' '-' '&Remove Method(s) ...//removeMethods' 
+	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods' 'Browse Method History//browseMethodHistory' 'Inspect//inspectMethod' '-' 'Browse Breakpoints//browseBreakpoints' 'Clear Method Breakpoints//clearMethodBreakpoints' '-' 'Find Method .../Ctrl+Shift+M/findMethod' '-' '&Remove Method(s) .../Ctrl+Shift+X/removeMethods' 
 	'-'
 	'Move To Package ...//moveMethodToPackage'
 	'-'
@@ -1073,7 +1090,7 @@ moveMethodsToPackageNamed: packageName
 					with: packageName).
 	self issueCommand: self selectedClass.
 	packageServiceToSelect := packageListPresenter list
-				detect: [:packageService | packageService name = packageName].
+				detect: [:packageService | packageService name = packageName] ifNone:[^self].
 	packageListPresenter selections: (self selectedPackageServices asOrderedCollection
 				add: packageServiceToSelect;
 				yourself).
@@ -1774,6 +1791,9 @@ unloadProjects
 		caption: 'UNLOAD PROJECTS WARNING!!') ifFalse: [^self].
 	self basicUnloadProjects: projectNames!
 
+updateAddPackageLists
+	addPackagePresenter ifNotNil: [addPackagePresenter projectService: projectListPresenter selection]!
+
 updateAfterFindClass: classService
 	| projectService |
 	classService ifNil: [^self].
@@ -2038,10 +2058,12 @@ browseInstVarWriters!menu handlers!public! !
 browseMethodHistory!menu handlers!public! !
 browseSelectedCategoryMethods!menu handlers!public!queries! !
 browseSelectedMethods!menu handlers!public!queries! !
-buildAddPackageTab!private!tabs! !
+buildAddPackageView!private!tabs! !
 buildGlobalsTab!private!tabs! !
 buildInfoTab:!private!tabs! !
 buildPreferencesMenu!menus!private!updating! !
+buildProjectListView!private!tabs! !
+buildProjectTab!private!tabs! !
 buildProjectTabIfNecessary!private!tabs! !
 categoriesMenuStrings!menus!public! !
 checkout!menu handlers!public! !
@@ -2205,6 +2227,7 @@ textTabChanged!event handlers!public! !
 togglePackageDictionaryColumn!menu handlers!public! !
 togglePackageGroupsColumn!menu handlers!public! !
 unloadProjects!project menu handlers!public! !
+updateAddPackageLists!public!updating! !
 updateAfterFindClass:!menu handlers!public!updating! !
 updateAfterFindClassInDictionary:!menu handlers!public!updating! !
 updateAfterFindClassInPackage:!menu handlers!public!updating! !

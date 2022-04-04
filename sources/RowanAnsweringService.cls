@@ -104,6 +104,13 @@ setBreakpointsEnabled: boolean session: session
 	commandArgs := Array with: boolean.
 	BrowserUpdate current issueCommands: (Array with: self) session: session!
 
+symbolDictionaryNames: session
+	self
+		command: #symbolDictionaryNames;
+		commandArgs: Array new.
+	BrowserUpdate current issueCommand: self session: session.
+	^answer!
+
 symbolExists: aSymbol session: session
 	command := #symbolExists:.
 	commandArgs := Array with: aSymbol.
@@ -133,6 +140,7 @@ needsCommit:!commands!public! !
 printOn:!printing!public! !
 setAutoCommit:for:!commands!public! !
 setBreakpointsEnabled:session:!commands!public! !
+symbolDictionaryNames:!commands!public! !
 symbolExists:session:!commands!public!testing! !
 symbolsMatching:session:!commands!public!testing! !
 !
