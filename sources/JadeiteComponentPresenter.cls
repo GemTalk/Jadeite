@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource conditionPresenter'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource conditionPresenter conditionContainer'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -79,11 +79,11 @@ componentListPresenter
 	^componentListPresenter!
 
 componentSelectionChanged
-	conditionPresenter value: nil. 
+	conditionPresenter value: nil.
 	self resetPrePostLoadSource.
 	self displayComponentPackages.
 	self displayPrePostLoadSources.
-	conditionPresenter view isEnabled: componentListPresenter selection isSubcomponent!
+	self displayConditionPresenter!
 
 conditionalAttributeItem: new updatedAtIndex: index
 	model
@@ -107,7 +107,8 @@ createComponents
 	conditionalAttributesPresenter := self add: ListPresenter new name: 'conditionalAttributesPresenter'.
 	platformPropertiesPresenter := self add: ListPresenter new name: 'platformPropertiesPresenter'.
 	prePostLoadSource := self add: TextPresenter new name: 'prePostLoadSource'.
-	conditionPresenter := self add: TextPresenter new name: 'conditionPresenter'!
+	conditionPresenter := self add: TextPresenter new name: 'conditionPresenter'.
+	conditionContainer := self add: Presenter new name: 'conditionContainer'. !
 
 createSchematicWiring
 	conditionPresenter
@@ -155,6 +156,10 @@ createSchematicWiring
 		send: #packageLabelOf:editedTo:accept:
 		to: self!
 
+displayArrayCondition
+
+	Transcript cr; show: 'Platform subcomponent'; flush. !
+
 displayComponentPackages
 	| packageNames |
 	componentListPresenter selections isEmpty ifTrue: [^self].
@@ -183,11 +188,8 @@ displayComponents
 								ifNone: [nil]].
 			children do: 
 					[:child |
-					| componentDefinitionService componentDefinitionClass |
-					componentDefinitionClass := child isSubcomponent
-								ifTrue: [RowanSubcomponentDefinitionService]
-								ifFalse: [RowanComponentDefinitionService].
-					componentDefinitionService := componentDefinitionClass new
+					| componentDefinitionService |
+					componentDefinitionService := child class new
 								name: child name;
 								projectDefinitionService: model.
 					treeModel add: componentDefinitionService asChildOf: parentDefinitionService]].
@@ -197,12 +199,10 @@ displayConditionalAttributes
 	conditionalAttributesPresenter
 		list: (model conditionalAttributes collect: [:attribute | model conditionalAttributes -> attribute])!
 
-displayLoadSpecification
-	"| assocs |
-	assocs := model specService objects
-				collect: [:assoc | Array with: assoc key with: assoc value asString].
-	assocs := assocs asSortedCollection: [:x :y | x first < y first].
-	loadSpecPresenter list: assocs asArray"!
+displayConditionPresenter
+	componentListPresenter selection isPlatformSubcomponent ifTrue: [^self displayArrayCondition].
+	componentListPresenter selection isSubcomponent ifTrue: [^self displayStringCondition].
+	self hideConditionPresenter!
 
 displayPrePostLoadSources
 	| list |
@@ -214,6 +214,10 @@ displayPrePostLoadSources
 			list add: (OrderedCollection with: #postloadDoitName
 						with: (componentListPresenter selection postloadDoitName ifNotNil: [:nm | nm key])).
 			prePostLoadListPresenter list: list]!
+
+displayStringCondition
+	self showConditionPresenter.
+	conditionPresenter value: componentListPresenter selection condition!
 
 displayTabs
 	| propertiesArray |
@@ -231,6 +235,11 @@ exportProjectDefinition
 		command: #export;
 		commandArgs: Array new.
 	self issueProjectDefinitionCommand!
+
+hideConditionPresenter
+	"only subcomponents have conditions"
+	componentListPresenter view arrangement bottomOffset: 0. 
+	conditionContainer view hide!
 
 initialize
 	super initialize. 
@@ -425,6 +434,10 @@ resetPrePostLoadSource
 		isModified: false;
 		isReadOnly: true!
 
+showConditionPresenter
+	componentListPresenter view arrangement bottomOffset: -25.
+	conditionContainer view show!
+
 updatePrePostSource
 	componentListPresenter selectionOrNil ifNil:[^self]. 
 	prePostLoadListPresenter selectionOrNil
@@ -448,14 +461,17 @@ conditionalAttributeItem:updatedAtIndex:!event handlers!public! !
 conditionChanged!event handlers!public! !
 createComponents!initialization!public! !
 createSchematicWiring!initialization!public! !
+displayArrayCondition!displaying!event handlers!public! !
 displayComponentPackages!displaying!public! !
 displayComponents!displaying!public! !
 displayConditionalAttributes!displaying!public! !
-displayLoadSpecification!displaying!public! !
+displayConditionPresenter!displaying!event handlers!public! !
 displayPrePostLoadSources!displaying!public! !
+displayStringCondition!displaying!event handlers!public! !
 displayTabs!displaying!event handlers!public! !
 editLoadSpec!menu handlers!public! !
 exportProjectDefinition!menu handlers!public! !
+hideConditionPresenter!displaying!event handlers!public! !
 initialize!initialization!public! !
 isClassSelected!public!testing! !
 isOkayToChange!event handlers!public! !
@@ -483,6 +499,7 @@ renameComponent!menu handlers!public! !
 renamePackage!menu handlers!public! !
 resetComponentList!initialization!public! !
 resetPrePostLoadSource!event handlers!public! !
+showConditionPresenter!displaying!event handlers!public! !
 updatePrePostSource!event handlers!public! !
 !
 

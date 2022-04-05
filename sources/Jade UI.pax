@@ -103,7 +103,9 @@ gsInspect
 
 	JadeInspector showOn: self oopType session: gciSession.
 ! !
-!GsObject categoriesFor: #gsInspect!public! !
+!GsObject categoriesForMethods!
+gsInspect!public! !
+!
 
 !GsProcess methodsFor!
 
@@ -137,24 +139,18 @@ terminate
 !
 
 trimStackToLevel: anInteger
-	Transcript
-		cr;
-		print: Processor activeProcess identityHash;
-		space;
-		show: 'trimStackToLevel:';
-		tab;
-		print: {anInteger};
-		flush.
 	stack := nil.
 	gciSession
 		send: #_trimStackToLevel:
 		to: self
 		withAll: (Array with: anInteger)! !
-!GsProcess categoriesFor: #stepInto:!public! !
-!GsProcess categoriesFor: #stepOut:!public! !
-!GsProcess categoriesFor: #stepOver:!public! !
-!GsProcess categoriesFor: #terminate!public! !
-!GsProcess categoriesFor: #trimStackToLevel:!public! !
+!GsProcess categoriesForMethods!
+stepInto:!public! !
+stepOut:!public! !
+stepOver:!public! !
+terminate!public! !
+trimStackToLevel:!public! !
+!
 
 !JadeServer32bit methodsFor!
 
@@ -211,11 +207,13 @@ sourceForProcess: gsProcess frame: level
 		_sourceForProcess: gsProcess 
 		frame: level.
 ! !
-!JadeServer32bit categoriesFor: #_oopAndStringFor:!Debugger!public! !
-!JadeServer32bit categoriesFor: #_stepPointFromProcess:frame:method:level:!Debugger!public! !
-!JadeServer32bit categoriesFor: #_trimStackOf:toLevel:!Debugger!public! !
-!JadeServer32bit categoriesFor: #recompile:withSource:!Debugger!public! !
-!JadeServer32bit categoriesFor: #sourceForProcess:frame:!Debugger!public! !
+!JadeServer32bit categoriesForMethods!
+_oopAndStringFor:!Debugger!public! !
+_stepPointFromProcess:frame:method:level:!Debugger!public! !
+_trimStackOf:toLevel:!Debugger!public! !
+recompile:withSource:!Debugger!public! !
+sourceForProcess:frame:!Debugger!public! !
+!
 
 !JadeServer64bit methodsFor!
 
@@ -257,10 +255,12 @@ sourceForProcess: gsProcess frame: level
 			ex return: (self asAsciiString: ('?????' , ex description , Character cr asString , (GsProcess stackReportToLevel: 50))).
 	].
 ! !
-!JadeServer64bit categoriesFor: #_oopAndStringFor:!Debugger!public! !
-!JadeServer64bit categoriesFor: #_stepPointFromProcess:frame:method:level:!Debugger!public! !
-!JadeServer64bit categoriesFor: #_trimStackOf:toLevel:!Debugger!public! !
-!JadeServer64bit categoriesFor: #sourceForProcess:frame:!Debugger!public! !
+!JadeServer64bit categoriesForMethods!
+_oopAndStringFor:!Debugger!public! !
+_stepPointFromProcess:frame:method:level:!Debugger!public! !
+_trimStackOf:toLevel:!Debugger!public! !
+sourceForProcess:frame:!Debugger!public! !
+!
 
 !JadeServer64bit33 methodsFor!
 
@@ -281,8 +281,10 @@ step: aGsProcess inFrame: anInteger
 
 	aGsProcess _stepOverInFrame: anInteger.
 ! !
-!JadeServer64bit33 categoriesFor: #_stepPointFromProcess:frame:method:level:!Debugger!public! !
-!JadeServer64bit33 categoriesFor: #step:inFrame:!Debugger!public!Socket! !
+!JadeServer64bit33 categoriesForMethods!
+_stepPointFromProcess:frame:method:level:!Debugger!public! !
+step:inFrame:!Debugger!public!Socket! !
+!
 
 !JadeServer64bit34 methodsFor!
 
@@ -290,7 +292,9 @@ step: aGsProcess inFrame: anInteger
 
 	aGsProcess _stepOverInFrame: anInteger.
 ! !
-!JadeServer64bit34 categoriesFor: #step:inFrame:!Debugger!public!Socket! !
+!JadeServer64bit34 categoriesForMethods!
+step:inFrame:!Debugger!public!Socket! !
+!
 
 !JadeServer64bit3x methodsFor!
 
@@ -298,7 +302,9 @@ _stepPointsForBreaksInMethod: gsMethod
 	"Presumably there is a way to do this, just not the same as 32-bit and 64-bit 2.x"
 
 	^#()! !
-!JadeServer64bit3x categoriesFor: #_stepPointsForBreaksInMethod:!Debugger!public! !
+!JadeServer64bit3x categoriesForMethods!
+_stepPointsForBreaksInMethod:!Debugger!public! !
+!
 
 !JadeTextDocument methodsFor!
 
@@ -321,7 +327,9 @@ fileIn
 		SessionManager current pause.
 	].
 ! !
-!JadeTextDocument categoriesFor: #fileIn!private! !
+!JadeTextDocument categoriesForMethods!
+fileIn!private! !
+!
 
 "End of package definition"!
 

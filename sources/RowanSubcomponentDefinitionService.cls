@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanComponentDefinitionService subclass: #RowanSubcomponentDefinitionService
-	instanceVariableNames: ''
+	instanceVariableNames: 'condition'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -10,10 +10,18 @@ RowanSubcomponentDefinitionService comment: ''!
 !RowanSubcomponentDefinitionService categoriesForClass!Unclassified! !
 !RowanSubcomponentDefinitionService methodsFor!
 
+condition
+	^condition!
+
+condition: anObject
+	condition := anObject!
+
 isSubcomponent
 
 	^true! !
 !RowanSubcomponentDefinitionService categoriesForMethods!
+condition!accessing!private! !
+condition:!accessing!private! !
 isSubcomponent!public!testing! !
 !
 

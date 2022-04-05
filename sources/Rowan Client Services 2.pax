@@ -223,7 +223,7 @@ RowanComponentDefinitionService subclass: #RowanPackageGroupService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanComponentDefinitionService subclass: #RowanSubcomponentDefinitionService
-	instanceVariableNames: ''
+	instanceVariableNames: 'condition'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
