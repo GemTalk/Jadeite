@@ -30,6 +30,7 @@ package classNames
 	add: #RowanPackageDefinitionService;
 	add: #RowanPackageGroupService;
 	add: #RowanPackageService;
+	add: #RowanPlatformSubcomponentDefinitionService;
 	add: #RowanProcessService;
 	add: #RowanProjectDefinitionService;
 	add: #RowanProjectService;
@@ -222,6 +223,11 @@ RowanComponentDefinitionService subclass: #RowanPackageGroupService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanComponentDefinitionService subclass: #RowanSubcomponentDefinitionService
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+RowanSubcomponentDefinitionService subclass: #RowanPlatformSubcomponentDefinitionService
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

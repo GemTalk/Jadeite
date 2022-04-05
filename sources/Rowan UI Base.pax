@@ -204,6 +204,7 @@ package methodNames
 	add: #JadePresenter -> #basicAllSelectedProjectsDirty:;
 	add: #JadePresenter -> #basicCheckoutTagAndRefresh:for:;
 	add: #JadePresenter -> #basicLoadV2Project:projectsHome:;
+	add: #JadePresenter -> #basicWriteProject:;
 	add: #JadePresenter -> #browseBreakpointList;
 	add: #JadePresenter -> #browseClassReferences:;
 	add: #JadePresenter -> #browseHierarchyImplementorsOf:className:;
@@ -2443,6 +2444,26 @@ basicLoadV2Project: path projectsHome: root
 		commandArgs: (Array with: path with: root).
 	self issueCommand: service!
 
+basicWriteProject: projectServices
+	| ws repositoryRoots |
+	ws := WriteStream on: String new.
+	repositoryRoots := RowanAnsweringService new projectRepositoryRoots: projectServices
+				session: gciSession.
+	projectServices do: 
+			[:service |
+			ws
+				nextPutAll: service name;
+				space;
+				nextPut: $(;
+				nextPutAll: (repositoryRoots at: service name);
+				nextPut: $);
+				space].
+	(MessageBox confirm: 'Write projects - ' , ws contents , 'to disk without committing?')
+		ifFalse: [^false].
+	projectServices do: [:service | service command: #write].
+	self issueCommands: projectServices.
+	MessageBox notify: 'Projects ' , ws contents , ' written to disk'!
+
 browseBreakpointList
 	^self class browseBreakpointsIn: self gciSession!
 
@@ -2749,6 +2770,7 @@ autoCommitExecutionString!menu handlers support!public! !
 basicAllSelectedProjectsDirty:!private!testing! !
 basicCheckoutTagAndRefresh:for:!menu handlers support!private! !
 basicLoadV2Project:projectsHome:!menu handlers!private! !
+basicWriteProject:!menu handlers!public! !
 browseBreakpointList!menu handlers!public! !
 browseClassReferences:!menu handlers!public! !
 browseHierarchyImplementorsOf:className:!browsing!public! !

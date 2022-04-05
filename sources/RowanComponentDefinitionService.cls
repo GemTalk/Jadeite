@@ -16,6 +16,10 @@ comment
 comment: anObject
 	comment := anObject!
 
+isPlatformSubcomponent
+
+	^false!
+
 isSubcomponent
 
 	^false!
@@ -55,6 +59,7 @@ projectNames: anObject
 !RowanComponentDefinitionService categoriesForMethods!
 comment!accessing!private! !
 comment:!accessing!private! !
+isPlatformSubcomponent!public!testing! !
 isSubcomponent!public!testing! !
 packageNames!accessing!private! !
 packageNames:!accessing!private! !

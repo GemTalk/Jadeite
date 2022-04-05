@@ -93,6 +93,17 @@ printOn: stream
 		nextPutAll: commandArgs printString;
 		nextPut: $)!
 
+projectRepositoryRoots: projectServices
+
+	!
+
+projectRepositoryRoots: projectServices session: session
+	self
+		command: #projectsRepositoryRoots:;
+		commandArgs: (Array with: (projectServices collect: [:projectService | projectService name])).
+	BrowserUpdate current issueCommands: (Array with: self) session: session.
+	^answer!
+
 setAutoCommit: boolean for: session
 	command := #setAutoCommit:.
 	self commandArgs: (Array with: boolean).
@@ -138,6 +149,8 @@ isTranscriptInstalledIn:!commands!public! !
 lowercaseSelectorsMatching:session:!commands!public!testing! !
 needsCommit:!commands!public! !
 printOn:!printing!public! !
+projectRepositoryRoots:!commands!public! !
+projectRepositoryRoots:session:!commands!public! !
 setAutoCommit:for:!commands!public! !
 setBreakpointsEnabled:session:!commands!public! !
 symbolDictionaryNames:!commands!public! !
