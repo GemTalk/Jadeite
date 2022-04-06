@@ -128,6 +128,11 @@ removeComponentNamed: componentName
 	commandArgs := Array with: componentName.
 	self issueCommand: self session: session!
 
+removeCondition: condition inSubcomponentNamed: subcomponentName
+	command := #removeCondition:inSubcomponentNamed:.
+	commandArgs := Array with: condition with: subcomponentName.
+	self issueCommand: self session: session!
+
 removePackageGroups: packageGroupServices
 	command := #removePackageGroupsNamed:.
 	commandArgs := Array
@@ -212,6 +217,7 @@ packageGroupUpdate:browser:!public!updating! !
 platformProperties!accessing!private! !
 platformProperties:!accessing!private! !
 removeComponentNamed:!commands!public! !
+removeCondition:inSubcomponentNamed:!commands!public! !
 removePackageGroups:!commands!public! !
 removePackageGroupsNamed:!commands!public! !
 removePackagesFromProjectDefinition:!commands!public! !

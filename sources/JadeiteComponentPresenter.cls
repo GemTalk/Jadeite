@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource conditionPresenter conditionContainer'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource conditionPresenter conditionStringContainer conditionArrayContainer conditionArrayPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -9,6 +9,20 @@ JadeiteComponentPresenter guid: (GUID fromString: '{f837143a-a8e6-4980-aed2-4c0f
 JadeiteComponentPresenter comment: ''!
 !JadeiteComponentPresenter categoriesForClass!Unclassified! !
 !JadeiteComponentPresenter methodsFor!
+
+addArrayCondition
+	| condition |
+	condition := Prompter prompt: 'Enter new condition'.
+	condition ifNil: [^self].
+	condition isEmpty ifTrue: [^self].
+	(conditionArrayPresenter list includes: condition) ifTrue: [^self].
+	componentListPresenter selection
+		condition: (componentListPresenter selection condition asOrderedCollection
+				add: condition;
+				yourself).
+	model subcomponentNamed: componentListPresenter selection name condition: condition asArray.
+	conditionArrayPresenter list add: condition.
+	conditionArrayPresenter view basicRefreshContents!
 
 addComponent
 	| componentName |
@@ -107,8 +121,14 @@ createComponents
 	conditionalAttributesPresenter := self add: ListPresenter new name: 'conditionalAttributesPresenter'.
 	platformPropertiesPresenter := self add: ListPresenter new name: 'platformPropertiesPresenter'.
 	prePostLoadSource := self add: TextPresenter new name: 'prePostLoadSource'.
+	self createConditionComponents!
+
+createConditionComponents
 	conditionPresenter := self add: TextPresenter new name: 'conditionPresenter'.
-	conditionContainer := self add: Presenter new name: 'conditionContainer'. !
+	conditionStringContainer := self add: Presenter new name: 'conditionStringContainer'.
+	conditionArrayContainer := self add: Presenter new name: 'conditionArrayContainer'.
+	conditionArrayPresenter := self add: ListPresenter new name: 'conditionArrayPresenter'.
+	conditionArrayPresenter list: (ListModel on: SortedCollection new)!
 
 createSchematicWiring
 	conditionPresenter
@@ -157,8 +177,10 @@ createSchematicWiring
 		to: self!
 
 displayArrayCondition
-
-	Transcript cr; show: 'Platform subcomponent'; flush. !
+	componentListPresenter view arrangement bottomOffset: -25.
+	conditionArrayContainer view show.
+	self hideConditionStringPresenter.
+	conditionArrayPresenter list: componentListPresenter selection condition asSortedCollection!
 
 displayComponentPackages
 	| packageNames |
@@ -189,9 +211,7 @@ displayComponents
 			children do: 
 					[:child |
 					| componentDefinitionService |
-					componentDefinitionService := child class new
-								name: child name;
-								projectDefinitionService: model.
+					componentDefinitionService := child copy.	"why do we need this again?"
 					treeModel add: componentDefinitionService asChildOf: parentDefinitionService]].
 	componentListPresenter view expandAll!
 
@@ -202,7 +222,7 @@ displayConditionalAttributes
 displayConditionPresenter
 	componentListPresenter selection isPlatformSubcomponent ifTrue: [^self displayArrayCondition].
 	componentListPresenter selection isSubcomponent ifTrue: [^self displayStringCondition].
-	self hideConditionPresenter!
+	self hideAllConditionPresenters!
 
 displayPrePostLoadSources
 	| list |
@@ -216,7 +236,9 @@ displayPrePostLoadSources
 			prePostLoadListPresenter list: list]!
 
 displayStringCondition
-	self showConditionPresenter.
+	componentListPresenter view arrangement bottomOffset: -25.
+	conditionStringContainer view show.
+	self hideConditionArrayPresenter.
 	conditionPresenter value: componentListPresenter selection condition!
 
 displayTabs
@@ -236,10 +258,16 @@ exportProjectDefinition
 		commandArgs: Array new.
 	self issueProjectDefinitionCommand!
 
-hideConditionPresenter
-	"only subcomponents have conditions"
-	componentListPresenter view arrangement bottomOffset: 0. 
-	conditionContainer view hide!
+hideAllConditionPresenters
+	self hideConditionStringPresenter.
+	self hideConditionArrayPresenter.
+	componentListPresenter view arrangement bottomOffset: 0!
+
+hideConditionArrayPresenter
+	conditionArrayContainer view hide!
+
+hideConditionStringPresenter
+	conditionStringContainer view hide!
 
 initialize
 	super initialize. 
@@ -341,6 +369,9 @@ packageLabelOf: packageName editedTo: value accept: accept
 	accept value: true. 
 !
 
+platformConditionChanged
+	self halt. !
+
 platformPropertyItem: association updatedAtIndex: value
 	model
 		command: #setPlatformProperty:to:;
@@ -389,6 +420,17 @@ registerPresentersForUpdates
 		selector: #componentsUpdate:browser:
 		browser: self!
 
+removeArrayCondition
+	| condition newConditions |
+	condition := conditionArrayPresenter selectionOrNil ifNil: [^self].
+	(conditionArrayPresenter list includes: condition) ifFalse: [^self].
+	(MessageBox confirm: 'Really remove condition ' , condition , '?') ifFalse: [^self].
+	newConditions := componentListPresenter selection condition asOrderedCollection.
+	newConditions remove: condition.
+	model subcomponentNamed: componentListPresenter selection name condition: newConditions asArray.
+	conditionArrayPresenter list remove: condition.
+	conditionArrayPresenter view basicRefreshContents!
+
 removeComponent
 	componentListPresenter selections isEmpty
 		ifTrue: [^MessageBox notify: 'Select component before removing it'].
@@ -434,10 +476,6 @@ resetPrePostLoadSource
 		isModified: false;
 		isReadOnly: true!
 
-showConditionPresenter
-	componentListPresenter view arrangement bottomOffset: -25.
-	conditionContainer view show!
-
 updatePrePostSource
 	componentListPresenter selectionOrNil ifNil:[^self]. 
 	prePostLoadListPresenter selectionOrNil
@@ -448,6 +486,7 @@ updatePrePostSource
 			loadAssoc := componentListPresenter selection perform: selection first.
 			prePostLoadSource value: (loadAssoc ifNotNil: [loadAssoc value])]! !
 !JadeiteComponentPresenter categoriesForMethods!
+addArrayCondition!menu handlers!public! !
 addComponent!menu handlers!public! !
 addConditionalAttribute!menu handlers!public! !
 addPackage!menu handlers!public! !
@@ -460,18 +499,21 @@ componentSelectionChanged!event handlers!public! !
 conditionalAttributeItem:updatedAtIndex:!event handlers!public! !
 conditionChanged!event handlers!public! !
 createComponents!initialization!public! !
+createConditionComponents!initialization!public! !
 createSchematicWiring!initialization!public! !
-displayArrayCondition!displaying!event handlers!public! !
+displayArrayCondition!displaying!public! !
 displayComponentPackages!displaying!public! !
 displayComponents!displaying!public! !
 displayConditionalAttributes!displaying!public! !
-displayConditionPresenter!displaying!event handlers!public! !
+displayConditionPresenter!displaying!public! !
 displayPrePostLoadSources!displaying!public! !
-displayStringCondition!displaying!event handlers!public! !
-displayTabs!displaying!event handlers!public! !
+displayStringCondition!displaying!public! !
+displayTabs!displaying!public! !
 editLoadSpec!menu handlers!public! !
 exportProjectDefinition!menu handlers!public! !
-hideConditionPresenter!displaying!event handlers!public! !
+hideAllConditionPresenters!displaying!public! !
+hideConditionArrayPresenter!displaying!public! !
+hideConditionStringPresenter!displaying!public! !
 initialize!initialization!public! !
 isClassSelected!public!testing! !
 isOkayToChange!event handlers!public! !
@@ -486,20 +528,21 @@ onDropPackageToComponent:!drag & drop!event handlers!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
 packageLabelOf:editedTo:accept:!event handlers!public! !
+platformConditionChanged!event handlers!public! !
 platformPropertyItem:updatedAtIndex:!event handlers!public! !
 prePostLoadChanged!event handlers!public! !
 projectDefinitionService!accessing!public! !
 projectListPresenter!accessing!public! !
 queryCommand:!menu handlers!public! !
 registerPresentersForUpdates!public!register presenters! !
+removeArrayCondition!menu handlers!public! !
 removeComponent!menu handlers!public! !
 removeConditionalAttribute!menu handlers!public! !
 removePackagesFromProjectDefinition!menu handlers!public! !
 renameComponent!menu handlers!public! !
 renamePackage!menu handlers!public! !
 resetComponentList!initialization!public! !
-resetPrePostLoadSource!event handlers!public! !
-showConditionPresenter!displaying!event handlers!public! !
+resetPrePostLoadSource!private! !
 updatePrePostSource!event handlers!public! !
 !
 
