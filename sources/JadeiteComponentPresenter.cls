@@ -24,6 +24,18 @@ addArrayCondition
 	conditionArrayPresenter list add: condition.
 	conditionArrayPresenter view basicRefreshContents!
 
+addChildrenOf: parentService
+	model componentDefinitions keysAndValuesDo: 
+			[:parent :children |
+			parent == #nil
+				ifFalse: 
+					[parent name = parentService name
+						ifTrue: 
+							[children do: 
+									[:child |
+									componentListPresenter model add: child asChildOf: parentService.
+									self addChildrenOf: child]]]]!
+
 addComponent
 	| componentName |
 	componentName := Prompter prompt: 'Please enter a component name ...' caption: 'Add Component'.
@@ -177,7 +189,7 @@ createSchematicWiring
 		to: self!
 
 displayArrayCondition
-	componentListPresenter view arrangement bottomOffset: -25.
+	componentListPresenter view arrangement bottomOffset: -50.
 	conditionArrayContainer view show.
 	self hideConditionStringPresenter.
 	conditionArrayPresenter list: componentListPresenter selection condition asSortedCollection!
@@ -197,22 +209,7 @@ displayComponentPackages
 	packageListPresenter list: packageNames!
 
 displayComponents
-	| treeModel |
-	treeModel := componentListPresenter model.
-	model componentDefinitions keysAndValuesDo: 
-			[:parent :children |
-			| parentDefinitionService |
-			parent == #nil
-				ifTrue: [parentDefinitionService := nil]
-				ifFalse: 
-					[parentDefinitionService := treeModel asBag
-								detect: [:definitionService | definitionService name = parent name]
-								ifNone: [nil]].
-			children do: 
-					[:child |
-					| componentDefinitionService |
-					componentDefinitionService := child copy.	"why do we need this again?"
-					treeModel add: componentDefinitionService asChildOf: parentDefinitionService]].
+	self populateComponentTree.
 	componentListPresenter view expandAll!
 
 displayConditionalAttributes
@@ -358,7 +355,8 @@ onViewClosed
 onViewOpened
 	super onViewOpened.
 	self registerPresentersForUpdates.
-	self updateService: model.!
+	self updateService: model.
+	self hideAllConditionPresenters!
 
 packageLabelOf: packageName editedTo: value accept: accept
 	packageName = value ifTrue: [^self].
@@ -377,6 +375,16 @@ platformPropertyItem: association updatedAtIndex: value
 		command: #setPlatformProperty:to:;
 		commandArgs: (Array with: association key with: value).
 	self issueProjectDefinitionCommand!
+
+populateComponentTree
+	self sortedComponentDefinitions keysAndValuesDo: 
+			[:parent :children |
+			parent = #nil
+				ifTrue: 
+					[children do: 
+							[:child |
+							componentListPresenter model add: child asChildOf: nil.
+							self addChildrenOf: child]]]!
 
 prePostLoadChanged
 	| command |
@@ -476,6 +484,9 @@ resetPrePostLoadSource
 		isModified: false;
 		isReadOnly: true!
 
+sortedComponentDefinitions
+	^model componentDefinitions!
+
 updatePrePostSource
 	componentListPresenter selectionOrNil ifNil:[^self]. 
 	prePostLoadListPresenter selectionOrNil
@@ -487,6 +498,7 @@ updatePrePostSource
 			prePostLoadSource value: (loadAssoc ifNotNil: [loadAssoc value])]! !
 !JadeiteComponentPresenter categoriesForMethods!
 addArrayCondition!menu handlers!public! !
+addChildrenOf:!displaying!private! !
 addComponent!menu handlers!public! !
 addConditionalAttribute!menu handlers!public! !
 addPackage!menu handlers!public! !
@@ -530,6 +542,7 @@ onViewOpened!event handlers!public! !
 packageLabelOf:editedTo:accept:!event handlers!public! !
 platformConditionChanged!event handlers!public! !
 platformPropertyItem:updatedAtIndex:!event handlers!public! !
+populateComponentTree!displaying!private! !
 prePostLoadChanged!event handlers!public! !
 projectDefinitionService!accessing!public! !
 projectListPresenter!accessing!public! !
@@ -543,6 +556,7 @@ renameComponent!menu handlers!public! !
 renamePackage!menu handlers!public! !
 resetComponentList!initialization!public! !
 resetPrePostLoadSource!private! !
+sortedComponentDefinitions!displaying!private! !
 updatePrePostSource!event handlers!public! !
 !
 
