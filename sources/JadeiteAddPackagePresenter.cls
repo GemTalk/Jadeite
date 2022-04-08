@@ -30,6 +30,7 @@ createComponents
 
 initializeComponents
 	| componentNames |
+	projectService componentServices ifNil:[^self]. "none project selected" 
 	componentNames := projectService componentServices keys
 				select: [:componentService | (componentService == #nil) not]
 				thenCollect: [:componentService | componentService name].

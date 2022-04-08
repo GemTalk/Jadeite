@@ -719,7 +719,7 @@ JadePresenterA subclass: #JadeiteCommandPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource conditionPresenter conditionStringContainer conditionArrayContainer conditionArrayPresenter'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource conditionPresenter conditionStringContainer conditionArrayContainer conditionArrayPresenter sortedComponents'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

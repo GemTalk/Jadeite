@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteComponentPresenter
-	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource conditionPresenter conditionStringContainer conditionArrayContainer conditionArrayPresenter'
+	instanceVariableNames: 'componentListPresenter packageListPresenter componentPropertyPresenter prePostLoadListPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter prePostLoadSource conditionPresenter conditionStringContainer conditionArrayContainer conditionArrayPresenter sortedComponents'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -25,8 +25,11 @@ addArrayCondition
 	conditionArrayPresenter view basicRefreshContents!
 
 addChildrenOf: parentService
-	model componentDefinitions keysAndValuesDo: 
-			[:parent :children |
+	self sortedComponents do: 
+			[:assoc |
+			| parent children |
+			parent := assoc key.
+			children := assoc value.
 			parent == #nil
 				ifFalse: 
 					[parent name = parentService name
@@ -377,8 +380,11 @@ platformPropertyItem: association updatedAtIndex: value
 	self issueProjectDefinitionCommand!
 
 populateComponentTree
-	self sortedComponentDefinitions keysAndValuesDo: 
-			[:parent :children |
+	self sortedComponents do: 
+			[:assoc |
+			| parent children |
+			parent := assoc key.
+			children := assoc value.
 			parent = #nil
 				ifTrue: 
 					[children do: 
@@ -484,8 +490,13 @@ resetPrePostLoadSource
 		isModified: false;
 		isReadOnly: true!
 
-sortedComponentDefinitions
-	^model componentDefinitions!
+sortedComponents
+	sortedComponents
+		ifNil: 
+			[sortedComponents := SortedCollection
+						sortBlock: [:x :y | (x key = #nil or: [y key = #nil]) ifTrue: [false] ifFalse: [x key name < y key name]].
+			sortedComponents addAll: model componentDefinitions associations].
+	^sortedComponents!
 
 updatePrePostSource
 	componentListPresenter selectionOrNil ifNil:[^self]. 
@@ -556,7 +567,7 @@ renameComponent!menu handlers!public! !
 renamePackage!menu handlers!public! !
 resetComponentList!initialization!public! !
 resetPrePostLoadSource!private! !
-sortedComponentDefinitions!displaying!private! !
+sortedComponents!accessing!private! !
 updatePrePostSource!event handlers!public! !
 !
 
