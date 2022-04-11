@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 TestCase2 subclass: #JadeiteBrokenTests
 	instanceVariableNames: ''
@@ -31,5 +31,7 @@ test_findClassNotInProject
 	self assert: self packageListPresenter selection name equals: 'Cypress-Definitions'.
 	self assert: self projectListPresenter selection name equals: 'Cypress'.
 	self deny: self projectsPresenter isNoneProjectSelected! !
-!JadeiteBrokenTests categoriesFor: #test_findClassNotInProject!public! !
+!JadeiteBrokenTests categoriesForMethods!
+test_findClassNotInProject!public! !
+!
 

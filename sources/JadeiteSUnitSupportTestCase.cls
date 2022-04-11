@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteAbstractTestCase subclass: #JadeiteSUnitSupportTestCase
 	instanceVariableNames: 'sunitBrowser'
@@ -1478,81 +1478,83 @@ test_testsRunInSelectedTestClass
 	self assert: self sunitPresenter runAll isKindOf: JadeTestResult.	"runSelected sends back the result of the last test"
 	self assert: (session executeString: 'RowanSample1Test testClassVar')
 		equals: #RowanSample1SubClassTest! !
-!JadeiteSUnitSupportTestCase categoriesFor: #aggressivelyCleanupRowanProject:!private!support!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #assertMenuItem:isEnabled:!public!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #assertPackageInList:!private!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #denyPackageInList:!private!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #isSampleProjectLoaded!private!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #methodListPresenter!public!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #projectsPresenter!private!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #selecProjectBrowserMethodsNamed:!public!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #selectProjectBrowserMethodNamed:!public!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #selectSUnitBrowserMethodNamed:!public!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #selectSUnitBrowserMethodsNamed:!public!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #setUp!public!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #setupAbstractSuperWithTest!public!support!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #setupRunInSelectedTestClassTest!private!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #setupTestSuperclass!private!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #sunitPresenter!public!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #tearDown!public!support! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_abortNoSelections!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_abortWithSelections!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_abstractTestAppearsOnlyInSubclasses!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_addNewTestPackage!public!test updates from other browsers!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_browseMethods!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_browseSelectedMethodForNewlyAddedTest!public!test updates from other browsers! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_browseSunitClass!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_browseTestSelectorsInSUnitTab!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_commitNoSelections!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_commitWithSelections!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_debugWithDifferentSelectedClasses!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_dontAddClassWhenPackageNotSelected!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_dontChangeTabs!public!test updates from other browsers! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_dontClearResults!public!test updates from other browsers! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_extensionOnlyTestClassVisible!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_extensionTestShowsUpInSUnitBrowser!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_extensionTestsShowUpInExtensionAndDefinedPackages!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_inheritedTests!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_maintainColumnSort!public!test updates from other browsers!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_maintainColumnSortChangeFromProjectBrowser!public!test updates from other browsers!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_menuEnablementDebugInClassPresenter!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_menuEnablementRunAndMesureTimeInClassPresenter!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_menuEnablementRunSelectedInClassPresenter!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_methodColumnDisplay!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectClasses!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_multiSelectNoDuplicates!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_openSunitBrowser!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_openTwoSUnitBrowsersLosingPackageSelection!public!test updates from other browsers! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_packageRemovedOnClassRemoval!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_projectBrowserRunAllTests!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_projectBrowserRunSelectedTests!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_projectBrowserTestRunningMenuItemEnablement!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_refresh!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_registeredPresentersInSUnitBrowserCleanedUp!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_resetMenuItemsNamedProperly!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_resetStatusBar!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_runClassTests!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_sameSelectorInheritedTests!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_sameSelectorInheritedTestsFailureInSuper!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_saveMethodInProjectBrowser!public!test updates from other browsers!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_selectCategoryInProjectBrowserDoesNotUpdateSunitBrowser!public!test updates from other browsers!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_selectClassDoesNotLoseTestResults!public!test updates from other browsers! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_selectInProjectBrowserDoesNotUpdateSunitBrowser!public!test updates from other browsers!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_selectionRemainsVisible!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_selectMethodFromProjectBrowser!public!test updates from other browsers!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_statusBarUpdatesAfterDebug!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_statusBarUpdatesAfterRunSelected!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanPackages!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestClasses!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserHasRowanTestMethods!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserPassingDebugTestShowsResult!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserSortOrderAfterAddingMethod!public!test updates from other browsers! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserUpdateRightClassInHierarchy!public!test updates from other browsers! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserUpdateRightClassInHierarchy2!public!test updates from other browsers! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitBrowserUpdates!public!test updates from other browsers! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitResetTestResultOnClassChange!public!test sunit tab! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitTabPassingDebugTestShowsResult!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_sunitTabUpdates!public!test updates from other browsers! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_testCountBar!public!tests! !
-!JadeiteSUnitSupportTestCase categoriesFor: #test_testsRunInSelectedTestClass!public!tests! !
+!JadeiteSUnitSupportTestCase categoriesForMethods!
+aggressivelyCleanupRowanProject:!private!support!tests! !
+assertMenuItem:isEnabled:!public!support! !
+assertPackageInList:!private!support! !
+denyPackageInList:!private!support! !
+isSampleProjectLoaded!private!support! !
+methodListPresenter!public!support! !
+projectsPresenter!private!support! !
+selecProjectBrowserMethodsNamed:!public!support! !
+selectProjectBrowserMethodNamed:!public!support! !
+selectSUnitBrowserMethodNamed:!public!support! !
+selectSUnitBrowserMethodsNamed:!public!support! !
+setUp!public!support! !
+setupAbstractSuperWithTest!public!support!tests! !
+setupRunInSelectedTestClassTest!private!support! !
+setupTestSuperclass!private!support! !
+sunitPresenter!public!support! !
+tearDown!public!support! !
+test_abortNoSelections!public!tests! !
+test_abortWithSelections!public!tests! !
+test_abstractTestAppearsOnlyInSubclasses!public!tests! !
+test_addNewTestPackage!public!test updates from other browsers!tests! !
+test_browseMethods!public!tests! !
+test_browseSelectedMethodForNewlyAddedTest!public!test updates from other browsers! !
+test_browseSunitClass!public!tests! !
+test_browseTestSelectorsInSUnitTab!public!tests! !
+test_commitNoSelections!public!tests! !
+test_commitWithSelections!public!tests! !
+test_debugWithDifferentSelectedClasses!public!tests! !
+test_dontAddClassWhenPackageNotSelected!public!tests! !
+test_dontChangeTabs!public!test updates from other browsers! !
+test_dontClearResults!public!test updates from other browsers! !
+test_extensionOnlyTestClassVisible!public!tests! !
+test_extensionTestShowsUpInSUnitBrowser!public!tests! !
+test_extensionTestsShowUpInExtensionAndDefinedPackages!public!tests! !
+test_inheritedTests!public!tests! !
+test_maintainColumnSort!public!test updates from other browsers!tests! !
+test_maintainColumnSortChangeFromProjectBrowser!public!test updates from other browsers!tests! !
+test_menuEnablementDebugInClassPresenter!public!tests! !
+test_menuEnablementRunAndMesureTimeInClassPresenter!public!tests! !
+test_menuEnablementRunSelectedInClassPresenter!public!tests! !
+test_methodColumnDisplay!public!tests! !
+test_multiSelectClasses!public!tests! !
+test_multiSelectNoDuplicates!public!tests! !
+test_openSunitBrowser!public!tests! !
+test_openTwoSUnitBrowsersLosingPackageSelection!public!test updates from other browsers! !
+test_packageRemovedOnClassRemoval!public!tests! !
+test_projectBrowserRunAllTests!public!tests! !
+test_projectBrowserRunSelectedTests!public!tests! !
+test_projectBrowserTestRunningMenuItemEnablement!public!tests! !
+test_refresh!public!tests! !
+test_registeredPresentersInSUnitBrowserCleanedUp!public!tests! !
+test_resetMenuItemsNamedProperly!public!tests! !
+test_resetStatusBar!public!tests! !
+test_runClassTests!public!tests! !
+test_sameSelectorInheritedTests!public!tests! !
+test_sameSelectorInheritedTestsFailureInSuper!public!tests! !
+test_saveMethodInProjectBrowser!public!test updates from other browsers!tests! !
+test_selectCategoryInProjectBrowserDoesNotUpdateSunitBrowser!public!test updates from other browsers!tests! !
+test_selectClassDoesNotLoseTestResults!public!test updates from other browsers! !
+test_selectInProjectBrowserDoesNotUpdateSunitBrowser!public!test updates from other browsers!tests! !
+test_selectionRemainsVisible!public!tests! !
+test_selectMethodFromProjectBrowser!public!test updates from other browsers!tests! !
+test_statusBarUpdatesAfterDebug!public!tests! !
+test_statusBarUpdatesAfterRunSelected!public!tests! !
+test_sunitBrowserHasRowanPackages!public!tests! !
+test_sunitBrowserHasRowanTestClasses!public!tests! !
+test_sunitBrowserHasRowanTestMethods!public!tests! !
+test_sunitBrowserPassingDebugTestShowsResult!public!tests! !
+test_sunitBrowserSortOrderAfterAddingMethod!public!test updates from other browsers! !
+test_sunitBrowserUpdateRightClassInHierarchy!public!test updates from other browsers! !
+test_sunitBrowserUpdateRightClassInHierarchy2!public!test updates from other browsers! !
+test_sunitBrowserUpdates!public!test updates from other browsers! !
+test_sunitResetTestResultOnClassChange!public!test sunit tab! !
+test_sunitTabPassingDebugTestShowsResult!public!tests! !
+test_sunitTabUpdates!public!test updates from other browsers! !
+test_testCountBar!public!tests! !
+test_testsRunInSelectedTestClass!public!tests! !
+!
 

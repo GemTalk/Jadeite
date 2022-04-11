@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RowanLoggingService subclass: #TestLoggingService
 	instanceVariableNames: ''
@@ -20,9 +20,11 @@ logComment: aString
 
 testFilename
 	^'jadeiteTestFilename.txt'! !
-!TestLoggingService categoriesFor: #isTestLoggingService!public!testing! !
-!TestLoggingService categoriesFor: #logComment:!public! !
-!TestLoggingService categoriesFor: #testFilename!private! !
+!TestLoggingService categoriesForMethods!
+isTestLoggingService!public!testing! !
+logComment:!public! !
+testFilename!private! !
+!
 
 !TestLoggingService class methodsFor!
 
@@ -30,5 +32,7 @@ newWithGroupId: integer logger: logger
 	"Logger can decide what to do."
 
 	^logger newWithGroupId: integer logger: logger! !
-!TestLoggingService class categoriesFor: #newWithGroupId:logger:!instance creation!public! !
+!TestLoggingService class categoriesForMethods!
+newWithGroupId:logger:!instance creation!public! !
+!
 

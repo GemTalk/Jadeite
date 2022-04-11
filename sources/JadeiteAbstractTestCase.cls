@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 TestCase subclass: #JadeiteAbstractTestCase
 	instanceVariableNames: 'session transcript projectsBrowser jadeiteShell user'
@@ -656,111 +656,113 @@ updateService: service
 
 variableListPresenter
 	^self projectsPresenter variableListPresenter.! !
-!JadeiteAbstractTestCase categoriesFor: #abortTransaction!private!setup teardown! !
-!JadeiteAbstractTestCase categoriesFor: #anotherNumberMethodSource!constants!private! !
-!JadeiteAbstractTestCase categoriesFor: #answerYesToDialogDuring:!private!support! !
-!JadeiteAbstractTestCase categoriesFor: #assertMethodInList:!private!support! !
-!JadeiteAbstractTestCase categoriesFor: #assertMethodInList:presenter:!private!support! !
-!JadeiteAbstractTestCase categoriesFor: #assertProjectInList:!private!support! !
-!JadeiteAbstractTestCase categoriesFor: #auditAll!public!support! !
-!JadeiteAbstractTestCase categoriesFor: #categoryListPresenter!private!project browser support! !
-!JadeiteAbstractTestCase categoriesFor: #classHierarchyPresenter!private!project browser support! !
-!JadeiteAbstractTestCase categoriesFor: #classListPresenter!private!project browser support! !
-!JadeiteAbstractTestCase categoriesFor: #cleanupExistingWindows!public!support! !
-!JadeiteAbstractTestCase categoriesFor: #cleanupTextPaneForClose:!public!support! !
-!JadeiteAbstractTestCase categoriesFor: #clearBreakAt:!private!support!tests! !
-!JadeiteAbstractTestCase categoriesFor: #cloneRowanSample1!private!project support! !
-!JadeiteAbstractTestCase categoriesFor: #closeExistingInspectors!private!support! !
-!JadeiteAbstractTestCase categoriesFor: #closeTranscriptAndLogout!private!setup teardown!support! !
-!JadeiteAbstractTestCase categoriesFor: #commitTransaction!private!setup teardown! !
-!JadeiteAbstractTestCase categoriesFor: #createDebuggerTestMethod!issue test support!private! !
-!JadeiteAbstractTestCase categoriesFor: #createNewTestProjectNamed:!public!support! !
-!JadeiteAbstractTestCase categoriesFor: #denyMethodInList:!private!support! !
-!JadeiteAbstractTestCase categoriesFor: #denyMethodInList:presenter:!private!support! !
-!JadeiteAbstractTestCase categoriesFor: #denyProjectInList:!private!support! !
-!JadeiteAbstractTestCase categoriesFor: #deselectProjects!private!project browser support!selection! !
-!JadeiteAbstractTestCase categoriesFor: #destroy:!public!setup teardown! !
-!JadeiteAbstractTestCase categoriesFor: #dictionaryPresenter!private!project browser support! !
-!JadeiteAbstractTestCase categoriesFor: #disableBreakpoints!public!support! !
-!JadeiteAbstractTestCase categoriesFor: #disableInteractionsWhile:!private!setup teardown! !
-!JadeiteAbstractTestCase categoriesFor: #enableBreakpoints!public!support! !
-!JadeiteAbstractTestCase categoriesFor: #ensureOneTab!private!support! !
-!JadeiteAbstractTestCase categoriesFor: #ensureRowanSample1Loaded!private!project support! !
-!JadeiteAbstractTestCase categoriesFor: #fail:!asserting!public! !
-!JadeiteAbstractTestCase categoriesFor: #interestingLoopMethodSource!constants!private! !
-!JadeiteAbstractTestCase categoriesFor: #isSampleProjectLoaded!private!private testing!project support! !
-!JadeiteAbstractTestCase categoriesFor: #issueCommand:!issue test support!public!support! !
-!JadeiteAbstractTestCase categoriesFor: #issueCommands:!issue test support!public!support! !
-!JadeiteAbstractTestCase categoriesFor: #itemNamed:in:!issue test support!private! !
-!JadeiteAbstractTestCase categoriesFor: #loadProjectNamed:!project support!public! !
-!JadeiteAbstractTestCase categoriesFor: #loadRowanSample1InProjectList!private!project support! !
-!JadeiteAbstractTestCase categoriesFor: #loginWithRetry:!private!support! !
-!JadeiteAbstractTestCase categoriesFor: #logoutThenLoginAs:!private!setup teardown!support! !
-!JadeiteAbstractTestCase categoriesFor: #methodListPresenter!private!project browser support! !
-!JadeiteAbstractTestCase categoriesFor: #methodSourceForTest!constants!private! !
-!JadeiteAbstractTestCase categoriesFor: #methodSourcePresenter!private!project browser support! !
-!JadeiteAbstractTestCase categoriesFor: #noBreakIn:!issue test support!private! !
-!JadeiteAbstractTestCase categoriesFor: #openProjectBrowser!private!support!test methods! !
-!JadeiteAbstractTestCase categoriesFor: #openWindow:!browser test support!private! !
-!JadeiteAbstractTestCase categoriesFor: #packageListPresenter!private!project browser support! !
-!JadeiteAbstractTestCase categoriesFor: #primaryTestWindow!accessing!public! !
-!JadeiteAbstractTestCase categoriesFor: #projectListPresenter!private!project browser support! !
-!JadeiteAbstractTestCase categoriesFor: #projectsPresenter!private!project browser support! !
-!JadeiteAbstractTestCase categoriesFor: #queryCommand:inPresenter:view:!private! !
-!JadeiteAbstractTestCase categoriesFor: #rowanProjectsHome!constants!private! !
-!JadeiteAbstractTestCase categoriesFor: #rowanSample1Path!constants!private! !
-!JadeiteAbstractTestCase categoriesFor: #sampleClassName!private!project browser support! !
-!JadeiteAbstractTestCase categoriesFor: #sampleProjectName!constants!private! !
-!JadeiteAbstractTestCase categoriesFor: #saveClass:superclass:instVars:package:!private! !
-!JadeiteAbstractTestCase categoriesFor: #saveClass:withInstVars:package:!private! !
-!JadeiteAbstractTestCase categoriesFor: #saveInterestingLoopMethod!browser support!private! !
-!JadeiteAbstractTestCase categoriesFor: #saveIssue166Method!issue test support!private! !
-!JadeiteAbstractTestCase categoriesFor: #saveIssue169Method!issue test support!private! !
-!JadeiteAbstractTestCase categoriesFor: #saveIssue216Method!issue test support!private! !
-!JadeiteAbstractTestCase categoriesFor: #saveMethod:in:category:!private!support! !
-!JadeiteAbstractTestCase categoriesFor: #saveSampleMethod!private! !
-!JadeiteAbstractTestCase categoriesFor: #saveTestClassWithInstVars:package:!private! !
-!JadeiteAbstractTestCase categoriesFor: #selectCategoriesNamed:!private!project browser support!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectCategoryNamed:!private!project browser support!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectClassInHierarchyNamed:!private!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectClassListTab!private!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectClassTab!private!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectClassTabIn:!private!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectHierarchyTab!private!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectHierarchyTabIn:!private!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectInstanceTab!private!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectInstanceTabIn:!private!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectMethodNamed:!private!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectMethodNamedInProjectBrowser:!private!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectMethodsNamed:!private!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectMethodsNamed:in:!private!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectNoneProject!public!support! !
-!JadeiteAbstractTestCase categoriesFor: #selectRowanSample1Class!private!project browser support!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectRowanSample1Test!private!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectRowanServicesPackage!private!test rename class!testing! !
-!JadeiteAbstractTestCase categoriesFor: #selectRowanServicesTestsPackage!private!test class hierarchy!tests! !
-!JadeiteAbstractTestCase categoriesFor: #selectServiceNamed:in:!private!project browser support!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectServicesNamed:in:!private!project browser support!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectTreeServicesNamed:in:!private!selection! !
-!JadeiteAbstractTestCase categoriesFor: #selectWithChangeEventMethodNamed:!private!selection! !
-!JadeiteAbstractTestCase categoriesFor: #serviceNamed:in:!private!selection! !
-!JadeiteAbstractTestCase categoriesFor: #setAutoCommit:!private!setup teardown! !
-!JadeiteAbstractTestCase categoriesFor: #setBreakAt:!private!support!tests! !
-!JadeiteAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
-!JadeiteAbstractTestCase categoriesFor: #setupProjectBrowser!private!setup teardown! !
-!JadeiteAbstractTestCase categoriesFor: #setupSupclassComparisonMethods!public!support! !
-!JadeiteAbstractTestCase categoriesFor: #tearDown!private!setup teardown! !
-!JadeiteAbstractTestCase categoriesFor: #test_globalAdditionalAccelerators!public!tests! !
-!JadeiteAbstractTestCase categoriesFor: #testsIssue:withTitle:!issue test support!public!support! !
-!JadeiteAbstractTestCase categoriesFor: #testsRowanIssue:withTitle:!issue test support!public!support! !
-!JadeiteAbstractTestCase categoriesFor: #transcript!public!transcript support! !
-!JadeiteAbstractTestCase categoriesFor: #transcriptForCurrentSession!private!setup teardown!support! !
-!JadeiteAbstractTestCase categoriesFor: #transcriptProjectList!public!transcript support! !
-!JadeiteAbstractTestCase categoriesFor: #transcriptProjectNamed:!public!transcript support! !
-!JadeiteAbstractTestCase categoriesFor: #transcriptTab!public!transcript support! !
-!JadeiteAbstractTestCase categoriesFor: #unloadSampleProject!private!project support! !
-!JadeiteAbstractTestCase categoriesFor: #updateService:!issue test support!public!support! !
-!JadeiteAbstractTestCase categoriesFor: #variableListPresenter!private!project browser support! !
+!JadeiteAbstractTestCase categoriesForMethods!
+abortTransaction!private!setup teardown! !
+anotherNumberMethodSource!constants!private! !
+answerYesToDialogDuring:!private!support! !
+assertMethodInList:!private!support! !
+assertMethodInList:presenter:!private!support! !
+assertProjectInList:!private!support! !
+auditAll!public!support! !
+categoryListPresenter!private!project browser support! !
+classHierarchyPresenter!private!project browser support! !
+classListPresenter!private!project browser support! !
+cleanupExistingWindows!public!support! !
+cleanupTextPaneForClose:!public!support! !
+clearBreakAt:!private!support!tests! !
+cloneRowanSample1!private!project support! !
+closeExistingInspectors!private!support! !
+closeTranscriptAndLogout!private!setup teardown!support! !
+commitTransaction!private!setup teardown! !
+createDebuggerTestMethod!issue test support!private! !
+createNewTestProjectNamed:!public!support! !
+denyMethodInList:!private!support! !
+denyMethodInList:presenter:!private!support! !
+denyProjectInList:!private!support! !
+deselectProjects!private!project browser support!selection! !
+destroy:!public!setup teardown! !
+dictionaryPresenter!private!project browser support! !
+disableBreakpoints!public!support! !
+disableInteractionsWhile:!private!setup teardown! !
+enableBreakpoints!public!support! !
+ensureOneTab!private!support! !
+ensureRowanSample1Loaded!private!project support! !
+fail:!asserting!public! !
+interestingLoopMethodSource!constants!private! !
+isSampleProjectLoaded!private!private testing!project support! !
+issueCommand:!issue test support!public!support! !
+issueCommands:!issue test support!public!support! !
+itemNamed:in:!issue test support!private! !
+loadProjectNamed:!project support!public! !
+loadRowanSample1InProjectList!private!project support! !
+loginWithRetry:!private!support! !
+logoutThenLoginAs:!private!setup teardown!support! !
+methodListPresenter!private!project browser support! !
+methodSourceForTest!constants!private! !
+methodSourcePresenter!private!project browser support! !
+noBreakIn:!issue test support!private! !
+openProjectBrowser!private!support!test methods! !
+openWindow:!browser test support!private! !
+packageListPresenter!private!project browser support! !
+primaryTestWindow!accessing!public! !
+projectListPresenter!private!project browser support! !
+projectsPresenter!private!project browser support! !
+queryCommand:inPresenter:view:!private! !
+rowanProjectsHome!constants!private! !
+rowanSample1Path!constants!private! !
+sampleClassName!private!project browser support! !
+sampleProjectName!constants!private! !
+saveClass:superclass:instVars:package:!private! !
+saveClass:withInstVars:package:!private! !
+saveInterestingLoopMethod!browser support!private! !
+saveIssue166Method!issue test support!private! !
+saveIssue169Method!issue test support!private! !
+saveIssue216Method!issue test support!private! !
+saveMethod:in:category:!private!support! !
+saveSampleMethod!private! !
+saveTestClassWithInstVars:package:!private! !
+selectCategoriesNamed:!private!project browser support!selection! !
+selectCategoryNamed:!private!project browser support!selection! !
+selectClassInHierarchyNamed:!private!selection! !
+selectClassListTab!private!selection! !
+selectClassTab!private!selection! !
+selectClassTabIn:!private!selection! !
+selectHierarchyTab!private!selection! !
+selectHierarchyTabIn:!private!selection! !
+selectInstanceTab!private!selection! !
+selectInstanceTabIn:!private!selection! !
+selectMethodNamed:!private!selection! !
+selectMethodNamedInProjectBrowser:!private!selection! !
+selectMethodsNamed:!private!selection! !
+selectMethodsNamed:in:!private!selection! !
+selectNoneProject!public!support! !
+selectRowanSample1Class!private!project browser support!selection! !
+selectRowanSample1Test!private!selection! !
+selectRowanServicesPackage!private!test rename class!testing! !
+selectRowanServicesTestsPackage!private!test class hierarchy!tests! !
+selectServiceNamed:in:!private!project browser support!selection! !
+selectServicesNamed:in:!private!project browser support!selection! !
+selectTreeServicesNamed:in:!private!selection! !
+selectWithChangeEventMethodNamed:!private!selection! !
+serviceNamed:in:!private!selection! !
+setAutoCommit:!private!setup teardown! !
+setBreakAt:!private!support!tests! !
+setUp!private!setup teardown! !
+setupProjectBrowser!private!setup teardown! !
+setupSupclassComparisonMethods!public!support! !
+tearDown!private!setup teardown! !
+test_globalAdditionalAccelerators!public!tests! !
+testsIssue:withTitle:!issue test support!public!support! !
+testsRowanIssue:withTitle:!issue test support!public!support! !
+transcript!public!transcript support! !
+transcriptForCurrentSession!private!setup teardown!support! !
+transcriptProjectList!public!transcript support! !
+transcriptProjectNamed:!public!transcript support! !
+transcriptTab!public!transcript support! !
+unloadSampleProject!private!project support! !
+updateService:!issue test support!public!support! !
+variableListPresenter!private!project browser support! !
+!
 
 !JadeiteAbstractTestCase class methodsFor!
 
@@ -769,6 +771,8 @@ isAbstract
 
 resources
 	^IdentitySet with: JadeiteTestResource! !
-!JadeiteAbstractTestCase class categoriesFor: #isAbstract!public! !
-!JadeiteAbstractTestCase class categoriesFor: #resources!public! !
+!JadeiteAbstractTestCase class categoriesForMethods!
+isAbstract!public! !
+resources!public! !
+!
 

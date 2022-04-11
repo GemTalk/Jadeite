@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserLowerTabsTestCase
 	instanceVariableNames: ''
@@ -1360,72 +1360,74 @@ test_unloadProjectClearsProjectTab
 			ensure: 
 				[self cloneRowanSample1.
 				self ensureRowanSample1Loaded]! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #cardMenuItemForCommand:in:!public!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_abstractTestsShown!public!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_breakAtDisplaysOneTime!public!test menus! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_breakpointDisabledHighlighting!public!test source! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseHierarchyImplementorsEnablement!public!test menus!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseHierarchySendersEnablement!public!test menus!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseImplementorsDisplaysOneTime!public!test menus! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseImplementorsEnablement!public!test menus!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseSendersDisplaysOneTime!public!test menus! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseSendersEnablement!public!test menus!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_browseTestSelectorsInSUnitTab!public!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_classCopy!public!test class list!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_comparisonPresenterEvents!public!test comparison tab! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_comparisonTabMultimethod!public!test comparison tab! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_comparisonTabNoMethodSelected!public!test comparison tab! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_comparisonTabSuperclass!public!test comparison tab! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_compileClass!public!test compiling!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_compileClassCompilerError!public!test compiling!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_compileClassDirtiesPackageAndProject!public!test compiling! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_compileClassExistingInAnotherPackage!public!test compiling!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_compileClassWithFailingMethods!public!test compiling!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_compileClassWithMethodWarnings!public!test compiling!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_compileErrorDisplay!public!test compiling!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_confirmationDialogDuringCompileClassExistingInAnotherPackage!public!test compiling!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_dontDuplicateBreakpoints!public!test breakpoints! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_doubleClickIncludesColon!public!test source! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_dragMethodOntoComparisonTextPanes!public!test comparison tab! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_editDeleteEnablement!public!test menus! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_enablementOfCardTabsWithSUnitTabSelected!public!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_findMethodDisabled!public!test find!test menus!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_inspectShowsCompileError!public!test source! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_modifiedSourceShouldNotChange!public!test two browsers!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_modifiedSourceShouldNotChangeMethodList!public!test two browsers!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_okayToChangeBeforeFindClass!public!test source! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_openComparisonTabWhenTwoMethodsSelected!public!test comparison tab! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_openMethodTabWhenOneMethodsSelected!public!test comparison tab! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_openNewBrowserTabWhileSUnitTabSelected!public!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_redoUndoEnablement!public!test menus! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatIllegalSource!public!test source! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatMenuItemEnabled!public!test menus! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatSource!public!test source! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatSourceAppliesOnlyToCurrentBrowser!public!test source! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_reloadAfterClassCompile!public!test compiling!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_revertSource!public!test two browsers!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_saveMethodKeepsAlphabetizedList!public!test two browsers!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_saveMethodResetsIndicators!public!test two browsers!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sortedTestSelectorsInSUnitTab!public!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_stepPoint1!public!test step points!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_stepPoint2!public!test step points!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitBarEnabledOnEntry!public!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitBarEnabledOnReEntry!public!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitBrowserForTestClass!public!test menus!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitBrowserIsEnabledForTestClass!public!test menus!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitBrowserNoSelectedTest!public!test menus!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitCtrlB!public!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitInheritedTests!public!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitOnlyRunTestMethods!public!test sunit tab! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitResetTestResultOnClassChange!public!test sunit tab! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitRunAllDoesNotLoseSelections!public!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitRunAndMeasureTime!public!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitRunSelected!public!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitRunTestAsSelectedSubclass!public!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitTabCanRefresh!public!test menus!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sUnitTabHandlesShortSelector!public!test class hierarchy!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sUnitTabRefresh!public!test menus!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_sunitUpdatesProperly!public!test sunit tab!tests! !
-!JadeiteProjectBrowserLowerTabsTestCase categoriesFor: #test_unloadProjectClearsProjectTab!public!test compiling!tests! !
+!JadeiteProjectBrowserLowerTabsTestCase categoriesForMethods!
+cardMenuItemForCommand:in:!public!test sunit tab!tests! !
+test_abstractTestsShown!public!test sunit tab!tests! !
+test_breakAtDisplaysOneTime!public!test menus! !
+test_breakpointDisabledHighlighting!public!test source! !
+test_browseHierarchyImplementorsEnablement!public!test menus!tests! !
+test_browseHierarchySendersEnablement!public!test menus!tests! !
+test_browseImplementorsDisplaysOneTime!public!test menus! !
+test_browseImplementorsEnablement!public!test menus!tests! !
+test_browseSendersDisplaysOneTime!public!test menus! !
+test_browseSendersEnablement!public!test menus!tests! !
+test_browseTestSelectorsInSUnitTab!public!test sunit tab!tests! !
+test_classCopy!public!test class list!test sunit tab!tests! !
+test_comparisonPresenterEvents!public!test comparison tab! !
+test_comparisonTabMultimethod!public!test comparison tab! !
+test_comparisonTabNoMethodSelected!public!test comparison tab! !
+test_comparisonTabSuperclass!public!test comparison tab! !
+test_compileClass!public!test compiling!tests! !
+test_compileClassCompilerError!public!test compiling!tests! !
+test_compileClassDirtiesPackageAndProject!public!test compiling! !
+test_compileClassExistingInAnotherPackage!public!test compiling!tests! !
+test_compileClassWithFailingMethods!public!test compiling!tests! !
+test_compileClassWithMethodWarnings!public!test compiling!tests! !
+test_compileErrorDisplay!public!test compiling!tests! !
+test_confirmationDialogDuringCompileClassExistingInAnotherPackage!public!test compiling!tests! !
+test_dontDuplicateBreakpoints!public!test breakpoints! !
+test_doubleClickIncludesColon!public!test source! !
+test_dragMethodOntoComparisonTextPanes!public!test comparison tab! !
+test_editDeleteEnablement!public!test menus! !
+test_enablementOfCardTabsWithSUnitTabSelected!public!test sunit tab!tests! !
+test_findMethodDisabled!public!test find!test menus!test sunit tab!tests! !
+test_inspectShowsCompileError!public!test source! !
+test_modifiedSourceShouldNotChange!public!test two browsers!tests! !
+test_modifiedSourceShouldNotChangeMethodList!public!test two browsers!tests! !
+test_okayToChangeBeforeFindClass!public!test source! !
+test_openComparisonTabWhenTwoMethodsSelected!public!test comparison tab! !
+test_openMethodTabWhenOneMethodsSelected!public!test comparison tab! !
+test_openNewBrowserTabWhileSUnitTabSelected!public!test sunit tab!tests! !
+test_redoUndoEnablement!public!test menus! !
+test_reformatIllegalSource!public!test source! !
+test_reformatMenuItemEnabled!public!test menus! !
+test_reformatSource!public!test source! !
+test_reformatSourceAppliesOnlyToCurrentBrowser!public!test source! !
+test_reformatSourceIsUndoable!public!test source! !
+test_reloadAfterClassCompile!public!test compiling!tests! !
+test_revertSource!public!test two browsers!tests! !
+test_saveMethodKeepsAlphabetizedList!public!test two browsers!tests! !
+test_saveMethodResetsIndicators!public!test two browsers!tests! !
+test_sortedTestSelectorsInSUnitTab!public!test sunit tab!tests! !
+test_stepPoint1!public!test step points!tests! !
+test_stepPoint2!public!test step points!tests! !
+test_sunitBarEnabledOnEntry!public!test sunit tab!tests! !
+test_sunitBarEnabledOnReEntry!public!test sunit tab!tests! !
+test_sunitBrowserForTestClass!public!test menus!test sunit tab!tests! !
+test_sunitBrowserIsEnabledForTestClass!public!test menus!test sunit tab!tests! !
+test_sunitBrowserNoSelectedTest!public!test menus!test sunit tab!tests! !
+test_sunitCtrlB!public!test sunit tab!tests! !
+test_sunitInheritedTests!public!test sunit tab!tests! !
+test_sunitOnlyRunTestMethods!public!test sunit tab! !
+test_sunitResetTestResultOnClassChange!public!test sunit tab! !
+test_sunitRunAllDoesNotLoseSelections!public!test sunit tab!tests! !
+test_sunitRunAndMeasureTime!public!test sunit tab!tests! !
+test_sunitRunSelected!public!test sunit tab!tests! !
+test_sunitRunTestAsSelectedSubclass!public!test sunit tab!tests! !
+test_sunitTabCanRefresh!public!test menus!test sunit tab!tests! !
+test_sUnitTabHandlesShortSelector!public!test class hierarchy!test sunit tab!tests! !
+test_sUnitTabRefresh!public!test menus!test sunit tab!tests! !
+test_sunitUpdatesProperly!public!test sunit tab!tests! !
+test_unloadProjectClearsProjectTab!public!test compiling!tests! !
+!
 

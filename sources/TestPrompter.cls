@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 Prompter subclass: #TestPrompter
 	instanceVariableNames: ''
@@ -22,10 +22,12 @@ prompt: thePrompt
 showModalView
 
 	"avoid raising the dialog window"! !
-!TestPrompter categoriesFor: #answer!public! !
-!TestPrompter categoriesFor: #caption:!public! !
-!TestPrompter categoriesFor: #prompt:!public! !
-!TestPrompter categoriesFor: #showModalView!public! !
+!TestPrompter categoriesForMethods!
+answer!public! !
+caption:!public! !
+prompt:!public! !
+showModalView!public! !
+!
 
 !TestPrompter class methodsFor!
 
@@ -46,7 +48,9 @@ plannedResult: answer
 	(answer isKindOf: OrderedCollection)
 		ifTrue: [PlannedResult := answer]
 		ifFalse: [PlannedResult := OrderedCollection with: answer]! !
-!TestPrompter class categoriesFor: #lastPrompt!accessing!public! !
-!TestPrompter class categoriesFor: #plannedResult!public! !
-!TestPrompter class categoriesFor: #plannedResult:!public! !
+!TestPrompter class categoriesForMethods!
+lastPrompt!accessing!public! !
+plannedResult!public! !
+plannedResult:!public! !
+!
 

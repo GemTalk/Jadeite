@@ -1203,7 +1203,7 @@ packageGroupPresenter
 
 possiblyClearProjectInfoTab
 	self projectListPresenter
-		selectionIfNone: [projectInfoTab ifNotNil: [:tab | tab list: ListModel new]]!
+		selectionIfNone: [projectInfoTab ifNotNil: [projectInfoList list: ListModel new]]!
 
 preferencesMenuStrings
 
@@ -1792,6 +1792,7 @@ unloadProjects
 	self basicUnloadProjects: projectNames!
 
 updateAddPackageLists
+	projectListPresenter selectionOrNil ifNil: [^self].
 	addPackagePresenter ifNotNil: [addPackagePresenter projectService: projectListPresenter selection]!
 
 updateAfterFindClass: classService

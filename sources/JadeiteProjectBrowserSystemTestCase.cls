@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserSystemTestCase
 	instanceVariableNames: ''
@@ -263,18 +263,20 @@ test_systemTabNamesProjectClassList
 	self selectServiceNamed: 'RowanSample1' in: self classListPresenter.
 	self assert: projectsBrowser cardsPresenter view currentCard arrangement text
 		equals: '1 RowanSample1'! !
-!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_addSystemTab!public!test system tabs! !
-!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_addSystemTabBrowserPosition!public!test system tabs! !
-!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_addSystemTabClassSelection!public!test system tabs! !
-!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_addSystemTabClassSelectionClassSide!public!test system tabs! !
-!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_addSystemTabNoSelections!public!test system tabs! !
-!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_browserPosition!public!test system tabs! !
-!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_deselectProjectOnly!public!test system tabs! !
-!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_modifiedSystemTab!public!test system tabs! !
-!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_moveTabsWithSUnitTabselected!public!test system tabs! !
-!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_queryCommandHandlesNilSession!public!tests! !
-!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_systemTabNamesDictionaryClass!public!test system tabs! !
-!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_systemTabNamesDictionaryClassHierarchy!public!test system tabs! !
-!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_systemTabNamesProjectClassHierarchy!public!test system tabs! !
-!JadeiteProjectBrowserSystemTestCase categoriesFor: #test_systemTabNamesProjectClassList!public!test system tabs! !
+!JadeiteProjectBrowserSystemTestCase categoriesForMethods!
+test_addSystemTab!public!test system tabs! !
+test_addSystemTabBrowserPosition!public!test system tabs! !
+test_addSystemTabClassSelection!public!test system tabs! !
+test_addSystemTabClassSelectionClassSide!public!test system tabs! !
+test_addSystemTabNoSelections!public!test system tabs! !
+test_browserPosition!public!test system tabs! !
+test_deselectProjectOnly!public!test system tabs! !
+test_modifiedSystemTab!public!test system tabs! !
+test_moveTabsWithSUnitTabselected!public!test system tabs! !
+test_queryCommandHandlesNilSession!public!tests! !
+test_systemTabNamesDictionaryClass!public!test system tabs! !
+test_systemTabNamesDictionaryClassHierarchy!public!test system tabs! !
+test_systemTabNamesProjectClassHierarchy!public!test system tabs! !
+test_systemTabNamesProjectClassList!public!test system tabs! !
+!
 

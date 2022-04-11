@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteAbstractTestCase subclass: #JadeiteLoggerTestCase
 	instanceVariableNames: ''
@@ -289,20 +289,22 @@ test_noFileWrittenWhenNotLogging
 			ensure: 
 				[file delete.
 				BrowserUpdate current isLogging: wasLogging]! !
-!JadeiteLoggerTestCase categoriesFor: #openLogBrowser!private!support!tests! !
-!JadeiteLoggerTestCase categoriesFor: #setUp!public!setup teardown! !
-!JadeiteLoggerTestCase categoriesFor: #tearDown!public!setup teardown! !
-!JadeiteLoggerTestCase categoriesFor: #test_additionalAccelerators!public!tests! !
-!JadeiteLoggerTestCase categoriesFor: #test_equality!public!tests! !
-!JadeiteLoggerTestCase categoriesFor: #test_globalAdditionalAccelerators!public!tests! !
-!JadeiteLoggerTestCase categoriesFor: #test_isLoggingDefaults!public!tests! !
-!JadeiteLoggerTestCase categoriesFor: #test_logComment!public!tests! !
-!JadeiteLoggerTestCase categoriesFor: #test_loggerCanHandleNilFilenames!public!tests! !
-!JadeiteLoggerTestCase categoriesFor: #test_loggerContainsServices!public!tests! !
-!JadeiteLoggerTestCase categoriesFor: #test_loggerMenuEnablement!public!tests! !
-!JadeiteLoggerTestCase categoriesFor: #test_loggingIds!public!tests! !
-!JadeiteLoggerTestCase categoriesFor: #test_logReceivedServices!public!tests! !
-!JadeiteLoggerTestCase categoriesFor: #test_logSentServices!public!tests! !
-!JadeiteLoggerTestCase categoriesFor: #test_newLoggingServiceCreated!public!tests! !
-!JadeiteLoggerTestCase categoriesFor: #test_noFileWrittenWhenNotLogging!public!tests! !
+!JadeiteLoggerTestCase categoriesForMethods!
+openLogBrowser!private!support!tests! !
+setUp!public!setup teardown! !
+tearDown!public!setup teardown! !
+test_additionalAccelerators!public!tests! !
+test_equality!public!tests! !
+test_globalAdditionalAccelerators!public!tests! !
+test_isLoggingDefaults!public!tests! !
+test_logComment!public!tests! !
+test_loggerCanHandleNilFilenames!public!tests! !
+test_loggerContainsServices!public!tests! !
+test_loggerMenuEnablement!public!tests! !
+test_loggingIds!public!tests! !
+test_logReceivedServices!public!tests! !
+test_logSentServices!public!tests! !
+test_newLoggingServiceCreated!public!tests! !
+test_noFileWrittenWhenNotLogging!public!tests! !
+!
 

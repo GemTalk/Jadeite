@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteAbstractTestCase subclass: #JadeiteDebuggerDataCuratorTestCase
 	instanceVariableNames: 'debugger gsProcess process secondDebugger'
@@ -332,30 +332,32 @@ test_doubleClickWhenClassNotResolvable
 test_globalAdditionalAccelerators
 	self openDebuggerOn: 'self halt'.
 	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7'))! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #cleanupProcesses!private!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #closeDebuggers!private!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #closeJadeiteLoginShells!private!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #createTestMethodWithBreakpoints!private!support!tests! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #debuggerDo:!private!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #getClipboardContents!private!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #getDebugger!private!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #getSecondDebugger!private!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #keyDownEscapeIn:!private!support!tests! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #menuItemIsEnabled:!private!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #methodListBrowser!private!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #openDebuggerOn:!private!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #pressButtonIn:!private!support!tests! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #primaryTestWindow!accessing!public! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #removeMethodNamed:!private!support!test ad hoc execution! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #saveMethodWithHalt!private!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #selectFrameAt:!private!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #selectFrameMatching:!private!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #setUp!private!setup teardown!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #statusBarValue!private!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #systemBrowser!private!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #tearDown!private!setup teardown!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #terminateGsProcess!private!running!support! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #test_browseMenuOptionEnablement!public!tests! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #test_doubleClickWhenClassNotResolvable!public!tests! !
-!JadeiteDebuggerDataCuratorTestCase categoriesFor: #test_globalAdditionalAccelerators!public!tests! !
+!JadeiteDebuggerDataCuratorTestCase categoriesForMethods!
+cleanupProcesses!private!support! !
+closeDebuggers!private!support! !
+closeJadeiteLoginShells!private!support! !
+createTestMethodWithBreakpoints!private!support!tests! !
+debuggerDo:!private!support! !
+getClipboardContents!private!support! !
+getDebugger!private!support! !
+getSecondDebugger!private!support! !
+keyDownEscapeIn:!private!support!tests! !
+menuItemIsEnabled:!private!support! !
+methodListBrowser!private!support! !
+openDebuggerOn:!private!support! !
+pressButtonIn:!private!support!tests! !
+primaryTestWindow!accessing!public! !
+removeMethodNamed:!private!support!test ad hoc execution! !
+saveMethodWithHalt!private!support! !
+selectFrameAt:!private!support! !
+selectFrameMatching:!private!support! !
+setUp!private!setup teardown!support! !
+statusBarValue!private!support! !
+systemBrowser!private!support! !
+tearDown!private!setup teardown!support! !
+terminateGsProcess!private!running!support! !
+test_browseMenuOptionEnablement!public!tests! !
+test_doubleClickWhenClassNotResolvable!public!tests! !
+test_globalAdditionalAccelerators!public!tests! !
+!
 

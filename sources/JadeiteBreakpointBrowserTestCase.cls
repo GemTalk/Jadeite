@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteAbstractTestCase subclass: #JadeiteBreakpointBrowserTestCase
 	instanceVariableNames: 'breakpointBrowser'
@@ -268,21 +268,23 @@ test_showsBreakpoints
 	self assert: (indicators at: 4) range equals: (14 to: 20).
 	self assert: (indicators at: 5) styleName equals: #stepPoint.
 	self assert: (indicators at: 5) range equals: (45 to: 46)! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #openBreakpointBrowser!private!support! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #primaryTestWindow!accessing!public! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #setUp!public!support! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #tearDown!public!support! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #test_addedBreakpointAddsMethod!public!tests! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #test_additionalAccelerators!public!tests! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #test_breakpointAdditionsUpdateAutomatically!public!tests! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #test_breakpointIsSelectedAndVisible!public!tests! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #test_breakpointRemovalsUpdateAutomatically!public!tests! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #test_clearMethodPaneWhenBreakpointRemoved!public!tests! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #test_clearMethodPaneWhenBreakpointRemoved2!public!tests! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #test_globalAdditionalAccelerators!public!tests! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #test_openBreakpointBrowser!public!tests! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #test_openBreakpointBrowserDisabledSourcePane!public!tests! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #test_revert!public!tests! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #test_selectedMethodIsFirstSelected!public!tests! !
-!JadeiteBreakpointBrowserTestCase categoriesFor: #test_showsBreakpoints!public!tests! !
+!JadeiteBreakpointBrowserTestCase categoriesForMethods!
+openBreakpointBrowser!private!support! !
+primaryTestWindow!accessing!public! !
+setUp!public!support! !
+tearDown!public!support! !
+test_addedBreakpointAddsMethod!public!tests! !
+test_additionalAccelerators!public!tests! !
+test_breakpointAdditionsUpdateAutomatically!public!tests! !
+test_breakpointIsSelectedAndVisible!public!tests! !
+test_breakpointRemovalsUpdateAutomatically!public!tests! !
+test_clearMethodPaneWhenBreakpointRemoved!public!tests! !
+test_clearMethodPaneWhenBreakpointRemoved2!public!tests! !
+test_globalAdditionalAccelerators!public!tests! !
+test_openBreakpointBrowser!public!tests! !
+test_openBreakpointBrowserDisabledSourcePane!public!tests! !
+test_revert!public!tests! !
+test_selectedMethodIsFirstSelected!public!tests! !
+test_showsBreakpoints!public!tests! !
+!
 

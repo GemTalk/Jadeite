@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteDebuggerDataCuratorTestCase subclass: #JadeiteDebuggerTestCase
 	instanceVariableNames: ''
@@ -2344,108 +2344,110 @@ x halt.
 		halt;"
 		yourself.
 ! !
-!JadeiteDebuggerTestCase categoriesFor: #firstFrameStartingWith:!public!support! !
-!JadeiteDebuggerTestCase categoriesFor: #indexOfVariableNamed:!public!support! !
-!JadeiteDebuggerTestCase categoriesFor: #lastFrameStartingWith:!public!support! !
-!JadeiteDebuggerTestCase categoriesFor: #selectFirstFrameStartingWith:!public!support! !
-!JadeiteDebuggerTestCase categoriesFor: #selectLastFrameStartingWith:!public!support! !
-!JadeiteDebuggerTestCase categoriesFor: #selectVariableNamed:!public!support! !
-!JadeiteDebuggerTestCase categoriesFor: #setUp!private!setup teardown! !
-!JadeiteDebuggerTestCase categoriesFor: #test_additionalAccelerators!public!test menus! !
-!JadeiteDebuggerTestCase categoriesFor: #test_adHocDebug!public!test ad hoc execution! !
-!JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionEvaluatesArgs!public!test ad hoc execution! !
-!JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionEvaluatesTemp!public!test ad hoc execution! !
-!JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionSelf!public!test ad hoc execution! !
-!JadeiteDebuggerTestCase categoriesFor: #test_adHocExecutionUpdatesVariablesList!public!test ad hoc execution! !
-!JadeiteDebuggerTestCase categoriesFor: #test_adHocVariablePaneDisplay!public!test ad hoc execution! !
-!JadeiteDebuggerTestCase categoriesFor: #test_adHocVariablePaneExecute!public!test ad hoc execution! !
-!JadeiteDebuggerTestCase categoriesFor: #test_adHocVariablePaneInspect!public!test ad hoc execution! !
-!JadeiteDebuggerTestCase categoriesFor: #test_adHocVariablePaneInspect2!public!test ad hoc execution! !
-!JadeiteDebuggerTestCase categoriesFor: #test_badCompileInDebugger!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_breakpointDisabledHighlighting!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_breakpointHighlighting!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_breakpointHighlightingInBlocks!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_browseClass!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_browseClassVariablePane!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_browseFrameClassMethod!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_browseFrameMethod!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_browseFrameMethodInBlock!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_browseImplementorsInBlock!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_browseSelectedFrameClassMethod!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_browseSelectedFrameMethod!public!test menus! !
-!JadeiteDebuggerTestCase categoriesFor: #test_browseSelectedFrameMethodClassSide!public!test menus! !
-!JadeiteDebuggerTestCase categoriesFor: #test_browseSendersInBlock!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_bug74!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_compileError!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlock!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlockFailsWhenNoHomeMethod!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_compileInExecutedBlockSameSelectorOnStack!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_contextMenu!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_copyFrameString!public!test menus! !
-!JadeiteDebuggerTestCase categoriesFor: #test_copyNotifierStack!public!test notifier! !
-!JadeiteDebuggerTestCase categoriesFor: #test_debugCodeWithLeadingLineReturns!public! !
-!JadeiteDebuggerTestCase categoriesFor: #test_debugCodeWithLeadingLineReturnsLF!public! !
-!JadeiteDebuggerTestCase categoriesFor: #test_debugCodeWithLeadingTab!public! !
-!JadeiteDebuggerTestCase categoriesFor: #test_debugFromWithinInspector!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneChangeFrame!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_debuggerModifiedSourcePaneStayOnFrame!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_disablebreakpointHighlighting!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_doubleClickIncludesColon!public!test source! !
-!JadeiteDebuggerTestCase categoriesFor: #test_duplicateInstVars!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_duplicateInstVarsHierarchy!public!test class hierarchy! !
-!JadeiteDebuggerTestCase categoriesFor: #test_duplicateInstVarsInHierarchy!public!test class hierarchy! !
-!JadeiteDebuggerTestCase categoriesFor: #test_errorInPrintString!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_frameDoubleClick!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_frameDoubleClickNoActionInBlockContext!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_implementersFromDebugger!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_implementorsSendersCaption!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_inspectedDebuggerObjectHeld!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_jadeItemsOnMenu!public!test menus! !
-!JadeiteDebuggerTestCase categoriesFor: #test_loginButtonEnablementAfterDebug!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_openDebuggerWthBreakpointInDebuggerService!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_processIsServices!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_processSwitching!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_processTermination!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_reformatIllegalSource!public!test source! !
-!JadeiteDebuggerTestCase categoriesFor: #test_reformatSource!public!test source! !
-!JadeiteDebuggerTestCase categoriesFor: #test_reformatSourceDoesNotStick!public!test source! !
-!JadeiteDebuggerTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !
-!JadeiteDebuggerTestCase categoriesFor: #test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_reloadWithDebuggerOpen!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_reopenInLastExtent!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_reopenInLastPosition!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_restartInBlock!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_runningTestDoesNotLoseStepPoint!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_saveMethod!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_saveMethodDuringTestRun!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_selectAfterDiveNoStepPoint!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_selectBlockContext!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_sendersFromDebugger!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_stackDumpDetailedFrame!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_stackDumpHeader!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_stackDumpTooLongString!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_stackMenuEnablement!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_stepOutMethod!public!test step out! !
-!JadeiteDebuggerTestCase categoriesFor: #test_stepOutSelectedFrame1!public!test step out! !
-!JadeiteDebuggerTestCase categoriesFor: #test_stepOutSelectedFrame2!public!test step out! !
-!JadeiteDebuggerTestCase categoriesFor: #test_stepOutTopFrame!public!test step out! !
-!JadeiteDebuggerTestCase categoriesFor: #test_stepThrough!public!test step out! !
-!JadeiteDebuggerTestCase categoriesFor: #test_terminateDoesNotWalkback!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_unicodeMethod!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_unsavedChangesActionChangeFrame!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_unsavedChangesActionChangeToHomeFrame!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_unsavedChangesActionStepping!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_variableDisplayLabels!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_variableDynamicInstVarLabels!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_variablePaneMenuOptions!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test_variablesSorted!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test1!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test2!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test3!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test4!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test5!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test6!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test7!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #test8!public!tests! !
-!JadeiteDebuggerTestCase categoriesFor: #testBug77!public! !
+!JadeiteDebuggerTestCase categoriesForMethods!
+firstFrameStartingWith:!public!support! !
+indexOfVariableNamed:!public!support! !
+lastFrameStartingWith:!public!support! !
+selectFirstFrameStartingWith:!public!support! !
+selectLastFrameStartingWith:!public!support! !
+selectVariableNamed:!public!support! !
+setUp!private!setup teardown! !
+test_additionalAccelerators!public!test menus! !
+test_adHocDebug!public!test ad hoc execution! !
+test_adHocExecutionEvaluatesArgs!public!test ad hoc execution! !
+test_adHocExecutionEvaluatesTemp!public!test ad hoc execution! !
+test_adHocExecutionSelf!public!test ad hoc execution! !
+test_adHocExecutionUpdatesVariablesList!public!test ad hoc execution! !
+test_adHocVariablePaneDisplay!public!test ad hoc execution! !
+test_adHocVariablePaneExecute!public!test ad hoc execution! !
+test_adHocVariablePaneInspect!public!test ad hoc execution! !
+test_adHocVariablePaneInspect2!public!test ad hoc execution! !
+test_badCompileInDebugger!public!tests! !
+test_breakpointDisabledHighlighting!public!tests! !
+test_breakpointHighlighting!public!tests! !
+test_breakpointHighlightingInBlocks!public!tests! !
+test_browseClass!public!tests! !
+test_browseClassVariablePane!public!tests! !
+test_browseFrameClassMethod!public!tests! !
+test_browseFrameMethod!public!tests! !
+test_browseFrameMethodInBlock!public!tests! !
+test_browseImplementorsInBlock!public!tests! !
+test_browseSelectedFrameClassMethod!public!tests! !
+test_browseSelectedFrameMethod!public!test menus! !
+test_browseSelectedFrameMethodClassSide!public!test menus! !
+test_browseSendersInBlock!public!tests! !
+test_bug74!public!tests! !
+test_compileError!public!tests! !
+test_compileInExecutedBlock!public!tests! !
+test_compileInExecutedBlockFailsWhenNoHomeMethod!public!tests! !
+test_compileInExecutedBlockSameSelectorOnStack!public!tests! !
+test_contextMenu!public!tests! !
+test_copyFrameString!public!test menus! !
+test_copyNotifierStack!public!test notifier! !
+test_debugCodeWithLeadingLineReturns!public! !
+test_debugCodeWithLeadingLineReturnsLF!public! !
+test_debugCodeWithLeadingTab!public! !
+test_debugFromWithinInspector!public!tests! !
+test_debuggerModifiedSourcePaneChangeFrame!public!tests! !
+test_debuggerModifiedSourcePaneStayOnFrame!public!tests! !
+test_disablebreakpointHighlighting!public!tests! !
+test_doubleClickIncludesColon!public!test source! !
+test_duplicateInstVars!public!tests! !
+test_duplicateInstVarsHierarchy!public!test class hierarchy! !
+test_duplicateInstVarsInHierarchy!public!test class hierarchy! !
+test_errorInPrintString!public!tests! !
+test_frameDoubleClick!public!tests! !
+test_frameDoubleClickNoActionInBlockContext!public!tests! !
+test_implementersFromDebugger!public!tests! !
+test_implementorsSendersCaption!public!tests! !
+test_inspectedDebuggerObjectHeld!public!tests! !
+test_jadeItemsOnMenu!public!test menus! !
+test_loginButtonEnablementAfterDebug!public!tests! !
+test_openDebuggerWthBreakpointInDebuggerService!public!tests! !
+test_processIsServices!public!tests! !
+test_processSwitching!public!tests! !
+test_processTermination!public!tests! !
+test_reformatIllegalSource!public!test source! !
+test_reformatSource!public!test source! !
+test_reformatSourceDoesNotStick!public!test source! !
+test_reformatSourceIsUndoable!public!test source! !
+test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
+test_reloadWithDebuggerOpen!public!tests! !
+test_reopenInLastExtent!public!tests! !
+test_reopenInLastPosition!public!tests! !
+test_restartInBlock!public!tests! !
+test_runningTestDoesNotLoseStepPoint!public!tests! !
+test_saveMethod!public!tests! !
+test_saveMethodDuringTestRun!public!tests! !
+test_selectAfterDiveNoStepPoint!public!tests! !
+test_selectBlockContext!public!tests! !
+test_sendersFromDebugger!public!tests! !
+test_stackDumpDetailedFrame!public!tests! !
+test_stackDumpHeader!public!tests! !
+test_stackDumpTooLongString!public!tests! !
+test_stackMenuEnablement!public!tests! !
+test_stepOutMethod!public!test step out! !
+test_stepOutSelectedFrame1!public!test step out! !
+test_stepOutSelectedFrame2!public!test step out! !
+test_stepOutTopFrame!public!test step out! !
+test_stepThrough!public!test step out! !
+test_terminateDoesNotWalkback!public!tests! !
+test_unicodeMethod!public!tests! !
+test_unsavedChangesActionChangeFrame!public!tests! !
+test_unsavedChangesActionChangeToHomeFrame!public!tests! !
+test_unsavedChangesActionStepping!public!tests! !
+test_variableDisplayLabels!public!tests! !
+test_variableDynamicInstVarLabels!public!tests! !
+test_variablePaneMenuOptions!public!tests! !
+test_variablesSorted!public!tests! !
+test1!public!tests! !
+test2!public!tests! !
+test3!public!tests! !
+test4!public!tests! !
+test5!public!tests! !
+test6!public!tests! !
+test7!public!tests! !
+test8!public!tests! !
+testBug77!public! !
+!
 

@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteAbstractTestCase subclass: #JadeiteTranscriptTestCase
 	instanceVariableNames: ''
@@ -820,55 +820,57 @@ writeToPrefsFile: string
 	| fileStream |
 	fileStream := FileStream read: SessionManager current imageBase , 'Jadeite.prefs'.
 	[fileStream nextPutAll: string] ensure: [fileStream close]! !
-!JadeiteTranscriptTestCase categoriesFor: #allTranscriptPresenters!private!support! !
-!JadeiteTranscriptTestCase categoriesFor: #browseMenu!private!support!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #checkAutoCommitMenuItemCheckmark:!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #menuItemIsEnabledInAllPresenters:!private!support! !
-!JadeiteTranscriptTestCase categoriesFor: #restoreBackupPrefsFile:!private!support!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #savePrefsBackup!private!support!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_abortRemovesProjectsInAllBrowsers!public!test menus! !
-!JadeiteTranscriptTestCase categoriesFor: #test_abortTransaction!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_autoCommitMenuItem!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_autoCommitOff!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_autoCommitOn!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_autoCommitSet!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_autoCompletionMenuItem!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_breakpointBrowserMenuItem!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_browseClassMenuItem!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_browseClassReferencesMenuItem!public!test menus! !
-!JadeiteTranscriptTestCase categoriesFor: #test_browseClassReferencesMenuItemIsEnabled!public!test menus! !
-!JadeiteTranscriptTestCase categoriesFor: #test_browseFindClassMenuItem!public!test menus! !
-!JadeiteTranscriptTestCase categoriesFor: #test_browseImplementors!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_browseImplementorsMenuItem!public!test menus! !
-!JadeiteTranscriptTestCase categoriesFor: #test_browseLiteralsReferencesMenuItem!public!test menus! !
-!JadeiteTranscriptTestCase categoriesFor: #test_browseMethodsContainingMenuItem!public!test menus! !
-!JadeiteTranscriptTestCase categoriesFor: #test_browseProjectsMenuItem!public!test menus! !
-!JadeiteTranscriptTestCase categoriesFor: #test_browseSenders!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_browseSendersMenuItem!public!test menus! !
-!JadeiteTranscriptTestCase categoriesFor: #test_checkoutTagRefresh!public!test menus! !
-!JadeiteTranscriptTestCase categoriesFor: #test_closeConsoleNeedingCommit!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_closeConsoleNoCommitNeeded!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_commitTransaction!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_doubleClickOpenProjectBrowser!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_flipBreakPointsDisabled!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_implementorsSenders_SearchList!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_implementorsSendersSearchList!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_jadeiteMenuAdHocExecutionItems!public!test menus! !
-!JadeiteTranscriptTestCase categoriesFor: #test_menuBarBrowseProjectsHonorsSelection!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_menuNames!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_multiSelectProject!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_openChangesBrowser!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_openPreferencesFile!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_openPreferencesFileCreatePrefsFile!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseClass!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseImplementors!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_popupMenuHasBrowseSenders!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_projectMenuCheckoutMenuItemsEnablement!public!test menus! !
-!JadeiteTranscriptTestCase categoriesFor: #test_projectMenuCheckoutTagMenuItemsEnablement!public!test menus! !
-!JadeiteTranscriptTestCase categoriesFor: #test_projectMenuGitCommitMenuItem!public!test menus! !
-!JadeiteTranscriptTestCase categoriesFor: #test_queryCommandHandlesNilSession!public!test menus! !
-!JadeiteTranscriptTestCase categoriesFor: #test_raiseConsole!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_selectorsList!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #test_transcriptNamedConsole!public!tests! !
-!JadeiteTranscriptTestCase categoriesFor: #writeToPrefsFile:!private!support!tests! !
+!JadeiteTranscriptTestCase categoriesForMethods!
+allTranscriptPresenters!private!support! !
+browseMenu!private!support!tests! !
+checkAutoCommitMenuItemCheckmark:!public!tests! !
+menuItemIsEnabledInAllPresenters:!private!support! !
+restoreBackupPrefsFile:!private!support!tests! !
+savePrefsBackup!private!support!tests! !
+test_abortRemovesProjectsInAllBrowsers!public!test menus! !
+test_abortTransaction!public!tests! !
+test_autoCommitMenuItem!public!tests! !
+test_autoCommitOff!public!tests! !
+test_autoCommitOn!public!tests! !
+test_autoCommitSet!public!tests! !
+test_autoCompletionMenuItem!public!tests! !
+test_breakpointBrowserMenuItem!public!tests! !
+test_browseClassMenuItem!public!tests! !
+test_browseClassReferencesMenuItem!public!test menus! !
+test_browseClassReferencesMenuItemIsEnabled!public!test menus! !
+test_browseFindClassMenuItem!public!test menus! !
+test_browseImplementors!public!tests! !
+test_browseImplementorsMenuItem!public!test menus! !
+test_browseLiteralsReferencesMenuItem!public!test menus! !
+test_browseMethodsContainingMenuItem!public!test menus! !
+test_browseProjectsMenuItem!public!test menus! !
+test_browseSenders!public!tests! !
+test_browseSendersMenuItem!public!test menus! !
+test_checkoutTagRefresh!public!test menus! !
+test_closeConsoleNeedingCommit!public!tests! !
+test_closeConsoleNoCommitNeeded!public!tests! !
+test_commitTransaction!public!tests! !
+test_doubleClickOpenProjectBrowser!public!tests! !
+test_flipBreakPointsDisabled!public!tests! !
+test_implementorsSenders_SearchList!public!tests! !
+test_implementorsSendersSearchList!public!tests! !
+test_jadeiteMenuAdHocExecutionItems!public!test menus! !
+test_menuBarBrowseProjectsHonorsSelection!public!tests! !
+test_menuNames!public!tests! !
+test_multiSelectProject!public!tests! !
+test_openChangesBrowser!public!tests! !
+test_openPreferencesFile!public!tests! !
+test_openPreferencesFileCreatePrefsFile!public!tests! !
+test_popupMenuHasBrowseClass!public!tests! !
+test_popupMenuHasBrowseImplementors!public!tests! !
+test_popupMenuHasBrowseSenders!public!tests! !
+test_projectMenuCheckoutMenuItemsEnablement!public!test menus! !
+test_projectMenuCheckoutTagMenuItemsEnablement!public!test menus! !
+test_projectMenuGitCommitMenuItem!public!test menus! !
+test_queryCommandHandlesNilSession!public!test menus! !
+test_raiseConsole!public!tests! !
+test_selectorsList!public!tests! !
+test_transcriptNamedConsole!public!tests! !
+writeToPrefsFile:!private!support!tests! !
+!
 

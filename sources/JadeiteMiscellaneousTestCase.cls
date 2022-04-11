@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteAbstractTestCase subclass: #JadeiteMiscellaneousTestCase
 	instanceVariableNames: 'workspace'
@@ -840,55 +840,57 @@ testMethodServiceClassNameIsString
 				className: #JadeiteMiscellaneousTestCase;
 				meta: false.
 	self assert: methodService className isKindOf: String! !
-!JadeiteMiscellaneousTestCase categoriesFor: #tearDown!private!support! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_adHocCompileError!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_adHocDisplay!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_adHocExecute!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitDoesNotMakeRoundTripWhenOpeningBrowser!public!test auto commit! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitInAdHocDisplay!public!test auto commit! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitInAdHocExecution!public!test auto commit! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocDisplay!public!test auto commit! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitOffInAdHocExecution!public!test auto commit! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autoCommitUpdatedInSession!public!test auto commit! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteCaseInsensitiveSearch!public!test auto complete!test methods! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSaveClassSymbolAdded!public!test auto complete!test methods! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSaveMethodSymbolAdded!public!test auto complete!test methods! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSort!public!test!test auto complete! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_autocompleteSymbolsNotAddedToIfAutocompleteOff!public!test auto complete!test methods! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_convertToPattern!public!test! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_dolphinStackDumpBanners!public!test! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_findInWorkspace!public!test! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_instVarConstants!public!test! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_releaseOops!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_returnedServices!public!test!test auto complete! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_serviceClassBookkeeping!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_setResetTextPaneFontSize!public!test auto complete!test methods! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_versionMatches!public!test! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workingDirectoryEqualsImageDirectory!public!test! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceAdHocDisplayUnicodeCharacters!public!test!test menus!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceBrowseProjects!public!test!test menus!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceConfirmInteraction!public!test!test menus!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceDoubleClickIncludesColon!public!test!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceImplementorsMenuNotTooLong!public!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceInformInteraction!public!test!test menus!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceJadeiteMenuAdHocExecutionItems!public!test!test menus!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageImplementors!public!test browse!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageImplementorsWithEndingQuote!public!test browse!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageSenders!public!test browse!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceMessageSendersWithEndingQuote!public!test browse!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspacePlainStringImplementors!public!test browse!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspacePlainStringSenders!public!test browse!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSendersMenuNotTooLong!public!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceStringWithQuotesImplementors!public!test browse!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceStringWithQuotesSenders!public!test browse!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolImplementors!public!test browse!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolSenders!public!test browse!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolSendersLeadingQuote!public!test browse!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolSendersRemoveSpaces!public!test browse!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolSendersTruncateLongSelectors!public!test browse!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolWithQuotesImplementors!public!test browse!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceSymbolWithQuotesSenders!public!test browse!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #test_workspaceUnsavedChanges!public!test!test workspaces! !
-!JadeiteMiscellaneousTestCase categoriesFor: #testClassServiceNameIsString!public! !
-!JadeiteMiscellaneousTestCase categoriesFor: #testMethodServiceClassNameIsString!public! !
+!JadeiteMiscellaneousTestCase categoriesForMethods!
+tearDown!private!support! !
+test_adHocCompileError!public! !
+test_adHocDisplay!public! !
+test_adHocExecute!public! !
+test_autoCommitDoesNotMakeRoundTripWhenOpeningBrowser!public!test auto commit! !
+test_autoCommitInAdHocDisplay!public!test auto commit! !
+test_autoCommitInAdHocExecution!public!test auto commit! !
+test_autoCommitOffInAdHocDisplay!public!test auto commit! !
+test_autoCommitOffInAdHocExecution!public!test auto commit! !
+test_autoCommitUpdatedInSession!public!test auto commit! !
+test_autocompleteCaseInsensitiveSearch!public!test auto complete!test methods! !
+test_autocompleteSaveClassSymbolAdded!public!test auto complete!test methods! !
+test_autocompleteSaveMethodSymbolAdded!public!test auto complete!test methods! !
+test_autocompleteSort!public!test!test auto complete! !
+test_autocompleteSymbolsNotAddedToIfAutocompleteOff!public!test auto complete!test methods! !
+test_convertToPattern!public!test! !
+test_dolphinStackDumpBanners!public!test! !
+test_findInWorkspace!public!test! !
+test_instVarConstants!public!test! !
+test_releaseOops!public! !
+test_returnedServices!public!test!test auto complete! !
+test_serviceClassBookkeeping!public! !
+test_setResetTextPaneFontSize!public!test auto complete!test methods! !
+test_versionMatches!public!test! !
+test_workingDirectoryEqualsImageDirectory!public!test! !
+test_workspaceAdHocDisplayUnicodeCharacters!public!test!test menus!test workspaces! !
+test_workspaceBrowseProjects!public!test!test menus!test workspaces! !
+test_workspaceConfirmInteraction!public!test!test menus!test workspaces! !
+test_workspaceDoubleClickIncludesColon!public!test!test workspaces! !
+test_workspaceImplementorsMenuNotTooLong!public!test workspaces! !
+test_workspaceInformInteraction!public!test!test menus!test workspaces! !
+test_workspaceJadeiteMenuAdHocExecutionItems!public!test!test menus!test workspaces! !
+test_workspaceMessageImplementors!public!test browse!test workspaces! !
+test_workspaceMessageImplementorsWithEndingQuote!public!test browse!test workspaces! !
+test_workspaceMessageSenders!public!test browse!test workspaces! !
+test_workspaceMessageSendersWithEndingQuote!public!test browse!test workspaces! !
+test_workspacePlainStringImplementors!public!test browse!test workspaces! !
+test_workspacePlainStringSenders!public!test browse!test workspaces! !
+test_workspaceSendersMenuNotTooLong!public!test workspaces! !
+test_workspaceStringWithQuotesImplementors!public!test browse!test workspaces! !
+test_workspaceStringWithQuotesSenders!public!test browse!test workspaces! !
+test_workspaceSymbolImplementors!public!test browse!test workspaces! !
+test_workspaceSymbolSenders!public!test browse!test workspaces! !
+test_workspaceSymbolSendersLeadingQuote!public!test browse!test workspaces! !
+test_workspaceSymbolSendersRemoveSpaces!public!test browse!test workspaces! !
+test_workspaceSymbolSendersTruncateLongSelectors!public!test browse!test workspaces! !
+test_workspaceSymbolWithQuotesImplementors!public!test browse!test workspaces! !
+test_workspaceSymbolWithQuotesSenders!public!test browse!test workspaces! !
+test_workspaceUnsavedChanges!public!test!test workspaces! !
+testClassServiceNameIsString!public! !
+testMethodServiceClassNameIsString!public! !
+!
 

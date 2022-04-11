@@ -2763,6 +2763,7 @@ updateProjects
 	self issueCommand: browserService!
 
 updateServices: services
+	services do:[:service | service name = nil ifTrue:[self halt]]. 
 	BrowserUpdate current updateServices: services asSet asArray session: gciSession! !
 !JadePresenter categoriesForMethods!
 abortTransaction!public!transaction management! !

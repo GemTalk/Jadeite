@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteAbstractTestCase subclass: #JadeiteProjectBrowserAbstractTestCase
 	instanceVariableNames: 'secondBrowser methodListBrowser secondPresenter transcriptWritesWereEnabled'
@@ -112,18 +112,20 @@ tearDown
 		ifNotNil: 
 			[self destroy: secondBrowser.
 			secondBrowser := nil]! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #assertClassDefinitionPaneMatches:!private!support! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #assertLinearAncestry:in:!private! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #disableTranscriptWrites!private! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #findClassNamed:!private!support! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #isAbstract!private!testing! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #issue170methodCreation!issue test support!private! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #loadProjectNamed:!private!project support! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #openSecondBrowser!private! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #primaryTestWindow!accessing!public! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #saveMethodWithUniqueString!private! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectLowerTabsThenDo:!private!support! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #selectSUnitTab!private!selection! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #setUp!private!setup teardown! !
-!JadeiteProjectBrowserAbstractTestCase categoriesFor: #tearDown!private!setup teardown! !
+!JadeiteProjectBrowserAbstractTestCase categoriesForMethods!
+assertClassDefinitionPaneMatches:!private!support! !
+assertLinearAncestry:in:!private! !
+disableTranscriptWrites!private! !
+findClassNamed:!private!support! !
+isAbstract!private!testing! !
+issue170methodCreation!issue test support!private! !
+loadProjectNamed:!private!project support! !
+openSecondBrowser!private! !
+primaryTestWindow!accessing!public! !
+saveMethodWithUniqueString!private! !
+selectLowerTabsThenDo:!private!support! !
+selectSUnitTab!private!selection! !
+setUp!private!setup teardown! !
+tearDown!private!setup teardown! !
+!
 

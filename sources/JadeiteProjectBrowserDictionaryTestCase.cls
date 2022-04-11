@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteProjectBrowserDictionaryDataCuratorTestCase subclass: #JadeiteProjectBrowserDictionaryTestCase
 	instanceVariableNames: ''
@@ -236,18 +236,20 @@ test_unicodeValueInUserGlobals
 	self assert: ((selection at: 3) isKindOf: Integer).
 	self assert: (#'*£¥*' match: (selection at: 4)) ]
 			ensure: [session executeString: 'RowanServicesTest new removeUnicodeSymbolsFromUserGlobals']! !
-!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #setUp!public!setup teardown! !
-!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_compileMethodInNonPackagedClass!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_dictionaryViewClassHierarchy!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_dictionaryViewClassHierarchySelectedClass!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_gotoPackageMenuItem!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_gotoPackageMenuItemHierarchyTab!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_multipleBrowsersUpdateClassList!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_mutliSelectDictionaryHierarchy!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_mutliSelectPackageHierarchy!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_packageAndDictionaryViewClass!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_removeMethodInNonPackagedClass!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_selectProjectClearHierarchy!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_unicodeKeyInUserGlobals!public!test unreadable code! !
-!JadeiteProjectBrowserDictionaryTestCase categoriesFor: #test_unicodeValueInUserGlobals!public!test unreadable code! !
+!JadeiteProjectBrowserDictionaryTestCase categoriesForMethods!
+setUp!public!setup teardown! !
+test_compileMethodInNonPackagedClass!public!test issue 217! !
+test_dictionaryViewClassHierarchy!public!test issue 217! !
+test_dictionaryViewClassHierarchySelectedClass!public!test issue 217! !
+test_gotoPackageMenuItem!public!test issue 217! !
+test_gotoPackageMenuItemHierarchyTab!public!test issue 217! !
+test_multipleBrowsersUpdateClassList!public!test issue 217! !
+test_mutliSelectDictionaryHierarchy!public!test issue 217! !
+test_mutliSelectPackageHierarchy!public!test issue 217! !
+test_packageAndDictionaryViewClass!public!test issue 217! !
+test_removeMethodInNonPackagedClass!public!test issue 217! !
+test_selectProjectClearHierarchy!public!test issue 217! !
+test_unicodeKeyInUserGlobals!public!test unreadable code! !
+test_unicodeValueInUserGlobals!public!test unreadable code! !
+!
 

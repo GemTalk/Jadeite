@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteAbstractTestCase subclass: #JadeiteChangesBrowserTestCase
 	instanceVariableNames: 'changesBrowser'
@@ -442,25 +442,27 @@ test_revertMethodRemoval
 		denyIsNil: (self methodListPresenter list detect: [:methodService | methodService selector = #test1]
 				ifNone: []).
 	self assert: change definition selector equals: 'test1 (restored)'! !
-!JadeiteChangesBrowserTestCase categoriesFor: #addNewClass!private! !
-!JadeiteChangesBrowserTestCase categoriesFor: #addNewMethod!private! !
-!JadeiteChangesBrowserTestCase categoriesFor: #makeLotsOfChanges!public!support!tests! !
-!JadeiteChangesBrowserTestCase categoriesFor: #setUp!private!setup teardown! !
-!JadeiteChangesBrowserTestCase categoriesFor: #tearDown!private!setup teardown! !
-!JadeiteChangesBrowserTestCase categoriesFor: #test_additionalAccelerators!public!tests! !
-!JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementors!public!tests! !
-!JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementorsOfRemovedMethod!public!tests! !
-!JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementorsOfRevertedChange!public!tests! !
-!JadeiteChangesBrowserTestCase categoriesFor: #test_browseImplementorsSelectsChangedMethod!public!tests! !
-!JadeiteChangesBrowserTestCase categoriesFor: #test_browseMethodSelectsAddedClass!public!tests! !
-!JadeiteChangesBrowserTestCase categoriesFor: #test_browseMethodSelectsAddedMethod!public!tests! !
-!JadeiteChangesBrowserTestCase categoriesFor: #test_browseOfRevertedChange!public!tests! !
-!JadeiteChangesBrowserTestCase categoriesFor: #test_browseSenders!public!tests! !
-!JadeiteChangesBrowserTestCase categoriesFor: #test_browseSendersOfRevertedChange!public!tests! !
-!JadeiteChangesBrowserTestCase categoriesFor: #test_changesAlphabetized!public!tests! !
-!JadeiteChangesBrowserTestCase categoriesFor: #test_identicalSource!public!tests! !
-!JadeiteChangesBrowserTestCase categoriesFor: #test_noExtraLF!public!tests! !
-!JadeiteChangesBrowserTestCase categoriesFor: #test_revertMethodAddition!public!tests! !
-!JadeiteChangesBrowserTestCase categoriesFor: #test_revertMethodModification!public!tests! !
-!JadeiteChangesBrowserTestCase categoriesFor: #test_revertMethodRemoval!public!tests! !
+!JadeiteChangesBrowserTestCase categoriesForMethods!
+addNewClass!private! !
+addNewMethod!private! !
+makeLotsOfChanges!public!support!tests! !
+setUp!private!setup teardown! !
+tearDown!private!setup teardown! !
+test_additionalAccelerators!public!tests! !
+test_browseImplementors!public!tests! !
+test_browseImplementorsOfRemovedMethod!public!tests! !
+test_browseImplementorsOfRevertedChange!public!tests! !
+test_browseImplementorsSelectsChangedMethod!public!tests! !
+test_browseMethodSelectsAddedClass!public!tests! !
+test_browseMethodSelectsAddedMethod!public!tests! !
+test_browseOfRevertedChange!public!tests! !
+test_browseSenders!public!tests! !
+test_browseSendersOfRevertedChange!public!tests! !
+test_changesAlphabetized!public!tests! !
+test_identicalSource!public!tests! !
+test_noExtraLF!public!tests! !
+test_revertMethodAddition!public!tests! !
+test_revertMethodModification!public!tests! !
+test_revertMethodRemoval!public!tests! !
+!
 

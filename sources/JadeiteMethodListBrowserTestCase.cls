@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteAbstractTestCase subclass: #JadeiteMethodListBrowserTestCase
 	instanceVariableNames: 'methodListBrowser cachedSymbols'
@@ -1123,6 +1123,21 @@ test_methodBrowserSaveMethod
 	self assert: self methodListSourcePresenter documentPresenter value equals: source2]
 			ensure: [self destroy: projectsBrowser]!
 
+test_methodListSourceDoesNotDisappear
+	self testsIssue: #issue863
+		withTitle: '(Oscar 3.1.0 and 3.1.1) Under certain conditions selected methods browser loses method source and errors out'.
+	methodListBrowser := JadePresenter browseImplementorsOf: #compileClass: session: session.
+	self assert: self methodListMethodListPresenter list size equals: 1.	"right now, implementors size = 1. If that changes, revisit test"
+	self assert: self methodSourcePresenter documentPresenter value
+				= self methodListMethodListPresenter selection source.
+	self openProjectBrowser.
+	self selectServiceNamed: 'RowanClientServices' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanBrowserService' in: self classListPresenter.	"this would have cleared the method source"
+	self assert: self methodSourcePresenter documentPresenter value
+				= self methodListMethodListPresenter selection source.
+	self assert: self methodListMethodListPresenter selection selector = #compileClass:!
+
 test_openComparisonTabWhenTwoMethodsSelected
 	self testsIssue: #issue752 withTitle: '(3.0.93) nice if I could compare two arbitrary methods'.
 	methodListBrowser := JadePresenter browseImplementorsOf: 'answer' session: session. 
@@ -1489,97 +1504,100 @@ test_wildCardSearchNotCaseSensitive
 	symbols := JadePresenter selectorsFrom: 'postLo*' session: session. "the capitalization was not found" 
 	symbols do: [:symbol | self assert: (symbol match: symbol)].
 	self assert: JadeiteSearch allSelectorSymbols equals: OrderedCollection new! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #browseLiteralTest:!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #methodListBrowserPresenter!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #methodListMethodListPresenter!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #methodListSelector!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #methodListSourcePresenter!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #methodSourcePresenter!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #primaryTestWindow!accessing!public! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #removeMethods:in:!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #removeMethods:inClassService:!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #removeMultiKeywordSenderAndSendee!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #removeMultipleReferencesToStringMethods!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #removeTestMethodAndCloseProjectBrowser!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #sampleMethodSource!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #saveMethod:in:category:!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #selectListAt:!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodNamed:!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodNamed:in:!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsNamed:!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsNamed:in:!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsWithClassNamed:!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #selectMethodsWithClassNamed:in:!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #setUp!public!setup teardown! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #setupMultiKeywordSenderAndSendee!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #setupMultipleReferencesToString!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #setupTestMethodInProjectBrowser!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #sourcePresenter!private!support! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #tearDown!public!setup teardown! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_additionalAccelerators!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_adHocContextClassSide!public!test methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_adHocContextInstanceSide!public!test methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpoints!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpointsClearAllMenuItemFromMethodList!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpointsFromTranscript!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseBreakpointsMenuItemFromTranscript!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClass!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClassReferenceCaptionTitle!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClassReferences!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseClassReferencesEnablement!public!test menus! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchyImplementorsEnablement!public!test menus! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchySenderHighlightingSameSelector!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseHierarchySendersEnablement!public!test menus! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseImplementorsEnablement!public!test menus! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseInstVarReaders!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseInstVarWriters!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseLiteralReferences!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseLiteralReferencesBlankSearch!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseMethodsContaining!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseMultiKeywordSendersHighlighting!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseMultiKeywordSendersOnEverySender!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSenderHighlightedWithEveryMethod!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSenderHighlightingIgnoreComments!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSenderHighlightingSameSelector!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersEnablement!public!test menus! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersFoo!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_browseSendersIsDirty!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_categoryUpdates!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_clearAllBreakpointsMenuItemOnMethodList!public!test menus! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonPresenterEvents!public!test comparison tab! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabMultimethod!public!test comparison tab! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabMultimethod2!public!test comparison tab! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabNoMethodSelected!public!test comparison tab! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_comparisonTabSuperclass!public!test comparison tab! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_compileErrorDisplay!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_compileErrorDisplayGoesAway!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_createUnicodeSymbolThenLoadSymbols!public! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_doSearch!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionClassMethod!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_doubleClickActionInstanceMethod!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_dragMethodOntoComparisonTextPanes!public!test comparison tab! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_firstReferenceRemovedAfterRecompile!public!test methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_firstReferenceRetained!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_globalAdditionalAccelerators!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_insertIfFalse!public!test methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_insertIfTrue!public!test methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_methodBrowserSaveMethod!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_openComparisonTabWhenTwoMethodsSelected!public!test comparison tab! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_redoUndoEnablement!public!test menus! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatIllegalSource!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatSource!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_reformatSourceIsUndoable!public!test source! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethod!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodInProjectBrowser!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodOutsideServices!public!test methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_removeMethodWarningString!public!test methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_selectorsNotSymbolsWithCachedSymbols!public!test methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_selectorsNotSymbolsWithUncachedSymbols!public!test methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_symbolsInitialized!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindow!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_UnsavedChangesActionCloseWindowStayOnMethod!public!tests! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_wildCardSearch!public!test browse methods! !
-!JadeiteMethodListBrowserTestCase categoriesFor: #test_wildCardSearchNotCaseSensitive!public!test browse methods! !
+!JadeiteMethodListBrowserTestCase categoriesForMethods!
+browseLiteralTest:!private!support! !
+methodListBrowserPresenter!private!support! !
+methodListMethodListPresenter!private!support! !
+methodListSelector!private!support! !
+methodListSourcePresenter!private!support! !
+methodSourcePresenter!private!support! !
+primaryTestWindow!accessing!public! !
+removeMethods:in:!private!support! !
+removeMethods:inClassService:!private!support! !
+removeMultiKeywordSenderAndSendee!private!support! !
+removeMultipleReferencesToStringMethods!private!support! !
+removeTestMethodAndCloseProjectBrowser!private!support! !
+sampleMethodSource!private!support! !
+saveMethod:in:category:!private!support! !
+selectListAt:!private!support! !
+selectMethodNamed:!private!support! !
+selectMethodNamed:in:!private!support! !
+selectMethodsNamed:!private!support! !
+selectMethodsNamed:in:!private!support! !
+selectMethodsWithClassNamed:!private!support! !
+selectMethodsWithClassNamed:in:!private!support! !
+setUp!public!setup teardown! !
+setupMultiKeywordSenderAndSendee!private!support! !
+setupMultipleReferencesToString!private!support! !
+setupTestMethodInProjectBrowser!private!support! !
+sourcePresenter!private!support! !
+tearDown!public!setup teardown! !
+test_additionalAccelerators!public!tests! !
+test_adHocContextClassSide!public!test methods! !
+test_adHocContextInstanceSide!public!test methods! !
+test_browseBreakpoints!public!test browse methods! !
+test_browseBreakpointsClearAllMenuItemFromMethodList!public!test browse methods! !
+test_browseBreakpointsFromTranscript!public!test browse methods! !
+test_browseBreakpointsMenuItemFromTranscript!public!test browse methods! !
+test_browseClass!public!tests! !
+test_browseClassReferenceCaptionTitle!public!test browse methods! !
+test_browseClassReferences!public!test browse methods! !
+test_browseClassReferencesEnablement!public!test menus! !
+test_browseHierarchyImplementorsEnablement!public!test menus! !
+test_browseHierarchySenderHighlightingSameSelector!public!test browse methods! !
+test_browseHierarchySendersEnablement!public!test menus! !
+test_browseImplementorsEnablement!public!test menus! !
+test_browseInstVarReaders!public!test browse methods! !
+test_browseInstVarWriters!public!test browse methods! !
+test_browseLiteralReferences!public!test browse methods! !
+test_browseLiteralReferencesBlankSearch!public!test browse methods! !
+test_browseMethodsContaining!public!test browse methods! !
+test_browseMultiKeywordSendersHighlighting!public!test browse methods! !
+test_browseMultiKeywordSendersOnEverySender!public!test browse methods! !
+test_browseSenderHighlightedWithEveryMethod!public!test browse methods! !
+test_browseSenderHighlightingIgnoreComments!public!test browse methods! !
+test_browseSenderHighlightingSameSelector!public!test browse methods! !
+test_browseSendersEnablement!public!test menus! !
+test_browseSendersFoo!public!test browse methods! !
+test_browseSendersIsDirty!public!test browse methods! !
+test_categoryUpdates!public!test browse methods! !
+test_clearAllBreakpointsMenuItemOnMethodList!public!test menus! !
+test_comparisonPresenterEvents!public!test comparison tab! !
+test_comparisonTabMultimethod!public!test comparison tab! !
+test_comparisonTabMultimethod2!public!test comparison tab! !
+test_comparisonTabNoMethodSelected!public!test comparison tab! !
+test_comparisonTabSuperclass!public!test comparison tab! !
+test_compileErrorDisplay!public!tests! !
+test_compileErrorDisplayGoesAway!public!tests! !
+test_createUnicodeSymbolThenLoadSymbols!public! !
+test_doSearch!public!tests! !
+test_doubleClickActionClassMethod!public!tests! !
+test_doubleClickActionInstanceMethod!public!tests! !
+test_dragMethodOntoComparisonTextPanes!public!test comparison tab! !
+test_firstReferenceRemovedAfterRecompile!public!test methods! !
+test_firstReferenceRetained!public!test browse methods! !
+test_globalAdditionalAccelerators!public!tests! !
+test_insertIfFalse!public!test methods! !
+test_insertIfTrue!public!test methods! !
+test_methodBrowserSaveMethod!public!tests! !
+test_methodListSourceDoesNotDisappear!public!test source! !
+test_openComparisonTabWhenTwoMethodsSelected!public!test comparison tab! !
+test_redoUndoEnablement!public!test menus! !
+test_reformatIllegalSource!public!tests! !
+test_reformatSource!public!tests! !
+test_reformatSourceIsUndoable!public!test source! !
+test_removeMethod!public!tests! !
+test_removeMethodInProjectBrowser!public!tests! !
+test_removeMethodOutsideServices!public!test methods! !
+test_removeMethodWarningString!public!test methods! !
+test_selectorsNotSymbolsWithCachedSymbols!public!test methods! !
+test_selectorsNotSymbolsWithUncachedSymbols!public!test methods! !
+test_symbolsInitialized!public!test browse methods! !
+test_UnsavedChangesActionChangeSelectionIgnoreChanges!public!tests! !
+test_UnsavedChangesActionChangeSelectionStayOnMethod!public!tests! !
+test_UnsavedChangesActionCloseWindow!public!tests! !
+test_UnsavedChangesActionCloseWindowStayOnMethod!public!tests! !
+test_wildCardSearch!public!test browse methods! !
+test_wildCardSearchNotCaseSensitive!public!test browse methods! !
+!
 

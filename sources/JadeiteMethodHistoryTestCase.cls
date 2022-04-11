@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteAbstractTestCase subclass: #JadeiteMethodHistoryTestCase
 	instanceVariableNames: 'methodHistoryBrowser'
@@ -108,10 +108,12 @@ test_updateAfterMethodCompile
 	self assert: methodHistoryBrowser history size equals: 4.
 	self assert: methodHistoryBrowser selection equals: 1	"stay on selection but update the view with the new method"]
 			ensure: [self removeMethodHistoryFor: self methodListPresenter selections first]! !
-!JadeiteMethodHistoryTestCase categoriesFor: #removeMethodHistoryFor:!public!support! !
-!JadeiteMethodHistoryTestCase categoriesFor: #tearDown!public!setup teardown! !
-!JadeiteMethodHistoryTestCase categoriesFor: #test_openMethodHistory!public!tests! !
-!JadeiteMethodHistoryTestCase categoriesFor: #test_openMethodHistoryWithHistory!public!tests! !
-!JadeiteMethodHistoryTestCase categoriesFor: #test_sliderClick!public!tests! !
-!JadeiteMethodHistoryTestCase categoriesFor: #test_updateAfterMethodCompile!public!tests! !
+!JadeiteMethodHistoryTestCase categoriesForMethods!
+removeMethodHistoryFor:!public!support! !
+tearDown!public!setup teardown! !
+test_openMethodHistory!public!tests! !
+test_openMethodHistoryWithHistory!public!tests! !
+test_sliderClick!public!tests! !
+test_updateAfterMethodCompile!public!tests! !
+!
 

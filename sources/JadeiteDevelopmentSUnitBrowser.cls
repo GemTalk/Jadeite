@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 SUnitBrowser subclass: #JadeiteDevelopmentSUnitBrowser
 	instanceVariableNames: ''
@@ -16,8 +16,10 @@ queryCommand: aCommandQuery
 
 stopTests
 	self model stopTestProcess! !
-!JadeiteDevelopmentSUnitBrowser categoriesFor: #queryCommand:!private! !
-!JadeiteDevelopmentSUnitBrowser categoriesFor: #stopTests!public! !
+!JadeiteDevelopmentSUnitBrowser categoriesForMethods!
+queryCommand:!private! !
+stopTests!public! !
+!
 
 !JadeiteDevelopmentSUnitBrowser class methodsFor!
 
@@ -50,8 +52,10 @@ toolsFolderIcon
 		description: 'Jadeite Test Browser'
 		openBlock: [:folder :item | self show]
 		helpId: nil! !
-!JadeiteDevelopmentSUnitBrowser class categoriesFor: #addToDevelopmentTools!public! !
-!JadeiteDevelopmentSUnitBrowser class categoriesFor: #defaultModelClass!accessing!private! !
-!JadeiteDevelopmentSUnitBrowser class categoriesFor: #resource_Default_view!public!resources-views! !
-!JadeiteDevelopmentSUnitBrowser class categoriesFor: #toolsFolderIcon!public! !
+!JadeiteDevelopmentSUnitBrowser class categoriesForMethods!
+addToDevelopmentTools!public! !
+defaultModelClass!accessing!private! !
+resource_Default_view!public!resources-views! !
+toolsFolderIcon!public! !
+!
 

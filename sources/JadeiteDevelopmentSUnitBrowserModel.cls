@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 SUnitBrowserModel subclass: #JadeiteDevelopmentSUnitBrowserModel
 	instanceVariableNames: 'testProcess'
@@ -23,7 +23,9 @@ stopTestProcess
 
 testProcess
 	^testProcess! !
-!JadeiteDevelopmentSUnitBrowserModel categoriesFor: #runIndividualTests:!actions!private! !
-!JadeiteDevelopmentSUnitBrowserModel categoriesFor: #stopTestProcess!actions!private! !
-!JadeiteDevelopmentSUnitBrowserModel categoriesFor: #testProcess!accessing!public! !
+!JadeiteDevelopmentSUnitBrowserModel categoriesForMethods!
+runIndividualTests:!actions!private! !
+stopTestProcess!actions!private! !
+testProcess!accessing!public! !
+!
 

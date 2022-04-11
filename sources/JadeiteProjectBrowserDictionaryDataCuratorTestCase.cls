@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserDictionaryDataCuratorTestCase
 	instanceVariableNames: ''
@@ -781,57 +781,59 @@ test_textTabSelectedWithProjectChange
 	self assert: self projectsPresenter textAreaTabs currentCard displayString equals: 'projectInfoTab'.
 	self selectNoneProject.
 	self assert: self projectsPresenter textAreaTabs currentCard displayString equals: 'globalsTab'! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #assertDictionaryInList:!private!support! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #assertDictionaryNotInList:!private!support! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #rowanSample1Dictionary!constants!public! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #setUp!public!setup teardown! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_abortInTranscriptRemovesDictionaryInBrowser!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_addDictionary!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_addSubclassNoSuperclassPackage!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_addSubclassNoSuperclassPackageGoesToNewClass!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_addSubclassWithPackage!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_allClassesBlackInDictionaryView!public! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_baseClassPurpleInPackageView!public! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_canSelectUnauthorizedObjectStub!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_changeMethodInDictionaryViewShowsDirtyInProject!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_commitAfterDictionaryAddOrRemove!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_dictionaryNameIsString!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_dictionarySelectionChangesTab!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_dictionarySelectionIndependentInTab!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_dictionaryWithoutClassHasClassTemplate!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_firstClickDictionaries!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_fullHierarchyExpansion!public!test class hierarchy! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_globalRemove!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_globalsBrowseClassMenuItem!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_globalsBrowseReferencesMenuItem!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_globalsDoubleClick!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_globalsInspectMenuItem!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_globalsTabHandlesBadPrintString!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_globalsTabHeaders!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_globalsTabValues!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_gotoDictionary!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_gotoDictionaryClassTab!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_gotoDictionaryHierarchyView!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_gotoDictionaryHierarchyViewClassTab!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_gotoDictionaryMenuItem!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_gotoDictionaryMenuItemClassTab!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_insertDictionaryMenuItemEnablement!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_insertDictionaryRandomly!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_minimumClassStateReturned!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_minimumProjectList!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_noneProjectNotRemovedOnUpdate!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_noneProjectRetainsSelectionWhenNewTabAdded!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_packageDictionaryCardsTabName!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_projectInfoTabMenuCopy!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_projectInfoTabMenuItemNames!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_projectListMenuItemsEnabled!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_projectSingleSelection!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_protectedDictionaryNames!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_removeDictionary!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_removeDictionaryMenuItemEnablement!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_removeDictionaryNoSelection!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_renameClassInDictionaryView!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_systemTabsShowDictionariesAndProjects!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_textTabsChange!public!test issue 217! !
-!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesFor: #test_textTabSelectedWithProjectChange!public!test issue 217! !
+!JadeiteProjectBrowserDictionaryDataCuratorTestCase categoriesForMethods!
+assertDictionaryInList:!private!support! !
+assertDictionaryNotInList:!private!support! !
+rowanSample1Dictionary!constants!public! !
+setUp!public!setup teardown! !
+test_abortInTranscriptRemovesDictionaryInBrowser!public!test issue 217! !
+test_addDictionary!public!test issue 217! !
+test_addSubclassNoSuperclassPackage!public!test issue 217! !
+test_addSubclassNoSuperclassPackageGoesToNewClass!public!test issue 217! !
+test_addSubclassWithPackage!public!test issue 217! !
+test_allClassesBlackInDictionaryView!public! !
+test_baseClassPurpleInPackageView!public! !
+test_canSelectUnauthorizedObjectStub!public!test issue 217! !
+test_changeMethodInDictionaryViewShowsDirtyInProject!public!test issue 217! !
+test_commitAfterDictionaryAddOrRemove!public!test issue 217! !
+test_dictionaryNameIsString!public!test issue 217! !
+test_dictionarySelectionChangesTab!public!test issue 217! !
+test_dictionarySelectionIndependentInTab!public!test issue 217! !
+test_dictionaryWithoutClassHasClassTemplate!public!test issue 217! !
+test_firstClickDictionaries!public!test issue 217! !
+test_fullHierarchyExpansion!public!test class hierarchy! !
+test_globalRemove!public!test issue 217! !
+test_globalsBrowseClassMenuItem!public!test issue 217! !
+test_globalsBrowseReferencesMenuItem!public!test issue 217! !
+test_globalsDoubleClick!public!test issue 217! !
+test_globalsInspectMenuItem!public!test issue 217! !
+test_globalsTabHandlesBadPrintString!public!test issue 217! !
+test_globalsTabHeaders!public!test issue 217! !
+test_globalsTabValues!public!test issue 217! !
+test_gotoDictionary!public!test issue 217! !
+test_gotoDictionaryClassTab!public!test issue 217! !
+test_gotoDictionaryHierarchyView!public!test issue 217! !
+test_gotoDictionaryHierarchyViewClassTab!public!test issue 217! !
+test_gotoDictionaryMenuItem!public!test issue 217! !
+test_gotoDictionaryMenuItemClassTab!public!test issue 217! !
+test_insertDictionaryMenuItemEnablement!public!test issue 217! !
+test_insertDictionaryRandomly!public!test issue 217! !
+test_minimumClassStateReturned!public!test issue 217! !
+test_minimumProjectList!public!test issue 217! !
+test_noneProjectNotRemovedOnUpdate!public!test issue 217! !
+test_noneProjectRetainsSelectionWhenNewTabAdded!public!test issue 217! !
+test_packageDictionaryCardsTabName!public!test issue 217! !
+test_projectInfoTabMenuCopy!public!test issue 217! !
+test_projectInfoTabMenuItemNames!public!test issue 217! !
+test_projectListMenuItemsEnabled!public!test issue 217! !
+test_projectSingleSelection!public!test issue 217! !
+test_protectedDictionaryNames!public!test issue 217! !
+test_removeDictionary!public!test issue 217! !
+test_removeDictionaryMenuItemEnablement!public!test issue 217! !
+test_removeDictionaryNoSelection!public!test issue 217! !
+test_renameClassInDictionaryView!public!test issue 217! !
+test_systemTabsShowDictionariesAndProjects!public!test issue 217! !
+test_textTabsChange!public!test issue 217! !
+test_textTabSelectedWithProjectChange!public!test issue 217! !
+!
 

@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteAbstractTestCase subclass: #JadeitePreferencesTestCase
 	instanceVariableNames: 'workspace'
@@ -288,26 +288,28 @@ test_validPreferences
 	validPreferences := #(#transcriptEnabled: #openBrowserOnClass: #openBrowserOnPackage: #openSUnitBrowserOnPackage: #autocommitEnabled: #autocompleteEnabled: #breakpointsEnabled: #loggingEnabled:).
 	prefs := JadeitePreferences new session: session.
 	validPreferences do: [:symbol | self assert: (prefs class canUnderstand: symbol)]! !
-!JadeitePreferencesTestCase categoriesFor: #closeWorkspace!public!support! !
-!JadeitePreferencesTestCase categoriesFor: #primaryTestWindow!accessing!public! !
-!JadeitePreferencesTestCase categoriesFor: #tearDown!private!setup teardown! !
-!JadeitePreferencesTestCase categoriesFor: #test_additionalAccelerators!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_autoCommitEnabled!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_autoCompleteEnabled!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_blanksInOpenWorkspaceArguments!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_breakpointEnabled!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_everyPreferenceIsInMustNotStripCategory!public! !
-!JadeitePreferencesTestCase categoriesFor: #test_fontSize!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_globalAdditionalAccelerators!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_handleMalformedPreference!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_loggingEnabled!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_preferencesHandlesBlanks!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_preferencesOpenBrowsers!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_preferencesOpenCorrectWorkspaceFiles!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_preferencesOpenWorkspace!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_preferencesOpenWorkspaceFiles!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_preferencesSettingTranscript!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_preferencesSUnitOpenBrowser!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_resetPreferences!public!tests! !
-!JadeitePreferencesTestCase categoriesFor: #test_validPreferences!public!tests! !
+!JadeitePreferencesTestCase categoriesForMethods!
+closeWorkspace!public!support! !
+primaryTestWindow!accessing!public! !
+tearDown!private!setup teardown! !
+test_additionalAccelerators!public!tests! !
+test_autoCommitEnabled!public!tests! !
+test_autoCompleteEnabled!public!tests! !
+test_blanksInOpenWorkspaceArguments!public!tests! !
+test_breakpointEnabled!public!tests! !
+test_everyPreferenceIsInMustNotStripCategory!public! !
+test_fontSize!public!tests! !
+test_globalAdditionalAccelerators!public!tests! !
+test_handleMalformedPreference!public!tests! !
+test_loggingEnabled!public!tests! !
+test_preferencesHandlesBlanks!public!tests! !
+test_preferencesOpenBrowsers!public!tests! !
+test_preferencesOpenCorrectWorkspaceFiles!public!tests! !
+test_preferencesOpenWorkspace!public!tests! !
+test_preferencesOpenWorkspaceFiles!public!tests! !
+test_preferencesSettingTranscript!public!tests! !
+test_preferencesSUnitOpenBrowser!public!tests! !
+test_resetPreferences!public!tests! !
+test_validPreferences!public!tests! !
+!
 

@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteInspectorDataCuratorTestCase subclass: #JadeiteInspectorTestCase
 	instanceVariableNames: ''
@@ -53,9 +53,11 @@ test_openProjectsBrowserOnClass
 	inspector := JadeInspector showOn: remoteObject session: session.
 	shell := inspector browseClass.
 	[self assert: (shell isKindOf: JadeiteBrowser)] ensure: [self destroy: shell]! !
-!JadeiteInspectorTestCase categoriesFor: #setUp!public!setup teardown! !
-!JadeiteInspectorTestCase categoriesFor: #test_inspectorRootObjectRegistered!public! !
-!JadeiteInspectorTestCase categoriesFor: #test_inspectorRootSpecialObjectNotRegistered!public! !
-!JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowser!public! !
-!JadeiteInspectorTestCase categoriesFor: #test_openProjectsBrowserOnClass!public! !
+!JadeiteInspectorTestCase categoriesForMethods!
+setUp!public!setup teardown! !
+test_inspectorRootObjectRegistered!public! !
+test_inspectorRootSpecialObjectNotRegistered!public! !
+test_openProjectsBrowser!public! !
+test_openProjectsBrowserOnClass!public! !
+!
 

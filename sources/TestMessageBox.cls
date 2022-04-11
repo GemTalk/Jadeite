@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 MessageBox subclass: #TestMessageBox
 	instanceVariableNames: ''
@@ -21,9 +21,11 @@ open
 
 result
 	^self class plannedResult! !
-!TestMessageBox categoriesFor: #initialize!initialization!public! !
-!TestMessageBox categoriesFor: #open!accessing!public! !
-!TestMessageBox categoriesFor: #result!accessing!public! !
+!TestMessageBox categoriesForMethods!
+initialize!initialization!public! !
+open!accessing!public! !
+result!accessing!public! !
+!
 
 !TestMessageBox class methodsFor!
 
@@ -58,10 +60,12 @@ plannedResult: answer
 	(answer isKindOf: OrderedCollection)
 		ifTrue: [PlannedResult := answer]
 		ifFalse: [PlannedResult := OrderedCollection with: answer]! !
-!TestMessageBox class categoriesFor: #disableJadeiteTestMessageBox!actions!public! !
-!TestMessageBox class categoriesFor: #enableJadeiteTestMessageBox!actions!public! !
-!TestMessageBox class categoriesFor: #lastMessageBox!accessing!public! !
-!TestMessageBox class categoriesFor: #lastMessageBox:!accessing!public! !
-!TestMessageBox class categoriesFor: #plannedResult!accessing!public! !
-!TestMessageBox class categoriesFor: #plannedResult:!accessing!public! !
+!TestMessageBox class categoriesForMethods!
+disableJadeiteTestMessageBox!actions!public! !
+enableJadeiteTestMessageBox!actions!public! !
+lastMessageBox!accessing!public! !
+lastMessageBox:!accessing!public! !
+plannedResult!accessing!public! !
+plannedResult:!accessing!public! !
+!
 

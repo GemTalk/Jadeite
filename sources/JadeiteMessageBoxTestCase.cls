@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteAbstractTestCase subclass: #JadeiteMessageBoxTestCase
 	instanceVariableNames: ''
@@ -58,10 +58,12 @@ testRemoveGlobalHook
 	TestMessageBox enableJadeiteTestMessageBox. 
 	self assert: (Smalltalk at: #JadeiteTestsActive).
 	! !
-!JadeiteMessageBoxTestCase categoriesFor: #setUp!public!support! !
-!JadeiteMessageBoxTestCase categoriesFor: #tearDown!public!support! !
-!JadeiteMessageBoxTestCase categoriesFor: #testClearResultAfterEachUse!public!test! !
-!JadeiteMessageBoxTestCase categoriesFor: #testEnableTestMessageBox!public!test! !
-!JadeiteMessageBoxTestCase categoriesFor: #testMessageBox!public!test! !
-!JadeiteMessageBoxTestCase categoriesFor: #testRemoveGlobalHook!public!test! !
+!JadeiteMessageBoxTestCase categoriesForMethods!
+setUp!public!support! !
+tearDown!public!support! !
+testClearResultAfterEachUse!public!test! !
+testEnableTestMessageBox!public!test! !
+testMessageBox!public!test! !
+testRemoveGlobalHook!public!test! !
+!
 

@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteAbstractTestCase subclass: #JadeiteDataCuratorTestCase
 	instanceVariableNames: ''
@@ -191,17 +191,19 @@ test_transcriptWindowPosition
 		withTitle: 'In multi-monitor setupt, inconsistent locations for opening windows (3.0.93-7)'.
 	self assert: transcript view position
 		equals: jadeiteShell view position + JadePresenter defaultWindowOffset! !
-!JadeiteDataCuratorTestCase categoriesFor: #setUp!public!setup teardown! !
-!JadeiteDataCuratorTestCase categoriesFor: #tearDown!public!setup teardown! !
-!JadeiteDataCuratorTestCase categoriesFor: #test_addAccessorsClassTab!public!test variable tab!tests! !
-!JadeiteDataCuratorTestCase categoriesFor: #test_autoCommit!public!test auto commit!tests! !
-!JadeiteDataCuratorTestCase categoriesFor: #test_basicInspection!public!test variable tab!tests! !
-!JadeiteDataCuratorTestCase categoriesFor: #test_compileClass!public!test compiing!tests! !
-!JadeiteDataCuratorTestCase categoriesFor: #test_dictionaryNameIsString!public!test issue 217! !
-!JadeiteDataCuratorTestCase categoriesFor: #test_dictionarySelectionChangesTab!public!test issue 217! !
-!JadeiteDataCuratorTestCase categoriesFor: #test_dictionaryWithoutClassHasClassTemplate!public!test issue 217! !
-!JadeiteDataCuratorTestCase categoriesFor: #test_dontDuplicateBreakpoints!public!test breakpoints! !
-!JadeiteDataCuratorTestCase categoriesFor: #test_dontOverrideExistingAccessorMethods!public!test variable tab!tests! !
-!JadeiteDataCuratorTestCase categoriesFor: #test_loginOk!public!tests! !
-!JadeiteDataCuratorTestCase categoriesFor: #test_transcriptWindowPosition!public!tests! !
+!JadeiteDataCuratorTestCase categoriesForMethods!
+setUp!public!setup teardown! !
+tearDown!public!setup teardown! !
+test_addAccessorsClassTab!public!test variable tab!tests! !
+test_autoCommit!public!test auto commit!tests! !
+test_basicInspection!public!test variable tab!tests! !
+test_compileClass!public!test compiing!tests! !
+test_dictionaryNameIsString!public!test issue 217! !
+test_dictionarySelectionChangesTab!public!test issue 217! !
+test_dictionaryWithoutClassHasClassTemplate!public!test issue 217! !
+test_dontDuplicateBreakpoints!public!test breakpoints! !
+test_dontOverrideExistingAccessorMethods!public!test variable tab!tests! !
+test_loginOk!public!tests! !
+test_transcriptWindowPosition!public!tests! !
+!
 

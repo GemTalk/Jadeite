@@ -136,7 +136,6 @@ updateMenuBar: aMenuBar withName: aString itemsFrom: aPresenter
 !
 
 updateService: service
-
 	^self updateServices: (Array with: service) ! !
 !JadePresenter categoriesForMethods!
 additionalAccelerators!constants!public! !

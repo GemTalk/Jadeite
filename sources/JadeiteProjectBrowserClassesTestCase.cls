@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserClassesTestCase
 	instanceVariableNames: ''
@@ -1839,91 +1839,93 @@ test_variablesUpdatedOnClassSaveInHierarchy
 	self projectsPresenter selectVariableTab.
 	self assert: self categoryListPresenter list size equals: 1.
 	self assert: (self categoryListPresenter list includes: 'aaa')! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_abortRemovesClassAndMethod!public!test class list! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_abortRemovesProjectAndPackage!public!test class list! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_addAccessorsHierarchyTab!public!test class hierarchy!test variable tab!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_addAccessorsHierarchyTabVerifySource!public!test class hierarchy!test variable tab!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_addRemoveHierarchyCategory!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_addSubclass!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_allClassesAutoCommitOn!public!test class list!test find!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_browseClassReferencesFromClassesMenu!public!test rename class! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classColoring!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classColoringExtension!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classCopyHierarchy!public!test class hierarchy! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classDefinitionTemplateAfterRemove!public!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classDefinitionTemplateAfterRemoveInHierarchy!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classDeselection!public!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classHierarchyDeselection!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classListNotBlank!public!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classRenameNoReferences!public!test rename class!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classRenameNoReferencesHierarchy!public!test rename class!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classRenameResetsClassDefinition!public!test rename class!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classRenameShowsMethods!public!test rename class!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classRenameWithReferences!public!test rename class!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classRenameWithReferencesFailingCompile!public!test rename class!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classRenameWithReferencesHierarchy!public!test rename class!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classRenameWithReferencesSimilarNameButNoFailCompile!public!test rename class!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classSideSelection!public!test class hierarchy!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classTemplateWhenNoPackagesSelected!public!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classVersionIncrementedInClassList!public!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_classVersionIncrementedInHierarchy!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_copyClassExistingClassRetry!public!test rename class! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_displayCompileWarningsNicely!public!test class list! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_dontDuplicateClasses!public!test rename class!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_dragClassInHierarchyDoesNotWalkback!public!test class hierarchy!test drag drop!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_dragDropMethodFailCompile!public!test class hierarchy!test drag drop!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_dragDropMultipleMethods!public!test class hierarchy!test drag drop!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_dragDropMultipleMethodsHierarchy!public!test class hierarchy!test drag drop!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_dropMethodOnClassHierarchy!public!test class hierarchy!test drag drop!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_dropMethodOnClassList!public!test class list!test drag drop!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_dropNonSelectedMethod!public!test class list!test drag drop!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_expansion!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_extensionColoringInHierarchy!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_extensionMethodSelection!public!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_failMethodCompile!public!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_filtersUpdatedInHierarchyView!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_findClass!public!test class list!test find!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_findClassDialog!public!test class list!test find!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_fullHierarchyExpansion!public!test class hierarchy! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_fullHierarchyExpansionDoubleClick!public!test class hierarchy! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_fullHierarchyExpansionManyLevels!public!test class hierarchy! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_fullHierarchyExpansionManyLevelsDoubleClick!public!test class hierarchy! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_getClassCommentWithDeprecationsOn!public!test class list!test deprecated!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_goToDefinedClassFromHierarchy!public!test class hierarchy!test defined package!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_goToDefinedClassFromHierarchyViaButton!public!test class hierarchy!test defined package!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_goToDefinedMethodFromClassList!public!test class list!test defined package!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_goToDefinedMethodFromHierarchy!public!test class hierarchy!test defined package!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_goToDefinedMethodFromHierarchyViaButton!public!test class hierarchy!test defined package!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_hierarchyCleanedUpAfterUnload!public!test class hierarchy!test projects!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_hierarchyMethodsNotDisplayed!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_hierarchySelectTwoBrowsers!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_hierarchyWithNonResolvableClass!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_newBrowserRetainsClassAndMethod!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_newBrowserRetainsClassAndMethodClassSide!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_noSelectionHierarchy!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_refreshFromServer!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_removeClassFromHierarchy!public!test class hierarchy!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_removeClassFromList!public!test class hierarchy!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_removeClassNoReferences!public!test class hierarchy!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_removeClassWithSubclasses!public!test class hierarchy!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_renameClassMethodListUpdates!public!test rename class! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_renameClassMethodListUpdatesFromClassesMenu!public!test rename class! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_renameClassShowsAsDefinedInPackage!public!test rename class! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_renameClassSUnitBrowserUpdates!public!test rename class! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_renameClassSwitchToHierarchyOk!public!test rename class! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_renameClassUpdatedInSecondBrowser!public!test rename class! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_renameClassUpdatedInSecondBrowserHierarchy!public!test rename class! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_renameInClassListWithMethodListOpen!public!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_renameInHierarchyWithMethodListOpen!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_rowanTestsHierarchy!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_saveClassCommentInClassList!public!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_saveClassCommentInHierarchy!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_selectionsRetainedFromClassListToHierarchy!public!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_selectionsRetainedFromHierarchyToClassList!public!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_showMethodsFailingClassRecompilation!public!test class list! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_simpleHierarchyTest!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_updateHierarchyAfterClassRecompile!public!test class hierarchy!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_variablesTab!public!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_variablesUpdatedOnClassSaveInClassList!public!test class list!tests! !
-!JadeiteProjectBrowserClassesTestCase categoriesFor: #test_variablesUpdatedOnClassSaveInHierarchy!public!test class list!tests! !
+!JadeiteProjectBrowserClassesTestCase categoriesForMethods!
+test_abortRemovesClassAndMethod!public!test class list! !
+test_abortRemovesProjectAndPackage!public!test class list! !
+test_addAccessorsHierarchyTab!public!test class hierarchy!test variable tab!tests! !
+test_addAccessorsHierarchyTabVerifySource!public!test class hierarchy!test variable tab!tests! !
+test_addRemoveHierarchyCategory!public!test class hierarchy!tests! !
+test_addSubclass!public!test class hierarchy!tests! !
+test_allClassesAutoCommitOn!public!test class list!test find!tests! !
+test_browseClassReferencesFromClassesMenu!public!test rename class! !
+test_classColoring!public!test class hierarchy!tests! !
+test_classColoringExtension!public!test class hierarchy!tests! !
+test_classCopyHierarchy!public!test class hierarchy! !
+test_classDefinitionTemplateAfterRemove!public!test class list!tests! !
+test_classDefinitionTemplateAfterRemoveInHierarchy!public!test class hierarchy!tests! !
+test_classDeselection!public!test class list!tests! !
+test_classHierarchyDeselection!public!test class hierarchy!tests! !
+test_classListNotBlank!public!test class list!tests! !
+test_classRenameNoReferences!public!test rename class!tests! !
+test_classRenameNoReferencesHierarchy!public!test rename class!tests! !
+test_classRenameResetsClassDefinition!public!test rename class!tests! !
+test_classRenameShowsMethods!public!test rename class!tests! !
+test_classRenameWithReferences!public!test rename class!tests! !
+test_classRenameWithReferencesFailingCompile!public!test rename class!tests! !
+test_classRenameWithReferencesHierarchy!public!test rename class!tests! !
+test_classRenameWithReferencesSimilarNameButNoFailCompile!public!test rename class!tests! !
+test_classSideSelection!public!test class hierarchy!test class list!tests! !
+test_classTemplateWhenNoPackagesSelected!public!test class list!tests! !
+test_classVersionIncrementedInClassList!public!test class list!tests! !
+test_classVersionIncrementedInHierarchy!public!test class hierarchy!tests! !
+test_copyClassExistingClassRetry!public!test rename class! !
+test_displayCompileWarningsNicely!public!test class list! !
+test_dontDuplicateClasses!public!test rename class!tests! !
+test_dragClassInHierarchyDoesNotWalkback!public!test class hierarchy!test drag drop!tests! !
+test_dragDropMethodFailCompile!public!test class hierarchy!test drag drop!tests! !
+test_dragDropMultipleMethods!public!test class hierarchy!test drag drop!tests! !
+test_dragDropMultipleMethodsHierarchy!public!test class hierarchy!test drag drop!tests! !
+test_dropMethodOnClassHierarchy!public!test class hierarchy!test drag drop!tests! !
+test_dropMethodOnClassList!public!test class list!test drag drop!tests! !
+test_dropNonSelectedMethod!public!test class list!test drag drop!tests! !
+test_expansion!public!test class hierarchy!tests! !
+test_extensionColoringInHierarchy!public!test class hierarchy!tests! !
+test_extensionMethodSelection!public!test class list!tests! !
+test_failMethodCompile!public!test class list!tests! !
+test_filtersUpdatedInHierarchyView!public!test class hierarchy!tests! !
+test_findClass!public!test class list!test find!tests! !
+test_findClassDialog!public!test class list!test find!tests! !
+test_fullHierarchyExpansion!public!test class hierarchy! !
+test_fullHierarchyExpansionDoubleClick!public!test class hierarchy! !
+test_fullHierarchyExpansionManyLevels!public!test class hierarchy! !
+test_fullHierarchyExpansionManyLevelsDoubleClick!public!test class hierarchy! !
+test_getClassCommentWithDeprecationsOn!public!test class list!test deprecated!tests! !
+test_goToDefinedClassFromHierarchy!public!test class hierarchy!test defined package!tests! !
+test_goToDefinedClassFromHierarchyViaButton!public!test class hierarchy!test defined package!tests! !
+test_goToDefinedMethodFromClassList!public!test class list!test defined package!tests! !
+test_goToDefinedMethodFromHierarchy!public!test class hierarchy!test defined package!tests! !
+test_goToDefinedMethodFromHierarchyViaButton!public!test class hierarchy!test defined package!tests! !
+test_hierarchyCleanedUpAfterUnload!public!test class hierarchy!test projects!tests! !
+test_hierarchyMethodsNotDisplayed!public!test class hierarchy!tests! !
+test_hierarchySelectTwoBrowsers!public!test class hierarchy!tests! !
+test_hierarchyWithNonResolvableClass!public!test class hierarchy!tests! !
+test_newBrowserRetainsClassAndMethod!public!test class hierarchy!tests! !
+test_newBrowserRetainsClassAndMethodClassSide!public!test class hierarchy!tests! !
+test_noSelectionHierarchy!public!test class hierarchy!tests! !
+test_refreshFromServer!public!test class hierarchy!tests! !
+test_removeClassFromHierarchy!public!test class hierarchy!test class list!tests! !
+test_removeClassFromList!public!test class hierarchy!test class list!tests! !
+test_removeClassNoReferences!public!test class hierarchy!test class list!tests! !
+test_removeClassWithSubclasses!public!test class hierarchy!test class list!tests! !
+test_renameClassMethodListUpdates!public!test rename class! !
+test_renameClassMethodListUpdatesFromClassesMenu!public!test rename class! !
+test_renameClassShowsAsDefinedInPackage!public!test rename class! !
+test_renameClassSUnitBrowserUpdates!public!test rename class! !
+test_renameClassSwitchToHierarchyOk!public!test rename class! !
+test_renameClassUpdatedInSecondBrowser!public!test rename class! !
+test_renameClassUpdatedInSecondBrowserHierarchy!public!test rename class! !
+test_renameInClassListWithMethodListOpen!public!test class list!tests! !
+test_renameInHierarchyWithMethodListOpen!public!test class hierarchy!tests! !
+test_rowanTestsHierarchy!public!test class hierarchy!tests! !
+test_saveClassCommentInClassList!public!test class list!tests! !
+test_saveClassCommentInHierarchy!public!test class hierarchy!tests! !
+test_selectionsRetainedFromClassListToHierarchy!public!test class list!tests! !
+test_selectionsRetainedFromHierarchyToClassList!public!test class list!tests! !
+test_showMethodsFailingClassRecompilation!public!test class list! !
+test_simpleHierarchyTest!public!test class hierarchy!tests! !
+test_updateHierarchyAfterClassRecompile!public!test class hierarchy!tests! !
+test_variablesTab!public!test class list!tests! !
+test_variablesUpdatedOnClassSaveInClassList!public!test class list!tests! !
+test_variablesUpdatedOnClassSaveInHierarchy!public!test class list!tests! !
+!
 

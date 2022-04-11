@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 TestResource subclass: #JadeiteTestResource
 	instanceVariableNames: 'projectsBrowser jadeiteShell'
@@ -203,30 +203,32 @@ unloadSampleProject
 		ifNone: [^self].
 	self transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName).
 	self session commit! !
-!JadeiteTestResource categoriesFor: #cloneRowanSample1!private!setup teardown! !
-!JadeiteTestResource categoriesFor: #closeTranscript:!private!setup teardown!support! !
-!JadeiteTestResource categoriesFor: #disableInteractionsWhile:!private!setup teardown! !
-!JadeiteTestResource categoriesFor: #ensureRowanSample1Loaded!private!setup teardown! !
-!JadeiteTestResource categoriesFor: #hasValidSession!public!testing! !
-!JadeiteTestResource categoriesFor: #isAvailable!public!testing! !
-!JadeiteTestResource categoriesFor: #issueCommand:!public!setup teardown! !
-!JadeiteTestResource categoriesFor: #loadProjectFromFile:projectsHome:customConditionalAttributes:componentNames:!private!setup teardown! !
-!JadeiteTestResource categoriesFor: #loadProjectNamed:!private!setup teardown! !
-!JadeiteTestResource categoriesFor: #loginWithRetry:!private!support! !
-!JadeiteTestResource categoriesFor: #logoutThenLoginAs:!private!setup teardown!support! !
-!JadeiteTestResource categoriesFor: #openProjectsBrowser!private!setup teardown! !
-!JadeiteTestResource categoriesFor: #openWindow:!private! !
-!JadeiteTestResource categoriesFor: #projectsBrowser:!private!setup teardown! !
-!JadeiteTestResource categoriesFor: #rowanProjectsHome!constants!private! !
-!JadeiteTestResource categoriesFor: #rowanSample1Path!constants!private! !
-!JadeiteTestResource categoriesFor: #rowanSample1Project!constants!private! !
-!JadeiteTestResource categoriesFor: #sampleProjectName!constants!private! !
-!JadeiteTestResource categoriesFor: #session!accessing!public! !
-!JadeiteTestResource categoriesFor: #setUp!private!setup teardown! !
-!JadeiteTestResource categoriesFor: #tearDown!private!setup teardown! !
-!JadeiteTestResource categoriesFor: #transcript!accessing!public! !
-!JadeiteTestResource categoriesFor: #transcriptForCurrentSession!private!setup teardown!support! !
-!JadeiteTestResource categoriesFor: #unloadSampleProject!private!setup teardown! !
+!JadeiteTestResource categoriesForMethods!
+cloneRowanSample1!private!setup teardown! !
+closeTranscript:!private!setup teardown!support! !
+disableInteractionsWhile:!private!setup teardown! !
+ensureRowanSample1Loaded!private!setup teardown! !
+hasValidSession!public!testing! !
+isAvailable!public!testing! !
+issueCommand:!public!setup teardown! !
+loadProjectFromFile:projectsHome:customConditionalAttributes:componentNames:!private!setup teardown! !
+loadProjectNamed:!private!setup teardown! !
+loginWithRetry:!private!support! !
+logoutThenLoginAs:!private!setup teardown!support! !
+openProjectsBrowser!private!setup teardown! !
+openWindow:!private! !
+projectsBrowser:!private!setup teardown! !
+rowanProjectsHome!constants!private! !
+rowanSample1Path!constants!private! !
+rowanSample1Project!constants!private! !
+sampleProjectName!constants!private! !
+session!accessing!public! !
+setUp!private!setup teardown! !
+tearDown!private!setup teardown! !
+transcript!accessing!public! !
+transcriptForCurrentSession!private!setup teardown!support! !
+unloadSampleProject!private!setup teardown! !
+!
 
 !JadeiteTestResource class methodsFor!
 
@@ -251,8 +253,10 @@ signalInitializationError
 
 	self reset.
 	^TestResult signalErrorWith: 'Resource ' , self name , ' could not be initialized'! !
-!JadeiteTestResource class categoriesFor: #current!Accessing!public! !
-!JadeiteTestResource class categoriesFor: #isAvailable!public! !
-!JadeiteTestResource class categoriesFor: #sampleProjectName!constants!public! !
-!JadeiteTestResource class categoriesFor: #signalInitializationError!error handling!public! !
+!JadeiteTestResource class categoriesForMethods!
+current!Accessing!public! !
+isAvailable!public! !
+sampleProjectName!constants!public! !
+signalInitializationError!error handling!public! !
+!
 

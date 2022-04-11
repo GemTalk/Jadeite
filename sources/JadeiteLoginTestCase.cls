@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 TestCase subclass: #JadeiteLoginTestCase
 	instanceVariableNames: 'session jadeiteLogin parmFileName jadeiteShell'
@@ -177,20 +177,22 @@ test_simpleLogin
 	session := nil!
 
 testsIssue: aSymbol withTitle: anObject! !
-!JadeiteLoginTestCase categoriesFor: #fail:!public! !
-!JadeiteLoginTestCase categoriesFor: #jadeLoginShell!private!setup teardown! !
-!JadeiteLoginTestCase categoriesFor: #login!private!setup teardown! !
-!JadeiteLoginTestCase categoriesFor: #loginWithRetry:!private!support! !
-!JadeiteLoginTestCase categoriesFor: #setUp!public!setup teardown! !
-!JadeiteLoginTestCase categoriesFor: #setupToLogin!private!support! !
-!JadeiteLoginTestCase categoriesFor: #tearDown!public!setup teardown! !
-!JadeiteLoginTestCase categoriesFor: #test_351Libraries!public!tests! !
-!JadeiteLoginTestCase categoriesFor: #test_360Libraries!public!tests! !
-!JadeiteLoginTestCase categoriesFor: #test_361Libraries!public!tests! !
-!JadeiteLoginTestCase categoriesFor: #test_370Libraries!public!tests! !
-!JadeiteLoginTestCase categoriesFor: #test_debugLoginDumpsParameters!public!tests! !
-!JadeiteLoginTestCase categoriesFor: #test_gemTask!public!tests! !
-!JadeiteLoginTestCase categoriesFor: #test_loginButtonEnablement!public!tests! !
-!JadeiteLoginTestCase categoriesFor: #test_simpleLogin!public!tests! !
-!JadeiteLoginTestCase categoriesFor: #testsIssue:withTitle:!private! !
+!JadeiteLoginTestCase categoriesForMethods!
+fail:!public! !
+jadeLoginShell!private!setup teardown! !
+login!private!setup teardown! !
+loginWithRetry:!private!support! !
+setUp!public!setup teardown! !
+setupToLogin!private!support! !
+tearDown!public!setup teardown! !
+test_351Libraries!public!tests! !
+test_360Libraries!public!tests! !
+test_361Libraries!public!tests! !
+test_370Libraries!public!tests! !
+test_debugLoginDumpsParameters!public!tests! !
+test_gemTask!public!tests! !
+test_loginButtonEnablement!public!tests! !
+test_simpleLogin!public!tests! !
+testsIssue:withTitle:!private! !
+!
 
