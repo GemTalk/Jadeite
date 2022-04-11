@@ -14,13 +14,6 @@ RowanDefinitionService comment: ''!
 	^definitionService isService
 		and: [definitionService isDefinitionService and: [name = definitionService name]]!
 
-basicReplicateFrom: newService
-	1 to: self class instSize
-		do: 
-			[:index |
-			(self shouldReplicateInstVarAtIndex: index newService: newService)
-				ifTrue: [self instVarAt: index put: (newService instVarAt: index)]]!
-
 excludedInstVars
 
 	^super excludedInstVars , #('session')!
@@ -58,7 +51,6 @@ shouldReplicateInstVarAtIndex: index newService: newService
 	^true! !
 !RowanDefinitionService categoriesForMethods!
 =!comparing!public! !
-basicReplicateFrom:!public! !
 excludedInstVars!public!ston! !
 hash!comparing!public! !
 indexOfSessionInstVar!public!replication! !

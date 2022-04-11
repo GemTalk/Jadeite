@@ -220,6 +220,7 @@ displayConditionalAttributes
 		list: (model conditionalAttributes collect: [:attribute | model conditionalAttributes -> attribute])!
 
 displayConditionPresenter
+	componentListPresenter selectionOrNil ifNil:[^self hideAllConditionPresenters].
 	componentListPresenter selection isPlatformSubcomponent ifTrue: [^self displayArrayCondition].
 	componentListPresenter selection isSubcomponent ifTrue: [^self displayStringCondition].
 	self hideAllConditionPresenters!

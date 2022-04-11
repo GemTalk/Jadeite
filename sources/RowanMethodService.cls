@@ -257,6 +257,12 @@ indexOfFirstReferenceInstVar
 
 	^34!
 
+indexOfSourceInstVar
+	^7!
+
+indexOfStepPointsInstVar
+	^21!
+
 indexOfTestResultInstVar
 	^28!
 
@@ -462,7 +468,11 @@ shouldReplicateInstVarAtIndex: index newService: newService
 	| isTestResultInstVar |
 	index = self indexOfFirstReferenceInstVar ifTrue: [firstReference ifNotNil: [^false]].
 	isTestResultInstVar := self indexOfTestResultInstVar = index.
-	^isTestResultInstVar not or: [isTestResultInstVar and: [(newService instVarAt: index) notNil]]!
+	self indexOfSourceInstVar = index ifTrue: [^newService source isNil not].	"fastRefresh nils out stepPoints and sources for performance"
+	self indexOfStepPointsInstVar = index ifTrue: [^newService stepPoints isNil not].
+	^isTestResultInstVar not or: 
+			[(isTestResultInstVar or: [self indexOfSourceInstVar = index])
+				and: [(newService instVarAt: index) notNil]]!
 
 sortAspect
 
@@ -612,8 +622,10 @@ hasSupers:!accessing!private! !
 homeMethodOop!accessing!private! !
 icon!public!sunit! !
 implementorsOf:!method accessing!public! !
-indexOfFirstReferenceInstVar!constants!public! !
-indexOfTestResultInstVar!constants!public! !
+indexOfFirstReferenceInstVar!constants!public!replication! !
+indexOfSourceInstVar!constants!public!replication! !
+indexOfStepPointsInstVar!constants!public!replication! !
+indexOfTestResultInstVar!constants!public!replication! !
 initialize!initialization!public! !
 inSelectedPackage!public!testing! !
 inSelectedPackage:!accessing!public! !
