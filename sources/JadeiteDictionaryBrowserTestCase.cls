@@ -47,7 +47,7 @@ selectWellKnownMethod
 
 setUp
 	super setUp.
-	dictionaryBrowser := self openWindow: [transcript openDictionaryBrowser]!
+	"dictionaryBrowser := self openWindow: [transcript openDictionaryBrowser]"!
 
 tearDown
 	super tearDown.

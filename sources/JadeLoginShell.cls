@@ -366,7 +366,7 @@ updateCaption
 updateModel
 
 	self model
-		gemVersion:	versionListPresenter 		selection;
+		gemVersion:	versionListPresenter 		selection displayName;
 		stoneHost: 	stoneHostPresenter 		value trimBlanks;
 		stoneName: 	stoneNamePresenter 		value trimBlanks;
 		gemType: 	gemTypePresenter 		value;

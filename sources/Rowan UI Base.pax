@@ -43,6 +43,7 @@ package classNames
 	add: #JadeiteSearch;
 	add: #JadeiteSemaphore;
 	add: #JadeiteTranscript;
+	add: #LibGciRpc64_Holder;
 	add: #PackageMethodListPresenter;
 	add: #Rowan;
 	add: #RowanAnsweringService;
@@ -539,6 +540,11 @@ Object subclass: #JadeiteSearch
 	instanceVariableNames: 'view session stop start'
 	classVariableNames: 'AllClassNames AllSelectors AutoCompleteEnabled'
 	poolDictionaries: 'ScintillaConstants'
+	classInstanceVariableNames: ''!
+Object subclass: #LibGciRpc64_Holder
+	instanceVariableNames: 'parentLibrary fileNameSearch displayName'
+	classVariableNames: ''
+	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Object subclass: #Rowan
 	instanceVariableNames: ''
