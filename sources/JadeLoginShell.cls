@@ -378,21 +378,21 @@ updateCaption
 
 updateModel
 	self model
-		gemVersion: versionListPresenter selection;
-		stoneHost: stoneHostPresenter value trimBlanks;
-		stoneName: stoneNamePresenter value trimBlanks;
-		gemType: gemTypePresenter value;
-		gemHost: gemHostPresenter value trimBlanks;
-		gemService: gemServicePresenter value trimBlanks;
-		gemTask: gemTaskPresenter value trimBlanks;
-		gsUserID: userIDPresenter value trimBlanks;
-		gsPassword: passwordPresenter value trimBlanks;
-		loginType: loginTypePresenter value;
-		hostUserID: hostUserIDPresenter value trimBlanks;
-		hostPassword: hostPasswordPresenter value trimBlanks;
-		initials: initialsPresenter value trimBlanks;
-		useSocket: useSocketPresenter value;
-		debugPath: debugPathPresenter value trimBlanks;
+		gemVersion:	versionListPresenter 		selection displayName;
+		stoneHost: 	stoneHostPresenter 		value trimBlanks;
+		stoneName: 	stoneNamePresenter 		value trimBlanks;
+		gemType: 	gemTypePresenter 		value;
+		gemHost: 		gemHostPresenter 		value trimBlanks;
+		gemService: 	gemServicePresenter 	value trimBlanks;
+		gemTask: 	gemTaskPresenter 		value trimBlanks;
+		gsUserID: 		userIDPresenter 		value trimBlanks;
+		gsPassword: 	passwordPresenter 		value trimBlanks;
+		loginType: 	loginTypePresenter 		value;
+		hostUserID:	hostUserIDPresenter		value trimBlanks;
+		hostPassword:	hostPasswordPresenter	value trimBlanks;
+		initials:		initialsPresenter		value trimBlanks;
+		useSocket: 	useSocketPresenter		value;
+		debugPath: 	debugPathPresenter		value trimBlanks;
 		yourself.
 	debugPathPresenter value isEmpty ifFalse: [self dumpLoginInfoToFile]!
 

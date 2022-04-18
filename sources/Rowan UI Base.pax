@@ -68,6 +68,7 @@ package classNames
 	add: #JadeiteTranscript;
 	add: #JadeiteTreePresenter;
 	add: #JadeiteTreeView;
+	add: #LibGciRpc64_Holder;
 	add: #PackageMethodListPresenter;
 	add: #Rowan;
 	add: #RowanClassCategoryUpdate;
@@ -628,6 +629,11 @@ Object subclass: #JadeiteSearch
 	instanceVariableNames: 'view session stop start'
 	classVariableNames: 'AllClassNames AllSelectors AutoCompleteEnabled'
 	poolDictionaries: 'ScintillaConstants'
+	classInstanceVariableNames: ''!
+Object subclass: #LibGciRpc64_Holder
+	instanceVariableNames: 'parentLibrary fileNameSearch displayName'
+	classVariableNames: ''
+	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Object subclass: #Rowan
 	instanceVariableNames: ''
