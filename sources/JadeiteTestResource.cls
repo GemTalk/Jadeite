@@ -52,6 +52,7 @@ disableInteractionsWhile: block
 			self issueCommand: answeringService]!
 
 ensureRowanSample1Loaded
+	self refreshProjectNamed: self rowanSample1Project name.  "make sure we have the correct server state in the browser" 
 	self rowanSample1Project ifNotNil: [:projectService | projectService isDirty ifFalse: [^self]].
 	self disableInteractionsWhile: 
 			[self unloadSampleProject.
@@ -137,6 +138,14 @@ openWindow: aBlock
 projectsBrowser: anObject
 	projectsBrowser := anObject!
 
+refreshProjectNamed: projectName
+	| projectService |
+	projectService := RowanProjectService new name: projectName.
+	projectService
+		command: #update;
+		commandArgs: nil.
+	JadePresenter issueCommands: (Array with: projectService) session: self session!
+
 rowanProjectsHome
 	^JadePresenter rowanProjectsHomeEnvVarString!
 
@@ -218,6 +227,7 @@ logoutThenLoginAs:!private!setup teardown!support! !
 openProjectsBrowser!private!setup teardown! !
 openWindow:!private! !
 projectsBrowser:!private!setup teardown! !
+refreshProjectNamed:!private!setup teardown! !
 rowanProjectsHome!constants!private! !
 rowanSample1Path!constants!private! !
 rowanSample1Project!constants!private! !

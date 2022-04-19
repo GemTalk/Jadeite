@@ -378,6 +378,13 @@ classesMenuStrings
 	menuStrings addLast: containedDictionaryLabel , '//gotoDictionary'.
 	^menuStrings!
 
+cleanupProjectInfoTab
+	self projectListPresenter selectionIfNone: 
+			[projectInfoTab
+				ifNotNil: 
+					[projectInfoList list: ListModel new.
+					addPackagePresenter view disable]]!
+
 clearComponentList
 	packageGroupPresenter model: (JadeiteTreeModel new
 				searchPolicy: SearchPolicy equality;
@@ -1201,10 +1208,6 @@ packageDictionaryCards
 packageGroupPresenter
 	^packageGroupPresenter!
 
-possiblyClearProjectInfoTab
-	self projectListPresenter
-		selectionIfNone: [projectInfoTab ifNotNil: [projectInfoList list: ListModel new]]!
-
 preferencesMenuStrings
 
 	false ifTrue: [		"adding explicit senders ensures that packaging will not drop methods and allows us to find references by browsing senders"
@@ -1239,6 +1242,9 @@ previousTopViewArrangement: anObject
 projectChanges
 	projectListPresenter selections isEmpty ifTrue: [^MessageBox notify: 'No project selected'].
 	^projectListPresenter selection changesUsing: self gciSession!
+
+projectInfoList
+	^projectInfoList!
 
 projectInfoMenu
 	^Menu fromStrings: self projectInfoMenuStrings!
@@ -1966,11 +1972,11 @@ updatePackageGroupPackages
 	self sundryCleanup!
 
 updateProject
-	self clearComponentList. 
+	self clearComponentList.
 	self projectListPresenter selectionIfNone: 
 			[packageListPresenter clear.
 			dictionaryPresenter clear.
-			self possiblyClearProjectInfoTab.
+			self cleanupProjectInfoTab.
 			self updateTabLabel.
 			^self].
 	classHierarchyPresenter model: JadeiteTreeModel new.
@@ -1991,7 +1997,8 @@ updateProjectInfo
 	self buildProjectTabIfNecessary.
 	service := projectListPresenter selectionIfNone: [^projectInfoTab list: ListModel new].
 	self updateTabLabel.
-	self updateProjectInfoTabFor: service!
+	self updateProjectInfoTabFor: service.
+	addPackagePresenter view enable!
 
 updateProjectInfoTabFor: service
 	| array |
@@ -2071,6 +2078,7 @@ checkout!menu handlers!public! !
 checkoutTag!menu handlers!public! !
 classCommentChanged!event handlers!public! !
 classesMenuStrings!menus!public! !
+cleanupProjectInfoTab!event handlers!public!updating! !
 clearComponentList!initialize/release!public! !
 clearMethodListPresenters!event handlers!private!updating! !
 comparisonPresenter!accessing!public! !
@@ -2163,13 +2171,13 @@ onViewOpened!event handlers!public! !
 openSourceStyler!menu handlers!public! !
 packageDictionaryCards!accessing!private! !
 packageGroupPresenter!accessing!private! !
-possiblyClearProjectInfoTab!event handlers!public!updating! !
 preferencesMenuStrings!menus!public! !
 previousTabViewArrangement!accessing!private! !
 previousTabViewArrangement:!accessing!private! !
 previousTopViewArrangement!accessing!private! !
 previousTopViewArrangement:!accessing!private! !
 projectChanges!project menu handlers!public! !
+projectInfoList!accessing!private! !
 projectInfoMenu!menus!public! !
 projectInfoMenuStrings!menus!public! !
 projectInfoTab!accessing!public! !

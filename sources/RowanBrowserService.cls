@@ -127,7 +127,7 @@ projectsUpdate: presenter browser: browser
 		whilePreservingSelections: projects
 		browser: browser.
 	browser addNoneProject.
-	browser possiblyClearProjectInfoTab!
+	browser cleanupProjectInfoTab!
 
 registerWindow: handle rootObject: oop session: session
 	self

@@ -48,6 +48,11 @@ checkout
 checkoutTag
 	self checkoutTag: projectListPresenter selection!
 
+cleanupProjectInfoTab
+	"no project tab to update"
+
+	!
+
 createComponents
 	super createComponents.
 	projectListPresenter := self add: ListPresenter new name: 'projectList'!
@@ -132,11 +137,6 @@ openChangesShell: changesString
 					editor selectionColor: Color red]].
 	editor selectionRange: editor defaultSelectionRange.
 	editor invalidate!
-
-possiblyClearProjectInfoTab
-	"no project tab to update" 
-
-	!
 
 primaryPresenter
 	^projectListPresenter!
@@ -256,6 +256,7 @@ basicUnloadProjects:!menu handlers!private! !
 browseProject!public! !
 checkout!menu handlers!public! !
 checkoutTag!menu handlers!public! !
+cleanupProjectInfoTab!public!updating! !
 createComponents!public! !
 createSchematicWiring!initialization!public! !
 gitCommit!menu handlers!public! !
@@ -265,7 +266,6 @@ loadProjects!menu handlers!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
 openChangesShell:!menu handlers!private! !
-possiblyClearProjectInfoTab!public!updating! !
 primaryPresenter!public! !
 projectChanges!menu handlers!public! !
 projectListPresenter!public! !
