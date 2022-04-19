@@ -16,27 +16,35 @@ displayName
 displayName: anObject
 	displayName := anObject!
 
+fileName
+	^fileNameSearch!
+
 fileNameSearch
 	^fileNameSearch!
 
 fileNameSearch: anObject
 	fileNameSearch := anObject!
 
+library
+	^parentLibrary!
+
+open: filePath
+	^parentLibrary open: filePath!
+
 parentLibrary
 	^parentLibrary!
 
 parentLibrary: anObject
-	parentLibrary := anObject!
-
-withDisplayName: aDisplayName
-	^parentLibrary! !
+	parentLibrary := anObject! !
 !LibGciRpc64_Holder categoriesFor: #displayName!accessing!private! !
 !LibGciRpc64_Holder categoriesFor: #displayName:!accessing!private! !
+!LibGciRpc64_Holder categoriesFor: #fileName!accessing!private! !
 !LibGciRpc64_Holder categoriesFor: #fileNameSearch!accessing!private! !
 !LibGciRpc64_Holder categoriesFor: #fileNameSearch:!accessing!private! !
+!LibGciRpc64_Holder categoriesFor: #library!accessing!public! !
+!LibGciRpc64_Holder categoriesFor: #open:!accessing!public! !
 !LibGciRpc64_Holder categoriesFor: #parentLibrary!accessing!private! !
 !LibGciRpc64_Holder categoriesFor: #parentLibrary:!accessing!private! !
-!LibGciRpc64_Holder categoriesFor: #withDisplayName:!accessing!public! !
 
 !LibGciRpc64_Holder class methodsFor!
 

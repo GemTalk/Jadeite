@@ -227,7 +227,7 @@ isVersion: a lessThanOrEqualTo: b
 login
 	| session |
 	self updateModel.
-	[session := self model login] on: Error
+	[session := self model login: versionListPresenter selection] on: Error
 		do: 
 			[:ex |
 			MessageBox errorMsg: ex description caption: self loginFailureCaption.

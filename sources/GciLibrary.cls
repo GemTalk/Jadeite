@@ -363,6 +363,9 @@ isRowanReady
 
 	^false!
 
+library
+	^self!
+
 onStartup2
 
 	default := nil.
@@ -397,19 +400,14 @@ sessionStarted
 	OopType64Array new.
 	OopType32 new.
 	OopType64 new.
-!
-
-withDisplayName: aString
-
-	^self allSubclasses detect: [:each | each displayName = aString].
 ! !
 !GciLibrary class categoriesFor: #addMissingMethods!public! !
 !GciLibrary class categoriesFor: #displayName!public! !
 !GciLibrary class categoriesFor: #fileName!public! !
 !GciLibrary class categoriesFor: #fileNameSearch!public! !
 !GciLibrary class categoriesFor: #isRowanReady!public!testing! !
+!GciLibrary class categoriesFor: #library!public! !
 !GciLibrary class categoriesFor: #onStartup2!public! !
 !GciLibrary class categoriesFor: #open:!public! !
 !GciLibrary class categoriesFor: #sessionStarted!public! !
-!GciLibrary class categoriesFor: #withDisplayName:!public! !
 

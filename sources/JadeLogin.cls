@@ -223,9 +223,9 @@ initials: aString
 	self trigger: #changed.
 !
 
-login
-	^GciSession 
-		libraryClass: (GciLibrary withDisplayName: gemVersion)
+login: libraryClass
+	^GciSession
+		libraryClass: libraryClass
 		stoneNRS: self stoneNRS
 		gemNRS: self gemNRS
 		userID: self gsUserID
@@ -364,7 +364,7 @@ useSocket: aBoolean
 !JadeLogin categoriesFor: #initializeFromXML:!public! !
 !JadeLogin categoriesFor: #initials!accessing!public! !
 !JadeLogin categoriesFor: #initials:!accessing!public! !
-!JadeLogin categoriesFor: #login!public! !
+!JadeLogin categoriesFor: #login:!public! !
 !JadeLogin categoriesFor: #loginType!accessing!public! !
 !JadeLogin categoriesFor: #loginType:!accessing!public! !
 !JadeLogin categoriesFor: #saveDefault!public! !
