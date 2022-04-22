@@ -218,13 +218,19 @@ loadRowanSample1InProjectList
 	self transcriptTab refresh!
 
 loginWithRetry: loginShell
-	| loginError |
+	| loginError maxTries count |
 	loginError := true.
+	maxTries := 25.
+	count := 0.
 	[loginError] whileTrue: 
 			[
 			[loginShell loginWithoutErrorHandling.
 			loginError := false] on: Error
-					do: [:ex | (Delay forMilliseconds: 100) wait]]!
+					do: 
+						[:ex |
+						count := count + 1.
+						self assert: count < maxTries.
+						(Delay forMilliseconds: 100) wait]]!
 
 logoutThenLoginAs: userName
 	"closing the transcript will logout the session. don't commit.
@@ -236,7 +242,8 @@ logoutThenLoginAs: userName
 	JadeiteLoginShell allInstances do: [:shell | shell view close].	"should save to the remote JadeDefaultConnection.gss file"
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteShell userIDPresenter value: userName.
-	self loginWithRetry: jadeiteShell!
+	self loginWithRetry: jadeiteShell.
+	GciSession current ifNil:[self halt]. !
 
 methodListPresenter
 	^self projectsPresenter methodListPresenter!

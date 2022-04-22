@@ -213,7 +213,7 @@ RowanDefinitionService subclass: #RowanPackageDefinitionService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanDefinitionService subclass: #RowanProjectDefinitionService
-	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions specService comment conditionalAttributes platformProperties packageGroups showLoadedPackageGroupsOnly allPackagesGroupService'
+	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions specService comment conditionalAttributes platformProperties packageGroups showLoadedPackageGroupsOnly allPackagesGroupService definition'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

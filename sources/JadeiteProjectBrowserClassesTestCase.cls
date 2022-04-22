@@ -15,6 +15,9 @@ test run wouldn''t be too long to run in the test browser. '!
 !JadeiteProjectBrowserClassesTestCase categoriesForClass!Unclassified! !
 !JadeiteProjectBrowserClassesTestCase methodsFor!
 
+expectedGrandchildrenNames
+	^#('RowanAnsweringService' 'RowanAutoCommitService' 'RowanBrowserService' 'RowanClassService' 'RowanComponentService' 'RowanDebuggerService' 'RowanDefinitionService' 'RowanDictionaryService' 'RowanFrameService' 'RowanInspectorService' 'RowanLoggingService' 'RowanMethodService' 'RowanPackageService' 'RowanProcessService' 'RowanProjectService' 'RowanQueryService' 'RowanTestService' 'RowanVariableService')!
+
 test_abortRemovesClassAndMethod
 	self testsIssue: #issue617 withTitle: 'Abort walkback if removing method from removed class'.
 	self selectRowanSample1Test.
@@ -1315,25 +1318,12 @@ test_noSelectionHierarchy
 	self deny: (childrensNames includes: 'RowanClassService').
 	grandchildren := self classHierarchyPresenter model
 				getChildrenOf: (children detect: [:classService | classService name = 'RowanService']).
-	self assert: grandchildren size equals: 17.	"this will probably change but it's a nice test to ensure all the expected services are present"
+	self assert: grandchildren size equals: 18.	"this will probably change but it's a nice test to ensure all the expected services are present"
 	grandchildrensNames := grandchildren collect: [:classService | classService name].
-	self assert: (grandchildrensNames at: 1) equals: 'RowanAnsweringService'.
-	self assert: (grandchildrensNames at: 2) equals: 'RowanAutoCommitService'.
-	self assert: (grandchildrensNames at: 3) equals: 'RowanBrowserService'.
-	self assert: (grandchildrensNames at: 4) equals: 'RowanClassService'.
-	self assert: (grandchildrensNames at: 5) equals: 'RowanComponentService'.
-	self assert: (grandchildrensNames at: 6) equals: 'RowanDebuggerService'.
-	self assert: (grandchildrensNames at: 7) equals: 'RowanDictionaryService'.
-	self assert: (grandchildrensNames at: 8) equals: 'RowanFrameService'.
-	self assert: (grandchildrensNames at: 9) equals: 'RowanInspectorService'.
-	self assert: (grandchildrensNames at: 10) equals: 'RowanLoggingService'.
-	self assert: (grandchildrensNames at: 11) equals: 'RowanMethodService'.
-	self assert: (grandchildrensNames at: 12) equals: 'RowanPackageService'.
-	self assert: (grandchildrensNames at: 13) equals: 'RowanProcessService'.
-	self assert: (grandchildrensNames at: 14) equals: 'RowanProjectService'.
-	self assert: (grandchildrensNames at: 15) equals: 'RowanQueryService'.
-	self assert: (grandchildrensNames at: 16) equals: 'RowanTestService'.
-	self assert: (grandchildrensNames at: 17) equals: 'RowanVariableService'!
+	1 to: self expectedGrandchildrenNames size
+		do: [:idx | self assert: (grandchildrensNames at: idx) equals: (self expectedGrandchildrenNames at: idx)].
+	1 to: grandchildrensNames size
+		do: [:idx | self assert: (grandchildrensNames at: idx) equals: (self expectedGrandchildrenNames at: idx)]!
 
 test_refreshFromServer
 	self selectRowanServicesPackage.
@@ -1840,6 +1830,7 @@ test_variablesUpdatedOnClassSaveInHierarchy
 	self assert: self categoryListPresenter list size equals: 1.
 	self assert: (self categoryListPresenter list includes: 'aaa')! !
 !JadeiteProjectBrowserClassesTestCase categoriesForMethods!
+expectedGrandchildrenNames!public!support! !
 test_abortRemovesClassAndMethod!public!test class list! !
 test_abortRemovesProjectAndPackage!public!test class list! !
 test_addAccessorsHierarchyTab!public!test class hierarchy!test variable tab!tests! !

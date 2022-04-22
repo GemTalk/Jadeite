@@ -100,18 +100,18 @@ project := (Rowan newProjectNamed: projectName)
 					, ''';
 	packageFormat: ''tonel'';
 	packageConvention: ''Rowan'';
-	addTopLevelComponentNamed: ''Core'';
+	addLoadComponentNamed: ''Core'';
 	yourself.
 true ifTrue: [
 	project addPackagesNamed: {projectName, ''-Core''} toComponentNamed: ''Core''.
 ].
 	yourself.										"RwDefinedProject - this guy can be manipulated (new packages, classes, etc.)"
 "the resolve message, creates the git repository on disk or attaches to an existing repository in disk"
-resolvedProject := project resolve.		"RwResolvedProject - this guy can be written to disk (write) and/or loaded (load)"
+resolvedProject := project resolveProject.		"RwResolvedProject - this guy can be written to disk (write) and/or loaded (load)"
 loadedProjects := resolvedProject
 	write;									
-	load.
-loadedProject := loadedProjects at: 1.	"this guy is the same object as (Rowan projectNamed: projectName)"'.
+	loadAsDefined.
+loadedProject := loadedProjects projectNamed: ''Izmir''.	"this guy is the same object as (Rowan projectNamed: projectName)"'.
 	self auditAll.
 	self projectsPresenter refreshFromServer!
 
@@ -1191,7 +1191,7 @@ test_closeConsoleInvalidSession
 			ensure: 
 				[projectsBrowser := nil.
 				GciSession current: nil.
-				self loginWithRetry: JadeiteLoginShell allInstances first.
+				self loginWithRetry: (JadeiteLoginShell allInstances detect:[:shell | shell isOpen]) "should only be one open".
 				self resources do: 
 						[:resource |
 						resource current
@@ -2048,17 +2048,15 @@ test_instVarWriters
 test_issue261
 	"create a loaded project and test the info display"
 
-	| view |
+	"this test will only work if 'Izmir' project has been checked out to $ROWEN_PROJECTS_HOME"
+
 	self testsIssue: #issue261 withTitle: 'Project tab should display reason for project font styling'.
 	self issue261createTestProject.
 	
 	[self selectServiceNamed: 'Izmir' in: self projectListPresenter.
-	view := self projectsPresenter projectInfoTab view.
-	self assert: (view columns first contentFromRow: (view list at: 3)) equals: 'Izmir'.
-	self assert: (view columns first contentFromRow: (view list at: 7))	"isDirty"]
-			ensure: 
-				[self projectsPresenter basicUnloadProjects: #('Izmir').
-				self issue261DeleteTestProjectPath]!
+	self assert: (self projectsPresenter projectInfoList list at: 3) first name equals: 'Izmir'.
+	self assert: (self projectsPresenter projectInfoList list at: 7) first isDirty	"isDirty"]
+			ensure: [self projectsPresenter basicUnloadProjects: #('Izmir')]!
 
 test_loadProjectRemovingClass
 	self selectRowanSample1Test.

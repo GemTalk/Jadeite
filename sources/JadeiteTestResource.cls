@@ -108,10 +108,10 @@ logoutThenLoginAs: userName
 	"closing the transcript will logout the session. don't commit"
 
 	userName ifNil: [^self].
-	GciSession current ifNil: [^self].
-	userName = GciSession current userID ifTrue: [^self].
+	GciSession current ifNotNil: [:current | userName = current userID ifTrue: [^self]].
 	self closeTranscript: self transcript.
-	JadeiteLoginShell allInstances do: [:shell | shell view close].	"should save to the remote JadeDefaultConnection.gss file"
+	JadeiteLoginShell allInstances
+		do: [:shell | shell view close	"should save to the remote JadeDefaultConnection.gss file"].
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteShell userIDPresenter value: userName.
 	self loginWithRetry: jadeiteShell!

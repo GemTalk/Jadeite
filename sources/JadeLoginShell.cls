@@ -250,7 +250,7 @@ login
 	self updateModel.
 	[session := self model login] on: Error
 		do: 
-			[:ex |
+			[:ex | 
 			MessageBox errorMsg: ex description caption: self loginFailureCaption.
 			SessionManager current pause.
 			GciSession current: nil.
@@ -463,7 +463,6 @@ onViewOpened!public! !
 openHomePage!public! !
 postLogin:!public! !
 queryCommand:!menu handlers support!private! !
-rowanReadyLibraries!gci!private! !
 saveDocument!public! !
 sendRequiredMessages!public! !
 setDocumentData:!accessing!public! !

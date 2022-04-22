@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanDefinitionService subclass: #RowanProjectDefinitionService
-	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions specService comment conditionalAttributes platformProperties packageGroups showLoadedPackageGroupsOnly allPackagesGroupService'
+	instanceVariableNames: 'definitionOop componentDefinitions packageDefinitions specService comment conditionalAttributes platformProperties packageGroups showLoadedPackageGroupsOnly allPackagesGroupService definition'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -74,7 +74,7 @@ conditionalAttributes: anObject
 excludedInstVars
 	"I'm not sure this is the right thing but since packageGroups does not need to be used on the server, we'll try it"
 
-	^super excludedInstVars , #('packageGroups' 'allPackagesGroupService')!
+	^super excludedInstVars , #('packageGroups' 'allPackagesGroupService' 'definition')!
 
 export
 	command := #export.
