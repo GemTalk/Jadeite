@@ -66,6 +66,9 @@ test_addDictionary
 				ifNone: [])!
 
 test_addSubclassNoSuperclassPackage
+	"verify this - adding subclasses of base image classes as DataCurator no
+	longer works in 3.7.0. Therefore, this test should only be run as SystemUser"
+
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectNoneProject.
 	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
@@ -78,12 +81,14 @@ test_addSubclassNoSuperclassPackage
 			ensure: [self projectsPresenter classDefinitionPresenter view isModified: false]!
 
 test_addSubclassNoSuperclassPackageGoesToNewClass
+	"verify this - adding subclasses of base image classes as DataCurator no
+	longer works in 3.7.0. Therefore, this test should only be run as SystemUser"
+
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectNoneProject.
 	self selectServiceNamed: 'Globals' in: self dictionaryPresenter.
 	self projectsPresenter selectClassNamed: 'Dictionary'.
-	self assert: self projectsPresenter selectedClass packageName
-		equals: 'Filein1C'.
+	self assert: self projectsPresenter selectedClass packageName equals: 'Filein1C'.
 	self projectsPresenter addSubclass.
 	self assert: self projectsPresenter classDefinitionPresenter view isModified.
 	self assertClassDefinitionPaneMatches: 'Dictionary rwSubclass: ''NewSubclass'''.
@@ -102,6 +107,9 @@ test_addSubclassNoSuperclassPackageGoesToNewClass
 	self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass!
 
 test_addSubclassWithPackage
+	"verify this - adding subclasses of base image classes as DataCurator no
+	longer works in 3.7.0. Therefore, this test should only be run as SystemUser"
+
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectRowanSample1Test.
 	self assert: self projectsPresenter selectedClass packageName equals: 'RowanSample1-Tests'.
@@ -328,7 +336,7 @@ test_globalsDoubleClick
 	self projectsPresenter globalsTab onActionPerformed. "double click"
 	inspector := JadeiteInspector allInstances first.
 	self assert: inspector documentPresenter value equals: 'false'.
-	inspector instVarListPresenter selectionByIndex: #(2).
+	inspector instVarListPresenter selectionByIndex: 2.
 	self assert: inspector documentPresenter value equals: '12'.
 	self assert: inspector instVarListPresenter selections first key equals: '-.asOop']
 			ensure: 
@@ -350,7 +358,7 @@ test_globalsInspectMenuItem
 	self projectsPresenter globalsTab selection: selection.
 	inspector := self projectsPresenter inspectGlobal.
 	self assert: inspector documentPresenter value equals: 'true'.
-	inspector instVarListPresenter selectionByIndex: #(2).
+	inspector instVarListPresenter selectionByIndex: 2.
 	self assert: inspector documentPresenter value equals: '268'.
 	self assert: inspector instVarListPresenter selections first key equals: '-.asOop']
 			ensure: 
@@ -624,38 +632,38 @@ test_projectInfoTabMenuCopy
 	| copyItem |
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectServiceNamed: 'STON' in: self projectListPresenter.
-	copyItem := self projectsPresenter projectInfoTab view contextMenu items
+	copyItem := self projectsPresenter projectInfoList view contextMenu items
 				detect: [:item | item text = 'Copy'].
 	self assert: copyItem command equals: #copyInfo.
-	self projectsPresenter projectInfoTab selectionByIndex: 1.
+	self projectsPresenter projectInfoList selectionByIndex: 1.
 	self projectsPresenter copyProjectInfo.
-	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'rowanProjectsHome'.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'rowanProjectsHome'.
 	"we don't know what the path is so just ensure it's not equal to the answer to the next assert:"
 	self deny: Clipboard current getText equals: 'false'.
-	self projectsPresenter projectInfoTab selectionByIndex: 7.
-	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'isDirty'.
+	self projectsPresenter projectInfoList selectionByIndex: 7.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'isDirty'.
 	self projectsPresenter copyProjectInfo.	"Tonel isn't usually changed so probably safe to assume answer is false"
 	self assert: Clipboard current getText equals: 'false'!
 
 test_projectInfoTabMenuItemNames
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectServiceNamed: 'STON' in: self projectListPresenter.
-	self projectsPresenter projectInfoTab selectionByIndex: 1.
-	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'rowanProjectsHome'.
-	self projectsPresenter projectInfoTab selectionByIndex: 2.
-	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: nil.
-	self projectsPresenter projectInfoTab selectionByIndex: 3.
-	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'name'.
-	self projectsPresenter projectInfoTab selectionByIndex: 4.
-	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'sha'.
-	self projectsPresenter projectInfoTab selectionByIndex: 5.
-	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'branch'.
-	self projectsPresenter projectInfoTab selectionByIndex: 6.
-	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'isSkew'.
-	self projectsPresenter projectInfoTab selectionByIndex: 7.
-	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'isDirty'.
-	self projectsPresenter projectInfoTab selectionByIndex: 8.
-	self assert: (self projectsPresenter projectInfoTab selection at: 2) equals: 'projectUrl'!
+	self projectsPresenter projectInfoList selectionByIndex: 1.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'rowanProjectsHome'.
+	self projectsPresenter projectInfoList selectionByIndex: 2.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: nil.
+	self projectsPresenter projectInfoList selectionByIndex: 3.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'name'.
+	self projectsPresenter projectInfoList selectionByIndex: 4.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'sha'.
+	self projectsPresenter projectInfoList selectionByIndex: 5.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'branch'.
+	self projectsPresenter projectInfoList selectionByIndex: 6.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'isSkew'.
+	self projectsPresenter projectInfoList selectionByIndex: 7.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'isDirty'.
+	self projectsPresenter projectInfoList selectionByIndex: 8.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'projectUrl'!
 
 test_projectListMenuItemsEnabled
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
@@ -768,7 +776,7 @@ test_textTabsChange
 	tabNames := (self projectsPresenter textAreaTabs cards
 				collect: [:card | card arrangement displayString]) asArray.
 	self assert: tabNames
-		equals: #('Class Definition' 'Class Documentation' 'Method Source' 'SUnit' 'Comparison' 'Project' 'Load Spec').
+		equals: #('Class Definition' 'Class Documentation' 'Method Source' 'SUnit' 'Comparison' 'Project').
 	self selectNoneProject.
 	tabNames := (self projectsPresenter textAreaTabs cards
 				collect: [:card | card arrangement displayString]) asArray.

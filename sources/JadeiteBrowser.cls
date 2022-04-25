@@ -54,7 +54,7 @@ openOn: session class: classService
 	browser currentCard selectProjectNamed: classService projectName.
 	classService projectName = RowanProjectService noneProject name
 		ifTrue: [browser currentCard selectDictionaryNamed: classService dictionaryName]
-		ifFalse: [browser currentCard selectPackageOrDictionaryNamed: classService packageName for: nil].
+		ifFalse: [browser currentCard selectPackageNamed: classService packageName].
 	browser currentCard selectClassNamed: classService name.
 	browser currentCard classListPresenter setFocus.
 	^browser!
@@ -72,7 +72,7 @@ openOn: session package: packageService
 	browser := self onSession: session.
 	BrowserUpdate current updateService: packageService session: session.
 	browser currentCard selectProjectNamed: packageService projectName.
-	browser currentCard selectPackageOrDictionaryNamed: packageService name for: nil.
+	browser currentCard selectPackageNamed: packageService name for: nil.
 	browser currentCard packageListPresenter setFocus.
 	^browser!
 

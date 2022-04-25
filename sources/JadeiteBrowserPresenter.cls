@@ -306,7 +306,7 @@ buildProjectTabIfNecessary
 		ifNil: 
 			[| cardLabel |
 			self buildProjectTab.
-			projectInfoTab view contextMenu: self projectInfoMenu.
+			projectInfoList view contextMenu: self projectInfoMenu.
 			cardLabel := CardLabel text: 'Project'.
 			cardLabel iconBlock: nil.
 			projectInfoTab view
@@ -408,11 +408,11 @@ copyInfo
 	!
 
 copyProjectInfo
-	projectInfoTab selectionIfNone: 
+	projectInfoList selectionIfNone: 
 			[MessageBox notify: 'No selection to copy'.
 			^self].
-	projectInfoTab selection last ifNil: [^self].
-	(projectInfoTab selection first perform: projectInfoTab selection last asSymbol) displayString
+	projectInfoList selection last ifNil: [^self].
+	(projectInfoList selection first perform: projectInfoList selection last asSymbol) displayString
 		copyToClipboard!
 
 createComponents
@@ -1653,22 +1653,22 @@ selectNoneProject
 	projectListPresenter selection: (projectListPresenter list
 				detect: [:projectService | projectService name = RowanProjectService noneProject name])!
 
+selectPackageNamed: packageName
+	| answeringService service |
+	answeringService := RowanAnsweringService new.
+	answeringService
+		command: #packageNamed:;
+		commandArgs: (Array with: packageName).
+	self issueCommand: answeringService.
+	service := answeringService answer.
+	service selectIn: self!
+
 selectPackageOrDictionaryFor: classService
 	| answeringService service |
 	answeringService := RowanAnsweringService new.
 	answeringService
 		command: #packageOrDictionaryFor:;
 		commandArgs: (Array with: classService).
-	self issueCommand: answeringService.
-	service := answeringService answer.
-	service selectIn: self!
-
-selectPackageOrDictionaryNamed: thingName for: classService
-	| answeringService service |
-	answeringService := RowanAnsweringService new.
-	answeringService
-		command: #packageOrDictionaryNamed:;
-		commandArgs: (Array with: thingName).
 	self issueCommand: answeringService.
 	service := answeringService answer.
 	service selectIn: self!
@@ -2218,8 +2218,8 @@ selectedPackageNames!public!selection! !
 selectedPackageServices!public!selection! !
 selectedProjectName!public!selection! !
 selectNoneProject!public!selection! !
+selectPackageNamed:!public!selection! !
 selectPackageOrDictionaryFor:!public!selection! !
-selectPackageOrDictionaryNamed:for:!public!selection! !
 selectProjectNamed:!public!selection! !
 setCompileErrorColor!compile support!public! !
 setCompileWarningColor!compile support!public! !

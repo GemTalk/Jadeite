@@ -197,7 +197,7 @@ test_abortWithSelections
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
 	self unloadSampleProject.
 	self commitTransaction.	"ensure that the sample package wasn't committed"
-	sunitBrowser primaryPresenter selectPackageOrDictionaryNamed: 'Rowan-Services-Tests' for: nil.
+	sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'.
 	sunitBrowser primaryPresenter selectClassNamed: 'RowanTestClassServiceTest'.
 	sunitBrowser primaryPresenter selectMethodNamed: #test_addCategory.
 	abortCommand := ((sunitBrowser view viewNamed: 'toolbar') itemAtIndex: 1) command.
@@ -399,7 +399,7 @@ test_commitNoSelections
 test_commitWithSelections
 	| commitCommand |
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
-	sunitBrowser primaryPresenter selectPackageOrDictionaryNamed: 'Rowan-Services-Tests' for: nil.
+	sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'.
 	sunitBrowser primaryPresenter selectClassNamed: 'RowanTestClassServiceTest'.
 	sunitBrowser primaryPresenter selectMethodNamed: #test_addCategory.
 	commitCommand := ((sunitBrowser view viewNamed: 'toolbar') itemAtIndex: 2) command.
@@ -446,7 +446,7 @@ test_dontAddClassWhenPackageNotSelected
 	self assert: sunitBrowser primaryPresenter classListPresenter selections isEmpty.
 	self projectsPresenter removeMethodSelector: #test_method.
 	self assert: sunitBrowser primaryPresenter classListPresenter selections isEmpty.
-	sunitBrowser primaryPresenter selectPackageOrDictionaryNamed: 'Rowan-Services-Tests' for: nil.
+	sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'.
 	classesSize := sunitBrowser primaryPresenter classListPresenter list size.
 	self assert: classesSize > 0.
 	self

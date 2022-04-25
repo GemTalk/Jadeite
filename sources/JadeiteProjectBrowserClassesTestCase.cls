@@ -181,7 +181,7 @@ test_classColoring
 	self selectRowanServicesTestsPackage.
 	sunitBrowser := self openWindow: [transcript jadeBrowseTests].
 	
-	[sunitBrowser primaryPresenter selectPackageOrDictionaryNamed: 'Rowan-Services-Tests' for: nil.
+	[sunitBrowser primaryPresenter selectPackageOrDictionaryNamed: 'Rowan-Services-Tests' for: nil. 
 	sunitBrowser primaryPresenter selectClassNamed: 'RowanClassServiceTest'.
 	classService := self classListPresenter list
 				detect: [:service | service name = 'RowanClassServiceTest'].

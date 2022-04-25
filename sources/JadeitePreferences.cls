@@ -78,7 +78,7 @@ openBrowserOnClass: className
 openBrowserOnPackage: packageName
 	| projectBrowser |
 	projectBrowser := self openProjectBrowser.
-	projectBrowser currentCard selectPackageOrDictionaryNamed: packageName for: nil.
+	projectBrowser currentCard selectPackageNamed: packageName.
 	lastWindowPosition := projectBrowser view position.
 	^projectBrowser!
 
