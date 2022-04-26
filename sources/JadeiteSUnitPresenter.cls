@@ -58,7 +58,7 @@ createSchematicWiring
 		to: self!
 
 debug
-	self debugTests: methodListPresenter selection!
+	self debugTests: methodListPresenter selections!
 
 debugTests: methodServices
 	| className |
@@ -213,11 +213,15 @@ selectMethodsNamed: selectors
 	methodServices := methodListPresenter list select: [:service | selectors includes: service selector].
 	methodListPresenter selections: (Array with: methodServices)!
 
-selectPackageNamed: packageName classNamed: className
-	| packageService classService |
+selectPackageNamed: packageName
+	| packageService |
 	packageService := packageListPresenter list detect: [:service | service name = packageName]
 				ifNone: [^self].
-	packageListPresenter selection: packageService.
+	packageListPresenter selection: packageService!
+
+selectPackageNamed: packageName classNamed: className
+	| classService |
+	self selectPackageNamed: packageName.
 	classService := classListPresenter list detect: [:service | service name asString = className]
 				ifNone: [^self].
 	classListPresenter selection: classService!
@@ -335,6 +339,7 @@ selectedPackageServiceNames!public!selection! !
 selectedPackageServices!public!selection! !
 selectMethodNamed:!public!selection! !
 selectMethodsNamed:!public!selection! !
+selectPackageNamed:!public! !
 selectPackageNamed:classNamed:!public! !
 selectPackageOrDictionaryNamed:for:!public!selection! !
 status!accessing!private! !

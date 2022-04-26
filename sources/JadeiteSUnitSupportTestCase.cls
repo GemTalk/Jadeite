@@ -67,13 +67,12 @@ selectSUnitBrowserMethodNamed: selector
 	^self selectSUnitBrowserMethodsNamed: (Array with: selector)!
 
 selectSUnitBrowserMethodsNamed: selectors
-	| methodServices |
+	| methodService |
 	self methodListPresenter resetSelection.
-	methodServices := selectors
-				collect: [:selector | self methodListPresenter list detect: [:svc | svc selector = selector]].
-	self methodListPresenter selection: methodServices.
+	methodService := self methodListPresenter list detect: [:svc | selectors includes: svc selector].
+	self methodListPresenter selection: methodService.
 	self methodListPresenter view invalidate.
-	^methodServices!
+	^methodService!
 
 setUp
 	super setUp.
@@ -173,8 +172,17 @@ sunitPresenter
 	^sunitBrowser primaryPresenter!
 
 tearDown
+	| count maxTries |
 	super tearDown.
-	sunitBrowser ifNotNil: [self assert: sunitBrowser view close].
+	count := 0.
+	maxTries := 10.
+	sunitBrowser
+		ifNotNil: 
+			[sunitBrowser view close.
+			[sunitBrowser view isOpen not and: [count > maxTries]] whileFalse: 
+					[(Delay forMilliseconds: 10) wait.
+					count := count + 1]].
+	self assert: count > maxTries description: 'sunitBrowser did not close quickly enough'.
 	projectsBrowser ifNotNil: [self destroy: projectsBrowser]!
 
 test_abortNoSelections
@@ -197,8 +205,7 @@ test_abortWithSelections
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
 	self unloadSampleProject.
 	self commitTransaction.	"ensure that the sample package wasn't committed"
-	sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'.
-	sunitBrowser primaryPresenter selectClassNamed: 'RowanTestClassServiceTest'.
+	sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests' classNamed: 'RowanTestClassServiceTest'.
 	sunitBrowser primaryPresenter selectMethodNamed: #test_addCategory.
 	abortCommand := ((sunitBrowser view viewNamed: 'toolbar') itemAtIndex: 1) command.
 	sunitBrowser primaryPresenter perform: abortCommand.

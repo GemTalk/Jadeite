@@ -88,16 +88,18 @@ rowanReadyLibraries
 
 updateCaption
 	self caption: 'Jadeite Login Version: ', self class jadeiteVersionString! !
-
 !JadeiteLoginShell categoriesForMethods!
 additionalAccelerators!accessing!public! !
 basicCaption!accessing!public! !
+buildSmalltalkClassesForNewSharedLibraries!public! !
+createNewClassIfNotInSystem:!public! !
 fillVersionList!public! !
 loginFailureCaption!private! !
 openGitHubJadeiteProject!public! !
 openGitHubRowanProject!public! !
 postLogin:!public! !
 raiseConsole!menu handlers!public! !
+rowanReadyLibraries!public! !
 updateCaption!public! !
 !
 

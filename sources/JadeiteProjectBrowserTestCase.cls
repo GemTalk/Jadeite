@@ -2259,13 +2259,13 @@ test_projectInfoTab
 	| view |
 	self testsIssue: #issue261 withTitle: 'Project tab should display reason for project font styling'.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self assert: (self projectsPresenter projectInfoTab view getItemText: 1) equals: 'rowanProjectsHome'.
-	self assert: (self projectsPresenter projectInfoTab view getItemText: 3) equals: 'name'.
-	self assert: (self projectsPresenter projectInfoTab view getItemText: 4) equals: 'sha'.
-	self assert: (self projectsPresenter projectInfoTab view getItemText: 5) equals: 'branch'.
-	self assert: (self projectsPresenter projectInfoTab view getItemText: 6) equals: 'isSkew'.
-	self assert: (self projectsPresenter projectInfoTab view getItemText: 7) equals: 'isDirty'.
-	view := self projectsPresenter projectInfoTab view.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 1) equals: 'rowanProjectsHome'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 3) equals: 'name'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 4) equals: 'sha'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 5) equals: 'branch'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 6) equals: 'isSkew'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 7) equals: 'isDirty'.
+	view := self projectsPresenter projectInfoList view.
 	self assert: (view columns first contentFromRow: (view list at: 3)) equals: 'Rowan'. "don't know the state of the rowan project so just test the name"!
 
 test_projectMenuGitCommitMenuItem
@@ -2715,14 +2715,13 @@ test_tabNames_projectsBrowser
 	self selectRowanSample1Class.
 	self saveHooMethod.
 	textTabs := self projectsPresenter textTabs.
-	self assert: textTabs size equals: 7.
+	self assert: textTabs size equals: 6.
 	self assert: (textTabs at: 1) text equals: 'Class Definition'.
 	self assert: (textTabs at: 2) text equals: 'Class Documentation'.
 	self assert: (textTabs at: 3) text equals: 'Method Source'.
 	self assert: (textTabs at: 4) text equals: 'SUnit'.
 	self assert: (textTabs at: 5) text equals: 'Comparison'.	"for some as yet unknown reason, this is created differently"
-	self assert: (textTabs at: 6) text equals: 'Project'.
-	self assert: (textTabs at: 7) text equals: 'Load Spec'.!
+	self assert: (textTabs at: 6) text equals: 'Project'.!
 
 test_tabNames_projectsBrowserNotLost
 	"why we have to put the text in the arrangement field is beyond me"

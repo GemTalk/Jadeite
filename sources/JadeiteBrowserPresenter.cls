@@ -1995,7 +1995,7 @@ updateProjectInfo
 	self removeAppropriateTab.
 	self isNoneProjectSelected ifTrue: [^self buildGlobalsTab].
 	self buildProjectTabIfNecessary.
-	service := projectListPresenter selectionIfNone: [^projectInfoTab list: ListModel new].
+	service := projectListPresenter selectionIfNone: [^projectInfoList list: ListModel new].
 	self updateTabLabel.
 	self updateProjectInfoTabFor: service.
 	addPackagePresenter view enable!
