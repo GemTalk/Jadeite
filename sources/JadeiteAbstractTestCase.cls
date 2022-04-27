@@ -71,6 +71,18 @@ clearBreakAt: anInteger
 cloneRowanSample1
 	JadeiteTestResource current cloneRowanSample1!
 
+closeBrowser: theBrowser
+	| count maxTries |
+	count := 0.
+	maxTries := 10.
+	theBrowser
+		ifNotNil: 
+			[theBrowser view close.
+			[theBrowser view isOpen not and: [count > maxTries]] whileFalse: 
+					[(Delay forMilliseconds: 10) wait.
+					count := count + 1]].
+	self assert: count > maxTries description: theBrowser printString , ' did not close quickly enough'!
+
 closeExistingInspectors
 	"not so elegant way of making sure the test gets the right inspector. Close others first"
 
@@ -678,6 +690,7 @@ cleanupExistingWindows!public!support! !
 cleanupTextPaneForClose:!public!support! !
 clearBreakAt:!private!support!tests! !
 cloneRowanSample1!private!project support! !
+closeBrowser:!public!support! !
 closeExistingInspectors!private!support! !
 closeTranscriptAndLogout!private!setup teardown!support! !
 commitTransaction!private!setup teardown! !

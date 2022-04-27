@@ -78,7 +78,7 @@ basicRemoveDynamicInstVars
 	nonDynamicsWereSelected := instVarListPresenter selections size - dynamicInstVarNames size > 0.
 	model removeDynamicInstVarsNamed: dynamicInstVarNames session: gciSession.
 	instVarListPresenter
-		selectionByIndex: (instVarListPresenter selectionsByIndex difference: selectionIndicesOfDynamics).
+		selectionsByIndex: (instVarListPresenter selectionsByIndex difference: selectionIndicesOfDynamics).
 	nonDynamicsWereSelected ifFalse: [self displayObjectSelecting: firstSelectionIndex - 1].
 	^nonDynamicsWereSelected!
 
@@ -458,7 +458,7 @@ reportCompileError: ex
 
 saveDictionaryElement
 	| keyOop |
-	keyOop := instVarListPresenter selection first value first.
+	keyOop := instVarListPresenter selection value first.
 	model
 		command: #saveKey:value:;
 		commandArgs: (Array with: keyOop with: documentPresenter value).

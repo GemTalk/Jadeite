@@ -275,7 +275,7 @@ test_adHocExecution
 	self assert: inspector documentPresenter value equals: 'self size 2']
 			ensure: 
 				[workspace isModified: false.
-				workspace view close]!
+				self closeBrowser: workspace]!
 
 test_adHocInspect
 	| workspace methodListBrowser |
@@ -292,8 +292,8 @@ test_adHocInspect
 	self assert: inspector instVarListPresenter selection key equals: 'self']
 			ensure: 
 				[workspace isModified: false.
-				workspace view close.
-				inspector view close].
+				self closeBrowser: workspace.
+				self closeBrowser: inspector].
 	self openProjectBrowser.
 	
 	[self selectRowanSample1Test.
@@ -306,7 +306,7 @@ test_adHocInspect
 	self projectsPresenter methodSourcePresenter view setFocus.
 	inspector := self projectsPresenter jadeInspect.
 	[self assert: inspector instVarListPresenter selection key equals: 'self']
-		ensure: [inspector view close].
+		ensure: [self closeBrowser: inspector].
 	methodListBrowser := self projectsPresenter browseImplementors.
 	methodListBrowser primaryPresenter methodSourcePresenter documentPresenter view
 		selectionRange: (12 to: 22).
@@ -314,9 +314,9 @@ test_adHocInspect
 	inspector := self projectsPresenter jadeInspect.
 	self assert: inspector instVarListPresenter selection key equals: 'self']
 			ensure: 
-				[projectsBrowser view close.
-				inspector view close.
-				methodListBrowser view close]!
+				[self closeBrowser: projectsBrowser.
+				self closeBrowser: inspector.
+				self closeBrowser: methodListBrowser]!
 
 test_adHocInspectCompileError
 	| workspace |
@@ -333,7 +333,7 @@ test_adHocInspectCompileError
 	self assert: inspector documentPresenter view text equals: '#(1 2expected a right parenthesis']
 			ensure: 
 				[workspace isModified: false.
-				workspace view close]!
+				self closeBrowser: workspace]!
 
 test_adHocInspectComplexObject
 	| workspace |
@@ -348,7 +348,7 @@ test_adHocInspectComplexObject
 	self assert: inspector instVarListPresenter selection key equals: 'self']
 			ensure: 
 				[workspace isModified: false.
-				workspace view close]!
+				self closeBrowser: workspace]!
 
 test_adHocInspectFromWithinInspector
 	| remoteObject secondInspector |
@@ -365,7 +365,7 @@ test_adHocInspectFromWithinInspector
 	
 	[self assert: secondInspector instVarListPresenter list size equals: 2.
 	self assert: secondInspector documentPresenter value equals: '3']
-			ensure: [secondInspector view close]!
+			ensure: [self closeBrowser: secondInspector]!
 
 test_autoCommitInAdHocInspect
 	| workspace |
@@ -381,9 +381,9 @@ test_autoCommitInAdHocInspect
 	self assert: inspector documentPresenter model value equals: '123'.
 	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]')]
 			ensure: 
-				[inspector topShell primaryPresenter view close.
+				[self closeBrowser: inspector topShell primaryPresenter.
 				workspace isModified: false.
-				workspace view close.
+				self closeBrowser: workspace.
 				self setAutoCommit: false	"should have committed already"].
 	
 	[self abortTransaction.
@@ -406,9 +406,9 @@ test_autoCommitOffInAdHocInspect
 	self assert: inspector documentPresenter model value equals: '123'.
 	self assert: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]')]
 			ensure: 
-				[inspector topShell primaryPresenter view close.
+				[self closeBrowser: inspector topShell primaryPresenter.
 				workspace isModified: false.
-				workspace view close].
+				self closeBrowser: workspace].
 	
 	[self abortTransaction.
 	self assertIsNil: (session executeString: 'UserGlobals at: #TestCommit ifAbsent:[]')]
@@ -484,21 +484,22 @@ test_closeWithUnsavedChanges
 	TestMessageBox enableJadeiteTestMessageBox.
 	
 	[TestMessageBox plannedResult: #yes.
-	inspector view close.
+	self closeBrowser: inspector.
 	self assert: inspector view isOpen.
 	TestMessageBox plannedResult: #no.
-	inspector view close.
+	self closeBrowser: inspector.
 	self deny: inspector view isOpen.
 	remoteObject := session
 				executeString: 'Bag new add: ''abc''; yourself'
 				fromContext: nil
 				environment: 0.
 	inspector := JadeiteInspector showOn: remoteObject session: session.
-	inspector view close.
+	TestMessageBox plannedResult: #no.
+	self closeBrowser: inspector.
 	self assert: inspector view isOpen]
 			ensure: 
 				[inspector codePane view isModified: false.
-				inspector view close. "in case test fails before inspector is closed" 
+				self closeBrowser: inspector.	"in case test fails before inspector is closed"
 				TestMessageBox disableJadeiteTestMessageBox]!
 
 test_commitTransactionInBasicInspector
@@ -734,7 +735,7 @@ test_dive
 	self assert: inspector documentPresenter value equals: '#''Object''']
 			ensure: 
 				[workspace isModified: false.
-				workspace view close]!
+				self closeBrowser: workspace]!
 
 test_diveIntoDoubleByteString
 	| service |
@@ -771,7 +772,7 @@ test_dynamicInstVars
 	self assert: inspector documentPresenter model value equals: '''bar''']
 			ensure: 
 				[workspace isModified: false.
-				workspace view close]!
+				self closeBrowser: workspace]!
 
 test_dynamicInstVarsInDictionary
 	| workspace |
@@ -795,7 +796,7 @@ test_dynamicInstVarsInDictionary
 	self assert: inspector documentPresenter model value equals: '''value''']
 			ensure: 
 				[workspace isModified: false.
-				workspace view close]!
+				self closeBrowser: workspace]!
 
 test_fileSaveEnabled
 	| remoteObject toolbarButton query |
@@ -999,30 +1000,30 @@ test_inspectInstVarInNewWindow
 	self assert: inspector documentPresenter value equals: '123'.
 	secondInspector := inspector inspectInNewWindow.
 	
-	[self assert: secondInspector instVarListPresenter selectionByIndex equals: #(1).
+	[self assert: secondInspector instVarListPresenter selectionByIndex equals: 1.
 	self assert: secondInspector documentPresenter value equals: '123']
-			ensure: [secondInspector view close].
+			ensure: [self closeBrowser: secondInspector].
 	self selectInstVarAtIndex: #(3).
 	self assert: inspector documentPresenter value equals: '''abc'''.
 	secondInspector := inspector inspectInNewWindow.
 	
-	[self assert: secondInspector instVarListPresenter selectionByIndex equals: #(1).
+	[self assert: secondInspector instVarListPresenter selectionByIndex equals: 1.
 	self assert: secondInspector documentPresenter value equals: '''abc''']
-			ensure: [secondInspector view close].
-	self selectInstVarAtIndex: #(2).
+			ensure: [self closeBrowser: secondInspector].
+	self selectInstVarAtIndex: 2.
 	self assert: inspector instVarListPresenter selections first key equals: '-.asOop'.
 	secondInspector := inspector inspectInNewWindow.
 	
-	[self assert: secondInspector instVarListPresenter selectionByIndex equals: #(1).
+	[self assert: secondInspector instVarListPresenter selectionByIndex equals: 1.
 	self assert: secondInspector documentPresenter value equals: 'anArray( 123)']
-			ensure: [secondInspector view close].
-	self selectInstVarAtIndex: #(1).
+			ensure: [self closeBrowser: secondInspector].
+	self selectInstVarAtIndex: 1.
 	self assert: inspector instVarListPresenter selections first key equals: 'self'.
 	secondInspector := inspector inspectInNewWindow.
 	
-	[self assert: secondInspector instVarListPresenter selectionByIndex equals: #(1).
+	[self assert: secondInspector instVarListPresenter selectionByIndex equals: 1.
 	self assert: secondInspector documentPresenter value equals: 'anArray( 123)']
-			ensure: [secondInspector view close]!
+			ensure: [self closeBrowser: secondInspector]!
 
 test_inspectInstVarKeyInNewWindow
 	| remoteObject secondInspector |
@@ -1036,9 +1037,9 @@ test_inspectInstVarKeyInNewWindow
 	self selectInstVarAtIndex: #(8).
 	secondInspector := inspector inspectKeyInNewWindow.
 	
-	[self assert: secondInspector instVarListPresenter selectionByIndex equals: #(1).
+	[self assert: secondInspector instVarListPresenter selectionByIndex equals: 1.
 	self assert: secondInspector documentPresenter value equals: '#''foo''']
-			ensure: [secondInspector view close]!
+			ensure: [self closeBrowser: secondInspector]!
 
 test_inspectKeyMenuItemEnablementArray
 	| remoteObject inspectKeyMenuItem query |
@@ -1164,7 +1165,7 @@ test_inspectRcQueue
 				environment: 0.
 	inspector := JadeiteInspector showOn: remoteObject session: session.
 	self assert: inspector documentPresenter value equals: 'aRcQueue( 1)'.
-	self assert: inspector instVarListPresenter list size equals: 23	"self + asOop + 1 inst var + default new size 20"!
+	self assert: inspector instVarListPresenter list size equals: 31	"self + asOop + 1 inst var + default new size 28"!
 
 test_inspectSet
 	| remoteObject |
@@ -1222,7 +1223,7 @@ test_interactionInspect
 					self denyIsNil: (anInspector instVarListPresenter list
 								detect: [:item | item key equals: '#''UserGlobals''']
 								ifNone: [])]
-							ensure: [anInspector view close]]]!
+							ensure: [self closeBrowser: anInspector]]]!
 
 test_menuBarItemNames
 	| remoteObject |
@@ -1236,7 +1237,7 @@ test_menuBarItemNames
 	[self assert: inspector view menuBar items size equals: 2.
 	self assert: (inspector view menuBar items at: 1) text equals: '&Edit'.
 	self assert: (inspector view menuBar items at: 2) text equals: '&Jadeite']
-			ensure: [inspector view close].
+			ensure: [self closeBrowser: inspector].
 	remoteObject := session
 				executeString: 'Array new'
 				fromContext: nil
@@ -1298,9 +1299,9 @@ test_modifyDictionaryValue
 	inspector documentPresenter value: '#''blah'''.
 	inspector saveDocument.
 	self assert: inspector documentPresenter value equals: '#''blah'''.
-	self assert: inspector instVarListPresenter selectionByIndex equals: #(8).
-	self selectInstVarAtIndex: #(7).
-	self selectInstVarAtIndex: #(8).
+	self assert: inspector instVarListPresenter selectionByIndex equals: 8.
+	self selectInstVarAtIndex: 7.
+	self selectInstVarAtIndex: 8.
 	self assert: inspector documentPresenter value equals: '#''blah'''!
 
 test_modifyDynamicInstVar
@@ -1377,7 +1378,7 @@ test_navigationInspectorDisplayedSizeLimit
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	instVarPresenter := inspector instVarListPresenter.
-	instVarPresenter selection: (Array with: (instVarPresenter list at: 3)).
+	instVarPresenter selectionByIndex: 3.
 	self assert: (inspector documentPresenter value last: 2) equals: 'X'''.
 	self assert: inspector documentPresenter value size = 100000!
 
@@ -1486,9 +1487,7 @@ test_openNavigationInspectorOnSymbol
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	self assert: (inspector isKindOf: JadeiteInspector).
-	self assert: inspector documentPresenter model value equals: '#''abc'''.
-	self selectInstVarAtIndex: #(2).	"asOop"
-	self assert: inspector documentPresenter model value equals: '11603713'!
+	self assert: inspector documentPresenter model value equals: '#''abc'''.!
 
 test_registeredPresentersInInspectorCleanedUp
 	"we don't register any yet, but this test will fail if we add any. 
@@ -1861,7 +1860,7 @@ test_rootObjectNotOverwritten
 				fromContext: handle
 				environment: 0.
 	self assert: firstOop equals: oop	"origin root object still held"]
-			ensure: [secondInspector view close]!
+			ensure: [self closeBrowser: secondInspector]!
 
 test_selectAll
 	| remoteObject |

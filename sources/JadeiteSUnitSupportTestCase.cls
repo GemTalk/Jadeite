@@ -172,17 +172,8 @@ sunitPresenter
 	^sunitBrowser primaryPresenter!
 
 tearDown
-	| count maxTries |
 	super tearDown.
-	count := 0.
-	maxTries := 10.
-	sunitBrowser
-		ifNotNil: 
-			[sunitBrowser view close.
-			[sunitBrowser view isOpen not and: [count > maxTries]] whileFalse: 
-					[(Delay forMilliseconds: 10) wait.
-					count := count + 1]].
-	self assert: count > maxTries description: 'sunitBrowser did not close quickly enough'.
+	self closeBrowser: sunitBrowser.
 	projectsBrowser ifNotNil: [self destroy: projectsBrowser]!
 
 test_abortNoSelections
