@@ -55,7 +55,7 @@ basicAddKey: string
 
 basicAddObject: string
 	| addedObject additionIndex newSelectionIndex |
-	additionIndex := (self indexedOffsetFromInstVarList: instVarListPresenter selectionByIndex) first.
+	additionIndex := (self indexedOffsetFromInstVarList: instVarListPresenter selectionsByIndex) first.
 	model
 		command: #addObject:after:;
 		commandArgs: (Array with: string with: additionIndex).
@@ -178,9 +178,7 @@ displayObjectSelecting: selectionIndex
 			[contents addFirst: '-.asOop' -> model oop printString.
 			contents addFirst: model myself].
 	instVarListPresenter list: contents.
-	instVarListPresenter selectionByIndex: (selectionIndex
-				ifNil: [1]
-				ifNotNil: [selectionIndex isNumber ifTrue: [Array with: selectionIndex] ifFalse: [selectionIndex]]).
+	instVarListPresenter selectionByIndex: (selectionIndex ifNil: [1] ifNotNil: [selectionIndex]).
 	reachedMax := model visibleIndices = self maxVariables
 				ifTrue: [' (max displayable)']
 				ifFalse: [String new].
