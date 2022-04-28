@@ -1518,14 +1518,14 @@ coll'
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self selectInstVarAtIndex: #(3).
+	self selectInstVarAtIndex: 3.
 	self assert: inspector documentPresenter value equals: '''bar'''.
 	inspector basicRemoveDynamicInstVars.
-	self assert: inspector instVarListPresenter selectionByIndex equals: #(2).
+	self assert: inspector instVarListPresenter selectionByIndex equals: 2.
 	self assert: inspector instVarListPresenter selection key equals: '-.asOop'!
 
 test_removeDynamicInstVarAndIndexedVar
-	| remoteObject |
+	| remoteObject theIndex |
 	remoteObject := session
 				executeString: '| coll oop inspectorService |
 coll := Array new.
@@ -1537,11 +1537,11 @@ coll'
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self selectInstVarAtIndex: #(3 4).
+	inspector instVarListPresenter view selectionsByIndex: #(3 4).
 	self assert: inspector documentPresenter value equals: '--foo: ''bar''
 1: ''entry1'''.
 	inspector basicRemoveObjects.
-	self assert: inspector instVarListPresenter selectionByIndex equals: #(4).
+	self assert: inspector instVarListPresenter selectionByIndex equals: 4.
 	self assert: inspector statusText equals: 'Displaying 49 of 49 variable inst vars'!
 
 test_removeFromDictionary
@@ -1561,7 +1561,7 @@ dictionary'
 	self selectInstVarAtIndex: (Array with: firstKeyIndex).
 	self assert: inspector documentPresenter value equals: '''value1'''.
 	inspector basicRemoveFromDictionary.
-	self assert: inspector instVarListPresenter selectionByIndex equals: (Array with: firstKeyIndex).
+	self assert: inspector instVarListPresenter selectionByIndex equals: firstKeyIndex.
 	self assert: inspector documentPresenter value equals: '''value10'''!
 
 test_removeFromSymbolDictionary
@@ -1572,8 +1572,8 @@ test_removeFromSymbolDictionary
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	selection := inspector instVarListPresenter list detect: [:assoc | assoc key = '#''ffoo'''].
-	inspector instVarListPresenter selection: (Array with: selection).
-	selectionIndex := inspector instVarListPresenter selectionByIndex first.
+	inspector instVarListPresenter selection: selection.
+	selectionIndex := inspector instVarListPresenter selectionByIndex.
 	self assert: inspector documentPresenter value equals: '''bbarr'''.
 	selectionIndex = inspector instVarListPresenter list size
 		ifTrue: 
@@ -1592,8 +1592,8 @@ test_removeFromSymbolDictionary
 	inspector basicRemoveFromDictionary.
 	self assertIsNil: (inspector instVarListPresenter list detect: [:assoc | assoc key = '#''ffoo''']
 				ifNone: []).
-	self assert: inspector instVarListPresenter selection equals: (Array with: after).
-	selectionIndex := inspector instVarListPresenter selectionByIndex first.
+	self assert: inspector instVarListPresenter selection equals: after.
+	selectionIndex := inspector instVarListPresenter selectionByIndex.
 	self assert: (inspector instVarListPresenter list at: selectionIndex - 1) equals: before!
 
 test_removeIndexedInstVar
@@ -1612,12 +1612,12 @@ coll'
 	self assert: inspector documentPresenter value equals: '''entry1'''.
 	self assert: inspector statusText equals: 'Displaying 50 of 50 variable inst vars'.
 	inspector basicRemoveObjectsAt: #(3).
-	self assert: inspector instVarListPresenter selectionByIndex equals: #(3).
+	self assert: inspector instVarListPresenter selectionByIndex equals: 3.
 	self assert: inspector documentPresenter value equals: '''entry2'''.
 	self assert: inspector statusText equals: 'Displaying 49 of 49 variable inst vars'!
 
 test_removeIndexedInstVars
-	| remoteObject |
+	| remoteObject  |
 	remoteObject := session
 				executeString: '| coll oop inspectorService |
 coll := Array new.
@@ -1628,12 +1628,12 @@ coll'
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self selectInstVarAtIndex: #(3 4).
+	inspector instVarListPresenter view selectionsByIndex: #(3 4).
 	self assert: inspector documentPresenter value equals: '1: ''entry1''
 2: ''entry2'''.
 	self assert: inspector statusText equals: 'Displaying 50 of 50 variable inst vars'.
 	inspector basicRemoveObjectsAt: #(3 4).
-	self assert: inspector instVarListPresenter selectionByIndex equals: #(3).
+	self assert: inspector instVarListPresenter selectionByIndex equals: 3.
 	self assert: inspector documentPresenter value equals: '''entry3'''.
 	self assert: inspector statusText equals: 'Displaying 48 of 48 variable inst vars'!
 
@@ -1654,7 +1654,7 @@ coll'
 	self assert: inspector documentPresenter value equals: '''entry1'''.
 	self assert: inspector statusText equals: 'Displaying 50 of 50 variable inst vars'.
 	inspector basicRemoveObjectsAt: #(5).
-	self assert: inspector instVarListPresenter selectionByIndex equals: #(5).
+	self assert: inspector instVarListPresenter selectionByIndex equals: 5.
 	self assert: inspector documentPresenter value equals: '''entry3'''.
 	self assert: inspector statusText equals: 'Displaying 49 of 49 variable inst vars'!
 
@@ -1724,7 +1724,7 @@ dictionary'
 	self assert: inspector documentPresenter value equals: '''value9'''.
 	inspector basicRemoveFromDictionary.
 	self assert: inspector instVarListPresenter selectionByIndex
-		equals: (Array with: inspector instVarListPresenter list size).
+		equals: inspector instVarListPresenter list size.
 	self assert: inspector documentPresenter value equals: '''value8'''!
 
 test_removeLastElementOfSet
@@ -1753,29 +1753,29 @@ test_removeLastIndexedInstVar
 	self assert: inspector documentPresenter value equals: '$c'.
 	self assert: inspector statusText equals: 'Displaying 3 of 3 variable inst vars'.
 	inspector basicRemoveObjectsAt: #(5).
-	self assert: inspector instVarListPresenter selectionByIndex equals: #(4).
+	self assert: inspector instVarListPresenter selectionByIndex equals: 4.
 	self assert: inspector documentPresenter value equals: '$b'.
 	self assert: inspector statusText equals: 'Displaying 2 of 2 variable inst vars'!
 
 test_removeLastIndexedInstVars
-	| remoteObject |
+	| remoteObject theIndex |
 	remoteObject := session
 				executeString: '
 ''abc'' copy '
 				fromContext: nil
 				environment: 0.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self selectInstVarAtIndex: #(4 5).
+	inspector instVarListPresenter view selectionsByIndex: #(4 5).
 	self assert: inspector documentPresenter value equals: '2: $b
 3: $c'.
 	self assert: inspector statusText equals: 'Displaying 3 of 3 variable inst vars'.
 	inspector basicRemoveObjectsAt: #(4 5).
-	self assert: inspector instVarListPresenter selectionByIndex equals: #(3).
+	self assert: inspector instVarListPresenter selectionByIndex equals: 3.
 	self assert: inspector documentPresenter value equals: '$a'.
 	self assert: inspector statusText equals: 'Displaying 1 of 1 variable inst vars'!
 
 test_removeMultipleFromDictionary
-	| remoteObject firstKeyIndex |
+	| remoteObject firstKeyIndex theIndex index |
 	remoteObject := session
 				executeString: '| dictionary |
 dictionary := Dictionary new.
@@ -1788,11 +1788,11 @@ dictionary'
 	inspector := JadeInspector showOn: remoteObject session: session.
 	firstKeyIndex := inspector instVarListPresenter list
 				indexOf: (inspector instVarListPresenter list detect: [:item | item key = '''1''']).
-	self selectInstVarAtIndex: (Array with: firstKeyIndex with: firstKeyIndex + 1).
+	inspector instVarListPresenter view selectionsByIndex: (Array with: firstKeyIndex with: firstKeyIndex + 1).
 	self assert: inspector documentPresenter value equals: '''1'': ''value1''
 ''10'': ''value10'''.
 	inspector basicRemoveFromDictionary.
-	self assert: inspector instVarListPresenter selectionByIndex equals: (Array with: firstKeyIndex).
+	self assert: inspector instVarListPresenter selectionByIndex equals: firstKeyIndex.
 	self assert: inspector documentPresenter value equals: '''value11'''!
 
 test_replaceSetElement
@@ -1826,7 +1826,7 @@ test_replaceSetElementWhichMovesAfterSave
 	inspector documentPresenter value: '26'.
 	inspector saveDocument.
 	self assert: inspector documentPresenter value equals: '26'.
-	self assert: inspector instVarListPresenter selectionByIndex equals: #(10).
+	self assert: inspector instVarListPresenter selectionByIndex equals: 10.
 	self selectInstVarAtIndex: #(8).	"abc is now first in sorted list"
 	self assert: inspector documentPresenter value equals: '''abc'''.
 	self selectInstVarAtIndex: #(10).

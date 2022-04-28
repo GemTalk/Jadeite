@@ -77,7 +77,7 @@ basicRemoveDynamicInstVars
 	dynamicInstVarNames := self selectedDynamicInstVars.
 	nonDynamicsWereSelected := instVarListPresenter selections size - dynamicInstVarNames size > 0.
 	model removeDynamicInstVarsNamed: dynamicInstVarNames session: gciSession.
-	instVarListPresenter
+	instVarListPresenter view
 		selectionsByIndex: (instVarListPresenter selectionsByIndex difference: selectionIndicesOfDynamics).
 	nonDynamicsWereSelected ifFalse: [self displayObjectSelecting: firstSelectionIndex - 1].
 	^nonDynamicsWereSelected!
@@ -86,7 +86,7 @@ basicRemoveFromDictionary
 	| selections newSelectionIndex |
 	selections := instVarListPresenter selections collect: [:sel | sel value at: 1].
 	self model removeKeys: selections session: gciSession.
-	newSelectionIndex := instVarListPresenter selectionByIndex first min: model objects size + 2.
+	newSelectionIndex := instVarListPresenter view selectionsByIndex first min: model objects size + 2.
 	self displayObjectSelecting: newSelectionIndex.
 	(oopsCollection intersection: selections) do: 
 			[:removedOop |
@@ -98,7 +98,7 @@ basicRemoveObjects
 	model instVarsAreRemovable ifFalse: [^self].
 	self isDynamicInstVarSelected
 		ifTrue: [self basicRemoveDynamicInstVars ifFalse: [^self]	"might need to remove other elements"].
-	indices := instVarListPresenter selectionByIndex.
+	indices := instVarListPresenter selectionsByIndex.
 	model isDictionary ifTrue: [^self basicRemoveFromDictionary].
 	self isNamedInstVarSelected ifTrue: [^MessageBox notify: 'Cannot remove inst var'].	"inst var"
 	model isUnordered ifTrue: [^self basicRemoveOop: instVarListPresenter selection value].
@@ -123,9 +123,9 @@ basicRemoveOop: oop
 	| selection selectionIndex |
 	selection := instVarListPresenter selection.
 	self model removeOop: oop session: gciSession.
-	selectionIndex := instVarListPresenter selectionByIndex first min: model objects size + 2.
+	selectionIndex := instVarListPresenter selectionByIndex min: model objects size + 2.
 	self displayObjectSelecting: selectionIndex.
-	oopsCollection remove: selection first value ifAbsent: [^self].
+	oopsCollection remove: selection value ifAbsent: [^self].
 	objectIndex := objectIndex - 1!
 
 canSave
@@ -507,7 +507,7 @@ saveNamedInstVar
 
 saveUnorderedElement
 	| oop addedObject newSelectionIndex |
-	oop := instVarListPresenter selection first value.
+	oop := instVarListPresenter view selections first value.
 	model
 		command: #replaceElement:with:;
 		commandArgs: (Array with: oop with: documentPresenter value).
