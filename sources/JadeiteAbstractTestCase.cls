@@ -617,7 +617,8 @@ setupSupclassComparisonMethods
 
 tearDown
 	super tearDown.
-	SessionManager inputState pumpMessages!
+	SessionManager inputState pumpMessages.
+	!
 
 test_globalAdditionalAccelerators
 	self primaryTestWindow ifNil: [^self].	"not all test classes have a primaryTestWindow"

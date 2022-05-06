@@ -127,11 +127,11 @@ getSecondDebugger
 	"Private - we opened up one debugger in the test, then another. find the second"
 
 	100 timesRepeat: 
-			[secondDebugger := JadeiteDebugger allInstances detect: [:each | true] ifNone: [nil].
-			(secondDebugger notNil and: 
+			[secondDebugger := JadeiteDebugger allInstances detect: [:aDebugger | aDebugger ~~ debugger]
+						ifNone: [].
+			secondDebugger notNil and: 
 					[secondDebugger gsProcess notNil
-						and: [secondDebugger documentPresenter view selection notEmpty and: [secondDebugger ~~ debugger]]])
-				ifTrue: [^self].
+						and: [secondDebugger documentPresenter view selection notEmpty ifTrue: [^true]]].
 			(Delay forMilliseconds: 10) wait]!
 
 keyDownEscapeIn: view
@@ -251,24 +251,28 @@ systemBrowser
 !
 
 tearDown
+	self assert: (session isKindOf: GciSession).
 	self cleanupProcesses.
+	self assert: (session isKindOf: GciSession).
 	projectsBrowser
 		ifNotNil: 
 			[projectsBrowser view close.
 			projectsBrowser := nil].
 	debugger ifNotNil: [debugger documentPresenter view isModified: false].
+	self assert: (session isKindOf: GciSession).
 	secondDebugger ifNotNil: [secondDebugger documentPresenter view isModified: false].
+	self assert: (session isKindOf: GciSession).
 	process
 		ifNotNil: 
 			[process terminate.
 			process := nil].
-	self
-		terminateGsProcess;
-		closeDebuggers;
-		yourself.
+	self terminateGsProcess.
+	self assert: (session isKindOf: GciSession).
+	self closeDebuggers.
 	JadeiteDebugger debuggerClass: nil.
 	JadeiteDebugger semaphore: nil.
 	TestMessageBox disableJadeiteTestMessageBox.	"in case the test has gotten stuck while enabled"
+	self assert: (session isKindOf: GciSession).
 	super tearDown!
 
 terminateGsProcess

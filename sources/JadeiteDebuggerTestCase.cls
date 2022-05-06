@@ -1122,7 +1122,7 @@ test_inspectedDebuggerObjectHeld
 	[self assert: (session executeString: 'Object = Object').
 	self assert: inspector documentPresenter value equals: 'anArray( anObject)']
 			ensure: [projectsBrowser view close]]
-			ensure: [inspector view close]!
+			ensure: [self destroy: inspector view]!
 
 test_jadeItemsOnMenu
 	| contextMenu theItem |
@@ -1167,7 +1167,6 @@ test_loginButtonEnablementAfterDebug
 	self rowanFixMe.	"without this, test somehow dies. Makes for a less useful test"
 	TestMessageBox plannedResult: #no.
 	transcript view close.	"closes all Jadeite windows"
-	shell := JadeiteLoginShell allInstances first.
 	query := CommandQuery commandDescription: (CommandDescription command: #login)
 				source: shell loginButtonPresenter view.
 	shell queryCommand: query.
@@ -1176,8 +1175,9 @@ test_loginButtonEnablementAfterDebug
 				[TestMessageBox disableJadeiteTestMessageBox.
 				debugger := nil.
 				process terminate.
-				process := nil.
-				session := shell login.
+				process := nil. 
+				shell login.
+				session := GciSession current. 
 				transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: []]!
 
 test_openDebuggerWthBreakpointInDebuggerService
@@ -1444,7 +1444,11 @@ abc add: 1.
 	self debuggerDo: [debugger resumeProcess]!
 
 test_restartInBlock
-	| restartProcess breakPoint |
+	"The original test did a restart but as of 3.7.0, restart (trim stack) no longer fails with a 	
+	second debugger. To simulate a failure, we just open a second debugger instead and
+	hope we're kind of testing the same code paths"
+
+	| secondDebuggedProcess breakPoint |
 	self testsIssue: #issue126
 		withTitle: 'Debugger opens second debugger, loses stack in original debugger'.
 	self openProjectBrowser.
@@ -1454,16 +1458,23 @@ test_restartInBlock
 	self projectsPresenter setBreakPointAt: breakPoint in: self projectsPresenter.	"inside the block"
 	
 	[self openDebuggerOn: 'RowanSample1 new interestingLoop'.
-	restartProcess := [self debuggerDo: [debugger restart]] fork.	"can't restart inside block. expect notifier"
+	secondDebuggedProcess := 
+			[self
+				debuggerDo: 
+					[session
+						debugString: '1 zork'
+						fromContext: nil
+						environment: 0] fork]
+					fork.
 	
 	[self getSecondDebugger.
 	self denyIsNil: secondDebugger.
 	self deny: debugger == secondDebugger.
 	self deny: debugger gsProcess oop = secondDebugger gsProcess oop.
 	self deny: debugger frameListPresenter list size = secondDebugger frameListPresenter list size]
-			ensure: [restartProcess terminate]]
+			ensure: [secondDebuggedProcess terminate]]
 			ensure: 
-				[self projectsPresenter clearBreakPointAt: breakPoint in: self projectsPresenter.	"inside the block"
+				[self projectsPresenter clearBreakPointAt: breakPoint in: self projectsPresenter.
 				self destroy: projectsBrowser]!
 
 test_runningTestDoesNotLoseStepPoint
@@ -1824,7 +1835,7 @@ test_terminateDoesNotWalkback
 	
 	[gsProcess := session executeString: '[9999 timesRepeat:[(Delay forSeconds: 1) wait]] fork asOop'.
 	self
-		openDebuggerOn: 'nil halt';
+		openDebuggerOn: 'nil halt'; 
 		assert: debugger processListPresenter list size equals: allProcesses + 1;
 		assert: (debugger processListPresenter selectionByIndex: allProcesses + 1) notNil.
 	TestMessageBox plannedResult: #yes.	"confirm we want to terminate process"

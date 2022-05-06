@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeTextDocument subclass: #JadeDebugger
 	instanceVariableNames: 'answer errorMessagePresenter frame frameListOffset frameListPresenter gsProcess processList processListPresenter terminateOnClose variableDataPresenter variableListPresenter waitingForAnswerProcess debuggerProcess'
@@ -259,6 +259,7 @@ stackInitialSelectionData
 		'(TestAsserter) >> assert: @5 line 4'
 		'TestAsserter >> assert: (envId 0) @5 line 4'
 		'UndefinedObject (Object) >> _doesNotUnderstand:args:envId:reason: @8 line 14'
+		'UndefinedObject (Object) >> _doesNotUnderstand:args:envId:reason: @12 line 17'
 	)!
 
 statusBarText: aString
@@ -285,34 +286,36 @@ updateProcessListPresenter
 updateSaveMethodOop: anInteger
 	"do nothing"
 ! !
-!JadeDebugger categoriesFor: #_terminateProcess!public! !
-!JadeDebugger categoriesFor: #_terminateProcess:!public! !
-!JadeDebugger categoriesFor: #activeTextEdit!private! !
-!JadeDebugger categoriesFor: #answer!public! !
-!JadeDebugger categoriesFor: #clearUI!public! !
-!JadeDebugger categoriesFor: #codeSourcePresenterClass!private! !
-!JadeDebugger categoriesFor: #contextObject!public! !
-!JadeDebugger categoriesFor: #copyStack!menu handlers!private! !
-!JadeDebugger categoriesFor: #createComponents!public! !
-!JadeDebugger categoriesFor: #createSchematicWiring!public! !
-!JadeDebugger categoriesFor: #debuggerProcess!accessing!private! !
-!JadeDebugger categoriesFor: #debuggerProcess:!accessing!private! !
-!JadeDebugger categoriesFor: #implement!public! !
-!JadeDebugger categoriesFor: #inspectVariable!menu handlers!private! !
-!JadeDebugger categoriesFor: #queryCommand:!public! !
-!JadeDebugger categoriesFor: #runToCursor!menu handlers!private! !
-!JadeDebugger categoriesFor: #saveMethod!menu handlers!private! !
-!JadeDebugger categoriesFor: #selectedFrame!public! !
-!JadeDebugger categoriesFor: #selectedVariable!public! !
-!JadeDebugger categoriesFor: #showNextStatement!public! !
-!JadeDebugger categoriesFor: #stackInitialSelection!public! !
-!JadeDebugger categoriesFor: #stackInitialSelectionData!public! !
-!JadeDebugger categoriesFor: #statusBarText:!public! !
-!JadeDebugger categoriesFor: #stepInto!menu handlers!private! !
-!JadeDebugger categoriesFor: #stepOut!menu handlers!private! !
-!JadeDebugger categoriesFor: #stepOver!menu handlers!private! !
-!JadeDebugger categoriesFor: #updateProcessListPresenter!private! !
-!JadeDebugger categoriesFor: #updateSaveMethodOop:!public! !
+!JadeDebugger categoriesForMethods!
+_terminateProcess!public! !
+_terminateProcess:!public! !
+activeTextEdit!private! !
+answer!public! !
+clearUI!public! !
+codeSourcePresenterClass!private! !
+contextObject!public! !
+copyStack!menu handlers!private! !
+createComponents!public! !
+createSchematicWiring!public! !
+debuggerProcess!accessing!private! !
+debuggerProcess:!accessing!private! !
+implement!public! !
+inspectVariable!menu handlers!private! !
+queryCommand:!public! !
+runToCursor!menu handlers!private! !
+saveMethod!menu handlers!private! !
+selectedFrame!public! !
+selectedVariable!public! !
+showNextStatement!public! !
+stackInitialSelection!public! !
+stackInitialSelectionData!public! !
+statusBarText:!public! !
+stepInto!menu handlers!private! !
+stepOut!menu handlers!private! !
+stepOver!menu handlers!private! !
+updateProcessListPresenter!private! !
+updateSaveMethodOop:!public! !
+!
 
 !JadeDebugger class methodsFor!
 
@@ -444,15 +447,17 @@ resetDebuggers
 
 	debuggers := nil.
 ! !
-!JadeDebugger class categoriesFor: #aboutToShowErrorShellOn:!public! !
-!JadeDebugger class categoriesFor: #debuggerFor:!public! !
-!JadeDebugger class categoriesFor: #debuggers!public! !
-!JadeDebugger class categoriesFor: #dumpStackFor:errorMessage:on:!public!stack dumping support! !
-!JadeDebugger class categoriesFor: #maxPrint!private!stack dumping support! !
-!JadeDebugger class categoriesFor: #openDebuggerOnException:!public! !
-!JadeDebugger class categoriesFor: #printShortFrameAt:process:on:!private!stack dumping support! !
-!JadeDebugger class categoriesFor: #printVar:on:!private!stack dumping support! !
-!JadeDebugger class categoriesFor: #printVariables:on:!private!stack dumping support! !
-!JadeDebugger class categoriesFor: #reportError:!public! !
-!JadeDebugger class categoriesFor: #resetDebuggers!public! !
+!JadeDebugger class categoriesForMethods!
+aboutToShowErrorShellOn:!public! !
+debuggerFor:!public! !
+debuggers!public! !
+dumpStackFor:errorMessage:on:!public!stack dumping support! !
+maxPrint!private!stack dumping support! !
+openDebuggerOnException:!public! !
+printShortFrameAt:process:on:!private!stack dumping support! !
+printVar:on:!private!stack dumping support! !
+printVariables:on:!private!stack dumping support! !
+reportError:!public! !
+resetDebuggers!public! !
+!
 

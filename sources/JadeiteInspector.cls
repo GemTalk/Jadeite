@@ -418,7 +418,7 @@ queryCommand: query
 					^true]].
 	command = #addObject
 		ifTrue: 
-			[view isWindowVisible ifTrue: [query isEnabled: model isVariable].
+			[model isService ifTrue: [query isEnabled: model isVariable].
 			^true].
 	command = #removeObjects
 		ifTrue: 

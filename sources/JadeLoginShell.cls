@@ -250,11 +250,11 @@ login
 	self updateModel.
 	[session := self model login] on: Error
 		do: 
-			[:ex | 
+			[:ex |
 			MessageBox errorMsg: ex description caption: self loginFailureCaption.
 			SessionManager current pause.
 			GciSession current: nil.
-			^self].
+			^nil].
 	self postLogin: session!
 
 loginFailureCaption

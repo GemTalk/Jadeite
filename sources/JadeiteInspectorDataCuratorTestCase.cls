@@ -1165,7 +1165,7 @@ test_inspectRcQueue
 				environment: 0.
 	inspector := JadeiteInspector showOn: remoteObject session: session.
 	self assert: inspector documentPresenter value equals: 'aRcQueue( 1)'.
-	self assert: inspector instVarListPresenter list size equals: 31	"self + asOop + 1 inst var + default new size 28"!
+	self assert: inspector instVarListPresenter list size equals: 23	"self + asOop + 1 inst var + default new size 20"!
 
 test_inspectSet
 	| remoteObject |
@@ -1221,7 +1221,7 @@ test_interactionInspect
 					[
 					[self assert: ('Inspector on SymbolDictionary for*' match: anInspector caption).
 					self denyIsNil: (anInspector instVarListPresenter list
-								detect: [:item | item key equals: '#''UserGlobals''']
+								detect: [:item | item key = '#''UserGlobals''']
 								ifNone: [])]
 							ensure: [self closeBrowser: anInspector]]]!
 

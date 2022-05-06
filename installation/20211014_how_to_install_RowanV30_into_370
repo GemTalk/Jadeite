@@ -1,6 +1,7 @@
 
 Last updated: 
-1/4/2022 - 
+5/6/2022 - 
+Added instructions on ("starting over" with a fresh rowan extent)
 Formatting changes to this document
 added merge of masterV3.0 before checking out eric branch
 changed branch name to eric_component_V3.0
@@ -35,3 +36,19 @@ input installRowan.tpz
 login to Jadeite (hopefully!)
 
 (optional - Load RowanSample9/rowan/specs/spec_0061.ston)
+-------
+("starting over" with a fresh rowan extent)
+Make a copy of the rowan installation (e.g. /uffda1/users/ewinger/rowanStones/ROWAN_370_GEMSTONE_dda3f733e)
+Remove everything but 'system.conf' from the product/data directory
+Copy hidden/bin/extent0.rowan.dbf to product/data
+Rename extent0.rowan.dbf -> extent0.dbf
+chmod 755 extent0.dbf
+start stone
+start netldi (don't forget -ga ewinger option!) 
+login with topaz
+>input /uffda1/users/ewinger/rowanStones/ROWAN_370_GEMSTONE_dda3f733e_copy/installRowan.tpz
+>run
+(Rowan projectNamed: 'RowanClientServices') reload
+%
+>list classes - verify that expected code is present, however that is done
+Do Jadeite login

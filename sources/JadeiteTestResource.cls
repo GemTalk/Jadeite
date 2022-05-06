@@ -109,7 +109,7 @@ logoutThenLoginAs: userName
 
 	userName ifNil: [^self].
 	GciSession current ifNotNil: [:current | userName = current userID ifTrue: [^self]].
-	self closeTranscript: self transcript.
+	self transcript ifNotNil: [self closeTranscript: self transcript].
 	JadeiteTranscript allInstances
 		do: [:transcript | self closeTranscript: transcript	"hopeful none, but just in case"].
 	JadeiteLoginShell allInstances
