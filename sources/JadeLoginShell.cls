@@ -344,10 +344,14 @@ saveDocument
 
 sendRequiredMessages
 	"The ImageStripper seems to think these messages aren't needed, but we die during runtime packaging with a MessageNotUnderstood."
-	
-	'string1' equals: 'string2'.
-	1 isImmediate.
-!
+
+	"5/9/22 I *think* that the ImageStripper problem in the above comment only requires that these methods be referenced from a sent method. 
+	It does not actually require them to be sent (which pollutes our transcript)"
+
+	true
+		ifFalse: 
+			['string1' equals: 'string2'.
+			1 isImmediate]!
 
 setDocumentData: aString
 

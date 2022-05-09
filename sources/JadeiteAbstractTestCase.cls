@@ -237,7 +237,9 @@ loginWithRetry: loginShell
 	[loginError] whileTrue: 
 			[
 			[loginShell loginWithoutErrorHandling.
-			loginError := false] on: Error
+			session := GciSession current.
+			loginError := false]
+					on: Error
 					do: 
 						[:ex |
 						count := count + 1.
@@ -616,9 +618,14 @@ setupSupclassComparisonMethods
 		category: 'test support'!
 
 tearDown
+	| answeringService |
 	super tearDown.
 	SessionManager inputState pumpMessages.
-	!
+	"debugging code - halt if we find a nil in the user's symbol list"
+	answeringService := RowanAnsweringService new
+				command: #symbolListHasNil;
+				commandArgs: Array new.
+	self issueCommand: answeringService!
 
 test_globalAdditionalAccelerators
 	self primaryTestWindow ifNil: [^self].	"not all test classes have a primaryTestWindow"
@@ -675,7 +682,16 @@ updateService: service
 	^self issueCommand: service	!
 
 variableListPresenter
-	^self projectsPresenter variableListPresenter.! !
+	^self projectsPresenter variableListPresenter.!
+
+verifyWindowClosed: presenter
+	| count maxTries |
+	maxTries := 100.
+	count := 0.
+	[count < maxTries] whileTrue: 
+			[presenter isOpen ifTrue: [count := count + 1] ifFalse: [^true].
+			(Delay forMilliseconds: 10) wait].
+	self deny: presenter isOpen! !
 !JadeiteAbstractTestCase categoriesForMethods!
 abortTransaction!private!setup teardown! !
 anotherNumberMethodSource!constants!private! !
@@ -783,6 +799,7 @@ transcriptTab!public!transcript support! !
 unloadSampleProject!private!project support! !
 updateService:!issue test support!public!support! !
 variableListPresenter!private!project browser support! !
+verifyWindowClosed:!private!support!tests! !
 !
 
 !JadeiteAbstractTestCase class methodsFor!

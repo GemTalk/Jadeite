@@ -919,6 +919,7 @@ test_registeredPresentersInSUnitBrowserCleanedUp
 	secondBrowser := self openWindow: [transcript jadeBrowseTests].
 	self assert: BrowserUpdate current registeredPresenters size > registeredPresentersSize.
 	self destroy: secondBrowser.
+	self verifyWindowClosed: secondBrowser.
 	secondBrowser := nil.
 	MemoryManager current collectGarbage.
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresentersSize!
@@ -1166,7 +1167,7 @@ test_selectionRemainsVisible
 	self assert: self sunitPresenter textResultPresenter value
 		equals: '1 run, 1 passed, 0 failures, 0 errors'.
 	self assert: methodListPresenter selections first selector equals: #test_zzz.
-	position := methodListPresenter view itemRect: methodListPresenter selectionByIndex first.
+	position := methodListPresenter view itemRect: methodListPresenter selectionByIndex.
 	self assert: ((0 @ 0 extent: methodListPresenter view rectangle extent) contains: position)!
 
 test_selectMethodFromProjectBrowser
@@ -1259,12 +1260,12 @@ test_sunitBrowserPassingDebugTestShowsResult
 	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
 	self selectServiceNamed: 'test1' in: self sunitPresenter methodListPresenter.
 	self assert: self sunitPresenter methodListPresenter selections size equals: 1.
-	self assert: self sunitPresenter methodListPresenter selection first selector equals: #test1.
-	self assertIsNil: self sunitPresenter methodListPresenter selections first testResult.
+	self assert: self sunitPresenter methodListPresenter selection selector equals: #test1.
+	self assertIsNil: self sunitPresenter methodListPresenter selection testResult.
 	self sunitPresenter debug.
-	self assert: self sunitPresenter methodListPresenter selection first selector equals: #test1.
+	self assert: self sunitPresenter methodListPresenter selection selector equals: #test1.
 	self assert: self sunitPresenter methodListPresenter selections size equals: 1.
-	self assert: self sunitPresenter methodListPresenter selections first testResult equals: 'passed'!
+	self assert: self sunitPresenter methodListPresenter selection testResult equals: 'passed'!
 
 test_sunitBrowserSortOrderAfterAddingMethod
 	|  visibleTestSelectors |

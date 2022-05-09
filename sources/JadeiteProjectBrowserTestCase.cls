@@ -66,6 +66,17 @@ dirtyProjectForChangeBrowser
 	self selectMethodNamed: #test1.
 	self projectsPresenter basicRemoveMethods!
 
+ensureTestIsSetUpAfterLogout
+	projectsBrowser := nil.
+	GciSession current: nil.
+	self loginWithRetry: (JadeiteLoginShell allInstances detect: [:shell | shell isOpen]).	"should only be one open"
+	self resources do: 
+			[:resource |
+			resource current
+				tearDown;
+				setUp].
+	self setUp!
+
 executeStringInOtherSession: string
 	| executionString |
 	executionString := '(SessionTemps current at: #otherSession) '.
@@ -1180,23 +1191,16 @@ test_closeConsoleInvalidSession
 	session beInvalidSession.
 	
 	[transcript onCloseRequested.
-	self deny: sunitPresenter isOpen.
-	self deny: projectsBrowser isOpen.
-	self deny: methodListBrowser isOpen.
-	self deny: hierarchyListBrowser isOpen.
-	self deny: workspace isOpen.
-	self deny: dictionaryBrowser isOpen.
-	self deny: simpleInspector isOpen.
-	self deny: complexInspector isOpen]
-			ensure: 
-				[projectsBrowser := nil.
-				GciSession current: nil.
-				self loginWithRetry: (JadeiteLoginShell allInstances detect:[:shell | shell isOpen]) "should only be one open".
-				self resources do: 
-						[:resource |
-						resource current
-							tearDown;
-							setUp]]!
+	self verifyWindowClosed: transcript.
+	self verifyWindowClosed: sunitPresenter.
+	self verifyWindowClosed: projectsBrowser.
+	self verifyWindowClosed: methodListBrowser.
+	self verifyWindowClosed: hierarchyListBrowser.
+	self verifyWindowClosed: workspace.
+	self verifyWindowClosed: dictionaryBrowser.
+	self verifyWindowClosed: simpleInspector.
+	self verifyWindowClosed: complexInspector]
+			ensure: [self ensureTestIsSetUpAfterLogout]!
 
 test_closeConsoleValidSession
 	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector methodHistoryBrowser |
@@ -1235,24 +1239,17 @@ test_closeConsoleValidSession
 	TestMessageBox plannedResult: #yes.
 	
 	[[transcript onCloseRequested] ensure: [TestMessageBox disableJadeiteTestMessageBox].
-	self deny: sunitPresenter isOpen.
-	self deny: projectsBrowser isOpen.
-	self deny: methodListBrowser isOpen.
-	self deny: hierarchyListBrowser isOpen.
-	self deny: workspace isOpen.
-	self deny: dictionaryBrowser isOpen.
-	self deny: simpleInspector isOpen.
-	self deny: complexInspector isOpen.
-	self deny: methodHistoryBrowser isOpen]
-			ensure: 
-				[projectsBrowser := nil.
-				GciSession current: nil.
-				self loginWithRetry: JadeiteLoginShell allInstances first.
-				self resources do: 
-						[:resource |
-						resource current
-							tearDown;
-							setUp]]!
+	self verifyWindowClosed: transcript. 
+	self verifyWindowClosed: sunitPresenter.
+	self verifyWindowClosed: projectsBrowser.
+	self verifyWindowClosed: methodListBrowser.
+	self verifyWindowClosed: hierarchyListBrowser.
+	self verifyWindowClosed: workspace.
+	self verifyWindowClosed: dictionaryBrowser.
+	self verifyWindowClosed: simpleInspector.
+	self verifyWindowClosed: complexInspector.
+	self verifyWindowClosed: methodHistoryBrowser]
+			ensure: [self ensureTestIsSetUpAfterLogout]!
 
 test_confirmOverrideExistingAccessorMethods
 	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
@@ -1525,7 +1522,7 @@ test_exitJadeiteInvalidSession
 	sunitPresenter := transcript jadeBrowseTests.
 	workspace := projectsBrowser addWorkspace.
 	dictionaryBrowser := transcript openDictionaryBrowser.
-	log := self projectsPresenter projectLog. 
+	log := self projectsPresenter projectLog.
 	simpleInspector := JadeInspector showOn: (session
 						executeString: '123'
 						fromContext: nil
@@ -1543,29 +1540,21 @@ test_exitJadeiteInvalidSession
 	self assert: dictionaryBrowser isOpen.
 	self assert: simpleInspector isOpen.
 	self assert: complexInspector isOpen.
-	self assert: log isOpen. 
+	self assert: log isOpen.
 	session beInvalidSession.
 	
 	[transcript exit.
-	self deny: sunitPresenter isOpen.
-	self deny: projectsBrowser isOpen.
-	self deny: methodListBrowser isOpen.
-	self deny: hierarchyListBrowser isOpen.
-	self deny: workspace isOpen.
-	self deny: dictionaryBrowser isOpen.
-	self deny: simpleInspector isOpen.
-	self deny: complexInspector isOpen.
-	self deny: log isOpen.]
-			ensure: 
-				[projectsBrowser := nil.
-				GciSession current: nil.
-				(Delay forSeconds: 1) wait. "not sure if this is necessary"
-				self loginWithRetry: JadeiteLoginShell allInstances first.
-				self resources do: 
-						[:resource |
-						resource current
-							tearDown;
-							setUp]]!
+	self verifyWindowClosed: transcript.
+	self verifyWindowClosed: sunitPresenter.
+	self verifyWindowClosed: projectsBrowser.
+	self verifyWindowClosed: methodListBrowser.
+	self verifyWindowClosed: hierarchyListBrowser.
+	self verifyWindowClosed: workspace.
+	self verifyWindowClosed: dictionaryBrowser.
+	self verifyWindowClosed: simpleInspector.
+	self verifyWindowClosed: complexInspector.
+	self verifyWindowClosed: log]
+			ensure: [self ensureTestIsSetUpAfterLogout]!
 
 test_exitJadeiteValidSession
 	| sunitPresenter workspace dictionaryBrowser hierarchyListBrowser simpleInspector complexInspector log |
@@ -1601,25 +1590,17 @@ test_exitJadeiteValidSession
 	TestMessageBox plannedResult: #yes.
 	
 	[[transcript onCloseRequested] ensure: [TestMessageBox disableJadeiteTestMessageBox].
-	self deny: sunitPresenter isOpen.
-	self deny: projectsBrowser isOpen.
-	self deny: methodListBrowser isOpen.
-	self deny: hierarchyListBrowser isOpen.
-	self deny: workspace isOpen.
-	self deny: dictionaryBrowser isOpen.
-	self deny: simpleInspector isOpen.
-	self deny: complexInspector isOpen.
-	self deny: log isOpen]
-			ensure: 
-				[projectsBrowser := nil.
-				GciSession current: nil.
-				(Delay forSeconds: 1) wait.	"not sure if this is necessary"
-				self loginWithRetry: JadeiteLoginShell allInstances first.
-				self resources do: 
-						[:resource |
-						resource current
-							tearDown;
-							setUp]]!
+	self verifyWindowClosed: transcript.
+	self verifyWindowClosed: sunitPresenter.
+	self verifyWindowClosed: projectsBrowser.
+	self verifyWindowClosed: methodListBrowser.
+	self verifyWindowClosed: hierarchyListBrowser.
+	self verifyWindowClosed: workspace.
+	self verifyWindowClosed: dictionaryBrowser.
+	self verifyWindowClosed: simpleInspector.
+	self verifyWindowClosed: complexInspector.
+	self verifyWindowClosed: log]
+			ensure: [self ensureTestIsSetUpAfterLogout]!
 
 test_findDialogBasic
 	| methodSourceView findView |
@@ -2434,8 +2415,8 @@ test_registeredPresentersInMethodBrowserCleanedUp
 	methodListBrowser := self projectsPresenter browseImplementorsOf: #size.
 	self assert: BrowserUpdate current registeredPresenters size > registeredPresenters size.
 	methodListBrowser view close.
+	self verifyWindowClosed: methodListBrowser.
 	methodListBrowser := nil.
-	"difference := BrowserUpdate current registeredPresenters difference: registeredPresenters. uncomment to figure out which presenters are left around"
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters size!
 
 test_registeredPresentersInProjectBrowserCleanedUp
@@ -2444,8 +2425,8 @@ test_registeredPresentersInProjectBrowserCleanedUp
 	secondBrowser := JadeiteBrowser showOnSession: session.
 	self assert: BrowserUpdate current registeredPresenters size > registeredPresenters size.
 	self destroy: secondBrowser.
+	self verifyWindowClosed: secondBrowser.
 	secondBrowser := nil.
-	"difference := BrowserUpdate current registeredPresenters difference: registeredPresenters. uncomment to figure out which presenters are left around"
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters size!
 
 test_removeAbortedClass
@@ -3342,7 +3323,7 @@ test_UnsavedChangesActionCloseWindow
 	self methodSourcePresenter view isModified: true.
 	TestMessageBox plannedResult: #no.	"answer that we want to ignore changes"
 	projectsBrowser view close.
-	self deny: projectsBrowser isOpen]
+	self verifyWindowClosed: projectsBrowser]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
 				JadeiteTestResource current projectsBrowser: nil.
@@ -3429,6 +3410,7 @@ assertAncestry:in:!private! !
 assertVariableTabSorted!private!support! !
 currentTabView!public!views! !
 dirtyProjectForChangeBrowser!dirty project!private! !
+ensureTestIsSetUpAfterLogout!private!support!tests! !
 executeStringInOtherSession:!public!support! !
 family:ofNodesIn:!private! !
 issue261createTestProject!issue test support!private! !
