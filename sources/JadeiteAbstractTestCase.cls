@@ -177,6 +177,12 @@ fail: aString
 	^super fail: aString
 	!
 
+haltTestForHardToCatchErrors: reason
+	| proc |
+	"Running test will not stop on assert. Need to do a hard halt to determine how a test can login as the wrong user"
+	proc := Processor activeProcess.
+	proc halt: proc topFrame sender cause: reason!
+
 interestingLoopMethodSource
 	^'interestingLoop
 
@@ -725,6 +731,7 @@ enableBreakpoints!public!support! !
 ensureOneTab!private!support! !
 ensureRowanSample1Loaded!private!project support! !
 fail:!asserting!public! !
+haltTestForHardToCatchErrors:!private!setup teardown! !
 interestingLoopMethodSource!constants!private! !
 isSampleProjectLoaded!private!private testing!project support! !
 issueCommand:!issue test support!public!support! !

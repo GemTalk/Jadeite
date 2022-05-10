@@ -884,8 +884,8 @@ coll
 		do: 
 			[:index |
 			self selectInstVarAtIndex: (Array with: index).
-			self
-				assert: (inspector documentPresenter model value equals: '''entry' , (index - 2) printString , '''')]!
+			self assert: inspector documentPresenter model value
+				equals: '''entry' , (index - 2) printString , '''']!
 
 test_globalAdditionalAccelerators
 	| remoteObject |

@@ -1,7 +1,6 @@
 "Boot a Jade development image"
 
 | list |
-PackageManager current install: 'C:\Users\ewinger\source\repos\RemoteServiceReplication\src-dolphin\RemoteServiceReplication-Test.pac'.
 
 list := #(
 	'JGF Dolphin'

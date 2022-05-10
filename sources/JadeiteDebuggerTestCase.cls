@@ -51,7 +51,15 @@ setUp
 	JadeiteDebugger debuggerClass: JadeiteDebugger.
 	self assertIsNil: JadeiteDebugger semaphore.
 	self assert: session notNil.
-	session := GciSession current!
+	session := GciSession current.
+	session userID = 'SystemUser'
+		ifFalse: 
+			["Running tests will not stop on assert. (Debugging tests does) Need to do a hard halt to determine how a test can login as the wrong user"
+			self haltTestForHardToCatchErrors: 'Debugger test is not logged in as SystemUser as expected'].
+	JadeiteLoginShell allInstances size > 1
+		ifTrue: 
+			["Running tests will not stop on assert. (Debugging tests does) Need to do a hard halt to determine how a test can login as the wrong user"
+			self haltTestForHardToCatchErrors: 'Multiple JadeiteLoginShells found']!
 
 test_additionalAccelerators
 	"No way yet to adequately test accelerators function
@@ -1150,6 +1158,9 @@ test_loginButtonEnablementAfterDebug
 	[GciSession current ifNotNil: [:sess | sess logout].
 	query := self closeJadeiteLoginShells.
 	shell := JadeiteLoginShell show position: 80 @ 20.
+	"make sure we're logging in as right user"
+	shell userIDPresenter value: user.
+	shell model gsUserID: user.
 	shell login.
 	self denyIsNil: GciSession current.
 	session := GciSession current.
@@ -1175,9 +1186,9 @@ test_loginButtonEnablementAfterDebug
 				[TestMessageBox disableJadeiteTestMessageBox.
 				debugger := nil.
 				process terminate.
-				process := nil. 
+				process := nil.
 				shell login.
-				session := GciSession current. 
+				session := GciSession current.
 				transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: []]!
 
 test_openDebuggerWthBreakpointInDebuggerService
