@@ -172,6 +172,17 @@ ensureOneTab
 ensureRowanSample1Loaded
 	JadeiteTestResource current ensureRowanSample1Loaded!
 
+ensureTestIsSetUpAfterLogout
+	projectsBrowser := nil.
+	GciSession current: nil.
+	self loginWithRetry: (JadeiteLoginShell allInstances detect: [:shell | shell isOpen]).	"should only be one open"
+	self resources do: 
+			[:resource |
+			resource current
+				tearDown;
+				setUp].
+	self setUp!
+
 fail: aString
 	TestMessageBox disableJadeiteTestMessageBox.
 	^super fail: aString
@@ -730,6 +741,7 @@ disableInteractionsWhile:!private!setup teardown! !
 enableBreakpoints!public!support! !
 ensureOneTab!private!support! !
 ensureRowanSample1Loaded!private!project support! !
+ensureTestIsSetUpAfterLogout!private!support!tests! !
 fail:!asserting!public! !
 haltTestForHardToCatchErrors:!private!setup teardown! !
 interestingLoopMethodSource!constants!private! !

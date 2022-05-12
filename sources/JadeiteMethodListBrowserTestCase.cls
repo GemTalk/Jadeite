@@ -126,10 +126,13 @@ selectMethodsNamed: selectors
 selectMethodsNamed: selectors in: browser
 	| methodServices methodListPresenter |
 	methodListPresenter := browser primaryPresenter methodListPresenter methodListPresenter.
-	methodListPresenter resetSelection.
 	methodServices := selectors
 				collect: [:selector | methodListPresenter list detect: [:svc | svc selector = selector]].
-	methodListPresenter selections: methodServices.
+	methodServices isEmpty
+		ifFalse: 
+			["to debug tests more easily, I *think* it's best not to reset the selection unless we know we can have methods to select"
+			methodListPresenter resetSelection.
+			methodListPresenter selections: methodServices].
 	^methodServices!
 
 selectMethodsWithClassNamed: classNames
@@ -1042,22 +1045,22 @@ test_firstReferenceRetained
 		withTitle: 'senders lists get highlighting confused after opening a second senders list'.
 	fooBrowser := JadePresenter browseSendersOf: 'foo' session: session.
 	
-	[self selectMethodNamed: #testNewClassVersionB in: fooBrowser.
+	[self selectMethodNamed: #test1 in: fooBrowser.
 	self assert: fooBrowser primaryPresenter methodSourcePresenter documentPresenter selection
 		equals: 'foo'.
 	barBrowser := JadePresenter browseSendersOf: 'bar' session: session.
-	self selectMethodNamed: #testNewClassVersionB in: barBrowser.
+	self selectMethodNamed: #test2 in: barBrowser.
 	self assert: barBrowser primaryPresenter methodSourcePresenter documentPresenter selection
 		equals: 'bar'.
-	self selectMethodNamed: #testIssue91 in: fooBrowser.
+	self selectMethodNamed: #testFailure in: fooBrowser.
 	self assert: fooBrowser primaryPresenter methodSourcePresenter documentPresenter selection
 		equals: 'foo'.
-	self selectMethodNamed: #testIssue72_addMethod in: barBrowser.
+	self selectMethodNamed: #testError in: barBrowser.
 	self assert: barBrowser primaryPresenter methodSourcePresenter documentPresenter selection
 		equals: 'bar']
 			ensure: 
 				[fooBrowser view close.
-				barBrowser view close]!
+				barBrowser ifNotNil: [barBrowser view close]]!
 
 test_globalAdditionalAccelerators
 	methodListBrowser := JadePresenter browseImplementorsOf: #size session: session.
@@ -1446,7 +1449,7 @@ test_UnsavedChangesActionCloseWindow
 	methodListBrowser primaryPresenter methodSourcePresenter documentPresenter value: 'new text'.
 	TestMessageBox plannedResult: #no.	"answer that we want to stay on frame"
 	methodListBrowser view close.
-	self deny: methodListBrowser isOpen]
+	self verifyWindowClosed: methodListBrowser]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
 				self removeMethods: methodListPresenter model asBag asArray inClassService: rowanSample1ClassService.

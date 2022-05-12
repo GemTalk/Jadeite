@@ -121,8 +121,10 @@ stepPointsFor: aGsMethod
 		with: aGsMethod
 		with: self.
 ! !
-!GsClass categoriesFor: #sourceFor:!Methods!public! !
-!GsClass categoriesFor: #stepPointsFor:!Methods!public! !
+!GsClass categoriesForMethods!
+sourceFor:!Methods!public! !
+stepPointsFor:!Methods!public! !
+!
 
 !JadeServer64bit3x methodsFor!
 
@@ -155,10 +157,12 @@ nameOfFirstDictionaryReferencing: aGlobal
 	list := self symbolList dictionariesAndSymbolsOf: aGlobal.
 	list isEmpty ifTrue: [^''].
 	^list first first name! !
-!JadeServer64bit3x categoriesFor: #_behavior:categoryOfSelector:!Methods!public! !
-!JadeServer64bit3x categoriesFor: #_methodsFor:categories:!Methods!public! !
-!JadeServer64bit3x categoriesFor: #environmentForMethod:!Methods!public! !
-!JadeServer64bit3x categoriesFor: #nameOfFirstDictionaryReferencing:!Methods!public! !
+!JadeServer64bit3x categoriesForMethods!
+_behavior:categoryOfSelector:!Methods!public! !
+_methodsFor:categories:!Methods!public! !
+environmentForMethod:!Methods!public! !
+nameOfFirstDictionaryReferencing:!Methods!public! !
+!
 
 "End of package definition"!
 

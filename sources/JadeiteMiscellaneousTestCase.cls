@@ -157,7 +157,23 @@ test_autocompleteCaseInsensitiveSearch
 	self assert: ((JadeiteSearch new allClassesStartingWith: 'cp') includes: 'CPointer').
 	self assert: ((JadeiteSearch new allClassesStartingWith: 'cp') includes: 'CPreprocessor').
 	self assert: ((JadeiteSearch new allClassesStartingWith: 'e') includes: 'Error').
-	self assert: ((JadeiteSearch new allClassesStartingWith: 'euc') includes: 'EUCString')!
+	self assert: ((JadeiteSearch new allClassesStartingWith: 'rowanan') includes: 'RowanAnsweringService')!
+
+test_autocompleteClearsSymbolsOnLogout
+	JadeiteSearch initializeAutocompleteSymbolsIn: session.
+	self deny: JadeiteSearch allClassNames isEmpty.
+	self deny: JadeiteSearch allSelectorSymbols isEmpty.
+	TestMessageBox
+		enableJadeiteTestMessageBox;
+		plannedResult: #no.
+	
+	[
+	[self destroy: transcript.
+	self verifyWindowClosed: transcript]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self assert: JadeiteSearch allClassNames isEmpty.
+	self assert: JadeiteSearch allSelectorSymbols isEmpty]
+			ensure: [self ensureTestIsSetUpAfterLogout]!
 
 test_autocompleteSaveClassSymbolAdded
 	self testsIssue: #issue647 withTitle: 'Adding class doesn''t update autocomplete symbols'.
@@ -852,6 +868,7 @@ test_autoCommitOffInAdHocDisplay!public!test auto commit! !
 test_autoCommitOffInAdHocExecution!public!test auto commit! !
 test_autoCommitUpdatedInSession!public!test auto commit! !
 test_autocompleteCaseInsensitiveSearch!public!test auto complete!test methods! !
+test_autocompleteClearsSymbolsOnLogout!public!test!test auto complete! !
 test_autocompleteSaveClassSymbolAdded!public!test auto complete!test methods! !
 test_autocompleteSaveMethodSymbolAdded!public!test auto complete!test methods! !
 test_autocompleteSort!public!test!test auto complete! !

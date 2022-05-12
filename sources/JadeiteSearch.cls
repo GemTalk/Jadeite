@@ -23,6 +23,9 @@ autocompleteSymbolsFrom: partialSelector
 		session: session
 		trailingWildcard: true!
 
+clearSymbolCaches
+	self clearSymbolCaches!
+
 completionListSortBlock
 	| crt |
 	crt := CRTLibrary default.
@@ -110,6 +113,7 @@ view: aView
 !JadeiteSearch categoriesForMethods!
 allClassesStartingWith:!accessing!public! !
 autocompleteSymbolsFrom:!accessing!public! !
+clearSymbolCaches!initialization!public! !
 completionListSortBlock!accessing!public! !
 insertCompletion:at:!autocompletion!private! !
 killAutocompleteTimer!autocompletion!private! !
@@ -148,6 +152,10 @@ autoCompleteEnabled: boolean
 			[self allSelectorSymbols: OrderedCollection new.
 			self allClassNames: OrderedCollection new]!
 
+clearSymbolCaches
+	AllClassNames := nil.
+	AllSelectors := nil!
+
 confirmAutoCompleteEnabled: boolean in: session
 	"If the user chooses not to continue. Reset the value
 	return the former value to the sending method."
@@ -168,7 +176,11 @@ initializeAutocompleteSymbolsIn: session
 				commandArgs: Array new.
 	BrowserUpdate current issueCommands: (Array with: service) session: session.
 	AllClassNames := service answer first.
-	AllSelectors := service answer last!
+	AllSelectors := service answer last.
+	session
+		when: #postLogout
+		send: #clearSymbolCaches
+		to: self!
 
 initializeClassNamesIn: session
 	| service |
@@ -214,6 +226,7 @@ allClassNames!accessing!public! !
 allSelectorSymbols!accessing!public! !
 autoCompleteEnabled!accessing!public! !
 autoCompleteEnabled:!accessing!public! !
+clearSymbolCaches!public!utilities! !
 confirmAutoCompleteEnabled:in:!accessing!public! !
 initializeAutocompleteSymbolsIn:!public!utilities! !
 initializeClassNamesIn:!public!utilities! !

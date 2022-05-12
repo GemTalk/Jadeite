@@ -5628,6 +5628,7 @@ displayTransactionConflicts:!private!transaction management! !
 
 addCachedSymbols: unused
 	"only add new symbols if auto complete was turned on (symbol collections are empty)"
+	Transcript cr; show: 'newCachedSelectors: '; print: newCachedSelectors; flush. 
 	newCachedSelectors
 		ifNotNil: 
 			[JadeiteSearch allSelectorSymbols isEmpty ifTrue: [^self].

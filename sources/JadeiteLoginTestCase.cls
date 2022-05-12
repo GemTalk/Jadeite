@@ -78,7 +78,7 @@ test_361Libraries
 
 test_370Libraries
 	self assert: LibGciRpc64_3_7 superclass equals: LibGciRpc64.
-	self assert: LibGciRpc64_3_7 displayName equals: '64-bit 3.7.0 unreleased'.
+	self assert: LibGciRpc64_3_7 displayName equals: '64-bit 3.7.0'.
 	self assert: (File exists: File workingDirectory , 'bin\' , LibGciRpc64_3_7 fileNameSearch)!
 
 test_debugLoginDumpsParameters
@@ -99,7 +99,7 @@ test_debugLoginDumpsParameters
 				setUp	"reset the tes resource's session, etc"]!
 
 test_gemTask
-	| formerGemTask jadeiteShell |
+	| jadeiteShell |
 	self testsIssue: #issue416 withTitle: 'NetLDI task in login is not displayed correctly'.
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #no.	"don't commit"
@@ -107,8 +107,6 @@ test_gemTask
 	JadeiteLoginShell allInstances do: [:inst | inst view close].
 	jadeiteShell := JadeiteLoginShell show position: 80 @ 20.
 	jadeiteLogin := jadeiteShell model.
-	formerGemTask := jadeiteLogin gemTask.
-	self assert: formerGemTask equals: 'gemnetobject'.	"might need to change this assumption"
 	jadeiteLogin gemTask: 'gemnetdebug'.
 	jadeiteShell gemTaskPresenter: 'gemnetdebug'.	"update the gui"
 	self loginWithRetry: jadeiteShell.	"have to login so new task is accepted"

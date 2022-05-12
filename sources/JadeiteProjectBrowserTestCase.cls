@@ -66,17 +66,6 @@ dirtyProjectForChangeBrowser
 	self selectMethodNamed: #test1.
 	self projectsPresenter basicRemoveMethods!
 
-ensureTestIsSetUpAfterLogout
-	projectsBrowser := nil.
-	GciSession current: nil.
-	self loginWithRetry: (JadeiteLoginShell allInstances detect: [:shell | shell isOpen]).	"should only be one open"
-	self resources do: 
-			[:resource |
-			resource current
-				tearDown;
-				setUp].
-	self setUp!
-
 executeStringInOtherSession: string
 	| executionString |
 	executionString := '(SessionTemps current at: #otherSession) '.
@@ -3410,7 +3399,6 @@ assertAncestry:in:!private! !
 assertVariableTabSorted!private!support! !
 currentTabView!public!views! !
 dirtyProjectForChangeBrowser!dirty project!private! !
-ensureTestIsSetUpAfterLogout!private!support!tests! !
 executeStringInOtherSession:!public!support! !
 family:ofNodesIn:!private! !
 issue261createTestProject!issue test support!private! !
