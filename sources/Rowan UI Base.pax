@@ -390,6 +390,7 @@ package methodNames
 	add: #MultipleSelectionListBox -> #wmRButtonDown:wParam:lParam:;
 	add: #Object -> #basicPrepareForReplication;
 	add: #Object -> #isClassService;
+	add: #Object -> #isInspectorService;
 	add: #Object -> #isMethodService;
 	add: #Object -> #isPackageService;
 	add: #Object -> #isProjectService;
@@ -5485,6 +5486,9 @@ isClassService
 
 	^false!
 
+isInspectorService
+	^false!
+
 isMethodService
 
 	^false!
@@ -5511,6 +5515,7 @@ rowanFixMe
 !Object categoriesForMethods!
 basicPrepareForReplication!Jadeite!public! !
 isClassService!public!testing! !
+isInspectorService!public!testing! !
 isMethodService!public!testing! !
 isPackageService!public!testing! !
 isProjectService!public!testing! !

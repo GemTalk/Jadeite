@@ -31,6 +31,15 @@ activeServices
 	services addAll: self activePackageServices.
 	^services!
 
+applyUpdatesFromReturnedServices: aCollection
+	"don't just reinitialize the updates instance variable because
+	presenters are registered to that object"
+
+	self applyUpdateWhile: 
+			[updates removeAll: updates.
+			updates addAll: aCollection.
+			self updatesReadyToApply]!
+
 applyUpdateWhile: block
 	applyingUpdates := true.
 	block ensure: 
@@ -145,7 +154,7 @@ logSentServices: services
 
 performUpdate: updateBlock with: selector
 	updates do: 
-			[:update |
+			[:update | 
 			update updateType
 				ifNil: [updateBlock value: update]
 				ifNotNil: 
@@ -161,7 +170,7 @@ register: presenter selector: selector
 	removed, it's events go with it."
 
 	self
-		when: #updateReady
+		when: #updatesReadyToApply
 		send: #update:withSelector:
 		to: presenter
 		withArguments: (Array with: self with: selector)!
@@ -169,8 +178,9 @@ register: presenter selector: selector
 register: presenter selector: selector browser: browser
 	"send the update to the presenter so that when the presenter gets
 	removed, it's events go with it."
+
 	self
-		when: #updateReady
+		when: #updatesReadyToApply
 		send: #update:withSelector:browser:
 		to: presenter
 		withArguments: (Array
@@ -191,8 +201,10 @@ registeredListServices
 registeredPresenters
 	| presenters |
 	presenters := Set new.
-	(self getEvents ifNil: [^Array new] ifNotNil: [:eventCollection | eventCollection at: #updateReady])
-		messagesDo: [:message | presenters add: message receiver].
+	(self getEvents
+		ifNil: [^Array new]
+		ifNotNil: [:eventCollection | eventCollection at: #updatesReadyToApply])
+			messagesDo: [:message | presenters add: message receiver].
 	^presenters!
 
 registeredTreePresenters
@@ -220,10 +232,10 @@ selectedServices
 	services do:[:service | service command: #update]. 
 	^services!
 
-shouldApply: selector forSelector: update
-	^update updateType isNil or: 
-			[update updateType == selector
-				or: [update updateType isEmpty or: [update updateType includes: selector]]]!
+shouldApply: selector forSelector: service
+	^service updateType isNil or: 
+			[service updateType == selector
+				or: [service updateType isEmpty or: [service updateType includes: selector]]]!
 
 shouldGetNewLoggerGroup: boolean
 
@@ -237,30 +249,19 @@ stopLogging
 
 update: services afterStonReplication: stonResults
 	"assume we get back the 'same' services as we sent"
+
 	self initializeUpdates.
 	returnedServices := STON fromString: stonResults.
 	logger loggingService replicateFrom: returnedServices last.
 	returnedServices := returnedServices copyWithout: returnedServices last.
 	self logReceivedServices: returnedServices.
 	returnedServices do: [:newService | services do: [:service | service replicateFrom: newService]].
-	self updates: returnedServices.
+	self applyUpdatesFromReturnedServices: returnedServices.
 	returnedServices do: [:service | service postUpdate].
 	^returnedServices!
 
-updateReady
-	updates isEmpty ifFalse: [self trigger: #updateReady]!
-
 updates
 	^updates!
-
-updates: aCollection
-	"don't just reinitialize the updates instance variable because
-	presenters are registered to that object"
-
-	self applyUpdateWhile: 
-			[updates removeAll: updates.
-			updates addAll: aCollection.
-			self updateReady]!
 
 updateService: service session: session
 	^self updateServices: (Array with: service) session: session!
@@ -299,12 +300,16 @@ updatesPerform: selector presenter: presenter browser: browser
 						with: presenter
 						with: browser]]]
 			on: Error
-			do: [:ex | self halt]! !
+			do: [:ex | self halt]!
+
+updatesReadyToApply
+	updates isEmpty ifFalse: [self trigger: #updatesReadyToApply]! !
 !BrowserUpdate categoriesForMethods!
 activeClassServices!accessing!public! !
 activeMethodServices!accessing!public! !
 activePackageServices!accessing!public! !
 activeServices!accessing!public! !
+applyUpdatesFromReturnedServices:!accessing!public! !
 applyUpdateWhile:!public!updating! !
 basicIssueCommand:session:!commands!private! !
 basicUpdateServices:session:!private!updating! !
@@ -344,13 +349,12 @@ shouldGetNewLoggerGroup:!accessing!public! !
 startLogging!logging!public! !
 stopLogging!logging!public! !
 update:afterStonReplication:!public!updating! !
-updateReady!public!updating! !
 updates!accessing!public! !
-updates:!accessing!public! !
 updateService:session:!public!updating! !
 updateServices:session:!public!updating! !
 updatesPerform:presenter:!public!updating! !
 updatesPerform:presenter:browser:!public!updating! !
+updatesReadyToApply!public!updating! !
 !
 
 !BrowserUpdate class methodsFor!

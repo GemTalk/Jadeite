@@ -199,16 +199,6 @@ getDocumentData
 	^self model asXML.
 !
 
-invalidateLoginButton
-	"fake up a query to ensure the button gets enabled without user action"
-
-	| buttonView query |
-	buttonView := loginButtonPresenter view.
-	query := CommandQuery commandDescription: buttonView commandDescription source: buttonView.
-	self queryCommand: query.
-	self view setFocus. 
-	buttonView invalidate!
-
 isModified
 
 	^isModified.
@@ -300,7 +290,7 @@ postLogin: aGciSession
 	versionListPresenter view disable.
 	aGciSession
 		when: #postLogout
-		send: #invalidateLoginButton
+		send: #postLogoutActions
 		to: self!
 
 queryCommand: query
@@ -453,7 +443,6 @@ fileOpen!commands!public! !
 fillVersionList!public! !
 gemTaskPresenter:!public! !
 getDocumentData!accessing!public! !
-invalidateLoginButton!displaying!public! !
 isModified!public! !
 isModified:!public! !
 isText!public!testing! !

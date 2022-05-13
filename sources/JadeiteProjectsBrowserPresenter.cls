@@ -1582,18 +1582,18 @@ updateClassMenu: menu
 	menu addItem: gotoDictionaryItem!
 
 updateCommand: aString onSuccessDo: aBlock
-
 	"Only use STON to update in our new browser"
+
 	stonCritical critical: 
 			[
 			[| stonResults update |
 			update := BrowserUpdate current initializeUpdates.
 			stonResults := self gciSession serverPerform: #systemBrowserSTON:
 						with: environment printString , ' ' , aString.
-			update updates: (STON fromString: stonResults).
+			update applyUpdatesFromReturnedServices: (STON fromString: stonResults).
 			self updateSelectionsFor: update.
 			self updateTabLabel.
-			update updates: #()]
+			update applyUpdatesFromReturnedServices: #()]
 					ensure: [selectedClassChanged := false]].
 	^nil!
 

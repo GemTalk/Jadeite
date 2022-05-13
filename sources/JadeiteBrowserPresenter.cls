@@ -1512,7 +1512,6 @@ registerPresentersForUpdates
 		register: classHierarchyPresenter
 			selector: #renamedClassInHierarchy:browser:
 			browser: self;
-		register: classListPresenter selector: #addCachedSymbols:;
 		register: packageListPresenter
 			selector: #componentPackagesUpdate:browser:
 			browser: self;

@@ -60,6 +60,16 @@ fillVersionList
 	list := list asSortedCollection: [:a :b | self isVersion: a lessThanOrEqualTo: b].
 	versionListPresenter list: list!
 
+invalidateLoginButton
+	"fake up a query to ensure the button gets enabled without user action"
+
+	| query buttonView |
+	buttonView := loginButtonPresenter view.
+	query := CommandQuery commandDescription: buttonView commandDescription source: buttonView.
+	self queryCommand: query.
+	self view setFocus.
+	buttonView invalidate!
+
 loginFailureCaption
 	^'Jadeite Login Error'!
 
@@ -76,6 +86,10 @@ postLogin: aGciSession
 	transcript := JadeiteTranscript showOnSession: aGciSession.
 	transcript view position: self view position + JadePresenter defaultWindowOffset. 
 	^result!
+
+postLogoutActions
+	self invalidateLoginButton.
+	BrowserUpdate clearCurrent	"gets rid of all old service events associated with current session"!
 
 raiseConsole
 	| transcript |
@@ -94,10 +108,12 @@ basicCaption!accessing!public! !
 buildSmalltalkClassesForNewSharedLibraries!public! !
 createNewClassIfNotInSystem:!public! !
 fillVersionList!public! !
+invalidateLoginButton!displaying!public! !
 loginFailureCaption!private! !
 openGitHubJadeiteProject!public! !
 openGitHubRowanProject!public! !
 postLogin:!public! !
+postLogoutActions!displaying!public! !
 raiseConsole!menu handlers!public! !
 rowanReadyLibraries!public! !
 updateCaption!public! !
