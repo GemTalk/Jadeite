@@ -373,10 +373,10 @@ loadLibrary: aClass debugPath: debugPath
 logout
 	self privateLogout.
 	self trigger: #logout.
+	self trigger: #postLogout.
 	gciSessionId := nil.
 	library := nil.
-	GciSession current: nil.
-	self trigger: #postLogout!
+	GciSession current: nil!
 
 logoutRequested
 
