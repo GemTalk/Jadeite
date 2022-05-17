@@ -1470,12 +1470,12 @@ test_restartInBlock
 	
 	[self openDebuggerOn: 'RowanSample1 new interestingLoop'.
 	secondDebuggedProcess := 
-			[self
-				debuggerDo: 
+			[self debuggerDo: 
+					[
 					[session
 						debugString: '1 zork'
 						fromContext: nil
-						environment: 0] fork]
+						environment: 0] fork]]
 					fork.
 	
 	[self getSecondDebugger.

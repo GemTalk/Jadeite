@@ -131,6 +131,10 @@ clientDefinitionClass
 
 	^self subclassResponsibility!
 
+codePoint
+	"trapping difficult to find error" 
+	self halt. !
+
 command
 	^command!
 
@@ -376,8 +380,8 @@ prepareForReplication
 printOn: aStream
 
 	super printOn: aStream. 
-	aStream nextPut: $:. 
-	aStream nextPutAll: (self name ifNil: [nil printString])!
+	[aStream nextPut: $:. 
+	aStream nextPutAll: (self name ifNil: [nil printString])] on: Error do:[:ex | aStream nextPutAll: 'Error printing service name: '; print: ex]. !
 
 processListUpdate: aPresenter!
 
@@ -568,6 +572,7 @@ classMethodsUpdate:browser:!public!updating! !
 classUpdate:!public!updating! !
 clearCommand!Init / Release!public! !
 clientDefinitionClass!public! !
+codePoint!accessing!public! !
 command!accessing!public! !
 command:!accessing!public! !
 commandArgs!accessing!public! !

@@ -10,6 +10,9 @@ JadeiteBrowser comment: ''!
 !JadeiteBrowser categoriesForClass!Unclassified! !
 !JadeiteBrowser methodsFor!
 
+closeRequested: anAssociation
+	anAssociation value ifTrue: [self isOkayToChange ifFalse: [anAssociation value: false]]!
+
 maximizeCode
 	| tabView topView |
 	self currentCard class == self systemBrowserPresenter ifFalse: [^self].
@@ -37,6 +40,7 @@ position: aPoint
 systemBrowserPresenter
 	^JadeiteBrowserPresenter! !
 !JadeiteBrowser categoriesForMethods!
+closeRequested:!public! !
 maximizeCode!public! !
 position:!public! !
 systemBrowserPresenter!public! !

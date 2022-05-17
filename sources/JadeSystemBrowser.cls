@@ -39,17 +39,6 @@ closeCard
 
 	cardsPresenter view removeSubView: self currentCard view.!
 
-closeRequested: anAssociation
-
-	anAssociation value ifTrue: [
-		self isOkayToChange ifTrue: [
-			[self saveLayoutAndContents] on: Error do: [:ex | ex return].
-		] ifFalse: [
-			anAssociation value: false.
-		].
-	].
-!
-
 commitTransaction
 	| commitResult |
 	commitResult := self currentCard commitTransaction.
@@ -252,7 +241,6 @@ addSystemBrowserForClass:!public! !
 addSystemBrowserWithLayoutInfo:!public! !
 addWorkspace!public! !
 closeCard!public! !
-closeRequested:!public! !
 commitTransaction!public! !
 createComponents!public! !
 createSchematicWiring!history!public! !

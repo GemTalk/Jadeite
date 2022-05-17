@@ -387,14 +387,21 @@ printOn: target
 
 	| serviceClassName |
 	serviceClassName := self class name.
-	target 
+	
+	[target
 		nextPutAll: (serviceClassName first isVowel ifTrue: ['an '] ifFalse: ['a ']);
 		nextPutAll: serviceClassName;
 		nextPut: $(;
-		nextPutAll: className; 
+		nextPutAll: className;
 		nextPutAll: '>>';
 		nextPutAll: selector asString;
-		nextPut: $). !
+		nextPut: $)]
+			on: Error
+			do: 
+				[:ex |
+				target
+					nextPutAll: 'Error in RowanMethodService>>printOn: ';
+					print: ex]!
 
 projectName
 	^projectName!
