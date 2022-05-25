@@ -20,34 +20,43 @@ cleanupProcesses
 
 closeDebuggers
 	| list semaphore |
-	list := JadeiteMethodListBrowser allInstances , RowanSystemBrowser allInstances
-				, JadeiteDebugger allInstances. 
+	list := JadeiteMethodListBrowser allInstances , JadeiteBrowser allInstances
+				, JadeiteDebugger allInstances.
 	semaphore := Semaphore new.
 	list do: 
 			[:each |
 			session removeEventsTriggeredFor: each.
 			
 			[
-			[each view close.
-			each become: Object new.
+			[each view destroy.
 			semaphore signal.
-			SessionManager inputState prod]
-					on: ProcessTermination
+			SessionManager inputState prod] on: ProcessTermination
 					do: 
 						[:ex |
 						"A debugger wants to terminate the current process!!!!"
 						
-						[each become: Object new.
-						semaphore signal.
-						SessionManager inputState prod]
-								forkAt: Processor userBackgroundPriority.
+						[semaphore signal.
+						SessionManager inputState prod] forkAt: Processor userBackgroundPriority.
 						ex pass]]
 					fork.
 			semaphore wait.
 			debugger == each ifTrue: [debugger := nil]].
-	list := JadeiteMethodListBrowser allInstances , RowanSystemBrowser allInstances
-				, JadeiteDebugger allInstances.
-	self assert: list isEmpty!
+	list := nil.
+	MemoryManager current collectGarbage.
+	(Delay forMilliseconds: 300) wait.
+	JadeiteMethodListBrowser allInstances
+		do: [:browser | self assert: (browser view isKindOf: DeafObject)].
+	JadeiteBrowser allInstances do: [:browser | self assert: (browser view isKindOf: DeafObject)].
+	JadeiteDebugger allInstances
+		do: [:theDebugger | self assert: (theDebugger view isKindOf: DeafObject)].
+	MemoryManager current collectGarbage.
+	(Delay forMilliseconds: 250) wait.
+	self purgeInstances: JadeiteBrowser.
+	self purgeInstances: JadeiteMethodListBrowser.
+	self purgeInstances: JadeiteDebugger.
+	self assert: JadeiteDebugger allInstances isEmpty.
+	self assert: JadeiteMethodListBrowser allInstances isEmpty.
+	self assert: JadeiteBrowser allInstances isEmpty!
 
 closeJadeiteLoginShells
 	| query |
@@ -115,7 +124,8 @@ getDebugger
 	"need a more definitive test to know when debugger is fully built"
 
 	100 timesRepeat: 
-			[debugger := JadeiteDebugger allInstances detect: [:each | true] ifNone: [nil].
+			[debugger := JadeiteDebugger allInstances detect: [:each | (each view isKindOf: DeafObject) not]
+						ifNone: [nil].
 			(debugger notNil and: 
 					[debugger documentPresenter view selection notEmpty and: 
 							[debugger gciSession notNil
@@ -156,8 +166,9 @@ methodListBrowser
 !
 
 openDebuggerOn: aString
+	JadeiteDebugger allInstances
+		do: [:theDebugger | self assert: (theDebugger view isKindOf: DeafObject)].
 	self
-		assert: JadeiteDebugger allInstances isEmpty;
 		debuggerDo: [process := [session executeString: aString] forkAt: Processor activePriority + 1];
 		getDebugger;
 		yourself!
@@ -177,6 +188,20 @@ primaryTestWindow
 	If not, just return nil"
 
 	^debugger!
+
+purgeInstances: aClass
+	| count |
+	count := 0.
+	aClass allInstances isEmpty
+		ifFalse: 
+			[[count < 50] whileTrue: 
+					[count := count + 1.
+					MemoryManager current collectGarbage.
+					SessionManager inputState pumpMessages.
+					(Delay forMilliseconds: 50) wait.
+					aClass allInstances isEmpty ifTrue: [^self]]].
+	aClass allInstances do: [:each | each become: Object new].
+	^count!
 
 removeMethodNamed: aSymbol
 	| classService methodService |
@@ -253,11 +278,20 @@ systemBrowser
 tearDown
 	self assert: (session isKindOf: GciSession).
 	self cleanupProcesses.
+	JadeSessionManager
+		dump: 'self cleanupProcesses'
+		toFileNamed: 'test6tracing.log'
+		andStop: false.
 	self assert: (session isKindOf: GciSession).
 	projectsBrowser
 		ifNotNil: 
 			[projectsBrowser view close.
 			projectsBrowser := nil].
+	JadeSessionManager
+		dump: 'projectsBrowser view close.
+			projectsBrowser := nil'
+		toFileNamed: 'test6tracing.log'
+		andStop: false.
 	debugger ifNotNil: [debugger documentPresenter view isModified: false].
 	self assert: (session isKindOf: GciSession).
 	secondDebugger ifNotNil: [secondDebugger documentPresenter view isModified: false].
@@ -266,14 +300,46 @@ tearDown
 		ifNotNil: 
 			[process terminate.
 			process := nil].
+	JadeSessionManager
+		dump: 'process terminate.
+			process := nil'
+		toFileNamed: 'test6tracing.log'
+		andStop: false.
 	self terminateGsProcess.
+	JadeSessionManager
+		dump: 'terminateGsProcess'
+		toFileNamed: 'test6tracing.log'
+		andStop: false.
 	self assert: (session isKindOf: GciSession).
 	self closeDebuggers.
+	JadeSessionManager
+		dump: 'closeDebuggers'
+		toFileNamed: 'test6tracing.log'
+		andStop: false.
 	JadeiteDebugger debuggerClass: nil.
 	JadeiteDebugger semaphore: nil.
 	TestMessageBox disableJadeiteTestMessageBox.	"in case the test has gotten stuck while enabled"
 	self assert: (session isKindOf: GciSession).
-	super tearDown!
+	super tearDown.
+	JadeSessionManager
+		dump: 'super tearDown'
+		toFileNamed: 'test6tracing.log'
+		andStop: false.
+	JadeSessionManager
+		dump: '#tearDown complete - dumping processes'
+		toFileNamed: 'test6tracing.log'
+		andStop: false.
+	Process allInstances do: 
+			[:theProcess |
+			theProcess isTerminated
+				ifFalse: 
+					[JadeSessionManager
+						dump: 'process: ' , theProcess displayString
+							toFileNamed: 'test6tracing.log'
+							andStop: false;
+						dump: (theProcess stackTrace: 100000)
+							toFileNamed: 'test6tracing.log'
+							andStop: false]]!
 
 terminateGsProcess
 	| string |
@@ -351,6 +417,7 @@ methodListBrowser!private!support! !
 openDebuggerOn:!private!support! !
 pressButtonIn:!private!support!tests! !
 primaryTestWindow!accessing!public! !
+purgeInstances:!private!support! !
 removeMethodNamed:!private!support!test ad hoc execution! !
 saveMethodWithHalt!private!support! !
 selectFrameAt:!private!support! !

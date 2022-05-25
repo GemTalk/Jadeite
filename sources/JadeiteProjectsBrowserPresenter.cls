@@ -780,7 +780,6 @@ onSetFocus: aView stack: aString
 onViewClosed
 	"the sunitPresenter doesn't seem to get it's events cleaned up on 
 	a normal window exit. Help it out."
-
 	super onViewClosed.
 	BrowserUpdate current logComment: 'Closing Projects Browser {' , self identityHash printString, '}'.
 	BrowserUpdate current removeEventsTriggeredFor: sunitPresenter methodListPresenter.

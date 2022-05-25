@@ -18,6 +18,11 @@ anotherNumberMethodSource
 
 		^3'!
 
+answerNoToDialogDuring: block
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #yes.
+	block ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 answerYesToDialogDuring: block
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #yes.
@@ -712,6 +717,7 @@ verifyWindowClosed: presenter
 !JadeiteAbstractTestCase categoriesForMethods!
 abortTransaction!private!setup teardown! !
 anotherNumberMethodSource!constants!private! !
+answerNoToDialogDuring:!private!support! !
 answerYesToDialogDuring:!private!support! !
 assertMethodInList:!private!support! !
 assertMethodInList:presenter:!private!support! !

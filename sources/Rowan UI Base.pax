@@ -466,6 +466,8 @@ package methodNames
 	add: #Time -> #stonOn:;
 	add: #TranscriptPresenter -> #clearTranscript;
 	add: #TreeModel -> #getNodeFor:ifAbsent:;
+	add: #View -> #wmWindowPosChanged:wParam:lParam:;
+	add: #View -> #wmWindowPosChanging:wParam:lParam:;
 	add: 'CodeSourcePresenter class' -> #resource_Default_view;
 	add: 'Date class' -> #fromSton:;
 	add: 'DiffBrowser class' -> #defaultModel;
@@ -529,6 +531,7 @@ package methodNames
 	add: 'JadePresenter class' -> #unsavedChangesValidSessionDialogIn:text:;
 	add: 'JadeServer class' -> #gsString;
 	add: 'JadeServer64bit32 class' -> #gsClassDefinitionStringFor:;
+	add: 'JadeSessionManager class' -> #dump:toFileNamed:andStop:;
 	add: 'JadeSessionManager class' -> #getUrl;
 	add: 'JadeSessionManager class' -> #mainShellClass;
 	add: 'JadeSessionManager class' -> #setVersion;
@@ -4017,6 +4020,29 @@ sbUpdateMethodPragmas!public!System Browser! !
 
 !JadeSessionManager class methodsFor!
 
+dump: message toFileNamed: fileName andStop: shouldSuspendProcess
+	| file fileStream |
+	(File exists: fileName) ifFalse: [[file := File open: fileName mode: #create] ensure: [file close]].
+	fileStream := FileStream write: fileName mode: #append.
+	
+	[fileStream
+		cr;
+		nextPutAll: Date today shortString;
+		space;
+		nextPutAll: Time now printString;
+		space;
+		nextPutAll: '<process: ';
+		nextPutAll: Processor activeProcess identityHash printString;
+		nextPutAll: '>';
+		tab;
+		nextPutAll: message]
+			ensure: [fileStream close].
+	Transcript
+		cr;
+		show: message;
+		flush.
+	shouldSuspendProcess ifTrue: [Processor activeProcess suspend]!
+
 getUrl
 	"no longer sent, but might be handy to have"
 
@@ -4033,6 +4059,7 @@ setVersion
 
 	Version := self getVersion.! !
 !JadeSessionManager class categoriesForMethods!
+dump:toFileNamed:andStop:!public! !
 getUrl!public! !
 mainShellClass!public! !
 setVersion!public! !
@@ -6042,6 +6069,42 @@ getNodeFor: anObject ifAbsent: aNiladicValuable
 	^objectNodeMap at: anObject ifAbsent: aNiladicValuable! !
 !TreeModel categoriesForMethods!
 getNodeFor:ifAbsent:!hierarchy!private! !
+!
+
+!View methodsFor!
+
+wmWindowPosChanged: message wParam: wParam lParam: lParam
+	"Private - The position of the receiver has changed in some manner."
+
+	self isStateRestoring
+		ifFalse: 
+			[(self presenter class canUnderstand: #onPositionChanged:)
+				ifTrue: 
+					[self presenter onPositionChanged: (PositionEvent
+								window: self
+								message: message
+								wParam: wParam
+								lParam: lParam)]].
+	"Ignore any return value from the high-level event, and answer 0 to 
+	prevent the DefWindowProc being invoked, which in turn prevents
+	WM_SIZE and WM_MOVE which we don't use anymore"
+	^0!
+
+wmWindowPosChanging: message wParam: wParam lParam: lParam
+	"Private - The position of the receiver is about to change in some manner."
+
+	^self isStateRestoring
+		ifFalse: 
+			[(self presenter class canUnderstand: #onPositionChanging:)
+				ifTrue: 
+					[self presenter onPositionChanging: (PositionEvent
+								window: self
+								message: message
+								wParam: wParam
+								lParam: lParam)]]! !
+!View categoriesForMethods!
+wmWindowPosChanged:wParam:lParam:!event handling-win32!private! !
+wmWindowPosChanging:wParam:lParam:!event handling-win32!private! !
 !
 
 "End of package definition"!

@@ -65,7 +65,11 @@ jadeInspect
 	^inspector
 		evaluateSelectedTextIn: self
 		thenInspectInContext: self inspectorContextObject
-		debugger: self parentPresenter! !
+		debugger: self parentPresenter!
+
+onViewClosed
+	super onViewClosed.
+	BrowserUpdate current removeEventsTriggeredFor: self.! !
 !JadeiteDebuggerMethodSourcePresenter categoriesForMethods!
 clearBreakPointAt:in:!menu handlers!public! !
 editMenuStrings!Jade!private! !
@@ -73,5 +77,6 @@ editRevert!edit!private! !
 executeSelectionOrLine:!menu handlers!public! !
 inspectorContextObject!private! !
 jadeInspect!Jade!private! !
+onViewClosed!events!public! !
 !
 

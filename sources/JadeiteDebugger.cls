@@ -274,6 +274,10 @@ initializeIdleProcess
 			[(Delay forMilliseconds: 10) wait.
 			cachedSession isCallInProgress] whileTrue: [].
 			cachedClass signalSemaphore.
+			(idleProcessSemaphore isKindOf: Semaphore)
+				ifFalse: 
+					[Processor activeProcess terminate
+					"we do weird things to close a debugger test. If the semaphore isn't a semaphore, stop!!"].
 			idleProcessSemaphore wait]
 					repeat]
 					ensure: [cachedClass ifNotNil: [:cls | cls signalSemaphore]]]
@@ -321,7 +325,6 @@ methodValueChanged
 
 onCloseRequested: boolValueHolder
 	self isOkayToChangeFrame ifFalse: [^self].
-	self class lastPosition: self view position.
 	super onCloseRequested: boolValueHolder!
 
 onIdleEntered
@@ -333,13 +336,20 @@ onViewClosed
 
 	BrowserUpdate current logComment: 'Closing Debugger {' , self identityHash printString , '}'.
 	processList := processListPresenter list.
-	BrowserUpdate current removeEventsTriggeredFor: self. 
+	BrowserUpdate current removeEventsTriggeredFor: self.
+	BrowserUpdate current removeEventsTriggeredFor: processListPresenter.
+	BrowserUpdate current removeEventsTriggeredFor: variableListPresenter.
+	BrowserUpdate current removeEventsTriggeredFor: documentPresenter.
 	"Allow test to know when view is closed"
 	self class signalSemaphore.
 	self terminateIdleProcess.
 	self class lastPosition: self view position.
 	self class lastExtent: self view extent.
-	super onViewClosed!
+	super onViewClosed.
+	frameListPresenter removeEventsTriggeredFor: self.
+	processListPresenter removeEventsTriggeredFor: self.
+	variableListPresenter removeEventsTriggeredFor: self.
+	codePane documentPresenter removeEventsTriggeredFor: self!
 
 onViewDestroyed
 	"Private - copied from RowanSystemBrowserPresenter>>onViewClosed"

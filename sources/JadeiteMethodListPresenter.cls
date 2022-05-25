@@ -144,6 +144,19 @@ onDragMethod: aSession
 		defaultOperation: #copy;
 		yourself!
 
+onViewClosed
+	super onViewClosed.
+	BrowserUpdate current removeEventsTriggeredFor: methodListPresenter methodListPresenter.
+	BrowserUpdate current removeEventsTriggeredFor: self.
+	methodListPresenter removeEventsTriggeredFor: self.
+	methodSourcePresenter removeEventsTriggeredFor: self.
+	autoCommit removeEventsTriggeredFor: self.
+	methodSourcePresenter documentPresenter removeEventsTriggeredFor: self!
+
+onViewDestroyed
+	super onViewDestroyed.
+	subPresenters := nil!
+
 onViewOpened
 
 	super onViewOpened. 
@@ -319,6 +332,8 @@ methods:selecting:!public! !
 methods:selectingAnyMatch:!public! !
 onCloseRequested:!event handlers!public! !
 onDragMethod:!drag & drop!public! !
+onViewClosed!event handlers!public! !
+onViewDestroyed!event handlers!public! !
 onViewOpened!event handlers!public! !
 postEditSaveMethod!menu handlers support!public! !
 queryCommand:!menu handlers support!public! !

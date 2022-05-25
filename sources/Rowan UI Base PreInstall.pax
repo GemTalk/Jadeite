@@ -11,7 +11,10 @@ Date class removeSelector: #fromSton:.
 Date removeSelector: #stonOn:. 
 ExternalStructure class removeSelector: #canUnderstand:.
 DolphinSureCertificateStore class removeSelector: #clearTemporaryTrustStore.
-SocketAbstract class removeSelector: #onShutdown
+SocketAbstract class removeSelector: #onShutdown.
+View removeSelector: #wmWindowPosChanged:wParam:lParam:.
+View removeSelector: #wmWindowPosChanging:wParam:lParam:.
+
 '.
 
 package binaryGlobalNames: (Set new

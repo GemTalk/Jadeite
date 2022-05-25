@@ -818,12 +818,11 @@ test_debugFromWithinInspector
 	[inspector documentPresenter value: 'self size'.
 	inspector documentPresenter view selectAll.
 	inspector documentPresenter view setFocus.
+	JadeiteDebugger allInstances do: [:each | self assert: (each view isKindOf: DeafObject) not].
 	self
-		assert: JadeiteDebugger allInstances isEmpty;
 		debuggerDo: [process := [inspector codePane jadeDebug] forkAt: Processor activePriority + 1];
 		getDebugger.
-	self assert: debugger model value equals: 'nil halt. self size'
-		]
+	self assert: debugger model value equals: 'nil halt. self size']
 			ensure: [inspector view close]!
 
 test_debuggerModifiedSourcePaneChangeFrame
@@ -1482,10 +1481,12 @@ test_restartInBlock
 	self denyIsNil: secondDebugger.
 	self deny: debugger == secondDebugger.
 	self deny: debugger gsProcess oop = secondDebugger gsProcess oop.
-	self deny: debugger frameListPresenter list size = secondDebugger frameListPresenter list size]
+	self deny: debugger frameListPresenter list size = secondDebugger frameListPresenter list size.
+	self answerNoToDialogDuring: [self destroy: secondDebugger]]
 			ensure: [secondDebuggedProcess terminate]]
 			ensure: 
-				[self projectsPresenter clearBreakPointAt: breakPoint in: self projectsPresenter.
+				[self answerNoToDialogDuring: [self destroy: debugger].
+				self projectsPresenter clearBreakPointAt: breakPoint in: self projectsPresenter.
 				self destroy: projectsBrowser]!
 
 test_runningTestDoesNotLoseStepPoint
@@ -1846,13 +1847,13 @@ test_terminateDoesNotWalkback
 	
 	[gsProcess := session executeString: '[9999 timesRepeat:[(Delay forSeconds: 1) wait]] fork asOop'.
 	self
-		openDebuggerOn: 'nil halt'; 
+		openDebuggerOn: 'nil halt';
 		assert: debugger processListPresenter list size equals: allProcesses + 1;
 		assert: (debugger processListPresenter selectionByIndex: allProcesses + 1) notNil.
 	TestMessageBox plannedResult: #yes.	"confirm we want to terminate process"
-	processTerminated := false. 
+	processTerminated := false.
 	terminateProcess := 
-			[processTerminated := debugger  terminateProcess notNil.
+			[processTerminated := debugger terminateProcess notNil.
 			self assert: processTerminated.
 			
 			[self
@@ -1866,10 +1867,16 @@ test_terminateDoesNotWalkback
 						"the debugger may be gone already"
 						]]
 					fork.
-	[processTerminated] whileFalse:[(Delay forMilliseconds: 10) wait]. 
-	self debuggerDo: [debugger resumeProcess]]
+	[processTerminated] whileFalse: [(Delay forMilliseconds: 10) wait].
+	
+	[TestMessageBox disableJadeiteTestMessageBox.
+	self destroy: debugger] on: Error
+			do: 
+				[:ex |
+				"the debugger may be gone already"
+				]]
 			ensure: 
-				[TestMessageBox disableJadeiteTestMessageBox.
+				[TestMessageBox disableJadeiteTestMessageBox.	"in case the test gets an error before we destroy the debugger"
 				terminateProcess terminate.
 				gsProcess := nil]!
 
@@ -2275,30 +2282,40 @@ test6
 	"browse senders"
 
 	| browser list |
-	[
-		500 timesRepeat: [
-			(Delay forMilliseconds: 10) wait.
-			SessionManager inputState prod.
-		].
-	] forkAt: Processor userBackgroundPriority.
-	self 
+	JadeSessionManager
+		dump: '#test6 starting'
+		toFileNamed: 'test6tracing.log'
+		andStop: false.
+	self
 		openDebuggerOn: '| x | 
 nil halt.
 x := 1 -> 2.
 x yourself';
-		assert: debugger documentPresenter view selection equals: 'halt';
-		debuggerDo: [debugger stepOver];
-		assert: debugger documentPresenter view selection equals: '->';
-		debuggerDo: [debugger stepInto];
-
-		debuggerDo: [debugger browseSenders];
-		assert: (browser := self methodListBrowser) notNil;
-		assert: (list := browser primaryPresenter methodListPresenter primaryPresenter list) notEmpty;
-		assert: list size > 10;
-
-		debuggerDo: [debugger resumeProcess];
-		yourself.
-!
+		assert: debugger documentPresenter view selection equals: 'halt'.
+	self debuggerDo: [debugger stepOver].
+	JadeSessionManager
+		dump: 'self debuggerDo: [debugger stepOver].'
+		toFileNamed: 'test6tracing.log'
+		andStop: false.
+	self assert: debugger documentPresenter view selection equals: '->'.
+	self debuggerDo: [debugger stepInto].
+	JadeSessionManager
+		dump: 'self debuggerDo: [debugger stepInto].'
+		toFileNamed: 'test6tracing.log'
+		andStop: false.
+	self debuggerDo: [debugger browseSenders].
+	JadeSessionManager
+		dump: 'self debuggerDo: [debugger browseSenders].'
+		toFileNamed: 'test6tracing.log'
+		andStop: false.
+	self assert: (browser := self methodListBrowser) notNil.
+	self assert: (list := browser primaryPresenter methodListPresenter primaryPresenter list) notEmpty.
+	self assert: list size > 10.
+	self debuggerDo: [debugger resumeProcess].
+	JadeSessionManager
+		dump: 'self debuggerDo: [debugger resumeProcess].'
+		toFileNamed: 'test6tracing.log'
+		andStop: false!
 
 test7
 	"set/clear breakpoints"

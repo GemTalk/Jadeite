@@ -29,7 +29,12 @@ onViewClosed
 	BrowserUpdate current
 		logComment: 'Closing Method List Browser {' , self identityHash printString , '}'.
 	BrowserUpdate current removeEventsTriggeredFor: self primaryPresenter.
-	BrowserUpdate current removeEventsTriggeredFor: self primaryPresenter methodSourcePresenter documentPresenter.  !
+	BrowserUpdate current removeEventsTriggeredFor: self primaryPresenter methodSourcePresenter documentPresenter.  
+	self primaryPresenter removeEventsTriggeredFor: self. !
+
+onViewDestroyed
+	super onViewDestroyed.
+	subPresenters := nil!
 
 onViewOpened
 	super onViewOpened.
@@ -58,6 +63,7 @@ editSaveMethod!menu handlers!public! !
 firstReferenceString!accessing!private! !
 firstReferenceString:!accessing!private! !
 onViewClosed!event handlers!public! !
+onViewDestroyed!event handlers!public! !
 onViewOpened!event handlers!public! !
 presenterClass!private! !
 reformatSource!menu handlers!public! !
