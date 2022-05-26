@@ -275,7 +275,9 @@ initialize
 	breakPoints := OrderedCollection new.
 	hasSupers := false.
 	hasSubs := false.
-	hasMethodHistory := true. !
+	hasMethodHistory := true.
+	isExtension := false.
+	inSelectedPackage := true!
 
 inSelectedPackage
 
@@ -286,9 +288,6 @@ inSelectedPackage: anObject
 
 isExtension
 	^isExtension!
-
-isExtension: anObject
-	isExtension := anObject!
 
 isMethodService
 
@@ -637,7 +636,6 @@ initialize!initialization!public! !
 inSelectedPackage!public!testing! !
 inSelectedPackage:!accessing!public! !
 isExtension!accessing!public! !
-isExtension:!accessing!public! !
 isMethodService!public!testing! !
 isReadOnly!public!testing! !
 isTestMethod!public!testing! !
