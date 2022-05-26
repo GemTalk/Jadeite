@@ -294,7 +294,7 @@ buildProjectListView
 	projectInfoTab view addSubView: listView!
 
 buildProjectTab
-	projectInfoTab := Presenter new.
+	projectInfoTab := Shell new.
 	projectInfoTab parentPresenter: self textAreaTabs.
 	projectInfoTab createView: 'Default view'.
 	projectInfoTab view layoutManager: ProportionalLayout new.
