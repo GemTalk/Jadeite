@@ -278,20 +278,11 @@ systemBrowser
 tearDown
 	self assert: (session isKindOf: GciSession).
 	self cleanupProcesses.
-	JadeSessionManager
-		dump: 'self cleanupProcesses'
-		toFileNamed: 'test6tracing.log'
-		andStop: false.
 	self assert: (session isKindOf: GciSession).
 	projectsBrowser
 		ifNotNil: 
 			[projectsBrowser view close.
 			projectsBrowser := nil].
-	JadeSessionManager
-		dump: 'projectsBrowser view close.
-			projectsBrowser := nil'
-		toFileNamed: 'test6tracing.log'
-		andStop: false.
 	debugger ifNotNil: [debugger documentPresenter view isModified: false].
 	self assert: (session isKindOf: GciSession).
 	secondDebugger ifNotNil: [secondDebugger documentPresenter view isModified: false].
@@ -300,46 +291,14 @@ tearDown
 		ifNotNil: 
 			[process terminate.
 			process := nil].
-	JadeSessionManager
-		dump: 'process terminate.
-			process := nil'
-		toFileNamed: 'test6tracing.log'
-		andStop: false.
 	self terminateGsProcess.
-	JadeSessionManager
-		dump: 'terminateGsProcess'
-		toFileNamed: 'test6tracing.log'
-		andStop: false.
 	self assert: (session isKindOf: GciSession).
 	self closeDebuggers.
-	JadeSessionManager
-		dump: 'closeDebuggers'
-		toFileNamed: 'test6tracing.log'
-		andStop: false.
 	JadeiteDebugger debuggerClass: nil.
 	JadeiteDebugger semaphore: nil.
 	TestMessageBox disableJadeiteTestMessageBox.	"in case the test has gotten stuck while enabled"
 	self assert: (session isKindOf: GciSession).
-	super tearDown.
-	JadeSessionManager
-		dump: 'super tearDown'
-		toFileNamed: 'test6tracing.log'
-		andStop: false.
-	JadeSessionManager
-		dump: '#tearDown complete - dumping processes'
-		toFileNamed: 'test6tracing.log'
-		andStop: false.
-	Process allInstances do: 
-			[:theProcess |
-			theProcess isTerminated
-				ifFalse: 
-					[JadeSessionManager
-						dump: 'process: ' , theProcess displayString
-							toFileNamed: 'test6tracing.log'
-							andStop: false;
-						dump: (theProcess stackTrace: 100000)
-							toFileNamed: 'test6tracing.log'
-							andStop: false]]!
+	super tearDown!
 
 terminateGsProcess
 	| string |

@@ -2282,10 +2282,6 @@ test6
 	"browse senders"
 
 	| browser list |
-	JadeSessionManager
-		dump: '#test6 starting'
-		toFileNamed: 'test6tracing.log'
-		andStop: false.
 	self
 		openDebuggerOn: '| x | 
 nil halt.
@@ -2293,29 +2289,13 @@ x := 1 -> 2.
 x yourself';
 		assert: debugger documentPresenter view selection equals: 'halt'.
 	self debuggerDo: [debugger stepOver].
-	JadeSessionManager
-		dump: 'self debuggerDo: [debugger stepOver].'
-		toFileNamed: 'test6tracing.log'
-		andStop: false.
 	self assert: debugger documentPresenter view selection equals: '->'.
 	self debuggerDo: [debugger stepInto].
-	JadeSessionManager
-		dump: 'self debuggerDo: [debugger stepInto].'
-		toFileNamed: 'test6tracing.log'
-		andStop: false.
 	self debuggerDo: [debugger browseSenders].
-	JadeSessionManager
-		dump: 'self debuggerDo: [debugger browseSenders].'
-		toFileNamed: 'test6tracing.log'
-		andStop: false.
 	self assert: (browser := self methodListBrowser) notNil.
 	self assert: (list := browser primaryPresenter methodListPresenter primaryPresenter list) notEmpty.
 	self assert: list size > 10.
-	self debuggerDo: [debugger resumeProcess].
-	JadeSessionManager
-		dump: 'self debuggerDo: [debugger resumeProcess].'
-		toFileNamed: 'test6tracing.log'
-		andStop: false!
+	self debuggerDo: [debugger resumeProcess]!
 
 test7
 	"set/clear breakpoints"
