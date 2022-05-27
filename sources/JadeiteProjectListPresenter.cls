@@ -206,7 +206,8 @@ queryCommand: aCommandQuery
 	^true!
 
 refresh
-	self updateProjects!
+	self updateProjects.
+	projectListPresenter view invalidate!
 
 refreshFromServerAfterAbort: browserService
 	browserService projectsUpdate: projectListPresenter browser: self. !
