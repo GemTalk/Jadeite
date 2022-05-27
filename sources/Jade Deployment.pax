@@ -40,7 +40,6 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\Base\Dolphin'
 	'..\Core\Object Arts\Dolphin\Base\Dolphin Legacy Date & Time'
 	'..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base'
-	'..\Core\Object Arts\Dolphin\MVP\Views\Scintilla\Dolphin Scintilla View'
 	'..\Core\Contributions\Burning River\ExternalProcess\ExternalProcess'
 	'GemStone C Interface'
 	'GemStone Session'

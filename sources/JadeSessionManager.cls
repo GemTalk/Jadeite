@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 RuntimeSessionManager subclass: #JadeSessionManager
 	instanceVariableNames: ''
@@ -44,11 +44,13 @@ version
 		ifTrue: [Version]
 		ifFalse: ['(Development)'].
 ! !
-!JadeSessionManager categoriesFor: #defaultResLibPath!public! !
-!JadeSessionManager categoriesFor: #logError:!public! !
-!JadeSessionManager categoriesFor: #main!public! !
-!JadeSessionManager categoriesFor: #pause!public! !
-!JadeSessionManager categoriesFor: #version!public! !
+!JadeSessionManager categoriesForMethods!
+defaultResLibPath!public! !
+logError:!public! !
+main!public! !
+pause!public! !
+version!public! !
+!
 
 !JadeSessionManager class methodsFor!
 
@@ -75,7 +77,6 @@ prependStackStartMessage: timeStampString on: fileStream
 
 sessionStarted
 
-	ScintillaLibrary open: 'bin\SciLexer.dll'.
 	GciLibrary sessionStarted.!
 
 shortVersion
@@ -90,11 +91,13 @@ version
 		ifTrue: [Version]
 		ifFalse: ['(Development)'].
 ! !
-!JadeSessionManager class categoriesFor: #appendStackEndMessage:on:!public!stack dumping support! !
-!JadeSessionManager class categoriesFor: #getVersion!public! !
-!JadeSessionManager class categoriesFor: #prependStackStartMessage:on:!public!stack dumping support! !
-!JadeSessionManager class categoriesFor: #sessionStarted!public! !
-!JadeSessionManager class categoriesFor: #shortVersion!public! !
-!JadeSessionManager class categoriesFor: #stackDumpTimeStampString!public!stack dumping support! !
-!JadeSessionManager class categoriesFor: #version!public! !
+!JadeSessionManager class categoriesForMethods!
+appendStackEndMessage:on:!public!stack dumping support! !
+getVersion!public! !
+prependStackStartMessage:on:!public!stack dumping support! !
+sessionStarted!public! !
+shortVersion!public! !
+stackDumpTimeStampString!public!stack dumping support! !
+version!public! !
+!
 
