@@ -151,10 +151,6 @@ createSchematicWiring
 		send: #conditionChanged
 		to: self.
 	componentListPresenter
-		when: #labelOf:editedTo:accept:
-		send: #labelOf:editedTo:accept:
-		to: self.
-	componentListPresenter
 		when: #drop:
 			send: #onDropPackageToComponent:
 			to: self;
@@ -295,16 +291,6 @@ issueProjectDefinitionCommand
 					old := componentListPresenter model asBag detect: [:oldDef | oldDef name = new name] ifNone: [].
 					old ifNotNil: [old replicateFrom: new]].
 			componentListPresenter selection: componentSelection ifAbsent:[]]!
-
-labelOf: componentService editedTo: value accept: accept
-	value isEmpty ifTrue: [^self].
-	componentService name = value ifTrue: [^self].
-	self projectDefinitionService
-		command: #renameComponent:to:;
-		commandArgs: (Array with: componentService name with: value).
-	self issueProjectDefinitionCommand.
-	componentService name: value.
-	accept value: true!
 
 loadSpecItem: specPropertyArray updatedAtIndex: index
 	model
@@ -472,8 +458,23 @@ removePackagesFromProjectDefinition
 	model removePackagesFromProjectDefinition: packageListPresenter selections.
 	self displayComponentPackages!
 
+rename: componentService to: newName
+	newName isEmpty ifTrue: [^self].
+	componentService name = newName ifTrue: [^self].
+	self projectDefinitionService
+		command: #renameComponent:to:;
+		commandArgs: (Array with: componentService name with: newName).
+	self issueProjectDefinitionCommand.
+	componentService name: newName!
+
 renameComponent
-	componentListPresenter view editSelectionLabel.!
+	| newName oldName path |
+	oldName := File splitFilenameFrom: componentListPresenter selection name.
+	path := (File splitPath: componentListPresenter selection name) second.
+	newName := Prompter prompt: 'Enter the new name of ' , oldName.
+	newName ifNil: [^self].
+	self rename: componentListPresenter selection to: path , newName.
+	componentListPresenter view invalidate!
 
 renamePackage
 	| result |
@@ -542,7 +543,6 @@ initialize!initialization!public! !
 isClassSelected!public!testing! !
 isOkayToChange!event handlers!public! !
 issueProjectDefinitionCommand!private! !
-labelOf:editedTo:accept:!event handlers!public! !
 loadSpecItem:updatedAtIndex:!event handlers!public! !
 model:!accessing!public! !
 nonNilComponentDefinitionRoots!private! !
@@ -564,6 +564,7 @@ removeArrayCondition!menu handlers!public! !
 removeComponent!menu handlers!public! !
 removeConditionalAttribute!menu handlers!public! !
 removePackagesFromProjectDefinition!menu handlers!public! !
+rename:to:!menu handlers!public! !
 renameComponent!menu handlers!public! !
 renamePackage!menu handlers!public! !
 resetComponentList!initialization!public! !
