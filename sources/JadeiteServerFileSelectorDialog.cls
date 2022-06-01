@@ -93,7 +93,7 @@ resource_Default_view
 
 showOnSession: aGciSession
 	| inst service answer |
-	service := RowanFileService new path: '$ROWAN_PROJECTS_HOME'.
+	service := RowanFileService new path: JadePresenter rowanProjectsHomeEnvVarString.
 	service session: aGciSession.
 	inst := self createOn: service.
 	inst pathText value: service path.

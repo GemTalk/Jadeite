@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteProjectsBrowserPresenter subclass: #JadeiteBrowserPresenter
-	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement packageGroupPresenter componentPackageContainer packageDictionaryContainer packageMethodListPresenter projectListContainer packageGroupsContainer classContainer projectInfoList addPackagePresenter'
+	instanceVariableNames: 'dictionaryPresenter packageDictionaryCards globalsTab autoCommitButton search previousTabViewArrangement previousTopViewArrangement packageGroupPresenter componentPackageContainer packageDictionaryContainer packageMethodListPresenter projectListContainer packageGroupsContainer classContainer projectInfoList addPackagePresenter projectReadMeTab'
 	classVariableNames: ''
 	poolDictionaries: 'ScintillaConstants'
 	classInstanceVariableNames: ''!
@@ -293,25 +293,41 @@ buildProjectListView
 	listView arrangement: 2. 
 	projectInfoTab view addSubView: listView!
 
+buildProjectReadMeTab
+	| cardLabel service |
+	projectReadMeTab := TextPresenter new.
+	(projectReadMeTab
+		parentPresenter: self textAreaTabs presenter;
+		createView: 'Scintilla view';
+		view)
+		wordWrap: true;
+		contextMenu: self projectInfoMenu;
+		backcolor: JadeiteTextStyles default colorForNoEdits.
+	service := RowanFileService new
+				command: #readmeContents;
+				path: JadePresenter rowanProjectsHomeEnvVarString , '/' , self selectedProjectName , '/README.md'.
+	self issueCommand: service.
+	projectReadMeTab value: service answer replaceLfWithCrLf.
+	cardLabel := CardLabel text: 'ReadMe'.
+	cardLabel iconBlock: nil.
+	projectReadMeTab view
+		arrangement: cardLabel;
+		name: 'projectReadMeTab'!
+
 buildProjectTab
+	| cardLabel |
 	projectInfoTab := Presenter new.
 	projectInfoTab parentPresenter: self textAreaTabs presenter.
 	projectInfoTab createView: 'Container view'.
 	projectInfoTab view layoutManager: ProportionalLayout new.
 	self buildProjectListView.
-	self buildAddPackageView!
-
-buildProjectTabIfNecessary
-	projectInfoTab
-		ifNil: 
-			[| cardLabel |
-			self buildProjectTab.
-			projectInfoList view contextMenu: self projectInfoMenu.
-			cardLabel := CardLabel text: 'Project'.
-			cardLabel iconBlock: nil.
-			projectInfoTab view
-				arrangement: cardLabel;
-				name: 'projectInfoTab']!
+	self buildAddPackageView.
+	projectInfoList view contextMenu: self projectInfoMenu.
+	cardLabel := CardLabel text: 'Project'.
+	cardLabel iconBlock: nil.
+	projectInfoTab view
+		arrangement: cardLabel;
+		name: 'projectInfoTab'!
 
 categoriesMenuStrings
 
@@ -1527,7 +1543,7 @@ reloadV2Project
 	^self loadProjects!
 
 removeAppropriateTab
-	self isNoneProjectSelected ifTrue: [self removeProjectTab] ifFalse: [self removeGlobalsTab]!
+	self isNoneProjectSelected ifTrue: [self removeProjectTabs] ifFalse: [self removeGlobalsTab]!
 
 removeClass
 	| classService answeringService classReferenceBrowser queryService |
@@ -1576,11 +1592,14 @@ removeGlobalsTab
 	globalsTabView ifNotNil: [self textAreaTabs removeSubView: globalsTabView].
 	globalsTab := nil!
 
-removeProjectTab
-	| projectInfoView |
+removeProjectTabs
+	| projectInfoView projectReadMeView |
 	projectInfoView := self view viewNamed: 'projectInfoTab' ifNone: [nil].
 	projectInfoView ifNotNil: [self textAreaTabs removeSubView: projectInfoView].
-	projectInfoTab := nil!
+	projectInfoTab := nil.
+	projectReadMeView := self view viewNamed: 'projectReadMeTab' ifNone: [nil].
+	projectReadMeView ifNotNil: [self textAreaTabs removeSubView: projectReadMeView].
+	projectReadMeTab := nil!
 
 resetClassTemplate
 	| presenter |
@@ -1993,7 +2012,10 @@ updateProjectInfo
 	| service |
 	self removeAppropriateTab.
 	self isNoneProjectSelected ifTrue: [^self buildGlobalsTab].
-	self buildProjectTabIfNecessary.
+	projectInfoTab
+		ifNil: 
+			[self buildProjectTab.
+			self buildProjectReadMeTab].
 	service := projectListPresenter selectionIfNone: [^projectInfoList list: ListModel new].
 	self updateTabLabel.
 	self updateProjectInfoTabFor: service.
@@ -2070,8 +2092,8 @@ buildGlobalsTab!private!tabs! !
 buildInfoTab:!private!tabs! !
 buildPreferencesMenu!menus!private!updating! !
 buildProjectListView!private!tabs! !
+buildProjectReadMeTab!private!tabs! !
 buildProjectTab!private!tabs! !
-buildProjectTabIfNecessary!private!tabs! !
 categoriesMenuStrings!menus!public! !
 checkout!menu handlers!public! !
 checkoutTag!menu handlers!public! !
@@ -2202,7 +2224,7 @@ removeClass!menu handlers!public! !
 removeDictionaries!menu handlers!public! !
 removeGlobal!menu handlers!public! !
 removeGlobalsTab!private!tabs! !
-removeProjectTab!private!tabs! !
+removeProjectTabs!private!tabs! !
 resetClassTemplate!private! !
 resetFontSize!menu handlers!public! !
 runAll!menu handlers!public! !
