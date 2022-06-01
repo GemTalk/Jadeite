@@ -1837,6 +1837,19 @@ array'.
 	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @12 line 6'.
 	self debuggerDo: [debugger resumeProcess]!
 
+test_tempNamedReceiver
+	| x |
+	self testsIssue: #issue902
+		withTitle: '(Oscar3.2pre-release5) message temp named receiver gets lost in inspector'.
+	self openDebuggerOn: '| receiver | 
+receiver := ''fnoodle''. 
+self halt.'.
+	self assert: debugger variableListPresenter list size equals: 3.	"two 'receivers' and an 'args and temps label'"
+	self assert: debugger variableListPresenter list first value equals: 'nil'.
+	self assert: debugger variableListPresenter list first key value equals: 'receiver'.
+	self assert: debugger variableListPresenter list last value equals: '''fnoodle'''.
+	self assert: debugger variableListPresenter list last key value = 'receiver'!
+
 test_terminateDoesNotWalkback
 	"Terminate a process other than the primary one"
 
@@ -2450,6 +2463,7 @@ test_stepOutSelectedFrame1!public!test step out! !
 test_stepOutSelectedFrame2!public!test step out! !
 test_stepOutTopFrame!public!test step out! !
 test_stepThrough!public!test step out! !
+test_tempNamedReceiver!public!tests! !
 test_terminateDoesNotWalkback!public!tests! !
 test_unicodeMethod!public!tests! !
 test_unsavedChangesActionChangeFrame!public!tests! !

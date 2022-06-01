@@ -9,6 +9,7 @@ package classNames
 	add: #JadeiteBreakpointBrowserTestCase;
 	add: #JadeiteBrokenTests;
 	add: #JadeiteChangesBrowserTestCase;
+	add: #JadeiteComponentEditorTestCase;
 	add: #JadeiteDataCuratorTestCase;
 	add: #JadeiteDebuggerDataCuratorTestCase;
 	add: #JadeiteDebuggerTestCase;
@@ -161,6 +162,11 @@ JadeiteAbstractTestCase subclass: #JadeiteBreakpointBrowserTestCase
 	classInstanceVariableNames: ''!
 JadeiteAbstractTestCase subclass: #JadeiteChangesBrowserTestCase
 	instanceVariableNames: 'changesBrowser'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteAbstractTestCase subclass: #JadeiteComponentEditorTestCase
+	instanceVariableNames: 'componentEditor'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

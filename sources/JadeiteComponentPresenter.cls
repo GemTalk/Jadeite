@@ -465,7 +465,8 @@ rename: componentService to: newName
 		command: #renameComponent:to:;
 		commandArgs: (Array with: componentService name with: newName).
 	self issueProjectDefinitionCommand.
-	componentService name: newName!
+	componentService name: newName.
+	componentListPresenter view invalidate!
 
 renameComponent
 	| newName oldName path |
@@ -474,7 +475,7 @@ renameComponent
 	newName := Prompter prompt: 'Enter the new name of ' , oldName.
 	newName ifNil: [^self].
 	self rename: componentListPresenter selection to: path , newName.
-	componentListPresenter view invalidate!
+	!
 
 renamePackage
 	| result |

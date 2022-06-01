@@ -148,6 +148,7 @@ deselectProjects
 	self projectListPresenter selectionByIndex: 0!
 
 destroy: visualThing
+	visualThing ifNil:[^self]. 
 	(Delay forMilliseconds: 200) wait.
 	(self class canUnderstand: #close) ifTrue: [visualThing close] ifFalse: [visualThing view close].
 	(Delay forMilliseconds: 20) wait.!
