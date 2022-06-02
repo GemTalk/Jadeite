@@ -294,20 +294,15 @@ buildProjectListView
 	projectInfoTab view addSubView: listView!
 
 buildProjectReadMeTab
-	| cardLabel service |
+	| cardLabel |
 	projectReadMeTab := TextPresenter new.
 	(projectReadMeTab
 		parentPresenter: self textAreaTabs presenter;
 		createView: 'Scintilla view';
 		view)
 		wordWrap: true;
-		contextMenu: self projectInfoMenu;
 		backcolor: JadeiteTextStyles default colorForNoEdits.
-	service := RowanFileService new
-				command: #readmeContents;
-				path: JadePresenter rowanProjectsHomeEnvVarString , '/' , self selectedProjectName , '/README.md'.
-	self issueCommand: service.
-	projectReadMeTab value: service answer replaceLfWithCrLf.
+	self updateProjectReadMe.
 	cardLabel := CardLabel text: 'ReadMe'.
 	cardLabel iconBlock: nil.
 	projectReadMeTab view
@@ -700,6 +695,15 @@ editRevert
 			[methodSourcePresenter value: methodListPresenter selection source.
 			self displayNoMods: methodSourcePresenter]!
 
+editSave
+	| currentCard |
+	currentCard := textAreaTabs view currentCard.
+	currentCard = classDefinitionPresenter view ifTrue: [^self editSaveClass].
+	currentCard = methodSourcePresenter view ifTrue: [^self editSaveMethod].
+	currentCard = classCommentPresenter view ifTrue: [^self editSaveClassComment].
+	currentCard = projectReadMeTab view ifTrue: [^self editSaveReadMe].
+	MessageBox notify: 'Save menu not effective for this text area tab'!
+
 editSaveClass
 	"a two stage class compilation is used. First stage compiles
 	the class and stores an anonymous method to be used in 
@@ -757,6 +761,14 @@ editSaveMethod: classService
 				ifTrue: 
 					["there will be no method selected on a compiler error"
 					self selectMethodsFrom: classService]]!
+
+editSaveReadMe
+	| service |
+	service := RowanFileService new
+				command: #writeReadme:;
+				commandArgs: (Array with: projectReadMeTab value);
+				path: self projectReadmePath.
+	self issueCommand: service!
 
 expandFullAt: classService
 	Cursor wait showWhile: 
@@ -1310,6 +1322,9 @@ projectMenuStrings
 				projectLog;
 				refresh].
 	^#('Projects' 'Create ...//createNewProject' 'Load Git Project ...//loadV2Project' 'Reload Project //reloadV2Project' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write ...//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' '&Add Package...//addPackage'  'Edit Components//editComponents' '-'  'Audit//auditProject' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
+
+projectReadmePath
+	^JadePresenter rowanProjectsHomeEnvVarString , '/' , self selectedProjectName , '/README.md'!
 
 projectTabLabel
 	"Selections get mixed up switching between system presenters unless the tabs
@@ -2019,6 +2034,7 @@ updateProjectInfo
 	service := projectListPresenter selectionIfNone: [^projectInfoList list: ListModel new].
 	self updateTabLabel.
 	self updateProjectInfoTabFor: service.
+	self updateProjectReadMe. 
 	addPackagePresenter view enable!
 
 updateProjectInfoTabFor: service
@@ -2036,6 +2052,14 @@ updateProjectInfoTabFor: service
 			array nextPut: (Array with: service with: 'projectUrl').
 			service == service ifFalse: [array nextPut: (Array with: RowanProjectService new with: nil)]].
 	projectInfoList list: array contents!
+
+updateProjectReadMe
+	| service |
+	service := RowanFileService new
+				command: #readmeContents;
+				path: self projectReadmePath. 
+	self issueCommand: service.
+	projectReadMeTab value: service answer replaceLfWithCrLf!
 
 updateSystemTab
 	| projectTabLabel | 
@@ -2125,9 +2149,11 @@ editComponents!menu handlers!public! !
 editDelete!menu handlers!public! !
 editPackageGroups!menu handlers!public! !
 editRevert!menu handlers!public! !
+editSave!menu handlers!public! !
 editSaveClass!menu handlers!public! !
 editSaveMethod!menu handlers!public! !
 editSaveMethod:!menu handlers support!private! !
+editSaveReadMe!menu handlers!private!tabs! !
 expandFullAt:!menu handlers support!private!updating! !
 expandFullHierarchy!menu handlers!public!updating! !
 findClass!menu handlers!public! !
@@ -2206,6 +2232,7 @@ projectLog!project menu handlers!public! !
 projectMenu!menus!public! !
 projectMenuCommands!menus!public! !
 projectMenuStrings!menus!public! !
+projectReadmePath!menu handlers!private!tabs! !
 projectTabLabel!displaying!private! !
 protectedDictionaries!constants!menu handlers!public! !
 pullFromGit!project menu handlers!public! !
@@ -2275,6 +2302,7 @@ updatePackageGroupPackages!event handlers!public!updating! !
 updateProject!event handlers!public!updating! !
 updateProjectInfo!private!tabs! !
 updateProjectInfoTabFor:!private!tabs! !
+updateProjectReadMe!private!tabs! !
 updateSystemTab!event handlers!private!updating! !
 updateTabLabel!public!updating! !
 variablesMenuStrings!menus!public! !
