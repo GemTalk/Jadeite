@@ -2686,13 +2686,14 @@ test_tabNames_projectsBrowser
 	self selectRowanSample1Class.
 	self saveHooMethod.
 	textTabs := self projectsPresenter textTabs.
-	self assert: textTabs size equals: 6.
+	self assert: textTabs size equals: 7.
 	self assert: (textTabs at: 1) text equals: 'Class Definition'.
 	self assert: (textTabs at: 2) text equals: 'Class Documentation'.
 	self assert: (textTabs at: 3) text equals: 'Method Source'.
 	self assert: (textTabs at: 4) text equals: 'SUnit'.
 	self assert: (textTabs at: 5) text equals: 'Comparison'.	"for some as yet unknown reason, this is created differently"
-	self assert: (textTabs at: 6) text equals: 'Project'.!
+	self assert: (textTabs at: 6) text equals: 'Project'.
+	self assert: (textTabs at: 7) text equals: 'ReadMe'.!
 
 test_tabNames_projectsBrowserNotLost
 	"why we have to put the text in the arrangement field is beyond me"

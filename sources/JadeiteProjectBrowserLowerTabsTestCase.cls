@@ -1356,7 +1356,8 @@ test_unloadProjectClearsProjectTab
 	self projectsPresenter projectInfoTab model size >= 8.	"sanity test. presume that we won't remove info from this tab"
 	
 	[self assertIsNil: (self projectListPresenter selectionIfNone: []).
-	self assert: self projectsPresenter projectInfoList list isEmpty]
+	self assert: self projectsPresenter projectInfoList list isEmpty.
+	self assert: self projectsPresenter projectReadMeTab value isEmpty]
 			ensure: 
 				[self cloneRowanSample1.
 				self ensureRowanSampleProjectsLoaded]! !

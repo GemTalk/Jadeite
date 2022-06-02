@@ -393,7 +393,7 @@ cleanupProjectInfoTab
 	self projectListPresenter selectionIfNone: 
 			[projectInfoTab
 				ifNotNil: 
-					[projectInfoList list: ListModel new.
+					[self clearProjectTabs.
 					addPackagePresenter view disable]]!
 
 clearComponentList
@@ -406,6 +406,10 @@ clearMethodListPresenters
 	variableListPresenter clear.
 	packageMethodListPresenter clear.
 	methodListPresenter clear!
+
+clearProjectTabs
+	projectReadMeTab value: String new.
+	projectInfoList list: ListModel new!
 
 comparisonPresenter
 
@@ -1326,6 +1330,9 @@ projectMenuStrings
 projectReadmePath
 	^JadePresenter rowanProjectsHomeEnvVarString , '/' , self selectedProjectName , '/README.md'!
 
+projectReadMeTab
+	^projectReadMeTab!
+
 projectTabLabel
 	"Selections get mixed up switching between system presenters unless the tabs
 	have a unique label. Rather silly, but we'll give the tab a unique number"
@@ -2031,10 +2038,12 @@ updateProjectInfo
 		ifNil: 
 			[self buildProjectTab.
 			self buildProjectReadMeTab].
-	service := projectListPresenter selectionIfNone: [^projectInfoList list: ListModel new].
+	service := projectListPresenter selectionIfNone: 
+					[self clearProjectTabs.
+					^self].
 	self updateTabLabel.
 	self updateProjectInfoTabFor: service.
-	self updateProjectReadMe. 
+	self updateProjectReadMe.
 	addPackagePresenter view enable!
 
 updateProjectInfoTabFor: service
@@ -2126,6 +2135,7 @@ classesMenuStrings!menus!public! !
 cleanupProjectInfoTab!event handlers!public!updating! !
 clearComponentList!initialize/release!public! !
 clearMethodListPresenters!event handlers!private!updating! !
+clearProjectTabs!private!tabs! !
 comparisonPresenter!accessing!public! !
 contextObject!menu handlers support!private! !
 copyInfo!menu handlers!public! !
@@ -2233,6 +2243,7 @@ projectMenu!menus!public! !
 projectMenuCommands!menus!public! !
 projectMenuStrings!menus!public! !
 projectReadmePath!menu handlers!private!tabs! !
+projectReadMeTab!accessing!private! !
 projectTabLabel!displaying!private! !
 protectedDictionaries!constants!menu handlers!public! !
 pullFromGit!project menu handlers!public! !

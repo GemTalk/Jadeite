@@ -299,7 +299,7 @@ isAvailable
 	^self current isAvailable!
 
 sampleProject1Name
-	^'RowanSample9'!
+	^'RowanSample1'!
 
 signalInitializationError
 	"TestSuite>>run: in the SUnit pacakge sends this method
