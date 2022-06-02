@@ -361,7 +361,7 @@ test_compileClassCompilerError
 				self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_compileClassDirtiesPackageAndProject
-	self ensureRowanSample1Loaded.	"reload to control dirty state"
+	self ensureRowanSampleProjectsLoaded.	"reload to control dirty state"
 	self selectRowanSample1Class.
 	self deny: self projectListPresenter selection isDirty.
 	self deny: self packageListPresenter selection isDirty.
@@ -1350,16 +1350,16 @@ test_sunitUpdatesProperly
 
 test_unloadProjectClearsProjectTab
 	self cloneRowanSample1.
-	self ensureRowanSample1Loaded.
+	self ensureRowanSampleProjectsLoaded.
 	self selectRowanSample1Class.
-	self unloadSampleProject.
+	self unloadSampleProject1.
 	self projectsPresenter projectInfoTab model size >= 8.	"sanity test. presume that we won't remove info from this tab"
 	
 	[self assertIsNil: (self projectListPresenter selectionIfNone: []).
 	self assert: self projectsPresenter projectInfoList list isEmpty]
 			ensure: 
 				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded]! !
+				self ensureRowanSampleProjectsLoaded]! !
 !JadeiteProjectBrowserLowerTabsTestCase categoriesForMethods!
 cardMenuItemForCommand:in:!public!test sunit tab!tests! !
 test_abstractTestsShown!public!test sunit tab!tests! !

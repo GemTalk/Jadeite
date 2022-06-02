@@ -175,8 +175,8 @@ ensureOneTab
 	projectsBrowser ifNil: [^self].
 	[projectsBrowser cardsPresenter view cards size = 1] whileFalse: [projectsBrowser closeCard]!
 
-ensureRowanSample1Loaded
-	JadeiteTestResource current ensureRowanSample1Loaded!
+ensureRowanSampleProjectsLoaded
+	JadeiteTestResource current ensureRowanSampleProjectsLoaded!
 
 ensureTestIsSetUpAfterLogout
 	projectsBrowser := nil.
@@ -217,9 +217,9 @@ interestingLoopMethodSource
 	].
 	^result'!
 
-isSampleProjectLoaded
+isSampleProject1Loaded
 	^(transcript projectListPresenter projectListPresenter list
-		detect: [:projectService | projectService name = self sampleProjectName]
+		detect: [:projectService | projectService name = self sampleProject1Name]
 		ifNone: []) notNil!
 
 issueCommand: service
@@ -246,7 +246,7 @@ loadRowanSample1InProjectList
 	root := self rowanProjectsHome.
 	self transcriptTab basicLoadV2Project: sample1Path projectsHome: root.
 	self transcriptTab refresh.
-	self selectServicesNamed: (Array with: self sampleProjectName)
+	self selectServicesNamed: (Array with: self sampleProject1Name)
 		in: self transcriptTab projectListPresenter.
 	selections := self transcriptTab projectListPresenter selections.
 	RowanBrowserService new reloadProjects: selections presenter: self transcriptTab.
@@ -348,8 +348,8 @@ rowanSample1Path
 sampleClassName
 	^'RowanSample1'!
 
-sampleProjectName
-	^JadeiteTestResource sampleProjectName!
+sampleProject1Name
+	^JadeiteTestResource sampleProject1Name!
 
 saveClass: className superclass: superName instVars: instVars package: aString
 	self projectsPresenter classDefinitionPresenter
@@ -613,7 +613,7 @@ setUp
 	session := JadeiteTestResource current session.
 	transcript := JadeiteTestResource current transcript.
 	self setAutoCommit: false.
-	self ensureRowanSample1Loaded!
+	self ensureRowanSampleProjectsLoaded!
 
 setupProjectBrowser
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
@@ -690,14 +690,14 @@ transcriptProjectNamed: string
 transcriptTab
 	^transcript projectListPresenter !
 
-unloadSampleProject
+unloadSampleProject1
 	| browserService |
-	self isSampleProjectLoaded
+	self isSampleProject1Loaded
 		ifTrue: 
 			[browserService := RowanBrowserService new.
 			browserService
 				command: #unloadProjectsNamed:;
-				commandArgs: (Array with: (Array with: self sampleProjectName)).
+				commandArgs: (Array with: (Array with: self sampleProject1Name)).
 			self issueCommand: browserService]!
 
 updateService: service
@@ -747,12 +747,12 @@ disableBreakpoints!public!support! !
 disableInteractionsWhile:!private!setup teardown! !
 enableBreakpoints!public!support! !
 ensureOneTab!private!support! !
-ensureRowanSample1Loaded!private!project support! !
+ensureRowanSampleProjectsLoaded!private!project support! !
 ensureTestIsSetUpAfterLogout!private!support!tests! !
 fail:!asserting!public! !
 haltTestForHardToCatchErrors:!private!setup teardown! !
 interestingLoopMethodSource!constants!private! !
-isSampleProjectLoaded!private!private testing!project support! !
+isSampleProject1Loaded!private!private testing!project support! !
 issueCommand:!issue test support!public!support! !
 issueCommands:!issue test support!public!support! !
 itemNamed:in:!issue test support!private! !
@@ -774,7 +774,7 @@ queryCommand:inPresenter:view:!private! !
 rowanProjectsHome!constants!private! !
 rowanSample1Path!constants!private! !
 sampleClassName!private!project browser support! !
-sampleProjectName!constants!private! !
+sampleProject1Name!constants!private! !
 saveClass:superclass:instVars:package:!private! !
 saveClass:withInstVars:package:!private! !
 saveInterestingLoopMethod!browser support!private! !
@@ -822,7 +822,7 @@ transcriptForCurrentSession!private!setup teardown!support! !
 transcriptProjectList!public!transcript support! !
 transcriptProjectNamed:!public!transcript support! !
 transcriptTab!public!transcript support! !
-unloadSampleProject!private!project support! !
+unloadSampleProject1!private!project support! !
 updateService:!issue test support!public!support! !
 variableListPresenter!private!project browser support! !
 verifyWindowClosed:!private!support!tests! !

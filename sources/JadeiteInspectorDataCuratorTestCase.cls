@@ -70,8 +70,7 @@ test_abortTransactionInBasicInspector
 	[transcript projectListPresenter refresh.
 	self denyProjectInList: 'RowanSample1'] ensure: 
 				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded].
-!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_abortTransactionInNavigationInspector
 	| remoteObject jadeiteMenu abortItem |
@@ -90,7 +89,7 @@ test_abortTransactionInNavigationInspector
 	[transcript projectListPresenter refresh.
 	self denyProjectInList: 'RowanSample1'] ensure: 
 				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded].
+				self ensureRowanSampleProjectsLoaded].
 	"focus in code pane"
 	inspector documentPresenter setFocus.
 	abortItem commandDescription performAgainst: inspector.
@@ -98,7 +97,7 @@ test_abortTransactionInNavigationInspector
 	[transcript projectListPresenter refresh.
 	self denyProjectInList: 'RowanSample1'] ensure: 
 				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded].
+				self ensureRowanSampleProjectsLoaded].
 	"focus in list pane"
 	inspector instVarListPresenter setFocus.
 	abortItem commandDescription performAgainst: inspector.
@@ -106,7 +105,7 @@ test_abortTransactionInNavigationInspector
 	[transcript projectListPresenter refresh.
 	self denyProjectInList: 'RowanSample1'] ensure: 
 				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_addCharacterToString
 	"add a character to a string and expect to have it highlighted"
@@ -506,7 +505,7 @@ test_commitTransactionInBasicInspector
 	| remoteObject jadeiteMenu commitItem abortItem |
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
 	self cloneRowanSample1.
-	self ensureRowanSample1Loaded.
+	self ensureRowanSampleProjectsLoaded.
 	self assertProjectInList: 'RowanSample1'.
 	remoteObject := session
 				executeString: '123'
@@ -520,17 +519,17 @@ test_commitTransactionInBasicInspector
 	abortItem := self itemNamed: 'Abort Transaction' in: jadeiteMenu.
 	abortItem commandDescription performAgainst: inspector.
 	self assertProjectInList: 'RowanSample1'.
-	self unloadSampleProject.
+	self unloadSampleProject1.
 	commitItem commandDescription performAgainst: inspector.
 	self denyProjectInList: 'RowanSample1'.
 	self cloneRowanSample1.
-	self ensureRowanSample1Loaded!
+	self ensureRowanSampleProjectsLoaded!
 
 test_commitTransactionInNavigationInspectorFocusCodePane
 	| remoteObject jadeiteMenu commitItem abortItem |
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
 	self cloneRowanSample1.
-	self ensureRowanSample1Loaded.
+	self ensureRowanSampleProjectsLoaded.
 	self assertProjectInList: 'RowanSample1'.
 	remoteObject := session
 				executeString: 'Array new'
@@ -545,17 +544,17 @@ test_commitTransactionInNavigationInspectorFocusCodePane
 	abortItem := self itemNamed: 'Abort Transaction' in: jadeiteMenu.
 	abortItem commandDescription performAgainst: inspector.
 	self assertProjectInList: 'RowanSample1'.
-	self unloadSampleProject.
+	self unloadSampleProject1.
 	commitItem commandDescription performAgainst: inspector.
 	self denyProjectInList: 'RowanSample1'.
 	self cloneRowanSample1.
-	self ensureRowanSample1Loaded!
+	self ensureRowanSampleProjectsLoaded!
 
 test_commitTransactionInNavigationInspectorFocusInstVars
 	| remoteObject jadeiteMenu commitItem abortItem |
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
 	self cloneRowanSample1.
-	self ensureRowanSample1Loaded.
+	self ensureRowanSampleProjectsLoaded.
 	self assertProjectInList: 'RowanSample1'.
 	remoteObject := session
 				executeString: 'Array new'
@@ -570,11 +569,11 @@ test_commitTransactionInNavigationInspectorFocusInstVars
 	abortItem := self itemNamed: 'Abort Transaction' in: jadeiteMenu.
 	abortItem commandDescription performAgainst: inspector.
 	self assertProjectInList: 'RowanSample1'.
-	self unloadSampleProject.
+	self unloadSampleProject1.
 	commitItem commandDescription performAgainst: inspector.
 	self denyProjectInList: 'RowanSample1'.
 	self cloneRowanSample1.
-	self ensureRowanSample1Loaded!
+	self ensureRowanSampleProjectsLoaded!
 
 test_compileErrorHandling
 	| remoteObject |

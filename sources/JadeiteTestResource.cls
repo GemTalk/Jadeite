@@ -52,16 +52,35 @@ disableInteractionsWhile: block
 			self issueCommand: answeringService]!
 
 ensureRowanSample1Loaded
-	self refreshProjectNamed: self rowanSample1Project name.  "make sure we have the correct server state in the browser" 
+	self refreshProjectNamed: self rowanSample1Project name.	"make sure we have the correct server state in the browser"
 	self rowanSample1Project ifNotNil: [:projectService | projectService isDirty ifFalse: [^self]].
 	self disableInteractionsWhile: 
-			[self unloadSampleProject.
+			[self unloadSampleProject1.
 			self session commit.
 			self
 				loadProjectFromFile: self rowanSample1Path
 				projectsHome: '$ROWAN_PROJECTS_HOME'
 				customConditionalAttributes: #('tests')
-				componentNames: #('Core' 'Tests')].!
+				componentNames: #('Core' 'Tests')]!
+
+ensureRowanSample9Loaded
+	| rowanSample9 |
+	rowanSample9 := self rowanSample9Project.
+	self refreshProjectNamed: rowanSample9 name.	"make sure we have the correct server state in the browser"
+	rowanSample9 ifNotNil: [:projectService | projectService isDirty ifFalse: [^self]].
+	self disableInteractionsWhile: 
+			[self unloadSampleProject1.
+			self session commit.
+			self
+				loadProjectFromFile: self rowanSample9Path
+				projectsHome: '$ROWAN_PROJECTS_HOME'
+				customConditionalAttributes: #('tests' 'examples' 'dkh')
+				componentNames: #('Core')]!
+
+ensureRowanSampleProjectsLoaded
+	"make sure we have the correct server state in the browser"
+	self ensureRowanSample1Loaded.
+	self ensureRowanSample9Loaded!
 
 hasValidSession
 	| session |
@@ -159,8 +178,19 @@ rowanSample1Project
 		detect: [:projectService | projectService name = 'RowanSample1']
 		ifNone: []!
 
-sampleProjectName
-	^self class sampleProjectName!
+rowanSample9Path
+	^JadePresenter rowanSample9Path!
+
+rowanSample9Project
+	^self transcript projectListPresenter projectListPresenter list
+		detect: [:projectService | projectService name = 'RowanSample9']
+		ifNone: []!
+
+sampleProject1Name
+	^self class sampleProject1Name!
+
+sampleProject9Name
+	^self class sampleProject9Name!
 
 session
 
@@ -173,8 +203,8 @@ setUp
 		ifNil: 
 			[MessageBox notify: 'GciSession current is nil. Login again.'.
 			Processor activeProcess terminate	"There's not a good way to safely return without many subsequent errors. Just kill the test process."].
-	self unloadSampleProject.
-	self ensureRowanSample1Loaded!
+	self unloadSampleProject1.
+	self ensureRowanSampleProjectsLoaded!
 
 tearDown
 	super tearDown.
@@ -182,9 +212,9 @@ tearDown
 	projectsBrowser
 		ifNotNil: 
 			[(projectsBrowser currentCard projectListPresenter list
-				detect: [:service | service name = self sampleProjectName]
+				detect: [:service | service name = self sampleProject1Name]
 				ifNone: [])
-					ifNotNil: [projectsBrowser currentCard basicUnloadProjects: (Array with: self sampleProjectName)].
+					ifNotNil: [projectsBrowser currentCard basicUnloadProjects: (Array with: self sampleProject1Name)].
 			projectsBrowser destroy.
 			projectsBrowser := nil]!
 
@@ -208,17 +238,26 @@ transcriptForCurrentSession
 			GciSession current ifNotNil: [:sess | sess logout]].
 	^transcript!
 
-unloadSampleProject
+unloadSampleProject1
 	self transcript projectListPresenter primaryPresenter list
-		detect: [:projectService | projectService name = self sampleProjectName]
+		detect: [:projectService | projectService name = self sampleProject1Name]
 		ifNone: [^self].
-	self transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProjectName).
+	self transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProject1Name).
+	self session commit!
+
+unloadSampleProject9
+	self transcript projectListPresenter primaryPresenter list
+		detect: [:projectService | projectService name = self sampleProject9Name]
+		ifNone: [^self].
+	self transcript projectListPresenter basicUnloadProjects: (Array with: self sampleProject9Name).
 	self session commit! !
 !JadeiteTestResource categoriesForMethods!
 cloneRowanSample1!private!setup teardown! !
 closeTranscript:!private!setup teardown!support! !
 disableInteractionsWhile:!private!setup teardown! !
 ensureRowanSample1Loaded!private!setup teardown! !
+ensureRowanSample9Loaded!private!setup teardown! !
+ensureRowanSampleProjectsLoaded!private!setup teardown! !
 hasValidSession!public!testing! !
 isAvailable!public!testing! !
 issueCommand:!public!setup teardown! !
@@ -233,13 +272,17 @@ refreshProjectNamed:!private!setup teardown! !
 rowanProjectsHome!constants!private! !
 rowanSample1Path!constants!private! !
 rowanSample1Project!constants!private! !
-sampleProjectName!constants!private! !
+rowanSample9Path!constants!private! !
+rowanSample9Project!constants!private! !
+sampleProject1Name!constants!private! !
+sampleProject9Name!constants!private! !
 session!accessing!public! !
 setUp!private!setup teardown! !
 tearDown!private!setup teardown! !
 transcript!accessing!public! !
 transcriptForCurrentSession!private!setup teardown!support! !
-unloadSampleProject!private!setup teardown! !
+unloadSampleProject1!private!setup teardown! !
+unloadSampleProject9!private!setup teardown! !
 !
 
 !JadeiteTestResource class methodsFor!
@@ -255,8 +298,8 @@ current
 isAvailable
 	^self current isAvailable!
 
-sampleProjectName
-	^'RowanSample1'!
+sampleProject1Name
+	^'RowanSample9'!
 
 signalInitializationError
 	"TestSuite>>run: in the SUnit pacakge sends this method
@@ -268,7 +311,7 @@ signalInitializationError
 !JadeiteTestResource class categoriesForMethods!
 current!Accessing!public! !
 isAvailable!public! !
-sampleProjectName!constants!public! !
+sampleProject1Name!constants!public! !
 signalInitializationError!error handling!public! !
 !
 

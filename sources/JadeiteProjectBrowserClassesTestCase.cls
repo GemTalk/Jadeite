@@ -40,7 +40,7 @@ test_abortRemovesClassAndMethod
 				ifNone: [])]
 			ensure: 
 				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_abortRemovesProjectAndPackage
 	self selectRowanSample1Test.
@@ -60,7 +60,7 @@ test_abortRemovesProjectAndPackage
 				ifNone: [])]
 			ensure: 
 				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_addAccessorsHierarchyTab
 	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
@@ -918,7 +918,7 @@ test_extensionMethodSelection
 	transcript projectListPresenter abortTransaction.	"clean up Rowan project"
 	[] ensure: 
 			[self cloneRowanSample1.
-			self ensureRowanSample1Loaded]!
+			self ensureRowanSampleProjectsLoaded]!
 
 test_failMethodCompile
 	| source |

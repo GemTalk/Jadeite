@@ -637,14 +637,13 @@ editReplace
 !
 
 editSave
-
 	| currentCard |
 	currentCard := textAreaTabs view currentCard.
 	currentCard = classDefinitionPresenter view ifTrue: [^self editSaveClass].
 	currentCard = methodSourcePresenter view ifTrue: [^self editSaveMethod].
 	currentCard = classCommentPresenter view ifTrue: [^self editSaveClassComment].
-	MessageBox notify: 'Save menu not effective for this text area tab'.
-!
+	currentCard name = 'projectReadMeTab' ifTrue: [^self editSaveReadMe].
+	MessageBox notify: 'Save menu not effective for this text area tab'!
 
 editSaveClassA
 

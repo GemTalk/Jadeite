@@ -193,12 +193,16 @@ rowanProjectsHomeEnvVarString
 	^'$ROWAN_PROJECTS_HOME'!
 
 rowanSample1Path
-	^'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1_resolved_v2.ston'! !
+	^'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1_resolved_v2.ston'!
+
+rowanSample9Path
+	^'file:$ROWAN_PROJECTS_HOME/RowanSample9/rowan/specs/spec_0061.ston'! !
 !JadePresenter class categoriesForMethods!
 loadViewResource2:inContext:!operations!public! !
 maxPrintStringSize!constants!public! !
 openCommit:inGitHub:!browsing!public! !
 rowanProjectsHomeEnvVarString!constants!public! !
 rowanSample1Path!constants!public! !
+rowanSample9Path!constants!public! !
 !
 

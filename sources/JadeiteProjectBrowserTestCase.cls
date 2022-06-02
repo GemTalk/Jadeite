@@ -238,10 +238,10 @@ selectVariableListEntryForcingEvent: variable
 		ifTrue: [self variableListPresenter selection: (self variableListPresenter list at: index)]!
 
 test_abortOnVariablesTab
-	self unloadSampleProject.
+	self unloadSampleProject1.
 	self commitTransaction.	"if sample project was loaded and committed outside test, test will fail"
 	self cloneRowanSample1.
-	self ensureRowanSample1Loaded.
+	self ensureRowanSampleProjectsLoaded.
 	self selectRowanSample1Test.
 	self projectsPresenter selectVariableTab.
 	self projectsPresenter variableListPresenter selectionByIndex: 1.
@@ -252,7 +252,7 @@ test_abortOnVariablesTab
 	self assert: self packageListPresenter list isEmpty]
 			ensure: 
 				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_acceptDefinedMethodInExtensionClass
 	self testsIssue: #issue375
@@ -370,14 +370,14 @@ test_addDuplicatePackage
 	
 	[TestMessageBox plannedResult: #failed.
 	addPackageResult := projectService addPackageNamed: packageName using: self projectsPresenter.
-	self assert: addPackageResult equals: MessageBox. "notify: does not return the result, sadly" 
+	self assert: addPackageResult equals: MessageBox.	"notify: does not return the result, sadly"
 	self assert: (self packageListPresenter list select: [:service | service name = packageName]) size
 		equals: 1]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]]
 			ensure: 
-				[self unloadSampleProject.	"we can't yet unload packages so unload the project and reload"
+				[self unloadSampleProject1.	"we can't yet unload packages so unload the project and reload"
 				self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_addInstVarVariablesStaySorted
 	self selectRowanSample1Test.
@@ -2199,16 +2199,16 @@ test_projectDisplaysSync
 			[self denyIsNil: (self projectNamed: 'RowanSample1').
 			self assert: self transcriptTab isKindOf: JadeiteProjectListPresenter.
 			self denyIsNil: (self transcriptProjectNamed: 'RowanSample1').
-			self unloadSampleProject.
+			self unloadSampleProject1.
 			self assertIsNil: (self projectNamed: 'RowanSample1').
 			self assertIsNil: (self transcriptProjectNamed: 'RowanSample1').
 			"project addition in projects browser"
 			self cloneRowanSample1.
-			self ensureRowanSample1Loaded.
+			self ensureRowanSampleProjectsLoaded.
 			
 			[self denyIsNil: (self transcriptProjectNamed: 'RowanSample1').
 			self denyIsNil: (self projectNamed: 'RowanSample1')]
-					ensure: [self unloadSampleProject].
+					ensure: [self unloadSampleProject1].
 			self assertIsNil: (self projectNamed: 'RowanSample1').
 			self assertIsNil: (self transcriptProjectNamed: 'RowanSample1').
 			"project addition in project list"
@@ -2217,9 +2217,9 @@ test_projectDisplaysSync
 			self denyIsNil: (self projectNamed: 'RowanSample1').
 			"project removal in project list"
 			(self transcriptTab projectListPresenter list
-				detect: [:projectService | projectService name = self sampleProjectName]
+				detect: [:projectService | projectService name = self sampleProject1Name]
 				ifNone: []) notNil
-				ifTrue: [self transcriptTab basicUnloadProjects: (Array with: self sampleProjectName)].
+				ifTrue: [self transcriptTab basicUnloadProjects: (Array with: self sampleProject1Name)].
 			
 			[self assertIsNil: (self projectNamed: 'RowanSample1').
 			self assertIsNil: (self transcriptProjectNamed: 'RowanSample1')]
@@ -2265,12 +2265,13 @@ test_projectRemoved
 	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
 	session executeString: 'Rowan projectTools delete deleteProjectNamed: ''RowanSample1'''.	"delete project behind tool's back"
 	self auditAll.
+	
 	[self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.	"expect project to disappear but not walkback"
 	sampleProject := self projectNamed: 'RowanSample1'.
 	self assertIsNil: sampleProject]
 			ensure: 
 				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_refreshAfterAbortMethodList
 	"method lists should remove deleted methods after an abort."
@@ -2294,12 +2295,12 @@ test_refreshAfterAbortMethodList
 		equals: 2.
 	projectListPresenter := transcript projectListPresenter projectListPresenter.
 	abortItem := transcript view menuBar items third items
-				detect: [:menuItem | menuItem command == #abortTransaction]. "jadeite menu" 
+				detect: [:menuItem | menuItem command == #abortTransaction].	"jadeite menu"
 	abortItem commandDescription performAgainst: transcript projectListPresenter.
 	[self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list isEmpty]
 		ensure: 
 			[self cloneRowanSample1.
-			self ensureRowanSample1Loaded]!
+			self ensureRowanSampleProjectsLoaded]!
 
 test_refreshAfterAbortMethodListLeaveCommitted
 	"method lists should remove deleted methods after an abort
@@ -2337,7 +2338,7 @@ test_refreshAfterAbortMethodListLeaveCommitted
 		equals: beforeSize]
 			ensure: 
 				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_refreshAfterReloadInProjectsBrowserWithAddedMethod
 	"add a method in a project, then reload from the project browser.
@@ -2431,7 +2432,7 @@ test_removeAbortedClass
 		assertIsNil: (self classListPresenter list detect: [:service | service name = 'TestClass'] ifNone: [])]
 			ensure: 
 				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded].
+				self ensureRowanSampleProjectsLoaded].
 	self saveTestClass.
 	self assert: self projectsPresenter selectedClass name = 'TestClass'.	"abort from a different browser"
 	transcript projectListPresenter abortTransaction.
@@ -2440,7 +2441,7 @@ test_removeAbortedClass
 		assertIsNil: (self classListPresenter list detect: [:service | service name = 'TestClass'] ifNone: [])]
 			ensure: 
 				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_removeInstVarVariablesStaySorted
 	self selectRowanSample1Test.
@@ -2469,7 +2470,7 @@ test_removeProject
 	| targetProject |
 	self testsIssue: #issue129 withTitle: 'Expose unload project.'.
 	targetProject := self projectListPresenter list
-				detect: [:projectService | projectService name = self sampleProjectName]
+				detect: [:projectService | projectService name = self sampleProject1Name]
 				ifNone: [].
 	self denyIsNil: targetProject.
 	self projectListPresenter selection: targetProject.
@@ -2480,7 +2481,7 @@ test_removeProject
 	self methodListPresenter selection: self methodListPresenter list first.
 	self projectsPresenter basicUnloadProjects: (Array with: self projectListPresenter selection name).
 	targetProject := self projectListPresenter list
-				detect: [:projectService | projectService name = self sampleProjectName]
+				detect: [:projectService | projectService name = self sampleProject1Name]
 				ifNone: [].
 	self assertIsNil: targetProject.
 	"make sure browser cleans itself up"
@@ -2492,7 +2493,7 @@ test_removeProject
 	self assert: self methodListPresenter list isEmpty]
 			ensure: 
 				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_renameCategory
 	self testsIssue: #issue380
@@ -3221,7 +3222,7 @@ test_unicodeDisplayMethod
 			ensure: 
 				[self abortTransaction.
 				self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_unicodeSpecialMethodNotRed
 	"the method that generates the non-displayable source message

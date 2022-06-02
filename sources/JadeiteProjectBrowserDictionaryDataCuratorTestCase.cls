@@ -49,7 +49,7 @@ test_abortInTranscriptRemovesDictionaryInBrowser
 			ensure: 
 				[self auditAll.
 				self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_addDictionary
 	| dictionaryName |
@@ -153,7 +153,7 @@ test_changeMethodInDictionaryViewShowsDirtyInProject
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
 	self selectRowanSample1Test.
 	self cloneRowanSample1.
-	self ensureRowanSample1Loaded.	"make sure project is not dirty"
+	self ensureRowanSampleProjectsLoaded.	"make sure project is not dirty"
 	self selectRowanSample1Test.
 	self deny: self projectListPresenter selection isDirty.
 	
@@ -165,7 +165,7 @@ test_changeMethodInDictionaryViewShowsDirtyInProject
 			ensure: 
 				[self abortTransaction.
 				self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_commitAfterDictionaryAddOrRemove
 	"Tests workaround for issue
@@ -190,7 +190,7 @@ test_commitAfterDictionaryAddOrRemove
 			ensure: 
 				[self auditAll.
 				self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_dictionaryNameIsString
 	"for consistency, service names should be strings"

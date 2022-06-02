@@ -30,7 +30,7 @@ test_compileMethodInNonPackagedClass
 			ensure: 
 				[self abortTransaction.
 				self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_dictionaryViewClassHierarchy
 	| classNames |
@@ -191,7 +191,7 @@ test_removeMethodInNonPackagedClass
 				[self dictionaryPresenter resetSelection.	"to avoid long refresh"
 				self abortTransaction.
 				self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_selectProjectClearHierarchy
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.

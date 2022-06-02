@@ -39,9 +39,9 @@ denyPackageInList: name
 				detect: [:packageService | packageService name = name]
 				ifNone: [])!
 
-isSampleProjectLoaded
+isSampleProject1Loaded
 	^(transcript projectListPresenter projectListPresenter list
-		detect: [:projectService | projectService name = self sampleProjectName]
+		detect: [:projectService | projectService name = self sampleProject1Name]
 		ifNone: []) notNil!
 
 methodListPresenter
@@ -179,24 +179,25 @@ tearDown
 test_abortNoSelections
 	| abortCommand |
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
-	self unloadSampleProject.
+	self unloadSampleProject1.
 	self commitTransaction.	"ensure that the sample package wasn't committed"
 	self denyPackageInList: 'RowanSample1-Tests'.
 	self cloneRowanSample1.
-	self ensureRowanSample1Loaded.
+	self ensureRowanSampleProjectsLoaded.
 	self assertPackageInList: 'RowanSample1-Tests'.
 	abortCommand := ((sunitBrowser view viewNamed: 'toolbar') itemAtIndex: 1) command.
 	sunitBrowser primaryPresenter perform: abortCommand.
 	[self denyPackageInList: 'RowanSample1-Tests'] ensure: 
 			[self cloneRowanSample1.
-			self ensureRowanSample1Loaded]!
+			self ensureRowanSampleProjectsLoaded]!
 
 test_abortWithSelections
 	| abortCommand |
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
-	self unloadSampleProject.
+	self unloadSampleProject1.
 	self commitTransaction.	"ensure that the sample package wasn't committed"
-	sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests' classNamed: 'RowanTestClassServiceTest'.
+	sunitBrowser primaryPresenter selectPackageNamed: 'Rowan-Services-Tests'
+		classNamed: 'RowanTestClassServiceTest'.
 	sunitBrowser primaryPresenter selectMethodNamed: #test_addCategory.
 	abortCommand := ((sunitBrowser view viewNamed: 'toolbar') itemAtIndex: 1) command.
 	sunitBrowser primaryPresenter perform: abortCommand.
@@ -210,7 +211,7 @@ test_abortWithSelections
 		equals: #test_addCategory]
 			ensure: 
 				[self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_abstractTestAppearsOnlyInSubclasses
 	| subclass1MethodService subclass2MethodService classNames |
@@ -289,7 +290,7 @@ test_addNewTestPackage
 			ensure: 
 				[self abortTransaction.
 				self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_browseMethods
 	| browseMethodMenuItem browser selectors |
@@ -389,10 +390,10 @@ test_commitNoSelections
 	self assertPackageInList: 'RowanSample1-Tests']
 			ensure: 
 				["don't want committed sample project in tests"
-				self unloadSampleProject.
+				self unloadSampleProject1.
 				sunitBrowser primaryPresenter perform: commitCommand.
 				self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_commitWithSelections
 	| commitCommand |
@@ -412,10 +413,10 @@ test_commitWithSelections
 		equals: #test_addCategory]
 			ensure: 
 				["don't want committed sample project in tests"
-				self unloadSampleProject.
+				self unloadSampleProject1.
 				sunitBrowser primaryPresenter perform: commitCommand.
 				self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_debugWithDifferentSelectedClasses
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
@@ -1482,7 +1483,7 @@ aggressivelyCleanupRowanProject:!private!support!tests! !
 assertMenuItem:isEnabled:!public!support! !
 assertPackageInList:!private!support! !
 denyPackageInList:!private!support! !
-isSampleProjectLoaded!private!support! !
+isSampleProject1Loaded!private!support! !
 methodListPresenter!public!support! !
 projectsPresenter!private!support! !
 selecProjectBrowserMethodsNamed:!public!support! !

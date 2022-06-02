@@ -92,7 +92,7 @@ test_abortRemovesProjectsInAllBrowsers
 				detect: [:projectService1 | projectService1 name = 'RowanSample1-Tests']
 				ifNone: []).
 	self cloneRowanSample1.
-	self ensureRowanSample1Loaded]
+	self ensureRowanSampleProjectsLoaded]
 			ensure: 
 				[SessionManager inputState pumpMessages.
 				self destroy: projectsBrowser.
@@ -105,7 +105,7 @@ test_abortTransaction
 	transcript toolbarPresenter abort.
 	self denyProjectInList: 'RowanSample1'.
 	self cloneRowanSample1.
-	self ensureRowanSample1Loaded!
+	self ensureRowanSampleProjectsLoaded!
 
 test_autoCommitMenuItem
 	| autoCommit jadeiteMenu autoCompleteMenuItem commandQuery |
@@ -161,7 +161,7 @@ test_autoCommitOff
 			ensure: 
 				[session executeString: 'UserGlobals removeKey: #TestCommit ifAbsent:[]'.
 				self cloneRowanSample1.
-				self ensureRowanSample1Loaded]!
+				self ensureRowanSampleProjectsLoaded]!
 
 test_autoCommitOn
 	| answeringService |
@@ -446,18 +446,18 @@ test_closeConsoleNoCommitNeeded
 test_commitTransaction
 	self testsIssue: #issue383 withTitle: '(3.0.53) the commit button on the SUnit browser is silent'.
 	self cloneRowanSample1.
-	self ensureRowanSample1Loaded.
+	self ensureRowanSampleProjectsLoaded.
 	transcript projectListPresenter refresh.
 	self assertProjectInList: 'RowanSample1'.
 	transcript toolbarPresenter commit.
 	self assertProjectInList: 'RowanSample1'.
 	transcript toolbarPresenter abort.
 	self assertProjectInList: 'RowanSample1'.
-	self unloadSampleProject.
-	transcript toolbarPresenter commit. 
+	self unloadSampleProject1.
+	transcript toolbarPresenter commit.
 	self denyProjectInList: 'RowanSample1'.
 	self cloneRowanSample1.
-	self ensureRowanSample1Loaded.!
+	self ensureRowanSampleProjectsLoaded!
 
 test_doubleClickOpenProjectBrowser
 	| randomIndex projectPresenter projectName |
