@@ -43,7 +43,7 @@ allSelectedProjectsDirty
 	^self basicAllSelectedProjectsDirty: projectListPresenter!
 
 auditProject
-	self auditProjectFor: projectListPresenter selection name!
+	^self auditProjectFor: projectListPresenter selection name!
 
 basicAddDictionaryNamed: newDictionaryName
 	| insertionIndex dictionaryService |

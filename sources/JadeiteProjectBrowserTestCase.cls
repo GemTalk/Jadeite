@@ -580,7 +580,7 @@ test_auditProject
 	| auditWorkspace menu item |
 	self testsIssue: #issue457 withTitle: '`audit project` menu item in project list pane?'.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	menu := Menu fromStrings: self projectsPresenter projectMenuStrings.
+	menu := Menu fromStrings: self projectsPresenter class projectMenuStrings.
 	self
 		denyIsNil: (item := menu items detect: [:menuItem | menuItem command == #auditProject] ifNone: []).
 	auditWorkspace := item commandDescription performAgainst: self projectsPresenter.
@@ -2024,8 +2024,8 @@ test_issue261
 	self issue261createTestProject.
 	
 	[self selectServiceNamed: 'Izmir' in: self projectListPresenter.
-	self assert: (self projectsPresenter projectInfoList list at: 3) first name equals: 'Izmir'.
-	self assert: (self projectsPresenter projectInfoList list at: 7) first isDirty	"isDirty"]
+	self assert: (self projectsPresenter projectInfoList list at: 4) first name equals: 'Izmir'.
+	self assert: (self projectsPresenter projectInfoList list at: 4) first isDirty	"isDirty"]
 			ensure: [self projectsPresenter basicUnloadProjects: #('Izmir')]!
 
 test_loadProjectRemovingClass
@@ -2064,7 +2064,7 @@ test_maximizeCode
 test_menuAddPackageOnProjectMenu
 	| transcriptProjectMenu transcriptCommands |
 	self testsIssue: #issue171 withTitle: 'Project menu quibbles'.
-	self assert: ((self projectsPresenter projectMenu items collect: [:each | each command])
+	self assert: ((self projectsPresenter class projectMenu items collect: [:each | each command])
 				includes: #addPackage).	"on projects menu in browser"
 	transcriptProjectMenu := transcript projectListPresenter projectListPresenter view parentView
 				contextMenu.
