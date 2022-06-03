@@ -23,6 +23,9 @@ addNoneProject
 allSelectedProjectsDirty
 	^self basicAllSelectedProjectsDirty: projectListPresenter!
 
+auditProject
+	self auditProjectFor: projectListPresenter selection name!
+
 basicUnloadProjects: projectNames
 	| browserService |
 	browserService := RowanBrowserService new.
@@ -105,8 +108,10 @@ onViewClosed
 
 onViewOpened
 	super onViewOpened.
-	BrowserUpdate current logComment: 'Opening Project List Browser {' , self identityHash printString , '}'.
-	self registerPresentersForUpdates!
+	BrowserUpdate current
+		logComment: 'Opening Project List Browser {' , self identityHash printString , '}'.
+	self registerPresentersForUpdates.
+	projectListPresenter view contextMenu: JadeiteBrowserPresenter projectMenu!
 
 openChangesShell: changesString
 	| shell editor rs |
@@ -195,7 +200,7 @@ queryCommand: aCommandQuery
 			ifTrue: 
 				[aCommandQuery isEnabled: projectListPresenter selections notEmpty.
 				^true].
-	(#(#loadV2Project #refresh) includes: aCommandQuery command)
+	(#(#loadProject #refresh) includes: aCommandQuery command)
 		ifTrue: 
 			[aCommandQuery isEnabled: true.
 			^true].
@@ -209,6 +214,10 @@ refresh
 	self updateProjects.
 	projectListPresenter view invalidate!
 
+refreshFromServer
+	self updateProjects.
+	self redrawAllViews!
+
 refreshFromServerAfterAbort: browserService
 	browserService projectsUpdate: projectListPresenter browser: self. !
 
@@ -218,6 +227,9 @@ registerPresentersForUpdates
 		selector: #projectsUpdate:browser:
 		browser: self.
 	BrowserUpdate current register: projectListPresenter selector: #removedProject:!
+
+reloadProject
+	self loadProjects!
 
 unloadProjects
 	| projectNames ws |
@@ -253,6 +265,7 @@ writeProject
 abortTransaction!menu handlers!public! !
 addNoneProject!public!updating! !
 allSelectedProjectsDirty!public!testing! !
+auditProject!menu handlers!public! !
 basicUnloadProjects:!menu handlers!private! !
 browseProject!public! !
 checkout!menu handlers!public! !
@@ -275,8 +288,10 @@ pullFromGit!menu handlers!public! !
 pushToGit!menu handlers!public! !
 queryCommand:!menu handlers!public! !
 refresh!menu handlers!public! !
+refreshFromServer!menu handlers!public! !
 refreshFromServerAfterAbort:!menu handlers!public! !
 registerPresentersForUpdates!private!register presenters! !
+reloadProject!menu handlers!public! !
 unloadProjects!menu handlers!public! !
 updateProject!public!updating! !
 updateProjectPackages!public!updating! !

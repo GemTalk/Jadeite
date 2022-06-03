@@ -245,14 +245,16 @@ package methodNames
 	add: #JadePresenter -> #update:afterStonReplication:;
 	add: #JadePresenter -> #updateProjects;
 	add: #JadePresenter -> #updateServices:;
+	add: #JadePresenterA -> #auditProjectFor:;
 	add: #JadePresenterA -> #basicRefreshBreakpointsIn:selection:;
 	add: #JadePresenterA -> #clearBreakPointAt:in:;
 	add: #JadePresenterA -> #confirmReloadProjects:;
 	add: #JadePresenterA -> #disableBreakPointAt:in:;
 	add: #JadePresenterA -> #enableBreakPointAt:in:;
+	add: #JadePresenterA -> #gitCommit:;
 	add: #JadePresenterA -> #isOkayToChangeSource:;
+	add: #JadePresenterA -> #loadProject;
 	add: #JadePresenterA -> #loadProjectsFrom:;
-	add: #JadePresenterA -> #loadV2Project;
 	add: #JadePresenterA -> #methodListSelection;
 	add: #JadePresenterA -> #openMethodListOn:selecting:;
 	add: #JadePresenterA -> #openMethodListOn:selectingAnyMatch:;
@@ -3250,6 +3252,17 @@ unsavedChangesValidSessionDialogIn:text:!public!unsaved changes support! !
 
 !JadePresenterA methodsFor!
 
+auditProjectFor: projectName
+	| answeringService workspace  |
+	answeringService := RowanAnsweringService new
+				command: #auditProjectNamed:;
+				commandArgs: (Array with: projectName).
+	BrowserUpdate current issueCommands: (Array with: answeringService) session: self gciSession.
+	workspace := JadeWorkspace showOnSession: self gciSession.
+	workspace updateCaption: 'Audit Report for project ' , projectName.
+	workspace model value: answeringService answer.
+	^workspace!
+
 basicRefreshBreakpointsIn: methodSourcePresenter selection: selection
 	| breakPointSymbol indicators includesBreakPoint individualBreakPointSymbol |
 	methodSourcePresenter view clearContainerIndicators.
@@ -3321,6 +3334,27 @@ enableBreakPointAt: stepPoint in: browser
 	self issueCommand: selection.
 	browser updateMethodSource!
 
+gitCommit: projectListPresenter 
+	| projectName message service promptResult |
+	projectListPresenter selections size > 1
+		ifTrue: [MessageBox notify: 'Only one project may be committed'].
+	projectName := projectListPresenter selection name.
+	message := String new asValue.
+	promptResult := JadeiteMultilinePrompter
+				on: message
+				prompt: 'Enter Git commit message. (Note - This will NOT do a GemStone commit)'
+				caption: 'Committing Project ' , projectName.
+	promptResult isNil ifTrue: [^self].
+	message value isEmpty
+		ifTrue: [^MessageBox notify: 'Commit message must not be empty. Commit to local repository NOT done.'].
+	service := projectListPresenter selection.
+	service
+		command: #commitWithMessage:;
+		commandArgs: (Array with: message value asString).
+	self issueCommand: service.
+	MessageBox notify: 'Project ' , projectName , ' committed to local repository!!'.
+	self refreshFromServer!
+
 isOkayToChangeSource: methodSourcePresenter
 	gciSession isValidSession
 		ifTrue: [(self class unsavedChangesValidSessionDialogIn: self) ifTrue: [^false]]
@@ -3333,15 +3367,7 @@ isOkayToChangeSource: methodSourcePresenter
 	methodSourcePresenter view isModified: false.
 	^true!
 
-loadProjectsFrom: browser
-	| selections |
-	selections := browser projectListPresenter selections.
-	(self confirmReloadProjects: selections)
-		ifTrue: 
-			[RowanBrowserService new reloadProjects: selections presenter: self.
-			BrowserUpdate current selectedServices do: [:service | service postReload]]!
-
-loadV2Project
+loadProject
 	| filePath |
 	filePath := RowanKeyValuePrompter
 				on: self class rowanSample1Path -> self class rowanProjectsHomeEnvVarString
@@ -3349,6 +3375,14 @@ loadV2Project
 				caption: 'Load Git Repository'.
 	filePath isNil ifTrue: [^false].
 	self basicLoadV2Project: filePath key projectsHome: filePath value!
+
+loadProjectsFrom: browser
+	| selections |
+	selections := browser projectListPresenter selections.
+	(self confirmReloadProjects: selections)
+		ifTrue: 
+			[RowanBrowserService new reloadProjects: selections presenter: self.
+			BrowserUpdate current selectedServices do: [:service | service postReload]]!
 
 methodListSelection
 	
@@ -3419,14 +3453,16 @@ updateMethodReferences: services
 	self issueCommands: services.
 	^services! !
 !JadePresenterA categoriesForMethods!
+auditProjectFor:!project menu handlers!public! !
 basicRefreshBreakpointsIn:selection:!Jadeite!public! !
 clearBreakPointAt:in:!Jadeite!public! !
 confirmReloadProjects:!Jadeite!public! !
 disableBreakPointAt:in:!Jadeite!public! !
 enableBreakPointAt:in:!Jadeite!public! !
+gitCommit:!project menu handlers!public! !
 isOkayToChangeSource:!Jadeite!public! !
+loadProject!Jadeite!public! !
 loadProjectsFrom:!Jadeite!public! !
-loadV2Project!Jadeite!public! !
 methodListSelection!Jadeite!public! !
 openMethodListOn:selecting:!menu handlers support!private!queries! !
 openMethodListOn:selectingAnyMatch:!menu handlers support!private!queries! !

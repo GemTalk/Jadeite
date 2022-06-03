@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenter subclass: #JadePresenterA
 	instanceVariableNames: ''
@@ -40,6 +40,14 @@ createLabelEditSchematicWiringFor: aPresenter
 		when: #labelOf:editedTo:accept: 	send: #labelOf:editedTo:accept:		to: self;
 		yourself.
 !
+
+createNewProject
+	| projectName | self halt. 
+	projectName := Prompter prompt: 'Enter Project Name' caption: 'Create new Rowan project'.
+	projectName
+		ifNotNil: 
+			[self newProjectNamed: projectName.
+			self selectProjectNamed: projectName]!
 
 createSchematicWiring
 
@@ -310,48 +318,51 @@ userSelection
 
 	^nil.
 ! !
-!JadePresenterA categoriesFor: #aboutToEditLabel:accept:!label edit!public! !
-!JadePresenterA categoriesFor: #canEditLabel:!label edit!public! !
-!JadePresenterA categoriesFor: #createDragDropSchematicWiringFor:!drag & drop!public! !
-!JadePresenterA categoriesFor: #createLabelEditSchematicWiringFor:!label edit!public! !
-!JadePresenterA categoriesFor: #createSchematicWiring!drag & drop!label edit!public! !
-!JadePresenterA categoriesFor: #dragDropPresenter!drag & drop!public! !
-!JadePresenterA categoriesFor: #dragDropPresenters!drag & drop!public! !
-!JadePresenterA categoriesFor: #drop:on:description:!drag & drop!public! !
-!JadePresenterA categoriesFor: #dropClass:on:!drag & drop!public! !
-!JadePresenterA categoriesFor: #dropClassCategory:on:!drag & drop!public! !
-!JadePresenterA categoriesFor: #dropMethod:on:!drag & drop!public! !
-!JadePresenterA categoriesFor: #dropMethodCategory:on:!drag & drop!public! !
-!JadePresenterA categoriesFor: #dropSymbolDictionary:on:!drag & drop!public! !
-!JadePresenterA categoriesFor: #labelEditPresenter!label edit!public! !
-!JadePresenterA categoriesFor: #labelEditPresenters!label edit!public! !
-!JadePresenterA categoriesFor: #labelOf:changedTo:!label edit!public! !
-!JadePresenterA categoriesFor: #labelOf:editedTo:accept:!label edit!public! !
-!JadePresenterA categoriesFor: #model:!public! !
-!JadePresenterA categoriesFor: #onDrag:!drag & drop!public! !
-!JadePresenterA categoriesFor: #onDragClassCategoriesOver:!drag & drop!public! !
-!JadePresenterA categoriesFor: #onDragClassesOver:!drag & drop!public! !
-!JadePresenterA categoriesFor: #onDragCut:!drag & drop!public! !
-!JadePresenterA categoriesFor: #onDragDrop:!drag & drop!public! !
-!JadePresenterA categoriesFor: #onDragDropClassCategories:!public! !
-!JadePresenterA categoriesFor: #onDragDropClasses:!public! !
-!JadePresenterA categoriesFor: #onDragDropMethodCategories:!drag & drop!public! !
-!JadePresenterA categoriesFor: #onDragDropMethods:!drag & drop!public! !
-!JadePresenterA categoriesFor: #onDragDropSymbolDictionaries:!public! !
-!JadePresenterA categoriesFor: #onDragDropSymbolLists:!public! !
-!JadePresenterA categoriesFor: #onDragMethodCategoriesOver:!drag & drop!public! !
-!JadePresenterA categoriesFor: #onDragMethodsOver:!drag & drop!public! !
-!JadePresenterA categoriesFor: #onDragOver:!drag & drop!public! !
-!JadePresenterA categoriesFor: #onDragOver:operations:!drag & drop!public! !
-!JadePresenterA categoriesFor: #onDragSymbolDictionariesOver:!drag & drop!public! !
-!JadePresenterA categoriesFor: #primaryPresenter!drag & drop!label edit!public! !
-!JadePresenterA categoriesFor: #selectionChanging:!public! !
-!JadePresenterA categoriesFor: #supportedClassCategoryDropOperations!drag & drop!public! !
-!JadePresenterA categoriesFor: #supportedClassDropOperations!drag & drop!public! !
-!JadePresenterA categoriesFor: #supportedMethodCategoryDropOperations!drag & drop!public! !
-!JadePresenterA categoriesFor: #supportedMethodDropOperations!drag & drop!public! !
-!JadePresenterA categoriesFor: #supportedSymbolListDropOperations!drag & drop!public! !
-!JadePresenterA categoriesFor: #userSelection!public! !
+!JadePresenterA categoriesForMethods!
+aboutToEditLabel:accept:!label edit!public! !
+canEditLabel:!label edit!public! !
+createDragDropSchematicWiringFor:!drag & drop!public! !
+createLabelEditSchematicWiringFor:!label edit!public! !
+createNewProject!menu handlers!menu handlers support!private! !
+createSchematicWiring!drag & drop!label edit!public! !
+dragDropPresenter!drag & drop!public! !
+dragDropPresenters!drag & drop!public! !
+drop:on:description:!drag & drop!public! !
+dropClass:on:!drag & drop!public! !
+dropClassCategory:on:!drag & drop!public! !
+dropMethod:on:!drag & drop!public! !
+dropMethodCategory:on:!drag & drop!public! !
+dropSymbolDictionary:on:!drag & drop!public! !
+labelEditPresenter!label edit!public! !
+labelEditPresenters!label edit!public! !
+labelOf:changedTo:!label edit!public! !
+labelOf:editedTo:accept:!label edit!public! !
+model:!public! !
+onDrag:!drag & drop!public! !
+onDragClassCategoriesOver:!drag & drop!public! !
+onDragClassesOver:!drag & drop!public! !
+onDragCut:!drag & drop!public! !
+onDragDrop:!drag & drop!public! !
+onDragDropClassCategories:!public! !
+onDragDropClasses:!public! !
+onDragDropMethodCategories:!drag & drop!public! !
+onDragDropMethods:!drag & drop!public! !
+onDragDropSymbolDictionaries:!public! !
+onDragDropSymbolLists:!public! !
+onDragMethodCategoriesOver:!drag & drop!public! !
+onDragMethodsOver:!drag & drop!public! !
+onDragOver:!drag & drop!public! !
+onDragOver:operations:!drag & drop!public! !
+onDragSymbolDictionariesOver:!drag & drop!public! !
+primaryPresenter!drag & drop!label edit!public! !
+selectionChanging:!public! !
+supportedClassCategoryDropOperations!drag & drop!public! !
+supportedClassDropOperations!drag & drop!public! !
+supportedMethodCategoryDropOperations!drag & drop!public! !
+supportedMethodDropOperations!drag & drop!public! !
+supportedSymbolListDropOperations!drag & drop!public! !
+userSelection!public! !
+!
 
 !JadePresenterA class methodsFor!
 
@@ -417,6 +428,8 @@ script
 	].
 	^stream contents.
 ! !
-!JadePresenterA class categoriesFor: #createIn:gciSession:!public! !
-!JadePresenterA class categoriesFor: #script!public! !
+!JadePresenterA class categoriesForMethods!
+createIn:gciSession:!public! !
+script!public! !
+!
 

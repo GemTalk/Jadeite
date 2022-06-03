@@ -1078,7 +1078,7 @@ test_checkoutTagRefresh
 	tags := projectService gitTags: session.
 	self assert: (tags includes: 'Oscar-3.0.93').	"An internal working release tag that should not go away"
 	self
-		assert: (self projectsPresenter projectMenuStrings includes: 'Checkout Git Tag ...//checkoutTag').
+		assert: (self projectsPresenter class projectMenuStrings includes: 'Checkout Git Tag ...//checkoutTag').
 	self assert: (self projectsPresenter class canUnderstand: #checkoutTag)!
 
 test_classDefinitionUpdatesAcrossTabs
@@ -2352,7 +2352,7 @@ test_refreshAfterReloadInProjectsBrowserWithAddedMethod
 	self issue284methodCreation.
 	self selectMethodNamed: #addedMethod.
 	loadProjectsMenuItem := self projectListPresenter view queryContextMenu items
-				detect: [:menuItem | menuItem command == #reloadV2Project].
+				detect: [:menuItem | menuItem command == #reloadProject].
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #yes.	"confirm we want to load project"
 	

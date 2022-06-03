@@ -785,22 +785,6 @@ onViewClosed
 	BrowserUpdate current removeEventsTriggeredFor: sunitPresenter methodListPresenter.
 	BrowserUpdate current removeEventsTriggeredFor: self!
 
-onViewOpened
-	"copied to RowanDebugger"
-
-	super onViewOpened.
-	BrowserUpdate current logComment: 'Opening Projects Browser {' , self identityHash printString , '}'.
-	self registerPresentersForUpdates.
-	projectListPresenter view contextMenu: self projectMenu.
-	self setupPackageMenu.
-	self updateMenuBar.
-	self updateProjects.
-	self updateAutoCommit.
-	definedClassPackageText view isMultiline: false.
-	definedClassPackageText view alignment: #left.
-	definedMethodPackageText view isMultiline: false.
-	definedMethodPackageText view alignment: #left!
-
 pkgsMenuStrings
 	0 == 1
 		ifTrue: 
@@ -992,7 +976,7 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: self hasCategorySelected.
 			^true].
-	command == #loadV2Project
+	command == #loadProject
 		ifTrue: 
 			[aCommandQuery isEnabled: true.
 			^true].
@@ -1787,7 +1771,6 @@ onDropOnClassList:!drag & drop!public! !
 onDropOnMethodCategory:!drag & drop!public! !
 onSetFocus:stack:!event handlers!public! !
 onViewClosed!event handlers!public! !
-onViewOpened!event handlers!public! !
 pkgsMenuStrings!menus!public! !
 populateFilterList!event handlers support!private!services!updating! !
 postOkToChangeEvent!event handlers!public! !

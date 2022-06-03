@@ -776,7 +776,7 @@ test_textTabsChange
 	tabNames := (self projectsPresenter textAreaTabs cards
 				collect: [:card | card arrangement displayString]) asArray.
 	self assert: tabNames
-		equals: #('Class Definition' 'Class Documentation' 'Method Source' 'SUnit' 'Comparison' 'Project').
+		equals: #('Class Definition' 'Class Documentation' 'Method Source' 'SUnit' 'Comparison' 'Project' 'ReadMe').
 	self selectNoneProject.
 	tabNames := (self projectsPresenter textAreaTabs cards
 				collect: [:card | card arrangement displayString]) asArray.
