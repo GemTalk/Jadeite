@@ -10,6 +10,9 @@ RowanComponentDefinitionService comment: ''!
 !RowanComponentDefinitionService categoriesForClass!Unclassified! !
 !RowanComponentDefinitionService methodsFor!
 
+basicPrepareForReplication
+	projectDefinitionService basicPrepareForReplication.!
+
 comment
 	^comment!
 
@@ -57,6 +60,7 @@ projectNames
 projectNames: anObject
 	projectNames := anObject! !
 !RowanComponentDefinitionService categoriesForMethods!
+basicPrepareForReplication!public!replication! !
 comment!accessing!private! !
 comment:!accessing!private! !
 isPlatformSubcomponent!public!testing! !

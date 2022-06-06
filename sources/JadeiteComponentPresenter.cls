@@ -199,7 +199,7 @@ displayComponentPackages
 	packageListPresenter clear.
 	packageNames := SortedCollection new.
 	componentListPresenter selections do: 
-			[:componentDefinitionService |
+			[:componentDefinitionService | 
 			componentDefinitionService
 				command: #packageNames;
 				projectDefinitionService: model.
@@ -356,6 +356,10 @@ packageLabelOf: packageName editedTo: value accept: accept
 		ifFalse: [self displayComponentPackages].
 	accept value: true. 
 !
+
+packageListPresenter
+	"for testing" 
+	^packageListPresenter!
 
 platformConditionChanged
 	self halt. !
@@ -553,6 +557,7 @@ onDropPackageToComponent:!drag & drop!event handlers!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
 packageLabelOf:editedTo:accept:!event handlers!public! !
+packageListPresenter!accessing!private! !
 platformConditionChanged!event handlers!public! !
 platformPropertyItem:updatedAtIndex:!event handlers!public! !
 populateComponentTree!displaying!private! !

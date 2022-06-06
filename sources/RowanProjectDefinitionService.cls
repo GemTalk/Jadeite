@@ -51,6 +51,10 @@ allPackagesGroupService
 						condition: String new;
 						projectDefinitionService: self]!
 
+basicPrepareForReplication
+	componentDefinitions := nil. 
+	packageDefinitions :=nil.!
+
 comment
 	^comment!
 
@@ -201,6 +205,7 @@ addPackagesNamed:toPackageGroup:!commands!public! !
 addSubcomponentNamed:toComponentNamed:!commands!public! !
 allPackagesGroupName!constants!public! !
 allPackagesGroupService!accessing!public! !
+basicPrepareForReplication!public!replication! !
 comment!accessing!private! !
 comment:!commands!public! !
 componentDefinitions!accessing!private! !
