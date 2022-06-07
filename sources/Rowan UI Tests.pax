@@ -166,7 +166,7 @@ JadeiteAbstractTestCase subclass: #JadeiteChangesBrowserTestCase
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteAbstractTestCase subclass: #JadeiteComponentEditorTestCase
-	instanceVariableNames: 'componentEditor'
+	instanceVariableNames: 'componentEditor treeModel componentPresenterList'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

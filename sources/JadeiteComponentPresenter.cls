@@ -43,12 +43,7 @@ addComponent
 	| componentName |
 	componentName := Prompter prompt: 'Please enter a component name ...' caption: 'Add Component'.
 	componentName ifNil: [^self].
-	componentListPresenter selectionOrNil
-		ifNil: [model addComponentNamed: componentName]
-		ifNotNil: [:sel | model addSubcomponentNamed: componentName toComponentNamed: sel name].
-	self displayComponents.
-	componentListPresenter selection: (componentListPresenter model asBag
-				detect: [:componentDefinitionService | componentDefinitionService name = componentName])!
+	self basicAddComponent: componentName!
 
 addConditionalAttribute
 	| attribute |
@@ -100,6 +95,19 @@ addPreLoadSelector
 					with: componentListPresenter selection name).
 	self issueProjectDefinitionCommand.
 	self displayPrePostLoadSources!
+
+basicAddComponent: componentName
+	componentListPresenter selectionOrNil
+		ifNil: [model addComponentNamed: componentName]
+		ifNotNil: [:sel | model addSubcomponentNamed: componentName toComponentNamed: sel name].
+	self displayComponents.
+	componentListPresenter selection: (componentListPresenter model asBag
+				detect: [:componentDefinitionService | componentDefinitionService name = componentName])!
+
+basicRemoveComponent
+	model removeComponentNamed: componentListPresenter selection name.
+	self resetComponentList.
+	self displayComponents!
 
 commentChanged
 	model comment: commentPresenter value!
@@ -413,9 +421,14 @@ projectListPresenter
 	^nil!
 
 queryCommand: query
-	query command = #removePackagesFromProjectDefinition
+	#addPackage = query command
 		ifTrue: 
 			[query isEnabled: componentListPresenter selections notEmpty.
+			^true].
+	(#(#removePackages #renamePackage #addPackage) includes: query command)
+		ifTrue: 
+			[query isEnabled: (componentListPresenter selections notEmpty
+						and: [packageListPresenter selections notEmpty]).
 			^true].
 	^super queryCommand: query!
 
@@ -440,10 +453,7 @@ removeComponent
 	componentListPresenter selections isEmpty
 		ifTrue: [^MessageBox notify: 'Select component before removing it'].
 	(MessageBox confirm: 'Really remove component ' , componentListPresenter selection name)
-		ifTrue: 
-			[model removeComponentNamed: componentListPresenter selection name.
-			self resetComponentList.
-			self displayComponents]!
+		ifTrue: [self basicRemoveComponent]!
 
 removeConditionalAttribute
 	(MessageBox
@@ -454,7 +464,7 @@ removeConditionalAttribute
 				self displayConditionalAttributes.
 				self conditionalAttributeItem: nil updatedAtIndex: model conditionalAttributes size]!
 
-removePackagesFromProjectDefinition
+removePackages
 	packageListPresenter selections isEmpty ifTrue: [^self].
 	(MessageBox
 		confirm: 'Really remove ' , packageListPresenter selections printString , ' from project definition?')
@@ -498,11 +508,9 @@ resetPrePostLoadSource
 		isReadOnly: true!
 
 sortedComponents
-	sortedComponents
-		ifNil: 
-			[sortedComponents := SortedCollection
-						sortBlock: [:x :y | (x key = #nil or: [y key = #nil]) ifTrue: [false] ifFalse: [x key name < y key name]].
-			sortedComponents addAll: model componentDefinitions associations].
+	sortedComponents := SortedCollection
+				sortBlock: [:x :y | (x key = #nil or: [y key = #nil]) ifTrue: [false] ifFalse: [x key name < y key name]].
+	sortedComponents addAll: model componentDefinitions associations.
 	^sortedComponents!
 
 updatePrePostSource
@@ -523,6 +531,8 @@ addPackage!menu handlers!public! !
 addPackageGroup!menu handlers!public! !
 addPostLoadSelector!menu handlers!public! !
 addPreLoadSelector!menu handlers!public! !
+basicAddComponent:!menu handlers!private! !
+basicRemoveComponent!menu handlers!private! !
 commentChanged!event handlers!public! !
 componentListPresenter!accessing!public! !
 componentSelectionChanged!event handlers!public! !
@@ -569,7 +579,7 @@ registerPresentersForUpdates!public!register presenters! !
 removeArrayCondition!menu handlers!public! !
 removeComponent!menu handlers!public! !
 removeConditionalAttribute!menu handlers!public! !
-removePackagesFromProjectDefinition!menu handlers!public! !
+removePackages!menu handlers!public! !
 rename:to:!menu handlers!public! !
 renameComponent!menu handlers!public! !
 renamePackage!menu handlers!public! !
