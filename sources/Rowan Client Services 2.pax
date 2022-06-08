@@ -163,7 +163,7 @@ RowanService subclass: #RowanProcessService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanService subclass: #RowanProjectService
-	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop name isDirty specService componentServices'
+	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop name isDirty specService componentServices packageGroups'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -218,7 +218,7 @@ RowanDefinitionService subclass: #RowanProjectDefinitionService
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanComponentDefinitionService subclass: #RowanPackageGroupService
-	instanceVariableNames: 'condition packageServices'
+	instanceVariableNames: 'condition packageServices projectName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

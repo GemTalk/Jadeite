@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanComponentDefinitionService subclass: #RowanPackageGroupService
-	instanceVariableNames: 'condition packageServices'
+	instanceVariableNames: 'condition packageServices projectName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -35,6 +35,9 @@ indexOfProjectDefinitionService
 packageServices
 	^packageServices!
 
+projectName: anObject
+	projectName := anObject!
+
 renamePackageGroupTo: newPackageGroupName
 	projectDefinitionService renamePackageGroup: name to: newPackageGroupName.
 	name := newPackageGroupName!
@@ -54,6 +57,7 @@ condition!accessing!private! !
 condition:!accessing!private! !
 indexOfProjectDefinitionService!public!replication! !
 packageServices!accessing!public! !
+projectName:!accessing!private! !
 renamePackageGroupTo:!commands!public! !
 setCondition:!commands!public! !
 shouldReplicateInstVarAtIndex:newService:!public!replication! !

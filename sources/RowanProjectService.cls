@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanProjectService
-	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop name isDirty specService componentServices'
+	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop name isDirty specService componentServices packageGroups'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -229,6 +229,28 @@ newTextView: session using: parentPresenter
 		contextMenu: parentPresenter view contextMenu.
 	^edit!
 
+packageGroupUpdate: presenter browser: browser
+	| treeModel allService |
+	wasUpdated ifFalse: [^self].
+	browser selectedProjectName = name ifFalse: [^self].
+	treeModel := self chooseModel: presenter using: browser.
+	allService := RowanPackageGroupService new
+				name: self class allPackagesGroupName;
+				projectName: name.
+	treeModel isEmpty
+		ifTrue: 
+			[treeModel add: allService asChildOf: nil.
+			packageGroups do: [:packageGroupService | treeModel add: packageGroupService asChildOf: allService]]
+		ifFalse: 
+			[(treeModel childrenOf: allService)
+				do: [:displayedGroup | (packageGroups includes: displayedGroup) ifFalse: [treeModel remove: displayedGroup ifAbsent: []]].
+			packageGroups do: 
+					[:packageGroupService |
+					((treeModel childrenOf: allService) includes: packageGroupService)
+						ifFalse: [treeModel add: packageGroupService asChildOf: allService]]].
+	presenter view ensureSelectionVisible.
+	presenter view expandAll!
+
 packages
 
 	^packages!
@@ -250,7 +272,6 @@ postUpdate
 
 prepareForReplication
 
-	"I don't *think* we need packages when sending to the server"
 	super prepareForReplication.
 	packages := nil.!
 
@@ -340,6 +361,7 @@ isSkew:!accessing!private! !
 name!accessing!public! !
 name:!accessing!public! !
 newTextView:using:!displaying!private! !
+packageGroupUpdate:browser:!public!updating! !
 packages!accessing!public! !
 packageServices!accessing!public! !
 performGitCommand:with:in:!presenter support!public! !
@@ -363,6 +385,9 @@ specService:!accessing!private! !
 
 !RowanProjectService class methodsFor!
 
+allPackagesGroupName
+	^'All Packages'!
+
 defaultIconName
 	"Answer a filename to use for an icon of this class."
 
@@ -383,6 +408,7 @@ noneProject
 		sha: 'not a project'.
 	^inst! !
 !RowanProjectService class categoriesForMethods!
+allPackagesGroupName!constants!public! !
 defaultIconName!private! !
 icon!private! !
 noneProject!instance creation!public! !
