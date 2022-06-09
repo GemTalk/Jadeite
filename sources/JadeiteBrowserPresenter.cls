@@ -1949,14 +1949,16 @@ updateMethodSourceColor
 			postToInputQueue!
 
 updatePackageGroupPackages
-	| classes | 
+	"Do the package selection & class gathering as such for a performance improvement"
+
+	| classes |
 	packageListPresenter clear.
 	packageGroupPresenter selections isEmpty ifTrue: [^self].
 	self updateServices: packageGroupPresenter selections.
-	packageListPresenter noEventsDo: [packageListPresenter selections: packageListPresenter list].	
-	classes := Set new. 
-	packageListPresenter selections do:[:packageService | classes addAll: packageService classes]. 
-	classListPresenter list: classes asArray. 
+	packageListPresenter noEventsDo: [packageListPresenter selections: packageListPresenter list].
+	classes := Set new.
+	packageListPresenter selections do: [:packageService | classes addAll: packageService classes].
+	classListPresenter list: classes asArray.
 	self sundryCleanup!
 
 updateProject

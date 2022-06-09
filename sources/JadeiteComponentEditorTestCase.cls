@@ -62,7 +62,7 @@ selectRowanSample9ProjectFromTranscript
 	^rowanSample9Project!
 
 setUp
-	super setUp.
+	super setUp. 
 	self openComponentEditorOnRowanSample9.
 	componentPresenterList := componentEditor primaryPresenter componentListPresenter.
 	self resetTreeModel!

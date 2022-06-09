@@ -22,7 +22,7 @@ hash
 	^self name hash!
 
 indexOfSessionInstVar
-	^9!
+	^10!
 
 isDefinitionService
 
