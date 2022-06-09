@@ -1949,10 +1949,14 @@ updateMethodSourceColor
 			postToInputQueue!
 
 updatePackageGroupPackages
+	| classes | 
 	packageListPresenter clear.
 	packageGroupPresenter selections isEmpty ifTrue: [^self].
 	self updateServices: packageGroupPresenter selections.
-	packageListPresenter noEventsDo: [packageListPresenter selections: packageListPresenter list].	"avoid updating the gui on every selection. we will update packages next"
+	packageListPresenter noEventsDo: [packageListPresenter selections: packageListPresenter list].	
+	classes := Set new. 
+	packageListPresenter selections do:[:packageService | classes addAll: packageService classes]. 
+	classListPresenter list: classes asArray. 
 	self sundryCleanup!
 
 updateProject

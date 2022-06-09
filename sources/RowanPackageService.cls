@@ -145,8 +145,7 @@ packageUpdate: presenter
 
 postUpdate
 	super postUpdate.
-	classes ifNotNil: [classes do: [:service | service postUpdate]].
-	classes := Array new!
+	classes ifNotNil: [classes do: [:service | service postUpdate]].!
 
 prepareForReplication
 	super prepareForReplication.
