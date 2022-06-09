@@ -1952,8 +1952,7 @@ updatePackageGroupPackages
 	packageListPresenter clear.
 	packageGroupPresenter selections isEmpty ifTrue: [^self].
 	self updateServices: packageGroupPresenter selections.
-	packageListPresenter selections: packageListPresenter list.
-	self updateServices: packageListPresenter selections.
+	packageListPresenter noEventsDo: [packageListPresenter selections: packageListPresenter list].	"avoid updating the gui on every selection. we will update packages next"
 	self sundryCleanup!
 
 updateProject

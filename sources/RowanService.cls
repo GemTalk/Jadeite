@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 Object subclass: #RowanService
-	instanceVariableNames: 'command commandArgs updateType organizer updates wasUpdated'
+	instanceVariableNames: 'command commandArgs updateType organizer updates wasUpdated shouldUpdate'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
