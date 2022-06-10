@@ -242,12 +242,12 @@ hierarchyServices: anObject
 
 indexOfMetaInstVar
 	"performance enhancement"
-	^16!
+	^17!
 
 indexOfMethodsInstVar
 	"performance enhancement"
 
-	^24!
+	^25!
 
 initialize
 	

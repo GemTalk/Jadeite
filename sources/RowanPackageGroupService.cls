@@ -30,7 +30,7 @@ condition: anObject
 	condition := anObject!
 
 indexOfProjectDefinitionService
-	^13!
+	^14!
 
 packageServices
 	^packageServices!

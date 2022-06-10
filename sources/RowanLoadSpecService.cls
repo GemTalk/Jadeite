@@ -39,7 +39,7 @@ export
 	self issueCommand: self session: session!
 
 indexOfSessionInstVar
-	^27!
+	^28!
 
 load
 	self

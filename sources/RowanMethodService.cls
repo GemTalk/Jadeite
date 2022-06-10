@@ -255,16 +255,16 @@ implementorsOf: aString
 
 indexOfFirstReferenceInstVar
 
-	^34!
+	^35!
 
 indexOfSourceInstVar
-	^7!
+	^8!
 
 indexOfStepPointsInstVar
-	^21!
+	^22!
 
 indexOfTestResultInstVar
-	^28!
+	^29!
 
 initialize
 	super initialize.

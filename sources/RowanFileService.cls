@@ -21,7 +21,7 @@ excludedInstVars
 	^super excludedInstVars , #('session')!
 
 indexOfSessionInstVar
-	^9!
+	^10!
 
 isDirectory: directory
 	command := #isDirectory:.
