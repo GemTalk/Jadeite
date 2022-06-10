@@ -392,7 +392,7 @@ processListPresenter
 	^processListPresenter!
 
 queryCommand: query
-	(#(#browseFrameMethod #browseImplementors #browseSenders #browseSelectedMethod)
+	(#(#browseFrameMethod #browseImplementors #browseSenders #browseSelectedMethod #browseFrameMethodInExistingBrowser)
 		includes: query commandSymbol)
 			ifTrue: 
 				[query isEnabled: (frame homeMethodSelector notNil and: [frame classIsResolvable]).
