@@ -435,6 +435,20 @@ test_browseFrameMethodInBlock
 	self assert: browser currentCard methodListPresenter selection selector equals: #testBlockMenuItems]
 			ensure: [browser view close]!
 
+test_browseFrameMethodInExistingBrowser
+	| browser |
+	browser := JadeiteBrowser showOnSession: session.
+	
+	[self assert: browser cardsPresenter subPresenters size = 1.
+	self saveMethodWithHalt.
+	self openDebuggerOn: 'RowanSample1 new sampleMethodWithHalt'.
+	self selectFirstFrameStartingWith: 'Array'.	"#halt sent to Array but actually implemented by Object, hence the test for Object later"
+	debugger browseFrameMethodInExistingBrowser.
+	self assert: browser cardsPresenter subPresenters size = 2.
+	self assert: browser currentCard classListPresenter selection name equals: 'Object'.
+	self assert: browser currentCard methodListPresenter selection selector equals: #halt]
+			ensure: [self destroy: browser]!
+
 test_browseImplementorsInBlock
 	| browser source |
 	self testsIssue: #issue287
@@ -2403,6 +2417,7 @@ test_browseClassVariablePane!public!tests! !
 test_browseFrameClassMethod!public!tests! !
 test_browseFrameMethod!public!tests! !
 test_browseFrameMethodInBlock!public!tests! !
+test_browseFrameMethodInExistingBrowser!public!tests! !
 test_browseImplementorsInBlock!public!tests! !
 test_browseSelectedFrameClassMethod!public!tests! !
 test_browseSelectedFrameMethod!public!test menus! !

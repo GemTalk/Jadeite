@@ -120,6 +120,34 @@ test_addSystemTabNoSelections
 	self assertIsNil: (self categoryListPresenter selectionIfNone:[]).
 	self assertIsNil: (self methodListPresenter selectionIfNone:[]).!
 
+test_browseInExistingBrowser
+	self testsIssue: #issue827
+		withTitle: 'Would be nice to be able to request that all browse menu items be routed to an existing project browser'.
+	JadeiteBrowser allInstances do: [:browser | self destroy: browser].
+	projectsBrowser := nil.
+	self setupProjectBrowser.
+	self assert: projectsBrowser cardsPresenter subPresenters size = 1.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #testError.
+	self assert: self projectsPresenter classListPresenter selection name = 'RowanSample1Test'.
+	self assert: self projectsPresenter methodListPresenter selection selector = #testError.
+	methodListBrowser := self projectsPresenter browseImplementors.
+	self assert: methodListBrowser view isForeground.
+	methodListBrowser primaryPresenter methodListPresenter methodListPresenter selectionByIndex: 3.
+	self
+		assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter selection
+				className = 'SUnitTest'.
+	methodListBrowser primaryPresenter methodListPresenter browseInExistingBrowser.
+	self assert: projectsBrowser cardsPresenter subPresenters size = 2.
+	self assert: self projectsPresenter classListPresenter selection name = 'SUnitTest'.
+	self assert: self projectsPresenter methodListPresenter selection selector = #testError.
+	self assert: projectsBrowser view isForeground.
+	projectsBrowser cardsPresenter view cardLayout firstCard.
+	self assert: self projectsPresenter classListPresenter selection name = 'RowanSample1Test'.
+	self assert: self projectsPresenter methodListPresenter selection selector = #testError.
+	self destroy: projectsBrowser.	"Because we've added tabs, we want to start the next test with a fresh project browser"
+	projectsBrowser := nil!
+
 test_browserPosition
 	self testsIssue: #issue735
 		withTitle: 'In multi-monitor setupt, inconsistent locations for opening windows (3.0.93-7)'.
@@ -269,6 +297,7 @@ test_addSystemTabBrowserPosition!public!test system tabs! !
 test_addSystemTabClassSelection!public!test system tabs! !
 test_addSystemTabClassSelectionClassSide!public!test system tabs! !
 test_addSystemTabNoSelections!public!test system tabs! !
+test_browseInExistingBrowser!public!test system tabs! !
 test_browserPosition!public!test system tabs! !
 test_deselectProjectOnly!public!test system tabs! !
 test_modifiedSystemTab!public!test system tabs! !

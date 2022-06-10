@@ -10,12 +10,6 @@ RowanSystemBrowser comment: ''!
 !RowanSystemBrowser categoriesForClass!Unclassified! !
 !RowanSystemBrowser methodsFor!
 
-addSystemBrowserWithLayoutInfo: each
-	"method can be removed - I think" 
-	"| presenter |
-	presenter := (self systemBrowserPresenter createIn: cardsPresenter gciSession: gciSession)
-				layoutInfo: each."!
-
 restoreLayoutAndContentsFromFile
 	self rowanFixMe. "Need to restore from saved state via services"
 	^false. !
@@ -28,7 +22,6 @@ shellName
 systemBrowserPresenter	
 	^RowanSystemBrowserPresenter! !
 !RowanSystemBrowser categoriesForMethods!
-addSystemBrowserWithLayoutInfo:!public! !
 restoreLayoutAndContentsFromFile!public! !
 shellName!overrides!private! !
 systemBrowserPresenter!public! !

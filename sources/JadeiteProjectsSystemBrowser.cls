@@ -11,7 +11,9 @@ JadeiteProjectsSystemBrowser comment: ''!
 !JadeiteProjectsSystemBrowser methodsFor!
 
 addSystemBrowser
-	self addSystemBrowserWithLayoutInfo: nil!
+	| browser |
+	browser := self addSystemBrowserWithLayoutInfo: nil.
+	^browser!
 
 addSystemBrowserWithLayoutInfo: each
 	| presenter |
