@@ -289,6 +289,7 @@ test_adHocContextInstanceSide
 test_browseBreakpoints
 	| methodService |
 	self testsIssue: #issue225 withTitle: 'nice to have a breakpoint browser'.
+	JadePresenter clearAllBreaksIn: session.
 	methodListBrowser := JadePresenter browseBreakpointsIn: session.
 	[self assert: self methodListMethodListPresenter list size equals: 0]
 		ensure: [methodListBrowser view close].
@@ -335,6 +336,7 @@ test_browseBreakpointsClearAllMenuItemFromMethodList
 test_browseBreakpointsFromTranscript
 	| methodService |
 	self testsIssue: #issue225 withTitle: 'nice to have a breakpoint browser'.
+	JadePresenter clearAllBreaksIn: session.
 	methodListBrowser := transcript browseBreakpointList.
 	[self assert: self methodListMethodListPresenter list size equals: 0]
 		ensure: [methodListBrowser view close].
