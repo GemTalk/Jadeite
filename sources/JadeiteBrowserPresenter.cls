@@ -31,6 +31,9 @@ addNoneProject
 	(projectListPresenter list includes: RowanProjectService noneProject)
 		ifFalse: [projectListPresenter model add: RowanProjectService noneProject]!
 
+addPackagePresenter
+	^addPackagePresenter!
+
 addSystemBrowser
 	| browser position |
 	position := self topShell view position.	"don't let default position takeover when adding tab"
@@ -1665,6 +1668,9 @@ selectProjectNamed: projectName
 	projectListPresenter selections: (Array with: projectService).
 	^projectService "return for testing"!
 
+selectProjectTab
+	self selectSourceTabNamed: 'projectInfoTab'!
+
 setCompileErrorColor
 	statusBarText view backcolor: Color red faded!
 
@@ -2048,6 +2054,7 @@ abortTransaction!public!transaction management! !
 addDictionary!menu handlers!public! !
 additionalAccelerators!constants!public! !
 addNoneProject!public!updating! !
+addPackagePresenter!accessing!private! !
 addSystemBrowser!menu handlers!public! !
 allSelectedProjectsDirty!public!testing! !
 auditProject!project menu handlers!public! !
@@ -2226,6 +2233,7 @@ selectNoneProject!public!selection! !
 selectPackageNamed:!public!selection! !
 selectPackageOrDictionaryFor:!public!selection! !
 selectProjectNamed:!public!selection! !
+selectProjectTab!public! !
 setCompileErrorColor!compile support!public! !
 setCompileWarningColor!compile support!public! !
 setFontSize!menu handlers!public! !

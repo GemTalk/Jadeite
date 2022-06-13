@@ -1396,9 +1396,6 @@ selectPackage: newPackageSelection
 	classSelection ifNotNil: [self selectClassNamed: classSelection name].
 	methodSelection ifNotNil: [self selectionMethod: methodSelection]!
 
-selectProjectTab
-	self selectSourceTabNamed: 'projectInfo'!
-
 selectSourceTabNamed: tabName
 	| tab |
 	tab := self view viewNamed: tabName.
@@ -1820,7 +1817,6 @@ selectMethods:!private!selection! !
 selectMethodsFrom:!private!selection! !
 selectMethodSourceTab!public!selection! !
 selectPackage:!private!selection! !
-selectProjectTab!public!selection! !
 selectSourceTabNamed:!private!selection! !
 selectSUnitTab!public!selection! !
 selectVariableTab!public!selection! !

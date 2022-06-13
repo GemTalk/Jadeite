@@ -13,12 +13,6 @@ JadePresenter comment: ''!
 additionalAccelerators
 	^#(#(#raiseConsole 'Ctrl+F7'))!
 
-addSystemBrowser
-	"only sent from browseSelectedClassIn:newTab:
-	Not implemented in all subclasses"
-
-	self subclassResponsibility!
-
 commitTransaction
 	"Even if it takes a windy path, try to make sure
 	all commits in Jadeite pass through here"
@@ -139,7 +133,6 @@ updateService: service
 	^self updateServices: (Array with: service) ! !
 !JadePresenter categoriesForMethods!
 additionalAccelerators!constants!public! !
-addSystemBrowser!private! !
 commitTransaction!public!transaction management! !
 gciSession!public! !
 gciSession:!public! !

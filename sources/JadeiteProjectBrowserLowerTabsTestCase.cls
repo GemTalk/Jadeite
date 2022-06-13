@@ -246,6 +246,20 @@ test_browseTestSelectorsInSUnitTab
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list asArray
 		equals: methodListBrowser primaryPresenter methodListPresenter methodListPresenter list asArray!
 
+test_canOpenSystemBrowserWithAddPackageShowing
+	"discovered that pressing addSystemBrowser might get routed to the add package presenter
+	in the project tab. Test that addPackagePresenter reroutes message to browser" 
+
+	| previousSize newSize |
+	previousSize := projectsBrowser cardsPresenter view tabs size.
+	self selectServiceNamed: 'RowanSample9' in: self projectListPresenter.
+	self projectsPresenter selectProjectTab.  
+	self projectsPresenter addPackagePresenter addSystemBrowser. 
+	newSize := projectsBrowser cardsPresenter view tabs size.
+	self assert: newSize = (previousSize + 1)
+
+	!
+
 test_classCopy
 	self testsIssue: #issue506 withTitle: 'Usefful to be able to copy a class ...'.
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
@@ -1373,6 +1387,7 @@ test_browseImplementorsEnablement!public!test menus!tests! !
 test_browseSendersDisplaysOneTime!public!test menus! !
 test_browseSendersEnablement!public!test menus!tests! !
 test_browseTestSelectorsInSUnitTab!public!test sunit tab!tests! !
+test_canOpenSystemBrowserWithAddPackageShowing!public!test project tab! !
 test_classCopy!public!test class list!test sunit tab!tests! !
 test_comparisonPresenterEvents!public!test comparison tab! !
 test_comparisonTabMultimethod!public!test comparison tab! !

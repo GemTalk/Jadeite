@@ -12,19 +12,9 @@ RowanSystemBrowser comment: ''!
 
 restoreLayoutAndContentsFromFile
 	self rowanFixMe. "Need to restore from saved state via services"
-	^false. !
-
-shellName
-
-	^'Dictionaries Browser'.
-!
-
-systemBrowserPresenter	
-	^RowanSystemBrowserPresenter! !
+	^false. ! !
 !RowanSystemBrowser categoriesForMethods!
 restoreLayoutAndContentsFromFile!public! !
-shellName!overrides!private! !
-systemBrowserPresenter!public! !
 !
 
 !RowanSystemBrowser class methodsFor!

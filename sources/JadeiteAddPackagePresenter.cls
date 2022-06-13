@@ -22,6 +22,11 @@ addPackage
 					with: componentPresenter selection).
 	self issueCommand: projectService!
 
+addSystemBrowser
+	"pass along to the browser"
+
+	self topShell addSystemBrowser!
+
 createComponents
 	super createComponents.
 	newPackagePresenter := self add: TextPresenter new name: 'newPackagePresenter'.
@@ -54,6 +59,7 @@ projectService: anObject
 	self initializeLists! !
 !JadeiteAddPackagePresenter categoriesForMethods!
 addPackage!actions!public! !
+addSystemBrowser!actions!public! !
 createComponents!initialization!public! !
 initializeComponents!initialization!public! !
 initializeLists!initialization!public! !
