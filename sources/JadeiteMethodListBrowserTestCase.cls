@@ -233,13 +233,27 @@ test_additionalAccelerators
 	"No way yet to adequately test accelerators function
 	but we can assert that we tell Dolphin to set them up"
 
+	| last textView |
 	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
 	methodListBrowser := JadePresenter browseImplementorsOf: #test1 session: session.
+	self assert: (self methodListBrowserPresenter class defaultAdditionalAccelerators
+				includes: #(#insertIfFalse 'Ctrl+Shift+D')).
+	self assert: (self methodListBrowserPresenter class defaultAdditionalAccelerators
+				includes: #(#insertIfTrue 'Ctrl+Shift+T')).
+	self assert: self methodListBrowserPresenter class defaultAdditionalAccelerators size equals: 3.	"if a new accelerator gets added, fail test so it gets updated."
+	
+	[textView := self methodListBrowserPresenter methodSourcePresenter documentPresenter view.
+	textView setFocus.  "required to initialize the accelerator table" 
+	last := self methodListBrowserPresenter methodSourcePresenter documentPresenter value size.
+	textView selectionStart: last end: last.
+	self routeCommand: #insertIfFalse toWindow: self methodListBrowserPresenter methodSourcePresenter.
 	self
-		assert: (self primaryTestWindow additionalAccelerators includes: #(#insertIfFalse 'Ctrl+Shift+D')).
-	self
-		assert: (self primaryTestWindow additionalAccelerators includes: #(#insertIfTrue 'Ctrl+Shift+T')).
-	self assert: self methodListBrowserPresenter additionalAccelerators size equals: 3	"should fail if we add a new one"!
+		assert: (self methodListBrowserPresenter methodSourcePresenter documentPresenter value last: 10)
+				= 'ifFalse:[]'.
+	self routeCommand: #insertIfTrue toWindow: self methodListBrowserPresenter methodSourcePresenter.
+	self assert: (self methodListBrowserPresenter methodSourcePresenter documentPresenter value last: 9)
+				= 'ifTrue:[]']
+			ensure: [textView isModified: false]!
 
 test_adHocContextClassSide
 	| classService |

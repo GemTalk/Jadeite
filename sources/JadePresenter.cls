@@ -155,6 +155,9 @@ updateService:!public!services! !
 
 !JadePresenter class methodsFor!
 
+defaultAdditionalAccelerators
+	^#(#(#raiseConsole 'Ctrl+F7'))!
+
 loadViewResource2: aString inContext: contextView
 	| resourceIdentifier |
 	ShellView
@@ -191,6 +194,7 @@ rowanSample1Path
 rowanSample9Path
 	^'file:$ROWAN_PROJECTS_HOME/RowanSample9/rowan/specs/spec_0061.ston'! !
 !JadePresenter class categoriesForMethods!
+defaultAdditionalAccelerators!constants!public! !
 loadViewResource2:inContext:!operations!public! !
 maxPrintStringSize!constants!public! !
 openCommit:inGitHub:!browsing!public! !

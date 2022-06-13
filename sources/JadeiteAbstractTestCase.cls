@@ -339,6 +339,23 @@ queryCommand: commandSymbol inPresenter: presenter view: view
 	presenter queryCommand: commandQuery.
 	^commandQuery!
 
+routeCommand: command toWindow: windowLikeThing
+	"Private - see CommandDescription class comment for explanation of how it fits in the Dolphin MVP architecture.
+	Route the command description through the command policy to see if it finds the right home"
+
+	| commandDescription id |
+	commandDescription := CommandDescription registry keys detect: [:key | key command = command].
+	id := CommandDescription registry at: commandDescription.
+	self routeCommandWithId: id inVisual: windowLikeThing!
+
+routeCommandWithId: id inVisual: windowLikeThing
+	"Private - see CommandDescription class comment for explanation of how it fits in the Dolphin MVP architecture.
+	Route the command description through the command policy to see if it finds the right home"
+
+	| commandDescription |
+	commandDescription := CommandDescription withId: id ifAbsent: [].
+	windowLikeThing commandPolicy route: commandDescription!
+
 rowanProjectsHome
 	^JadePresenter rowanProjectsHomeEnvVarString!
 
@@ -651,9 +668,15 @@ tearDown
 	self issueCommand: answeringService!
 
 test_globalAdditionalAccelerators
+	| id |
 	self primaryTestWindow ifNil: [^self].	"not all test classes have a primaryTestWindow"
-	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7')).
-!
+	self assert: (self primaryTestWindow class defaultAdditionalAccelerators
+				includes: #(#raiseConsole 'Ctrl+F7')).
+	
+	[id := 32325.	"This magic constant came from View>>wmCommand:wParam:lParam: which originated from the Windows OS"
+	self routeCommandWithId: id inVisual: self primaryTestWindow.
+	self assert: transcript view isForeground	"If successful, the console will be the top view"]
+			ensure: [self primaryTestWindow topShell view beForeground]!
 
 testsIssue: aSymbol withTitle: anObject
 	"send this to help identify which tests test which issues"
@@ -771,6 +794,8 @@ primaryTestWindow!accessing!public! !
 projectListPresenter!private!project browser support! !
 projectsPresenter!private!project browser support! !
 queryCommand:inPresenter:view:!private! !
+routeCommand:toWindow:!helpers!private! !
+routeCommandWithId:inVisual:!helpers!private! !
 rowanProjectsHome!constants!private! !
 rowanSample1Path!constants!private! !
 sampleClassName!private!project browser support! !

@@ -38,7 +38,8 @@ test_packageGroupsFromLoadedPackage
 	self assert: packageGroupModel roots first name = 'All Packages'.
 	children := packageGroupModel childrenOf: packageGroupModel roots first.
 	childNames := children collect: [:child | child name].
-	loadedProjectPackageGroupNames := #('groups/WorkGroup_dkh' 'groups/Tests' 'groups/Examples' 'groups/Projects' 'groups/Loader' 'groups/Rowan').
+	"get loaded project names directly for test" 
+	loadedProjectPackageGroupNames := (RowanAnsweringService new execReturningObject: '(Rowan projectNamed: ''RowanSample9'') packageGroupNames' in: session) answer. 
 	childNames do: [:childName | self assert: (loadedProjectPackageGroupNames includes: childName)].
 	loadedProjectPackageGroupNames
 		do: [:expectedChildName | self assert: (childNames includes: expectedChildName)]! !

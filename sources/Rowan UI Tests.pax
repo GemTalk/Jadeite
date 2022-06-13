@@ -70,6 +70,7 @@ package methodNames
 	add: #MethodHistoryBrowser -> #slider:;
 	add: #SUnitBrowserModel -> #debugIndividualTestsWithResources:;
 	add: 'ChoicePrompter class' -> #create:;
+	add: 'CommandDescription class' -> #registry;
 	add: 'JadeiteSearch class' -> #allClassNames:;
 	add: 'JadeiteSearch class' -> #allSelectorSymbols:;
 	add: 'MessageBox class' -> #new;
@@ -311,6 +312,15 @@ create: viewName
 		ifFalse: [super create: viewName]! !
 !ChoicePrompter class categoriesForMethods!
 create:!instance creation!public! !
+!
+
+!CommandDescription class methodsFor!
+
+registry
+	"accessor for testing" 
+	^CommandDescriptionRegistry! !
+!CommandDescription class categoriesForMethods!
+registry!accessing!public! !
 !
 
 !DifferencesPresenter methodsFor!

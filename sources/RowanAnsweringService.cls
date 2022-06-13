@@ -44,6 +44,15 @@ exec: string in: session
 	commandArgs := Array with: string.
 	BrowserUpdate current issueCommands: (Array with: self) session: session!
 
+execReturningObject: string in: session
+	"instead of just returning a printString of the remote execution results, return
+	a fully-formed object. If only simple objects are used, it might work. Else, STON
+	might become unhappy and crash. Use at your own risk"
+
+	command := #execReturningObject:.
+	commandArgs := Array with: string.
+	BrowserUpdate current issueCommands: (Array with: self) session: session!
+
 expressionSelector: string session: session
 	command := #expressionSelector:.
 	commandArgs := Array with: string.
@@ -141,6 +150,7 @@ breakPointsAreEnabled:!commands!public! !
 breakpointSettingChanged:!public!updating! !
 canAccessServiceClasses:!commands!public! !
 exec:in:!commands!public! !
+execReturningObject:in:!commands!public! !
 expressionSelector:session:!commands!public! !
 flipAutoCommitFor:!commands!public! !
 flipTranscriptIn:!commands!public! !

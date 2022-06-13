@@ -37,6 +37,32 @@ test_abstractTestsShown
 				view: self methodListPresenter view.
 	self deny: commandQuery isEnabled	"run test menu item disabled in the abstract class"!
 
+test_additionalAccelerators
+	"No way yet to adequately test accelerators function
+	but we can assert that we tell Dolphin to set them up"
+
+	| last textView |
+	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
+	self selectRowanSample1Class.
+	self selectServiceNamed: 'foo' in: self methodListPresenter.
+	self assert: (self projectsPresenter class defaultAdditionalAccelerators
+				includes: #(#insertIfFalse 'Ctrl+Shift+D')).
+	self assert: (self projectsPresenter class defaultAdditionalAccelerators
+				includes: #(#insertIfTrue 'Ctrl+Shift+T')).
+	self assert: self projectsPresenter class defaultAdditionalAccelerators size equals: 3.	"if a new accelerator gets added, fail test so it gets updated."
+	
+	[textView := self projectsPresenter methodSourcePresenter view.
+	textView setFocus.	"required to initialize the accelerator table"
+	last := self projectsPresenter methodSourcePresenter value size.
+	textView selectionStart: last end: last.
+	self routeCommand: #insertIfFalse toWindow: self projectsPresenter methodSourcePresenter.
+	self assert: (self projectsPresenter methodSourcePresenter value last: 10) = 'ifFalse:[]'.
+	self routeCommand: #insertIfTrue toWindow: self projectsPresenter methodSourcePresenter.
+	self assert: (self projectsPresenter methodSourcePresenter value last: 9) = 'ifTrue:[]']
+			ensure: 
+				[textView isModified: false.
+				self destroy: projectsBrowser]!
+
 test_breakAtDisplaysOneTime
 	"make sure to properly remove menu item before adding a new one based on caret position"
 
@@ -1378,6 +1404,7 @@ test_unloadProjectClearsProjectTab
 !JadeiteProjectBrowserLowerTabsTestCase categoriesForMethods!
 cardMenuItemForCommand:in:!public!test sunit tab!tests! !
 test_abstractTestsShown!public!test sunit tab!tests! !
+test_additionalAccelerators!public!test menus!tests! !
 test_breakAtDisplaysOneTime!public!test menus! !
 test_breakpointDisabledHighlighting!public!test source! !
 test_browseHierarchyImplementorsEnablement!public!test menus!tests! !
