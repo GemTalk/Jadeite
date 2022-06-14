@@ -11,6 +11,7 @@ LibGciRpc64_Holder comment: 'Placeholder for a subclass of GciLibrary. Used for 
 !LibGciRpc64_Holder methodsFor!
 
 = aHolder
+	aHolder class = LibGciRpc64_Holder ifFalse:[^false]. 
 	^fileNameSearch = aHolder fileNameSearch!
 
 displayName
