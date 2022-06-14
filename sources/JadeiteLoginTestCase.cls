@@ -166,6 +166,22 @@ test_loginButtonEnablement
 	self assert: query isEnabled]
 			ensure: [jadeiteShell login]!
 
+test_loginShellPlaceholdersForAddedLibraries
+	| loginShell previousPlaceHolders binDir fakeLib newPlaceHolders addedPlaceHolders fakeLibPath |
+	loginShell := JadeiteLoginShell allInstances first.
+	previousPlaceHolders := loginShell placeholdersForNewSharedLibraries.
+	binDir := SessionManager current imageBase , 'bin\'.
+	
+	[fakeLibPath := binDir , '\libgcirpc-3.7.46-32.dll'.	"I hope we never actually release the 46th version of 3.7"
+	fakeLib := File open: fakeLibPath mode: #create]
+			ensure: [fakeLib close].
+	
+	[newPlaceHolders := loginShell placeholdersForNewSharedLibraries.
+	self assert: newPlaceHolders size = (previousPlaceHolders size + 1).
+	addedPlaceHolders := newPlaceHolders difference: previousPlaceHolders.
+	self assert: addedPlaceHolders first fileNameSearch = 'libgcirpc-3.7.46-32.dll']
+			ensure: [File delete: fakeLibPath]!
+
 test_simpleLogin
 	self denyIsNil: session.
 	self assert: session isKindOf: GciSession. 
@@ -190,6 +206,7 @@ test_370Libraries!public!tests! !
 test_debugLoginDumpsParameters!public!tests! !
 test_gemTask!public!tests! !
 test_loginButtonEnablement!public!tests! !
+test_loginShellPlaceholdersForAddedLibraries!public!tests! !
 test_simpleLogin!public!tests! !
 testsIssue:withTitle:!private! !
 !

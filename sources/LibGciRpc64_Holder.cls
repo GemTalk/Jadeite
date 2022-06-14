@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 Object subclass: #LibGciRpc64_Holder
 	instanceVariableNames: 'parentLibrary fileNameSearch displayName'
@@ -9,6 +9,9 @@ LibGciRpc64_Holder guid: (GUID fromString: '{f0ed36c5-2e5f-453b-8e5e-90532556ecb
 LibGciRpc64_Holder comment: 'Placeholder for a subclass of GciLibrary. Used for logging into server versions for which no GciLibrary subclass is present. '!
 !LibGciRpc64_Holder categoriesForClass!Kernel-Objects! !
 !LibGciRpc64_Holder methodsFor!
+
+= aHolder
+	^fileNameSearch = aHolder fileNameSearch!
 
 displayName
 	^displayName!
@@ -22,6 +25,9 @@ fileNameSearch
 fileNameSearch: anObject
 	fileNameSearch := anObject!
 
+hash
+	^fileNameSearch hash!
+
 parentLibrary
 	^parentLibrary!
 
@@ -30,13 +36,17 @@ parentLibrary: anObject
 
 withDisplayName: aDisplayName
 	^parentLibrary! !
-!LibGciRpc64_Holder categoriesFor: #displayName!accessing!private! !
-!LibGciRpc64_Holder categoriesFor: #displayName:!accessing!private! !
-!LibGciRpc64_Holder categoriesFor: #fileNameSearch!accessing!private! !
-!LibGciRpc64_Holder categoriesFor: #fileNameSearch:!accessing!private! !
-!LibGciRpc64_Holder categoriesFor: #parentLibrary!accessing!private! !
-!LibGciRpc64_Holder categoriesFor: #parentLibrary:!accessing!private! !
-!LibGciRpc64_Holder categoriesFor: #withDisplayName:!accessing!public! !
+!LibGciRpc64_Holder categoriesForMethods!
+=!comparison!public! !
+displayName!accessing!private! !
+displayName:!accessing!private! !
+fileNameSearch!accessing!private! !
+fileNameSearch:!accessing!private! !
+hash!comparison!public! !
+parentLibrary!accessing!private! !
+parentLibrary:!accessing!private! !
+withDisplayName:!accessing!public! !
+!
 
 !LibGciRpc64_Holder class methodsFor!
 
@@ -48,5 +58,7 @@ displayName: displayName fileNameSearch: fileNameSearch parentLibrary: parentLib
 		fileNameSearch: fileNameSearch;
 		parentLibrary: parentLibraryClass.
 	^inst! !
-!LibGciRpc64_Holder class categoriesFor: #displayName:fileNameSearch:parentLibrary:!public! !
+!LibGciRpc64_Holder class categoriesForMethods!
+displayName:fileNameSearch:parentLibrary:!public! !
+!
 
