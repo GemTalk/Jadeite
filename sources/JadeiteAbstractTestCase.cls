@@ -668,13 +668,14 @@ tearDown
 	self issueCommand: answeringService!
 
 test_globalAdditionalAccelerators
-	| id |
+
 	self primaryTestWindow ifNil: [^self].	"not all test classes have a primaryTestWindow"
 	self assert: (self primaryTestWindow class defaultAdditionalAccelerators
 				includes: #(#raiseConsole 'Ctrl+F7')).
 	
-	[id := 32325.	"This magic constant came from View>>wmCommand:wParam:lParam: which originated from the Windows OS"
-	self routeCommandWithId: id inVisual: self primaryTestWindow.
+	[
+	self primaryTestWindow view setFocus. 
+	self routeCommand: #raiseConsole toWindow: self primaryTestWindow.
 	self assert: transcript view isForeground	"If successful, the console will be the top view"]
 			ensure: [self primaryTestWindow topShell view beForeground]!
 

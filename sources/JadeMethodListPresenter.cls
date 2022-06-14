@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeBrowserPresenter subclass: #JadeMethodListPresenter
 	instanceVariableNames: 'methodListPresenter methodSourcePresenter searchBlock'
@@ -269,36 +269,38 @@ updateSource
 	methodListPresenter selectedMethod ifNil: [^self].
 	self displayUncompilableSourceIn: methodSourcePresenter documentPresenter
 		! !
-!JadeMethodListPresenter categoriesFor: #browse:gsMethod:!public! !
-!JadeMethodListPresenter categoriesFor: #browse:method:!public! !
-!JadeMethodListPresenter categoriesFor: #browse:methodSelector:!public! !
-!JadeMethodListPresenter categoriesFor: #browseMethods:!public! !
-!JadeMethodListPresenter categoriesFor: #browseMethodsContaining:!public! !
-!JadeMethodListPresenter categoriesFor: #browseMethodsFromString:!public! !
-!JadeMethodListPresenter categoriesFor: #browseMethodsFromString:methodName:!public! !
-!JadeMethodListPresenter categoriesFor: #browseMethodsFromString:methodName:type:!public! !
-!JadeMethodListPresenter categoriesFor: #codePresenterIsMethod!public! !
-!JadeMethodListPresenter categoriesFor: #createComponents!public! !
-!JadeMethodListPresenter categoriesFor: #createSchematicWiring!public! !
-!JadeMethodListPresenter categoriesFor: #doSearch!public! !
-!JadeMethodListPresenter categoriesFor: #gciSession:!public! !
-!JadeMethodListPresenter categoriesFor: #getOopToNewMethod!public! !
-!JadeMethodListPresenter categoriesFor: #getSelectedMethod!public! !
-!JadeMethodListPresenter categoriesFor: #getSelectedMethodName!public! !
-!JadeMethodListPresenter categoriesFor: #insertIfFalse!menu handlers!must not strip!public! !
-!JadeMethodListPresenter categoriesFor: #insertIfTrue!menu handlers!must not strip!public! !
-!JadeMethodListPresenter categoriesFor: #jadeMenuStrings!public! !
-!JadeMethodListPresenter categoriesFor: #methodListPresenter!public! !
-!JadeMethodListPresenter categoriesFor: #onLeftButtonPressed:!public! !
-!JadeMethodListPresenter categoriesFor: #searchFor:!public! !
-!JadeMethodListPresenter categoriesFor: #selectedCategory!public! !
-!JadeMethodListPresenter categoriesFor: #selectedClass!public! !
-!JadeMethodListPresenter categoriesFor: #selectFirstMethod!public! !
-!JadeMethodListPresenter categoriesFor: #selecting:!public! !
-!JadeMethodListPresenter categoriesFor: #selectingAnyMatch:!public! !
-!JadeMethodListPresenter categoriesFor: #updateMenuBar:!public! !
-!JadeMethodListPresenter categoriesFor: #updateSaveMethodOop:!public! !
-!JadeMethodListPresenter categoriesFor: #updateSource!public! !
+!JadeMethodListPresenter categoriesForMethods!
+browse:gsMethod:!public! !
+browse:method:!public! !
+browse:methodSelector:!public! !
+browseMethods:!public! !
+browseMethodsContaining:!public! !
+browseMethodsFromString:!public! !
+browseMethodsFromString:methodName:!public! !
+browseMethodsFromString:methodName:type:!public! !
+codePresenterIsMethod!public! !
+createComponents!public! !
+createSchematicWiring!public! !
+doSearch!public! !
+gciSession:!public! !
+getOopToNewMethod!public! !
+getSelectedMethod!public! !
+getSelectedMethodName!public! !
+insertIfFalse!menu handlers!must not strip!public! !
+insertIfTrue!menu handlers!must not strip!public! !
+jadeMenuStrings!public! !
+methodListPresenter!public! !
+onLeftButtonPressed:!public! !
+searchFor:!public! !
+selectedCategory!public! !
+selectedClass!public! !
+selectFirstMethod!public! !
+selecting:!public! !
+selectingAnyMatch:!public! !
+updateMenuBar:!public! !
+updateSaveMethodOop:!public! !
+updateSource!public! !
+!
 
 !JadeMethodListPresenter class methodsFor!
 
@@ -335,10 +337,12 @@ setListView
 setTreeView
 
 	self setJadeMethodBrowserPresenterClass: JadeTreeMethodListPresenter! !
-!JadeMethodListPresenter class categoriesFor: #getJadeMethodBrowserPresenterClass!public! !
-!JadeMethodListPresenter class categoriesFor: #getJadeShellViewName!public! !
-!JadeMethodListPresenter class categoriesFor: #resource_Default_view!public!resources-views! !
-!JadeMethodListPresenter class categoriesFor: #setJadeMethodBrowserPresenterClass:!public! !
-!JadeMethodListPresenter class categoriesFor: #setListView!public! !
-!JadeMethodListPresenter class categoriesFor: #setTreeView!public! !
+!JadeMethodListPresenter class categoriesForMethods!
+getJadeMethodBrowserPresenterClass!public! !
+getJadeShellViewName!public! !
+resource_Default_view!public!resources-views! !
+setJadeMethodBrowserPresenterClass:!public! !
+setListView!public! !
+setTreeView!public! !
+!
 
