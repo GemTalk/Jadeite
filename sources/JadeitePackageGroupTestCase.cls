@@ -31,6 +31,8 @@ test_packageGroupsFromLoadedPackage
 	not the project definition."
 
 	| packageGroupModel children loadedProjectPackageGroupNames childNames |
+	self testsIssue: #issue898
+		withTitle: 'Let''s consider using the loaded project for displaying packageGroups in the project browser'.
 	self selectServiceNamed: 'RowanSample9' in: self projectListPresenter.
 	packageGroupModel := self projectsPresenter packageGroupPresenter model.
 	self assert: packageGroupModel notEmpty.
@@ -38,13 +40,57 @@ test_packageGroupsFromLoadedPackage
 	self assert: packageGroupModel roots first name = 'All Packages'.
 	children := packageGroupModel childrenOf: packageGroupModel roots first.
 	childNames := children collect: [:child | child name].
-	"get loaded project names directly for test" 
-	loadedProjectPackageGroupNames := (RowanAnsweringService new execReturningObject: '(Rowan projectNamed: ''RowanSample9'') packageGroupNames' in: session) answer. 
+	"get loaded project names directly for test"
+	loadedProjectPackageGroupNames := (RowanAnsweringService new
+				execReturningObject: '(Rowan projectNamed: ''RowanSample9'') packageGroupNames'
+				in: session) answer.
 	childNames do: [:childName | self assert: (loadedProjectPackageGroupNames includes: childName)].
 	loadedProjectPackageGroupNames
-		do: [:expectedChildName | self assert: (childNames includes: expectedChildName)]! !
+		do: [:expectedChildName | self assert: (childNames includes: expectedChildName)]!
+
+test_packageGroupsSelection
+	"test that only loaded packages show up in the right package group"
+
+	| packageGroupName packageNames |
+	self testsIssue: #issue898
+		withTitle: 'Let''s consider using the loaded project for displaying packageGroups in the project browser'.
+	self selectServiceNamed: 'RowanSample9' in: self projectListPresenter.
+	self projectsPresenter packageGroupPresenter model asBag do: 
+			[:packageGroupService |
+			packageGroupName := packageGroupService name.
+			packageGroupName = 'All Packages'
+				ifFalse: 
+					[self selectTreeServicesNamed: (Array with: packageGroupName)
+						in: self projectsPresenter packageGroupPresenter.
+					packageNames := (RowanAnsweringService new
+								execReturningObject: '| packageGroup loadedProjectPackageNames |
+					packageGroup := (Rowan projectNamed: ''RowanSample9'') packageGroupNamed: '''
+										, packageGroupName
+											, '''. 
+					loadedProjectPackageNames := (Rowan image loadedProjectNamed: ''RowanSample9'') packageNames.
+					packageGroup packageNames select:[:packageName | loadedProjectPackageNames includes: packageName]'
+								in: session) answer.
+					self
+						assert: (self packageListPresenter list collect: [:packageService | packageService name]) asArray
+								= packageNames]]!
+
+test_rowanAllPackagesDoesNotTakeTooLong
+	"Although it's hard to test performance in a unit test, 
+	do a sanity test that selecting All Packages in the Rowan
+	project doesn't take a long time. There was a bug causing
+	horrendous performance."
+
+	| expectedTime time |
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	expectedTime := 2000.	"ms"
+	time := Time millisecondsToRun: 
+					[self selectTreeServicesNamed: (Array with: 'All Packages')
+						in: self projectsPresenter packageGroupPresenter].
+	self assert: time < expectedTime! !
 !JadeitePackageGroupTestCase categoriesForMethods!
 test_basicDisplayPackageGroups!public!tests! !
 test_packageGroupsFromLoadedPackage!public!tests! !
+test_packageGroupsSelection!public!tests! !
+test_rowanAllPackagesDoesNotTakeTooLong!public!tests! !
 !
 
