@@ -462,7 +462,7 @@ package methodNames
 	add: #RowanProjectService -> #changesUsing:;
 	add: #RowanProjectService -> #projectLogUsing:session:;
 	add: #SequencedGrowableCollection -> #removeAtIndexWithoutNotification:;
-	add: #SequencedGrowableCollection -> #removeWithoutNotification:ifAbsent:;
+	add: #SequencedGrowableCollection -> #removeWithoutNotification:ifAbsent:view:;
 	add: #SequencedStream -> #nextWordWithoutPunctuation;
 	add: #SmallInteger -> #_digitsAsString;
 	add: #Time -> #asStringUsingFormat:;
@@ -5977,8 +5977,8 @@ removeAtIndexWithoutNotification: index
 
 	self subclassResponsibility!
 
-removeWithoutNotification: oldElement ifAbsent: exceptionHandler
-	"Jadeite - remove without notification for ListModel only" 
+removeWithoutNotification: oldElement ifAbsent: exceptionHandler view: anObject
+	"Jadeite - remove without notification for ListModel only"
 
 	| index |
 	^(index := self indexOf: oldElement) == 0
@@ -5986,7 +5986,7 @@ removeWithoutNotification: oldElement ifAbsent: exceptionHandler
 		ifFalse: [self removeAtIndexWithoutNotification: index]! !
 !SequencedGrowableCollection categoriesForMethods!
 removeAtIndexWithoutNotification:!public!removing! !
-removeWithoutNotification:ifAbsent:!public!removing! !
+removeWithoutNotification:ifAbsent:view:!public!removing! !
 !
 
 !SequencedStream methodsFor!

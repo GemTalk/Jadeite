@@ -62,6 +62,28 @@ test_abortRemovesProjectAndPackage
 				[self cloneRowanSample1.
 				self ensureRowanSampleProjectsLoaded]!
 
+test_abortRemovesSelectedChildHierarchyTab
+	self testsIssue: #issue891 withTitle: 'class hierarchy not quite right'.
+	self selectServiceNamed: 'RowanClientServices' in: self projectListPresenter.
+	self selectServiceNamed: 'Rowan-Services-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'RowanService' in: self classListPresenter.
+	self selectHierarchyTab.
+	self
+		saveClass: 'RowanServiceTestClass'
+		superclass: 'RowanService'
+		instVars: #('var1' 'var2' 'var3')
+		package: 'Rowan-Services-Core'.
+	
+	[self assert: self classHierarchyPresenter selection name = 'RowanServiceTestClass'.
+	self abortTransaction.
+	self assert: self classHierarchyPresenter selection name = 'RowanService'.
+	self assertIsNil: (self classHierarchyPresenter model asBag
+				detect: [:classService | classService name = 'RowanServiceTestClass']
+				ifNone: [])]
+			ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSampleProjectsLoaded]!
+
 test_addAccessorsHierarchyTab
 	self testsIssue: #issue382 withTitle: 'Add Accessors menu item is disabled'.
 	self selectRowanSample1Class.
@@ -1833,6 +1855,7 @@ test_variablesUpdatedOnClassSaveInHierarchy
 expectedGrandchildrenNames!public!support! !
 test_abortRemovesClassAndMethod!public!test class list! !
 test_abortRemovesProjectAndPackage!public!test class list! !
+test_abortRemovesSelectedChildHierarchyTab!public!test class hierarchy!test variable tab!tests! !
 test_addAccessorsHierarchyTab!public!test class hierarchy!test variable tab!tests! !
 test_addAccessorsHierarchyTabVerifySource!public!test class hierarchy!test variable tab!tests! !
 test_addRemoveHierarchyCategory!public!test class hierarchy!tests! !

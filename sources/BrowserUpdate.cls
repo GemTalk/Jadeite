@@ -230,7 +230,7 @@ selectedServices
 					[potentialSelections := presenter selections.
 					services addAll: (potentialSelections select: [:selection | selection isUpdatableService])]].
 	services do:[:service | service command: #update]. 
-	^services!
+	^services asSet asArray!
 
 shouldApply: selector forSelector: service
 	^service updateType isNil or: 
