@@ -1,4 +1,4 @@
-| package |
+﻿| package |
 package := Package name: 'GemStone Objects'.
 package paxVersion: 1;
 	basicComment: ''.
@@ -18,9 +18,8 @@ package binaryGlobalNames: (Set new
 package globalAliases: (Set new
 	yourself).
 
-package setPrerequisites: (IdentitySet new
-	add: '..\Core\Object Arts\Dolphin\Base\Dolphin';
-	yourself).
+package setPrerequisites: #(
+	'..\Core\Object Arts\Dolphin\Base\Dolphin').
 
 package!
 

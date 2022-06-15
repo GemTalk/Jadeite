@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 Model subclass: #RowanCommandResult
 	instanceVariableNames: 'executionTime'
@@ -8,30 +8,3 @@ Model subclass: #RowanCommandResult
 RowanCommandResult guid: (GUID fromString: '{4ed93b8d-f706-49f3-b224-97cd3ebf739c}')!
 RowanCommandResult comment: 'Needs to be in GemStone Objects package (for the moment) so GsObject subclass won''t have cyclical dependencies.'!
 !RowanCommandResult categoriesForClass!Unclassified! !
-!RowanCommandResult methodsFor!
-
-addCachedSymbols: unused
-	
-!
-
-doNothing: anObject
-
-	"as the name implies"!
-
-prepareForReplication!
-
-testResultUpdate: presenter
-	| existingService |
-	existingService := presenter list detect: [:methodService | methodService = self] ifNone:[^self]. 
-	existingService replicateFrom: self. 
-	presenter view invalidate. 
-!
-
-updateSelector
-	^#doNothing:! !
-!RowanCommandResult categoriesFor: #addCachedSymbols:!public!updating! !
-!RowanCommandResult categoriesFor: #doNothing:!private! !
-!RowanCommandResult categoriesFor: #prepareForReplication!public!replication! !
-!RowanCommandResult categoriesFor: #testResultUpdate:!public!updating! !
-!RowanCommandResult categoriesFor: #updateSelector!public! !
-
