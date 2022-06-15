@@ -347,10 +347,11 @@ packageName: anObject
 	packageName := anObject!
 
 possiblyAdjustChildServiceIn: presenter
-	| superclassService |
-	superclassService := presenter model asArray detect: [:service | service name = superclassName]
-				ifNone: [^false].
-	(presenter model asArray includes: self)
+	| superclassService bag |
+	presenter model getNodeFor: self ifAbsent: [^false].
+	bag := presenter model asBag.
+	superclassService := bag detect: [:service | service name = superclassName] ifNone: [^false].
+	(bag includes: self)
 		ifTrue: 
 			[(presenter model parentOf: self) = superclassService
 				ifFalse: 

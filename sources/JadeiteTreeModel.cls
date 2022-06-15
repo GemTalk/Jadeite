@@ -22,6 +22,7 @@ removeWithoutNotification: anObject ifAbsent: aNiladicValuable view: theView
 	"Jadeite - remove but don't trigger events to avoid trips to the server"
 
 	| node parentNode parent |
+	self getNodeFor: anObject ifAbsent:[^self]. 
 	parent := self parentOf: anObject.
 	node := self getNodeFor: anObject ifAbsent: [].
 	node isNil ifTrue: [^aNiladicValuable value].
