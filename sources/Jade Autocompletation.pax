@@ -147,9 +147,11 @@ documentPresenterClass
 
 hasClassSideSelected
 	^parentPresenter hasClassSideSelected! !
-!CodeSourcePresenter categoriesFor: #createComponents!public! !
-!CodeSourcePresenter categoriesFor: #documentPresenterClass!public! !
-!CodeSourcePresenter categoriesFor: #hasClassSideSelected!public! !
+!CodeSourcePresenter categoriesForMethods!
+createComponents!public! !
+documentPresenterClass!public! !
+hasClassSideSelected!public! !
+!
 
 !JadeMethodListPresenter methodsFor!
 
@@ -160,15 +162,19 @@ getSelectedClassName
 hasClassSideSelected
 
 	^(self selectedClass name subStrings: ' ') last = 'class'! !
-!JadeMethodListPresenter categoriesFor: #getSelectedClassName!public! !
-!JadeMethodListPresenter categoriesFor: #hasClassSideSelected!public! !
+!JadeMethodListPresenter categoriesForMethods!
+getSelectedClassName!public! !
+hasClassSideSelected!public! !
+!
 
 !JadePresenterA methodsFor!
 
 registry
 
 	^JadeAutocompletationRegistry default! !
-!JadePresenterA categoriesFor: #registry!autocompletion!public! !
+!JadePresenterA categoriesForMethods!
+registry!autocompletion!public! !
+!
 
 !JadeTextDocument methodsFor!
 
@@ -181,14 +187,18 @@ hasClassSideSelected
 registry
 
 	^JadeAutocompletationRegistry default! !
-!JadeTextDocument categoriesFor: #hasClassSideSelected!public! !
-!JadeTextDocument categoriesFor: #registry!autocompletion!private! !
+!JadeTextDocument categoriesForMethods!
+hasClassSideSelected!public! !
+registry!autocompletion!private! !
+!
 
 !MethodSourcePresenter methodsFor!
 
 hasClassSideSelected
 	^parentPresenter hasClassSideSelected! !
-!MethodSourcePresenter categoriesFor: #hasClassSideSelected!public! !
+!MethodSourcePresenter categoriesForMethods!
+hasClassSideSelected!public! !
+!
 
 "End of package definition"!
 

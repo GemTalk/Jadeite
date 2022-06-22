@@ -668,16 +668,19 @@ tearDown
 	self issueCommand: answeringService!
 
 test_globalAdditionalAccelerators
-
+	| command |
 	self primaryTestWindow ifNil: [^self].	"not all test classes have a primaryTestWindow"
 	self assert: (self primaryTestWindow class defaultAdditionalAccelerators
 				includes: #(#raiseConsole 'Ctrl+F7')).
-	
-	[
-	self primaryTestWindow view setFocus. 
-	self routeCommand: #raiseConsole toWindow: self primaryTestWindow.
-	self assert: transcript view isForeground	"If successful, the console will be the top view"]
-			ensure: [self primaryTestWindow topShell view beForeground]!
+	self primaryTestWindow topShell view buildCombinedAcceleratorTable.	"lazily done by Dolphin when view is engaged"
+	command := self primaryTestWindow topShell view combinedAcceleratorTable commands values
+				detect: [:ea | ea command = #insertIfFalse]
+				ifNone: [].
+	self denyIsNil: command.
+	command := self primaryTestWindow topShell view combinedAcceleratorTable commands values
+				detect: [:ea | ea command = #insertIfTrue]
+				ifNone: [].
+	self denyIsNil: command!
 
 testsIssue: aSymbol withTitle: anObject
 	"send this to help identify which tests test which issues"

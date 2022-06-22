@@ -430,10 +430,10 @@ test_additionalAccelerators
 
 	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
 	self
-		assert: (self primaryTestWindow additionalAccelerators includes: #(#insertIfFalse 'Ctrl+Shift+D')).
+		assert: (self primaryTestWindow class defaultAdditionalAccelerators includes: #(#insertIfFalse 'Ctrl+Shift+D')).
 	self
-		assert: (self primaryTestWindow additionalAccelerators includes: #(#insertIfTrue 'Ctrl+Shift+T')).
-	self assert: self projectsPresenter additionalAccelerators size equals: 3	"should fail if we add a new one"!
+		assert: (self primaryTestWindow class defaultAdditionalAccelerators includes: #(#insertIfTrue 'Ctrl+Shift+T')).
+	self assert: self projectsPresenter class defaultAdditionalAccelerators size equals: 3	"should fail if we add a new one"!
 
 test_addPackageReloadProject
 	self testsIssue: #issue183

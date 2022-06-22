@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeTextPresenter subclass: #JadeAutoTextPresenter3
 	instanceVariableNames: 'currentGsShape currentText previousText currentStyleName previousStyleName lastTimeKey wordRightSideIsEmpty lastParsedResult lastTextSelection'
@@ -514,62 +514,68 @@ wordRightSideIsEmpty
 
 wordRightSideIsEmpty: anObject
 	wordRightSideIsEmpty := anObject! !
-!JadeAutoTextPresenter3 categoriesFor: #addParenthesisOrBracketsToSelection!keyboard shortcut!public! !
-!JadeAutoTextPresenter3 categoriesFor: #autocompletationConfiguration!public! !
-!JadeAutoTextPresenter3 categoriesFor: #autocompleteForIdentifier!autocompletation cycle!public! !
-!JadeAutoTextPresenter3 categoriesFor: #autocompleteForNormal!autocompletation cycle!public! !
-!JadeAutoTextPresenter3 categoriesFor: #autocompleteForUnaryMessage!autocompletation cycle!public! !
-!JadeAutoTextPresenter3 categoriesFor: #autocompleteForUpperIdentifier!autocompletation cycle!public! !
-!JadeAutoTextPresenter3 categoriesFor: #codePresenterIsMethod!public! !
-!JadeAutoTextPresenter3 categoriesFor: #configuration!public! !
-!JadeAutoTextPresenter3 categoriesFor: #createSchematicWiring!key event!public! !
-!JadeAutoTextPresenter3 categoriesFor: #currentGsShape!accessing!private! !
-!JadeAutoTextPresenter3 categoriesFor: #currentGsShape:!accessing!private! !
-!JadeAutoTextPresenter3 categoriesFor: #currentSelectionOrLine!accessing!public! !
-!JadeAutoTextPresenter3 categoriesFor: #currentStyleName!accessing!private! !
-!JadeAutoTextPresenter3 categoriesFor: #currentStyleName:!accessing!private! !
-!JadeAutoTextPresenter3 categoriesFor: #currentText!accessing!private! !
-!JadeAutoTextPresenter3 categoriesFor: #currentText:!accessing!private! !
-!JadeAutoTextPresenter3 categoriesFor: #getArgumentsNames!autocompletion list!public! !
-!JadeAutoTextPresenter3 categoriesFor: #getBreakCharacters!public! !
-!JadeAutoTextPresenter3 categoriesFor: #getClassInstancesVariables!autocompletion list!public! !
-!JadeAutoTextPresenter3 categoriesFor: #getClassName!public! !
-!JadeAutoTextPresenter3 categoriesFor: #getCurrentWord!public! !
-!JadeAutoTextPresenter3 categoriesFor: #getNamesForClassUnaryMessage!autocompletion list!public! !
-!JadeAutoTextPresenter3 categoriesFor: #getNamesForIdentifier!autocompletion list!public! !
-!JadeAutoTextPresenter3 categoriesFor: #getNamesForUnaryMessage!autocompletion list!public! !
-!JadeAutoTextPresenter3 categoriesFor: #getNameUpperIdentifier!autocompletion list!public! !
-!JadeAutoTextPresenter3 categoriesFor: #getSelectedGsShape!public! !
-!JadeAutoTextPresenter3 categoriesFor: #getTemporaries!autocompletion list!public! !
-!JadeAutoTextPresenter3 categoriesFor: #initialize!public! !
-!JadeAutoTextPresenter3 categoriesFor: #insertBasicText:at:!autocompletation cycle!autocompletion!public! !
-!JadeAutoTextPresenter3 categoriesFor: #insertKeywordText:at:!autocompletation cycle!autocompletion!public! !
-!JadeAutoTextPresenter3 categoriesFor: #insertKeywordText2:at:!autocompletation cycle!autocompletion!public! !
-!JadeAutoTextPresenter3 categoriesFor: #insertSimpleText:at:!autocompletation cycle!autocompletion!public! !
-!JadeAutoTextPresenter3 categoriesFor: #insertText:at:!autocompletation cycle!autocompletion!public! !
-!JadeAutoTextPresenter3 categoriesFor: #isAddingParenthesisOrBrackets!keyboard shortcut!public! !
-!JadeAutoTextPresenter3 categoriesFor: #isAtEndOfWord!public! !
-!JadeAutoTextPresenter3 categoriesFor: #isKeyboardShorcut!keyboard shortcut!public! !
-!JadeAutoTextPresenter3 categoriesFor: #lastCharacterIsSpace!public! !
-!JadeAutoTextPresenter3 categoriesFor: #lastGsShape:!public! !
-!JadeAutoTextPresenter3 categoriesFor: #onAutoComplete:startingAt:accept:!autocompletation cycle!autocompletion!public! !
-!JadeAutoTextPresenter3 categoriesFor: #onKeyPressed:!key event!public! !
-!JadeAutoTextPresenter3 categoriesFor: #onLeftButtonPressed:!key event!public! !
-!JadeAutoTextPresenter3 categoriesFor: #onPainted!keyboard shortcut!public! !
-!JadeAutoTextPresenter3 categoriesFor: #previousStyleName!accessing!private! !
-!JadeAutoTextPresenter3 categoriesFor: #previousStyleName:!accessing!private! !
-!JadeAutoTextPresenter3 categoriesFor: #previousText!accessing!private! !
-!JadeAutoTextPresenter3 categoriesFor: #previousText:!accessing!private! !
-!JadeAutoTextPresenter3 categoriesFor: #processKeyPressed:!key event!public! !
-!JadeAutoTextPresenter3 categoriesFor: #registry!autocompletion!public! !
-!JadeAutoTextPresenter3 categoriesFor: #replaceKeyboardShortcut!keyboard shortcut!public! !
-!JadeAutoTextPresenter3 categoriesFor: #showAutoCompletionList:prefixLength:!public! !
-!JadeAutoTextPresenter3 categoriesFor: #showCompileError:!private! !
-!JadeAutoTextPresenter3 categoriesFor: #updateLastParsedResult!autocompletion list!public! !
-!JadeAutoTextPresenter3 categoriesFor: #wordRightSideIsEmpty!accessing!private! !
-!JadeAutoTextPresenter3 categoriesFor: #wordRightSideIsEmpty:!accessing!private! !
+!JadeAutoTextPresenter3 categoriesForMethods!
+addParenthesisOrBracketsToSelection!keyboard shortcut!public! !
+autocompletationConfiguration!public! !
+autocompleteForIdentifier!autocompletation cycle!public! !
+autocompleteForNormal!autocompletation cycle!public! !
+autocompleteForUnaryMessage!autocompletation cycle!public! !
+autocompleteForUpperIdentifier!autocompletation cycle!public! !
+codePresenterIsMethod!public! !
+configuration!public! !
+createSchematicWiring!key event!public! !
+currentGsShape!accessing!private! !
+currentGsShape:!accessing!private! !
+currentSelectionOrLine!accessing!public! !
+currentStyleName!accessing!private! !
+currentStyleName:!accessing!private! !
+currentText!accessing!private! !
+currentText:!accessing!private! !
+getArgumentsNames!autocompletion list!public! !
+getBreakCharacters!public! !
+getClassInstancesVariables!autocompletion list!public! !
+getClassName!public! !
+getCurrentWord!public! !
+getNamesForClassUnaryMessage!autocompletion list!public! !
+getNamesForIdentifier!autocompletion list!public! !
+getNamesForUnaryMessage!autocompletion list!public! !
+getNameUpperIdentifier!autocompletion list!public! !
+getSelectedGsShape!public! !
+getTemporaries!autocompletion list!public! !
+initialize!public! !
+insertBasicText:at:!autocompletation cycle!autocompletion!public! !
+insertKeywordText:at:!autocompletation cycle!autocompletion!public! !
+insertKeywordText2:at:!autocompletation cycle!autocompletion!public! !
+insertSimpleText:at:!autocompletation cycle!autocompletion!public! !
+insertText:at:!autocompletation cycle!autocompletion!public! !
+isAddingParenthesisOrBrackets!keyboard shortcut!public! !
+isAtEndOfWord!public! !
+isKeyboardShorcut!keyboard shortcut!public! !
+lastCharacterIsSpace!public! !
+lastGsShape:!public! !
+onAutoComplete:startingAt:accept:!autocompletation cycle!autocompletion!public! !
+onKeyPressed:!key event!public! !
+onLeftButtonPressed:!key event!public! !
+onPainted!keyboard shortcut!public! !
+previousStyleName!accessing!private! !
+previousStyleName:!accessing!private! !
+previousText!accessing!private! !
+previousText:!accessing!private! !
+processKeyPressed:!key event!public! !
+registry!autocompletion!public! !
+replaceKeyboardShortcut!keyboard shortcut!public! !
+showAutoCompletionList:prefixLength:!public! !
+showCompileError:!private! !
+updateLastParsedResult!autocompletion list!public! !
+wordRightSideIsEmpty!accessing!private! !
+wordRightSideIsEmpty:!accessing!private! !
+!
 
 !JadeAutoTextPresenter3 class methodsFor!
+
+defaultAdditionalAccelerators
+	^super defaultAdditionalAccelerators
+		, #(#(#insertIfFalse 'Ctrl+Shift+D') #(#insertIfTrue 'Ctrl+Shift+T') #(#raiseConsole 'Ctrl+F7'))!
 
 initializeReplacementDictionary
 
@@ -594,7 +600,10 @@ replacementDictionaryKeys
 	ReplacementDictionary ifNil: [self initializeReplacementDictionary].
 
 	^ReplacementDictionary keys! !
-!JadeAutoTextPresenter3 class categoriesFor: #initializeReplacementDictionary!public! !
-!JadeAutoTextPresenter3 class categoriesFor: #replacementDictionary!public! !
-!JadeAutoTextPresenter3 class categoriesFor: #replacementDictionaryKeys!public! !
+!JadeAutoTextPresenter3 class categoriesForMethods!
+defaultAdditionalAccelerators!constants!public! !
+initializeReplacementDictionary!public! !
+replacementDictionary!public! !
+replacementDictionaryKeys!public! !
+!
 

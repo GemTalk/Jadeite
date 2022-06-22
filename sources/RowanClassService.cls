@@ -70,7 +70,8 @@ categories
 classHierarchyUpdate: presenter browser: browser
 	| treeModel subclasses parent |
 	browser isClassListTabSelected ifTrue: [^self].
-	(self possiblyAdjustChildServiceIn: presenter) ifTrue: [^self].
+	(self couldBeInTree: presenter) ifFalse: [^self].
+	(self reparentOrAddChildServiceIn: presenter) ifTrue: [^self].
 	hierarchyServices isNil ifTrue: [^self].
 	(browser isNoneProjectSelected not and: [browser packageListPresenter selections isEmpty])
 		ifTrue: [^self].
@@ -126,6 +127,15 @@ computeVisibleMethods: presenter browser: browser
 	visibleMethods
 		do: [:svc | svc inSelectedPackage: (self selectedPackageServiceNames includes: svc packageName)].
 	^visibleMethods!
+
+couldBeInTree: presenter
+	"I should be in the tree if either I or my parent is in the tree"
+
+	| superclassService bag |
+	bag := presenter model asBag.
+	bag isEmpty ifTrue: [^true].
+	superclassService := self superclassServiceIn: presenter.
+	^(bag includes: self) or: [bag includes: superclassService]!
 
 definedClass
 	#rowanFixMe. "looks like an update to RSR broke this. Maybe?" 
@@ -346,21 +356,6 @@ packageName
 packageName: anObject
 	packageName := anObject!
 
-possiblyAdjustChildServiceIn: presenter
-	| superclassService bag |
-	presenter model getNodeFor: self ifAbsent: [^false].
-	bag := presenter model asBag.
-	superclassService := bag detect: [:service | service name = superclassName] ifNone: [^false].
-	(bag includes: self)
-		ifTrue: 
-			[(presenter model parentOf: self) = superclassService
-				ifFalse: 
-					[presenter model move: self asChildOf: superclassService.
-					^true].
-			^false].
-	presenter model add: self asChildOf: superclassService.
-	^true!
-
 postReload
 	" don't retain reference to (possibly) different version of class"
 
@@ -445,6 +440,20 @@ renamedName
 renamedName: anObject
 	renamedName := anObject!
 
+reparentOrAddChildServiceIn: presenter
+	| superclassService |
+	superclassService := self superclassServiceIn: presenter.
+	superclassService ifNil:[^false]. 
+	(presenter model asBag includes: self)
+		ifTrue: 
+			[(presenter model parentOf: self) = superclassService
+				ifFalse: 
+					[presenter model move: self asChildOf: superclassService.
+					^true].
+			^false].
+	presenter model add: self asChildOf: superclassService.
+	^true!
+
 replicateFrom: newService
 	newService isClassService
 		ifTrue: [self = newService ifTrue: [^super basicReplicateFrom: newService]]!
@@ -520,6 +529,11 @@ sunitMethodsUpdate: presenter browser: browser
 	oldClassService replicateFrom: self. 
 	browser updateMethodsFrom: selections!
 
+superclassServiceIn: presenter
+	| bag |
+	bag := presenter model asBag.
+	^bag detect: [:service | service name = superclassName] ifNone: [nil]!
+
 template
 	^template!
 
@@ -563,6 +577,7 @@ updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
 	hierarchy should not"
 
 	| classNode superclassService selectedPackageNames |
+
 	classHierarchyPresenter view invalidate.
 	classNode := classHierarchyPresenter model getNodeFor: self ifAbsent: [^self].
 	superclassService := classHierarchyPresenter model parentOf: self.
@@ -653,6 +668,7 @@ classOrHierarchyPresenter:!private!updating support! !
 comment!accessing!public! !
 comment:!accessing!public! !
 computeVisibleMethods:browser:!private!updating support! !
+couldBeInTree:!private!updating support! !
 definedClass!accessing!private! !
 definedPackageName!accessing!private! !
 definedPackageName:!accessing!private! !
@@ -702,7 +718,6 @@ oop!accessing!private! !
 oop:!accessing!private! !
 packageName!accessing!private! !
 packageName:!accessing!private! !
-possiblyAdjustChildServiceIn:!private!updating support! !
 postReload!public!replication! !
 postUpdate!Init / Release!public! !
 prepareForReplication!public!replication! !
@@ -713,6 +728,7 @@ renamedClass:browser:!public!updating! !
 renamedClassInHierarchy:browser:!public!updating! !
 renamedName!accessing!private! !
 renamedName:!accessing!private! !
+reparentOrAddChildServiceIn:!private!updating support! !
 replicateFrom:!public!replication! !
 saveMethod:category:session:!actions!public! !
 selectedMethods!accessing!private! !
@@ -726,6 +742,7 @@ shouldReplicateInstVarAtIndex:newService:!public!testing! !
 silentlyExpandHierarchyOneLevel:!public! !
 sortAspect!accessing!public! !
 sunitMethodsUpdate:browser:!public!updating! !
+superclassServiceIn:!private!updating support! !
 template!accessing!private! !
 template:!accessing!private! !
 toolTip!public! !

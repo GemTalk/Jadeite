@@ -48,6 +48,9 @@ systemBrowserPresenter!public! !
 
 !JadeiteBrowser class methodsFor!
 
+defaultAdditionalAccelerators
+	^super defaultAdditionalAccelerators, #(#(#insertIfFalse 'Ctrl+Shift+D') #(#insertIfTrue 'Ctrl+Shift+T'))!
+
 onSession: session
 	^self showOnSession: session!
 
@@ -87,6 +90,7 @@ openOn: session project: projectService
 	browser currentCard projectListPresenter setFocus.
 	^browser! !
 !JadeiteBrowser class categoriesForMethods!
+defaultAdditionalAccelerators!constants!public! !
 onSession:!instance creation!public! !
 openOn:class:!instance creation!public! !
 openOn:dictionary:!instance creation!public! !

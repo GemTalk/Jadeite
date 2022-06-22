@@ -233,7 +233,6 @@ test_additionalAccelerators
 	"No way yet to adequately test accelerators function
 	but we can assert that we tell Dolphin to set them up"
 
-	| last textView |
 	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
 	methodListBrowser := JadePresenter browseImplementorsOf: #test1 session: session.
 	self assert: (self methodListBrowserPresenter class defaultAdditionalAccelerators
@@ -242,18 +241,18 @@ test_additionalAccelerators
 				includes: #(#insertIfTrue 'Ctrl+Shift+T')).
 	self assert: self methodListBrowserPresenter class defaultAdditionalAccelerators size equals: 3.	"if a new accelerator gets added, fail test so it gets updated."
 	
-	[textView := self methodListBrowserPresenter methodSourcePresenter documentPresenter view.
-	textView setFocus.  "required to initialize the accelerator table" 
-	last := self methodListBrowserPresenter methodSourcePresenter documentPresenter value size.
-	textView selectionStart: last end: last.
-	self routeCommand: #insertIfFalse toWindow: self methodListBrowserPresenter methodSourcePresenter.
-	self
-		assert: (self methodListBrowserPresenter methodSourcePresenter documentPresenter value last: 10)
-				= 'ifFalse:[]'.
-	self routeCommand: #insertIfTrue toWindow: self methodListBrowserPresenter methodSourcePresenter.
-	self assert: (self methodListBrowserPresenter methodSourcePresenter documentPresenter value last: 9)
-				= 'ifTrue:[]']
-			ensure: [textView isModified: false]!
+	[| command sourcePresenter |
+	sourcePresenter := self methodListBrowserPresenter methodSourcePresenter.
+	sourcePresenter topShell view buildCombinedAcceleratorTable.	"lazily done by Dolphin when view is engaged"
+	command := sourcePresenter topShell view combinedAcceleratorTable commands values
+				detect: [:ea | ea command = #insertIfFalse]
+				ifNone: [].
+	self denyIsNil: command.
+	command := sourcePresenter topShell view combinedAcceleratorTable commands values
+				detect: [:ea | ea command = #insertIfTrue]
+				ifNone: [].
+	self denyIsNil: command]
+			ensure: [self destroy: projectsBrowser]!
 
 test_adHocContextClassSide
 	| classService |
@@ -1093,7 +1092,7 @@ test_insertIfFalse
 	self
 		assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter selectionRange
 		equals: (10 to: 9).
-	self assert: (methodListBrowser primaryPresenter additionalAccelerators
+	self assert: (methodListBrowser primaryPresenter class defaultAdditionalAccelerators
 				includes: #(#insertIfFalse 'Ctrl+Shift+D'))!
 
 test_insertIfTrue
@@ -1107,7 +1106,7 @@ test_insertIfTrue
 	self
 		assert: methodListBrowser primaryPresenter methodSourcePresenter documentPresenter selectionRange
 		equals: (9 to: 8).
-	self assert: (methodListBrowser primaryPresenter additionalAccelerators
+	self assert: (methodListBrowser primaryPresenter class defaultAdditionalAccelerators
 				includes: #(#insertIfTrue 'Ctrl+Shift+T'))!
 
 test_methodBrowserSaveMethod

@@ -72,7 +72,7 @@ primaryTestWindow
 	"Every test should have a primary window it is testing. 
 	If not, just return nil"
 
-	^self projectsPresenter!
+	^projectsBrowser!
 
 saveMethodWithUniqueString
 

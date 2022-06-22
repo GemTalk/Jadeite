@@ -326,7 +326,7 @@ test_browseSelectedMethodForNewlyAddedTest
 	self
 		saveMethod: 'test_newMethod'
 		in: 'RowanSample1Test'
-		category: '*RowanSample1-Tests'.
+		category: 'dontcare?'.
 	newMethodService := self methodListPresenter list
 				detect: [:methodService | methodService selector == #test_newMethod]
 				ifNone: [].
