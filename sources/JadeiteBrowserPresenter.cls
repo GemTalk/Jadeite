@@ -1795,7 +1795,7 @@ updateAddPackageLists
 updateAfterFindClass: classService
 	| projectService |
 	classService ifNil: [^self].
-	self updateService: classService.
+	classService projectName ifNil: [self updateService: classService].
 	projectService := projectListPresenter list
 				detect: [:service | service name = classService projectName]
 				ifNone: 
