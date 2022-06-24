@@ -21,7 +21,8 @@ primaryTestWindow
 
 setUp
 	super setUp.
-	JadePresenter clearAllBreakpointsIn: session!
+	JadePresenter clearAllBreakpointsIn: session.
+	self enableBreakpoints!
 
 tearDown
 	breakpointBrowser ifNotNil: [breakpointBrowser view close].
