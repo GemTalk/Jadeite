@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 GciLibrary subclass: #GciSingleThreadedLibrary
 	instanceVariableNames: 'semaphore'
@@ -410,7 +410,7 @@ loginAs: userName password: password
 		success ifTrue: [^self gciGetSessionId].
 		error := self lastError.
 		GciLoginFailed 
-			signal: error message
+			signal: error reason
 			with: error.
 	].
 
@@ -637,77 +637,79 @@ version
 
 	^self gciVersion.
 ! !
-!GciSingleThreadedLibrary categoriesFor: #_semaphore!private! !
-!GciSingleThreadedLibrary categoriesFor: #abortSession:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #beginSession:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #close!public! !
-!GciSingleThreadedLibrary categoriesFor: #commitSession:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #critical:!private! !
-!GciSingleThreadedLibrary categoriesFor: #fetchBytes:!not subclassResponsibility!private! !
-!GciSingleThreadedLibrary categoriesFor: #fetchBytes:class:!private! !
-!GciSingleThreadedLibrary categoriesFor: #fetchChars:!private! !
-!GciSingleThreadedLibrary categoriesFor: #fetchClass:!private! !
-!GciSingleThreadedLibrary categoriesFor: #fetchObjImpl:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciAbort!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciBegin!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciCallInProgress!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciClearStack:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciCommit!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciErr:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciFetchBytes:_:_:_:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciFetchChars:_:_:_:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciFetchClass:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciFetchObjImpl:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciFetchSize:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciFetchVaryingOops:_:_:_:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciGemTrace:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciGetSessionId!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciHardBreak!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciInit!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciLogin:_:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciLogout!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciNbContinueWith:_:_:_:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciNbEnd:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciNbExecuteStrFromContext:_:_:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciNbExecuteStrFromContext_:_:_:_:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciNbPerform:_:_:_:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciNbPerformNoDebug:_:_:_:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciNewString:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciOopToChr:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciPollForSignal!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciReleaseAllOops!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciReleaseOops:_:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciSetNet:_:_:_:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciSetSessionId:!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciShutdown!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciSoftBreak!private! !
-!GciSingleThreadedLibrary categoriesFor: #gciVersion!private! !
-!GciSingleThreadedLibrary categoriesFor: #gemTrace:!public!to investigate! !
-!GciSingleThreadedLibrary categoriesFor: #hardBreakSession:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #initialize!private! !
-!GciSingleThreadedLibrary categoriesFor: #lastError!private! !
-!GciSingleThreadedLibrary categoriesFor: #loginAs:password:!public!to investigate! !
-!GciSingleThreadedLibrary categoriesFor: #loginHostUser:hostPassword:gsUser:gsPassword:gemNRS:stoneNRS:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #logoutSession:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #nbResult!public!to investigate! !
-!GciSingleThreadedLibrary categoriesFor: #pollForSignalSession:!public! !
-!GciSingleThreadedLibrary categoriesFor: #releaseAllOopsForSession:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #sendInterpreted:to:with:session:!public! !
-!GciSingleThreadedLibrary categoriesFor: #session:clearStack:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #session:continue:withObject:!public! !
-!GciSingleThreadedLibrary categoriesFor: #session:execute:context:environment:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #session:fetchBytes:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #session:fetchObjects:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #session:oopForInteger:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #session:oopForString:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #session:releaseOops:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #session:send:to:with:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #session:valueOfOop:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #signalIfError!private! !
-!GciSingleThreadedLibrary categoriesFor: #signalLastError!private! !
-!GciSingleThreadedLibrary categoriesFor: #signalSemaphoreIfNeeded:!private! !
-!GciSingleThreadedLibrary categoriesFor: #softBreakSession:!public!required! !
-!GciSingleThreadedLibrary categoriesFor: #specialFromOop:!private! !
-!GciSingleThreadedLibrary categoriesFor: #valueOfOop:!private! !
-!GciSingleThreadedLibrary categoriesFor: #version!public! !
+!GciSingleThreadedLibrary categoriesForMethods!
+_semaphore!private! !
+abortSession:!public!required! !
+beginSession:!public!required! !
+close!public! !
+commitSession:!public!required! !
+critical:!private! !
+fetchBytes:!not subclassResponsibility!private! !
+fetchBytes:class:!private! !
+fetchChars:!private! !
+fetchClass:!private! !
+fetchObjImpl:!private! !
+gciAbort!private! !
+gciBegin!private! !
+gciCallInProgress!private! !
+gciClearStack:!private! !
+gciCommit!private! !
+gciErr:!private! !
+gciFetchBytes:_:_:_:!private! !
+gciFetchChars:_:_:_:!private! !
+gciFetchClass:!private! !
+gciFetchObjImpl:!private! !
+gciFetchSize:!private! !
+gciFetchVaryingOops:_:_:_:!private! !
+gciGemTrace:!private! !
+gciGetSessionId!private! !
+gciHardBreak!private! !
+gciInit!private! !
+gciLogin:_:!private! !
+gciLogout!private! !
+gciNbContinueWith:_:_:_:!private! !
+gciNbEnd:!private! !
+gciNbExecuteStrFromContext:_:_:!private! !
+gciNbExecuteStrFromContext_:_:_:_:!private! !
+gciNbPerform:_:_:_:!private! !
+gciNbPerformNoDebug:_:_:_:!private! !
+gciNewString:!private! !
+gciOopToChr:!private! !
+gciPollForSignal!private! !
+gciReleaseAllOops!private! !
+gciReleaseOops:_:!private! !
+gciSetNet:_:_:_:!private! !
+gciSetSessionId:!private! !
+gciShutdown!private! !
+gciSoftBreak!private! !
+gciVersion!private! !
+gemTrace:!public!to investigate! !
+hardBreakSession:!public!required! !
+initialize!private! !
+lastError!private! !
+loginAs:password:!public!to investigate! !
+loginHostUser:hostPassword:gsUser:gsPassword:gemNRS:stoneNRS:!public!required! !
+logoutSession:!public!required! !
+nbResult!public!to investigate! !
+pollForSignalSession:!public! !
+releaseAllOopsForSession:!public!required! !
+sendInterpreted:to:with:session:!public! !
+session:clearStack:!public!required! !
+session:continue:withObject:!public! !
+session:execute:context:environment:!public!required! !
+session:fetchBytes:!public!required! !
+session:fetchObjects:!public!required! !
+session:oopForInteger:!public!required! !
+session:oopForString:!public!required! !
+session:releaseOops:!public!required! !
+session:send:to:with:!public!required! !
+session:valueOfOop:!public!required! !
+signalIfError!private! !
+signalLastError!private! !
+signalSemaphoreIfNeeded:!private! !
+softBreakSession:!public!required! !
+specialFromOop:!private! !
+valueOfOop:!private! !
+version!public! !
+!
 
