@@ -227,7 +227,6 @@ package methodNames
 	add: #JadePresenter -> #checkoutTag:;
 	add: #JadePresenter -> #clearAllBreaks;
 	add: #JadePresenter -> #clearMethodBreakpoints:;
-	add: #JadePresenter -> #commitTransaction;
 	add: #JadePresenter -> #compilationWarningFrom:;
 	add: #JadePresenter -> #currentMethodSourceFrom:;
 	add: #JadePresenter -> #currentSelectionOrLine;
@@ -930,8 +929,6 @@ JadeShell subclass: #JadeiteComponentEditor
 	classInstanceVariableNames: ''!
 JadeShell subclass: #JadeiteLoadSpecEditor
 	instanceVariableNames: ''
-JadeTranscript subclass: #JadeiteTranscript
-	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsEnabled autoCompleteEnabled transactionModePresenter lastKnownTransaction'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -2643,20 +2640,6 @@ clearAllBreaks
 
 clearMethodBreakpoints: methodServices
 	^self class clearMethodBreakpoints: methodServices in: self gciSession!
-
-commitTransaction
-	"Even if it takes a windy path, try to make sure
-	all commits in Jadeite pass through here"
-
-	| commitResult |
-	commitResult := gciSession commit.
-	commitResult
-		ifTrue: 
-			[Sound informationBeep.
-			self setInTransaction: RowanAnsweringService new session: gciSession.
-			JadePresenter trigger: #committedTransaction]
-		ifFalse: [MessageBox warning: 'Commit failed!!'].
-	^commitResult!
 
 compilationWarningFrom: methodServices
 	methodServices do: 
@@ -6160,37 +6143,39 @@ getNodeFor: anObject ifAbsent: aNiladicValuable
 getNodeFor:ifAbsent:!hierarchy!private! !
 !
 
+
 !View methodsFor!
-
 wmWindowPosChanged: message wParam: wParam lParam: lParam
-	"Private - The position of the receiver has changed in some manner."
 
-	self isStateRestoring
-		ifFalse: 
-			[(self presenter class canUnderstand: #onPositionChanged:)
-				ifTrue: 
-					[self presenter onPositionChanged: (PositionEvent
-								window: self
-								message: message
-								wParam: wParam
-								lParam: lParam)]].
-	"Ignore any return value from the high-level event, and answer 0 to 
-	prevent the DefWindowProc being invoked, which in turn prevents
-	WM_SIZE and WM_MOVE which we don't use anymore"
-	^0!
+    "Private - The position of the receiver has changed in some manner."
+
+    self isStateRestoring
+        ifFalse: 
+            [(self presenter class canUnderstand: #onPositionChanged:)
+                ifTrue: 
+                    [self presenter onPositionChanged: (PositionEvent
+                                window: self
+                                message: message
+                                wParam: wParam
+                                lParam: lParam)]].
+    "Ignore any return value from the high-level event, and answer 0 to 
+    prevent the DefWindowProc being invoked, which in turn prevents
+    WM_SIZE and WM_MOVE which we don't use anymore"
+    ^0!
 
 wmWindowPosChanging: message wParam: wParam lParam: lParam
-	"Private - The position of the receiver is about to change in some manner."
+    "Private - The position of the receiver is about to change in some manner."
 
-	^self isStateRestoring
-		ifFalse: 
-			[(self presenter class canUnderstand: #onPositionChanging:)
-				ifTrue: 
-					[self presenter onPositionChanging: (PositionEvent
-								window: self
-								message: message
-								wParam: wParam
-								lParam: lParam)]]! !
+    ^self isStateRestoring
+        ifFalse: 
+            [(self presenter class canUnderstand: #onPositionChanging:)
+                ifTrue: 
+                    [self presenter onPositionChanging: (PositionEvent
+                                window: self
+                                message: message
+                                wParam: wParam
+                                lParam: lParam)]]! !
+
 !View categoriesForMethods!
 wmWindowPosChanged:wParam:lParam:!event handling-win32!private! !
 wmWindowPosChanging:wParam:lParam:!event handling-win32!private! !
