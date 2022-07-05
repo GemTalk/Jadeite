@@ -366,7 +366,19 @@ shouldAskToCommitOnLogout
 		or: [self transactionMode = #manualBegin and: [self parentPresenter inTransaction]]!
 
 toolbarPresenter
-	^toolbarPresenter! !
+	^toolbarPresenter!
+
+transactionMode
+	^self parentPresenter transactionMode!
+
+transactionMode: aSymbol
+	"It seems Dolphin should have an event like 'aboutToChangeRadioButton' to avoid having to muck with the low level view"
+
+	(MessageBox confirm: 'Switching transaction modes will cause an abort. Continue?')
+		ifTrue: 
+			[self basicTransactionMode: aSymbol.
+			JadePresenter trigger: #abortedTransaction]
+		ifFalse: [self resetTransactionModeRadioButtons]! !
 !JadeiteTranscript categoriesForMethods!
 abortedTransaction!public! !
 abortTransaction!menu handlers!public! !
@@ -428,6 +440,8 @@ resetTransactionModeRadioButtons!accessing!public!transaction mode! !
 setTransactionModeFromServer!actions!public!transaction mode! !
 shouldAskToCommitOnLogout!public!testing! !
 toolbarPresenter!accessing!public! !
+transactionMode!public! !
+transactionMode:!public! !
 !
 
 !JadeiteTranscript class methodsFor!
