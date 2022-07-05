@@ -46,14 +46,14 @@ autoCompleteEnabled
 
 	^autoCompleteEnabled value!
 
-browseBreakpointList
-	^JadePresenter browseBreakpointsIn: self gciSession!
-
 basicTransactionMode: aSymbol
 	self parentPresenter transactionMode: aSymbol session: gciSession!
 
 beginTransaction
 	self parentPresenter beginTransaction!
+
+browseBreakpointList
+	^JadePresenter browseBreakpointsIn: self gciSession!
 
 browseBreakpoints
 	^JadeiteBreakpointBrowser showOnSession: self gciSession!
@@ -99,24 +99,6 @@ createComponents
 createNewProject
 	projectListPresenter createNewProject!
 
-editComponents
-	| projectName |
-	projectName := projectListPresenter projectListPresenter selectionOrNil
-				ifNil: [^self]
-				ifNotNil: [:projectService | projectService name].
-	^JadeiteComponentEditor showOn: projectName session: self gciSession!
-
-editLoadSpecFromFile
-	^JadeiteLoadSpecEditor editLoadSpecFromFileInSession: gciSession!
-
-flipAutoCommit
-	| browserService |
-	browserService := RowanAutoCommitService new.
-	browserService
-		command: #flipAutoCommit;
-		commandArgs: Array new.
-	self issueCommand: browserService!
-
 createSchematicWiring
 	super createSchematicWiring.
 	self parentPresenter class
@@ -131,11 +113,21 @@ createSchematicWiring
 displayLastKnownCommitOrAbort
 	| writeStream |
 	writeStream := WriteStream on: String new.
-	Timestamp now
+	TimeStamp current
 		printOn: writeStream
 		timeFormat: Locale default timeFormat
 		dateFormat: Locale default dateFormat.
 	lastKnownTransaction value: 'Last Known Commit or Abort: ' , writeStream contents!
+
+editComponents
+	| projectName |
+	projectName := projectListPresenter projectListPresenter selectionOrNil
+				ifNil: [^self]
+				ifNotNil: [:projectService | projectService name].
+	^JadeiteComponentEditor showOn: projectName session: self gciSession!
+
+editLoadSpecFromFile
+	^JadeiteLoadSpecEditor editLoadSpecFromFileInSession: gciSession!
 
 flipAutoCommit
 	self parentPresenter flipAutoCommit!
@@ -188,18 +180,11 @@ gciSession: aGciSession
 gitCommit
 	projectListPresenter gitCommit!
 
-getTransactionModeFromServer
-	"Only run this when opening the transcript.  We don't use the service mutex and don't want to get our server execution mixed up"
-
-	transactionMode := gciSession executeString: 'System transactionMode'!
-
 initialize
 	super initialize.
 	isTranscriptInstalled := ValueHolder with: true.
 	areBreakpointsEnabled := ValueHolder with: true.
 	autoCompleteEnabled := ValueHolder with: JadeiteSearch autoCompleteEnabled.
-	transactionMode 
-		ifNil: [transactionMode := #autoBegin    "should have already been set when window was created"]
 !
 
 initializeTransactionModeSettings
@@ -383,6 +368,7 @@ shouldAskToCommitOnLogout
 toolbarPresenter
 	^toolbarPresenter! !
 !JadeiteTranscript categoriesForMethods!
+abortedTransaction!public! !
 abortTransaction!menu handlers!public! !
 additionalAccelerators!public! !
 areBreakpointsEnabled!accessing!private! !
@@ -390,6 +376,8 @@ auditProject!menu handlers!public! !
 autoCommit!accessing!private! !
 autoCommit:!accessing!private! !
 autoCompleteEnabled!accessing!private! !
+basicTransactionMode:!accessing!public!transaction mode! !
+beginTransaction!menu handlers!public! !
 browseBreakpointList!menu handlers!public! !
 browseBreakpoints!menu handlers!public! !
 browseClass!menu handlers!public! !
@@ -400,9 +388,12 @@ browseJadeitePrefs!menu handlers!public! !
 browseLiteralReferences!menu handlers!public! !
 browseMethodsContaining!menu handlers!public! !
 browseSendersOf!menu handlers!public! !
+committedTransaction!event handling!public! !
 commitTransaction!menu handlers!public! !
-createComponents!public! !
+createComponents!initialization!public! !
 createNewProject!menu handlers!public! !
+createSchematicWiring!initialization!public! !
+displayLastKnownCommitOrAbort!event handling!private! !
 editComponents!menu handlers!public! !
 editLoadSpecFromFile!menu handlers!public! !
 flipAutoCommit!menu handlers!public! !
@@ -414,8 +405,12 @@ flipTranscript!menu handlers!public! !
 gciSession:!public! !
 gitCommit!menu handlers!public! !
 initialize!initialization!public! !
+initializeTransactionModeSettings!initialization!public!transaction mode! !
+isBeginTransactionEnabled!public!testing! !
+isCommitEnabled!public!testing! !
 isTranscriptInstalled!public! !
 isTranscriptInstalledValueHolder!private! !
+lastKnownTransaction!accessing!private! !
 onCloseRequested:!event handling!public! !
 onViewClosed!event handling!public! !
 onViewOpened!event handling!public! !
@@ -429,76 +424,11 @@ refreshFromServer!menu handlers!public! !
 registerPresentersForUpdates!public!register presenters! !
 reloadProject!menu handlers!public! !
 remoteAutoCommit!accessing!private! !
+resetTransactionModeRadioButtons!accessing!public!transaction mode! !
+setTransactionModeFromServer!actions!public!transaction mode! !
+shouldAskToCommitOnLogout!public!testing! !
 toolbarPresenter!accessing!public! !
 !
-
-transactionMode
-	^self parentPresenter transactionMode!
-
-transactionMode: aSymbol
-	"It seems Dolphin should have an event like 'aboutToChangeRadioButton' to avoid having to muck with the low level view"
-
-	(MessageBox confirm: 'Switching transaction modes will cause an abort. Continue?')
-		ifTrue: 
-			[self basicTransactionMode: aSymbol.
-			JadePresenter trigger: #abortedTransaction]
-		ifFalse: [self resetTransactionModeRadioButtons]! !
-!JadeiteTranscript categoriesFor: #abortedTransaction!event handling!public! !
-!JadeiteTranscript categoriesFor: #abortTransaction!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #additionalAccelerators!public! !
-!JadeiteTranscript categoriesFor: #areBreakpointsEnabled!accessing!private! !
-!JadeiteTranscript categoriesFor: #autoCommit!accessing!private! !
-!JadeiteTranscript categoriesFor: #autoCommit:!accessing!private! !
-!JadeiteTranscript categoriesFor: #autoCompleteEnabled!accessing!private! !
-!JadeiteTranscript categoriesFor: #autoCompleteEnabled:!accessing!private! !
-!JadeiteTranscript categoriesFor: #basicTransactionMode:!accessing!public!transaction mode! !
-!JadeiteTranscript categoriesFor: #beginTransaction!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #browseBreakpoints!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #browseClass!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #browseClassReferences!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #browseImplementorsOf!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #browseJadeiteLogs!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #browseJadeitePrefs!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #browseLiteralReferences!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #browseMethodsContaining!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #browseSendersOf!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #committedTransaction!event handling!public! !
-!JadeiteTranscript categoriesFor: #commitTransaction!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #createComponents!initialization!public! !
-!JadeiteTranscript categoriesFor: #createSchematicWiring!initialization!public! !
-!JadeiteTranscript categoriesFor: #displayLastKnownCommitOrAbort!event handling!private! !
-!JadeiteTranscript categoriesFor: #flipAutoCommit!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #flipAutocomplete!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #flipBreakpointsEnabled!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #flipDebugger!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #flipLogging!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #flipTranscript!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #gciSession:!public! !
-!JadeiteTranscript categoriesFor: #initialize!initialization!public! !
-!JadeiteTranscript categoriesFor: #initializeTransactionModeSettings!initialization!public!transaction mode! !
-!JadeiteTranscript categoriesFor: #isBeginTransactionEnabled!public!testing! !
-!JadeiteTranscript categoriesFor: #isCommitEnabled!public!testing! !
-!JadeiteTranscript categoriesFor: #isTranscriptInstalled!public! !
-!JadeiteTranscript categoriesFor: #isTranscriptInstalledValueHolder!private! !
-!JadeiteTranscript categoriesFor: #lastKnownTransaction!accessing!private! !
-!JadeiteTranscript categoriesFor: #onCloseRequested:!event handling!public! !
-!JadeiteTranscript categoriesFor: #onViewClosed!event handling!public! !
-!JadeiteTranscript categoriesFor: #onViewOpened!event handling!public! !
-!JadeiteTranscript categoriesFor: #openCommitInGitHub!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #openDictionaryBrowser!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #openGitHubJadeiteProject!event handling!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #openGitHubRowanProject!event handling!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #openJadeiteProjectsBrowser!menu handlers!public! !
-!JadeiteTranscript categoriesFor: #projectListPresenter!accessing!public! !
-!JadeiteTranscript categoriesFor: #queryCommand:!private! !
-!JadeiteTranscript categoriesFor: #registerPresentersForUpdates!public!register presenters! !
-!JadeiteTranscript categoriesFor: #remoteAutoCommit!accessing!private! !
-!JadeiteTranscript categoriesFor: #resetTransactionModeRadioButtons!accessing!public!transaction mode! !
-!JadeiteTranscript categoriesFor: #setTransactionModeFromServer!actions!public!transaction mode! !
-!JadeiteTranscript categoriesFor: #shouldAskToCommitOnLogout!public!testing! !
-!JadeiteTranscript categoriesFor: #toolbarPresenter!accessing!public! !
-!JadeiteTranscript categoriesFor: #transactionMode!accessing!public!transaction mode! !
-!JadeiteTranscript categoriesFor: #transactionMode:!accessing!public!transaction mode! !
 
 !JadeiteTranscript class methodsFor!
 
@@ -524,6 +454,9 @@ showOnSession: aGciSession
 	theTranscript := super showOnSession: aGciSession.
 	theTranscript setTransactionModeFromServer.
 	^theTranscript! !
-!JadeiteTranscript class categoriesFor: #resource_Default_view!public!resources-views! !
-!JadeiteTranscript class categoriesFor: #showOnSession:!instance creation!public! !
+!JadeiteTranscript class categoriesForMethods!
+defaultAdditionalAccelerators!public! !
+resource_Default_view!public!resources-views! !
+showOnSession:!instance creation!public! !
+!
 

@@ -161,7 +161,6 @@ transcriptEnabled: booleanString
 	answeringService := RowanAnsweringService new.
 	(answeringService isTranscriptInstalledIn: session) == boolean
 		ifFalse: [answeringService flipTranscriptIn: session]! !
-
 !JadeitePreferences categoriesForMethods!
 allowsSpacesInArgument:!private!testing! !
 applyPreference:!accessing!must not strip!public! !
@@ -179,6 +178,9 @@ openSUnitBrowserOnPackage:!must not strip!preferences!public! !
 openWorkspace:!must not strip!preferences!public! !
 performCommand:allowSpacesInArgs:!accessing!must not strip!public! !
 session:!accessing!private! !
+sigAbortProcessInterval:!public! !
+sigAbortsProcessEnabled:!public! !
+transactionMode:!public! !
 transcriptEnabled:!must not strip!preferences!public! !
 !
 
@@ -214,9 +216,13 @@ preferencesFileDefaultContents
 #transcriptEnabled: true
 #sigAbortProcessInterval: <# of seconds with default 10>
 #sigAbortsProcessEnabled: true
-#transactionMode: <autoBegin manualBegin transactionless>
+#transactionMode: <autoBegin manualBegin transactionless>'!
+
+public! !
 !JadeitePreferences class categoriesForMethods!
 onSession:!instance creation!public! !
-preferencesFile!constants!public! !
-preferencesFileDefaultContents!constants!public! !
+preferencesFile!public! !
+preferencesFileDefaultContents!public! !
+public!public! !
 !
+

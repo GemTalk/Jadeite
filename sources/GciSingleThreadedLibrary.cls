@@ -555,7 +555,8 @@ session: session oopForString: aString
 	self critical: [
 		self gciSetSessionId: session.
 		^self gciNewString: aString.
-	].
+	]
+!
 
 session: anInteger releaseOops: anArray
 
@@ -568,8 +569,7 @@ session: anInteger releaseOops: anArray
 		].
 		self gciReleaseOops: array _: array size.
 		self signalIfError.	"Might have gotten a transaction backlog error "
-	].
-!
+	].!
 
 session: anInteger send: aString to: anOopType with: anArray 
 	
@@ -640,7 +640,6 @@ version
 
 	^self gciVersion.
 ! !
-
 !GciSingleThreadedLibrary categoriesForMethods!
 _semaphore!private! !
 abortSession:!public!required! !
@@ -682,6 +681,7 @@ gciOopToChr:!private! !
 gciPollForSignal!private! !
 gciReleaseAllOops!private! !
 gciReleaseOops:_:!private! !
+gciSaveObjs:_:!public! !
 gciSetNet:_:_:_:!private! !
 gciSetSessionId:!private! !
 gciShutdown!private! !
@@ -716,5 +716,4 @@ specialFromOop:!private! !
 valueOfOop:!private! !
 version!public! !
 !
-
 

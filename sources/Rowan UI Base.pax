@@ -206,14 +206,12 @@ package methodNames
 	add: #JadePresenter -> #abortTransaction;
 	add: #JadePresenter -> #autoCommitExecutionString;
 	add: #JadePresenter -> #basicAllSelectedProjectsDirty:;
+	add: #JadePresenter -> #basicBeginTransaction;
 	add: #JadePresenter -> #basicCheckoutTagAndRefresh:for:;
 	add: #JadePresenter -> #basicLoadV2Project:projectsHome:;
-	add: #JadePresenter -> #basicBeginTransaction;
 	add: #JadePresenter -> #basicWriteProject:;
-	add: #JadePresenter -> #browseBreakpointList;
-	add: #JadePresenter -> #basicCloneProject:root:;
 	add: #JadePresenter -> #beginTransaction;
-	add: #JadePresenter -> #browseBreakpoints;
+	add: #JadePresenter -> #browseBreakpointList;
 	add: #JadePresenter -> #browseClassReferences:;
 	add: #JadePresenter -> #browseHierarchyImplementorsOf:className:;
 	add: #JadePresenter -> #browseHierarchySendersOf:className:;
@@ -239,9 +237,9 @@ package methodNames
 	add: #JadePresenter -> #insertCompileErrorText:into:;
 	add: #JadePresenter -> #issueCommand:;
 	add: #JadePresenter -> #issueCommands:;
+	add: #JadePresenter -> #listenForSigAborts:;
 	add: #JadePresenter -> #myTopShell;
 	add: #JadePresenter -> #onViewClosed;
-	add: #JadePresenter -> #listenForSigAborts:;
 	add: #JadePresenter -> #openBrowserInNewTab:on:;
 	add: #JadePresenter -> #openProjectBrowserOn:selector:;
 	add: #JadePresenter -> #raiseConsole;
@@ -457,7 +455,6 @@ package methodNames
 	add: 'JadeInspector class' -> #setNavigationInspector;
 	add: 'JadeInspector class' -> #showOn:session:;
 	add: 'JadeNavigationInspector class' -> #resource_Default_view;
-	add: 'JadePresenter class' -> #abortTransaction:;
 	add: 'JadePresenter class' -> #abortTransactionInSession:;
 	add: 'JadePresenter class' -> #allClassesIn:;
 	add: 'JadePresenter class' -> #allPackagesIn:;
@@ -494,10 +491,10 @@ package methodNames
 	add: 'JadePresenter class' -> #enableAllBreakpointsIn:;
 	add: 'JadePresenter class' -> #enableMethodBreakpoints:in:;
 	add: 'JadePresenter class' -> #findMethodIn:class:presenter:;
-	add: 'JadePresenter class' -> #issueCommands:session:;
 	add: 'JadePresenter class' -> #initializeTransactionMode;
 	add: 'JadePresenter class' -> #inTransaction:;
 	add: 'JadePresenter class' -> #issueCommand:session:;
+	add: 'JadePresenter class' -> #issueCommands:session:;
 	add: 'JadePresenter class' -> #openGitHubJadeiteProject;
 	add: 'JadePresenter class' -> #openGitHubRowanProject;
 	add: 'JadePresenter class' -> #openMethodListOn:selecting:session:;
@@ -506,14 +503,14 @@ package methodNames
 	add: 'JadePresenter class' -> #promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:searchString:;
 	add: 'JadePresenter class' -> #runMethodTests:in:;
 	add: 'JadePresenter class' -> #selectorsFrom:session:;
-	add: 'JadePresenter class' -> #unsavedChangesInvalidSessionDialogIn:;
-	add: 'JadePresenter class' -> #unsavedChangesInvalidSessionDialogIn:text:;
-	add: 'JadePresenter class' -> #unsavedChangesValidSessionDialogIn:;
-	add: 'JadePresenter class' -> #unsavedChangesValidSessionDialogIn:text:;
 	add: 'JadePresenter class' -> #setInTransaction:session:;
 	add: 'JadePresenter class' -> #transactionMode:;
 	add: 'JadePresenter class' -> #transactionMode:session:;
 	add: 'JadePresenter class' -> #turnOffAutoCommitIn:;
+	add: 'JadePresenter class' -> #unsavedChangesInvalidSessionDialogIn:;
+	add: 'JadePresenter class' -> #unsavedChangesInvalidSessionDialogIn:text:;
+	add: 'JadePresenter class' -> #unsavedChangesValidSessionDialogIn:;
+	add: 'JadePresenter class' -> #unsavedChangesValidSessionDialogIn:text:;
 	add: 'JadeServer class' -> #gsString;
 	add: 'JadeServer64bit32 class' -> #gsClassDefinitionStringFor:;
 	add: 'JadeSessionManager class' -> #dump:toFileNamed:andStop:;
@@ -853,7 +850,7 @@ JadeWorkspace subclass: #JadeitePreferencesWorkspace
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeTranscript subclass: #JadeiteTranscript
-	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsEnabled autoCompleteEnabled'
+	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsEnabled autoCompleteEnabled transactionModePresenter lastKnownTransaction'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1606,7 +1603,6 @@ withExplanation: aString doA: aBlock
 	an improved monitoring solution"
 
 	^self handlingClientForwarderSendDo: aBlock! !
-
 !GciSession categoriesForMethods!
 _executeString:fromContextOop:environment:!private! !
 clientServerVersionRelationship!private! !
@@ -1616,16 +1612,19 @@ confirmMessageBox:!must not strip!public!server interactions! !
 executeString:!Jade convenience!public! !
 executeString:fromContext:environment:!long running!public! !
 gemNRS!public!title bar! !
+handleTransactionBacklogError:!public! !
 hasServer!public! !
 informMessageBox:!must not strip!public!server interactions! !
 initializeServer!private! !
 inspectServerObject:!must not strip!public!server interactions! !
 oopTypeFor:!public! !
+pollForSignal!public! !
 postLoadClientPreferences!private! !
 postLoadServerPreferences!private! !
 postLoginAs:useSocket:!private! !
 preferencesFile!constants!private! !
 serverPerform:withArguments:!Jade convenience!public! !
+shouldHandleTransactionBacklogError:!public! !
 terminate:!public! !
 titleBarFor:!public!title bar! !
 verifyRowanLoaded!private! !
@@ -2047,46 +2046,6 @@ displayError: ex
 displayInstVarError: ex instVar: anObject
 	^'Error inspecting object ' , anObject printString , '. Error text: ' , ex printString!
 
-displayObject
-	| result stream theClassName oop size instVarNames passWindowHandle |
-	((model isKindOf: Character) or: [(model isKindOf: Float) or: [model isKindOf: Symbol]])
-		ifTrue: 
-			[instVarNames := self displaySpecials.
-			^self].
-	result := 
-			[passWindowHandle := gciSession executeString: '(Rowan jadeServerClassNamed: #JadeServer) canUnderstand: #inspect:windowHandle:'.	"support for older versions"
-			passWindowHandle
-				ifTrue: 
-					[gciSession
-						serverPerform: #inspect:windowHandle:
-						with: model
-						with: self view handle value]
-				ifFalse: [gciSession serverPerform: #inspect: with: model]]
-					on: Error
-					do: [:ex | ^self displayError: ex].
-	(result isKindOf: ByteArray) ifTrue: [result := result asString].
-	(result isKindOf: String)
-		ifFalse: 
-			[self error: 'Result of #inspect: on ' , model printString , ' should be a String but is '
-						, model class name].
-	stream := ReadStream on: result.
-	theClassName := stream upTo: Character tab.
-	self setLastGsShape: theClassName.
-	oop := stream nextLine.
-	size := stream nextLine asNumber.
-	instVarNames := OrderedCollection with: '-.asOop' -> oop.
-	size timesRepeat: 
-			[| name |
-			name := '-' , (stream upTo: Character tab).
-			oop := stream upTo: Character lf.
-			instVarNames add: name -> (gciSession oopTypeWithOop: oop asNumber)].
-	instVarNames addFirst: 'self' -> stream upToEnd.
-	instVarListPresenter
-		list: instVarNames;
-		selection: instVarNames first;
-		yourself.
-	className := theClassName!
-
 displaySpecials
 	| instVarNames |
 	((model isKindOf: Character) and: [model asInteger > 255])
@@ -2371,43 +2330,6 @@ onViewOpened
 	methodColumns := methodListPresenter view columnsList.	"columns will be selectively displayed based on class selections"
 	methodListPresenter view columnsList: (Array with: methodColumns second)!
 
-packageListPresenter
-	^packageListPresenter!
-
-queryCommand: commandQuery
-	commandQuery isEnabled: true.
-	commandQuery command = #beginTransaction
-		ifTrue: 
-			[commandQuery isEnabled: self isBeginTransactionEnabled.
-			^true].
-	commandQuery command = #commitTransaction
-		ifTrue: 
-			[commandQuery isEnabled: self isCommitEnabled.
-			^true].
-	(#(#browseMethods #debug #runSelected) includes: commandQuery command)
-		ifTrue: 
-			[methodListPresenter selections isEmpty ifTrue: [commandQuery isEnabled: false].
-			^true].
-	(#(#browseClass) includes: commandQuery command)
-		ifTrue: 
-			[classListPresenter selections isEmpty ifTrue: [commandQuery isEnabled: false].
-			^true].
-	^true!
-
-refresh
-	| packageSelections classSelections methodSelections |
-	packageSelections := packageListPresenter selections.
-	classSelections := classListPresenter selections.
-	methodSelections := methodListPresenter selections.
-	self updatePackages.
-	packageListPresenter selections: (packageListPresenter list
-				select: [:packageService | packageSelections includes: packageService]).
-	classListPresenter selections: (classListPresenter list
-				select: [:packageService | classSelections includes: packageService]).
-	methodListPresenter selections: (methodListPresenter list
-				select: [:packageService | methodSelections includes: packageService]).
-	self reset!
-
 registerPresentersForUpdates
 	BrowserUpdate current register: packageListPresenter selector: #testPackages:.
 	BrowserUpdate current
@@ -2575,15 +2497,15 @@ basicWriteProject: projectServices
 	self issueCommands: projectServices.
 	MessageBox notify: 'Projects ' , ws contents , ' written to disk'!
 
-browseBreakpointList
-	^self class browseBreakpointsIn: self gciSession!
-
 beginTransaction
 	"Even if it takes a windy path, try to make sure
 	all begin transaction in Jadeite pass through here"
 
 	(MessageBox confirm: 'Abort the current transaction and begin a new transaction?')
 		ifTrue: [self basicBeginTransaction]!
+
+browseBreakpointList
+	^self class browseBreakpointsIn: self gciSession!
 
 browseClassReferences: className
 	^self class browseClassReferences: className session: self gciSession!
@@ -2765,22 +2687,6 @@ issueCommand: service
 issueCommands: services
 	^self class issueCommands: services session: self gciSession!
 
-myTopShell
-	" must be a better way"
-
-	^(self topShell isKindOf: DeafObject) ifTrue: [self parentPresenter view] ifFalse: [self topShell]!
-
-onViewClosed
-	super onViewClosed.
-	self gciSession
-		ifNotNil: 
-			[:sess |
-			sess isValidSession
-				ifTrue: 
-					[| window |
-					window := self myTopShell.
-					RowanBrowserService new releaseWindow: window view handle value session: self gciSession]]!
-
 listenForSigAborts: session
 	self enableSigAbortError.
 	self
@@ -2799,6 +2705,22 @@ listenForSigAborts: session
 					repeat]
 					forkAt: Processor userBackgroundPriority).
 	self sigAbortsProcess name: 'SigAbort Listening Process'!
+
+myTopShell
+	" must be a better way"
+
+	^(self topShell isKindOf: DeafObject) ifTrue: [self parentPresenter view] ifFalse: [self topShell]!
+
+onViewClosed
+	super onViewClosed.
+	self gciSession
+		ifNotNil: 
+			[:sess |
+			sess isValidSession
+				ifTrue: 
+					[| window |
+					window := self myTopShell.
+					RowanBrowserService new releaseWindow: window view handle value session: self gciSession]]!
 
 openBrowserInNewTab: openNewTab on: classService
 	| shell |
@@ -2920,14 +2842,15 @@ updateProjects
 
 updateServices: services
 	BrowserUpdate current updateServices: services asSet asArray session: gciSession! !
-
 !JadePresenter categoriesForMethods!
 abortTransaction!public!transaction management! !
 autoCommitExecutionString!menu handlers support!public! !
 basicAllSelectedProjectsDirty:!private!testing! !
+basicBeginTransaction!public! !
 basicCheckoutTagAndRefresh:for:!menu handlers support!private! !
 basicLoadV2Project:projectsHome:!menu handlers!private! !
 basicWriteProject:!menu handlers!public! !
+beginTransaction!public! !
 browseBreakpointList!menu handlers!public! !
 browseClassReferences:!menu handlers!public! !
 browseHierarchyImplementorsOf:className:!browsing!public! !
@@ -2948,11 +2871,13 @@ currentSelectionOrLine!menu handlers support!public! !
 displayNoMods:!compile support!displaying!public! !
 displayUncompilableSourceIn:!event handlers!public!text tabs!updating! !
 editSaveMethod:in:category:!compile support!public! !
+enableSigAbortError!public! !
 executeSelectionOrLine:!menu handlers!private! !
 flipAutoCommit!menu handlers!public! !
 insertCompileErrorText:into:!compile support!public! !
 issueCommand:!browsing support!public!services! !
 issueCommands:!browsing support!public!services! !
+listenForSigAborts:!public! !
 myTopShell!event handlers!public! !
 onViewClosed!event handlers!public! !
 openBrowserInNewTab:on:!Jade!public! !
@@ -2965,6 +2890,11 @@ selectionRangeFrom:source:!compile support!private! !
 serviceFromSelection:!menu handlers!menu handlers support!private! !
 setCompileErrorColor!compile support!public! !
 setCompileWarningColor!compile support!public! !
+setInTransaction:session:!public! !
+sigAbortProcessInterval!public! !
+sigAbortsProcess!public! !
+sigAbortsProcess:!public! !
+stopListeningForSigAborts!public! !
 update:afterStonReplication:!browsing support!public!services! !
 updateProjects!public! !
 updateServices:!private!services! !
@@ -3288,9 +3218,6 @@ issueCommand: services session: session
 issueCommands: services session: session
 	^BrowserUpdate current issueCommands: services session: session!
 
-inTransaction: aBoolean
-	InTransaction := aBoolean!
-
 openGitHubJadeiteProject
 	ShellLibrary default shellOpen: 'https://github.com/GemTalk/Jadeite' directory: ''!
 
@@ -3353,21 +3280,6 @@ setInTransaction: answeringService session: session
 	answeringService exec: 'System inTransaction' session: session.
 	self inTransaction: answeringService answer = 'true'!
 
-unsavedChangesInvalidSessionDialogIn: presenter
-	^self unsavedChangesInvalidSessionDialogIn: presenter text: 'Copy changes to Clipboard?'!
-
-unsavedChangesInvalidSessionDialogIn: presenter text: text
-	^MessageBox confirm: text caption: (self defaultCaptionText: presenter)!
-
-unsavedChangesValidSessionDialogIn: presenter
-	^self unsavedChangesValidSessionDialogIn: presenter text: self defaultUnsavedChangesText!
-
-unsavedChangesValidSessionDialogIn: presenter text: text
-	^MessageBox new
-		owner: presenter view;
-		caption: 'Unsaved changes warning in ' , presenter view topShell caption , '!!';
-		confirm: text!
-
 transactionMode: aSymbol
 	TransactionMode ifNil: [self initializeTransactionMode].
 	TransactionMode value: aSymbol!
@@ -3388,10 +3300,24 @@ turnOffAutoCommitIn: session
 	autoCommitService
 		command: #autoCommit:;
 		commandArgs: (Array with: false).
-	self issueCommand: (Array with: autoCommitService) session: session! !
+	self issueCommand: (Array with: autoCommitService) session: session!
 
+unsavedChangesInvalidSessionDialogIn: presenter
+	^self unsavedChangesInvalidSessionDialogIn: presenter text: 'Copy changes to Clipboard?'!
+
+unsavedChangesInvalidSessionDialogIn: presenter text: text
+	^MessageBox confirm: text caption: (self defaultCaptionText: presenter)!
+
+unsavedChangesValidSessionDialogIn: presenter
+	^self unsavedChangesValidSessionDialogIn: presenter text: self defaultUnsavedChangesText!
+
+unsavedChangesValidSessionDialogIn: presenter text: text
+	^MessageBox new
+		owner: presenter view;
+		caption: 'Unsaved changes warning in ' , presenter view topShell caption , '!!';
+		confirm: text! !
 !JadePresenter class categoriesForMethods!
-abortTransaction:!browsing support!public! !
+abortTransactionInSession:!public! !
 allClassesIn:!browsing support!private! !
 allPackagesIn:!browsing support!private! !
 basicBrowseClassReferences:session:!browsing!browsing support!public! !
@@ -3427,6 +3353,9 @@ disableMethodBreakpoints:in:!browsing!public! !
 enableAllBreakpointsIn:!browsing!public! !
 enableMethodBreakpoints:in:!browsing!public! !
 findMethodIn:class:presenter:!browsing!public! !
+initializeTransactionMode!public! !
+inTransaction:!public! !
+issueCommand:session:!public! !
 issueCommands:session:!public! !
 openGitHubJadeiteProject!browsing!public! !
 openGitHubRowanProject!browsing!public! !
@@ -3436,12 +3365,15 @@ promptFor:withCaption:!browsing support!private! !
 promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:searchString:!browsing support!private! !
 runMethodTests:in:!public! !
 selectorsFrom:session:!browsing support!private! !
+setInTransaction:session:!public! !
+transactionMode:!public! !
+transactionMode:session:!public! !
+turnOffAutoCommitIn:!public! !
 unsavedChangesInvalidSessionDialogIn:!public!unsaved changes support! !
 unsavedChangesInvalidSessionDialogIn:text:!public!unsaved changes support! !
 unsavedChangesValidSessionDialogIn:!public!unsaved changes support! !
 unsavedChangesValidSessionDialogIn:text:!public!unsaved changes support! !
 !
-
 
 !JadePresenterA methodsFor!
 
@@ -6143,8 +6075,8 @@ getNodeFor: anObject ifAbsent: aNiladicValuable
 getNodeFor:ifAbsent:!hierarchy!private! !
 !
 
-
 !View methodsFor!
+
 wmWindowPosChanged: message wParam: wParam lParam: lParam
 
     "Private - The position of the receiver has changed in some manner."
@@ -6175,7 +6107,6 @@ wmWindowPosChanging: message wParam: wParam lParam: lParam
                                 message: message
                                 wParam: wParam
                                 lParam: lParam)]]! !
-
 !View categoriesForMethods!
 wmWindowPosChanged:wParam:lParam:!event handling-win32!private! !
 wmWindowPosChanging:wParam:lParam:!event handling-win32!private! !
