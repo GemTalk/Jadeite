@@ -285,32 +285,19 @@ loginWithRetry: loginShell
 						self assert: count < maxTries.
 						(Delay forMilliseconds: 100) wait]]!
 
-logoutThenLoginAs: userName
-	"closing the transcript will logout the session. don't commit.
-	If the user name hasn't changed, we don't perform the logout. This saves time in the tests."
-
-	userName ifNil: [^self].
-	userName = GciSession current userID ifTrue: [^self].
-	self closeTranscriptAndLogout.
-	JadeiteLoginShell allInstances do: [:shell | shell view close].	"should save to the remote JadeDefaultConnection.gss file"
-	jadeiteShell := JadeiteLoginShell show.
-	jadeiteShell userIDPresenter value: userName.
-	self loginWithRetry: jadeiteShell.
-	GciSession current ifNil:[self halt]. !
-
 logoutOtherSession
 	^session executeString: '
 				(UserGlobals at: #otherSession) ifNotNil: [:sess | sess logout]'!
 
-logoutThenLoginAs: user
+logoutThenLoginAs: theUser
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #no.	"closing the transcript will logout the session. don't commit"
 	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == GciSession current]
 				ifNone: [].
 	[transcript view close] ensure: [TestMessageBox disableJadeiteTestMessageBox].
 	JadeiteLoginShell allInstances do: [:shell | shell view close].	"should save to the remote JadeDefaultConnection.gss file"
-	jadeiteShell := JadeiteLoginShell show.
-	jadeiteShell userIDPresenter value: user.
+	jadeiteShell := JadeiteLoginShell show. 
+	jadeiteShell userIDPresenter value: theUser.
 	self loginWithRetry: jadeiteShell!
 
 methodListPresenter
@@ -378,23 +365,6 @@ queryCommand: commandSymbol inPresenter: presenter view: view
 	presenter queryCommand: commandQuery.
 	^commandQuery!
 
-routeCommand: command toWindow: windowLikeThing
-	"Private - see CommandDescription class comment for explanation of how it fits in the Dolphin MVP architecture.
-	Route the command description through the command policy to see if it finds the right home"
-
-	| commandDescription id |
-	commandDescription := CommandDescription registry keys detect: [:key | key command = command].
-	id := CommandDescription registry at: commandDescription.
-	self routeCommandWithId: id inVisual: windowLikeThing!
-
-routeCommandWithId: id inVisual: windowLikeThing
-	"Private - see CommandDescription class comment for explanation of how it fits in the Dolphin MVP architecture.
-	Route the command description through the command policy to see if it finds the right home"
-
-	| commandDescription |
-	commandDescription := CommandDescription withId: id ifAbsent: [].
-	windowLikeThing commandPolicy route: commandDescription!
-
 removePreferencesFile
 	| path prefsExist |
 	path := self jadeitePrefsFilePath.
@@ -421,6 +391,23 @@ restoreBackupPrefsFile: prefsExisted
 			[backupStream close.
 			(File open: backupPath) delete.
 			fileStream close]!
+
+routeCommand: command toWindow: windowLikeThing
+	"Private - see CommandDescription class comment for explanation of how it fits in the Dolphin MVP architecture.
+	Route the command description through the command policy to see if it finds the right home"
+
+	| commandDescription id |
+	commandDescription := CommandDescription registry keys detect: [:key | key command = command].
+	id := CommandDescription registry at: commandDescription.
+	self routeCommandWithId: id inVisual: windowLikeThing!
+
+routeCommandWithId: id inVisual: windowLikeThing
+	"Private - see CommandDescription class comment for explanation of how it fits in the Dolphin MVP architecture.
+	Route the command description through the command policy to see if it finds the right home"
+
+	| commandDescription |
+	commandDescription := CommandDescription withId: id ifAbsent: [].
+	windowLikeThing commandPolicy route: commandDescription!
 
 rowanProjectsHome
 	^JadePresenter rowanProjectsHomeEnvVarString!
@@ -704,7 +691,8 @@ setUp
 	session := JadeiteTestResource current session.
 	transcript := JadeiteTestResource current transcript.
 	self setAutoCommit: false.
-	self ensureRowanSampleProjectsLoaded!
+	self switchTransactionModeTo: #autoBegin.  "Ensure tests start with transaction mode that is predictable - most tests assume #autoBegin" 
+	self ensureRowanSampleProjectsLoaded.!
 
 setupProjectBrowser
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
@@ -741,6 +729,9 @@ sessionsToStop :=  System currentSessions select:[:i |
 	username := ((System descriptionOfSession: i) at: 1) userId. 
 	((username ~= ''GcUser'') and:[(username ~=''SymbolUser'' and:[System session ~= i])])].
 sessionsToStop do:[:i | System stopSession: i]'!
+
+switchTransactionModeTo: aSymbol
+	JadeiteTestResource current switchTransactionModeTo: aSymbol!
 
 tearDown
 	| answeringService |
@@ -827,7 +818,6 @@ verifyWindowClosed: presenter
 			[presenter isOpen ifTrue: [count := count + 1] ifFalse: [^true].
 			(Delay forMilliseconds: 10) wait].
 	self deny: presenter isOpen! !
-
 !JadeiteAbstractTestCase categoriesForMethods!
 abortTransaction!private!setup teardown! !
 anotherNumberMethodSource!constants!private! !
@@ -862,6 +852,7 @@ enableBreakpoints!public!support! !
 ensureOneTab!private!support! !
 ensureRowanSampleProjectsLoaded!private!project support! !
 ensureTestIsSetUpAfterLogout!private!support!tests! !
+executeStringInOtherSession:!public! !
 fail:!asserting!public! !
 haltTestForHardToCatchErrors:!private!setup teardown! !
 interestingLoopMethodSource!constants!private! !
@@ -869,14 +860,18 @@ isSampleProject1Loaded!private!private testing!project support! !
 issueCommand:!issue test support!public!support! !
 issueCommands:!issue test support!public!support! !
 itemNamed:in:!issue test support!private! !
+jadeitePrefsFilePath!public! !
 loadProjectNamed:!project support!public! !
 loadRowanSample1InProjectList!private!project support! !
+loginOtherSession!public! !
 loginWithRetry:!private!support! !
+logoutOtherSession!public! !
 logoutThenLoginAs:!private!setup teardown!support! !
 methodListPresenter!private!project browser support! !
 methodSourceForTest!constants!private! !
 methodSourcePresenter!private!project browser support! !
 noBreakIn:!issue test support!private! !
+nonSystemSessionCount!public! !
 openProjectBrowser!private!support!test methods! !
 openWindow:!browser test support!private! !
 packageListPresenter!private!project browser support! !
@@ -884,6 +879,8 @@ primaryTestWindow!accessing!public! !
 projectListPresenter!private!project browser support! !
 projectsPresenter!private!project browser support! !
 queryCommand:inPresenter:view:!private! !
+removePreferencesFile!public! !
+restoreBackupPrefsFile:!public! !
 routeCommand:toWindow:!helpers!private! !
 routeCommandWithId:inVisual:!helpers!private! !
 rowanProjectsHome!constants!private! !
@@ -897,6 +894,7 @@ saveIssue166Method!issue test support!private! !
 saveIssue169Method!issue test support!private! !
 saveIssue216Method!issue test support!private! !
 saveMethod:in:category:!private!support! !
+savePrefsBackup!public! !
 saveSampleMethod!private! !
 saveTestClassWithInstVars:package:!private! !
 selectCategoriesNamed:!private!project browser support!selection! !
@@ -928,6 +926,8 @@ setBreakAt:!private!support!tests! !
 setUp!private!setup teardown! !
 setupProjectBrowser!private!setup teardown! !
 setupSupclassComparisonMethods!public!support! !
+stopOtherSessions!public! !
+switchTransactionModeTo:!private!support!tests! !
 tearDown!private!setup teardown! !
 test_globalAdditionalAccelerators!public!tests! !
 testsIssue:withTitle:!issue test support!public!support! !
@@ -942,7 +942,6 @@ updateService:!issue test support!public!support! !
 variableListPresenter!private!project browser support! !
 verifyWindowClosed:!private!support!tests! !
 !
-
 
 !JadeiteAbstractTestCase class methodsFor!
 

@@ -2459,7 +2459,7 @@ basicBeginTransaction
 	| answeringService |
 	
 	[answeringService := RowanAnsweringService new.
-	answeringService exec: 'System beginTransaction' session: gciSession]
+	answeringService exec: 'System beginTransaction' in: gciSession]
 			ensure: 
 				[self setInTransaction: answeringService session: gciSession.
 				JadePresenter trigger: #abortedTransaction.
@@ -2676,7 +2676,7 @@ flipAutoCommit
 	autoCommitService
 		command: #flipAutoCommit;
 		commandArgs: Array new.
-	self issueCommand: (Array with: autoCommitService)!
+	self issueCommand: autoCommitService!
 
 insertCompileErrorText: string into: methodSourcePresenter
 	methodSourcePresenter view topShell statusBarText: (string copyFrom: 1 to: string size - 2)!
@@ -3277,7 +3277,7 @@ selectorsFrom: selector session: session
 		trailingWildcard: false!
 
 setInTransaction: answeringService session: session
-	answeringService exec: 'System inTransaction' session: session.
+	answeringService exec: 'System inTransaction' in: session.
 	self inTransaction: answeringService answer = 'true'!
 
 transactionMode: aSymbol
@@ -3288,7 +3288,7 @@ transactionMode: aSymbol session: session
 	| answeringService |
 	aSymbol = #autoBegin ifFalse: [self turnOffAutoCommitIn: session].
 	answeringService := RowanAnsweringService new.
-	answeringService exec: 'System transactionMode: ' , aSymbol printString session: session.
+	answeringService exec: 'System transactionMode: ' , aSymbol printString in: session.
 	self setInTransaction: answeringService session: session.
 	self transactionMode: aSymbol!
 
@@ -3300,7 +3300,7 @@ turnOffAutoCommitIn: session
 	autoCommitService
 		command: #autoCommit:;
 		commandArgs: (Array with: false).
-	self issueCommand: (Array with: autoCommitService) session: session!
+	self issueCommand: autoCommitService session: session!
 
 unsavedChangesInvalidSessionDialogIn: presenter
 	^self unsavedChangesInvalidSessionDialogIn: presenter text: 'Copy changes to Clipboard?'!

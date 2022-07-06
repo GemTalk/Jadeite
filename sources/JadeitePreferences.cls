@@ -40,7 +40,7 @@ autocommitEnabled: booleanString
 	autoCommitService := RowanAutoCommitService new
 				command: #autoCommit:;
 				commandArgs: (Array with: boolean).
-	BrowserUpdate current issueCommands: (Array with: autoCommitService) session: session!
+	BrowserUpdate current issueCommand: autoCommitService session: session!
 
 autocompleteEnabled: booleanString
 	| boolean |

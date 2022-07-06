@@ -20,7 +20,7 @@ autoCommitUpdate: browser
 
 (If you choose ''No'' you will be prompted with a list of transaction conflicts)'.
 					shouldAbort
-						ifTrue: [JadePresenter abortTransaction: browser gciSession]
+						ifTrue: [JadePresenter abortTransactionInSession: browser gciSession]
 						ifFalse: [self displayTransactionConflicts: browser]]].
 	browser autoCommit: autoCommit.
 	^postUpdateBlock!

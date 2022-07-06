@@ -1334,6 +1334,9 @@ queryCommand: aCommandQuery
 			[aCommandQuery isEnabled: true.
 			^true].
 	aCommandQuery commandSymbol = #beginTransaction
+		ifTrue: 
+			[aCommandQuery isEnabled: self isBeginTransactionEnabled.
+			^true].
 	command = #flipAutoCommit
 		ifTrue: 
 			[aCommandQuery isEnabled: self transactionMode = #autoBegin.
@@ -2066,6 +2069,7 @@ writeProject
 	projectServices isEmpty ifTrue: [^MessageBox notify: 'No project selected'].
 	^self basicWriteProject: projectServices! !
 !JadeiteBrowserPresenter categoriesForMethods!
+abortedTransaction!public! !
 abortTransaction!public!transaction management! !
 addDictionary!menu handlers!public! !
 additionalAccelerators!constants!public! !

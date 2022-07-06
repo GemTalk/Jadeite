@@ -263,7 +263,6 @@ onCloseRequested: boolValueHolder
 !
 
 onViewClosed
-
 	self updateModel.
 	model saveDefault.
 	super onViewClosed.
@@ -408,7 +407,7 @@ updateView
 	gemTypePresenter 		value: self model gemType.
 	gemHostPresenter 		value: self model gemHost.
 	gemServicePresenter 	value: self model gemService.
-	gemTaskPresenter 		value: self model gemTask.
+	gemTaskPresenter 		value: self model gemTask. 
 	userIDPresenter 		value: self model gsUserID.
 	passwordPresenter 		value: self model gsPassword.
 	loginTypePresenter		value: self model loginType.

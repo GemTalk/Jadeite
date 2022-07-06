@@ -10,8 +10,22 @@ JadeiteBrowser comment: ''!
 !JadeiteBrowser categoriesForClass!Unclassified! !
 !JadeiteBrowser methodsFor!
 
+abortedTransaction
+	toolbarPresenter view validateUserInterface!
+
 closeRequested: anAssociation
 	anAssociation value ifTrue: [self isOkayToChange ifFalse: [anAssociation value: false]]!
+
+createComponents
+	super createComponents.
+	toolbarPresenter := self add: JadeToolsToolBarPresenter new name: 'leftToolbar'!
+
+createSchematicWiring
+	super createSchematicWiring.
+	JadePresenter
+		when: #abortedTransaction
+		send: #abortedTransaction
+		to: self!
 
 maximizeCode
 	| tabView topView |
@@ -38,12 +52,20 @@ position: aPoint
 	super position: aPoint!
 
 systemBrowserPresenter
-	^JadeiteBrowserPresenter! !
+	^JadeiteBrowserPresenter!
+
+toolbarPresenter
+	"for tests" 
+	^toolbarPresenter! !
 !JadeiteBrowser categoriesForMethods!
+abortedTransaction!event handlers!public! !
 closeRequested:!public! !
+createComponents!initialization!public! !
+createSchematicWiring!initialization!public! !
 maximizeCode!public! !
 position:!public! !
 systemBrowserPresenter!public! !
+toolbarPresenter!private! !
 !
 
 !JadeiteBrowser class methodsFor!
@@ -89,45 +111,6 @@ openOn: session project: projectService
 	browser currentCard selectProjectNamed: projectService name.
 	browser currentCard projectListPresenter setFocus.
 	^browser! !
-
-abortedTransaction
-	toolbarPresenter view validateUserInterface!
-
-createComponents
-	super createComponents.
-	toolbarPresenter := self add: JadeToolsToolBarPresenter new name: 'leftToolbar'!
-
-createSchematicWiring
-	super createSchematicWiring.
-	JadePresenter
-		when: #abortedTransaction
-		send: #abortedTransaction
-		to: self!
-
-onViewClosed
-	super onViewClosed.
-	JadePresenter removeEventsTriggeredFor: self!
-
-queryCommand: aCommandQuery
-	| command |
-	command := aCommandQuery command.
-	command = #commitTransaction
-		ifTrue: 
-			[aCommandQuery isEnabled: JadePresenter isCommitEnabled.
-			^true].
-	command = #beginTransaction
-		ifTrue: 
-			[aCommandQuery isEnabled: JadePresenter isBeginTransactionEnabled.
-			^true].
-	^super queryCommand: aCommandQuery!
-
-systemBrowserPresenter
-	^JadeiteBrowserPresenter! !
-
-toolbarPresenter
-	"for tests" 
-	^toolbarPresenter! !
-
 !JadeiteBrowser class categoriesForMethods!
 defaultAdditionalAccelerators!constants!public! !
 onSession:!instance creation!public! !
@@ -136,3 +119,4 @@ openOn:dictionary:!instance creation!public! !
 openOn:package:!instance creation!public! !
 openOn:project:!instance creation!public! !
 !
+

@@ -113,10 +113,7 @@ createSchematicWiring
 displayLastKnownCommitOrAbort
 	| writeStream |
 	writeStream := WriteStream on: String new.
-	TimeStamp current
-		printOn: writeStream
-		timeFormat: Locale default timeFormat
-		dateFormat: Locale default dateFormat.
+	TimeStamp current printOn: writeStream format: 'M/d/yyyy h:mm:ss tt'.
 	lastKnownTransaction value: 'Last Known Commit or Abort: ' , writeStream contents!
 
 editComponents

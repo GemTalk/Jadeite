@@ -52,6 +52,7 @@ disableInteractionsWhile: block
 			self issueCommand: answeringService]!
 
 ensureRowanSample1Loaded
+	self switchTransactionModeTo: #autoBegin. "Initializing the resource will do a commit. Make sure we can commit." 
 	self refreshProjectNamed: self rowanSample1Project name.	"make sure we have the correct server state in the browser"
 	self rowanSample1Project ifNotNil: [:projectService | projectService isDirty ifFalse: [^self]].
 	self disableInteractionsWhile: 
@@ -206,6 +207,11 @@ setUp
 	self unloadSampleProject1.
 	self ensureRowanSampleProjectsLoaded!
 
+switchTransactionModeTo: aSymbol
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #yes.	"confirm transaction mode switch"
+	[self transcript transactionMode: aSymbol] ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 tearDown
 	super tearDown.
 	self logoutThenLoginAs: 'SystemUser'.
@@ -278,6 +284,7 @@ sampleProject1Name!constants!private! !
 sampleProject9Name!constants!private! !
 session!accessing!public! !
 setUp!private!setup teardown! !
+switchTransactionModeTo:!public! !
 tearDown!private!setup teardown! !
 transcript!accessing!public! !
 transcriptForCurrentSession!private!setup teardown!support! !
