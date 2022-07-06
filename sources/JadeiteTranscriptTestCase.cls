@@ -799,14 +799,12 @@ writeToPrefsFile: string
 	| fileStream |
 	fileStream := FileStream read: SessionManager current imageBase , 'Jadeite.prefs'.
 	[fileStream nextPutAll: string] ensure: [fileStream close]! !
-
 !JadeiteTranscriptTestCase categoriesForMethods!
 allTranscriptPresenters!private!support! !
 browseMenu!private!support!tests! !
 checkAutoCommitMenuItemCheckmark:!public!tests! !
+jadeitePrefsFilePath!public! !
 menuItemIsEnabledInAllPresenters:!private!support! !
-restoreBackupPrefsFile:!private!support!tests! !
-savePrefsBackup!private!support!tests! !
 test_abortRemovesProjectsInAllBrowsers!public!test menus! !
 test_abortTransaction!public!tests! !
 test_autoCommitMenuItem!public!tests! !
@@ -853,3 +851,4 @@ test_selectorsList!public!tests! !
 test_transcriptNamedConsole!public!tests! !
 writeToPrefsFile:!private!support!tests! !
 !
+

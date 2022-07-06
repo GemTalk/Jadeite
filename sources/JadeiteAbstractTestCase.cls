@@ -686,13 +686,14 @@ setBreakAt: anInteger
 
 setUp
 	super setUp.
+	user ifNil: [user := 'SystemUser'].
 	transcript := JadeiteTestResource current transcript.
 	self logoutThenLoginAs: user.
 	session := JadeiteTestResource current session.
 	transcript := JadeiteTestResource current transcript.
 	self setAutoCommit: false.
-	self switchTransactionModeTo: #autoBegin.  "Ensure tests start with transaction mode that is predictable - most tests assume #autoBegin" 
-	self ensureRowanSampleProjectsLoaded.!
+	self switchTransactionModeTo: #autoBegin.	"Ensure tests start with transaction mode that is predictable - most tests assume #autoBegin"
+	self ensureRowanSampleProjectsLoaded!
 
 setupProjectBrowser
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.

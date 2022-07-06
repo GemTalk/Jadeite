@@ -2650,13 +2650,3 @@ variableListPresenter!accessing!public! !
 viewActivated!event handlers!public! !
 !
 
-!JadeSystemBrowserPresenter class methodsFor!
-
-overriddenIcon
-
-	^Icon fromId: 'icons\OVERRIDDEN.ICO'.
-! !
-!JadeSystemBrowserPresenter class categoriesForMethods!
-overriddenIcon!public! !
-!
-

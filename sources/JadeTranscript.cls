@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeWorkspace subclass: #JadeTranscript
 	instanceVariableNames: 'allSessionsPresenter historyPresenter mySessionPresenter stoneInfoPresenter toolbarPresenter transcriptPresenter'
@@ -46,9 +46,9 @@ createSchematicWiring
 currentCardChanged
 
 	| currentCard |
-	currentCard := (self view viewNamed: 'cardContainer') currentCard.
+	currentCard := (self view viewNamed: 'cardContainer') currentCard. 
 	(currentCard isKindOf: TextEdit) 	ifTrue: [currentCard setFocus].
-	(currentCard name = 'codePane')		ifTrue: [[(currentCard viewNamed: 'document') setFocus] postToInputQueue. ^self].
+	"(currentCard name = 'codePane')		ifTrue: [[(currentCard viewNamed: 'document') setFocus] postToInputQueue. ^self]."
 	(currentCard name = 'history')		ifTrue: [historyPresenter value isEmpty ifTrue: [historyPresenter value: (gciSession executeString: 'DbfHistory')]. ^self].
 	(currentCard name = 'My Session')	ifTrue: [mySessionPresenter fillSessionInfo. ^self].
 	(currentCard name = 'Stone')		ifTrue: [stoneInfoPresenter fillSessionInfo. ^self].!
@@ -185,29 +185,31 @@ turnAutoMigrateOn
 
 	gciSession executeString: 'MCPlatformSupport autoMigrate: true'.
 ! !
-!JadeTranscript categoriesFor: #allSessionsPresenter!accessing!private! !
-!JadeTranscript categoriesFor: #allSessionsPresenter:!accessing!private! !
-!JadeTranscript categoriesFor: #autocompletion!event handling!public! !
-!JadeTranscript categoriesFor: #browseMonticelloRepositories!event handling!public! !
-!JadeTranscript categoriesFor: #createComponents!public! !
-!JadeTranscript categoriesFor: #createSchematicWiring!public! !
-!JadeTranscript categoriesFor: #currentCardChanged!public! !
-!JadeTranscript categoriesFor: #describeErrorNumber!event handling!public! !
-!JadeTranscript categoriesFor: #disableNativeCode!event handling!public! !
-!JadeTranscript categoriesFor: #gciSession:!private! !
-!JadeTranscript categoriesFor: #hasClassSideSelected!public! !
-!JadeTranscript categoriesFor: #historyPresenter!accessing!private! !
-!JadeTranscript categoriesFor: #historyPresenter:!accessing!private! !
-!JadeTranscript categoriesFor: #inspectOop!event handling!public! !
-!JadeTranscript categoriesFor: #mySessionPresenter!accessing!private! !
-!JadeTranscript categoriesFor: #mySessionPresenter:!accessing!private! !
-!JadeTranscript categoriesFor: #onCloseRequested:!event handling!public! !
-!JadeTranscript categoriesFor: #onIdleEntered!public! !
-!JadeTranscript categoriesFor: #queryCommand:!public!updating! !
-!JadeTranscript categoriesFor: #resetCursor!event handling!public! !
-!JadeTranscript categoriesFor: #stoneInfoPresenter!accessing!private! !
-!JadeTranscript categoriesFor: #stoneInfoPresenter:!accessing!private! !
-!JadeTranscript categoriesFor: #transcriptPresenter!private! !
-!JadeTranscript categoriesFor: #turnAutoMigrateOff!event handling!public! !
-!JadeTranscript categoriesFor: #turnAutoMigrateOn!event handling!public! !
+!JadeTranscript categoriesForMethods!
+allSessionsPresenter!accessing!private! !
+allSessionsPresenter:!accessing!private! !
+autocompletion!event handling!public! !
+browseMonticelloRepositories!event handling!public! !
+createComponents!public! !
+createSchematicWiring!public! !
+currentCardChanged!public! !
+describeErrorNumber!event handling!public! !
+disableNativeCode!event handling!public! !
+gciSession:!private! !
+hasClassSideSelected!public! !
+historyPresenter!accessing!private! !
+historyPresenter:!accessing!private! !
+inspectOop!event handling!public! !
+mySessionPresenter!accessing!private! !
+mySessionPresenter:!accessing!private! !
+onCloseRequested:!event handling!public! !
+onIdleEntered!public! !
+queryCommand:!public!updating! !
+resetCursor!event handling!public! !
+stoneInfoPresenter!accessing!private! !
+stoneInfoPresenter:!accessing!private! !
+transcriptPresenter!private! !
+turnAutoMigrateOff!event handling!public! !
+turnAutoMigrateOn!event handling!public! !
+!
 

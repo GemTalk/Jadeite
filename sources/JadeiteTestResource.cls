@@ -52,8 +52,8 @@ disableInteractionsWhile: block
 			self issueCommand: answeringService]!
 
 ensureRowanSample1Loaded
-	self switchTransactionModeTo: #autoBegin. "Initializing the resource will do a commit. Make sure we can commit." 
-	self refreshProjectNamed: self rowanSample1Project name.	"make sure we have the correct server state in the browser"
+	self switchTransactionModeTo: #autoBegin.	"Initializing the resource will do a commit. Make sure we can commit."
+	self transcript projectListPresenter refresh.	"make sure we have the correct server state in the browser"
 	self rowanSample1Project ifNotNil: [:projectService | projectService isDirty ifFalse: [^self]].
 	self disableInteractionsWhile: 
 			[self unloadSampleProject1.
@@ -70,7 +70,7 @@ ensureRowanSample9Loaded
 	self refreshProjectNamed: rowanSample9 name.	"make sure we have the correct server state in the browser"
 	rowanSample9 ifNotNil: [:projectService | projectService isDirty ifFalse: [^self]].
 	self disableInteractionsWhile: 
-			[self unloadSampleProject1.
+			[self unloadSampleProject9.
 			self session commit.
 			self
 				loadProjectFromFile: self rowanSample9Path

@@ -95,7 +95,9 @@ addSessionWithId: anInteger toStream: aStream
 		addSessionWithId: anInteger 
 		toStream: aStream.
 ! !
-!JadeServer32bit categoriesFor: #addSessionWithId:toStream:!public!Sessions! !
+!JadeServer32bit categoriesForMethods!
+addSessionWithId:toStream:!public!Sessions! !
+!
 
 !JadeServer64bit methodsFor!
 
@@ -138,10 +140,12 @@ stringType
 
 	^(Globals at: #StringConfiguration ifAbsent: [String]) name
 ! !
-!JadeServer64bit categoriesFor: #addSessionWithId:toStream:!public!Sessions! !
-!JadeServer64bit categoriesFor: #metacelloConfigurations!public!Transcript! !
-!JadeServer64bit categoriesFor: #streamType!public!Transcript! !
-!JadeServer64bit categoriesFor: #stringType!public!Transcript! !
+!JadeServer64bit categoriesForMethods!
+addSessionWithId:toStream:!public!Sessions! !
+metacelloConfigurations!public!Transcript! !
+streamType!public!Transcript! !
+stringType!public!Transcript! !
+!
 
 !JadeServer64bit33 methodsFor!
 
@@ -149,7 +153,9 @@ gemLogPath
 
 	^System gemLogPath
 ! !
-!JadeServer64bit33 categoriesFor: #gemLogPath!public!Transcript! !
+!JadeServer64bit33 categoriesForMethods!
+gemLogPath!public!Transcript! !
+!
 
 !JadeServer64bit34 methodsFor!
 
@@ -157,7 +163,9 @@ gemLogPath
 
 	^System gemLogPath
 ! !
-!JadeServer64bit34 categoriesFor: #gemLogPath!public!Transcript! !
+!JadeServer64bit34 categoriesForMethods!
+gemLogPath!public!Transcript! !
+!
 
 "End of package definition"!
 

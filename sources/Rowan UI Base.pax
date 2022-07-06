@@ -5878,7 +5878,7 @@ methodService!public!services! !
 !RowanMethodService methodsFor!
 
 basicSubSuperIcon
-	hasSupers ifTrue: [^JadeSystemBrowserPresenter overriddenIcon].
+	hasSupers ifTrue: [^JadeiteBrowserPresenter overriddenIcon].
 	hasSubs ifTrue: [^JadeiteBrowserPresenter downArrowIcon].
 	^Icon blank!
 
