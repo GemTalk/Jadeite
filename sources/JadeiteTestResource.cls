@@ -136,7 +136,7 @@ logoutThenLoginAs: userName
 		do: [:shell | shell view close	"should save to the remote JadeDefaultConnection.gss file"].
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteShell userIDPresenter value: userName.
-	jadeiteShell loginWithoutErrorHandling!
+	jadeiteShell loginWithoutErrorHandling.!
 
 openProjectsBrowser
 	(projectsBrowser isNil or: [projectsBrowser isOpen not])

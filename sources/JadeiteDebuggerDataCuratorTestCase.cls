@@ -200,7 +200,10 @@ purgeInstances: aClass
 					SessionManager inputState pumpMessages.
 					(Delay forMilliseconds: 50) wait.
 					aClass allInstances isEmpty ifTrue: [^self]]].
-	aClass allInstances do: [:each | each become: Object new].
+	aClass allInstances do: 
+			[:each |
+			JadePresenter removeEventsTriggeredFor: each.
+			each become: Object new].
 	^count!
 
 removeMethodNamed: aSymbol

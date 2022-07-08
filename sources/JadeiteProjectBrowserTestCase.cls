@@ -915,10 +915,10 @@ test_browseSameClassCategoriesCorrect
 	self selectServiceNamed: 'Rowan-Definitions' in: self packageListPresenter.
 	self selectServiceNamed: 'RwClassExtensionDefinition' in: self classListPresenter.
 	self selectCategoryNamed: 'comparing'.
-	self assert: self methodListPresenter list size equals: 2.
+	self assert: self methodListPresenter list size equals: 1.
 	self selectMethodNamed: #compareDictionary:againstBaseDictionary:into:elementClass:isMeta:.
 	methodListBrowser := self projectsPresenter browseImplementors.
-	self assert: self methodListPresenter list size equals: 2.	"original browser method list doesn't change"
+	self assert: self methodListPresenter list size equals: 1.	"original browser method list doesn't change"
 	methodInSameClass := methodListBrowser primaryPresenter methodListPresenter methodListPresenter
 				list detect: [:methodService | methodService className = 'RwClassExtensionDefinition'] ifNone: [].
 	self denyIsNil: methodInSameClass.
@@ -926,7 +926,7 @@ test_browseSameClassCategoriesCorrect
 		selection: methodInSameClass.
 	newBrowser := methodListBrowser primaryPresenter methodListPresenter browseClass.
 	
-	[self assert: self methodListPresenter list size equals: 2.	"original browser method list doesn't change"
+	[self assert: self methodListPresenter list size equals: 1.	"original browser method list doesn't change"
 	self assert: newBrowser currentCard categoryListPresenter list notEmpty.
 	self assert: self projectsPresenter categoryListPresenter list notEmpty.
 	self assert: newBrowser currentCard categoryListPresenter list
@@ -3393,7 +3393,6 @@ test_verifyValidCategory
 
 waitForPresenter: presenter
 	[presenter list isEmpty] whileTrue: [(Delay forMilliseconds: 50) wait]! !
-
 !JadeiteProjectBrowserTestCase categoriesForMethods!
 addSampleMethodGoo!dirty project!private! !
 addSampleMethodHoo!dirty project!private! !

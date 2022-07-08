@@ -12,14 +12,6 @@ In packages pane, show projects & packages. Remove class categories.
 !JadeiteProjectsBrowserPresenter categoriesForClass!Unclassified! !
 !JadeiteProjectsBrowserPresenter methodsFor!
 
-aboutToChange: aSelectionChangingEvent
-	aSelectionChangingEvent value ifTrue: [
-		aSelectionChangingEvent value: self isOkayToChange.
-		self resetCategoryText.
-	].
-	
-!
-
 addNoneProject 
 
 	"ignore in this browser"!
@@ -1687,9 +1679,7 @@ updateSUnitTab
 
 updateSUnitTab: service
 	service ifNil: [sunitPresenter testClassService: nil] ifNotNil: [self setTestClass: service]! !
-
 !JadeiteProjectsBrowserPresenter categoriesForMethods!
-aboutToChange:!event handlers!public! !
 addNoneProject!private! !
 addPackage!menu handlers!public! !
 addPackageDictionaryInfoTo:!private! !
@@ -1860,39 +1850,5 @@ updateSelectionsForUpdate:!public!updating! !
 updateSingleMethodSource!event handlers support!private! !
 updateSUnitTab!event handlers!public!updating! !
 updateSUnitTab:!event handlers!public!updating! !
-!
-
-updateSystemTab
-	| projectTabLabel |
-	projectTabLabel := self projectTabLabel.
-	self topShell cardsPresenter view currentCard arrangement: projectTabLabel.
-	self parentPresenter view updateTabs!
-
-updateTabLabel
-	self updateSystemTab!
-
-writeProject
-	| projectServices ws |
-	projectServices := projectListPresenter selections.
-	ws := WriteStream on: String new.
-	projectServices do: 
-			[:service |
-			ws
-				nextPutAll: service name;
-				space].
-	(MessageBox confirm: 'Write projects - ' , ws contents , '- to disk without committing?')
-		ifFalse: [^false].
-	projectServices do: [:service | service command: #write].
-	self issueCommand: projectServices.
-	MessageBox notify: 'Projects ' ,  ws contents  , ' written to disk'.
-	self refreshFromServer. ! !
-
-!JadeiteProjectsBrowserPresenter class methodsFor!
-
-downArrowIcon
-	^Icon fromFile: 'icons\DownArrow.ico'
-! !
-!JadeiteProjectsBrowserPresenter class categoriesForMethods!
-downArrowIcon!public! !
 !
 

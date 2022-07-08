@@ -178,9 +178,9 @@ openSUnitBrowserOnPackage:!must not strip!preferences!public! !
 openWorkspace:!must not strip!preferences!public! !
 performCommand:allowSpacesInArgs:!accessing!must not strip!public! !
 session:!accessing!private! !
-sigAbortProcessInterval:!public! !
-sigAbortsProcessEnabled:!public! !
-transactionMode:!public! !
+sigAbortProcessInterval:!must not strip!public! !
+sigAbortsProcessEnabled:!must not strip!public! !
+transactionMode:!must not strip!public! !
 transcriptEnabled:!must not strip!preferences!public! !
 !
 

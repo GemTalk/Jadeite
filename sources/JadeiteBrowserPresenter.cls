@@ -17,6 +17,14 @@ abortTransaction
 	super abortTransaction.
 	self autoCommit: (autoCommit value == #failed ifTrue: [true] ifFalse: [autoCommit value])!
 
+aboutToChange: aSelectionChangingEvent
+	aSelectionChangingEvent value ifTrue: [
+		aSelectionChangingEvent value: self isOkayToChange.
+		self resetCategoryText.
+	].
+	
+!
+
 addDictionary
 	| newDictionaryName |
 	(newDictionaryName := Prompter prompt: 'Enter new dictionary name:') isNil ifTrue: [^self].
@@ -1333,7 +1341,7 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: true.
 			^true].
-	aCommandQuery commandSymbol = #beginTransaction
+	command = #beginTransaction
 		ifTrue: 
 			[aCommandQuery isEnabled: self isBeginTransactionEnabled.
 			^true].
@@ -2071,6 +2079,7 @@ writeProject
 !JadeiteBrowserPresenter categoriesForMethods!
 abortedTransaction!public! !
 abortTransaction!public!transaction management! !
+aboutToChange:!event handlers!public! !
 addDictionary!menu handlers!public! !
 additionalAccelerators!constants!public! !
 addNoneProject!public!updating! !

@@ -880,11 +880,11 @@ test_reformatSourceAppliesOnlyToCurrentBrowser
 	self methodSourcePresenter value: nil.
 	self methodSourcePresenter isModified: false.
 	self
-		saveMethod: 'reformatSourceTemporaryMethod ^#test'
+		saveMethod: 'reformatSourceTemporaryMethod ^#test2'
 		in: 'RowanSample1'
 		category: 'other'.
 	self selectMethodNamed: #reformatSourceTemporaryMethod.
-	self assert: self methodSourcePresenter value equals: 'reformatSourceTemporaryMethod ^#test'.
+	self assert: self methodSourcePresenter value equals: 'reformatSourceTemporaryMethod ^#test2'.
 	self openSecondBrowser.
 	self selectServiceNamed: 'RowanSample1' in: secondPresenter projectListPresenter.
 	self selectServiceNamed: 'RowanSample1-Core' in: secondPresenter packageListPresenter.
@@ -893,14 +893,14 @@ test_reformatSourceAppliesOnlyToCurrentBrowser
 				collect: [:selector | secondPresenter methodListPresenter list detect: [:svc | svc selector = selector]].
 	secondPresenter methodListPresenter selections: methodServices.
 	self assert: secondPresenter methodSourcePresenter value
-		equals: 'reformatSourceTemporaryMethod ^#test'.
+		equals: 'reformatSourceTemporaryMethod ^#test2'.
 	self projectsPresenter reformatSource.
 	self assert: self methodSourcePresenter view isModified.
 	self assert: self methodSourcePresenter value
 		equals: 'reformatSourceTemporaryMethod
-	^ #''test''' replaceCrLfWithLf.
+	^ #''test2''' replaceCrLfWithLf.
 	self assert: secondPresenter methodSourcePresenter value
-		equals: 'reformatSourceTemporaryMethod ^#test'.
+		equals: 'reformatSourceTemporaryMethod ^#test2'.
 	self methodSourcePresenter isModified: false.
 	self projectsPresenter removeMethods: self classListPresenter selections!
 
