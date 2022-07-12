@@ -289,8 +289,8 @@ logoutOtherSession
 	^session executeString: '
 				(UserGlobals at: #otherSession) ifNotNil: [:sess | sess logout]'!
 
-logoutThenLoginAs: theUser
-	^JadeiteTestResource current logoutThenLoginAs: theUser!
+logoutThenLoginAs: theUser forceClose: aBoolean
+	^JadeiteTestResource current logoutThenLoginAs: theUser forceClose: aBoolean!
 
 methodListPresenter
 	^self projectsPresenter methodListPresenter!
@@ -680,7 +680,7 @@ setUp
 	super setUp.
 	user ifNil: [user := 'SystemUser'].
 	transcript := JadeiteTestResource current transcript.
-	self logoutThenLoginAs: user.
+	self logoutThenLoginAs: user forceClose: false.
 	session := JadeiteTestResource current session.
 	transcript := JadeiteTestResource current transcript.
 	self setAutoCommit: false.
@@ -859,7 +859,7 @@ loadRowanSample1InProjectList!private!project support! !
 loginOtherSession!public! !
 loginWithRetry:!private!support! !
 logoutOtherSession!public! !
-logoutThenLoginAs:!private!setup teardown!support! !
+logoutThenLoginAs:forceClose:!private!setup teardown!support! !
 methodListPresenter!private!project browser support! !
 methodSourceForTest!constants!private! !
 methodSourcePresenter!private!project browser support! !

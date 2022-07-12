@@ -20,7 +20,7 @@ setUp
 
 tearDown
 	GciSession current userID: nil.	"ensure we logout and back in"
-	self logoutThenLoginAs: 'SystemUser'.
+	self logoutThenLoginAs: 'SystemUser' forceClose: false.
 	self assert: jadeiteShell userIDPresenter value equals: 'SystemUser'.
 	self assert: GciSession current userID equals: 'SystemUser'.
 	self assert: (GciSession current executeString: '3+4') equals: 7!

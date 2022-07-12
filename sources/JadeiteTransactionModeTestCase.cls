@@ -162,7 +162,8 @@ test_transactionModeDefault
 	| prefsExist |
 	self testsIssue: #issue889 withTitle: 'Support transaction modes & SIGABORT handling'.
 	prefsExist := self removePreferencesFile.
-	[self logoutThenLoginAs: 'SystemUser'.	"ensure we have reset the transaction mode on the login to auto"
+	
+	[self logoutThenLoginAs: 'SystemUser' forceClose: false.	"ensure we have reset the transaction mode on the login to auto"
 	self assert: transcript transactionMode equals: #autoBegin]
 			ensure: [self restoreBackupPrefsFile: prefsExist]!
 
@@ -176,11 +177,13 @@ test_transactionModeLogoffRestoresDefaultSettings
 		sigAbortProcessInterval: JadePresenter defaultSigAbortProcessInterval + 50;
 		sigAbortsProcessEnabled: false;
 		transactionMode: #transactionless session: session.
-	self assert: JadePresenter sigAbortProcessInterval equals: JadePresenter defaultSigAbortProcessInterval + 50.
+	self assert: JadePresenter sigAbortProcessInterval
+		equals: JadePresenter defaultSigAbortProcessInterval + 50.
 	self assert: JadePresenter sigAbortsProcessEnabled equals: false.
 	self assert: JadePresenter transactionMode equals: #transactionless.
 	
-	[self logoutThenLoginAs: 'SystemUser'.	"ensure we have reset the transaction mode on the login to auto"
+	[self logoutThenLoginAs: 'SystemUser' forceClose: true.	"ensure we have reset the transaction mode on the login to auto"
+	session := GciSession current. 
 	self assert: JadePresenter sigAbortProcessInterval
 		equals: JadePresenter defaultSigAbortProcessInterval.
 	self assert: JadePresenter sigAbortsProcessEnabled equals: true.

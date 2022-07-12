@@ -25,6 +25,8 @@ package classNames
 	add: #JadeiteCommandShell;
 	add: #JadeiteComponentEditor;
 	add: #JadeiteComponentPresenter;
+	add: #JadeiteCreateProjectEditor;
+	add: #JadeiteCreateProjectPresenter;
 	add: #JadeiteDebugger;
 	add: #JadeiteDebuggerMethodSourcePresenter;
 	add: #JadeiteDiffBrowser;
@@ -714,6 +716,11 @@ JadePresenterA subclass: #JadeiteComponentPresenter
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+JadePresenterA subclass: #JadeiteCreateProjectPresenter
+	instanceVariableNames: 'defaultPropertyList propertyList'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 JadePresenterA subclass: #JadeiteLoadSpecPresenter
 	instanceVariableNames: 'loadSpecPresenter commentPresenter conditionalAttributesPresenter platformPropertiesPresenter hasUnwrittenChanges'
 	classVariableNames: ''
@@ -920,6 +927,11 @@ JadeShell subclass: #JadeiteCommandShell
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeShell subclass: #JadeiteComponentEditor
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeShell subclass: #JadeiteCreateProjectEditor
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

@@ -124,11 +124,12 @@ loginWithRetry: loginShell
 			loginError := false] on: Error
 					do: [:ex | (Delay forMilliseconds: 100) wait]]!
 
-logoutThenLoginAs: userName
+logoutThenLoginAs: userName forceClose: forceClose
 	"closing the transcript will logout the session. don't commit"
 
 	userName ifNil: [^self].
-	GciSession current ifNotNil: [:current | userName = current userID ifTrue: [^self]].
+	forceClose
+		ifFalse: [GciSession current ifNotNil: [:current | userName = current userID ifTrue: [^self]]].
 	self transcript ifNotNil: [self closeTranscript: self transcript].
 	JadeiteTranscript allInstances
 		do: [:transcript | self closeTranscript: transcript	"hopeful none, but just in case"].
@@ -199,7 +200,7 @@ session
 
 setUp
 	super setUp.
-	self logoutThenLoginAs: 'SystemUser'.
+	self logoutThenLoginAs: 'SystemUser' forceClose: false.
 	GciSession current
 		ifNil: 
 			[MessageBox notify: 'GciSession current is nil. Login again.'.
@@ -214,7 +215,7 @@ switchTransactionModeTo: aSymbol
 
 tearDown
 	super tearDown.
-	self logoutThenLoginAs: 'SystemUser'.
+	self logoutThenLoginAs: 'SystemUser' forceClose: false.
 	projectsBrowser
 		ifNotNil: 
 			[(projectsBrowser currentCard projectListPresenter list
@@ -270,7 +271,7 @@ issueCommand:!public!setup teardown! !
 loadProjectFromFile:projectsHome:customConditionalAttributes:componentNames:!private!setup teardown! !
 loadProjectNamed:!private!setup teardown! !
 loginWithRetry:!private!support! !
-logoutThenLoginAs:!private!setup teardown!support! !
+logoutThenLoginAs:forceClose:!private!setup teardown!support! !
 openProjectsBrowser!private!setup teardown! !
 openWindow:!private! !
 projectsBrowser:!private!setup teardown! !
