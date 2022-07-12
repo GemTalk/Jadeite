@@ -11,11 +11,14 @@ JadeiteCreateProjectEditor comment: ''!
 !JadeiteCreateProjectEditor methodsFor!
 
 cancel
-	self view close!
+	| canClose |
+	canClose := true.
+	self primaryPresenter propertiesAreChanged
+		ifTrue: [canClose := MessageBox confirm: 'There are unsaved changes. Close anyway?'].
+	canClose ifTrue: [self view close]!
 
 createProject
-	self primaryPresenter createProject
-!
+	self primaryPresenter createProject ifTrue: [self view close]!
 
 presenterClass
 	^JadeiteCreateProjectPresenter!

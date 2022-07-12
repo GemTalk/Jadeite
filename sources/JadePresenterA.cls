@@ -41,14 +41,6 @@ createLabelEditSchematicWiringFor: aPresenter
 		yourself.
 !
 
-createNewProject
-	| projectName | self halt. 
-	projectName := Prompter prompt: 'Enter Project Name' caption: 'Create new Rowan project'.
-	projectName
-		ifNotNil: 
-			[self newProjectNamed: projectName.
-			self selectProjectNamed: projectName]!
-
 createSchematicWiring
 
 	super createSchematicWiring.
@@ -323,7 +315,6 @@ aboutToEditLabel:accept:!label edit!public! !
 canEditLabel:!label edit!public! !
 createDragDropSchematicWiringFor:!drag & drop!public! !
 createLabelEditSchematicWiringFor:!label edit!public! !
-createNewProject!menu handlers!menu handlers support!private! !
 createSchematicWiring!drag & drop!label edit!public! !
 dragDropPresenter!drag & drop!public! !
 dragDropPresenters!drag & drop!public! !

@@ -264,6 +264,7 @@ package methodNames
 	add: #JadePresenterA -> #basicRefreshBreakpointsIn:selection:;
 	add: #JadePresenterA -> #clearBreakPointAt:in:;
 	add: #JadePresenterA -> #confirmReloadProjects:;
+	add: #JadePresenterA -> #createNewProject;
 	add: #JadePresenterA -> #disableBreakPointAt:in:;
 	add: #JadePresenterA -> #enableBreakPointAt:in:;
 	add: #JadePresenterA -> #gitCommit:;
@@ -3453,6 +3454,9 @@ confirmReloadProjects: selections
 			ifFalse: [^false].
 	^true!
 
+createNewProject
+	JadeiteCreateProjectEditor showOnSession: gciSession!
+
 disableBreakPointAt: stepPoint in: browser
 	| selection |
 	selection := self methodListSelection.
@@ -3594,6 +3598,7 @@ auditProjectFor:!project menu handlers!public! !
 basicRefreshBreakpointsIn:selection:!Jadeite!public! !
 clearBreakPointAt:in:!Jadeite!public! !
 confirmReloadProjects:!Jadeite!public! !
+createNewProject!menu handlers!menu handlers support!private! !
 disableBreakPointAt:in:!Jadeite!public! !
 enableBreakPointAt:in:!Jadeite!public! !
 gitCommit:!project menu handlers!public! !
