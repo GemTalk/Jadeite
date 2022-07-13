@@ -195,7 +195,7 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: self allSelectedProjectsDirty.
 			^true].
-	(#(#unloadProjects #loadProjects #pullFromGit #pushToGit #writeProject #projectChanges #browseProject #projectLog)
+	(#(#reloadProject #unloadProjects #loadProjects #pullFromGit #pushToGit #writeProject #projectChanges #browseProject #projectLog)
 		includes: aCommandQuery command)
 			ifTrue: 
 				[aCommandQuery isEnabled: projectListPresenter selections notEmpty.
@@ -229,7 +229,7 @@ registerPresentersForUpdates
 	BrowserUpdate current register: projectListPresenter selector: #removedProject:!
 
 reloadProject
-	self loadProjects!
+	self reloadProjectsFrom: self!
 
 unloadProjects
 	| projectNames ws |

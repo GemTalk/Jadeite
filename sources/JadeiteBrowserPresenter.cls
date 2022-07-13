@@ -1535,9 +1535,7 @@ registerPresentersForUpdates
 			browser: self!
 
 reloadProject
-	"intention revealing selector"
-
-	^self loadProjects!
+	^self reloadProjectsFrom: self!
 
 removeAppropriateTab
 	self isNoneProjectSelected ifTrue: [self removeProjectTabs] ifFalse: [self removeGlobalsTab]!

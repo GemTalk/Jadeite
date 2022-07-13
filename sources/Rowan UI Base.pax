@@ -268,6 +268,8 @@ package methodNames
 	add: #JadePresenterA -> #disableBreakPointAt:in:;
 	add: #JadePresenterA -> #enableBreakPointAt:in:;
 	add: #JadePresenterA -> #gitCommit:;
+	add: #JadePresenterA -> #installProjectFromPath:;
+	add: #JadePresenterA -> #installProjectFromPath:projectsHome:;
 	add: #JadePresenterA -> #isOkayToChangeSource:;
 	add: #JadePresenterA -> #loadProject;
 	add: #JadePresenterA -> #loadProjectsFrom:;
@@ -276,6 +278,7 @@ package methodNames
 	add: #JadePresenterA -> #openMethodListOn:selectingAnyMatch:;
 	add: #JadePresenterA -> #queryCommand:;
 	add: #JadePresenterA -> #refreshBreakPointsIn:;
+	add: #JadePresenterA -> #reloadProjectsFrom:;
 	add: #JadePresenterA -> #removeSelectorsString:;
 	add: #JadePresenterA -> #setBreakPointAt:in:;
 	add: #JadePresenterA -> #updateMethodReferences:;
@@ -3496,6 +3499,21 @@ gitCommit: projectListPresenter
 	MessageBox notify: 'Project ' , projectName , ' committed to local repository!!'.
 	self refreshFromServer!
 
+installProjectFromPath: path
+	^self installProjectFromPath: path projectsHome: '$ROWAN_PROJECTS_HOME'!
+
+installProjectFromPath: path projectsHome: projectsHomePath
+	| projectService |
+	projectService := RowanProjectService new.
+	projectService
+		command: #installProjectFromFile:projectsHome:componentNames:resolveStrict:;
+		commandArgs: (Array
+					with: 'file:' , path
+					with: projectsHomePath
+					with: #()
+					with: true).
+	self issueCommand: projectService!
+
 isOkayToChangeSource: methodSourcePresenter
 	gciSession isValidSession
 		ifTrue: [(self class unsavedChangesValidSessionDialogIn: self) ifTrue: [^false]]
@@ -3518,12 +3536,9 @@ loadProject
 	self basicLoadV2Project: filePath key projectsHome: filePath value!
 
 loadProjectsFrom: browser
-	| selections |
-	selections := browser projectListPresenter selections.
-	(self confirmReloadProjects: selections)
-		ifTrue: 
-			[RowanBrowserService new reloadProjects: selections presenter: self.
-			BrowserUpdate current selectedServices do: [:service | service postReload]]!
+	| path |
+	path := JadeiteServerFileSelectorDialog showOnSession: gciSession.
+	path ifNotNil: [^self installProjectFromPath: path]!
 
 methodListSelection
 	
@@ -3556,6 +3571,14 @@ refreshBreakPointsIn: methodSourcePresenter
 	selection := self methodListSelection.
 	selection ifNil: [^self].
 	self basicRefreshBreakpointsIn: methodSourcePresenter selection: selection!
+
+reloadProjectsFrom: browser
+	| selections |
+	selections := browser projectListPresenter selections.
+	(self confirmReloadProjects: selections)
+		ifTrue: 
+			[RowanBrowserService new reloadProjects: selections presenter: self.
+			BrowserUpdate current selectedServices do: [:service | service postReload]]!
 
 removeSelectorsString: selections
 	| stream answeringService |
@@ -3602,14 +3625,17 @@ createNewProject!menu handlers!menu handlers support!private! !
 disableBreakPointAt:in:!Jadeite!public! !
 enableBreakPointAt:in:!Jadeite!public! !
 gitCommit:!project menu handlers!public! !
+installProjectFromPath:!Jadeite!menu handlers support!public! !
+installProjectFromPath:projectsHome:!Jadeite!menu handlers support!public! !
 isOkayToChangeSource:!Jadeite!public! !
 loadProject!Jadeite!public! !
-loadProjectsFrom:!Jadeite!public! !
+loadProjectsFrom:!Jadeite!menu handlers support!public! !
 methodListSelection!Jadeite!public! !
 openMethodListOn:selecting:!menu handlers support!private!queries! !
 openMethodListOn:selectingAnyMatch:!menu handlers support!private!queries! !
 queryCommand:!public! !
 refreshBreakPointsIn:!Jadeite!public! !
+reloadProjectsFrom:!Jadeite!menu handlers support!public! !
 removeSelectorsString:!Jadeite!public! !
 setBreakPointAt:in:!Jadeite!public! !
 updateMethodReferences:!Jadeite!public! !
