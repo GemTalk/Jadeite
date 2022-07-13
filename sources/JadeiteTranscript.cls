@@ -286,40 +286,48 @@ openJadeiteProjectsBrowser
 projectListPresenter
 	^projectListPresenter!
 
-queryCommand: query
-	super queryCommand: query.
-	query commandSymbol = #begin
+queryCommand: aCommandQuery
+	super queryCommand: aCommandQuery.
+	aCommandQuery commandSymbol = #loadProjects
 		ifTrue: 
-			[query isEnabled: self isBeginTransactionEnabled.
+			[aCommandQuery isEnabled: true.
 			^true].
-	query commandSymbol = #commitTransaction
+	aCommandQuery commandSymbol = #reloadProject
 		ifTrue: 
-			[query isEnabled: self isCommitEnabled.
+			[aCommandQuery isEnabled: projectListPresenter projectListPresenter selections notEmpty.
 			^true].
-	query commandSymbol = #flipTranscript
+	aCommandQuery commandSymbol = #begin
 		ifTrue: 
-			[query isChecked: self isTranscriptInstalled.
+			[aCommandQuery isEnabled: self isBeginTransactionEnabled.
 			^true].
-	query commandSymbol = #flipAutoCommit
+	aCommandQuery commandSymbol = #commitTransaction
 		ifTrue: 
-			[query
+			[aCommandQuery isEnabled: self isCommitEnabled.
+			^true].
+	aCommandQuery commandSymbol = #flipTranscript
+		ifTrue: 
+			[aCommandQuery isChecked: self isTranscriptInstalled.
+			^true].
+	aCommandQuery commandSymbol = #flipAutoCommit
+		ifTrue: 
+			[aCommandQuery
 				isChecked: (GciSession current ifNil: [false] ifNotNil: [:session | session autoCommit == true]).
 			^true].
-	query commandSymbol = #flipDebugger
+	aCommandQuery commandSymbol = #flipDebugger
 		ifTrue: 
-			[query isChecked: JadeiteDebugger debuggerClass = JadeiteDebugger.
+			[aCommandQuery isChecked: JadeiteDebugger debuggerClass = JadeiteDebugger.
 			^true].
-	query commandSymbol = #flipLogging
+	aCommandQuery commandSymbol = #flipLogging
 		ifTrue: 
-			[query isChecked: BrowserUpdate current isLogging.
+			[aCommandQuery isChecked: BrowserUpdate current isLogging.
 			^true].
-	query commandSymbol = #flipBreakpointsEnabled
+	aCommandQuery commandSymbol = #flipBreakpointsEnabled
 		ifTrue: 
-			[query isChecked: areBreakpointsEnabled value.
+			[aCommandQuery isChecked: areBreakpointsEnabled value.
 			^true].
-	query commandSymbol = #flipAutocomplete
+	aCommandQuery commandSymbol = #flipAutocomplete
 		ifTrue: 
-			[query isChecked: autoCompleteEnabled value.
+			[aCommandQuery isChecked: autoCompleteEnabled value.
 			^true]!
 
 refreshFromServer
