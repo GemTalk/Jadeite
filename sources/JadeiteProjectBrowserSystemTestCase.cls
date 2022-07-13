@@ -159,6 +159,14 @@ test_browserPosition
 	self assert: projectsBrowser view position
 		equals: transcript view position + JadePresenter defaultWindowOffset!
 
+test_createProject
+	"sanity test - do we open the right browser?"
+
+	| createProjectsBrowser |
+	createProjectsBrowser := self projectsPresenter createNewProject.
+	[self assert: createProjectsBrowser isKindOf: JadeiteCreateProjectEditor]
+		ensure: [self destroy: createProjectsBrowser]!
+
 test_deselectProjectOnly
 	"make sure it updates the tab label"
 
@@ -299,6 +307,7 @@ test_addSystemTabClassSelectionClassSide!public!test system tabs! !
 test_addSystemTabNoSelections!public!test system tabs! !
 test_browseInExistingBrowser!public!test system tabs! !
 test_browserPosition!public!test system tabs! !
+test_createProject!public!test system tabs! !
 test_deselectProjectOnly!public!test system tabs! !
 test_modifiedSystemTab!public!test system tabs! !
 test_moveTabsWithSUnitTabselected!public!test system tabs! !

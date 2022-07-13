@@ -97,7 +97,7 @@ createComponents
 	transactionModePresenter model: (self aspectValue: #transactionMode)!
 
 createNewProject
-	projectListPresenter createNewProject!
+	^projectListPresenter createNewProject!
 
 createSchematicWiring
 	super createSchematicWiring.

@@ -3458,7 +3458,7 @@ confirmReloadProjects: selections
 	^true!
 
 createNewProject
-	JadeiteCreateProjectEditor showOnSession: gciSession!
+	^JadeiteCreateProjectEditor showOnSession: gciSession!
 
 disableBreakPointAt: stepPoint in: browser
 	| selection |

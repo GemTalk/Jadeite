@@ -438,6 +438,14 @@ test_commitTransaction
 	self cloneRowanSample1.
 	self ensureRowanSampleProjectsLoaded!
 
+test_createProject
+	"sanity test - do we open the right browser?"
+
+	| createProjectsBrowser |
+	createProjectsBrowser := transcript createNewProject.
+	[self assert: createProjectsBrowser isKindOf: JadeiteCreateProjectEditor]
+		ensure: [self destroy: createProjectsBrowser]!
+
 test_doubleClickOpenProjectBrowser
 	| randomIndex projectPresenter projectName |
 	randomIndex := (Random new next * 4) ceiling.
@@ -828,6 +836,7 @@ test_checkoutTagRefresh!public!test menus! !
 test_closeConsoleNeedingCommit!public!tests! !
 test_closeConsoleNoCommitNeeded!public!tests! !
 test_commitTransaction!public!tests! !
+test_createProject!public!tests! !
 test_doubleClickOpenProjectBrowser!public!tests! !
 test_flipBreakPointsDisabled!public!tests! !
 test_implementorsSenders_SearchList!public!tests! !
