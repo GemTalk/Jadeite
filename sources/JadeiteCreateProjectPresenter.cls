@@ -68,7 +68,7 @@ defaults
 	properties
 		add: (Array with: 'projectName' with: String new); 
 		add: (Array with: 'componentName' with: 'Core');
-		add: (Array with: 'defaultSymbolDictName' with: 'Globals');
+		add: (Array with: 'defaultSymbolDictName' with: 'UserGlobals');
 		add: (Array with: 'packageConvention' with: 'RowanHybrid');
 		add: (Array with: 'packageFormat' with: 'tonel');
 		add: (Array with: 'projectsHome' with: '$ROWAN_PROJECTS_HOME');
