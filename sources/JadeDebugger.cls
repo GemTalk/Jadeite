@@ -82,16 +82,6 @@ codeSourcePresenterClass
 contextObject
 	^frame oop!
 
-copyStack
-	| stream |
-	Cursor wait showWhile: 
-			[stream := WriteStream on: String new.
-			self class
-				dumpStackFor: gsProcess
-				errorMessage: errorMessagePresenter value
-				on: stream.
-			stream contents copyToClipboard]!
-
 createComponents
 
 	super createComponents.
@@ -290,7 +280,6 @@ answer!public! !
 clearUI!public! !
 codeSourcePresenterClass!private! !
 contextObject!public! !
-copyStack!menu handlers!private! !
 createComponents!public! !
 createSchematicWiring!public! !
 debuggerProcess!accessing!private! !

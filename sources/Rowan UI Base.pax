@@ -63,6 +63,7 @@ package classNames
 	add: #JadeiteRenameClassMethodListPresenter;
 	add: #JadeiteScintillaView;
 	add: #JadeiteSearch;
+	add: #JadeiteServerFileSaveDialog;
 	add: #JadeiteServerFileSelectorDialog;
 	add: #JadeiteSmalltalkSearchPresenter;
 	add: #JadeiteSmalltalkWorkspace;
@@ -872,6 +873,11 @@ Dialog subclass: #JadeiteServerFileSelectorDialog
 	classInstanceVariableNames: ''!
 AdvancedFindDialog subclass: #JadeiteAdvancedFindDialog
 	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteServerFileSelectorDialog subclass: #JadeiteServerFileSaveDialog
+	instanceVariableNames: 'fileNamePresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

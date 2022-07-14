@@ -756,7 +756,7 @@ editSaveMethod: classService
 editSaveReadMe
 	| service |
 	service := RowanFileService new
-				command: #writeReadme:;
+				command: #write:;
 				commandArgs: (Array with: projectReadMeTab value);
 				path: self projectReadmePath.
 	self issueCommand: service!
