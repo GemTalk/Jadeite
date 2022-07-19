@@ -477,8 +477,10 @@ aboutJadeite
 		notify: 'Jadeite is an open-source Smalltalk GUI IDE for use with
 Rowan-enabled GemStone, developed by GemTalk Systems LLC
 
-Version: '
-				, version
+Jadeite version: '
+				, version, '
+
+RowanClientServices version ', GciSession current rowanClientServicesVersion
 		caption: 'About Jadeite'!
 
 defaultFileExtension

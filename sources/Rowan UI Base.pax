@@ -1595,8 +1595,8 @@ validateRowanClientServicesVersion
 	| stream |
 	self rowanClientServicesIsSupported ifTrue: [^self].
 	stream := WriteStream on: String new.
-	stream
-		nextPutAll: 'RowanClientServices version ', self rowanClientServicesVersion, ' is not supported. You may continue to use Jadeite but could encounter errors'.
+	stream 
+	nextPutAll: 'This version of Jadeite not supported with RowanClientServices ', self rowanClientServicesVersion, '. You may continue with login, but could encounter errors.'. 
 	stream
 		cr;
 		cr;
