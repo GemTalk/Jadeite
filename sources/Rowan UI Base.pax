@@ -120,7 +120,6 @@ package methodNames
 	add: #DiffBrowser -> #diffsPresenter;
 	add: #Float -> #asString;
 	add: #GciSession -> #_executeString:fromContextOop:environment:;
-	add: #GciSession -> #clientServerVersionRelationship;
 	add: #GciSession -> #computeGemHost;
 	add: #GciSession -> #computeStoneHost;
 	add: #GciSession -> #confirmMessageBox:;
@@ -138,10 +137,14 @@ package methodNames
 	add: #GciSession -> #postLoadServerPreferences;
 	add: #GciSession -> #postLoginAs:useSocket:;
 	add: #GciSession -> #preferencesFile;
+	add: #GciSession -> #rowanClientServicesIsSupported;
+	add: #GciSession -> #rowanClientServicesRangeHigh;
+	add: #GciSession -> #rowanClientServicesVersion;
 	add: #GciSession -> #serverPerform:withArguments:;
 	add: #GciSession -> #shouldHandleTransactionBacklogError:;
 	add: #GciSession -> #terminate:;
 	add: #GciSession -> #titleBarFor:;
+	add: #GciSession -> #validateRowanClientServicesVersion;
 	add: #GciSession -> #verifyRowanLoaded;
 	add: #GciSession -> #withExplanation:do:;
 	add: #GciSession -> #withExplanation:doA:;
@@ -1345,18 +1348,6 @@ _executeString: aString fromContextOop: anOopType environment: anInteger
 		context: anOopType
 		environment: anInteger!
 
-clientServerVersionRelationship
-	^self
-		executeString: ' 
-	(Rowan class canUnderstand: #answeringServiceClass) 
-		ifFalse:[^''Client is more recent than server''].
-	(Rowan answeringServiceClass value canUnderstand: #doClientAndServerVersionsMatch:)
-	ifTrue:[
-		Rowan answeringServiceClass value new doClientAndServerVersionsMatch: '
-				, RowanService version printString , ']
-	ifFalse:[
-		^''Client is more recent than server'']'!
-
 computeGemHost
 	| list |
 	list := gemNRS subStrings: $#.
@@ -1501,7 +1492,6 @@ postLoadServerPreferences
 		do:[:ex | "do not break the login"]'!
 
 postLoginAs: aString useSocket: aBoolean
-	| answer |
 	self verifyRowanLoaded
 		ifFalse: 
 			[^MessageBox notify: 'Rowan not loaded or $ROWAN_PROJECTS_HOME not set. Logging out.'	"log out in RowinLoginShell>>postLogin:"].
@@ -1509,11 +1499,7 @@ postLoginAs: aString useSocket: aBoolean
 				executeString: '(Rowan jadeServerClassNamed: #JadeServer) theJadeiteServer installTranscript; yourself'.
 	aBoolean ifTrue: [self attemptSocket].
 	self setInitials: aString.	"This gets back the session and serial number"
-	answer := self clientServerVersionRelationship.
-	answer == true
-		ifFalse: 
-			[BrowserUpdate current logComment: 'login warning. version mismatch'.
-			MessageBox notify: 'Version mismatch. ' , answer caption: 'Login warning'].
+	self validateRowanClientServicesVersion.
 	GciSession current: self.
 	JadeiteSearch autoCompleteEnabled ifTrue: [JadeiteSearch initializeAutocompleteSymbolsIn: self].
 	self postLoadClientPreferences.
@@ -1522,6 +1508,36 @@ postLoginAs: aString useSocket: aBoolean
 preferencesFile
 
 	^'Jadeite.prefs'!
+
+rowanClientServicesIsSupported
+	^self
+		executeString: ' 
+	(Rowan class canUnderstand: #serviceClass) 
+		ifFalse:[^false].
+	^(Rowan serviceClass value class canUnderstand: #isRowanClientServicesVersionSupported:)
+	ifTrue:[
+		Rowan serviceClass value isRowanClientServicesVersionSupported: '''
+				, RowanService rowanClientServicesVersionLowerLimit , ''']
+		ifFalse:[^false].'!
+
+rowanClientServicesRangeHigh
+	^self
+		executeString: ' 
+	(Rowan class canUnderstand: #serviceClass) 
+		ifFalse:[^''invalid version''].
+	^(Rowan serviceClass value class canUnderstand: #versionRangeHigh:)
+	ifTrue:[Rowan serviceClass value versionRangeHigh: '''
+				, RowanService rowanClientServicesVersionLowerLimit , ''']
+	ifFalse:[''invalid version''].'!
+
+rowanClientServicesVersion
+	^self
+		executeString: ' 
+	(Rowan class canUnderstand: #serviceClass) 
+		ifFalse:[^''invalid version''].
+	^(Rowan serviceClass value class canUnderstand: #version)
+	ifTrue:[Rowan serviceClass value version]
+	ifFalse:[''invalid version''].'!
 
 serverPerform: aSymbol withArguments: anArray
 	| answer |
@@ -1575,6 +1591,23 @@ titleBarFor: windowName
 		ifFalse: [stream nextPutAll: ' with linked gem'].
 	^stream contents!
 
+validateRowanClientServicesVersion
+	| stream |
+	self rowanClientServicesIsSupported ifTrue: [^self].
+	stream := WriteStream on: String new.
+	stream
+		nextPutAll: 'RowanClientServices version ', self rowanClientServicesVersion, ' is not supported. You may continue to use Jadeite but could encounter errors'.
+	stream
+		cr;
+		cr;
+		nextPutAll: 'Supported range: ';
+		nextPutAll: RowanService rowanClientServicesVersionLowerLimit;
+		space;
+		nextPut: $-;
+		space; 
+		nextPutAll: self rowanClientServicesRangeHigh.
+	MessageBox notify: stream contents!
+
 verifyRowanLoaded
 	"The global Rowan indicates the Rowan packages are loaded. 
 	The ROWAN_PROJECTS_HOME gem environment variable is also required"
@@ -1627,7 +1660,6 @@ withExplanation: aString doA: aBlock
 	^self handlingClientForwarderSendDo: aBlock! !
 !GciSession categoriesForMethods!
 _executeString:fromContextOop:environment:!private! !
-clientServerVersionRelationship!private! !
 computeGemHost!public!title bar! !
 computeStoneHost!public!title bar! !
 confirmMessageBox:!must not strip!public!server interactions! !
@@ -1645,10 +1677,14 @@ postLoadClientPreferences!private! !
 postLoadServerPreferences!private! !
 postLoginAs:useSocket:!private! !
 preferencesFile!constants!private! !
+rowanClientServicesIsSupported!private! !
+rowanClientServicesRangeHigh!private! !
+rowanClientServicesVersion!private! !
 serverPerform:withArguments:!Jade convenience!public! !
 shouldHandleTransactionBacklogError:!public! !
 terminate:!public! !
 titleBarFor:!public!title bar! !
+validateRowanClientServicesVersion!private! !
 verifyRowanLoaded!private! !
 withExplanation:do:!long running!private! !
 withExplanation:doA:!long running!private! !

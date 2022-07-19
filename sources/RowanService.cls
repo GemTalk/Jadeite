@@ -714,13 +714,10 @@ new
 notRowanizedPackageName
 	^'(NONE)'!
 
-templateClassName	^self name!
+rowanClientServicesVersionLowerLimit
+	^'3.0.0'!
 
-version
-	"change this method carefully and only at Jadeite release boundaries.
-	Failure to do so may prevent logins"
-
-	^3200! !
+templateClassName	^self name! !
 !RowanService class categoriesForMethods!
 command:withArgs:!instance creation!public! !
 defaultIcon!private! !
@@ -728,7 +725,7 @@ defaultIconName!private! !
 icon!private! !
 new!initialization!public! !
 notRowanizedPackageName!constants!public! !
+rowanClientServicesVersionLowerLimit!public!version actions! !
 templateClassName!public! !
-version!public!version actions! !
 !
 
