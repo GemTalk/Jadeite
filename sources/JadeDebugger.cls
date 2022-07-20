@@ -43,6 +43,7 @@ answer
 		left in a state in which the cursor is not set back to its original value.
 		We mitigate that problem by changing it to the default."
 
+	| suspendingList |
 	Cursor reset.
 	waitingForAnswerProcess := 
 			[[SessionManager inputState loopWhile: [answer isNil]] ensure: 
@@ -57,10 +58,13 @@ answer
 									[:proc |
 									"need to resume the suspended main process as main process"
 									SessionManager current inputState main: Processor activeProcess.
-									proc resume.
+									proc resume: suspendingList.
 									Processor terminateActive]]]]
 					fork.
+	waitingForAnswerProcess name: 'debugger waitingForAnswerProcess' , self identityHash printString.
 	debuggerProcess := Processor activeProcess.
+	debuggerProcess name: 'debuggerProcess' , self identityHash printString.
+	[suspendingList := debuggerProcess suspendingList] forkAt: Processor activePriority + 1.
 	Processor suspendActive.
 	debuggerProcess := nil.
 	^answer!

@@ -309,6 +309,9 @@ isAvailable
 sampleProject1Name
 	^'RowanSample1'!
 
+sampleProject9Name
+	^'RowanSample9'!
+
 signalInitializationError
 	"TestSuite>>run: in the SUnit pacakge sends this method
 	to the class, but implements it on the instance. That appears
@@ -320,6 +323,7 @@ signalInitializationError
 current!Accessing!public! !
 isAvailable!public! !
 sampleProject1Name!constants!public! !
+sampleProject9Name!constants!public! !
 signalInitializationError!error handling!public! !
 !
 
