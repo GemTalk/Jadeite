@@ -444,7 +444,7 @@ test_addPackageReloadProject
 	TestMessageBox enableJadeiteTestMessageBox.
 	
 	[TestMessageBox plannedResult: #yes.	"confirm we want to reload project"
-	self projectsPresenter loadProjects.
+	self projectsPresenter reloadProject.
 	self assertIsNil: (self packageNamed: 'NewPackage')]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
@@ -2385,9 +2385,9 @@ test_refreshAfterReloadWithAddedMethod
 	self denyIsNil: sampleProjectInList.
 	projectListPresenter selection: sampleProjectInList.
 	refreshItem := projectListPresenter view queryContextMenu items
-				detect: [:menuItem | menuItem command == #loadProjects].
+				detect: [:menuItem | menuItem command == #reloadProject].
 	TestMessageBox enableJadeiteTestMessageBox.
-	TestMessageBox plannedResult: #yes.	"confirm we want to load project"
+	TestMessageBox plannedResult: #yes.	"confirm we want to reload project"
 	
 	[refreshItem commandDescription performAgainst: transcript projectListPresenter.
 	self assertIsNil: (self methodListPresenter list

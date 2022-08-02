@@ -229,7 +229,7 @@ registerPresentersForUpdates
 	BrowserUpdate current register: projectListPresenter selector: #removedProject:!
 
 reloadProject
-	self reloadProjectsFrom: self!
+	^self reloadProjectsFrom: self!
 
 unloadProjects
 	| projectNames ws |

@@ -516,7 +516,8 @@ updateList: presenter whilePreservingSelections: updates browser: anObject
 			replicate := updates detect: [:update | update = service] ifNone: [nil].
 			replicate notNil ifTrue: [service replicateFrom: replicate]].
 	updates
-		do: [:update | ((bag includes: update) and: [update wasRenamed not]) ifFalse: [presenter model add: update]]!
+		do: [:update | ((bag includes: update) and: [update wasRenamed not]) ifFalse: [presenter model add: update]].
+	bag do: [:service | (updates includes: service) ifFalse: [presenter model remove: service]]!
 
 updateMethodFilterSelectionFor: presenter!
 

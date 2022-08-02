@@ -338,6 +338,9 @@ methodSourceUpdate: presenter browser: methodSourcePresenter
 					methodSourcePresenter refreshBreakPointsIn: presenter.
 					methodSourcePresenter displayNoMods: presenter]]!
 
+methodsRemoved: presenter 
+	presenter list remove: self!
+
 methodUpdate: presenter browser: browser
 	presenter list do: 
 			[:methodService |
@@ -647,6 +650,7 @@ methodHistoryUpdated:!public!updating! !
 methodListUpdate:browser:!public!updating! !
 methodName!accessing!private! !
 methodSourceUpdate:browser:!public!updating! !
+methodsRemoved:!public!updating! !
 methodUpdate:browser:!public!updating! !
 name!accessing!public! !
 name:!accessing!public! !
