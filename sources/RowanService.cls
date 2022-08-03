@@ -517,7 +517,10 @@ updateList: presenter whilePreservingSelections: updates browser: anObject
 			replicate notNil ifTrue: [service replicateFrom: replicate]].
 	updates
 		do: [:update | ((bag includes: update) and: [update wasRenamed not]) ifFalse: [presenter model add: update]].
-	bag do: [:service | (updates includes: service) ifFalse: [presenter model remove: service]]!
+	bag do: 
+			[:service |
+			(updates includes: service)
+				ifFalse: [service = RowanProjectService noneProject ifFalse: [presenter model remove: service]]]!
 
 updateMethodFilterSelectionFor: presenter!
 
