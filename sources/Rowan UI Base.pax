@@ -126,6 +126,7 @@ package methodNames
 	add: #GciSession -> #executeString:;
 	add: #GciSession -> #executeString:fromContext:environment:;
 	add: #GciSession -> #gemNRS;
+	add: #GciSession -> #getServer;
 	add: #GciSession -> #handleTransactionBacklogError:;
 	add: #GciSession -> #hasServer;
 	add: #GciSession -> #informMessageBox:;
@@ -138,6 +139,7 @@ package methodNames
 	add: #GciSession -> #postLoginAs:useSocket:;
 	add: #GciSession -> #preferencesFile;
 	add: #GciSession -> #rowanClientServicesIsSupported;
+	add: #GciSession -> #rowanClientServicesIsSupportedWithLowerLimit:;
 	add: #GciSession -> #rowanClientServicesRangeHigh;
 	add: #GciSession -> #rowanClientServicesVersion;
 	add: #GciSession -> #serverPerform:withArguments:;
@@ -1389,6 +1391,10 @@ gemNRS
 
 	^gemNRS!
 
+getServer
+	^self
+		executeString: '(Rowan jadeServerClassNamed: #JadeServer) theJadeiteServer installTranscript; yourself'!
+
 handleTransactionBacklogError: error
 	
 	[JadePresenter sigAbortsProcessEnabled
@@ -1495,11 +1501,15 @@ postLoginAs: aString useSocket: aBoolean
 	self verifyRowanLoaded
 		ifFalse: 
 			[^MessageBox notify: 'Rowan not loaded or $ROWAN_PROJECTS_HOME not set. Logging out.'	"log out in RowinLoginShell>>postLogin:"].
-	server := self
-				executeString: '(Rowan jadeServerClassNamed: #JadeServer) theJadeiteServer installTranscript; yourself'.
+	server := self getServer.
 	aBoolean ifTrue: [self attemptSocket].
 	self setInitials: aString.	"This gets back the session and serial number"
-	self validateRowanClientServicesVersion.
+	[self validateRowanClientServicesVersion] on: Error
+		do: 
+			[:ex |
+			MessageBox
+				notify: 'RowanClientServices version checking encountered an error. Continuing post login. Message text: '
+						, ex messageText].
 	GciSession current: self.
 	JadeiteSearch autoCompleteEnabled ifTrue: [JadeiteSearch initializeAutocompleteSymbolsIn: self].
 	self postLoadClientPreferences.
@@ -1511,14 +1521,17 @@ preferencesFile
 
 rowanClientServicesIsSupported
 	^self
-		executeString: ' 
-	(Rowan class canUnderstand: #serviceClass) 
-		ifFalse:[^false].
-	^(Rowan serviceClass value class canUnderstand: #isRowanClientServicesVersionSupported:)
-	ifTrue:[
-		Rowan serviceClass value isRowanClientServicesVersionSupported: '''
-				, RowanService rowanClientServicesVersionLowerLimit , ''']
-		ifFalse:[^false].'!
+		rowanClientServicesIsSupportedWithLowerLimit: RowanService rowanClientServicesVersionLowerLimit!
+
+rowanClientServicesIsSupportedWithLowerLimit: lowerLimit
+	"run on post login so don't use services"
+
+	^self
+		executeString: ' 	
+	(Rowan class canUnderstand: #''serviceClass'')
+		ifFalse: [ ^ false ].
+	^Rowan serviceClass value isRowanClientServicesVersionSupported: '''
+				, lowerLimit , ''''!
 
 rowanClientServicesRangeHigh
 	^self
@@ -1666,6 +1679,7 @@ confirmMessageBox:!must not strip!public!server interactions! !
 executeString:!Jade convenience!public! !
 executeString:fromContext:environment:!long running!public! !
 gemNRS!public!title bar! !
+getServer!private! !
 handleTransactionBacklogError:!public! !
 hasServer!public! !
 informMessageBox:!must not strip!public!server interactions! !
@@ -1678,6 +1692,7 @@ postLoadServerPreferences!private! !
 postLoginAs:useSocket:!private! !
 preferencesFile!constants!private! !
 rowanClientServicesIsSupported!private! !
+rowanClientServicesIsSupportedWithLowerLimit:!private! !
 rowanClientServicesRangeHigh!private! !
 rowanClientServicesVersion!private! !
 serverPerform:withArguments:!Jade convenience!public! !

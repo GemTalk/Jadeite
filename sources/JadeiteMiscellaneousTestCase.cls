@@ -387,11 +387,10 @@ test_setResetTextPaneFontSize
 						ifTrue: [self assert: textStyle pointSize equals: nil]]]!
 
 test_versionMatches
-	"to prevent invalid logins, make sure internal server
-	version matches internal client version"
+	"See RowanVersionTest for more RowanClientServices version tests"
 
 	self testsIssue: #issue521 withTitle: 'Jadeite version check'.
-	self assert: (session executeString: 'RowanService version') equals: RowanService version!
+	self assert: session rowanClientServicesIsSupported	"whatever we're running is actually supported"!
 
 test_workingDirectoryEqualsImageDirectory
 	"should be set after login window first opens"
