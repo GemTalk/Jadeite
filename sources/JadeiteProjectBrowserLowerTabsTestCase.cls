@@ -942,7 +942,7 @@ test_reloadAfterClassCompile
 		instVars: #('erbleldy')
 		package: 'RowanSample1-Tests'.
 	self assert: self classListPresenter selection version equals: version + 1.
-	self projectsPresenter loadProjects.
+	self projectsPresenter reloadProject.
 	self assert: self classListPresenter selection version equals: version + 2	"see https://github.com/GemTalk/Rowan/issues/506"]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
