@@ -774,6 +774,9 @@ debuggerClass: aDebugger
 	debuggerClass := aDebugger.
 !
 
+defaultAdditionalAccelerators
+	^super defaultAdditionalAccelerators, #(#(#reformatSource 'Ctrl+Shift+O'))!
+
 disableBreakpointsWhile: block session: session
 	| wereBreakpointsEnabled answeringService result |
 	answeringService := RowanAnsweringService new.
@@ -834,6 +837,7 @@ signalSemaphore
 aboutToShowErrorShellOn:!public! !
 debuggerClass!public! !
 debuggerClass:!public! !
+defaultAdditionalAccelerators!constants!public! !
 disableBreakpointsWhile:session:!private! !
 lastExtent!accessing!private! !
 lastExtent:!accessing!private! !
