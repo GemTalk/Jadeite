@@ -61,7 +61,7 @@ pop
 
 select
 	| folder |
-	model value = pathText value ifFalse:[^self goto]. 
+	model value path = pathText value ifFalse:[^self goto]. 
 	folder := directoryContentsList selectionOrNil ifNil: [String new] ifNotNil: [:sel | sel key].
 	pathText value: pathText value , '/' , folder.
 	self ok.

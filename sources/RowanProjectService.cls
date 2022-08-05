@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanProjectService
-	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop name isDirty specService componentServices packageGroups'
+	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop name isDirty specService componentServices packageGroups defaultSymbolDictionaryName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -131,6 +131,9 @@ componentsUpdate: presenter browser: browser
 	removals do: [:service | treeModel remove: service ifAbsent: []].
 	topLevelComponents do: [:component | presenter view expand: component].
 	presenter view ensureSelectionVisible!
+
+defaultSymbolDictionaryName
+	^defaultSymbolDictionaryName!
 
 definition
 
@@ -345,6 +348,7 @@ branch:!accessing!public! !
 checkoutUsing:!presenter support!public! !
 componentServices!public! !
 componentsUpdate:browser:!public!updating! !
+defaultSymbolDictionaryName!accessing!private! !
 definition!accessing!public! !
 displayName!accessing!displaying!public! !
 displayStringFor:!displaying!public! !

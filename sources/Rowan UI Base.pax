@@ -707,7 +707,7 @@ DifferencesPresenter subclass: #JadeiteDifferencesPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenter subclass: #JadeiteAddPackagePresenter
-	instanceVariableNames: 'symbolDictionaryPresenter componentPresenter newPackagePresenter projectService'
+	instanceVariableNames: 'symbolDictionaryPresenter componentPresenter newPackagePresenter projectService defaultSymbolDictionaryText'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

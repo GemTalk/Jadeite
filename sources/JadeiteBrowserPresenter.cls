@@ -673,6 +673,9 @@ editDelete
 	self methodValueChanged.
 !
 
+editLoadSpecFromFile
+	^JadeiteLoadSpecEditor editLoadSpecFromFileInSession: gciSession!
+
 editPackageGroups
 	| projectName |
 	projectName := self projectListPresenter selectionOrNil
@@ -2139,6 +2142,7 @@ displayStringFor:in:!double dispatch!public! !
 displayVariable:!displaying!private! !
 editComponents!menu handlers!public! !
 editDelete!menu handlers!public! !
+editLoadSpecFromFile!menu handlers!public! !
 editPackageGroups!menu handlers!public! !
 editRevert!menu handlers!public! !
 editSave!menu handlers!public! !
@@ -2317,7 +2321,8 @@ projectMenu
 	^Menu fromStrings: self projectMenuStrings!
 
 projectMenuStrings
-	"put on the class side so it can be shared with the projectlist in the console" 
+	"put on the class side so it can be shared with the projectlist in the console"
+
 	self rowanFixMe.	"this really is a cumbersome way to build a menu."
 	0 == 1
 		ifTrue: 
@@ -2337,7 +2342,7 @@ projectMenuStrings
 				auditProject;
 				projectLog;
 				refresh].
-	^#('Projects' 'Create ...//createNewProject' 'Load Git Project ...//loadProjects' 'Reload Project //reloadProject' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write ...//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-'  'Edit Components//editComponents' '-' 'Audit//auditProject' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
+	^#('Projects' 'Create ...//createNewProject' 'Load Git Project ...//loadProjects' 'Reload Project //reloadProject' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write ...//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' 'Edit Components//editComponents' 'Edit Load Spec From File ...//editLoadSpecFromFile' '-' 'Audit//auditProject' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
 
 resource_Default_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.
