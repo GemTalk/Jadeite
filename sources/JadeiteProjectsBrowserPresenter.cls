@@ -16,17 +16,6 @@ addNoneProject
 
 	"ignore in this browser"!
 
-addPackage
-	| projectService newPackageName |
-	true
-		ifTrue: 
-			[self rowanFixMe.
-			^MessageBox notify: 'Packages cannot be added in RowanV2.0 yet. Sorry.'
-				caption: 'Unavailable operation'].
-	(newPackageName := Prompter prompt: 'Enter new package name:') isNil ifTrue: [^self].
-	projectService := projectListPresenter selection.
-	projectService addPackageNamed: newPackageName using: self!
-
 addPackageDictionaryInfoTo: aStream
 
 	"Private - projects don't write themselves to string"!
@@ -790,7 +779,6 @@ pkgsMenuStrings
 				savePackage;
 				unloadPackage].
 	^#('&Packages' 
-	'&Add Package...//addPackage'
 	'&Write Package...//savePackage'
 	'&Unload Package...//unloadPackage'
 	'&Edit Package Groups...//editPackageGroups')!
@@ -1681,7 +1669,6 @@ updateSUnitTab: service
 	service ifNil: [sunitPresenter testClassService: nil] ifNotNil: [self setTestClass: service]! !
 !JadeiteProjectsBrowserPresenter categoriesForMethods!
 addNoneProject!private! !
-addPackage!menu handlers!public! !
 addPackageDictionaryInfoTo:!private! !
 addSubclass!menu handlers!public! !
 addVariableAccessors!menu handlers!public! !

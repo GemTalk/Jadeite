@@ -361,15 +361,14 @@ test_addDuplicatePackage
 	[packageName := 'NewPackage'.
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
 	projectService := self projectListPresenter selection.
-	projectService addPackageNamed: packageName using: self projectsPresenter.
+	self addPackageNamed: packageName.
 	self assert: self packageListPresenter selection name equals: packageName.
 	self assert: (self packageListPresenter list select: [:service | service name = packageName]) size
 		equals: 1.
 	TestMessageBox enableJadeiteTestMessageBox.
 	
 	[TestMessageBox plannedResult: #failed.
-	addPackageResult := projectService addPackageNamed: packageName using: self projectsPresenter.
-	self assert: addPackageResult equals: MessageBox.	"notify: does not return the result, sadly"
+	self addPackageNamed: packageName.
 	self assert: (self packageListPresenter list select: [:service | service name = packageName]) size
 		equals: 1]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]]
@@ -435,17 +434,19 @@ test_additionalAccelerators
 	self assert: self projectsPresenter class defaultAdditionalAccelerators size equals: 3	"should fail if we add a new one"!
 
 test_addPackageReloadProject
+	| packageName |
 	self testsIssue: #issue183
 		withTitle: 'Add package but don''t write it to disk then reload - walkback'.
 	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
-	self assertIsNil: (self packageNamed: 'NewPackage').
-	self projectListPresenter selection addPackageNamed: 'NewPackage' using: self projectsPresenter.
-	self denyIsNil: (self packageNamed: 'NewPackage').
+	packageName := 'NewPackage'.
+	self assertIsNil: (self packageNamed: packageName).
+	self addPackageNamed: packageName.
+	self denyIsNil: (self packageNamed: packageName).
 	TestMessageBox enableJadeiteTestMessageBox.
 	
 	[TestMessageBox plannedResult: #yes.	"confirm we want to reload project"
 	self projectsPresenter reloadProject.
-	self assertIsNil: (self packageNamed: 'NewPackage')]
+	self assertIsNil: (self packageNamed: packageName)]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_addRemoveCategory
@@ -2060,16 +2061,6 @@ test_maximizeCode
 	projectsBrowser maximizeCode.	"minimizes tabView"
 	self assert: tabView arrangement equals: 12!
 
-test_menuAddPackageOnProjectMenu
-	| transcriptProjectMenu transcriptCommands |
-	self testsIssue: #issue171 withTitle: 'Project menu quibbles'.
-	self assert: ((self projectsPresenter class projectMenu items collect: [:each | each command])
-				includes: #addPackage).	"on projects menu in browser"
-	transcriptProjectMenu := transcript projectListPresenter projectListPresenter view parentView
-				contextMenu.
-	transcriptCommands := transcriptProjectMenu items collect: [:each | each command].
-	self deny: (transcriptCommands includes: #addPackage)!
-
 test_menuEnablementDoesNotBreak
 	"the bug in the issue was a bad enablement test in a menu item
 	during the query. If nothing else, test that we can always query
@@ -3504,7 +3495,6 @@ test_instVarWriters!public!test variable tab!tests! !
 test_issue261!public!test menus!test projects!tests! !
 test_loadProjectRemovingClass!public!test projects! !
 test_maximizeCode!public!tests! !
-test_menuAddPackageOnProjectMenu!public!test projects!tests! !
 test_menuEnablementDoesNotBreak!public!tests! !
 test_menusDontAddBreaks!public!tests! !
 test_multiplePackageSelection!public!test packages!tests! !

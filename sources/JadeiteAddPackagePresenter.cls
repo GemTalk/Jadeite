@@ -20,12 +20,18 @@ addPackage
 					with: newPackagePresenter value
 					with: symbolDictionaryPresenter selection
 					with: componentPresenter selection).
-	self issueCommand: projectService!
+	self issueCommand: projectService.
+	self trigger: #packageAdded: with: newPackagePresenter value. 
+!
 
 addSystemBrowser
 	"pass along to the browser"
 
 	self topShell addSystemBrowser!
+
+componentPresenter
+	"for testing"
+	^componentPresenter!
 
 createComponents
 	super createComponents.
@@ -56,6 +62,10 @@ initializeSymbolDictionaries
 	symbolDictionaryPresenter selectionByIndex: index.
 	defaultSymbolDictionaryText value: 'Default: (' , projectService defaultSymbolDictionaryName , ')'!
 
+newPackagePresenter
+	"for testing" 
+	^newPackagePresenter!
+
 projectService
 	^projectService!
 
@@ -65,10 +75,12 @@ projectService: anObject
 !JadeiteAddPackagePresenter categoriesForMethods!
 addPackage!actions!public! !
 addSystemBrowser!actions!public! !
+componentPresenter!accessing!private! !
 createComponents!initialization!public! !
 initializeComponents!initialization!public! !
 initializeLists!initialization!public! !
 initializeSymbolDictionaries!initialization!public! !
+newPackagePresenter!accessing!private! !
 projectService!accessing!private! !
 projectService:!accessing!private! !
 !

@@ -21,6 +21,11 @@ aggressivelyCleanupRowanProject: projectName
 			ifNotNil: [ :proj | Rowan image _removeLoadedProject: proj ]'
 		in: session!
 
+assertClassInList: name
+	self denyIsNil: (sunitBrowser primaryPresenter classListPresenter list
+				detect: [:classService | classService name = name]
+				ifNone: [])!
+
 assertMenuItem: command isEnabled: boolean
 	| commandQuery |
 	commandQuery := self
@@ -32,6 +37,11 @@ assertMenuItem: command isEnabled: boolean
 assertPackageInList: name
 	self denyIsNil: (sunitBrowser primaryPresenter packageListPresenter list
 				detect: [:packageService | packageService name = name]
+				ifNone: [])!
+
+denyClassInList: name
+	self assertIsNil: (sunitBrowser primaryPresenter classListPresenter list
+				detect: [:classService | classService name = name]
 				ifNone: [])!
 
 denyPackageInList: name
@@ -246,41 +256,33 @@ test_addNewTestPackage
 	"test package should show up when test method is added"
 
 	| packageName className methodService |
+	"doesn't matter which component for test"
+
+	"don't pick a symbol list so default symbol list is used"
 	packageName := 'AddedPackage'.
 	className := 'AddedTestClass'.
-	self assertIsNil: (self sunitPresenter packageListPresenter list
-				detect: [:packageService | packageService name = packageName]
-				ifNone: []).
+	self denyClassInList: className.
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
 	self selectRowanSample1Test.
 	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
-	self projectsPresenter projectListPresenter selection addPackageNamed: packageName
-		using: self projectsPresenter.
+	self addPackageNamed: packageName.
 	
 	[| classService1 |
-	self assertIsNil: (self sunitPresenter packageListPresenter list
-				detect: [:packageService | packageService name = packageName]
-				ifNone: []).	"not added until method is created"
+	self denyPackageInList: packageName.	"not added until method is created"
 	self
 		saveClass: className
 		superclass: 'TestCase'
 		instVars: #('abc')
 		package: packageName.
-	self assertIsNil: (self sunitPresenter packageListPresenter list
-				detect: [:packageService | packageService name = packageName]
-				ifNone: []).	"not added until method is created"
+	self denyPackageInList: packageName.	"not added until method is created"
 	classService1 := RowanClassService named: className.
 	classService1
 		saveMethod: 'test_blah'
 		category: 'tests'
 		session: session.
-	self denyIsNil: (self sunitPresenter packageListPresenter list
-				detect: [:packageService | packageService name = packageName]
-				ifNone: []).
+	self assertPackageInList: packageName.
 	self selectServiceNamed: packageName in: self sunitPresenter packageListPresenter.
-	self denyIsNil: (self sunitPresenter classListPresenter list
-				detect: [:classService | classService name = className]
-				ifNone: []).
+	self assertClassInList: className.
 	self selectServiceNamed: className in: self sunitPresenter classListPresenter.
 	methodService := self sunitPresenter methodListPresenter list
 				detect: [:svc | svc selector = #test_blah]
@@ -291,6 +293,35 @@ test_addNewTestPackage
 				[self abortTransaction.
 				self cloneRowanSample1.
 				self ensureRowanSampleProjectsLoaded]!
+
+test_addPackageReloadProject
+	| packageName classService1 className |
+	self testsIssue: #issue183
+		withTitle: 'Add package but don''t write it to disk then reload - walkback'.
+	self openProjectBrowser.
+	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
+	packageName := 'NewPackage'.
+	className := 'NewClass'.
+	self denyPackageInList: packageName.
+	self addPackageNamed: packageName.
+	self denyPackageInList: packageName.	"need method to be there"
+	self
+		saveClass: className
+		superclass: 'TestCase'
+		instVars: #('abc')
+		package: packageName.
+	classService1 := RowanClassService named: className.
+	classService1
+		saveMethod: 'test_blah'
+		category: 'tests'
+		session: session.
+	self assertPackageInList: packageName.
+	TestMessageBox enableJadeiteTestMessageBox.
+	
+	[TestMessageBox plannedResult: #yes.	"confirm we want to reload project"
+	self projectsPresenter reloadProject.
+	self denyPackageInList: packageName]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
 test_browseMethods
 	| browseMethodMenuItem browser selectors |
@@ -1480,8 +1511,10 @@ test_testsRunInSelectedTestClass
 		equals: #RowanSample1SubClassTest! !
 !JadeiteSUnitSupportTestCase categoriesForMethods!
 aggressivelyCleanupRowanProject:!private!support!tests! !
+assertClassInList:!private!support! !
 assertMenuItem:isEnabled:!public!support! !
 assertPackageInList:!private!support! !
+denyClassInList:!private!support! !
 denyPackageInList:!private!support! !
 isSampleProject1Loaded!private!support! !
 methodListPresenter!public!support! !
@@ -1500,6 +1533,7 @@ test_abortNoSelections!public!tests! !
 test_abortWithSelections!public!tests! !
 test_abstractTestAppearsOnlyInSubclasses!public!tests! !
 test_addNewTestPackage!public!test updates from other browsers!tests! !
+test_addPackageReloadProject!public!test updates from other browsers!tests! !
 test_browseMethods!public!tests! !
 test_browseSelectedMethodForNewlyAddedTest!public!test updates from other browsers! !
 test_browseSunitClass!public!tests! !

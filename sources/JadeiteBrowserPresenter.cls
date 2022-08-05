@@ -213,6 +213,10 @@ buildAddPackageView
 		arrangement: 1;
 		backcolor: JadeiteTextStyles default colorForNoEdits.
 	projectInfoTab view addSubView: addPackageView.
+	addPackagePresenter
+		when: #packageAdded:
+		send: #selectNewPackage:
+		to: self.
 	^addPackageView!
 
 buildGlobalsTab
@@ -495,11 +499,11 @@ createSchematicWiring
 		when: #drop:
 			send: #onDropOnPackageList:
 			to: self.
-	projectListPresenter 
+	projectListPresenter
 		when: #selectionChanged
-			send: #updateAddPackageLists
-			to: self
-			!
+		send: #updateAddPackageLists
+		to: self.
+!
 
 createSchematicWiringForClassHierarchy
 		
@@ -1665,6 +1669,12 @@ selectedPackageServices
 selectedProjectName
 	^(projectListPresenter selectionOrNil ifNil: [^nil]) name!
 
+selectNewPackage: newPackage
+	| thePackageService | 
+	thePackageService := packageListPresenter list
+				detect: [:packageService | packageService name = newPackage].
+	packageListPresenter selection: thePackageService!
+
 selectNoneProject
 	projectListPresenter selection: (projectListPresenter list
 				detect: [:projectService | projectService name = RowanProjectService noneProject name])!
@@ -2260,6 +2270,7 @@ selectedGlobalName:!menu handlers support!private! !
 selectedPackageNames!public!selection! !
 selectedPackageServices!public!selection! !
 selectedProjectName!public!selection! !
+selectNewPackage:!event handlers!public! !
 selectNoneProject!public!selection! !
 selectPackageNamed:!public!selection! !
 selectPackageOrDictionaryFor:!public!selection! !
@@ -2328,7 +2339,6 @@ projectMenuStrings
 		ifTrue: 
 			[self new
 				createNewProject;
-				addPackage;
 				loadProject;
 				reloadProject;
 				unloadProjects;

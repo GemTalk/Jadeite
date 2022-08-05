@@ -13,6 +13,12 @@ JadeiteAbstractTestCase comment: ''!
 abortTransaction
 	transcript abortTransaction!
 
+addPackageNamed: packageName
+	self projectsPresenter addPackagePresenter newPackagePresenter value: packageName.
+	self projectsPresenter addPackagePresenter componentPresenter selectionByIndex: 1.	"doesn't matter which component for test"
+	"don't pick a symbol list so default symbol list is used"
+	self projectsPresenter addPackagePresenter addPackage!
+
 anotherNumberMethodSource
 	^'anotherNumber
 
@@ -813,6 +819,7 @@ verifyWindowClosed: presenter
 	self deny: presenter isOpen! !
 !JadeiteAbstractTestCase categoriesForMethods!
 abortTransaction!private!setup teardown! !
+addPackageNamed:!public!test updates from other browsers!tests! !
 anotherNumberMethodSource!constants!private! !
 answerNoToDialogDuring:!private!support! !
 answerYesToDialogDuring:!private!support! !
