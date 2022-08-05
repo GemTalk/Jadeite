@@ -13,21 +13,6 @@ RowanProjectService comment: ''!
 = projectService
 	^projectService isProjectService ifTrue: [name = projectService name] ifFalse: [^false]!
 
-addPackageNamed: newPackageName using: presenter
-	| packageService answeringService services |
-	self
-		command: #addPackageNamed:;
-		commandArgs: (Array with: newPackageName).
-	services := presenter issueCommand: self. 
-	answeringService := services detect: [:service | service isAnsweringService].
-	answeringService answer = #duplicatePackage
-		ifTrue: [^MessageBox notify: 'Duplicate Package. Package named ' , newPackageName , ' not added'].
-	packageService := presenter packageListPresenter list
-				detect: [:service | service name = newPackageName]
-				ifNone: [^MessageBox notify: 'Package named ' , newPackageName , ' not found'].
-	presenter packageListPresenter selection: packageService.
-	presenter refreshFromServer!
-
 allClasses
 	"for testing"
 
@@ -336,7 +321,6 @@ specService: anObject
 	specService := anObject! !
 !RowanProjectService categoriesForMethods!
 =!comparing!public! !
-addPackageNamed:using:!presenter support!public! !
 allClasses!accessing!public! !
 basicChangesUsing:!presenter support!public! !
 basicCheckout:using:!presenter support!public! !
