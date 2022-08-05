@@ -64,10 +64,11 @@ stack
 
 terminate
 	"temporary until debugger is rewritten"
-	(GsProcess session: GciSession current oopType: (GciSession current oopTypeWithOop: oop))
-		terminate.
-	
-	! !
+
+	"During logout, it's possible that the session may no longer be a session"
+
+	(GciSession current isKindOf: GciSession) ifFalse: [^self].
+	(GsProcess session: GciSession current oopType: (GciSession current oopTypeWithOop: oop)) terminate! !
 !RowanProcessService categoriesForMethods!
 displayName!displaying!public! !
 frameForLevel:!public! !

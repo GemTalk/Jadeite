@@ -454,7 +454,7 @@ transactionMode:!public! !
 defaultAdditionalAccelerators
 	"Private - Even though this is specified in the context menu in JadeiteTranscript, the accelerator key is not recognized"
 
-	^super defaultAdditionalAccelerators , #(#(#editComponents 'Ctrl+E'))!
+	^super defaultAdditionalAccelerators , #(#(#jadeExecute 'Ctrl+E'))!
 
 resource_Default_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.
