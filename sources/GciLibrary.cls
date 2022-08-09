@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 ExternalLibrary subclass: #GciLibrary
 	instanceVariableNames: ''
@@ -266,57 +266,59 @@ version
 
 	self subclassResponsibility.
 ! !
-!GciLibrary categoriesFor: #abortSession:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #beginSession:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #commitSession:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #errorStructureClass!private!subclassResponsibility! !
-!GciLibrary categoriesFor: #gsHasPragmas!public! !
-!GciLibrary categoriesFor: #hardBreakSession:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #loginHostUser:hostPassword:gsUser:gsPassword:gemNRS:stoneNRS:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #logoutSession:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #nbResult!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopAsciiNul!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopAt:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopClassArray!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopClassByteArray!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopClassDoubleByteString!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopClassQuadByteString!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopClassString!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopClassSymbol!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopClassSystem!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopClassUnicode16!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopClassUnicode32!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopClassUnicode7!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopFalse!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopForInteger:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopGemStoneError!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopIllegal!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopMaxSmallInteger!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopMinSmallInteger!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopMinusOne!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopNil!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopOne!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopRemoteNil!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopTrue!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopTwo!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopTypeArrayClass!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopTypeClass!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopTypeWithOop:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #oopZero!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #pollForSignalSession:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #sendInterpreted:to:with:session:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #session:clearStack:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #session:continue:!public! !
-!GciLibrary categoriesFor: #session:continue:withObject:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #session:execute:context:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #session:execute:context:environment:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #session:fetchBytes:!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #session:oopForInteger:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #session:oopForString:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #session:releaseOops:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #session:send:to:with:!public!Reserved OOPs!subclassResponsibility! !
-!GciLibrary categoriesFor: #softBreakSession:!public!subclassResponsibility! !
-!GciLibrary categoriesFor: #version!public!subclassResponsibility! !
+!GciLibrary categoriesForMethods!
+abortSession:!public!subclassResponsibility! !
+beginSession:!public!subclassResponsibility! !
+commitSession:!public!subclassResponsibility! !
+errorStructureClass!private!subclassResponsibility! !
+gsHasPragmas!public! !
+hardBreakSession:!public!subclassResponsibility! !
+loginHostUser:hostPassword:gsUser:gsPassword:gemNRS:stoneNRS:!public!subclassResponsibility! !
+logoutSession:!public!subclassResponsibility! !
+nbResult!public!subclassResponsibility! !
+oopAsciiNul!public!Reserved OOPs!subclassResponsibility! !
+oopAt:!public!subclassResponsibility! !
+oopClassArray!public!Reserved OOPs!subclassResponsibility! !
+oopClassByteArray!public!Reserved OOPs!subclassResponsibility! !
+oopClassDoubleByteString!public!Reserved OOPs!subclassResponsibility! !
+oopClassQuadByteString!public!Reserved OOPs!subclassResponsibility! !
+oopClassString!public!Reserved OOPs!subclassResponsibility! !
+oopClassSymbol!public!Reserved OOPs!subclassResponsibility! !
+oopClassSystem!public!Reserved OOPs!subclassResponsibility! !
+oopClassUnicode16!public!Reserved OOPs!subclassResponsibility! !
+oopClassUnicode32!public!Reserved OOPs!subclassResponsibility! !
+oopClassUnicode7!public!Reserved OOPs!subclassResponsibility! !
+oopFalse!public!Reserved OOPs!subclassResponsibility! !
+oopForInteger:!public!subclassResponsibility! !
+oopGemStoneError!public!Reserved OOPs!subclassResponsibility! !
+oopIllegal!public!Reserved OOPs!subclassResponsibility! !
+oopMaxSmallInteger!public!Reserved OOPs!subclassResponsibility! !
+oopMinSmallInteger!public!Reserved OOPs!subclassResponsibility! !
+oopMinusOne!public!Reserved OOPs!subclassResponsibility! !
+oopNil!public!Reserved OOPs!subclassResponsibility! !
+oopOne!public!Reserved OOPs!subclassResponsibility! !
+oopRemoteNil!public!Reserved OOPs!subclassResponsibility! !
+oopTrue!public!Reserved OOPs!subclassResponsibility! !
+oopTwo!public!Reserved OOPs!subclassResponsibility! !
+oopTypeArrayClass!public!Reserved OOPs!subclassResponsibility! !
+oopTypeClass!public!Reserved OOPs!subclassResponsibility! !
+oopTypeWithOop:!public!subclassResponsibility! !
+oopZero!public!Reserved OOPs!subclassResponsibility! !
+pollForSignalSession:!public!subclassResponsibility! !
+sendInterpreted:to:with:session:!public!subclassResponsibility! !
+session:clearStack:!public!subclassResponsibility! !
+session:continue:!public! !
+session:continue:withObject:!public!subclassResponsibility! !
+session:execute:context:!public!subclassResponsibility! !
+session:execute:context:environment:!public!subclassResponsibility! !
+session:fetchBytes:!public!Reserved OOPs!subclassResponsibility! !
+session:oopForInteger:!public!subclassResponsibility! !
+session:oopForString:!public!subclassResponsibility! !
+session:releaseOops:!public!subclassResponsibility! !
+session:send:to:with:!public!Reserved OOPs!subclassResponsibility! !
+softBreakSession:!public!subclassResponsibility! !
+version!public!subclassResponsibility! !
+!
 
 !GciLibrary class methodsFor!
 
@@ -399,17 +401,24 @@ sessionStarted
 	OopType64 new.
 !
 
+supportsRowanV30
+
+	^false!
+
 withDisplayName: aString
 
 	^self allSubclasses detect: [:each | each displayName = aString].
 ! !
-!GciLibrary class categoriesFor: #addMissingMethods!public! !
-!GciLibrary class categoriesFor: #displayName!public! !
-!GciLibrary class categoriesFor: #fileName!public! !
-!GciLibrary class categoriesFor: #fileNameSearch!public! !
-!GciLibrary class categoriesFor: #isRowanReady!public!testing! !
-!GciLibrary class categoriesFor: #onStartup2!public! !
-!GciLibrary class categoriesFor: #open:!public! !
-!GciLibrary class categoriesFor: #sessionStarted!public! !
-!GciLibrary class categoriesFor: #withDisplayName:!public! !
+!GciLibrary class categoriesForMethods!
+addMissingMethods!public! !
+displayName!public! !
+fileName!public! !
+fileNameSearch!public! !
+isRowanReady!public!testing! !
+onStartup2!public! !
+open:!public! !
+sessionStarted!public! !
+supportsRowanV30!public!testing! !
+withDisplayName:!public! !
+!
 

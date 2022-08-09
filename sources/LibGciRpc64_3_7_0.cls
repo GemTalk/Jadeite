@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 LibGciRpc64_3_7 subclass: #LibGciRpc64_3_7_0
 	instanceVariableNames: ''
@@ -12,7 +12,14 @@ LibGciRpc64_3_7_0 comment: ''!
 
 displayName   ^'64-bit 3.7.0'!
 
-fileNameSearch   ^'libgcirpc-3.7.0-32.dll'! !
-!LibGciRpc64_3_7_0 class categoriesFor: #displayName!public! !
-!LibGciRpc64_3_7_0 class categoriesFor: #fileNameSearch!public! !
+fileNameSearch   ^'libgcirpc-3.7.0-32.dll'!
+
+supportsRowanV30
+
+	^true! !
+!LibGciRpc64_3_7_0 class categoriesForMethods!
+displayName!public! !
+fileNameSearch!public! !
+supportsRowanV30!public!testing! !
+!
 

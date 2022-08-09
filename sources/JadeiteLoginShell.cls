@@ -18,7 +18,7 @@ basicCaption
 
 fillVersionList
 	| list |
-	list := self rowanReadyLibraries.
+	list := self librariesSupportingRowanV30.
 	list addAll: self placeholdersForNewSharedLibraries.
 	list := list
 				asSortedCollection: [:a :b | self isVersion: a displayName lessThanOrEqualTo: b displayName].
@@ -33,6 +33,9 @@ invalidateLoginButton
 	self queryCommand: query.
 	self view setFocus.
 	buttonView invalidate!
+
+librariesSupportingRowanV30
+	^GciLibrary allSubclasses select: [:library | library supportsRowanV30]!
 
 loginFailureCaption
 	^'Jadeite Login Error'!
@@ -96,26 +99,24 @@ raiseConsole
 	transcript := self class defaultTranscript.
 	transcript ifNotNil: [transcript view setFocus]!
 
-rowanReadyLibraries
-	^GciLibrary allSubclasses
-		select: [:library | library isRowanReady and: [library superclass ~= LibGciRpc64]]!
-
 updateCaption
 	self caption: 'Jadeite Login Version: ', self class jadeiteVersionString! !
-
-!JadeiteLoginShell categoriesFor: #additionalAccelerators!accessing!public! !
-!JadeiteLoginShell categoriesFor: #basicCaption!accessing!public! !
-!JadeiteLoginShell categoriesFor: #fillVersionList!public!version list! !
-!JadeiteLoginShell categoriesFor: #loginFailureCaption!private! !
-!JadeiteLoginShell categoriesFor: #openGitHubJadeiteProject!public! !
-!JadeiteLoginShell categoriesFor: #openGitHubRowanProject!public! !
-!JadeiteLoginShell categoriesFor: #placeholderFor:version:libraryName:!gci!private!version list! !
-!JadeiteLoginShell categoriesFor: #placeholdersForNewSharedLibraries!gci!private!version list! !
-!JadeiteLoginShell categoriesFor: #postLogin:!public! !
-!JadeiteLoginShell categoriesFor: #raiseConsole!menu handlers!public! !
-!JadeiteLoginShell categoriesFor: #rowanReadyLibraries!gci!private!version list! !
-!JadeiteLoginShell categoriesFor: #updateCaption!public! !
-
+!JadeiteLoginShell categoriesForMethods!
+additionalAccelerators!accessing!public! !
+basicCaption!accessing!public! !
+fillVersionList!public!version list! !
+invalidateLoginButton!public! !
+librariesSupportingRowanV30!gci!private!version list! !
+loginFailureCaption!private! !
+openGitHubJadeiteProject!public! !
+openGitHubRowanProject!public! !
+placeholderFor:version:libraryName:!gci!private!version list! !
+placeholdersForNewSharedLibraries!gci!private!version list! !
+postLogin:!public! !
+postLogoutActions!public! !
+raiseConsole!menu handlers!public! !
+updateCaption!public! !
+!
 
 !JadeiteLoginShell class methodsFor!
 
