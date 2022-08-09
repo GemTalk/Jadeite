@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeLoginShell subclass: #ContactsLoginShell
 	instanceVariableNames: ''
@@ -53,18 +53,9 @@ newUser addGroup: ''Subscribers''.
 ].
 newUser insertDictionary: dict at: 1.
 System commitTransaction ifFalse: [nil error: ''commit failed''].
-'!
-
-postLogin: aGciSession
-
-	Keyboard default isShiftDown ifTrue: [
-		super postLogin: aGciSession.
-	] ifFalse: [
-		aGciSession executeString: self initialSetupCode.
-		ContactsBrowser showOn: aGciSession.
-	].
-! !
-!ContactsLoginShell categoriesFor: #basicCaption!public! !
-!ContactsLoginShell categoriesFor: #initialSetupCode!public! !
-!ContactsLoginShell categoriesFor: #postLogin:!public! !
+'! !
+!ContactsLoginShell categoriesForMethods!
+basicCaption!public! !
+initialSetupCode!public! !
+!
 

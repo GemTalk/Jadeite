@@ -51,13 +51,6 @@ insertIfTrue: methodSourcePresenter
 	methodSourcePresenter view replaceSelection: 'ifTrue:[]'.
 	methodSourcePresenter selectionRange: selectionRange + 8!
 
-onViewOpened
-	super onViewOpened.
-	self positionToDefaultLocation!
-
-positionToDefaultLocation
-	self topShell position: JadePresenter defaultWindowPosition!
-
 inTransaction
 
 	^self class inTransaction!
@@ -71,11 +64,15 @@ isBeginTransactionEnabled
 isCommitEnabled
 	^self class isCommitEnabled!
 
+onViewOpened
+	super onViewOpened.
+	self positionToDefaultLocation!
+
+positionToDefaultLocation
+	self topShell position: JadePresenter defaultWindowPosition!
+
 postEditSaveMethod!
 
-refresh
-
-	self subclassResponsibility!
 queryCommand: query
 	"this seems dumb but if JadePresenter can perform a symbol it will enable 
 	the command regardless of what it's subclasses do."
@@ -89,6 +86,10 @@ queryCommand: query
 		ifTrue: 
 			[query isEnabled: self isCommitEnabled.
 			^true]!
+
+refresh
+
+	self subclassResponsibility!
 
 refreshFromServer
 	parentPresenter refreshFromServer!
@@ -182,7 +183,6 @@ updateMenuBar: aMenuBar withName: aString itemsFrom: aPresenter
 
 updateService: service
 	^self updateServices: (Array with: service) ! !
-
 !JadePresenter categoriesForMethods!
 additionalAccelerators!constants!public! !
 commitTransaction!public!transaction management! !
@@ -190,16 +190,27 @@ gciSession!public! !
 gciSession:!public! !
 insertIfFalse:!displaying!public! !
 insertIfTrue:!displaying!public! !
+inTransaction!public! !
+inTransaction:!public! !
+isBeginTransactionEnabled!public! !
+isCommitEnabled!public! !
 onViewOpened!event handlers!public! !
 positionToDefaultLocation!event handlers!event handlers support!public! !
 postEditSaveMethod!menu handlers support!public! !
+queryCommand:!public! !
 refresh!menu handlers!public! !
 refreshFromServer!public! !
 resetCursor!public! !
+resetListeningForSigAborts:!public! !
 setStatusBarDefault!displaying!public! !
+sigAbortsProcessEnabled!public! !
+sigAbortsProcessEnabled:!public! !
 statusBarText:!public! !
 subMenuName!menus!public! !
 subMenuPresenter!menus!public! !
+transactionMode!public! !
+transactionMode:!public! !
+transactionMode:session:!public! !
 updateMenuBar:!menus!public! !
 updateMenuBar:withName:itemsFrom:!menus!public! !
 updateService:!public!services! !
@@ -207,8 +218,31 @@ updateService:!public!services! !
 
 !JadePresenter class methodsFor!
 
+areAbortCommitEnabled
+	^self transactionMode == #autoBegin
+		or: [self transactionMode == #manualBegin and: [self inTransaction]]!
+
 defaultAdditionalAccelerators
 	^#(#(#raiseConsole 'Ctrl+F7'))!
+
+defaultSigAbortProcessInterval
+	"in seconds"
+
+	^10!
+
+homeEnvVarString
+	^'$HOME'!
+
+inTransaction
+
+	^InTransaction!
+
+isBeginTransactionEnabled
+	^self transactionMode = #manualBegin and: [self inTransaction not]!
+
+isCommitEnabled
+	^self transactionMode == #autoBegin
+		or: [self transactionMode == #manualBegin and: [self inTransaction]]!
 
 loadViewResource2: aString inContext: contextView
 	| resourceIdentifier |
@@ -234,37 +268,8 @@ loadViewResource2: aString inContext: contextView
 maxPrintStringSize
 	^100000!
 
-areAbortCommitEnabled
-	^self transactionMode == #autoBegin
-		or: [self transactionMode == #manualBegin and: [self inTransaction]]!
-
-defaultSigAbortProcessInterval
-	"in seconds"
-
-	^10!
-
-inTransaction
-
-	^InTransaction!
-
-isBeginTransactionEnabled
-	^self transactionMode = #manualBegin and: [self inTransaction not]!
-
-isCommitEnabled
-	^self transactionMode == #autoBegin
-		or: [self transactionMode == #manualBegin and: [self inTransaction]]!
-
 openCommit: sha inGitHub: projectService
 	^ShellLibrary default shellOpen: projectService projectUrl , '/commit/' , sha directory: ''!
-
-rowanProjectsHomeEnvVarString
-	^'$ROWAN_PROJECTS_HOME'!
-
-rowanSample1Path
-	^'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1_resolved_v2.ston'!
-
-rowanSample9Path
-	^'file:$ROWAN_PROJECTS_HOME/RowanSample9/rowan/specs/spec_0061.ston'!
 
 resetSigAbortProcessEnablement
 	"Sent during logout process. 
@@ -277,6 +282,15 @@ resetSigAbortProcessInterval
 	Interval control is done in the Jadeite.prefs file"
 
 	self sigAbortProcessInterval: self defaultSigAbortProcessInterval!
+
+rowanProjectsHomeEnvVarString
+	^'$ROWAN_PROJECTS_HOME'!
+
+rowanSample1Path
+	^'file:$ROWAN_PROJECTS_HOME/Rowan/samples/RowanSample1_resolved_v2.ston'!
+
+rowanSample9Path
+	^'file:$ROWAN_PROJECTS_HOME/RowanSample9/rowan/specs/spec_0061.ston'!
 
 sigAbortProcessInterval
 	^SigAbortProcessInterval ifNil: [SigAbortProcessInterval := self defaultSigAbortProcessInterval]!
@@ -310,13 +324,30 @@ transactionMode
 
 transactionModeValueHolder
 	^TransactionMode ifNil:[self initializeTransactionMode]! !
-
 !JadePresenter class categoriesForMethods!
+areAbortCommitEnabled!public! !
 defaultAdditionalAccelerators!constants!public! !
+defaultSigAbortProcessInterval!public! !
+homeEnvVarString!constants!public! !
+inTransaction!public! !
+isBeginTransactionEnabled!public! !
+isCommitEnabled!public! !
 loadViewResource2:inContext:!operations!public! !
 maxPrintStringSize!constants!public! !
 openCommit:inGitHub:!browsing!public! !
+resetSigAbortProcessEnablement!public! !
+resetSigAbortProcessInterval!public! !
 rowanProjectsHomeEnvVarString!constants!public! !
 rowanSample1Path!constants!public! !
 rowanSample9Path!constants!public! !
+sigAbortProcessInterval!public! !
+sigAbortProcessInterval:!public! !
+sigAbortsProcess!public! !
+sigAbortsProcess:!public! !
+sigAbortsProcessEnabled!public! !
+sigAbortsProcessEnabled:!public! !
+stopListeningForSigAborts!public! !
+transactionMode!public! !
+transactionModeValueHolder!public! !
 !
+

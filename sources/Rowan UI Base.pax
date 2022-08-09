@@ -132,6 +132,7 @@ package methodNames
 	add: #GciSession -> #informMessageBox:;
 	add: #GciSession -> #initializeServer;
 	add: #GciSession -> #inspectServerObject:;
+	add: #GciSession -> #isRowanLoaded;
 	add: #GciSession -> #oopTypeFor:;
 	add: #GciSession -> #pollForSignal;
 	add: #GciSession -> #postLoadClientPreferences;
@@ -1460,6 +1461,9 @@ inspectServerObject: oop
 	JadeInspector showOn: oopType session: self.
 	^oopType!
 
+isRowanLoaded
+	^self executeString: '(System myUserProfile objectNamed: ''Rowan'') notNil'!
+
 oopTypeFor: anObject 
 
 	anObject isNil 					ifTrue: [^library oopNil].
@@ -1498,9 +1502,6 @@ postLoadServerPreferences
 		do:[:ex | "do not break the login"]'!
 
 postLoginAs: aString useSocket: aBoolean
-	self verifyRowanLoaded
-		ifFalse: 
-			[^MessageBox notify: 'Rowan not loaded or $ROWAN_PROJECTS_HOME not set. Logging out.'	"log out in RowinLoginShell>>postLogin:"].
 	server := self getServer.
 	aBoolean ifTrue: [self attemptSocket].
 	self setInitials: aString.	"This gets back the session and serial number"
@@ -1626,7 +1627,8 @@ verifyRowanLoaded
 	The ROWAN_PROJECTS_HOME gem environment variable is also required"
 
 	^self
-		executeString: '(System myUserProfile objectNamed: ''Rowan'') notNil and:[(System gemEnvironmentVariable: ''ROWAN_PROJECTS_HOME'') notNil] '!
+		executeString: '(System myUserProfile objectNamed: ''Rowan'') notNil and:['
+				, self isRowanProjectsHomeSetExecutionString , '] '!
 
 withExplanation: aString do: aBlock
 	"Here we make the call and handle any error."
@@ -1685,6 +1687,7 @@ hasServer!public! !
 informMessageBox:!must not strip!public!server interactions! !
 initializeServer!private! !
 inspectServerObject:!must not strip!public!server interactions! !
+isRowanLoaded!private!testing! !
 oopTypeFor:!public! !
 pollForSignal!public! !
 postLoadClientPreferences!private! !
@@ -1700,7 +1703,7 @@ shouldHandleTransactionBacklogError:!public! !
 terminate:!public! !
 titleBarFor:!public!title bar! !
 validateRowanClientServicesVersion!private! !
-verifyRowanLoaded!private! !
+verifyRowanLoaded!private!testing! !
 withExplanation:do:!long running!private! !
 withExplanation:doA:!long running!private! !
 !

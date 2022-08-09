@@ -37,8 +37,17 @@ invalidateLoginButton
 librariesSupportingRowanV30
 	^GciLibrary allSubclasses select: [:library | library supportsRowanV30]!
 
-loginFailureCaption
-	^'Jadeite Login Error'!
+login
+	| session |
+	self updateModel.
+	[session := self model login] on: Error
+		do: 
+			[:ex |
+			MessageBox errorMsg: ex description caption: 'Jadeite Login Error'.
+			SessionManager current pause.
+			GciSession current: nil.
+			^nil].
+	self postShellLogin: session!
 
 openGitHubJadeiteProject
 	^JadePresenter openGitHubJadeiteProject!
@@ -82,17 +91,20 @@ placeholdersForNewSharedLibraries
 								libraryName: libraryName)]].
 	^placeholders!
 
-postLogin: aGciSession
-	| result transcript |
-	aGciSession verifyRowanLoaded ifFalse: [^aGciSession logout].	"Already notified the user"
-	result := super postLogin: aGciSession.
-	transcript := JadeiteTranscript showOnSession: aGciSession.
-	transcript view position: self view position + JadePresenter defaultWindowOffset. 
-	^result!
-
 postLogoutActions
 	self invalidateLoginButton.
 	BrowserUpdate clearCurrent	"gets rid of all old service events associated with current session"!
+
+postShellLogin: aGciSession
+	| transcript |
+	aGciSession isRowanLoaded ifFalse: [^aGciSession logout].
+	versionListPresenter view disable.
+	aGciSession
+		when: #postLogout
+		send: #postLogoutActions
+		to: self.
+	transcript := JadeiteTranscript showOnSession: aGciSession.
+	transcript view position: self view position + JadePresenter defaultWindowOffset!
 
 raiseConsole
 	| transcript |
@@ -107,13 +119,13 @@ basicCaption!accessing!public! !
 fillVersionList!public!version list! !
 invalidateLoginButton!public! !
 librariesSupportingRowanV30!gci!private!version list! !
-loginFailureCaption!private! !
+login!public! !
 openGitHubJadeiteProject!public! !
 openGitHubRowanProject!public! !
 placeholderFor:version:libraryName:!gci!private!version list! !
 placeholdersForNewSharedLibraries!gci!private!version list! !
-postLogin:!public! !
 postLogoutActions!public! !
+postShellLogin:!public! !
 raiseConsole!menu handlers!public! !
 updateCaption!public! !
 !

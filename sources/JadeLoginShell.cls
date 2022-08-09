@@ -235,21 +235,6 @@ isVersion: a lessThanOrEqualTo: b
 	^true.
 !
 
-login
-	| session |
-	self updateModel.
-	[session := self model login] on: Error
-		do: 
-			[:ex |
-			MessageBox errorMsg: ex description caption: self loginFailureCaption.
-			SessionManager current pause.
-			GciSession current: nil.
-			^nil].
-	self postLogin: session!
-
-loginFailureCaption
-	^'Jade Login Error'!
-
 model: anObject
 
 	super model: anObject.
@@ -284,13 +269,6 @@ openHomePage
 		shellOpen: 'http://www.gemtalksystems.com/index.php/products/gemstones/' 
 		directory: ''.
 !
-
-postLogin: aGciSession
-	versionListPresenter view disable.
-	aGciSession
-		when: #postLogout
-		send: #postLogoutActions
-		to: self!
 
 queryCommand: query
 	query commandSymbol = #login
@@ -446,14 +424,11 @@ isModified!public! !
 isModified:!public! !
 isText!public!testing! !
 isVersion:lessThanOrEqualTo:!public! !
-login!public! !
-loginFailureCaption!private! !
 model:!accessing!public! !
 onCloseRequested:!public! !
 onViewClosed!public! !
 onViewOpened!public! !
 openHomePage!public! !
-postLogin:!public! !
 queryCommand:!menu handlers support!private! !
 saveDocument!public! !
 sendRequiredMessages!public! !
