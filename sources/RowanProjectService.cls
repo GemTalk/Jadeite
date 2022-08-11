@@ -358,12 +358,12 @@ prepareForReplication!public!replication! !
 projectPackagesUpdate:browser:!public!updating! !
 projectSelectionUpdate:!public!updating! !
 projectsUpdate:!public!updating! !
-projectUrl!accessing!public! !
+projectUrl!accessing!must not strip!public! !
 remoteServiceName!must not strip!public! !
 removed:!public!updating! !
 removedProject:!public!updating! !
 replicateFrom:!public!replication! !
-rowanProjectsHome!accessing!public! !
+rowanProjectsHome!accessing!must not strip!public! !
 sha!accessing!public! !
 sha:!accessing!public! !
 sortAspect!accessing!public! !
