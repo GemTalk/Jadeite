@@ -148,7 +148,6 @@ package methodNames
 	add: #GciSession -> #terminate:;
 	add: #GciSession -> #titleBarFor:;
 	add: #GciSession -> #validateRowanClientServicesVersion;
-	add: #GciSession -> #verifyRowanLoaded;
 	add: #GciSession -> #withExplanation:do:;
 	add: #GciSession -> #withExplanation:doA:;
 	add: #GsError -> #debugError;
@@ -1622,14 +1621,6 @@ validateRowanClientServicesVersion
 		nextPutAll: self rowanClientServicesRangeHigh.
 	MessageBox notify: stream contents!
 
-verifyRowanLoaded
-	"The global Rowan indicates the Rowan packages are loaded. 
-	The ROWAN_PROJECTS_HOME gem environment variable is also required"
-
-	^self
-		executeString: '(System myUserProfile objectNamed: ''Rowan'') notNil and:['
-				, self isRowanProjectsHomeSetExecutionString , '] '!
-
 withExplanation: aString do: aBlock
 	"Here we make the call and handle any error."
 
@@ -1703,7 +1694,6 @@ shouldHandleTransactionBacklogError:!public! !
 terminate:!public! !
 titleBarFor:!public!title bar! !
 validateRowanClientServicesVersion!private! !
-verifyRowanLoaded!private!testing! !
 withExplanation:do:!long running!private! !
 withExplanation:doA:!long running!private! !
 !

@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #CodeSourcePresenter
 	instanceVariableNames: 'documentPresenter menuTitle environment'
@@ -212,7 +212,6 @@ jadeDisplay
 !
 
 jadeExecute
-
 	self jadeExecuteAndDisplay: false.
 !
 
@@ -441,66 +440,68 @@ updateCodeFont
 		documentPresenter view font: CodeFont.
 	].
 ! !
-!CodeSourcePresenter categoriesFor: #addMenu!menus!public! !
-!CodeSourcePresenter categoriesFor: #addMenuTo:!menus!public! !
-!CodeSourcePresenter categoriesFor: #addQuotesToSelection!edit!private! !
-!CodeSourcePresenter categoriesFor: #browseImplementors!public! !
-!CodeSourcePresenter categoriesFor: #browseSenders!public! !
-!CodeSourcePresenter categoriesFor: #clearBreakAtStepPoint:!Breakpoints!public! !
-!CodeSourcePresenter categoriesFor: #clearSelection!public! !
-!CodeSourcePresenter categoriesFor: #codeFont:!public! !
-!CodeSourcePresenter categoriesFor: #codePresenterIsMethod!public! !
-!CodeSourcePresenter categoriesFor: #copySelection!edit!private! !
-!CodeSourcePresenter categoriesFor: #createSchematicWiring!Jade!private! !
-!CodeSourcePresenter categoriesFor: #currentSelectionOrLine!Jade!private! !
-!CodeSourcePresenter categoriesFor: #cutSelection!public! !
-!CodeSourcePresenter categoriesFor: #documentPresenter!public! !
-!CodeSourcePresenter categoriesFor: #editCut!edit!private! !
-!CodeSourcePresenter categoriesFor: #editDelete!edit!private! !
-!CodeSourcePresenter categoriesFor: #editFind!edit!private! !
-!CodeSourcePresenter categoriesFor: #editFindNext!edit!private! !
-!CodeSourcePresenter categoriesFor: #editPaste!edit!private! !
-!CodeSourcePresenter categoriesFor: #editReplace!edit!private! !
-!CodeSourcePresenter categoriesFor: #editRevert!edit!private! !
-!CodeSourcePresenter categoriesFor: #editSelectAll!edit!private! !
-!CodeSourcePresenter categoriesFor: #environment:!public! !
-!CodeSourcePresenter categoriesFor: #fileSave!private! !
-!CodeSourcePresenter categoriesFor: #findClassList!public! !
-!CodeSourcePresenter categoriesFor: #handleInvalidSession!public! !
-!CodeSourcePresenter categoriesFor: #initialize!public! !
-!CodeSourcePresenter categoriesFor: #isClassSelectedInEditor!public! !
-!CodeSourcePresenter categoriesFor: #isModified!public! !
-!CodeSourcePresenter categoriesFor: #isOkayToChange!public!testing! !
-!CodeSourcePresenter categoriesFor: #jadeDebug!Jade!private! !
-!CodeSourcePresenter categoriesFor: #jadeDisplay!Jade!private! !
-!CodeSourcePresenter categoriesFor: #jadeExecute!Jade!private! !
-!CodeSourcePresenter categoriesFor: #jadeExecuteAndDisplay:!Jade!private! !
-!CodeSourcePresenter categoriesFor: #menuTitle:!menus!public! !
-!CodeSourcePresenter categoriesFor: #methodDoubleClicked:!Jade!private! !
-!CodeSourcePresenter categoriesFor: #methodMenu:!menus!private! !
-!CodeSourcePresenter categoriesFor: #mySave!private! !
-!CodeSourcePresenter categoriesFor: #pasteClipboard!public! !
-!CodeSourcePresenter categoriesFor: #queryCommand:!public! !
-!CodeSourcePresenter categoriesFor: #redo!edit!private! !
-!CodeSourcePresenter categoriesFor: #removeMenu!menus!public! !
-!CodeSourcePresenter categoriesFor: #removeQuotesFromSelection!edit!private! !
-!CodeSourcePresenter categoriesFor: #selectAll!public! !
-!CodeSourcePresenter categoriesFor: #selectedClassName!public! !
-!CodeSourcePresenter categoriesFor: #selectionChanging:!public! !
-!CodeSourcePresenter categoriesFor: #selectLfIfEndingOnCr!edit!private! !
-!CodeSourcePresenter categoriesFor: #setBreakAtStepPoint:!Breakpoints!public! !
-!CodeSourcePresenter categoriesFor: #setBreakAtStepPoint:session:!public! !
-!CodeSourcePresenter categoriesFor: #setCaretToEndOfSelection!Jade!private! !
-!CodeSourcePresenter categoriesFor: #setDocumentPresenterWith:!public! !
-!CodeSourcePresenter categoriesFor: #setFont!private! !
-!CodeSourcePresenter categoriesFor: #showCompileError:!Jade!private! !
-!CodeSourcePresenter categoriesFor: #showSelection!edit!private! !
-!CodeSourcePresenter categoriesFor: #subMenuName!menus!public! !
-!CodeSourcePresenter categoriesFor: #subMenuPresenter!menus!public! !
-!CodeSourcePresenter categoriesFor: #textStyles!public! !
-!CodeSourcePresenter categoriesFor: #undo!edit!private! !
-!CodeSourcePresenter categoriesFor: #update!public! !
-!CodeSourcePresenter categoriesFor: #updateCodeFont!public! !
+!CodeSourcePresenter categoriesForMethods!
+addMenu!menus!public! !
+addMenuTo:!menus!public! !
+addQuotesToSelection!edit!private! !
+browseImplementors!public! !
+browseSenders!public! !
+clearBreakAtStepPoint:!Breakpoints!public! !
+clearSelection!public! !
+codeFont:!public! !
+codePresenterIsMethod!public! !
+copySelection!edit!private! !
+createSchematicWiring!Jade!private! !
+currentSelectionOrLine!Jade!private! !
+cutSelection!public! !
+documentPresenter!public! !
+editCut!edit!private! !
+editDelete!edit!private! !
+editFind!edit!private! !
+editFindNext!edit!private! !
+editPaste!edit!private! !
+editReplace!edit!private! !
+editRevert!edit!private! !
+editSelectAll!edit!private! !
+environment:!public! !
+fileSave!private! !
+findClassList!public! !
+handleInvalidSession!public! !
+initialize!public! !
+isClassSelectedInEditor!public! !
+isModified!public! !
+isOkayToChange!public!testing! !
+jadeDebug!Jade!private! !
+jadeDisplay!Jade!private! !
+jadeExecute!Jade!private! !
+jadeExecuteAndDisplay:!Jade!private! !
+menuTitle:!menus!public! !
+methodDoubleClicked:!Jade!private! !
+methodMenu:!menus!private! !
+mySave!private! !
+pasteClipboard!public! !
+queryCommand:!public! !
+redo!edit!private! !
+removeMenu!menus!public! !
+removeQuotesFromSelection!edit!private! !
+selectAll!public! !
+selectedClassName!public! !
+selectionChanging:!public! !
+selectLfIfEndingOnCr!edit!private! !
+setBreakAtStepPoint:!Breakpoints!public! !
+setBreakAtStepPoint:session:!public! !
+setCaretToEndOfSelection!Jade!private! !
+setDocumentPresenterWith:!public! !
+setFont!private! !
+showCompileError:!Jade!private! !
+showSelection!edit!private! !
+subMenuName!menus!public! !
+subMenuPresenter!menus!public! !
+textStyles!public! !
+undo!edit!private! !
+update!public! !
+updateCodeFont!public! !
+!
 
 !CodeSourcePresenter class methodsFor!
 
@@ -523,6 +524,8 @@ codeFont: aFont
 		].
 	].
 ! !
-!CodeSourcePresenter class categoriesFor: #codeFont!public! !
-!CodeSourcePresenter class categoriesFor: #codeFont:!public! !
+!CodeSourcePresenter class categoriesForMethods!
+codeFont!public! !
+codeFont:!public! !
+!
 
