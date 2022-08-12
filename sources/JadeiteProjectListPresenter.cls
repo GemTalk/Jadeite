@@ -191,7 +191,7 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: self allSelectedProjectsDirty.
 			^true].
-	(#(#reloadProject #unloadProjects #loadProject #pullFromGit #pushToGit #writeProject #projectChanges #browseProject #projectLog)
+	(#(#reloadProject #unloadProjects #pullFromGit #pushToGit #writeProject #projectChanges #browseProject #projectLog)
 		includes: aCommandQuery command)
 			ifTrue: 
 				[aCommandQuery isEnabled: projectListPresenter selections notEmpty.

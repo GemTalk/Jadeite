@@ -1988,6 +1988,15 @@ updateMethodSourceColor
 	methodSourcePresenter view invalidate]
 			postToInputQueue!
 
+updatePackage
+	classListPresenter model: ListModel new.
+	classHierarchyPresenter model: JadeiteTreeModel new.
+	self updateClasses.
+	self isClassListTabSelected ifFalse: [self updateHierarchy].
+	self updatePackageInfo.
+	self resetSunitTestList.
+	packageListPresenter selectionIfNone: [self selectProjectTab]!
+
 updatePackageGroupPackages
 	"Do the package selection & class gathering as such for a performance improvement"
 
@@ -2300,6 +2309,7 @@ updateHierarchy!public!updating! !
 updateHierarchyForPacktionaries!private!updating! !
 updateMenuBar!menus!public!updating! !
 updateMethodSourceColor!public!updating! !
+updatePackage!event handlers!public!updating! !
 updatePackageGroupPackages!event handlers!public!updating! !
 updateProject!event handlers!public!updating! !
 updateProjectInfo!private!tabs! !

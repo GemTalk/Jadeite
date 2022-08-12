@@ -1611,14 +1611,6 @@ updateMultiMethodComparison
 			with: (methodListPresenter selections at: 2) source.
 	comparisonPresenter view invalidate!
 
-updatePackage
-	classListPresenter model: ListModel new.
-	classHierarchyPresenter model: JadeiteTreeModel new.
-	self updateClasses.
-	self isClassListTabSelected ifFalse: [self updateHierarchy].
-	self updatePackageInfo.
-	self resetSunitTestList!
-
 updatePackageInfo
 	| service |
 	self updateTabLabel.
@@ -1829,7 +1821,6 @@ updateMethodMenu:!event handlers!public!updating! !
 updateMethodReferences:!private!services! !
 updateMethodSource!event handlers!public!text tabs!updating! !
 updateMultiMethodComparison!event handlers support!private! !
-updatePackage!event handlers!public!updating! !
 updatePackageInfo!event handlers!public!updating! !
 updatePresenter:selections:!event handlers support!public! !
 updateProjectPackages!event handlers!public!updating! !

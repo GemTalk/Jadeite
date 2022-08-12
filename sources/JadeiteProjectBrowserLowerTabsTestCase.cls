@@ -530,6 +530,14 @@ test_confirmationDialogDuringCompileClassExistingInAnotherPackage
 	self assert: self packageListPresenter selection name equals: 'RowanSample1-Tests'	"class still in test package"]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+test_deselectPackageShowsProjectTab
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self assert: self projectsPresenter isProjectInfoTabSelected.
+	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
+	self deny: self projectsPresenter isProjectInfoTabSelected.
+	self packageListPresenter selectionByIndex: 0.	"deselect"
+	self assert: self projectsPresenter isProjectInfoTabSelected!
+
 test_dontDuplicateBreakpoints
 	| breakpointBrowser |
 	self testsIssue: #issue533
@@ -1428,6 +1436,7 @@ test_compileClassWithFailingMethods!public!test compiling!tests! !
 test_compileClassWithMethodWarnings!public!test compiling!tests! !
 test_compileErrorDisplay!public!test compiling!tests! !
 test_confirmationDialogDuringCompileClassExistingInAnotherPackage!public!test compiling!tests! !
+test_deselectPackageShowsProjectTab!public!test compiling! !
 test_dontDuplicateBreakpoints!public!test breakpoints! !
 test_doubleClickIncludesColon!public!test source! !
 test_dragMethodOntoComparisonTextPanes!public!test comparison tab! !
