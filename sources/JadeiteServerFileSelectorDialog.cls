@@ -28,7 +28,7 @@ createSchematicWiring
 	pathText
 		when: #focusLost
 		send: #goto
-		to: self. 
+		to: self.
 	!
 
 dive
