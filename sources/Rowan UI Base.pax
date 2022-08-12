@@ -82,7 +82,6 @@ package classNames
 	add: #RowanDictionaryUpdate;
 	add: #RowanDisplayLabelVariableService;
 	add: #RowanGlobalsUpdate;
-	add: #RowanKeyValuePrompter;
 	add: #RowanMethodListBrowser;
 	add: #RowanMethodListPresenter;
 	add: #RowanMethodSelectionPresenter;
@@ -278,7 +277,6 @@ package methodNames
 	add: #JadePresenterA -> #installProjectFromPath:projectsHome:;
 	add: #JadePresenterA -> #isOkayToChangeSource:;
 	add: #JadePresenterA -> #loadProject;
-	add: #JadePresenterA -> #loadProjectsFrom:;
 	add: #JadePresenterA -> #methodListSelection;
 	add: #JadePresenterA -> #openMethodListOn:selecting:;
 	add: #JadePresenterA -> #openMethodListOn:selectingAnyMatch:;
@@ -554,7 +552,6 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Dialogs\Find\Dolphin Find Dialog'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Font\Dolphin Font Presenter'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Integer Prompter'
-	'..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Key-Value Prompter'
 	'..\Core\Object Arts\Dolphin\Base\Dolphin Legacy Date & Time'
 	'..\Core\Object Arts\Dolphin\MVP\Models\List\Dolphin List Models'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\List\Dolphin List Presenter'
@@ -883,11 +880,6 @@ AdvancedFindDialog subclass: #JadeiteAdvancedFindDialog
 	classInstanceVariableNames: ''!
 JadeiteServerFileSelectorDialog subclass: #JadeiteServerFileSaveDialog
 	instanceVariableNames: 'fileNamePresenter'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-KeyValuePrompter subclass: #RowanKeyValuePrompter
-	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -3577,15 +3569,6 @@ isOkayToChangeSource: methodSourcePresenter
 	^true!
 
 loadProject
-	| filePath |
-	filePath := RowanKeyValuePrompter
-				on: self class rowanSample1Path -> self class rowanProjectsHomeEnvVarString
-				prompt: 'Please select location of the code repository to load:'
-				caption: 'Load Git Repository'.
-	filePath isNil ifTrue: [^false].
-	self basicLoadV2Project: filePath key projectsHome: filePath value!
-
-loadProjectsFrom: browser
 	| path |
 	path := JadeiteServerFileSelectorDialog showOnSession: gciSession.
 	path ifNotNil: [^self installProjectFromPath: path]!
@@ -3679,7 +3662,6 @@ installProjectFromPath:!Jadeite!menu handlers support!public! !
 installProjectFromPath:projectsHome:!Jadeite!menu handlers support!public! !
 isOkayToChangeSource:!Jadeite!public! !
 loadProject!Jadeite!public! !
-loadProjectsFrom:!Jadeite!menu handlers support!public! !
 methodListSelection!Jadeite!public! !
 openMethodListOn:selecting:!menu handlers support!private!queries! !
 openMethodListOn:selectingAnyMatch:!menu handlers support!private!queries! !

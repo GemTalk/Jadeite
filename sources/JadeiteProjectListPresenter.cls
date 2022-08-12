@@ -96,10 +96,6 @@ list: list
 	projectListPresenter list: (SortedCollection sortBlock: [:x :y | x sortAspect < y sortAspect]).
 	projectListPresenter model addAll: list!
 
-loadProjects
-	self loadProjectsFrom: self.
-	self refreshGlobalSelections.!
-
 onViewClosed
 	super onViewClosed.
 	BrowserUpdate current
@@ -195,7 +191,7 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: self allSelectedProjectsDirty.
 			^true].
-	(#(#reloadProject #unloadProjects #loadProjects #pullFromGit #pushToGit #writeProject #projectChanges #browseProject #projectLog)
+	(#(#reloadProject #unloadProjects #loadProject #pullFromGit #pushToGit #writeProject #projectChanges #browseProject #projectLog)
 		includes: aCommandQuery command)
 			ifTrue: 
 				[aCommandQuery isEnabled: projectListPresenter selections notEmpty.
@@ -276,7 +272,6 @@ createSchematicWiring!initialization!public! !
 gitCommit!menu handlers!public! !
 hasSelection!public!testing! !
 list:!public! !
-loadProjects!menu handlers!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
 openChangesShell:!menu handlers!private! !

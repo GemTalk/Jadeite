@@ -969,10 +969,6 @@ jadeInspect
 	^inspector evaluateSelectedTextIn: methodSourcePresenter
 		thenInspectInContext: self inspectorContextObject!
 
-loadProjects
-	self loadProjectsFrom: self.
-	self findRemovedServices!
-
 makeSameSelectionsIn: newPresenter as: previousPresenter
 	| projectService packageService dictionaryService classService isMeta methodService |
 	projectService := previousPresenter projectListPresenter selectionIfNone: [].
@@ -1344,7 +1340,7 @@ pushToGit
 queryCommand: aCommandQuery
 	| command |
 	command := aCommandQuery command.
-	#loadProjects = command
+	#loadProject = command
 		ifTrue: 
 			[aCommandQuery isEnabled: true.
 			^true].
@@ -2196,7 +2192,6 @@ isRowanProjectSelected!public!testing! !
 isSourceTabSelected!public!testing! !
 isSunitTabSelected!public!testing! !
 jadeInspect!menu handlers!public! !
-loadProjects!menu handlers support!private! !
 makeSameSelectionsIn:as:!menu handlers!menu handlers support!private! !
 maxAutoCompleteListSize!constants!public! !
 methodMenu:!menu handlers support!private! !
@@ -2352,7 +2347,7 @@ projectMenuStrings
 				auditProject;
 				projectLog;
 				refresh].
-	^#('Projects' 'Create ...//createNewProject' 'Load Git Project ...//loadProjects' 'Reload Project //reloadProject' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write ...//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' 'Edit Components//editComponents' 'Edit Load Spec From File ...//editLoadSpecFromFile' '-' 'Audit//auditProject' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
+	^#('Projects' 'Create ...//createNewProject' 'Load Git Project ...//loadProject' 'Reload Project //reloadProject' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write ...//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' 'Edit Components//editComponents' 'Edit Load Spec From File ...//editLoadSpecFromFile' '-' 'Audit//auditProject' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
 
 resource_Default_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.
