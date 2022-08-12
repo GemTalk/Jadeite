@@ -287,6 +287,16 @@ containedDictionaryLabel
 		ifNotNil: [:classService | containedDictionary := containedDictionary , ' (' , classService dictionaryName , ')'].
 	^containedDictionary!
 
+containedPackageDictionaryLabel
+	| containedDictionary |
+	containedDictionary := 'Go To Containing Dictionary'.
+	packageListPresenter selection
+		ifNotNil: 
+			[:packageService |
+			containedDictionary := containedDictionary , ' ('
+						, (packageService dictionaryName ifNil: [String new]) , ')'].
+	^containedDictionary!
+
 copyClass
 	| oldClassService newClassName validClassNameSelected |
 	oldClassService := self selectedClass ifNil: [^MessageBox notify: 'Class must be selected'].
@@ -385,15 +395,16 @@ createSchematicWiringForPackageDictionaryTabs
 createSchematicWiringForPackageList
 
 	packageListPresenter
-		when: #'drag:'				send: #'onDragPackageList:'		to: self;
+		when: #'drag:'				send: #'onDragPackageList:'			to: self;
 		when: #'dragCut:'			send: #'onDragCutPackageList:'		to: self;
-		when: #'dragOver:'			send: #'onDragOverPackageList:'	to: self;
-		when: #'drop:'				send: #'onDropOnPackageList:'		to: self;
+		when: #'dragOver:'			send: #'onDragOverPackageList:'		to: self;
+		when: #'drop:'				send: #'onDropOnPackageList:'		to: self; 
 		when: #'keyTyped:'			send: #'delayUpdate'				to: self;
 		when: #'selectionChanging:'	send: #'aboutToChange:'			to: self;
 		when: #'selectionChanging:'	send: #'releasedReferencedServices:'	to: self;
 		when: #'selectionChanged'		send: #'updatePackage' 			to: self;
-		when: #keyTyped: 			send: #selectServiceStartingWith: 	to: packageListPresenter
+		when: #keyTyped: 			send: #selectServiceStartingWith: 		to: packageListPresenter;
+		when: #aboutToDisplayMenu: send: #updatePackageMenu: 		to: self
 !
 
 createSchematicWiringForVariableList
@@ -771,17 +782,6 @@ onViewClosed
 	BrowserUpdate current removeEventsTriggeredFor: sunitPresenter methodListPresenter.
 	BrowserUpdate current removeEventsTriggeredFor: self.
 	JadePresenter transactionModeValueHolder removeEventsTriggeredFor: self. !
-
-pkgsMenuStrings
-	0 == 1
-		ifTrue: 
-			[self
-				savePackage;
-				unloadPackage].
-	^#('&Packages' 
-	'&Write Package...//savePackage'
-	'&Unload Package...//unloadPackage'
-	'&Edit Package Groups...//editPackageGroups')!
 
 populateFilterList
 	| listModel |
@@ -1530,23 +1530,6 @@ updateClassInfo
 	self updateSUnitTab.
 !
 
-updateClassMenu: menu
-	| gotoPackageItem gotoDictionaryItem |
-	(menu class canUnderstand: #items) ifFalse: [^self].
-	"Removal and adding of the item seems to be necessary to update the menu about to be displayed"
-	gotoPackageItem := menu items
-				detect: [:commandItem | commandItem commandDescription command = #gotoClassDefinedPackage]
-				ifNone: [^self].
-	menu removeItem: gotoPackageItem.
-	gotoPackageItem description: self definedClassMenuItemLabel.
-	menu addItem: gotoPackageItem.
-	gotoDictionaryItem := menu items
-				detect: [:commandItem | commandItem commandDescription command = #gotoDictionary]
-				ifNone: [^self].
-	menu removeItem: gotoDictionaryItem.
-	gotoDictionaryItem description: self containedDictionaryLabel.
-	menu addItem: gotoDictionaryItem!
-
 updateCommand: aString onSuccessDo: aBlock
 	"Only use STON to update in our new browser"
 
@@ -1691,6 +1674,7 @@ comparisonTab!private!text tabs! !
 confirmCategoryRemoval:!menu handlers support!private! !
 confirmOverwriteAccessor!menu handlers support!public! !
 containedDictionaryLabel!menus!private! !
+containedPackageDictionaryLabel!menus!private! !
 copyClass!menu handlers!public! !
 createComponents!initialize/release!public! !
 createSchematicWiring!create schemantic wiring!public! !
@@ -1744,7 +1728,6 @@ onDropOnClassList:!drag & drop!public! !
 onDropOnMethodCategory:!drag & drop!public! !
 onSetFocus:stack:!event handlers!public! !
 onViewClosed!event handlers!public! !
-pkgsMenuStrings!menus!public! !
 populateFilterList!event handlers support!private!services!updating! !
 postOkToChangeEvent!event handlers!public! !
 projectListPresenter!accessing!public! !
@@ -1815,7 +1798,6 @@ update:afterStonReplication:!public!updating! !
 updateAndSelectA:!public!updating! !
 updateClasses!event handlers!public!updating! !
 updateClassInfo!event handlers!public!updating! !
-updateClassMenu:!event handlers!public!updating! !
 updateCommand:onSuccessDo:!public!updating! !
 updateMethodMenu:!event handlers!public!updating! !
 updateMethodReferences:!private!services! !

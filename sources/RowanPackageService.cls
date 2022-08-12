@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanPackageService
-	instanceVariableNames: 'classes defaultTemplate projectName classCompilationFailures testClasses hierarchyServices selectedClass name isDirty'
+	instanceVariableNames: 'classes defaultTemplate projectName classCompilationFailures testClasses hierarchyServices selectedClass name isDirty dictionaryName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -91,6 +91,9 @@ defaultTemplate
 
 defaultTemplate: anObject
 	defaultTemplate := anObject!
+
+dictionaryName
+	^dictionaryName!
 
 displayName
 	"for logging. for now"
@@ -225,6 +228,7 @@ condenseExtensions:!private!updating! !
 confirmClassRemoval:!accessing!public! !
 defaultTemplate!accessing!private! !
 defaultTemplate:!accessing!private! !
+dictionaryName!accessing!private! !
 displayName!displaying!public! !
 displayString!displaying!public! !
 displayStringFor:!displaying!public! !

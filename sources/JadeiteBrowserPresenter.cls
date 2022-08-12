@@ -840,6 +840,15 @@ gotoDictionaryNamed: dictionaryName
 				ifNone: [^self].
 	dictionaryPresenter selections: (Array with: dictionaryService)!
 
+gotoPackageDictionary
+	| selectedPackage dictionaryService |
+	selectedPackage := packageListPresenter selection.
+	self selectNoneProject.
+	dictionaryService := dictionaryPresenter list
+				detect: [:service | service name = selectedPackage dictionaryName]
+				ifNone: [^self].
+	dictionaryPresenter selections: (Array with: dictionaryService)!
+
 hasCategorySelected
 
 	^categoryListPresenter selections notEmpty!
@@ -1221,6 +1230,18 @@ packageDictionaryCards
 
 packageGroupPresenter
 	^packageGroupPresenter!
+
+pkgsMenuStrings
+	0 == 1
+		ifTrue: 
+			[self
+				savePackage;
+				unloadPackage].
+	^#('&Packages' 
+	'&Write Package...//savePackage'
+	'&Unload Package...//unloadPackage'
+	'&Edit Package Groups...//editPackageGroups'
+	'Go to Containing Dictionary//gotoPackageDictionary')!
 
 preferencesMenuStrings
 
@@ -1888,6 +1909,23 @@ updateClasses
 		ifTrue: [self updateServices: dictionaryPresenter selections]
 		ifFalse: [self updateServices: packageListPresenter selections]!
 
+updateClassMenu: menu
+	| gotoPackageItem gotoDictionaryItem |
+	(menu class canUnderstand: #items) ifFalse: [^self].
+	"Removal and adding of the item seems to be necessary to update the menu about to be displayed"
+	gotoPackageItem := menu items
+				detect: [:commandItem | commandItem commandDescription command = #gotoClassDefinedPackage]
+				ifNone: [^self].
+	menu removeItem: gotoPackageItem.
+	gotoPackageItem description: self definedClassMenuItemLabel.
+	menu addItem: gotoPackageItem.
+	gotoDictionaryItem := menu items
+				detect: [:commandItem | commandItem commandDescription command = #gotoDictionary]
+				ifNone: [^self].
+	menu removeItem: gotoDictionaryItem.
+	gotoDictionaryItem description: self containedDictionaryLabel.
+	menu addItem: gotoDictionaryItem!
+
 updateDictionaries
 	| browserService |
 	browserService := RowanBrowserService new.
@@ -2009,6 +2047,18 @@ updatePackageGroupPackages
 	packageListPresenter selections do: [:packageService | classes addAll: packageService classes].
 	classListPresenter list: classes asArray.
 	self sundryCleanup!
+
+updatePackageMenu: menu
+	| gotoPackageDictionaryItem |
+	(menu class canUnderstand: #items) ifFalse: [^self].
+	"Removal and adding of the item seems to be necessary to update the menu about to be displayed"
+	gotoPackageDictionaryItem := menu items
+				detect: [:commandItem | commandItem commandDescription command = #gotoPackageDictionary]
+				ifNone: [^self].
+	menu removeItem: gotoPackageDictionaryItem.
+	packageListPresenter selectionIfNone: [^self].
+	gotoPackageDictionaryItem description: self containedPackageDictionaryLabel.
+	menu addItem: gotoPackageDictionaryItem!
 
 updateProject
 	self clearComponentList.
@@ -2176,6 +2226,7 @@ globalsTab!accessing!private! !
 gotoClassDefinedPackage!menu handlers!public! !
 gotoDictionary!menu handlers!public! !
 gotoDictionaryNamed:!menu handlers!public! !
+gotoPackageDictionary!menu handlers!public! !
 hasCategorySelected!public!testing! !
 hasExactlyOneCategorySelected!public!testing! !
 hasMethods!public!testing! !
@@ -2228,6 +2279,7 @@ onViewOpened!event handlers!public! !
 openSourceStyler!menu handlers!public! !
 packageDictionaryCards!accessing!private! !
 packageGroupPresenter!accessing!private! !
+pkgsMenuStrings!menus!public! !
 preferencesMenuStrings!menus!public! !
 previousTabViewArrangement!accessing!private! !
 previousTabViewArrangement:!accessing!private! !
@@ -2302,6 +2354,7 @@ updateAfterFindClassInPackage:!menu handlers!public!updating! !
 updateAutoCommit!public!register presenters!updating! !
 updateClass:!public!updating! !
 updateClasses!event handlers!public!updating! !
+updateClassMenu:!event handlers!public!updating! !
 updateDictionaries!public!updating! !
 updateDictionary!public!updating! !
 updateGlobalsTab!private!tabs! !
@@ -2311,6 +2364,7 @@ updateMenuBar!menus!public!updating! !
 updateMethodSourceColor!public!updating! !
 updatePackage!event handlers!public!updating! !
 updatePackageGroupPackages!event handlers!public!updating! !
+updatePackageMenu:!event handlers!public!updating! !
 updateProject!event handlers!public!updating! !
 updateProjectInfo!private!tabs! !
 updateProjectInfoTabFor:!private!tabs! !
