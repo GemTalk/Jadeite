@@ -59,23 +59,6 @@ tearDown
 			session library: nil.
 			session := nil]!
 
-test_351Libraries
-	self testsIssue: #issue723 withTitle: 'need 3.5.1 gci libraries included in builds'.
-	self assert: LibGciRpc64_3_5_1 superclass equals: LibGciRpc64_3_5.
-	self assert: LibGciRpc64_3_5_1 displayName equals: '64-bit 3.5.1'.
-	self assert: (File exists: File workingDirectory , 'bin\' , LibGciRpc64_3_5_1 fileNameSearch)!
-
-test_360Libraries
-	self testsIssue: #issue728 withTitle: 'Add 3.6.0 client libs to Jadeite'.
-	self assert: LibGciRpc64_3_6 superclass equals: LibGciRpc64.
-	self assert: LibGciRpc64_3_6 displayName equals: '64-bit 3.6.0'.
-	self assert: (File exists: File workingDirectory , 'bin\' , LibGciRpc64_3_6 fileNameSearch)!
-
-test_361Libraries
-	self assert: LibGciRpc64_3_6_1 superclass equals: LibGciRpc64_3_6.
-	self assert: LibGciRpc64_3_6_1 displayName equals: '64-bit 3.6.1'.
-	self assert: (File exists: File workingDirectory , 'bin\' , LibGciRpc64_3_6_1 fileNameSearch)!
-
 test_370Libraries
 	self assert: LibGciRpc64_3_7 superclass equals: LibGciRpc64.
 	self assert: LibGciRpc64_3_7 displayName equals: '64-bit 3.7.0'.
@@ -199,9 +182,6 @@ loginWithRetry:!private!support! !
 setUp!public!setup teardown! !
 setupToLogin!private!support! !
 tearDown!public!setup teardown! !
-test_351Libraries!public!tests! !
-test_360Libraries!public!tests! !
-test_361Libraries!public!tests! !
 test_370Libraries!public!tests! !
 test_debugLoginDumpsParameters!public!tests! !
 test_gemTask!public!tests! !
