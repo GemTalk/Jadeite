@@ -268,11 +268,11 @@ loadRowanSample1InProjectList
 	self transcriptTab refresh!
 
 loginOtherSession
-	(Delay forSeconds: 1) wait.	"not sure if this is necessary"
-	session
+	 session
 		executeString: 'UserGlobals at: #otherSession put: (GsExternalSession gemNRS: ''' , session gemNRS
 				, ''' stoneNRS: ''' , session stoneName
-				, ''' username: ''SystemUser'' password: ''swordfish'') login'.!
+				, ''' username: ''SystemUser'' password: ''swordfish'') login'.
+!
 
 loginWithRetry: loginShell
 	| loginError maxTries count |
