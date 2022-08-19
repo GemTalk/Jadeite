@@ -776,7 +776,6 @@ valueOfArrayOop: anOopType
 valueOfOop: anOopType
 
 	^library session: gciSessionId valueOfOop: anOopType.! !
-
 !GciSession categoriesForMethods!
 _library!accessing!private! !
 _send:to:withAll:!private! !
@@ -794,9 +793,11 @@ clientForwarders!public! !
 commit!Jade convenience!public! !
 debugString:fromContext:environment:!long running!public! !
 debugToFilePath:!Jade convenience!public! !
+enableSignaledAbortError!public! !
 eventCount!public! !
 fetchBytes:!private! !
 forceLogout!Jade!public! !
+gciAbort!public! !
 gciSessionId!public! !
 gciSessionId:!private! !
 gciVersion!public! !

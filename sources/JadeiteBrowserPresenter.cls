@@ -1241,7 +1241,7 @@ pkgsMenuStrings
 	'&Write Package...//savePackage'
 	'&Unload Package...//unloadPackage'
 	'&Edit Package Groups...//editPackageGroups'
-	'Go to Containing Dictionary//gotoPackageDictionary')!
+	'Go to Class Creation Dictionary//gotoPackageDictionary')!
 
 preferencesMenuStrings
 

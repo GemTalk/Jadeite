@@ -59,6 +59,13 @@ executeSelectionOrLine: contextObject
 inspectorContextObject
 	^self parentPresenter contextObject!
 
+jadeDebug
+	| result |
+	result := self parentPresenter execute: 'nil halt. ' , self currentSelectionOrLine
+				context: self parentPresenter contextObject.
+	result key ifFalse: [MessageBox notify: 'Compile error in expression ' , (result value first at: 3)].
+	^result!
+
 jadeInspect
 	| inspector |
 	inspector := JadeiteInspector new gciSession: gciSession.
@@ -76,7 +83,16 @@ editMenuStrings!Jade!private! !
 editRevert!edit!private! !
 executeSelectionOrLine:!menu handlers!public! !
 inspectorContextObject!private! !
+jadeDebug!Jade!private! !
 jadeInspect!Jade!private! !
 onViewClosed!events!public! !
+!
+
+!JadeiteDebuggerMethodSourcePresenter class methodsFor!
+
+defaultAdditionalAccelerators
+	^super defaultAdditionalAccelerators , #(#(#jadeDebug 'Ctrl+B'))! !
+!JadeiteDebuggerMethodSourcePresenter class categoriesForMethods!
+defaultAdditionalAccelerators!constants!public! !
 !
 

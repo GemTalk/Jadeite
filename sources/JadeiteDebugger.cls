@@ -235,7 +235,7 @@ dumpStackToFile
 errorMessagePresenter
 	^errorMessagePresenter!
 
-executeSelectionOrLine: contextObject
+execute: string context:  contextObject
 	| answeringService theAnswer oop |
 	oop := (contextObject isKindOf: ExternalInteger)
 				ifTrue: [contextObject value]
@@ -245,7 +245,7 @@ executeSelectionOrLine: contextObject
 	answeringService
 		command: #exec:inFrame:ofProcess:context:;
 		commandArgs: (Array
-					with: self currentSelectionOrLine
+					with: string
 					with: frameListPresenter selectionByIndex
 					with: gsProcess oop
 					with: oop).
@@ -254,6 +254,9 @@ executeSelectionOrLine: contextObject
 	theAnswer
 		ifNotNil: [theAnswer key ifTrue: [theAnswer value: (OopType64 fromInteger: theAnswer value)]].
 	^theAnswer!
+
+executeSelectionOrLine: contextObject
+	^self execute: self currentSelectionOrLine context: contextObject!
 
 frameListPresenter
 	^frameListPresenter!
@@ -702,6 +705,7 @@ displayVariables!frames!private! !
 documentPresenter!accessing!public! !
 dumpStackToFile!menu handlers!private! !
 errorMessagePresenter!accessing!public! !
+execute:context:!Jade!private! !
 executeSelectionOrLine:!Jade!private! !
 frameListPresenter!accessing!frames!public! !
 gciSession:!public! !

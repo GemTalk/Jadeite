@@ -200,12 +200,13 @@ isOkayToChange
 	^true!
 
 jadeDebug
+	
 	[gciSession
 		debugString: self currentSelectionOrLine
 		fromContext: (OopType64 fromInteger: self inspectorContextObject)
 		environment: environment]
 			on: GsCompileError
-			do: [:ex | self jadeExecute]!
+			do: [:ex | MessageBox notify: 'Compile error in expression ' , ex descriptiveText]!
 
 jadeDisplay
 	self jadeExecuteAndDisplay: true.

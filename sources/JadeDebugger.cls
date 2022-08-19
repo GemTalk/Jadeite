@@ -56,10 +56,13 @@ answer
 							[debuggerProcess
 								ifNotNil: 
 									[:proc |
+									| dp |
 									"need to resume the suspended main process as main process"
+									dp := debuggerProcess.
 									SessionManager current inputState main: Processor activeProcess.
-									proc resume: suspendingList.
-									Processor terminateActive]]]]
+									[proc resume: suspendingList] ensure: 
+											[debuggerProcess := nil.
+											dp terminate]]]]]
 					fork.
 	waitingForAnswerProcess name: 'debugger waitingForAnswerProcess' , self identityHash printString.
 	debuggerProcess := Processor activeProcess.
