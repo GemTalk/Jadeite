@@ -60,10 +60,16 @@ inspectorContextObject
 	^self parentPresenter contextObject!
 
 jadeDebug
-	| result |
-	result := self parentPresenter execute: 'nil halt. ' , self currentSelectionOrLine
+	| result nilHalt |
+	nilHalt := 'nil halt. '.
+	result := self parentPresenter execute: nilHalt , self currentSelectionOrLine
 				context: self parentPresenter contextObject.
-	result key ifFalse: [MessageBox notify: 'Compile error in expression ' , (result value first at: 3)].
+	result key
+		ifFalse: 
+			[| adjustedArray |
+			adjustedArray := result value first.
+			adjustedArray at: 2 put: (adjustedArray at: 2) - nilHalt size.
+			self showCompileError: adjustedArray].
 	^result!
 
 jadeInspect
