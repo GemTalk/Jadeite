@@ -1239,7 +1239,7 @@ pkgsMenuStrings
 				removePackages].
 	^#('&Packages' 
 	'&Write Package...//savePackage'
-	'&Remove Package...//removePackages'
+	'&Remove Package(s)...//removePackages'
 	'&Edit Package Groups...//editPackageGroups'
 	'Go to Class Creation Dictionary//gotoPackageDictionary')!
 
