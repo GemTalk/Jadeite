@@ -221,8 +221,10 @@ evaluateSelectedTextIn: textPresenter thenInspectInContext: context debugger: de
 				debugger: debugger.
 	service compileErrorArray
 		ifNotNil: 
-			[[^textPresenter showCompileError: service compileErrorArray first]
-				ensure: [service compileErrorArray: nil]].
+			[
+			[self view close.
+			^textPresenter showCompileError: service compileErrorArray first]
+					ensure: [service compileErrorArray: nil]].
 	^self showOn: service!
 
 evaluateText: string thenInspectInContext: context

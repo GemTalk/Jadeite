@@ -43,14 +43,14 @@ closeDebuggers
 			debugger == each ifTrue: [debugger := nil]].
 	list := nil.
 	MemoryManager current collectGarbage.
-	(Delay forMilliseconds: 300) wait.
+	(Delay forMilliseconds: 50) wait.
 	JadeiteMethodListBrowser allInstances
 		do: [:browser | self assert: (browser view isKindOf: DeafObject)].
 	JadeiteBrowser allInstances do: [:browser | self assert: (browser view isKindOf: DeafObject)].
 	JadeiteDebugger allInstances
 		do: [:theDebugger | self assert: (theDebugger view isKindOf: DeafObject)].
 	MemoryManager current collectGarbage.
-	(Delay forMilliseconds: 250) wait.
+	(Delay forMilliseconds: 50) wait.
 	self purgeInstances: JadeiteBrowser.
 	self purgeInstances: JadeiteMethodListBrowser.
 	self purgeInstances: JadeiteDebugger.

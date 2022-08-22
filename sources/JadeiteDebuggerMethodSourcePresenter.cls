@@ -63,13 +63,27 @@ jadeDebug
 	| result nilHalt |
 	nilHalt := 'nil halt. '.
 	result := self parentPresenter execute: nilHalt , self currentSelectionOrLine
-				context: self parentPresenter contextObject.
+				context: self parentPresenter contextObject. 
 	result key
 		ifFalse: 
 			[| adjustedArray |
 			adjustedArray := result value first.
 			adjustedArray at: 2 put: (adjustedArray at: 2) - nilHalt size.
 			self showCompileError: adjustedArray].
+	^result!
+
+jadeDisplay
+	| result |
+	result := self parentPresenter execute: self currentSelectionOrLine
+				context: self parentPresenter contextObject.
+	result key ifTrue: [self showResult: result value] ifFalse: [self showCompileError: result value first].
+	^result!
+
+jadeExecute
+	| result |
+	result := self parentPresenter execute: self currentSelectionOrLine
+				context: self parentPresenter contextObject.
+	result key ifFalse: [self showCompileError: result value first].
 	^result!
 
 jadeInspect
@@ -90,6 +104,8 @@ editRevert!edit!private! !
 executeSelectionOrLine:!menu handlers!public! !
 inspectorContextObject!private! !
 jadeDebug!Jade!private! !
+jadeDisplay!Jade!private! !
+jadeExecute!Jade!private! !
 jadeInspect!Jade!private! !
 onViewClosed!events!public! !
 !

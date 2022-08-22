@@ -59,8 +59,9 @@ setUp
 	JadeiteLoginShell allInstances size > 1
 		ifTrue: 
 			["Running tests will not stop on assert. (Debugging tests does) Need to do a hard halt to determine how a test can login as the wrong user"
-			self haltTestForHardToCatchErrors: 'Multiple JadeiteLoginShells found']!
-
+			(Delay forSeconds: 1) wait. "give it a second to cleanup" 
+			JadeiteLoginShell allInstances size > 1
+				ifTrue: [self haltTestForHardToCatchErrors: 'Multiple JadeiteLoginShells found']]!
 
 test_additionalAccelerators
 	"No way yet to adequately test accelerators function
@@ -1853,19 +1854,6 @@ array'.
 	self assert: debugger frameListPresenter selection equals: '[] in Executed Code  @12 line 6'.
 	self debuggerDo: [debugger resumeProcess]!
 
-test_tempNamedReceiver
-	| x |
-	self testsIssue: #issue902
-		withTitle: '(Oscar3.2pre-release5) message temp named receiver gets lost in inspector'.
-	self openDebuggerOn: '| receiver | 
-receiver := ''fnoodle''. 
-self halt.'.
-	self assert: debugger variableListPresenter list size equals: 3.	"two 'receivers' and an 'args and temps label'"
-	self assert: debugger variableListPresenter list first value equals: 'nil'.
-	self assert: debugger variableListPresenter list first key value equals: 'receiver'.
-	self assert: debugger variableListPresenter list last value equals: '''fnoodle'''.
-	self assert: debugger variableListPresenter list last key value = 'receiver'!
-
 test_switchProcesses
 	| activeProcesses longRunningProcess |
 	activeProcesses := session executeString: 'ProcessorScheduler scheduler allProcesses size'.
@@ -1883,6 +1871,19 @@ test_switchProcesses
 		assert: debugger methodSourcePresenter documentPresenter value
 			equals: '[(Delay forSeconds: 9999) wait] fork asOop.';
 		assert: longRunningProcess oop equals: gsProcess!
+
+test_tempNamedReceiver
+	| x |
+	self testsIssue: #issue902
+		withTitle: '(Oscar3.2pre-release5) message temp named receiver gets lost in inspector'.
+	self openDebuggerOn: '| receiver | 
+receiver := ''fnoodle''. 
+self halt.'.
+	self assert: debugger variableListPresenter list size equals: 3.	"two 'receivers' and an 'args and temps label'"
+	self assert: debugger variableListPresenter list first value equals: 'nil'.
+	self assert: debugger variableListPresenter list first key value equals: 'receiver'.
+	self assert: debugger variableListPresenter list last value equals: '''fnoodle'''.
+	self assert: debugger variableListPresenter list last key value = 'receiver'!
 
 test_terminateDoesNotWalkback
 	"Terminate a process other than the primary one"
@@ -2410,7 +2411,6 @@ x halt.
 		halt;"
 		yourself.
 ! !
-
 !JadeiteDebuggerTestCase categoriesForMethods!
 firstFrameStartingWith:!public!support! !
 indexOfVariableNamed:!public!support! !
@@ -2499,6 +2499,7 @@ test_stepOutSelectedFrame1!public!test step out! !
 test_stepOutSelectedFrame2!public!test step out! !
 test_stepOutTopFrame!public!test step out! !
 test_stepThrough!public!test step out! !
+test_switchProcesses!public! !
 test_tempNamedReceiver!public!tests! !
 test_terminateDoesNotWalkback!public!tests! !
 test_unicodeMethod!public!tests! !
@@ -2519,3 +2520,4 @@ test7!public!tests! !
 test8!public!tests! !
 testBug77!public! !
 !
+
