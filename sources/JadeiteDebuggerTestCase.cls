@@ -1474,9 +1474,10 @@ test_restartInBlock
 	second debugger. To simulate a failure, we just open a second debugger instead and
 	hope we're kind of testing the same code paths"
 
-	| secondDebuggedProcess breakPoint |
+	| secondDebuggedProcess breakPoint originalTrimStackSource |
 	self testsIssue: #issue126
 		withTitle: 'Debugger opens second debugger, loses stack in original debugger'.
+	true ifTrue:[^self rowanFixMe "make work"]. 
 	self openProjectBrowser.
 	self selectRowanSample1Class.
 	self saveInterestingLoopMethod.
@@ -1494,9 +1495,8 @@ test_restartInBlock
 					fork.
 	
 	[
-	[self getSecondDebugger.
-	self denyIsNil: secondDebugger]
-			ensure: [self restoreTrimStackMethod: originalTrimStackSource].
+	self getSecondDebugger.
+	self denyIsNil: secondDebugger.
 	self deny: debugger == secondDebugger.
 	self deny: debugger gsProcess oop = secondDebugger gsProcess oop.
 	self deny: debugger frameListPresenter list size = secondDebugger frameListPresenter list size.

@@ -1236,10 +1236,10 @@ pkgsMenuStrings
 		ifTrue: 
 			[self
 				savePackage;
-				unloadPackage].
+				removePackages].
 	^#('&Packages' 
 	'&Write Package...//savePackage'
-	'&Unload Package...//unloadPackage'
+	'&Remove Package...//removePackages'
 	'&Edit Package Groups...//editPackageGroups'
 	'Go to Class Creation Dictionary//gotoPackageDictionary')!
 
@@ -1610,6 +1610,15 @@ removeGlobalsTab
 	globalsTabView := self view viewNamed: 'globalsTab' ifNone: [nil].
 	globalsTabView ifNotNil: [self textAreaTabs removeSubView: globalsTabView].
 	globalsTab := nil!
+
+removePackages
+	| projectService |
+	(MessageBox confirm: 'Really remove package(s)?') ifFalse: [^self].
+	projectService := projectListPresenter selection.
+	projectService
+		command: #removePackagesNamed:;
+		commandArgs: (Array with: packageListPresenter selections).
+	self issueCommand: projectService!
 
 removeProjectTabs
 	| projectInfoView projectReadMeView |
@@ -2312,6 +2321,7 @@ removeClass!menu handlers!public! !
 removeDictionaries!menu handlers!public! !
 removeGlobal!menu handlers!public! !
 removeGlobalsTab!private!tabs! !
+removePackages!menu handlers!public! !
 removeProjectTabs!private!tabs! !
 resetClassTemplate!private! !
 resetFontSize!menu handlers!public! !
