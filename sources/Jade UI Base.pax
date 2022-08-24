@@ -12,6 +12,7 @@ package classNames
 	add: #JadeBrowserPresenter;
 	add: #JadeInspector;
 	add: #JadeiteGitCommandPresenter;
+	add: #JadeiteServerFileSelectorPresenter;
 	add: #JadeiteTextStyles;
 	add: #JadeMigrateClassDialog;
 	add: #JadePresenter;
@@ -42,6 +43,7 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Boolean\Dolphin Boolean Presenter'
 	'..\Core\Object Arts\Dolphin\MVP\Dialogs\Common\Dolphin Common Dialogs'
 	'..\Core\Object Arts\Dolphin\MVP\Views\Control Bars\Dolphin Control Bars'
+	'..\Core\Object Arts\Dolphin\MVP\Models\List\Dolphin List Models'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\List\Dolphin List Presenter'
 	'..\Core\Object Arts\Dolphin\Base\Dolphin Message Box'
 	'..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base'
@@ -51,6 +53,7 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Models\Value\Dolphin Value Models'
 	'GemStone C Interface'
 	'GemStone Session'
+	'..\Core\Contributions\Solutions Software\SSW EditableListView'
 	'..\Core\Object Arts\Dolphin\ActiveX\Shell\Windows Shell').
 
 package!
@@ -89,6 +92,11 @@ JadePresenterA subclass: #CodeSourcePresenter
 	classInstanceVariableNames: ''!
 JadePresenterA subclass: #JadeBrowserPresenter
 	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadePresenterA subclass: #JadeiteServerFileSelectorPresenter
+	instanceVariableNames: 'directoryContentsList pathText'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

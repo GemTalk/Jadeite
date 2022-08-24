@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteServerFileSelectorDialog subclass: #JadeiteServerFileSaveDialog
-	instanceVariableNames: 'fileNamePresenter'
+	instanceVariableNames: 'fileNamePresenter pathText'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

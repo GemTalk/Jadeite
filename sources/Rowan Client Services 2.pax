@@ -233,7 +233,7 @@ RowanSubcomponentDefinitionService subclass: #RowanPlatformSubcomponentDefinitio
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 RowanInspectorService subclass: #RowanLoadSpecService
-	instanceVariableNames: 'loadSpecOop loadSpecPath session comment conditionalAttributes platformProperties'
+	instanceVariableNames: 'loadSpecOop loadSpecPath session comment conditionalAttributes platformProperties componentNames'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

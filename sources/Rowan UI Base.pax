@@ -36,6 +36,7 @@ package classNames
 	add: #JadeiteFindMethodDialog;
 	add: #JadeiteGitLog;
 	add: #JadeiteInspector;
+	add: #JadeiteLoadProjectDialog;
 	add: #JadeiteLoadSpecEditor;
 	add: #JadeiteLoadSpecPresenter;
 	add: #JadeiteLogger;
@@ -273,8 +274,7 @@ package methodNames
 	add: #JadePresenterA -> #disableBreakPointAt:in:;
 	add: #JadePresenterA -> #enableBreakPointAt:in:;
 	add: #JadePresenterA -> #gitCommit:;
-	add: #JadePresenterA -> #installProjectFromPath:;
-	add: #JadePresenterA -> #installProjectFromPath:projectsHome:;
+	add: #JadePresenterA -> #installProjectFromPath:projectsHome:componentNames:attributes:resolveStrict:;
 	add: #JadePresenterA -> #isOkayToChangeSource:;
 	add: #JadePresenterA -> #loadProject;
 	add: #JadePresenterA -> #methodListSelection;
@@ -869,7 +869,7 @@ JadeTranscript subclass: #JadeiteTranscript
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Dialog subclass: #JadeiteServerFileSelectorDialog
-	instanceVariableNames: 'directoryContentsList pathText'
+	instanceVariableNames: 'fileSelectorPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -878,8 +878,13 @@ AdvancedFindDialog subclass: #JadeiteAdvancedFindDialog
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+JadeiteServerFileSelectorDialog subclass: #JadeiteLoadProjectDialog
+	instanceVariableNames: 'projectHomeSelector customAttributesList componentList session attributes components'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 JadeiteServerFileSelectorDialog subclass: #JadeiteServerFileSaveDialog
-	instanceVariableNames: 'fileNamePresenter'
+	instanceVariableNames: 'fileNamePresenter pathText'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -3541,19 +3546,17 @@ gitCommit: projectListPresenter
 	MessageBox notify: 'Project ' , projectName , ' committed to local repository!!'.
 	self refreshFromServer!
 
-installProjectFromPath: path
-	^self installProjectFromPath: path projectsHome: '$ROWAN_PROJECTS_HOME'!
-
-installProjectFromPath: path projectsHome: projectsHomePath
+installProjectFromPath: path projectsHome: projectsHomePath componentNames: componentNames attributes: attributes resolveStrict: resolveStrict
 	| projectService |
 	projectService := RowanProjectService new.
 	projectService
-		command: #installProjectFromFile:projectsHome:componentNames:resolveStrict:;
+		command: #installProjectFromFile:projectsHome:componentNames:attributes:resolveStrict:;
 		commandArgs: (Array
 					with: 'file:' , path
 					with: projectsHomePath
-					with: #()
-					with: true).
+					with: componentNames
+					with: attributes
+					with: resolveStrict).
 	self issueCommand: projectService!
 
 isOkayToChangeSource: methodSourcePresenter
@@ -3569,9 +3572,16 @@ isOkayToChangeSource: methodSourcePresenter
 	^true!
 
 loadProject
-	| path |
-	path := JadeiteServerFileSelectorDialog showOnSession: gciSession.
-	path ifNotNil: [^self installProjectFromPath: path]!
+	| paths |
+	paths := JadeiteLoadProjectDialog showOnSession: gciSession.
+	paths
+		ifNotNil: 
+			[^self
+				installProjectFromPath: paths first
+				projectsHome: paths second
+				componentNames: paths third
+				attributes: paths last
+				resolveStrict: true]!
 
 methodListSelection
 	
@@ -3658,8 +3668,7 @@ createNewProject!menu handlers!menu handlers support!private! !
 disableBreakPointAt:in:!Jadeite!public! !
 enableBreakPointAt:in:!Jadeite!public! !
 gitCommit:!project menu handlers!public! !
-installProjectFromPath:!Jadeite!menu handlers support!public! !
-installProjectFromPath:projectsHome:!Jadeite!menu handlers support!public! !
+installProjectFromPath:projectsHome:componentNames:attributes:resolveStrict:!Jadeite!menu handlers support!public! !
 isOkayToChangeSource:!Jadeite!public! !
 loadProject!Jadeite!public! !
 methodListSelection!Jadeite!public! !

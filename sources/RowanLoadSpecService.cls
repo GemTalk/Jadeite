@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanInspectorService subclass: #RowanLoadSpecService
-	instanceVariableNames: 'loadSpecOop loadSpecPath session comment conditionalAttributes platformProperties'
+	instanceVariableNames: 'loadSpecOop loadSpecPath session comment conditionalAttributes platformProperties componentNames'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -15,6 +15,12 @@ comment
 
 comment: anObject
 	comment := anObject!
+
+componentNames
+	^componentNames!
+
+componentNames: anObject
+	componentNames := anObject!
 
 conditionalAttributeItem: new updatedAtIndex: index
 	self
@@ -96,6 +102,8 @@ shouldReplicateInstVarAtIndex: index newService: newService
 !RowanLoadSpecService categoriesForMethods!
 comment!accessing!private! !
 comment:!accessing!private! !
+componentNames!accessing!private! !
+componentNames:!accessing!private! !
 conditionalAttributeItem:updatedAtIndex:!commands!public! !
 conditionalAttributes!accessing!private! !
 conditionalAttributes:!accessing!private! !

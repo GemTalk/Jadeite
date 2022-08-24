@@ -160,7 +160,7 @@ jadeMenuStrings
 		'&Commit Transaction//commitTransaction'
 		'&Begin Transaction//beginTransaction'
 		'-'
-		'&New Worspace/Ctrl+N/newWorkspace'
+		'&New Workspace/Ctrl+N/newWorkspace'
 		'&Open Projects Browser/Ctrl+P/newProjectsBrowser'
 		'E&xit/Shift+F4/exit'
 	).
@@ -270,7 +270,6 @@ updateSource
 	methodListPresenter selectedMethod ifNil: [^self].
 	self displayUncompilableSourceIn: methodSourcePresenter documentPresenter
 		! !
-
 !JadeMethodListPresenter categoriesForMethods!
 browse:gsMethod:!public! !
 browse:method:!public! !
