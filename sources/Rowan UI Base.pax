@@ -118,6 +118,7 @@ package methodNames
 	add: #Collection -> #prepareForReplication;
 	add: #Date -> #stonOn:;
 	add: #DiffBrowser -> #diffsPresenter;
+	add: #DragDropSession -> #defaultScrollInterval;
 	add: #Float -> #asString;
 	add: #GciSession -> #_executeString:fromContextOop:environment:;
 	add: #GciSession -> #computeGemHost;
@@ -1309,6 +1310,17 @@ clearTemporaryTrustStore
 ! !
 !DolphinSureCertificateStore class categoriesForMethods!
 clearTemporaryTrustStore!must not strip!private! !
+!
+
+!DragDropSession methodsFor!
+
+defaultScrollInterval
+	"Answers the time (in ms) between the scroll operations while the
+	drop pointer is in the scroll zone"
+
+	^100 milliseconds! !
+!DragDropSession categoriesForMethods!
+defaultScrollInterval!constants!public! !
 !
 
 !ExternalStructure class methodsFor!
