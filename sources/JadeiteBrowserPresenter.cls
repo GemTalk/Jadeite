@@ -710,7 +710,7 @@ editSaveClass
 	a debugger is raised as not much information is available 
 	without a stack."
 
-	| browserService |
+	| browserService | 
 	browserService := RowanBrowserService new.
 	browserService
 		command: #compileClass:;
@@ -718,7 +718,7 @@ editSaveClass
 	browserService selectedClass: self selectedClass name.
 	[self issueCommand: browserService] on: Error
 		do: 
-			[:ex |
+			[:ex | 
 			(ex isKindOf: GsCompileError)
 				ifTrue: [self handleClassCompileError: ex]
 				ifFalse: [self statusBarText: 'ERROR: ' , ex messageText].
@@ -1962,8 +1962,10 @@ updateGlobalsTab
 				with: 'Value').
 	dictionaryPresenter selections isEmpty
 		ifFalse: 
-			[dictionaryPresenter selections
-				do: [:dictionaryService | dictionaryService globals do: [:globalArray | array nextPut: globalArray]]].
+			[dictionaryPresenter selections do: 
+					[:dictionaryService |
+					dictionaryService globals
+						ifNotNil: [:globals | globals do: [:globalArray | array nextPut: globalArray]]]].
 	globalsTab list: array contents!
 
 updateHierarchy

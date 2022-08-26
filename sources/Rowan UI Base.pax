@@ -322,7 +322,6 @@ package methodNames
 	add: #JadeSystemBrowserPresenter -> #createSchematicWiring;
 	add: #JadeSystemBrowserPresenter -> #createSchematicWiringForClassHierarchyTabs;
 	add: #JadeSystemBrowserPresenter -> #currentMethodSource;
-	add: #JadeSystemBrowserPresenter -> #editSaveClass;
 	add: #JadeSystemBrowserPresenter -> #findClass;
 	add: #JadeSystemBrowserPresenter -> #handleClassCompileError:;
 	add: #JadeSystemBrowserPresenter -> #instanceClassTabs;
@@ -4451,29 +4450,6 @@ createSchematicWiringForClassHierarchyTabs
 currentMethodSource
 	^self currentMethodSourceFrom: methodSourcePresenter value!
 
-editSaveClass
-	| string stream flag |
-	string := classDefinitionPresenter value
-				collect: [:each | each codePoint < 32 ifTrue: [Character space] ifFalse: [each]].
-	stream := (WriteStream on: String new)
-				nextPutAll: 'class';
-				tab;
-				nextPutAll: string;
-				lf;
-				yourself.
-	flag := false.
-	
-	[self updateCommand: stream contents , self requestString
-		onSuccessDo: 
-			[classDefinitionPresenter view isModified: false.
-			flag := true]]
-			on: GsCompileError
-			do: 
-				[:ex |
-				string := self handleClassCompileError: ex.
-				^self].
-	flag ifTrue: [self editSaveClassA]!
-
 findClass
 "
 	Array with: className with: dictionaryName with: catetory with: packageName.
@@ -4970,7 +4946,6 @@ createComponents!overrides!public! !
 createSchematicWiring!create schemantic wiring!overrides!public! !
 createSchematicWiringForClassHierarchyTabs!create schemantic wiring!public! !
 currentMethodSource!menu handlers!public! !
-editSaveClass!menu handlers!public! !
 findClass!menu handlers!public! !
 handleClassCompileError:!compiling!public! !
 instanceClassTabs!accessing!private! !
