@@ -446,6 +446,25 @@ test_createProject
 	[self assert: createProjectsBrowser isKindOf: JadeiteCreateProjectEditor]
 		ensure: [self destroy: createProjectsBrowser]!
 
+test_displayConfigOptions
+	"sanity test just to make sure displaying configuration details doesn't break - code is old Jade code and is rather brittle"
+
+	| gemFailSafeNscEnumerate configurationPresenter readStream workspace lastLine |
+	self testsIssue: #issue854 withTitle: 'https://github.com/GemTalk/Jadeite/issues/854'.
+	configurationPresenter := transcript mySessionPresenter configurationReportPresenter.
+	gemFailSafeNscEnumerate := configurationPresenter list
+				detect: [:array | array first = 'GemFailSafeNscEnumerate'].
+	configurationPresenter selection: gemFailSafeNscEnumerate.
+	workspace := configurationPresenter trigger: #actionPerformed.
+	readStream := ReadStream on: workspace model value.
+	
+	[self assert: readStream nextLine = '# GemFailSafeNscEnumerate'.
+	[readStream atEnd] whileFalse: [lastLine := readStream nextLine].
+	self assert: ('System gemConfigurationAt: #GemFailSafeNscEnumerate*' match: lastLine)]
+			ensure: 
+				[readStream close.
+				self destroy: workspace]!
+
 test_doubleClickOpenProjectBrowser
 	| randomIndex projectPresenter projectName |
 	randomIndex := (Random new next * 4) ceiling.
@@ -837,6 +856,7 @@ test_closeConsoleNeedingCommit!public!tests! !
 test_closeConsoleNoCommitNeeded!public!tests! !
 test_commitTransaction!public!tests! !
 test_createProject!public!tests! !
+test_displayConfigOptions!public!tests! !
 test_doubleClickOpenProjectBrowser!public!tests! !
 test_flipBreakPointsDisabled!public!tests! !
 test_implementorsSenders_SearchList!public!tests! !
