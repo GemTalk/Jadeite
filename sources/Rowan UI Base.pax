@@ -3242,7 +3242,7 @@ defaultCaptionText: presenter
 	^'Unsaved changes warning in ' , presenter view topShell caption , '!!'!
 
 defaultUnsavedChangesText
-	^'Keep unsaved changes?'!
+	^'You have unsaved changes: continue editing?'!
 
 defaultWindowOffset
 	^25 @ 25!
