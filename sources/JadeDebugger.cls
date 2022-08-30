@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadeTextDocument subclass: #JadeDebugger
-	instanceVariableNames: 'answer errorMessagePresenter frame frameListOffset frameListPresenter gsProcess processList processListPresenter terminateOnClose variableDataPresenter variableListPresenter waitingForAnswerProcess'
+	instanceVariableNames: 'answer errorMessagePresenter frame frameListOffset frameListPresenter gsProcess processList processListPresenter terminateOnClose variableDataPresenter variableListPresenter waitingForAnswerProcess debuggerProcess'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggers'!
@@ -38,16 +38,39 @@ activeTextEdit
 	^theView!
 
 answer
-		"It is likely that the debugger was opened by some UI command that changed the cursor to a wait cursor.
+	"It is likely that the debugger was opened by some UI command that changed the cursor to a wait cursor.
 		Because we are starting a new main UI process, and because our process can be terminated, we can be
 		left in a state in which the cursor is not set back to its original value.
 		We mitigate that problem by changing it to the default."
 
-	Cursor current: nil.
-	[
-		SessionManager inputState loopWhile: [answer isNil].
-	] on: GPFault do: [:ex | ].	"It seems that Scintilla can get an error when the debugger closes"
-	^answer.!
+	| suspendingList |
+	Cursor reset.
+	waitingForAnswerProcess := 
+			[[SessionManager inputState loopWhile: [answer isNil]] ensure: 
+					[waitingForAnswerProcess := nil.
+					answer isNil
+						ifTrue: 
+							[Processor activeProcess == debuggerProcess ifFalse: [debuggerProcess terminate].
+							debuggerProcess := nil]
+						ifFalse: 
+							[debuggerProcess
+								ifNotNil: 
+									[:proc |
+									| dp |
+									"need to resume the suspended main process as main process"
+									dp := debuggerProcess.
+									SessionManager current inputState main: Processor activeProcess.
+									[proc resume: suspendingList] ensure: 
+											[debuggerProcess := nil.
+											dp terminate ]]]]]
+					fork.
+	waitingForAnswerProcess name: 'debugger waitingForAnswerProcess' , self identityHash printString.
+	debuggerProcess := Processor activeProcess.
+	debuggerProcess name: 'debuggerProcess' , self identityHash printString.
+	[suspendingList := debuggerProcess suspendingList] forkAt: Processor activePriority + 1.
+	Processor suspendActive.
+	debuggerProcess := nil.
+	^answer!
 
 clearUI
 

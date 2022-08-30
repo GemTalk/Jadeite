@@ -66,10 +66,12 @@ select
 	parentPresenter select!
 
 selectionMade
-	| folder |
-	model value path = pathText value ifFalse:[^self goto]. 
-	folder := directoryContentsList selectionOrNil ifNil: [String new] ifNotNil: [:sel | sel key].
-	pathText value: pathText value , '/' , folder.!
+	| item finalSlash |
+	model value path = pathText value ifFalse: [^self goto].
+	item := directoryContentsList selectionOrNil ifNil: [String new] ifNotNil: [:sel | sel key].
+	finalSlash := pathText value isEmpty
+				ifFalse: [pathText value last = $/ ifTrue: [String new] ifFalse: ['/']].
+	pathText value: pathText value , finalSlash , item!
 
 showDirectoryContents
 	| directoryContents |

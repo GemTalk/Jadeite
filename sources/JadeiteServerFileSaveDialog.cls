@@ -17,6 +17,10 @@ createComponents
 fileNamePresenter
 	^fileNamePresenter!
 
+goto
+	model value path: pathText value.
+	self showDirectoryContents!
+
 save
 	model value = pathText value ifFalse: [^self goto].
 	pathText value: (pathText value , '/' , fileNamePresenter value).
@@ -25,6 +29,7 @@ save
 !JadeiteServerFileSaveDialog categoriesForMethods!
 createComponents!initialization!public! !
 fileNamePresenter!accessing!private! !
+goto!actions!public! !
 save!actions!public! !
 !
 
@@ -46,6 +51,7 @@ showOnSession: aGciSession initialFileName: fileName
 	service := RowanFileService new path: JadePresenter rowanProjectsHomeEnvVarString.
 	service session: aGciSession.
 	inst := self createOn: service.
+	inst setPresenterModel.
 	inst fileNamePresenter value: fileName. 
 	inst pathText value: service path.
 	inst showDirectoryContents.

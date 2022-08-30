@@ -45,7 +45,6 @@ ok
 	^super ok!
 
 select
-	| components attributes |
 	fileSelectorPresenter selectionMade.
 	projectHomeSelector selectionMade.
 	self ok.
