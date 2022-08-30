@@ -57,15 +57,14 @@ breakpointsEnabled: booleanString
 	BrowserUpdate current issueCommands: (Array with: answeringService) session: session!
 
 fontSize: integerStringOrNil
-	"file syntax - fontSize: 12"
-
-	| pointSize |
+	| pointSize newFont |
 	pointSize := integerStringOrNil = 'nil'
 				ifTrue: [nil]
 				ifFalse: 
 					[[integerStringOrNil asNumber] on: Error
 						do: [:ex | ^MessageBox notify: 'Error setting fontSize preference. Error description:' , ex description]].
-	JadeiteTextStyles default textStyles do: [:textStyle | textStyle pointSize: pointSize]!
+	newFont := (View desktop font ifNil: [Font default]) pointSize: pointSize.
+	self class displayFontFrom: newFont!
 
 loggingEnabled: booleanString
 	| boolean |
@@ -150,6 +149,15 @@ sigAbortProcessInterval: anIntegerString
 sigAbortsProcessEnabled: booleanString
 	JadePresenter sigAbortsProcessEnabled: booleanString = 'true'!
 
+textFontSize: integerStringOrNil
+	| pointSize |
+	pointSize := integerStringOrNil = 'nil'
+				ifTrue: [nil]
+				ifFalse: 
+					[[integerStringOrNil asNumber] on: Error
+						do: [:ex | ^MessageBox notify: 'Error setting textFontSize preference. Error description:' , ex description]].
+	JadeiteTextStyles default textStyles do: [:textStyle | textStyle pointSize: pointSize]!
+
 transactionMode: transactionMode
 	JadePresenter transactionMode: transactionMode asSymbol session: session!
 
@@ -172,19 +180,32 @@ loggingEnabled:!must not strip!preferences!public! !
 openBrowserOnClass:!must not strip!preferences!public! !
 openBrowserOnPackage:!must not strip!preferences!public! !
 openBrowserOnProject:!must not strip!preferences!public! !
-openProjectBrowser!preferences!private! !
-openSUnitBrowser!preferences!private! !
+openProjectBrowser!must not strip!preferences!private! !
+openSUnitBrowser!must not strip!preferences!private! !
 openSUnitBrowserOnPackage:!must not strip!preferences!public! !
 openWorkspace:!must not strip!preferences!public! !
 performCommand:allowSpacesInArgs:!accessing!must not strip!public! !
 session:!accessing!private! !
 sigAbortProcessInterval:!must not strip!public! !
 sigAbortsProcessEnabled:!must not strip!public! !
+textFontSize:!must not strip!preferences!public! !
 transactionMode:!must not strip!public! !
 transcriptEnabled:!must not strip!preferences!public! !
 !
 
 !JadeitePreferences class methodsFor!
+
+displayFontFrom: newFont
+	| lfw lf |
+	lf := newFont logFont.
+	lfw := LOGFONTW new.
+	lfw
+		replaceFrom: 1
+		to: lf byteSize
+		with: lf bytes
+		startingAt: 1.
+	lfw faceName: lf faceName.
+	View desktop font: (Font fromLogFont: lfw)!
 
 onSession: session
 	^self new session: session!
@@ -206,6 +227,7 @@ preferencesFileDefaultContents
 
 #legal values are an integer or nil for default font size
 #fontSize: <anInteger or nil>
+#textFontSize: <anInteger or nil>
 
 #legal values are a name (without quotes) or nil
 #openBrowserOnClass: <class name>
@@ -220,6 +242,7 @@ preferencesFileDefaultContents
 
 public! !
 !JadeitePreferences class categoriesForMethods!
+displayFontFrom:!public!utilities! !
 onSession:!instance creation!public! !
 preferencesFile!public! !
 preferencesFileDefaultContents!public! !

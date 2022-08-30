@@ -371,14 +371,14 @@ test_serviceClassBookkeeping
 test_setResetTextPaneFontSize
 	self testsIssue: #issue805 withTitle: 'Preference to adjust font size (3.1.0)'.
 	self openProjectBrowser.
-	self projectsPresenter setFontSizeTo: 20.
+	self projectsPresenter setTextFontTo: 20.
 	JadeiteScintillaView allInstances do: 
 			[:scintillaView |
 			scintillaView textStyles do: 
 					[:textStyle |
 					(JadeiteTextStyles default textStyles includes: textStyle)
 						ifTrue: [self assert: textStyle pointSize equals: 20]]].
-	self projectsPresenter resetFontSize.
+	self projectsPresenter resetFont.
 	JadeiteScintillaView allInstances do: 
 			[:scintillaView |
 			scintillaView textStyles do: 

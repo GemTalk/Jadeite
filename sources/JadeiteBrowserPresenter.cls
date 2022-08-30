@@ -1246,14 +1246,15 @@ pkgsMenuStrings
 preferencesMenuStrings
 
 	false ifTrue: [		"adding explicit senders ensures that packaging will not drop methods and allows us to find references by browsing senders"
-		self openSourceStyler; setColorForCompileErrors; setColorForNoEdits; setColorForUnsavedEdits.
+		self openSourceStyler; setColorForCompileErrors; setColorForNoEdits; setColorForUnsavedEdits; resetFont; setTextFont; setCodeFont.
 	].
 	^#(
 		'&Preferences'
 		'&Source Styler...//openSourceStyler'
 		'-'
-		'Reset &Font Size//resetFontSize'
-		'Set Font Size...//setFontSize'
+		'Reset &Font Size//resetFont'
+		'Set Font Size...//setFont'
+		'Set Text Font Size...//setTextFont'
 		'-'
 		'&Reset Colors//resetColors'
 		'Color for &Compile Errors...//setColorForCompileErrors'
@@ -1644,8 +1645,11 @@ resetClassTemplate
 				ifFalse: [presenter selections first defaultTemplate]).
 	self resetClassDefinitionPane!
 
-resetFontSize
-	self setFontSizeTo: nil!
+resetFont
+	View desktop font: nil!
+
+resetTextFont
+	self setTextFontTo: nil!
 
 runAll
 	self selectSUnitTab.
@@ -1741,27 +1745,34 @@ setCompileErrorColor
 setCompileWarningColor
 	statusBarText view backcolor: Color yellow faded!
 
-setFontSize
+setFont
+	| pointSize newFont |
+	pointSize := IntegerPrompter create
+				caption: 'Update Font Size';
+				prompt: 'Enter Font Size:';
+				interval: (1 to: 50);
+				showModal.
+	newFont := (View desktop font ifNil: [Font default]) pointSize: pointSize.
+	JadeitePreferences displayFontFrom: newFont!
+
+setStatusBarDefault
+	statusBarText view backcolor: statusBarText view defaultBackcolor!
+
+setTextFont
 	| fontSize |
 	fontSize := IntegerPrompter create
 				caption: 'Update Text Pane Font Size';
 				prompt: 'Enter Font Size:';
 				interval: (1 to: 50);
 				showModal.
-	self setFontSizeTo: fontSize!
+	self setTextFontTo: fontSize!
 
-setFontSizeTo: anIntegerOrNil
+setTextFontTo: anIntegerOrNil
 	| textStyles |
 	textStyles := JadeiteTextStyles default textStyles.
 	textStyles do: [:textStyle | textStyle pointSize: anIntegerOrNil].
-	JadeiteScintillaView allInstances do: 
-			[:scintillaView |
-			( scintillaView class canUnderstand: #textStyles:)
-				ifTrue: [scintillaView textStyles: textStyles]].
-	!
-
-setStatusBarDefault
-	statusBarText view backcolor: statusBarText view defaultBackcolor!
+	JadeiteScintillaView allInstances
+		do: [:scintillaView | (scintillaView class canUnderstand: #textStyles:) ifTrue: [scintillaView textStyles: textStyles]]!
 
 shouldShowNoneTabLabel
 	^dictionaryPresenter list isEmpty
@@ -2326,7 +2337,8 @@ removeGlobalsTab!private!tabs! !
 removePackages!menu handlers!public! !
 removeProjectTabs!private!tabs! !
 resetClassTemplate!private! !
-resetFontSize!menu handlers!public! !
+resetFont!menu handlers!public! !
+resetTextFont!menu handlers!public! !
 runAll!menu handlers!public! !
 runSelected!menu handlers!public! !
 search!accessing!public! !
@@ -2346,9 +2358,10 @@ selectProjectNamed:!public!selection! !
 selectProjectTab!public! !
 setCompileErrorColor!compile support!public! !
 setCompileWarningColor!compile support!public! !
-setFontSize!menu handlers!public! !
-setFontSizeTo:!menu handlers support!private! !
+setFont!menu handlers!public! !
 setStatusBarDefault!compile support!public! !
+setTextFont!menu handlers!public! !
+setTextFontTo:!menu handlers support!private! !
 shouldShowNoneTabLabel!displaying!private!testing! !
 showDictionaryList!event handlers!public!updating! !
 showPackageList!event handlers!public!updating! !

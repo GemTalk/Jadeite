@@ -112,9 +112,7 @@ test_fontSize
 	self testsIssue: #issue805 withTitle: 'Preference to adjust font size (3.1.0)'.
 	prefs := JadeitePreferences new session: session.
 	prefs applyPreference: 'fontSize: 20'.
-	JadeiteTextStyles default textStyles do: [:style | self assert: style pointSize equals: 20].
-	prefs applyPreference: 'fontSize: nil'.
-	JadeiteTextStyles default textStyles do: [:style | self assert: style pointSize equals: nil]!
+	[self assert: View desktop font pointSize equals: 20] ensure: [View desktop font: nil]!
 
 test_globalAdditionalAccelerators
 	| prefs |
@@ -312,13 +310,21 @@ test_resetPreferences
 	workspace basicResetPreferences.
 	self assert: (workspace model value equals: JadeitePreferences preferencesFileDefaultContents)!
 
+test_textFontSize
+	| prefs |
+	self testsIssue: #issue805 withTitle: 'Preference to adjust font size (3.1.0)'.
+	prefs := JadeitePreferences new session: session.
+	prefs applyPreference: 'textFontSize: 20'.
+	JadeiteTextStyles default textStyles do: [:style | self assert: style pointSize equals: 20].
+	prefs applyPreference: 'textFontSize: nil'.
+	JadeiteTextStyles default textStyles do: [:style | self assert: style pointSize equals: nil]!
+
 test_validPreferences
 	| prefs validPreferences |
 	self testsIssue: #issue553 withTitle: 'Jadeite settings in preferences file (3.0.78)'.
 	validPreferences := #(#transcriptEnabled: #openBrowserOnClass: #openBrowserOnPackage: #openSUnitBrowserOnPackage: #autocommitEnabled: #autocompleteEnabled: #breakpointsEnabled: #loggingEnabled:).
 	prefs := JadeitePreferences new session: session.
 	validPreferences do: [:symbol | self assert: (prefs class canUnderstand: symbol)]! !
-
 !JadeitePreferencesTestCase categoriesForMethods!
 closeWorkspace!public!support! !
 primaryTestWindow!accessing!public! !
@@ -339,7 +345,12 @@ test_preferencesOpenCorrectWorkspaceFiles!public!tests! !
 test_preferencesOpenWorkspace!public!tests! !
 test_preferencesOpenWorkspaceFiles!public!tests! !
 test_preferencesSettingTranscript!public!tests! !
+test_preferencesSigAbortsProcessEnabled!public! !
+test_preferencesSigAbortsProcessInterval!public! !
 test_preferencesSUnitOpenBrowser!public!tests! !
+test_preferencesTransactionModeSet!public! !
 test_resetPreferences!public!tests! !
+test_textFontSize!public!tests! !
 test_validPreferences!public!tests! !
 !
+
