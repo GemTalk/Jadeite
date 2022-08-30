@@ -10,6 +10,11 @@ JadeiteServerFileSaveDialog comment: ''!
 !JadeiteServerFileSaveDialog categoriesForClass!Unclassified! !
 !JadeiteServerFileSaveDialog methodsFor!
 
+answer
+	^self isConfirmed
+		ifTrue: [ fileSelectorPresenter pathText value ]
+		ifFalse: [ nil ]!
+
 createComponents
 	super createComponents.
 	fileNamePresenter := self add: TextPresenter new name: 'fileName'!
@@ -18,15 +23,16 @@ fileNamePresenter
 	^fileNamePresenter!
 
 goto
-	model value path: pathText value.
+	model value path: fileSelectorPresenter pathText value.
 	self showDirectoryContents!
 
 save
-	model value = pathText value ifFalse: [^self goto].
-	pathText value: (pathText value , '/' , fileNamePresenter value).
-	self ok.
-	! !
+	model value path = fileSelectorPresenter pathText value ifFalse: [^self goto].
+	fileSelectorPresenter pathText
+		value: fileSelectorPresenter pathText value , '/' , fileNamePresenter value.
+	self ok! !
 !JadeiteServerFileSaveDialog categoriesForMethods!
+answer!public! !
 createComponents!initialization!public! !
 fileNamePresenter!accessing!private! !
 goto!actions!public! !
