@@ -289,7 +289,7 @@ containedDictionaryLabel
 
 containedPackageDictionaryLabel
 	| containedDictionary |
-	containedDictionary := 'Go To Class Creation Dictionary'.
+	containedDictionary := 'Go to Associated Dictionary'.
 	packageListPresenter selection
 		ifNotNil: 
 			[:packageService |
