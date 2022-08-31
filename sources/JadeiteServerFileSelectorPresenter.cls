@@ -76,10 +76,7 @@ selectionMade
 showDirectoryContents
 	| directoryContents |
 	directoryContents := model value directoryContents.
-	directoryContentsList list: directoryContents!
-
-updateCaption
-	self caption: (model value session titleBarFor: 'Server File Selector')! !
+	directoryContentsList list: directoryContents! !
 !JadeiteServerFileSelectorPresenter categoriesForMethods!
 cancel!actions!public! !
 createComponents!initialization!public! !
@@ -94,7 +91,6 @@ pop!actions!public! !
 select!actions!public! !
 selectionMade!actions!public! !
 showDirectoryContents!actions!public! !
-updateCaption!public! !
 !
 
 !JadeiteServerFileSelectorPresenter class methodsFor!

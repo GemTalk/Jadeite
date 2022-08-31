@@ -15,6 +15,10 @@ createComponents
 	fileSelectorPresenter := self add: JadeiteServerFileSelectorPresenter new name: 'fileSelectorPresenter'.
 !
 
+fileSelectorPresenter
+	"for testing" 
+	^fileSelectorPresenter!
+
 pathText
 	^fileSelectorPresenter pathText!
 
@@ -40,6 +44,7 @@ updateCaptionInSession: session
 	self caption: (session titleBarFor: self shellName)! !
 !JadeiteServerFileSelectorDialog categoriesForMethods!
 createComponents!initialization!public! !
+fileSelectorPresenter!accessing!private! !
 pathText!initialization!public! !
 select!public! !
 setPathText:!initialization!public! !

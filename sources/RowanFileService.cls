@@ -41,6 +41,11 @@ pop
 	self issueCommand: self session: session. 
 	^answer ifNotNil: [self shortNames]!
 
+remove
+	command := #remove.
+	commandArgs := Array new.
+	self issueCommand: self session: session!
+
 session
 	^session!
 
@@ -68,6 +73,7 @@ isDirectory:!commands!public! !
 path!accessing!private! !
 path:!accessing!public! !
 pop!commands!public! !
+remove!commands!public! !
 session!accessing!private! !
 session:!accessing!private! !
 shortNames!accessing!private! !

@@ -37,6 +37,41 @@ aboutToChangeFrame: aSelectionChangingEvent
 additionalAccelerators
 	^super additionalAccelerators , #(#(#reformatSource 'Ctrl+Shift+O') #(#jadeDebug 'Ctrl+B'))!
 
+answer
+	"It is likely that the debugger was opened by some UI command that changed the cursor to a wait cursor.
+		Because we are starting a new main UI process, and because our process can be terminated, we can be
+		left in a state in which the cursor is not set back to its original value.
+		We mitigate that problem by changing it to the default."
+
+	| suspendingList |
+	Cursor reset.
+	waitingForAnswerProcess := 
+			[[SessionManager inputState loopWhile: [answer isNil]] ensure: 
+					[waitingForAnswerProcess := nil.
+					answer isNil
+						ifTrue: 
+							[Processor activeProcess == debuggerProcess ifFalse: [debuggerProcess terminate].
+							debuggerProcess := nil]
+						ifFalse: 
+							[debuggerProcess
+								ifNotNil: 
+									[:proc |
+									| dp |
+									"need to resume the suspended main process as main process"
+									dp := debuggerProcess.
+									SessionManager current inputState main: Processor activeProcess.
+									[proc resume: suspendingList] ensure: 
+											[debuggerProcess := nil.
+											dp kill ]]]]]
+					fork.
+	waitingForAnswerProcess name: 'debugger waitingForAnswerProcess' , self identityHash printString.
+	debuggerProcess := Processor activeProcess.
+	debuggerProcess name: 'debuggerProcess' , self identityHash printString.
+	[suspendingList := debuggerProcess suspendingList] forkAt: Processor activePriority + 1.
+	Processor suspendActive.
+	debuggerProcess := nil.
+	^answer!
+
 basicSelectedFrame
 	| index |
 	(index := frameListPresenter selectionByIndex) = 0 ifTrue: [^nil].
@@ -683,6 +718,7 @@ _processList!public! !
 _terminateProcess:!public! !
 aboutToChangeFrame:!event handlers!public! !
 additionalAccelerators!accessing!public! !
+answer!public! !
 basicSelectedFrame!public! !
 browseFrameMethod!menu handlers!private! !
 browseFrameMethodInExistingBrowser!menu handlers!private! !

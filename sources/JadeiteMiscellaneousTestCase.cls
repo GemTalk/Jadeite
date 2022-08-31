@@ -265,6 +265,31 @@ test_dolphinStackDumpBanners
 	self assert: ('*' , timestampString , '*' match: stream contents).
 	self assert: ('*Ending Dolphin stack dump started at*' match: stream contents).!
 
+test_fileSaveDialog
+	| dialog |
+	"not a great test in the non modal dialog as the return is different, but at least
+	we exercise the save button"
+	dialog := JadeiteServerFileSaveDialog showNonModalOnSession: session
+				initialFileName: 'test_fileSaveDialog.txt'.
+	dialog fileNamePresenter value: 'test_fileSaveDialog.txt2'.
+	dialog save.
+	self assert: dialog fileNamePresenter value equals: 'test_fileSaveDialog.txt2'!
+
+test_fileSaveDialogBasics
+	| dialog priorDirectoryContents |
+	
+	[dialog := JadeiteServerFileSaveDialog showNonModalOnSession: session
+				initialFileName: 'test_fileSaveDialogBasics.txt'.
+	self assert: dialog isKindOf: JadeiteServerFileSaveDialog.
+	self assert: dialog pathText value equals: self rowanProjectsHome.	"default to rowan projects home directory env var"
+	self assert: dialog fileNamePresenter value equals: 'test_fileSaveDialogBasics.txt'.	"initial file name should be what was passed in"
+	priorDirectoryContents := dialog fileSelectorPresenter directoryContentsList list
+				collect: [:assoc | assoc key].
+	dialog fileSelectorPresenter pop.
+	self deny: priorDirectoryContents
+		equals: (dialog fileSelectorPresenter directoryContentsList list collect: [:assoc | assoc key])	"no way to know the contents of the directory so just ensure the contents changed - lousy test"]
+			ensure: [dialog cancel]!
+
 test_findInWorkspace
 	| workspace findView documentPresenter |
 	self testsIssue: #issue468 withTitle: 'Find text dialog does not highlight correctly'.
@@ -874,6 +899,8 @@ test_autocompleteSort!public!test!test auto complete! !
 test_autocompleteSymbolsNotAddedToIfAutocompleteOff!public!test auto complete!test methods! !
 test_convertToPattern!public!test! !
 test_dolphinStackDumpBanners!public!test! !
+test_fileSaveDialog!public!test! !
+test_fileSaveDialogBasics!public!test! !
 test_findInWorkspace!public!test! !
 test_instVarConstants!public!test! !
 test_releaseOops!public! !
