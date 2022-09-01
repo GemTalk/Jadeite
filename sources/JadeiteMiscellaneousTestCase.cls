@@ -252,6 +252,45 @@ test_convertToPattern
 	self assert: pattern equals: #('symboldict' $*).
 	!
 
+test_createProjectEditorCreateProject
+	| editor presenter newProjectServiceInTranscript newProjectServiceInBrowser |
+	editor := JadeiteCreateProjectEditor showOnSession: session.
+	
+	[presenter := editor primaryPresenter.
+	presenter propertyList list first at: 2 put: 'Test_createProjectEditorCreateProject'.
+	editor createProject.
+	projectsBrowser := presenter browser.
+	newProjectServiceInTranscript := transcript projectListPresenter projectListPresenter list
+				detect: [:projectService | projectService name = #Test_createProjectEditorCreateProject]
+				ifNone: [].
+	self denyIsNil: newProjectServiceInTranscript.
+	newProjectServiceInBrowser := self projectsPresenter projectListPresenter list
+				detect: [:projectService | projectService name = #Test_createProjectEditorCreateProject]
+				ifNone: [].
+	self denyIsNil: newProjectServiceInBrowser]
+			ensure: 
+				[self abortTransaction.
+				newProjectServiceInBrowser := self projectsPresenter projectListPresenter list
+							detect: [:projectService | projectService name = #Test_createProjectEditorCreateProject]
+							ifNone: [].
+				self assertIsNil: newProjectServiceInBrowser.
+				self destroy: projectsBrowser]!
+
+test_createProjectEditorProjectsChanged
+	| editor presenter |
+	editor := JadeiteCreateProjectEditor showOnSession: session.
+	
+	[presenter := editor primaryPresenter.
+	self deny: presenter propertiesAreChanged.
+	self assert: (presenter propertyList list first at: 1) equals: 'projectName'.
+	presenter propertyList list first at: 2 put: 'Abc'.
+	self assert: presenter propertiesAreChanged]
+			ensure: 
+				[TestMessageBox enableJadeiteTestMessageBox.
+				TestMessageBox plannedResult: #yes.	"close anyway? message"
+				editor cancel.
+				TestMessageBox disableJadeiteTestMessageBox]!
+
 test_dolphinStackDumpBanners
 	| timestampString stream |
 	self testsIssue: #issue237 withTitle: 'time stamp at end of Dolphin stack dump would be useful'.
@@ -898,6 +937,8 @@ test_autocompleteSaveMethodSymbolAdded!public!test auto complete!test methods! !
 test_autocompleteSort!public!test!test auto complete! !
 test_autocompleteSymbolsNotAddedToIfAutocompleteOff!public!test auto complete!test methods! !
 test_convertToPattern!public!test! !
+test_createProjectEditorCreateProject!public!test! !
+test_createProjectEditorProjectsChanged!public!test! !
 test_dolphinStackDumpBanners!public!test! !
 test_fileSaveDialog!public!test! !
 test_fileSaveDialogBasics!public!test! !

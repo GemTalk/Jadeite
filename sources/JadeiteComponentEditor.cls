@@ -14,7 +14,6 @@ cancel
 	^self primaryPresenter cancel!
 
 createProject
-	self halt. 
 	^self primaryPresenter createProject!
 
 editLoadSpec

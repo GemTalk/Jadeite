@@ -724,7 +724,7 @@ JadePresenterA subclass: #JadeiteComponentPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenterA subclass: #JadeiteCreateProjectPresenter
-	instanceVariableNames: 'defaultPropertyList propertyList'
+	instanceVariableNames: 'propertyList initialPropertyList browser'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

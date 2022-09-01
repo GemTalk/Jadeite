@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeiteCreateProjectPresenter
-	instanceVariableNames: 'defaultPropertyList propertyList'
+	instanceVariableNames: 'propertyList initialPropertyList browser'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -11,11 +11,14 @@ JadeiteCreateProjectPresenter comment: ''!
 !JadeiteCreateProjectPresenter methodsFor!
 
 atProperty: property
-	^(propertyList detect: [:propertyArray | propertyArray first = property]) last!
+	^(initialPropertyList detect: [:propertyArray | propertyArray first = property]) last!
+
+browser
+	^browser!
 
 createComponents
 	super createComponents.
-	defaultPropertyList := self add: ListPresenter new name: 'propertyList'!
+	propertyList := self add: ListPresenter new name: 'propertyList'!
 
 createProject
 	| service browserService projectNames projectName shell newService |
@@ -23,6 +26,10 @@ createProject
 	self issueCommand: browserService.
 	projectNames := browserService projects collect: [:projectService | projectService name].
 	projectName := self atProperty: 'projectName'.
+	projectName isEmpty
+		ifTrue: 
+			[MessageBox notify: 'Project name cannot be blank'.
+			^false].
 	(projectNames includes: projectName)
 		ifTrue: 
 			[MessageBox notify: 'Project name already exists'.
@@ -39,25 +46,36 @@ createProject
 				add: (self atProperty: 'repositoryType');
 				yourself) asArray.
 	self issueCommand: service.
-	shell := JadeiteBrowser showOnSession: gciSession.
-	newService := shell currentCard projectListPresenter list
+	browser := JadeiteBrowser showOnSession: gciSession.
+	newService := browser currentCard projectListPresenter list
 				detect: [:projectService | projectService name = projectName]
-				ifNone: [^true].
-	shell currentCard projectListPresenter selection: newService.
+				ifNone: 
+					[MessageBox notify: 'Project possibly not created'.
+					^true	"something went wrong but close the create project editor anyway as it may just be a display problem"].
+	browser currentCard projectListPresenter selection: newService.
 	^true!
 
 initializeValues
-	propertyList := self class defaults copy.
-	defaultPropertyList list: propertyList!
+	initialPropertyList := self class defaults copy.
+	propertyList list: initialPropertyList!
 
 propertiesAreChanged
-	^(self class defaults = propertyList) not! !
+	^(self class defaults = initialPropertyList) not!
+
+propertyList
+	^propertyList!
+
+propertyList: anObject
+	propertyList := anObject! !
 !JadeiteCreateProjectPresenter categoriesForMethods!
 atProperty:!private! !
+browser!accessing!private! !
 createComponents!initialization!public! !
 createProject!menu handlers!public! !
 initializeValues!initialization!menu handlers!public! !
 propertiesAreChanged!public!testing! !
+propertyList!accessing!private! !
+propertyList:!accessing!private! !
 !
 
 !JadeiteCreateProjectPresenter class methodsFor!
