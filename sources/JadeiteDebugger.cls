@@ -39,9 +39,9 @@ additionalAccelerators
 
 answer
 	"It is likely that the debugger was opened by some UI command that changed the cursor to a wait cursor.
-		Because we are starting a new main UI process, and because our process can be terminated, we can be
-		left in a state in which the cursor is not set back to its original value.
-		We mitigate that problem by changing it to the default."
+        Because we are starting a new main UI process, and because our process can be terminated, we can be
+        left in a state in which the cursor is not set back to its original value.
+        We mitigate that problem by changing it to the default."
 
 	| suspendingList |
 	Cursor reset.
@@ -56,13 +56,9 @@ answer
 							[debuggerProcess
 								ifNotNil: 
 									[:proc |
-									| dp |
 									"need to resume the suspended main process as main process"
-									dp := debuggerProcess.
 									SessionManager current inputState main: Processor activeProcess.
-									[proc resume: suspendingList] ensure: 
-											[debuggerProcess := nil.
-											dp kill ]]]]]
+									[proc resume: suspendingList] ensure: [Processor activeProcess terminate]]]]]
 					fork.
 	waitingForAnswerProcess name: 'debugger waitingForAnswerProcess' , self identityHash printString.
 	debuggerProcess := Processor activeProcess.
