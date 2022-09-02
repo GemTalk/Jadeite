@@ -543,6 +543,7 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\IDE\Base\Development System'
 	'..\Core\Object Arts\Dolphin\Base\Dolphin'
 	'..\Core\Object Arts\Dolphin\MVP\Base\Dolphin Basic Geometry'
+	'..\Core\Object Arts\Dolphin\MVP\Presenters\Boolean\Dolphin Boolean Presenter'
 	'..\Core\Object Arts\Dolphin\MVP\Views\Cards\Dolphin Card Containers'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Choice Prompter'
 	'..\Core\Object Arts\Dolphin\MVP\Views\Common Controls\Dolphin Common Controls'
@@ -879,7 +880,7 @@ AdvancedFindDialog subclass: #JadeiteAdvancedFindDialog
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteServerFileSelectorDialog subclass: #JadeiteLoadProjectDialog
-	instanceVariableNames: 'projectHomeSelector customAttributesList componentList session attributes components'
+	instanceVariableNames: 'projectHomeSelector customAttributesList componentList session attributes components resolveStrictCheckbox'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -3583,16 +3584,16 @@ isOkayToChangeSource: methodSourcePresenter
 	^true!
 
 loadProject
-	| paths |
-	paths := JadeiteLoadProjectDialog showOnSession: gciSession.
-	paths
+	| projectInfo |
+	projectInfo := JadeiteLoadProjectDialog showOnSession: gciSession.
+	projectInfo
 		ifNotNil: 
 			[^self
-				installProjectFromPath: paths first
-				projectsHome: paths second
-				componentNames: paths third
-				attributes: paths last
-				resolveStrict: true]!
+				installProjectFromPath: projectInfo first
+				projectsHome: projectInfo second
+				componentNames: projectInfo third
+				attributes: projectInfo fourth
+				resolveStrict: projectInfo last]!
 
 methodListSelection
 	
