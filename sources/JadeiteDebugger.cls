@@ -48,10 +48,13 @@ answer
 	waitingForAnswerProcess := 
 			[[SessionManager inputState loopWhile: [answer isNil]] ensure: 
 					[waitingForAnswerProcess := nil.
+					Transcript cr; print: answer; flush. 
 					answer isNil
 						ifTrue: 
-							[Processor activeProcess == debuggerProcess ifFalse: [debuggerProcess terminate].
-							debuggerProcess := nil]
+							[| dp | "nil the debuggerProcess first in case something goes wrong" 
+							dp := debuggerProcess.
+							debuggerProcess := nil.
+							Processor activeProcess == dp ifFalse: [dp terminate]]
 						ifFalse: 
 							[debuggerProcess
 								ifNotNil: 
