@@ -15,29 +15,6 @@ description
 	^gciSession printString: self oop.
 !
 
-frameForLevel: anInteger
- 
-	| string |
-	anInteger = 0 ifTrue: [self error: 'No such frame level!!'].
-	[
-		string := gciSession 
-			serverPerform: #'sourceForProcess:frame:'
-			with: self 
-			with: anInteger.
-		(string beginsWith: '?????') ifTrue: [self error: (string copyFrom: 6 to: string size)].
-	] on: Error do: [:ex | 
-		MessageBox warning: 
-'Error when attempting to read stack frame.
-Maybe an object got an error on a #printString method.
-' , ex description.
-		SessionManager current pause.
-		^nil.
-	].
-	^GsStackFrame
-		fromStringXML: string
-		session: gciSession.
-!
-
 gciSession: aGciSession 
 	gciSession := aGciSession!
 
@@ -58,7 +35,6 @@ type: anObject
 	type := anObject! !
 !GsProcess categoriesForMethods!
 description!public! !
-frameForLevel:!public! !
 gciSession:!public! !
 printOn:!public! !
 type!accessing!public! !
