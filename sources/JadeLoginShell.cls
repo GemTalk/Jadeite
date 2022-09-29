@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 DocumentShell subclass: #JadeLoginShell
-	instanceVariableNames: 'debugPathPresenter gemHostPresenter gemServicePresenter gemTaskPresenter gemTypePresenter hostPasswordPresenter hostUserIDPresenter initialsPresenter isModified loginTypePresenter passwordPresenter stoneHostPresenter stoneNamePresenter userIDPresenter useSocketPresenter versionListPresenter loginButtonPresenter'
+	instanceVariableNames: 'debugPathPresenter gemHostPresenter gemServicePresenter gemTaskPresenter hostPasswordPresenter hostUserIDPresenter initialsPresenter isModified loginTypePresenter passwordPresenter stoneHostPresenter stoneNamePresenter userIDPresenter useSocketPresenter versionListPresenter loginButtonPresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -31,7 +31,6 @@ createComponents
 	versionListPresenter := self add: ListPresenter new name: 'versionList'.
 	stoneHostPresenter := self add: TextPresenter new name: 'stoneHost'.
 	stoneNamePresenter := self add: TextPresenter new name: 'stoneName'.
-	gemTypePresenter := self add: RadioButtonSetPresenter new name: 'gemType'.
 	gemHostPresenter := self add: TextPresenter new name: 'gemHost'.
 	gemServicePresenter := self add: TextPresenter new name: 'gemService'.
 	gemTaskPresenter := self add: TextPresenter new name: 'gemTask'.
@@ -51,7 +50,6 @@ createSchematicWiring
 	versionListPresenter		when: #selectionChanged 	send: #isModified: 	to: self with: true.
 	stoneHostPresenter 		when: #valueChanged 	send: #isModified: 	to: self with: true.
 	stoneNamePresenter 		when: #valueChanged 	send: #isModified: 	to: self with: true.
-	gemTypePresenter		when: #valueChanged 	send: #isModified: 	to: self with: true.
 	gemHostPresenter 		when: #valueChanged 	send: #isModified: 	to: self with: true.
 	gemServicePresenter 	when: #valueChanged 	send: #isModified: 	to: self with: true.
 	gemTaskPresenter 		when: #valueChanged 	send: #isModified: 	to: self with: true.
@@ -355,21 +353,21 @@ updateCaption
 
 updateModel
 	self model
-		gemVersion:	versionListPresenter 		selection displayName;
-		stoneHost: 	stoneHostPresenter 		value trimBlanks;
-		stoneName: 	stoneNamePresenter 		value trimBlanks;
-		gemType: 	gemTypePresenter 		value;
-		gemHost: 		gemHostPresenter 		value trimBlanks;
-		gemService: 	gemServicePresenter 	value trimBlanks;
-		gemTask: 	gemTaskPresenter 		value trimBlanks;
-		gsUserID: 		userIDPresenter 		value trimBlanks;
-		gsPassword: 	passwordPresenter 		value trimBlanks;
-		loginType: 	loginTypePresenter 		value;
-		hostUserID:	hostUserIDPresenter		value trimBlanks;
-		hostPassword:	hostPasswordPresenter	value trimBlanks;
-		initials:		initialsPresenter		value trimBlanks;
-		useSocket: 	useSocketPresenter		value;
-		debugPath: 	debugPathPresenter		value trimBlanks;
+		gemVersion: versionListPresenter selection displayName;
+		stoneHost: stoneHostPresenter value trimBlanks;
+		stoneName: stoneNamePresenter value trimBlanks;
+		gemType: #remote;
+		gemHost: gemHostPresenter value trimBlanks;
+		gemService: gemServicePresenter value trimBlanks;
+		gemTask: gemTaskPresenter value trimBlanks;
+		gsUserID: userIDPresenter value trimBlanks;
+		gsPassword: passwordPresenter value trimBlanks;
+		loginType: loginTypePresenter value;
+		hostUserID: hostUserIDPresenter value trimBlanks;
+		hostPassword: hostPasswordPresenter value trimBlanks;
+		initials: initialsPresenter value trimBlanks;
+		useSocket: useSocketPresenter value;
+		debugPath: debugPathPresenter value trimBlanks;
 		yourself.
 	debugPathPresenter value isEmpty ifFalse: [self dumpLoginInfoToFile]!
 
@@ -382,7 +380,6 @@ updateView
 	versionListPresenter		selection: selection.
 	stoneHostPresenter 		value: self model stoneHost.
 	stoneNamePresenter 		value: self model stoneName.
-	gemTypePresenter 		value: self model gemType.
 	gemHostPresenter 		value: self model gemHost.
 	gemServicePresenter 	value: self model gemService.
 	gemTaskPresenter 		value: self model gemTask. 

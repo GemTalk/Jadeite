@@ -1365,6 +1365,10 @@ pushToGit
 queryCommand: aCommandQuery
 	| command |
 	command := aCommandQuery command.
+	#openJadeiteProjectsBrowser = command
+		ifTrue: 
+			[aCommandQuery isEnabled: true.
+			^true].
 	#loadProject = command
 		ifTrue: 
 			[aCommandQuery isEnabled: true.
