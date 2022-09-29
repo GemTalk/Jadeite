@@ -121,6 +121,7 @@ package methodNames
 	add: #DragDropSession -> #defaultScrollInterval;
 	add: #Float -> #asString;
 	add: #GciSession -> #_executeString:fromContextOop:environment:;
+	add: #GciSession -> #commit;
 	add: #GciSession -> #computeGemHost;
 	add: #GciSession -> #computeStoneHost;
 	add: #GciSession -> #confirmMessageBox:;
@@ -413,6 +414,7 @@ package methodNames
 	add: #MethodSourcePresenter -> #updateMethodSource;
 	add: #MethodSourcePresenter -> #updateMethodStepPoints;
 	add: #MultipleSelectionListBox -> #wmRButtonDown:wParam:lParam:;
+	add: #MySessionPresenter -> #configDetailsFor:;
 	add: #Object -> #basicPrepareForReplication;
 	add: #Object -> #isClassService;
 	add: #Object -> #isInspectorService;
@@ -447,6 +449,7 @@ package methodNames
 	add: #SequencedGrowableCollection -> #removeWithoutNotification:ifAbsent:view:;
 	add: #SequencedStream -> #nextWordWithoutPunctuation;
 	add: #SmallInteger -> #_digitsAsString;
+	add: #StoneInfoPresenter -> #configDetailsFor:;
 	add: #Time -> #asStringUsingFormat:;
 	add: #Time -> #stonOn:;
 	add: #TranscriptPresenter -> #clearTranscript;
@@ -1359,6 +1362,11 @@ _executeString: aString fromContextOop: anOopType environment: anInteger
 		context: anOopType
 		environment: anInteger!
 
+commit
+	| result |
+	BrowserUpdate current inUpdateWhile: [result := self serverPerform: #commit].
+	^result!
+
 computeGemHost
 	| list |
 	list := gemNRS subStrings: $#.
@@ -1675,6 +1683,7 @@ withExplanation: aString doA: aBlock
 	^self handlingClientForwarderSendDo: aBlock! !
 !GciSession categoriesForMethods!
 _executeString:fromContextOop:environment:!private! !
+commit!Jade convenience!public! !
 computeGemHost!public!title bar! !
 computeStoneHost!public!title bar! !
 confirmMessageBox:!must not strip!public!server interactions! !
@@ -5736,6 +5745,22 @@ wmRButtonDown: message wParam: wParam lParam: lParam
 wmRButtonDown:wParam:lParam:!event handlers!public! !
 !
 
+!MySessionPresenter methodsFor!
+
+configDetailsFor: aPresenter
+	| line string |
+	line := aPresenter selection.
+	BrowserUpdate current
+		inUpdateWhile: [string := gciSession serverPerform: #descriptionOfConfigOption: with: line first].
+	string := string , 'System gemConfigurationAt: #' , (line at: 1) , ' "' , (line at: 2) , '"'.
+	^(JadeWorkspace showOnSession: gciSession)
+		model: string;
+		isModified: false;
+		yourself! !
+!MySessionPresenter categoriesForMethods!
+configDetailsFor:!public! !
+!
+
 !Object methodsFor!
 
 basicPrepareForReplication
@@ -6065,6 +6090,21 @@ onShutdown
 	AllSockets ifNotNil: [:all | all values do: [:each | each onShutdown]]! !
 !SocketAbstract class categoriesForMethods!
 onShutdown!event handling!must not strip!private! !
+!
+
+!StoneInfoPresenter methodsFor!
+
+configDetailsFor: aPresenter
+
+	| line string |
+	line := aPresenter selection.	BrowserUpdate current inUpdateWhile: [string := gciSession serverPerform: #'descriptionOfConfigOption:' with: line first].
+	string := string , 'System stoneConfigurationAt: #' , (line at: 1) , ' "' , (line at: 2) , '"'.
+	(JadeWorkspace showOnSession: gciSession)
+		model: string;
+		isModified: false;
+		yourself.! !
+!StoneInfoPresenter categoriesForMethods!
+configDetailsFor:!public! !
 !
 
 !Time methodsFor!

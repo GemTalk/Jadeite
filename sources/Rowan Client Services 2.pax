@@ -43,7 +43,14 @@ package classNames
 	yourself.
 
 package methodNames
+	add: #GciSession -> #serverPerformInterpreted:with:with:;
+	add: #GciSession -> #setInitials:;
+	add: #GsProcess -> #stack;
+	add: #JadeProcessBrowser -> #update;
+	add: #MySessionPresenter -> #fillSessionInfo;
 	add: #Object -> #isService;
+	add: #StoneInfoPresenter -> #fillSessionInfo;
+	add: 'GsCompileError class' -> #errorListFor:inSession:;
 	yourself.
 
 package binaryGlobalNames: (Set new
@@ -65,6 +72,8 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Tree\Dolphin Tree Presenter'
 	'GemStone C Interface'
 	'GemStone Session'
+	'Jade Process Browser'
+	'Jade Transcript'
 	'Jade UI Base'
 	'..\Core\Contributions\svenc\STON\STON-Core').
 
@@ -253,12 +262,135 @@ TreeNode subclass: #JadeiteTreeNode
 
 "Loose Methods"!
 
+!GciSession methodsFor!
+
+serverPerformInterpreted: aSymbol with: arg1 with: arg2
+	| result |
+	BrowserUpdate current inUpdateWhile: 
+			[result := self serverPerformInterpreted: aSymbol withArguments: (Array with: arg1 with: arg2)].
+	^result!
+
+setInitials: initials
+	| pieces string |
+	server isNil ifTrue: [^self].
+	BrowserUpdate current inUpdateWhile: [string := self serverPerform: #mcInitials: with: initials].
+	pieces := string subStrings collect: [:each | each asNumber].
+	stoneSessionID := pieces at: 1.
+	stoneSerial := pieces at: 2! !
+!GciSession categoriesForMethods!
+serverPerformInterpreted:with:with:!Jade convenience!public! !
+setInitials:!private! !
+!
+
+!GsCompileError class methodsFor!
+
+errorListFor: anOop inSession: aGciSession
+	| result list |
+	BrowserUpdate current
+		inUpdateWhile: [result := aGciSession serverPerform: #errorListFor: with: anOop].
+	list := result subStrings: Character lf.
+	list := list collect: [:each | each , '	' subStrings: Character tab].
+	list := list collect: 
+					[:each |
+					Array
+						with: (each at: 1) asNumber
+						with: (each at: 2) asNumber
+						with: (each at: 3)].
+	^list! !
+!GsCompileError class categoriesForMethods!
+errorListFor:inSession:!public! !
+!
+
+!GsProcess methodsFor!
+
+stack
+	stack notNil ifTrue: [^stack].
+	self oopType = (gciSession oopTypeFor: nil) ifTrue: [^#()].
+	BrowserUpdate current
+		inUpdateWhile: [stack := gciSession serverPerform: #stackForProcess: with: oopType].
+	stack := stack copyReplaceAll: ' | ' with: '>>#'.
+	stack := stack subStrings: Character lf.
+	^stack! !
+!GsProcess categoriesForMethods!
+stack!public! !
+!
+
+!JadeProcessBrowser methodsFor!
+
+update
+	| string lines priorities |
+	BrowserUpdate current inUpdateWhile: [string := gciSession serverPerform: #processes].
+	lines := (string subStrings: Character lf) asOrderedCollection.
+	priorities := lines removeFirst subStrings: Character tab.
+	priorities := priorities collect: 
+					[:each |
+					| pieces |
+					pieces := each subStrings: Character space.
+					pieces first -> pieces last asNumber].
+	priorities := priorities asSortedCollection: [:a :b | a value > b value].
+	prioritiesPresenter model list: priorities.
+	lines := lines collect: [:each | (each subStrings: Character tab) , #('?' '?')].
+	processesPresenter model list: lines! !
+!JadeProcessBrowser categoriesForMethods!
+update!private! !
+!
+
+!MySessionPresenter methodsFor!
+
+fillSessionInfo
+	| line list stream |
+	gciVersionPresenter value: gciSession libraryVersion.
+	userIDPresenter value: gciSession userID.
+	stoneHostPresenter value: gciSession stoneHost.
+	stoneNamePresenter value: gciSession stoneName.
+	gciSession isLinkedGem
+		ifTrue: [gemTypePresenter value: 'linked']
+		ifFalse: 
+			[gemTypePresenter value: 'RPC'.
+			gemHostPresenter value: gciSession gemHost.
+			netPortPresenter value: gciSession netPort.
+			netTaskPresenter value: gciSession netTask].
+	stoneSessionIDPresenter value: gciSession stoneSessionID.
+	stoneSerialPresenter value: gciSession stoneSerial.
+	gciSessionIdPresenter value: gciSession gciSessionId.
+	BrowserUpdate current
+		inUpdateWhile: [stream := ReadStream on: (gciSession serverPerform: #mySessionInfo)].
+	logPathPresenter value: stream nextLine.
+	list := OrderedCollection new.
+	[(line := stream nextLine) = '%'] whileFalse: [list add: (line subStrings: Character tab)].
+	versionReportPresenter list: list.
+	list := OrderedCollection new.
+	[(line := stream nextLine) = '%'] whileFalse: [list add: (line subStrings: Character tab)].
+	configurationReportPresenter list: list! !
+!MySessionPresenter categoriesForMethods!
+fillSessionInfo!public!updating! !
+!
+
 !Object methodsFor!
 
 isService
 	^false! !
 !Object categoriesForMethods!
 isService!public!testing! !
+!
+
+!StoneInfoPresenter methodsFor!
+
+fillSessionInfo
+	| line list stream |
+	BrowserUpdate current
+		inUpdateWhile: [stream := ReadStream on: (gciSession serverPerform: #stoneInfo)].
+	streamTypePresenter value: (stream upTo: Character tab).
+	stringTypePresenter value: (stream upTo: Character tab).
+	stream nextLine.
+	list := OrderedCollection new.
+	[(line := stream nextLine) = '%'] whileFalse: [list add: (line subStrings: Character tab)].
+	versionReportPresenter list: list.
+	list := OrderedCollection new.
+	[(line := stream nextLine) = '%'] whileFalse: [list add: (line subStrings: Character tab)].
+	configurationReportPresenter list: list! !
+!StoneInfoPresenter categoriesForMethods!
+fillSessionInfo!public! !
 !
 
 "End of package definition"!

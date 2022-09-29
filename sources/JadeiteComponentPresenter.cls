@@ -493,8 +493,7 @@ renameComponent
 
 renamePackage
 	| result |
-	result := packageListPresenter view editSelectionLabel.
-	Transcript cr; show: result printString. !
+	result := packageListPresenter view editSelectionLabel. !
 
 resetComponentList
 	componentListPresenter model: (JadeiteTreeModel new

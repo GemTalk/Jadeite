@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 GsObject subclass: #GsProcess
 	instanceVariableNames: 'stack type'
@@ -51,32 +51,19 @@ printOn: aStream
 		yourself.
 !
 
-stack
-
-	stack notNil ifTrue: [^stack].
-	self oopType = (gciSession oopTypeFor: nil) ifTrue: [^#()].
-	stack := gciSession 
-		serverPerform: #'stackForProcess:'
-		with: oopType.
-	stack := stack
-		copyReplaceAll: ' | '
-		with: '>>#'.
-	stack := stack subStrings: Character lf.
-	^stack.
-!
-
 type
 	^type!
 
 type: anObject
 	type := anObject! !
-!GsProcess categoriesFor: #description!public! !
-!GsProcess categoriesFor: #frameForLevel:!public! !
-!GsProcess categoriesFor: #gciSession:!public! !
-!GsProcess categoriesFor: #printOn:!public! !
-!GsProcess categoriesFor: #stack!public! !
-!GsProcess categoriesFor: #type!accessing!public! !
-!GsProcess categoriesFor: #type:!accessing!public! !
+!GsProcess categoriesForMethods!
+description!public! !
+frameForLevel:!public! !
+gciSession:!public! !
+printOn:!public! !
+type!accessing!public! !
+type:!accessing!public! !
+!
 
 !GsProcess class methodsFor!
 
@@ -92,6 +79,8 @@ xmlBaseName
 
 	^'process'.
 ! !
-!GsProcess class categoriesFor: #session:oopType:!public! !
-!GsProcess class categoriesFor: #xmlBaseName!public! !
+!GsProcess class categoriesForMethods!
+session:oopType:!public! !
+xmlBaseName!public! !
+!
 

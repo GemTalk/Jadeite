@@ -23,12 +23,12 @@ pathText
 	^fileSelectorPresenter pathText!
 
 select
-	fileSelectorPresenter select.
+	fileSelectorPresenter selectionMade.
 	self ok.
 	^fileSelectorPresenter pathText value!
 
 setPathText: thePathText
-	fileSelectorPresenter pathText: thePathText!
+	fileSelectorPresenter pathText: thePathText asValue!
 
 setPresenterModel
 	fileSelectorPresenter model: model!

@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 GsError subclass: #GsCompileError
 	instanceVariableNames: 'list additionalArgs'
@@ -44,34 +44,20 @@ list
 
 	^list.
 ! !
-!GsCompileError categoriesFor: #additionalArgs!accessing!private! !
-!GsCompileError categoriesFor: #descriptiveText!accessing!public! !
-!GsCompileError categoriesFor: #gatherData!public! !
-!GsCompileError categoriesFor: #list!public! !
+!GsCompileError categoriesForMethods!
+additionalArgs!accessing!private! !
+descriptiveText!accessing!public! !
+gatherData!public! !
+list!public! !
+!
 
 !GsCompileError class methodsFor!
-
-errorListFor: anOop inSession: aGciSession
- 
-	| result list |
-	result := aGciSession
-		serverPerform: #'errorListFor:'
-		with: anOop.
-	list := result subStrings: Character lf.
-	list := list collect: [:each | each , '	' subStrings: Character tab].
-	list := list collect: [:each | 
-		Array
-			with: (each at: 1) asNumber
-			with: (each at: 2) asNumber
-			with: (each at: 3).
-	].
-	^list.
-!
 
 wantsToHandle: aGciErrorSType session: aGciSession
 
 	^aGciErrorSType isCompileErrorInSession: aGciSession.
 ! !
-!GsCompileError class categoriesFor: #errorListFor:inSession:!public! !
-!GsCompileError class categoriesFor: #wantsToHandle:session:!public! !
+!GsCompileError class categoriesForMethods!
+wantsToHandle:session:!public! !
+!
 

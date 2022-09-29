@@ -140,11 +140,6 @@ clientForwarders
 	^clientForwarders.
 !
 
-commit
-
-	^self serverPerform: #'commit'.
-!
-
 debugString: aString fromContext: anObject environment: anInteger
 	^self
 		serverPerform: #'debugString:fromContext:environment:' with: aString with: anObject with: anInteger.
@@ -582,15 +577,6 @@ serverPerform: aSymbol with: arg1 with: arg2 with: arg3 with: arg4
 			with: arg4).
 !
 
-serverPerformInterpreted: aSymbol with: arg1 with: arg2
-
-	^self
-		serverPerformInterpreted: aSymbol 
-		withArguments: (Array
-			with: arg1
-			with: arg2).
-!
-
 serverPerformInterpreted: aSymbol withArguments: anArray
 
 	| answer |
@@ -603,18 +589,6 @@ serverPerformInterpreted: aSymbol withArguments: anArray
 		to: server
 		withAll: anArray.
 	^answer.
-!
-
-setInitials: initials
-
-	| pieces string |
-	server isNil ifTrue: [^self].
-	string := self
-		serverPerform: #'mcInitials:' 
-		with: initials.
-	pieces := string subStrings collect: [:each | each asNumber].
-	stoneSessionID := pieces at: 1.
-	stoneSerial := pieces at: 2.
 !
 
 signalConfirmationRequestUsing: anOopType64 
@@ -790,7 +764,6 @@ briefDescription!public! !
 clearStack:!Jade!public! !
 clientForwardError:!public! !
 clientForwarders!public! !
-commit!Jade convenience!public! !
 debugString:fromContext:environment:!long running!public! !
 debugToFilePath:!Jade convenience!public! !
 enableSignaledAbortError!public! !
@@ -842,9 +815,7 @@ serverPerform:with:!Jade convenience!public! !
 serverPerform:with:with:!Jade convenience!public! !
 serverPerform:with:with:with:!Jade convenience!public! !
 serverPerform:with:with:with:with:!Jade convenience!public! !
-serverPerformInterpreted:with:with:!Jade convenience!public! !
 serverPerformInterpreted:withArguments:!Jade convenience!public! !
-setInitials:!private! !
 signalConfirmationRequestUsing:!OmniBrowser!public! !
 signalInformRequestUsing:!OmniBrowser!public! !
 signalMultiLineTextRequestUsing:!OmniBrowser!public! !

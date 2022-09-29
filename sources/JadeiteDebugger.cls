@@ -48,13 +48,13 @@ answer
 	waitingForAnswerProcess := 
 			[[SessionManager inputState loopWhile: [answer isNil]] ensure: 
 					[waitingForAnswerProcess := nil.
-					Transcript cr; print: answer; flush. 
 					answer isNil
 						ifTrue: 
-							[| dp | "nil the debuggerProcess first in case something goes wrong" 
+							[| dp |
+							"nil the debuggerProcess first in case something goes wrong"
 							dp := debuggerProcess.
 							debuggerProcess := nil.
-							Processor activeProcess == dp ifFalse: [dp terminate]]
+							dp ifNotNil: [dp terminate]]
 						ifFalse: 
 							[debuggerProcess
 								ifNotNil: 
@@ -63,11 +63,13 @@ answer
 									SessionManager current inputState main: Processor activeProcess.
 									[proc resume: suspendingList] ensure: [Processor activeProcess terminate]]]]]
 					fork.
-	waitingForAnswerProcess name: 'debugger waitingForAnswerProcess' , self identityHash printString.
+	waitingForAnswerProcess
+		name: 'debugger waitingForAnswerProcess' , waitingForAnswerProcess id printString.
+	
 	debuggerProcess := Processor activeProcess.
-	debuggerProcess name: 'debuggerProcess' , self identityHash printString.
+	debuggerProcess name: 'debuggerProcess' , debuggerProcess id printString.
 	[suspendingList := debuggerProcess suspendingList] forkAt: Processor activePriority + 1.
-	Processor suspendActive.
+	Processor suspendActive. 
 	debuggerProcess := nil.
 	^answer!
 
@@ -838,11 +840,17 @@ lastPosition: anObject
 	lastPosition := anObject!
 
 openOn: gsProcess message: aString terminateOnClose: aBoolean
-	^(self showOnSession: gsProcess gciSession)
+	| finished answer |
+	finished := false. 
+	[[answer := (self showOnSession: gsProcess gciSession)
 		initializeProcess: gsProcess
 			message: aString
 			terminateOnClose: aBoolean;
-		answer!
+		answer] ifCurtailed: [finished := true]. 
+	finished := true] fork. 
+	[finished] whileFalse:[(Delay forMilliseconds: 1) wait]. 
+	answer ifNil: [Processor activeProcess terminate]. 
+	^answer!
 
 resource_Default_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.

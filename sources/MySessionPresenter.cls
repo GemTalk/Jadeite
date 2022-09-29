@@ -18,16 +18,6 @@ abortTransaction
 commitTransaction
 	^parentPresenter commitTransaction!
 
-configDetailsFor: aPresenter
-
-	| line string |
-	line := aPresenter selection.	string := gciSession serverPerform: #'descriptionOfConfigOption:' with: line first.
-	string := string , 'System gemConfigurationAt: #' , (line at: 1) , ' "' , (line at: 2) , '"'.
-	^(JadeWorkspace showOnSession: gciSession)
-		model: string;
-		isModified: false;
-		yourself.!
-
 configurationReportPresenter
 	" for testing"
 
@@ -59,42 +49,6 @@ createSchematicWiring
 	versionReportPresenter 		when: #'actionPerformed' send: #'versionDetailsFor:' 	to: self with: versionReportPresenter.
 !
 
-fillSessionInfo
-
-	| line list stream |
-	gciVersionPresenter 	value: gciSession libraryVersion.
-	userIDPresenter		value: gciSession userID.
-	stoneHostPresenter	value: gciSession stoneHost.
-	stoneNamePresenter	value: gciSession stoneName.
-	gciSession isLinkedGem ifTrue: [
-		gemTypePresenter	value: 'linked'.
-	] ifFalse: [
-		gemTypePresenter	value: 'RPC'.
-		gemHostPresenter	value: gciSession gemHost.
-		netPortPresenter	value: gciSession netPort.
-		netTaskPresenter	value: gciSession netTask.
-	].
-	stoneSessionIDPresenter	value: gciSession stoneSessionID.
-	stoneSerialPresenter		value: gciSession stoneSerial.
-	gciSessionIdPresenter	value: gciSession gciSessionId.
-
-	stream := ReadStream on: (gciSession serverPerform: #'mySessionInfo').
-	logPathPresenter value: stream nextLine.
-	list := OrderedCollection new.
-	[
-		(line := stream nextLine) = '%'.
-	] whileFalse: [
-		list add: (line subStrings: Character tab).
-	].
-	versionReportPresenter list: list.
-	list := OrderedCollection new.
-	[
-		(line := stream nextLine) = '%'.
-	] whileFalse: [
-		list add: (line subStrings: Character tab).
-	].
-	configurationReportPresenter list: list.!
-
 hardBreak
 
 	gciSession hardBreak.
@@ -116,11 +70,9 @@ versionDetailsFor: aPresenter
 !MySessionPresenter categoriesForMethods!
 abortTransaction!public! !
 commitTransaction!public! !
-configDetailsFor:!public! !
 configurationReportPresenter!accessing!private! !
 createComponents!public! !
 createSchematicWiring!public! !
-fillSessionInfo!public!updating! !
 hardBreak!public! !
 softBreak!public! !
 versionDetailsFor:!public! !
