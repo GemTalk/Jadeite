@@ -206,7 +206,7 @@ buildAddPackageView
 	| addPackageView |
 	addPackagePresenter := JadeiteAddPackagePresenter new
 				gciSession: gciSession;
-				projectService: projectListPresenter selection.
+				projectService: (projectListPresenter selectionIfNone: [RowanProjectService noneProject]).
 	addPackagePresenter parentPresenter: projectInfoTab.
 	addPackageView := addPackagePresenter createView: 'Default view'.
 	addPackageView
@@ -301,7 +301,7 @@ buildProjectReadMeTab
 		view)
 		wordWrap: true;
 		backcolor: JadeiteTextStyles default colorForNoEdits.
-	self updateProjectReadMe.
+	self selectedProjectName ifNotNil: [self updateProjectReadMe].
 	cardLabel := CardLabel text: 'ReadMe'.
 	cardLabel iconBlock: nil.
 	projectReadMeTab view
@@ -1215,7 +1215,11 @@ onViewOpened
 	definedClassPackageText view alignment: #left.
 	definedMethodPackageText view isMultiline: false.
 	definedMethodPackageText view alignment: #left.
-	self showPackageList!
+	self showPackageList.
+	self
+		buildProjectTab;
+		buildProjectReadMeTab.
+	self selectProjectTab!
 
 openJadeiteProjectsBrowser
 	^self addSystemBrowser!

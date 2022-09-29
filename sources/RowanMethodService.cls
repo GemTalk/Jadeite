@@ -725,6 +725,6 @@ icon
 !RowanMethodService class categoriesForMethods!
 defaultIconName!private! !
 fakeMethodFor:selector:source:!instance creation!public! !
-icon!private! !
+icon!public! !
 !
 
