@@ -1217,6 +1217,9 @@ onViewOpened
 	definedMethodPackageText view alignment: #left.
 	self showPackageList!
 
+openJadeiteProjectsBrowser
+	^self addSystemBrowser!
+
 openSourceStyler
 	| textStyles |
 	textStyles := super openSourceStyler.
@@ -2298,6 +2301,7 @@ onDropMethodsOnPackageList:session:!drag & drop!public! !
 onDropOnPackageList:!drag & drop!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
+openJadeiteProjectsBrowser!menu handlers!public! !
 openSourceStyler!menu handlers!public! !
 packageDictionaryCards!accessing!private! !
 packageGroupPresenter!accessing!private! !
@@ -2436,7 +2440,7 @@ projectMenuStrings
 				auditProject;
 				projectLog;
 				refresh].
-	^#('Projects' 'Create ...//createNewProject' 'Load Project ...//loadProject' 'Reload Project //reloadProject' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write ...//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' 'Edit Components//editComponents' 'Edit Load Spec From File ...//editLoadSpecFromFile' '-' 'Audit//auditProject' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
+	^#('Projects' 'Browse//openJadeiteProjectsBrowser' 'Create ...//createNewProject' 'Load Project ...//loadProject' 'Reload Project //reloadProject' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write ...//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' 'Edit Components//editComponents' 'Edit Load Spec From File ...//editLoadSpecFromFile' '-' 'Audit//auditProject' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
 
 resource_Default_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.
