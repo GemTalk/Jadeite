@@ -10,6 +10,9 @@ JadeiteBreakpointBrowserSourcePresenter comment: ''!
 !JadeiteBreakpointBrowserSourcePresenter categoriesForClass!Unclassified! !
 !JadeiteBreakpointBrowserSourcePresenter methodsFor!
 
+inspectorContextObject
+	^20!
+
 setDefaultMethod
 	documentPresenter
 		value: String new;
@@ -17,6 +20,7 @@ setDefaultMethod
 		isReadOnly: false;
 		yourself! !
 !JadeiteBreakpointBrowserSourcePresenter categoriesForMethods!
+inspectorContextObject!public! !
 setDefaultMethod!public! !
 !
 

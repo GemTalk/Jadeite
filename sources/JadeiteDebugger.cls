@@ -380,6 +380,17 @@ initializeProcess: aProcess message: aString terminateOnClose: aBoolean
 isOkayToChangeFrame
 	^codePane isOkayToChange!
 
+jadeDebug
+	variableDataPresenter view hasFocus
+		ifTrue: 
+			[
+			[gciSession
+				debugString: self currentSelectionOrLine
+				fromContext:   (OopType64 fromInteger: self contextObject)
+				environment: environment]
+					on: GsCompileError
+					do: [:ex | MessageBox notify: 'Compile error in expression ' , ex descriptiveText]]!
+
 jadeInspect
 	| inspector | 
 	inspector := JadeiteInspector new gciSession: gciSession.
@@ -753,6 +764,7 @@ initialize!initialization!public! !
 initializeIdleProcess!initialization!public! !
 initializeProcess:message:terminateOnClose:!initialization!public! !
 isOkayToChangeFrame!public!testing! !
+jadeDebug!menu handlers!public! !
 jadeInspect!menu handlers!public! !
 methodListSelection!accessing!public! !
 methodSourcePresenter!public! !
@@ -816,7 +828,7 @@ debuggerClass: aDebugger
 !
 
 defaultAdditionalAccelerators
-	^super defaultAdditionalAccelerators, #(#(#reformatSource 'Ctrl+Shift+O'))!
+	^super defaultAdditionalAccelerators, #(#(#reformatSource 'Ctrl+Shift+O') #(#jadeDebug 'Ctrl+B'))!
 
 disableBreakpointsWhile: block session: session
 	| wereBreakpointsEnabled answeringService result |
