@@ -1092,12 +1092,13 @@ isVariablesTabSelected
 !
 
 jadeDebug
-	[
-		gciSession debugString: self currentSelectionOrLine fromContext: nil environment: environment.
-	] on: GsCompileError do: [:ex | 
-		self jadeExecute.
-	].
-!
+	
+	[gciSession
+		debugString: self currentSelectionOrLine
+		fromContext: (OopType64 fromInteger: 20)
+		environment: environment]
+			on: GsCompileError
+			do: [:ex | self jadeExecute]!
 
 jadeDisplay
 
@@ -1742,16 +1743,6 @@ revertNewClass
 	stream nextPutAll: selectedClassName subStrings first.
 	stream lf; nextPutAll: self requestString.
 	self updateCommand: stream contents.
-!
-
-runMethodTests
-
-	| result |
-	result := self gciSession 
-		serverPerform: #'sbRunMethodTests:' 
-		with: self methodsIdentifier.
-	result == true ifFalse: [self error: 'unexpected result!!'].
-	MessageBox notify: 'Ran ' , methodListPresenter selections size printString , ' test(s)'.
 !
 
 selectClass: aString selector: methodString
@@ -2600,7 +2591,6 @@ requestString!public!request string! !
 requestStringForUpdate!public!request string! !
 resetColors!menu handlers!public! !
 revertNewClass!menu handlers!public! !
-runMethodTests!menu handlers!public! !
 selectClass:selector:!public! !
 selectedClassChanged:!public! !
 selectedClasses!public! !

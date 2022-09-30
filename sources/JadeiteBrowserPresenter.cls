@@ -1052,7 +1052,7 @@ methodsMenuStrings
 	'-'
 	'Move To Package ...//moveMethodToPackage'
 	'-'
-	'Run All Tests/Ctrl+Shift+A/runAll' 'Run Selected Test(s)/Ctrl+Shift+S/runMethodTests' 'Debug Selected &Test(s)/Ctrl+B/runMethodTests' '-' 'Go To Defining Package//gotoMethodDefinedPackage')!
+	'Run All Tests/Ctrl+Shift+A/runAll' 'Run Selected Test(s)/Ctrl+Shift+S/runMethodTests' 'Debug Selected &Test(s)/Ctrl+Shift+B/runMethodTests' '-' 'Go To Defining Package//gotoMethodDefinedPackage')!
 
 methodsUpdate: classService
 	classService meta = self isClassSideSelected ifFalse: [^self].

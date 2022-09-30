@@ -656,10 +656,6 @@ initialize
 	super initialize.
 	stonCritical := Semaphore forMutualExclusion.!
 
-jadeDebug
-	View focus name = 'methodSource' ifFalse: [^self runMethodTests].
-	^super jadeDebug!
-
 jadeDisplay
 	View focus == methodSourcePresenter view ifFalse: [^self].
 	^super jadeDisplay!
@@ -1711,7 +1707,6 @@ gotoMethodDefinedPackageViaButton!menu handlers!public! !
 gotoPackageNamed:!menu handlers!public! !
 gotoProjectNamed:!menu handlers!public! !
 initialize!initialize/release!public! !
-jadeDebug!menu handlers!private! !
 jadeDisplay!menu handlers!private! !
 jadeExecute!menu handlers!private! !
 jadeMenuStrings!menus!public! !

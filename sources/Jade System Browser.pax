@@ -70,6 +70,7 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Models\Tree\Dolphin Tree Models'
 	'..\Core\Object Arts\Dolphin\MVP\Type Converters\Dolphin Type Converters'
 	'..\Core\Object Arts\Dolphin\MVP\Models\Value\Dolphin Value Models'
+	'GemStone C Interface'
 	'GemStone Objects'
 	'GemStone Services'
 	'GemStone Session'
