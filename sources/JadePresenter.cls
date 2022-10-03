@@ -323,7 +323,14 @@ transactionMode
 	^TransactionMode value!
 
 transactionModeValueHolder
-	^TransactionMode ifNil:[self initializeTransactionMode]! !
+	^TransactionMode ifNil:[self initializeTransactionMode]!
+
+waitForAnswer: thingThatCanAnswer
+	| theAnswer deferredValue |
+	deferredValue := [thingThatCanAnswer answer] deferredValue.
+	[deferredValue hasValue] whileFalse: [(Delay forMilliseconds: 1) wait].
+	theAnswer := [deferredValue value] on: Error do: [:ex | nil].
+	^theAnswer! !
 !JadePresenter class categoriesForMethods!
 areAbortCommitEnabled!public! !
 defaultAdditionalAccelerators!constants!public! !
@@ -349,5 +356,6 @@ sigAbortsProcessEnabled:!public! !
 stopListeningForSigAborts!public! !
 transactionMode!public! !
 transactionModeValueHolder!public! !
+waitForAnswer:!debugger support!public! !
 !
 

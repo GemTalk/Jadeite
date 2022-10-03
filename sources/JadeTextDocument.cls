@@ -430,7 +430,10 @@ validateUserInterface
 	] on: Error do: [:ex | 
 		view == DeafObject current ifTrue: [ex return: nil].
 		ex pass.
-	].! !
+	].!
+
+waitForAnswer: answeringService
+	^JadePresenter waitForAnswer: answeringService! !
 !JadeTextDocument categoriesForMethods!
 abortTransaction!Jade!private! !
 activeTextEdit!private! !
@@ -489,6 +492,7 @@ updateCodeFont!private! !
 updateStatusBar!private! !
 updateStatusBarItem:with:!private! !
 validateUserInterface!overrides!private! !
+waitForAnswer:!Jade!private! !
 !
 
 !JadeTextDocument class methodsFor!

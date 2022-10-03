@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadeDebugger subclass: #JadeiteDebugger
-	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore search debuggerService'
+	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore search debuggerService debuggerClosed'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggerClass semaphore lastPosition lastExtent'!
@@ -38,40 +38,7 @@ additionalAccelerators
 	^super additionalAccelerators , #(#(#reformatSource 'Ctrl+Shift+O') #(#jadeDebug 'Ctrl+B'))!
 
 answer
-	"It is likely that the debugger was opened by some UI command that changed the cursor to a wait cursor.
-        Because we are starting a new main UI process, and because our process can be terminated, we can be
-        left in a state in which the cursor is not set back to its original value.
-        We mitigate that problem by changing it to the default."
-
-	| suspendingList |
-	Cursor reset.
-	waitingForAnswerProcess := 
-			[[SessionManager inputState loopWhile: [answer isNil]] ensure: 
-					[waitingForAnswerProcess := nil.
-					answer isNil
-						ifTrue: 
-							[| dp |
-							"nil the debuggerProcess first in case something goes wrong"
-							dp := debuggerProcess.
-							debuggerProcess := nil.
-							dp ifNotNil: [dp terminate]]
-						ifFalse: 
-							[debuggerProcess
-								ifNotNil: 
-									[:proc |
-									"need to resume the suspended main process as main process"
-									SessionManager current inputState main: Processor activeProcess.
-									[proc resume: suspendingList] ensure: [Processor activeProcess terminate]]]]]
-					fork.
-	waitingForAnswerProcess
-		name: 'debugger waitingForAnswerProcess' , waitingForAnswerProcess id printString.
-	
-	debuggerProcess := Processor activeProcess.
-	debuggerProcess name: 'debuggerProcess' , debuggerProcess id printString.
-	[suspendingList := debuggerProcess suspendingList] forkAt: Processor activePriority + 1.
-	Processor suspendActive. 
-	debuggerProcess := nil.
-	^answer!
+	[SessionManager inputState loopWhile: [answer isNil and: [debuggerClosed not]]] ensure: [^answer]!
 
 basicSelectedFrame
 	| index |
@@ -271,7 +238,7 @@ dumpStackToFile
 errorMessagePresenter
 	^errorMessagePresenter!
 
-execute: string context:  contextObject
+execute: string context: contextObject
 	| answeringService theAnswer oop |
 	oop := (contextObject isKindOf: ExternalInteger)
 				ifTrue: [contextObject value]
@@ -286,7 +253,7 @@ execute: string context:  contextObject
 					with: gsProcess oop
 					with: oop).
 	self issueCommand: answeringService.
-	theAnswer := answeringService answer.
+	theAnswer := self waitForAnswer: answeringService.
 	theAnswer
 		ifNotNil: [theAnswer key ifTrue: [theAnswer value: (OopType64 fromInteger: theAnswer value)]].
 	^theAnswer!
@@ -339,7 +306,8 @@ homeFrameOf: theFrame
 
 initialize
 	super initialize.
-	processList := OrderedCollection new. !
+	processList := OrderedCollection new.
+	debuggerClosed := false!
 
 initializeIdleProcess
 	"Private - Support for automated testing so we know when UI is ready.
@@ -428,6 +396,7 @@ onViewClosed
 	"Private - copied from RowanSystemBrowserPresenter>>onViewClosed"
 
 	BrowserUpdate current logComment: 'Closing Debugger {' , self identityHash printString , '}'.
+	debuggerClosed := true. 
 	processList := processListPresenter list.
 	BrowserUpdate current removeEventsTriggeredFor: self.
 	BrowserUpdate current removeEventsTriggeredFor: processListPresenter.
@@ -724,13 +693,32 @@ variableDataPresenter
 	^variableDataPresenter!
 
 variableListPresenter
-	^variableListPresenter! !
+	^variableListPresenter!
+
+waitingProcessResumeWith: suspendingList
+	^
+	[[SessionManager inputState loopWhile: [answer isNil]] ensure: 
+			[waitingForAnswerProcess := nil.
+			answer isNil
+				ifTrue: 
+					[| dp |
+					"nil the debuggerProcess first in case something goes wrong"
+					dp := debuggerProcess.
+					debuggerProcess := nil.
+					dp ifNotNil: [dp terminate]]
+				ifFalse: 
+					[debuggerProcess
+						ifNotNil: 
+							[:proc |
+							"need to resume the suspended main process as main process"
+							SessionManager current inputState main: Processor activeProcess.
+							[proc resume: suspendingList] ensure: [Processor activeProcess terminate]]]]]! !
 !JadeiteDebugger categoriesForMethods!
 _processList!public! !
 _terminateProcess:!public! !
 aboutToChangeFrame:!event handlers!public! !
 additionalAccelerators!accessing!public! !
-answer!public! !
+answer!process synchronisation!public! !
 basicSelectedFrame!public! !
 browseFrameMethod!menu handlers!private! !
 browseFrameMethodInExistingBrowser!menu handlers!private! !
@@ -801,6 +789,7 @@ terminateProcess!menu handlers!private! !
 updateMethodSource!public! !
 variableDataPresenter!accessing!public! !
 variableListPresenter!accessing!public! !
+waitingProcessResumeWith:!process synchronisation!public! !
 !
 
 !JadeiteDebugger class methodsFor!
@@ -852,16 +841,13 @@ lastPosition: anObject
 	lastPosition := anObject!
 
 openOn: gsProcess message: aString terminateOnClose: aBoolean
-	| finished answer |
-	finished := false. 
-	[[answer := (self showOnSession: gsProcess gciSession)
-		initializeProcess: gsProcess
-			message: aString
-			terminateOnClose: aBoolean;
-		answer] ifCurtailed: [finished := true]. 
-	finished := true] fork. 
-	[finished] whileFalse:[(Delay forMilliseconds: 1) wait]. 
-	answer ifNil: [Processor activeProcess terminate]. 
+	| answer debugger |
+	debugger := (self showOnSession: gsProcess gciSession)
+				initializeProcess: gsProcess
+				message: aString
+				terminateOnClose: aBoolean.
+	answer := self waitForAnswer: debugger.
+	answer ifNil: [Processor activeProcess terminate].
 	^answer!
 
 resource_Default_view
@@ -891,7 +877,10 @@ signalSemaphore
 			[:sem |
 			
 			[sem signal.
-			SessionManager inputState prod] forkAt: Processor userBackgroundPriority]! !
+			SessionManager inputState prod] forkAt: Processor userBackgroundPriority]!
+
+waitForAnswer: answeringService
+	^JadePresenter waitForAnswer: answeringService! !
 !JadeiteDebugger class categoriesForMethods!
 aboutToShowErrorShellOn:!public! !
 debuggerClass!public! !
@@ -907,5 +896,6 @@ resource_Default_view!public!resources-views! !
 semaphore!public! !
 semaphore:!public! !
 signalSemaphore!public! !
+waitForAnswer:!accessing!public! !
 !
 

@@ -268,6 +268,7 @@ package methodNames
 	add: #JadePresenter -> #update:afterStonReplication:;
 	add: #JadePresenter -> #updateProjects;
 	add: #JadePresenter -> #updateServices:;
+	add: #JadePresenter -> #waitForAnswer:;
 	add: #JadePresenterA -> #auditProjectFor:;
 	add: #JadePresenterA -> #basicRefreshBreakpointsIn:selection:;
 	add: #JadePresenterA -> #clearBreakPointAt:in:;
@@ -848,7 +849,7 @@ JadeLoginShell subclass: #JadeiteLoginShell
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeDebugger subclass: #JadeiteDebugger
-	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore search debuggerService'
+	instanceVariableNames: 'statusTextPresenter idleProcess idleProcessSemaphore search debuggerService debuggerClosed'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'debuggerClass semaphore lastPosition lastExtent'!
@@ -2742,7 +2743,7 @@ executeSelectionOrLine: contextObject
 				ifFalse: [contextObject].	"services wants a local special as a context"
 	oop ifNil: [oop := 20].
 	answeringService := RowanAnsweringService new.
-	window := self myTopShell. 
+	window := self myTopShell.
 	answeringService
 		command: #exec:context:inWindow:;
 		commandArgs: (Array
@@ -2750,7 +2751,7 @@ executeSelectionOrLine: contextObject
 					with: oop
 					with: window view handle value).
 	self issueCommand: answeringService.
-	answer := answeringService answer.
+	answer := self waitForAnswer: answeringService.
 	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
 	^answer!
 
@@ -2925,7 +2926,10 @@ updateProjects
 	self issueCommand: browserService!
 
 updateServices: services
-	BrowserUpdate current updateServices: services asSet asArray session: gciSession! !
+	BrowserUpdate current updateServices: services asSet asArray session: gciSession!
+
+waitForAnswer: answeringService
+	^self class waitForAnswer: answeringService! !
 !JadePresenter categoriesForMethods!
 abortTransaction!public!transaction management! !
 autoCommitExecutionString!menu handlers support!public! !
@@ -2982,6 +2986,7 @@ stopListeningForSigAborts!public! !
 update:afterStonReplication:!browsing support!public!services! !
 updateProjects!public! !
 updateServices:!private!services! !
+waitForAnswer:!menu handlers!private! !
 !
 
 !JadePresenter class methodsFor!
@@ -5002,7 +5007,7 @@ aboutJadeite
 	JadeLoginShell aboutJadeite!
 
 executeSelectionOrLine: contextObject
-	| answeringService answer oop |
+	| answeringService answer oop  |
 	oop := (contextObject isKindOf: ExternalInteger)
 				ifTrue: [contextObject value]
 				ifFalse: [contextObject].	"services wants a local special as a context"
@@ -5012,7 +5017,7 @@ executeSelectionOrLine: contextObject
 		command: #exec:context:;
 		commandArgs: (Array with: self currentSelectionOrLine with: oop).
 	self issueCommand: answeringService.
-	answer := answeringService answer.
+	answer := self waitForAnswer: answeringService. 
 	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
 	^answer!
 
