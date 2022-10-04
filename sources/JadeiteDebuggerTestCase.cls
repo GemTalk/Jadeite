@@ -49,6 +49,7 @@ setUp
 	super setUp.
 	self closeDebuggers.
 	JadeiteDebugger debuggerClass: JadeiteDebugger.
+	JadeiteDebugger allInstances isEmpty ifTrue: [JadeiteDebugger semaphore: nil].
 	self assertIsNil: JadeiteDebugger semaphore.
 	self assert: session notNil.
 	session := GciSession current.
@@ -59,7 +60,7 @@ setUp
 	JadeiteLoginShell allInstances size > 1
 		ifTrue: 
 			["Running tests will not stop on assert. (Debugging tests does) Need to do a hard halt to determine how a test can login as the wrong user"
-			(Delay forSeconds: 1) wait. "give it a second to cleanup" 
+			(Delay forSeconds: 1) wait.	"give it a second to cleanup"
 			JadeiteLoginShell allInstances size > 1
 				ifTrue: [self haltTestForHardToCatchErrors: 'Multiple JadeiteLoginShells found']]!
 

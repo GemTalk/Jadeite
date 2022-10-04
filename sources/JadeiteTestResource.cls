@@ -95,6 +95,9 @@ isAvailable
 issueCommand: service
 	^JadePresenter issueCommands: (Array with: service) session: self session!
 
+jadeiteShell
+	^jadeiteShell!
+
 loadProjectFromFile: fileString projectsHome: projectsHomePath customConditionalAttributes: attributes componentNames: componentNames
 	| projectService |
 	projectService := RowanProjectService new.
@@ -140,7 +143,7 @@ logoutThenLoginAs: userName forceClose: forceClose
 	jadeiteShell loginWithoutErrorHandling.!
 
 openProjectsBrowser
-	(projectsBrowser isNil or: [projectsBrowser isOpen not])
+	((projectsBrowser isKindOf: JadeiteBrowser) not or: [projectsBrowser isOpen not])
 		ifTrue: [projectsBrowser := self openWindow: [self transcript openJadeiteProjectsBrowser]].
 	projectsBrowser := projectsBrowser topShell.
 	^projectsBrowser!
@@ -216,8 +219,8 @@ switchTransactionModeTo: aSymbol
 tearDown
 	super tearDown.
 	self logoutThenLoginAs: 'SystemUser' forceClose: false.
-	projectsBrowser
-		ifNotNil: 
+	(projectsBrowser isKindOf: JadeiteBrowser)
+		ifTrue: 
 			[(projectsBrowser currentCard projectListPresenter list
 				detect: [:service | service name = self sampleProject1Name]
 				ifNone: [])
@@ -268,6 +271,7 @@ ensureRowanSampleProjectsLoaded!private!setup teardown! !
 hasValidSession!public!testing! !
 isAvailable!public!testing! !
 issueCommand:!public!setup teardown! !
+jadeiteShell!accessing!private! !
 loadProjectFromFile:projectsHome:customConditionalAttributes:componentNames:!private!setup teardown! !
 loadProjectNamed:!private!setup teardown! !
 loginWithRetry:!private!support! !

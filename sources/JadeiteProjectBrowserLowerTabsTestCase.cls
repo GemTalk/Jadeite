@@ -1180,15 +1180,18 @@ test_sunitOnlyRunTestMethods
 		saveMethod: 'nonTestMethod  ^123'
 		in: 'RowanSample1Test'
 		category: 'deleteMe'.
-	[self selectMethodsNamed: #(#nonTestMethod #test1). 
-	self projectsPresenter jadeDebug. 
-	self assert: self projectsPresenter isSunitTabSelected. 
-	self assert: self projectsPresenter sunitPresenter methodListPresenter selections size equals: 1. 
-	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first selector equals: #test1. 
-	self assert: self projectsPresenter sunitPresenter textResultPresenter  value equals: '1 run, 1 passed, 0 failures, 0 errors'. 
-	] ensure: 
-			[self selectMethodNamed: #nonTestMethod.
-			self projectsPresenter removeMethods: self classListPresenter selections]!
+	
+	[self selectMethodsNamed: #(#nonTestMethod #test1).
+	self projectsPresenter runMethodTests.
+	self assert: self projectsPresenter isSunitTabSelected.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selections size equals: 1.
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first selector
+		equals: #test1.
+	self assert: self projectsPresenter sunitPresenter textResultPresenter value
+		equals: '1 run, 1 passed, 0 failures, 0 errors']
+			ensure: 
+				[self selectMethodNamed: #nonTestMethod.
+				self projectsPresenter removeMethods: self classListPresenter selections]!
 
 test_sunitResetTestResultOnClassChange
 	"reset test results when classes changed"

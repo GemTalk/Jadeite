@@ -169,6 +169,9 @@ createSchematicWiring
 			send: #onCharAdded:
 			to: self search!
 
+debuggerClosed: anObject
+	debuggerClosed := anObject!
+
 debuggerService
 	"for test usage" 
 	^debuggerService!
@@ -734,6 +737,7 @@ copyFrameString!menu handlers!private! !
 copyStack!menu handlers!private! !
 createComponents!public! !
 createSchematicWiring!public! !
+debuggerClosed:!accessing!private! !
 debuggerService!accessing!private! !
 disableBreakpointsWhile:!private! !
 displayUncompilableSourceIn:!private! !

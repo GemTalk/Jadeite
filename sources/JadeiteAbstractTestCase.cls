@@ -296,7 +296,8 @@ logoutOtherSession
 				(UserGlobals at: #otherSession) ifNotNil: [:sess | sess logout]'!
 
 logoutThenLoginAs: theUser forceClose: aBoolean
-	^JadeiteTestResource current logoutThenLoginAs: theUser forceClose: aBoolean!
+	JadeiteTestResource current logoutThenLoginAs: theUser forceClose: aBoolean.
+	jadeiteShell := JadeiteTestResource current jadeiteShell. !
 
 methodListPresenter
 	^self projectsPresenter methodListPresenter!

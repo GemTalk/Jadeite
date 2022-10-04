@@ -11,8 +11,8 @@ JadeiteDebuggerDataCuratorTestCase comment: ''!
 !JadeiteDebuggerDataCuratorTestCase methodsFor!
 
 cleanupProcesses
-	debugger
-		ifNotNil: 
+	(debugger isKindOf: JadeiteDebugger)
+		ifTrue: 
 			[debugger debuggerService processes do: 
 					[:processService |
 					session executeString: '[(Object _objectForOop: ' , processService oop printString
@@ -28,9 +28,10 @@ closeDebuggers
 			session removeEventsTriggeredFor: each.
 			
 			[
-			[each view destroy.
+			[self destroy: each.
 			semaphore signal.
-			SessionManager inputState prod] on: ProcessTermination
+			SessionManager inputState prod]
+					on: ProcessTermination
 					do: 
 						[:ex |
 						"A debugger wants to terminate the current process!!!!"
@@ -47,8 +48,10 @@ closeDebuggers
 	JadeiteMethodListBrowser allInstances
 		do: [:browser | self assert: (browser view isKindOf: DeafObject)].
 	JadeiteBrowser allInstances do: [:browser | self assert: (browser view isKindOf: DeafObject)].
-	JadeiteDebugger allInstances
-		do: [:theDebugger | self assert: (theDebugger view isKindOf: DeafObject)].
+	JadeiteDebugger allInstances do: 
+			[:theDebugger |
+			(theDebugger view isKindOf: DeafObject) ifFalse: [(Delay forMilliseconds: 50) wait].
+			self assert: (theDebugger view isKindOf: DeafObject)].
 	MemoryManager current collectGarbage.
 	(Delay forMilliseconds: 50) wait.
 	self purgeInstances: JadeiteBrowser.
@@ -173,6 +176,12 @@ openDebuggerOn: aString
 		getDebugger;
 		yourself!
 
+openSecondDebuggerOn: aString
+	self
+		debuggerDo: [process := [session executeString: aString] forkAt: Processor activePriority + 1];
+		getSecondDebugger;
+		yourself!
+
 pressButtonIn: view
 	view
 		postMessage: 16r204
@@ -198,7 +207,7 @@ purgeInstances: aClass
 					[count := count + 1.
 					MemoryManager current collectGarbage.
 					SessionManager inputState pumpMessages.
-					(Delay forMilliseconds: 50) wait.
+					(Delay forMilliseconds: 1) wait.
 					aClass allInstances isEmpty ifTrue: [^self]]].
 	aClass allInstances do: 
 			[:each |
@@ -301,7 +310,7 @@ tearDown
 	JadeiteDebugger semaphore: nil.
 	TestMessageBox disableJadeiteTestMessageBox.	"in case the test has gotten stuck while enabled"
 	self assert: (session isKindOf: GciSession).
-	super tearDown!
+	super tearDown.!
 
 terminateGsProcess
 	| string |
@@ -363,7 +372,33 @@ test_doubleClickWhenClassNotResolvable
 
 test_globalAdditionalAccelerators
 	self openDebuggerOn: 'self halt'.
-	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7'))! !
+	self assert: (self primaryTestWindow additionalAccelerators includes: #(#raiseConsole 'Ctrl+F7'))!
+
+test_multipleDebuggersBasic
+	| sourceDocument |
+	self testsIssue: #issue927 withTitle: '[3.2.9] Concurrent debuggers can hang Jadeite'.
+	self openDebuggerOn: '''abc'' halt size'.
+	
+	[sourceDocument := debugger methodSourcePresenter documentPresenter.
+	sourceDocument value: '123'.
+	sourceDocument view selectAll.
+	[debugger methodSourcePresenter jadeDebug] fork.
+	self getSecondDebugger.
+	self assert: secondDebugger methodSourcePresenter documentPresenter value equals: 'nil halt. 123']
+			ensure: 
+				["the not nil tests are to avoid trying to resume if the test was stopped prematurely"
+				secondDebugger ifNotNil: [self debuggerDo: [secondDebugger resumeProcess]].
+				debugger ifNotNil: [self debuggerDo: [debugger resumeProcess]]]!
+
+test_multipleDebuggersOpenedIndependently
+	self testsIssue: #issue927 withTitle: '[3.2.9] Concurrent debuggers can hang Jadeite'.
+	self openDebuggerOn: '| foo | foo := ''abc''. self halt. foo := foo size'.
+	self openSecondDebuggerOn: '| foo | foo := ''def''. self halt. foo := foo size'.
+	2 timesRepeat: 
+			[self debuggerDo: [secondDebugger stepOver].
+			self debuggerDo: [debugger stepOver]].
+	self assert: debugger frameListPresenter list notEmpty.
+	self assert: secondDebugger frameListPresenter list notEmpty! !
 !JadeiteDebuggerDataCuratorTestCase categoriesForMethods!
 cleanupProcesses!private!support! !
 closeDebuggers!private!support! !
@@ -377,6 +412,7 @@ keyDownEscapeIn:!private!support!tests! !
 menuItemIsEnabled:!private!support! !
 methodListBrowser!private!support! !
 openDebuggerOn:!private!support! !
+openSecondDebuggerOn:!private!support! !
 pressButtonIn:!private!support!tests! !
 primaryTestWindow!accessing!public! !
 purgeInstances:!private!support! !
@@ -392,5 +428,7 @@ terminateGsProcess!private!running!support! !
 test_browseMenuOptionEnablement!public!tests! !
 test_doubleClickWhenClassNotResolvable!public!tests! !
 test_globalAdditionalAccelerators!public!tests! !
+test_multipleDebuggersBasic!public!tests! !
+test_multipleDebuggersOpenedIndependently!public!tests! !
 !
 

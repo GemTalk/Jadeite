@@ -451,6 +451,7 @@ test_displayConfigOptions
 
 	| gemFailSafeNscEnumerate configurationPresenter readStream workspace lastLine |
 	self testsIssue: #issue854 withTitle: 'https://github.com/GemTalk/Jadeite/issues/854'.
+	(transcript view viewNamed: 'cardContainer') tabs selectionByIndex: 4. "My Session tab needs to be lazily initialized" 
 	configurationPresenter := transcript mySessionPresenter configurationReportPresenter.
 	gemFailSafeNscEnumerate := configurationPresenter list
 				detect: [:array | array first = 'GemFailSafeNscEnumerate'].

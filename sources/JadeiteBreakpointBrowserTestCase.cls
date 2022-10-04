@@ -58,8 +58,7 @@ test_additionalAccelerators
 
 	self testsIssue: #issue329 withTitle: 'Need accelerator key tests'.
 	self openBreakpointBrowser.
-	self assert: (breakpointBrowser additionalAccelerators includes: #(#editSaveMethod 'Ctrl+S')).
-	self assert: breakpointBrowser additionalAccelerators size equals: 2	"should fail if we add a new one"!
+	self assert: breakpointBrowser additionalAccelerators size equals: 1	"should fail if we add a new one"!
 
 test_breakpointAdditionsUpdateAutomatically
 	| treeModel indicators |

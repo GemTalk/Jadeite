@@ -681,7 +681,7 @@ test_projectListMenuItemsEnabled
 			query := CommandQuery commandDescription: item source: self projectListPresenter view.
 			self projectsPresenter queryCommand: query.
 			(('*Refresh*' match: item text)
-				or: [('*Load Git Project*' match: item text) or: ['*Create*' match: item text]])
+				or: [('Load Project*' match: item text) or: [('*Create*' match: item text) or: ['Browse' = item text]]])
 					ifTrue: [self assert: query isEnabled]
 					ifFalse: [self deny: query isEnabled]].
 	self projectListPresenter resetSelection.
@@ -690,10 +690,11 @@ test_projectListMenuItemsEnabled
 			| query |
 			query := CommandQuery commandDescription: item source: self projectListPresenter view.
 			self projectsPresenter queryCommand: query.
-			(('*Refresh*' match: item text)
-				or: [('*Load Git Project*' match: item text) or: ['*Create*' match: item text]])
-					ifTrue: [self assert: query isEnabled]
-					ifFalse: [self deny: query isEnabled]]!
+			(('*Refresh*' match: item text) or: 
+					[('Load Project*' match: item text)
+						or: [('*Create*' match: item text) or: ['Browse' = item text]]])
+				ifTrue: [self assert: query isEnabled]
+				ifFalse: [self deny: query isEnabled]]!
 
 test_projectSingleSelection
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
