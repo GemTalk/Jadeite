@@ -958,7 +958,7 @@ test_debugTests
 	methodListBrowser := JadePresenter browseImplementorsOf: #test_flipAutoCommit session: session.
 	debugTestMenuItem := self methodListMethodListPresenter view contextMenu items
 				detect: [:item | item command = #debugSelectedTests].
-	self assert: debugTestMenuItem description = 'Debug Selected Tests'.
+	self assert: debugTestMenuItem description = 'Debug Selected Test(s)'.
 	TestMessageBox
 		enableJadeiteTestMessageBox;
 		plannedResult: #ok.
