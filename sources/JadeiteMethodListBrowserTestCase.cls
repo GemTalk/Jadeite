@@ -953,6 +953,18 @@ test_createUnicodeSymbolThenLoadSymbols
 		do: [:methodService | self assert: methodService selector equals: #size]]
 			ensure: [session executeString: 'RowanServicesTest new removeUnicodeSymbolsFromUserGlobals']!
 
+test_debugTests
+	| debugTestMenuItem |
+	methodListBrowser := JadePresenter browseImplementorsOf: #test_flipAutoCommit session: session.
+	debugTestMenuItem := self methodListMethodListPresenter view contextMenu items
+				detect: [:item | item command = #debugSelectedTests].
+	self assert: debugTestMenuItem description = 'Debug Selected Tests'.
+	TestMessageBox
+		enableJadeiteTestMessageBox;
+		plannedResult: #ok.
+	[self methodListBrowserPresenter methodListPresenter debugSelectedTests]
+		ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_doSearch
 	"browse literal references on the server doesn't always work - 
 	perhaps because of optimized selectors? 
@@ -1588,6 +1600,7 @@ test_comparisonTabSuperclass!public!test comparison tab! !
 test_compileErrorDisplay!public!tests! !
 test_compileErrorDisplayGoesAway!public!tests! !
 test_createUnicodeSymbolThenLoadSymbols!public! !
+test_debugTests!public!test methods! !
 test_doSearch!public!tests! !
 test_doubleClickActionClassMethod!public!tests! !
 test_doubleClickActionInstanceMethod!public!tests! !

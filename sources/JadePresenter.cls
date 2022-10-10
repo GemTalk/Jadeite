@@ -330,8 +330,7 @@ waitForAnswer: thingThatCanAnswer
 	deferredValue := [thingThatCanAnswer answer] deferredValue.
 	sem := Semaphore new.
 	[deferredValue hasValue] whileFalse: 
-			["loopWhile condition is ignored and exited if another loopWhile: completes. Restart the forked loop in that case"
-			[[SessionManager inputState loopWhile: [deferredValue hasValue not]] ensure: [sem signal]] fork.
+			[[[SessionManager inputState loopWhile: [deferredValue hasValue not]] ensure: [sem signal]] fork.
 			sem wait].
 	theAnswer := [deferredValue value] on: Error do: [:ex | nil].
 	^theAnswer! !
