@@ -371,7 +371,7 @@ methodListSelection
 	"really a selection from the frame list"
 
 	| methodService |
-	methodService := self basicSelectedFrame gsMethod.
+	methodService := self basicSelectedFrame ifNil:[^nil] ifNotNil:[:theFrame | theFrame gsMethod].
 	methodService command: nil.
 	self updateServices: (Array with: methodService).
 	^methodService!
@@ -447,10 +447,12 @@ queryCommand: query
 			ifTrue: 
 				[query isEnabled: (frame homeMethodSelector notNil and: [frame classIsResolvable]).
 				^true].
-	(#(#resumeProcess #runToCursor #stepInto #stepOut #stepOver) includes: query commandSymbol)
-		ifTrue: 
-			[query isEnabled: processListPresenter selectionByIndex == 1.
-			^true].
+	(#(#resumeProcess #runToCursor #stepInto #stepOut #stepOver #stepThrough)
+		includes: query commandSymbol)
+			ifTrue: 
+				[query
+					isEnabled: (frameListPresenter selectionByIndex > 0 and: [processListPresenter selectionByIndex == 1]).
+				^true].
 	(#(#terminateProcess) includes: query commandSymbol)
 		ifTrue: 
 			[query

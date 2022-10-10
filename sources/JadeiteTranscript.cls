@@ -189,18 +189,6 @@ initializeTransactionModeSettings
 		ifNil: 
 			[self setTransactionModeFromServer	"should have already been set when window was created ... but just in case"]!
 
-installProjectFromPath: path projectsHome: projectsHomePath
-	| projectService |
-	projectService := RowanProjectService new.
-	projectService
-		command: #installProjectFromFile:projectsHome:componentNames:resolveStrict:;
-		commandArgs: (Array
-					with: 'file:' , path
-					with: projectsHomePath
-					with: #()
-					with: true).
-	self issueCommand: projectService!
-
 isBeginTransactionEnabled
 	^self parentPresenter isBeginTransactionEnabled!
 
@@ -456,7 +444,6 @@ gciSession:!public! !
 gitCommit!menu handlers!public! !
 initialize!initialization!public! !
 initializeTransactionModeSettings!initialization!public!transaction mode! !
-installProjectFromPath:projectsHome:!actions!public! !
 isBeginTransactionEnabled!public!testing! !
 isCommitEnabled!public!testing! !
 isTranscriptInstalled!public! !
