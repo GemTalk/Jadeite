@@ -384,6 +384,7 @@ test_multipleDebuggersBasic
 	sourceDocument view selectAll.
 	[debugger methodSourcePresenter jadeDebug] fork.
 	self getSecondDebugger.
+	(Delay forMilliseconds: 100) wait. 
 	self assert: secondDebugger methodSourcePresenter documentPresenter value equals: 'nil halt. 123']
 			ensure: 
 				["the not nil tests are to avoid trying to resume if the test was stopped prematurely"

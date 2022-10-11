@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 Toolbar subclass: #ToolbarA
 	instanceVariableNames: ''
@@ -15,5 +15,7 @@ commandSource
 	Delegate to the parent."
 
 	^self parentView commandSource! !
-!ToolbarA categoriesFor: #commandSource!commands!public! !
+!ToolbarA categoriesForMethods!
+commandSource!commands!public! !
+!
 

@@ -68,9 +68,16 @@ flipTranscriptIn: session
 	command := #flipTranscript.
 	BrowserUpdate current issueCommands: (Array with: self) session: session!
 
+getProcessList
+	"do nothing. See JadePresenter class>>waitForAnswer: 
+	Maybe shouldn't overload that method. Hmmm" !
+
 isAnsweringService
 
 	^true!
+
+isDeafObject
+	^false!
 
 isTranscriptInstalledIn: session
 	command := #transcriptInstalled.
@@ -141,7 +148,11 @@ symbolsMatching: string session: session
 	command := #symbolsMatching:.
 	commandArgs := Array with: string.
 	BrowserUpdate current issueCommands: (Array with: self) session: session.
-	^answer! !
+	^answer!
+
+update
+	"do nothing. See JadePresenter class>>waitForAnswer: 
+	Maybe shouldn't overload that method. Hmmm" ! !
 !RowanAnsweringService categoriesForMethods!
 answer!accessing!private! !
 answer:!accessing!private! !
@@ -154,7 +165,9 @@ execReturningObject:in:!commands!public! !
 expressionSelector:session:!commands!public! !
 flipAutoCommitFor:!commands!public! !
 flipTranscriptIn:!commands!public! !
+getProcessList!public! !
 isAnsweringService!public!testing! !
+isDeafObject!public!testing! !
 isTranscriptInstalledIn:!commands!public! !
 lowercaseSelectorsMatching:session:!commands!public!testing! !
 needsCommit:!commands!public! !
@@ -166,8 +179,6 @@ setBreakpointsEnabled:session:!commands!public! !
 symbolDictionaryNames:!commands!public! !
 symbolExists:session:!commands!public!testing! !
 symbolsMatching:session:!commands!public!testing! !
+update!public! !
 !
-updateSymbols: unused
-	updateType = #updateSymbols: ifFalse: [^self].
-	JadeiteSearch allClassNames addAll: answer first.
-	JadeiteSearch allSelectors addAll: answer last! !
+

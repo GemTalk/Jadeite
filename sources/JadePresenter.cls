@@ -326,13 +326,24 @@ transactionModeValueHolder
 	^TransactionMode ifNil:[self initializeTransactionMode]!
 
 waitForAnswer: thingThatCanAnswer
-	| theAnswer deferredValue sem |
+	| theAnswer deferredValue |
 	deferredValue := [thingThatCanAnswer answer] deferredValue.
-	sem := Semaphore new.
 	[deferredValue hasValue] whileFalse: 
-			[[[SessionManager inputState loopWhile: [deferredValue hasValue not]] ensure: [sem signal]] fork.
-			sem wait].
-	theAnswer := [deferredValue value] on: Error do: [:ex | nil].
+			[| loop |
+			loop := 
+					[SessionManager inputState
+						loopWhile: [deferredValue hasValue not and: [thingThatCanAnswer isDeafObject not]]]
+							fork.
+			(Delay forMilliseconds: 1) wait.
+			[loop isAlive] whileTrue: [(Delay forMilliseconds: 1) wait]].
+	theAnswer := [deferredValue value] on: Error
+				do: 
+					[:ex |
+					ex messageText = 'DeferredValue terminated prematurely'
+						ifTrue: [nil]
+						ifFalse: 
+							[thingThatCanAnswer getProcessList; update.	"should be a debugger so update"
+							self waitForAnswer: thingThatCanAnswer ]].
 	^theAnswer! !
 !JadePresenter class categoriesForMethods!
 areAbortCommitEnabled!public! !

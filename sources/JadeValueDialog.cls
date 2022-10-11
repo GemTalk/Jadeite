@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 ValueDialog subclass: #JadeValueDialog
 	instanceVariableNames: ''
@@ -14,5 +14,7 @@ icon
 
 	^Icon fromFile: 'icons\GS32.ico'.
 ! !
-!JadeValueDialog class categoriesFor: #icon!public! !
+!JadeValueDialog class categoriesForMethods!
+icon!public! !
+!
 

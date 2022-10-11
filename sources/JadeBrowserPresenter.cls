@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenterA subclass: #JadeBrowserPresenter
 	instanceVariableNames: ''
@@ -24,6 +24,8 @@ onDragClass: aSession className: class
 selectedClassName
 
 	self subclassResponsibility! !
-!JadeBrowserPresenter categoriesFor: #onDragClass:className:!drag & drop!public! !
-!JadeBrowserPresenter categoriesFor: #selectedClassName!public!selection! !
+!JadeBrowserPresenter categoriesForMethods!
+onDragClass:className:!drag & drop!public! !
+selectedClassName!public!selection! !
+!
 

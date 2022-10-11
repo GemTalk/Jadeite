@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 Notification subclass: #ShortcutMenuStatus
 	instanceVariableNames: ''
@@ -14,7 +14,9 @@ defaultAction
 
 	Status := tag.
 ! !
-!ShortcutMenuStatus categoriesFor: #defaultAction!public! !
+!ShortcutMenuStatus categoriesForMethods!
+defaultAction!public! !
+!
 
 !ShortcutMenuStatus class methodsFor!
 
@@ -45,10 +47,12 @@ stop
 
 	self signalWith: #'stop'.
 ! !
-!ShortcutMenuStatus class categoriesFor: #isClosed!public! !
-!ShortcutMenuStatus class categoriesFor: #isOpen!public! !
-!ShortcutMenuStatus class categoriesFor: #reset!public! !
-!ShortcutMenuStatus class categoriesFor: #start!public! !
-!ShortcutMenuStatus class categoriesFor: #status!public! !
-!ShortcutMenuStatus class categoriesFor: #stop!public! !
+!ShortcutMenuStatus class categoriesForMethods!
+isClosed!public! !
+isOpen!public! !
+reset!public! !
+start!public! !
+status!public! !
+stop!public! !
+!
 

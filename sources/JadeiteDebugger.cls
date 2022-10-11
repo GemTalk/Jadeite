@@ -348,6 +348,9 @@ initializeProcess: aProcess message: aString terminateOnClose: aBoolean
 				terminateOnClose: aBoolean]
 					ensure: [self initializeIdleProcess]]!
 
+isDeafObject
+	^self view isKindOf: DeafObject!
+
 isOkayToChangeFrame
 	^codePane isOkayToChange!
 
@@ -674,7 +677,7 @@ stepThrough
 	BrowserUpdate current logComment: '#stepThrough'.
 	gciSession stepThrough: (GsProcess session: gciSession oopType: gsProcess oopType)
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
-	(gciSession gciVersion beginsWith: '3.2') ifFalse: [self stepOver].
+	self stepOver.
 	[self getProcessList] on: RowanDebuggerStepPointError do: [:ex | self stepInto]!
 
 terminateIdleProcess
@@ -698,26 +701,7 @@ variableDataPresenter
 	^variableDataPresenter!
 
 variableListPresenter
-	^variableListPresenter!
-
-waitingProcessResumeWith: suspendingList
-	^
-	[[SessionManager inputState loopWhile: [answer isNil]] ensure: 
-			[waitingForAnswerProcess := nil.
-			answer isNil
-				ifTrue: 
-					[| dp |
-					"nil the debuggerProcess first in case something goes wrong"
-					dp := debuggerProcess.
-					debuggerProcess := nil.
-					dp ifNotNil: [dp terminate]]
-				ifFalse: 
-					[debuggerProcess
-						ifNotNil: 
-							[:proc |
-							"need to resume the suspended main process as main process"
-							SessionManager current inputState main: Processor activeProcess.
-							[proc resume: suspendingList] ensure: [Processor activeProcess terminate]]]]]! !
+	^variableListPresenter! !
 !JadeiteDebugger categoriesForMethods!
 _processList!public! !
 _terminateProcess:!public! !
@@ -757,6 +741,7 @@ homeFrameOf:!frames!public! !
 initialize!initialization!public! !
 initializeIdleProcess!initialization!public! !
 initializeProcess:message:terminateOnClose:!initialization!public! !
+isDeafObject!public!testing! !
 isOkayToChangeFrame!public!testing! !
 jadeDebug!menu handlers!public! !
 jadeInspect!menu handlers!public! !
@@ -795,7 +780,6 @@ terminateProcess!menu handlers!private! !
 updateMethodSource!public! !
 variableDataPresenter!accessing!public! !
 variableListPresenter!accessing!public! !
-waitingProcessResumeWith:!process synchronisation!public! !
 !
 
 !JadeiteDebugger class methodsFor!

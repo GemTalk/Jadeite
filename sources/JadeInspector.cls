@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeTextDocument subclass: #JadeInspector
 	instanceVariableNames: 'instVarListPresenter className'
@@ -61,15 +61,17 @@ model: anObject
 	(anObject isKindOf: Symbol) ifTrue: [object := object asSymbol].
 	model := object.
 	codePane model: object! !
-!JadeInspector categoriesFor: #contextObject!private! !
-!JadeInspector categoriesFor: #createComponents!accessing!private! !
-!JadeInspector categoriesFor: #createSchematicWiring!accessing!private! !
-!JadeInspector categoriesFor: #createView:!public! !
-!JadeInspector categoriesFor: #expectedModelClass!private! !
-!JadeInspector categoriesFor: #inspectInstVar!accessing!private! !
-!JadeInspector categoriesFor: #instVarListPresenter!accessing!private! !
-!JadeInspector categoriesFor: #isModified!private! !
-!JadeInspector categoriesFor: #model:!private! !
+!JadeInspector categoriesForMethods!
+contextObject!private! !
+createComponents!accessing!private! !
+createSchematicWiring!accessing!private! !
+createView:!public! !
+expectedModelClass!private! !
+inspectInstVar!accessing!private! !
+instVarListPresenter!accessing!private! !
+isModified!private! !
+model:!private! !
+!
 
 !JadeInspector class methodsFor!
 
@@ -81,6 +83,8 @@ setDefaultInspectorClass: aJadeInspectorClass
 setNormalInspector
 
 	self setDefaultInspectorClass: JadeInspector! !
-!JadeInspector class categoriesFor: #setDefaultInspectorClass:!public! !
-!JadeInspector class categoriesFor: #setNormalInspector!public! !
+!JadeInspector class categoriesForMethods!
+setDefaultInspectorClass:!public! !
+setNormalInspector!public! !
+!
 

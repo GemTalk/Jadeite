@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 Object subclass: #JadeiteTextStyles
 	instanceVariableNames: 'colorForCompileError colorForNoEdits colorForUnsavedEdits textStyles colorForUndisplayableSource'
@@ -218,19 +218,21 @@ textStyles
 
 textStyles: anObject
 	textStyles := anObject! !
-!JadeiteTextStyles categoriesFor: #colorForCompileError!accessing!public! !
-!JadeiteTextStyles categoriesFor: #colorForCompileError:!accessing!public! !
-!JadeiteTextStyles categoriesFor: #colorForNoEdits!accessing!public! !
-!JadeiteTextStyles categoriesFor: #colorForNoEdits:!accessing!public! !
-!JadeiteTextStyles categoriesFor: #colorForUndisplayableSource!accessing!private! !
-!JadeiteTextStyles categoriesFor: #colorForUndisplayableSource:!accessing!private! !
-!JadeiteTextStyles categoriesFor: #colorForUnsavedEdits!accessing!public! !
-!JadeiteTextStyles categoriesFor: #colorForUnsavedEdits:!accessing!public! !
-!JadeiteTextStyles categoriesFor: #defaultIndicatorStyles!public! !
-!JadeiteTextStyles categoriesFor: #defaultTextStyles!public! !
-!JadeiteTextStyles categoriesFor: #resetColors!public! !
-!JadeiteTextStyles categoriesFor: #textStyles!accessing!public! !
-!JadeiteTextStyles categoriesFor: #textStyles:!accessing!public! !
+!JadeiteTextStyles categoriesForMethods!
+colorForCompileError!accessing!public! !
+colorForCompileError:!accessing!public! !
+colorForNoEdits!accessing!public! !
+colorForNoEdits:!accessing!public! !
+colorForUndisplayableSource!accessing!private! !
+colorForUndisplayableSource:!accessing!private! !
+colorForUnsavedEdits!accessing!public! !
+colorForUnsavedEdits:!accessing!public! !
+defaultIndicatorStyles!public! !
+defaultTextStyles!public! !
+resetColors!public! !
+textStyles!accessing!public! !
+textStyles:!accessing!public! !
+!
 
 !JadeiteTextStyles class methodsFor!
 
@@ -238,5 +240,7 @@ default
 
 	^default ifNil: [default := self new].
 ! !
-!JadeiteTextStyles class categoriesFor: #default!public! !
+!JadeiteTextStyles class categoriesForMethods!
+default!public! !
+!
 

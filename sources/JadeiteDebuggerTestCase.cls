@@ -16,6 +16,18 @@ firstFrameStartingWith: className
 	^debugger frameListPresenter list detect: [:stackFrame | className , '*' match: stackFrame]
 		ifNone: [self error: 'Frame with class named ' , className , ' not found']!
 
+forkStepThrough
+	| fork completed |
+	completed := false.
+	fork := 
+			[JadeiteDebugger semaphore: nil.
+			self debuggerDo: [debugger stepThrough].
+			completed := true]
+					fork.
+	(Delay forMilliseconds: 1) wait.
+	[fork isActive and: [completed not]] whileTrue: [(Delay forMilliseconds: 1) wait].
+	(Delay forMilliseconds: 500) wait!
+
 indexOfVariableNamed: aSymbol
 	| variable |
 	variable := debugger variableListPresenter list detect: [:var | aSymbol = var key value] ifNone: [].
@@ -841,6 +853,36 @@ test_debugFromWithinInspector
 		getDebugger.
 	self assert: debugger model value equals: 'nil halt. self size']
 			ensure: [inspector view close]!
+
+test_debuggerDoesNotFreeze
+	"tests one of the many ways the debugger would freeze the gui. If test completes
+	we didn't freeze."
+
+	| workspace |
+	self testsIssue: #issue927 withTitle: '[3.2.9] Concurrent debuggers can hang Jadeite'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	workspace
+		setDocumentData: '{ Date today } collect: [:aDay |
+		aDay asString = ''asdf''
+			ifFalse: [self error: ''wrong value''].
+		].'.
+	self debuggerDo: 
+			[process := 
+					[workspace codePane documentPresenter setFocus.
+					workspace codePane documentPresenter view selectAll.
+					workspace codePane jadeDebug]
+							forkAt: Processor activePriority + 1].
+	self getDebugger.
+	8 timesRepeat: 
+			["We fork the stepThrough because the debugger will encounter an error in the debugged code.
+			The debugger then unceremoniously kills the activeProcess which in this case is the test process
+			if it weren't forked. Then the test wouldn't finish. "
+			self forkStepThrough]]
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
 
 test_debuggerModifiedSourcePaneChangeFrame
 	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
@@ -2414,6 +2456,7 @@ x halt.
 ! !
 !JadeiteDebuggerTestCase categoriesForMethods!
 firstFrameStartingWith:!public!support! !
+forkStepThrough!public!support! !
 indexOfVariableNamed:!public!support! !
 lastFrameStartingWith:!public!support! !
 selectFirstFrameStartingWith:!public!support! !
@@ -2457,6 +2500,7 @@ test_debugCodeWithLeadingLineReturns!public! !
 test_debugCodeWithLeadingLineReturnsLF!public! !
 test_debugCodeWithLeadingTab!public! !
 test_debugFromWithinInspector!public!tests! !
+test_debuggerDoesNotFreeze!public!test ad hoc execution! !
 test_debuggerModifiedSourcePaneChangeFrame!public!tests! !
 test_debuggerModifiedSourcePaneStayOnFrame!public!tests! !
 test_disablebreakpointHighlighting!public!tests! !

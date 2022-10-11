@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 TextPresenter subclass: #JadeTextPresenter
 	instanceVariableNames: ''
@@ -20,6 +20,8 @@ selection
 
 	^view selection.
 ! !
-!JadeTextPresenter categoriesFor: #onViewOpened!public! !
-!JadeTextPresenter categoriesFor: #selection!public! !
+!JadeTextPresenter categoriesForMethods!
+onViewOpened!public! !
+selection!public! !
+!
 
