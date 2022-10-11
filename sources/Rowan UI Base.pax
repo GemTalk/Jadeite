@@ -5043,7 +5043,7 @@ jadeExecuteAndDisplay: showResult
 			newProcess
 		name: 'GciSession';
 		resume.
-	[result isNil] whileTrue: [(Delay forMilliseconds: 10) wait].
+	(Delay forMilliseconds: 10) wait.
 	^result!
 
 jadeExecuteAndDisplay: showResult view: focusViewOrNil

@@ -854,7 +854,7 @@ test_debugFromWithinInspector
 	self assert: debugger model value equals: 'nil halt. self size']
 			ensure: [inspector view close]!
 
-test_debuggerDoesNotFreeze
+test_debuggerDoesNotFreeze1
 	"tests one of the many ways the debugger would freeze the gui. If test completes
 	we didn't freeze."
 
@@ -880,6 +880,43 @@ test_debuggerDoesNotFreeze
 			The debugger then unceremoniously kills the activeProcess which in this case is the test process
 			if it weren't forked. Then the test wouldn't finish. "
 			self forkStepThrough]]
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
+test_debuggerDoesNotFreeze2
+	"tests one of the many ways the debugger would freeze the gui. If test completes
+	we didn't freeze."
+
+	| workspace debuggersDestroyed |
+	self testsIssue: #issue927 withTitle: '[3.2.9] Concurrent debuggers can hang Jadeite'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	workspace setDocumentData: 'Array new: 1'.
+	self debuggerDo: 
+			[process := 
+					[workspace codePane documentPresenter setFocus.
+					workspace codePane documentPresenter view selectAll.
+					workspace codePane jadeDebug]
+							forkAt: Processor activePriority + 1].
+	self getDebugger.
+	debugger variableDataPresenter value: 'String new halt'.
+	debugger variableDataPresenter view selectAll.
+	[debugger jadeExecute] fork.
+	self getSecondDebugger.
+	self assert: (secondDebugger isKindOf: JadeiteDebugger).
+	debuggersDestroyed := false.
+	
+	[self destroy: debugger.
+	self destroy: secondDebugger.
+	debuggersDestroyed := true] fork.
+	[debuggersDestroyed] whileFalse: [(Delay forMilliseconds: 50) wait].
+	workspace setDocumentData: '#foo'.
+	workspace codePane documentPresenter setFocus.
+	workspace codePane documentPresenter view selectAll.
+	workspace codePane jadeDisplay.
+	self assert: workspace codePane documentPresenter value = '#foo #''foo''']
 			ensure: 
 				[workspace isModified: false.
 				workspace view close]!
@@ -2500,7 +2537,8 @@ test_debugCodeWithLeadingLineReturns!public! !
 test_debugCodeWithLeadingLineReturnsLF!public! !
 test_debugCodeWithLeadingTab!public! !
 test_debugFromWithinInspector!public!tests! !
-test_debuggerDoesNotFreeze!public!test ad hoc execution! !
+test_debuggerDoesNotFreeze1!public!test ad hoc execution! !
+test_debuggerDoesNotFreeze2!public!test ad hoc execution! !
 test_debuggerModifiedSourcePaneChangeFrame!public!tests! !
 test_debuggerModifiedSourcePaneStayOnFrame!public!tests! !
 test_disablebreakpointHighlighting!public!tests! !

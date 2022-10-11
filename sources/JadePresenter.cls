@@ -335,15 +335,22 @@ waitForAnswer: thingThatCanAnswer
 						loopWhile: [deferredValue hasValue not and: [thingThatCanAnswer isDeafObject not]]]
 							fork.
 			(Delay forMilliseconds: 1) wait.
-			[loop isAlive] whileTrue: [(Delay forMilliseconds: 1) wait]].
+			[loop isAlive] whileTrue: 
+					[thingThatCanAnswer isDeafObject
+						ifTrue: 
+							[loop terminate.
+							^nil].
+					(Delay forMilliseconds: 1) wait]].
 	theAnswer := [deferredValue value] on: Error
 				do: 
 					[:ex |
 					ex messageText = 'DeferredValue terminated prematurely'
 						ifTrue: [nil]
 						ifFalse: 
-							[thingThatCanAnswer getProcessList; update.	"should be a debugger so update"
-							self waitForAnswer: thingThatCanAnswer ]].
+							[thingThatCanAnswer
+								getProcessList;
+								update.	"should be a debugger so update"
+							self waitForAnswer: thingThatCanAnswer]].
 	^theAnswer! !
 !JadePresenter class categoriesForMethods!
 areAbortCommitEnabled!public! !
