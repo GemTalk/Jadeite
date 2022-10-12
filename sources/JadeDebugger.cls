@@ -376,7 +376,7 @@ reportError: gsError
 	(debugger := self debuggerFor: gsError processOop) notNil
 		ifTrue: 
 			[debugger getProcessList; update.
-			Processor activeProcess kill.
+			Processor activeProcess terminate.
 			self error: 'We should never get here!!'].
 	(#(2709 6005) includes: gsError errorReport number)
 		ifTrue: [^self openDebuggerOnException: gsError].
