@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 CodeSourcePresenter subclass: #MethodSourcePresenter
 	instanceVariableNames: 'currentSelector gsMethod originalSource offsets'
@@ -147,15 +147,13 @@ setEmptyMethod
 !
 
 showStepPoint: anInteger
-
 	| lineNumber range stepPoint |
-	stepPoint := gsMethod stepPoints at: anInteger.
-	documentPresenter view selectionRange: stepPoint key. 
+	stepPoint := gsMethod stepPoints at: anInteger ifAbsent: [^self].
+	documentPresenter view selectionRange: stepPoint key.
 	(range := documentPresenter view selectionRange) isEmpty ifTrue: [^self].
 	lineNumber := documentPresenter view lineFromPosition: range first.
 	lineNumber := lineNumber - 4 max: 1.
-	documentPresenter view lineScroll: lineNumber.
-!
+	documentPresenter view lineScroll: lineNumber!
 
 stepPointAt: aPoint
 
@@ -200,27 +198,29 @@ update
 		yourself.
 	self updateMethodStepPoints.
 	currentSelector := gsMethod selector! !
-!MethodSourcePresenter categoriesFor: #canSetBreakpoints!Breakpoints!public! !
-!MethodSourcePresenter categoriesFor: #clearBreakAtStepPoint:!public! !
-!MethodSourcePresenter categoriesFor: #codePresenterIsMethod!public! !
-!MethodSourcePresenter categoriesFor: #createSchematicWiring!Jade!private! !
-!MethodSourcePresenter categoriesFor: #defaultMethod!public! !
-!MethodSourcePresenter categoriesFor: #gsMethod:!public! !
-!MethodSourcePresenter categoriesFor: #hoverEnd:!Jade!private! !
-!MethodSourcePresenter categoriesFor: #hoverStart:!Jade!private! !
-!MethodSourcePresenter categoriesFor: #methodMenu:!menu handlers!private! !
-!MethodSourcePresenter categoriesFor: #methodSource!public! !
-!MethodSourcePresenter categoriesFor: #newSelector!public! !
-!MethodSourcePresenter categoriesFor: #offsetAt:!accessing!public! !
-!MethodSourcePresenter categoriesFor: #offsets!accessing!private! !
-!MethodSourcePresenter categoriesFor: #offsets:!accessing!private! !
-!MethodSourcePresenter categoriesFor: #onViewOpened!public! !
-!MethodSourcePresenter categoriesFor: #setBreakAtStepPoint:!public! !
-!MethodSourcePresenter categoriesFor: #setDefaultMethod!public! !
-!MethodSourcePresenter categoriesFor: #setEmptyMethod!public! !
-!MethodSourcePresenter categoriesFor: #showStepPoint:!public! !
-!MethodSourcePresenter categoriesFor: #stepPointAt:!Jade!private! !
-!MethodSourcePresenter categoriesFor: #update!public! !
+!MethodSourcePresenter categoriesForMethods!
+canSetBreakpoints!Breakpoints!public! !
+clearBreakAtStepPoint:!public! !
+codePresenterIsMethod!public! !
+createSchematicWiring!Jade!private! !
+defaultMethod!public! !
+gsMethod:!public! !
+hoverEnd:!Jade!private! !
+hoverStart:!Jade!private! !
+methodMenu:!menu handlers!private! !
+methodSource!public! !
+newSelector!public! !
+offsetAt:!accessing!public! !
+offsets!accessing!private! !
+offsets:!accessing!private! !
+onViewOpened!public! !
+setBreakAtStepPoint:!public! !
+setDefaultMethod!public! !
+setEmptyMethod!public! !
+showStepPoint:!public! !
+stepPointAt:!Jade!private! !
+update!public! !
+!
 
 !MethodSourcePresenter class methodsFor!
 
@@ -231,5 +231,7 @@ publishedEventsOfInstances
 			add: #'savedMethod:inClass:';
 			yourself.
 ! !
-!MethodSourcePresenter class categoriesFor: #publishedEventsOfInstances!public! !
+!MethodSourcePresenter class categoriesForMethods!
+publishedEventsOfInstances!public! !
+!
 

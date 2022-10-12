@@ -338,7 +338,7 @@ waitForAnswer: thingThatCanAnswer
 			[loop isAlive] whileTrue: 
 					[thingThatCanAnswer isDeafObject
 						ifTrue: 
-							[loop terminate.
+							[loop kill. "uncerimoneously kill the loop - don't run ensure blocks" 
 							^nil].
 					(Delay forMilliseconds: 1) wait]].
 	theAnswer := [deferredValue value] on: Error
