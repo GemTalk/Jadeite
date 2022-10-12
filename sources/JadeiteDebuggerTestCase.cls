@@ -921,6 +921,50 @@ test_debuggerDoesNotFreeze2
 				[workspace isModified: false.
 				workspace view close]!
 
+test_debuggerDoesNotFreeze3
+	"tests one of the many ways the debugger would freeze the gui. If test completes
+	we didn't freeze."
+
+	| workspace debuggerDestroyed |
+	self testsIssue: #issue927 withTitle: '[3.2.9] Concurrent debuggers can hang Jadeite'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	workspace
+		setDocumentData: '{ Date today } collect: [:aDay |
+		aDay asString = ''asdf''
+			ifFalse: [self error: ''wrong value''].
+		].'.
+	self debuggerDo: 
+			[process := 
+					[workspace codePane documentPresenter setFocus.
+					workspace codePane documentPresenter view selectAll.
+					workspace codePane jadeDebug]
+							forkAt: Processor activePriority + 1].
+	self getDebugger.
+	6 timesRepeat: 
+			["We fork the stepThrough because the debugger will encounter an error in the debugged code.
+			The debugger then unceremoniously kills the activeProcess which in this case is the test process
+			if it weren't forked. Then the test wouldn't finish. "
+			self forkStepThrough].
+	debugger stepInto.
+	8 timesRepeat: 
+			["just don't freeze up"
+			self forkStepThrough].
+	debuggerDestroyed := false.
+	
+	[self destroy: debugger.
+	debuggerDestroyed := true] fork.
+	[debuggerDestroyed] whileFalse: [(Delay forMilliseconds: 50) wait].
+	workspace setDocumentData: '#foo'.
+	workspace codePane documentPresenter setFocus.
+	workspace codePane documentPresenter view selectAll.
+	workspace codePane jadeDisplay.
+	self assert: workspace codePane documentPresenter value = '#foo #''foo''']
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
 test_debuggerModifiedSourcePaneChangeFrame
 	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
 	TestMessageBox enableJadeiteTestMessageBox.
@@ -2539,6 +2583,7 @@ test_debugCodeWithLeadingTab!public! !
 test_debugFromWithinInspector!public!tests! !
 test_debuggerDoesNotFreeze1!public!test ad hoc execution! !
 test_debuggerDoesNotFreeze2!public!test ad hoc execution! !
+test_debuggerDoesNotFreeze3!public!test ad hoc execution! !
 test_debuggerModifiedSourcePaneChangeFrame!public!tests! !
 test_debuggerModifiedSourcePaneStayOnFrame!public!tests! !
 test_disablebreakpointHighlighting!public!tests! !
