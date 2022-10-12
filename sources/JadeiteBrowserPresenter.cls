@@ -272,6 +272,22 @@ buildInfoTab: infoTab
 	infoTabView getImageBlock: nil.
 	^infoTabView!
 
+buildPackageList
+	| newCard |
+	(packageDictionaryCards view cards includes: dictionaryPresenter view)
+		ifTrue: 
+			[packageDictionaryCards view removeSubView: dictionaryPresenter view.
+			dictionaryPresenter list: ListModel new].
+	packageDictionaryCards view cards isEmpty
+		ifTrue: 
+			[newCard := packageDictionaryCards add: packageListPresenter.
+			self createListViewFor: newCard.
+			packageDictionaryCards view cards first arrangement: 'Packages'.
+			self setupPackageMenu.
+			classListPresenter list: ListModel new.
+			classHierarchyPresenter model: JadeiteTreeModel new].
+	packageListPresenter view isDropTarget: true!
+
 buildPreferencesMenu
 	| preferencesMenu showPackageItem showPackageGroupItem |
 	preferencesMenu := Menu fromStrings: self preferencesMenuStrings.
@@ -363,6 +379,9 @@ classCommentChanged
 				isModified: true;
 				yourself]!
 
+classContainer
+	^classContainer!
+
 classesMenuStrings
 	| definedLabel containedDictionaryLabel menuStrings |
 	false
@@ -413,6 +432,9 @@ clearProjectTabs
 comparisonPresenter
 
 	^comparisonPresenter!
+
+componentPackageContainer
+	^componentPackageContainer!
 
 contextObject
 	^self selectedClass ifNil: [^gciSession oopNil value] ifNotNil: [:classService | classService oop]!
@@ -842,7 +864,7 @@ gotoDictionaryNamed: dictionaryName
 
 gotoPackageDictionary
 	| selectedPackage dictionaryService |
-	selectedPackage := packageListPresenter selection.
+	selectedPackage := packageListPresenter selectionIfNone: [^MessageBox notify: 'No Package Selected'].
 	self selectNoneProject.
 	dictionaryService := dictionaryPresenter list
 				detect: [:service | service name = selectedPackage dictionaryName]
@@ -859,6 +881,14 @@ hasExactlyOneCategorySelected
 
 hasMethods
 	^true!
+
+hidePackageGroups
+	packageDictionaryContainer view arrangement: 100.
+	packageGroupPresenter view creationParentView hide!
+
+hidePackageList
+	componentPackageContainer view arrangement: 1 / 6.
+	packageDictionaryContainer view hide!
 
 hierarchyClassDoubleClicked
 	self expandFullHierarchy!
@@ -1215,11 +1245,15 @@ onViewOpened
 	definedClassPackageText view alignment: #left.
 	definedMethodPackageText view isMultiline: false.
 	definedMethodPackageText view alignment: #left.
-	self showPackageList.
+	self buildPackageList.
 	self
 		buildProjectTab;
 		buildProjectReadMeTab.
-	self selectProjectTab!
+	self selectProjectTab.
+	JadePresenter packageListVisible ifTrue: [self showPackageList] ifFalse: [self hidePackageList].
+	JadePresenter packageGroupsVisible
+		ifTrue: [self showPackageGroups]
+		ifFalse: [self hidePackageGroups]!
 
 openJadeiteProjectsBrowser
 	^self addSystemBrowser!
@@ -1463,12 +1497,16 @@ queryCommand: aCommandQuery
 	#togglePackageDictionaryColumn == aCommandQuery command
 		ifTrue: 
 			[aCommandQuery isEnabled: true.
-			aCommandQuery isChecked: packageDictionaryContainer view isWindowVisible.
+			aCommandQuery isChecked: JadePresenter packageListVisible.
 			^true].
 	#togglePackageGroupsColumn == aCommandQuery command
 		ifTrue: 
-			[aCommandQuery isEnabled: true.
-			aCommandQuery isChecked: packageGroupPresenter view isWindowVisible.
+			[aCommandQuery isEnabled: true. 
+			aCommandQuery isChecked: JadePresenter packageGroupsVisible.
+			^true].
+	#gotoPackageDictionary = aCommandQuery command
+		ifTrue: 
+			[aCommandQuery isEnabled: (packageListPresenter selectionIfNone: []) ~~ nil.
 			^true].
 	^super queryCommand: aCommandQuery!
 
@@ -1806,21 +1844,17 @@ showDictionaryList
 	self updateDictionaries.
 	self clearComponentList!
 
+showPackageGroups
+	classContainer view arrangement: 1 / 5.
+	packageDictionaryContainer view arrangement: 0.5.
+	packageGroupPresenter view creationParentView show!
+
 showPackageList
-	| newCard |
-	(packageDictionaryCards view cards includes: dictionaryPresenter view)
-		ifTrue: 
-			[packageDictionaryCards view removeSubView: dictionaryPresenter view.
-			dictionaryPresenter list: ListModel new].
-	packageDictionaryCards view cards isEmpty
-		ifTrue: 
-			[newCard := packageDictionaryCards add: packageListPresenter.
-			self createListViewFor: newCard.
-			packageDictionaryCards view cards first arrangement: 'Packages'.
-			self setupPackageMenu.
-			classListPresenter list: ListModel new.
-			classHierarchyPresenter model: JadeiteTreeModel new].
-	packageListPresenter view isDropTarget: true. !
+	componentPackageContainer view arrangement: 1 / 3.
+	packageDictionaryContainer view show.
+	self view
+		hide;
+		show	"ugh - this seems necessary for some reason to get the gui to update"!
 
 statusBarText
 	
@@ -1842,22 +1876,20 @@ textTabChanged
 togglePackageDictionaryColumn
 	packageDictionaryContainer view isWindowVisible
 		ifTrue: 
-			[componentPackageContainer view arrangement: 1 / 6.
-			packageDictionaryContainer view hide]
+			[JadePresenter packageListVisible: false.
+			JadePresenter hidePackageList]
 		ifFalse: 
-			[componentPackageContainer view arrangement: 1 / 3.
-			packageDictionaryContainer view show].
-!
+			[JadePresenter packageListVisible: true.
+			JadePresenter showPackageList]!
 
 togglePackageGroupsColumn
 	packageGroupPresenter view creationParentView isWindowVisible
 		ifTrue: 
-			[packageDictionaryContainer view arrangement: 100.
-			packageGroupPresenter view creationParentView hide]
+			[JadePresenter packageGroupsVisible: false.
+			JadePresenter hidePackageGroups]
 		ifFalse: 
-			[classContainer view arrangement: 1 / 5.
-			packageDictionaryContainer view arrangement: 0.5.
-			packageGroupPresenter view creationParentView show]!
+			[JadePresenter packageGroupsVisible: true.
+			JadePresenter showPackageGroups]!
 
 unloadProjects
 	| projectNames ws |
@@ -2108,7 +2140,7 @@ updateProject
 			self updateTabLabel.
 			self updateProjectInfo]
 		ifFalse: 
-			[self showPackageList.
+			[self buildPackageList.
 			self updateTabLabel.
 			self basicUpdateProject]!
 
@@ -2207,6 +2239,7 @@ browseSelectedMethods!menu handlers!public!queries! !
 buildAddPackageView!private!tabs! !
 buildGlobalsTab!private!tabs! !
 buildInfoTab:!private!tabs! !
+buildPackageList!event handlers!public!updating! !
 buildPreferencesMenu!menus!private!updating! !
 buildProjectListView!private!tabs! !
 buildProjectReadMeTab!private!tabs! !
@@ -2215,12 +2248,14 @@ categoriesMenuStrings!menus!public! !
 checkout!menu handlers!public! !
 checkoutTag!menu handlers!public! !
 classCommentChanged!event handlers!public! !
+classContainer!accessing!public! !
 classesMenuStrings!menus!public! !
 cleanupProjectInfoTab!event handlers!public!updating! !
 clearComponentList!initialize/release!public! !
 clearMethodListPresenters!event handlers!private!updating! !
 clearProjectTabs!private!tabs! !
 comparisonPresenter!accessing!public! !
+componentPackageContainer!accessing!public! !
 contextObject!menu handlers support!private! !
 copyInfo!menu handlers!public! !
 copyProjectInfo!menu handlers!public! !
@@ -2263,6 +2298,8 @@ gotoPackageDictionary!menu handlers!public! !
 hasCategorySelected!public!testing! !
 hasExactlyOneCategorySelected!public!testing! !
 hasMethods!public!testing! !
+hidePackageGroups!displaying!public! !
+hidePackageList!displaying!public! !
 hierarchyClassDoubleClicked!menu handlers!public! !
 insertCompileErrorText:into:!compile support!public! !
 insertIfFalse!menu handlers!must not strip!public! !
@@ -2376,13 +2413,14 @@ setTextFont!menu handlers!public! !
 setTextFontTo:!menu handlers support!private! !
 shouldShowNoneTabLabel!displaying!private!testing! !
 showDictionaryList!event handlers!public!updating! !
-showPackageList!event handlers!public!updating! !
+showPackageGroups!displaying!public! !
+showPackageList!displaying!public! !
 statusBarText!accessing!public! !
 statusBarText:!accessing!public! !
 symbolExists:!public!testing! !
 textTabChanged!event handlers!public! !
-togglePackageDictionaryColumn!menu handlers!public! !
-togglePackageGroupsColumn!menu handlers!public! !
+togglePackageDictionaryColumn!displaying!menu handlers!public! !
+togglePackageGroupsColumn!displaying!menu handlers!public! !
 unloadProjects!project menu handlers!public! !
 updateAddPackageLists!public!updating! !
 updateAfterFindClass:!menu handlers!public!updating! !

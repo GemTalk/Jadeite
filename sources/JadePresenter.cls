@@ -2,7 +2,7 @@
 
 Presenter subclass: #JadePresenter
 	instanceVariableNames: 'gciSession'
-	classVariableNames: 'InTransaction SigAbortProcessInterval SigAbortsProcess SigAbortsProcessEnabled TransactionMode'
+	classVariableNames: 'InTransaction PackageGroupsVisible PackageListVisible SigAbortProcessInterval SigAbortsProcess SigAbortsProcessEnabled TransactionMode'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenter guid: (GUID fromString: '{b55f33eb-59fb-46d6-8fec-7df1571c7d45}')!
@@ -271,6 +271,18 @@ maxPrintStringSize
 openCommit: sha inGitHub: projectService
 	^ShellLibrary default shellOpen: projectService projectUrl , '/commit/' , sha directory: ''!
 
+packageGroupsVisible
+	^PackageGroupsVisible ifNil: [PackageGroupsVisible := true]!
+
+packageGroupsVisible: aBoolean
+	PackageGroupsVisible := aBoolean!
+
+packageListVisible
+	^PackageListVisible ifNil: [PackageListVisible := true]!
+
+packageListVisible: aBoolean
+	PackageListVisible := aBoolean!
+
 resetSigAbortProcessEnablement
 	"Sent during logout process. 
 	Enablement control is done in the Jadeite.prefs file"
@@ -363,19 +375,23 @@ isCommitEnabled!public! !
 loadViewResource2:inContext:!operations!public! !
 maxPrintStringSize!constants!public! !
 openCommit:inGitHub:!browsing!public! !
+packageGroupsVisible!preferences!public! !
+packageGroupsVisible:!preferences!public! !
+packageListVisible!preferences!public! !
+packageListVisible:!preferences!public! !
 resetSigAbortProcessEnablement!public! !
 resetSigAbortProcessInterval!public! !
 rowanProjectsHomeEnvVarString!constants!public! !
 rowanSample1Path!constants!public! !
 rowanSample9Path!constants!public! !
-sigAbortProcessInterval!public! !
-sigAbortProcessInterval:!public! !
+sigAbortProcessInterval!preferences!public! !
+sigAbortProcessInterval:!preferences!public! !
 sigAbortsProcess!public! !
 sigAbortsProcess:!public! !
 sigAbortsProcessEnabled!public! !
 sigAbortsProcessEnabled:!public! !
 stopListeningForSigAborts!public! !
-transactionMode!public! !
+transactionMode!preferences!public! !
 transactionModeValueHolder!public! !
 waitForAnswer:!debugger support!public! !
 !

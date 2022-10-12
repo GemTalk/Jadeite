@@ -133,6 +133,20 @@ openWorkspace: pathOrNil
 							^MessageBox notify: 'preferences workspace ' , pathOrNil , ' unable to be opened']]].
 	^workspace!
 
+packageGroupsVisible: booleanString
+	"file syntax - packageGroupsVisible: true"
+
+	| boolean | 
+	boolean := booleanString = 'true'.
+	JadePresenter packageGroupsVisible: boolean!
+
+packageListVisible: booleanString
+	"file syntax - packageListVisible: true"
+
+	| boolean |
+	boolean := booleanString = 'true'.
+	JadePresenter packageListVisible: boolean!
+
 performCommand: message allowSpacesInArgs: preferencesString
 	| argument readStream |
 	readStream := ReadStream on: preferencesString trimBlanks.
@@ -184,6 +198,8 @@ openProjectBrowser!must not strip!preferences!private! !
 openSUnitBrowser!must not strip!preferences!private! !
 openSUnitBrowserOnPackage:!must not strip!preferences!public! !
 openWorkspace:!must not strip!preferences!public! !
+packageGroupsVisible:!must not strip!preferences!public! !
+packageListVisible:!must not strip!preferences!public! !
 performCommand:allowSpacesInArgs:!accessing!must not strip!public! !
 session:!accessing!private! !
 sigAbortProcessInterval:!must not strip!public! !
@@ -217,13 +233,15 @@ preferencesFile
 preferencesFileDefaultContents
 	^'#Remove # to uncomment option. 
 
-#legal values are either a boolean
+#legal values are a boolean
 
 #autocommitEnabled: false
 #autocompleteEnabled: false
 #breakpointsEnabled: true
 #loggingEnabled: false
 #transcriptEnabled: true
+#packageGroupsVisible: true
+#packageListVisible: true
 
 #legal values are an integer or nil for default font size
 #fontSize: <anInteger or nil>

@@ -145,6 +145,32 @@ test_loggingEnabled
 	self deny: BrowserUpdate current isLogging]
 			ensure: [BrowserUpdate current isLogging: loggingWasEnabled]!
 
+test_packageGroupVisible
+	| prefs packageGroupWasVisible |
+	self testsIssue: #issue887
+		withTitle: '(Oscar V3.2) consider having the Preferences>>Package list visible menu apply to all tabs in a browser'.
+	packageGroupWasVisible := JadePresenter packageGroupsVisible.
+	
+	[prefs := JadeitePreferences new session: session.
+	prefs applyPreference: 'packageGroupsVisible: true'.
+	self assert: JadePresenter packageGroupsVisible.
+	prefs applyPreference: 'packageGroupsVisible: false'.
+	self deny: JadePresenter packageGroupsVisible]
+			ensure: [JadePresenter packageGroupsVisible: packageGroupWasVisible]!
+
+test_packageListVisible
+	| prefs packageListWasVisible |
+	self testsIssue: #issue887
+		withTitle: '(Oscar V3.2) consider having the Preferences>>Package list visible menu apply to all tabs in a browser'.
+	packageListWasVisible := JadePresenter packageGroupsVisible.
+	
+	[prefs := JadeitePreferences new session: session.
+	prefs applyPreference: 'packageListVisible: true'.
+	self assert: JadePresenter packageListVisible.
+	prefs applyPreference: 'packageListVisible: false'.
+	self deny: JadePresenter packageListVisible]
+			ensure: [JadePresenter packageListVisible: packageListWasVisible]!
+
 test_preferencesHandlesBlanks
 	| prefs result |
 	prefs := JadeitePreferences new session: session.
@@ -339,6 +365,8 @@ test_fontSize!public!tests! !
 test_globalAdditionalAccelerators!public!tests! !
 test_handleMalformedPreference!public!tests! !
 test_loggingEnabled!public!tests! !
+test_packageGroupVisible!public!tests! !
+test_packageListVisible!public!tests! !
 test_preferencesHandlesBlanks!public!tests! !
 test_preferencesOpenBrowsers!public!tests! !
 test_preferencesOpenCorrectWorkspaceFiles!public!tests! !

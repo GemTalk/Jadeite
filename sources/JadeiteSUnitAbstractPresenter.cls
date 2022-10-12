@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenter subclass: #JadeiteSUnitAbstractPresenter
 	instanceVariableNames: 'methodListPresenter textResultPresenter'
@@ -121,23 +121,25 @@ textResultPresenter: anObject
 updateResult: jadeResult
 	jadeResult setSummary.
 	self setColorFor: jadeResult! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #createComponents!public! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #debugTestAsFailureMethodServices:className:!private! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #debugTestMethodServices:className:!private! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #debugTests:!public! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #editSelectAll!menu handlers support!public! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #methodListPresenter!accessing!private! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #methodListPresenter:!accessing!private! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #refresh!event handlers!public! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #refreshFromServerAfterAbort:!event handlers!public! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #reset!public! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #runTestCommand:methods:className:!private! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #runTestMethodServices:className:!private! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #runTests:!public! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #runTests:in:!public! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #selectedClass!accessing!public! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #setColorFor:!public! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #textResultPresenter!accessing!private! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #textResultPresenter:!accessing!private! !
-!JadeiteSUnitAbstractPresenter categoriesFor: #updateResult:!public! !
+!JadeiteSUnitAbstractPresenter categoriesForMethods!
+createComponents!public! !
+debugTestAsFailureMethodServices:className:!private! !
+debugTestMethodServices:className:!private! !
+debugTests:!public! !
+editSelectAll!menu handlers support!public! !
+methodListPresenter!accessing!private! !
+methodListPresenter:!accessing!private! !
+refresh!event handlers!public! !
+refreshFromServerAfterAbort:!event handlers!public! !
+reset!public! !
+runTestCommand:methods:className:!private! !
+runTestMethodServices:className:!private! !
+runTests:!public! !
+runTests:in:!public! !
+selectedClass!accessing!public! !
+setColorFor:!public! !
+textResultPresenter!accessing!private! !
+textResultPresenter:!accessing!private! !
+updateResult:!public! !
+!
 

@@ -505,6 +505,8 @@ package methodNames
 	add: 'JadePresenter class' -> #enableAllBreakpointsIn:;
 	add: 'JadePresenter class' -> #enableMethodBreakpoints:in:;
 	add: 'JadePresenter class' -> #findMethodIn:class:presenter:;
+	add: 'JadePresenter class' -> #hidePackageGroups;
+	add: 'JadePresenter class' -> #hidePackageList;
 	add: 'JadePresenter class' -> #initializeTransactionMode;
 	add: 'JadePresenter class' -> #inTransaction:;
 	add: 'JadePresenter class' -> #issueCommand:session:;
@@ -518,6 +520,8 @@ package methodNames
 	add: 'JadePresenter class' -> #runMethodTests:in:;
 	add: 'JadePresenter class' -> #selectorsFrom:session:;
 	add: 'JadePresenter class' -> #setInTransaction:session:;
+	add: 'JadePresenter class' -> #showPackageGroups;
+	add: 'JadePresenter class' -> #showPackageList;
 	add: 'JadePresenter class' -> #transactionMode:;
 	add: 'JadePresenter class' -> #transactionMode:session:;
 	add: 'JadePresenter class' -> #turnOffAutoCommitIn:;
@@ -3295,6 +3299,12 @@ findMethodIn: session class: classService presenter: browser
 	methodService := JadeiteFindMethodDialog showModal: 'DefaultView' on: classService.
 	^self basicBrowseMethod: methodService presenter: browser!
 
+hidePackageGroups
+	JadeiteBrowserPresenter allInstances do: [:presenter | presenter hidePackageGroups]!
+
+hidePackageList
+	JadeiteBrowserPresenter allInstances do: [:presenter | presenter hidePackageList]!
+
 initializeTransactionMode
 	TransactionMode := ValueHolder new!
 
@@ -3369,6 +3379,12 @@ setInTransaction: answeringService session: session
 	answeringService exec: 'System inTransaction' in: session.
 	self inTransaction: answeringService answer = 'true'!
 
+showPackageGroups
+	JadeiteBrowserPresenter allInstances do: [:presenter | presenter showPackageGroups]!
+
+showPackageList
+	JadeiteBrowserPresenter allInstances do: [:presenter | presenter showPackageList]!
+
 transactionMode: aSymbol
 	TransactionMode ifNil: [self initializeTransactionMode].
 	TransactionMode value: aSymbol!
@@ -3442,6 +3458,8 @@ disableMethodBreakpoints:in:!browsing!public! !
 enableAllBreakpointsIn:!browsing!public! !
 enableMethodBreakpoints:in:!browsing!public! !
 findMethodIn:class:presenter:!browsing!public! !
+hidePackageGroups!displaying!menu handlers!preferences!public! !
+hidePackageList!displaying!menu handlers!preferences!public! !
 initializeTransactionMode!public! !
 inTransaction:!public! !
 issueCommand:session:!public! !
@@ -3455,7 +3473,9 @@ promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:searchString:!br
 runMethodTests:in:!public! !
 selectorsFrom:session:!browsing support!private! !
 setInTransaction:session:!public! !
-transactionMode:!public! !
+showPackageGroups!displaying!menu handlers!preferences!public! !
+showPackageList!displaying!menu handlers!preferences!public! !
+transactionMode:!preferences!public! !
 transactionMode:session:!public! !
 turnOffAutoCommitIn:!public! !
 unsavedChangesInvalidSessionDialogIn:!public!unsaved changes support! !
