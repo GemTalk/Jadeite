@@ -38,7 +38,8 @@ additionalAccelerators
 	^super additionalAccelerators , #(#(#reformatSource 'Ctrl+Shift+O') #(#jadeDebug 'Ctrl+B'))!
 
 answer
-	[SessionManager inputState loopWhile: [answer isNil and: [debuggerClosed not]]] ensure: [^answer]!
+	[[answer isNil and: [debuggerClosed not]] whileTrue: [(Delay forMilliseconds: 1) wait]]
+		ensure: [^answer]!
 
 basicSelectedFrame
 	| index |
@@ -294,8 +295,8 @@ getProcessList
 	gsProcess := debuggerService processes
 				detect: [:processService | processService oop = gsProcess oop]
 				ifNone: [gsProcess	"it should be found though"].
-	debuggerService processes notEmpty
-		ifTrue: [processListPresenter selection: debuggerService processes first]!
+	processListPresenter list notEmpty
+		ifTrue: [processListPresenter selection: debuggerService processes first ifAbsent: []]!
 
 homeFrame
 	^frameListPresenter list detect: [:str | str = (self homeFrameOf: frame) printString]!

@@ -2754,7 +2754,7 @@ executeSelectionOrLine: contextObject
 					with: self currentSelectionOrLine
 					with: oop
 					with: window view handle value).
-	self issueCommand: answeringService.
+	self issueCommand: answeringService. 
 	answer := self waitForAnswer: answeringService.
 	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
 	^answer!
@@ -5036,8 +5036,8 @@ executeSelectionOrLine: contextObject
 	answeringService
 		command: #exec:context:;
 		commandArgs: (Array with: self currentSelectionOrLine with: oop).
-	self issueCommand: answeringService.
-	answer := self waitForAnswer: answeringService. 
+	self issueCommand: answeringService. 
+	answer := self waitForAnswer: answeringService.  
 	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
 	^answer!
 
