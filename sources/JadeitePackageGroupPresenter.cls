@@ -98,6 +98,9 @@ onViewClosed
 	super onViewClosed.
 	BrowserUpdate current removeEventsTriggeredFor: packageGroupPresenter.!
 
+packageGroupPresenter
+	^packageGroupPresenter!
+
 packageGroupSelectionChanged
 	self displayPackageGroupPackages!
 
@@ -137,6 +140,7 @@ onDragPackageToComponent:!drag & drop!event handlers!public! !
 onDropPackageToComponent:!drag & drop!event handlers!public! !
 onDropPackageToPackageGroup:!drag & drop!public! !
 onViewClosed!event handlers!public! !
+packageGroupPresenter!accessing!private! !
 packageGroupSelectionChanged!event handlers!public! !
 queryCommand:!menu handlers!public! !
 removePackageFromPackageGroup!menu handlers!public! !

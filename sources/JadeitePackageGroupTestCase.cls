@@ -26,6 +26,23 @@ test_basicDisplayPackageGroups
 	childNames do: [:childName | self assert: (expectedChildNames includes: childName)].
 	expectedChildNames do: [:expectedChildName | self assert: (childNames includes: expectedChildName)]!
 
+test_packageGroupEditorSelection
+	"basic selection was broken"
+
+	| packageGroupEditor |
+	self testsIssue: #issue923
+		withTitle: '(3.2.8) Package Group Editor not implemented sufficiently to have value'.
+	self selectServiceNamed: 'RowanSample9' in: self projectListPresenter.
+	packageGroupEditor := self projectsPresenter editPackageGroups.
+	
+	[1 to: packageGroupEditor primaryPresenter model packageGroups size
+		do: 
+			[:index |
+			packageGroupEditor primaryPresenter packageGroupPresenter selectionByIndex: index.
+			self assert: packageGroupEditor primaryPresenter packageGroupPresenter selectionByIndex
+				equals: index]]
+			ensure: [self destroy: packageGroupEditor]!
+
 test_packageGroupsFromLoadedPackage
 	"in the browser, the package groups shown should be derived from the loaded project, 
 	not the project definition."
@@ -89,6 +106,7 @@ test_rowanAllPackagesDoesNotTakeTooLong
 	self assert: time < expectedTime! !
 !JadeitePackageGroupTestCase categoriesForMethods!
 test_basicDisplayPackageGroups!public!tests! !
+test_packageGroupEditorSelection!public!tests! !
 test_packageGroupsFromLoadedPackage!public!tests! !
 test_packageGroupsSelection!public!tests! !
 test_rowanAllPackagesDoesNotTakeTooLong!public!tests! !
