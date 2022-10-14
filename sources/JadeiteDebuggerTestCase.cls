@@ -1296,6 +1296,7 @@ test_loginButtonEnablementAfterDebug
 	
 	[GciSession current ifNotNil: [:sess | sess logout].
 	query := self closeJadeiteLoginShells.
+	JadeiteLoginShell allInstances do:[:loginShell | self destroy: loginShell]. 
 	shell := JadeiteLoginShell show position: 80 @ 20.
 	"make sure we're logging in as right user"
 	shell userIDPresenter value: user.

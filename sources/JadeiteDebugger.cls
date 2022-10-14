@@ -392,7 +392,7 @@ methodValueChanged
 	self displayUncompilableSourceIn: codePane documentPresenter!
 
 onCloseRequested: boolValueHolder
-	self isOkayToChangeFrame ifFalse: [^self].
+	self isOkayToChangeFrame ifFalse: [^boolValueHolder value: false].
 	super onCloseRequested: boolValueHolder!
 
 onIdleEntered

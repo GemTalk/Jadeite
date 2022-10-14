@@ -48,10 +48,8 @@ closeDebuggers
 	JadeiteMethodListBrowser allInstances
 		do: [:browser | self assert: (browser view isKindOf: DeafObject)].
 	JadeiteBrowser allInstances do: [:browser | self assert: (browser view isKindOf: DeafObject)].
-	JadeiteDebugger allInstances do: 
-			[:theDebugger |
-			(theDebugger view isKindOf: DeafObject) ifFalse: [(Delay forMilliseconds: 50) wait].
-			self assert: (theDebugger view isKindOf: DeafObject)].
+	JadeiteDebugger allInstances
+		do: [:theDebugger | (theDebugger view isKindOf: DeafObject) ifFalse: [(Delay forMilliseconds: 50) wait]].
 	MemoryManager current collectGarbage.
 	(Delay forMilliseconds: 50) wait.
 	self purgeInstances: JadeiteBrowser.

@@ -340,19 +340,13 @@ transactionModeValueHolder
 waitForAnswer: thingThatCanAnswer
 	| theAnswer deferredValue |
 	deferredValue := [thingThatCanAnswer answer] deferredValue.
-	[deferredValue hasValue] whileFalse: 
-			[| loop |
-			loop := 
-					[SessionManager inputState
-						loopWhile: [deferredValue hasValue not and: [thingThatCanAnswer isDeafObject not]]]
-							fork.
-			(Delay forMilliseconds: 1) wait.
-			[loop isAlive] whileTrue: 
-					[thingThatCanAnswer isDeafObject
-						ifTrue: 
-							[loop terminate.
-							^deferredValue hasValue ifTrue: [deferredValue value] ifFalse: [nil]].
-					(Delay forMilliseconds: 1) wait]].
+	[deferredValue hasValue not and: [thingThatCanAnswer isDeafObject not]] whileTrue: 
+			[| sync |
+			sync := ModalMsgLoop new.
+			
+			[(Delay forMilliseconds: 1) wait.
+			sync signal] fork.
+			sync wait].
 	theAnswer := [deferredValue value] on: Error
 				do: 
 					[:ex |
