@@ -343,9 +343,9 @@ waitForAnswer: thingThatCanAnswer
 	[deferredValue hasValue not and: [thingThatCanAnswer isDeafObject not]] whileTrue: 
 			[| sync |
 			sync := ModalMsgLoop new.
-			
+			[
 			[(Delay forMilliseconds: 1) wait.
-			sync signal] fork.
+			sync signal] on: Error do: [:ex | ]] fork.
 			sync wait].
 	theAnswer := [deferredValue value] on: Error
 				do: 
@@ -356,7 +356,7 @@ waitForAnswer: thingThatCanAnswer
 							[thingThatCanAnswer
 								getProcessList;
 								update.	"should be a debugger so update"
-							self waitForAnswer: thingThatCanAnswer]].
+							^self waitForAnswer: thingThatCanAnswer]].
 	^theAnswer! !
 !JadePresenter class categoriesForMethods!
 areAbortCommitEnabled!public! !

@@ -54,6 +54,7 @@ closeDebuggers
 	(Delay forMilliseconds: 50) wait.
 	self purgeInstances: JadeiteBrowser.
 	self purgeInstances: JadeiteMethodListBrowser.
+	JadeiteDebugger allInstances do: [:theDebugger | theDebugger debuggerClosed: true].
 	self purgeInstances: JadeiteDebugger.
 	self assert: JadeiteDebugger allInstances isEmpty.
 	self assert: JadeiteMethodListBrowser allInstances isEmpty.
@@ -286,6 +287,7 @@ systemBrowser
 !
 
 tearDown
+	TestMessageBox disableJadeiteTestMessageBox.	"in case the test has gotten stuck while enabled"
 	self assert: (session isKindOf: GciSession).
 	self cleanupProcesses.
 	self assert: (session isKindOf: GciSession).
@@ -306,9 +308,8 @@ tearDown
 	self closeDebuggers.
 	JadeiteDebugger debuggerClass: nil.
 	JadeiteDebugger semaphore: nil.
-	TestMessageBox disableJadeiteTestMessageBox.	"in case the test has gotten stuck while enabled"
 	self assert: (session isKindOf: GciSession).
-	super tearDown.!
+	super tearDown!
 
 terminateGsProcess
 	| string |

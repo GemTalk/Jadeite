@@ -270,7 +270,7 @@ test_badCompileInDebugger
 	debugger saveMethod.
 	self assert: self statusBarValue equals: 'undefined symbol'.
 	self assert: debugger methodSourcePresenter documentPresenter view backcolor
-		equals: JadeiteTextStyles default colorForCompileError!
+		equals: JadeiteTextStyles default colorForCompileError.!
 
 test_breakpointDisabledHighlighting
 	| indicator |
@@ -402,7 +402,7 @@ test_browseFrameClassMethod
 	[self assert: browser isKindOf: JadeiteBrowser.
 	self assert: browser currentCard classListPresenter selection name equals: 'GsNMethod'.
 	self assert: browser currentCard methodListPresenter selection selector equals: #_gsReturnToC]
-			ensure: [browser view close]!
+			ensure: [self destroy: browser]!
 
 test_browseFrameMethod
 	| browser |
@@ -518,7 +518,7 @@ test_browseSelectedFrameClassMethod
 	self assert: methodListBrowser primaryPresenter methodListPresenter methodListPresenter selection
 				selector
 		equals: #_gsReturnToC]
-			ensure: [methodListBrowser view close]!
+			ensure: [self destroy: methodListBrowser]!
 
 test_browseSelectedFrameMethod
 	| methodListBrowser |
@@ -965,6 +965,38 @@ test_debuggerDoesNotFreeze3
 				[workspace isModified: false.
 				workspace view close]!
 
+test_debuggerDoesNotFreeze4
+	"tests one of the many ways the debugger would freeze the gui. If test completes
+	we didn't freeze."
+
+	| workspace debuggersDestroyed |
+	self testsIssue: #issue927 withTitle: '[3.2.9] Concurrent debuggers can hang Jadeite'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	workspace setDocumentData: 'Array new: 1'.
+	self debuggerDo: 
+			[process := 
+					[workspace codePane documentPresenter setFocus.
+					workspace codePane documentPresenter view selectAll.
+					workspace codePane jadeDebug]
+							forkAt: Processor activePriority + 1].
+	self getDebugger.
+	debugger documentPresenter value: debugger documentPresenter value , ' randomText'.
+	debuggersDestroyed := false.
+	
+	[self destroy: debugger.
+	debuggersDestroyed := true] fork.
+	[debuggersDestroyed] whileFalse: [(Delay forMilliseconds: 50) wait].
+	workspace setDocumentData: '#foo'.
+	workspace codePane documentPresenter setFocus.
+	workspace codePane documentPresenter view selectAll.
+	workspace codePane jadeDisplay.
+	self assert: workspace codePane documentPresenter value = '#foo #''foo''']
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
 test_debuggerModifiedSourcePaneChangeFrame
 	self testsIssue: #issue120 withTitle: 'Debugger, edits in text, copy to clipboard, get error'.
 	TestMessageBox enableJadeiteTestMessageBox.
@@ -1295,9 +1327,11 @@ test_loginButtonEnablementAfterDebug
 	TestMessageBox plannedResult: #no.	"don't commit"
 	
 	[GciSession current ifNotNil: [:sess | sess logout].
-	query := self closeJadeiteLoginShells.
-	JadeiteLoginShell allInstances do:[:loginShell | self destroy: loginShell]. 
-	shell := JadeiteLoginShell show position: 80 @ 20.
+	shell := JadeiteLoginShell allInstances first.
+	query := CommandQuery commandDescription: (CommandDescription command: #login)
+				source: shell loginButtonPresenter view.
+	shell queryCommand: query.
+	self assert: query isEnabled.	" login shell should have a disabled login button"
 	"make sure we're logging in as right user"
 	shell userIDPresenter value: user.
 	shell model gsUserID: user.
@@ -2585,6 +2619,7 @@ test_debugFromWithinInspector!public!tests! !
 test_debuggerDoesNotFreeze1!public!test ad hoc execution! !
 test_debuggerDoesNotFreeze2!public!test ad hoc execution! !
 test_debuggerDoesNotFreeze3!public!test ad hoc execution! !
+test_debuggerDoesNotFreeze4!public!test ad hoc execution! !
 test_debuggerModifiedSourcePaneChangeFrame!public!tests! !
 test_debuggerModifiedSourcePaneStayOnFrame!public!tests! !
 test_disablebreakpointHighlighting!public!tests! !
