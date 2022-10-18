@@ -58,7 +58,7 @@ closeDebuggers
 	self purgeInstances: JadeiteDebugger.
 	self assert: JadeiteDebugger allInstances isEmpty.
 	self assert: JadeiteMethodListBrowser allInstances isEmpty.
-	self assert: JadeiteBrowser allInstances isEmpty!
+	self assert: JadeiteBrowser allInstances isEmpty.!
 
 closeJadeiteLoginShells
 	| query |

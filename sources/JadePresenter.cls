@@ -338,15 +338,20 @@ transactionModeValueHolder
 	^TransactionMode ifNil:[self initializeTransactionMode]!
 
 waitForAnswer: thingThatCanAnswer
-	| theAnswer deferredValue |
+	| theAnswer deferredValue thisProcess suspendingList |
 	deferredValue := [thingThatCanAnswer answer] deferredValue.
-	[deferredValue hasValue not and: [thingThatCanAnswer isDeafObject not]] whileTrue: 
-			[| sync |
-			sync := ModalMsgLoop new.
-			[
-			[(Delay forMilliseconds: 1) wait.
-			sync signal] on: Error do: [:ex | ]] fork.
-			sync wait].
+	thisProcess := Processor activeProcess.
+	
+	[
+	[[deferredValue hasValue not and: [thingThatCanAnswer isDeafObject not]]
+		whileTrue: [(Delay forMilliseconds: 1) wait]]
+			ensure: 
+				[SessionManager current inputState main: Processor activeProcess.
+				thingThatCanAnswer isDeafObject
+					ifTrue: [thisProcess terminate]
+					ifFalse: [[thisProcess resume: nil] on: Error do: [:ex | ]]]]
+			fork.
+	Processor suspendActive.
 	theAnswer := [deferredValue value] on: Error
 				do: 
 					[:ex |
@@ -356,7 +361,7 @@ waitForAnswer: thingThatCanAnswer
 							[thingThatCanAnswer
 								getProcessList;
 								update.	"should be a debugger so update"
-							^self waitForAnswer: thingThatCanAnswer]].
+							self waitForAnswer: thingThatCanAnswer]].
 	^theAnswer! !
 !JadePresenter class categoriesForMethods!
 areAbortCommitEnabled!public! !
