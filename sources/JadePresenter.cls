@@ -338,7 +338,7 @@ transactionModeValueHolder
 	^TransactionMode ifNil:[self initializeTransactionMode]!
 
 waitForAnswer: thingThatCanAnswer
-	| theAnswer deferredValue thisProcess suspendingList |
+	| theAnswer deferredValue thisProcess |
 	deferredValue := [thingThatCanAnswer answer] deferredValue.
 	thisProcess := Processor activeProcess.
 	

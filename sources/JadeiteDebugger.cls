@@ -867,8 +867,10 @@ signalSemaphore
 		ifNotNil: 
 			[:sem |
 			
-			[sem signal.
-			SessionManager inputState prod] forkAt: Processor userBackgroundPriority]!
+			[SessionManager current inputState main: Processor activeProcess.
+			sem signal.
+			SessionManager inputState prod]
+					forkAt: Processor userBackgroundPriority]!
 
 waitForAnswer: answeringService
 	^JadePresenter waitForAnswer: answeringService! !

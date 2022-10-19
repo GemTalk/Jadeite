@@ -14,39 +14,6 @@ clearBreakPointAt: stepPoint in: browser
 	super clearBreakPointAt: stepPoint in: browser.
 	self parentPresenter clearBreakPointsAt: stepPoint!
 
-editMenuStrings
-	false ifTrue: [
-		self editSaveMethod; undo; redo; cutSelection; copySelection; pasteClipboard; clearSelection; selectAll; editFind; editFindNext; editReplace; 
-			jadeDisplay; jadeExecute; jadeInspect; browseSelectedClass.
-	].
-	^#(
-		'&Edit'
-		'&Save/Ctrl+S/editSaveMethod'
-		'-'
-		'&Undo/Ctrl+Z/undo'
-		'&Redo/Ctrl+Y/redo'
-		'Revert//editRevert'
-		'-'
-		'&Reformat Source/Ctrl+Shift+O/reformatSource'
-		'-'
-		'&Cu&t/Ctrl+X/cutSelection'
-		'&Copy/Ctrl+C/copySelection'
-		'&Paste/Ctrl+V/pasteClipboard'
-		'&Delete/Delete/clearSelection'
-		'-'
-		'Select &All/Ctrl+A/selectAll'
-		'-'
-		'&Find/Ctrl+F/editFind'
-		'Find &Next/F3/editFindNext'
-		'&Replace/Ctrl+H/editReplace'
-		'-'
-		'Display/Ctrl+D/jadeDisplay'
-		'Execute/Ctrl+E/jadeExecute'
-		'Inspect/Ctrl+Q/jadeInspect'
-		'Debug/Ctrl+B/jadeDebug'
-	).
-!
-
 editRevert
 	self isOkayToChange
 		ifTrue: 
@@ -99,7 +66,6 @@ onViewClosed
 	BrowserUpdate current removeEventsTriggeredFor: self.! !
 !JadeiteDebuggerMethodSourcePresenter categoriesForMethods!
 clearBreakPointAt:in:!menu handlers!public! !
-editMenuStrings!Jade!private! !
 editRevert!edit!private! !
 executeSelectionOrLine:!menu handlers!public! !
 inspectorContextObject!private! !

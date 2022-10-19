@@ -349,20 +349,20 @@ test_browseClass
 	
 	[self assert: (browser isKindOf: JadeiteBrowserPresenter).
 	self assert: browser classListPresenter selection name = 'Rowan']
-			ensure: [self assert: browser topShell view close].
+			ensure: [self destroy: browser].
 	debugger documentPresenter view selectionRange: (105 to: 110).
 	self debuggerDo: [browser := debugger methodSourcePresenter browseSelectedClass].
 	
 	[self assert: (browser isKindOf: JadeiteBrowserPresenter).
 	self assert: ('*String*' match: browser selectedClasses first name)]
-			ensure: [self assert: browser topShell view close].
+			ensure: [self destroy: browser].
 	debugger documentPresenter view selectionRange: (119 to: 128).
 	self debuggerDo: [browser := debugger methodSourcePresenter browseSelectedClass].
 	
 	[self assert: (browser isKindOf: JadeiteBrowserPresenter).
 	self assert: browser selectedClassName equals: 'TranscriptStreamPortable']
 			ensure: 
-				[self assert: browser topShell view close.
+				[self destroy: browser.
 				self destroy: projectsBrowser]!
 
 test_browseClassVariablePane
@@ -1228,7 +1228,7 @@ test_frameDoubleClick
 	
 	[self assert: projectPresenter classListPresenter selection name equals: 'RowanClassService'.
 	self assert: projectPresenter methodListPresenter selection selector equals: #classHierarchy]
-			ensure: [self assert: projectPresenter topShell view close]!
+			ensure: [self destroy: projectPresenter]!
 
 test_frameDoubleClickNoActionInBlockContext
 	| projectPresenter |
@@ -1252,7 +1252,7 @@ test_implementersFromDebugger
 	[self assert: (browser isKindOf: JadeiteMethodListBrowser).
 	self assert: ('*Implementors of ''classFromName''*' match: browser topShell caption)]
 			ensure: 
-				[self assert: browser topShell view close.
+				[self destroy: browser. 
 				self destroy: projectsBrowser]!
 
 test_implementorsSendersCaption
@@ -1265,10 +1265,10 @@ test_implementorsSendersCaption
 		assert: debugger frameListPresenter list first = 'RowanProjectService >> branch @1 line 1'.
 	self debuggerDo: [methodListBrowser := debugger browseImplementors].
 	[self assert: ('Implementors of ''branch'' for *' match: methodListBrowser caption)]
-		ensure: [self assert: methodListBrowser view close].
+		ensure: [self destroy: methodListBrowser].
 	self debuggerDo: [methodListBrowser := debugger browseSenders].
 	[self assert: ('Senders of ''branch'' for *' match: methodListBrowser caption)]
-		ensure: [self assert: methodListBrowser view close]!
+		ensure: [self destroy: methodListBrowser]!
 
 test_inspectedDebuggerObjectHeld
 	| inspector |
@@ -1587,7 +1587,7 @@ test_reloadWithDebuggerOpen
 	self assertIsNil: (self methodListPresenter list
 				detect: [:methodService | methodService selector = #issue169]
 				ifNone: [])]
-			ensure: [self assert: projectsBrowser topShell view close]!
+			ensure: [self destroy: projectsBrowser]!
 
 test_reopenInLastExtent
 	| newExtent |
@@ -1810,7 +1810,7 @@ test_sendersFromDebugger
 	[self assert: (browser isKindOf: JadeiteMethodListBrowser).
 	self assert: ('*Senders of ''classFromName''*' match: browser topShell caption)]
 			ensure: 
-				[self assert: browser topShell view close.
+				[self destroy: browser.
 				self destroy: projectsBrowser]!
 
 test_stackDumpDetailedFrame
