@@ -28,9 +28,16 @@ select
 	^fileSelectorPresenter pathText value!
 
 setPathText: thePathText
-	fileSelectorPresenter pathText: thePathText asValue!
+	fileSelectorPresenter pathText value: thePathText!
 
 setPresenterModel
+	fileSelectorPresenter model: model!
+
+setPresenterModelFor: session path: path
+	| projectSpecService |
+	projectSpecService := RowanFileService new path: path.
+	projectSpecService session: session.
+	fileSelectorPresenter model: projectSpecService asValue.
 	fileSelectorPresenter model: model!
 
 shellName
@@ -49,6 +56,7 @@ pathText!initialization!public! !
 select!public! !
 setPathText:!initialization!public! !
 setPresenterModel!actions!public! !
+setPresenterModelFor:path:!actions!public! !
 shellName!constants!private! !
 showDirectoryContents!actions!public! !
 updateCaptionInSession:!overrides!private! !
@@ -74,8 +82,8 @@ showOnSession: aGciSession defaultPath: path
 	service := RowanFileService new path: path. 
 	service session: aGciSession.
 	inst := self createOn: service.
-	inst setPresenterModel.
 	inst setPathText: path.
+	inst setPresenterModelFor: aGciSession path: path.
 	inst showDirectoryContents.
 	inst updateCaptionInSession: aGciSession.
 	answer := inst showModal.

@@ -66,6 +66,7 @@ package classNames
 	add: #JadeiteSearch;
 	add: #JadeiteServerFileSaveDialog;
 	add: #JadeiteServerFileSelectorDialog;
+	add: #JadeiteServerFileWorkspace;
 	add: #JadeiteSmalltalkSearchPresenter;
 	add: #JadeiteSmalltalkWorkspace;
 	add: #JadeiteSUnitBrowser;
@@ -869,6 +870,11 @@ JadeWorkspace subclass: #JadeiteGitLog
 	classInstanceVariableNames: ''!
 JadeWorkspace subclass: #JadeitePreferencesWorkspace
 	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeWorkspace subclass: #JadeiteServerFileWorkspace
+	instanceVariableNames: 'path'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
