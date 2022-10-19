@@ -1598,6 +1598,7 @@ shouldHandleTransactionBacklogError: result
 
 terminate: anOopType
 	
+	[
 	[| processService |
 	processService := RowanDebuggerService new
 				command: #terminateProcess:;
@@ -1607,8 +1608,8 @@ terminate: anOopType
 			do: 
 				[:ex |
 				"ignore termination errors"
-				].
-	TerminateProcess signal!
+				]]
+			ensure: [TerminateProcess signal]!
 
 titleBarFor: windowName
 	| stream |
@@ -1855,7 +1856,7 @@ initializeProcess: aProcess message: aString terminateOnClose: aBoolean
 
 onViewClosed
 	BrowserUpdate current logComment: 'Releasing debugger'.
-	gciSession ifNil:[^super onViewClosed].
+	gciSession ifNil: [^super onViewClosed].
 	gciSession isValidSession
 		ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: gciSession].
 	BrowserUpdate current logComment: 'Releasing debugger complete'.
@@ -1863,7 +1864,6 @@ onViewClosed
 		ifTrue: 
 			[gsProcess := processListPresenter list first.
 			self class debuggers removeKey: gsProcess oopType asInteger ifAbsent: [].
-			waitingForAnswerProcess ifNotNil: [waitingForAnswerProcess terminate].
 			(terminateOnClose and: [answer isNil])
 				ifTrue: 
 					[[gsProcess terminate] ensure: [super onViewClosed].
