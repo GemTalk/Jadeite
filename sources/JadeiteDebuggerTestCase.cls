@@ -2020,12 +2020,11 @@ test_switchProcesses
 	session executeString: '(Delay forSeconds: 1) wait'.	"let forked process start"
 	self
 		openDebuggerOn: 'nil halt';
-		assert: debugger _processList size equals: activeProcesses + 1;
 		assert: debugger processListPresenter list size equals: activeProcesses + 1.
 	longRunningProcess := debugger processListPresenter list
 				detect: [:processService | processService oop = gsProcess].
 	self debuggerDo: [debugger processListPresenter selection: longRunningProcess].
-	self debuggerDo: [self selectFrameAt: 8].
+	self debuggerDo: [self selectFrameAt: 6].
 	self
 		assert: debugger methodSourcePresenter documentPresenter value
 			equals: '[(Delay forSeconds: 9999) wait] fork asOop.';
