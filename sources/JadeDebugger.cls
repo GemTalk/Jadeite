@@ -375,9 +375,10 @@ reportError: gsError
 	| debugger answer |
 	(debugger := self debuggerFor: gsError processOop) notNil
 		ifTrue: 
-			[debugger getProcessList; update.
-			Processor activeProcess kill.
-			self error: 'We should never get here!!'].
+			[debugger
+				getProcessList;
+				update.
+			Processor activeProcess kill].
 	(#(2709 6005) includes: gsError errorReport number)
 		ifTrue: [^self openDebuggerOnException: gsError].
 	self aboutToShowErrorShellOn: gsError.	"allow JadeiteDebuggerTestCase to override and skip error dialog and go straight to debugger"
