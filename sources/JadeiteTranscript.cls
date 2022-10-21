@@ -46,6 +46,17 @@ autoCompleteEnabled
 
 	^autoCompleteEnabled value!
 
+basicOpenServerFile: filePath
+	| service |
+	service := RowanFileService new
+				command: #fileContents;
+				path: filePath.
+	self issueCommand: service.
+	^JadeiteServerFileWorkspace
+		showOnSession: gciSession
+		path: filePath
+		contents: service answer!
+
 basicTransactionMode: aSymbol
 	self parentPresenter transactionMode: aSymbol session: gciSession!
 
@@ -201,8 +212,19 @@ isTranscriptInstalled
 isTranscriptInstalledValueHolder
 	^isTranscriptInstalled!
 
+jadeiteHelpFileCSSExtension
+	"for testing"
+
+	^'.css'!
+
+jadeiteHelpFileExtension
+	^'.html'!
+
 jadeiteHelpFileName
-	^'JadeiteHelp.html'!
+	^self jadeiteHelpFileNameRoot , self jadeiteHelpFileExtension!
+
+jadeiteHelpFileNameRoot
+	^'JadeiteHelp'!
 
 lastKnownTransaction
 	^lastKnownTransaction!
@@ -291,18 +313,11 @@ openJadeiteProjectsBrowser
 				caption: 'Cannot open Jadeite Projects browser']!
 
 openServerFile
-	| filePath service |
+	| filePath |
 	filePath := JadeiteServerFileSelectorDialog showOnSession: gciSession
 				defaultPath: '$ROWAN_PROJECTS_HOME'.
 	filePath ifNil: [^self].
-	service := RowanFileService new
-				command: #fileContents;
-				path: filePath.
-	self issueCommand: service.
-	JadeiteServerFileWorkspace
-		showOnSession: gciSession
-		path: filePath
-		contents: service answer!
+	^self basicOpenServerFile: filePath!
 
 projectListPresenter
 	^projectListPresenter!
@@ -435,6 +450,7 @@ auditProject!menu handlers!public! !
 autoCommit!accessing!private! !
 autoCommit:!accessing!private! !
 autoCompleteEnabled!accessing!private! !
+basicOpenServerFile:!menu handlers!private! !
 basicTransactionMode:!accessing!public!transaction mode! !
 beginTransaction!menu handlers!public! !
 browseBreakpointList!menu handlers!public! !
@@ -469,7 +485,10 @@ isBeginTransactionEnabled!public!testing! !
 isCommitEnabled!public!testing! !
 isTranscriptInstalled!public! !
 isTranscriptInstalledValueHolder!private! !
-jadeiteHelpFileName!menu handlers!public! !
+jadeiteHelpFileCSSExtension!constants!public! !
+jadeiteHelpFileExtension!constants!public! !
+jadeiteHelpFileName!constants!public! !
+jadeiteHelpFileNameRoot!constants!public! !
 lastKnownTransaction!accessing!private! !
 onCloseRequested:!event handling!public! !
 onViewClosed!event handling!public! !

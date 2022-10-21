@@ -655,6 +655,13 @@ test_openPreferencesFileCreatePrefsFile
 				self restoreBackupPrefsFile: prefsExists.
 				self assert: (File exists: path) equals: prefsExists]!
 
+test_openServerFile
+	| editor |
+	self testsIssue: #issue954 withTitle: 'Need online help; our formatting is somewhat opaque'.
+	editor := transcript basicOpenServerFile: '$ROWAN_PROJECTS_HOME/RowanSample1/LICENSE'.
+	[self assert: (editor codePane documentPresenter value copyFrom: 1 to: 11) equals: 'MIT License']
+		ensure: [self destroy: editor]!
+
 test_popupMenuHasBrowseClass
 	| browseClassItem |
 	self testsIssue: #issue429 withTitle: '(3.0.60) ''Browse Class'' on Transcript gets walkback'.
@@ -823,6 +830,16 @@ test_transcriptNamedConsole
 	self assert: transcript transcriptPresenter documentPresenter view displayValue isEmpty]
 			ensure: [wasInstalled ifFalse: [transcript flipTranscript	"turn back off"]]!
 
+test_validateHelpFiles
+	"need both .html & .css file to properly display Jadeite help file in a browser"
+
+	self testsIssue: #issue954 withTitle: 'Need online help; our formatting is somewhat opaque'.
+	self assert: (File
+				exists: SessionManager current installationDirectory , '\' , transcript jadeiteHelpFileName).
+	self assert: (File
+				exists: SessionManager current installationDirectory , '\' , transcript jadeiteHelpFileNameRoot
+						, transcript jadeiteHelpFileCSSExtension)!
+
 writeToPrefsFile: string
 	| fileStream |
 	fileStream := FileStream read: SessionManager current imageBase , 'Jadeite.prefs'.
@@ -869,6 +886,7 @@ test_multiSelectProject!public!tests! !
 test_openChangesBrowser!public!tests! !
 test_openPreferencesFile!public!tests! !
 test_openPreferencesFileCreatePrefsFile!public!tests! !
+test_openServerFile!public!test menus! !
 test_popupMenuHasBrowseClass!public!tests! !
 test_popupMenuHasBrowseImplementors!public!tests! !
 test_popupMenuHasBrowseSenders!public!tests! !
@@ -879,6 +897,7 @@ test_queryCommandHandlesNilSession!public!test menus! !
 test_raiseConsole!public!tests! !
 test_selectorsList!public!tests! !
 test_transcriptNamedConsole!public!tests! !
+test_validateHelpFiles!public!test menus! !
 writeToPrefsFile:!private!support!tests! !
 !
 
