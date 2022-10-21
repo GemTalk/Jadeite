@@ -1927,7 +1927,7 @@ onViewClosed
 			(terminateOnClose and: [answer isNil])
 				ifTrue: 
 					[[gsProcess terminate] ensure: [super onViewClosed].
-					self error: 'We should never get here!!']].
+					Processor activeProcess kill "we should never get here but just in case" ]].
 	^super onViewClosed!
 
 resumeProcess
