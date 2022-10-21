@@ -872,6 +872,26 @@ test_dropNonSelectedMethod
 	self assert: newMethodService selector equals: #foo.
 	self deny: newMethodService meta!
 
+test_expandFullHierarchyFromClassesMenu
+	self testsIssue: #issue852
+		withTitle: 'would be convenient if Expand Full Hierarchy was enabled when Classes tab selected in project browser'.
+	self projectsPresenter selectClassListTab.
+	self selectRowanServicesPackage.
+	self selectServiceNamed: 'RowanService' in: self classListPresenter.
+	self projectsPresenter expandFullHierarchy.
+	self assert: self projectsPresenter isClassHierarchyTabSelected.
+	self denyIsNil: (self projectsPresenter classHierarchyPresenter model asBag
+				detect: [:classService | classService name = 'Object']
+				ifNone: []).
+	RowanService allSubclassesDo: 
+			[:subclass |
+			"RowanDisplayLabelVariableService is not a true service"
+			subclass name = 'RowanDisplayLabelVariableService'
+				ifFalse: 
+					[self denyIsNil: (self projectsPresenter classHierarchyPresenter model asBag
+								detect: [:classService | classService name = subclass name]
+								ifNone: [])]]!
+
 test_expansion
 	"When no classes are selected and the hierarchy tab is chosen, we should
 	see a hierarchy showing all superclasses of the packaged classes. 
@@ -1892,6 +1912,7 @@ test_dragDropMultipleMethodsHierarchy!public!test class hierarchy!test drag drop
 test_dropMethodOnClassHierarchy!public!test class hierarchy!test drag drop!tests! !
 test_dropMethodOnClassList!public!test class list!test drag drop!tests! !
 test_dropNonSelectedMethod!public!test class list!test drag drop!tests! !
+test_expandFullHierarchyFromClassesMenu!public!test class hierarchy!tests! !
 test_expansion!public!test class hierarchy!tests! !
 test_extensionColoringInHierarchy!public!test class hierarchy!tests! !
 test_extensionMethodSelection!public!test class list!tests! !

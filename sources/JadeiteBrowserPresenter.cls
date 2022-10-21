@@ -799,7 +799,10 @@ expandFullAt: classService
 			classHierarchyPresenter view expandAll: classService ]!
 
 expandFullHierarchy
-	self expandFullAt: self selectedClass!
+	self selectClassHierarchyTab.
+	self selectClassInClassHierarchyNamed: self selectedClass. 
+	self expandFullAt: self selectedClass. 
+	classHierarchyPresenter view ensureSelectionVisible!
 
 findClass
 	| find |
@@ -922,6 +925,9 @@ inspectorContextObject
 
 isClassDefinitionTabSelected
 	^textAreaTabs currentCard name = 'classDefinition'!
+
+isClassHierarchyTabSelected
+	^classHierarchyTabs currentCard name = 'classHierarchy'!
 
 isClassSelected
 	^self selectedClass notNil!
@@ -1476,7 +1482,7 @@ queryCommand: aCommandQuery
 			^true].
 	#expandFullHierarchy = command
 		ifTrue: 
-			[aCommandQuery isEnabled: self isClassListTabSelected not.
+			[aCommandQuery isEnabled: true.
 			^true].
 	#browseSelectedCategoryMethods = command
 		ifTrue: 
@@ -1709,6 +1715,12 @@ runSelected
 
 search
 	^search ifNil: [search := JadeiteSearch on: methodSourcePresenter view session: self gciSession]!
+
+selectClassHierarchyTab
+	classHierarchyTabs lastCard!
+
+selectClassListTab
+	classHierarchyTabs firstCard!
 
 selectDictionaryNamed: dictionaryName
 	| dictionaryService |
@@ -2308,6 +2320,7 @@ inspectGlobal!menu handlers!public! !
 inspectMethod!menu handlers!public! !
 inspectorContextObject!menu handlers support!private! !
 isClassDefinitionTabSelected!public!testing! !
+isClassHierarchyTabSelected!public!testing! !
 isClassSelected!public!testing! !
 isComparisonTabSelected!public!testing! !
 isDictionariesTabSelected!public!testing! !
@@ -2391,6 +2404,8 @@ resetTextFont!menu handlers!public! !
 runAll!menu handlers!public! !
 runSelected!menu handlers!public! !
 search!accessing!public! !
+selectClassHierarchyTab!public!selection! !
+selectClassListTab!public!selection! !
 selectDictionaryNamed:!public!selection! !
 selectedDictionaryNames!public!selection! !
 selectedDictionaryOrPackage!private!selection! !

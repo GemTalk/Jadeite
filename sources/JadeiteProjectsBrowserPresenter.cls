@@ -1279,9 +1279,6 @@ selectClassInClassListNamed: className
 	selection ifNotNil: [classListPresenter selection: selection].
 	^selection!
 
-selectClassListTab
-	classHierarchyTabs firstCard!
-
 selectClassNamed: className
 	self isClassListTabSelected
 		ifTrue: [self selectClassInClassListNamed: className]
@@ -1754,7 +1751,6 @@ selectCategoryTab!public!selection! !
 selectClassDefinitionTab!public!selection! !
 selectClassInClassHierarchyNamed:!private!selection! !
 selectClassInClassListNamed:!private!selection! !
-selectClassListTab!public!selection! !
 selectClassNamed:!private!selection! !
 selectClassTab!public!selection! !
 selectCommentTab!public!selection! !
