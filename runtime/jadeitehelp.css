@@ -1,0 +1,189 @@
+html, body {
+	font-family: Helvetica, Arial,sans-serif;
+	color: #333333;
+	line-height: 1.15;
+     background-color: #FFFFFF;
+     height: 100%;
+	margin:0;
+	padding:0;
+	}
+
+a:link, a:visited{
+	color: #0982c6;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #6CBCBD;
+}
+
+h1, h2, h3, h4, h5 {
+	margin: 0;
+	padding: 0;
+}
+
+/***********************************************/
+/*     body div, headers, and footers                                     */
+/***********************************************/
+
+#wrapper {
+	widthx: 1000px;
+	width: 100%;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 0px;
+	text-align: left;
+	background-color: #ffffff;
+		min-height:100%;
+		position:relative;
+	}
+#wrapper-contents {
+	margin-left: 5%; 
+	padding: 30px 30px 5px 10px;
+	max-width: 900px;
+		padding-bottom:130px;	/* Height of the footer */
+	}
+#wrapper-contents-wide {
+	margin-left: 5%; 
+	padding: 30px 30px 5px 10px;
+		padding-bottom:130px;	/* Height of the footer */
+}
+
+#top-banner {
+	height: 80px;	
+	border-bottom: 14px solid #434343;
+}
+#banner-logo {
+	float: left;
+  	width: 55%;
+  	background-position: left center;
+  	background-repeat: no-repeat;
+	padding: 12px 0 0 0;
+	margin-left: 5%; 
+	}
+
+
+.page-titlebar{
+  background-color: lightyellow;
+  width: 100%;
+  background-size: cover;
+  background-repeat: round;
+  background-position: center center;
+  border-top: 2px solid #d2d3d4;
+  border-bottom: 1px solid #d2d3d4;
+  margin: 0 auto;
+  position: relative;
+}
+
+.page-title{
+  font-weight: normal;
+  font: 1.05em arial, helvetica, sans-serif;
+  color: #333333;
+   xmargin: 1% 2% 1%  2%;
+   margin: 1% 2% 1%  5%;
+}
+
+
+/**************************/
+/*  RESPONSIVE LAYOUTS         */
+/**************************/
+
+@media only screen and (max-width: 1000px) {
+	#bugbody { max-width: 70%; }
+	}
+
+/* move breadcrumbs, reduce padding and title font size when screen gets narrower */
+@media only screen and (max-width: 700px) {
+	#wrapper-contents { 
+	    	padding-top: 10px;
+	    	padding-right: 10px;
+	    	padding-left: 10px;
+		}
+	#top-banner { height: 110px;	}
+	#banner-logo { float:none;	}
+
+	.page-title{
+  		font: .95em arial, helvetica, sans-serif;
+	}
+}
+
+/* a little narrower, reduce some font sizes */
+@media only screen and (max-width: 620px) {
+	th {
+		font-size: .9em;
+		}
+}
+
+/* more narrow screens; allow title to wrap */
+@media only screen and (max-width: 600px) {
+	#wrapper {
+		min-width: 510px;
+		}
+
+}
+
+
+
+/***********************************************/
+/*     basic element styles for pages          */
+/***********************************************/
+
+
+h1 {
+	color: #333333;
+	font-size: 28px;
+	font-weight: bold;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+h2 {
+	color: #333333;
+	font-size: 22px;
+	font-weight: bold;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+h3 {
+	color: #70a83c;
+	font-size: 20px;
+	font-weight: bold;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+p, li {
+	padding-top: 5px;
+	padding-bottom: 4px;
+	font-size: 16px;
+	line-height: 1.25;
+}
+
+h4 {
+	color: #333333;
+	font-size: 16px;
+	font-weight: bold;
+	padding-top: 20px;
+}
+
+.small {
+	color: #999999;
+	font-size: 13px;
+	padding: 5px 0 5px 0;
+}
+
+br { line-height: 0.5; }
+
+pre { font-size: 16px; }
+
+.redfont { color: red;  }
+.boldfont { font-weight: bold;  }
+.bolditalicfont { font-weight: bold; font-style: italic; }
+.purplefont { color: purple;  }
+.purpleunderlinefont { color: purple; text-decoration: underline;  }
+
+
+
+
+

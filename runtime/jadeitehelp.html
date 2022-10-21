@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+     <title>Jadeite Help </title>
+     <link href="./jadeitehelp.css" rel="stylesheet" type="text/css" media="screen" />
+     <link rel="icon" href="https://gemtalksystems.com/wp-content/uploads/gemtalk-globe.ico">
+</head>
+<body>
+
+<div id="wrapper">
+
+        <div class="page-titlebar">
+                <div class="page-title">
+                        <h1>Jadite Help</h1>
+Jadeite is a graphical user interface for code development and debugging, for use with the Rowan code manager <br>
+within a GemStone environment. For more information, see the <a href="https://github.com/GemTalk/Jadeite">Github project</a>.<br>&nbsp;
+                        </div>
+        </div>
+
+<div id="wrapper-contents">
+
+<em>This is a placeholder for online help for Jadeite. </em>
+<br><br><br>
+
+Topics are:
+ <ul>
+	<li><a href="#BrowserCodeDecoration">Browser code status decoration</a></li>
+	<li><a href="#FontSizing">Setting Font Sizes</a></li>
+</ul>
+
+<hr>
+
+<h2><a name="BrowserCodeDecoration"></a>Browser Code status decoration</h2>
+
+<h3>Project status text decoration</h3>
+The color, weight and bold/italic font for a Project's name in the Console's Project List or the Projects Browser indicates the status of the Project in the image, vs. the on-disk status.
+
+<ul>
+<li>Normal font for a Project indicates that it is loaded, and there are no changes either in the image or on disk.</li>
+
+<li><span class="redfont">Red font</span> indicates that there are changes to the on-disk code for a Project that are not loaded in the image (skew). 
+Red does not necessarily indicate a need for action. However, <b>do not write to disk if there is skew</b>, since it may create corruption in the logical state in the git repository itself./li>
+
+<li><span class="bolditalicfont">Bold italic font</span> indicates that a Project that is attached but not loaded. This will not have a "Loaded Sha" number (the middle column on the Console Projects tab). The loaded Sha is a column in the Console Projects tab; to see this in the Project Browser you can use the lower pane Project tab./li>
+
+<li><span class="bolditalicfont">Bold italic font</span> can also indicate that the project has changes in the image that have not been written to disk.</li>
+
+<li>A Project name with a trailing asterisk* indicates that the project that is dirty on disk.</li>
+
+</ul>
+
+<h3>Class and Method status text decoration</h3>
+
+When the Projects Browser displays a Package, it displays a list of all classes that are associated with that Package, and also displays classes that are in other Packages, but have extension methods that are in that Package. 
+<p>
+When the Projects Browser displays a Class, it displays a list of all methods that are defined for that class, including methods that are in the selected Package and methods that are defined in other Packages. 
+
+<ul>
+<li>A class is in normal font and a method in normal font indicate that the Class and method is defined in the selected Package or Packages.
+</li>
+
+<li>If the class is in normal and the method is in <span class="purpleunderlinefont">purple and underlined </span>, it indicates that the method is defined in a different package; the other package contains an extension method to the selected class. <br><br> Use the method pop up menu item Go To Defining Package to see the Package for that method.</li>
+
+<li>A class in <span class="purplefont">purple</span> indicates that the class  definition is associated with a different package; the class is included in the list of classes since it has one or more extension methods that are defined in this package. <br><br> Use the pop up menu item Go To Defining Package to see the Package for that class.
+</li>
+
+<li>If the class is in <span class="purplefont">purple</span> and the method is in normal font, it indicates that the method is defined in the same package as the class.  <br><br> The Class and Method pane pop up menu item Go To Defining Package will show the Package for that class/method. </li>
+
+<li>If the class is in <span class="purplefont">purple</span> and the method is in <span class="purplefont">purple (not underlined)</span>, it indicates that the method is defined in the selected package; that is, this is an extension method in the selected package. </li>
+
+<li>If the class is in <span class="purplefont">purple</span> and the method is in <span class="purpleunderlinefont">purple and underlined </span>, it indicates that the method is defined in a third package, neither the selected package nor the package that the class is defined on. <br><br> Use the method pop up menu item Go To Defining Package to see the Package for that method.</li>
+</ul>
+
+<hr>
+
+<h2><a name="FontSizing"></a>Setting Font Sizes</h2>
+
+To set the System Font, which controls pane labels, menus, tabs, and the display of class and method names, set a preference in Jadeite.prefs.  You can use the Console menu item Edit Preferences File to set a font size.  Legal values are an integer or nil for default font size.
+<p>
+For example, to set the font size to 11 (slightly larger than the default)
+<pre>
+    fontSize: 11
+</pre>
+You will need to logout and login to see the change. 
+
+<p>
+To set the Text Font for method bodies,  workspaces, and similar text panes, you can also use the preferences file.
+<pre>
+    textFontSize: 11
+</pre>
+You will need to logout and login to see the change. 
+<p>
+You may also set this at runtime using the Projects Browser menu Preferences > Text Font Size.
+
+</div>
+</body>
+</html>
+
+
+
+
+
+

@@ -24,22 +24,6 @@ _library
 	^library.
 !
 
-_send: aSymbol to: anObject withAll: anArray
-	| arguments oops result |
-	oops := OrderedCollection new.
-	arguments := anArray collect: 
-					[:each |
-					(each isKindOf: Integer)
-						ifTrue: [library session: gciSessionId oopForInteger: each]
-						ifFalse: [(each isKindOf: String) ifTrue: [oops add: (self oopForString: each)] ifFalse: [each]]].
-	result := library
-				session: gciSessionId
-				send: aSymbol
-				to: (self oopTypeFor: anObject)
-				with: (self serverArrayFor: arguments).
-	self releaseOops: oops.
-	^result!
-
 _server
 
 	^server.
@@ -470,32 +454,6 @@ send: aSymbol to: anObject
 		to: anObject
 		withAll: #()!
 
-send: aSymbol to: anObject withAll: anArray
-	| stream |
-	stream := WriteStream on: String new.
-	stream
-		nextPutAll: (anObject == server ifTrue: ['jadeServer'] ifFalse: [anObject printString]);
-		cr;
-		nextPutAll: '	perform: #''';
-		nextPutAll: aSymbol;
-		nextPut: $';
-		cr;
-		nextPutAll: '	withAll: (Array';
-		yourself.
-	anArray do: 
-			[:each |
-			stream
-				cr;
-				nextPutAll: '		with: ';
-				print: each].
-	stream nextPut: $).
-	^self withExplanation: stream contents
-		do: 
-			[self
-				_send: aSymbol
-				to: anObject
-				withAll: anArray]!
-
 sendInterpreted: aString to: anObject withAll: anArray
 
 	| stream arguments |
@@ -752,7 +710,6 @@ valueOfOop: anOopType
 	^library session: gciSessionId valueOfOop: anOopType.! !
 !GciSession categoriesForMethods!
 _library!accessing!private! !
-_send:to:withAll:!private! !
 _server!private! !
 abort!Jade convenience!public! !
 attemptSocket!private! !
@@ -807,7 +764,6 @@ releaseOop:!Jade convenience!public! !
 releaseOops:!Jade!public! !
 returningResultOrErrorDo:!long running!private! !
 send:to:!Jade convenience!public! !
-send:to:withAll:!Jade convenience!long running!public! !
 sendInterpreted:to:withAll:!Jade convenience!long running!public! !
 serverArrayFor:!Jade convenience!public! !
 serverPerform:!Jade convenience!public! !

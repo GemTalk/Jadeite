@@ -199,14 +199,6 @@ isOkayToChange
 	documentPresenter view isModified: false.
 	^true!
 
-jadeDebug
-	[gciSession
-		debugString: self currentSelectionOrLine
-		fromContext: (OopType64 fromInteger: self inspectorContextObject)
-		environment: environment]
-			on: GsCompileError
-			do: [:ex | MessageBox notify: 'Compile error in expression ' , ex descriptiveText]!
-
 jadeDisplay
 	self jadeExecuteAndDisplay: true.
 !
@@ -471,7 +463,6 @@ initialize!public! !
 isClassSelectedInEditor!public! !
 isModified!public! !
 isOkayToChange!public!testing! !
-jadeDebug!Jade!private! !
 jadeDisplay!Jade!private! !
 jadeExecute!Jade!private! !
 jadeExecuteAndDisplay:!Jade!private! !

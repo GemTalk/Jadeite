@@ -112,6 +112,7 @@ package methodNames
 	add: #CodeSourcePresenter -> #currentSelection;
 	add: #CodeSourcePresenter -> #executeSelectionOrLine;
 	add: #CodeSourcePresenter -> #inspectorContextObject;
+	add: #CodeSourcePresenter -> #jadeDebug;
 	add: #CodeSourcePresenter -> #jadeInspect;
 	add: #CodeSourcePresenter -> #methodMenuBreak:;
 	add: #CodeSourcePresenter -> #showResult:;
@@ -122,6 +123,7 @@ package methodNames
 	add: #DragDropSession -> #defaultScrollInterval;
 	add: #Float -> #asString;
 	add: #GciSession -> #_executeString:fromContextOop:environment:;
+	add: #GciSession -> #_send:to:withAll:;
 	add: #GciSession -> #commit;
 	add: #GciSession -> #computeGemHost;
 	add: #GciSession -> #computeStoneHost;
@@ -146,6 +148,7 @@ package methodNames
 	add: #GciSession -> #rowanClientServicesIsSupportedWithLowerLimit:;
 	add: #GciSession -> #rowanClientServicesRangeHigh;
 	add: #GciSession -> #rowanClientServicesVersion;
+	add: #GciSession -> #send:to:withAll:;
 	add: #GciSession -> #serverPerform:withArguments:;
 	add: #GciSession -> #shouldHandleTransactionBacklogError:;
 	add: #GciSession -> #terminate:;
@@ -1150,6 +1153,16 @@ executeSelectionOrLine
 inspectorContextObject
 	^parentPresenter contextObject!
 
+jadeDebug
+	
+	[BrowserUpdate current inUpdateWhile: 
+			[gciSession
+				debugString: self currentSelectionOrLine
+				fromContext: (OopType64 fromInteger: self inspectorContextObject)
+				environment: environment]]
+			on: GsCompileError
+			do: [:ex | MessageBox notify: 'Compile error in expression ' , ex descriptiveText]!
+
 jadeInspect
 	| inspector | 
 	inspector := JadeiteInspector new gciSession: gciSession.
@@ -1209,6 +1222,7 @@ browseSelectedClass!Jade!public! !
 currentSelection!public! !
 executeSelectionOrLine!Jade!private! !
 inspectorContextObject!Jade!private! !
+jadeDebug!Jade!private! !
 jadeInspect!Jade!private! !
 methodMenuBreak:!menus!public! !
 showResult:!Jade!private! !
@@ -1373,6 +1387,23 @@ _executeString: aString fromContextOop: anOopType environment: anInteger
 		context: anOopType
 		environment: anInteger!
 
+_send: aSymbol to: anObject withAll: anArray
+	| arguments oops result |
+	oops := OrderedCollection new.
+	arguments := anArray collect: 
+					[:each |
+					(each isKindOf: Integer)
+						ifTrue: [library session: gciSessionId oopForInteger: each]
+						ifFalse: [(each isKindOf: String) ifTrue: [oops add: (self oopForString: each)] ifFalse: [each]]].
+	BrowserUpdate current inUpdateWhile: 
+			[result := library
+						session: gciSessionId
+						send: aSymbol
+						to: (self oopTypeFor: anObject)
+						with: (self serverArrayFor: arguments).
+			self releaseOops: oops].
+	^result!
+
 commit
 	| result |
 	BrowserUpdate current inUpdateWhile: [result := self serverPerform: #commit].
@@ -1406,14 +1437,15 @@ executeString: aString
 
 executeString: aString fromContext: anObject environment: anInteger
 	| oopType |
-	BrowserUpdate current logComment: 'GciSession executeString: ' , aString.
-	oopType := self oopTypeFor: anObject.
-	^self withExplanation: aString
-		do: 
-			[self
-				_executeString: aString
-				fromContextOop: oopType
-				environment: anInteger]!
+	BrowserUpdate current inUpdateWhile: 
+			[BrowserUpdate current logComment: 'GciSession executeString: ' , aString.
+			oopType := self oopTypeFor: anObject.
+			^self withExplanation: aString
+				do: 
+					[self
+						_executeString: aString
+						fromContextOop: oopType
+						environment: anInteger]]!
 
 gemNRS
 
@@ -1580,6 +1612,32 @@ rowanClientServicesVersion
 	ifTrue:[Rowan serviceClass value version]
 	ifFalse:[''invalid version''].'!
 
+send: aSymbol to: anObject withAll: anArray
+	| stream |
+	stream := WriteStream on: String new.
+	stream
+		nextPutAll: (anObject == server ifTrue: ['jadeServer'] ifFalse: [anObject printString]);
+		cr;
+		nextPutAll: '	perform: #''';
+		nextPutAll: aSymbol;
+		nextPut: $';
+		cr;
+		nextPutAll: '	withAll: (Array';
+		yourself.
+	anArray do: 
+			[:each |
+			stream
+				cr;
+				nextPutAll: '		with: ';
+				print: each].
+	stream nextPut: $).
+	^self withExplanation: stream contents
+		do: 
+			[self
+				_send: aSymbol
+				to: anObject
+				withAll: anArray]!
+
 serverPerform: aSymbol withArguments: anArray
 	| answer |
 	server isNil
@@ -1671,7 +1729,10 @@ withExplanation: aString do: aBlock
 							[[library signalIfError] on: Error
 								do: [:ex | (self shouldHandleTransactionBacklogError: ex) ifTrue: [self handleTransactionBacklogError: ex]]]].
 			error := result.
-			[result := error signal] ensure: [self releaseAllOops].
+			
+			[('*thread*' match: error description) ifTrue: [Process allInstances inspect. self halt.  ].
+			result := error signal]
+					ensure: [self releaseAllOops].
 			result = #resume ifFalse: [self error: 'Unrecognized response of ' , result printString]].
 	"other work may need to be done by, say, the debugger. Give those processes a chance to run 
 	before continuing"
@@ -1695,6 +1756,7 @@ withExplanation: aString doA: aBlock
 	^self handlingClientForwarderSendDo: aBlock! !
 !GciSession categoriesForMethods!
 _executeString:fromContextOop:environment:!private! !
+_send:to:withAll:!private! !
 commit!Jade convenience!public! !
 computeGemHost!public!title bar! !
 computeStoneHost!public!title bar! !
@@ -1719,6 +1781,7 @@ rowanClientServicesIsSupported!private! !
 rowanClientServicesIsSupportedWithLowerLimit:!private! !
 rowanClientServicesRangeHigh!private! !
 rowanClientServicesVersion!private! !
+send:to:withAll:!Jade convenience!long running!public! !
 serverPerform:withArguments:!Jade convenience!public! !
 shouldHandleTransactionBacklogError:!public! !
 terminate:!public! !
