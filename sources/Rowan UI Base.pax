@@ -1539,6 +1539,7 @@ pollForSignal
 
 postLoadClientPreferences
 	| path file stream nextLine prefs |
+	self halt. 
 	path := SessionManager current imageBase , self preferencesFile.
 	(File exists: path) ifFalse: [^self].
 	prefs := JadeitePreferences onSession: self.
@@ -5160,14 +5161,7 @@ onPromptToSaveChanges: aBooleanValue
 
 	documentPresenter value ifNil: [self isModified: false].
 	self isModified
-		ifTrue: 
-			[MessageBox new
-				owner: self view;
-				caption: (JadePresenter defaultCaptionText: self);
-				confirm: JadePresenter defaultUnsavedChangesText
-					onYes: [aBooleanValue value: self fileSave]
-					onNo: [self isModified: false]
-					onCancel: [aBooleanValue value: false]].
+		ifTrue: [aBooleanValue value: (JadePresenter unsavedChangesValidSessionDialogIn: self) not].
 	^aBooleanValue value!
 
 openDictionaryBrowser

@@ -16,8 +16,7 @@ client preferences. See GciSession>>postLoadServerPreferences'!
 !JadeitePreferences methodsFor!
 
 allowsSpacesInArgument: commandSymbol
-	"so far openWorkspace: is only command to allow spaces in it's arguments"
-	^commandSymbol = #openWorkspace:!
+	^commandSymbol = #openWorkspace: or: [commandSymbol = #openBrowserOnClasses:]!
 
 applyPreference: preferencesString
 	"only perform messages which are defined by this class"
@@ -75,6 +74,19 @@ openBrowserOnClass: className
 	| projectBrowser classService |
 	projectBrowser := self openProjectBrowser.
 	classService := RowanClassService new name: className.
+	projectBrowser currentCard updateAfterFindClass: classService.
+	lastWindowPosition := projectBrowser view position.
+	^projectBrowser!
+
+openBrowserOnClasses: stringOfClassNames
+	| projectBrowser classService classNameArray |
+	classNameArray := stringOfClassNames subStrings.
+	projectBrowser := self openProjectBrowser.
+	classNameArray do: 
+			[:className |
+			classService := RowanClassService new name: className.
+			projectBrowser currentCard updateAfterFindClass: classService.
+			className ~= classNameArray last ifTrue: [projectBrowser addSystemBrowser]].
 	projectBrowser currentCard updateAfterFindClass: classService.
 	lastWindowPosition := projectBrowser view position.
 	^projectBrowser!
@@ -192,6 +204,7 @@ breakpointsEnabled:!must not strip!preferences!public! !
 fontSize:!must not strip!preferences!public! !
 loggingEnabled:!must not strip!preferences!public! !
 openBrowserOnClass:!must not strip!preferences!public! !
+openBrowserOnClasses:!must not strip!preferences!public! !
 openBrowserOnPackage:!must not strip!preferences!public! !
 openBrowserOnProject:!must not strip!preferences!public! !
 openProjectBrowser!must not strip!preferences!private! !
@@ -249,6 +262,7 @@ preferencesFileDefaultContents
 
 #legal values are a name (without quotes) or nil
 #openBrowserOnClass: <class name>
+#openBrowserOnClasses: <className1 className2 ...>
 #openBrowserOnPackage: <package name>
 #openBrowserOnProject: <project name> 
 #openSUnitBrowserOnPackage: <package name>

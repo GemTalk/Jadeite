@@ -680,6 +680,8 @@ jadeMenuStrings
 		'-'
 		'&Find Class.../Ctrl+Shift+F/findClass' 
 		'&Go To Class In New Browser.../Ctrl+Shift+G/gotoClass' 
+		'&Save Class Tabs to Preferences File//saveCurrentClassTabsToPreferencesFile'
+		'-'
 		'&Refresh/Ctrl+R/refreshFromServer'
 		'-'
 		'E&xit/Shift+F4/exit'

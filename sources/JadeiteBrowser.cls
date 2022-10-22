@@ -51,6 +51,53 @@ position: aPoint
 		ifTrue: [^self	"don't move a project browser automatically if it has multiple tabs"].
 	super position: aPoint!
 
+saveCurrentClassTabsToPreferencesFile
+	| classNames path createDefaultPrefsFile fileStream file writeStream |
+	classNames := OrderedCollection new.
+	self cardsPresenter view cardLayout cards do: 
+			[:container |
+			| browserPresenter |
+			browserPresenter := container presenter.
+			browserPresenter selectedClass ifNotNil: [:classService | classNames add: classService name]].
+	classNames isEmpty ifTrue: [^self].
+	path := SessionManager current imageBase , gciSession preferencesFile.
+	createDefaultPrefsFile := false.
+	(File exists: path)
+		ifFalse: 
+			[(MessageBox
+				confirm: 'Jadeite.prefs does not exist in ' , SessionManager current imageBase , '. Create it?')
+					ifTrue: [createDefaultPrefsFile := true]
+					ifFalse: [^self]].
+	file := File
+				open: path
+				mode: #open
+				check: false.	"create it if it's not there"
+	
+	[createDefaultPrefsFile
+		ifTrue: 
+			[fileStream := FileStream on: file.
+			fileStream
+				nextPutAll: JadeitePreferences preferencesFileDefaultContents;
+				flush]]
+			ensure: [file close].
+	file := File
+				open: path
+				mode: #append
+				check: false.
+	
+	[writeStream := WriteStream on: String new.
+	writeStream
+		cr;
+		nextPutAll: 'openBrowserOnClasses: '.
+	classNames do: 
+			[:name |
+			writeStream
+				nextPutAll: name;
+				space].
+	file write: writeStream contents]
+			ensure: [file close].
+	MessageBox notify: 'Current class browsers saved to preferences file!!'!
+
 systemBrowserPresenter
 	^JadeiteBrowserPresenter!
 
@@ -64,6 +111,7 @@ createComponents!initialization!public! !
 createSchematicWiring!initialization!public! !
 maximizeCode!public! !
 position:!public! !
+saveCurrentClassTabsToPreferencesFile!menu handlers!public! !
 systemBrowserPresenter!public! !
 toolbarPresenter!private! !
 !

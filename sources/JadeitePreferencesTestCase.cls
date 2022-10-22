@@ -233,6 +233,20 @@ test_preferencesOpenCorrectWorkspaceFiles
 			file2 delete.
 			File deleteDirectory: 'operations']!
 
+test_preferencesOpenMultipleClassesInOneBrowser
+	| prefs browser |
+	prefs := JadeitePreferences new session: session.
+	browser := prefs openBrowserOnClasses: 'RowanService String JadeServer'.
+	
+	[self assert: (browser isKindOf: JadeiteBrowser).
+	self assert: browser cardsPresenter view firstCard presenter classListPresenter selection name
+		equals: 'RowanService'.
+	self assert: browser cardsPresenter view nextCard presenter classListPresenter selection name
+		equals: 'String'.
+	self assert: browser cardsPresenter view lastCard presenter classListPresenter selection name
+		equals: 'JadeServer']
+			ensure: [self destroy: browser]!
+
 test_preferencesOpenWorkspace
 	| prefs |
 	prefs := JadeitePreferences new session: session.
@@ -370,6 +384,7 @@ test_packageListVisible!public!tests! !
 test_preferencesHandlesBlanks!public!tests! !
 test_preferencesOpenBrowsers!public!tests! !
 test_preferencesOpenCorrectWorkspaceFiles!public!tests! !
+test_preferencesOpenMultipleClassesInOneBrowser!public!tests! !
 test_preferencesOpenWorkspace!public!tests! !
 test_preferencesOpenWorkspaceFiles!public!tests! !
 test_preferencesSettingTranscript!public!tests! !
