@@ -52,14 +52,14 @@ position: aPoint
 	super position: aPoint!
 
 saveCurrentClassTabsToPreferencesFile
-	| classNames path createDefaultPrefsFile fileStream file writeStream |
+	| classNames path createDefaultPrefsFile fileStream file writeStream | 
 	classNames := OrderedCollection new.
 	self cardsPresenter view cardLayout cards do: 
 			[:container |
 			| browserPresenter |
 			browserPresenter := container presenter.
 			browserPresenter selectedClass ifNotNil: [:classService | classNames add: classService name]].
-	classNames isEmpty ifTrue: [^self].
+	classNames isEmpty ifTrue: [MessageBox notify: 'No tabs with classes in browser'. ^self].
 	path := SessionManager current imageBase , gciSession preferencesFile.
 	createDefaultPrefsFile := false.
 	(File exists: path)
@@ -93,7 +93,7 @@ saveCurrentClassTabsToPreferencesFile
 			[:name |
 			writeStream
 				nextPutAll: name;
-				space].
+				space]. 
 	file write: writeStream contents]
 			ensure: [file close].
 	MessageBox notify: 'Current class browsers saved to preferences file!!'!

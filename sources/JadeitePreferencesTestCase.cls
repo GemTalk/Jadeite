@@ -16,6 +16,15 @@ closeWorkspace
 			[workspace codePane documentPresenter view isModified: false.
 			workspace view close]!
 
+prefsFileLastLine
+	| stream file lastLine |
+	file := File open: JadeitePreferences preferencesPath mode: #read.
+	
+	[stream := file readWriteStream.
+	[stream atEnd] whileFalse: [lastLine := stream nextLine]]
+			ensure: [file close].
+	^lastLine!
+
 primaryTestWindow
 	"Every test should have a primary window it is testing. 
 	If not, just return nil"
@@ -350,6 +359,29 @@ test_resetPreferences
 	workspace basicResetPreferences.
 	self assert: (workspace model value equals: JadeitePreferences preferencesFileDefaultContents)!
 
+test_saveMultipleClassesInPrefsFile
+	| prefs prefsFileContents file |
+	prefs := JadeitePreferences new session: session.
+	self deny: self prefsFileLastLine trimBlanks
+				= 'openBrowserOnClasses: RowanService OrderedCollection Array'.
+	file := File open: JadeitePreferences preferencesPath mode: #read.
+	[prefsFileContents := file readWriteStream contents] ensure: [file close].
+	
+	[projectsBrowser := prefs openBrowserOnClasses: 'RowanService OrderedCollection Array'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #ok.
+	[projectsBrowser saveCurrentClassTabsToPreferencesFile]
+		ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self assert: self prefsFileLastLine trimBlanks
+				= 'openBrowserOnClasses: RowanService OrderedCollection Array']
+			ensure: 
+				[self destroy: projectsBrowser.
+				file := File
+							open: JadeitePreferences preferencesPath
+							mode: #truncate
+							check: false.
+				[file write: prefsFileContents] ensure: [file close]]!
+
 test_textFontSize
 	| prefs |
 	self testsIssue: #issue805 withTitle: 'Preference to adjust font size (3.1.0)'.
@@ -367,6 +399,7 @@ test_validPreferences
 	validPreferences do: [:symbol | self assert: (prefs class canUnderstand: symbol)]! !
 !JadeitePreferencesTestCase categoriesForMethods!
 closeWorkspace!public!support! !
+prefsFileLastLine!public!support! !
 primaryTestWindow!accessing!public! !
 tearDown!private!setup teardown! !
 test_additionalAccelerators!public!tests! !
@@ -393,6 +426,7 @@ test_preferencesSigAbortsProcessInterval!public! !
 test_preferencesSUnitOpenBrowser!public!tests! !
 test_preferencesTransactionModeSet!public! !
 test_resetPreferences!public!tests! !
+test_saveMultipleClassesInPrefsFile!public!tests! !
 test_textFontSize!public!tests! !
 test_validPreferences!public!tests! !
 !

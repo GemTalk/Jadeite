@@ -260,8 +260,7 @@ preferencesFileDefaultContents
 #fontSize: <anInteger or nil>
 #textFontSize: <anInteger or nil>
 
-#legal values are a name (without quotes) or nil
-#openBrowserOnClass: <class name>
+#legal values are a name (without quotes or angle brackets) or nil
 #openBrowserOnClasses: <className1 className2 ...>
 #openBrowserOnPackage: <package name>
 #openBrowserOnProject: <project name> 
@@ -272,12 +271,16 @@ preferencesFileDefaultContents
 #sigAbortsProcessEnabled: true
 #transactionMode: <autoBegin manualBegin transactionless>'!
 
+preferencesPath
+	^SessionManager current imageBase , self preferencesFile!
+
 public! !
 !JadeitePreferences class categoriesForMethods!
 displayFontFrom:!public!utilities! !
 onSession:!instance creation!public! !
 preferencesFile!public! !
 preferencesFileDefaultContents!public! !
+preferencesPath!public! !
 public!public! !
 !
 
