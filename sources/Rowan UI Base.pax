@@ -1539,7 +1539,6 @@ pollForSignal
 
 postLoadClientPreferences
 	| path file stream nextLine prefs |
-	self halt. 
 	path := SessionManager current imageBase , self preferencesFile.
 	(File exists: path) ifFalse: [^self].
 	prefs := JadeitePreferences onSession: self.
