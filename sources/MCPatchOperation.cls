@@ -73,6 +73,7 @@ obsoletionText
 !
 
 reverted
+	reverted ifNil: [reverted := false]. 
 	^reverted!
 
 reverted: anObject
@@ -93,7 +94,7 @@ typeString
 
 	| typeString |
 	typeString := self class name copyFrom: 3 to: self class name size.
-	reverted ifTrue: [typeString := typeString , ' ' , '(reverted)'].
+	self reverted ifTrue: [typeString := typeString , ' ' , '(reverted)'].
 	^typeString! !
 !MCPatchOperation categoriesForMethods!
 <=!public! !
