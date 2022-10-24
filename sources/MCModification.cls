@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 MCPatchOperation subclass: #MCModification
 	instanceVariableNames: 'obsoletion obsoletionMemo obsoletionMemoMarkers obsoletionLines modification modificationMemo modificationMemoMarkers modificationLines'
@@ -179,21 +179,23 @@ selector
 
 	^modification selector.
 ! !
-!MCModification categoriesFor: #bestMatchAfter:!differences!public! !
-!MCModification categoriesFor: #className!public! !
-!MCModification categoriesFor: #computeDifferences!differences!public! !
-!MCModification categoriesFor: #detailsString!public! !
-!MCModification categoriesFor: #firstDifferenceAfter:!differences!public! !
-!MCModification categoriesFor: #firstMatchAfter:!differences!public! !
-!MCModification categoriesFor: #hasEquivalentText!public! !
-!MCModification categoriesFor: #matchCountFromObsoletionLine:modificationLine:!differences!public! !
-!MCModification categoriesFor: #modificationMemo!public! !
-!MCModification categoriesFor: #modificationMemoMarkers!differences!public! !
-!MCModification categoriesFor: #modificationText!public! !
-!MCModification categoriesFor: #obsoletionMemo!public! !
-!MCModification categoriesFor: #obsoletionMemoMarkers!differences!public! !
-!MCModification categoriesFor: #obsoletionText!public! !
-!MCModification categoriesFor: #selector!public! !
+!MCModification categoriesForMethods!
+bestMatchAfter:!differences!public! !
+className!public! !
+computeDifferences!differences!public! !
+detailsString!public! !
+firstDifferenceAfter:!differences!public! !
+firstMatchAfter:!differences!public! !
+hasEquivalentText!public! !
+matchCountFromObsoletionLine:modificationLine:!differences!public! !
+modificationMemo!public! !
+modificationMemoMarkers!differences!public! !
+modificationText!public! !
+obsoletionMemo!public! !
+obsoletionMemoMarkers!differences!public! !
+obsoletionText!public! !
+selector!public! !
+!
 
 !MCModification class methodsFor!
 
@@ -201,5 +203,7 @@ icon
 	"Answers an Icon that can be used to represent this class"
 	^Icon fromFile: 'Changed.ico'
 ! !
-!MCModification class categoriesFor: #icon!public! !
+!MCModification class categoriesForMethods!
+icon!public! !
+!
 

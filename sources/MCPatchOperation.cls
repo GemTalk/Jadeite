@@ -1,7 +1,7 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 GsObject subclass: #MCPatchOperation
-	instanceVariableNames: ''
+	instanceVariableNames: 'reverted'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -24,6 +24,10 @@ hasEquivalentText
 
 	^false.
 !
+
+initialize
+	super initialize. 
+	reverted := false. !
 
 initialize: aStream session: aGciSession
 
@@ -68,6 +72,12 @@ obsoletionText
 	^''.
 !
 
+reverted
+	^reverted!
+
+reverted: anObject
+	reverted := anObject!
+
 selector
 
 	self subclassResponsibility.
@@ -79,23 +89,31 @@ sortString
 !
 
 typeString
+	"This browser is going away someday. Do ugly string parsing for now to make modifications that are reverted more visible"
 
-	^self class name copyFrom: 3 to: self class name size.
-! !
-!MCPatchOperation categoriesFor: #<=!public! !
-!MCPatchOperation categoriesFor: #className!public! !
-!MCPatchOperation categoriesFor: #hasEquivalentText!public! !
-!MCPatchOperation categoriesFor: #initialize:session:!public! !
-!MCPatchOperation categoriesFor: #isRemoval!public! !
-!MCPatchOperation categoriesFor: #modificationMemo!public! !
-!MCPatchOperation categoriesFor: #modificationMemoMarkers!public! !
-!MCPatchOperation categoriesFor: #modificationText!public! !
-!MCPatchOperation categoriesFor: #obsoletionMemo!public! !
-!MCPatchOperation categoriesFor: #obsoletionMemoMarkers!public! !
-!MCPatchOperation categoriesFor: #obsoletionText!public! !
-!MCPatchOperation categoriesFor: #selector!public! !
-!MCPatchOperation categoriesFor: #sortString!public! !
-!MCPatchOperation categoriesFor: #typeString!public! !
+	| typeString |
+	typeString := self class name copyFrom: 3 to: self class name size.
+	reverted ifTrue: [typeString := typeString , ' ' , '(reverted)'].
+	^typeString! !
+!MCPatchOperation categoriesForMethods!
+<=!public! !
+className!public! !
+hasEquivalentText!public! !
+initialize!initialization!public! !
+initialize:session:!public! !
+isRemoval!public! !
+modificationMemo!public! !
+modificationMemoMarkers!public! !
+modificationText!public! !
+obsoletionMemo!public! !
+obsoletionMemoMarkers!public! !
+obsoletionText!public! !
+reverted!accessing!private! !
+reverted:!accessing!private! !
+selector!public! !
+sortString!public! !
+typeString!public! !
+!
 
 !MCPatchOperation class methodsFor!
 
@@ -113,5 +131,7 @@ fromStream: aStream session: aGciSession
 		initialize: aStream
 		session:  aGciSession.
 ! !
-!MCPatchOperation class categoriesFor: #fromStream:session:!public! !
+!MCPatchOperation class categoriesForMethods!
+fromStream:session:!public! !
+!
 

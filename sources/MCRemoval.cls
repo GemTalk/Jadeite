@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 MCPatchOperation subclass: #MCRemoval
 	instanceVariableNames: 'definition'
@@ -38,17 +38,21 @@ selector
 
 	^definition selector.
 ! !
-!MCRemoval categoriesFor: #className!public! !
-!MCRemoval categoriesFor: #detailsString!public! !
-!MCRemoval categoriesFor: #isRemoval!public! !
-!MCRemoval categoriesFor: #obsoletionMemo!public! !
-!MCRemoval categoriesFor: #obsoletionText!public! !
-!MCRemoval categoriesFor: #selector!public! !
+!MCRemoval categoriesForMethods!
+className!public! !
+detailsString!public! !
+isRemoval!public! !
+obsoletionMemo!public! !
+obsoletionText!public! !
+selector!public! !
+!
 
 !MCRemoval class methodsFor!
 
 icon
 	"Answers an Icon that can be used to represent this class"
 	^False icon! !
-!MCRemoval class categoriesFor: #icon!public! !
+!MCRemoval class categoriesForMethods!
+icon!public! !
+!
 

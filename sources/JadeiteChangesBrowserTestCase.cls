@@ -150,8 +150,9 @@ test_browseImplementorsOfRevertedChange
 	changesBrowser operationListPresenter selection: changesBrowser operationListPresenter list first.
 	self assert: changesBrowser operationListPresenter selection className equals: 'RowanSample1Test'.
 	self assert: changesBrowser operationListPresenter selection selector equals: 'test2'.
+	self assert: changesBrowser operationListPresenter selection typeString equals: 'Modification'. 
 	changesBrowser revert.
-	self assert: changesBrowser operationListPresenter selection selector equals: 'test2 (reverted)'.
+	self assert: changesBrowser operationListPresenter selection typeString equals: 'Modification (reverted)'.
 	methodListBrowser := changesBrowser browseImplementors.
 	
 	[self assert: methodListBrowser primaryPresenter methodListPresenter selection selector
@@ -237,8 +238,9 @@ test_browseOfRevertedChange
 	changesBrowser operationListPresenter selection: changesBrowser operationListPresenter list first.
 	self assert: changesBrowser operationListPresenter selection className equals: 'RowanSample1Test'.
 	self assert: changesBrowser operationListPresenter selection selector equals: 'test2'.
+	self assert: changesBrowser operationListPresenter selection typeString equals: 'Modification'. 
 	changesBrowser revert.
-	self assert: changesBrowser operationListPresenter selection selector equals: 'test2 (reverted)'.
+	self assert: changesBrowser operationListPresenter selection typeString equals: 'Modification (reverted)'.
 	secondProjectBrowser := changesBrowser browseChangedThing.
 	[self assert: secondProjectBrowser currentCard methodListPresenter selection selector equals: #test2] ensure: 
 			[self destroy: secondProjectBrowser.
@@ -292,8 +294,9 @@ test_browseSendersOfRevertedChange
 	changesBrowser operationListPresenter selection: changesBrowser operationListPresenter list first.
 	self assert: changesBrowser operationListPresenter selection className equals: 'RowanSample1Test'.
 	self assert: changesBrowser operationListPresenter selection selector equals: 'test2'.
+	self assert: changesBrowser operationListPresenter selection typeString equals: 'Modification'. 
 	changesBrowser revert.
-	self assert: changesBrowser operationListPresenter selection selector equals: 'test2 (reverted)'.
+	self assert: changesBrowser operationListPresenter selection typeString equals: 'Modification (reverted)'.
 	methodListBrowser := changesBrowser browseSenders.
 	
 	[self assert: methodListBrowser primaryPresenter methodListPresenter selection selector
@@ -362,13 +365,13 @@ test_noExtraLF
 	self assert: RowanSample1 new foo = ''foo'''.
 	changesBrowser operationListPresenter selection: change.
 	self assert: changesBrowser operationListPresenter selection modification selector equals: 'test1'.
+	self assert: changesBrowser operationListPresenter selection typeString equals: 'Modification'. 
 	changesBrowser revert.
 	self assert: change modification source replaceLfWithCrLf
 		equals: 'test1
 
 	self assert: RowanSample1 new foo = ''foo'''.
-	self assert: changesBrowser operationListPresenter selection modification selector
-		equals: 'test1 (reverted)'.
+	self assert: changesBrowser operationListPresenter selection typeString equals: 'Modification (reverted)'. 
 	self assert: changesBrowser diffsPresenter afterTitlePresenter value equals: 'Image (no change)'!
 
 test_revertMethodAddition
@@ -409,12 +412,13 @@ test_revertMethodModification
 	self assert: RowanSample1 new foo = ''foo'''.
 	changesBrowser operationListPresenter selection: change.
 	self assert: changesBrowser operationListPresenter selection modification selector equals: 'test1'.
+	self assert: changesBrowser operationListPresenter selection typeString equals: 'Modification'. 
 	changesBrowser revert.
 	self assert: change modification source trimBlanks replaceLfWithCrLf
 		equals: 'test1
 
 	self assert: RowanSample1 new foo = ''foo'''.
-	self assert: changesBrowser operationListPresenter selection modification selector equals: 'test1 (reverted)'.
+	self assert: changesBrowser operationListPresenter selection typeString equals: 'Modification (reverted)'.
 	self assert: changesBrowser diffsPresenter afterTitlePresenter value equals: 'Image (no change)'!
 
 test_revertMethodRemoval

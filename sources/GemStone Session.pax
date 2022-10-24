@@ -355,7 +355,7 @@ GsObject subclass: #MCPatch
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 GsObject subclass: #MCPatchOperation
-	instanceVariableNames: ''
+	instanceVariableNames: 'reverted'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

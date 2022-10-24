@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 MCPatchOperation subclass: #MCAddition
 	instanceVariableNames: 'definition'
@@ -40,13 +40,15 @@ selector
 
 	^definition selector.
 ! !
-!MCAddition categoriesFor: #className!public! !
-!MCAddition categoriesFor: #detailsString!public! !
-!MCAddition categoriesFor: #isMethod!public!testing! !
-!MCAddition categoriesFor: #isMethodAddition!public!testing! !
-!MCAddition categoriesFor: #modificationMemo!public! !
-!MCAddition categoriesFor: #modificationText!public! !
-!MCAddition categoriesFor: #selector!public! !
+!MCAddition categoriesForMethods!
+className!public! !
+detailsString!public! !
+isMethod!public!testing! !
+isMethodAddition!public!testing! !
+modificationMemo!public! !
+modificationText!public! !
+selector!public! !
+!
 
 !MCAddition class methodsFor!
 
@@ -54,5 +56,7 @@ icon
 	"Answers an Icon that can be used to represent this class"
 
 	^(self environment at: #Icon) fromId: (File composeStem: 'CompiledMethod' extension: 'ico')! !
-!MCAddition class categoriesFor: #icon!public! !
+!MCAddition class categoriesForMethods!
+icon!public! !
+!
 
