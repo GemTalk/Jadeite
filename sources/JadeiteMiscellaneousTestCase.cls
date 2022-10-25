@@ -432,24 +432,6 @@ test_serviceClassBookkeeping
 		overArrayOop: remoteOop
 		session: session!
 
-test_setResetTextPaneFontSize
-	self testsIssue: #issue805 withTitle: 'Preference to adjust font size (3.1.0)'.
-	self openProjectBrowser.
-	self projectsPresenter setTextFontTo: 20.
-	JadeiteScintillaView allInstances do: 
-			[:scintillaView |
-			scintillaView textStyles do: 
-					[:textStyle |
-					(JadeiteTextStyles default textStyles includes: textStyle)
-						ifTrue: [self assert: textStyle pointSize equals: 20]]].
-	self projectsPresenter resetFont.
-	JadeiteScintillaView allInstances do: 
-			[:scintillaView |
-			scintillaView textStyles do: 
-					[:textStyle |
-					(JadeiteTextStyles default textStyles includes: textStyle)
-						ifTrue: [self assert: textStyle pointSize equals: nil]]]!
-
 test_versionMatches
 	"See RowanVersionTest for more RowanClientServices version tests"
 
@@ -947,7 +929,6 @@ test_instVarConstants!public!test! !
 test_releaseOops!public! !
 test_returnedServices!public!test!test auto complete! !
 test_serviceClassBookkeeping!public! !
-test_setResetTextPaneFontSize!public!test auto complete!test methods! !
 test_versionMatches!public!test! !
 test_workingDirectoryEqualsImageDirectory!public!test! !
 test_workspaceAdHocDisplayUnicodeCharacters!public!test!test menus!test workspaces! !

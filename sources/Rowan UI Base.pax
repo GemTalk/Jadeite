@@ -564,7 +564,6 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Difference\Dolphin Differences Presenter'
 	'..\Core\Object Arts\Dolphin\MVP\Dialogs\Find\Dolphin Find Dialog'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Font\Dolphin Font Presenter'
-	'..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Integer Prompter'
 	'..\Core\Object Arts\Dolphin\Base\Dolphin Legacy Date & Time'
 	'..\Core\Object Arts\Dolphin\MVP\Models\List\Dolphin List Models'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\List\Dolphin List Presenter'
@@ -624,7 +623,7 @@ package!
 
 Object subclass: #JadeitePreferences
 	instanceVariableNames: 'session lastWindowPosition font textFont'
-	classVariableNames: 'Current'
+	classVariableNames: 'Current DefaultFont DefaultTextFont'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Object subclass: #JadeiteSearch

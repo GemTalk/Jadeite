@@ -120,8 +120,10 @@ test_fontSize
 	| prefs |
 	self testsIssue: #issue805 withTitle: 'Preference to adjust font size (3.1.0)'.
 	prefs := JadeitePreferences new session: session.
-	prefs applyPreference: 'fontSize: 20'.
-	[self assert: View desktop font pointSize equals: 20] ensure: [View desktop font: nil]!
+	prefs applyPreference: 'font: Tahoma 20'.
+	[self assert: View desktop font pointSize equals: 20] ensure: 
+			[JadeitePreferences current resetFont.
+			View desktop font: JadeitePreferences defaultFont]!
 
 test_globalAdditionalAccelerators
 	| prefs |
@@ -382,14 +384,39 @@ test_saveMultipleClassesInPrefsFile
 							check: false.
 				[file write: prefsFileContents] ensure: [file close]]!
 
-test_textFontSize
+test_setResetFont
+	self testsIssue: #issue805 withTitle: 'Preference to adjust font size (3.1.0)'.
+	transcript basicSetFont: (Font name: 'Tahoma' pointSize: 16).
+	self assert: View desktop font name equals: 'Tahoma'.
+	self assert: View desktop font pointSize equals: 16.
+	transcript resetFonts.
+	self assert: View desktop font name equals: JadeitePreferences defaultFont name.
+	self assert: View desktop font pointSize equals: JadeitePreferences defaultFont pointSize!
+
+test_setResetTextFont
+	self testsIssue: #issue805 withTitle: 'Preference to adjust font size (3.1.0)'.
+	transcript basicSetTextFont: (Font name: 'Tahoma' pointSize: 16).
+	JadeiteScintillaView allInstances do: 
+			[:scintillaView |
+			self assert: scintillaView font pointSize equals: 16.
+			self assert: scintillaView font name equals: 'Tahoma'].
+	transcript resetFonts.
+	JadeiteScintillaView allInstances do: 
+			[:scintillaView |
+			self assert: scintillaView font pointSize equals: JadeitePreferences defaultTextFont pointSize.
+			self assert: scintillaView font name equals: JadeitePreferences defaultTextFont name]!
+
+test_textFont
 	| prefs |
 	self testsIssue: #issue805 withTitle: 'Preference to adjust font size (3.1.0)'.
 	prefs := JadeitePreferences new session: session.
-	prefs applyPreference: 'textFontSize: 20'.
-	JadeiteTextStyles default textStyles do: [:style | self assert: style pointSize equals: 20].
-	prefs applyPreference: 'textFontSize: nil'.
-	JadeiteTextStyles default textStyles do: [:style | self assert: style pointSize equals: nil]!
+	
+	[prefs applyPreference: 'textFont: Verdana 20'.
+	JadeiteScintillaView allInstances do: 
+			[:view |
+			self assert: view font pointSize equals: 20.
+			self assert: view font name equals: 'Verdana']]
+			ensure: [JadeitePreferences current resetTextFont]!
 
 test_validPreferences
 	| prefs validPreferences |
@@ -427,7 +454,9 @@ test_preferencesSUnitOpenBrowser!public!tests! !
 test_preferencesTransactionModeSet!public! !
 test_resetPreferences!public!tests! !
 test_saveMultipleClassesInPrefsFile!public!tests! !
-test_textFontSize!public!tests! !
+test_setResetFont!public!tests! !
+test_setResetTextFont!public!tests! !
+test_textFont!public!tests! !
 test_validPreferences!public!tests! !
 !
 

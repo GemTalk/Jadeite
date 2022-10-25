@@ -994,8 +994,10 @@ isProjectInfoTabSelected
 
 isProjectItemEnabled: command
 	(command = #refreshFromServer or: [command = #loadProject]) ifTrue: [^true].
-	^projectListPresenter selections notEmpty
-		and: [(projectListPresenter selections includes: RowanProjectService noneProject) not]!
+	self selectedProjectName = RowanProjectService noneProject name ifTrue: [^false].
+	(#(#unloadProjects #reloadProject) includes: command)
+		ifTrue: [^('UnPackaged' = self selectedProjectName) not].
+	^projectListPresenter selections isEmpty not!
 
 isRowanProjectSelected
 	^(self isNoneProjectSelected or: [projectListPresenter selections isEmpty]) not!
@@ -1293,15 +1295,11 @@ pkgsMenuStrings
 preferencesMenuStrings
 
 	false ifTrue: [		"adding explicit senders ensures that packaging will not drop methods and allows us to find references by browsing senders"
-		self openSourceStyler; setColorForCompileErrors; setColorForNoEdits; setColorForUnsavedEdits; resetFont; setTextFont; setCodeFont.
+		self openSourceStyler; setColorForCompileErrors; setColorForNoEdits; setColorForUnsavedEdits.
 	].
 	^#(
 		'&Preferences'
 		'&Source Styler...//openSourceStyler'
-		'-'
-		'Reset &Fonts//resetFont'
-		'Set Font...//setFont'
-		'Set Text Font...//setTextFont'
 		'-'
 		'&Reset Colors//resetColors'
 		'Color for &Compile Errors...//setColorForCompileErrors'
@@ -1507,12 +1505,18 @@ queryCommand: aCommandQuery
 			^true].
 	#togglePackageGroupsColumn == aCommandQuery command
 		ifTrue: 
-			[aCommandQuery isEnabled: true. 
+			[aCommandQuery isEnabled: true.
 			aCommandQuery isChecked: JadePresenter packageGroupsVisible.
 			^true].
 	#gotoPackageDictionary = aCommandQuery command
 		ifTrue: 
 			[aCommandQuery isEnabled: (packageListPresenter selectionIfNone: []) ~~ nil.
+			^true].
+	(#(#unloadProjects #reloadProject) includes: aCommandQuery command)
+		ifTrue: 
+			[self halt.
+			aCommandQuery isEnabled: ((Array with: RowanService notRowanizedPackageName with: 'UnPackaged')
+						includes: self selectedProjectName).
 			^true].
 	^super queryCommand: aCommandQuery!
 
@@ -1700,12 +1704,6 @@ resetClassTemplate
 				ifFalse: [presenter selections first defaultTemplate]).
 	self resetClassDefinitionPane!
 
-resetFont
-	View desktop font: JadeitePreferences defaultFont.
-	self setTextFontTo: JadeitePreferences defaultTextFont.
-	JadeitePreferences current resetFont.
-	JadeitePreferences current resetTextFont!
-
 runAll
 	self selectSUnitTab.
 	self sunitPresenter runAll!
@@ -1812,35 +1810,10 @@ setFont
 	newFont := FontDialog showModalOn: currentFont.
 	newFont ifNil: [^self].
 	JadeitePreferences displayFontFrom: newFont.
-	JadeitePreferences current
-		currentFont: newFont;
-		fontName: newFont name;
-		fontPointSize: newFont pointSize!
+	JadeitePreferences current currentFont: newFont!
 
 setStatusBarDefault
 	statusBarText view backcolor: statusBarText view defaultBackcolor!
-
-setTextFont
-	| newFont currentFont |
-	currentFont := JadeitePreferences current currentTextFont ifNil: [Font default].
-	newFont := FontDialog showModalOn: currentFont.
-	newFont ifNil: [^self].
-	self setTextFontTo: newFont.
-	JadeitePreferences current currentTextFont: newFont!
-
-setTextFontSize
-	| pointSize |
-	pointSize := IntegerPrompter
-				on: JadeitePreferences current textFontPointSize
-				prompt: 'Enter Text Font Size:'
-				caption: 'Update Text Pane Font Size'.
-	pointSize ifNil: [^self].
-	self setTextFontTo: pointSize. 
-	JadeitePreferences current textFontPointSize: pointSize!
-
-setTextFontTo: font
-	JadeiteScintillaView allInstances do: [:scintillaView | scintillaView font: font]
-!
 
 shouldShowNoneTabLabel
 	^dictionaryPresenter list isEmpty
@@ -2337,7 +2310,7 @@ isMethodSourceTabSelected!public!testing! !
 isNoneProjectSelected!event handlers!public!updating! !
 isOkayToChange!event handlers!public!testing! !
 isProjectInfoTabSelected!public!testing! !
-isProjectItemEnabled:!menu handlers support!private! !
+isProjectItemEnabled:!menu handlers support!private!testing! !
 isRowanProjectSelected!public!testing! !
 isSourceTabSelected!public!testing! !
 isSunitTabSelected!public!testing! !
@@ -2406,7 +2379,6 @@ removeGlobalsTab!private!tabs! !
 removePackages!menu handlers!public! !
 removeProjectTabs!private!tabs! !
 resetClassTemplate!private! !
-resetFont!menu handlers!public! !
 runAll!menu handlers!public! !
 runSelected!menu handlers!public! !
 search!accessing!public! !
@@ -2430,9 +2402,6 @@ setCompileErrorColor!compile support!public! !
 setCompileWarningColor!compile support!public! !
 setFont!menu handlers!public! !
 setStatusBarDefault!compile support!public! !
-setTextFont!menu handlers!public! !
-setTextFontSize!menu handlers!public! !
-setTextFontTo:!menu handlers support!private! !
 shouldShowNoneTabLabel!displaying!private!testing! !
 showDictionaryList!event handlers!public!updating! !
 showPackageGroups!displaying!public! !

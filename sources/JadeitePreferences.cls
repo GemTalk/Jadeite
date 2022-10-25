@@ -2,7 +2,7 @@
 
 Object subclass: #JadeitePreferences
 	instanceVariableNames: 'session lastWindowPosition font textFont'
-	classVariableNames: 'Current'
+	classVariableNames: 'Current DefaultFont DefaultTextFont'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeitePreferences guid: (GUID fromString: '{80b64814-9abd-4128-b728-ba94645715b1}')!
@@ -11,7 +11,10 @@ See GciSession>>postLoadClientPreferences.
 
 Server preferences are stored in #JadeitePreferences in UserGlobals 
 on the server. If the value is a block, it gets run on login after 
-client preferences. See GciSession>>postLoadServerPreferences'!
+client preferences. See GciSession>>postLoadServerPreferences
+
+DefaultFont & DefaultTextFont are captured lazily at startup as changing fonts
+dynamically can change the system default fonts. '!
 !JadeitePreferences categoriesForClass!Unclassified! !
 !JadeitePreferences methodsFor!
 
@@ -178,9 +181,12 @@ performCommand: message allowSpacesInArgs: preferencesString
 	^self perform: message with: argument!
 
 resetFont
+	View desktop font: JadeitePreferences defaultFont.
 	font := self class defaultFont!
 
 resetTextFont
+	JadeiteScintillaView allInstances
+		do: [:scintillaView | scintillaView font: JadeitePreferences defaultTextFont].
 	textFont := self class defaultTextFont!
 
 session: anObject
@@ -248,13 +254,14 @@ current
 	^Current!
 
 current: aJadeitePreferences
+	Current ifNil: [DefaultTextFont := self initializeDefaultFonts].
 	Current := aJadeitePreferences!
 
 defaultFont
-	^SmalltalkSystem current defaultFont!
+	^DefaultFont!
 
 defaultTextFont
-	^(Font name: 'Verdana' pointSize: 10).!
+	^DefaultTextFont!
 
 displayFontFrom: newFont
 	| lfw lf |
@@ -267,6 +274,10 @@ displayFontFrom: newFont
 		startingAt: 1.
 	lfw faceName: lf faceName.
 	View desktop font: (Font fromLogFont: lfw)!
+
+initializeDefaultFonts
+	DefaultFont := SmalltalkSystem current defaultFont.
+	^Font name: 'Verdana' pointSize: 10!
 
 onSession: session
 	^self new session: session!
@@ -313,6 +324,7 @@ current:!accessing!public! !
 defaultFont!accessing!public! !
 defaultTextFont!accessing!public! !
 displayFontFrom:!public!utilities! !
+initializeDefaultFonts!accessing!initializing!public! !
 onSession:!instance creation!public! !
 preferencesFile!public! !
 preferencesFileDefaultContents!public! !
