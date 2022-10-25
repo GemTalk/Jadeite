@@ -623,8 +623,8 @@ package!
 "Class Definitions"!
 
 Object subclass: #JadeitePreferences
-	instanceVariableNames: 'session lastWindowPosition'
-	classVariableNames: ''
+	instanceVariableNames: 'session lastWindowPosition fontPointSize textFontPointSize font fontName textFontName textFont'
+	classVariableNames: 'Current'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Object subclass: #JadeiteSearch
@@ -1540,11 +1540,11 @@ pollForSignal
 
 postLoadClientPreferences
 	| path file stream nextLine prefs |
-	path := JadeitePreferences preferencesPath. 
+	path := JadeitePreferences preferencesPath.
 	(File exists: path) ifFalse: [^self].
 	prefs := JadeitePreferences onSession: self.
+	JadeitePreferences current: prefs.
 	file := File open: path mode: #read.
-	
 	[stream := file readWriteStream.
 	[stream atEnd] whileFalse: 
 			[nextLine := stream nextLine.

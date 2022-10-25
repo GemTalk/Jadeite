@@ -1299,9 +1299,9 @@ preferencesMenuStrings
 		'&Preferences'
 		'&Source Styler...//openSourceStyler'
 		'-'
-		'Reset &Font Size//resetFont'
-		'Set Font Size...//setFont'
-		'Set Text Font Size...//setTextFont'
+		'Reset &Fonts//resetFont'
+		'Set Font...//setFont'
+		'Set Text Font...//setTextFont'
 		'-'
 		'&Reset Colors//resetColors'
 		'Color for &Compile Errors...//setColorForCompileErrors'
@@ -1701,10 +1701,10 @@ resetClassTemplate
 	self resetClassDefinitionPane!
 
 resetFont
-	View desktop font: nil!
-
-resetTextFont
-	self setTextFontTo: nil!
+	View desktop font: nil.
+	self setTextFontTo: Font default.
+	JadeitePreferences current resetFont.
+	JadeitePreferences current resetTextFont!
 
 runAll
 	self selectSUnitTab.
@@ -1807,33 +1807,54 @@ setCompileWarningColor
 	statusBarText view backcolor: Color yellow faded!
 
 setFont
+	| newFont currentFont |
+	currentFont := JadeitePreferences current currentFont ifNil: [Font default].
+	newFont := FontDialog showModalOn: currentFont.
+	newFont ifNil: [^self].
+	JadeitePreferences displayFontFrom: newFont.
+	JadeitePreferences current
+		currentFont: newFont;
+		fontName: newFont name;
+		fontPointSize: newFont pointSize!
+
+setFontSize
 	| pointSize newFont |
-	pointSize := IntegerPrompter create
-				caption: 'Update Font Size';
-				prompt: 'Enter Font Size:';
-				interval: (1 to: 50);
-				showModal.
+	pointSize := IntegerPrompter
+				on: JadeitePreferences current fontPointSize
+				prompt: 'Enter Font Size:'
+				caption: 'Update Font Size'.
+	pointSize ifNil: [^self].
 	newFont := (View desktop font ifNil: [Font default]) pointSize: pointSize.
-	JadeitePreferences displayFontFrom: newFont!
+	JadeitePreferences displayFontFrom: newFont.
+	JadeitePreferences current fontPointSize: pointSize!
 
 setStatusBarDefault
 	statusBarText view backcolor: statusBarText view defaultBackcolor!
 
 setTextFont
-	| fontSize |
-	fontSize := IntegerPrompter create
-				caption: 'Update Text Pane Font Size';
-				prompt: 'Enter Font Size:';
-				interval: (1 to: 50);
-				showModal.
-	self setTextFontTo: fontSize!
+	| newFont currentFont |
+	currentFont := JadeitePreferences current currentTextFont ifNil: [Font default].
+	newFont := FontDialog showModalOn: currentFont.
+	newFont ifNil: [^self].
+	self setTextFontTo: newFont. 
+	JadeitePreferences current
+		currentTextFont: newFont;
+		textFontName: newFont name;
+		textFontPointSize: newFont pointSize!
 
-setTextFontTo: anIntegerOrNil
-	| textStyles |
-	textStyles := JadeiteTextStyles default textStyles.
-	textStyles do: [:textStyle | textStyle pointSize: anIntegerOrNil].
-	JadeiteScintillaView allInstances
-		do: [:scintillaView | (scintillaView class canUnderstand: #textStyles:) ifTrue: [scintillaView textStyles: textStyles]]!
+setTextFontSize
+	| pointSize |
+	pointSize := IntegerPrompter
+				on: JadeitePreferences current textFontPointSize
+				prompt: 'Enter Text Font Size:'
+				caption: 'Update Text Pane Font Size'.
+	pointSize ifNil: [^self].
+	self setTextFontTo: pointSize. 
+	JadeitePreferences current textFontPointSize: pointSize!
+
+setTextFontTo: font
+	JadeiteScintillaView allInstances do: [:scintillaView | scintillaView font: font]
+!
 
 shouldShowNoneTabLabel
 	^dictionaryPresenter list isEmpty
@@ -2400,7 +2421,6 @@ removePackages!menu handlers!public! !
 removeProjectTabs!private!tabs! !
 resetClassTemplate!private! !
 resetFont!menu handlers!public! !
-resetTextFont!menu handlers!public! !
 runAll!menu handlers!public! !
 runSelected!menu handlers!public! !
 search!accessing!public! !
@@ -2423,8 +2443,10 @@ selectProjectTab!public! !
 setCompileErrorColor!compile support!public! !
 setCompileWarningColor!compile support!public! !
 setFont!menu handlers!public! !
+setFontSize!menu handlers!public! !
 setStatusBarDefault!compile support!public! !
 setTextFont!menu handlers!public! !
+setTextFontSize!menu handlers!public! !
 setTextFontTo:!menu handlers support!private! !
 shouldShowNoneTabLabel!displaying!private!testing! !
 showDictionaryList!event handlers!public!updating! !

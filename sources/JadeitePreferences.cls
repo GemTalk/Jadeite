@@ -1,8 +1,8 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 Object subclass: #JadeitePreferences
-	instanceVariableNames: 'session lastWindowPosition'
-	classVariableNames: ''
+	instanceVariableNames: 'session lastWindowPosition fontPointSize textFontPointSize font fontName textFontName textFont'
+	classVariableNames: 'Current'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeitePreferences guid: (GUID fromString: '{80b64814-9abd-4128-b728-ba94645715b1}')!
@@ -16,7 +16,8 @@ client preferences. See GciSession>>postLoadServerPreferences'!
 !JadeitePreferences methodsFor!
 
 allowsSpacesInArgument: commandSymbol
-	^commandSymbol = #openWorkspace: or: [commandSymbol = #openBrowserOnClasses:]!
+	^commandSymbol = #openWorkspace: or: 
+			[commandSymbol = #openBrowserOnClasses: or: [commandSymbol = #font: or: [commandSymbol = #textFont:]]]!
 
 applyPreference: preferencesString
 	"only perform messages which are defined by this class"
@@ -54,6 +55,41 @@ breakpointsEnabled: booleanString
 				command: #setBreakPointsAreEnabled:;
 				commandArgs: (Array with: boolean).
 	BrowserUpdate current issueCommands: (Array with: answeringService) session: session!
+
+currentFont
+	^font!
+
+currentFont: anObject
+	font := anObject!
+
+currentTextFont
+	^textFont!
+
+currentTextFont: anObject
+	textFont := anObject!
+
+defaultFontPointSize
+	^10!
+
+font: stringWithFontNameSize
+	| fontInfoArray |
+	fontInfoArray := stringWithFontNameSize subStrings.
+	font := Font name: fontInfoArray first pointSize: fontInfoArray last asNumber. 
+	self class displayFontFrom: font.
+	fontName := font name. 
+	fontPointSize := font pointSize!
+
+fontName
+	^fontName!
+
+fontName: anObject
+	fontName := anObject!
+
+fontPointSize
+	^fontPointSize ifNil: [fontPointSize := self defaultFontPointSize]!
+
+fontPointSize: anObject
+	fontPointSize := anObject!
 
 fontSize: integerStringOrNil
 	| pointSize newFont |
@@ -166,6 +202,12 @@ performCommand: message allowSpacesInArgs: preferencesString
 	argument := readStream upToEnd.
 	^self perform: message with: argument!
 
+resetFont
+	fontPointSize := Font default!
+
+resetTextFont
+	textFont := Font default!
+
 session: anObject
 	session := anObject!
 
@@ -174,6 +216,26 @@ sigAbortProcessInterval: anIntegerString
 
 sigAbortsProcessEnabled: booleanString
 	JadePresenter sigAbortsProcessEnabled: booleanString = 'true'!
+
+textFont: stringWithFontNameSize
+	| fontInfoArray |
+	fontInfoArray := stringWithFontNameSize subStrings.
+	textFont := Font name: fontInfoArray first pointSize: fontInfoArray last asNumber.
+	JadeiteScintillaView allInstances do: [:view | view font: textFont].
+	textFontName := font name.
+	textFontPointSize := font pointSize!
+
+textFontName
+	^textFontName!
+
+textFontName: anObject
+	textFontName := anObject!
+
+textFontPointSize
+	^textFontPointSize ifNil: [textFontPointSize := self defaultFontPointSize]!
+
+textFontPointSize: anObject
+	textFontPointSize := anObject!
 
 textFontSize: integerStringOrNil
 	| pointSize |
@@ -201,6 +263,16 @@ applyPreference:!accessing!must not strip!public! !
 autocommitEnabled:!must not strip!preferences!public! !
 autocompleteEnabled:!must not strip!preferences!public! !
 breakpointsEnabled:!must not strip!preferences!public! !
+currentFont!accessing!public! !
+currentFont:!accessing!public! !
+currentTextFont!accessing!private! !
+currentTextFont:!accessing!private! !
+defaultFontPointSize!constants!public! !
+font:!must not strip!preferences!private! !
+fontName!accessing!private! !
+fontName:!accessing!private! !
+fontPointSize!accessing!private! !
+fontPointSize:!accessing!private! !
 fontSize:!must not strip!preferences!public! !
 loggingEnabled:!must not strip!preferences!public! !
 openBrowserOnClass:!must not strip!preferences!public! !
@@ -214,9 +286,16 @@ openWorkspace:!must not strip!preferences!public! !
 packageGroupsVisible:!must not strip!preferences!public! !
 packageListVisible:!must not strip!preferences!public! !
 performCommand:allowSpacesInArgs:!accessing!must not strip!public! !
+resetFont!actions!public! !
+resetTextFont!actions!public! !
 session:!accessing!private! !
 sigAbortProcessInterval:!must not strip!public! !
 sigAbortsProcessEnabled:!must not strip!public! !
+textFont:!accessing!private! !
+textFontName!accessing!private! !
+textFontName:!accessing!private! !
+textFontPointSize!accessing!private! !
+textFontPointSize:!accessing!private! !
 textFontSize:!must not strip!preferences!public! !
 transactionMode:!must not strip!public! !
 transcriptEnabled:!must not strip!preferences!public! !
@@ -224,10 +303,16 @@ transcriptEnabled:!must not strip!preferences!public! !
 
 !JadeitePreferences class methodsFor!
 
+current
+	^Current!
+
+current: aJadeitePreferences
+	Current := aJadeitePreferences!
+
 displayFontFrom: newFont
 	| lfw lf |
 	lf := newFont logFont.
-	lfw := LOGFONTW new.
+	lfw := LOGFONTW new. "believe this is necessary if the user picks a legacy font - LOGFONTA"
 	lfw
 		replaceFrom: 1
 		to: lf byteSize
@@ -276,6 +361,8 @@ preferencesPath
 
 public! !
 !JadeitePreferences class categoriesForMethods!
+current!accessing!public! !
+current:!accessing!public! !
 displayFontFrom:!public!utilities! !
 onSession:!instance creation!public! !
 preferencesFile!public! !
