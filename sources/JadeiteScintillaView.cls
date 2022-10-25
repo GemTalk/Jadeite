@@ -73,9 +73,9 @@ find: aFindDetails range: anInterval
 findDialogClass
 	^Smalltalk at: #JadeiteAdvancedFindDialog ifAbsent: [FindDialog]!
 
-onViewCreated 
-	super onViewCreated. 
-	self font: (JadeitePreferences current currentTextFont ifNil: [Font default]).!
+onViewCreated
+	super onViewCreated.
+	self font: JadeitePreferences current currentTextFont!
 
 queryCommand: query
 	"for some reason, TextEdit does not query #redo"

@@ -1701,8 +1701,8 @@ resetClassTemplate
 	self resetClassDefinitionPane!
 
 resetFont
-	View desktop font: nil.
-	self setTextFontTo: Font default.
+	View desktop font: JadeitePreferences defaultFont.
+	self setTextFontTo: JadeitePreferences defaultTextFont.
 	JadeitePreferences current resetFont.
 	JadeitePreferences current resetTextFont!
 
@@ -1817,17 +1817,6 @@ setFont
 		fontName: newFont name;
 		fontPointSize: newFont pointSize!
 
-setFontSize
-	| pointSize newFont |
-	pointSize := IntegerPrompter
-				on: JadeitePreferences current fontPointSize
-				prompt: 'Enter Font Size:'
-				caption: 'Update Font Size'.
-	pointSize ifNil: [^self].
-	newFont := (View desktop font ifNil: [Font default]) pointSize: pointSize.
-	JadeitePreferences displayFontFrom: newFont.
-	JadeitePreferences current fontPointSize: pointSize!
-
 setStatusBarDefault
 	statusBarText view backcolor: statusBarText view defaultBackcolor!
 
@@ -1836,11 +1825,8 @@ setTextFont
 	currentFont := JadeitePreferences current currentTextFont ifNil: [Font default].
 	newFont := FontDialog showModalOn: currentFont.
 	newFont ifNil: [^self].
-	self setTextFontTo: newFont. 
-	JadeitePreferences current
-		currentTextFont: newFont;
-		textFontName: newFont name;
-		textFontPointSize: newFont pointSize!
+	self setTextFontTo: newFont.
+	JadeitePreferences current currentTextFont: newFont!
 
 setTextFontSize
 	| pointSize |
@@ -2443,7 +2429,6 @@ selectProjectTab!public! !
 setCompileErrorColor!compile support!public! !
 setCompileWarningColor!compile support!public! !
 setFont!menu handlers!public! !
-setFontSize!menu handlers!public! !
 setStatusBarDefault!compile support!public! !
 setTextFont!menu handlers!public! !
 setTextFontSize!menu handlers!public! !

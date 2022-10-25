@@ -623,7 +623,7 @@ package!
 "Class Definitions"!
 
 Object subclass: #JadeitePreferences
-	instanceVariableNames: 'session lastWindowPosition fontPointSize textFontPointSize font fontName textFontName textFont'
+	instanceVariableNames: 'session lastWindowPosition font textFont'
 	classVariableNames: 'Current'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

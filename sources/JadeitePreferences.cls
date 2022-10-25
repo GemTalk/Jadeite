@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 Object subclass: #JadeitePreferences
-	instanceVariableNames: 'session lastWindowPosition fontPointSize textFontPointSize font fontName textFontName textFont'
+	instanceVariableNames: 'session lastWindowPosition font textFont'
 	classVariableNames: 'Current'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -57,49 +57,24 @@ breakpointsEnabled: booleanString
 	BrowserUpdate current issueCommands: (Array with: answeringService) session: session!
 
 currentFont
+	font ifNil: [font := self class defaultFont].
 	^font!
 
 currentFont: anObject
 	font := anObject!
 
 currentTextFont
+	textFont ifNil: [textFont := self class defaultTextFont].
 	^textFont!
 
 currentTextFont: anObject
 	textFont := anObject!
 
-defaultFontPointSize
-	^10!
-
 font: stringWithFontNameSize
 	| fontInfoArray |
 	fontInfoArray := stringWithFontNameSize subStrings.
 	font := Font name: fontInfoArray first pointSize: fontInfoArray last asNumber. 
-	self class displayFontFrom: font.
-	fontName := font name. 
-	fontPointSize := font pointSize!
-
-fontName
-	^fontName!
-
-fontName: anObject
-	fontName := anObject!
-
-fontPointSize
-	^fontPointSize ifNil: [fontPointSize := self defaultFontPointSize]!
-
-fontPointSize: anObject
-	fontPointSize := anObject!
-
-fontSize: integerStringOrNil
-	| pointSize newFont |
-	pointSize := integerStringOrNil = 'nil'
-				ifTrue: [nil]
-				ifFalse: 
-					[[integerStringOrNil asNumber] on: Error
-						do: [:ex | ^MessageBox notify: 'Error setting fontSize preference. Error description:' , ex description]].
-	newFont := (View desktop font ifNil: [Font default]) pointSize: pointSize.
-	self class displayFontFrom: newFont!
+	self class displayFontFrom: font.!
 
 loggingEnabled: booleanString
 	| boolean |
@@ -182,14 +157,14 @@ openWorkspace: pathOrNil
 	^workspace!
 
 packageGroupsVisible: booleanString
-	"file syntax - packageGroupsVisible: true"
+	"Private - file syntax - packageGroupsVisible: true"
 
 	| boolean | 
 	boolean := booleanString = 'true'.
 	JadePresenter packageGroupsVisible: boolean!
 
 packageListVisible: booleanString
-	"file syntax - packageListVisible: true"
+	"Private - file syntax - packageListVisible: true"
 
 	| boolean |
 	boolean := booleanString = 'true'.
@@ -203,10 +178,10 @@ performCommand: message allowSpacesInArgs: preferencesString
 	^self perform: message with: argument!
 
 resetFont
-	fontPointSize := Font default!
+	font := self class defaultFont!
 
 resetTextFont
-	textFont := Font default!
+	textFont := self class defaultTextFont!
 
 session: anObject
 	session := anObject!
@@ -221,36 +196,13 @@ textFont: stringWithFontNameSize
 	| fontInfoArray |
 	fontInfoArray := stringWithFontNameSize subStrings.
 	textFont := Font name: fontInfoArray first pointSize: fontInfoArray last asNumber.
-	JadeiteScintillaView allInstances do: [:view | view font: textFont].
-	textFontName := font name.
-	textFontPointSize := font pointSize!
-
-textFontName
-	^textFontName!
-
-textFontName: anObject
-	textFontName := anObject!
-
-textFontPointSize
-	^textFontPointSize ifNil: [textFontPointSize := self defaultFontPointSize]!
-
-textFontPointSize: anObject
-	textFontPointSize := anObject!
-
-textFontSize: integerStringOrNil
-	| pointSize |
-	pointSize := integerStringOrNil = 'nil'
-				ifTrue: [nil]
-				ifFalse: 
-					[[integerStringOrNil asNumber] on: Error
-						do: [:ex | ^MessageBox notify: 'Error setting textFontSize preference. Error description:' , ex description]].
-	JadeiteTextStyles default textStyles do: [:textStyle | textStyle pointSize: pointSize]!
+	JadeiteScintillaView allInstances do: [:view | view font: textFont]!
 
 transactionMode: transactionMode
 	JadePresenter transactionMode: transactionMode asSymbol session: session!
 
 transcriptEnabled: booleanString
-	"file syntax - transcriptEnabled false"
+	"Private - file syntax - transcriptEnabled false"
 
 	| answeringService boolean |
 	boolean := booleanString = 'true'.
@@ -260,45 +212,34 @@ transcriptEnabled: booleanString
 !JadeitePreferences categoriesForMethods!
 allowsSpacesInArgument:!private!testing! !
 applyPreference:!accessing!must not strip!public! !
-autocommitEnabled:!must not strip!preferences!public! !
-autocompleteEnabled:!must not strip!preferences!public! !
-breakpointsEnabled:!must not strip!preferences!public! !
+autocommitEnabled:!must not strip!preferences!private! !
+autocompleteEnabled:!must not strip!preferences!private! !
+breakpointsEnabled:!must not strip!preferences!private! !
 currentFont!accessing!public! !
 currentFont:!accessing!public! !
 currentTextFont!accessing!private! !
 currentTextFont:!accessing!private! !
-defaultFontPointSize!constants!public! !
 font:!must not strip!preferences!private! !
-fontName!accessing!private! !
-fontName:!accessing!private! !
-fontPointSize!accessing!private! !
-fontPointSize:!accessing!private! !
-fontSize:!must not strip!preferences!public! !
-loggingEnabled:!must not strip!preferences!public! !
-openBrowserOnClass:!must not strip!preferences!public! !
-openBrowserOnClasses:!must not strip!preferences!public! !
-openBrowserOnPackage:!must not strip!preferences!public! !
-openBrowserOnProject:!must not strip!preferences!public! !
+loggingEnabled:!must not strip!preferences!private! !
+openBrowserOnClass:!must not strip!preferences!private! !
+openBrowserOnClasses:!must not strip!preferences!private! !
+openBrowserOnPackage:!must not strip!preferences!private! !
+openBrowserOnProject:!must not strip!preferences!private! !
 openProjectBrowser!must not strip!preferences!private! !
 openSUnitBrowser!must not strip!preferences!private! !
-openSUnitBrowserOnPackage:!must not strip!preferences!public! !
-openWorkspace:!must not strip!preferences!public! !
-packageGroupsVisible:!must not strip!preferences!public! !
-packageListVisible:!must not strip!preferences!public! !
+openSUnitBrowserOnPackage:!must not strip!preferences!private! !
+openWorkspace:!must not strip!preferences!private! !
+packageGroupsVisible:!must not strip!preferences!private! !
+packageListVisible:!must not strip!preferences!private! !
 performCommand:allowSpacesInArgs:!accessing!must not strip!public! !
 resetFont!actions!public! !
 resetTextFont!actions!public! !
 session:!accessing!private! !
 sigAbortProcessInterval:!must not strip!public! !
 sigAbortsProcessEnabled:!must not strip!public! !
-textFont:!accessing!private! !
-textFontName!accessing!private! !
-textFontName:!accessing!private! !
-textFontPointSize!accessing!private! !
-textFontPointSize:!accessing!private! !
-textFontSize:!must not strip!preferences!public! !
+textFont:!must not strip!preferences!private! !
 transactionMode:!must not strip!public! !
-transcriptEnabled:!must not strip!preferences!public! !
+transcriptEnabled:!must not strip!preferences!private! !
 !
 
 !JadeitePreferences class methodsFor!
@@ -308,6 +249,12 @@ current
 
 current: aJadeitePreferences
 	Current := aJadeitePreferences!
+
+defaultFont
+	^SmalltalkSystem current defaultFont!
+
+defaultTextFont
+	^(Font name: 'Verdana' pointSize: 10).!
 
 displayFontFrom: newFont
 	| lfw lf |
@@ -341,9 +288,9 @@ preferencesFileDefaultContents
 #packageGroupsVisible: true
 #packageListVisible: true
 
-#legal values are an integer or nil for default font size
-#fontSize: <anInteger or nil>
-#textFontSize: <anInteger or nil>
+#legal values are font name plus font point size
+#font: <fontName pointSize>
+#textFont: <fontName pointSize>
 
 #legal values are a name (without quotes or angle brackets) or nil
 #openBrowserOnClasses: <className1 className2 ...>
@@ -363,6 +310,8 @@ public! !
 !JadeitePreferences class categoriesForMethods!
 current!accessing!public! !
 current:!accessing!public! !
+defaultFont!accessing!public! !
+defaultTextFont!accessing!public! !
 displayFontFrom:!public!utilities! !
 onSession:!instance creation!public! !
 preferencesFile!public! !
