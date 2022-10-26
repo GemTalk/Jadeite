@@ -69,7 +69,7 @@ test_autoCommit
 	self assert: self projectsPresenter autoCommit.
 	self assert: methodListPresenter autoCommit.
 	self assert: transcript autoCommit]
-			ensure: [methodListBrowser view close]!
+			ensure: [self destroy: methodListBrowser]!
 
 test_basicInspection
 	| remoteObject inspector |
