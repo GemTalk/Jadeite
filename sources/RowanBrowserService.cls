@@ -136,6 +136,10 @@ registerWindow: handle rootObject: oop session: session
 	JadePresenter issueCommands: (Array with: self) session: session!
 
 releaseWindow: handle session: session
+	"during test runs, the session may have been logged out making the release moot"
+
+	session isValidSession ifFalse: [^self].
+	session isLoggingOut ifTrue: [^self].
 	self
 		command: #releaseWindowHandle:;
 		commandArgs: (Array with: handle).

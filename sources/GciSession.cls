@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 Object subclass: #GciSession
-	instanceVariableNames: 'briefDescription clientForwarders eventCount gciSessionId gemHost gemNRS heartbeatProcess isHandlingClientForwarderSend isPackagePolicyEnabled library netPort netTask server stoneHost stoneName stoneNRS stoneSerial stoneSessionID userID blocking autoCommit'
+	instanceVariableNames: 'briefDescription clientForwarders eventCount gciSessionId gemHost gemNRS heartbeatProcess isHandlingClientForwarderSend isPackagePolicyEnabled library netPort netTask server stoneHost stoneName stoneNRS stoneSerial stoneSessionID userID blocking autoCommit isLoggingOut'
 	classVariableNames: 'Current GemCursor'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -270,6 +270,10 @@ indexOfClientForwarder: anObject
 		ifAbsent: [clientForwarders add: anObject. clientForwarders size].
 !
 
+initialize
+	super initialize.
+	isLoggingOut := false!
+
 initializeLibrary: libraryClass 
 stoneNRS: stoneString 
 gemNRS: gemString 
@@ -319,6 +323,9 @@ isLinkedGem
 
 	^gemNRS isEmpty.
 !
+
+isLoggingOut
+	^isLoggingOut!
 
 isOopType: anObject
 
@@ -415,6 +422,7 @@ printString: anOopType
 
 privateLogout
 	"extract private aspects of logout"
+	isLoggingOut := true. 
 	self stopHeartbeat.
 	self trigger: #logoutPending.
 	library ifNotNil: [library logoutSession: gciSessionId]!
@@ -738,9 +746,11 @@ hardBreak!Jade!public! !
 heartbeat:arguments:!heartbeat!private! !
 incrementEventCount!long running!private! !
 indexOfClientForwarder:!public! !
+initialize!initialize!public! !
 initializeLibrary:stoneNRS:gemNRS:userID:password:hostUserID:password:initials:useSocket:debugPath:!private! !
 isCallInProgress!public! !
 isLinkedGem!public! !
+isLoggingOut!accessing!private! !
 isOopType:!public! !
 isPackagePolicyEnabled!public! !
 isRemoteGem!public! !
@@ -815,8 +825,8 @@ password: hostPassword
 initials: initials
 useSocket: useSocket
 debugPath: debugPath
-
-	^super new
+	
+	^super new initialize
 		initializeLibrary: libraryClass
 		stoneNRS: stoneNRS 
 		gemNRS: gemNRS 

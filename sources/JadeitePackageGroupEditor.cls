@@ -32,10 +32,7 @@ onViewClosed
 	super onViewClosed.
 	myPresenter onViewClosed.
 	self gciSession
-		ifNotNil: 
-			[:sess |
-			sess isValidSession
-				ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: self gciSession]]!
+		ifNotNil: [:sess | RowanBrowserService new releaseWindow: self view handle value session: self gciSession]!
 
 presenterClass
 	^JadeitePackageGroupPresenter!

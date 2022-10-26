@@ -1917,8 +1917,7 @@ initializeProcess: aProcess message: aString terminateOnClose: aBoolean
 onViewClosed
 	BrowserUpdate current logComment: 'Releasing debugger'.
 	gciSession ifNil: [^super onViewClosed].
-	gciSession isValidSession
-		ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: gciSession].
+	RowanBrowserService new releaseWindow: self view handle value session: gciSession.
 	BrowserUpdate current logComment: 'Releasing debugger complete'.
 	(processListPresenter list notNil and: [processListPresenter list notEmpty])
 		ifTrue: 
@@ -1927,7 +1926,7 @@ onViewClosed
 			(terminateOnClose and: [answer isNil])
 				ifTrue: 
 					[[gsProcess terminate] ensure: [super onViewClosed].
-					Processor activeProcess kill "we should never get here but just in case" ]].
+					Processor activeProcess kill	"we should never get here but just in case"]].
 	^super onViewClosed!
 
 resumeProcess
@@ -2029,10 +2028,7 @@ onViewClosed
 	BrowserUpdate current
 		logComment: 'Releasing notifier window (JadeErrorShell) {' , self identityHash printString , '}'.
 	gsError
-		ifNotNil: 
-			[:err |
-			err gciSession isValidSession
-				ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: gsError gciSession]].
+		ifNotNil: [:err | RowanBrowserService new releaseWindow: self view handle value session: gsError gciSession].
 	super onViewClosed!
 
 onViewOpened
@@ -2225,8 +2221,7 @@ displayUndisplayableCharacter
 
 onViewClosed
 	BrowserUpdate current logComment: 'Closing Inspector {' , self identityHash printString , '}'.
-	self gciSession isValidSession
-		ifTrue: [RowanBrowserService new releaseWindow: self view handle value session: self gciSession].
+	RowanBrowserService new releaseWindow: self view handle value session: self gciSession.
 	super onViewClosed!
 
 onViewOpened
@@ -2871,11 +2866,9 @@ onViewClosed
 	self gciSession
 		ifNotNil: 
 			[:sess |
-			sess isValidSession
-				ifTrue: 
-					[| window |
-					window := self myTopShell.
-					RowanBrowserService new releaseWindow: window view handle value session: self gciSession]]!
+			| window |
+			window := self myTopShell.
+			RowanBrowserService new releaseWindow: window view handle value session: self gciSession]!
 
 openBrowserInNewTab: openNewTab on: classService
 	| shell |

@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 GciSession subclass: #GciSessionWithSocket
 	instanceVariableNames: 'socket'
@@ -110,14 +110,16 @@ terminate: anOopType
 		withAll: (Array with: anOopType with: #'terminate').
 	TerminateProcess signal.
 ! !
-!GciSessionWithSocket categoriesFor: #_continueProcess:!long running!private! !
-!GciSessionWithSocket categoriesFor: #_send:to:withAll:!private! !
-!GciSessionWithSocket categoriesFor: #_usingSocketSend:to:withAll:!private! !
-!GciSessionWithSocket categoriesFor: #initializeFrom:withSocket:!public! !
-!GciSessionWithSocket categoriesFor: #stepInto:inFrame:!public! !
-!GciSessionWithSocket categoriesFor: #stepOut:inFrame:!public! !
-!GciSessionWithSocket categoriesFor: #stepOver:inFrame:!public! !
-!GciSessionWithSocket categoriesFor: #terminate:!public! !
+!GciSessionWithSocket categoriesForMethods!
+_continueProcess:!long running!private! !
+_send:to:withAll:!private! !
+_usingSocketSend:to:withAll:!private! !
+initializeFrom:withSocket:!public! !
+stepInto:inFrame:!public! !
+stepOut:inFrame:!public! !
+stepOver:inFrame:!public! !
+terminate:!public! !
+!
 
 !GciSessionWithSocket class methodsFor!
 
@@ -131,6 +133,8 @@ from: aGciSession withSocket: aSocket
 new
 
 	self error: 'use #''from:withSocket:'''.! !
-!GciSessionWithSocket class categoriesFor: #from:withSocket:!public! !
-!GciSessionWithSocket class categoriesFor: #new!public! !
+!GciSessionWithSocket class categoriesForMethods!
+from:withSocket:!public! !
+new!public! !
+!
 
