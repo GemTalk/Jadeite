@@ -350,6 +350,7 @@ package methodNames
 	add: #JadeSystemBrowserPresenter -> #verifyValidCategory:;
 	add: #JadeTextDocument -> #aboutJadeite;
 	add: #JadeTextDocument -> #executeSelectionOrLine:;
+	add: #JadeTextDocument -> #fileIn;
 	add: #JadeTextDocument -> #issueCommand:;
 	add: #JadeTextDocument -> #issueCommands:;
 	add: #JadeTextDocument -> #jadeBrowseTests;
@@ -5100,6 +5101,18 @@ executeSelectionOrLine: contextObject
 	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
 	^answer!
 
+fileIn
+	| filePath fileContents service |
+	filePath := JadeiteServerFileSelectorDialog showOnSession: gciSession
+				defaultPath: '$ROWAN_PROJECTS_HOME'.
+	filePath ifNil: [^self].
+	service := RowanFileService new
+				path: filePath;
+				session: gciSession.
+	service fileIn.
+	fileContents := service answer. 
+	(JadeWorkspace showOnSession: gciSession) showText: fileContents!
+
 issueCommand: service
 	^self issueCommands: (Array with: service)!
 
@@ -5183,6 +5196,7 @@ updateServices: services
 !JadeTextDocument categoriesForMethods!
 aboutJadeite!private! !
 executeSelectionOrLine:!Jade!private! !
+fileIn!private! !
 issueCommand:!public!services! !
 issueCommands:!public!services! !
 jadeBrowseTests!Jade!public! !

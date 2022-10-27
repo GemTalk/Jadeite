@@ -773,23 +773,6 @@ fileOutClass
 	path ifNotNil: [:value | self fileOutClassOnPath: value].
 !
 
-fileOutClassOnPath: aString
-
-	| header file newSource index |
-	newSource := self gciSession 
-		serverPerform: #'systemBrowser:' 
-		with: environment printString , ' fileOutClass' , Character tab asString , self behaviorIdentifier.
-	index := newSource indexOf: Character lf.
-	newSource := newSource copyFrom: index + 1 to: newSource size.
-	header := self stuffToKeepFromPath: aString andAddTo: newSource.
-	file := FileStream write: aString.
-	[
-		file nextPutAll: header; nextPutAll: newSource.
-	] ensure: [
-		file close.
-	].
-!
-
 fileOutDictionary
 
 	| dictionaryName path string file index |
@@ -2502,7 +2485,6 @@ editUndo!menu handlers!public! !
 executeSelectionOrLine!menu handlers!public! !
 fileInCode!menu handlers!public! !
 fileOutClass!menu handlers!public! !
-fileOutClassOnPath:!menu handlers!public! !
 fileOutDictionary!menu handlers!public! !
 fileOutMethod!menu handlers!public! !
 fileOutMethodOnPath:!menu handlers!public! !

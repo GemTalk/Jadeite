@@ -197,21 +197,6 @@ browseHierarchySenders
 browseSelectedClass
 	^self browseSelectedClassIn: methodSourcePresenter newTab: Keyboard default isCtrlDown!
 
-categoriesMenuStrings
-
-	false ifTrue: [
-		self addMethodCategory; renameMethodCategory; removeMethodCategories; fileOutCategories.
-	].
-	^#(
-		'&Categories'
-		'&Add//addMethodCategory'
-		'&Rename//renameMethodCategory'
-		'&Remove//removeMethodCategories'
-		'-'
-		'&File out categories//fileOutCategories'
-	)
-!
-
 categoryListPresenter
 	^categoryListPresenter!
 
@@ -471,59 +456,19 @@ editSaveClassComment
 		isModified: false;
 		backcolor: JadeiteTextStyles default colorForNoEdits!
 
-fileOutCategories
-	| path suggestedFileName classSide |
-	MessageBox notify: 'Filein/fileout are not Rowan-ready in this version'
-		caption: 'Filein/fileout notification'.
-	true ifTrue: [^self].
-	"note that the code below should work. Rowan issue is problem"
-	classSide := self selectedClass meta ifTrue: ['class_'] ifFalse: [String new].
-	suggestedFileName := categoryListPresenter selections size = 1
-				ifTrue: [self selectedClass name , '_' , classSide , categoryListPresenter selection]
-				ifFalse: [self selectedClass name , classSide , 'categories'].
-	suggestedFileName := suggestedFileName copyWithout: $*.
-	path := FileSaveDialog new
-				caption: 'File Out Categories';
-				fileTypes: self fileTypes;
-				defaultExtension: self defaultFileExtension;
-				value: suggestedFileName;
-				overwritePrompt;
-				showModal.
-	path ifNotNil: [self fileOutCategoriesOnPath: path]!
-
 fileOutCategoriesOnPath: path
-	| file service answeringService |
+	| service |
 	service := self selectedClass.
 	service
-		command: #fileoutCategories:;
-		commandArgs: (Array with: categoryListPresenter selections).
-	answeringService := (self issueCommand: service) first.
-	file := FileStream write: path.
-	[file nextPutAll: answeringService answer] ensure: [file close]!
-
-fileOutClass
-	| path suggestedFileName classSide |
-	MessageBox notify: 'Filein/fileout are not Rowan-ready in this version'
-		caption: 'Filein/fileout notification'.
-	true ifTrue: [^self].
-	"note that the code below should work. Rowan issue is problem"
-	suggestedFileName := self selectedClass name.
-	path := FileSaveDialog new
-				caption: 'File Out Class';
-				fileTypes: self fileTypes;
-				defaultExtension: self defaultFileExtension;
-				value: suggestedFileName;
-				overwritePrompt;
-				showModal.
-	path ifNotNil: [self fileOutClassOnPath: path]!
+		command: #fileoutCategories:on:;
+		commandArgs: (Array with: categoryListPresenter selections with: path).
+	self issueCommand: service!
 
 fileOutClassOnPath: path
-	| file answeringService service |
+	| service |
 	service := self selectedClass.
-	service command: #fileoutClass.
-	answeringService := (self issueCommand: service) first.
-	file := FileStream write: path.
-	[file nextPutAll: answeringService answer] ensure: [file close]!
+	service command: #fileoutClassOn:; commandArgs: (Array with: path).
+	self issueCommand: service!
 
 fileOutMethods
 	| path suggestedFileName classSide |
@@ -1657,7 +1602,6 @@ behaviorIdentifier!private!selection! !
 browseHierarchyImplementors!menu handlers!public!queries! !
 browseHierarchySenders!public!queries! !
 browseSelectedClass!menu handlers!public! !
-categoriesMenuStrings!menus!public! !
 categoryListPresenter!accessing!public! !
 classCommentPresenter!accessing!menu handlers!public! !
 classDefinitionPresenter!accessing!public! !
@@ -1687,9 +1631,7 @@ displayMultipleCategories!displaying!private!updating! !
 editFind!menu handlers!public! !
 editReplace!menu handlers!public! !
 editSaveClassComment!menu handlers!public! !
-fileOutCategories!menu handlers!public! !
 fileOutCategoriesOnPath:!menu handlers support!private! !
-fileOutClass!menu handlers!public! !
 fileOutClassOnPath:!menu handlers support!private! !
 fileOutMethods!menu handlers!public! !
 fileOutMethodsOnPath:!menu handlers support!private! !

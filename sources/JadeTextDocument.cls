@@ -134,16 +134,6 @@ environment: anInteger
 executeSelectionOrLine
 	^self executeSelectionOrLine: self contextObject!
 
-fileIn: aString
-
-	self setDocumentData: aString.
-	self activeTextEdit selectAll.
-	self 
-		fileIn;
-		isModified: false;
-		yourself.
-!
-
 fileNew
 
 	JadeWorkspace showOnSession: gciSession.
@@ -306,7 +296,7 @@ queryCommand: query
 	textEdit := self activeTextEdit.
 	focusView := View focus.
 	isTextEdit := focusView isKindOf: TextEdit.
-	(#(#addQuotesToSelection #removeQuotesFromSelection #editCut #editCopy #editDelete #editReplace #editFind #editFindNext #editSelectAll #fileIn #jadeDebug #jadeDisplay #jadeExecute #jadeInspect)
+	(#(#addQuotesToSelection #removeQuotesFromSelection #editCut #editCopy #editDelete #editReplace #editFind #editFindNext #editSelectAll #jadeDebug #jadeDisplay #jadeExecute #jadeInspect)
 		includes: query commandSymbol)
 			ifTrue: 
 				[query isEnabled: (textEdit notNil and: [textEdit isKindOf: TextEdit]).
@@ -458,7 +448,6 @@ editReplace!menu handlers!private! !
 editSelectAll!menu handlers!private! !
 environment:!accessing!public! !
 executeSelectionOrLine!Jade!private! !
-fileIn:!private! !
 fileNew!private! !
 fileOpen!private! !
 gciSession!private! !

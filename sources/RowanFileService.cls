@@ -20,6 +20,11 @@ excludedInstVars
 
 	^super excludedInstVars , #('session')!
 
+fileIn
+	command := #fileIn:.
+	commandArgs := Array with: path.
+	self issueCommand: self session: session!
+
 indexOfSessionInstVar
 	^10!
 
@@ -68,6 +73,7 @@ shouldReplicateInstVarAtIndex: index newService: newService
 !RowanFileService categoriesForMethods!
 directoryContents!commands!public! !
 excludedInstVars!private!ston! !
+fileIn!commands!public! !
 indexOfSessionInstVar!public!ston! !
 isDirectory:!commands!public! !
 path!accessing!private! !

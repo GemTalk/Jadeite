@@ -35,7 +35,6 @@ package methodNames
 	add: #JadeServer64bit33 -> #step:inFrame:;
 	add: #JadeServer64bit34 -> #step:inFrame:;
 	add: #JadeServer64bit3x -> #_stepPointsForBreaksInMethod:;
-	add: #JadeTextDocument -> #fileIn;
 	yourself.
 
 package binaryGlobalNames: (Set new
@@ -304,31 +303,6 @@ _stepPointsForBreaksInMethod: gsMethod
 	^#()! !
 !JadeServer64bit3x categoriesForMethods!
 _stepPointsForBreaksInMethod:!Debugger!public! !
-!
-
-!JadeTextDocument methodsFor!
-
-fileIn
-
-	MessageBox notify: 'Filein/fileout are not Rowan-ready in this version'
-		caption: 'Filein/fileout notification'.
-	true ifTrue:[^self].
-	[
-		JadeFileIn new
-			fileInString: self activeTextEdit selection
-			session: gciSession.
-	] on: Error do: [:ex | 
-		| stream |
-		SessionManager current logError: ex.
-		stream := WriteStream on: String new.
-		ex printTraceOn: stream.
-		(JadeWorkspace showOnSession: gciSession) showText: stream contents.
-		MessageBox notify: ex description.
-		SessionManager current pause.
-	].
-! !
-!JadeTextDocument categoriesForMethods!
-fileIn!private! !
 !
 
 "End of package definition"!

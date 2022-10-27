@@ -352,7 +352,7 @@ categoriesMenuStrings
 		'-'
 		'&Browse category methods//browseSelectedCategoryMethods'
 		'-'
-		'&File out categories//fileOutCategories'
+		'&File out categories ...//fileOutCategories'
 	)
 !
 
@@ -397,7 +397,7 @@ classesMenuStrings
 				showSUnitBrowserOnClass].
 	definedLabel := self definedClassMenuItemLabel.
 	containedDictionaryLabel := self containedDictionaryLabel.
-	menuStrings := #('&Classes' '&Browse Class References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' '&File Out Class//fileOutClass' 'Add &Subclass//addSubclass' '&Rename ... //renameClass' 'Copy ...//copyClass' '&Remove//removeClass' '-')
+	menuStrings := #('&Classes' '&Browse Class References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' '&File Out Class ...//fileOutClass' 'Add &Subclass//addSubclass' '&Rename ... //renameClass' 'Copy ...//copyClass' '&Remove//removeClass' '-')
 				asOrderedCollection.
 	menuStrings add: '&Expand Full Hierarchy//expandFullHierarchy'.
 	menuStrings add: '-'.
@@ -803,6 +803,18 @@ expandFullHierarchy
 	self selectClassInClassHierarchyNamed: self selectedClass. 
 	self expandFullAt: self selectedClass. 
 	classHierarchyPresenter view ensureSelectionVisible!
+
+fileOutCategories
+	| path className |
+	className := self selectedClassName ifNil: [^self].
+	path := JadeiteServerFileSaveDialog showOnSession: gciSession initialFileName: className , '-categories.gs'.
+	path ifNotNil: [self fileOutCategoriesOnPath: path]!
+
+fileOutClass
+	| path className |
+	className := self selectedClassName ifNil: [^self].
+	path := JadeiteServerFileSaveDialog showOnSession: gciSession initialFileName: className , '.gs'.
+	path ifNotNil: [self fileOutClassOnPath: path]!
 
 findClass
 	| find |
@@ -2280,6 +2292,8 @@ editSaveMethod:!menu handlers support!private! !
 editSaveReadMe!menu handlers!private!tabs! !
 expandFullAt:!menu handlers support!private!updating! !
 expandFullHierarchy!menu handlers!public!updating! !
+fileOutCategories!menu handlers!public! !
+fileOutClass!menu handlers!public! !
 findClass!menu handlers!public! !
 findRemovedServices!menu handlers support!private! !
 gitCommit!project menu handlers!public! !
