@@ -996,7 +996,10 @@ isProjectItemEnabled: command
 	(command = #refreshFromServer or: [command = #loadProject]) ifTrue: [^true].
 	self selectedProjectName = RowanProjectService noneProject name ifTrue: [^false].
 	(#(#unloadProjects #reloadProject) includes: command)
-		ifTrue: [^('UnPackaged' = self selectedProjectName) not].
+		ifTrue: 
+			[self selectedProjectName isNil
+				ifTrue: [^false]
+				ifFalse: [('UnPackaged' = self selectedProjectName) not]].
 	^projectListPresenter selections isEmpty not!
 
 isRowanProjectSelected

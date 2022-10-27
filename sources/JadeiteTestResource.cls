@@ -136,11 +136,13 @@ logoutThenLoginAs: userName forceClose: forceClose
 	self transcript ifNotNil: [self closeTranscript: self transcript].
 	JadeiteTranscript allInstances
 		do: [:transcript | self closeTranscript: transcript	"hopeful none, but just in case"].
-	JadeiteLoginShell allInstances
-		do: [:shell | shell view close	"should save to the remote JadeDefaultConnection.gss file"].
+	JadeiteLoginShell allInstances do: 
+			[:shell |
+			shell view close.
+			(Delay forMilliseconds: 100) wait	"should save to the remote JadeDefaultConnection.gss file"].
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteShell userIDPresenter value: userName.
-	jadeiteShell loginWithoutErrorHandling.!
+	jadeiteShell loginWithoutErrorHandling!
 
 openProjectsBrowser
 	((projectsBrowser isKindOf: JadeiteBrowser) not or: [projectsBrowser isOpen not])

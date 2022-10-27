@@ -22,7 +22,7 @@ fillVersionList
 	list addAll: self placeholdersForNewSharedLibraries.
 	list := list
 				asSortedCollection: [:a :b | self isVersion: a displayName lessThanOrEqualTo: b displayName].
-	versionListPresenter list: list!
+	versionListPresenter list: list asArray!
 
 invalidateLoginButton
 	"fake up a query to ensure the button gets enabled without user action"

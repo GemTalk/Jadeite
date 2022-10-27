@@ -68,13 +68,7 @@ setUp
 	session userID = 'SystemUser'
 		ifFalse: 
 			["Running tests will not stop on assert. (Debugging tests does) Need to do a hard halt to determine how a test can login as the wrong user"
-			self haltTestForHardToCatchErrors: 'Debugger test is not logged in as SystemUser as expected'].
-	JadeiteLoginShell allInstances size > 1
-		ifTrue: 
-			["Running tests will not stop on assert. (Debugging tests does) Need to do a hard halt to determine how a test can login as the wrong user"
-			(Delay forSeconds: 1) wait.	"give it a second to cleanup"
-			JadeiteLoginShell allInstances size > 1
-				ifTrue: [self haltTestForHardToCatchErrors: 'Multiple JadeiteLoginShells found']]!
+			self haltTestForHardToCatchErrors: 'Debugger test is not logged in as SystemUser as expected'].!
 
 test_additionalAccelerators
 	"No way yet to adequately test accelerators function
