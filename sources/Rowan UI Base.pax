@@ -903,7 +903,7 @@ JadeiteServerFileSelectorDialog subclass: #JadeiteLoadProjectDialog
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteServerFileSelectorDialog subclass: #JadeiteServerFileSaveDialog
-	instanceVariableNames: 'fileNamePresenter pathText'
+	instanceVariableNames: 'fileNamePresenter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

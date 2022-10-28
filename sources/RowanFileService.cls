@@ -13,7 +13,7 @@ RowanFileService comment: ''!
 directoryContents
 	command := #directoryContents.
 	commandArgs := Array new.
-	self issueCommand: self session: session. 
+	self issueCommand.
 	^answer ifNotNil: [self shortNames]!
 
 excludedInstVars
@@ -23,16 +23,31 @@ excludedInstVars
 fileIn
 	command := #fileIn:.
 	commandArgs := Array with: path.
-	self issueCommand: self session: session!
+	self issueCommand!
+
+fileOutDictionaries: array
+	self
+		command: #fileoutDictionaries:;
+		commandArgs: (Array with: array).
+	self issueCommand!
+
+fileOutMethods: array
+	self
+		command: #fileoutMethods:;
+		commandArgs: (Array with: array).
+	self issueCommand!
 
 indexOfSessionInstVar
 	^10!
 
 isDirectory: directory
 	command := #isDirectory:.
-	commandArgs := Array with: path, '/', directory.
-	self issueCommand: self session: session. 
+	commandArgs := Array with: path , '/' , directory.
+	self issueCommand.
 	^answer!
+
+issueCommand
+	self issueCommand: self session: session!
 
 path
 	^path!
@@ -43,13 +58,13 @@ path: anObject
 pop
 	command := #pop.
 	commandArgs := Array new.
-	self issueCommand: self session: session. 
+	self issueCommand.
 	^answer ifNotNil: [self shortNames]!
 
 remove
 	command := #remove.
 	commandArgs := Array new.
-	self issueCommand: self session: session!
+	self issueCommand!
 
 session
 	^session!
@@ -74,8 +89,11 @@ shouldReplicateInstVarAtIndex: index newService: newService
 directoryContents!commands!public! !
 excludedInstVars!private!ston! !
 fileIn!commands!public! !
+fileOutDictionaries:!commands!public! !
+fileOutMethods:!commands!public! !
 indexOfSessionInstVar!public!ston! !
 isDirectory:!commands!public! !
+issueCommand!commands!public! !
 path!accessing!private! !
 path:!accessing!public! !
 pop!commands!public! !

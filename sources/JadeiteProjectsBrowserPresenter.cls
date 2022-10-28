@@ -456,51 +456,6 @@ editSaveClassComment
 		isModified: false;
 		backcolor: JadeiteTextStyles default colorForNoEdits!
 
-fileOutCategoriesOnPath: path
-	| service |
-	service := self selectedClass.
-	service
-		command: #fileoutCategories:on:;
-		commandArgs: (Array with: categoryListPresenter selections with: path).
-	self issueCommand: service!
-
-fileOutClassOnPath: path
-	| service |
-	service := self selectedClass.
-	service command: #fileoutClassOn:; commandArgs: (Array with: path).
-	self issueCommand: service!
-
-fileOutMethods
-	| path suggestedFileName classSide |
-	MessageBox notify: 'Filein/fileout are not Rowan-ready in this version'
-		caption: 'Filein/fileout notification'.
-	true ifTrue:[^self].
-	"note that the code below should work. Rowan issue is problem"
-	classSide := self selectedClass meta ifTrue: ['class_'] ifFalse: [String new].
-	suggestedFileName := methodListPresenter selections size = 1
-				ifTrue: 
-					[methodListPresenter selection className , '_' , classSide
-						, methodListPresenter selection selector asString]
-				ifFalse: [methodListPresenter selections first className , '_' , classSide , 'methods'].
-	path := FileSaveDialog new
-				caption: 'File Out Method';
-				fileTypes: self fileTypes;
-				defaultExtension: self defaultFileExtension;
-				value: suggestedFileName;
-				overwritePrompt;
-				showModal.
-	path ifNotNil: [self fileOutMethodsOnPath: path]!
-
-fileOutMethodsOnPath: path
-	| file answeringService service |
-	service := self selectedClass.
-	service
-		command: #fileoutMethods:;
-		commandArgs: (Array with: methodListPresenter selections).
-	answeringService := (self issueCommand: service) first.
-	file := FileStream write: path.
-	[file nextPutAll: answeringService answer] ensure: [file close]!
-
 filterTabChanged
 	self isClassSelected
 		ifTrue: [self updateService: self selectedClass]
@@ -1631,10 +1586,6 @@ displayMultipleCategories!displaying!private!updating! !
 editFind!menu handlers!public! !
 editReplace!menu handlers!public! !
 editSaveClassComment!menu handlers!public! !
-fileOutCategoriesOnPath:!menu handlers support!private! !
-fileOutClassOnPath:!menu handlers support!private! !
-fileOutMethods!menu handlers!public! !
-fileOutMethodsOnPath:!menu handlers support!private! !
 filterTabChanged!event handlers!public!updating! !
 findMethod!event handlers!menu handlers!public!updating! !
 findMethod:!menu handlers!public! !

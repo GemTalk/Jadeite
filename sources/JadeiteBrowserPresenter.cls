@@ -397,7 +397,7 @@ classesMenuStrings
 				showSUnitBrowserOnClass].
 	definedLabel := self definedClassMenuItemLabel.
 	containedDictionaryLabel := self containedDictionaryLabel.
-	menuStrings := #('&Classes' '&Browse Class References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' '&File Out Class ...//fileOutClass' 'Add &Subclass//addSubclass' '&Rename ... //renameClass' 'Copy ...//copyClass' '&Remove//removeClass' '-')
+	menuStrings := #('&Classes' '&Browse Class References//browseClassReferences' 'Browse SUnit//showSUnitBrowserOnClass' 'Add &Subclass//addSubclass' '&Rename ... //renameClass' 'Copy ...//copyClass' '&Remove//removeClass' '-')
 				asOrderedCollection.
 	menuStrings add: '&Expand Full Hierarchy//expandFullHierarchy'.
 	menuStrings add: '-'.
@@ -405,6 +405,8 @@ classesMenuStrings
 	menuStrings add: '-'.
 	menuStrings addLast: definedLabel , '//gotoClassDefinedPackage'.
 	menuStrings addLast: containedDictionaryLabel , '//gotoDictionary'.
+	menuStrings addLast: '&File Out Class ...//fileOutClass'.
+
 	^menuStrings!
 
 cleanupProjectInfoTab
@@ -662,12 +664,10 @@ dictionaryMenu
 
 dictionaryMenuStrings
 	self rowanFixMe.	"this really is a cumbersome way to build a menu."
-	0 == 1
-		ifTrue: 
-			[self
+	0 == 1 ifTrue: [(self
 				addDictionary;
-				removeDictionaries].
-	^#('Dictionaries' 'Insert Dictionary//addDictionary' 'Remove Dictionaries//removeDictionaries')!
+				removeDictionaries) fileOutDictionaries].
+	^#('Dictionaries' 'Insert Dictionary//addDictionary' 'Remove Dictionaries//removeDictionaries' '-' 'File Out Selected Dictionaries ...//fileOutDictionaries')!
 
 dictionaryPresenter
 	^dictionaryPresenter!
@@ -810,11 +810,53 @@ fileOutCategories
 	path := JadeiteServerFileSaveDialog showOnSession: gciSession initialFileName: className , '-categories.gs'.
 	path ifNotNil: [self fileOutCategoriesOnPath: path]!
 
+fileOutCategoriesOnPath: path
+	| service |
+	service := self selectedClass.
+	service
+		command: #fileoutCategories:on:;
+		commandArgs: (Array with: categoryListPresenter selections with: path).
+	self issueCommand: service!
+
 fileOutClass
 	| path className |
 	className := self selectedClassName ifNil: [^self].
 	path := JadeiteServerFileSaveDialog showOnSession: gciSession initialFileName: className , '.gs'.
 	path ifNotNil: [self fileOutClassOnPath: path]!
+
+fileOutClassOnPath: path
+	| service |
+	service := self selectedClass.
+	service command: #fileoutClassOn:; commandArgs: (Array with: path).
+	self issueCommand: service!
+
+fileOutDictionaries
+	| path |
+	self selectedDictionaryNames isEmpty ifTrue: [^self]. 
+	path := JadeiteServerFileSaveDialog showOnSession: gciSession initialFileName: 'dictionaries.gs'.
+	path ifNotNil: [self fileOutDictionariesOnPath: path]!
+
+fileOutDictionariesOnPath: path
+	| service |
+	service := RowanFileService new
+				path: path;
+				session: gciSession.
+	service fileOutDictionaries: self selectedDictionaryNames!
+
+fileOutMethodsOnPath: path
+	| service |
+	service := RowanFileService new
+				path: path;
+				session: gciSession.
+	service fileOutMethods: methodListPresenter selections!
+
+fileOutSelectedMethods
+	| path |
+	self methodListPresenter selections isEmpty ifTrue: [^self].
+	self selectedClassName ifNil: [^self].
+	path := JadeiteServerFileSaveDialog showOnSession: gciSession
+				initialFileName: self selectedClassName , '-methods.gs'.
+	path ifNotNil: [self fileOutMethodsOnPath: path]!
 
 findClass
 	| find |
@@ -1095,7 +1137,7 @@ methodsMenuStrings
 				clearMethodBreakpoints;
 				removeMethods;
 				runMethodTests;
-				fileOutMethods;
+				fileOutSelectedMethods;
 				findMethod;
 				runMethodTests;
 				gotoMethodDefinedPackage;
@@ -1104,6 +1146,7 @@ methodsMenuStrings
 	^#('&Methods' 'Browse &Implementors//browseImplementors' 'Browse Implementors of ...//browseImplementorsOf' 'Browse &Senders//browseSenders' 'Browse Senders of ...//browseSendersOf' '-' 'Browse Hierarchy Implementors//browseHierarchyImplementors' 'Browse Hierarchy Senders//browseHierarchySenders' '-' 'Browse Methods &Containing ...//browseMethodsContaining' 'Browse Literal References ...//browseLiteralReferences' 'Browse Selected Methods//browseSelectedMethods' 'Browse Method History//browseMethodHistory' 'Inspect//inspectMethod' '-' 'Browse Breakpoints//browseBreakpoints' 'Clear Method Breakpoints//clearMethodBreakpoints' '-' 'Find Method .../Ctrl+Shift+M/findMethod' '-' '&Remove Method(s) .../Ctrl+Shift+X/removeMethods' 
 	'-'
 	'Move To Package ...//moveMethodToPackage'
+	'File Out Selected Methods ...//fileOutSelectedMethods'
 	'-'
 	'Run All Tests/Ctrl+Shift+A/runAll' 'Run Selected Test(s)/Ctrl+Shift+S/runMethodTests' 'Debug Selected &Test(s)/Ctrl+Shift+B/runMethodTests' '-' 'Go To Defining Package//gotoMethodDefinedPackage')!
 
@@ -1497,13 +1540,17 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: true.
 			^true].
-	#browseSelectedCategoryMethods = command
+	(#browseSelectedCategoryMethods = command or: [#fileOutCategories = command])
 		ifTrue: 
 			[aCommandQuery isEnabled: categoryListPresenter selections notEmpty.
 			^true].
 	#inspectMethod = command
 		ifTrue: 
 			[aCommandQuery isEnabled: methodListPresenter selections size = 1.
+			^true].
+	#fileOutSelectedMethods = command
+		ifTrue: 
+			[aCommandQuery isEnabled: methodListPresenter selections notEmpty.
 			^true].
 	command == #editDelete
 		ifTrue: 
@@ -2293,7 +2340,13 @@ editSaveReadMe!menu handlers!private!tabs! !
 expandFullAt:!menu handlers support!private!updating! !
 expandFullHierarchy!menu handlers!public!updating! !
 fileOutCategories!menu handlers!public! !
+fileOutCategoriesOnPath:!menu handlers support!private! !
 fileOutClass!menu handlers!public! !
+fileOutClassOnPath:!menu handlers support!private! !
+fileOutDictionaries!menu handlers!public! !
+fileOutDictionariesOnPath:!menu handlers support!private! !
+fileOutMethodsOnPath:!menu handlers support!private! !
+fileOutSelectedMethods!menu handlers!public! !
 findClass!menu handlers!public! !
 findRemovedServices!menu handlers support!private! !
 gitCommit!project menu handlers!public! !
