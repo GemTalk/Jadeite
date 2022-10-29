@@ -979,6 +979,68 @@ test_failMethodCompile
 				ifNone: [])]
 			ensure: [self projectsPresenter basicRemoveMethodCategories]!
 
+test_fileoutClass
+	"don't over-test the contents of the file itself as that could change and string parsing is brittle. 
+	Instead just test that the file out file gets written and do a couple sanity checks on the contents"
+
+	| path fileContents |
+	path := '/home/ewinger/temp/test_fileoutClass.gs'.
+	(session executeString: 'GsFile existsOnServer: ''' , path , '''')
+		ifTrue: [session executeString: 'GsFile removeServerFile: ''' , path , ''''].
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #('instVar1' 'instVar2')
+		package: 'RowanSample1-Core'.
+	self projectsPresenter selectVariableTab.
+	self variableListPresenter selections: #('instVar1' 'instVar2').
+	self projectsPresenter addVariableAccessors.
+	
+	[self projectsPresenter fileOutClassOnPath: path.
+	fileContents := session executeString: '(GsFile openReadOnServer: ''' , path , ''') contents'.
+	self
+		assert: ('*Object subclass: ''TestClass''*instVarNames: #( instVar1 instVar2)*' match: fileContents).
+	self assert: ('*category: ''accessing''*method: TestClass*instVar1*^instVar1*' match: fileContents).
+	self assert: (session executeString: 'GsFile existsOnServer: ''' , path , '''')]
+			ensure: 
+				[session executeString: 'GsFile removeServerFile: ''' , path , ''''.
+				self deny: (session executeString: 'GsFile existsOnServer: ''' , path , '''')]!
+
+test_fileoutSelectedMethods
+	"don't over-test the contents of the file itself as that could change and string parsing is brittle. 
+	Instead just test that the file out file gets written and do a couple sanity checks on the contents"
+
+	| path fileContents |
+	path := '/home/ewinger/temp/test_fileoutSelectedMethods.gs'.
+	(session executeString: 'GsFile existsOnServer: ''' , path , '''')
+		ifTrue: [session executeString: 'GsFile removeServerFile: ''' , path , ''''].
+	self
+		saveClass: 'TestClass'
+		superclass: 'Object'
+		instVars: #()
+		package: 'RowanSample1-Core'.
+	self
+		saveMethod: 'october ^''october'''
+		in: 'TestClass'
+		category: 'months'.
+	self
+		saveMethod: 'november ^''november'''
+		in: 'TestClass'
+		category: 'months'.
+	self
+		saveMethod: 'december ^''december'''
+		in: 'TestClass'
+		category: 'months'.
+	self selectMethodsNamed: #(november december). 
+	[self projectsPresenter fileOutMethodsOnPath: path.
+	fileContents := session executeString: '(GsFile openReadOnServer: ''' , path , ''') contents'.
+	self assert: ('*!!*category: ''months''*method: TestClass*december ^''december''*%*' match: fileContents).
+	self assert: ('*!!*category: ''months''*method: TestClass*november ^''november''*%*' match: fileContents).
+	self assert: (session executeString: 'GsFile existsOnServer: ''' , path , '''')]
+			ensure: 
+				[session executeString: 'GsFile removeServerFile: ''' , path , ''''.
+				self deny: (session executeString: 'GsFile existsOnServer: ''' , path , '''')]!
+
 test_filtersUpdatedInHierarchyView
 	| selectedClass browserServiceCategories |
 	self testsIssue: #issue343 withTitle: 'Category/Variables tab not updating correctly'.
@@ -1917,6 +1979,8 @@ test_expansion!public!test class hierarchy!tests! !
 test_extensionColoringInHierarchy!public!test class hierarchy!tests! !
 test_extensionMethodSelection!public!test class list!tests! !
 test_failMethodCompile!public!test class list!tests! !
+test_fileoutClass!public!test class list!test find!tests! !
+test_fileoutSelectedMethods!public!test class list!test find!tests! !
 test_filtersUpdatedInHierarchyView!public!test class hierarchy!tests! !
 test_findClass!public!test class list!test find!tests! !
 test_findClassDialog!public!test class list!test find!tests! !
