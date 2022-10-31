@@ -947,14 +947,14 @@ test_browseSelectedMethods
 				view: self methodListPresenter view.
 	self deny: commandQuery isEnabled.
 	self selectMethodsNamed: (Array
-				with: #fileoutClass
+				with: #fileoutClassOn:
 				with: #removeMethods:
 				with: #addCategory:).
 	methodListBrowser := self projectsPresenter browseSelectedMethods.
 	methodListPresenter := methodListBrowser primaryPresenter methodListPresenter methodListPresenter.
 	self assert: methodListPresenter list size equals: 3.
 	self assert: methodListPresenter list first selector equals: #addCategory:.
-	self assert: methodListPresenter list second selector equals: #fileoutClass.
+	self assert: methodListPresenter list second selector equals: #fileoutClassOn:.
 	self assert: methodListPresenter list third selector equals: #removeMethods:.
 	self assert: ('Selected Methods*' match: methodListBrowser caption).
 	commandQuery := self

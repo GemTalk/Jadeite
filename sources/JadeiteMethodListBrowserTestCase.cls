@@ -1003,15 +1003,23 @@ test_doubleClickActionClassMethod
 test_doubleClickActionInstanceMethod
 	self testsIssue: #issue403
 		withTitle: 'Double click in method browser change class to show instance methods'.
-	methodListBrowser := JadePresenter browseImplementorsOf: #foo session: session.
+	self
+		saveMethod: 'test_doubleClickActionInstanceMethod ^#deleteme'
+		in: 'RowanSample1'
+		category: 'deleteme'.
+	methodListBrowser := JadePresenter browseImplementorsOf: #test_doubleClickActionInstanceMethod
+				session: session.
 	self assert: self methodListMethodListPresenter list size equals: 1.
 	self deny: self methodListMethodListPresenter selection meta.
 	projectsBrowser := methodListBrowser primaryPresenter methodListPresenter browseClass.
 	
 	[self deny: self classListPresenter selection meta.
 	self deny: self projectsPresenter isClassSideSelected.
-	self assert: self methodListPresenter selection selector equals: #foo]
-			ensure: [self destroy: projectsBrowser]!
+	self assert: self methodListPresenter selection selector
+		equals: #test_doubleClickActionInstanceMethod]
+			ensure: 
+				[self projectsPresenter removeMethodSelector: #test_doubleClickActionInstanceMethod.
+				self destroy: projectsBrowser]!
 
 test_dragMethodOntoComparisonTextPanes
 	| dragDropSession draggedService source |
