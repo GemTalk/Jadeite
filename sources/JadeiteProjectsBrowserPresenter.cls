@@ -635,16 +635,6 @@ methodsMenuStrings
 methodSourcePresenter: anObject
 	methodSourcePresenter := anObject!
 
-moveMethods: methodServices toCategory: targetCategory
-	| classService |
-	classService := self selectedClass.
-	self selectCategoriesNamed: (categoryListPresenter selections copyWith: targetCategory).
-	classService
-		command: #moveMethods:to:;
-		commandArgs: (Array with: methodServices with: targetCategory).
-	self issueCommand: classService.
-	self selectMethodsFrom: classService!
-
 newBrowser
 	| classService selector |
 	classService := self selectedClass.
@@ -1608,7 +1598,6 @@ methodListSelection!accessing!public! !
 methodMenuBreak:!menus!public! !
 methodsMenuStrings!menus!public! !
 methodSourcePresenter:!accessing!private! !
-moveMethods:toCategory:!drag & drop!private! !
 newBrowser!menu handlers!public! !
 onDropMethodsOnClassHierarchy:!drag & drop!public! !
 onDropOnClassList:!drag & drop!public! !

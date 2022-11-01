@@ -1390,6 +1390,23 @@ test_hierarchyWithNonResolvableClass
 				[self projectsPresenter basicUnloadProjects: #('Issue470').
 				session executeString: ' Rowan platform _alternateImageClass: nil.']!
 
+test_moveMethodDirtiesPackage
+	self testsIssue: #issue950
+		withTitle: '(3.2.10) RowanClassService>>moveMethods:to: should not use the category name as a literal package name'.
+	self ensureRowanSampleProjectsLoaded.
+	self selectRowanSample1Class.
+	self deny: self projectsPresenter projectListPresenter selection isDirty.
+	self deny: self projectsPresenter packageListPresenter selection isDirty.
+	self projectsPresenter basicAddMethodCategory: '*rowansample1-extensions'.
+	self selectCategoryNamed: 'accessing'.
+	self selectMethodNamed: #foo.
+	self projectsPresenter moveMethods: self methodListPresenter selections
+		toCategory: '*rowansample1-extensions'.
+	self assert: self categoryListPresenter selection equals: '*rowansample1-extensions'.
+	self assert: self methodListPresenter selection name equals: #foo.
+	self assert: self projectsPresenter projectListPresenter selection isDirty.
+	self assert: self projectsPresenter packageListPresenter selection isDirty!
+
 test_newBrowserRetainsClassAndMethod
 	self selectRowanSample1Test.
 	self selectMethodNamed: #test1.
@@ -1998,6 +2015,7 @@ test_hierarchyCleanedUpAfterUnload!public!test class hierarchy!test projects!tes
 test_hierarchyMethodsNotDisplayed!public!test class hierarchy!tests! !
 test_hierarchySelectTwoBrowsers!public!test class hierarchy!tests! !
 test_hierarchyWithNonResolvableClass!public!test class hierarchy!tests! !
+test_moveMethodDirtiesPackage!public!test class list! !
 test_newBrowserRetainsClassAndMethod!public!test class hierarchy!tests! !
 test_newBrowserRetainsClassAndMethodClassSide!public!test class hierarchy!tests! !
 test_noSelectionHierarchy!public!test class hierarchy!tests! !

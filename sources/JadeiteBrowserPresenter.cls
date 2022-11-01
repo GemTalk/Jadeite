@@ -1195,6 +1195,16 @@ moveClassToPackageNamed: packageName
 				add: packageServiceToSelect;
 				yourself)!
 
+moveMethods: methodServices toCategory: targetCategory
+	| classService |
+	classService := self selectedClass.
+	self selectCategoriesNamed: (categoryListPresenter selections copyWith: targetCategory).
+	classService
+		command: #moveMethods:to:;
+		commandArgs: (Array with: methodServices with: targetCategory).
+	self issueCommand: classService.
+	self selectMethodsFrom: classService!
+
 moveMethodsToPackageNamed: packageName
 	| packageServiceToSelect selectedClass selectedMethods newSelectedMethods |
 	methodListPresenter selections isEmpty ifTrue: [^self].
@@ -2395,6 +2405,7 @@ methodToReformat!menu handlers support!private! !
 methodValueChanged!event handlers!public! !
 moveClassToPackage!menu handlers!public! !
 moveClassToPackageNamed:!menu handlers!public! !
+moveMethods:toCategory:!drag & drop!private! !
 moveMethodsToPackageNamed:!menu handlers!public! !
 moveMethodToPackage!menu handlers!public! !
 newProjectNamed:!menu handlers!menu handlers support!private! !
