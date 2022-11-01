@@ -1539,17 +1539,24 @@ pollForSignal
 	library pollForSignalSession: gciSessionId!
 
 postLoadClientPreferences
+	"This is run after login, after the console is created. 
+	Retroactively apply fonts to the JadeiteScintillaView
+	instances"
+
 	| path file stream nextLine prefs |
 	path := JadeitePreferences preferencesPath.
 	(File exists: path) ifFalse: [^self].
 	prefs := JadeitePreferences onSession: self.
 	JadeitePreferences current: prefs.
 	file := File open: path mode: #read.
+	
 	[stream := file readWriteStream.
 	[stream atEnd] whileFalse: 
 			[nextLine := stream nextLine.
 			prefs applyPreference: nextLine]]
-			ensure: [^file close]!
+			ensure: [^file close].
+	JadeiteScintillaView allInstances
+		do: [:view | view font: JadeitePreferences current currentTextFont]!
 
 postLoadServerPreferences
 	self

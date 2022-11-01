@@ -75,7 +75,9 @@ findDialogClass
 
 onViewCreated
 	super onViewCreated.
-	self font: JadeitePreferences current currentTextFont!
+	JadeitePreferences current
+		ifNotNil: 
+			[self font: JadeitePreferences current currentTextFont	"Avoid failure during window creation right after login, we'll set font in post login"]!
 
 queryCommand: query
 	"for some reason, TextEdit does not query #redo"
