@@ -34,6 +34,7 @@ package classNames
 	add: #JadeiteDividerMenuItem;
 	add: #JadeiteFindClassDialog;
 	add: #JadeiteFindMethodDialog;
+	add: #JadeiteGitChoicePrompter;
 	add: #JadeiteGitLog;
 	add: #JadeiteInspector;
 	add: #JadeiteLoadProjectDialog;
@@ -450,6 +451,7 @@ package methodNames
 	add: #RowanPatch -> #operations:;
 	add: #RowanPatch -> #session:;
 	add: #RowanProjectService -> #changesUsing:;
+	add: #RowanProjectService -> #checkoutUsing:;
 	add: #RowanProjectService -> #projectLogUsing:session:;
 	add: #SequencedGrowableCollection -> #removeAtIndexWithoutNotification:;
 	add: #SequencedGrowableCollection -> #removeWithoutNotification:ifAbsent:view:;
@@ -909,6 +911,11 @@ JadeiteServerFileSelectorDialog subclass: #JadeiteServerFileSaveDialog
 	classInstanceVariableNames: ''!
 MCVersionDialog subclass: #RowanSavePackageDialog
 	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+ChoicePrompter subclass: #JadeiteGitChoicePrompter
+	instanceVariableNames: 'gitUrl'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -2711,7 +2718,11 @@ browseSendersOf: string
 checkoutTag: projectService
 	| choice tags |
 	tags := projectService gitTags: self gciSession.
-	choice := ChoicePrompter choices: tags.
+	choice := (JadeiteGitChoicePrompter
+				on: ValueHolder new
+				choices: tags
+				caption: 'Select tag to checkout:'
+				gitUrl: projectService projectUrl) showModal.
 	choice ifNil: [^self].
 	self basicCheckoutTagAndRefresh: choice for: projectService!
 
@@ -6114,6 +6125,17 @@ changesUsing: session
 		name: name]
 			ensure: [changes := nil	"clean this up. no longer needed and can be large"]!
 
+checkoutUsing: presenter
+	| branchName branches |
+	branches := self basicCheckoutUsing: presenter.
+	branchName := (JadeiteGitChoicePrompter
+				on: branch
+				choices: branches
+				caption: 'Select branch to checkout:'
+				gitUrl: projectUrl) showModal.
+	branchName isNil ifTrue: [^self].
+	self basicCheckout: branchName using: presenter!
+
 projectLogUsing: parentPresenter session: session
 	| gitLog projectName queryService |
 	projectName := self name.
@@ -6125,6 +6147,7 @@ projectLogUsing: parentPresenter session: session
 	gitLog codePane documentPresenter value: queryService queryResults! !
 !RowanProjectService categoriesForMethods!
 changesUsing:!presenter support!public! !
+checkoutUsing:!presenter support!public! !
 projectLogUsing:session:!presenter support!public! !
 !
 

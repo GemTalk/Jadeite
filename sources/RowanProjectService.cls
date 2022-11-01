@@ -65,16 +65,6 @@ branch
 branch: anObject
 	branch := anObject!
 
-checkoutUsing: presenter
-	| branchName branches |
-	branches := self basicCheckoutUsing: presenter.
-	branchName := ChoicePrompter
-				on: branch
-				choices: branches
-				caption: 'Select branch to checkout:'.
-	branchName isNil ifTrue: [^self].
-	self basicCheckout: branchName using: presenter!
-
 componentServices
 
 	^componentServices!
@@ -329,7 +319,6 @@ basicCheckoutUsing:!presenter support!private! !
 basicName:!accessing!public! !
 branch!accessing!public! !
 branch:!accessing!public! !
-checkoutUsing:!presenter support!public! !
 componentServices!public! !
 componentsUpdate:browser:!public!updating! !
 defaultSymbolDictionaryName!accessing!private! !
