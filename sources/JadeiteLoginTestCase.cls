@@ -82,21 +82,31 @@ test_debugLoginDumpsParameters
 				setUp	"reset the tes resource's session, etc"]!
 
 test_gemTask
-	| jadeiteShell |
+	"Dolphin runs tests at priority 6. Dolphin debugs tests at priority 5.  I hope there's a good reason for this. 
+	If activeProcess priority = 5, the test can't close the window properly
+	so the file write on close won't happen.  See JadeiteLoginShell>>onViewClosed.
+	So we change the priority to 5"
+
+	Processor activeProcess priority: 5.
 	self testsIssue: #issue416 withTitle: 'NetLDI task in login is not displayed correctly'.
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #no.	"don't commit"
 	GciSession current ifNotNil: [:sess | sess logout].
-	JadeiteLoginShell allInstances do: [:inst | inst view close].
+	JadeiteLoginShell allInstances do: 
+			[:inst |
+			inst model gemTask: 'gemnetobject'.
+			inst view close].	"set known value in file to start test"
+	jadeiteLogin := nil.
 	jadeiteShell := JadeiteLoginShell show position: 80 @ 20.
 	jadeiteLogin := jadeiteShell model.
+	self assert: jadeiteLogin gemTask equals: 'gemnetobject'.
 	jadeiteLogin gemTask: 'gemnetdebug'.
 	jadeiteShell gemTaskPresenter: 'gemnetdebug'.	"update the gui"
 	self loginWithRetry: jadeiteShell.	"have to login so new task is accepted"
 	"somehow test that we are using gemnetdebug"
 	TestMessageBox plannedResult: #no.
 	GciSession current logout.
-	JadeiteLoginShell allInstances do: [:inst | inst view close].	"should save to the remote JadeDefaultConnection.gss file"
+	jadeiteShell view close.	"should save to the remote 'C:\Users\ewinger\AppData\Roaming\JadeDefaultConnection.gss' file"
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteLogin := jadeiteShell model.
 	self assert: jadeiteLogin gemTask equals: 'gemnetdebug'.
@@ -106,7 +116,7 @@ test_gemTask
 	"somehow test that we are using gemnetobject"
 	TestMessageBox plannedResult: #no.
 	[GciSession current logout] ensure: [TestMessageBox disableJadeiteTestMessageBox].
-	JadeiteLoginShell allInstances do: [:inst | inst view close].	"should save to the remote JadeDefaultConnection.gss file"
+	jadeiteShell view close.	"should save to the remote 'C:\Users\ewinger\AppData\Roaming\JadeDefaultConnection.gss' file"
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteLogin := jadeiteShell model.
 	self assert: jadeiteLogin gemTask equals: 'gemnetobject'.

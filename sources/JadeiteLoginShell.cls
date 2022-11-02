@@ -49,6 +49,12 @@ login
 			^nil].
 	self postShellLogin: session!
 
+onViewClosed
+	self updateModel.
+	model saveDefault.
+	super onViewClosed.
+!
+
 openGitHubJadeiteProject
 	^JadePresenter openGitHubJadeiteProject!
 
@@ -120,6 +126,7 @@ fillVersionList!public!version list! !
 invalidateLoginButton!public! !
 librariesSupportingRowanV30!gci!private!version list! !
 login!public! !
+onViewClosed!event handlers!public! !
 openGitHubJadeiteProject!public! !
 openGitHubRowanProject!public! !
 placeholderFor:version:libraryName:!gci!private!version list! !

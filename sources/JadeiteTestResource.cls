@@ -139,7 +139,7 @@ logoutThenLoginAs: userName forceClose: forceClose
 	JadeiteLoginShell allInstances do: 
 			[:shell |
 			shell view close.
-			(Delay forMilliseconds: 100) wait	"should save to the remote JadeDefaultConnection.gss file"].
+			(Delay forMilliseconds: 100) wait	"should save to the remote 'C:\Users\ewinger\AppData\Roaming\JadeDefaultConnection.gss' file"].
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteShell userIDPresenter value: userName.
 	jadeiteShell loginWithoutErrorHandling!

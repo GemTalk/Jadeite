@@ -245,12 +245,6 @@ onCloseRequested: boolValueHolder
 	^super onCloseRequested: boolValueHolder.
 !
 
-onViewClosed
-	self updateModel.
-	model saveDefault.
-	super onViewClosed.
-!
-
 onViewOpened
 	super onViewOpened.
 	self
@@ -423,7 +417,6 @@ isText!public!testing! !
 isVersion:lessThanOrEqualTo:!public! !
 model:!accessing!public! !
 onCloseRequested:!public! !
-onViewClosed!public! !
 onViewOpened!public! !
 openHomePage!public! !
 queryCommand:!menu handlers support!private! !
