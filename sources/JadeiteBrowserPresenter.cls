@@ -1139,6 +1139,8 @@ methodsMenuStrings
 				runMethodTests;
 				fileOutSelectedMethods;
 				findMethod;
+				moveMethodToPackage;
+				removeMethods;
 				runMethodTests;
 				gotoMethodDefinedPackage;
 				runAll;
