@@ -1245,10 +1245,7 @@ noClassSelectedInEitherPresenter
 	^false!
 
 onDragClass: aSession
-	| className |
-	className := self selectedClass name.
-	^self onDragClass: aSession className: className
-!
+	^self onDragClass: aSession className: self selectedClass!
 
 onDragMethod: aSession
 	| list |

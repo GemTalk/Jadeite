@@ -707,7 +707,7 @@ user:!accessing!private! !
 defaultIconName
 	"Answer a filename to use for an icon of this class."
 
-	^File composeStem: 'Message' extension: 'ico'.!
+	^File composeStem: 'Behavior' extension: 'ico'.!
 
 fakeMethodFor: className selector: selector source: source
 	| inst |
