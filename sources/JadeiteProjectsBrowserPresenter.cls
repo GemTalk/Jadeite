@@ -850,6 +850,10 @@ queryCommand: aCommandQuery
 		ifTrue: 
 			[aCommandQuery isEnabled: self hasCategorySelected.
 			^true].
+	command == #addMethodCategory
+		ifTrue: 
+			[aCommandQuery isEnabled: self selectedClass notNil.
+			^true].
 	command == #loadProject
 		ifTrue: 
 			[aCommandQuery isEnabled: true.

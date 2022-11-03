@@ -970,6 +970,19 @@ test_cannotSelectMultipleProjects
 	self assert: self rowanProjectNames size > 1. 
 	self assert: self projectListPresenter selections size = 1!
 
+test_categoryMenuAddEnablement
+	| addItem query |
+	self selectRowanServicesPackage.
+	addItem := self projectsPresenter categoryListPresenter view queryContextMenu items
+				detect: [:menuItem | menuItem command == #addMethodCategory].
+	query := CommandQuery commandDescription: addItem commandDescription
+				source: self projectsPresenter categoryListPresenter view.
+	self projectsPresenter queryCommand: query.
+	self deny: query isEnabled.
+	self selectRowanSample1Class.
+	self projectsPresenter queryCommand: query.
+	self assert: query isEnabled!
+
 test_categoryTextDisplay
 	self testsIssue: #issue232 withTitle: 'cannot tell which `category` a method is in (Oscar-3.0.41)'.
 	self selectRowanServicesPackage.
@@ -3486,6 +3499,7 @@ test_browseLiteralReferences!public!tests! !
 test_browseSameClassCategoriesCorrect!public!tests! !
 test_browseSelectedMethods!public!tests! !
 test_cannotSelectMultipleProjects!public!test projects!tests! !
+test_categoryMenuAddEnablement!public!test categories!tests! !
 test_categoryTextDisplay!public!test categories!tests! !
 test_changeClassComment!public!test two browsers!tests! !
 test_changeListSortOrder!public!tests! !
