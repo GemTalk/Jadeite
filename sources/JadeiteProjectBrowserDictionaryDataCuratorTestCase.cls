@@ -643,7 +643,12 @@ test_projectInfoTabMenuCopy
 	self projectsPresenter projectInfoList selectionByIndex: 7.
 	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'isDirty'.
 	self projectsPresenter copyProjectInfo.	"Tonel isn't usually changed so probably safe to assume answer is false"
-	self assert: Clipboard current getText equals: 'false'!
+	self assert: Clipboard current getText equals: 'false'.
+	self projectsPresenter projectInfoList selectionByIndex: 9.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'packageConvention'.
+	self projectsPresenter copyProjectInfo.
+	self assert: Clipboard current getText equals: 'RowanHybrid'.
+!
 
 test_projectInfoTabMenuItemNames
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.
@@ -663,7 +668,9 @@ test_projectInfoTabMenuItemNames
 	self projectsPresenter projectInfoList selectionByIndex: 7.
 	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'isDirty'.
 	self projectsPresenter projectInfoList selectionByIndex: 8.
-	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'projectUrl'!
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'projectUrl'.
+	self projectsPresenter projectInfoList selectionByIndex: 9.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'packageConvention'!
 
 test_projectListMenuItemsEnabled
 	self testsIssue: #issue217 withTitle: 'Eliminate Dictionary Browser'.

@@ -252,26 +252,6 @@ buildGlobalsTab
 	classListPresenter list: ListModel new.
 	self updateGlobalsTab!
 
-buildInfoTab: infoTab
-	| infoTabView |
-	infoTabView := infoTab createView: 'Editable list view'.
-	infoTabView backcolor: JadeiteTextStyles default colorForNoEdits.
-	infoTabView
-		hasColumnHeaders: false;
-		hasGridLines: false;
-		isMultiSelect: true.
-	(infoTabView allColumns at: 1)
-		isEditable: false;
-		width: 175;
-		getContentsBlock: [:each | each at: 2].
-	infoTabView addColumn.
-	(infoTabView allColumns at: 2)
-		isEditable: false;
-		isAutoResize: true;
-		getContentsBlock: [:each | (each at: 2) ifNil: [String new] ifNotNil: [:iv | (each at: 1) instVarNamed: iv]].
-	infoTabView getImageBlock: nil.
-	^infoTabView!
-
 buildPackageList
 	| newCard |
 	(packageDictionaryCards view cards includes: dictionaryPresenter view)
@@ -300,12 +280,32 @@ buildPreferencesMenu
 	showPackageGroupItem isRadioButtonStyle: true.
 	^preferencesMenu!
 
+buildProjectInfoTab: infoTab
+	| infoTabView |
+	infoTabView := infoTab createView: 'Editable list view'.
+	infoTabView backcolor: JadeiteTextStyles default colorForNoEdits.
+	infoTabView
+		hasColumnHeaders: false;
+		hasGridLines: false;
+		isMultiSelect: true.
+	(infoTabView allColumns at: 1)
+		isEditable: false;
+		width: 175;
+		getContentsBlock: [:each | each at: 2].
+	infoTabView addColumn.
+	(infoTabView allColumns at: 2)
+		isEditable: false;
+		isAutoResize: true;
+		getContentsBlock: [:each | (each at: 2) ifNil: [String new] ifNotNil: [:iv | (each at: 1) instVarNamed: iv]].
+	infoTabView getImageBlock: nil.
+	^infoTabView!
+
 buildProjectListView
 	| listView |
 	projectInfoList := ListPresenter new.
 	projectInfoList parentPresenter: projectInfoTab.
-	listView := self buildInfoTab: projectInfoList. 
-	listView arrangement: 2. 
+	listView := self buildProjectInfoTab: projectInfoList.
+	listView arrangement: 2.
 	projectInfoTab view addSubView: listView!
 
 buildProjectReadMeTab
@@ -2236,6 +2236,7 @@ updateProjectInfoTabFor: service
 			array nextPut: (Array with: service with: 'isSkew').
 			array nextPut: (Array with: service with: 'isDirty').
 			array nextPut: (Array with: service with: 'projectUrl').
+			array nextPut: (Array with: service with: 'packageConvention').
 			service == service ifFalse: [array nextPut: (Array with: RowanProjectService new with: nil)]].
 	projectInfoList list: array contents!
 
@@ -2301,9 +2302,9 @@ browseSelectedCategoryMethods!menu handlers!public!queries! !
 browseSelectedMethods!menu handlers!public!queries! !
 buildAddPackageView!private!tabs! !
 buildGlobalsTab!private!tabs! !
-buildInfoTab:!private!tabs! !
 buildPackageList!event handlers!public!updating! !
 buildPreferencesMenu!menus!private!updating! !
+buildProjectInfoTab:!private!tabs! !
 buildProjectListView!private!tabs! !
 buildProjectReadMeTab!private!tabs! !
 buildProjectTab!private!tabs! !

@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanProjectService
-	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop name isDirty specService componentServices packageGroups defaultSymbolDictionaryName'
+	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop name isDirty specService componentServices packageGroups defaultSymbolDictionaryName packageConvention'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -207,6 +207,9 @@ newTextView: session using: parentPresenter
 		contextMenu: parentPresenter view contextMenu.
 	^edit!
 
+packageConvention
+	^packageConvention!
+
 packageGroupUpdate: presenter browser: browser
 	| treeModel allService |
 	wasUpdated ifFalse: [^self].
@@ -338,6 +341,7 @@ isSkew:!accessing!private! !
 name!accessing!public! !
 name:!accessing!public! !
 newTextView:using:!displaying!private! !
+packageConvention!accessing!private! !
 packageGroupUpdate:browser:!public!updating! !
 packages!accessing!public! !
 packageServices!accessing!public! !
