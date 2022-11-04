@@ -27,12 +27,15 @@ Topics are:
  <ul>
 	<li><a href="#BrowserCodeDecoration">Browser code status decoration</a></li>
 	<li><a href="#FontSizing">Setting Font Sizes</a></li>
+	<li><a href="#PackagingConvention">Project Packaging Conventions</a></li>
 </ul>
 
+
+
+
 <hr>
-
-<h2><a name="BrowserCodeDecoration"></a>Browser Code status decoration</h2>
-
+<h2><a name="BrowserCodeDecoration"></a>Browser Code status decoration
+</h2>
 <h3>Project status text decoration</h3>
 The color, weight and bold/italic font for a Project's name in the Console's Project List or the Projects Browser indicates the status of the Project in the image, vs. the on-disk status.
 
@@ -72,9 +75,14 @@ When the Projects Browser displays a Class, it displays a list of all methods th
 <li>If the class is in <span class="purplefont">purple</span> and the method is in <span class="purpleunderlinefont">purple and underlined </span>, it indicates that the method is defined in a third package, neither the selected package nor the package that the class is defined on. <br><br> Use the method pop up menu item Go To Defining Package to see the Package for that method.</li>
 </ul>
 
-<hr>
 
-<h2><a name="FontSizing"></a>Setting Font Sizes</h2>
+
+
+
+
+<hr>
+<h2><a name="FontSizing"></a>Setting Font Sizes
+</h2>
 
 To set the System Font, which controls pane labels, menus, tabs, and the display of class and method names, set a preference in Jadeite.prefs.  You can use the Console menu item Edit Preferences File to set a font size.  Legal values are an integer or nil for default font size.
 <p>
@@ -92,6 +100,42 @@ To set the Text Font for method bodies,  workspaces, and similar text panes, you
 You will need to logout and login to see the change. 
 <p>
 You may also set this at runtime using the Projects Browser menu Preferences > Text Font Size.
+
+
+
+<hr>
+<h2><a name="PackagingConvention"></a>Project Packaging Conventions
+</h2>
+<br><br>
+A feature of rowan is that a Package can contain methods that belong to classes that are in a different package.  These are called extension methods.  These methods show up in
+<span class="purplefont">purple</span> in the Project Browser (see <a href="#BrowserCodeDecoration">Browser code status decoration</a>).
+The way the programmer defines that a method should be part of a particular package varies; the rules are based on the Project's packaging convention.
+<p>
+To see the packaging convention for a project, see the Project Browser Project tab.
+<br>
+Options are:
+
+<dl>
+<dt><b>Monticello</b></dt>
+<dd> A leading asterisk in the method or class category indicates the package for the method.  For example, a method category <code>*myproject-tests</code> means that all methods in that category
+belong to a package named <code>MyProject-Tests</code>.  While Rowan and GemStone code often use lowercase package names, the category is case-insenstive. This convention is widely used within the Pharo community.
+<br>
+Other feature of Monticello convention is that a trailing -<em>aString</em> could be included, to provide a non-package related categorization.  For example <code>*myproject-tests-setup</code> and <code>*myproject-tests-behavior</code> would both be packaged in the package named <code>MyProject-Tests</code>, although the method categories are distinct.
+<br>
+A problem associated with  Monticello convention is the ambiguous case in which the -<em>aString</em> is ambigous; for example, if the packages <code>MyProject-Tests</code> and <code>MyProject</code> both exist.
+<br><br>
+ </dd> 
+
+<dt><b>RowanHybrid</b></dt>
+<dd> The RowanHybrid is a modified version of the Monticello convention. A leading asterisks in the method or class category indicates the package for the method; however, the a trailing -<em>aString</em> is not allowed. This avoids the ambiguity of the Monticello convention.
+<br><br>
+</dd>
+
+<dt><b>Rowan</b></dt>
+<dd> With the Rowan convention, package association is not controlled by category name; the underlying definition contains packaging information, and Jadeite tools allow you to move methods from package to package. 
+</dd>
+
+
 
 </div>
 </body>

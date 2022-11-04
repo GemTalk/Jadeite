@@ -310,7 +310,7 @@ openGitHubRowanProject
 
 openJadeiteHelpFile
 	^ShellLibrary default shellOpen: self jadeiteHelpFileName
-		directory: SessionManager current installationDirectory!
+		directory: SessionManager current installationDirectory, 'Help\'!
 
 openJadeiteProjectsBrowser
 	projectListPresenter hasSelection

@@ -836,9 +836,9 @@ test_validateHelpFiles
 
 	self testsIssue: #issue954 withTitle: 'Need online help; our formatting is somewhat opaque'.
 	self assert: (File
-				exists: SessionManager current installationDirectory , '\' , transcript jadeiteHelpFileName).
+				exists: SessionManager current installationDirectory , '\help\' , transcript jadeiteHelpFileName).
 	self assert: (File
-				exists: SessionManager current installationDirectory , '\' , transcript jadeiteHelpFileNameRoot
+				exists: SessionManager current installationDirectory , '\help\' , transcript jadeiteHelpFileNameRoot
 						, transcript jadeiteHelpFileCSSExtension)!
 
 writeToPrefsFile: string
