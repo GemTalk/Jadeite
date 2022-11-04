@@ -47,12 +47,6 @@ addClassHierarchyInfoTo: aStream
 	aStream lf.
 !
 
-addMethodCategory
-	| string |
-	(string := Prompter prompt: 'New method category?') isNil ifTrue: [^self].
-	string trimBlanks isEmpty ifTrue: [^MessageBox notify: 'Category name must not be blank'].
-	self basicAddMethodCategory: string!
-
 addMethodInfoTo: aStream
 
 	| string |
@@ -2420,7 +2414,6 @@ aboutToChange:!event handlers!public! !
 aboutToEditClassLabel:accept:!event handlers!public! !
 addClassCategoryInfoTo:!public!request string! !
 addClassHierarchyInfoTo:!public!request string! !
-addMethodCategory!menu handlers!public! !
 addMethodInfoTo:!public!request string! !
 addMissingAccessors!menu handlers!public! !
 addPackage!menu handlers!public! !

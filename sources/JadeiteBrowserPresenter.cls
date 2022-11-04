@@ -38,6 +38,12 @@ addDictionary
 additionalAccelerators
 	^super additionalAccelerators , #(#(#insertIfFalse 'Ctrl+Shift+D') #(#insertIfTrue 'Ctrl+Shift+T'))!
 
+addMethodCategory
+	| string |
+	(string := Prompter prompt: 'New method category?') isNil ifTrue: [^self].
+	string trimBlanks isEmpty ifTrue: [^MessageBox notify: 'Category name must not be blank'].
+	self basicAddMethodCategory: string!
+
 addNoneProject
 	(projectListPresenter list includes: RowanProjectService noneProject)
 		ifFalse: [projectListPresenter model add: RowanProjectService noneProject]!
@@ -71,6 +77,17 @@ basicAddDictionaryNamed: newDictionaryName
 	self issueCommand: dictionaryService.
 	dictionaryPresenter
 		selection: (dictionaryPresenter list detect: [:newService | newService name = newDictionaryName])!
+
+basicAddMethodCategory: string
+	| service |
+	(self categoryListPresenter list includes: string)
+		ifFalse: 
+			[service := self selectedClass
+						command: #addCategory:;
+						commandArgs: (Array with: string).
+			service meta: self isClassSideSelected.
+			self issueCommand: service].
+	self selectCategoriesNamed: (Array with: string)!
 
 basicCopyClass: oldClassService to: newClassName
 	oldClassService
@@ -2277,12 +2294,14 @@ abortTransaction!public!transaction management! !
 aboutToChange:!event handlers!public! !
 addDictionary!menu handlers!public! !
 additionalAccelerators!constants!public! !
+addMethodCategory!menu handlers!public! !
 addNoneProject!public!updating! !
 addPackagePresenter!accessing!private! !
 addSystemBrowser!menu handlers!public! !
 allSelectedProjectsDirty!public!testing! !
 auditProject!project menu handlers!public! !
 basicAddDictionaryNamed:!menu handlers support!private! !
+basicAddMethodCategory:!menu handlers support!private! !
 basicCopyClass:to:!menu handlers support!private! !
 basicDictionaryTabLabel!displaying!private! !
 basicProjectTabLabel!displaying!private!tabs! !

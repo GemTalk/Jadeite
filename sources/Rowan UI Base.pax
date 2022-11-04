@@ -321,7 +321,6 @@ package methodNames
 	add: #JadeShell -> #raiseConsole;
 	add: #JadeShell -> #updateCaptionFromSearchString:;
 	add: #JadeSystemBrowser -> #jadeBrowseTests;
-	add: #JadeSystemBrowserPresenter -> #basicAddMethodCategory:;
 	add: #JadeSystemBrowserPresenter -> #basicRemoveMethods;
 	add: #JadeSystemBrowserPresenter -> #browseMethodsAndSelect:;
 	add: #JadeSystemBrowserPresenter -> #browseMethodsAndSelect:type:;
@@ -4462,24 +4461,6 @@ jadeBrowseTests!public! !
 
 !JadeSystemBrowserPresenter methodsFor!
 
-basicAddMethodCategory: string
-	| stream |
-	stream := (WriteStream on: String new)
-				nextPutAll: 'addMethodCategory';
-				tab;
-				nextPutAll: self selectedClassNameWithoutVersion;
-				tab;
-				nextPutAll: selectedClassOop printString;
-				tab;
-				nextPutAll: instanceClassTabs currentCard name;
-				tab;
-				nextPutAll: string;
-				tab;
-				lf;
-				yourself.
-	self updateCommand: stream contents , self requestString
-		onSuccessDo: [methodSourcePresenter ensureVisible]!
-
 basicRemoveMethods
 	| string |
 	string := 'removeMethods' , Character tab asString , self methodsIdentifier , Character lf asString
@@ -5051,7 +5032,6 @@ verifyValidCategory: category
 	self issueCommand: service.
 	^service answer! !
 !JadeSystemBrowserPresenter categoriesForMethods!
-basicAddMethodCategory:!menu handlers!public! !
 basicRemoveMethods!menu handlers!public! !
 browseMethodsAndSelect:!menu handlers!public! !
 browseMethodsAndSelect:type:!menu handlers!public! !

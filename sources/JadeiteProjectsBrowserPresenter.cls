@@ -67,17 +67,6 @@ autoCommit: boolean
 	autoCommit value: boolean.
 	gciSession autoCommit: boolean!
 
-basicAddMethodCategory: string
-	| service |
-	(self categoryListPresenter list includes: string)
-		ifFalse: 
-			[service := self selectedClass
-						command: #addCategory:;
-						commandArgs: (Array with: string).
-			service meta: self isClassSideSelected.
-			self issueCommand: service].
-	self selectCategoriesNamed: (Array with: string)!
-
 basicOnDropClassList: dragDropSession
 	| classService failedCompilations newSelections |
 	failedCompilations := OrderedCollection new.
@@ -1539,7 +1528,6 @@ addVariableAccessors!menu handlers!public! !
 allClasses!menu handlers!public! !
 autoCommit!accessing!private! !
 autoCommit:!initialize/release!public! !
-basicAddMethodCategory:!menu handlers support!private! !
 basicOnDropClassList:!drag & drop!public! !
 basicProjectTabLabel!displaying!private! !
 basicRemoveMethodCategories!menu handlers support!private! !
