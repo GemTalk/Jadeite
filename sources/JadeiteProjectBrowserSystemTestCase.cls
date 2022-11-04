@@ -223,6 +223,105 @@ test_moveTabsWithSUnitTabselected
 	self assert: projectsBrowser cardsPresenter view cards size equals: 1.
 	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 Projects'!
 
+test_projectDisplaysSync
+	"the projects browser and project list in the transcript should
+	stay sync'ed automaticall"
+
+	"project removal in projects browser"
+
+	self disableInteractionsWhile: 
+			[self denyIsNil: (self projectNamed: 'RowanSample1').
+			self assert: self transcriptTab isKindOf: JadeiteProjectListPresenter.
+			self denyIsNil: (self transcriptProjectNamed: 'RowanSample1').
+			self unloadSampleProject1.
+			self assertIsNil: (self projectNamed: 'RowanSample1').
+			self assertIsNil: (self transcriptProjectNamed: 'RowanSample1').
+			"project addition in projects browser"
+			self cloneRowanSample1.
+			self ensureRowanSampleProjectsLoaded.
+			
+			[self denyIsNil: (self transcriptProjectNamed: 'RowanSample1').
+			self denyIsNil: (self projectNamed: 'RowanSample1')]
+					ensure: [self unloadSampleProject1].
+			self assertIsNil: (self projectNamed: 'RowanSample1').
+			self assertIsNil: (self transcriptProjectNamed: 'RowanSample1').
+			"project addition in project list"
+			self loadRowanSample1InProjectList.
+			self denyIsNil: (self transcriptProjectNamed: 'RowanSample1').
+			self denyIsNil: (self projectNamed: 'RowanSample1').
+			"project removal in project list"
+			(self transcriptTab projectListPresenter list
+				detect: [:projectService | projectService name = self sampleProject1Name]
+				ifNone: []) notNil
+				ifTrue: [self transcriptTab basicUnloadProjects: (Array with: self sampleProject1Name)].
+			
+			[self assertIsNil: (self projectNamed: 'RowanSample1').
+			self assertIsNil: (self transcriptProjectNamed: 'RowanSample1')]
+					ensure: [self loadRowanSample1InProjectList]]!
+
+test_projectInfoTab
+	| view |
+	self testsIssue: #issue261 withTitle: 'Project tab should display reason for project font styling'.
+	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 1) equals: 'rowanProjectsHome'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 3) equals: 'name'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 4) equals: 'sha'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 5) equals: 'branch'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 6) equals: 'isSkew'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 7) equals: 'isDirty'.
+	view := self projectsPresenter projectInfoList view.
+	self assert: (view columns first contentFromRow: (view list at: 3)) equals: 'Rowan'. "don't know the state of the rowan project so just test the name"!
+
+test_projectMenuEnablementUnloadReload
+	self testsIssue: #issue836 withTitle: 'Can''t reload (UnPackaged) project'.
+	#(#unloadProjects #reloadProject) do: 
+			[:command |
+			| projectNames |
+			self deselectProjects.
+			self deny: (self projectsPresenter isProjectItemEnabled: command).
+			projectNames := self projectListPresenter list collect: [:projectService | projectService name].
+			projectNames do: 
+					[:projectName |
+					self selectServiceNamed: RowanService notRowanizedPackageName in: self projectListPresenter.
+					(projectName = 'Unpackaged' or: [projectName = RowanService notRowanizedPackageName])
+						ifTrue: [self deny: (self projectsPresenter isProjectItemEnabled: command)]
+						ifFalse: [self assert: (self projectsPresenter isProjectItemEnabled: command)]]]!
+
+test_projectMenuGitCommitMenuItem
+	| gitCommitMenuItem query |
+	self testsIssue: #issue317 withTitle: 'Commit when no changes results in walkback'.
+	gitCommitMenuItem := self projectListPresenter view queryContextMenu items
+				detect: [:menu | '*Commit to Git*' match: menu text]
+				ifNone: [].
+	self denyIsNil: gitCommitMenuItem.
+	self assert: gitCommitMenuItem command equals: #gitCommit.
+	self assert: (self projectsPresenter class canUnderstand: #gitCommit).
+	query := CommandQuery commandDescription: gitCommitMenuItem source: self projectListPresenter view.
+	self projectListPresenter list do: 
+			[:projectService |
+			self projectListPresenter selection: projectService.
+			self projectsPresenter queryCommand: query.
+			projectService isDirty ifTrue: [self assert: query isEnabled] ifFalse: [self deny: query isEnabled]]!
+
+test_projectRemoved
+	"Gracefully remove a project from the project list if it was 
+	removed behind the tool's back"
+
+	| sampleProject |
+	self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.
+	sampleProject := self projectNamed: 'RowanSample1'.
+	self denyIsNil: sampleProject.
+	self selectServicesNamed: (Array with: 'Rowan') in: self projectListPresenter.
+	session executeString: 'Rowan projectTools delete deleteProjectNamed: ''RowanSample1'''.	"delete project behind tool's back"
+	self auditAll.
+	
+	[self selectServicesNamed: (Array with: 'RowanSample1') in: self projectListPresenter.	"expect project to disappear but not walkback"
+	sampleProject := self projectNamed: 'RowanSample1'.
+	self assertIsNil: sampleProject]
+			ensure: 
+				[self cloneRowanSample1.
+				self ensureRowanSampleProjectsLoaded]!
+
 test_queryCommandHandlesNilSession
 	| flipAutoCommitItem query previousAutoCommit |
 	self testsIssue: #issue773
@@ -311,6 +410,11 @@ test_createProject!public!test system tabs! !
 test_deselectProjectOnly!public!test system tabs! !
 test_modifiedSystemTab!public!test system tabs! !
 test_moveTabsWithSUnitTabselected!public!test system tabs! !
+test_projectDisplaysSync!public!test projects!tests! !
+test_projectInfoTab!public!test menus!test projects!tests! !
+test_projectMenuEnablementUnloadReload!public!test system tabs! !
+test_projectMenuGitCommitMenuItem!public!test menus! !
+test_projectRemoved!public!test projects!tests! !
 test_queryCommandHandlesNilSession!public!tests! !
 test_systemTabNamesDictionaryClass!public!test system tabs! !
 test_systemTabNamesDictionaryClassHierarchy!public!test system tabs! !
