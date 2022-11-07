@@ -313,6 +313,10 @@ selectedClassName
 	^documentPresenter selection
 	!
 
+selection
+	^documentPresenter selection
+	!
+
 selectionChanging: aSelectionChangingEvent 
 
 	(documentPresenter view isKindOf: DeafObject) ifTrue: [^self].
@@ -477,6 +481,7 @@ removeMenu!menus!public! !
 removeQuotesFromSelection!edit!private! !
 selectAll!public! !
 selectedClassName!public! !
+selection!public! !
 selectionChanging:!public! !
 selectLfIfEndingOnCr!edit!private! !
 setBreakAtStepPoint:!Breakpoints!public! !

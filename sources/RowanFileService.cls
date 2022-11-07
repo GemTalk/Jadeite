@@ -25,6 +25,11 @@ fileIn
 	commandArgs := Array with: path.
 	self issueCommand!
 
+fileInChunk: aString
+	command := #fileInChunk:.
+	commandArgs := Array with: aString.
+	self issueCommand!
+
 fileOutDictionaries: array
 	self
 		command: #fileoutDictionaries:;
@@ -89,6 +94,7 @@ shouldReplicateInstVarAtIndex: index newService: newService
 directoryContents!commands!public! !
 excludedInstVars!private!ston! !
 fileIn!commands!public! !
+fileInChunk:!commands!public! !
 fileOutDictionaries:!commands!public! !
 fileOutMethods:!commands!public! !
 indexOfSessionInstVar!public!ston! !

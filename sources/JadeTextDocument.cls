@@ -505,24 +505,20 @@ icon
 !
 
 open: filename onSession: aGciSession
-
 	| openFilename |
 	openFilename := filename.
 	openFilename isNil ifTrue: [^nil].
 	^(self showOnSession: aGciSession)
 		openOn: openFilename;
-		yourself.
-!
+		yourself!
 
 openOnSession: aGciSession
-
 	| openFilename |
 	openFilename := self getFilename.
 	openFilename isNil ifTrue: [^nil].
 	^(self showOnSession: aGciSession)
 		openOn: openFilename;
-		yourself.
-!
+		yourself!
 
 showOnSession: aGciSession
 
