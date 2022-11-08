@@ -288,6 +288,7 @@ systemBrowser
 
 tearDown
 	TestMessageBox disableJadeiteTestMessageBox.	"in case the test has gotten stuck while enabled"
+	TestJadeErrorShell disableJadeiteErrorShell.
 	self assert: (session isKindOf: GciSession).
 	self cleanupProcesses.
 	self assert: (session isKindOf: GciSession).

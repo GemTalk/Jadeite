@@ -349,6 +349,7 @@ package methodNames
 	add: #JadeSystemBrowserPresenter -> #updateSelector;
 	add: #JadeSystemBrowserPresenter -> #verifyValidCategory:;
 	add: #JadeTextDocument -> #aboutJadeite;
+	add: #JadeTextDocument -> #basicFileInFromFile:;
 	add: #JadeTextDocument -> #executeSelectionOrLine:;
 	add: #JadeTextDocument -> #fileIn;
 	add: #JadeTextDocument -> #fileInChunk;
@@ -2057,8 +2058,8 @@ onViewOpened
 		rootObject: gsProcess oopType
 		session: gsError gciSession.
 	message := gsError errorReport message.
-	isResumable := gsError isResumableInGem.
-	detail := message.
+	isResumable := [gsError isResumableInGem] on: Error do:[:ex | false]. "this may not be correct to handle errors here but if a compiler error occurs, we'll get an error here which prevents opening the debugger" 
+ 	detail := message.
 	message := message notEmpty ifTrue: [(message subStrings: Character lf) first] ifFalse: [''].
 	message := message copyFrom: 1 to: (message size min: 100).
 	self caption: message.
@@ -5085,6 +5086,15 @@ resource_Default_view!private!resources-views! !
 aboutJadeite
 	JadeLoginShell aboutJadeite!
 
+basicFileInFromFile: filePath
+	| service fileContents |
+	service := RowanFileService new
+				path: filePath;
+				session: gciSession.
+	service fileIn.
+	fileContents := service answer.
+	(JadeWorkspace showOnSession: gciSession) showText: fileContents!
+
 executeSelectionOrLine: contextObject
 	| answeringService answer oop  |
 	oop := (contextObject isKindOf: ExternalInteger)
@@ -5101,16 +5111,11 @@ executeSelectionOrLine: contextObject
 	^answer!
 
 fileIn
-	| filePath fileContents service |
+	| filePath |
 	filePath := JadeiteServerFileSelectorDialog showOnSession: gciSession
 				defaultPath: '$ROWAN_PROJECTS_HOME'.
 	filePath ifNil: [^self].
-	service := RowanFileService new
-				path: filePath;
-				session: gciSession.
-	service fileIn.
-	fileContents := service answer. 
-	(JadeWorkspace showOnSession: gciSession) showText: fileContents!
+	self basicFileInFromFile: filePath!
 
 fileInChunk
 	| service |
@@ -5199,6 +5204,7 @@ updateServices: services
 	BrowserUpdate current updateServices: services asSet asArray session: gciSession! !
 !JadeTextDocument categoriesForMethods!
 aboutJadeite!private! !
+basicFileInFromFile:!private! !
 executeSelectionOrLine:!Jade!private! !
 fileIn!private! !
 fileInChunk!private! !

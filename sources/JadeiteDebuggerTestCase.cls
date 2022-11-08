@@ -12,6 +12,24 @@ It''s recommended to run this set of tests with a fresh login to avoid counting 
 !JadeiteDebuggerTestCase categoriesForClass!SUnit! !
 !JadeiteDebuggerTestCase methodsFor!
 
+badFileInString
+
+	^
+'DoIt
+ Object subclass: ''BadClass''
+  instVarNames: #()
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: UserGlobals
+  options: #()
+%
+method: BadClass
+iContainACompileError
+
+	^SomethingThatDoesNotExist at: #key ifAbsent: [42]
+%'!
+
 firstFrameStartingWith: className
 	^debugger frameListPresenter list detect: [:stackFrame | className , '*' match: stackFrame]
 		ifNone: [self error: 'Frame with class named ' , className , ' not found']!
@@ -1359,6 +1377,21 @@ test_loginButtonEnablementAfterDebug
 				session := GciSession current.
 				transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: []]!
 
+test_notifierDoesNotErrorCheckingResumeStatus
+	| fileService shell |
+	fileService := RowanFileService new session: session.
+	TestJadeErrorShell enableJadeiteErrorShell.
+	
+	[process := [fileService fileInChunk: self badFileInString] forkAt: Processor activePriority + 1.
+	self getDebugger.
+	shell := TestJadeErrorShell lastErrorShell.
+	self assert: shell caption
+		equals: 'a CompileError occurred (error 1001), undefined symbol  SomethingThatDoesNotExist'.
+	self assert: (shell gsError isKindOf: GsCompileError).
+	self assert: shell gsError messageText
+		equals: 'a CompileError occurred (error 1001), undefined symbol  SomethingThatDoesNotExist']
+			ensure: [TestJadeErrorShell disableJadeiteErrorShell]!
+
 test_openDebuggerWthBreakpointInDebuggerService
 	"Basics of opening a debugger, viewing the UI, and resuming."
 
@@ -2564,6 +2597,7 @@ x halt.
 		yourself.
 ! !
 !JadeiteDebuggerTestCase categoriesForMethods!
+badFileInString!public!support! !
 firstFrameStartingWith:!public!support! !
 forkStepThrough!public!support! !
 indexOfVariableNamed:!public!support! !
@@ -2628,6 +2662,7 @@ test_implementorsSendersCaption!public!tests! !
 test_inspectedDebuggerObjectHeld!public!tests! !
 test_jadeItemsOnMenu!public!test menus! !
 test_loginButtonEnablementAfterDebug!public!tests! !
+test_notifierDoesNotErrorCheckingResumeStatus!public!test notifier! !
 test_openDebuggerWthBreakpointInDebuggerService!public!tests! !
 test_processIsServices!public!tests! !
 test_processSwitching!public!tests! !

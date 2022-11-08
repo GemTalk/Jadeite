@@ -36,6 +36,7 @@ package classNames
 	add: #JadeiteTestResource;
 	add: #JadeiteTransactionModeTestCase;
 	add: #JadeiteTranscriptTestCase;
+	add: #TestJadeErrorShell;
 	add: #TestLoggingService;
 	add: #TestMessageBox;
 	add: #TestPrompter;
@@ -126,6 +127,11 @@ package!
 MessageBox subclass: #TestMessageBox
 	instanceVariableNames: ''
 	classVariableNames: 'LastMessageBox PlannedResult'
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeErrorShell subclass: #TestJadeErrorShell
+	instanceVariableNames: ''
+	classVariableNames: 'LastErrorShell'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Prompter subclass: #TestPrompter
