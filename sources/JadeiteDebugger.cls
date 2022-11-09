@@ -242,15 +242,18 @@ dumpStackToFile
 errorMessagePresenter
 	^errorMessagePresenter!
 
-execute: string context: contextObject
-	| answeringService theAnswer oop |
+execute: string context: contextObject shouldDebug: shouldDebug
+	| answeringService theAnswer oop command |
 	oop := (contextObject isKindOf: ExternalInteger)
 				ifTrue: [contextObject value]
 				ifFalse: [contextObject].	"services wants a local special as a context"
 	oop ifNil: [oop := 20].
 	answeringService := RowanAnsweringService new.
+	command := shouldDebug
+				ifTrue: [#debug:inFrame:ofProcess:context:]
+				ifFalse: [#exec:inFrame:ofProcess:context:].
 	answeringService
-		command: #exec:inFrame:ofProcess:context:;
+		command: command;
 		commandArgs: (Array
 					with: string
 					with: frameListPresenter selectionByIndex
@@ -262,8 +265,8 @@ execute: string context: contextObject
 		ifNotNil: [theAnswer key ifTrue: [theAnswer value: (OopType64 fromInteger: theAnswer value)]].
 	^theAnswer!
 
-executeSelectionOrLine: contextObject
-	^self execute: self currentSelectionOrLine context: contextObject!
+executeSelectionOrLine: contextObject shouldDebug: aBoolean
+	^self execute: self currentSelectionOrLine context: contextObject shouldDebug: aBoolean!
 
 frameListPresenter
 	^frameListPresenter!
@@ -357,14 +360,7 @@ isOkayToChangeFrame
 
 jadeDebug
 	variableDataPresenter view hasFocus
-		ifTrue: 
-			[
-			[gciSession
-				debugString: self currentSelectionOrLine
-				fromContext:   (OopType64 fromInteger: self contextObject)
-				environment: environment]
-					on: GsCompileError
-					do: [:ex | MessageBox notify: 'Compile error in expression ' , ex descriptiveText]]!
+		ifTrue: [BrowserUpdate current inUpdateWhile: [self jadeExecuteAndDisplay: false shouldDebug: true]]!
 
 jadeInspect
 	| inspector | 
@@ -732,8 +728,8 @@ displayVariables!frames!private! !
 documentPresenter!accessing!public! !
 dumpStackToFile!menu handlers!private! !
 errorMessagePresenter!accessing!public! !
-execute:context:!Jade!private! !
-executeSelectionOrLine:!Jade!private! !
+execute:context:shouldDebug:!Jade!private! !
+executeSelectionOrLine:shouldDebug:!Jade!private! !
 frameListPresenter!accessing!frames!public! !
 gciSession:!public! !
 getProcessList!public! !

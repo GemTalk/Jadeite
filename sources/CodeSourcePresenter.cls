@@ -200,30 +200,22 @@ isOkayToChange
 	^true!
 
 jadeDisplay
-	self jadeExecuteAndDisplay: true.
-!
+	self jadeExecuteAndDisplay: true shouldDebug: false!
 
 jadeExecute
-	self jadeExecuteAndDisplay: false.
-!
+	self jadeExecuteAndDisplay: false shouldDebug: false!
 
-jadeExecuteAndDisplay: showResult 
-
+jadeExecuteAndDisplay: showResult shouldDebug: shouldDebug
 	| result |
-	result := self executeSelectionOrLine. 
-	result ifNil: [^self]. 
-	result key ifTrue: [
-		showResult ifTrue: [
-			self showResult: result value.
-		] ifFalse: [
-			self setCaretToEndOfSelection.
-		].
-		^result value.
-	] ifFalse: [
-		self showCompileError: result value first.
-		^self		"flag for compile error"
-	].
-!
+	result := self executeSelectionOrLine: self parentPresenter contextObject shouldDebug: shouldDebug.
+	result ifNil: [^self].
+	result key
+		ifTrue: 
+			[showResult ifTrue: [self showResult: result value] ifFalse: [self setCaretToEndOfSelection].
+			^result value]
+		ifFalse: 
+			[self showCompileError: result value first.
+			^self	"flag for compile error"]!
 
 menuTitle: aString
 
@@ -469,7 +461,7 @@ isModified!public! !
 isOkayToChange!public!testing! !
 jadeDisplay!Jade!private! !
 jadeExecute!Jade!private! !
-jadeExecuteAndDisplay:!Jade!private! !
+jadeExecuteAndDisplay:shouldDebug:!Jade!private! !
 menuTitle:!menus!public! !
 methodDoubleClicked:!Jade!private! !
 methodMenu:!menus!private! !

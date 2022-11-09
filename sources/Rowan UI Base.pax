@@ -247,7 +247,7 @@ package methodNames
 	add: #JadePresenter -> #displayUncompilableSourceIn:;
 	add: #JadePresenter -> #editSaveMethod:in:category:;
 	add: #JadePresenter -> #enableSigAbortError;
-	add: #JadePresenter -> #executeSelectionOrLine:;
+	add: #JadePresenter -> #executeSelectionOrLine:shouldDebug:;
 	add: #JadePresenter -> #flipAutoCommit;
 	add: #JadePresenter -> #insertCompileErrorText:into:;
 	add: #JadePresenter -> #issueCommand:;
@@ -350,13 +350,13 @@ package methodNames
 	add: #JadeSystemBrowserPresenter -> #verifyValidCategory:;
 	add: #JadeTextDocument -> #aboutJadeite;
 	add: #JadeTextDocument -> #basicFileInFromFile:;
-	add: #JadeTextDocument -> #executeSelectionOrLine:;
+	add: #JadeTextDocument -> #executeSelectionOrLine:shouldDebug:;
 	add: #JadeTextDocument -> #fileIn;
 	add: #JadeTextDocument -> #fileInChunk;
 	add: #JadeTextDocument -> #issueCommand:;
 	add: #JadeTextDocument -> #issueCommands:;
 	add: #JadeTextDocument -> #jadeBrowseTests;
-	add: #JadeTextDocument -> #jadeExecuteAndDisplay:;
+	add: #JadeTextDocument -> #jadeExecuteAndDisplay:shouldDebug:;
 	add: #JadeTextDocument -> #jadeExecuteAndDisplay:view:;
 	add: #JadeTextDocument -> #jadeInspect;
 	add: #JadeTextDocument -> #onPromptToSaveChanges:;
@@ -1157,20 +1157,13 @@ currentSelection
 	^RowanAnsweringService new expressionSelector: selection session: self gciSession!
 
 executeSelectionOrLine
-	^self executeSelectionOrLine: self parentPresenter contextObject !
+	^self executeSelectionOrLine: self parentPresenter contextObject shouldDebug: false!
 
 inspectorContextObject
 	^parentPresenter contextObject!
 
 jadeDebug
-	
-	[BrowserUpdate current inUpdateWhile: 
-			[gciSession
-				debugString: self currentSelectionOrLine
-				fromContext: (OopType64 fromInteger: self inspectorContextObject)
-				environment: environment]]
-			on: GsCompileError
-			do: [:ex | MessageBox notify: 'Compile error in expression ' , ex descriptiveText]!
+	BrowserUpdate current inUpdateWhile: [self jadeExecuteAndDisplay: false shouldDebug: true]!
 
 jadeInspect
 	| inspector | 
@@ -2821,21 +2814,25 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 enableSigAbortError
 	gciSession enableSignaledAbortError!
 
-executeSelectionOrLine: contextObject
-	| answeringService answer oop window |
+executeSelectionOrLine: contextObject shouldDebug: shouldDebug
+	"services wants a local special as a context"
+
+	| answer oop answeringService window selection command |
+	selection := self currentSelectionOrLine.
 	oop := (contextObject isKindOf: ExternalInteger)
 				ifTrue: [contextObject value]
 				ifFalse: [contextObject].	"services wants a local special as a context"
 	oop ifNil: [oop := 20].
 	answeringService := RowanAnsweringService new.
 	window := self myTopShell.
+	command := shouldDebug ifTrue: [#debug:context:inWindow:] ifFalse: [#exec:context:inWindow:].
 	answeringService
-		command: #exec:context:inWindow:;
+		command: command;
 		commandArgs: (Array
-					with: self currentSelectionOrLine
+					with: selection
 					with: oop
 					with: window view handle value).
-	self issueCommand: answeringService. 
+	self issueCommand: answeringService.
 	answer := self waitForAnswer: answeringService.
 	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
 	^answer!
@@ -3043,7 +3040,7 @@ displayNoMods:!compile support!displaying!public! !
 displayUncompilableSourceIn:!event handlers!public!text tabs!updating! !
 editSaveMethod:in:category:!compile support!public! !
 enableSigAbortError!public! !
-executeSelectionOrLine:!menu handlers!private! !
+executeSelectionOrLine:shouldDebug:!menu handlers!private! !
 flipAutoCommit!menu handlers!public! !
 insertCompileErrorText:into:!compile support!public! !
 issueCommand:!browsing support!public!services! !
@@ -5095,8 +5092,8 @@ basicFileInFromFile: filePath
 	fileContents := service answer.
 	(JadeWorkspace showOnSession: gciSession) showText: fileContents!
 
-executeSelectionOrLine: contextObject
-	| answeringService answer oop  |
+executeSelectionOrLine: contextObject shouldDebug: aBoolean
+	| answeringService answer oop |
 	oop := (contextObject isKindOf: ExternalInteger)
 				ifTrue: [contextObject value]
 				ifFalse: [contextObject].	"services wants a local special as a context"
@@ -5105,8 +5102,8 @@ executeSelectionOrLine: contextObject
 	answeringService
 		command: #exec:context:;
 		commandArgs: (Array with: self currentSelectionOrLine with: oop).
-	self issueCommand: answeringService. 
-	answer := self waitForAnswer: answeringService.  
+	self issueCommand: answeringService.
+	answer := self waitForAnswer: answeringService.
 	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
 	^answer!
 
@@ -5131,11 +5128,11 @@ issueCommands: services
 jadeBrowseTests
 	^JadeiteSUnitBrowser showOnSession: gciSession!
 
-jadeExecuteAndDisplay: showResult
+jadeExecuteAndDisplay: showResult shouldDebug: shouldDebug
 	| result |
 	BrowserUpdate current logComment: '#jadeExecuteAndDisplay:'.
 	
-	[result := self executeSelectionOrLine.
+	[result := self executeSelectionOrLine: self contextObject shouldDebug: shouldDebug.
 	
 	[self
 		jadeExecuteAndDisplay: showResult
@@ -5205,13 +5202,13 @@ updateServices: services
 !JadeTextDocument categoriesForMethods!
 aboutJadeite!private! !
 basicFileInFromFile:!private! !
-executeSelectionOrLine:!Jade!private! !
+executeSelectionOrLine:shouldDebug:!Jade!private! !
 fileIn!private! !
 fileInChunk!private! !
 issueCommand:!public!services! !
 issueCommands:!public!services! !
 jadeBrowseTests!Jade!public! !
-jadeExecuteAndDisplay:!Jade!private! !
+jadeExecuteAndDisplay:shouldDebug:!Jade!private! !
 jadeExecuteAndDisplay:view:!Jade!private! !
 jadeInspect!menu handlers!private! !
 onPromptToSaveChanges:!event handlers!private! !

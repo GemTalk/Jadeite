@@ -132,7 +132,7 @@ environment: anInteger
 !
 
 executeSelectionOrLine
-	^self executeSelectionOrLine: self contextObject!
+	^self executeSelectionOrLine: self contextObject shouldDebug: false!
 
 fileNew
 
@@ -182,13 +182,10 @@ jadeDebug
 	"Intercepted by CodeSourcePresenter"!
 
 jadeDisplay
-	^self jadeExecuteAndDisplay: true.
-
-!
+	^self jadeExecuteAndDisplay: true shouldDebug: false!
 
 jadeExecute
-	^self jadeExecuteAndDisplay: false.
-!
+	^self jadeExecuteAndDisplay: false shouldDebug: false!
 
 jadeExecuteAndDisplay: showResult result: anAssociation view: focusViewOrNil
 	| textView result value selectionRange offset |

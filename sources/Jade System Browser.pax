@@ -67,14 +67,14 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Views\Scintilla\Dolphin Scintilla View'
 	'..\Core\Object Arts\Dolphin\MVP\Models\Tree\Dolphin Tree Models'
 	'..\Core\Object Arts\Dolphin\MVP\Models\Value\Dolphin Value Models'
-	'GemStone C Interface'
 	'GemStone Objects'
 	'GemStone Session'
 	'Jade Autocompletation'
 	'Jade Method Browser'
 	'Jade UI'
 	'Jade UI Base'
-	'Monticello').
+	'Monticello'
+	'Rowan Client Services 2').
 
 package!
 
