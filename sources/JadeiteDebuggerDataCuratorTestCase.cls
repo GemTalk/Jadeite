@@ -385,14 +385,15 @@ test_multipleDebuggersAdHocHasTemps
 temp := ''abc''.
 temp first'.
 	sourceDocument view selectAll.
-	sourceDocument view setFocus. 
+	sourceDocument view setFocus.
 	[debugger methodSourcePresenter jadeDebug] fork.
 	self getSecondDebugger.
-	(Delay forMilliseconds: 100) wait. 
-	self assert: secondDebugger methodSourcePresenter documentPresenter value equals: '"comment"
+	(Delay forMilliseconds: 100) wait.
+	self assert: secondDebugger methodSourcePresenter documentPresenter value
+		equals: '"comment"
 | temp |
 temp := ''abc''.
-temp first']
+temp first' replaceCrLfWithLf]
 			ensure: 
 				["the not nil tests are to avoid trying to resume if the test was stopped prematurely"
 				secondDebugger ifNotNil: [self debuggerDo: [secondDebugger resumeProcess]].

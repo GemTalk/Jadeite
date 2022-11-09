@@ -113,7 +113,7 @@ test_adHocDebug
 					workspace codePane jadeDebug]
 							forkAt: Processor activePriority + 1].
 	self getDebugger.
-	self assert: debugger methodSourcePresenter documentPresenter value equals: 'nil halt. 123'. 
+	self assert: debugger methodSourcePresenter documentPresenter value equals: '123'. 
 ]
 			ensure: 
 				[workspace isModified: false.
@@ -863,7 +863,7 @@ test_debugFromWithinInspector
 	self
 		debuggerDo: [process := [inspector codePane jadeDebug] forkAt: Processor activePriority + 1];
 		getDebugger.
-	self assert: debugger model value equals: 'nil halt. self size']
+	self assert: debugger model value equals: 'self size']
 			ensure: [inspector view close]!
 
 test_debuggerDoesNotFreeze1
@@ -1338,16 +1338,14 @@ test_loginButtonEnablementAfterDebug
 	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #no.	"don't commit"
 	
-	[GciSession current ifNotNil: [:sess | sess logout].
+	[JadeiteTestResource current logout.
+	TestMessageBox disableJadeiteTestMessageBox.
 	shell := JadeiteLoginShell allInstances first.
 	query := CommandQuery commandDescription: (CommandDescription command: #login)
 				source: shell loginButtonPresenter view.
 	shell queryCommand: query.
-	self assert: query isEnabled.	" login shell should have a disabled login button"
-	"make sure we're logging in as right user"
-	shell userIDPresenter value: user.
-	shell model gsUserID: user.
-	shell login.
+	self assert: query isEnabled.	"enabled login button"
+	JadeiteTestResource current. "will login" 
 	self denyIsNil: GciSession current.
 	session := GciSession current.
 	transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: [].
@@ -1362,6 +1360,7 @@ test_loginButtonEnablementAfterDebug
 	self openDebuggerOn: 'RowanMethodServiceTest new test_noStepPoints'.
 	self debuggerDo: [debugger resumeProcess].
 	self rowanFixMe.	"without this, test somehow dies. Makes for a less useful test"
+	TestMessageBox enableJadeiteTestMessageBox.
 	TestMessageBox plannedResult: #no.
 	transcript view close.	"closes all Jadeite windows"
 	query := CommandQuery commandDescription: (CommandDescription command: #login)
@@ -1371,9 +1370,9 @@ test_loginButtonEnablementAfterDebug
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
 				debugger := nil.
-				process terminate.
+				process ifNotNil: [process terminate].
 				process := nil.
-				shell login.
+				JadeiteTestResource current logoutThenLoginAs: user forceClose: true. 
 				session := GciSession current.
 				transcript := JadeiteTranscript allInstances detect: [:tran | tran gciSession == session] ifNone: []]!
 

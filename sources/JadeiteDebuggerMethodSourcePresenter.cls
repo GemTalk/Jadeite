@@ -31,9 +31,13 @@ jadeDebug
 
 jadeDisplay
 	| result |
-	result := self parentPresenter execute: self currentSelectionOrLine
-				context: self parentPresenter contextObject.
-	result key ifTrue: [self showResult: result value] ifFalse: [self showCompileError: result value first].
+	result := self parentPresenter
+				execute: self currentSelectionOrLine
+				context: self parentPresenter contextObject
+				shouldDebug: false.
+	result key
+		ifTrue: [self showResult: result value]
+		ifFalse: [self showCompileError: result value first].
 	^result!
 
 jadeExecute

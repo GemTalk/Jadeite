@@ -118,6 +118,11 @@ loadProjectNamed: projectName
 		commandArgs: nil.
 	JadePresenter issueCommands: (Array with: projectService) session: self session!
 
+loginAs: userName
+	jadeiteShell := JadeiteLoginShell show.
+	jadeiteShell userIDPresenter value: userName.
+	jadeiteShell loginWithoutErrorHandling!
+
 loginWithRetry: loginShell
 	| loginError |
 	loginError := true.
@@ -127,22 +132,27 @@ loginWithRetry: loginShell
 			loginError := false] on: Error
 					do: [:ex | (Delay forMilliseconds: 100) wait]]!
 
-logoutThenLoginAs: userName forceClose: forceClose
-	"closing the transcript will logout the session. don't commit"
-
-	userName ifNil: [^self].
-	forceClose
-		ifFalse: [GciSession current ifNotNil: [:current | userName = current userID ifTrue: [^self]]].
+logout
 	self transcript ifNotNil: [self closeTranscript: self transcript].
 	JadeiteTranscript allInstances
 		do: [:transcript | self closeTranscript: transcript	"hopeful none, but just in case"].
 	JadeiteLoginShell allInstances do: 
 			[:shell |
 			shell view close.
-			(Delay forMilliseconds: 100) wait	"should save to the remote 'C:\Users\ewinger\AppData\Roaming\JadeDefaultConnection.gss' file"].
-	jadeiteShell := JadeiteLoginShell show.
-	jadeiteShell userIDPresenter value: userName.
-	jadeiteShell loginWithoutErrorHandling!
+			(Delay forMilliseconds: 100) wait	"should save to the remote 'C:\Users\ewinger\AppData\Roaming\JadeDefaultConnection.gss' file"]!
+
+logoutThenLoginAs: userName forceClose: forceClose
+	"closing the transcript will logout the session. don't commit"
+
+	"hopeful none, but just in case"
+
+	"should save to the remote 'C:\Users\ewinger\AppData\Roaming\JadeDefaultConnection.gss' file"
+
+	userName ifNil: [^self].
+	forceClose
+		ifFalse: [GciSession current ifNotNil: [:current | userName = current userID ifTrue: [^self]]].
+	self logout.
+	self loginAs: userName!
 
 openProjectsBrowser
 	((projectsBrowser isKindOf: JadeiteBrowser) not or: [projectsBrowser isOpen not])
@@ -276,7 +286,9 @@ issueCommand:!public!setup teardown! !
 jadeiteShell!accessing!private! !
 loadProjectFromFile:projectsHome:customConditionalAttributes:componentNames:!private!setup teardown! !
 loadProjectNamed:!private!setup teardown! !
+loginAs:!private!setup teardown!support! !
 loginWithRetry:!private!support! !
+logout!private!setup teardown!support! !
 logoutThenLoginAs:forceClose:!private!setup teardown!support! !
 openProjectsBrowser!private!setup teardown! !
 openWindow:!private! !
