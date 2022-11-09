@@ -73,8 +73,7 @@ package setPrerequisites: #(
 	'Jade Method Browser'
 	'Jade UI'
 	'Jade UI Base'
-	'Monticello'
-	'Rowan Client Services 2').
+	'Monticello').
 
 package!
 

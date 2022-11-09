@@ -1084,6 +1084,9 @@ isSourceTabSelected
 isSunitTabSelected
 	^self textAreaTabs currentCard name = 'sunit'!
 
+jadeDebug
+	BrowserUpdate current inUpdateWhile: [self jadeExecuteAndDisplay: false shouldDebug: true]!
+
 jadeInspect
 	| inspector |
 	inspector := JadeiteInspector new gciSession: gciSession.
@@ -2413,6 +2416,7 @@ isProjectItemEnabled:!menu handlers support!private!testing! !
 isRowanProjectSelected!public!testing! !
 isSourceTabSelected!public!testing! !
 isSunitTabSelected!public!testing! !
+jadeDebug!menu handlers!private! !
 jadeInspect!menu handlers!public! !
 makeSameSelectionsIn:as:!menu handlers!menu handlers support!private! !
 maxAutoCompleteListSize!constants!public! !

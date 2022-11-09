@@ -385,6 +385,7 @@ test_multipleDebuggersAdHocHasTemps
 temp := ''abc''.
 temp first'.
 	sourceDocument view selectAll.
+	sourceDocument view setFocus. 
 	[debugger methodSourcePresenter jadeDebug] fork.
 	self getSecondDebugger.
 	(Delay forMilliseconds: 100) wait. 
@@ -405,10 +406,11 @@ test_multipleDebuggersBasic
 	[sourceDocument := debugger methodSourcePresenter documentPresenter.
 	sourceDocument value: '123'.
 	sourceDocument view selectAll.
+	sourceDocument view setFocus. 
 	[debugger methodSourcePresenter jadeDebug] fork.
 	self getSecondDebugger.
 	(Delay forMilliseconds: 100) wait. 
-	self assert: secondDebugger methodSourcePresenter documentPresenter value equals: 'nil halt. 123']
+	self assert: secondDebugger methodSourcePresenter documentPresenter value equals: '123']
 			ensure: 
 				["the not nil tests are to avoid trying to resume if the test was stopped prematurely"
 				secondDebugger ifNotNil: [self debuggerDo: [secondDebugger resumeProcess]].

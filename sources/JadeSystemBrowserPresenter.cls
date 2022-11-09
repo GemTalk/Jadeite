@@ -1068,9 +1068,6 @@ isVariablesTabSelected
 	^methodFilterTabs currentCard name = 'variableList'.
 !
 
-jadeDebug
-	BrowserUpdate current inUpdateWhile: [self jadeExecuteAndDisplay: false shouldDebug: true]!
-
 jadeDisplay
 	self jadeExecuteAndDisplay: true shouldDebug: false!
 
@@ -2495,7 +2492,6 @@ isPackageListTabSelected!public!testing! !
 isPragmasTabSelected!public!testing! !
 isTreeModel:equivalentTo:!public! !
 isVariablesTabSelected!public!testing! !
-jadeDebug!menu handlers!private! !
 jadeDisplay!menu handlers!public! !
 jadeExecute!menu handlers!public! !
 jadeExecuteAndDisplay:shouldDebug:!menu handlers!public! !

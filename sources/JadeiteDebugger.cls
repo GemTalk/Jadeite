@@ -266,7 +266,13 @@ execute: string context: contextObject shouldDebug: shouldDebug
 	^theAnswer!
 
 executeSelectionOrLine: contextObject shouldDebug: aBoolean
-	^self execute: self currentSelectionOrLine context: contextObject shouldDebug: aBoolean!
+	| string |
+	string := self currentSelectionOrLine.
+	string isEmpty ifTrue: [^MessageBox notify: 'No text selected to execute!!'].
+	^self
+		execute: string
+		context: contextObject
+		shouldDebug: aBoolean!
 
 frameListPresenter
 	^frameListPresenter!
