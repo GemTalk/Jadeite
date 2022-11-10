@@ -32,6 +32,7 @@ package classNames
 	add: #JadeiteProjectBrowserLowerTabsTestCase;
 	add: #JadeiteProjectBrowserSystemTestCase;
 	add: #JadeiteProjectBrowserTestCase;
+	add: #JadeiteServerFileSaveTestDialog;
 	add: #JadeiteSUnitSupportTestCase;
 	add: #JadeiteTestResource;
 	add: #JadeiteTransactionModeTestCase;
@@ -127,6 +128,11 @@ package!
 MessageBox subclass: #TestMessageBox
 	instanceVariableNames: ''
 	classVariableNames: 'LastMessageBox PlannedResult'
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteServerFileSaveDialog subclass: #JadeiteServerFileSaveTestDialog
+	instanceVariableNames: ''
+	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeErrorShell subclass: #TestJadeErrorShell

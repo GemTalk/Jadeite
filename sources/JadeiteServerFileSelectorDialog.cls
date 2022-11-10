@@ -64,6 +64,17 @@ updateCaptionInSession:!overrides!private! !
 
 !JadeiteServerFileSelectorDialog class methodsFor!
 
+createDialogOn: aGciSession path: path
+	| service inst |
+	service := RowanFileService new path: path.
+	service session: aGciSession.
+	inst := self createOn: service.
+	inst setPathText: path.
+	inst setPresenterModelFor: aGciSession path: path.
+	inst showDirectoryContents.
+	inst updateCaptionInSession: aGciSession.
+	^inst!
+
 resource_Default_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.
 	DO NOT EDIT OR RECATEGORIZE THIS METHOD.
@@ -78,17 +89,12 @@ showOnSession: aGciSession
 	^self showOnSession: aGciSession defaultPath: JadePresenter rowanProjectsHomeEnvVarString!
 
 showOnSession: aGciSession defaultPath: path
-	| inst service answer |
-	service := RowanFileService new path: path. 
-	service session: aGciSession.
-	inst := self createOn: service.
-	inst setPathText: path.
-	inst setPresenterModelFor: aGciSession path: path.
-	inst showDirectoryContents.
-	inst updateCaptionInSession: aGciSession.
+	| inst answer |
+	inst := self createDialogOn: aGciSession path: path.
 	answer := inst showModal.
 	^answer ifNil: [nil] ifNotNil: [inst pathText value]! !
 !JadeiteServerFileSelectorDialog class categoriesForMethods!
+createDialogOn:path:!instance creation!public! !
 resource_Default_view!public!resources-views! !
 showOnSession:!instance creation!public! !
 showOnSession:defaultPath:!instance creation!public! !

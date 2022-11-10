@@ -42,6 +42,9 @@ dive
 			self showDirectoryContents]
 		ifFalse: [self select]!
 
+fileName
+	^self model fileName!
+
 goto
 	model value path: pathText value.
 	self showDirectoryContents!
@@ -50,6 +53,9 @@ logoutRequested: aValueHolder
 	"Private - Opportunity to save changes."
 
 	aValueHolder value: true.!
+
+parentDirectoryPath
+	^self model parentDirectoryPath!
 
 pathText
 	^pathText!
@@ -73,6 +79,10 @@ selectionMade
 				ifFalse: [pathText value last = $/ ifTrue: [String new] ifFalse: ['/']].
 	pathText value: pathText value , finalSlash , item!
 
+setPath: path
+	pathText value: path.
+	model value path: path. !
+
 showDirectoryContents
 	| directoryContents |
 	directoryContents := model value directoryContents.
@@ -83,13 +93,16 @@ createComponents!initialization!public! !
 createSchematicWiring!initialization!public! !
 directoryContentsList!accessing!private! !
 dive!actions!public! !
+fileName!accessing!public! !
 goto!actions!public! !
 logoutRequested:!event handlers!private! !
+parentDirectoryPath!accessing!public! !
 pathText!accessing!private! !
 pathText:!accessing!private! !
 pop!actions!public! !
 select!actions!public! !
 selectionMade!actions!public! !
+setPath:!actions!public! !
 showDirectoryContents!actions!public! !
 !
 

@@ -377,8 +377,10 @@ package methodNames
 	add: #JadeTreeMethodListPresenter -> #browseMethodsFromString:methodName:;
 	add: #JadeTreeMethodListPresenter -> #browseMethodsFromString:methodName:type:;
 	add: #JadeTreeMethodListPresenter -> #onDropMethodsTree:;
+	add: #JadeWorkspace -> #basicOpenServerFile:;
 	add: #JadeWorkspace -> #onViewClosed;
 	add: #JadeWorkspace -> #onViewOpened;
+	add: #JadeWorkspace -> #openServerFile;
 	add: #ListModel -> #removeAtIndexWithoutNotification:;
 	add: #ListPresenter -> #selectServiceStartingWith:;
 	add: #ListView -> #resortOnLastColumnClicked;
@@ -5354,6 +5356,12 @@ onDropMethodsTree:!public! !
 
 !JadeWorkspace methodsFor!
 
+basicOpenServerFile: filePath
+	| newWorkspace |
+	newWorkspace := JadeiteServerFileWorkspace showOnSession: gciSession path: filePath.
+	self view close.
+	^newWorkspace!
+
 onViewClosed
 	super onViewClosed.
 	BrowserUpdate current logComment: 'Closing Workspace {' , self identityHash printString , '}'
@@ -5363,10 +5371,20 @@ onViewClosed
 onViewOpened
 	super onViewOpened.
 	BrowserUpdate current
-		logComment: 'Opening ' , self class name asString , ' {' , self identityHash printString , '}'! !
+		logComment: 'Opening ' , self class name asString , ' {' , self identityHash printString , '}'!
+
+openServerFile
+	| filePath |
+	self codePane isOkayToChange ifFalse:[^self]. 
+	filePath := JadeiteServerFileSelectorDialog showOnSession: gciSession
+				defaultPath: '$ROWAN_PROJECTS_HOME'.
+	filePath ifNil: [^self].
+	^self basicOpenServerFile: filePath! !
 !JadeWorkspace categoriesForMethods!
+basicOpenServerFile:!menu handlers!private! !
 onViewClosed!private! !
 onViewOpened!private! !
+openServerFile!menu handlers!public! !
 !
 
 !ListModel methodsFor!

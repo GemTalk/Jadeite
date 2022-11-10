@@ -47,15 +47,7 @@ autoCompleteEnabled
 	^autoCompleteEnabled value!
 
 basicOpenServerFile: filePath
-	| service |
-	service := RowanFileService new
-				command: #fileContents;
-				path: filePath.
-	self issueCommand: service.
-	^JadeiteServerFileWorkspace
-		showOnSession: gciSession
-		path: filePath
-		contents: service answer!
+	^JadeiteServerFileWorkspace showOnSession: gciSession path: filePath!
 
 basicSetFont: newFont
 	JadeitePreferences displayFontFrom: newFont.

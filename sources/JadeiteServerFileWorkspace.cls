@@ -34,20 +34,24 @@ saveDocument
 	codePane documentPresenter view isModified: false. !
 
 saveDocumentAs
-	| service newPath |
-	newPath := JadeiteServerFileSaveDialog showOnSession: gciSession defaultPath: path.
+	| newPath |
+	newPath := JadeiteServerFileSaveDialog showOnSession: gciSession defaultFilePath: path.
 	newPath ifNil: [^self].
+	self writeDocumentTo: newPath!
+
+updateCaption
+	self caption: (gciSession titleBarFor: 'File contents of: ' , path)!
+
+writeDocumentTo: newPath
+	| service |
 	service := RowanFileService new
 				command: #write:;
 				commandArgs: (Array with: codePane documentPresenter value);
 				path: newPath.
 	self issueCommand: service.
-	codePane documentPresenter view isModified: false. 
+	codePane documentPresenter view isModified: false.
 	path := newPath.
-	self updateCaption!
-
-updateCaption
-	self caption: (gciSession titleBarFor: 'File contents of: ' , path)! !
+	self updateCaption! !
 !JadeiteServerFileWorkspace categoriesForMethods!
 isOkayToChangeFrame!event handlers!public! !
 onCloseRequested:!event handlers!public! !
@@ -56,14 +60,21 @@ path:!accessing!private! !
 saveDocument!public! !
 saveDocumentAs!public! !
 updateCaption!actions!public! !
+writeDocumentTo:!private! !
 !
 
 !JadeiteServerFileWorkspace class methodsFor!
 
-showOnSession: aGciSession path: path contents: contents
-	| inst |
-	inst := (self new path: path). 
-	inst codePane documentPresenter value: contents. 
+showOnSession: aGciSession path: path
+	| inst service |
+	inst := self new
+				path: path;
+				gciSession: aGciSession.
+	service := RowanFileService new
+				command: #fileContents;
+				path: path.
+	inst issueCommand: service.
+	inst codePane documentPresenter value: service answer.
 	inst
 		gciSession: aGciSession;
 		createView: self defaultView;
@@ -71,6 +82,6 @@ showOnSession: aGciSession path: path contents: contents
 		yourself.
 	^inst! !
 !JadeiteServerFileWorkspace class categoriesForMethods!
-showOnSession:path:contents:!instance creation!public! !
+showOnSession:path:!instance creation!public! !
 !
 

@@ -30,6 +30,13 @@ fileInChunk: aString
 	commandArgs := Array with: aString.
 	self issueCommand!
 
+fileName
+
+	command := #fileName.
+	commandArgs := Array new.
+	self issueCommand.
+	^answer!
+
 fileOutDictionaries: array
 	self
 		command: #fileoutDictionaries:;
@@ -53,6 +60,13 @@ isDirectory: directory
 
 issueCommand
 	self issueCommand: self session: session!
+
+parentDirectoryPath
+
+	command := #parentDirectoryPath.
+	commandArgs := Array new.
+	self issueCommand.
+	^answer!
 
 path
 	^path!
@@ -95,11 +109,13 @@ directoryContents!commands!public! !
 excludedInstVars!private!ston! !
 fileIn!commands!public! !
 fileInChunk:!commands!public! !
+fileName!commands!public! !
 fileOutDictionaries:!commands!public! !
 fileOutMethods:!commands!public! !
 indexOfSessionInstVar!public!ston! !
 isDirectory:!commands!public! !
 issueCommand!commands!public! !
+parentDirectoryPath!commands!public! !
 path!accessing!private! !
 path:!accessing!public! !
 pop!commands!public! !

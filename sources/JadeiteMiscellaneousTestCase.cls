@@ -305,10 +305,9 @@ test_dolphinStackDumpBanners
 	self assert: ('*Ending Dolphin stack dump started at*' match: stream contents).!
 
 test_fileSaveDialog
+	"not much of a test but at least we exercise the save button" 
 	| dialog |
-	"not a great test in the non modal dialog as the return is different, but at least
-	we exercise the save button"
-	dialog := JadeiteServerFileSaveDialog showNonModalOnSession: session
+	dialog := JadeiteServerFileSaveTestDialog showOnSession: session
 				initialFileName: 'test_fileSaveDialog.txt'.
 	dialog fileNamePresenter value: 'test_fileSaveDialog.txt2'.
 	dialog save.
@@ -317,7 +316,7 @@ test_fileSaveDialog
 test_fileSaveDialogBasics
 	| dialog priorDirectoryContents |
 	
-	[dialog := JadeiteServerFileSaveDialog showNonModalOnSession: session
+	[dialog := JadeiteServerFileSaveTestDialog showOnSession: session
 				initialFileName: 'test_fileSaveDialogBasics.txt'.
 	self assert: dialog isKindOf: JadeiteServerFileSaveDialog.
 	self assert: dialog pathText value equals: self rowanProjectsHome.	"default to rowan projects home directory env var"
@@ -328,6 +327,17 @@ test_fileSaveDialogBasics
 	self deny: priorDirectoryContents
 		equals: (dialog fileSelectorPresenter directoryContentsList list collect: [:assoc | assoc key])	"no way to know the contents of the directory so just ensure the contents changed - lousy test"]
 			ensure: [dialog cancel]!
+
+test_fileSaveFromWorkspace
+	| sourcePath targetPath |
+	targetPath := 'testJadeiteFileSave.txt'.
+	self deny: (session executeString: 'GsFile existsOnServer: ''' , targetPath , '''').
+	sourcePath := '/export/gcm/where/gemstone64/releases/3.6.1/x86_64.Linux/fast/product/version.txt'.
+	workspace := JadeiteServerFileWorkspace showOnSession: session path: sourcePath.
+	
+	[workspace writeDocumentTo: 'testJadeiteFileSave.txt'.
+	self assert: (session executeString: 'GsFile existsOnServer: ''' , targetPath , '''')]
+			ensure: [session executeString: 'GsFile removeServerFile: ''' , targetPath , '''']!
 
 test_findInWorkspace
 	| workspace findView documentPresenter |
@@ -922,8 +932,9 @@ test_convertToPattern!public!test! !
 test_createProjectEditorCreateProject!public!test! !
 test_createProjectEditorProjectsChanged!public!test! !
 test_dolphinStackDumpBanners!public!test! !
-test_fileSaveDialog!public!test! !
-test_fileSaveDialogBasics!public!test! !
+test_fileSaveDialog!public!test file! !
+test_fileSaveDialogBasics!public!test file! !
+test_fileSaveFromWorkspace!public!test file! !
 test_findInWorkspace!public!test! !
 test_instVarConstants!public!test! !
 test_releaseOops!public! !
