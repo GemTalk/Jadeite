@@ -24,9 +24,17 @@ browseChangedThing
 	selection isNil ifTrue: [^MessageBox notify: 'Nothing to browse'].
 	selection isRemoval ifTrue: [^MessageBox notify: 'Cannot browse a removed item'].
 	
-	[classService := RowanClassService named: selection className.
+	[| className |
+	className := selection className.
+	(className last: 6) = ' class'
+		ifTrue: [className := selection className copyFrom: 1 to: selection className size - 6].
+	classService := RowanClassService named: className.
 	shell := JadeiteBrowser showOnSession: gciSession.
-	shell currentCard updateServices: (Array with: classService)]
+	shell currentCard updateAfterFindClass: classService.
+	selection isMethodModification
+		ifTrue: 
+			[selection modification classIsMeta ifTrue: [shell currentCard selectClassTab].
+			shell currentCard findMethod: selection modification selector]]
 			on: Error
 			do: 
 				[:ex |

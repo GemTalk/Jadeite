@@ -374,6 +374,29 @@ test_noExtraLF
 	self assert: changesBrowser operationListPresenter selection typeString equals: 'Modification (reverted)'. 
 	self assert: changesBrowser diffsPresenter afterTitlePresenter value equals: 'Image (no change)'!
 
+test_revertClassMethod
+	| secondProjectBrowser |
+	self testsIssue: #issue867
+		withTitle: '(Oscar-3.1.1-release1) revert of a class method restores as an instance method (apparently)'.
+	self selectRowanSample1Class.
+	self
+		saveClassMethod: 'bar  ^123'
+		in: 'RowanSample1'
+		category: 'deleteMe'.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	self assert: changesBrowser operationListPresenter list first isKindOf: MCModification.
+	changesBrowser operationListPresenter selection: changesBrowser operationListPresenter list first.
+	self assert: changesBrowser operationListPresenter selection className equals: 'RowanSample1 class'.
+	self assert: changesBrowser operationListPresenter selection obsoletion classIsMeta. 
+	self assert: changesBrowser operationListPresenter selection selector equals: 'bar'.
+	self assert: changesBrowser operationListPresenter selection typeString equals: 'Modification'. 
+	changesBrowser revert.
+	self assert: changesBrowser operationListPresenter selection typeString equals: 'Modification (reverted)'.
+	secondProjectBrowser := changesBrowser browseChangedThing.
+	[self assert: secondProjectBrowser currentCard methodListPresenter selection selector equals: #bar] ensure: 
+			[self destroy: secondProjectBrowser.
+			self destroy: projectsBrowser]!
+
 test_revertMethodAddition
 	| change |
 	self testsIssue: #issue624
@@ -465,6 +488,7 @@ test_browseSendersOfRevertedChange!public!tests! !
 test_changesAlphabetized!public!tests! !
 test_identicalSource!public!tests! !
 test_noExtraLF!public!tests! !
+test_revertClassMethod!public!tests! !
 test_revertMethodAddition!public!tests! !
 test_revertMethodModification!public!tests! !
 test_revertMethodRemoval!public!tests! !

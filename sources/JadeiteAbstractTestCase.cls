@@ -435,6 +435,16 @@ saveClass: className superclass: superName instVars: instVars package: aString
 saveClass: className withInstVars: instVars package: aString
 	self saveClass: className superclass: 'Object' instVars: instVars package: aString!
 
+saveClassMethod: source in: className category: category
+	| classService |
+	classService := RowanClassService named: className.
+	classService meta: true. 
+	classService
+		saveMethod: source
+		category: category
+		session: session.
+	^classService!
+
 saveInterestingLoopMethod
 	| source |
 	source := self methodSourceForTest.
@@ -899,6 +909,7 @@ sampleClassName!private!project browser support! !
 sampleProject1Name!constants!private! !
 saveClass:superclass:instVars:package:!private! !
 saveClass:withInstVars:package:!private! !
+saveClassMethod:in:category:!private!support! !
 saveInterestingLoopMethod!browser support!private! !
 saveIssue166Method!issue test support!private! !
 saveIssue169Method!issue test support!private! !

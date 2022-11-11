@@ -5509,7 +5509,7 @@ isMethodRemoval
 
 revert: session
 	| classService |
-	classService := RowanClassService named: className asString.
+	classService := (RowanClassService named: className asString) meta: classIsMeta.
 	classService
 		command: #saveMethodSource:category:;
 		commandArgs: (Array with: source with: category).
