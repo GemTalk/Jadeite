@@ -889,6 +889,7 @@ findRemovedServices
 	BrowserUpdate current issueCommands: (Array with: browserService) session: self gciSession!
 
 gitCommit
+	self refreshFromServer.
 	self gitCommit: projectListPresenter!
 
 globalsMenu
@@ -2252,6 +2253,7 @@ updateProjectInfoTabFor: service
 		ifTrue: 
 			[array nextPut: (Array with: service with: 'name').
 			array nextPut: (Array with: service with: 'sha').
+			array nextPut: (Array with: service with: 'diskSha').
 			array nextPut: (Array with: service with: 'branch').
 			array nextPut: (Array with: service with: 'isSkew').
 			array nextPut: (Array with: service with: 'isDirty').

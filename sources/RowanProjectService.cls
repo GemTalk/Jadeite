@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanProjectService
-	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop name isDirty specService componentServices packageGroups defaultSymbolDictionaryName packageConvention'
+	instanceVariableNames: 'sha branch isSkew packages changes existsOnDisk isLoaded projectUrl rowanProjectsHome isDiskDirty projectOop name isDirty specService componentServices packageGroups defaultSymbolDictionaryName packageConvention diskSha'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -113,6 +113,9 @@ defaultSymbolDictionaryName
 definition
 
 	"send back a copy of the definition"!
+
+diskSha
+	^diskSha!
 
 displayName
 	| displayName |
@@ -326,6 +329,7 @@ componentServices!public! !
 componentsUpdate:browser:!public!updating! !
 defaultSymbolDictionaryName!accessing!private! !
 definition!accessing!public! !
+diskSha!accessing!private! !
 displayName!accessing!displaying!public! !
 displayStringFor:!displaying!public! !
 gitTags:!presenter support!public! !

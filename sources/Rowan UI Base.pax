@@ -276,9 +276,11 @@ package methodNames
 	add: #JadePresenter -> #waitForAnswer:;
 	add: #JadePresenterA -> #auditProjectFor:;
 	add: #JadePresenterA -> #basicRefreshBreakpointsIn:selection:;
+	add: #JadePresenterA -> #canCommit:;
 	add: #JadePresenterA -> #clearBreakPointAt:in:;
 	add: #JadePresenterA -> #confirmReloadProjects:;
 	add: #JadePresenterA -> #createNewProject;
+	add: #JadePresenterA -> #dirtyDiskConfirmation;
 	add: #JadePresenterA -> #disableBreakPointAt:in:;
 	add: #JadePresenterA -> #enableBreakPointAt:in:;
 	add: #JadePresenterA -> #gitCommit:;
@@ -286,6 +288,7 @@ package methodNames
 	add: #JadePresenterA -> #isOkayToChangeSource:;
 	add: #JadePresenterA -> #loadProject;
 	add: #JadePresenterA -> #methodListSelection;
+	add: #JadePresenterA -> #mismatchedShasConfirmation;
 	add: #JadePresenterA -> #openMethodListOn:selecting:;
 	add: #JadePresenterA -> #openMethodListOn:selectingAnyMatch:;
 	add: #JadePresenterA -> #queryCommand:;
@@ -3603,6 +3606,21 @@ basicRefreshBreakpointsIn: methodSourcePresenter selection: selection
 	methodSourcePresenter view indicators: indicators.
 	methodSourcePresenter view update!
 
+canCommit: projectListPresenter
+	| projectService |
+	projectListPresenter selections size > 1
+		ifTrue: 
+			[MessageBox notify: 'Only one project may be committed'.
+			^false].
+	projectService := projectListPresenter selectionOrNil.
+	projectService
+		ifNil: 
+			[MessageBox notify: 'No project selected'.
+			^false].
+	^projectService sha = projectService diskSha
+		ifTrue: [projectService isDiskDirty ifTrue: [self dirtyDiskConfirmation] ifFalse: [true]]
+		ifFalse: [self mismatchedShasConfirmation]!
+
 clearBreakPointAt: stepPoint in: browser
 	| selection |
 	selection := self methodListSelection.
@@ -3631,6 +3649,10 @@ confirmReloadProjects: selections
 createNewProject
 	^JadeiteCreateProjectEditor showOnSession: gciSession!
 
+dirtyDiskConfirmation
+	^MessageBox
+		confirm: 'The on-disk state of the git repository is dirty. This may be due to a previous project write without commit, or change to the repository outside Jadeite. It is recommended to check status on the git command line before committing. Proceed?'!
+
 disableBreakPointAt: stepPoint in: browser
 	| selection |
 	selection := self methodListSelection.
@@ -3649,10 +3671,9 @@ enableBreakPointAt: stepPoint in: browser
 	self issueCommand: selection.
 	browser updateMethodSource!
 
-gitCommit: projectListPresenter 
+gitCommit: projectListPresenter
 	| projectName message service promptResult |
-	projectListPresenter selections size > 1
-		ifTrue: [MessageBox notify: 'Only one project may be committed'].
+	(self canCommit: projectListPresenter) ifFalse: [^self].
 	projectName := projectListPresenter selection name.
 	message := String new asValue.
 	promptResult := JadeiteMultilinePrompter
@@ -3667,8 +3688,8 @@ gitCommit: projectListPresenter
 		command: #commitWithMessage:;
 		commandArgs: (Array with: message value asString).
 	self issueCommand: service.
-	MessageBox notify: 'Project ' , projectName , ' committed to local repository!!'.
-	self refreshFromServer!
+	RowanBrowserService new reloadProjects: projectListPresenter selections presenter: self.
+	MessageBox notify: 'Project ' , projectName , ' committed to local repository!!'!
 
 installProjectFromPath: path projectsHome: projectsHomePath componentNames: componentNames attributes: attributes resolveStrict: resolveStrict
 	| projectService |
@@ -3710,6 +3731,15 @@ loadProject
 methodListSelection
 	
 	^self parentPresenter methodListSelection!
+
+mismatchedShasConfirmation
+	| mb msg |
+	mb := MessageBox new.
+	mb iconStyle: #warning.
+	msg := 'The most recently loaded sha differs from the sha of the git repository. It is not recommended to commit; if you are aware of the issues, you may continue to write and commit your image changes. Proceed?'.
+	mb caption: 'Confirm Git Commit'.
+	mb defaultButton: 2.
+	^mb confirm: msg!
 
 openMethodListOn: service selecting: string
 	^JadeiteMethodListBrowser
@@ -3786,9 +3816,11 @@ updateMethodReferences: services
 !JadePresenterA categoriesForMethods!
 auditProjectFor:!project menu handlers!public! !
 basicRefreshBreakpointsIn:selection:!Jadeite!public! !
+canCommit:!private!project menu handlers! !
 clearBreakPointAt:in:!Jadeite!public! !
 confirmReloadProjects:!Jadeite!public! !
 createNewProject!menu handlers!menu handlers support!private! !
+dirtyDiskConfirmation!private!project menu handlers! !
 disableBreakPointAt:in:!Jadeite!public! !
 enableBreakPointAt:in:!Jadeite!public! !
 gitCommit:!project menu handlers!public! !
@@ -3796,6 +3828,7 @@ installProjectFromPath:projectsHome:componentNames:attributes:resolveStrict:!Jad
 isOkayToChangeSource:!Jadeite!public! !
 loadProject!Jadeite!public! !
 methodListSelection!Jadeite!public! !
+mismatchedShasConfirmation!private!project menu handlers! !
 openMethodListOn:selecting:!menu handlers support!private!queries! !
 openMethodListOn:selectingAnyMatch:!menu handlers support!private!queries! !
 queryCommand:!public! !
