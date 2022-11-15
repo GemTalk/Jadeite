@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 JadeSystemBrowserPresenter subclass: #JadeAutoSystemBrowserPresenter
 	instanceVariableNames: 'lastGsShape'
@@ -36,10 +36,6 @@ createSchematicWiringForMethodSource
 		when: #'focusLost'						send: #'cancelCallTip'					to: methodSourcePresenter view;
 		yourself.
 !
-
-createStateEntry
-
-	^packageDictionaryTabs currentCard == packageListPresenter view!
 
 getClassHierarchy
 	"
@@ -206,25 +202,26 @@ updateMethodList
 	self hasClassSideSelected ifTrue: [^lastGsShape gsClassMethods: self gsClassMethods].
 
 	^lastGsShape gsMethods: self gsMethods.! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #codePresenterIsMethod!public! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #createArrayFromString:!public!updating! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #createSchematicWiringForMethodSource!create schemantic wiring!public! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #createStateEntry!accessing!public!updating! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #getClassHierarchy!public!updating! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #getClassName!public!updating! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #gsClassMethods!public!updating! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #gsClassPoolDictionaries!public!updating! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #gsClassVariables!public!updating! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #gsInstClassVariables!public!updating! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #gsInstVariables!public!updating! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #gsMethods!public!updating! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #hasClassSideSelected!public! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #lastGsShape!accessing!private! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #lastGsShape:!accessing!private! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #newMethodPresenter!public! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #registerClassData!public!updating! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #removeClass!menu handlers!public! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #restoreFrom:!history!public!updating! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #updateAndSelect:!public!updating! !
-!JadeAutoSystemBrowserPresenter categoriesFor: #updateMethodList!public!updating! !
+!JadeAutoSystemBrowserPresenter categoriesForMethods!
+codePresenterIsMethod!public! !
+createArrayFromString:!public!updating! !
+createSchematicWiringForMethodSource!create schemantic wiring!public! !
+getClassHierarchy!public!updating! !
+getClassName!public!updating! !
+gsClassMethods!public!updating! !
+gsClassPoolDictionaries!public!updating! !
+gsClassVariables!public!updating! !
+gsInstClassVariables!public!updating! !
+gsInstVariables!public!updating! !
+gsMethods!public!updating! !
+hasClassSideSelected!public! !
+lastGsShape!accessing!private! !
+lastGsShape:!accessing!private! !
+newMethodPresenter!public! !
+registerClassData!public!updating! !
+removeClass!menu handlers!public! !
+restoreFrom:!history!public!updating! !
+updateAndSelect:!public!updating! !
+updateMethodList!public!updating! !
+!
 

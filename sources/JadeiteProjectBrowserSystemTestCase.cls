@@ -272,6 +272,24 @@ test_projectInfoTab
 	view := self projectsPresenter projectInfoList view.
 	self assert: (view columns first contentFromRow: (view list at: 3)) equals: 'Rowan'. "don't know the state of the rowan project so just test the name"!
 
+test_projectListToolTip
+	self rowanFixMe.	"when issue & title made, insert"
+	self testsIssue: #issue withTitle: ''.
+	self projectListPresenter list do: 
+			[:projectService |
+			BrowserUpdate current updateService: projectService session: session.
+			projectService isDirty ifTrue: [self assert: ('*Dirty in image*' match: projectService toolTip)].
+			projectService isDiskDirty ifTrue: [self assert: ('*Dirty on disk*' match: projectService toolTip)].
+			projectService isSkew ifTrue: [self assert: ('*Skew in sha*' match: projectService toolTip)].
+			projectService displayName = RowanService notRowanizedPackageName
+				ifTrue: [self assert: projectService toolTip equals: 'Does not exist on disk'].
+			projectService existsOnDisk
+				ifTrue: 
+					[projectService isDirty not & projectService isDiskDirty not & projectService isSkew not
+						& (projectService existsOnDisk == false) not
+							ifTrue: [self assert: projectService toolTip = 'Disk/image consistent']]
+				ifFalse: [self assert: ('*Does not exist on disk*' match: projectService toolTip)]]!
+
 test_projectMenuEnablementUnloadReload
 	self testsIssue: #issue836 withTitle: 'Can''t reload (UnPackaged) project'.
 	#(#unloadProjects #reloadProject) do: 
@@ -412,6 +430,7 @@ test_modifiedSystemTab!public!test system tabs! !
 test_moveTabsWithSUnitTabselected!public!test system tabs! !
 test_projectDisplaysSync!public!test projects!tests! !
 test_projectInfoTab!public!test menus!test projects!tests! !
+test_projectListToolTip!public!test system tabs! !
 test_projectMenuEnablementUnloadReload!public!test system tabs! !
 test_projectMenuGitCommitMenuItem!public!test menus! !
 test_projectRemoved!public!test projects!tests! !

@@ -387,10 +387,6 @@ createSchematicWiringForVariableList
 		when: #selectionChanged send: #selectMethodSourceTab to: self;
 		when: #selectionChanged send: #refreshMethodsOn: to: self with: methodListPresenter!
 
-createStateEntry
-
-	^projectDictionaryTabs currentCard == projectListPresenter view!
-
 definedClassMenuItemLabel
 	| definedLabel |
 	definedLabel := 'Go To Defining Package'.
@@ -1561,7 +1557,6 @@ createSchematicWiringForMethodFilterTabs!create schemantic wiring!public! !
 createSchematicWiringForPackageDictionaryTabs!create schemantic wiring!public! !
 createSchematicWiringForPackageList!create schemantic wiring!public! !
 createSchematicWiringForVariableList!create schemantic wiring!public! !
-createStateEntry!accessing!public!updating! !
 definedClassMenuItemLabel!menus!private! !
 definedMethodMenuItemLabel!menus!private! !
 displayMultipleCategories!displaying!private!updating! !

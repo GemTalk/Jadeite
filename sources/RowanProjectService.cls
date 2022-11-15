@@ -138,6 +138,10 @@ displayStringFor: displayThing
 		ifFalse: [displayThing forecolor: Color black].
 	isDiskDirty ifTrue: [displayThing font beItalic]!
 
+existsOnDisk
+	name = self class notRowanizedPackageName ifTrue:[^false]. 
+	^existsOnDisk!
+
 gitTags: session
 	| query tags |
 	query := RowanQueryService new
@@ -312,7 +316,39 @@ specService
 	^specService!
 
 specService: anObject
-	specService := anObject! !
+	specService := anObject!
+
+toolTip
+	| writeStream crNeeded |
+	writeStream := WriteStream on: String new.
+	crNeeded := false.
+	(isDiskDirty not and: 
+			[isDirty not and: 
+					[isSkew not
+						and: [(existsOnDisk == false) not and: [self displayName ~= RowanService notRowanizedPackageName]]]])
+		ifTrue: 
+			[writeStream nextPutAll: 'Disk/image consistent'.
+			crNeeded := true].
+	isDiskDirty
+		ifTrue: 
+			[writeStream nextPutAll: 'Dirty on disk'.
+			crNeeded := true].
+	isDirty
+		ifTrue: 
+			[crNeeded ifTrue: [writeStream cr].
+			writeStream nextPutAll: 'Dirty in image'.
+			crNeeded := true].
+	isSkew
+		ifTrue: 
+			[crNeeded ifTrue: [writeStream cr].
+			writeStream nextPutAll: 'Skew in sha'.
+			crNeeded := true].
+	(existsOnDisk == false or: [self displayName = RowanService notRowanizedPackageName])
+		ifTrue: 
+			[crNeeded ifTrue: [writeStream cr].
+			writeStream nextPutAll: 'Does not exist on disk'.
+			crNeeded := true].
+	^writeStream contents! !
 !RowanProjectService categoriesForMethods!
 =!comparing!public! !
 allClasses!accessing!public! !
@@ -330,6 +366,7 @@ definition!accessing!public! !
 diskSha!accessing!private! !
 displayName!accessing!displaying!public! !
 displayStringFor:!displaying!public! !
+existsOnDisk!accessing!private! !
 gitTags:!presenter support!public! !
 hash!comparing!public! !
 initialize!Init / Release!public! !
@@ -364,6 +401,7 @@ sha:!accessing!public! !
 sortAspect!accessing!public! !
 specService!accessing!private! !
 specService:!accessing!private! !
+toolTip!accessing!displaying!public! !
 !
 
 !RowanProjectService class methodsFor!
