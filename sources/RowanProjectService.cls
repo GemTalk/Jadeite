@@ -122,23 +122,21 @@ displayName
 	name ifNil: [^String new].
 	displayName := name.
 	existsOnDisk == false ifTrue: [displayName := '(' , displayName , ')'].
-	isDiskDirty ifTrue: [displayName := displayName , '*'].
 	^displayName!
 
 displayStringFor: displayThing
 	name ifNil: [^self].
-	self isDirty == true 
+	self isDirty == true
 		ifTrue: 
-			[displayThing font
-				beItalic;
-				beBold.
+			[displayThing font beBold.
 			displayThing forecolor: Color black].
 	self isLoaded
 		ifTrue: 
 			[self isSkew
 				ifTrue: [displayThing forecolor: Color red]
 				ifFalse: [displayThing forecolor: Color black]]
-		ifFalse: [displayThing forecolor: Color black]!
+		ifFalse: [displayThing forecolor: Color black].
+	isDiskDirty ifTrue: [displayThing font beItalic]!
 
 gitTags: session
 	| query tags |

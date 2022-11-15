@@ -1349,7 +1349,12 @@ onViewOpened
 	JadePresenter packageListVisible ifTrue: [self showPackageList] ifFalse: [self hidePackageList].
 	JadePresenter packageGroupsVisible
 		ifTrue: [self showPackageGroups]
-		ifFalse: [self hidePackageGroups]!
+		ifFalse: [self hidePackageGroups].
+	projectListPresenter view getImageBlock: 
+			[:each |
+			each
+				ifNil: [each class icon]
+				ifNotNil: [each isDiskDirty ifTrue: [(Icon fromId: 'LintWarning.ico') imageIndex ] ifFalse: [each class icon imageIndex]]].!
 
 openJadeiteProjectsBrowser
 	^self addSystemBrowser!
@@ -2583,7 +2588,7 @@ projectMenuStrings
 				auditProject;
 				projectLog;
 				refresh].
-	^#('Projects' 'Browse//openJadeiteProjectsBrowser' 'Create ...//createNewProject' 'Load Project ...//loadProject' 'Reload Project //reloadProject' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write ...//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' 'Edit Components//editComponents' 'Edit Load Spec From File ...//editLoadSpecFromFile' '-' 'Audit//auditProject' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
+	^#('Projects' 'Browse//openJadeiteProjectsBrowser' 'Create ...//createNewProject' 'Load ...//loadProject' 'Refresh From Disk //reloadProject' 'Unload//unloadProjects' '-' 'Pull from Git//pullFromGit' 'Commit to Git ...//gitCommit' 'Push to Git//pushToGit' '-' '&Changes//projectChanges' 'Write ...//writeProject' 'Checkout Git Tag ...//checkoutTag' 'Checkout Git Branch ...//checkout' '-' 'Edit Components//editComponents' 'Edit Load Spec From File ...//editLoadSpecFromFile' '-' 'Audit//auditProject' 'Git Log//projectLog' '&Refresh//refreshFromServer')!
 
 resource_Default_view
 	"Answer the literal data from which the 'Default view' resource can be reconstituted.
