@@ -296,7 +296,7 @@ preferencesFileDefaultContents
 #breakpointsEnabled: true
 #loggingEnabled: false
 #transcriptEnabled: true
-#packageGroupsVisible: true
+packageGroupsVisible: false
 #packageListVisible: true
 
 #legal values are font name plus font point size

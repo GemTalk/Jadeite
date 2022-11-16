@@ -958,7 +958,10 @@ hasMethods
 	^true!
 
 hidePackageGroups
-	packageDictionaryContainer view arrangement: 100.
+	componentPackageContainer view arrangement: 1/5.
+	packageDictionaryContainer view arrangement: 100. 
+	projectListContainer view arrangement: 1/5. 
+	classContainer view arrangement: 1/5. 
 	packageGroupPresenter view creationParentView hide!
 
 hidePackageList
@@ -1929,8 +1932,10 @@ showDictionaryList
 	self clearComponentList!
 
 showPackageGroups
-	classContainer view arrangement: 1 / 5.
-	packageDictionaryContainer view arrangement: 0.5.
+	componentPackageContainer view arrangement: 1/4.
+	packageDictionaryContainer view arrangement: 0.5. 
+	projectListContainer view arrangement: 3/20. 
+	classContainer view arrangement: 1/5. 
 	packageGroupPresenter view creationParentView show!
 
 showPackageList
