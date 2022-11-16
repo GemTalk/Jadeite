@@ -92,6 +92,10 @@ gitCommit
 hasSelection
 	^projectListPresenter selections isEmpty not!
 
+invalidate
+	"update the view of the underlying list view" 
+	^projectListPresenter view invalidate!
+
 list: list
 	projectListPresenter list: (SortedCollection sortBlock: [:x :y | x sortAspect < y sortAspect]).
 	projectListPresenter model addAll: list!
@@ -271,6 +275,7 @@ createComponents!public! !
 createSchematicWiring!initialization!public! !
 gitCommit!menu handlers!public! !
 hasSelection!public!testing! !
+invalidate!displaying!public! !
 list:!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !

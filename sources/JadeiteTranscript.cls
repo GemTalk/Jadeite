@@ -367,7 +367,8 @@ queryCommand: aCommandQuery
 			^true]!
 
 refreshFromServer
-	projectListPresenter refreshFromServer!
+	projectListPresenter refreshFromServer.
+	projectListPresenter invalidate!
 
 registerPresentersForUpdates
 	BrowserUpdate current
