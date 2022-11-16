@@ -16,6 +16,17 @@ closeWorkspace
 			[workspace codePane documentPresenter view isModified: false.
 			workspace view close]!
 
+preferenceFileLines
+	^JadeitePreferences preferencesFileDefaultContents lines!
+
+preferenceSymbols
+	"Private - parse the default contents of the preferences file for symbols"
+
+	| preferenceSymbols |
+	preferenceSymbols := self rawPreferenceSymbols.
+	preferenceSymbols := preferenceSymbols collect: [:string | (string copyWithout: $#) asSymbol].
+	^preferenceSymbols!
+
 prefsFileLastLine
 	| stream file lastLine |
 	file := File open: JadeitePreferences preferencesPath mode: #read.
@@ -30,6 +41,18 @@ primaryTestWindow
 	If not, just return nil"
 
 	^workspace!
+
+rawPreferenceSymbols
+	| preferenceSymbols lines |
+	lines := self preferenceFileLines.
+	preferenceSymbols := OrderedCollection new.
+	lines do: 
+			[:line |
+			| substrings |
+			substrings := line subStrings.
+			(substrings notEmpty and: [substrings first last = $:])
+				ifTrue: [preferenceSymbols add: substrings first]].
+	^preferenceSymbols!
 
 tearDown
 	workspace ifNotNil: [self closeWorkspace]!
@@ -155,6 +178,19 @@ test_loggingEnabled
 	prefs applyPreference: 'loggingEnabled: false'.
 	self deny: BrowserUpdate current isLogging]
 			ensure: [BrowserUpdate current isLogging: loggingWasEnabled]!
+
+test_packageGroupsHidden
+	"preference default is for packageGroups to be hidden.
+	The preference symbols which are not #'d out will be executed on startup. 
+	Confirm packageGroups preference is not #'d out. "
+
+	| packageGroupPreference lines |
+	packageGroupPreference := self rawPreferenceSymbols
+				detect: [:symbol | '*packageGroupsVisible:*' match: symbol].
+	self assert: packageGroupPreference equals: 'packageGroupsVisible:'.
+	lines := self preferenceFileLines.
+	packageGroupPreference := lines detect: [:symbol | '*packageGroupsVisible:*' match: symbol].
+	self assert: packageGroupPreference equals: 'packageGroupsVisible: false'!
 
 test_packageGroupVisible
 	| prefs packageGroupWasVisible |
@@ -421,13 +457,16 @@ test_textFont
 test_validPreferences
 	| prefs validPreferences |
 	self testsIssue: #issue553 withTitle: 'Jadeite settings in preferences file (3.0.78)'.
-	validPreferences := #(#transcriptEnabled: #openBrowserOnClass: #openBrowserOnPackage: #openSUnitBrowserOnPackage: #autocommitEnabled: #autocompleteEnabled: #breakpointsEnabled: #loggingEnabled:).
+	validPreferences := self preferenceSymbols. 
 	prefs := JadeitePreferences new session: session.
 	validPreferences do: [:symbol | self assert: (prefs class canUnderstand: symbol)]! !
 !JadeitePreferencesTestCase categoriesForMethods!
-closeWorkspace!public!support! !
-prefsFileLastLine!public!support! !
+closeWorkspace!private!support! !
+preferenceFileLines!private!support! !
+preferenceSymbols!private!support! !
+prefsFileLastLine!private!support! !
 primaryTestWindow!accessing!public! !
+rawPreferenceSymbols!private!support! !
 tearDown!private!setup teardown! !
 test_additionalAccelerators!public!tests! !
 test_autoCommitEnabled!public!tests! !
@@ -439,6 +478,7 @@ test_fontSize!public!tests! !
 test_globalAdditionalAccelerators!public!tests! !
 test_handleMalformedPreference!public!tests! !
 test_loggingEnabled!public!tests! !
+test_packageGroupsHidden!public!tests! !
 test_packageGroupVisible!public!tests! !
 test_packageListVisible!public!tests! !
 test_preferencesHandlesBlanks!public!tests! !
