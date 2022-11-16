@@ -64,6 +64,10 @@ isBeginTransactionEnabled
 isCommitEnabled
 	^self class isCommitEnabled!
 
+maxSymbolSize
+
+	^1024!
+
 onViewOpened
 	super onViewOpened.
 	self positionToDefaultLocation!
@@ -194,6 +198,7 @@ inTransaction!public! !
 inTransaction:!public! !
 isBeginTransactionEnabled!public! !
 isCommitEnabled!public! !
+maxSymbolSize!constants!public! !
 onViewOpened!event handlers!public! !
 positionToDefaultLocation!event handlers!event handlers support!public! !
 postEditSaveMethod!menu handlers support!public! !

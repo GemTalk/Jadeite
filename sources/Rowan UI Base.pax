@@ -1159,7 +1159,9 @@ currentSelection
 			[selection := selection copyFrom: 2 to: selection size.
 			selection isEmpty ifTrue: [^selection].
 			selection := selection copyFrom: 1 to: selection size - 1].
-	^RowanAnsweringService new expressionSelector: selection session: self gciSession!
+	^selection size > 1024 "limitation in gemstone - can't create a symbol > 1024" 
+		ifFalse: [RowanAnsweringService new expressionSelector: selection session: self gciSession]
+		ifTrue: [selection]!
 
 executeSelectionOrLine
 	^self executeSelectionOrLine: self parentPresenter contextObject shouldDebug: false!
@@ -2692,6 +2694,7 @@ browseImplementorsOf
 !
 
 browseImplementorsOf: string
+	string size > self maxSymbolSize ifTrue:[^MessageBox notify: 'String exceeds max symbol size - ', self maxSymbolSize printString, ' characters']. 
 	^self class browseImplementorsOf: string session: self gciSession!
 
 browseLiteralReferences
@@ -2712,6 +2715,10 @@ browseSendersOf
 !
 
 browseSendersOf: string
+	string size > self maxSymbolSize
+		ifTrue: 
+			[^MessageBox
+				notify: 'String exceeds max symbol size - ' , self maxSymbolSize printString , ' characters'].
 	^self class browseSendersOf: string session: self gciSession!
 
 checkoutTag: projectService
