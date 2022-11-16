@@ -256,19 +256,3 @@ testClasses:browser:!public!updating! !
 updateList:whilePreservingSelections:browser:!private!updating! !
 !
 
-!RowanPackageService class methodsFor!
-
-defaultIconName
-	"Answer a filename to use for an icon of this class."
-
-	^File composeStem: 'Package' extension: 'ico'.!
-
-icon
-	"Answers an Icon that can be used to represent this class"
-
-	^##(self) defaultIcon! !
-!RowanPackageService class categoriesForMethods!
-defaultIconName!private! !
-icon!private! !
-!
-
