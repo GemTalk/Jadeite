@@ -19,6 +19,11 @@ DragDropSession removeSelector: #defaultScrollInterval.
 
 '.
 
+package classNames
+	add: #JadeiteSTON;
+	add: #JadeiteSTONWriter;
+	yourself.
+
 package binaryGlobalNames: (Set new
 	yourself).
 
@@ -26,12 +31,23 @@ package globalAliases: (Set new
 	yourself).
 
 package setPrerequisites: #(
-).
+	'..\Core\Object Arts\Dolphin\System\STON\Dolphin STON'
+	'..\Core\Contributions\svenc\STON\STON-Core').
 
 package!
 
 "Class Definitions"!
 
+STON subclass: #JadeiteSTON
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+DolphinSTONWriter subclass: #JadeiteSTONWriter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 
 "Global Aliases"!
 

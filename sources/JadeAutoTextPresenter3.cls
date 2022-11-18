@@ -555,7 +555,7 @@ lastCharacterIsSpace!public! !
 lastGsShape:!public! !
 onAutoComplete:startingAt:accept:!autocompletation cycle!autocompletion!public! !
 onKeyPressed:!key event!public! !
-onLeftButtonPressed:!key event!public! !
+onLeftButtonPressed:!public! !
 onPainted!keyboard shortcut!public! !
 previousStyleName!accessing!private! !
 previousStyleName:!accessing!private! !

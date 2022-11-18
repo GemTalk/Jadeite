@@ -135,8 +135,7 @@ executeSelectionOrLine
 	^self executeSelectionOrLine: self contextObject shouldDebug: false!
 
 fileNew
-
-	JadeWorkspace showOnSession: gciSession.
+	^JadeWorkspace showOnSession: gciSession.
 !
 
 fileOpen
@@ -518,7 +517,6 @@ openOnSession: aGciSession
 		yourself!
 
 showOnSession: aGciSession
-
 	^self new 
 		gciSession: aGciSession;
 		createView: self defaultView;

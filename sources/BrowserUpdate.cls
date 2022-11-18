@@ -54,7 +54,7 @@ basicIssueCommand: services session: session
 	loggedServices := services asOrderedCollection
 				addFirst: newLoggingService;
 				yourself. 
-	stonString := STON toString: loggedServices. 
+	stonString := JadeiteSTON toString: loggedServices. 
 	[stonResultString := session serverPerform: #updateFromSton: with: stonString]
 		ensure: [services do: [:service | service clearCommand]].
 	stonResultString = 'nil' ifFalse: [
@@ -259,7 +259,7 @@ update: services afterStonReplication: stonResults
 	"assume we get back the 'same' services as we sent"
 
 	self initializeUpdates.
-	returnedServices := STON fromString: stonResults.
+	returnedServices := JadeiteSTON fromString: stonResults.
 	logger loggingService replicateFrom: returnedServices last.
 	returnedServices := returnedServices copyWithout: returnedServices last.
 	self logReceivedServices: returnedServices.

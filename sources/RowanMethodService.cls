@@ -331,7 +331,8 @@ methodSourceUpdate: presenter browser: methodSourcePresenter
 	selection ifNil: [^self].
 	selection = self
 		ifTrue: 
-			[selection replicateFrom: self.
+			[
+			selection replicateFrom: self.
 			presenter view isModified
 				ifFalse: 
 					[presenter value: source.
@@ -490,7 +491,7 @@ sortAspect
 source
 	^source!
 
-source: anObject
+source: anObject 
 	source := anObject!
 
 stepPointFromCursorIn: methodSourcePresenter

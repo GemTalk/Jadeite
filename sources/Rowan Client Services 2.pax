@@ -75,6 +75,7 @@ package setPrerequisites: #(
 	'Jade Process Browser'
 	'Jade Transcript'
 	'Jade UI Base'
+	'Rowan UI Base PreInstall'
 	'..\Core\Contributions\svenc\STON\STON-Core').
 
 package!

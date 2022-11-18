@@ -369,6 +369,8 @@ package methodNames
 	add: #JadeTextDocument -> #registerWindow:rootObject:;
 	add: #JadeTextDocument -> #update:afterStonReplication:;
 	add: #JadeTextDocument -> #updateServices:;
+	add: #JadeTextPresenter -> #defaultMethod;
+	add: #JadeTextPresenter -> #setDefaultMethod;
 	add: #JadeToolsToolBarPresenter -> #browseClasses;
 	add: #JadeToolsToolBarPresenter -> #browseTests;
 	add: #JadeToolsToolBarPresenter -> #jadePreferences;
@@ -2800,7 +2802,7 @@ editSaveMethod: classService in: methodSourcePresenter category: category
 	| methodSource1 firstVisibleLine caretPosition |
 	caretPosition := methodSourcePresenter view caretPosition.
 	firstVisibleLine := methodSourcePresenter view lineScroll.
-	methodSource1 := self currentMethodSourceFrom: methodSourcePresenter value.
+	methodSource1 := (self currentMethodSourceFrom: methodSourcePresenter value) replaceCrLfWithLf.
 	classService
 		command: #saveMethodSource:category:;
 		commandArgs: (Array with: methodSource1 with: category).
@@ -2830,7 +2832,7 @@ executeSelectionOrLine: contextObject shouldDebug: shouldDebug
 	"services wants a local special as a context"
 
 	| answer oop answeringService window selection command |
-	selection := self currentSelectionOrLine.
+	selection := self currentSelectionOrLine asUtf8String.
 	oop := (contextObject isKindOf: ExternalInteger)
 				ifTrue: [contextObject value]
 				ifFalse: [contextObject].	"services wants a local special as a context"
@@ -5260,6 +5262,30 @@ raiseConsole!public! !
 registerWindow:rootObject:!private! !
 update:afterStonReplication:!public!services! !
 updateServices:!public!services! !
+!
+
+!JadeTextPresenter methodsFor!
+
+defaultMethod
+
+^'methodSelector
+	"method comment"
+
+	| temps |
+	^self yourself.
+'.
+!
+
+setDefaultMethod
+
+	view 
+		value: self defaultMethod;
+		isModified: false;
+		isReadOnly: false;
+		yourself.! !
+!JadeTextPresenter categoriesForMethods!
+defaultMethod!public! !
+setDefaultMethod!public! !
 !
 
 !JadeToolsToolBarPresenter methodsFor!

@@ -79,6 +79,16 @@ onViewCreated
 		ifNotNil: 
 			[self font: JadeitePreferences current currentTextFont	"Avoid failure during window creation right after login, we'll set font in post login"]!
 
+onViewOpened
+	"must set the stringClass here because when Dolphin opens a view, #initialize is NOT run. 
+	#basicNew is sent. But even sending an #initialize after #basicNew won't work because 
+	Dolphin does some weird restore from proxy code to open the view which *retains the 
+	state of the proxy* and ignores the initialized changes to the newly created object.
+	See STBViewProxy>>restoreView for the culprit"
+
+	super onViewOpened.
+	stringClass := Utf8String!
+
 queryCommand: query
 	"for some reason, TextEdit does not query #redo"
 
@@ -106,6 +116,7 @@ editFind!constants!private! !
 find:range:!private!searching & replacing! !
 findDialogClass!constants!private! !
 onViewCreated!event handlers!public! !
+onViewOpened!event handlers!public! !
 queryCommand:!menu handlers support!public! !
 searchFor:in:from:length:details:!private!searching & replacing! !
 !

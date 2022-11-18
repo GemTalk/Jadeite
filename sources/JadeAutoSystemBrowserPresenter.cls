@@ -122,7 +122,7 @@ lastGsShape: anObject
 
 newMethodPresenter
 
-	^JadeAutoTextPresenter3 new.!
+	^JadeTextPresenter new.!
 
 registerClassData
 	"When a class is selected in the GemStone browser all meta data of that class is registered to be used in the autocompletion system"

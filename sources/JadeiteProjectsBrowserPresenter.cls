@@ -1457,7 +1457,7 @@ updateMethodSource
 			definedMethodPackageText view
 				text: 'Defined Package: ' , methodListPresenter selection definedPackage.
 			methodCategoryText value: 'Category: ' , methodListPresenter selection category].
-	self updateSUnitTab.
+	self updateSUnitTab. 
 	self displayUncompilableSourceIn: methodSourcePresenter!
 
 updateMultiMethodComparison

@@ -23,7 +23,6 @@ commit
 	^super commitTransaction!
 
 fileNew
-
 	JadeWorkspace showOnSession: gciSession.
 !
 

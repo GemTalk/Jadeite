@@ -20,7 +20,7 @@ createComponents
 
 	super createComponents.
 
-	codePresenter := self  add: JadeAutoTextPresenter3 new name: 'code'.!
+	codePresenter := self  add: JadeTextPresenter new name: 'code'.!
 
 doesNotUnderstand: aMessage
 	"The receiver has not understood aMessage. Most likely this is because it was intended for
