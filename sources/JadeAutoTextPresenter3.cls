@@ -478,23 +478,6 @@ showAutoCompletionList: anOrdedCollection prefixLength: anInteger
 
 	^view showAutoCompletionList: anOrdedCollection prefixLength: anInteger!
 
-showCompileError: anArray
-
-	| result string count textView selectionRange offset |
-	textView := self view.
-	offset := anArray at: 2.
-	result := anArray at: 3.
-	selectionRange := textView selectionRange.
-	string := textView value.
-	string := string copyFrom: selectionRange start to: selectionRange stop.
-	string := string replaceCrLfWithLf copyFrom: 1 to: offset - 1.
-	count := (string select: [:each | each = Character lf]) size.
-	offset := offset + count.
-	textView
-		caretPosition: selectionRange start + offset - 1;
-		replaceSelection: result;
-		selectionStart: textView caretPosition - result size length: result size.!
-
 updateLastParsedResult
    "The receiver get the temporaries of the current method being edited"
 
@@ -565,7 +548,6 @@ processKeyPressed:!key event!public! !
 registry!autocompletion!public! !
 replaceKeyboardShortcut!keyboard shortcut!public! !
 showAutoCompletionList:prefixLength:!public! !
-showCompileError:!private! !
 updateLastParsedResult!autocompletion list!public! !
 wordRightSideIsEmpty!accessing!private! !
 wordRightSideIsEmpty:!accessing!private! !

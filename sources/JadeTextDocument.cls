@@ -205,7 +205,7 @@ jadeExecuteAndDisplay: showResult result: anAssociation view: focusViewOrNil
 				ifTrue: 
 					[(gciSession isOopType: value)
 						ifFalse: [result := ' ' , value printString]
-						ifTrue: [result := ' ' , (gciSession printString: value)]].
+						ifTrue: [result := String new , (gciSession printString: value)]].
 			selectionRange := textView selectionRange.
 			result := result.	"replaceLfWithCrLf"
 			textView

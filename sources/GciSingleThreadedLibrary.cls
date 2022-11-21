@@ -94,19 +94,21 @@ critical: aBlock
 !
 
 fetchBytes: anOopType
-
 	| oopClass |
 	oopClass := self fetchClass: anOopType.
-	oopClass = self oopClassString 						ifTrue: [^self fetchChars: anOopType].
-	oopClass = self oopClassSymbol 					ifTrue: [^(self fetchChars: anOopType) asSymbol].
-	oopClass = self oopClassByteArray 				ifTrue: [^self fetchBytes: anOopType class: ByteArray].
-	oopClass = self oopClassUnicode7 				ifTrue: [^self fetchBytes: anOopType class: Unicode7].
-	oopClass = self oopClassUnicode16 				ifTrue: [^self fetchBytes: anOopType class: Unicode16].
-	oopClass = self oopClassUnicode32 				ifTrue: [^self fetchBytes: anOopType class: Unicode32].
-	oopClass = self oopClassDoubleByteString 	ifTrue: [^self fetchBytes: anOopType class: DoubleByteString].
-	oopClass = self oopClassQuadByteString		ifTrue: [^self fetchBytes: anOopType class: QuadByteString].
-	^anOopType.
-!
+	oopClass = self oopClassString ifTrue: [^self fetchChars: anOopType].
+	oopClass = self oopClassSymbol ifTrue: [^(self fetchChars: anOopType) asSymbol].
+	oopClass = self oopClassByteArray ifTrue: [^self fetchBytes: anOopType class: ByteArray].
+	oopClass = self oopClassUnicode7
+		ifTrue: [^Utf8String fromByteArray: (self fetchBytes: anOopType class: Unicode7)].
+	oopClass = self oopClassUnicode16
+		ifTrue: [^(Utf16String fromByteArray: (self fetchBytes: anOopType class: Unicode16)) asUtf8String].
+	oopClass = self oopClassUnicode32 ifTrue: [^self fetchBytes: anOopType class: Unicode32].
+	oopClass = self oopClassDoubleByteString
+		ifTrue: 
+			[^(Utf16String fromByteArray: (self fetchBytes: anOopType class: DoubleByteString)) asUtf8String].
+	oopClass = self oopClassQuadByteString ifTrue: [^self fetchBytes: anOopType class: QuadByteString].
+	^anOopType!
 
 fetchBytes: anOopType class: aClass
 
