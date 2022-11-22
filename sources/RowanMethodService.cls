@@ -510,25 +510,24 @@ stepPointFromCursorIn: methodSourcePresenter charIndex: charIndex
 	^nil!
 
 stepPoints
-	(stepPoints notEmpty and: [stepPoints first key isInteger]) ifTrue: [
-		stepPoints := stepPoints collect: [:each | 
-			| range start char length |
-			start := each key.
-			char := source at: start.
-			length := (char isAlphaNumeric or: [char = $_])
-				ifTrue: [(source copyFrom: start + 1 to: source size) findFirst: [:eachChar | (eachChar isAlphaNumeric or: [eachChar = $_ or: [eachChar = $:]]) not]]
-				ifFalse: [2].
-			length = 0 ifTrue: [length := source size - start + 1].
-			[
-				2 < length and: [(source at: start) = $_].
-			] whileTrue: [
-				start := start + 1.
-				length := length - 1.
-			].
-			range := Interval from: start to: start + length - 1.
-			range -> each value.
-		].
-	].
+	(stepPoints notEmpty and: [stepPoints first key isInteger])
+		ifTrue: 
+			[stepPoints := stepPoints collect: 
+							[:each |
+							| range start char length |
+							start := source indexOfNth: each key.
+							char := source codePointAt: start.
+							length := (char isAlphaNumeric or: [char = $_])
+										ifTrue: 
+											[(source copyFrom: start + 1 to: source size)
+												findFirst: [:eachChar | (eachChar isAlphaNumeric or: [eachChar = $_ or: [eachChar = $:]]) not]]
+										ifFalse: [2].
+							length = 0 ifTrue: [length := source size - start + 1].
+							[2 < length and: [(source at: start) = $_]] whileTrue: 
+									[start := start + 1.
+									length := length - 1].
+							range := Interval from: start to: start + length - 1.
+							range -> each value]].
 	^stepPoints!
 
 subSuperIcon
