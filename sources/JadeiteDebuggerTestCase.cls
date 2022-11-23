@@ -1227,6 +1227,24 @@ test_errorInPrintString
 		assert: (debugger isNil or: [debugger view class == DeafObject]);
 		yourself!
 
+test_extendedCharacterMethod
+	"The the time of writing, extended characters should display ok in the debugger but not high unicode characters"
+	self testsIssue: #issue
+		withTitle: '(3.0.65) browse methods containing `%` yields "Can''t hold $\x3B1" Dollphin error'.
+	self
+		saveMethod: 'extendedChar | char | char := $¹. self halt.  ^char'
+		in: 'RowanSample1'
+		category: 'extendedChar'.
+	self openDebuggerOn: 'RowanSample1 new extendedChar'.
+	self assert: debugger frameListPresenter selection equals: 'RowanSample1 >> extendedChar @3 line 1'.
+	self assert: debugger methodSourcePresenter documentPresenter view backcolor
+		equals: JadeiteTextStyles default colorForNoEdits.
+	self assert: debugger methodSourcePresenter documentPresenter value
+		equals:  'extendedChar | char | char := $¹. self halt.  ^char'.
+	debugger variableListPresenter selectionByIndex: 3. "char" 
+	self assert: debugger variableListPresenter selection value equals: '$¹'. 
+	self assert: debugger variableDataPresenter value equals: '$¹'. !
+
 test_frameDoubleClick
 	| projectPresenter |
 	self testsIssue: #issue238
@@ -2141,6 +2159,9 @@ test_terminateDoesNotWalkback
 				gsProcess := nil]!
 
 test_unicodeMethod
+	"This won't actually display the character x3B1 correctly in the debugger yet but at least no error occurs.
+	The lower extended characters should display correctly though. "
+
 	self testsIssue: #issue
 		withTitle: '(3.0.65) browse methods containing `%` yields "Can''t hold $\x3B1" Dollphin error'.
 	session executeString: 'RowanServicesTest new compileUnicodeMethod'.
@@ -2148,15 +2169,19 @@ test_unicodeMethod
 	self assert: debugger frameListPresenter selection
 		equals: 'RowanServicesTest >> iAmAUnicodeMethod @3 line 5'.
 	self assert: debugger methodSourcePresenter documentPresenter view backcolor
-		equals: JadeiteTextStyles default colorForUndisplayableSource.
-	self selectFrameAt: 1.
-	self deny: debugger methodSourcePresenter documentPresenter view backcolor
-		equals: JadeiteTextStyles default colorForUndisplayableSource.
-	self selectLastFrameStartingWith: 'RowanServicesTest'.
-	self assert: debugger frameListPresenter selection
-		equals: 'RowanServicesTest >> iAmAUnicodeMethod @3 line 5'.
-	self assert: debugger methodSourcePresenter documentPresenter view backcolor
-		equals: JadeiteTextStyles default colorForUndisplayableSource!
+		equals: JadeiteTextStyles default colorForNoEdits.
+	self assert: debugger methodSourcePresenter documentPresenter value
+		equals: 'iAmAUnicodeMethod
+
+		| abc |
+		abc := ''Ϛ''.
+		self halt. 
+		^abc'.
+	debugger variableListPresenter selectionByIndex: 7.
+	self assert: debugger variableListPresenter selection value equals: '''Ϛ'''.
+	self assert: debugger variableDataPresenter value equals: '''Ϛ'''.
+
+!
 
 test_unsavedChangesActionChangeFrame
 	| finished |
@@ -2682,6 +2707,7 @@ test_duplicateInstVars!public!tests! !
 test_duplicateInstVarsHierarchy!public!test class hierarchy! !
 test_duplicateInstVarsInHierarchy!public!test class hierarchy! !
 test_errorInPrintString!public!tests! !
+test_extendedCharacterMethod!public!tests! !
 test_frameDoubleClick!public!tests! !
 test_frameDoubleClickNoActionInBlockContext!public!tests! !
 test_implementersFromDebugger!public!tests! !

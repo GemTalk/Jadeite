@@ -468,7 +468,29 @@ test_revertMethodRemoval
 	self
 		denyIsNil: (self methodListPresenter list detect: [:methodService | methodService selector = #test1]
 				ifNone: []).
-	self assert: change definition selector equals: 'test1 (restored)'! !
+	self assert: change definition selector equals: 'test1 (restored)'!
+
+test_unicodeSource
+	| source change |
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	source := 'test1
+
+	self assert: RowanSample1 new foo = ''¶'''.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	change := changesBrowser operationListPresenter list first.
+	self assert: change isMethodModification.
+	changesBrowser operationListPresenter selection: change.
+	self assert: change modification source trimBlanks replaceLfWithCrLf
+		equals: 'test1
+
+	self assert: RowanSample1 new foo = ''¶'''.
+	self assert: change obsoletion source trimBlanks replaceLfWithCrLf
+		equals: 'test1
+
+	self assert: RowanSample1 new foo = ''foo'''! !
 !JadeiteChangesBrowserTestCase categoriesForMethods!
 addNewClass!private! !
 addNewMethod!private! !
@@ -492,5 +514,6 @@ test_revertClassMethod!public!tests! !
 test_revertMethodAddition!public!tests! !
 test_revertMethodModification!public!tests! !
 test_revertMethodRemoval!public!tests! !
+test_unicodeSource!public!tests! !
 !
 

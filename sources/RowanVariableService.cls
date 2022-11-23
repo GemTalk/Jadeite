@@ -72,7 +72,6 @@ updateVariable: listPresenter debugger: debugger
 	listPresenter view invalidate.!
 
 value
-
 	^value! !
 !RowanVariableService categoriesForMethods!
 _key!public! !
