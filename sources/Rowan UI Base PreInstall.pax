@@ -12,6 +12,7 @@ Date removeSelector: #stonOn:.
 ExternalStructure class removeSelector: #canUnderstand:.
 DolphinSureCertificateStore class removeSelector: #clearTemporaryTrustStore.
 SocketAbstract class removeSelector: #onShutdown.
+"note - that the following 2 lines will break error dialogs during install until Rowan UI Base is loaded" 
 View removeSelector: #wmWindowPosChanged:wParam:lParam:.
 View removeSelector: #wmWindowPosChanging:wParam:lParam:.
 DragDropSession removeSelector: #defaultScrollInterval.

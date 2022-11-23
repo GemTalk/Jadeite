@@ -1,7 +1,6 @@
 "Boot a Jade development image"
 
 | list |
-
 list := #(
 	'JGF Dolphin'
 	'JGF Fading Dialog'
@@ -26,8 +25,8 @@ list := #(
 	'Contacts Demo'
 	'Jade in Dolphin'
 	'Jade Tests'
-	'Rowan Client Services 2' 
 	'Rowan UI Base PreInstall'
+	'Rowan Client Services 2' 
 	'Rowan UI Base'
 	'Rowan UI Tests'
 ).

@@ -383,7 +383,6 @@ specialFromOop: anOop
 	].
 	^nil.
 ! !
-
 !LibGciRpc64 categoriesForMethods!
 errorStructureClass!private! !
 gciClearStack:!private! !
@@ -408,6 +407,7 @@ gciNbPerformNoDebug:_:_:_:_:!private! !
 gciNewString:!private! !
 gciOopToChr:!private! !
 gciReleaseOops:_:!private! !
+gciSaveObjs:_:!public! !
 oopAsciiNul!public!Reserved OOPs! !
 oopAt:!private! !
 oopClassArray!public!Reserved OOPs! !
@@ -439,3 +439,4 @@ oopZero!public!Reserved OOPs! !
 sendInterpreted:to:with:session:!public! !
 specialFromOop:!public! !
 !
+
