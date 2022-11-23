@@ -470,9 +470,9 @@ auditProject!menu handlers!public! !
 autoCommit!accessing!private! !
 autoCommit:!accessing!private! !
 autoCompleteEnabled!accessing!private! !
-basicOpenServerFile:!menu handlers!private! !
-basicSetFont:!menu handlers!preferences!private! !
-basicSetTextFont:!menu handlers!preferences!private! !
+basicOpenServerFile:!menu handlers support!private! !
+basicSetFont:!menu handlers support!preferences!private! !
+basicSetTextFont:!menu handlers support!preferences!private! !
 basicTransactionMode:!accessing!public!transaction mode! !
 beginTransaction!menu handlers!public! !
 browseBreakpointList!menu handlers!public! !

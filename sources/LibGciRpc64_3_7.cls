@@ -40,6 +40,9 @@ jadeServerClass
 	^JadeServer64bit34
 !
 
+multiByteStringClassOop
+	^OopType64 fromInteger: 154369 "16r25B01" "Unicode7 oop" !
+
 session: session execute: string context: contextOop environment: anInteger
 	"environment in Jadeite is always 0" 
 	^self
@@ -62,7 +65,7 @@ session: session execute: string context: contextOop symbolList: symbolList flag
 			self
 				gciNbExecuteStrContextDbg: string
 				_: string size
-				_: self stringClassOop
+				_: (self stringClassOopFrom: string)
 				_: contextOop
 				_: symbolList
 				_: flags.
@@ -91,7 +94,12 @@ specialFromOop: anOop
 !
 
 stringClassOop
-	^OopType64 fromInteger: 74753 "16r12401"! !
+	^OopType64 fromInteger: 74753 "16r12401"!
+
+stringClassOopFrom: string
+	^(string isKindOf: UtfEncodedString)
+		ifTrue: [self multiByteStringClassOop]
+		ifFalse: [self stringClassOop]! !
 !LibGciRpc64_3_7 categoriesForMethods!
 errorStructureClass!private! !
 gciErr:!private! !
@@ -99,12 +107,14 @@ gciNbExecuteStrContextDbg:_:_:_:_:_:!public! !
 gciNbExecuteStrContextDbg_:_:_:_:_:_:_:!public! !
 gsHasPragmas!public! !
 jadeServerClass!public! !
+multiByteStringClassOop!private!required! !
 session:execute:context:environment:!public!required! !
 session:execute:context:symbolList:!public!required! !
 session:execute:context:symbolList:flags:!public!required! !
 session:send:to:with:!public!required! !
 specialFromOop:!public! !
 stringClassOop!private!required! !
+stringClassOopFrom:!private!required! !
 !
 
 !LibGciRpc64_3_7 class methodsFor!

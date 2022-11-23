@@ -48,6 +48,10 @@ defaultMethod
 '.
 !
 
+gsMethod
+	"testing only"
+	^gsMethod!
+
 gsMethod: aGsMethod
 	gsMethod := aGsMethod.
 	self update.!
@@ -204,6 +208,7 @@ clearBreakAtStepPoint:!public! !
 codePresenterIsMethod!public! !
 createSchematicWiring!Jade!private! !
 defaultMethod!public! !
+gsMethod!public! !
 gsMethod:!public! !
 hoverEnd:!Jade!private! !
 hoverStart:!Jade!private! !

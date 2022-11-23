@@ -33,6 +33,14 @@ checkAutoCommitMenuItemCheckmark: commandQuery
 	transcript queryCommand: commandQuery.
 	self deny: commandQuery isChecked!
 
+extendedCharacters
+	^'( ) * +  - / 0 1 2 3 4 5 6 7 8 9 : ; < = > ? @ A B C D E F G
+H I J K L M N O P Q R S T U V W X Y Z [ \ ] ^ _ ` a b c d e f
+g h i j k l m n o p q r s t u v w x y z { | } ~   ¡ ¢ £ ¤ ¥ ¦ § ¨ © ª
+« ¬ ­ ® ¯ ° ± ² ³ ´ µ ¶ · ¸ ¹ º » ¼ ½ ¾ ¿ À Á Â Ã Ä Å Æ Ç È É
+Ê Ë Ì Í Î Ï Ð Ñ Ò Ó Ô Õ Ö × Ø Ù Ú Û Ü Ý Þ ß à á â ã ä å æ
+ç è é ê ë ì í î ï ð ñ ò ó ô õ ö ÷ ø ù ú û ü ý þ ÿ  ı Ł ł Œ œ Š š'!
+
 jadeitePrefsFilePath
 	^SessionManager current imageBase , 'Jadeite.prefs'!
 
@@ -831,6 +839,36 @@ test_transcriptNamedConsole
 	self assert: transcript transcriptPresenter documentPresenter view displayValue isEmpty]
 			ensure: [wasInstalled ifFalse: [transcript flipTranscript	"turn back off"]]!
 
+test_unicodeCharactersDisplay
+	| service |
+	self testsIssue: #issue963
+		withTitle: '[3.2.12] Filein/fileout need to behave correctly in the presence of Characters [128..254] and [255+]'.	"not exactly the issue, but need to connect the test to something"
+	self extendedCharacters do: 
+			[:char |
+			char isSeparator
+				ifFalse: 
+					[session executeString: 'Transcript cr; show: ''' , char printString , '''; flush'.
+					self assert: self transcriptLastLine equals: '''' , char printString , '''']].
+	service := RowanAnsweringService new.
+	self extendedCharacters do: 
+			[:char |
+			char isSeparator
+				ifFalse: 
+					[service exec: 'Transcript cr; show: ''' , char printString , '''; flush' in: session.
+					self assert: self transcriptLastLine equals: '''' , char printString , '''']]!
+
+test_unicodeStringDisplay
+	self testsIssue: #issue963
+		withTitle: '[3.2.12] Filein/fileout need to behave correctly in the presence of Characters [128..254] and [255+]'.	"not exactly the issue, but need to connect the test to something"
+	session
+		executeString: 'Transcript cr; show: ''This was written by test JadeiteTranscriptTest>>test_unicodeCharactersDisplay - š''; flush. '.
+	self assert: self transcriptLastLine
+		equals: '''This was written by test JadeiteTranscriptTest>>test_unicodeCharactersDisplay - š'''.
+	session executeString: 'Transcript cr; show: (Character codePoint: 16r161) printString; flush'.	"$š"
+	self assert: self transcriptLastLine equals: '''$š'''.
+	session executeString: 'Transcript cr; show: (Character codePoint: 16rA2) printString; flush'.	"$¢"
+	self assert: self transcriptLastLine equals: '''$¢'''!
+
 test_validateHelpFiles
 	"need both .html & .css file to properly display Jadeite help file in a browser"
 
@@ -841,6 +879,12 @@ test_validateHelpFiles
 				exists: SessionManager current installationDirectory , '\help\' , transcript jadeiteHelpFileNameRoot
 						, transcript jadeiteHelpFileCSSExtension)!
 
+transcriptLastLine
+	| lastLine readStream |
+	readStream := ReadStream on: transcript transcriptPresenter documentPresenter value.
+	[readStream atEnd] whileFalse: [lastLine := readStream nextLine].
+	^lastLine!
+
 writeToPrefsFile: string
 	| fileStream |
 	fileStream := FileStream read: SessionManager current imageBase , 'Jadeite.prefs'.
@@ -849,6 +893,7 @@ writeToPrefsFile: string
 allTranscriptPresenters!private!support! !
 browseMenu!private!support!tests! !
 checkAutoCommitMenuItemCheckmark:!public!tests! !
+extendedCharacters!constants!private!tests! !
 jadeitePrefsFilePath!public! !
 menuItemIsEnabledInAllPresenters:!private!support! !
 test_abortRemovesProjectsInAllBrowsers!public!test menus! !
@@ -898,7 +943,10 @@ test_queryCommandHandlesNilSession!public!test menus! !
 test_raiseConsole!public!tests! !
 test_selectorsList!public!tests! !
 test_transcriptNamedConsole!public!tests! !
+test_unicodeCharactersDisplay!public!tests! !
+test_unicodeStringDisplay!public!tests! !
 test_validateHelpFiles!public!test menus! !
-writeToPrefsFile:!private!support!tests! !
+transcriptLastLine!public!support! !
+writeToPrefsFile:!private!support! !
 !
 

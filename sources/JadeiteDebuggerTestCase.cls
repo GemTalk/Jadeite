@@ -2017,6 +2017,34 @@ abc'.
 	self assert: debugger documentPresenter view selection equals: 'to:'.
 	self debuggerDo: [debugger resumeProcess]!
 
+test_stepPointMarkers
+	| stepPointsMarkers |
+	self testsIssue: #issue401
+		withTitle: 'Step Into A Block Without going thru the detail code? Is this possible.'.
+	self
+		openDebuggerOn: '| array string |
+array := Array with: ''ý'' with: ''def'' with: ''ghi''. 
+string := ''¾''. 
+self halt. 
+array do:[:theString |
+	string := string, theString]. 
+array'.
+	stepPointsMarkers := debugger methodSourcePresenter gsMethod stepPoints
+				collect: [:assoc | assoc key].
+	self assert: (stepPointsMarkers at: 1) = (1 to: 2).
+	self assert: (stepPointsMarkers at: 2) = (33 to: 37).
+	self assert: (stepPointsMarkers at: 3) = (24 to: 25).
+	self assert: (stepPointsMarkers at: 4) = (79 to: 80).
+	self assert: (stepPointsMarkers at: 5) = (96 to: 97).
+	self assert: (stepPointsMarkers at: 6) = (109 to: 110).
+	self assert: (stepPointsMarkers at: 7) = (162 to: 162).
+	self assert: (stepPointsMarkers at: 8) = (112 to: 122).
+	self assert: (stepPointsMarkers at: 9) = (113 to: 122).
+	self assert: (stepPointsMarkers at: 10) = (143 to: 143).
+	self assert: (stepPointsMarkers at: 11) = (134 to: 134).
+	self assert: (stepPointsMarkers at: 12) = (153 to: 154).
+	self debuggerDo: [debugger resumeProcess]!
+
 test_stepThrough
 	self testsIssue: #issue401
 		withTitle: 'Step Into A Block Without going thru the detail code? Is this possible.'.
@@ -2685,11 +2713,12 @@ test_stackDumpDetailedFrame!public!tests! !
 test_stackDumpHeader!public!tests! !
 test_stackDumpTooLongString!public!tests! !
 test_stackMenuEnablement!public!tests! !
-test_stepOutMethod!public!test step out! !
-test_stepOutSelectedFrame1!public!test step out! !
-test_stepOutSelectedFrame2!public!test step out! !
-test_stepOutTopFrame!public!test step out! !
-test_stepThrough!public!test step out! !
+test_stepOutMethod!public!test step! !
+test_stepOutSelectedFrame1!public!test step! !
+test_stepOutSelectedFrame2!public!test step! !
+test_stepOutTopFrame!public!test step! !
+test_stepPointMarkers!public!test step! !
+test_stepThrough!public!test step! !
 test_switchProcesses!public! !
 test_tempNamedReceiver!public!tests! !
 test_terminateDoesNotWalkback!public!tests! !

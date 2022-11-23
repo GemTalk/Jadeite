@@ -27,7 +27,6 @@ errorReport
 !
 
 gatherData
-
 	gciErrSType notNil ifTrue: [
 		messageText := gciErrSType message.
 	].

@@ -1932,7 +1932,7 @@ UserGlobals at: #aDict1 put: d.'.
 	[remoteObject := session executeString: 'UserGlobals at: #aDict1'.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	self selectInstVarAtIndex: (Array with: inspector instVarListPresenter list size).
-	self assert: inspector documentPresenter value equals: '''aa?b''']
+	self assert: inspector documentPresenter value equals: '''aašb''']
 			ensure: [session executeString: 'UserGlobals removeKey: #aDict1']!
 
 test_unicodeInspect2
@@ -1949,8 +1949,50 @@ UserGlobals at: #aDict4 put: d.'.
 	[remoteObject := session executeString: 'UserGlobals at: #aDict4'.
 	inspector := JadeInspector showOn: remoteObject session: session.
 	self assert: (inspector instVarListPresenter list at: inspector instVarListPresenter list size) key
-		equals: '''da?b''']
-			ensure: [session executeString: 'UserGlobals removeKey: #aDict4']! !
+		equals: '''dašb''']
+			ensure: [session executeString: 'UserGlobals removeKey: #aDict4']!
+
+test_unicodeInspectCharacterKNOWNBROKEN
+	| remoteObject |
+	self rowanFixMe.	"KNOWN TO FAIL - Not sure why but the size passed to the gci call is 3 but the logical size is 2. Perhaps that is the problem. 
+					However, this problem seems to be limited to `executeString:` which uses a direct gci call without going through STON before 
+					going to the gci. Since (eventually) all server interactions will use services, this may be a moot point. Disabling but keeping
+					test around as a reminder that this is broken. "
+	true ifTrue:[^self]. 
+	self testsIssue: #issue963
+		withTitle: '[3.2.12] Filein/fileout need to behave correctly in the presence of Characters [128..254] and [255+]'.	"not exactly the issue, but need to connect the test to something"
+	remoteObject := session executeString: '$Œ'.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	self assert: inspector instVarListPresenter selection key equals: 'self'.
+	self assert: inspector documentPresenter value equals: '$Œ'.
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector documentPresenter value equals: '$Œ'!
+
+test_unicodeInspectCharacterWithService
+	| openInspectors |
+	self testsIssue: #issue963
+		withTitle: '[3.2.12] Filein/fileout need to behave correctly in the presence of Characters [128..254] and [255+]'.	"not exactly the issue, but need to connect the test to something"
+	openInspectors := JadeiteInspector allInstances.
+	RowanAnsweringService new exec: '$Œ inspect' in: session.
+	inspector := (JadeiteInspector allInstances difference: openInspectors) first.
+	self assert: inspector instVarListPresenter selection key equals: 'self'.
+	self assert: inspector documentPresenter value equals: '$Œ'.
+	self assert: inspector instVarListPresenter list size equals: 2.
+	inspector instVarListPresenter selectionByIndex: 2.
+	self assert: inspector instVarListPresenter selection key equals: '-.asOop'!
+
+test_unicodeInspectStringWithCharacter
+	| remoteObject |
+	self testsIssue: #issue963
+		withTitle: '[3.2.12] Filein/fileout need to behave correctly in the presence of Characters [128..254] and [255+]'.	"not exactly the issue, but need to connect the test to something"
+	remoteObject := session executeString: '''$Œ'''.
+	inspector := JadeiteInspector showOn: remoteObject session: session.
+	self assert: inspector instVarListPresenter selection key equals: 'self'.
+	self assert: inspector documentPresenter value equals: '''$Œ'''.
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector documentPresenter value equals: '$$'.
+	inspector instVarListPresenter selectionByIndex: 4.
+	self assert: inspector documentPresenter value equals: '$Œ'! !
 !JadeiteInspectorDataCuratorTestCase categoriesForMethods!
 commandQueryOn:!private! !
 enableForward:andBack:!private! !
@@ -2051,5 +2093,8 @@ test_showReturnsNavigationInspector!public!tests! !
 test_showReturnsStringInspector!public!tests! !
 test_unicodeInspect1!public!tests! !
 test_unicodeInspect2!public!tests! !
+test_unicodeInspectCharacterKNOWNBROKEN!public!tests! !
+test_unicodeInspectCharacterWithService!public!tests! !
+test_unicodeInspectStringWithCharacter!public!tests! !
 !
 

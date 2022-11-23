@@ -516,7 +516,7 @@ stepPoints
 							[:each |
 							| range start char length |
 							start := source indexOfNth: each key.
-							char := source codePointAt: start.
+							char := [source codePointAt: start] on: BoundsError do:[:ex | source last].
 							length := (char isAlphaNumeric or: [char = $_])
 										ifTrue: 
 											[(source copyFrom: start + 1 to: source size)
