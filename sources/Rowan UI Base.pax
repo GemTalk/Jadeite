@@ -2509,6 +2509,11 @@ registerPresentersForUpdates
 		selector: #renamedClass:browser:
 		browser: self.
 	BrowserUpdate current
+		register: classListPresenter
+		selector: #classesUpdate:browser:
+		browser: self.
+	BrowserUpdate current register: classListPresenter selector: #removedClass:.
+	BrowserUpdate current
 		register: methodListPresenter
 		selector: #sunitMethodsUpdate:browser:
 		browser: self.

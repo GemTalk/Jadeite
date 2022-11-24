@@ -770,7 +770,7 @@ editSaveClass
 			on: GsCompileError
 			do: [:ex | ^self showMethodRecompilationError: ex].
 	self resetClassDefinitionPane.
-	self updateAfterFindClass: browserService selectedClass!
+	self updateAfterFindClass: browserService selectedClass.!
 
 editSaveMethod
 	| selection |

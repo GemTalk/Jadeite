@@ -98,9 +98,17 @@ initializeClassList
 	classListPresenter
 		model: (ListModel new list: (SortedCollection sortBlock: [:x :y | x name < y name]))!
 
+isClassSelected
+	"for updates only" 
+	^true!
+
 isNoneProjectSelected
 	"no concept of dictionaries in sunit browser"
 
+	^false!
+
+isRowanProjectSelected
+	"no projects in sunit browser" 
 	^false!
 
 methodListPresenter
@@ -316,7 +324,9 @@ displayStringFor:in:!double dispatch!public! !
 editSelectAll!menu handlers support!public! !
 getTestCounter!public! !
 initializeClassList!public! !
+isClassSelected!public!testing! !
 isNoneProjectSelected!public!testing! !
+isRowanProjectSelected!public!testing! !
 methodListPresenter!accessing!private! !
 onClassesChanged!event handlers!public! !
 onPackageChanged!event handlers!public! !

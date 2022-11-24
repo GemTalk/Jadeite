@@ -252,6 +252,18 @@ test_abstractTestAppearsOnlyInSubclasses
 	self assert: subclass1MethodService testResult equals: #passed.
 	self assert: subclass2MethodService testResult equals: #failure!
 
+test_addNewTestClass
+	self testsIssue: #issue879 withTitle: 'Removing class does not remove class from sunit browser'.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self denyClassInList: 'NewSubclass'.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self projectsPresenter addSubclass.
+	self projectsPresenter editSaveClass.
+	[self assertClassInList: 'NewSubclass']
+		ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass].
+	self denyClassInList: 'NewSubclass'!
+
 test_addNewTestPackage
 	"test package should show up when test method is added"
 
@@ -322,6 +334,18 @@ test_addPackageReloadProject
 	self projectsPresenter reloadProject.
 	self denyPackageInList: packageName]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
+test_addRemoveTestClass
+	self testsIssue: #issue879 withTitle: 'Removing class does not remove class from sunit browser'.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self denyClassInList: 'NewSubclass'.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self projectsPresenter addSubclass.
+	self projectsPresenter editSaveClass.
+	[self assertClassInList: 'NewSubclass']
+		ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass].
+	self denyClassInList: 'NewSubclass'!
 
 test_browseMethods
 	| browseMethodMenuItem browser selectors |
@@ -956,6 +980,18 @@ test_registeredPresentersInSUnitBrowserCleanedUp
 	MemoryManager current collectGarbage.
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresentersSize!
 
+test_removeTestClass
+	self testsIssue: #issue879 withTitle: 'Removing class does not remove class from sunit browser'.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self denyClassInList: 'NewSubclass'.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self projectsPresenter addSubclass.
+	self projectsPresenter editSaveClass.
+	[self assertClassInList: 'NewSubclass']
+		ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass].
+	self denyClassInList: 'NewSubclass'!
+
 test_resetMenuItemsNamedProperly
 	"https://github.com/GemTalk/Jadeite/issues/218#issuecomment-445919980"
 
@@ -1532,8 +1568,10 @@ tearDown!public!support! !
 test_abortNoSelections!public!tests! !
 test_abortWithSelections!public!tests! !
 test_abstractTestAppearsOnlyInSubclasses!public!tests! !
+test_addNewTestClass!public!test updates from other browsers!tests! !
 test_addNewTestPackage!public!test updates from other browsers!tests! !
 test_addPackageReloadProject!public!test updates from other browsers!tests! !
+test_addRemoveTestClass!public!test updates from other browsers!tests! !
 test_browseMethods!public!tests! !
 test_browseSelectedMethodForNewlyAddedTest!public!test updates from other browsers! !
 test_browseSunitClass!public!tests! !
@@ -1564,6 +1602,7 @@ test_projectBrowserRunSelectedTests!public!tests! !
 test_projectBrowserTestRunningMenuItemEnablement!public!tests! !
 test_refresh!public!tests! !
 test_registeredPresentersInSUnitBrowserCleanedUp!public!tests! !
+test_removeTestClass!public!test updates from other browsers!tests! !
 test_resetMenuItemsNamedProperly!public!tests! !
 test_resetStatusBar!public!tests! !
 test_runClassTests!public!tests! !

@@ -47,7 +47,7 @@ classesUpdate: presenter browser: browser
 	self removeDeletedClassesIn: presenter browser: browser.
 	condensedList := self condenseExtensions: presenter.
 	presenter selectionOrNil
-		ifNil: [presenter list: (ListModel withAll: condensedList keys)]
+		ifNil: [presenter list: (ListModel withAll: (condensedList keys asArray asSortedCollection:[:x :y | x name < y name]) asArray)]
 		ifNotNil: 
 			[self
 				updateList: presenter
