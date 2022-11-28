@@ -46,9 +46,11 @@ classesUpdate: presenter browser: browser
 	(self doesUpdateApply: browser) ifFalse: [^self].
 	self removeDeletedClassesIn: presenter browser: browser.
 	condensedList := self condenseExtensions: presenter.
-	presenter selectionOrNil
-		ifNil: [presenter list: (ListModel withAll: (condensedList keys asArray asSortedCollection:[:x :y | x name < y name]) asArray)]
-		ifNotNil: 
+	presenter selections isEmpty
+		ifTrue: 
+			[presenter
+				list: (ListModel withAll: (condensedList keys asSortedCollection: [:x :y | x name < y name]) asSet)]
+		ifFalse: 
 			[self
 				updateList: presenter
 				whilePreservingSelections: condensedList
@@ -107,9 +109,7 @@ displayStringFor: displayThing
 	name ifNil: [^self].
 	self isDirty == true
 		ifTrue: 
-			[displayThing font
-				beItalic;
-				beBold.
+			[displayThing font beBold.
 			displayThing forecolor: Color black]!
 
 doesUpdateApply: browser

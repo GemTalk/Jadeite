@@ -34,7 +34,6 @@ activeServices
 applyUpdatesFromReturnedServices: aCollection
 	"don't just reinitialize the updates instance variable because
 	presenters are registered to that object"
-
 	self applyUpdateWhile: 
 			[updates removeAll: updates.
 			updates addAll: aCollection.
