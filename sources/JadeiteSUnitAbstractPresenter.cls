@@ -60,11 +60,10 @@ reset
 	textResultPresenter view backcolor: Color face3d!
 
 runTestCommand: command methods: methodServices className: className
-	| jadeResult |
+	| jadeResult index |
 	jadeResult := JadeTestResult new.
 	methodServices do: 
 			[:methodService |
-			| index |
 			methodService
 				command: command;
 				commandArgs: (Array with: methodService selector with: (className ifNil: [methodService className])).
@@ -72,9 +71,10 @@ runTestCommand: command methods: methodServices className: className
 			methodService testResult = 'error' ifTrue: [jadeResult addError: methodService].
 			methodService testResult = 'failure' ifTrue: [jadeResult addFailure: methodService].
 			methodService testResult = 'passed' ifTrue: [jadeResult addPassed: methodService].
-			index := methodServices indexOf: methodService.
+			index := methodListPresenter list indexOf: methodService.
 			methodListPresenter view ensureVisible: index].
 	self updateResult: jadeResult.
+	methodListPresenter view ensureVisible: index. "ensure last test run is visible" 
 	^jadeResult!
 
 runTestMethodServices: methodServices className: className

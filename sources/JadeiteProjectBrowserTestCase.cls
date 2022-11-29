@@ -3261,7 +3261,7 @@ test_unicodeDisplayMethod
 	[self selectRowanServicesTestsPackage.
 	self selectServiceNamed: 'RowanServicesTest' in: self classListPresenter.
 	self selectMethodNamed: #iAmAUnicodeMethod.
-	self assert: ('*METHOD SOURCE CANNOT BE DISPLAYED*' match: self methodSourcePresenter value).
+	self assert: self methodSourcePresenter value equals: 'new text'.
 	self assert: self methodSourcePresenter view backcolor equals: Color red faded faded.
 	methodListBrowser := self projectsPresenter browseImplementors.
 	methodSource := methodListBrowser primaryPresenter methodSourcePresenter documentPresenter.

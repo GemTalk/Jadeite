@@ -168,6 +168,8 @@ refreshFromServerAfterAbort: browserService
 	browserService testPackages: packageListPresenter!
 
 runAll
+	self reset.
+	methodListPresenter resetSelection.
 	^(classListPresenter selections size > 1 or: [classListPresenter selections isEmpty])
 		ifTrue: [self runTests: methodListPresenter model]
 		ifFalse: [self runTests: methodListPresenter model in: classListPresenter selections first name]!
