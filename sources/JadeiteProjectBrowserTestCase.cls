@@ -1395,9 +1395,9 @@ test_dirtyProjectOnDisk
 		in: self projectsPresenter selectedClass name
 		category: 'deleteMe'.
 	self answerYesToDialogDuring: [self projectsPresenter writeProject].
-	self assert: self projectListPresenter selection displayName equals: 'RowanSample1*'.
+	self assert: self projectListPresenter selection displayName equals: 'RowanSample1'. "used to be followed by  *. Now it's italic. Need a way to test for italic"
 	self assert: transcript projectListPresenter projectListPresenter selections first displayName
-		equals: 'RowanSample1*']
+		equals: 'RowanSample1']
 			ensure: 
 				[self projectsPresenter removeMethodSelector: #deleteThisMethod.
 				self projectListPresenter selection
@@ -2289,9 +2289,10 @@ test_projectInfoTab
 	self assert: (self projectsPresenter projectInfoList view getItemText: 1) equals: 'rowanProjectsHome'.
 	self assert: (self projectsPresenter projectInfoList view getItemText: 3) equals: 'name'.
 	self assert: (self projectsPresenter projectInfoList view getItemText: 4) equals: 'sha'.
-	self assert: (self projectsPresenter projectInfoList view getItemText: 5) equals: 'branch'.
-	self assert: (self projectsPresenter projectInfoList view getItemText: 6) equals: 'isSkew'.
-	self assert: (self projectsPresenter projectInfoList view getItemText: 7) equals: 'isDirty'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 5) equals: 'diskSha'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 6) equals: 'branch'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 7) equals: 'isSkew'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 8) equals: 'isDirty'.
 	view := self projectsPresenter projectInfoList view.
 	self assert: (view columns first contentFromRow: (view list at: 3)) equals: 'Rowan'. "don't know the state of the rowan project so just test the name"!
 
@@ -3261,19 +3262,33 @@ test_unicodeDisplayMethod
 	[self selectRowanServicesTestsPackage.
 	self selectServiceNamed: 'RowanServicesTest' in: self classListPresenter.
 	self selectMethodNamed: #iAmAUnicodeMethod.
-	self assert: self methodSourcePresenter value equals: 'new text'.
-	self assert: self methodSourcePresenter view backcolor equals: Color red faded faded.
+	self assert: self methodSourcePresenter value replaceLfWithCrLf
+		equals: 'iAmAUnicodeMethod
+
+		| abc |
+		abc := ''Ϛ''.
+		self halt. 
+		^abc'.
 	methodListBrowser := self projectsPresenter browseImplementors.
 	methodSource := methodListBrowser primaryPresenter methodSourcePresenter documentPresenter.
-	self assert: ('*METHOD SOURCE CANNOT BE DISPLAYED*' match: methodSource value).
-	self assert: methodSource view backcolor equals: Color red faded faded.
+	self assert: methodSource value replaceLfWithCrLf
+		equals: 'iAmAUnicodeMethod
+
+		| abc |
+		abc := ''Ϛ''.
+		self halt. 
+		^abc'.
 	secondMethodListBrowser := methodListBrowser primaryPresenter methodListPresenter
 				browseImplementors.
 	
 	[methodSource := secondMethodListBrowser primaryPresenter methodSourcePresenter documentPresenter.
-	self assert: ('*METHOD SOURCE CANNOT BE DISPLAYED*' match: methodSource value).
-	self assert: methodSource view backcolor
-		equals: JadeiteTextStyles default colorForUndisplayableSource]
+	self assert: methodSource value replaceLfWithCrLf
+		equals: 'iAmAUnicodeMethod
+
+		| abc |
+		abc := ''Ϛ''.
+		self halt. 
+		^abc']
 			ensure: 
 				[self projectsPresenter basicRemoveMethods.
 				secondMethodListBrowser view close]]

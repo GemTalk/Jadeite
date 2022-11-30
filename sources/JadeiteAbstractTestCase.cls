@@ -695,6 +695,10 @@ setBreakAt: anInteger
 
 setUp
 	super setUp.
+	JadeiteBrowser
+		compile: 'validateUserInterface
+	[self view validateUserInterface] on: Win32Error do: [:ex | ex resume].'
+		categories: #(#deleteme).	"opening / closing windows really fast can wreak havoc on the windows system"
 	user ifNil: [user := 'SystemUser'].
 	transcript := JadeiteTestResource current transcript.
 	self logoutThenLoginAs: user forceClose: false.
@@ -706,7 +710,7 @@ setUp
 	JadeiteLoginShell allInstances size > 1
 		ifTrue: 
 			["Running tests will not stop on assert. (Debugging tests does) Need to do a hard halt to determine how a test can login as the wrong user"
-			MemoryManager current collectGarbage.
+			MemoryManager current collectGarbage
 			"(Delay forMilliseconds: 1000) wait.	give it a second to cleanup
 			MemoryManager current collectGarbage"
 			"Taking this check out.  Although we still are tripping over multiple login windows, they are going away so it should no longer be a problem.- Famous last words. 
@@ -755,6 +759,7 @@ switchTransactionModeTo: aSymbol
 tearDown
 	| answeringService |
 	super tearDown.
+	JadeiteBrowser removeSelector: #validateUserInterface ifAbsent: [].	"remove hook to avoid lots of error dialogs when opening/closing windows too fast"
 	SessionManager inputState pumpMessages.
 	"debugging code - halt if we find a nil in the user's symbol list"
 	answeringService := RowanAnsweringService new

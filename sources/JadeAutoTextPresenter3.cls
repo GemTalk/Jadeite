@@ -73,12 +73,6 @@ currentGsShape
 currentGsShape: anObject
 	currentGsShape := anObject!
 
-currentSelectionOrLine
-	| range |
-	self hasSelection ifFalse: [self view selectCurrentLine].
-	range := self view selectionRange.
-	^(self value copyFrom: range start to: range stop) replaceCrLfWithLf!
-
 currentStyleName
 	^currentStyleName!
 
@@ -509,7 +503,6 @@ configuration!public! !
 createSchematicWiring!key event!public! !
 currentGsShape!accessing!private! !
 currentGsShape:!accessing!private! !
-currentSelectionOrLine!accessing!public! !
 currentStyleName!accessing!private! !
 currentStyleName:!accessing!private! !
 currentText!accessing!private! !

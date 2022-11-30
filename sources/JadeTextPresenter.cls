@@ -10,6 +10,12 @@ JadeTextPresenter comment: ''!
 !JadeTextPresenter categoriesForClass!Unclassified! !
 !JadeTextPresenter methodsFor!
 
+currentSelectionOrLine
+	| range |
+	self hasSelection ifFalse: [self view selectCurrentLine].
+	range := self view selectionRange.
+	^(self value copyFrom: range start to: range stop) replaceCrLfWithLf!
+
 onViewOpened
 	super onViewOpened.
 	(view isKindOf: ScintillaView) ifFalse: [^self].
@@ -38,6 +44,7 @@ showCompileError: anArray
 		replaceSelection: result;
 		selectionStart: textView caretPosition - result size length: result size.! !
 !JadeTextPresenter categoriesForMethods!
+currentSelectionOrLine!accessing!public! !
 onViewOpened!public! !
 selection!public! !
 showCompileError:!private! !
