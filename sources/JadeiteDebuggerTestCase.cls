@@ -165,6 +165,7 @@ test_adHocExecutionEvaluatesTemp
 			ensure: [self removeMethodNamed: #testAdHocExecutionWith:]!
 
 test_adHocExecutionSelf
+	| count | 
 	self openDebuggerOn: '''gloop'' halt'.
 	self selectFirstFrameStartingWith: 'String'.
 	debugger methodSourcePresenter documentPresenter value: 'self'.
@@ -174,9 +175,11 @@ test_adHocExecutionSelf
 			[debugger jadeDisplay.
 			debugger methodSourcePresenter documentPresenter view invalidate]
 					forkAt: Processor activePriority + 1].
-	[debugger methodSourcePresenter documentPresenter value = 'self ''gloop''']
-		whileFalse: [(Delay forMilliseconds: 10) wait].
-	self assert: debugger methodSourcePresenter documentPresenter value equals: 'self ''gloop'''.
+	count := 0. 
+	[debugger methodSourcePresenter documentPresenter value = 'self''gloop''' or: [count >= 100]]
+		whileFalse: [(Delay forMilliseconds: 10) wait. count := count + 1].
+	self assert: count <= 100. 
+	self assert: debugger methodSourcePresenter documentPresenter value equals: 'self''gloop'''.
 	debugger methodSourcePresenter documentPresenter view isModified: false!
 
 test_adHocExecutionUpdatesVariablesList
@@ -203,6 +206,7 @@ test_adHocExecutionUpdatesVariablesList
 			ensure: [self removeMethodNamed: #testAdHocExecutionWith:]!
 
 test_adHocVariablePaneDisplay
+	| count | 
 	self openDebuggerOn: 'self halt'.
 	self assert: debugger variableDataPresenter value equals: String new.
 	debugger variableDataPresenter value: '#abc'.
@@ -211,9 +215,11 @@ test_adHocVariablePaneDisplay
 			[debugger jadeDisplay.
 			debugger methodSourcePresenter documentPresenter view invalidate]
 					forkAt: Processor activePriority + 1].
-	[debugger variableDataPresenter value = '#abc #''abc''']
-		whileFalse: [(Delay forMilliseconds: 10) wait].
-	self assert: debugger variableDataPresenter value equals: '#abc #''abc'''.
+	count := 0. 
+	[debugger variableDataPresenter value = '#abc#''abc''' or: [count >= 100]]
+		whileFalse: [(Delay forMilliseconds: 10) wait. count := count + 1].
+	self assert: count <= 100. 
+	self assert: debugger variableDataPresenter value equals: '#abc#''abc'''.
 	self debuggerDo: [debugger resumeProcess]!
 
 test_adHocVariablePaneExecute
@@ -1520,7 +1526,7 @@ test_reformatIllegalSource
 	debugger documentPresenter view isModified: true. 
 	self assert: debugger statusTextPresenter view backcolor equals: Color red faded.
 	self assert: debugger documentPresenter view isModified.
-	self assert: debugger statusBarText equals: 'Reformat failed. Illegal source' replaceCrLfWithLf.
+	self assert: debugger statusBarText equals: 'Reformat failed. Illegal source - a UserDefinedError occurred (error 2318), reason:halt, Expecting a literal type' replaceCrLfWithLf.
 	self assert: debugger documentPresenter value
 		equals: 'reformatSourceTemporaryMethod self halt. ^#' replaceCrLfWithLf	"unchanged"]
 			ensure: [debugger documentPresenter view isModified: false]!

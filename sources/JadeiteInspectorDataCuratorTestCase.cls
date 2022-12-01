@@ -748,13 +748,13 @@ test_diveIntoDoubleByteString
 	inspector showOn: service.
 	self selectInstVarAtIndex: #(3).
 	inspector inspectInstVar.
-	self assert: inspector documentPresenter value equals: '''aa?b'''.
+	self assert: inspector documentPresenter value equals: '''aašb'''.
 	self selectInstVarAtIndex: #(3).
 	self assert: inspector documentPresenter value equals: '$a'.
 	self selectInstVarAtIndex: #(4).
 	self assert: inspector documentPresenter value equals: '$a'.
 	self selectInstVarAtIndex: #(5).
-	self assert: inspector documentPresenter value equals: '$?'.
+	self assert: inspector documentPresenter value equals: '$š'.
 	self selectInstVarAtIndex: #(6).
 	self assert: inspector documentPresenter value equals: '$b'!
 
@@ -951,13 +951,13 @@ test_inspectDoubleByteString
 				session: session
 				windowHandle: inspector view handle value.
 	inspector showOn: service.
-	self assert: inspector documentPresenter value equals: '''aa?b'''.
+	self assert: inspector documentPresenter value equals: '''aašb'''.
 	self selectInstVarAtIndex: #(3).
 	self assert: inspector documentPresenter value equals: '$a'.
 	self selectInstVarAtIndex: #(4).
 	self assert: inspector documentPresenter value equals: '$a'.
 	self selectInstVarAtIndex: #(5).
-	self assert: inspector documentPresenter value equals: '$?'.
+	self assert: inspector documentPresenter value equals: '$š'.
 	self selectInstVarAtIndex: #(6).
 	self assert: inspector documentPresenter value equals: '$b'!
 
@@ -1125,7 +1125,7 @@ test_inspectorHandlesError
 			ensure: [self destroy: inspector]!
 
 test_inspectRcIdentityBag
-	| remoteObject |
+	| remoteObject keys |
 	remoteObject := session
 				executeString: 'RcIdentityBag with: 1 with: ''abc'' with: $k'
 				fromContext: nil
@@ -1133,15 +1133,12 @@ test_inspectRcIdentityBag
 	inspector := JadeiteInspector showOn: remoteObject session: session.
 	self assert: (inspector isKindOf: JadeiteInspector).
 	self assert: inspector documentPresenter value equals: 'aRcIdentityBag( 1, $k, ''abc'')'.
-	self assert: (inspector instVarListPresenter list collect: [:ea | ea key]) asArray
-		equals: #('self' '-.asOop' '-_varyingSize' '-_numEntries' '-_indexedPaths' '-_levels' '-components' '$k' '''abc''' '1').
+	keys := (inspector instVarListPresenter list collect: [:ea | ea key]) asArray.
+	self assert: (keys copyFrom: 1 to: 7)
+		equals: #('self' '-.asOop' '-_varyingSize' '-_numEntries' '-_indexedPaths' '-_levels' '-components').
 	"not sure about order in an identity bag. Might need to test differently"
-	self selectInstVarAtIndex: #(10).
-	self assert: inspector documentPresenter value equals: '1'.
-	self selectInstVarAtIndex: #(9).
-	self assert: inspector documentPresenter value equals: '''abc'''.
-	self selectInstVarAtIndex: #(8).
-	self assert: inspector documentPresenter value equals: '$k'!
+	self assert: (keys copyFrom: 8 to: 10) asSortedCollection asArray
+		equals: #('$k' '1' '''abc''' ). !
 
 test_inspectRcIdentityBagWithUnicodeKey
 	| remoteObject |
@@ -1152,9 +1149,9 @@ bag := RcIdentityBag new.
 bag add: (''a'', dbs) asString.
 bag'.
 	inspector := JadeInspector showOn: remoteObject session: session.
-	self assert: inspector documentPresenter value equals: 'aRcIdentityBag( ''aa?b'')'.
+	self assert: inspector documentPresenter value equals: 'aRcIdentityBag( ''aašb'')'.
 	self selectInstVarAtIndex: #(8).
-	self assert: inspector documentPresenter value equals: '''aa?b'''!
+	self assert: inspector documentPresenter value equals: '''aašb'''!
 
 test_inspectRcQueue
 	| remoteObject |
@@ -1795,7 +1792,7 @@ dictionary'
 	self assert: inspector documentPresenter value equals: '''value11'''!
 
 test_replaceSetElement
-	| remoteObject |
+	| remoteObject valuesSorted |
 	self testsIssue: #issue104 withTitle: 'Inspector: be nice to be able to apply changes to the object'.
 	remoteObject := session
 				executeString: 'Set with: 1 with: ''abc'' with: $a'
@@ -1805,11 +1802,10 @@ test_replaceSetElement
 	self selectInstVarAtIndex: #(8).	"select the 1st indexed element"
 	inspector documentPresenter value: '$z'.
 	inspector saveDocument.
-	self assert: inspector documentPresenter value equals: '$z'.	"element didn't move in sorted list"
-	self selectInstVarAtIndex: #(9).
-	self assert: inspector documentPresenter value equals: '''abc'''.
-	self selectInstVarAtIndex: #(8).
-	self assert: inspector documentPresenter value equals: '$z'!
+	valuesSorted := (inspector instVarListPresenter list copyFrom: 8 to: 10) asSortedCollection.
+	self assert: valuesSorted first key = '$a'.
+	self assert: valuesSorted second key = '$z'.
+	self assert: valuesSorted third key = '1'!
 
 test_replaceSetElementWhichMovesAfterSave
 	"ctrl-s will replace an element in a set"
@@ -1827,7 +1823,7 @@ test_replaceSetElementWhichMovesAfterSave
 	self assert: inspector documentPresenter value equals: '26'.
 	self assert: inspector instVarListPresenter selectionByIndex equals: 10.
 	self selectInstVarAtIndex: #(8).	"abc is now first in sorted list"
-	self assert: inspector documentPresenter value equals: '''abc'''.
+	self assert: inspector documentPresenter value equals: '$a'.
 	self selectInstVarAtIndex: #(10).
 	self assert: inspector documentPresenter value equals: '26'!
 
