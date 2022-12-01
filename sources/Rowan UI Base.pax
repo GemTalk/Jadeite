@@ -292,6 +292,7 @@ package methodNames
 	add: #JadePresenterA -> #openMethodListOn:selecting:;
 	add: #JadePresenterA -> #openMethodListOn:selectingAnyMatch:;
 	add: #JadePresenterA -> #queryCommand:;
+	add: #JadePresenterA -> #reformatSourceInPresenter:methodService:;
 	add: #JadePresenterA -> #refreshBreakPointsIn:;
 	add: #JadePresenterA -> #reloadProjectsFrom:;
 	add: #JadePresenterA -> #removeSelectorsString:;
@@ -3778,6 +3779,25 @@ queryCommand: query
 			^true].
 	^super queryCommand: query!
 
+reformatSourceInPresenter: presenter methodService: methodService
+	methodService
+		source: presenter value;
+		command: #reformatSource;
+		commandArgs: Array new.
+	[self issueCommand: methodService] on: Error
+		do: 
+			[:ex |
+			self setCompileErrorColor.
+			self statusBarText: 'Reformat failed. Illegal source - ' , ex description.
+			^false].
+	presenter view
+		performUndoableAction: [presenter view modifyText: [presenter view sciSetText: methodService source]].
+	presenter value: methodService source.
+	presenter view isModified: true.
+	self setStatusBarDefault.
+	self statusBarText: String new.
+	^presenter value!
+
 refreshBreakPointsIn: methodSourcePresenter
 	| selection |
 	selection := self methodListSelection.
@@ -3847,6 +3867,7 @@ mismatchedShasConfirmation!private!project menu handlers! !
 openMethodListOn:selecting:!menu handlers support!private!queries! !
 openMethodListOn:selectingAnyMatch:!menu handlers support!private!queries! !
 queryCommand:!public! !
+reformatSourceInPresenter:methodService:!Jadeite!public! !
 refreshBreakPointsIn:!Jadeite!public! !
 reloadProjectsFrom:!Jadeite!menu handlers support!public! !
 removeSelectorsString:!Jadeite!public! !

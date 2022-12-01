@@ -1616,26 +1616,11 @@ queryCommand: aCommandQuery
 	^super queryCommand: aCommandQuery!
 
 reformatSource
-	| methodService |
-	(methodService := self methodToReformat)
-		source: methodSourcePresenter value;
-		command: #reformatSource;
-		commandArgs: Array new.
-	[self issueCommand: methodService] on: Error
-		do: 
-			[:ex |
-			self setCompileErrorColor.
-			self statusBarText: 'Reformat failed. Illegal source'.
-			^false].
-	self methodSourcePresenter view performUndoableAction: 
-			[self methodSourcePresenter view
-				modifyText: [self methodSourcePresenter view sciSetText: methodService source]].
-	methodSourcePresenter value: methodService source.
-	methodSourcePresenter view isModified: true.
+	| formattedSource |
+	formattedSource := self reformatSourceInPresenter: self methodSourcePresenter
+				methodService: self methodToReformat.
 	self methodValueChanged.
-	self setStatusBarDefault.
-	self statusBarText: String new.
-	^methodSourcePresenter value!
+	^formattedSource!
 
 refresh
 	self refreshFromServer!

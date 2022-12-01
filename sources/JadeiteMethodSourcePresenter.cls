@@ -111,26 +111,7 @@ onViewOpened
 	self registerPresentersForUpdates!
 
 reformatSource
-	methodService
-		source: documentPresenter value;
-		command: #reformatSource;
-		commandArgs: Array new.
-	[self issueCommand: methodService] on: Error
-		do: 
-			[:ex |
-			self setCompileErrorColor.
-			self statusBarText: 'Reformat failed. Illegal source'.
-			^false].
-	documentPresenter view performUndoableAction: 
-			[documentPresenter view modifyText: [documentPresenter view sciSetText: methodService source]].
-	documentPresenter value: methodService source.
-	documentPresenter view isModified: true.
-	documentPresenter view
-		backcolor: JadeiteTextStyles default colorForUnsavedEdits;
-		clearContainerIndicators.
-	self setStatusBarDefault.
-	self statusBarText: String new.
-	^documentPresenter value!
+	^self reformatSourceInPresenter: documentPresenter methodService: methodService!
 
 registerPresentersForUpdates
 	BrowserUpdate current

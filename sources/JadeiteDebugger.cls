@@ -494,7 +494,7 @@ reformatSource
 		do: 
 			[:ex |
 			self setCompileErrorColor.
-			self statusBarText: 'Reformat failed. Illegal source'.
+			self statusBarText: 'Reformat failed. Illegal source - ' , ex description.
 			^false].
 	documentPresenter view performUndoableAction: 
 			[documentPresenter view modifyText: [documentPresenter view sciSetText: methodService source]].
