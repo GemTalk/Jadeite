@@ -1407,7 +1407,11 @@ test_notifierDoesNotErrorCheckingResumeStatus
 	self assert: (shell gsError isKindOf: GsCompileError).
 	self assert: shell gsError messageText
 		equals: 'a CompileError occurred (error 1001), undefined symbol  SomethingThatDoesNotExist']
-			ensure: [TestJadeErrorShell disableJadeiteErrorShell]!
+			ensure: 
+				[TestJadeErrorShell disableJadeiteErrorShell.
+				self abortTransaction. "make sure BadClass goes away" 
+				self cloneRowanSample1.
+				self ensureRowanSampleProjectsLoaded]!
 
 test_openDebuggerWthBreakpointInDebuggerService
 	"Basics of opening a debugger, viewing the UI, and resuming."

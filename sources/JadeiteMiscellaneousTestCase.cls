@@ -15,7 +15,7 @@ tearDown
 	workspace
 		ifNotNil: 
 			[workspace codePane documentPresenter view isModified: false.
-			workspace view close]!
+			self destroy: workspace]!
 
 test_adHocCompileError
 	self testsIssue: #issue688 withTitle: '(3.0.92) Compile Errors in Workspace broken'.
@@ -463,9 +463,9 @@ test_workspaceAdHocDisplayUnicodeCharacters
 	workspace codePane selectAll.
 	workspace activeTextEdit setFocus.
 	workspace codePane jadeDisplay.
-	self assert: workspace codePane documentPresenter selection equals: ' ''aa?bb'''.
+	self assert: workspace codePane documentPresenter selection equals: ' ''aašbb'''.
 	self assert: workspace codePane documentPresenter value
-		equals: '''aa'', (String with: (Character withValue: 353)), ''bb''   ''aa?bb'''.!
+		equals: '''aa'', (String with: (Character withValue: 353)), ''bb''   ''aašbb'''.!
 
 test_workspaceBrowseProjects
 	| jadeiteMenu browseProjectsItem |
@@ -496,7 +496,7 @@ test_workspaceConfirmInteraction
 		jadeExecuteAndDisplay: true
 		result: result
 		view: nil.
-	self assert: workspace codePane documentPresenter value equals: 'self confirm: ''hi'' false'.
+	self assert: workspace codePane documentPresenter value equals: 'self confirm: ''hi''false'.
 	workspace codePane documentPresenter value: 'self confirm: ''hi'''.
 	workspace codePane selectAll.
 	TestMessageBox plannedResult: #yes.
@@ -505,7 +505,7 @@ test_workspaceConfirmInteraction
 		jadeExecuteAndDisplay: true
 		result: result
 		view: nil.
-	self assert: workspace codePane documentPresenter value equals: 'self confirm: ''hi'' true'.
+	self assert: workspace codePane documentPresenter value equals: 'self confirm: ''hi''true'.
 	self assert: TestMessageBox lastMessageBox caption equals: 'Rowan Confirmation'.
 	self assert: TestMessageBox lastMessageBox text equals: 'hi']
 			ensure: 

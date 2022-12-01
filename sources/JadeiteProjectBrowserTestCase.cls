@@ -182,11 +182,6 @@ previousTabView
 projectList
 	^self projectListPresenter list!
 
-projectNamed: aString
-	^self projectsPresenter projectListPresenter list
-		detect: [:projectService | projectService name = aString]
-		ifNone: []!
-
 rowanDependentProjectNames
 	"this may change"
 
@@ -3488,7 +3483,6 @@ nextTabView!public!views! !
 packageNamed:!private!project support! !
 previousTabView!public!views! !
 projectList!private!project support! !
-projectNamed:!private!project support! !
 rowanDependentProjectNames!constants!private! !
 rowanProjectNames!constants!private! !
 saveHooMethod!private! !

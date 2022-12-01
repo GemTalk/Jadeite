@@ -74,6 +74,11 @@ primaryTestWindow
 
 	^projectsBrowser!
 
+projectNamed: aString
+	^self projectsPresenter projectListPresenter list
+		detect: [:projectService | projectService name = aString]
+		ifNone: []!
+
 saveMethodWithUniqueString
 
 	| source |
@@ -122,6 +127,7 @@ issue170methodCreation!issue test support!private! !
 loadProjectNamed:!private!project support! !
 openSecondBrowser!private! !
 primaryTestWindow!accessing!public! !
+projectNamed:!private!project support! !
 saveMethodWithUniqueString!private! !
 selectLowerTabsThenDo:!private!support! !
 selectSUnitTab!private!selection! !

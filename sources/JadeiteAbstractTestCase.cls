@@ -697,7 +697,7 @@ setUp
 	super setUp.
 	JadeiteBrowser
 		compile: 'validateUserInterface
-	[self view validateUserInterface] on: Win32Error do: [:ex | ex resume].'
+	[self view validateUserInterface] on: Win32Error do: [:ex |].'
 		categories: #(#deleteme).	"opening / closing windows really fast can wreak havoc on the windows system"
 	user ifNil: [user := 'SystemUser'].
 	transcript := JadeiteTestResource current transcript.
@@ -759,7 +759,8 @@ switchTransactionModeTo: aSymbol
 tearDown
 	| answeringService |
 	super tearDown.
-	JadeiteBrowser removeSelector: #validateUserInterface ifAbsent: [].	"remove hook to avoid lots of error dialogs when opening/closing windows too fast"
+	"remove hook to avoid lots of error dialogs when opening/closing windows too fast. See #setUp for compilation."
+	[JadeiteBrowser removeSelector: #validateUserInterface ifAbsent: []] on: Error do: [:ex |  "avoid Dolphin bug triggering method removal event"].
 	SessionManager inputState pumpMessages.
 	"debugging code - halt if we find a nil in the user's symbol list"
 	answeringService := RowanAnsweringService new

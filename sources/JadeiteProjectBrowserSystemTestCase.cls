@@ -259,19 +259,6 @@ test_projectDisplaysSync
 			self assertIsNil: (self transcriptProjectNamed: 'RowanSample1')]
 					ensure: [self loadRowanSample1InProjectList]]!
 
-test_projectInfoTab
-	| view |
-	self testsIssue: #issue261 withTitle: 'Project tab should display reason for project font styling'.
-	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self assert: (self projectsPresenter projectInfoList view getItemText: 1) equals: 'rowanProjectsHome'.
-	self assert: (self projectsPresenter projectInfoList view getItemText: 3) equals: 'name'.
-	self assert: (self projectsPresenter projectInfoList view getItemText: 4) equals: 'sha'.
-	self assert: (self projectsPresenter projectInfoList view getItemText: 5) equals: 'branch'.
-	self assert: (self projectsPresenter projectInfoList view getItemText: 6) equals: 'isSkew'.
-	self assert: (self projectsPresenter projectInfoList view getItemText: 7) equals: 'isDirty'.
-	view := self projectsPresenter projectInfoList view.
-	self assert: (view columns first contentFromRow: (view list at: 3)) equals: 'Rowan'. "don't know the state of the rowan project so just test the name"!
-
 test_projectListToolTip
 	self rowanFixMe.	"when issue & title made, insert"
 	self testsIssue: #issue withTitle: ''.
@@ -299,9 +286,9 @@ test_projectMenuEnablementUnloadReload
 			self deny: (self projectsPresenter isProjectItemEnabled: command).
 			projectNames := self projectListPresenter list collect: [:projectService | projectService name].
 			projectNames do: 
-					[:projectName |
-					self selectServiceNamed: RowanService notRowanizedPackageName in: self projectListPresenter.
-					(projectName = 'Unpackaged' or: [projectName = RowanService notRowanizedPackageName])
+					[:projectName | 
+					self selectServiceNamed: projectName in: self projectListPresenter.
+					(projectName = 'UnPackaged' or: [projectName = RowanService notRowanizedPackageName])
 						ifTrue: [self deny: (self projectsPresenter isProjectItemEnabled: command)]
 						ifFalse: [self assert: (self projectsPresenter isProjectItemEnabled: command)]]]!
 
@@ -429,7 +416,6 @@ test_deselectProjectOnly!public!test system tabs! !
 test_modifiedSystemTab!public!test system tabs! !
 test_moveTabsWithSUnitTabselected!public!test system tabs! !
 test_projectDisplaysSync!public!test projects!tests! !
-test_projectInfoTab!public!test menus!test projects!tests! !
 test_projectListToolTip!public!test system tabs! !
 test_projectMenuEnablementUnloadReload!public!test system tabs! !
 test_projectMenuGitCommitMenuItem!public!test menus! !

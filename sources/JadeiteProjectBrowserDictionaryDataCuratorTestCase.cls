@@ -640,11 +640,11 @@ test_projectInfoTabMenuCopy
 	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'rowanProjectsHome'.
 	"we don't know what the path is so just ensure it's not equal to the answer to the next assert:"
 	self deny: Clipboard current getText equals: 'false'.
-	self projectsPresenter projectInfoList selectionByIndex: 7.
+	self projectsPresenter projectInfoList selectionByIndex: 8.
 	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'isDirty'.
 	self projectsPresenter copyProjectInfo.	"Tonel isn't usually changed so probably safe to assume answer is false"
 	self assert: Clipboard current getText equals: 'false'.
-	self projectsPresenter projectInfoList selectionByIndex: 9.
+	self projectsPresenter projectInfoList selectionByIndex: 10.
 	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'packageConvention'.
 	self projectsPresenter copyProjectInfo.
 	self assert: Clipboard current getText equals: 'RowanHybrid'.
@@ -662,14 +662,16 @@ test_projectInfoTabMenuItemNames
 	self projectsPresenter projectInfoList selectionByIndex: 4.
 	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'sha'.
 	self projectsPresenter projectInfoList selectionByIndex: 5.
-	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'branch'.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'diskSha'.
 	self projectsPresenter projectInfoList selectionByIndex: 6.
-	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'isSkew'.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'branch'.
 	self projectsPresenter projectInfoList selectionByIndex: 7.
-	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'isDirty'.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'isSkew'.
 	self projectsPresenter projectInfoList selectionByIndex: 8.
-	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'projectUrl'.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'isDirty'.
 	self projectsPresenter projectInfoList selectionByIndex: 9.
+	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'projectUrl'.
+	self projectsPresenter projectInfoList selectionByIndex: 10.
 	self assert: (self projectsPresenter projectInfoList selection at: 2) equals: 'packageConvention'!
 
 test_projectListMenuItemsEnabled
@@ -687,8 +689,8 @@ test_projectListMenuItemsEnabled
 			| query |
 			query := CommandQuery commandDescription: item source: self projectListPresenter view.
 			self projectsPresenter queryCommand: query.
-			(('*Refresh*' match: item text)
-				or: [('Load Project*' match: item text) or: [('*Create*' match: item text) or: ['Browse' = item text]]])
+			(('&Refresh' = item text)
+				or: [('Load*' match: item text) or: [('*Create*' match: item text) or: ['Browse' = item text]]])
 					ifTrue: [self assert: query isEnabled]
 					ifFalse: [self deny: query isEnabled]].
 	self projectListPresenter resetSelection.
@@ -697,8 +699,8 @@ test_projectListMenuItemsEnabled
 			| query |
 			query := CommandQuery commandDescription: item source: self projectListPresenter view.
 			self projectsPresenter queryCommand: query.
-			(('*Refresh*' match: item text) or: 
-					[('Load Project*' match: item text)
+			(('&Refresh' = item text) or: 
+					[('Load*' match: item text)
 						or: [('*Create*' match: item text) or: ['Browse' = item text]]])
 				ifTrue: [self assert: query isEnabled]
 				ifFalse: [self deny: query isEnabled]]!
