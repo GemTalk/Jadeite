@@ -2263,7 +2263,7 @@ updateProjectReadMe
 updateSystemTab
 	| projectTabLabel | 
 	projectTabLabel := self projectTabLabel.
-	self topShell cardsPresenter view currentCard arrangement: projectTabLabel.
+	self view arrangement: projectTabLabel.
 	self parentPresenter view updateTabs!
 
 updateTabLabel
