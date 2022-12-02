@@ -501,6 +501,12 @@ saveIssue216Method
 	self methodSourcePresenter value: source.
 	self projectsPresenter editSaveMethod: self classListPresenter selection!
 
+saveMethod: source in: className
+	^self
+		saveMethod: source
+		in: className
+		category: 'dontCare'!
+
 saveMethod: source in: className category: category
 	| classService |
 	classService := RowanClassService named: className.
@@ -698,7 +704,8 @@ setUp
 	JadeiteBrowser
 		compile: 'validateUserInterface
 	[self view validateUserInterface] on: Win32Error do: [:ex |].'
-		categories: #(#deleteme).	"opening / closing windows really fast can wreak havoc on the windows system"
+		categories: #(#deleteme)
+		package: (Package name: 'Dolphin').	"opening / closing windows really fast can wreak havoc on the windows system"
 	user ifNil: [user := 'SystemUser'].
 	transcript := JadeiteTestResource current transcript.
 	self logoutThenLoginAs: user forceClose: false.
@@ -920,6 +927,7 @@ saveInterestingLoopMethod!browser support!private! !
 saveIssue166Method!issue test support!private! !
 saveIssue169Method!issue test support!private! !
 saveIssue216Method!issue test support!private! !
+saveMethod:in:!private!support! !
 saveMethod:in:category:!private!support! !
 savePrefsBackup!public! !
 saveSampleMethod!private! !

@@ -36,8 +36,9 @@ addWorkspace
 !
 
 closeCard
-
-	cardsPresenter view removeSubView: self currentCard view.!
+	cardsPresenter view removeSubView: self currentCard view.
+	cardsPresenter view cards do:[:containerView |
+		containerView presenter updateTabLabel]!
 
 commitTransaction
 	| commitResult |

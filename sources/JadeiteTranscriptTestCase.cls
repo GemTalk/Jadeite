@@ -484,6 +484,36 @@ test_doubleClickOpenProjectBrowser
 	[self assert: projectPresenter projectListPresenter selection name equals: projectName]
 		ensure: [projectPresenter topShell view close]!
 
+test_fileIn
+	| path className |
+	self openProjectBrowser.
+	
+	[path := '/home/ewinger/temp'.
+	(session executeString: '''' , path , ''' asFileReference exists')
+		ifTrue: [session executeString: '''' , path , ''' asFileReference delete'].
+	
+	[className := 'TestFileIn'.
+	self
+		saveClass: className
+		superclass: 'Object'
+		instVars: #('instVarA')
+		package: 'RowanSample1-Core'.
+	self saveMethod: 'method1 ^true' in: 'TestFileIn'.
+	self saveMethod: 'method2 ^true' in: 'TestFileIn'.
+	self saveMethod: 'method3 ^true' in: 'TestFileIn'.
+	self projectsPresenter fileOutClassOnPath: path.
+	self assert: (session executeString: '''' , path , ''' asFileReference exists')]
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass].
+	
+	[self assertIsNil: (session executeString: 'Rowan globalNamed: ''' , className , '''').
+	transcript basicFileInFromFile: path.
+	self denyIsNil: (session executeString: 'Rowan globalNamed: ''' , className , '''').
+	self assert: (session executeString: 'TestFileIn new method1').
+	self assert: (session executeString: 'TestFileIn new method2').
+	self assert: (session executeString: 'TestFileIn new method3')]
+			ensure: [session executeString: '''' , path , ''' asFileReference delete']]
+			ensure: [self destroy: projectsBrowser]!
+
 test_flipBreakPointsDisabled
 	| breakPointsEnabled |
 	self testsIssue: #issue515 withTitle: '(3.0.77) clear all breakpoints menu item would be useful'.
@@ -922,6 +952,7 @@ test_commitTransaction!public!tests! !
 test_createProject!public!tests! !
 test_displayConfigOptions!public!tests! !
 test_doubleClickOpenProjectBrowser!public!tests! !
+test_fileIn!public!tests! !
 test_flipBreakPointsDisabled!public!tests! !
 test_implementorsSenders_SearchList!public!tests! !
 test_implementorsSendersSearchList!public!tests! !
