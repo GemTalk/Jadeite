@@ -2287,12 +2287,12 @@ writeProject
 abortedTransaction!public! !
 abortTransaction!public!transaction management! !
 aboutToChange:!event handlers!public! !
-addDictionary!menu handlers!public! !
+addDictionary!menu handlers!must not strip!public! !
 additionalAccelerators!constants!public! !
-addMethodCategory!menu handlers!public! !
+addMethodCategory!menu handlers!must not strip!public! !
 addNoneProject!public!updating! !
 addPackagePresenter!accessing!private! !
-addSystemBrowser!menu handlers!public! !
+addSystemBrowser!menu handlers!must not strip!public! !
 allSelectedProjectsDirty!public!testing! !
 auditProject!project menu handlers!public! !
 basicAddDictionaryNamed:!menu handlers support!private! !
@@ -2306,14 +2306,14 @@ basicRemoveGlobal:!menu handlers support!private! !
 basicUnloadProjects:!menu handlers support!private! !
 basicUpdateProject!private!updating! !
 browseBreakpoints!public! !
-browseClassReferences!menu handlers!public! !
-browseGlobalClass!menu handlers!public! !
-browseGlobalReferences!menu handlers!public! !
-browseInstVarReaders!menu handlers!public! !
-browseInstVarWriters!menu handlers!public! !
-browseMethodHistory!menu handlers!public! !
-browseSelectedCategoryMethods!menu handlers!public!queries! !
-browseSelectedMethods!menu handlers!public!queries! !
+browseClassReferences!menu handlers!must not strip!public! !
+browseGlobalClass!menu handlers!must not strip!public! !
+browseGlobalReferences!menu handlers!must not strip!public! !
+browseInstVarReaders!menu handlers!must not strip!public! !
+browseInstVarWriters!menu handlers!must not strip!public! !
+browseMethodHistory!menu handlers!must not strip!public! !
+browseSelectedCategoryMethods!menu handlers!must not strip!public!queries! !
+browseSelectedMethods!menu handlers!must not strip!public!queries! !
 buildAddPackageView!private!tabs! !
 buildGlobalsTab!private!tabs! !
 buildPackageList!event handlers!public!updating! !
@@ -2323,8 +2323,8 @@ buildProjectListView!private!tabs! !
 buildProjectReadMeTab!private!tabs! !
 buildProjectTab!private!tabs! !
 categoriesMenuStrings!menus!public! !
-checkout!menu handlers!public! !
-checkoutTag!menu handlers!public! !
+checkout!menu handlers!must not strip!public! !
+checkoutTag!menu handlers!must not strip!public! !
 classCommentChanged!event handlers!public! !
 classContainer!accessing!public! !
 classesMenuStrings!menus!public! !
@@ -2335,8 +2335,8 @@ clearProjectTabs!private!tabs! !
 comparisonPresenter!accessing!public! !
 componentPackageContainer!accessing!public! !
 contextObject!menu handlers support!private! !
-copyInfo!menu handlers!public! !
-copyProjectInfo!menu handlers!public! !
+copyInfo!menu handlers!must not strip!public! !
+copyProjectInfo!menu handlers!must not strip!public! !
 createComponents!initialize/release!public! !
 createListViewFor:!private! !
 createSchematicWiring!create schemantic wiring!initialize/release!public! !
@@ -2345,53 +2345,53 @@ createSchematicWiringForClassList!create schemantic wiring!public! !
 createSchematicWiringForMethodList!create schemantic wiring!public! !
 createSchematicWiringForMethodSource!create schemantic wiring!initialize/release!public! !
 createSchematicWiringForProjectList!create schemantic wiring!public! !
-debug!menu handlers!public! !
+debug!menu handlers!must not strip!public! !
 dictionaryMenu!menus!public! !
 dictionaryMenuStrings!menus!public! !
 dictionaryPresenter!accessing!private! !
 displayStringFor:in:!double dispatch!public! !
 displayVariable:!displaying!private! !
-editComponents!menu handlers!public! !
-editDelete!menu handlers!public! !
-editLoadSpecFromFile!menu handlers!public! !
-editPackageGroups!menu handlers!public! !
-editRevert!menu handlers!public! !
-editSave!menu handlers!public! !
-editSaveClass!menu handlers!public! !
-editSaveMethod!menu handlers!public! !
+editComponents!menu handlers!must not strip!public! !
+editDelete!menu handlers!must not strip!public! !
+editLoadSpecFromFile!menu handlers!must not strip!public! !
+editPackageGroups!menu handlers!must not strip!public! !
+editRevert!menu handlers!must not strip!public! !
+editSave!menu handlers!must not strip!public! !
+editSaveClass!menu handlers!must not strip!public! !
+editSaveMethod!menu handlers!must not strip!public! !
 editSaveMethod:!menu handlers support!private! !
-editSaveReadMe!menu handlers!private!tabs! !
+editSaveReadMe!menu handlers!must not strip!private!tabs! !
 expandFullAt:!menu handlers support!private!updating! !
-expandFullHierarchy!menu handlers!public!updating! !
-fileOutCategories!menu handlers!public! !
+expandFullHierarchy!menu handlers!must not strip!public!updating! !
+fileOutCategories!menu handlers!must not strip!public! !
 fileOutCategoriesOnPath:!menu handlers support!private! !
-fileOutClass!menu handlers!public! !
+fileOutClass!menu handlers!must not strip!public! !
 fileOutClassOnPath:!menu handlers support!private! !
-fileOutDictionaries!menu handlers!public! !
+fileOutDictionaries!menu handlers!must not strip!public! !
 fileOutDictionariesOnPath:!menu handlers support!private! !
 fileOutMethodsOnPath:!menu handlers support!private! !
-fileOutSelectedMethods!menu handlers!public! !
-findClass!menu handlers!public! !
+fileOutSelectedMethods!menu handlers!must not strip!public! !
+findClass!menu handlers!must not strip!public! !
 findRemovedServices!menu handlers support!private! !
 gitCommit!project menu handlers!public! !
 globalsMenu!menus!public! !
 globalsMenuStrings!menus!public! !
 globalsTab!accessing!private! !
-gotoClassDefinedPackage!menu handlers!public! !
-gotoDictionary!menu handlers!public! !
-gotoDictionaryNamed:!menu handlers!public! !
-gotoPackageDictionary!menu handlers!public! !
+gotoClassDefinedPackage!menu handlers!must not strip!public! !
+gotoDictionary!menu handlers!must not strip!public! !
+gotoDictionaryNamed:!menu handlers!must not strip!public! !
+gotoPackageDictionary!menu handlers!must not strip!public! !
 hasCategorySelected!public!testing! !
 hasExactlyOneCategorySelected!public!testing! !
 hasMethods!public!testing! !
 hidePackageGroups!displaying!public! !
 hidePackageList!displaying!public! !
-hierarchyClassDoubleClicked!menu handlers!public! !
+hierarchyClassDoubleClicked!menu handlers!must not strip!public! !
 insertCompileErrorText:into:!compile support!public! !
 insertIfFalse!menu handlers!must not strip!public! !
 insertIfTrue!menu handlers!must not strip!public! !
-inspectGlobal!menu handlers!public! !
-inspectMethod!menu handlers!public! !
+inspectGlobal!menu handlers!must not strip!public! !
+inspectMethod!menu handlers!must not strip!public! !
 inspectorContextObject!menu handlers support!private! !
 isClassDefinitionTabSelected!public!testing! !
 isClassHierarchyTabSelected!public!testing! !
@@ -2408,9 +2408,9 @@ isProjectItemEnabled:!menu handlers support!private!testing! !
 isRowanProjectSelected!public!testing! !
 isSourceTabSelected!public!testing! !
 isSunitTabSelected!public!testing! !
-jadeDebug!menu handlers!private! !
-jadeInspect!menu handlers!public! !
-makeSameSelectionsIn:as:!menu handlers!menu handlers support!private! !
+jadeDebug!menu handlers!must not strip!private! !
+jadeInspect!menu handlers!must not strip!public! !
+makeSameSelectionsIn:as:!menu handlers!menu handlers support!must not strip!private! !
 maxAutoCompleteListSize!constants!public! !
 methodMenu:!menu handlers support!private! !
 methodSelectionChanged!event handlers!public! !
@@ -2418,12 +2418,12 @@ methodsMenuStrings!menus!public! !
 methodsUpdate:!public!updating! !
 methodToReformat!menu handlers support!private! !
 methodValueChanged!event handlers!public! !
-moveClassToPackage!menu handlers!public! !
-moveClassToPackageNamed:!menu handlers!public! !
+moveClassToPackage!menu handlers!must not strip!public! !
+moveClassToPackageNamed:!menu handlers!must not strip!public! !
 moveMethods:toCategory:!drag & drop!private! !
-moveMethodsToPackageNamed:!menu handlers!public! !
-moveMethodToPackage!menu handlers!public! !
-newProjectNamed:!menu handlers!menu handlers support!private! !
+moveMethodsToPackageNamed:!menu handlers!must not strip!public! !
+moveMethodToPackage!menu handlers!must not strip!public! !
+newProjectNamed:!menu handlers!menu handlers support!must not strip!private! !
 noClassSelectedInEitherPresenter!public!testing! !
 onDragClass:!drag & drop!public! !
 onDragMethod:!drag & drop!public! !
@@ -2435,8 +2435,8 @@ onDropMethodsOnPackageList:session:!drag & drop!public! !
 onDropOnPackageList:!drag & drop!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
-openJadeiteProjectsBrowser!menu handlers!public! !
-openSourceStyler!menu handlers!public! !
+openJadeiteProjectsBrowser!menu handlers!must not strip!public! !
+openSourceStyler!menu handlers!must not strip!public! !
 packageDictionaryCards!accessing!private! !
 packageGroupPresenter!accessing!private! !
 pkgsMenuStrings!menus!public! !
@@ -2452,31 +2452,31 @@ projectInfoMenuStrings!menus!public! !
 projectInfoTab!accessing!public! !
 projectLog!project menu handlers!public! !
 projectMenuCommands!menus!public! !
-projectReadmePath!menu handlers!private!tabs! !
+projectReadmePath!menu handlers!must not strip!private!tabs! !
 projectReadMeTab!accessing!private! !
 projectTabLabel!displaying!private! !
-protectedDictionaries!constants!menu handlers!public! !
+protectedDictionaries!constants!menu handlers!must not strip!public! !
 pullFromGit!project menu handlers!public! !
 pushToGit!project menu handlers!public! !
 queryCommand:!menu handlers support!private! !
-reformatSource!menu handlers!menu handlers support!private! !
-refresh!event handlers!menu handlers!public!updating! !
+reformatSource!menu handlers!menu handlers support!must not strip!private! !
+refresh!event handlers!menu handlers!must not strip!public!updating! !
 refreshClass!event handlers!public!updating! !
-refreshFromServer!event handlers!menu handlers!public!updating! !
+refreshFromServer!event handlers!menu handlers!must not strip!public!updating! !
 refreshFromServerAfterAbort:!public! !
 refreshMethodsOn:!event handlers!public! !
 registerPresentersForUpdates!public!register presenters! !
-reloadProject!menu handlers!public! !
+reloadProject!menu handlers!must not strip!public! !
 removeAppropriateTab!private!tabs! !
-removeClass!menu handlers!public! !
-removeDictionaries!menu handlers!public! !
-removeGlobal!menu handlers!public! !
+removeClass!menu handlers!must not strip!public! !
+removeDictionaries!menu handlers!must not strip!public! !
+removeGlobal!menu handlers!must not strip!public! !
 removeGlobalsTab!private!tabs! !
-removePackages!menu handlers!public! !
+removePackages!menu handlers!must not strip!public! !
 removeProjectTabs!private!tabs! !
 resetClassTemplate!private! !
-runAll!menu handlers!public! !
-runSelected!menu handlers!public! !
+runAll!menu handlers!must not strip!public! !
+runSelected!menu handlers!must not strip!public! !
 search!accessing!public! !
 selectClassHierarchyTab!public!selection! !
 selectClassListTab!public!selection! !
@@ -2496,7 +2496,7 @@ selectProjectNamed:!public!selection! !
 selectProjectTab!public! !
 setCompileErrorColor!compile support!public! !
 setCompileWarningColor!compile support!public! !
-setFont!menu handlers!public! !
+setFont!menu handlers!must not strip!public! !
 setStatusBarDefault!compile support!public! !
 shouldShowNoneTabLabel!displaying!private!testing! !
 showDictionaryList!event handlers!public!updating! !
@@ -2506,13 +2506,13 @@ statusBarText!accessing!public! !
 statusBarText:!accessing!public! !
 symbolExists:!public!testing! !
 textTabChanged!event handlers!public! !
-togglePackageDictionaryColumn!displaying!menu handlers!public! !
-togglePackageGroupsColumn!displaying!menu handlers!public! !
+togglePackageDictionaryColumn!displaying!menu handlers!must not strip!public! !
+togglePackageGroupsColumn!displaying!menu handlers!must not strip!public! !
 unloadProjects!project menu handlers!public! !
 updateAddPackageLists!public!updating! !
-updateAfterFindClass:!menu handlers!public!updating! !
-updateAfterFindClassInDictionary:!menu handlers!public!updating! !
-updateAfterFindClassInPackage:!menu handlers!public!updating! !
+updateAfterFindClass:!menu handlers!must not strip!public!updating! !
+updateAfterFindClassInDictionary:!menu handlers!must not strip!public!updating! !
+updateAfterFindClassInPackage:!menu handlers!must not strip!public!updating! !
 updateAutoCommit!public!register presenters!updating! !
 updateClass:!public!updating! !
 updateClasses!event handlers!public!updating! !
