@@ -468,7 +468,8 @@ test_revertMethodRemoval
 	self
 		denyIsNil: (self methodListPresenter list detect: [:methodService | methodService selector = #test1]
 				ifNone: []).
-	self assert: change definition selector equals: 'test1 (restored)'!
+	self assert: change definition selector equals: 'test1 (restored)'.
+	self assert: (changesBrowser operationListPresenter view getItemText: 1) equals: 'Removal (reverted)'.!
 
 test_unicodeSource
 	| source change |

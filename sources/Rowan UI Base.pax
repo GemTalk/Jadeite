@@ -5538,7 +5538,8 @@ revert: session
 		commandArgs: (Array with: (Array with: methodService)).
 	BrowserUpdate current issueCommands: (Array with: classService) session: self gciSession.
 	('*(removed)*' match: definition selector)
-		ifFalse: [definition selector: definition selector , ' (removed)']! !
+		ifFalse: [definition selector: definition selector , ' (removed)'].
+	reverted := true! !
 !MCAddition categoriesForMethods!
 revert:!public! !
 !
@@ -5711,7 +5712,8 @@ isMethodRemoval
 revert: session
 	definition revert: session.
 	('*(restored)*' match: definition selector)
-		ifFalse: [definition selector: definition selector , ' (restored)']! !
+		ifFalse: [definition selector: definition selector , ' (restored)'].
+	reverted := true! !
 !MCRemoval categoriesForMethods!
 isMethod!public!testing! !
 isMethodRemoval!public!testing! !
