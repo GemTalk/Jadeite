@@ -57,7 +57,6 @@ ensureRowanSample1Loaded
 	self rowanSample1Project ifNotNil: [:projectService | projectService isDirty ifFalse: [^self]].
 	self disableInteractionsWhile: 
 			[self unloadSampleProject1.
-			self session commit.
 			self
 				loadProjectFromFile: self rowanSample1Path
 				projectsHome: '$ROWAN_PROJECTS_HOME'
@@ -71,7 +70,6 @@ ensureRowanSample9Loaded
 	rowanSample9 ifNotNil: [:projectService | projectService isDirty ifFalse: [^self]].
 	self disableInteractionsWhile: 
 			[self unloadSampleProject9.
-			self session commit.
 			self
 				loadProjectFromFile: self rowanSample9Path
 				projectsHome: '$ROWAN_PROJECTS_HOME'

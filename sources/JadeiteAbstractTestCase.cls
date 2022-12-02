@@ -182,6 +182,9 @@ ensureOneTab
 	[projectsBrowser cardsPresenter view cards size = 1] whileFalse: [projectsBrowser closeCard]!
 
 ensureRowanSampleProjectsLoaded
+	JadeiteTestResource current unloadSampleProject1.
+	JadeiteTestResource current unloadSampleProject9.
+	session commit. 
 	JadeiteTestResource current ensureRowanSampleProjectsLoaded!
 
 ensureTestIsSetUpAfterLogout
