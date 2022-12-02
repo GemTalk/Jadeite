@@ -488,7 +488,7 @@ test_fileIn
 	| path className |
 	self openProjectBrowser.
 	
-	[path := '/home/ewinger/temp'.
+	[path := '/home/ewinger/temp/TestFileIn.gs'.
 	(session executeString: '''' , path , ''' asFileReference exists')
 		ifTrue: [session executeString: '''' , path , ''' asFileReference delete'].
 	
