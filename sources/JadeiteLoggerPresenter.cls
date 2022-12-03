@@ -64,11 +64,7 @@ onViewOpened
 	self inputFiles!
 
 raiseConsole
-	| transcript |
-	transcript := JadeiteTranscript allInstances
-				detect: [:trans | trans gciSession = GciSession current]
-				ifNone: [^self].
-	transcript view setFocus!
+	^JadePresenter raiseConsole!
 
 serverFilename
 	^serverFilename!

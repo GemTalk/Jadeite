@@ -19,6 +19,7 @@ activeTextEdit
 !
 
 additionalAccelerators
+
 	^#(#(#raiseConsole 'Ctrl+F7') )!
 
 addQuotesToSelection

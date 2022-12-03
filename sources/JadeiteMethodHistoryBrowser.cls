@@ -19,6 +19,9 @@ MethodHistoryBrowser built in Dolphin Smalltalk 6.x
 Version 6b
 © 2005 by Ian Bartholomew'!
 
+additionalAccelerators
+	^super additionalAccelerators , #(#(#raiseConsole 'Ctrl+F7'))!
+
 applyOptions
 	view maxCompletionListHeight: 10.
 	view maxCompletionListWidth: 40.
@@ -94,6 +97,9 @@ queryCommand: aCommandQuery
 		ifTrue: [^false	"Jadeite does not support these menu options yet"].
 	^super queryCommand: aCommandQuery!
 
+raiseConsole
+	^JadePresenter raiseConsole!
+
 registerPresentersForUpdates
 	BrowserUpdate current register: self selector: #methodHistoryUpdated:!
 
@@ -164,6 +170,7 @@ updateHistory
 	self moveToLast! !
 !JadeiteMethodHistoryBrowser categoriesForMethods!
 about!commands!public! !
+additionalAccelerators!constants!public! !
 applyOptions!initialization!public! !
 classService!accessing!public! !
 createComponents!initialization!public! !
@@ -174,6 +181,7 @@ methodService!accessing!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !
 queryCommand:!commands!public! !
+raiseConsole!menu handlers!public! !
 registerPresentersForUpdates!initialization!public! !
 restoreMethod!commands!public! !
 serviceSource!commands!public! !
@@ -191,6 +199,9 @@ updateHistory!public!updating! !
 canUseIdeaSpace
 
 	^false!
+
+defaultAdditionalAccelerators
+	^super defaultAdditionalAccelerators , #(#(#raiseConsole 'Ctrl+F7') )!
 
 defaultModel
 	"in runtime environment, the superclass
@@ -221,6 +232,7 @@ showOnClass: classService selector: methodService
 
 showOnClass: aClass selector: aSymbol debugger: aDebuggerOrNil
 	| inst |
+	additionalKeyBindings := nil. "force our defaults to be included"
 	inst := (self create session: GciSession current) showShell
 				setClass: aClass
 				selector: aSymbol
@@ -229,6 +241,7 @@ showOnClass: aClass selector: aSymbol debugger: aDebuggerOrNil
 	^inst! !
 !JadeiteMethodHistoryBrowser class categoriesForMethods!
 canUseIdeaSpace!public!testing! !
+defaultAdditionalAccelerators!constants!public! !
 defaultModel!public! !
 resource_Default_view!public!resources-views! !
 reuseIfOpen!public!testing! !

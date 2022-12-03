@@ -533,6 +533,7 @@ package methodNames
 	add: 'JadePresenter class' -> #openMethodListOn:selectingAnyMatch:session:;
 	add: 'JadePresenter class' -> #promptFor:withCaption:;
 	add: 'JadePresenter class' -> #promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:searchString:;
+	add: 'JadePresenter class' -> #raiseConsole;
 	add: 'JadePresenter class' -> #runMethodTests:in:;
 	add: 'JadePresenter class' -> #selectorsFrom:session:;
 	add: 'JadePresenter class' -> #setInTransaction:session:;
@@ -2925,11 +2926,7 @@ openProjectBrowserOn: classService selector: selector
 	^projectBrowser!
 
 raiseConsole
-	| transcript |
-	transcript := JadeiteTranscript allInstances
-				detect: [:trans | trans gciSession = GciSession current]
-				ifNone: [^self].
-	transcript view setFocus!
+	^self class raiseConsole!
 
 refreshGlobalSelections
 	"refresh selections in all browsers."
@@ -3457,6 +3454,13 @@ promptForMatchingSymbolsIn: session actionBlock: aBlock promptCaption: caption s
 	(selector := ChoicePrompter choices: symbols) isNil ifTrue: [^self].
 	^aBlock value: selector!
 
+raiseConsole
+	| transcript |
+	transcript := JadeiteTranscript allInstances
+				detect: [:trans | trans gciSession = GciSession current]
+				ifNone: [^self].
+	transcript view setFocus!
+
 runMethodTests: methodServices in: session
 	| answeringService |
 	answeringService := RowanAnsweringService new.
@@ -3567,6 +3571,7 @@ openMethodListOn:selecting:session:!public! !
 openMethodListOn:selectingAnyMatch:session:!public! !
 promptFor:withCaption:!browsing support!private! !
 promptForMatchingSymbolsIn:actionBlock:promptCaption:searchType:searchString:!browsing support!private! !
+raiseConsole!menu handlers!public! !
 runMethodTests:in:!public! !
 selectorsFrom:session:!browsing support!private! !
 setInTransaction:session:!public! !
@@ -4506,11 +4511,7 @@ setVersion!public! !
 !JadeShell methodsFor!
 
 raiseConsole
-	| transcript |
-	transcript := JadeiteTranscript allInstances
-				detect: [:trans | trans gciSession = GciSession current]
-				ifNone: [^self].
-	transcript view setFocus!
+	^JadePresenter raiseConsole!
 
 updateCaptionFromSearchString: searchString
 
@@ -5252,11 +5253,7 @@ openProjectsBrowser
 	^JadeiteBrowser showOnSession: gciSession!
 
 raiseConsole
-	| transcript |
-	transcript := JadeiteTranscript allInstances
-				detect: [:trans | trans gciSession = GciSession current]
-				ifNone: [^self].
-	transcript view setFocus!
+	^JadePresenter raiseConsole!
 
 registerWindow: handle rootObject: oop
 	^RowanBrowserService new
