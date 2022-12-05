@@ -2281,13 +2281,13 @@ test_projectInfoTab
 	| view |
 	self testsIssue: #issue261 withTitle: 'Project tab should display reason for project font styling'.
 	self selectServiceNamed: 'Rowan' in: self projectListPresenter.
-	self assert: (self projectsPresenter projectInfoList view getItemText: 1) equals: 'rowanProjectsHome'.
-	self assert: (self projectsPresenter projectInfoList view getItemText: 3) equals: 'name'.
-	self assert: (self projectsPresenter projectInfoList view getItemText: 4) equals: 'sha'.
-	self assert: (self projectsPresenter projectInfoList view getItemText: 5) equals: 'diskSha'.
-	self assert: (self projectsPresenter projectInfoList view getItemText: 6) equals: 'branch'.
-	self assert: (self projectsPresenter projectInfoList view getItemText: 7) equals: 'isSkew'.
-	self assert: (self projectsPresenter projectInfoList view getItemText: 8) equals: 'isDirty'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 1) equals: 'Rowan Projects Home'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 3) equals: 'Name'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 4) equals: 'Sha'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 5) equals: 'Disk Sha'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 6) equals: 'Branch'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 7) equals: 'Skew'.
+	self assert: (self projectsPresenter projectInfoList view getItemText: 8) equals: 'Dirty State'.
 	view := self projectsPresenter projectInfoList view.
 	self assert: (view columns first contentFromRow: (view list at: 3)) equals: 'Rowan'. "don't know the state of the rowan project so just test the name"!
 

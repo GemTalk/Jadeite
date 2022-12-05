@@ -837,7 +837,7 @@ test_reformatIllegalSource
 	self methodSourcePresenter value: 'reformatSourceTemporaryMethod ^#'.
 	self projectsPresenter reformatSource.
 	self assert: self projectsPresenter statusBarText value
-		equals: 'Reformat failed. Illegal source' replaceCrLfWithLf.
+		equals: 'Reformat failed. Illegal source - a UserDefinedError occurred (error 2318), reason:halt, Expecting a literal type' replaceCrLfWithLf.
 	self assert: self projectsPresenter statusBarText view backcolor equals: Color red faded.
 	self assert: self methodSourcePresenter value equals: 'reformatSourceTemporaryMethod ^#'	"unchanged"]
 			ensure: [self methodSourcePresenter view isModified: false]!

@@ -307,12 +307,20 @@ buildProjectInfoTab: infoTab
 	(infoTabView allColumns at: 1)
 		isEditable: false;
 		width: 175;
-		getContentsBlock: [:each | each at: 2].
+		getContentsBlock: [:each | (each at: 1) prettyPrintInstVar: (each at: 2)].
 	infoTabView addColumn.
 	(infoTabView allColumns at: 2)
 		isEditable: false;
 		isAutoResize: true;
-		getContentsBlock: [:each | (each at: 2) ifNil: [String new] ifNotNil: [:iv | (each at: 1) instVarNamed: iv]].
+		getContentsBlock: 
+				[:each |
+				(each at: 2)
+					ifNil: [String new]
+					ifNotNil: 
+						[:iv |
+						| service |
+						service := each at: 1.
+						iv = 'isDirty' ifTrue: [service toolTip] ifFalse: [service instVarNamed: iv]]].
 	infoTabView getImageBlock: nil.
 	^infoTabView!
 

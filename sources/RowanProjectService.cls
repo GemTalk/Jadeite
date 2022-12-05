@@ -261,6 +261,27 @@ prepareForReplication
 	super prepareForReplication.
 	packages := nil.!
 
+prettyPrintInstVar: instVarName
+	"for display on the project info tab"
+
+	^instVarName ifNil: [String new] ifNotNil: [:iv | self printPrintInstVars at: iv]!
+
+printPrintInstVars
+	| pretty |
+	pretty := Dictionary new.
+	pretty
+		at: 'rowanProjectsHome' put: 'Rowan Projects Home';
+		at: 'name' put: 'Name';
+		at: 'sha' put: 'Sha';
+		at: 'diskSha' put: 'Disk Sha';
+		at: 'branch' put: 'Branch';
+		at: 'isSkew' put: 'Skew';
+		at: 'isDirty' put: 'Dirty State';
+		at: 'projectUrl' put: 'URL';
+		at: 'packageConvention' put: 'Package Convention';
+		yourself.
+	^pretty!
+
 projectPackagesUpdate: presenter browser: browser
 	wasUpdated ifFalse: [^self].
 	self
@@ -387,6 +408,8 @@ packageServices!accessing!public! !
 performGitCommand:with:in:!presenter support!public! !
 postUpdate!Init / Release!public! !
 prepareForReplication!public!replication! !
+prettyPrintInstVar:!accessing!public! !
+printPrintInstVars!accessing!private! !
 projectPackagesUpdate:browser:!public!updating! !
 projectSelectionUpdate:!public!updating! !
 projectsUpdate:!public!updating! !
