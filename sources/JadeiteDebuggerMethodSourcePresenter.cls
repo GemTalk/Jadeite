@@ -72,11 +72,3 @@ jadeInspect!Jade!private! !
 onViewClosed!events!public! !
 !
 
-!JadeiteDebuggerMethodSourcePresenter class methodsFor!
-
-defaultAdditionalAccelerators
-	^super defaultAdditionalAccelerators , #(#(#jadeDebug 'Ctrl+B'))! !
-!JadeiteDebuggerMethodSourcePresenter class categoriesForMethods!
-defaultAdditionalAccelerators!constants!public! !
-!
-

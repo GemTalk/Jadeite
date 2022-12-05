@@ -229,6 +229,9 @@ update!public! !
 
 !MethodSourcePresenter class methodsFor!
 
+defaultAdditionalAccelerators
+	^super defaultAdditionalAccelerators , #(#(#reformatSource 'Ctrl+Shift+O') #(#jadeDebug 'Ctrl+B')  #(#editFind 'Ctrl+F'))!
+
 publishedEventsOfInstances
     
     	^super publishedEventsOfInstances
@@ -237,6 +240,7 @@ publishedEventsOfInstances
 			yourself.
 ! !
 !MethodSourcePresenter class categoriesForMethods!
+defaultAdditionalAccelerators!accessing!public! !
 publishedEventsOfInstances!public! !
 !
 
