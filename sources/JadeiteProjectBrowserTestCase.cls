@@ -460,7 +460,7 @@ test_addStarredCategory
 	self projectsPresenter basicAddMethodCategory: '*blasdfqewr'.
 	
 	[self assert: (self categoryListPresenter list includes: '*blasdfqewr').
-	self assert: (self categoryListPresenter selectionOrNil equals: '*blasdfqewr')]
+	self assert: self categoryListPresenter selectionOrNil equals: '*blasdfqewr']
 			ensure: 
 				["there's currently a bug in rowan #875 that affects removal of starred categories. Use abort temporarily instead."
 				self abortTransaction.
@@ -734,7 +734,7 @@ test_autoCommitFailure
 			whileTrue: [(Delay forMilliseconds: 2) wait].
 	
 	[self denyIsNil: (transactionConflictInspector instVarListPresenter list
-				detect: [:assoc | assoc key equals: '#''Write-Write''']
+				detect: [:assoc | assoc key = '#''Write-Write''']
 				ifNone: [])]
 			ensure: [transactionConflictInspector view close].
 	self assert: (projectsBrowser view viewNamed: 'autoCommitButton') backcolor equals: Color red.
@@ -1022,7 +1022,7 @@ test_changeClassComment
 	[self selectCommentTab.
 	self projectsPresenter classCommentPresenter value: 'change coming'.
 	self assert: self projectsPresenter selectedClass comment equals: comment.
-	self projectsPresenter classCommentPresenter value equals: 'change coming'.
+	self assert: self projectsPresenter classCommentPresenter value equals: 'change coming'.
 	TestMessageBox plannedResult: #yes.	"keep changes"
 	okToChange := self projectsPresenter isOkayToChange.
 	self deny: okToChange.

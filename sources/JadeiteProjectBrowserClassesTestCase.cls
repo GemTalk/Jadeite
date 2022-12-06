@@ -1740,23 +1740,23 @@ test_rowanTestsHierarchy
 test_saveClassCommentInClassList
 	self selectRowanSample1Class.
 	self projectsPresenter selectCommentTab.
-	self projectsPresenter classCommentPresenter value equals: String new.
+	self assert: ('No class-specific documentation for RowanSample1, hierarchy is:*' match: self projectsPresenter classCommentPresenter value). 
 	self projectsPresenter classCommentPresenter value: 'testing'.
 	self projectsPresenter editSaveClassComment.
 	self selectHierarchyTab.
 	self projectsPresenter selectCommentTab.
-	self projectsPresenter classCommentPresenter value equals: 'testing'!
+	self assert: self projectsPresenter classCommentPresenter value equals: 'testing'!
 
 test_saveClassCommentInHierarchy
 	self selectRowanSample1Class.
 	self selectHierarchyTab.
 	self projectsPresenter selectCommentTab.
-	self projectsPresenter classCommentPresenter value equals: String new.
+	self assert: ('No class-specific documentation for RowanSample1, hierarchy is:*' match: self projectsPresenter classCommentPresenter value).
 	self projectsPresenter classCommentPresenter value: 'this is a test'.
 	self projectsPresenter editSaveClassComment.
 	self selectClassTab.
 	self projectsPresenter selectCommentTab.
-	self projectsPresenter classCommentPresenter value equals: 'this is a test'!
+	self assert: self projectsPresenter classCommentPresenter value equals: 'this is a test'!
 
 test_selectionsRetainedFromClassListToHierarchy
 	self testsIssue: #issue448 withTitle: 'Class selection not retained from Hierarchy->Class view'.
@@ -1867,7 +1867,7 @@ test_updateHierarchyAfterClassRecompile
 	self assert: selection name equals: 'RowanSample1Test'.
 	self assert: selection version equals: 2.
 	self assert: selection versions equals: 2.
-	self classHierarchyPresenter selection displayString equals: 'RowanSample1Test (2/2)'.
+	self assert: self classHierarchyPresenter selection displayString equals: 'RowanSample1Test (2/2)'.
 	self assertClassDefinitionPaneMatches: 'TestCase rwSubclass: ''RowanSample1Test''']
 			ensure: 
 				["restore the class"

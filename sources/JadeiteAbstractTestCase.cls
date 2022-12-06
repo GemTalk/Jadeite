@@ -776,7 +776,7 @@ tearDown
 	answeringService := RowanAnsweringService new
 				command: #symbolListHasNil;
 				commandArgs: Array new.
-	self issueCommand: answeringService!
+	self issueCommand: answeringService.!
 
 test_globalAdditionalAccelerators
 	| command |

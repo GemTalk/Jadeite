@@ -277,11 +277,11 @@ test_globalRemove
 	session executeString: 'UserGlobals at: #test_removeGlobal put: ''foo'''.
 	self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
 	selection := self projectsPresenter globalsTab list
-				detect: [:array | (array at: 1) equals: 'UserGlobals.test_removeGlobal'].
+				detect: [:array | (array at: 1) = 'UserGlobals.test_removeGlobal'].
 	self projectsPresenter globalsTab selection: selection.
 	self projectsPresenter basicRemoveGlobal: selection first.
 	self assertIsNil: (self projectsPresenter globalsTab list
-				detect: [:array | (array at: 1) equals: 'UserGlobals.test_removeGlobal']
+				detect: [:array | (array at: 1) = 'UserGlobals.test_removeGlobal']
 				ifNone: [])!
 
 test_globalsBrowseClassMenuItem
@@ -295,7 +295,7 @@ test_globalsBrowseClassMenuItem
 	
 	[self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
 	selection := self projectsPresenter globalsTab list
-				detect: [:array | (array at: 1) equals: 'UserGlobals.test_globalsBrowseClassMenuItem'].
+				detect: [:array | (array at: 1) = 'UserGlobals.test_globalsBrowseClassMenuItem'].
 	self projectsPresenter globalsTab selection: selection.
 	secondBrowser := self projectsPresenter browseGlobalClass.
 	self assert: ('String*' match: secondBrowser classListPresenter selection name)]
@@ -313,7 +313,7 @@ test_globalsBrowseReferencesMenuItem
 	
 	[self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
 	selection := self projectsPresenter globalsTab list
-				detect: [:array | (array at: 1) equals: 'UserGlobals.UserGlobals'].
+				detect: [:array | (array at: 1) = 'UserGlobals.UserGlobals'].
 	self projectsPresenter globalsTab selection: selection.
 	methodListBrowser := self projectsPresenter browseGlobalReferences.
 	self assert: ('*UserGlobals*'
@@ -331,7 +331,7 @@ test_globalsDoubleClick
 	
 	[self selectServiceNamed: 'UserGlobals' in: self dictionaryPresenter.
 	selection := self projectsPresenter globalsTab list
-				detect: [:array | (array at: 1) equals: 'UserGlobals.test_globalsDoubleClick'].
+				detect: [:array | (array at: 1) = 'UserGlobals.test_globalsDoubleClick'].
 	self projectsPresenter globalsTab selection: selection.
 	self projectsPresenter globalsTab onActionPerformed. "double click"
 	inspector := JadeiteInspector allInstances first.

@@ -395,7 +395,7 @@ test_resetPreferences
 	workspace := JadeitePreferencesWorkspace showOnSession: session.
 	workspace model value: String new.
 	workspace basicResetPreferences.
-	self assert: (workspace model value equals: JadeitePreferences preferencesFileDefaultContents)!
+	self assert: workspace model value equals: JadeitePreferences preferencesFileDefaultContents!
 
 test_saveMultipleClassesInPrefsFile
 	| prefs prefsFileContents file |
