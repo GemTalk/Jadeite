@@ -307,6 +307,9 @@ getProcessList
 	processListPresenter list notEmpty
 		ifTrue: [processListPresenter selection: debuggerService processes first ifAbsent: []]!
 
+hasValidSession
+	^gciSession ifNil: [^false] ifNotNil: [:sess | sess isValidSession]!
+
 homeFrame
 	^frameListPresenter list detect: [:str | str = (self homeFrameOf: frame) printString]!
 
@@ -666,6 +669,7 @@ stepInto
 stepOut
 	| stepOutFrameIndex |
 	self isOkayToChangeFrame ifFalse: [^self].
+	frame homeMethodSelector ifNil:[^self resumeProcess]. 
 	BrowserUpdate current logComment: '#stepOut'.
 	stepOutFrameIndex := frameListPresenter selectionByIndex.
 	stepOutFrameIndex = 1 ifTrue: [stepOutFrameIndex := 2].
@@ -744,6 +748,7 @@ executeSelectionOrLine:shouldDebug:!Jade!private! !
 frameListPresenter!accessing!frames!public! !
 gciSession:!public! !
 getProcessList!public! !
+hasValidSession!public!testing! !
 homeFrame!compiling!frames!menu handlers!private! !
 homeFrameOf:!frames!public! !
 initialize!initialization!public! !

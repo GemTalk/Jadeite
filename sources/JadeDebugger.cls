@@ -269,12 +269,11 @@ updateSaveMethodOop:!public! !
 
 aboutToShowErrorShellOn: gsError!
 
-debuggerFor: anInteger		"aGsProcess asOop"
-
-	^self debuggers
-		at: anInteger
-		ifAbsent: [nil].
-!
+debuggerFor: anInteger
+	| debugger |
+	debugger := self debuggers at: anInteger ifAbsent: [^nil].
+	debugger hasValidSession ifFalse: [^nil].
+	^debugger!
 
 debuggers
 
@@ -378,7 +377,10 @@ reportError: gsError
 			[debugger
 				getProcessList;
 				update.
-			Processor activeProcess kill].
+			debugger hasValidSession
+				ifTrue: 
+					["already open"
+					Processor activeProcess kill]].
 	(#(2709 6005) includes: gsError errorReport number)
 		ifTrue: [^self openDebuggerOnException: gsError].
 	self aboutToShowErrorShellOn: gsError.	"allow JadeiteDebuggerTestCase to override and skip error dialog and go straight to debugger"

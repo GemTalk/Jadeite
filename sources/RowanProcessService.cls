@@ -59,8 +59,7 @@ sortAspect
 	^name!
 
 stack
-
-	^frames collect: [:each | each printString]!
+	^frames ifNil: [Array new] ifNotNil: [frames collect: [:each | each printString]]!
 
 terminate
 	"temporary until debugger is rewritten"
