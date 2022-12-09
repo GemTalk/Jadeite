@@ -1980,9 +1980,9 @@ abc'.
 	self debuggerDo: [debugger stepOver].
 	self assert: debugger documentPresenter view selection equals: 'with:'.	"inner #with:with:with:"
 	debugger frameListPresenter selectionByIndex: 3.
-	self debuggerDo: [debugger stepOut].
-	self assert: ('Executed Code*' match: debugger frameListPresenter selection).	"on the top frame so should step one frame up"
-	self assert: debugger documentPresenter view selection equals: 'c' "on last 'abc'"!
+	self debuggerDo: [debugger stepOut].	"this will step out of the executed code frame and resume"
+	self assert: (debugger view isKindOf: DeafObject).
+	debugger := nil!
 
 test_stepOutSelectedFrame2
 	self
@@ -2012,9 +2012,9 @@ abc'.
 	self debuggerDo: [debugger stepThrough].
 	self assert: debugger documentPresenter view selection equals: 'size'.	"innermost `size`"
 	debugger frameListPresenter selectionByIndex: 5.	"Executed code `home frame`"
-	self debuggerDo: [debugger stepOut].
-	self assert: ('Executed Code*' match: debugger frameListPresenter selection).	"on the top frame so should step one frame up"
-	self assert: debugger documentPresenter view selection equals: 'c' "last character of 'abc'"!
+	self debuggerDo: [debugger stepOut]. "this will step out of the executed code frame and resume"
+	self assert: (debugger view isKindOf: DeafObject).
+	debugger := nil. !
 
 test_stepOutTopFrame
 	self
@@ -2040,10 +2040,9 @@ abc'.
 	self debuggerDo: [debugger stepThrough].
 	self assert: debugger documentPresenter view selection equals: 'with:'.	"inner #with:with:with:"
 	self assert: debugger frameListPresenter selectionByIndex equals: 1.
-	self debuggerDo: [debugger stepOut].
-	self assert: (('Array (Collection) >> do: @* line 9') match: debugger frameListPresenter selection). "on the top frame so should step one frame up"
-	self assert: debugger documentPresenter view selection equals: 'to:'.
-	self debuggerDo: [debugger resumeProcess]!
+	self debuggerDo: [debugger stepOut]. "on the top frame so this should just resume."
+	self assert: (debugger view isKindOf: DeafObject). 
+	debugger := nil. !
 
 test_stepPointMarkers
 	| stepPointsMarkers |
@@ -2465,7 +2464,7 @@ test1
 test2
 	"Stepping (note that 3.2.15 has some odd behaviors)"
 
-	self 
+	self
 		openDebuggerOn: '| x | 
 nil halt.
 x := 1 + 2 * 3.
@@ -2473,39 +2472,36 @@ x := 1 + 2 * 3.
 1 to: 1 by: 1 do: [:i | x := i ].
 [x := 2] value.
 x yourself';
-		assert: (debugger errorMessagePresenter value) equals: 'a Halt occurred (error 2709)';
-		assert: (debugger frameListPresenter selection) equals: 'Executed Code  @2 line 2';
-		assert: (debugger documentPresenter view selection) equals: 'halt';
+		assert: debugger errorMessagePresenter value equals: 'a Halt occurred (error 2709)';
+		assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 2';
+		assert: debugger documentPresenter view selection equals: 'halt';
 		debuggerDo: [debugger stepOver];
-		assert: (debugger documentPresenter view selection) equals: '+ ';
+		assert: debugger documentPresenter view selection equals: '+ ';
 		debuggerDo: [debugger stepOver];
-		assert: (debugger documentPresenter view selection) equals: '* ';
+		assert: debugger documentPresenter view selection equals: '* ';
 		debuggerDo: [debugger stepOver];
-		assert: (debugger documentPresenter view selection) equals: ':=';
+		assert: debugger documentPresenter view selection equals: ':=';
 		debuggerDo: [debugger stepOver];
-		assert: (debugger documentPresenter view selection) equals: '==';
+		assert: debugger documentPresenter view selection equals: '==';
 		debuggerDo: [debugger stepOver];
-		assert: (debugger documentPresenter view selection) equals: 'ifTrue:';
+		assert: debugger documentPresenter view selection equals: 'ifTrue:';
 		debuggerDo: [debugger stepOver];
-		assert: (debugger documentPresenter view selection) = ':=';
-		debuggerDo: [debugger stepOver];
-		debuggerDo: [debugger stepOver];
-		assert: (debugger documentPresenter view selection) = 'to:'; 
-		debuggerDo: [debugger stepOver];
-		assert: (debugger documentPresenter view selection) = ':=';
-		debuggerDo: [debugger stepOver];
-		assert: (debugger documentPresenter view selection) equals: 'to:';
+		assert: debugger documentPresenter view selection = ':=';
 		debuggerDo: [debugger stepOver];
 		debuggerDo: [debugger stepOver];
-		assert: (debugger documentPresenter view selection) equals: 'value'; 
+		assert: debugger documentPresenter view selection = 'to:';
+		debuggerDo: [debugger stepOver];
+		assert: debugger documentPresenter view selection = ':=';
+		debuggerDo: [debugger stepOver];
+		assert: debugger documentPresenter view selection equals: 'to:';
+		debuggerDo: [debugger stepOver];
+		debuggerDo: [debugger stepOver];
+		assert: debugger documentPresenter view selection equals: 'value';
 		debuggerDo: [debugger stepInto];
-		assert: (debugger documentPresenter view selection) equals: 'x';
+		assert: debugger documentPresenter view selection equals: 'x';
 		debuggerDo: [debugger stepOver];
-		debuggerDo: [debugger stepOut];
-		assert: (debugger documentPresenter view selection) equals: 'yourself';
-		debuggerDo: [debugger resumeProcess];
-		yourself.
-!
+		debuggerDo: [debugger stepOut].	"will resume, stepping out of context"
+	debugger := nil!
 
 test3
 	"browse stack class"

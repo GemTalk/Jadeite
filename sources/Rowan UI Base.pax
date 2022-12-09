@@ -3728,6 +3728,10 @@ installProjectFromPath: path projectsHome: projectsHomePath componentNames: comp
 	self issueCommand: projectService!
 
 isOkayToChangeSource: methodSourcePresenter
+	(self view isKindOf: DeafObject)
+		ifTrue: 
+			["view closed, ok to proceed"
+			^true].
 	gciSession isValidSession
 		ifTrue: [(self class unsavedChangesValidSessionDialogIn: self) ifTrue: [^false]]
 		ifFalse: 
