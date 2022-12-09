@@ -191,7 +191,7 @@ JadeiteAbstractTestCase subclass: #JadeiteDataCuratorTestCase
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteAbstractTestCase subclass: #JadeiteDebuggerDataCuratorTestCase
-	instanceVariableNames: 'debugger gsProcess process secondDebugger'
+	instanceVariableNames: 'debugger gsProcess process secondDebugger executionResult'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

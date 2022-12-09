@@ -427,21 +427,9 @@ privateLogout
 	self trigger: #logoutPending.
 	library ifNotNil: [library logoutSession: gciSessionId]!
 
-releaseAllOops
-	library ifNil: [^self].
-	library releaseAllOopsForSession: gciSessionId.
-	library signalIfError!
-
 releaseOop: anOopType
 
 	self releaseOops: (Array with: anOopType).
-!
-
-releaseOops: anArray
-
-	library ifNil: [^self].
-	anArray isEmpty ifTrue: [^self].
-	library session: gciSessionId releaseOops: anArray.
 !
 
 returningResultOrErrorDo: aBlock
@@ -769,9 +757,7 @@ oopNil!accessing!public! !
 oopTypeWithOop:!public! !
 printString:!Jade convenience!public! !
 privateLogout!Jade!private! !
-releaseAllOops!Jade!public! !
 releaseOop:!Jade convenience!public! !
-releaseOops:!Jade!public! !
 returningResultOrErrorDo:!long running!private! !
 send:to:!Jade convenience!public! !
 sendInterpreted:to:withAll:!Jade convenience!long running!public! !

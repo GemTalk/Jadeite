@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteAbstractTestCase subclass: #JadeiteDebuggerDataCuratorTestCase
-	instanceVariableNames: 'debugger gsProcess process secondDebugger'
+	instanceVariableNames: 'debugger gsProcess process secondDebugger executionResult'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -171,9 +171,10 @@ openDebuggerOn: aString
 	JadeiteDebugger allInstances
 		do: [:theDebugger | self assert: (theDebugger view isKindOf: DeafObject)].
 	self
-		debuggerDo: [process := [session executeString: aString] forkAt: Processor activePriority + 1];
+		debuggerDo: 
+				[process := [executionResult := session executeString: aString] forkAt: Processor activePriority + 1];
 		getDebugger;
-		yourself!
+		yourself.!
 
 openSecondDebuggerOn: aString
 	self

@@ -145,6 +145,8 @@ package methodNames
 	add: #GciSession -> #postLoadServerPreferences;
 	add: #GciSession -> #postLoginAs:useSocket:;
 	add: #GciSession -> #preferencesFile;
+	add: #GciSession -> #releaseAllOops;
+	add: #GciSession -> #releaseOops:;
 	add: #GciSession -> #rowanClientServicesIsSupported;
 	add: #GciSession -> #rowanClientServicesIsSupportedWithLowerLimit:;
 	add: #GciSession -> #rowanClientServicesRangeHigh;
@@ -1402,14 +1404,14 @@ _executeString: aString fromContextOop: anOopType environment: anInteger
 
 _send: aSymbol to: anObject withAll: anArray
 	| arguments oops result |
-	oops := OrderedCollection new.
-	arguments := anArray collect: 
-					[:each |
-					(each isKindOf: Integer)
-						ifTrue: [library session: gciSessionId oopForInteger: each]
-						ifFalse: [(each isKindOf: String) ifTrue: [oops add: (self oopForString: each)] ifFalse: [each]]].
 	BrowserUpdate current inUpdateWhile: 
-			[result := library
+			[oops := OrderedCollection new.
+			arguments := anArray collect: 
+							[:each |
+							(each isKindOf: Integer)
+								ifTrue: [library session: gciSessionId oopForInteger: each]
+								ifFalse: [(each isKindOf: String) ifTrue: [oops add: (self oopForString: each)] ifFalse: [each]]].
+			result := library
 						session: gciSessionId
 						send: aSymbol
 						to: (self oopTypeFor: anObject)
@@ -1598,6 +1600,17 @@ postLoginAs: aString useSocket: aBoolean
 preferencesFile
 
 	^'Jadeite.prefs'!
+
+releaseAllOops
+	library ifNil: [^self].
+	BrowserUpdate current inUpdateWhile: 
+			[library releaseAllOopsForSession: gciSessionId.
+			library signalIfError]!
+
+releaseOops: anArray
+	library ifNil: [^self].
+	anArray isEmpty ifTrue: [^self].
+	BrowserUpdate current inUpdateWhile: [library session: gciSessionId releaseOops: anArray]!
 
 rowanClientServicesIsSupported
 	^self
@@ -1794,6 +1807,8 @@ postLoadClientPreferences!private! !
 postLoadServerPreferences!private! !
 postLoginAs:useSocket:!private! !
 preferencesFile!constants!private! !
+releaseAllOops!Jade!public! !
+releaseOops:!Jade!public! !
 rowanClientServicesIsSupported!private! !
 rowanClientServicesIsSupportedWithLowerLimit:!private! !
 rowanClientServicesRangeHigh!private! !

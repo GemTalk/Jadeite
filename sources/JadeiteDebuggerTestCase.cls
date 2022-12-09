@@ -1956,6 +1956,45 @@ abc'.
 	self assert: debugger frameListPresenter selection equals: 'Executed Code  @4 line 3'.	"on the top frame so should step one frame up"
 	self assert: debugger documentPresenter view selection equals: ':='!
 
+test_stepOutRepeated
+	| inspector |
+	self testsIssue: #issue884
+		withTitle: 'Breakpoint within a block is only honored for a few iterations'.
+	self
+		saveMethod: 'blockIteration
+"ThreeTest new blockIteration"
+
+  | clsOrg report res |
+  clsOrg := ClassOrganizer newExcludingGlobals.
+  report := { #''flattened'' . #''pairsCollect:'' . #''containsDigit'' . #''blarf'' . #sunshine . #tuesday . #asString . #asInteger . #now} 
+      select: [:sel |
+          res := clsOrg implementorsOf: sel.
+          res size > 0
+          ].
+  ^report'
+		in: 'RowanSample1'.
+	self openProjectBrowser.
+	self selectRowanSample1Class.
+	self selectMethodNamed: #blockIteration.
+	self setBreakAt: 10.	"#size"
+	self openDebuggerOn: '| report | report := RowanSample1 new blockIteration'.
+	(Delay forMilliseconds: 250) wait.
+	9 timesRepeat: 
+			[debugger
+				ifNotNil: 
+					[self debuggerDo: [process := [debugger resumeProcess] forkAt: Processor activePriority + 1].
+					(Delay forMilliseconds: 250) wait.
+					self getDebugger]].
+	inspector := JadeiteInspector showOn: executionResult session: session.
+	
+	[self assert: (inspector isKindOf: JadeiteInspector).
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector documentPresenter value equals: '#''asString''']
+			ensure: 
+				[self destroy: inspector.
+				debugger := nil.
+				self clearBreakAt: 10	"#size"]!
+
 test_stepOutSelectedFrame1
 	self
 		openDebuggerOn: '| abc |
@@ -2746,6 +2785,7 @@ test_stackDumpHeader!public!tests! !
 test_stackDumpTooLongString!public!tests! !
 test_stackMenuEnablement!public!tests! !
 test_stepOutMethod!public!test step! !
+test_stepOutRepeated!public!test step! !
 test_stepOutSelectedFrame1!public!test step! !
 test_stepOutSelectedFrame2!public!test step! !
 test_stepOutTopFrame!public!test step! !
