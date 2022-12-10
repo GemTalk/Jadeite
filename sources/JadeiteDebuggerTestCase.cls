@@ -88,6 +88,20 @@ setUp
 			["Running tests will not stop on assert. (Debugging tests does) Need to do a hard halt to determine how a test can login as the wrong user"
 			self haltTestForHardToCatchErrors: 'Debugger test is not logged in as SystemUser as expected'].!
 
+stepOutTwiceExpecting: aString
+	self debuggerDo: [process := [debugger stepOut] forkAt: Processor activePriority + 1].
+	self getDebugger.
+	(Delay forMilliseconds: 50) wait. 
+	self assert: debugger frameListPresenter selection
+		equals: 'Array (SequenceableCollection) >> select: @20 line 25'.	"step out to select:"
+	self debuggerDo: [process := [debugger stepOut] forkAt: Processor activePriority + 1].
+	self getDebugger.
+	(Delay forMilliseconds: 50) wait. 
+	debugger variableListPresenter selectionByIndex: 5.
+	[debugger variableListPresenter selectionByIndex = 5] whileFalse:[(Delay forMilliseconds: 1) wait]. 
+	[ debugger variableDataPresenter value = aString] whileFalse:[(Delay forMilliseconds: 1) wait].  
+	self assert: debugger variableDataPresenter value equals: aString.!
+
 test_additionalAccelerators
 	"No way yet to adequately test accelerators function
 	but we can assert that we tell Dolphin to set them up"
@@ -1720,6 +1734,45 @@ test_restartInBlock
 				self projectsPresenter clearBreakPointAt: breakPoint in: self projectsPresenter.
 				self destroy: projectsBrowser]!
 
+test_resumeRepeated
+	| inspector |
+	self testsIssue: #issue884
+		withTitle: 'Breakpoint within a block is only honored for a few iterations'.
+	self
+		saveMethod: 'blockIteration
+"ThreeTest new blockIteration"
+
+  | clsOrg report res |
+  clsOrg := ClassOrganizer newExcludingGlobals.
+  report := { #''flattened'' . #''pairsCollect:'' . #''containsDigit'' . #''blarf'' . #sunshine . #tuesday . #asString . #asInteger . #now} 
+      select: [:sel |
+          res := clsOrg implementorsOf: sel.
+          res size > 0
+          ].
+  ^report'
+		in: 'RowanSample1'.
+	self openProjectBrowser.
+	self selectRowanSample1Class.
+	self selectMethodNamed: #blockIteration.
+	self setBreakAt: 10.	"#size"
+	self openDebuggerOn: '| report | report := RowanSample1 new blockIteration'.
+	(Delay forMilliseconds: 250) wait.
+	9 timesRepeat: 
+			[debugger
+				ifNotNil: 
+					[self debuggerDo: [process := [debugger resumeProcess] forkAt: Processor activePriority + 1].
+					(Delay forMilliseconds: 250) wait.
+					self getDebugger]].
+	inspector := JadeiteInspector showOn: executionResult session: session.
+	
+	[self assert: (inspector isKindOf: JadeiteInspector).
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector documentPresenter value equals: '#''asString''']
+			ensure: 
+				[self destroy: inspector.
+				debugger := nil.
+				self clearBreakAt: 10	"#size"]!
+
 test_runningTestDoesNotLoseStepPoint
 	| count |
 	self testsIssue: #issue226 withTitle: 'have to reset method in order to disable a break point'.
@@ -1929,6 +1982,61 @@ test_stackMenuEnablement
 	frameContextMenu
 		itemsDo: [:item | item isDivider not ifTrue: [self assert: (self menuItemIsEnabled: item)]]!
 
+test_stepOutEventuallyResumes
+	| inspector |
+	"step out to select:"
+	self testsIssue: #issue884
+		withTitle: 'Breakpoint within a block is only honored for a few iterations'.
+	self
+		saveMethod: 'blockIteration
+"ThreeTest new blockIteration"
+
+  | clsOrg report res |
+  clsOrg := ClassOrganizer newExcludingGlobals.
+  report := { #''flattened'' . #''pairsCollect:'' . #''containsDigit'' . #''blarf'' . #sunshine . #tuesday . #asString . #asInteger . #now} 
+      select: [:sel |
+          res := clsOrg implementorsOf: sel.
+          res size > 0
+          ].
+  ^report'
+		in: 'RowanSample1'.
+	self openProjectBrowser.
+	self selectRowanSample1Class.
+	self selectMethodNamed: #blockIteration.
+	self setBreakAt: 10.	"#size"
+	self openDebuggerOn: '| report | report := RowanSample1 new blockIteration'.
+	(Delay forMilliseconds: 250) wait.
+	self stepOutTwiceExpecting: '#''pairsCollect:'''.
+	self stepOutTwiceExpecting: '#''containsDigit'''.
+	self stepOutTwiceExpecting: '#''blarf'''.
+	self stepOutTwiceExpecting: '#''sunshine'''.
+	self stepOutTwiceExpecting: '#''tuesday'''.
+	self stepOutTwiceExpecting: '#''asString'''.
+	self stepOutTwiceExpecting: '#''asInteger'''.
+	self stepOutTwiceExpecting: '#''now'''.
+	"now step out to the highest level which should resume on the final step out" 
+	self debuggerDo: [process := [debugger stepOut] forkAt: Processor activePriority + 1].
+	self getDebugger.
+	(Delay forMilliseconds: 50) wait. 
+	self debuggerDo: [process := [debugger stepOut] forkAt: Processor activePriority + 1].
+	self getDebugger.
+	(Delay forMilliseconds: 50) wait. 
+	self debuggerDo: [process := [debugger stepOut] forkAt: Processor activePriority + 1].
+	self getDebugger.
+	(Delay forMilliseconds: 50) wait. 
+	self debuggerDo: [process := [debugger stepOut] forkAt: Processor activePriority + 1].
+	self getDebugger.
+	(Delay forMilliseconds: 50) wait. 
+	inspector := JadeiteInspector showOn: executionResult session: session.
+	
+	[self assert: (inspector isKindOf: JadeiteInspector).
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector documentPresenter value equals: '#''asString''']
+			ensure: 
+				[self destroy: inspector.
+				debugger := nil.
+				self clearBreakAt: 10	"#size"]!
+
 test_stepOutMethod
 	"not in a block. Step out to higher level method context"
 
@@ -1955,45 +2063,6 @@ abc'.
 	self debuggerDo: [debugger stepOut].
 	self assert: debugger frameListPresenter selection equals: 'Executed Code  @4 line 3'.	"on the top frame so should step one frame up"
 	self assert: debugger documentPresenter view selection equals: ':='!
-
-test_stepOutRepeated
-	| inspector |
-	self testsIssue: #issue884
-		withTitle: 'Breakpoint within a block is only honored for a few iterations'.
-	self
-		saveMethod: 'blockIteration
-"ThreeTest new blockIteration"
-
-  | clsOrg report res |
-  clsOrg := ClassOrganizer newExcludingGlobals.
-  report := { #''flattened'' . #''pairsCollect:'' . #''containsDigit'' . #''blarf'' . #sunshine . #tuesday . #asString . #asInteger . #now} 
-      select: [:sel |
-          res := clsOrg implementorsOf: sel.
-          res size > 0
-          ].
-  ^report'
-		in: 'RowanSample1'.
-	self openProjectBrowser.
-	self selectRowanSample1Class.
-	self selectMethodNamed: #blockIteration.
-	self setBreakAt: 10.	"#size"
-	self openDebuggerOn: '| report | report := RowanSample1 new blockIteration'.
-	(Delay forMilliseconds: 250) wait.
-	9 timesRepeat: 
-			[debugger
-				ifNotNil: 
-					[self debuggerDo: [process := [debugger resumeProcess] forkAt: Processor activePriority + 1].
-					(Delay forMilliseconds: 250) wait.
-					self getDebugger]].
-	inspector := JadeiteInspector showOn: executionResult session: session.
-	
-	[self assert: (inspector isKindOf: JadeiteInspector).
-	inspector instVarListPresenter selectionByIndex: 3.
-	self assert: inspector documentPresenter value equals: '#''asString''']
-			ensure: 
-				[self destroy: inspector.
-				debugger := nil.
-				self clearBreakAt: 10	"#size"]!
 
 test_stepOutSelectedFrame1
 	self
@@ -2703,6 +2772,7 @@ selectFirstFrameStartingWith:!public!support! !
 selectLastFrameStartingWith:!public!support! !
 selectVariableNamed:!public!support! !
 setUp!private!setup teardown! !
+stepOutTwiceExpecting:!public!test step! !
 test_additionalAccelerators!public!test menus! !
 test_adHocDebug!public!test ad hoc execution! !
 test_adHocExecutionEvaluatesArgs!public!test ad hoc execution! !
@@ -2774,6 +2844,7 @@ test_reloadWithDebuggerOpen!public!tests! !
 test_reopenInLastExtent!public!tests! !
 test_reopenInLastPosition!public!tests! !
 test_restartInBlock!public!tests! !
+test_resumeRepeated!public!test step! !
 test_runningTestDoesNotLoseStepPoint!public!tests! !
 test_saveMethod!public!tests! !
 test_saveMethodDuringTestRun!public!tests! !
@@ -2784,8 +2855,8 @@ test_stackDumpDetailedFrame!public!tests! !
 test_stackDumpHeader!public!tests! !
 test_stackDumpTooLongString!public!tests! !
 test_stackMenuEnablement!public!tests! !
+test_stepOutEventuallyResumes!public!test step! !
 test_stepOutMethod!public!test step! !
-test_stepOutRepeated!public!test step! !
 test_stepOutSelectedFrame1!public!test step! !
 test_stepOutSelectedFrame2!public!test step! !
 test_stepOutTopFrame!public!test step! !
