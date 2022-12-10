@@ -373,6 +373,15 @@ test_systemTabNamesDictionaryClassHierarchy
 	self selectClassInHierarchyNamed: 'JadeServer'.
 	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 JadeServer'!
 
+test_systemTabNamesMultiplePackagesAndClassSelected
+	self testsIssue: #issue623
+		withTitle: '(3.0.85) when multiple packages selected the browser tab not updated with class name'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter. 
+	self selectServicesNamed: #('RowanSample1-Core' 'RowanSample1-Tests') in: self packageListPresenter. 
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 RowanSample1'.
+	self selectServiceNamed: 'RowanSample1Test' in: self classListPresenter. 
+	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 RowanSample1Test'.	!
+
 test_systemTabNamesProjectClassHierarchy
 	self testsIssue: #issue381
 		withTitle: '(3.0.53) useful to have class displayed when code pane is maximized'.
@@ -423,6 +432,7 @@ test_projectRemoved!public!test projects!tests! !
 test_queryCommandHandlesNilSession!public!tests! !
 test_systemTabNamesDictionaryClass!public!test system tabs! !
 test_systemTabNamesDictionaryClassHierarchy!public!test system tabs! !
+test_systemTabNamesMultiplePackagesAndClassSelected!public!test system tabs! !
 test_systemTabNamesProjectClassHierarchy!public!test system tabs! !
 test_systemTabNamesProjectClassList!public!test system tabs! !
 !

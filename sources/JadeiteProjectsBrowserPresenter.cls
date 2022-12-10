@@ -101,8 +101,8 @@ basicProjectTabLabel
 	label := projectListPresenter selection name.
 	packageListPresenter list isEmpty ifTrue: [^label].
 	packageListPresenter selections isEmpty ifTrue: [^label].
-	packageListPresenter selections size > 1 ifTrue: [^label].
-	label := packageListPresenter selection name.
+	(packageListPresenter selections size > 1 and: [self selectedClass isNil]) ifTrue: [^label].
+	packageListPresenter selections size = 1 ifTrue: [label := packageListPresenter selection name].
 	^self selectedClass ifNil: [label] ifNotNil: [self selectedClass name]!
 
 basicRemoveMethodCategories
