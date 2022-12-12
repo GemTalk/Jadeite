@@ -779,7 +779,7 @@ editSaveClass
 	a debugger is raised as not much information is available 
 	without a stack."
 
-	| browserService | 
+	| browserService |
 	browserService := RowanBrowserService new.
 	browserService
 		command: #compileClass:;
@@ -787,7 +787,7 @@ editSaveClass
 	browserService selectedClass: self selectedClass name.
 	[self issueCommand: browserService] on: Error
 		do: 
-			[:ex | 
+			[:ex |
 			(ex isKindOf: GsCompileError)
 				ifTrue: [self handleClassCompileError: ex]
 				ifFalse: [self statusBarText: 'ERROR: ' , ex messageText].
@@ -797,10 +797,14 @@ editSaveClass
 		command: #recompileMethodsAfterClassCompilation;
 		commandArgs: #().
 	self issueCommand: browserService]
-			on: GsCompileError
-			do: [:ex | ^self showMethodRecompilationError: ex].
+			on: GsApplicationError
+			do:  
+				[:ex |
+				('*poolDictionaries not supported yet*' match: ex description)
+					ifTrue: [^MessageBox notify: 'Pool Dictionaries not supported yet'].
+				^self showMethodRecompilationError: ex].
 	self resetClassDefinitionPane.
-	self updateAfterFindClass: browserService selectedClass.!
+	self updateAfterFindClass: browserService selectedClass!
 
 editSaveMethod
 	| selection |
