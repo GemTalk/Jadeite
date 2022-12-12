@@ -94,7 +94,7 @@ inUpdateWhile: block
 	BrowserUpdate current logComment: 'About to execute inUpdate block - ' , block printString.
 	inUpdate := RowanSemaphore forMutualExclusion.
 	result := inUpdate critical: 
-					[[Cursor wait showWhile: block] ensure: 
+					[block ensure: 
 							[inUpdate := nil.
 							GciSession current
 								ifNotNil: 

@@ -341,6 +341,7 @@ specService: anObject
 
 toolTip
 	| writeStream crNeeded |
+	BrowserUpdate current updateService: self session: GciSession current.
 	writeStream := WriteStream on: String new.
 	crNeeded := false.
 	(isDiskDirty not and: 
@@ -352,17 +353,17 @@ toolTip
 			crNeeded := true].
 	isDiskDirty
 		ifTrue: 
-			[writeStream nextPutAll: 'Dirty on disk'.
+			[writeStream nextPutAll: 'Dirty on disk '.
 			crNeeded := true].
 	isDirty
 		ifTrue: 
 			[crNeeded ifTrue: [writeStream cr].
-			writeStream nextPutAll: 'Dirty in image'.
+			writeStream nextPutAll: 'Dirty in image '.
 			crNeeded := true].
 	isSkew
 		ifTrue: 
 			[crNeeded ifTrue: [writeStream cr].
-			writeStream nextPutAll: 'Skew in sha'.
+			writeStream nextPutAll: 'Skew in sha '.
 			crNeeded := true].
 	(existsOnDisk == false or: [self displayName = RowanService notRowanizedPackageName])
 		ifTrue: 
