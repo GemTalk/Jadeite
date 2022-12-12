@@ -197,6 +197,45 @@ test_browseClassReferencesFromClassesMenu
 	methodListBrowser primaryPresenter methodListPresenter methodListPresenter list
 		do: [:methodService | self assert: ('*RowanClassService*' match: methodService source)]!
 
+test_changeClassUpdatesSubclasses
+	| classTwo |
+	self testsIssue: #issue619
+		withTitle: 'Recompiling class does not update subclasses (3.0.86 candidate)'.
+	self
+		saveClass: 'ClassOne'
+		superclass: 'Object'
+		instVars: #('one')
+		package: 'RowanSample1-Core'.
+	self projectsPresenter selectVariableTab.
+	self selectVariableNamed: #one.
+	self projectsPresenter basicAddVariableAccessors.
+	self assert: self projectsPresenter variableListPresenter list asArray = #(#one).
+	self assert: self projectsPresenter selectedClass displayString = 'ClassOne'.
+	self
+		saveClass: 'ClassTwo'
+		superclass: 'ClassOne'
+		instVars: #('two')
+		package: 'RowanSample1-Core'.
+	self projectsPresenter selectVariableTab.
+	self selectVariableNamed: #two.
+	self projectsPresenter basicAddVariableAccessors.
+	self assert: self projectsPresenter variableListPresenter list asArray = #(#one #two).
+	self assert: self projectsPresenter selectedClass displayString = 'ClassTwo'.
+	TestMessageBox enableJadeiteTestMessageBox. 
+	TestMessageBox plannedResult: #yes. 
+	[self
+		saveClass: 'ClassOne'
+		superclass: 'Object'
+		instVars:  #('one' 'onePlus')
+		package: 'RowanSample1-Core'] ensure: [TestMessageBox disableJadeiteTestMessageBox. ].
+	self assert: self projectsPresenter selectedClass displayString = 'ClassOne (2/2)'.
+	self assert: self projectsPresenter variableListPresenter list asArray = #(#one #onePlus).
+	classTwo := self projectsPresenter classListPresenter list
+				detect: [:classService | classService name = 'ClassTwo'].
+	self assert: classTwo displayString = 'ClassTwo (2/2)'.
+	self projectsPresenter selectClassInClassListNamed: 'ClassTwo'.
+	self assert: self projectsPresenter variableListPresenter list asArray = #(#one #onePlus #two)!
+
 test_classColoring
 	| classService sunitBrowser |
 	self testsIssue: #issue426 withTitle: 'Strange case of classes turning purple'.
@@ -1961,6 +2000,7 @@ test_addRemoveHierarchyCategory!public!test class hierarchy!tests! !
 test_addSubclass!public!test class hierarchy!tests! !
 test_allClassesAutoCommitOn!public!test class list!test find!tests! !
 test_browseClassReferencesFromClassesMenu!public!test rename class! !
+test_changeClassUpdatesSubclasses!public!test class hierarchy!tests! !
 test_classColoring!public!test class hierarchy!tests! !
 test_classColoringExtension!public!test class hierarchy!tests! !
 test_classCopyHierarchy!public!test class hierarchy! !

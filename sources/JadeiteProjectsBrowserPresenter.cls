@@ -31,25 +31,6 @@ addSubclass
 		ensureVisible;
 		value: answerService answer!
 
-addVariableAccessors
-	| cachedSelections |
-	self confirmOverwriteAccessor ifFalse: [^self].
-	(cachedSelections := self methodFilterListPresenter selections) do: 
-			[:variable |
-			| sourceStream classService |
-			classService := self selectedClass.
-			sourceStream := self getterMethodSourceFor: variable.
-			classService
-				saveMethod: sourceStream contents
-				category: 'accessing'
-				session: self gciSession.
-			sourceStream := self setterMethodSourceFor: variable.
-			classService
-				saveMethod: sourceStream contents
-				category: 'accessing'
-				session: self gciSession].
-	self methodFilterListPresenter selections: cachedSelections!
-
 allClasses
 	| browserService |
 	browserService := RowanBrowserService new.
@@ -1520,7 +1501,6 @@ updateSUnitTab: service
 addNoneProject!private! !
 addPackageDictionaryInfoTo:!private! !
 addSubclass!menu handlers!public! !
-addVariableAccessors!menu handlers!public! !
 allClasses!menu handlers!public! !
 autoCommit!accessing!private! !
 autoCommit:!initialize/release!public! !

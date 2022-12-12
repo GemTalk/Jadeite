@@ -666,6 +666,14 @@ selectTreeServicesNamed: anArray in: presenter
 						add: service;
 						yourself)]!
 
+selectVariableNamed: aSymbol
+	| variable |
+	variable := self projectsPresenter variableListPresenter list detect: [:var | aSymbol = var]
+				ifNone: [].
+	self projectsPresenter variableListPresenter
+		selectionByIndex: (self projectsPresenter variableListPresenter list indexOf: variable).
+	self assert: self projectsPresenter variableListPresenter selection equals: aSymbol!
+
 selectWithChangeEventMethodNamed: selector
 	"foolishly, the selection changing event which needs testing
 	is only sent through a button click in Dolphin. We need to 
@@ -957,6 +965,7 @@ selectRowanServicesTestsPackage!private!test class hierarchy!tests! !
 selectServiceNamed:in:!private!project browser support!selection! !
 selectServicesNamed:in:!private!project browser support!selection! !
 selectTreeServicesNamed:in:!private!selection! !
+selectVariableNamed:!private!support! !
 selectWithChangeEventMethodNamed:!private!selection! !
 serviceNamed:in:!private!selection! !
 setAutoCommit:!private!setup teardown! !

@@ -67,13 +67,6 @@ selectLastFrameStartingWith: className
 	frame := self lastFrameStartingWith: className.
 	debugger frameListPresenter selection: frame!
 
-selectVariableNamed: aSymbol
-	| variable |
-	variable := debugger variableListPresenter list detect: [:var | aSymbol = var key value] ifNone: [].
-	debugger variableListPresenter
-		selectionByIndex: (debugger variableListPresenter list indexOf: variable).
-	self assert: debugger variableListPresenter selection _key equals: aSymbol!
-
 setUp
 	user := 'SystemUser'.
 	super setUp.
@@ -207,7 +200,7 @@ test_adHocExecutionUpdatesVariablesList
 		category: 'tests'.
 	
 	[self openDebuggerOn: 'RowanSample1Test new testAdHocExecutionWith: 1 '.
-	self selectVariableNamed: #temp1. 
+	self selectVariableNamed: #temp1.
 	self assert: debugger variableListPresenter selection value equals: '1'.
 	debugger methodSourcePresenter documentPresenter selectionRange: (44 to: 57).
 	self assert: debugger methodSourcePresenter documentPresenter selection equals: 'temp1 := arg1.'.
@@ -215,7 +208,7 @@ test_adHocExecutionUpdatesVariablesList
 	debugger methodSourcePresenter documentPresenter selectionRange: (44 to: 53).
 	debugger methodSourcePresenter documentPresenter view setFocus.
 	debugger methodSourcePresenter executeSelectionOrLine.
-	self selectVariableNamed: #temp1. 
+	self selectVariableNamed: #temp1.
 	self assert: debugger variableListPresenter selection value equals: '5']
 			ensure: [self removeMethodNamed: #testAdHocExecutionWith:]!
 
@@ -409,7 +402,8 @@ test_browseClassVariablePane
 	projectsBrowser := debugger browseObjectClass.
 	
 	[self assert: (projectsBrowser isKindOf: JadeiteBrowser).
-	self assert: projectsBrowser currentCard classListPresenter selection name equals: 'OrderedCollection'	"receiver is OrderedCollection class"]
+	self assert: projectsBrowser currentCard classListPresenter selection name
+		equals: 'OrderedCollection'	"receiver is OrderedCollection class"]
 			ensure: [projectsBrowser view close].
 	self selectVariableNamed: #aValue.
 	self assert: debugger variableDataPresenter value equals: 'aRowanClassService:nil'.
@@ -1332,7 +1326,7 @@ test_inspectedDebuggerObjectHeld
 		in: 'RowanSample1'
 		category: 'other'.
 	self openDebuggerOn: 'RowanSample1 new issue385'.
-	self debuggerDo: [self selectVariableNamed: #abc ].
+	self debuggerDo: [self selectVariableNamed: #abc].
 	self debuggerDo: [inspector := debugger inspectVariable].
 	
 	[self assert: (session executeString: 'Object = Object').
@@ -2645,7 +2639,7 @@ x yourself';
 		debuggerDo: [debugger stepOver];
 		debuggerDo: [debugger stepOver];
 		debuggerDo: [debugger stepOver];
-		assert: (self selectVariableNamed: #x ) notNil;
+		assert: (self selectVariableNamed: #x) notNil;
 		debuggerDo: [projectsBrowser := debugger browseObjectClass];
 		assert: projectsBrowser isKindOf: JadeiteBrowser.
 	
@@ -2770,7 +2764,6 @@ indexOfVariableNamed:!public!support! !
 lastFrameStartingWith:!public!support! !
 selectFirstFrameStartingWith:!public!support! !
 selectLastFrameStartingWith:!public!support! !
-selectVariableNamed:!public!support! !
 setUp!private!setup teardown! !
 stepOutTwiceExpecting:!public!test step! !
 test_additionalAccelerators!public!test menus! !

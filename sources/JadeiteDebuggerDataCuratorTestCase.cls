@@ -275,6 +275,13 @@ selectFrameMatching: wildCardString
 	event value ifFalse: [^self].
 	debugger frameListPresenter selection: selectedFrame!
 
+selectVariableNamed: aSymbol
+	| variable |
+	variable := debugger variableListPresenter list detect: [:var | aSymbol = var key value] ifNone: [].
+	debugger variableListPresenter
+		selectionByIndex: (debugger variableListPresenter list indexOf: variable).
+	self assert: debugger variableListPresenter selection _key equals: aSymbol!
+
 setUp
 	user ifNil: [user := 'DataCurator']. "SystemUser will already be set in the subclass if not running as DataCurator" 
 	super setUp!
@@ -448,6 +455,7 @@ removeMethodNamed:!private!support!test ad hoc execution! !
 saveMethodWithHalt!private!support! !
 selectFrameAt:!private!support! !
 selectFrameMatching:!private!support! !
+selectVariableNamed:!public!support! !
 setUp!private!setup teardown!support! !
 statusBarValue!private!support! !
 systemBrowser!private!support! !

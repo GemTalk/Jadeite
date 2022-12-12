@@ -59,6 +59,10 @@ addSystemBrowser
 	self topShell view position: position.
 	^browser!
 
+addVariableAccessors
+	self confirmOverwriteAccessor ifFalse: [^self].
+	self basicAddVariableAccessors!
+
 allSelectedProjectsDirty
 	^self basicAllSelectedProjectsDirty: projectListPresenter!
 
@@ -88,6 +92,24 @@ basicAddMethodCategory: string
 			service meta: self isClassSideSelected.
 			self issueCommand: service].
 	self selectCategoriesNamed: (Array with: string)!
+
+basicAddVariableAccessors
+	| cachedSelections |
+	(cachedSelections := self methodFilterListPresenter selections) do: 
+			[:variable |
+			| sourceStream classService |
+			classService := self selectedClass.
+			sourceStream := self getterMethodSourceFor: variable.
+			classService
+				saveMethod: sourceStream contents
+				category: 'accessing'
+				session: self gciSession.
+			sourceStream := self setterMethodSourceFor: variable.
+			classService
+				saveMethod: sourceStream contents
+				category: 'accessing'
+				session: self gciSession].
+	self methodFilterListPresenter selections: cachedSelections!
 
 basicCopyClass: oldClassService to: newClassName
 	oldClassService
@@ -2301,10 +2323,12 @@ addMethodCategory!menu handlers!must not strip!public! !
 addNoneProject!public!updating! !
 addPackagePresenter!accessing!private! !
 addSystemBrowser!menu handlers!must not strip!public! !
+addVariableAccessors!menu handlers!public! !
 allSelectedProjectsDirty!public!testing! !
 auditProject!project menu handlers!public! !
 basicAddDictionaryNamed:!menu handlers support!private! !
 basicAddMethodCategory:!menu handlers support!private! !
+basicAddVariableAccessors!menu handlers!public! !
 basicCopyClass:to:!menu handlers support!private! !
 basicDictionaryTabLabel!displaying!private! !
 basicProjectTabLabel!displaying!private!tabs! !
