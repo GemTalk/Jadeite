@@ -1429,6 +1429,21 @@ test_hierarchyWithNonResolvableClass
 				[self projectsPresenter basicUnloadProjects: #('Issue470').
 				session executeString: ' Rowan platform _alternateImageClass: nil.']!
 
+test_moveClassToPackageOutsideProject
+
+	self testsIssue: #issue980 withTitle: '[3.2.13] error on moving class to package in a different project'. 
+	self selectRowanSample1Class. 
+	self assert: self projectsPresenter selectedProjectName equals: 'RowanSample1'. 
+	self assert: self projectsPresenter selectedPackageNames first equals: 'RowanSample1-Core'. 
+	self deny: self projectsPresenter projectListPresenter selectionOrNil isDirty. 
+	self deny: self projectsPresenter packageListPresenter selectionOrNil isDirty. 
+	self projectsPresenter moveClassToPackageNamed: 'RowanSample9-Core'. 
+	self assert: self projectsPresenter selectedProjectName equals: 'RowanSample9'. 
+	self assert: self projectsPresenter selectedPackageNames first equals: 'RowanSample9-Core'. 
+	self assert: self projectsPresenter projectListPresenter selectionOrNil isDirty. 
+	self assert: self projectsPresenter packageListPresenter selectionOrNil isDirty. 
+	!
+
 test_moveMethodDirtiesPackage
 	self testsIssue: #issue950
 		withTitle: '(3.2.10) RowanClassService>>moveMethods:to: should not use the category name as a literal package name'.
@@ -2055,6 +2070,7 @@ test_hierarchyCleanedUpAfterUnload!public!test class hierarchy!test projects!tes
 test_hierarchyMethodsNotDisplayed!public!test class hierarchy!tests! !
 test_hierarchySelectTwoBrowsers!public!test class hierarchy!tests! !
 test_hierarchyWithNonResolvableClass!public!test class hierarchy!tests! !
+test_moveClassToPackageOutsideProject!public! !
 test_moveMethodDirtiesPackage!public!test class list! !
 test_newBrowserRetainsClassAndMethod!public!test class hierarchy!tests! !
 test_newBrowserRetainsClassAndMethodClassSide!public!test class hierarchy!tests! !

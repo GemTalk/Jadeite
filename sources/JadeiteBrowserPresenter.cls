@@ -1243,17 +1243,12 @@ moveClassToPackage
 	self moveClassToPackageNamed: packageService name!
 
 moveClassToPackageNamed: packageName
-	| packageServiceToSelect |
 	self selectedClass ifNil: [^self].
 	self selectedClass
 		command: #moveToPackageNamed:;
 		commandArgs: (Array with: packageName).
 	self issueCommand: self selectedClass.
-	packageServiceToSelect := packageListPresenter list
-				detect: [:packageService | packageService name = packageName].
-	packageListPresenter selections: (self selectedPackageServices asOrderedCollection
-				add: packageServiceToSelect;
-				yourself)!
+	self updateAfterFindClass: self selectedClass!
 
 moveMethods: methodServices toCategory: targetCategory
 	| classService |
