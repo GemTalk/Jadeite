@@ -300,8 +300,8 @@ packageGroupsVisible: false
 #packageListVisible: true
 
 #legal values are font name plus font point size
-#font: <fontName pointSize>
-#textFont: <fontName pointSize>
+#font: <Segoe UI 10>
+#textFont: <Verdana 10>
 
 #legal values are a name (without quotes or angle brackets) or nil
 #openBrowserOnClasses: <className1 className2 ...>
