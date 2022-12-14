@@ -111,7 +111,7 @@ createComponents!initialization!public! !
 createSchematicWiring!initialization!public! !
 maximizeCode!public! !
 position:!public! !
-saveCurrentClassTabsToPreferencesFile!menu handlers!public! !
+saveCurrentClassTabsToPreferencesFile!menu handlers!must not strip!public! !
 systemBrowserPresenter!public! !
 toolbarPresenter!private! !
 !
