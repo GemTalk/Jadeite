@@ -26,6 +26,7 @@ applyPreference: preferencesString
 	"only perform messages which are defined by this class"
 
 	| message subStrings |
+	
 	preferencesString trimBlanks subStrings isEmpty ifTrue: [^self].
 	subStrings := preferencesString subStrings.
 	message := subStrings first asSymbol.
@@ -74,10 +75,11 @@ currentTextFont: anObject
 	textFont := anObject!
 
 font: stringWithFontNameSize
-	| fontInfoArray |
+	| fontInfoArray fontName |
 	fontInfoArray := stringWithFontNameSize subStrings.
-	font := Font name: fontInfoArray first pointSize: fontInfoArray last asNumber. 
-	self class displayFontFrom: font.!
+	fontName := (fontInfoArray copyFrom: 1 to: fontInfoArray size - 1) fold: [:a :b | a , ' ' , b].
+	font := Font name: fontName pointSize: fontInfoArray last asNumber.
+	self class displayFontFrom: font!
 
 loggingEnabled: booleanString
 	| boolean |
@@ -199,9 +201,10 @@ sigAbortsProcessEnabled: booleanString
 	JadePresenter sigAbortsProcessEnabled: booleanString = 'true'!
 
 textFont: stringWithFontNameSize
-	| fontInfoArray |
+	| fontInfoArray fontName |
 	fontInfoArray := stringWithFontNameSize subStrings.
-	textFont := Font name: fontInfoArray first pointSize: fontInfoArray last asNumber.
+	fontName := (fontInfoArray copyFrom: 1 to: fontInfoArray size - 1) fold: [:a :b | a , ' ' , b].
+	textFont := Font name: fontName pointSize: fontInfoArray last asNumber.
 	JadeiteScintillaView allInstances do: [:view | view font: textFont]!
 
 transactionMode: transactionMode
@@ -300,8 +303,8 @@ packageGroupsVisible: false
 #packageListVisible: true
 
 #legal values are font name plus font point size
-#font: <Segoe UI 10>
-#textFont: <Verdana 10>
+#font: Segoe UI 10
+#textFont: Verdana 10
 
 #legal values are a name (without quotes or angle brackets) or nil
 #openBrowserOnClasses: <className1 className2 ...>

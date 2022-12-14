@@ -67,6 +67,14 @@ test_additionalAccelerators
 	workspace := prefs openWorkspace: 'nil'.
 	self assert: workspace additionalAccelerators size equals: 1	"should fail if we add a new one"!
 
+test_allowSpacesInArguments
+	| prefs |
+	prefs := JadeitePreferences new session: session.
+	self assert: (prefs allowsSpacesInArgument: #openWorkspace:).
+	self assert: (prefs allowsSpacesInArgument: #openBrowserOnClasses:).
+	self assert: (prefs allowsSpacesInArgument: #font:).
+	self assert: (prefs allowsSpacesInArgument: #textFont:)!
+
 test_autoCommitEnabled
 	| prefs autoCommitWasEnabled |
 	self testsIssue: #issue553 withTitle: 'Jadeite settings in preferences file (3.0.78)'.
@@ -138,6 +146,18 @@ test_everyPreferenceIsInMustNotStripCategory
 			ensure: 
 				[self assert: count >= 10.	"sanity test that we checked every pref at the time test was written"
 				stream close]!
+
+test_fontNameHasSpaces
+	| prefs |
+	self testsIssue: #issue959 withTitle: '[3.2.12] Cannot set font by name in preferences file'.
+	prefs := JadeitePreferences new session: session.
+	prefs applyPreference: 'font: Comic Sans MS 10'.
+	
+	[self assert: View desktop font pointSize equals: 10.
+	self assert: View desktop font name equals: 'Comic Sans MS']
+			ensure: 
+				[JadeitePreferences current resetFont.
+				View desktop font: JadeitePreferences defaultFont]!
 
 test_fontSize
 	| prefs |
@@ -454,6 +474,18 @@ test_textFont
 			self assert: view font name equals: 'Verdana']]
 			ensure: [JadeitePreferences current resetTextFont]!
 
+test_textFontNameHasSpaces
+	| prefs |
+	self testsIssue: #issue959 withTitle: '[3.2.12] Cannot set font by name in preferences file'.
+	prefs := JadeitePreferences new session: session.
+	
+	[prefs applyPreference: 'textFont: Comic Sans MS 10'.
+	JadeiteScintillaView allInstances do: 
+			[:view |
+			self assert: view font pointSize equals: 10.
+			self assert: view font name equals: 'Comic Sans MS']]
+			ensure: [JadeitePreferences current resetTextFont]!
+
 test_validPreferences
 	| prefs validPreferences |
 	self testsIssue: #issue553 withTitle: 'Jadeite settings in preferences file (3.0.78)'.
@@ -469,11 +501,13 @@ primaryTestWindow!accessing!public! !
 rawPreferenceSymbols!private!support! !
 tearDown!private!setup teardown! !
 test_additionalAccelerators!public!tests! !
+test_allowSpacesInArguments!public!tests! !
 test_autoCommitEnabled!public!tests! !
 test_autoCompleteEnabled!public!tests! !
 test_blanksInOpenWorkspaceArguments!public!tests! !
 test_breakpointEnabled!public!tests! !
 test_everyPreferenceIsInMustNotStripCategory!public! !
+test_fontNameHasSpaces!public!tests! !
 test_fontSize!public!tests! !
 test_globalAdditionalAccelerators!public!tests! !
 test_handleMalformedPreference!public!tests! !
@@ -497,6 +531,7 @@ test_saveMultipleClassesInPrefsFile!public!tests! !
 test_setResetFont!public!tests! !
 test_setResetTextFont!public!tests! !
 test_textFont!public!tests! !
+test_textFontNameHasSpaces!public!tests! !
 test_validPreferences!public!tests! !
 !
 
