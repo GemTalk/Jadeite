@@ -612,7 +612,7 @@ test_jadeiteMenuAdHocExecutionItems
 	self assert: displayMenuItem commandDescription acceleratorKey = 4676	"Ctrl-D"!
 
 test_menuBarBrowseProjectsHonorsSelection
-	| randomIndex projectPresenter projectName browseMenu browseProjectsMenuItem projectsPresenter |
+	| randomIndex projectName browseMenu browseProjectsMenuItem projectsPresenter |
 	randomIndex := (Random new next * 4) ceiling.
 	transcript projectListPresenter projectListPresenter selectionByIndex: randomIndex.
 	projectName := transcript projectListPresenter projectListPresenter selection name.
@@ -642,6 +642,68 @@ test_menuNames
 	self denyIsNil: checkoutMenuItem.
 	self assert: checkoutMenuItem command equals: #checkout.
 	self assert: (transcript projectListPresenter class canUnderstand: #checkout)!
+
+test_menuSaveOnlyEnabledOnWorkspace
+	| fileMenu fileSaveItem fileSaveQuery fileSaveAsItem fileSaveAsQuery |
+	self testsIssue: #issue953 withTitle: 'File Browser for server files'.
+	fileMenu := transcript view menuBar items detect: [:menu | '*File*' match: menu text] ifNone: [].
+	fileSaveItem := fileMenu items detect: [:command | command command = #fileSave] ifNone: [].
+	fileSaveQuery := CommandQuery commandDescription: fileSaveItem commandDescription
+				source: transcript view.
+	fileSaveAsItem := fileMenu items detect: [:command | command command = #fileSaveAs] ifNone: [].
+	fileSaveAsQuery := CommandQuery commandDescription: fileSaveAsItem commandDescription
+				source: transcript view.
+	transcript cardContainer view cardLayout firstCard.
+	self assert: transcript cardContainer view currentCard name = 'Transcript'.
+	transcript queryCommand: fileSaveQuery.
+	self deny: fileSaveQuery isEnabled.
+	transcript queryCommand: fileSaveAsQuery.
+	self deny: fileSaveAsQuery isEnabled.
+
+	transcript cardContainer view cardLayout nextCard.
+	self assert: transcript cardContainer view currentCard name = 'history'.
+	transcript queryCommand: fileSaveQuery.
+	self deny: fileSaveQuery isEnabled.
+	transcript queryCommand: fileSaveAsQuery.
+	self deny: fileSaveAsQuery isEnabled.	
+
+	transcript cardContainer view cardLayout nextCard.
+	self assert: transcript cardContainer view currentCard name = 'Stone'.
+	transcript queryCommand: fileSaveQuery.
+	self deny: fileSaveQuery isEnabled.
+	transcript queryCommand: fileSaveAsQuery.
+	self deny: fileSaveAsQuery isEnabled.	
+
+	transcript cardContainer view cardLayout nextCard.
+	self assert: transcript cardContainer view currentCard name = 'My Session'.
+	transcript queryCommand: fileSaveQuery.
+	self deny: fileSaveQuery isEnabled.
+	transcript queryCommand: fileSaveAsQuery.
+	self deny: fileSaveAsQuery isEnabled.	
+
+	transcript cardContainer view cardLayout nextCard.
+	self assert: transcript cardContainer view currentCard name = 'All Sessions'.
+	transcript queryCommand: fileSaveQuery.
+	self deny: fileSaveQuery isEnabled.
+	transcript queryCommand: fileSaveAsQuery.
+	self deny: fileSaveAsQuery isEnabled.	
+
+	transcript cardContainer view cardLayout nextCard.
+	self assert: transcript cardContainer view currentCard name = 'codePane'.
+	transcript queryCommand: fileSaveQuery.
+	self assert: fileSaveQuery isEnabled.
+	transcript queryCommand: fileSaveAsQuery.
+	self assert: fileSaveAsQuery isEnabled.	
+
+	transcript cardContainer view cardLayout nextCard.
+	self assert: transcript cardContainer view currentCard name = 'projectsList'.
+	transcript queryCommand: fileSaveQuery.
+	self deny: fileSaveQuery isEnabled.
+	transcript queryCommand: fileSaveAsQuery.
+	self deny: fileSaveAsQuery isEnabled.	
+
+
+!
 
 test_multiSelectProject
 	| projectServices projectCount |
@@ -959,6 +1021,7 @@ test_implementorsSendersSearchList!public!tests! !
 test_jadeiteMenuAdHocExecutionItems!public!test menus! !
 test_menuBarBrowseProjectsHonorsSelection!public!tests! !
 test_menuNames!public!tests! !
+test_menuSaveOnlyEnabledOnWorkspace!public!test menus! !
 test_multiSelectProject!public!tests! !
 test_openChangesBrowser!public!tests! !
 test_openPreferencesFile!public!tests! !

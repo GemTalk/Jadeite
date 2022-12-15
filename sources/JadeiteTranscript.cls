@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadeTranscript subclass: #JadeiteTranscript
-	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsEnabled autoCompleteEnabled transactionModePresenter lastKnownTransaction'
+	instanceVariableNames: 'projectListPresenter isTranscriptInstalled autoCommit areBreakpointsEnabled autoCompleteEnabled transactionModePresenter lastKnownTransaction cardContainer'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -93,6 +93,12 @@ browseMethodsContaining
 browseSendersOf
 	^JadePresenter browseSendersIn: self gciSession!
 
+cardContainer
+	^cardContainer!
+
+cardContainer: anObject
+	cardContainer := anObject!
+
 committedTransaction
 	self displayLastKnownCommitOrAbort!
 
@@ -105,7 +111,8 @@ createComponents
 	lastKnownTransaction := self add: TextPresenter new name: 'lastKnownTransaction'.
 	lastKnownTransaction value: 'Last Known Commit or Abort: (unknown)'. 
 	transactionModePresenter := self add: RadioButtonSetPresenter new name: 'transactionMode'.
-	transactionModePresenter model: (self aspectValue: #transactionMode)!
+	transactionModePresenter model: (self aspectValue: #transactionMode).
+	cardContainer := self add: Presenter new name: 'cardContainer'. "for testing"!
 
 createNewProject
 	^projectListPresenter createNewProject!
@@ -493,6 +500,8 @@ browseJadeitePrefs!menu handlers!public! !
 browseLiteralReferences!menu handlers!public! !
 browseMethodsContaining!menu handlers!public! !
 browseSendersOf!menu handlers!public! !
+cardContainer!accessing!private! !
+cardContainer:!accessing!private! !
 committedTransaction!event handling!public! !
 commitTransaction!menu handlers!public! !
 createComponents!initialization!public! !
