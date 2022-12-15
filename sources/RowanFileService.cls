@@ -16,6 +16,12 @@ directoryContents
 	self issueCommand.
 	^answer ifNotNil: [self shortNames]!
 
+directoryPath
+	command := #directoryPath.
+	commandArgs := Array new.
+	self issueCommand.
+	^answer!
+
 excludedInstVars
 
 	^super excludedInstVars , #('session')!
@@ -106,6 +112,7 @@ shouldReplicateInstVarAtIndex: index newService: newService
 	^true! !
 !RowanFileService categoriesForMethods!
 directoryContents!commands!public! !
+directoryPath!commands!public! !
 excludedInstVars!private!ston! !
 fileIn!commands!public! !
 fileInChunk:!commands!public! !

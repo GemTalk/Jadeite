@@ -315,7 +315,7 @@ openJadeiteProjectsBrowser
 openServerFile
 	| filePath |
 	filePath := JadeiteServerFileSelectorDialog showOnSession: gciSession
-				defaultPath: '$ROWAN_PROJECTS_HOME'.
+				defaultPath: JadePresenter rowanProjectsHomeEnvVarString.
 	filePath ifNil: [^self].
 	^self basicOpenServerFile: filePath!
 

@@ -913,7 +913,7 @@ AdvancedFindDialog subclass: #JadeiteAdvancedFindDialog
 	classInstanceVariableNames: ''!
 JadeiteServerFileSelectorDialog subclass: #JadeiteLoadProjectDialog
 	instanceVariableNames: 'projectHomeSelector customAttributesList componentList session attributes components resolveStrictCheckbox'
-	classVariableNames: ''
+	classVariableNames: 'PreviousFilePath PreviousProjectHomePath'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteServerFileSelectorDialog subclass: #JadeiteServerFileSaveDialog
@@ -5201,7 +5201,7 @@ executeSelectionOrLine: contextObject shouldDebug: aBoolean
 fileIn
 	| filePath |
 	filePath := JadeiteServerFileSelectorDialog showOnSession: gciSession
-				defaultPath: '$ROWAN_PROJECTS_HOME'.
+				defaultPath: JadePresenter rowanProjectsHomeEnvVarString.
 	filePath ifNil: [^self].
 	self basicFileInFromFile: filePath.
 	MessageBox notify: 'Successful fileIn: ' , filePath!
@@ -5487,7 +5487,7 @@ openServerFile
 	| filePath |
 	self codePane isOkayToChange ifFalse:[^self]. 
 	filePath := JadeiteServerFileSelectorDialog showOnSession: gciSession
-				defaultPath: '$ROWAN_PROJECTS_HOME'.
+				defaultPath: JadePresenter rowanProjectsHomeEnvVarString.
 	filePath ifNil: [^self].
 	^self basicOpenServerFile: filePath! !
 !JadeWorkspace categoriesForMethods!
