@@ -23,6 +23,11 @@ pathText
 	^fileSelectorPresenter pathText!
 
 select
+	| service |
+	service := RowanFileService new
+				path: fileSelectorPresenter newPathText;
+				session: model session.
+	service isDirectory ifTrue: [^MessageBox notify: 'Cannot open a directory'].
 	fileSelectorPresenter selectionMade.
 	self ok.
 	^fileSelectorPresenter pathText value!

@@ -58,6 +58,12 @@ fileOutMethods: array
 indexOfSessionInstVar
 	^10!
 
+isDirectory
+	command := #isDirectory.
+	commandArgs := Array new. 
+	self issueCommand.
+	^answer!
+
 isDirectory: directory
 	command := #isDirectory:.
 	commandArgs := Array with: path , '/' , directory.
@@ -120,6 +126,7 @@ fileName!commands!public! !
 fileOutDictionaries:!commands!public! !
 fileOutMethods:!commands!public! !
 indexOfSessionInstVar!public!ston! !
+isDirectory!commands!public! !
 isDirectory:!commands!public! !
 issueCommand!commands!public! !
 parentDirectoryPath!commands!public! !
