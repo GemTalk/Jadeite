@@ -358,7 +358,6 @@ setCaretToEndOfSelection
 !
 
 setDocumentPresenterWith: aJadeGsClassShape
-
 	documentPresenter lastGsShape: aJadeGsClassShape!
 
 setFont

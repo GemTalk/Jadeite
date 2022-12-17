@@ -164,7 +164,6 @@ gciSession: aGciSession
 !
 
 getDocumentData
-
 	^documentPresenter value ifNil: [''] ifNotNil: [:x | x asString].
 !
 
@@ -350,7 +349,6 @@ selectLfIfEndingOnCr
 !
 
 setDocumentData: aString
-
 	documentPresenter value: aString.
 !
 

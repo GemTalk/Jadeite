@@ -20,7 +20,8 @@ onViewOpened
 	super onViewOpened.
 	(view isKindOf: ScintillaView) ifFalse: [^self].
 	view textStyles: JadeiteTextStyles default textStyles.
-	view indicatorStyles: JadeiteTextStyles default defaultIndicatorStyles!
+	view indicatorStyles: JadeiteTextStyles default defaultIndicatorStyles.
+	view text: model value!
 
 selection
 
