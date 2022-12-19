@@ -28,7 +28,7 @@ saveDocument
 	| service |
 	service := RowanFileService new
 				command: #write:;
-				commandArgs: (Array with: codePane documentPresenter value);
+				commandArgs: (Array with: codePane documentPresenter value replaceCrLfWithLf);
 				path: path.
 	self issueCommand: service.
 	codePane documentPresenter view isModified: false. !
@@ -46,7 +46,7 @@ writeDocumentTo: newPath
 	| service |
 	service := RowanFileService new
 				command: #write:;
-				commandArgs: (Array with: codePane documentPresenter value);
+				commandArgs: (Array with: codePane documentPresenter value replaceCrLfWithLf);
 				path: newPath.
 	self issueCommand: service.
 	codePane documentPresenter view isModified: false.

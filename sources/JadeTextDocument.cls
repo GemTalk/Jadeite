@@ -164,6 +164,7 @@ gciSession: aGciSession
 !
 
 getDocumentData
+
 	^documentPresenter value ifNil: [''] ifNotNil: [:x | x asString].
 !
 

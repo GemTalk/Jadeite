@@ -339,6 +339,34 @@ test_fileSaveFromWorkspace
 	self assert: (session executeString: 'GsFile existsOnServer: ''' , targetPath , '''')]
 			ensure: [session executeString: 'GsFile removeServerFile: ''' , targetPath , '''']!
 
+test_fileSaveWithUnicode
+	| service |
+	self testsIssue: #issue988
+		withTitle: '[3.2.13] Saving a server text file with extended characters is not good'.
+	self writeUnicodeFile.
+	workspace := JadeiteServerFileWorkspace showOnSession: session
+				path: '/export/uffda2/users/ewinger/logs//testJadeiteUnicodeFile.txt'.
+	
+	[self assert: workspace codePane documentPresenter value
+		equals: 'This is some unicode text
+  
+ý š
+
+Another extended char - Ü  aaa œ'
+				replaceCrLfWithLf.
+	workspace codePane documentPresenter value: 'ò ó ô õ ö ÷ ø ù ú û'.
+	workspace saveDocument]
+			ensure: [self destroy: workspace].
+	workspace := JadeiteServerFileWorkspace showOnSession: session
+				path: '/export/uffda2/users/ewinger/logs//testJadeiteUnicodeFile.txt'.
+	self assert: workspace codePane documentPresenter value
+		equals: 'ò ó ô õ ö ÷ ø ù ú û' replaceCrLfWithLf.
+	service := RowanFileService new.
+	service
+		command: #deleteFileWithUnicode;
+		commandArgs: Array new.
+	service issueCommand: service session: session!
+
 test_findInWorkspace
 	| workspace findView documentPresenter |
 	self testsIssue: #issue468 withTitle: 'Find text dialog does not highlight correctly'.
@@ -910,7 +938,17 @@ testMethodServiceClassNameIsString
 				selector: 'fnoodle';
 				className: #JadeiteMiscellaneousTestCase;
 				meta: false.
-	self assert: methodService className isKindOf: String! !
+	self assert: methodService className isKindOf: String!
+
+writeUnicodeFile
+	"write out a text file with unicode characters"
+
+	| service |
+	service := RowanFileService new.
+	service
+		command: #writeFileWithUnicode;
+		commandArgs: Array new.
+	service issueCommand: service session: session! !
 !JadeiteMiscellaneousTestCase categoriesForMethods!
 tearDown!private!support! !
 test_adHocCompileError!public! !
@@ -935,6 +973,7 @@ test_dolphinStackDumpBanners!public!test! !
 test_fileSaveDialog!public!test file! !
 test_fileSaveDialogBasics!public!test file! !
 test_fileSaveFromWorkspace!public!test file! !
+test_fileSaveWithUnicode!public!test file! !
 test_findInWorkspace!public!test! !
 test_instVarConstants!public!test! !
 test_releaseOops!public! !
@@ -968,5 +1007,6 @@ test_workspaceSymbolWithQuotesSenders!public!test browse!test workspaces! !
 test_workspaceUnsavedChanges!public!test!test workspaces! !
 testClassServiceNameIsString!public! !
 testMethodServiceClassNameIsString!public! !
+writeUnicodeFile!public!support! !
 !
 
