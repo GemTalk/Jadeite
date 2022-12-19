@@ -16,7 +16,7 @@ codePane
 	^codePane!
 
 editRevert
-	documentPresenter value: lastSave!
+	codePane documentPresenter value: lastSave!
 
 queryCommand: aCommandQuery
 
@@ -31,7 +31,7 @@ queryCommand: aCommandQuery
 setEnvironment: anInteger
 
 	environment := anInteger.
-	documentPresenter parentPresenter environment: anInteger.
+	codePane documentPresenter parentPresenter environment: anInteger.
 	self updateCaption.
 !
 
