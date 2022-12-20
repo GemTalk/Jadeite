@@ -21,11 +21,6 @@ autocompletion
 	JadeAutocompletationConfigurationShell show.
 !
 
-browseMonticelloRepositories
-
-	self jadeBrowseMonticello.
-!
-
 createComponents
 
 	super createComponents.
@@ -189,7 +184,6 @@ turnAutoMigrateOn
 allSessionsPresenter!accessing!private! !
 allSessionsPresenter:!accessing!private! !
 autocompletion!event handling!public! !
-browseMonticelloRepositories!event handling!public! !
 createComponents!public! !
 createSchematicWiring!public! !
 currentCardChanged!public! !

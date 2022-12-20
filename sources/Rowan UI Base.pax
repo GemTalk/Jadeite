@@ -617,6 +617,7 @@ package setPrerequisites: #(
 	'Jade Transcript'
 	'Jade UI'
 	'Jade UI Base'
+	'Jade User Browser'
 	'Monticello'
 	'Object Log Browser'
 	'Rowan Client Services 2'

@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 GsObject subclass: #GsUserProfile
 	instanceVariableNames: 'lastLoginTime remainingLogins isDisabled maxSessions language disabledReason lastPasswordChange isSpecial'
@@ -129,20 +129,22 @@ symbolList
 	list := list collect: [:each | GsSymbolDictionary new initialize: each session: gciSession].
 	^list.
 ! !
-!GsUserProfile categoriesFor: #disabledReason!public! !
-!GsUserProfile categoriesFor: #editGroup:value:!public! !
-!GsUserProfile categoriesFor: #editPrivilege:value:!public! !
-!GsUserProfile categoriesFor: #groupList!public! !
-!GsUserProfile categoriesFor: #initialize:!public! !
-!GsUserProfile categoriesFor: #isDisabled!public! !
-!GsUserProfile categoriesFor: #isSpecial!public! !
-!GsUserProfile categoriesFor: #language!public! !
-!GsUserProfile categoriesFor: #lastLoginTime!public! !
-!GsUserProfile categoriesFor: #lastPasswordChange!public! !
-!GsUserProfile categoriesFor: #maxSessions!public! !
-!GsUserProfile categoriesFor: #privilegeList!public! !
-!GsUserProfile categoriesFor: #remainingLogins!public! !
-!GsUserProfile categoriesFor: #symbolList!public! !
+!GsUserProfile categoriesForMethods!
+disabledReason!public! !
+editGroup:value:!public! !
+editPrivilege:value:!public! !
+groupList!public! !
+initialize:!public! !
+isDisabled!public! !
+isSpecial!public! !
+language!public! !
+lastLoginTime!public! !
+lastPasswordChange!public! !
+maxSessions!public! !
+privilegeList!public! !
+remainingLogins!public! !
+symbolList!public! !
+!
 
 !GsUserProfile class methodsFor!
 
@@ -154,5 +156,7 @@ allIn: aGciSession
 	list := list collect: [:each | self new initialize: each session: aGciSession].
 	^list.
 ! !
-!GsUserProfile class categoriesFor: #allIn:!public! !
+!GsUserProfile class categoriesForMethods!
+allIn:!public! !
+!
 

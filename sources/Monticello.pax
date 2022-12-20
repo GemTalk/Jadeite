@@ -16,7 +16,6 @@ package classNames
 	add: #MCModificationTestCase;
 	add: #MCOrganizationDefinition;
 	add: #MCPatchBrowser;
-	add: #MCRepositoryBrowser;
 	add: #MCVersionDialog;
 	add: #MCVersionName;
 	yourself.
@@ -25,8 +24,6 @@ package methodNames
 	add: #JadeServer32bit -> #mcInitialsA:;
 	add: #JadeServer64bit -> #mcInitialsA:;
 	add: #JadeServer64bit32 -> #gsPackagePolicy;
-	add: #JadeTextDocument -> #jadeBrowseMonticello;
-	add: #JadeToolsToolBarPresenter -> #browseMonticello;
 	add: #MCAddition -> #initialize:;
 	add: #MCModification -> #initialize:;
 	add: #MCPackage -> #versionNames:;
@@ -45,23 +42,18 @@ package setPrerequisites: #(
 	'..\Core\Object Arts\Dolphin\MVP\Base\Dolphin Basic Geometry'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Boolean\Dolphin Boolean Presenter'
 	'..\Core\Object Arts\Dolphin\MVP\Views\Cards\Dolphin Card Containers'
-	'..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Choice Prompter'
 	'..\Core\Object Arts\Dolphin\MVP\Views\Common Controls\Dolphin Common Controls'
-	'..\Core\Object Arts\Dolphin\MVP\Dialogs\Common\Dolphin Common Dialogs'
 	'..\Core\Object Arts\Dolphin\MVP\Models\List\Dolphin List Models'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\List\Dolphin List Presenter'
-	'..\Core\Object Arts\Dolphin\Base\Dolphin Message Box'
 	'..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Prompter'
-	'..\Core\Object Arts\Dolphin\MVP\Presenters\Text\Dolphin Rich Text Presenter'
 	'..\Core\Object Arts\Dolphin\MVP\Views\Scintilla\Dolphin Scintilla View'
 	'..\Core\Object Arts\Dolphin\MVP\Presenters\Text\Dolphin Text Presenter'
 	'..\Core\Object Arts\Dolphin\MVP\Type Converters\Dolphin Type Converters'
 	'..\Core\Object Arts\Dolphin\MVP\Models\Value\Dolphin Value Models'
 	'GemStone C Interface'
 	'GemStone Session'
-	'Jade UI Base'
-	'..\Core\Object Arts\Dolphin\ActiveX\Shell\Windows Shell Namespace').
+	'Jade UI Base').
 
 package!
 
@@ -112,11 +104,6 @@ JadeShell subclass: #MCPatchBrowser
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeShell subclass: #MCRepositoryBrowser
-	instanceVariableNames: 'repositoryListPresenter packageListPresenter versionListPresenter repositoryCreationTemplatePresenter versionNamePresenter versionDatePresenter versionTimePresenter versionAuthorPresenter versionIDPresenter versionAncestorsPresenter versionStepChildrenPresenter versionMessagePresenter loadedVersionNames'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
 TestCase2 subclass: #MCModificationTestCase
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -140,7 +127,9 @@ mcInitialsA: aString
 	super mcInitialsA: aString.
 	^true.
 ! !
-!JadeServer32bit categoriesFor: #mcInitialsA:!Monticello!public! !
+!JadeServer32bit categoriesForMethods!
+mcInitialsA:!Monticello!public! !
+!
 
 !JadeServer64bit methodsFor!
 
@@ -153,7 +142,9 @@ mcInitialsA: aString
 		ex return: false.
 	].
 ! !
-!JadeServer64bit categoriesFor: #mcInitialsA:!Monticello!public! !
+!JadeServer64bit categoriesForMethods!
+mcInitialsA:!Monticello!public! !
+!
 
 !JadeServer64bit32 methodsFor!
 
@@ -165,28 +156,9 @@ gsPackagePolicy
 	class enabled ifFalse: [^nil].
 	^class current
 ! !
-!JadeServer64bit32 categoriesFor: #gsPackagePolicy!public! !
-
-!JadeTextDocument methodsFor!
-
-jadeBrowseMonticello
-
-	gciSession hasServer ifTrue: [
-		^MCRepositoryBrowser showOnSession: gciSession.
-	].
-	MessageBox
-		warning: 'Server initialization failed at login.'
-		caption: 'Unable to Open Browser'.
-! !
-!JadeTextDocument categoriesFor: #jadeBrowseMonticello!Jade!private! !
-
-!JadeToolsToolBarPresenter methodsFor!
-
-browseMonticello
-
-	MCRepositoryBrowser showOnSession: gciSession.
-! !
-!JadeToolsToolBarPresenter categoriesFor: #browseMonticello!public! !
+!JadeServer64bit32 categoriesForMethods!
+gsPackagePolicy!public! !
+!
 
 !MCAddition methodsFor!
 
@@ -194,7 +166,9 @@ initialize: aStream
 
 	definition := MCDefinition fromStream: aStream.
 ! !
-!MCAddition categoriesFor: #initialize:!public! !
+!MCAddition categoriesForMethods!
+initialize:!public! !
+!
 
 !MCModification methodsFor!
 
@@ -203,7 +177,9 @@ initialize: aStream
 	obsoletion := MCDefinition fromStream: aStream.
 	modification := MCDefinition fromStream: aStream.
 ! !
-!MCModification categoriesFor: #initialize:!public! !
+!MCModification categoriesForMethods!
+initialize:!public! !
+!
 
 !MCPackage methodsFor!
 
@@ -223,7 +199,9 @@ versionNames: aList
 	list := list asSortedCollection.	"at first it seemed that the server provided them in order but that seems to not be consistent"
 	list := list collect: [:each | MCVersionName new name: each value].
 	versionNames := list.! !
-!MCPackage categoriesFor: #versionNames:!accessing!public! !
+!MCPackage categoriesForMethods!
+versionNames:!accessing!public! !
+!
 
 !MCRemoval methodsFor!
 
@@ -231,7 +209,9 @@ initialize: aStream
 
 	definition := MCDefinition fromStream: aStream.
 ! !
-!MCRemoval categoriesFor: #initialize:!public! !
+!MCRemoval categoriesForMethods!
+initialize:!public! !
+!
 
 "End of package definition"!
 
