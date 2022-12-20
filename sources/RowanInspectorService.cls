@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 RowanService subclass: #RowanInspectorService
-	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray isOop instVarNames instVarsAreRemovable isDictionary isVariable selectionOop isUnordered statusText name'
+	instanceVariableNames: 'oop objects myself className indexedSize visibleIndices nextIndices maxIndexedVars compileErrorArray isOop instVarNames instVarsAreRemovable isDictionary isVariable selectionOop isUnordered statusText name isStringObject'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -93,6 +93,17 @@ inspect: oopOrObject session: session inWindow: handle
 		commandArgs: (Array with: oop with: handle).
 	BrowserUpdate current issueCommands: (Array with: self) session: session!
 
+inspectBytes: oopOrObject session: session inWindow: handle
+	oop := (oopOrObject isKindOf: ExternalInteger)
+				ifTrue: [oopOrObject value]
+				ifFalse: 
+					[isOop := false.
+					oopOrObject].
+	self
+		command: #inspectBytes:inWindow:;
+		commandArgs: (Array with: oop with: handle).
+	BrowserUpdate current issueCommands: (Array with: self) session: session!
+
 instVarNames
 	^instVarNames!
 
@@ -115,6 +126,9 @@ isInspectorService
 isShowingAllIndexedVars
 
 	^visibleIndices = indexedSize!
+
+isStringObject
+	^isStringObject!
 
 isUnordered
 	^isUnordered!
@@ -226,6 +240,7 @@ indexedSize:!accessing!private! !
 initialize!initialization!public! !
 inspect:session:!inspecting!public! !
 inspect:session:inWindow:!inspecting!public! !
+inspectBytes:session:inWindow:!inspecting!public! !
 instVarNames!accessing!private! !
 instVarNames:!accessing!private! !
 instVarsAreRemovable!accessing!private! !
@@ -233,6 +248,7 @@ instVarsAreRemovable:!accessing!private! !
 isDictionary!accessing!public! !
 isInspectorService!public!testing! !
 isShowingAllIndexedVars!public!testing! !
+isStringObject!accessing!public! !
 isUnordered!accessing!private! !
 isUnordered:!accessing!private! !
 isVariable!accessing!private! !

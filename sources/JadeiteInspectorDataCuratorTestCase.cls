@@ -941,6 +941,37 @@ test_inspectBag
 	self assert: inspector instVarListPresenter selection key equals: '''abc'''.
 	self assert: inspector instVarListPresenter list size equals: 9!
 
+test_inspectBytes
+	| remoteObject bytesInspector |
+	remoteObject := session
+				executeString: '''abcŠ'' copy'
+				fromContext: nil
+				environment: 0.
+	inspector := JadeInspector showOn: remoteObject session: session.
+	bytesInspector := inspector inspectBytes.
+	
+	[self assert: bytesInspector instVarListPresenter list size equals: 10.
+	self assert: ('Inspector on ByteArray*' match: bytesInspector caption).
+	self assert: bytesInspector documentPresenter value
+		equals: 'aByteArray( 0, 97, 0, 98, 0, 99, 1, 96)'.
+	bytesInspector instVarListPresenter selectionByIndex: 3.
+	self assert: bytesInspector documentPresenter value equals: '0'.
+	bytesInspector instVarListPresenter selectionByIndex: 4.
+	self assert: bytesInspector documentPresenter value equals: '97'.
+	bytesInspector instVarListPresenter selectionByIndex: 5.
+	self assert: bytesInspector documentPresenter value equals: '0'.
+	bytesInspector instVarListPresenter selectionByIndex: 6.
+	self assert: bytesInspector documentPresenter value equals: '98'.
+	bytesInspector instVarListPresenter selectionByIndex: 7.
+	self assert: bytesInspector documentPresenter value equals: '0'.
+	bytesInspector instVarListPresenter selectionByIndex: 8.
+	self assert: bytesInspector documentPresenter value equals: '99'.
+	bytesInspector instVarListPresenter selectionByIndex: 9.
+	self assert: bytesInspector documentPresenter value equals: '1'.
+	bytesInspector instVarListPresenter selectionByIndex: 10.
+	self assert: bytesInspector documentPresenter value equals: '96']
+			ensure: [self destroy: bytesInspector]!
+
 test_inspectDoubleByteString
 	| service |
 	inspector := JadeiteInspector new gciSession: session.
@@ -2036,6 +2067,7 @@ test_fullInspectArray!public! !
 test_globalAdditionalAccelerators!public!tests! !
 test_inspectAsOopField!public! !
 test_inspectBag!public! !
+test_inspectBytes!public!tests! !
 test_inspectDoubleByteString!public! !
 test_inspectIdentityBag!public! !
 test_inspectInstVarInNewWindow!public!tests add remove! !
