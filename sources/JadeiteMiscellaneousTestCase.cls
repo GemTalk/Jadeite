@@ -238,6 +238,15 @@ test_autocompleteSymbolsNotAddedToIfAutocompleteOff
 		category: 'deleteme'.
 	self assert: (JadeiteSearch allSelectorSymbols includes: #covid19)!
 
+test_browseUsersDoesNotDecay
+	"old tool, just make sure it still opens"
+
+	| userBrowser |
+	self testsIssue: #issue549
+		withTitle: 'User Browser hard-to-find, and while otherwise read-only, allows you to add user (3.0.78)'.
+	userBrowser := transcript browseUsers.
+	[self assert: (userBrowser isKindOf: AllUsersShell)] ensure: [self destroy: userBrowser]!
+
 test_convertToPattern
 	| pattern |
 	self testsIssue: #issue258
@@ -966,6 +975,7 @@ test_autocompleteSaveClassSymbolAdded!public!test auto complete!test methods! !
 test_autocompleteSaveMethodSymbolAdded!public!test auto complete!test methods! !
 test_autocompleteSort!public!test!test auto complete! !
 test_autocompleteSymbolsNotAddedToIfAutocompleteOff!public!test auto complete!test methods! !
+test_browseUsersDoesNotDecay!public!test! !
 test_convertToPattern!public!test! !
 test_createProjectEditorCreateProject!public!test! !
 test_createProjectEditorProjectsChanged!public!test! !

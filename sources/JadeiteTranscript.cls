@@ -94,7 +94,7 @@ browseSendersOf
 	^JadePresenter browseSendersIn: self gciSession!
 
 browseUsers
-	AllUsersShell showOnSession: gciSession.
+	^AllUsersShell showOnSession: gciSession.
 !
 
 cardContainer

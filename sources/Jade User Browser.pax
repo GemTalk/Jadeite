@@ -1,4 +1,4 @@
-| package |
+﻿| package |
 package := Package name: 'Jade User Browser'.
 package paxVersion: 1;
 	basicComment: ''.
@@ -20,7 +20,6 @@ package methodNames
 	add: #JadeServer32bit -> #addUser:toStream:;
 	add: #JadeServer64bit -> #addUser:toStream:;
 	add: #JadeTextDocument -> #jadeBrowseUsers;
-	add: #JadeToolsToolBarPresenter -> #browseUsers;
 	yourself.
 
 package binaryGlobalNames: (Set new
@@ -29,23 +28,24 @@ package binaryGlobalNames: (Set new
 package globalAliases: (Set new
 	yourself).
 
-package setPrerequisites: (IdentitySet new
-	add: '..\Core\Object Arts\Dolphin\Base\Dolphin';
-	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Boolean\Dolphin Boolean Presenter';
-	add: '..\Core\Object Arts\Dolphin\MVP\Views\Cards\Dolphin Card Containers';
-	add: '..\Core\Object Arts\Dolphin\MVP\Views\Common Controls\Dolphin Common Controls';
-	add: '..\Core\Object Arts\Dolphin\MVP\Models\List\Dolphin List Models';
-	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\List\Dolphin List Presenter';
-	add: '..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base';
-	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Number\Dolphin Number Presenter';
-	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Prompter';
-	add: '..\Core\Object Arts\Dolphin\MVP\Presenters\Text\Dolphin Text Presenter';
-	add: '..\Core\Object Arts\Dolphin\MVP\Type Converters\Dolphin Type Converters';
-	add: '..\Core\Object Arts\Dolphin\MVP\Models\Value\Dolphin Value Models';
-	add: 'GemStone Session';
-	add: 'Jade UI Base';
-	add: '..\Core\Contributions\Solutions Software\SSW EditableListView';
-	yourself).
+package setPrerequisites: #(
+	'..\Core\Object Arts\Dolphin\Base\Dolphin'
+	'..\Core\Object Arts\Dolphin\MVP\Base\Dolphin Basic Geometry'
+	'..\Core\Object Arts\Dolphin\MVP\Presenters\Boolean\Dolphin Boolean Presenter'
+	'..\Core\Object Arts\Dolphin\MVP\Views\Cards\Dolphin Card Containers'
+	'..\Core\Object Arts\Dolphin\MVP\Views\Common Controls\Dolphin Common Controls'
+	'..\Core\Object Arts\Dolphin\MVP\Models\List\Dolphin List Models'
+	'..\Core\Object Arts\Dolphin\MVP\Presenters\List\Dolphin List Presenter'
+	'..\Core\Object Arts\Dolphin\Base\Dolphin Message Box'
+	'..\Core\Object Arts\Dolphin\MVP\Base\Dolphin MVP Base'
+	'..\Core\Object Arts\Dolphin\MVP\Presenters\Number\Dolphin Number Presenter'
+	'..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Prompter'
+	'..\Core\Object Arts\Dolphin\MVP\Presenters\Text\Dolphin Text Presenter'
+	'..\Core\Object Arts\Dolphin\MVP\Type Converters\Dolphin Type Converters'
+	'..\Core\Object Arts\Dolphin\MVP\Models\Value\Dolphin Value Models'
+	'GemStone Session'
+	'Jade UI Base'
+	'..\Core\Contributions\Solutions Software\SSW EditableListView').
 
 package!
 
@@ -104,7 +104,9 @@ addUser: aUserProfile toStream: aStream
 		addUser: aUserProfile 
 		toStream: aStream.
 ! !
-!JadeServer32bit categoriesFor: #addUser:toStream:!public!UserProfile! !
+!JadeServer32bit categoriesForMethods!
+addUser:toStream:!public!UserProfile! !
+!
 
 !JadeServer64bit methodsFor!
 
@@ -119,7 +121,9 @@ addUser: aUserProfile toStream: aStream
 		ex return.
 	].
 ! !
-!JadeServer64bit categoriesFor: #addUser:toStream:!public!UserProfile! !
+!JadeServer64bit categoriesForMethods!
+addUser:toStream:!public!UserProfile! !
+!
 
 !JadeTextDocument methodsFor!
 
@@ -132,15 +136,9 @@ jadeBrowseUsers
 		warning: 'Server initialization failed at login.'
 		caption: 'Unable to Open Browser'.
 ! !
-!JadeTextDocument categoriesFor: #jadeBrowseUsers!Jade!private! !
-
-!JadeToolsToolBarPresenter methodsFor!
-
-browseUsers
-
-	AllUsersShell showOnSession: gciSession.
-! !
-!JadeToolsToolBarPresenter categoriesFor: #browseUsers!public! !
+!JadeTextDocument categoriesForMethods!
+jadeBrowseUsers!Jade!private! !
+!
 
 "End of package definition"!
 

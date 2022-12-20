@@ -112,6 +112,7 @@ package setPrerequisites: #(
 	'Jade Test Browser'
 	'Jade UI'
 	'Jade UI Base'
+	'Jade User Browser'
 	'Rowan Client Services 2'
 	'Rowan UI Base'
 	'..\Core\Contributions\Solutions Software\SSW EditableListView'
