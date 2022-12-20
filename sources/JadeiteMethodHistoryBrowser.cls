@@ -65,10 +65,12 @@ diff
 methodHistoryUpdated: newMethodService
 	self methodService = newMethodService
 		ifTrue: 
-			[history add: (Array
-						with: #sources
-						with: newMethodService selector
-						with: newMethodService source)].
+			[history last last = newMethodService source
+				ifFalse: 
+					[history add: (Array
+								with: #sources
+								with: newMethodService selector
+								with: newMethodService source)]].
 	self updateSelection!
 
 methodService

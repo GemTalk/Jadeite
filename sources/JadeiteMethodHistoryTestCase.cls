@@ -25,6 +25,30 @@ tearDown
 	super tearDown.
 	methodHistoryBrowser ifNotNil: [methodHistoryBrowser view close]!
 
+test_dontAddToHistoryIfIdenticalSource
+	"we were incrementing the history gui when a method 
+	was selected. That made it look like the history was bigger
+	than it really was"
+
+	self setupProjectBrowser.
+	self selectRowanSample1Class.
+	self
+		saveMethod: 'test_openMethodHistory  ^1'
+		in: 'RowanSample1'
+		category: 'other'.
+	
+	[self selectMethodNamed: #test_openMethodHistory.
+	methodHistoryBrowser := self projectsPresenter browseMethodHistory.
+	self assert: methodHistoryBrowser source equals: 'test_openMethodHistory  ^1'.
+	self assert: methodHistoryBrowser slider value equals: 2.
+	self assert: methodHistoryBrowser slider view isEnabled.
+	self assert: methodHistoryBrowser history size equals: 2.
+	10 timesRepeat: 
+			[self selectRowanSample1Class.	"will deselect method"
+			self selectMethodNamed: #test_openMethodHistory.
+			self assert: methodHistoryBrowser history size equals: 2]]
+			ensure: [self removeMethodHistoryFor: self methodListPresenter selections first]!
+
 test_openMethodHistory
 	self setupProjectBrowser.
 	self selectRowanSample1Class.
@@ -111,6 +135,7 @@ test_updateAfterMethodCompile
 !JadeiteMethodHistoryTestCase categoriesForMethods!
 removeMethodHistoryFor:!public!support! !
 tearDown!public!setup teardown! !
+test_dontAddToHistoryIfIdenticalSource!public!tests! !
 test_openMethodHistory!public!tests! !
 test_openMethodHistoryWithHistory!public!tests! !
 test_sliderClick!public!tests! !
