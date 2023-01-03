@@ -37,6 +37,7 @@ package classNames
 	add: #JadeiteTestResource;
 	add: #JadeiteTransactionModeTestCase;
 	add: #JadeiteTranscriptTestCase;
+	add: #JadeiteWorkspaceTestCase;
 	add: #TestFileSaveDialog;
 	add: #TestJadeErrorShell;
 	add: #TestLoggingService;
@@ -256,6 +257,11 @@ JadeiteAbstractTestCase subclass: #JadeiteTransactionModeTestCase
 	classInstanceVariableNames: ''!
 JadeiteAbstractTestCase subclass: #JadeiteTranscriptTestCase
 	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadeiteAbstractTestCase subclass: #JadeiteWorkspaceTestCase
+	instanceVariableNames: 'workspace'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
