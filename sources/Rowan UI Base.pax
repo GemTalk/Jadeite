@@ -368,6 +368,7 @@ package methodNames
 	add: #JadeTextDocument -> #onPromptToSaveChanges:;
 	add: #JadeTextDocument -> #openDictionaryBrowser;
 	add: #JadeTextDocument -> #openProjectsBrowser;
+	add: #JadeTextDocument -> #openUnsavedChangesDialog;
 	add: #JadeTextDocument -> #raiseConsole;
 	add: #JadeTextDocument -> #registerWindow:rootObject:;
 	add: #JadeTextDocument -> #update:afterStonReplication:;
@@ -515,11 +516,16 @@ package methodNames
 	add: 'JadePresenter class' -> #clearMethodBreakpoints:in:;
 	add: 'JadePresenter class' -> #convertToPattern:;
 	add: 'JadePresenter class' -> #defaultCaptionText:;
+	add: 'JadePresenter class' -> #defaultUnsavedChangesActionButton;
 	add: 'JadePresenter class' -> #defaultUnsavedChangesText;
+	add: 'JadePresenter class' -> #defaultUnsavedChangesWithSaveActionButton;
+	add: 'JadePresenter class' -> #defaultUnsavedChangesWithSaveText;
 	add: 'JadePresenter class' -> #defaultWindowOffset;
 	add: 'JadePresenter class' -> #defaultWindowPosition;
 	add: 'JadePresenter class' -> #disableAllBreakpointsIn:;
 	add: 'JadePresenter class' -> #disableMethodBreakpoints:in:;
+	add: 'JadePresenter class' -> #displayUnsavedChangesIn:with:for:;
+	add: 'JadePresenter class' -> #displayUnsavedChangesWithSaveIn:with:for:;
 	add: 'JadePresenter class' -> #enableAllBreakpointsIn:;
 	add: 'JadePresenter class' -> #enableMethodBreakpoints:in:;
 	add: 'JadePresenter class' -> #findMethodIn:class:presenter:;
@@ -544,10 +550,10 @@ package methodNames
 	add: 'JadePresenter class' -> #transactionMode:;
 	add: 'JadePresenter class' -> #transactionMode:session:;
 	add: 'JadePresenter class' -> #turnOffAutoCommitIn:;
-	add: 'JadePresenter class' -> #unsavedChangesInvalidSessionDialogIn:;
-	add: 'JadePresenter class' -> #unsavedChangesInvalidSessionDialogIn:text:;
-	add: 'JadePresenter class' -> #unsavedChangesValidSessionDialogIn:;
-	add: 'JadePresenter class' -> #unsavedChangesValidSessionDialogIn:text:;
+	add: 'JadePresenter class' -> #unsavedChangesDialogIn:;
+	add: 'JadePresenter class' -> #unsavedChangesDialogIn:text:;
+	add: 'JadePresenter class' -> #unsavedChangesDialogWithSaveIn:;
+	add: 'JadePresenter class' -> #unsavedChangesDialogWithSaveIn:text:;
 	add: 'JadeServer class' -> #gsString;
 	add: 'JadeServer64bit32 class' -> #gsClassDefinitionStringFor:;
 	add: 'JadeSessionManager class' -> #dump:toFileNamed:andStop:;
@@ -3372,8 +3378,21 @@ convertToPattern: wildcardString
 defaultCaptionText: presenter
 	^'Unsaved changes warning in ' , presenter view topShell caption , '!!'!
 
+defaultUnsavedChangesActionButton
+	"intention revealing cancel default button"
+
+	^2!
+
 defaultUnsavedChangesText
-	^'You have unsaved changes: continue editing?'!
+	^'You have unsaved changes. Really exit?'!
+
+defaultUnsavedChangesWithSaveActionButton
+	"intention revealing cancel default button"
+
+	^3!
+
+defaultUnsavedChangesWithSaveText
+	^'You have unsaved changes: Save document?'!
 
 defaultWindowOffset
 	^25 @ 25!
@@ -3395,6 +3414,21 @@ disableMethodBreakpoints: methodServices in: session
 	| service |
 	service := RowanAnsweringService command: #disableMethodBreaks: withArgs: (Array with: methodServices).
 	self issueCommands: (Array with: service) session: session!
+
+displayUnsavedChangesIn: messageBox with: text for: presenter
+	^messageBox
+		caption: (self defaultCaptionText: presenter);
+		defaultButton: self defaultUnsavedChangesActionButton;
+		confirm: text!
+
+displayUnsavedChangesWithSaveIn: messageBox with: text for: presenter
+	^messageBox
+		defaultButton: self defaultUnsavedChangesWithSaveActionButton;
+		caption: (self defaultCaptionText: presenter);
+		confirm: text
+			onYes: [true]
+			onNo: [false]
+			onCancel: [nil]!
 
 enableAllBreakpointsIn: session
 	| service |
@@ -3526,20 +3560,33 @@ turnOffAutoCommitIn: session
 		commandArgs: (Array with: false).
 	self issueCommand: autoCommitService session: session!
 
-unsavedChangesInvalidSessionDialogIn: presenter
-	^self unsavedChangesInvalidSessionDialogIn: presenter text: 'Copy changes to Clipboard?'!
+unsavedChangesDialogIn: presenter
+	^self unsavedChangesDialogIn: presenter
+		text: (GciSession isCurrentSessionValid
+				ifTrue: [self defaultUnsavedChangesText]
+				ifFalse: ['Copy changes to Clipboard?'])!
 
-unsavedChangesInvalidSessionDialogIn: presenter text: text
-	^MessageBox confirm: text caption: (self defaultCaptionText: presenter)!
+unsavedChangesDialogIn: presenter text: text
+	| messageBox |
+	messageBox := MessageBox new owner: presenter view.
+	^self
+		displayUnsavedChangesIn: messageBox
+		with: text
+		for: presenter!
 
-unsavedChangesValidSessionDialogIn: presenter
-	^self unsavedChangesValidSessionDialogIn: presenter text: self defaultUnsavedChangesText!
+unsavedChangesDialogWithSaveIn: presenter
+	^self unsavedChangesDialogWithSaveIn: presenter
+		text: (GciSession isCurrentSessionValid
+				ifTrue: [self defaultUnsavedChangesWithSaveText]
+				ifFalse: ['Copy changes to Clipboard?'])!
 
-unsavedChangesValidSessionDialogIn: presenter text: text
-	^MessageBox new
-		owner: presenter view;
-		caption: 'Unsaved changes warning in ' , presenter view topShell caption , '!!';
-		confirm: text! !
+unsavedChangesDialogWithSaveIn: presenter text: text
+	| messageBox |
+	messageBox := MessageBox new owner: presenter view.
+	^self
+		displayUnsavedChangesWithSaveIn: messageBox
+		with: text
+		for: presenter! !
 !JadePresenter class categoriesForMethods!
 abortTransactionInSession:!public! !
 allClassesIn:!browsing support!private! !
@@ -3569,11 +3616,16 @@ clearAllBreaksIn:!browsing!public! !
 clearMethodBreakpoints:in:!browsing!public! !
 convertToPattern:!browsing support!private! !
 defaultCaptionText:!public!unsaved changes support! !
+defaultUnsavedChangesActionButton!public!unsaved changes support! !
 defaultUnsavedChangesText!public!unsaved changes support! !
+defaultUnsavedChangesWithSaveActionButton!public!unsaved changes support! !
+defaultUnsavedChangesWithSaveText!public!unsaved changes support! !
 defaultWindowOffset!browsing support!private! !
 defaultWindowPosition!browsing support!public! !
 disableAllBreakpointsIn:!browsing!public! !
 disableMethodBreakpoints:in:!browsing!public! !
+displayUnsavedChangesIn:with:for:!public!unsaved changes support! !
+displayUnsavedChangesWithSaveIn:with:for:!public!unsaved changes support! !
 enableAllBreakpointsIn:!browsing!public! !
 enableMethodBreakpoints:in:!browsing!public! !
 findMethodIn:class:presenter:!browsing!public! !
@@ -3598,10 +3650,10 @@ showPackageList!displaying!menu handlers!preferences!public! !
 transactionMode:!preferences!public! !
 transactionMode:session:!public! !
 turnOffAutoCommitIn:!public! !
-unsavedChangesInvalidSessionDialogIn:!public!unsaved changes support! !
-unsavedChangesInvalidSessionDialogIn:text:!public!unsaved changes support! !
-unsavedChangesValidSessionDialogIn:!public!unsaved changes support! !
-unsavedChangesValidSessionDialogIn:text:!public!unsaved changes support! !
+unsavedChangesDialogIn:!public!unsaved changes support! !
+unsavedChangesDialogIn:text:!public!unsaved changes support! !
+unsavedChangesDialogWithSaveIn:!public!unsaved changes support! !
+unsavedChangesDialogWithSaveIn:text:!public!unsaved changes support! !
 !
 
 !JadePresenterA methodsFor!
@@ -3744,20 +3796,22 @@ installProjectFromPath: path projectsHome: projectsHomePath componentNames: comp
 	self issueCommand: projectService!
 
 isOkayToChangeSource: methodSourcePresenter
+	| choice |
 	(self view isKindOf: DeafObject)
 		ifTrue: 
 			["view closed, ok to proceed"
 			^true].
-	gciSession isValidSession
-		ifTrue: [(self class unsavedChangesValidSessionDialogIn: self) ifTrue: [^false]]
-		ifFalse: 
-			[(self class unsavedChangesInvalidSessionDialogIn: self)
-				ifTrue: 
+	choice := self class unsavedChangesDialogIn: self.
+	choice
+		ifTrue: 
+			[methodSourcePresenter view isModified: false.
+			gciSession isValidSession
+				ifTrue: [^true]
+				ifFalse: 
 					[methodSourcePresenter
 						selectAll;
 						copySelection]].
-	methodSourcePresenter view isModified: false.
-	^true!
+	^false!
 
 loadProject
 	| projectInfo |
@@ -5263,9 +5317,20 @@ onPromptToSaveChanges: aBooleanValue
 	"we were calling #getDocumentData essentially to test for nil. 
 	That uses #asString which some objects don't understand - like booleans."
 
+	| modifiedTextChoice |
 	documentPresenter value ifNil: [self isModified: false].
 	self isModified
-		ifTrue: [aBooleanValue value: (JadePresenter unsavedChangesValidSessionDialogIn: self) not].
+		ifTrue: 
+			[modifiedTextChoice := self openUnsavedChangesDialog.
+			modifiedTextChoice
+				ifNil: [aBooleanValue value: false]
+				ifNotNil: 
+					[:choice |
+					aBooleanValue value: (choice
+								ifTrue: [self saveDocument]
+								ifFalse: 
+									[documentPresenter view isModified: false.
+									true])]].
 	^aBooleanValue value!
 
 openDictionaryBrowser
@@ -5273,6 +5338,9 @@ openDictionaryBrowser
 
 openProjectsBrowser
 	^JadeiteBrowser showOnSession: gciSession!
+
+openUnsavedChangesDialog
+	^JadePresenter unsavedChangesDialogWithSaveIn: self!
 
 raiseConsole
 	^JadePresenter raiseConsole!
@@ -5303,6 +5371,7 @@ jadeInspect!menu handlers!private! !
 onPromptToSaveChanges:!event handlers!private! !
 openDictionaryBrowser!Jade!private! !
 openProjectsBrowser!Jade!private! !
+openUnsavedChangesDialog!event handlers!private! !
 raiseConsole!public! !
 registerWindow:rootObject:!private! !
 update:afterStonReplication:!public!services! !

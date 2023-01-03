@@ -740,9 +740,9 @@ isCallInProgress!public! !
 isLinkedGem!public! !
 isLoggingOut!accessing!private! !
 isOopType:!public! !
-isPackagePolicyEnabled!public! !
-isRemoteGem!public! !
-isValidSession!public! !
+isPackagePolicyEnabled!public!testing! !
+isRemoteGem!public!testing! !
+isValidSession!public!testing! !
 library:!accessing!private! !
 libraryVersion!public! !
 loadLibrary:debugPath:!public! !
@@ -801,6 +801,10 @@ current: aGciSession
 			["set to nil during logout"
 			aGciSession autoCommit: false]!
 
+isCurrentSessionValid
+	GciSession current ifNil: [^false].
+	^GciSession current isValidSession!
+
 libraryClass: libraryClass 
 stoneNRS: stoneNRS 
 gemNRS: gemNRS 
@@ -846,6 +850,7 @@ publishedEventsOfInstances
 !GciSession class categoriesForMethods!
 current!accessing!public! !
 current:!accessing!public! !
+isCurrentSessionValid!public!testing! !
 libraryClass:stoneNRS:gemNRS:userID:password:hostUserID:password:initials:useSocket:debugPath:!public! !
 new!public! !
 publishedEventsOfInstances!public! !

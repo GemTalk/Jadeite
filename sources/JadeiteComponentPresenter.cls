@@ -284,7 +284,7 @@ isClassSelected
 
 isOkayToChange
 	prePostLoadSource view isModified
-		ifTrue: [(JadePresenter unsavedChangesValidSessionDialogIn: self topShell) ifTrue: [^false]].
+		ifTrue: [(JadePresenter unsavedChangesDialogIn: self topShell) ifTrue: [^false]].
 	^true!
 
 issueProjectDefinitionCommand

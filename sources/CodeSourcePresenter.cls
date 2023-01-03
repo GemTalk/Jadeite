@@ -195,7 +195,7 @@ isModified
 
 isOkayToChange
 	documentPresenter view isModified
-		ifTrue: [(JadePresenter unsavedChangesValidSessionDialogIn: documentPresenter) ifTrue: [^false]].
+		ifTrue: [(JadePresenter unsavedChangesDialogIn: documentPresenter) ifTrue: [^false]].
 	documentPresenter view isModified: false.
 	^true!
 

@@ -1069,11 +1069,11 @@ isOkayToChange
 	classDefinitionPresenter view isModified
 		ifTrue: 
 			[classDefinitionPresenter ensureVisible.
-			gciSession isValidSession
-				ifTrue: [(JadePresenter unsavedChangesValidSessionDialogIn: self) ifTrue: [^false]]
-				ifFalse: 
-					[(JadePresenter unsavedChangesInvalidSessionDialogIn: self)
-						ifTrue: 
+			(JadePresenter unsavedChangesDialogIn: self)
+				ifTrue: 
+					[gciSession isValidSession
+						ifTrue: [^false]
+						ifFalse: 
 							[classDefinitionPresenter
 								selectAll;
 								copySelection]].
@@ -1083,10 +1083,10 @@ isOkayToChange
 			[classCommentPresenter ensureVisible.
 			gciSession isValidSession
 				ifTrue: 
-					[(JadePresenter unsavedChangesValidSessionDialogIn: self
+					[(JadePresenter unsavedChangesDialogIn: self
 						text: 'Stay on window with unsaved changes? Class comment has unsaved changes.') ifTrue: [^false]]
 				ifFalse: 
-					[(JadePresenter unsavedChangesInvalidSessionDialogIn: self
+					[(JadePresenter unsavedChangesDialogIn: self
 						text: 'Copy changes to Clipboard? Class comment has unsaved changes')
 							ifTrue: 
 								[classCommentPresenter

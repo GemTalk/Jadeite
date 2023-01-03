@@ -326,7 +326,7 @@ isNamedInstVarSelected
 
 isOkayToChange
 	documentPresenter view isModified
-		ifTrue: [(JadePresenter unsavedChangesValidSessionDialogIn: documentPresenter) ifTrue: [^false]].
+		ifTrue: [^JadePresenter unsavedChangesDialogIn: documentPresenter].
 	documentPresenter view isModified: false.
 	^true!
 
