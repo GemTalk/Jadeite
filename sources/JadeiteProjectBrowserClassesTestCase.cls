@@ -1037,6 +1037,10 @@ test_fileoutClass
 	
 	[self projectsPresenter fileOutClassOnPath: path.
 	fileContents := session executeString: '(GsFile openReadOnServer: ''' , path , ''') contents'.
+	1 to: fileContents size do:[:index |
+	  | char |
+		char := fileContents at: index. 
+		self deny: char equals: Character cr]. 
 	self
 		assert: ('*Object subclass: ''TestClass''*instVarNames: #( instVar1 instVar2)*' match: fileContents).
 	self assert: ('*category: ''accessing''*method: TestClass*instVar1*^instVar1*' match: fileContents).

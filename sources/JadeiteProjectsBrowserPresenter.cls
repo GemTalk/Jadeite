@@ -466,7 +466,7 @@ getterMethodSourceFor: variable
 	sourceStream := WriteStream on: String new.
 	sourceStream
 		nextPutAll: variable;
-		cr;
+		lf;
 		tab;
 		nextPut: $^;
 		nextPutAll: variable.
@@ -1266,7 +1266,7 @@ setterMethodSourceFor: variable
 	sourceStream := WriteStream on: String new.
 	sourceStream
 		nextPutAll: variable , ': object';
-		cr;
+		lf;
 		tab;
 		nextPutAll: variable , ' := object'.
 	^sourceStream!
