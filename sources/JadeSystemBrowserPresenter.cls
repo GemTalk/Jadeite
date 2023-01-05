@@ -748,25 +748,6 @@ fileInCode
 		session: gciSession.
 !
 
-fileOutClass
-
-	| path string |
-	MessageBox notify: 'Filein/fileout are not Rowan-ready in this version'
-		caption: 'Filein/fileout notification'.
-	true ifTrue:[^self].
-	((string := self selectedClassNameWithoutVersion) endsWith: 'TestCase') ifTrue: [
-		string := string copyFrom: 1 to: string size - 8.
-	].
-	path := FileSaveDialog new
-		caption: 'File Out ' , self selectedClassNameWithoutVersion;
-		fileTypes: self fileTypes;
-		defaultExtension: self defaultFileExtension;
-		value: string;
-		overwritePrompt;
-		showModal.
-	path ifNotNil: [:value | self fileOutClassOnPath: value].
-!
-
 fileOutDictionary
 
 	| dictionaryName path string file index |
@@ -2461,7 +2442,6 @@ editSelectAll!menu handlers!public! !
 editUndo!menu handlers!public! !
 executeSelectionOrLine!menu handlers!public! !
 fileInCode!menu handlers!public! !
-fileOutClass!menu handlers!public! !
 fileOutDictionary!menu handlers!public! !
 fileOutMethod!menu handlers!public! !
 fileOutMethodOnPath:!menu handlers!public! !

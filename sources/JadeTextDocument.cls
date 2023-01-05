@@ -92,12 +92,9 @@ editDelete
 !
 
 editFind
-	"I'm not sure how it works, but this method isn't called!! 
-	Somehow, the command is sent directly to the text widget."
+	"sent through key binding Ctrl-F in a debugger"
 
-self error: 'Do we ever get here!!?'.
-	"self activeTextEdit editFind."
-!
+	self activeTextEdit editFind!
 
 editFindNext
 
