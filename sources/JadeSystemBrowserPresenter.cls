@@ -129,37 +129,6 @@ addRepository
 	self updateCommand: stream contents , self requestString.
 !
 
-addSubclass
-
-	| i j superclass string | 
-	self isOkayToChange ifFalse: [^self].
-	i := classDefinition indexOfSubCollection: '''' startingAt: 1.
-	j := classDefinition indexOfSubCollection: '''' startingAt: i + 1.
-	superclass := classDefinition copyFrom: i + 1 to: j - 1.
-	string := '(
-' , superclass , ' subclass: ''MyNewSubclass''' , (classDefinition copyFrom: j + 1 to: classDefinition size).
-	j := 1.
-	[
-		i := string indexOfSubCollection: '#(' startingAt: j.
-		0 < i.
-	] whileTrue: [
-		j := string indexOfSubCollection: ')' startingAt: i + 1.
-		string := (string copyFrom: 1 to: i + 1) , (string copyFrom: j to: string size).
-	].
-	j := 1.
-	[
-		i := string indexOfSubCollection: '#[' startingAt: j.
-		0 < i.
-	] whileTrue: [
-		j := string indexOfSubCollection: ']' startingAt: i + 1.
-		string := (string copyFrom: 1 to: i + 1) , (string copyFrom: j to: string size).
-	].
-	classDefinitionPresenter
-		ensureVisible;
-		value: string;
-		yourself.
-!
-
 behaviorIdentifier
 
 	^(WriteStream on: String new)
@@ -2384,7 +2353,6 @@ addMissingAccessors!menu handlers!public! !
 addPackage!menu handlers!public! !
 addPackageDictionaryInfoTo:!public!request string! !
 addRepository!menu handlers!public! !
-addSubclass!menu handlers!public! !
 behaviorIdentifier!menu handlers!public! !
 breakAt:operation:!event handlers!menu handlers!public! !
 browseGlobalReferences!menu handlers!public! !

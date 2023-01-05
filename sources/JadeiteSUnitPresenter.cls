@@ -111,6 +111,9 @@ isRowanProjectSelected
 	"no projects in sunit browser" 
 	^false!
 
+isValidClassService: classService
+	^classService isTestCase!
+
 methodListPresenter
 	^methodListPresenter!
 
@@ -329,6 +332,7 @@ initializeClassList!public! !
 isClassSelected!public!testing! !
 isNoneProjectSelected!public!testing! !
 isRowanProjectSelected!public!testing! !
+isValidClassService:!public!testing! !
 methodListPresenter!accessing!private! !
 onClassesChanged!event handlers!public! !
 onPackageChanged!event handlers!public! !

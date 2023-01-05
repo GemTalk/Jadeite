@@ -41,19 +41,23 @@ classes: anArray
 classesUpdate: presenter browser: browser
 	"If the selected packages have the same class defined and extended, show the defined class"
 
-	| condensedList selections selectedPackageServices |
+	| condensedList selections selectedPackageServices validatedList |
 	presenter list isEmpty ifTrue: [self initializePresenterList: presenter].
 	(self doesUpdateApply: browser) ifFalse: [^self].
 	self removeDeletedClassesIn: presenter browser: browser.
 	condensedList := self condenseExtensions: presenter.
+	validatedList := Dictionary new.
+	condensedList keysAndValuesDo: 
+			[:classService :dontcare |
+			(browser isValidClassService: classService) ifTrue: [validatedList at: classService put: dontcare]].
 	presenter selections isEmpty
 		ifTrue: 
 			[presenter
-				list: (ListModel withAll: (condensedList keys asSortedCollection: [:x :y | x name < y name]) asSet)]
+				list: (ListModel withAll: (validatedList keys asSortedCollection: [:x :y | x name < y name]) asSet)]
 		ifFalse: 
 			[self
 				updateList: presenter
-				whilePreservingSelections: condensedList
+				whilePreservingSelections: validatedList
 				browser: browser].
 	"#selections is very expensive in Dolphin. Don't send it in a loop"
 	selections := browser packageListPresenter selections.

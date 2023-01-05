@@ -64,6 +64,9 @@ isBeginTransactionEnabled
 isCommitEnabled
 	^self class isCommitEnabled!
 
+isValidClassService: classService
+	^true!
+
 maxSymbolSize
 
 	^1024!
@@ -198,6 +201,7 @@ inTransaction!public! !
 inTransaction:!public! !
 isBeginTransactionEnabled!public! !
 isCommitEnabled!public! !
+isValidClassService:!public!testing! !
 maxSymbolSize!constants!public! !
 onViewOpened!event handlers!public! !
 positionToDefaultLocation!event handlers!event handlers support!public! !

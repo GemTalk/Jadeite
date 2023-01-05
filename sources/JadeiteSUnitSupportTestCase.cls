@@ -252,6 +252,21 @@ test_abstractTestAppearsOnlyInSubclasses
 	self assert: subclass1MethodService testResult equals: #passed.
 	self assert: subclass2MethodService testResult equals: #failure!
 
+test_addNewNonTestClassDoesNotGetAdded
+	self testsIssue: #issue879 withTitle: 'Removing class does not remove class from sunit browser'.
+	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
+	self denyClassInList: 'NewSubclass'.
+	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
+	self selectRowanSample1Test.
+	self denyClassInList: 'NewSubclass'.
+	self
+		saveClass: 'NewNonTestClass'
+		withInstVars: #('abc')
+		package: 'RowanSample1-Tests'.
+	[self denyClassInList: 'NewSubclass']
+		ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass].
+	self denyClassInList: 'NewSubclass'!
+
 test_addNewTestClass
 	self testsIssue: #issue879 withTitle: 'Removing class does not remove class from sunit browser'.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
@@ -1505,7 +1520,7 @@ test_testCountBar
 		equals: 'Test Cases:' , self sunitPresenter methodListPresenter model size printString.
 	self assert: self sunitPresenter testClassesSize
 		equals: 'Test Classes:'
-				, ((session executeString: 'RowanServicesTest allSubclasses size') + 1) printString!
+				, ((session executeString: 'RowanServicesTest allSubclasses size') + 1 + 1 "JadeServicesTest") printString!
 
 test_testsRunInSelectedTestClass
 	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
@@ -1568,6 +1583,7 @@ tearDown!public!support! !
 test_abortNoSelections!public!tests! !
 test_abortWithSelections!public!tests! !
 test_abstractTestAppearsOnlyInSubclasses!public!tests! !
+test_addNewNonTestClassDoesNotGetAdded!public!test updates from other browsers!tests! !
 test_addNewTestClass!public!test updates from other browsers!tests! !
 test_addNewTestPackage!public!test updates from other browsers!tests! !
 test_addPackageReloadProject!public!test updates from other browsers!tests! !
