@@ -128,10 +128,11 @@ test_addAccessorsHierarchyTabVerifySource
 	self projectsPresenter addVariableAccessors.
 	self selectMethodNamed: #var1.
 	self assert: self methodSourcePresenter value equals: 'var1
-	^var1'.
+	^var1' replaceCrLfWithLf.
 	self selectMethodNamed: #var1:.
-	self assert: self methodSourcePresenter value equals: 'var1: object
-	var1 := object']
+	self assert: self methodSourcePresenter value
+		equals: 'var1: object
+	var1 := object' replaceCrLfWithLf]
 			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_addRemoveHierarchyCategory
