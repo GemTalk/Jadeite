@@ -49,6 +49,16 @@ goto
 	model value path: pathText value.
 	self showDirectoryContents!
 
+isDirectorySelected
+	^(directoryContentsList selectionIfNone: [^true]) value!
+
+isFileSelected
+	^(directoryContentsList selectionIfNone: [^false]) value not!
+
+load
+
+	^parentPresenter load!
+
 logoutRequested: aValueHolder
 	"Private - Opportunity to save changes."
 
@@ -79,6 +89,9 @@ pop
 select
 	parentPresenter select!
 
+selectedFilePath
+	^self pathText value , '/' , directoryContentsList selection key!
+
 selectionMade
 	| newPathText |
 	model value path = pathText value ifFalse: [^self goto].
@@ -101,13 +114,17 @@ directoryContentsList!accessing!private! !
 dive!actions!public! !
 fileName!accessing!public! !
 goto!actions!public! !
+isDirectorySelected!public!testing! !
+isFileSelected!public!testing! !
+load!menu handlers!public! !
 logoutRequested:!event handlers!private! !
 newPathText!actions!public! !
 parentDirectoryPath!accessing!public! !
 pathText!accessing!private! !
 pathText:!accessing!private! !
-pop!actions!public! !
-select!actions!public! !
+pop!actions!menu handlers!public! !
+select!actions!menu handlers!public! !
+selectedFilePath!accessing!public! !
 selectionMade!actions!public! !
 setPath:!actions!public! !
 showDirectoryContents!actions!public! !
