@@ -52,6 +52,8 @@ package methodNames
 	add: #Object -> #isService;
 	add: #StoneInfoPresenter -> #fillSessionInfo;
 	add: 'GsCompileError class' -> #errorListFor:inSession:;
+	add: 'JadePresenter class' -> #expandedRowanProjectsHome;
+	add: 'JadePresenter class' -> #expandedRowanProjectsHome:;
 	yourself.
 
 package binaryGlobalNames: (Set new
@@ -337,6 +339,25 @@ stack
 !GsProcess categoriesForMethods!
 frameForLevel:!public! !
 stack!public! !
+!
+
+!JadePresenter class methodsFor!
+
+expandedRowanProjectsHome
+	ExpandedRowanProjectsHome
+		ifNil: 
+			[| fileService |
+			fileService := RowanFileService new
+						path: self rowanProjectsHomeEnvVarString;
+						session: GciSession current.
+			ExpandedRowanProjectsHome := fileService expandPath].
+	^ExpandedRowanProjectsHome!
+
+expandedRowanProjectsHome: aString
+	ExpandedRowanProjectsHome := aString! !
+!JadePresenter class categoriesForMethods!
+expandedRowanProjectsHome!constants!public! !
+expandedRowanProjectsHome:!constants!public! !
 !
 
 !JadeProcessBrowser methodsFor!

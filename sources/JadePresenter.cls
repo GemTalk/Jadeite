@@ -2,7 +2,7 @@
 
 Presenter subclass: #JadePresenter
 	instanceVariableNames: 'gciSession'
-	classVariableNames: 'InTransaction PackageGroupsVisible PackageListVisible SigAbortProcessInterval SigAbortsProcess SigAbortsProcessEnabled TransactionMode'
+	classVariableNames: 'ExpandedRowanProjectsHome InTransaction PackageGroupsVisible PackageListVisible SigAbortProcessInterval SigAbortsProcess SigAbortsProcessEnabled TransactionMode'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenter guid: (GUID fromString: '{b55f33eb-59fb-46d6-8fec-7df1571c7d45}')!

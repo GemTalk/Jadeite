@@ -71,7 +71,7 @@ Notification subclass: #ShortcutMenuStatus
 	classInstanceVariableNames: ''!
 Presenter subclass: #JadePresenter
 	instanceVariableNames: 'gciSession'
-	classVariableNames: 'InTransaction PackageGroupsVisible PackageListVisible SigAbortProcessInterval SigAbortsProcess SigAbortsProcessEnabled TransactionMode'
+	classVariableNames: 'ExpandedRowanProjectsHome InTransaction PackageGroupsVisible PackageListVisible SigAbortProcessInterval SigAbortsProcess SigAbortsProcessEnabled TransactionMode'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenter subclass: #JadePresenterA

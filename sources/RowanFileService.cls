@@ -26,6 +26,12 @@ excludedInstVars
 
 	^super excludedInstVars , #('session')!
 
+expandPath
+	command := #expandPath.
+	commandArgs := Array new. 
+	self issueCommand.
+	^answer!
+
 fileIn
 	command := #fileIn:.
 	commandArgs := Array with: path.
@@ -120,6 +126,7 @@ shouldReplicateInstVarAtIndex: index newService: newService
 directoryContents!commands!public! !
 directoryPath!commands!public! !
 excludedInstVars!private!ston! !
+expandPath!commands!public! !
 fileIn!commands!public! !
 fileInChunk:!commands!public! !
 fileName!commands!public! !
