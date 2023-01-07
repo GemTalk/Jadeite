@@ -29,8 +29,8 @@ package classNames
 	add: #JadeiteProjectBrowserClassesTestCase;
 	add: #JadeiteProjectBrowserDictionaryDataCuratorTestCase;
 	add: #JadeiteProjectBrowserDictionaryTestCase;
+	add: #JadeiteProjectBrowserHigherLevelFunctionsTestCase;
 	add: #JadeiteProjectBrowserLowerTabsTestCase;
-	add: #JadeiteProjectBrowserSystemTestCase;
 	add: #JadeiteProjectBrowserTestCase;
 	add: #JadeiteServerFileSaveTestDialog;
 	add: #JadeiteSUnitSupportTestCase;
@@ -290,12 +290,12 @@ JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserDictionary
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserLowerTabsTestCase
-	instanceVariableNames: ''
+JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserHigherLevelFunctionsTestCase
+	instanceVariableNames: 'loadProjectDialog'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserSystemTestCase
+JadeiteProjectBrowserAbstractTestCase subclass: #JadeiteProjectBrowserLowerTabsTestCase
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

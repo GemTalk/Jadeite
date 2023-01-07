@@ -56,11 +56,6 @@ issue170methodCreation
 	self methodSourcePresenter value: (source := 'try  ^5').
 	self projectsPresenter editSaveMethod: self classListPresenter selection!
 
-loadProjectNamed: projectName
-	| projectService |
-	projectService := RowanProjectService new name: projectName.
-	RowanBrowserService new reloadProjects: (Array with: projectService) presenter: self projectsPresenter!
-
 openSecondBrowser
 	secondBrowser := (self openWindow: [transcript openJadeiteProjectsBrowser]) topShell.
 	secondBrowser caption: 'second browser'.
@@ -78,6 +73,12 @@ projectNamed: aString
 	^self projectsPresenter projectListPresenter list
 		detect: [:projectService | projectService name = aString]
 		ifNone: []!
+
+reloadProjectNamed: projectName
+	| projectService |
+	projectService := RowanProjectService new name: projectName.
+	RowanBrowserService new reloadProjects: (Array with: projectService)
+		presenter: self projectsPresenter!
 
 saveMethodWithUniqueString
 
@@ -124,10 +125,10 @@ disableTranscriptWrites!private! !
 findClassNamed:!private!support! !
 isAbstract!private!testing! !
 issue170methodCreation!issue test support!private! !
-loadProjectNamed:!private!project support! !
 openSecondBrowser!private! !
 primaryTestWindow!accessing!public! !
 projectNamed:!private!project support! !
+reloadProjectNamed:!private!project support! !
 saveMethodWithUniqueString!private! !
 selectLowerTabsThenDo:!private!support! !
 selectSUnitTab!private!selection! !

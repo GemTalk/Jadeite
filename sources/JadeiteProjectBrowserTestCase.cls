@@ -2050,19 +2050,6 @@ test_issue261
 	self assert: (self projectsPresenter projectInfoList list at: 4) first isDirty	"isDirty"]
 			ensure: [self projectsPresenter basicUnloadProjects: #('Izmir')]!
 
-test_loadProjectRemovingClass
-	self selectRowanSample1Test.
-	self assert: self classListPresenter list size equals: 1.
-	self
-		saveClass: 'FooTest'
-		superclass: 'RowanSample1Test'
-		instVars: #()
-		package: 'RowanSample1-Tests'.
-	self assert: self classListPresenter selection name equals: 'FooTest'.
-	self loadProjectNamed: 'RowanSample1'.
-	self assert: self classListPresenter selections isEmpty.
-	self assert: self classListPresenter list size equals: 1!
-
 test_maximizeCode
 	"the arrangement proportions are somewhat arbitrary in appearance.
 	Good enough to test that the tabView got doubled in size"
@@ -2471,6 +2458,19 @@ test_registeredPresentersInProjectBrowserCleanedUp
 	self verifyWindowClosed: secondBrowser.
 	secondBrowser := nil.
 	self assert: BrowserUpdate current registeredPresenters size equals: registeredPresenters size!
+
+test_reloadProjectRemovingClass
+	self selectRowanSample1Test.
+	self assert: self classListPresenter list size equals: 1.
+	self
+		saveClass: 'FooTest'
+		superclass: 'RowanSample1Test'
+		instVars: #()
+		package: 'RowanSample1-Tests'.
+	self assert: self classListPresenter selection name equals: 'FooTest'.
+	self reloadProjectNamed: 'RowanSample1'.
+	self assert: self classListPresenter selections isEmpty.
+	self assert: self classListPresenter list size equals: 1!
 
 test_removeAbortedClass
 	"make sure we can safely remove an aborted class during post-abort refresh"
@@ -3571,7 +3571,6 @@ test_implementorsSendersCaption!public!tests! !
 test_instVarReaders!public!test variable tab!tests! !
 test_instVarWriters!public!test variable tab!tests! !
 test_issue261!public!test menus!test projects!tests! !
-test_loadProjectRemovingClass!public!test projects! !
 test_maximizeCode!public!tests! !
 test_menuEnablementDoesNotBreak!public!tests! !
 test_menusDontAddBreaks!public!tests! !
@@ -3594,6 +3593,7 @@ test_refreshAfterReloadInProjectsBrowserWithAddedMethod!public!test projects!tes
 test_refreshAfterReloadWithAddedMethod!public!test projects!tests! !
 test_registeredPresentersInMethodBrowserCleanedUp!public!tests! !
 test_registeredPresentersInProjectBrowserCleanedUp!public!tests! !
+test_reloadProjectRemovingClass!public!test projects! !
 test_removeAbortedClass!public!tests! !
 test_removeInstVarVariablesStaySorted!public!test variable tab!tests! !
 test_removeProject!public!test projects!tests! !

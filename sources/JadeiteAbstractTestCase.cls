@@ -250,14 +250,6 @@ itemNamed: menuName in: menuBar
 jadeitePrefsFilePath
 	^SessionManager current imageBase , 'Jadeite.prefs'!
 
-loadProjectNamed: projectName
-	| projectService |
-	projectService := RowanProjectService new name: projectName.
-	projectService
-		command: #reloadProject;
-		commandArgs: nil.
-	JadePresenter issueCommands: (Array with: projectService) session: session!
-
 loadRowanSample1InProjectList
 	| sample1Path root selections |
 	sample1Path := self rowanSample1Path.
@@ -366,6 +358,14 @@ queryCommand: commandSymbol inPresenter: presenter view: view
 				source: view.
 	presenter queryCommand: commandQuery.
 	^commandQuery!
+
+reloadProjectNamed: projectName
+	| projectService |
+	projectService := RowanProjectService new name: projectName.
+	projectService
+		command: #reloadProject;
+		commandArgs: nil.
+	JadePresenter issueCommands: (Array with: projectService) session: session!
 
 removePreferencesFile
 	| path prefsExist |
@@ -905,7 +905,6 @@ issueCommand:!issue test support!public!support! !
 issueCommands:!issue test support!public!support! !
 itemNamed:in:!issue test support!private! !
 jadeitePrefsFilePath!public! !
-loadProjectNamed:!project support!public! !
 loadRowanSample1InProjectList!private!project support! !
 loginOtherSession!public! !
 loginWithRetry:!private!support! !
@@ -923,6 +922,7 @@ primaryTestWindow!accessing!public! !
 projectListPresenter!private!project browser support! !
 projectsPresenter!private!project browser support! !
 queryCommand:inPresenter:view:!private! !
+reloadProjectNamed:!project support!public! !
 removePreferencesFile!public! !
 restoreBackupPrefsFile:!public! !
 routeCommand:toWindow:!helpers!private! !

@@ -108,14 +108,6 @@ loadProjectFromFile: fileString projectsHome: projectsHomePath customConditional
 					with: componentNames).
 	JadePresenter issueCommands: (Array with: projectService) session: self session!
 
-loadProjectNamed: projectName
-	| projectService |
-	projectService := RowanProjectService new name: projectName.
-	projectService
-		command: #reloadProject;
-		commandArgs: nil.
-	JadePresenter issueCommands: (Array with: projectService) session: self session!
-
 loginAs: userName
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteShell userIDPresenter value: userName.
@@ -179,6 +171,14 @@ refreshProjectNamed: projectName
 	projectService := RowanProjectService new name: projectName.
 	projectService
 		command: #update;
+		commandArgs: nil.
+	JadePresenter issueCommands: (Array with: projectService) session: self session!
+
+reloadProjectNamed: projectName
+	| projectService |
+	projectService := RowanProjectService new name: projectName.
+	projectService
+		command: #reloadProject;
 		commandArgs: nil.
 	JadePresenter issueCommands: (Array with: projectService) session: self session!
 
@@ -283,7 +283,6 @@ isAvailable!public!testing! !
 issueCommand:!public!setup teardown! !
 jadeiteShell!accessing!private! !
 loadProjectFromFile:projectsHome:customConditionalAttributes:componentNames:!private!setup teardown! !
-loadProjectNamed:!private!setup teardown! !
 loginAs:!private!setup teardown!support! !
 loginWithRetry:!private!support! !
 logout!private!setup teardown!support! !
@@ -292,6 +291,7 @@ openProjectsBrowser!private!setup teardown! !
 openWindow:!private! !
 projectsBrowser:!private!setup teardown! !
 refreshProjectNamed:!private!setup teardown! !
+reloadProjectNamed:!private!setup teardown! !
 rowanProjectsHome!constants!private! !
 rowanSample1Path!constants!private! !
 rowanSample1Project!constants!private! !

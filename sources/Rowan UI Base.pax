@@ -919,7 +919,7 @@ AdvancedFindDialog subclass: #JadeiteAdvancedFindDialog
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteServerFileSelectorDialog subclass: #JadeiteLoadProjectDialog
-	instanceVariableNames: 'projectHomeSelector customAttributesList componentList session attributes components resolveStrictCheckbox'
+	instanceVariableNames: 'projectHomePresenter customAttributesList componentList session attributes components resolveStrictCheckbox'
 	classVariableNames: 'PreviousFilePath PreviousProjectHomePath'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
