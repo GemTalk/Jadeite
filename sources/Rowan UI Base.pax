@@ -288,6 +288,7 @@ package methodNames
 	add: #JadePresenterA -> #enableBreakPointAt:in:;
 	add: #JadePresenterA -> #gitCommit:;
 	add: #JadePresenterA -> #installProjectFromPath:projectsHome:componentNames:attributes:resolveStrict:;
+	add: #JadePresenterA -> #installProjectFromURL:;
 	add: #JadePresenterA -> #isOkayToChangeSource:;
 	add: #JadePresenterA -> #loadProject;
 	add: #JadePresenterA -> #methodListSelection;
@@ -925,7 +926,7 @@ AdvancedFindDialog subclass: #JadeiteAdvancedFindDialog
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteServerFileSelectorDialog subclass: #JadeiteLoadProjectDialog
-	instanceVariableNames: 'projectHomePresenter customAttributesList componentList session attributes components resolveStrictCheckbox'
+	instanceVariableNames: 'projectHomePresenter customAttributesList componentList session attributes components resolveStrictCheckbox urlText lastSelectedTabName'
 	classVariableNames: 'PreviousFilePath PreviousProjectHomePath'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -3801,6 +3802,14 @@ installProjectFromPath: path projectsHome: projectsHomePath componentNames: comp
 					with: resolveStrict).
 	self issueCommand: projectService!
 
+installProjectFromURL: url
+	| projectService |
+	projectService := RowanProjectService new.
+	projectService
+		command: #installProjectFromURL:;
+		commandArgs: (Array with: url).
+	self issueCommand: projectService!
+
 isOkayToChangeSource: methodSourcePresenter
 	| choice |
 	(self view isKindOf: DeafObject)
@@ -3824,12 +3833,15 @@ loadProject
 	projectInfo := JadeiteLoadProjectDialog showOnSession: gciSession.
 	projectInfo
 		ifNotNil: 
-			[^self
-				installProjectFromPath: projectInfo first
-				projectsHome: projectInfo second
-				componentNames: projectInfo third
-				attributes: projectInfo fourth
-				resolveStrict: projectInfo last]!
+			[projectInfo first = 'URL Container'
+				ifTrue: [^self installProjectFromURL: projectInfo last]
+				ifFalse: 
+					[self
+						installProjectFromPath: projectInfo first
+						projectsHome: projectInfo second
+						componentNames: projectInfo third
+						attributes: projectInfo fourth
+						resolveStrict: projectInfo last]]!
 
 methodListSelection
 	
@@ -3947,6 +3959,7 @@ disableBreakPointAt:in:!Jadeite!public! !
 enableBreakPointAt:in:!Jadeite!public! !
 gitCommit:!project menu handlers!public! !
 installProjectFromPath:projectsHome:componentNames:attributes:resolveStrict:!Jadeite!menu handlers support!public! !
+installProjectFromURL:!Jadeite!menu handlers support!public! !
 isOkayToChangeSource:!Jadeite!public! !
 loadProject!Jadeite!public! !
 methodListSelection!Jadeite!public! !

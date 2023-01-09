@@ -263,7 +263,35 @@ test_loadProjectDialogTabOrder
 	(loadProjectDialog view viewNamed: 'Tabs') nextCard.
 	self assert: loadProjectDialog isProjectHomeTabSelected.
 	(loadProjectDialog view viewNamed: 'Tabs') nextCard.
+	self assert: loadProjectDialog isURLTabSelected.
+	(loadProjectDialog view viewNamed: 'Tabs') nextCard.
 	self assert: loadProjectDialog isAdvancedTabSelected!
+
+test_loadProjectFromURL
+	| projectNames answer loadedProjectName |
+	self testsIssue: #issue939
+		withTitle: '(3.2.10) need to be able to specify an http url in ''Load project spec'' dialog ...'.
+	projectNames := self projectListPresenter list collect: [:projectService | projectService name].
+	self deny: (projectNames includes: 'RowanSample9V3').
+	loadProjectDialog := JadeiteLoadProjectDialog showNonModalOnSession: session.
+	(loadProjectDialog view viewNamed: 'Tabs') nextCard.
+	(loadProjectDialog view viewNamed: 'Tabs') nextCard.
+	self assert: loadProjectDialog isURLTabSelected.
+	loadProjectDialog urlText
+		value: 'https://raw.githubusercontent.com/dalehenrich/RowanSample9V3/spec_0061/rowan/specs/spec_0061.ston'.
+	"simulate load for testing"
+	loadProjectDialog lastSelectedTabName: loadProjectDialog selectedTab.
+	answer := loadProjectDialog
+				apply;
+				answer.
+	self assert: answer first = 'URL Container'.
+	loadedProjectName := 'RowanSample9V3'.
+	self projectsPresenter installProjectFromURL: answer last.
+	self projectsPresenter selectProjectNamed: loadedProjectName.
+	
+	[projectNames := self projectListPresenter list collect: [:projectService | projectService name].
+	self assert: (projectNames includes: loadedProjectName)]
+			ensure: [self projectsPresenter basicUnloadProjects: (Array with: loadedProjectName)]!
 
 test_modifiedSystemTab
 	| cardLabel |
@@ -518,6 +546,7 @@ test_loadProjectDialogDiveIntoPeriod!public!test projects! !
 test_loadProjectDialogDiveNotRetainedOnCancel!public!test projects! !
 test_loadProjectDialogExpandEnvVariable!public!test projects! !
 test_loadProjectDialogTabOrder!public!test projects! !
+test_loadProjectFromURL!public!test projects! !
 test_modifiedSystemTab!public!test system tabs! !
 test_moveTabsWithSUnitTabselected!public!test system tabs! !
 test_projectDisplaysSync!public!test projects!tests! !
