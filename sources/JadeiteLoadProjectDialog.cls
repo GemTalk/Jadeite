@@ -41,6 +41,13 @@ createSchematicWiring
 		send: #updateProperties
 		to: self!
 
+initialize
+	super initialize.
+	self class previousFilePath
+		ifNil: [self class previousFilePath: JadePresenter expandedRowanProjectsHome].
+	self class previousProjectHomePath
+		ifNil: [self class previousProjectHomePath: JadePresenter expandedRowanProjectsHome]!
+
 isAdvancedTabSelected
 	^self selectedTab = 'Advanced Container'!
 
@@ -143,6 +150,7 @@ answer!accessing!public! !
 apply!actions!public! !
 createComponents!initialization!public! !
 createSchematicWiring!initialization!public! !
+initialize!initialization!public! !
 isAdvancedTabSelected!public!testing! !
 isProjectHomeTabSelected!public!testing! !
 isProjectSpecTabSelected!public!testing! !
@@ -161,11 +169,6 @@ updateProperties!event handlers!public! !
 !
 
 !JadeiteLoadProjectDialog class methodsFor!
-
-initialize
-	super initialize. 
-	self previousFilePath: JadePresenter expandedRowanProjectsHome. 
-	self previousProjectHomePath: JadePresenter expandedRowanProjectsHome!
 
 instantiateDialogOn: aGciSession
 	| inst |
@@ -217,7 +220,6 @@ showOnSession: aGciSession
 	answer := inst showModal.
 	^answer! !
 !JadeiteLoadProjectDialog class categoriesForMethods!
-initialize!initialization!public! !
 instantiateDialogOn:!instance creation!private! !
 previousFilePath!accessing!public! !
 previousFilePath:!accessing!public! !

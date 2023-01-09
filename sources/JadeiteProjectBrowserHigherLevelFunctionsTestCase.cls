@@ -10,6 +10,28 @@ JadeiteProjectBrowserHigherLevelFunctionsTestCase comment: ''!
 !JadeiteProjectBrowserHigherLevelFunctionsTestCase categoriesForClass!Unclassified! !
 !JadeiteProjectBrowserHigherLevelFunctionsTestCase methodsFor!
 
+selectLoadDirectoryNamed: aString
+	| presenter selection |
+	presenter := (loadProjectDialog view viewNamed: 'Tabs') currentCard name = 'Project Spec Container'
+				ifTrue: [loadProjectDialog fileSelectorPresenter]
+				ifFalse: [loadProjectDialog projectHomePresenter].
+	selection := presenter directoryContentsList list detect: [:assoc | assoc key = aString].
+	presenter directoryContentsList selection: selection!
+
+selectLoadProjectDialogFirstDirectory
+	| presenter |
+	presenter := (loadProjectDialog view viewNamed: 'Tabs') currentCard name = 'Project Spec Container'
+				ifTrue: [loadProjectDialog fileSelectorPresenter]
+				ifFalse: [loadProjectDialog projectHomePresenter].
+	presenter directoryContentsList list do: 
+			[:directoryOrFile |
+			(directoryOrFile key ~= '.' and: [directoryOrFile value ~= '..'])
+				ifTrue: 
+					[directoryOrFile value
+						ifTrue: 
+							[presenter directoryContentsList selection: directoryOrFile.
+							^self]]]!
+
 tearDown
 	super tearDown.
 	loadProjectDialog ifNotNil: [self destroy: loadProjectDialog]!
@@ -181,13 +203,55 @@ test_deselectProjectOnly
 	self deselectProjects.
 	self assert: projectsBrowser cardsPresenter view currentCard arrangement text equals: '1 Projects'!
 
+test_loadProjectDialogDiveIntoDoublePeriod
+	"should effectively be a pop"
+
+	| path parentDirectory |
+	JadeiteLoadProjectDialog previousProjectHomePath: nil.	"will reset to $ROWAN_PROJECTS_HOME"
+	JadeiteLoadProjectDialog previousFilePath: nil.
+	loadProjectDialog := JadeiteLoadProjectDialog showNonModalOnSession: session.
+	path := loadProjectDialog pathText value.
+	self selectLoadDirectoryNamed: '..'.
+	loadProjectDialog fileSelectorPresenter dive.
+	parentDirectory := session executeString: '(Path from: ''' , path , ''') parent pathString'.
+	self assert: loadProjectDialog pathText value equals: parentDirectory!
+
+test_loadProjectDialogDiveIntoPeriod
+	| path |
+	loadProjectDialog := JadeiteLoadProjectDialog showNonModalOnSession: session.
+	path := loadProjectDialog pathText value.
+	self selectLoadDirectoryNamed: '.'.
+	loadProjectDialog fileSelectorPresenter dive.
+	self assert: loadProjectDialog pathText value equals: path	"no change"!
+
+test_loadProjectDialogDiveNotRetainedOnCancel
+	JadeiteLoadProjectDialog previousProjectHomePath: nil.
+	JadeiteLoadProjectDialog previousFilePath: nil.
+	loadProjectDialog := JadeiteLoadProjectDialog showNonModalOnSession: session.
+	self assert: JadeiteLoadProjectDialog previousProjectHomePath
+		equals: JadePresenter expandedRowanProjectsHome.
+	self assert: JadeiteLoadProjectDialog previousFilePath
+		equals: JadePresenter expandedRowanProjectsHome.
+	self selectLoadProjectDialogFirstDirectory.
+	loadProjectDialog fileSelectorPresenter dive.
+	loadProjectDialog cancel.
+	self assert: JadeiteLoadProjectDialog previousProjectHomePath
+		equals: JadePresenter expandedRowanProjectsHome.	"no change"
+	self assert: JadeiteLoadProjectDialog previousFilePath
+		equals: JadePresenter expandedRowanProjectsHome	"no change"!
+
 test_loadProjectDialogExpandEnvVariable
 	"$ROWAN_PROJECTS_HOME should be expanded when dialog is opened. "
 
-	JadeiteLoadProjectDialog initialize. "reset the saved paths" 
+	JadeiteLoadProjectDialog previousProjectHomePath: nil.	"reset the saved paths - should expand $ROWAN_PROJECTS_HOME on instantiation."
+	JadeiteLoadProjectDialog previousFilePath: nil.
 	loadProjectDialog := JadeiteLoadProjectDialog showNonModalOnSession: session.
 	(loadProjectDialog view viewNamed: 'Tabs') nextCard.	"switch to Projects Home tab"
 	self assert: loadProjectDialog projectHomePresenter pathText value
+		equals: JadePresenter expandedRowanProjectsHome.
+	self assert: JadeiteLoadProjectDialog previousProjectHomePath
+		equals: JadePresenter expandedRowanProjectsHome.
+	self assert: JadeiteLoadProjectDialog previousFilePath
 		equals: JadePresenter expandedRowanProjectsHome!
 
 test_loadProjectDialogTabOrder
@@ -437,6 +501,8 @@ test_systemTabNamesProjectClassList
 	self assert: projectsBrowser cardsPresenter view currentCard arrangement text
 		equals: '1 RowanSample1'! !
 !JadeiteProjectBrowserHigherLevelFunctionsTestCase categoriesForMethods!
+selectLoadDirectoryNamed:!public!support! !
+selectLoadProjectDialogFirstDirectory!public!support! !
 tearDown!public!support! !
 test_addSystemTab!public!test system tabs! !
 test_addSystemTabBrowserPosition!public!test system tabs! !
@@ -447,6 +513,9 @@ test_browseInExistingBrowser!public!test system tabs! !
 test_browserPosition!public!test system tabs! !
 test_createProject!public!test system tabs! !
 test_deselectProjectOnly!public!test system tabs! !
+test_loadProjectDialogDiveIntoDoublePeriod!public!test projects! !
+test_loadProjectDialogDiveIntoPeriod!public!test projects! !
+test_loadProjectDialogDiveNotRetainedOnCancel!public!test projects! !
 test_loadProjectDialogExpandEnvVariable!public!test projects! !
 test_loadProjectDialogTabOrder!public!test projects! !
 test_modifiedSystemTab!public!test system tabs! !

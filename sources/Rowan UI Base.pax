@@ -67,6 +67,7 @@ package classNames
 	add: #JadeiteSearch;
 	add: #JadeiteServerFileSaveDialog;
 	add: #JadeiteServerFileSelectorDialog;
+	add: #JadeiteServerFileSelectorPresenter;
 	add: #JadeiteServerFileWorkspace;
 	add: #JadeiteSmalltalkSearchPresenter;
 	add: #JadeiteSmalltalkWorkspace;
@@ -775,6 +776,11 @@ JadePresenterA subclass: #JadeitePackageGroupPresenter
 	classInstanceVariableNames: ''!
 JadePresenterA subclass: #JadeitePropertyPresenter
 	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+JadePresenterA subclass: #JadeiteServerFileSelectorPresenter
+	instanceVariableNames: 'directoryContentsList pathText'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
