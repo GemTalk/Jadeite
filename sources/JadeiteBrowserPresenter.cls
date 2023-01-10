@@ -124,6 +124,34 @@ basicDictionaryTabLabel
 	label := self shouldShowNoneTabLabel ifTrue: [label] ifFalse: [dictionaryPresenter selection name].
 	^self selectedClass ifNil: [label] ifNotNil: [self selectedClass name]!
 
+basicOnDropClassList: dragDropSession
+	| classService failedCompilations newSelections |
+	failedCompilations := OrderedCollection new.
+	classService := dragDropSession suggestedTarget.
+	classService meta: self isClassSideSelected.
+	dragDropSession dragObjects do: 
+			[:dragDropObject |
+			
+			[dragDropObject object source ifNil: [self updateService: dragDropObject object].
+			classService
+				saveMethod: dragDropObject object source
+				category: dragDropObject object category
+				session: gciSession]
+					on: GsCompileError
+					do: [:ex | failedCompilations add: dragDropObject object]].
+	failedCompilations isEmpty
+		ifTrue: 
+			[self selectedClass == classService
+				ifFalse: 
+					[self isHierarchyTabSelected
+						ifTrue: [self selectClassInClassHierarchyNamed: classService name]
+						ifFalse: [self selectClassNamed: classService name]].
+			newSelections := methodListPresenter list select: 
+							[:methodService |
+							(dragDropSession dragObjects collect: [:ea | ea object selector]) includes: methodService selector].
+			methodListPresenter selections: newSelections].
+	^failedCompilations!
+
 basicProjectTabLabel
 	projectListPresenter selections isEmpty ifTrue: [^'Projects'].
 	self isNoneProjectSelected ifFalse: [^super basicProjectTabLabel].
@@ -1336,6 +1364,9 @@ onDropClassesOnPackageList: aSession
 		onDropClassesOnPackage: aSession suggestedTarget 
 		session: aSession.!
 
+onDropMethodsOnClassHierarchy: aSession
+	^self onDropOnClassList: aSession!
+
 onDropMethodsOnPackageList: aSession
 	self onDropMethodsOnPackageList: aSession suggestedTarget session: aSession!
 
@@ -1349,6 +1380,20 @@ onDropMethodsOnPackageList: packageServiceOrName session: aSession
 						ifFalse: [packageServiceOrName])].
 	MessageBox notify: 'Sorry, we are not yet prepared to handle ' , aSession printString , '!!'.
 	SessionManager current pause!
+
+onDropOnClassList: dragDropSession
+	| failedCompilations |
+	failedCompilations := self basicOnDropClassList: dragDropSession.
+	failedCompilations isEmpty
+		ifFalse: 
+			[MessageBox notify: 'Methods failing compilation: '
+						, (failedCompilations collect: [:methodService | methodService selector]) asArray printString]!
+
+onDropOnMethodCategory: aSession
+	| methodServices targetCategory |
+	methodServices := aSession dragObjects collect: [:each | each format: #method].
+	targetCategory := aSession suggestedTarget trimBlanks.
+	self moveMethods: methodServices toCategory: targetCategory!
 
 onDropOnPackageList: aSession
 	(aSession isFormatAvailable: #class) ifTrue: [^self onDropClassesOnPackageList: aSession].
@@ -2330,6 +2375,7 @@ basicAddMethodCategory:!menu handlers support!private! !
 basicAddVariableAccessors!menu handlers!public! !
 basicCopyClass:to:!menu handlers support!private! !
 basicDictionaryTabLabel!displaying!private! !
+basicOnDropClassList:!drag & drop!public! !
 basicProjectTabLabel!displaying!private!tabs! !
 basicRemoveClass:!menu handlers support!private! !
 basicRemoveDictionaries:!menu handlers support!private! !
@@ -2461,8 +2507,11 @@ onDragMethod:!drag & drop!public! !
 onDragOverPackageList:!drag & drop!public! !
 onDropClassesOnPackage:session:!drag & drop!public! !
 onDropClassesOnPackageList:!drag & drop!public! !
+onDropMethodsOnClassHierarchy:!drag & drop!public! !
 onDropMethodsOnPackageList:!drag & drop!public! !
 onDropMethodsOnPackageList:session:!drag & drop!public! !
+onDropOnClassList:!drag & drop!public! !
+onDropOnMethodCategory:!drag & drop!public! !
 onDropOnPackageList:!drag & drop!public! !
 onViewClosed!event handlers!public! !
 onViewOpened!event handlers!public! !

@@ -262,6 +262,12 @@ openHomePage
 		directory: ''.
 !
 
+passwordPresenter
+	^passwordPresenter!
+
+passwordPresenter: anObject
+	passwordPresenter := anObject!
+
 queryCommand: query
 	query commandSymbol = #login
 		ifTrue: 
@@ -326,6 +332,12 @@ setWorkingDirectory
 
 shouldEnableLoginButton
 	^GciSession current isNil or: [GciSession current isValidSession not]!
+
+stoneNamePresenter
+	^stoneNamePresenter!
+
+stoneNamePresenter: anObject
+	stoneNamePresenter := anObject!
 
 updateCaption
 	"The receiver has changed in such a way that the caption may need to be refreshed.
@@ -419,12 +431,16 @@ model:!accessing!public! !
 onCloseRequested:!public! !
 onViewOpened!public! !
 openHomePage!public! !
+passwordPresenter!accessing!private! !
+passwordPresenter:!accessing!private! !
 queryCommand:!menu handlers support!private! !
 saveDocument!public! !
 sendRequiredMessages!public! !
 setDocumentData:!accessing!public! !
 setWorkingDirectory!public! !
 shouldEnableLoginButton!private!testing! !
+stoneNamePresenter!accessing!private! !
+stoneNamePresenter:!accessing!private! !
 updateCaption!public! !
 updateModel!public! !
 updateView!public! !

@@ -159,6 +159,39 @@ test_loginButtonEnablement
 	self assert: query isEnabled]
 			ensure: [jadeiteShell login]!
 
+test_loginErrorMessages
+	| userId stoneName password |
+	self testsIssue: #issue858 withTitle: 'better gci error reporting is needed'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.
+	self setupToLogin.
+	userId := jadeiteShell userIDPresenter value.
+	jadeiteShell userIDPresenter value: 'WrongUser'.
+	[jadeiteShell login] ensure: 
+			[TestMessageBox disableJadeiteTestMessageBox.
+			jadeiteShell userIDPresenter value: userId].
+	self assert: TestMessageBox lastMessageBox text
+		equals: 'Login failed:  the userId/password combination is invalid or expired. An unknown GciLoginFailed has occurred'.
+	password := jadeiteShell passwordPresenter value.
+	jadeiteShell passwordPresenter value: 'xxxxxx'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.
+	[jadeiteShell login] ensure: 
+			[TestMessageBox disableJadeiteTestMessageBox.
+			jadeiteShell passwordPresenter value: password].
+	self assert: TestMessageBox lastMessageBox text
+		equals: 'Login failed:  the userId/password combination is invalid or expired. An unknown GciLoginFailed has occurred'.
+	stoneName := jadeiteShell stoneNamePresenter value.
+	jadeiteShell stoneNamePresenter value: 'WrongStone'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.
+	[jadeiteShell login] ensure: 
+			[TestMessageBox disableJadeiteTestMessageBox.
+			jadeiteShell stoneNamePresenter value: stoneName].
+	self
+		assert: ('The given Stone Repository monitor cannot be reached, could not find server ''WrongStone'' on host ''*'' because  service not found An unknown GciLoginFailed has occurred'
+				match: TestMessageBox lastMessageBox text)!
+
 test_loginShellPlaceholdersForAddedLibraries
 	| loginShell previousPlaceHolders binDir fakeLib newPlaceHolders addedPlaceHolders fakeLibPath |
 	loginShell := JadeiteLoginShell allInstances first.
@@ -196,6 +229,7 @@ test_370Libraries!public!tests! !
 test_debugLoginDumpsParameters!public!tests! !
 test_gemTask!public!tests! !
 test_loginButtonEnablement!public!tests! !
+test_loginErrorMessages!public!tests! !
 test_loginShellPlaceholdersForAddedLibraries!public!tests! !
 test_simpleLogin!public!tests! !
 testsIssue:withTitle:!private! !

@@ -43,7 +43,15 @@ login
 	[session := self model login] on: Error
 		do: 
 			[:ex |
-			MessageBox errorMsg: ex description caption: 'Jadeite Login Error'.
+			| ws | 
+			ws := WriteStream on: String new.
+			ex tag message isEmpty
+				ifFalse: 
+					[ws
+						nextPutAll: ex tag message;
+						space].
+			ws nextPutAll: ex description.
+			MessageBox errorMsg: ws contents caption: 'Jadeite Login Error'.
 			SessionManager current pause.
 			GciSession current: nil.
 			^nil].

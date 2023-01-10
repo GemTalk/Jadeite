@@ -48,34 +48,6 @@ autoCommit: boolean
 	autoCommit value: boolean.
 	gciSession autoCommit: boolean!
 
-basicOnDropClassList: dragDropSession
-	| classService failedCompilations newSelections |
-	failedCompilations := OrderedCollection new.
-	classService := dragDropSession suggestedTarget.
-	classService meta: self isClassSideSelected.
-	dragDropSession dragObjects do: 
-			[:dragDropObject |
-			
-			[dragDropObject object source ifNil: [self updateService: dragDropObject object].
-			classService
-				saveMethod: dragDropObject object source
-				category: dragDropObject object category
-				session: gciSession]
-					on: GsCompileError
-					do: [:ex | failedCompilations add: dragDropObject object]].
-	failedCompilations isEmpty
-		ifTrue: 
-			[self selectedClass == classService
-				ifFalse: 
-					[self isHierarchyTabSelected
-						ifTrue: [self selectClassInClassHierarchyNamed: classService name]
-						ifFalse: [self selectClassNamed: classService name]].
-			newSelections := methodListPresenter list select: 
-							[:methodService |
-							(dragDropSession dragObjects collect: [:ea | ea object selector]) includes: methodService selector].
-			methodListPresenter selections: newSelections].
-	^failedCompilations!
-
 basicProjectTabLabel
 	| label |
 	projectListPresenter selections isEmpty ifTrue: [^'Projects'].
@@ -606,23 +578,6 @@ newBrowser
 	classService := self selectedClass.
 	selector := methodListPresenter selectionOrNil ifNotNil: [:methodService | methodService selector].
 	^self openProjectBrowserOn: classService selector: selector!
-
-onDropMethodsOnClassHierarchy: aSession
-	^self onDropOnClassList: aSession!
-
-onDropOnClassList: dragDropSession
-	| failedCompilations |
-	failedCompilations := self basicOnDropClassList: dragDropSession.
-	failedCompilations isEmpty
-		ifFalse: 
-			[MessageBox notify: 'Methods failing compilation: '
-						, (failedCompilations collect: [:methodService | methodService selector]) asArray printString]!
-
-onDropOnMethodCategory: aSession
-	| methodServices targetCategory |
-	methodServices := aSession dragObjects collect: [:each | each format: #method].
-	targetCategory := aSession suggestedTarget trimBlanks.
-	self moveMethods: methodServices toCategory: targetCategory!
 
 onSetFocus: aView stack: aString
 
@@ -1504,7 +1459,6 @@ addSubclass!menu handlers!public! !
 allClasses!menu handlers!public! !
 autoCommit!accessing!private! !
 autoCommit:!initialize/release!public! !
-basicOnDropClassList:!drag & drop!public! !
 basicProjectTabLabel!displaying!private! !
 basicRemoveMethodCategories!menu handlers support!private! !
 basicRemoveMethods!menu handlers support!private! !
@@ -1566,9 +1520,6 @@ methodMenuBreak:!menus!public! !
 methodsMenuStrings!menus!public! !
 methodSourcePresenter:!accessing!private! !
 newBrowser!menu handlers!public! !
-onDropMethodsOnClassHierarchy:!drag & drop!public! !
-onDropOnClassList:!drag & drop!public! !
-onDropOnMethodCategory:!drag & drop!public! !
 onSetFocus:stack:!event handlers!public! !
 onViewClosed!event handlers!public! !
 populateFilterList!event handlers support!private!services!updating! !
