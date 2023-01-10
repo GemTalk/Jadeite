@@ -3837,10 +3837,10 @@ loadProject
 				ifTrue: [^self installProjectFromURL: projectInfo last]
 				ifFalse: 
 					[self
-						installProjectFromPath: projectInfo first
-						projectsHome: projectInfo second
-						componentNames: projectInfo third
-						attributes: projectInfo fourth
+						installProjectFromPath: projectInfo second
+						projectsHome: projectInfo third
+						componentNames: projectInfo fourth
+						attributes: projectInfo fifth
 						resolveStrict: projectInfo last]]!
 
 methodListSelection

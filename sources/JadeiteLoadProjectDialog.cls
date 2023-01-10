@@ -12,7 +12,6 @@ JadeiteLoadProjectDialog comment: ''!
 
 answer
 	"Answer the model if the receiver was confirmed (with #apply, #ok) or nil otherwise"
-
 	^self isConfirmed
 		ifTrue: 
 			[lastSelectedTabName = 'URL Container'
