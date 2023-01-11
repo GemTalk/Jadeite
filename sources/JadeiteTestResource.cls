@@ -140,7 +140,9 @@ logoutThenLoginAs: userName forceClose: forceClose
 
 	userName ifNil: [^self].
 	forceClose
-		ifFalse: [GciSession current ifNotNil: [:current | userName = current userID ifTrue: [^self]]].
+		ifFalse: 
+			[GciSession current
+				ifNotNil: [:current | current isValidSession ifTrue: [userName = current userID ifTrue: [^self]]]].
 	self logout.
 	self loginAs: userName!
 

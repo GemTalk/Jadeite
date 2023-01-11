@@ -161,6 +161,7 @@ package methodNames
 	add: #GciSession -> #withExplanation:do:;
 	add: #GciSession -> #withExplanation:doA:;
 	add: #GsError -> #debugError;
+	add: #GsFatalError -> #defaultAction;
 	add: #GsMethod -> #className;
 	add: #GsMethod -> #meta;
 	add: #GsMethod -> #methodService;
@@ -1843,6 +1844,24 @@ debugError
 	^JadeiteDebugger debuggerClass reportError: self! !
 !GsError categoriesForMethods!
 debugError!public! !
+!
+
+!GsFatalError methodsFor!
+
+defaultAction
+	| ws |
+	ws := WriteStream on: String new.
+	ws
+		nextPutAll: gciErrSType message;
+		cr;
+		nextPutAll: 'Shutting session down'.
+	MessageBox errorMsg: ws contents caption: 'Fatal GemStone Error'.
+	self gciSession beInvalidSession.
+	self gciSession trigger: #forceJadeiteWindowClose.
+	JadeiteTranscript allInstances do: [:transcript | transcript view destroy].	"should be only one"
+	TerminateProcess signal! !
+!GsFatalError categoriesForMethods!
+defaultAction!public! !
 !
 
 !GsMethod methodsFor!

@@ -420,6 +420,31 @@ test_instVarConstants
 	self assert: (RowanMethodService indexOfInstVar: 'firstReference')
 		equals: RowanMethodService new indexOfFirstReferenceInstVar!
 
+test_logoutFatalError
+	self testsIssue: #issue858 withTitle: 'better gci error reporting is needed'.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #ok.
+	
+	[
+	[session
+		executeString: 'UserGlobals at: #foo put: Array new. 
+
+1 to: 10000000 do:[:index | 
+	(UserGlobals at: #foo) add: ''abcdefghijklmno'', index printString]']
+			on: GsFatalError
+			do: 
+				[:ex |
+				"don't pass fatal error to outer handler (TestResult) so error doesn't get recorded. Default action will execute code that we're testing"
+				[ex defaultAction] on: TerminateProcess
+					do: 
+						[:ex2 |
+						"ignore terminate signal so test continues"
+						]]]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox].
+	self assert: ('VM temporary object memory is full* old space overflow*Shutting session down'
+				match: TestMessageBox lastMessageBox text).
+	self deny: session isValidSession!
+
 test_methodServiceClassNameIsString
 	| methodService |
 	self testsIssue: #issue441
@@ -552,6 +577,7 @@ test_fileSaveFromWorkspace!public!test file! !
 test_fileSaveWithUnicode!public!test file! !
 test_findInWorkspace!public!test! !
 test_instVarConstants!public!test! !
+test_logoutFatalError!public!test! !
 test_methodServiceClassNameIsString!public! !
 test_releaseOops!public! !
 test_returnedServices!public!test!test auto complete! !

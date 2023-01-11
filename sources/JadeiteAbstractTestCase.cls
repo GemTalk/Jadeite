@@ -778,13 +778,19 @@ tearDown
 	| answeringService |
 	super tearDown.
 	"remove hook to avoid lots of error dialogs when opening/closing windows too fast. See #setUp for compilation."
-	[JadeiteBrowser removeSelector: #validateUserInterface ifAbsent: []] on: Error do: [:ex |  "avoid Dolphin bug triggering method removal event"].
+	[JadeiteBrowser removeSelector: #validateUserInterface ifAbsent: []] on: Error
+		do: 
+			[:ex |
+			"avoid Dolphin bug triggering method removal event"
+			].
 	SessionManager inputState pumpMessages.
 	"debugging code - halt if we find a nil in the user's symbol list"
-	answeringService := RowanAnsweringService new
-				command: #symbolListHasNil;
-				commandArgs: Array new.
-	self issueCommand: answeringService.!
+	session isValidSession
+		ifTrue: 
+			[answeringService := RowanAnsweringService new
+						command: #symbolListHasNil;
+						commandArgs: Array new.
+			self issueCommand: answeringService]!
 
 test_globalAdditionalAccelerators
 	| command |
