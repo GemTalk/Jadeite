@@ -714,7 +714,9 @@ setUp
 	super setUp.
 	JadeiteBrowser
 		compile: 'validateUserInterface
-	[self view validateUserInterface] on: Win32Error do: [:ex |].'
+	[self view validateUserInterface] 
+		on: Win32Error do: [:ex |]
+		on: ViewClosedError do: [:ex |].'
 		categories: #(#deleteme)
 		package: (Package name: 'Dolphin').	"opening / closing windows really fast can wreak havoc on the windows system"
 	user ifNil: [user := 'SystemUser'].

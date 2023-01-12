@@ -342,10 +342,11 @@ test_addAccessorsVerifySource
 	self projectsPresenter addVariableAccessors.
 	self selectMethodNamed: #var1.
 	self assert: self methodSourcePresenter value equals: 'var1
-	^var1'.
+	^var1' replaceCrLfWithLf.
 	self selectMethodNamed: #var1:.
-	self assert: self methodSourcePresenter value equals: 'var1: object
-	var1 := object']
+	self assert: self methodSourcePresenter value
+		equals: 'var1: object
+	var1 := object' replaceCrLfWithLf]
 			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_addDuplicatePackage
@@ -1077,13 +1078,13 @@ test_changeVariableWithModifiedMethodSource
 	
 	[self methodSourcePresenter value: 'foo ^1'.
 	self methodSourcePresenter view isModified: true.
-	TestMessageBox plannedResult: #no.
+	TestMessageBox plannedResult: #yes.
 	self projectsPresenter variableListPresenter selection: 'classVarNames'.
 	self selectVariableListEntryForcingEvent: 'classVarNames'.
 	self assert: self projectsPresenter variableListPresenter selection equals: 'classVarNames'.
 	self methodSourcePresenter value: 'foo ^2'.
 	self methodSourcePresenter view isModified: true.
-	TestMessageBox plannedResult: #yes.
+	TestMessageBox plannedResult: #no.
 	self selectVariableListEntryForcingEvent: 'instVarNames'.
 	self assert: self projectsPresenter variableListPresenter selection equals: 'classVarNames']
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
@@ -1286,10 +1287,10 @@ test_confirmOverrideExistingAccessorMethods
 	[self projectsPresenter addVariableAccessors] ensure: [TestMessageBox disableJadeiteTestMessageBox].
 	self selectMethodNamed: #abc.
 	self assert: self methodSourcePresenter value equals: 'abc
-	^abc'.
+	^abc' replaceCrLfWithLf.
 	self selectMethodNamed: #abc:.
 	self assert: self methodSourcePresenter value equals: 'abc: object
-	abc := object']
+	abc := object' replaceCrLfWithLf]
 			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_copyClassEnablement
@@ -3331,7 +3332,7 @@ test_UnsavedChangesActionChangeSelectionIgnoreChanges
 	self assert: self methodListPresenter selection selector equals: #sampleMethod.
 	self methodSourcePresenter value: 'new text'.
 	self methodSourcePresenter view isModified: true.
-	TestMessageBox plannedResult: #no.	"answer that we want to ignore changes"
+	TestMessageBox plannedResult: #yes.	"answer that we want to ignore changes"
 	self selectWithChangeEventMethodNamed: #foo.
 	self assert: self methodListPresenter selection selector equals: #foo]
 			ensure: 
@@ -3355,7 +3356,7 @@ test_UnsavedChangesActionChangeSelectionStayOnMethod
 	self assert: self methodListPresenter selection selector equals: #sampleMethod.
 	self methodSourcePresenter value: 'new text'.
 	self methodSourcePresenter view isModified: true.
-	TestMessageBox plannedResult: #yes.	"answer that we want to stay on method"
+	TestMessageBox plannedResult: #no.	"answer that we want to stay on method"
 	self selectWithChangeEventMethodNamed: #foo.
 	self assert: self methodListPresenter selection selector equals: #sampleMethod]
 			ensure: 
@@ -3379,7 +3380,7 @@ test_UnsavedChangesActionCloseWindow
 	self assert: self methodListPresenter selection selector equals: #sampleMethod.
 	self methodSourcePresenter value: 'new text'.
 	self methodSourcePresenter view isModified: true.
-	TestMessageBox plannedResult: #no.	"answer that we want to ignore changes"
+	TestMessageBox plannedResult: #yes.	"answer that we want to ignore changes"
 	projectsBrowser view close.
 	self verifyWindowClosed: projectsBrowser]
 			ensure: 

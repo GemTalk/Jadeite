@@ -966,12 +966,12 @@ test_revertSource
 	self methodSourcePresenter value: source.
 	self methodSourcePresenter view isModified: true.
 	TestMessageBox enableJadeiteTestMessageBox.
-	TestMessageBox plannedResult: #yes.
+	TestMessageBox plannedResult: #no.
 	
 	[self projectsPresenter editRevert.
 	self assert: self methodSourcePresenter value equals: source.
 	self assert: self methodSourcePresenter view isModified.
-	TestMessageBox plannedResult: #no.
+	TestMessageBox plannedResult: #yes.
 	self projectsPresenter editRevert]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox].
 	self assert: self methodSourcePresenter value equals: originalSource.

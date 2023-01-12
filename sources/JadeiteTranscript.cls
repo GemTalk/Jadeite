@@ -271,7 +271,6 @@ onCloseRequested: boolValueHolder
 				stopListeningForSigAborts;
 				resetSigAbortProcessEnablement;
 				resetSigAbortProcessInterval.
-			gciSession trigger: #forceJadeiteWindowClose.	"close all windows except me and debugger"
 			temp := gciSession.	"I'm getting closed so make sure session gets logged out"
 			gciSession := nil.
 			temp forceLogout]!

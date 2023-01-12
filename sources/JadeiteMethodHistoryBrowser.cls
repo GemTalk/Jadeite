@@ -125,6 +125,11 @@ session: aGciSession
 		when: #forceJadeiteWindowClose
 			send: #exit
 			to: self;
+		yourself.
+	session
+		when: #logout
+			send: #exit
+			to: self;
 		yourself!
 
 setCaption

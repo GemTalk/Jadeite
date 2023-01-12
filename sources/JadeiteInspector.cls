@@ -459,7 +459,7 @@ queryCommand: query
 			^true].
 	command = #inspectBytes
 		ifTrue: 
-			[query isEnabled: model isStringObject.
+			[query isEnabled: (model isStringObject ifNil:[false]).
 			^true].
 	^super queryCommand: query!
 
