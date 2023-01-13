@@ -3904,7 +3904,7 @@ reformatSourceInPresenter: presenter methodService: methodService
 		commandArgs: Array new.
 	[self issueCommand: methodService] on: Error
 		do: 
-			[:ex |
+			[:ex | 
 			self setCompileErrorColor.
 			self statusBarText: 'Reformat failed. Illegal source - ' , ex description.
 			^false].

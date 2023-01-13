@@ -82,18 +82,30 @@ setUp
 			self haltTestForHardToCatchErrors: 'Debugger test is not logged in as SystemUser as expected'].!
 
 stepOutTwiceExpecting: aString
+	| count |
 	self debuggerDo: [process := [debugger stepOut] forkAt: Processor activePriority + 1].
 	self getDebugger.
-	(Delay forMilliseconds: 50) wait. 
+	(Delay forMilliseconds: 50) wait.
 	self assert: debugger frameListPresenter selection
 		equals: 'Array (SequenceableCollection) >> select: @20 line 25'.	"step out to select:"
 	self debuggerDo: [process := [debugger stepOut] forkAt: Processor activePriority + 1].
 	self getDebugger.
-	(Delay forMilliseconds: 50) wait. 
+	(Delay forMilliseconds: 50) wait.
 	debugger variableListPresenter selectionByIndex: 5.
-	[debugger variableListPresenter selectionByIndex = 5] whileFalse:[(Delay forMilliseconds: 1) wait]. 
-	[ debugger variableDataPresenter value = aString] whileFalse:[(Delay forMilliseconds: 1) wait].  
-	self assert: debugger variableDataPresenter value equals: aString.!
+	(Delay forMilliseconds: 50) wait.
+	[debugger variableListPresenter selectionByIndex = 5] whileFalse: 
+			[debugger variableListPresenter selectionByIndex: 5.
+			(Delay forMilliseconds: 1) wait].
+	(Delay forMilliseconds: 50) wait.
+	count := 0.
+	
+	[count := count + 1.
+	count >= 100
+		ifTrue: 
+			[^self assert: debugger variableDataPresenter value equals: aString	"didn't hit the string in 100 ms so fail the assertion to stop the test and show us what the values are"].
+	debugger variableDataPresenter value = aString]
+			whileFalse: [(Delay forMilliseconds: 1) wait].
+	self assert: debugger variableDataPresenter value equals: aString!
 
 test_additionalAccelerators
 	"No way yet to adequately test accelerators function
@@ -1999,7 +2011,7 @@ test_stepOutEventuallyResumes
 	self selectMethodNamed: #blockIteration.
 	self setBreakAt: 10.	"#size"
 	self openDebuggerOn: '| report | report := RowanSample1 new blockIteration'.
-	(Delay forMilliseconds: 250) wait.
+	(Delay forMilliseconds: 250) wait. 
 	self stepOutTwiceExpecting: '#''pairsCollect:'''.
 	self stepOutTwiceExpecting: '#''containsDigit'''.
 	self stepOutTwiceExpecting: '#''blarf'''.
@@ -2303,7 +2315,7 @@ test_unsavedChangesActionChangeFrame
 	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #no.	"ignore changes"
+	TestMessageBox plannedResult: #yes.	"ignore changes"
 	finished := false.
 	self
 		debuggerDo: [
@@ -2338,12 +2350,12 @@ test_unsavedChangesActionStepping
 	self assert: ( 'Executed Code  @* line *' match: debugger frameListPresenter selection).
 	debugger methodSourcePresenter documentPresenter value: 'step over'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #no.	"don't save changes"
+	TestMessageBox plannedResult: #yes.	"don't save changes"
 	self debuggerDo: [debugger stepOver].
 	self assert: debugger methodSourcePresenter documentPresenter value equals: originalSource.
 	debugger methodSourcePresenter documentPresenter value: 'step into'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #yes.	"keep changes"
+	TestMessageBox plannedResult: #no.	"keep changes"
 	self debuggerDo: [[debugger stepInto] fork].
 	self assert: debugger methodSourcePresenter documentPresenter value equals: 'step into']
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!

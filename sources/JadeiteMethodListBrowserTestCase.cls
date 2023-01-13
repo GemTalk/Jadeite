@@ -1227,8 +1227,8 @@ test_reformatIllegalSource
 		equals: 'reformatSourceTemporaryMethod ^#test'.
 	self methodSourcePresenter documentPresenter value: 'reformatSourceTemporaryMethod ^#'.
 	self methodSourcePresenter reformatSource.
-	self assert: methodListBrowser statusBarText value
-		equals: 'Reformat failed. Illegal source' replaceCrLfWithLf.
+	self assert: ('Reformat failed. Illegal source*Expecting a literal type' replaceCrLfWithLf
+				match: methodListBrowser statusBarText value).
 	self assert: methodListBrowser statusBarText view backcolor equals: Color red faded.
 	self methodListSourcePresenter documentPresenter isModified: true.	"needed for tests"
 	self assert: self methodSourcePresenter documentPresenter view isModified.
@@ -1454,7 +1454,7 @@ test_UnsavedChangesActionChangeSelectionStayOnMethod
 	self assert: methodListPresenter list size equals: 2.
 	methodListBrowser primaryPresenter methodSourcePresenter documentPresenter value: 'new text'.
 	self methodListSourcePresenter documentPresenter isModified: true.	"needed for tests"
-	TestMessageBox plannedResult: #yes.	"answer that we want to stay on frame"
+	TestMessageBox plannedResult: #no.	"answer that we want to stay on frame"
 	self selectListAt: 2.
 	self assert: methodListPresenter selectionByIndex equals: 1]
 			ensure: 
