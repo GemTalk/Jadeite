@@ -549,7 +549,7 @@ editFindNext
 editMenuStrings
 
 	false ifTrue: [
-		self editSave; editUndo; editRevert; editRedo; editCut; editCopy; editPaste; editDelete; editSelectAll; editFind; editFindNext; editReplace; 
+		self editSave; editUndo; editRevert; editRedo; editCut; editCopy; editPaste; editSelectAll; editFind; editFindNext; editReplace; 
 			jadeDisplay; jadeExecute; jadeInspect; browseSelectedClass.
 	].
 	^#(
@@ -565,7 +565,6 @@ editMenuStrings
 		'&Cu&t/Ctrl+X/editCut'
 		'&Copy/Ctrl+C/editCopy'
 		'&Paste/Ctrl+V/editPaste'
-		'&Delete/Delete/editDelete'
 		'-'
 		'Select &All/Ctrl+A/editSelectAll'
 		'-'

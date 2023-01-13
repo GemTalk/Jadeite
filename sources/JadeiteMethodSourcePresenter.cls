@@ -22,7 +22,7 @@ createSchematicWiring
 
 editMenuStrings
 	false ifTrue: [
-		self editSaveMethod; undo; redo; editRevert; reformatSource; cutSelection; copySelection; pasteClipboard; clearSelection; selectAll; editFind; editFindNext; editReplace; 
+		self editSaveMethod; undo; redo; editRevert; reformatSource; cutSelection; copySelection; pasteClipboard; selectAll; editFind; editFindNext; editReplace; 
 			jadeDisplay; jadeExecute; jadeInspect; browseSelectedClass.
 	].
 	^#(
@@ -38,7 +38,6 @@ editMenuStrings
 		'&Cu&t/Ctrl+X/cutSelection'
 		'&Copy/Ctrl+C/copySelection'
 		'&Paste/Ctrl+V/pasteClipboard'
-		'&Delete/Delete/clearSelection'
 		'-'
 		'Select &All/Ctrl+A/selectAll'
 		'-'
