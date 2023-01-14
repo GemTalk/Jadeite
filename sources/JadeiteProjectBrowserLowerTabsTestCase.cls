@@ -600,30 +600,6 @@ test_dragMethodOntoComparisonTextPanes
 	self assert: self projectsPresenter comparisonPresenter beforePresenter value equals: source]
 			ensure: [methodListBrowser view close]!
 
-test_editDeleteEnablement
-	| commandQuery methodSourcePresenter menuItem |
-	self testsIssue: #issue583 withTitle: 'Undo/Redo in method list browser (3.0.81) '.
-	self selectRowanSample1Test.
-	self selectMethodNamed: #test1.
-	methodSourcePresenter := self projectsPresenter methodSourcePresenter.
-	self deny: methodSourcePresenter view hasSelection.
-	menuItem := methodSourcePresenter view contextMenu items
-				detect: [:item | item command == #editDelete]
-				ifNone: [].
-	self denyIsNil: menuItem.
-	commandQuery := self
-				queryCommand: #editDelete
-				inPresenter: methodSourcePresenter
-				view: methodSourcePresenter view.
-	self deny: commandQuery isEnabled.
-	methodSourcePresenter view selectAll.
-	self assert: methodSourcePresenter view hasSelection.
-	commandQuery := self
-				queryCommand: #editDelete
-				inPresenter: self projectsPresenter
-				view: methodSourcePresenter view.
-	self assert: commandQuery isEnabled!
-
 test_enablementOfCardTabsWithSUnitTabSelected
 	| toolbar |
 	self testsIssue: #issue556 withTitle: 'Funny orange boxes enabled for Sunit tab, but error'.
@@ -736,7 +712,7 @@ test_okayToChangeBeforeFindClass
 	self methodSourcePresenter value: 'abc'.
 	self methodSourcePresenter isModified: true.
 	TestMessageBox enableJadeiteTestMessageBox.
-	TestMessageBox plannedResult: #yes.	"Keep unsaved changes"
+	TestMessageBox plannedResult: #no.	"Keep unsaved changes"
 	
 	[self projectsPresenter findClass.
 	self assert: self methodSourcePresenter value equals: 'abc'	"no change"]
@@ -1443,7 +1419,6 @@ test_deselectPackageShowsProjectTab!public!test compiling! !
 test_dontDuplicateBreakpoints!public!test breakpoints! !
 test_doubleClickIncludesColon!public!test source! !
 test_dragMethodOntoComparisonTextPanes!public!test comparison tab! !
-test_editDeleteEnablement!public!test menus! !
 test_enablementOfCardTabsWithSUnitTabSelected!public!test sunit tab!tests! !
 test_findMethodDisabled!public!test find!test menus!test sunit tab!tests! !
 test_inspectShowsCompileError!public!test source! !

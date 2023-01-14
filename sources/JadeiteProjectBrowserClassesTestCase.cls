@@ -1912,6 +1912,54 @@ test_simpleHierarchyTest
 	self selectClassListTab.
 	self assert: self projectsPresenter classListPresenter selection name = 'RowanProjectService'!
 
+test_stayOnDefinitionPaneAfterUnsavedChanges
+	"The mouse events are ridiculously hacked-up. They may be brittle. 
+	Dolphin sends the unsaved changes check from the gui, not the underlying model change 
+	which makes it hard to test. "
+
+	| mouseEvent |
+	self selectRowanSample1Test.
+	self
+		saveClass: 'TestUnsavedChanges'
+		superclass: 'Object'
+		instVars: #(#aaa)
+		package: 'RowanSample1-Tests'.
+	self projectsPresenter selectVariableTab.
+	self projectsPresenter variableListPresenter selection: 'aaa'.
+	self projectsPresenter addVariableAccessors.
+	self selectMethodNamed: #aaa.
+	
+	[self projectsPresenter selectClassDefinitionTab.
+	self projectsPresenter classDefinitionPresenter
+		value: 'Object rwSubclass: ''TestUnsavedChanges''
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: ''RowanSample1-Tests''
+	options: #()'.
+	self assert: self projectsPresenter classDefinitionPresenter view isModified.
+	TestMessageBox enableJadeiteTestMessageBox.
+	TestMessageBox plannedResult: #no.	"stay on definition pane"
+	mouseEvent := MouseEvent
+				window: self methodListPresenter view
+				message: 513
+				wParam: 1
+				lParam: 852058.
+	self methodListPresenter view onButtonPressed: mouseEvent.
+	self assert: self projectsPresenter classDefinitionPresenter view isModified.
+	self assert: self methodListPresenter selection selector equals: #aaa.
+	TestMessageBox plannedResult: #yes.	"stay on definition pane"
+	mouseEvent := MouseEvent
+				window: self methodListPresenter view
+				message: 513
+				wParam: 1
+				lParam: 2359362.
+	self methodListPresenter view onButtonPressed: mouseEvent.
+	self deny: self projectsPresenter classDefinitionPresenter view isModified.
+	self assert: self methodListPresenter selection selector equals: #aaa:]
+			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
+
 test_updateHierarchyAfterClassRecompile
 	| selection |
 	self selectRowanSample1Test.
@@ -2101,6 +2149,7 @@ test_selectionsRetainedFromClassListToHierarchy!public!test class list!tests! !
 test_selectionsRetainedFromHierarchyToClassList!public!test class list!tests! !
 test_showMethodsFailingClassRecompilation!public!test class list! !
 test_simpleHierarchyTest!public!test class hierarchy!tests! !
+test_stayOnDefinitionPaneAfterUnsavedChanges!public!test class list! !
 test_updateHierarchyAfterClassRecompile!public!test class hierarchy!tests! !
 test_variablesTab!public!test class list!tests! !
 test_variablesUpdatedOnClassSaveInClassList!public!test class list!tests! !

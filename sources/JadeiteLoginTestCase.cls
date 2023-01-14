@@ -211,7 +211,7 @@ test_loginShellPlaceholdersForAddedLibraries
 test_simpleLogin
 	self denyIsNil: session.
 	self assert: session isKindOf: GciSession. 
-	self deny: session sameAs: GciSession current.  
+	self deny: session identicalTo: GciSession current.  
 	self tearDown.
 	self assertIsNil: session.
 	session := nil!

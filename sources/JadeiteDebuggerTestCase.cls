@@ -1044,7 +1044,7 @@ test_debuggerModifiedSourcePaneChangeFrame
 	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #no.	"answer that we want to stay on frame"
+	TestMessageBox plannedResult: #yes.	
 	[self selectFrameAt: 2] forkAt: Processor activePriority + 1.	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
 	self assert: debugger frameListPresenter selectionByIndex equals: 2]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
@@ -1058,7 +1058,7 @@ test_debuggerModifiedSourcePaneStayOnFrame
 	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'.
 	debugger methodSourcePresenter documentPresenter value: 'new text'.
 	debugger methodSourcePresenter documentPresenter view isModified: true.
-	TestMessageBox plannedResult: #yes.	"answer that we want to stay on frame"
+	TestMessageBox plannedResult: #no.	"answer that we want to stay on frame"
 	[self selectFrameAt: 2] forkAt: Processor activePriority + 1.	"Fork so that the tests' error handler doesn't catch the expected error raised in #selectedFrame"
 	self assert: debugger frameListPresenter selection equals: 'Executed Code  @2 line 1'. "did not change frames"]
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!

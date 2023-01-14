@@ -1618,6 +1618,7 @@ preferencesFile
 
 releaseAllOops
 	library ifNil: [^self].
+	self isValidSession ifFalse:[^self]. 
 	BrowserUpdate current inUpdateWhile: 
 			[library releaseAllOopsForSession: gciSessionId.
 			library signalIfError]!

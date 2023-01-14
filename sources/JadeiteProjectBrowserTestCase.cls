@@ -1133,11 +1133,11 @@ test_classDefinitionUpdatesAcrossTabs
 	self projectsPresenter classDefinitionPresenter value: newSource replaceCrLfWithLf.
 	self projectsPresenter editSaveClass.
 	self assert: self projectsPresenter topShell cardsPresenter view cardLayout currentCard
-		sameAs: firstTab.
+		identicalTo: firstTab.
 	self assert: self projectsPresenter classDefinitionPresenter value equals: newSource replaceCrLfWithLf.
 	self projectsPresenter topShell cardsPresenter view cardLayout cycleNextCard. 
 	self assert: self projectsPresenter topShell cardsPresenter view cardLayout currentCard
-		sameAs: secondTab.
+		identicalTo: secondTab.
 	self assert: self projectsPresenter classDefinitionPresenter value equals: newSource replaceCrLfWithLf!
 
 test_classListSelectionShouldNotUpdateOtherHierarchy
@@ -1425,9 +1425,9 @@ test_dontChangeTabOnMethodSave
 	self methodSourcePresenter value: source.
 	self projectsPresenter editSaveMethod: self classListPresenter selection.
 	self assert: self methodSourcePresenter value equals: source.
-	self assert: self currentTabView sameAs: firstTab.	"still on tab 1"
+	self assert: self currentTabView identicalTo: firstTab.	"still on tab 1"
 	self nextTabView.	"go to tab 2"
-	self assert: self currentTabView sameAs: secondTab.
+	self assert: self currentTabView identicalTo: secondTab.
 	self assert: self methodSourcePresenter value equals: source!
 
 test_dontOverrideExistingAccessorMethods

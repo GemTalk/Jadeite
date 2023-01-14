@@ -18,12 +18,10 @@ abortTransaction
 	self autoCommit: (autoCommit value == #failed ifTrue: [true] ifFalse: [autoCommit value])!
 
 aboutToChange: aSelectionChangingEvent
-	aSelectionChangingEvent value ifTrue: [
-		aSelectionChangingEvent value: self isOkayToChange.
-		self resetCategoryText.
-	].
-	
-!
+	aSelectionChangingEvent value
+		ifTrue: 
+			[aSelectionChangingEvent value: self isOkayToChange.
+			aSelectionChangingEvent value ifTrue: [self resetCategoryText]]!
 
 addDictionary
 	| newDictionaryName |
@@ -826,7 +824,7 @@ editSaveClass
 		commandArgs: #().
 	self issueCommand: browserService]
 			on: GsApplicationError
-			do:  
+			do: 
 				[:ex |
 				('*poolDictionaries not supported yet*' match: ex description)
 					ifTrue: [^MessageBox notify: 'Pool Dictionaries not supported yet'].
@@ -1100,11 +1098,14 @@ isOkayToChange
 			(JadePresenter unsavedChangesDialogIn: self)
 				ifTrue: 
 					[gciSession isValidSession
-						ifTrue: [^false]
+						ifTrue: 
+							[classDefinitionPresenter view isModified: false.
+							^true]
 						ifFalse: 
 							[classDefinitionPresenter
 								selectAll;
-								copySelection]].
+								copySelection]]
+				ifFalse: [^false].
 			classDefinitionPresenter view isModified: false].
 	classCommentPresenter view isModified
 		ifTrue: 
