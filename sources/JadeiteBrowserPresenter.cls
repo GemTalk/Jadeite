@@ -823,7 +823,7 @@ editSaveClass
 		command: #recompileMethodsAfterClassCompilation;
 		commandArgs: #().
 	self issueCommand: browserService]
-			on: GsApplicationError
+			on: GsApplicationError, GsCompileError
 			do: 
 				[:ex |
 				('*poolDictionaries not supported yet*' match: ex description)
