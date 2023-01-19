@@ -72,9 +72,11 @@ runTestCommand: command methods: methodServices className: className
 			methodService testResult = 'failure' ifTrue: [jadeResult addFailure: methodService].
 			methodService testResult = 'passed' ifTrue: [jadeResult addPassed: methodService].
 			index := methodListPresenter list indexOf: methodService.
-			methodListPresenter view ensureVisible: index].
+			methodListPresenter view updateItem: methodService atIndex: index.
+			methodListPresenter view ensureVisible: index.
+			methodListPresenter view update].
 	self updateResult: jadeResult.
-	methodListPresenter view ensureVisible: index. "ensure last test run is visible" 
+	methodListPresenter view ensureVisible: index.	"ensure last test run is visible"
 	^jadeResult!
 
 runTestMethodServices: methodServices className: className

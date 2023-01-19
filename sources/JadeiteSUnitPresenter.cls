@@ -180,7 +180,6 @@ runAll
 runSelected
 	"if multiple classes are selected, we really don't know which test class
 	the user intended for the test to be run so pick the class the test is defined in"
-
 	^classListPresenter selections size > 1
 		ifTrue: [self runTests: methodListPresenter selections]
 		ifFalse: [self runTests: methodListPresenter selections in: classListPresenter selections first name]!

@@ -23,10 +23,12 @@ addMethodServicesToTree: methodServices
 			[:methodService |
 			methodService breakPoints isEmpty
 				ifFalse: 
-					[breakpointListPresenter model getNodeFor: methodService className
-						ifAbsent: [breakpointListPresenter model addRoot: methodService className].
-					breakpointListPresenter model add: methodService asChildOf: methodService className.
-					breakpointListPresenter view expand: methodService className]]!
+					[methodService className
+						ifNotNil: 
+							[breakpointListPresenter model getNodeFor: methodService className
+								ifAbsent: [breakpointListPresenter model addRoot: methodService className].
+							breakpointListPresenter model add: methodService asChildOf: methodService className.
+							breakpointListPresenter view expand: methodService className]]]!
 
 areBreakpointsEnabled
 	^areBreakpointsEnabled!
