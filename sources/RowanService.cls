@@ -719,7 +719,7 @@ notRowanizedPackageName
 	^'(NONE)'!
 
 rowanClientServicesVersionLowerLimit
-	^'3.0.4'!
+	^'3.0.5'!
 
 templateClassName	^self name! !
 !RowanService class categoriesForMethods!
