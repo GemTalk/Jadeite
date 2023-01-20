@@ -234,6 +234,14 @@ areAbortCommitEnabled
 defaultAdditionalAccelerators
 	^#(#(#raiseConsole 'Ctrl+F7'))!
 
+defaultMethodTemplate
+
+	^'methodSelector
+	"method comment"
+
+	| temps |
+	^ self yourself' replaceCrLfWithLf!
+
 defaultSigAbortProcessInterval
 	"in seconds"
 
@@ -375,6 +383,7 @@ waitForAnswer: thingThatCanAnswer
 !JadePresenter class categoriesForMethods!
 areAbortCommitEnabled!public! !
 defaultAdditionalAccelerators!constants!public! !
+defaultMethodTemplate!public! !
 defaultSigAbortProcessInterval!public! !
 homeEnvVarString!constants!public! !
 inTransaction!public! !

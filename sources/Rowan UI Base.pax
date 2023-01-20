@@ -1931,14 +1931,7 @@ methodMenuBreak:!menus!public! !
 !JadeAutoTextPresenter3 methodsFor!
 
 defaultMethod
-
-^'methodSelector
-	"method comment"
-
-	| temps |
-	^self yourself.
-'.
-!
+	^JadePresenter defaultMethodTemplate!
 
 setDefaultMethod
 
@@ -4786,6 +4779,7 @@ methodsMenuStrings
 !
 
 methodSourceEqual
+	methodSourcePresenter value = JadePresenter defaultMethodTemplate ifTrue: [^true].
 	^methodSourcePresenter value = methodSource!
 
 onViewOpened 
@@ -5420,14 +5414,7 @@ updateServices:!public!services! !
 !JadeTextPresenter methodsFor!
 
 defaultMethod
-
-^'methodSelector
-	"method comment"
-
-	| temps |
-	^self yourself.
-'.
-!
+	^JadePresenter defaultMethodTemplate!
 
 setDefaultMethod
 

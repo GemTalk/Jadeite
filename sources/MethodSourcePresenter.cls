@@ -39,14 +39,7 @@ createSchematicWiring
 		yourself!
 
 defaultMethod
-
-^'methodSelector
-	"method comment"
-
-	| temps |
-	^self yourself.
-'.
-!
+	^JadePresenter defaultMethodTemplate!
 
 gsMethod
 	"testing only"
