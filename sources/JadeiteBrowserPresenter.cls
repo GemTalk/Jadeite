@@ -1753,6 +1753,12 @@ refreshMethodsOn: presenter
 				ifFalse: [classService filters: packageMethodListPresenter selections]].
 	classService displayMethodsOn: presenter browser: self!
 
+refreshProjectInfoTab
+	| service |
+	service := self projectListPresenter selectionIfNone: [^self cleanupProjectInfoTab].
+	service wasUpdated: true. 
+	self updateProjectInfoTabFor: service!
+
 registerPresentersForUpdates
 	super registerPresentersForUpdates.
 	BrowserUpdate current
@@ -2546,6 +2552,7 @@ refreshClass!event handlers!public!updating! !
 refreshFromServer!event handlers!menu handlers!must not strip!public!updating! !
 refreshFromServerAfterAbort:!public! !
 refreshMethodsOn:!event handlers!public! !
+refreshProjectInfoTab!event handlers!public!updating! !
 registerPresentersForUpdates!public!register presenters! !
 reloadProject!menu handlers!must not strip!public! !
 removeAppropriateTab!private!tabs! !

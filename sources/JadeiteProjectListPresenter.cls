@@ -221,6 +221,10 @@ refreshFromServer
 refreshFromServerAfterAbort: browserService
 	browserService projectsUpdate: projectListPresenter browser: self. !
 
+refreshProjectInfoTab
+
+	!
+
 registerPresentersForUpdates
 	BrowserUpdate current
 		register: projectListPresenter
@@ -290,6 +294,7 @@ queryCommand:!menu handlers!public! !
 refresh!menu handlers!public! !
 refreshFromServer!menu handlers!public! !
 refreshFromServerAfterAbort:!menu handlers!public! !
+refreshProjectInfoTab!public!updating! !
 registerPresentersForUpdates!private!register presenters! !
 reloadProject!menu handlers!public! !
 unloadProjects!menu handlers!public! !
