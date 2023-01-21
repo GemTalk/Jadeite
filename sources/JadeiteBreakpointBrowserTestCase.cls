@@ -146,6 +146,35 @@ test_breakpointRemovalsUpdateAutomatically
 	self assert: treeModel rootNodes first children first object breakpointDisplayString
 		equals: 'test2 (1)'!
 
+test_browseSelectedMethod
+	| menuItem commandQuery methodListBrowser |
+	self testsIssue: #issue822
+		withTitle: 'would be nice to be able to choose to browse a method, when full project browser is overkill'.
+	self openProjectBrowser.
+	self selectRowanSample1Test.
+	self selectMethodNamed: #test1.
+	self projectsPresenter setBreakPointAt: 1 in: self projectsPresenter.
+	breakpointBrowser := self projectsPresenter browseBreakpoints.
+	self assert: breakpointBrowser selectedMethodServices size equals: 1.
+	self assert: breakpointBrowser selectedMethodServices first selector equals: #test1.
+	self selectMethodNamed: #test1.
+	menuItem := breakpointBrowser methodListPresenter view contextMenu items
+				detect: [:item | item command = #browseSelectedMethod].
+	commandQuery := CommandQuery commandDescription: menuItem
+				source: breakpointBrowser methodListPresenter view.
+	breakpointBrowser queryCommand: commandQuery.
+	self assert: commandQuery isEnabled.
+	methodListBrowser := breakpointBrowser browseSelectedMethod.
+	
+	[self assert: (methodListBrowser isKindOf: JadeiteMethodListBrowser).
+	self assert: methodListBrowser primaryPresenter methodListPresenter selection selector
+		equals: #test1]
+			ensure: [self destroy: methodListBrowser].
+	self assert: breakpointBrowser methodListPresenter model asArray first equals: #RowanSample1Test.
+	breakpointBrowser methodListPresenter selection: #RowanSample1Test.
+	breakpointBrowser queryCommand: commandQuery.
+	self deny: commandQuery isEnabled!
+
 test_clearMethodPaneWhenBreakpointRemoved
 	| originalSource |
 	self testsIssue: #issue763
@@ -278,6 +307,7 @@ test_additionalAccelerators!public!tests! !
 test_breakpointAdditionsUpdateAutomatically!public!tests! !
 test_breakpointIsSelectedAndVisible!public!tests! !
 test_breakpointRemovalsUpdateAutomatically!public!tests! !
+test_browseSelectedMethod!public!tests! !
 test_clearMethodPaneWhenBreakpointRemoved!public!tests! !
 test_clearMethodPaneWhenBreakpointRemoved2!public!tests! !
 test_globalAdditionalAccelerators!public!tests! !
