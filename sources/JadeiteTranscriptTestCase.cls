@@ -54,6 +54,10 @@ menuItemIsEnabledInAllPresenters: aSymbol
 						view: presenter view.
 			self assert: commandQuery isEnabled]!
 
+tearDown
+	super tearDown.
+	projectsBrowser ifNotNil: [self destroy: projectsBrowser]!
+
 test_abortRemovesProjectsInAllBrowsers
 	| sunitBrowser |
 	projectsBrowser := self openWindow: [JadeiteBrowser showOnSession: session].
@@ -763,6 +767,44 @@ test_openServerFile
 	[self assert: (editor codePane documentPresenter value copyFrom: 1 to: 11) equals: 'MIT License']
 		ensure: [self destroy: editor]!
 
+test_packageGroupsVisibility
+	| packageGroupsWereVisible |
+	self testsIssue: #issue887
+		withTitle: '(Oscar V3.2) consider having the Preferences>>Package list visible menu apply to all tabs in a browser'.
+	self openProjectBrowser.
+	self selectRowanSample1Test.
+	packageGroupsWereVisible := JadePresenter packageGroupsVisible.
+	
+	[JadePresenter packageGroupsVisible
+		ifTrue: 
+			[self assert: self projectsPresenter packageGroupPresenter view isWindowVisible.
+			transcript togglePackageGroups.
+			self deny: self projectsPresenter packageGroupPresenter view isWindowVisible]
+		ifFalse: 
+			[self deny: self projectsPresenter packageGroupPresenter view isWindowVisible.
+			transcript togglePackageGroups.
+			self assert: self projectsPresenter packageGroupPresenter view isWindowVisible]]
+			ensure: [JadePresenter packageGroupsVisible: packageGroupsWereVisible]!
+
+test_packageListVisibility
+	| packageListWasVisible |
+	self testsIssue: #issue887
+		withTitle: '(Oscar V3.2) consider having the Preferences>>Package list visible menu apply to all tabs in a browser'.
+	self openProjectBrowser.
+	self selectRowanSample1Test.
+	packageListWasVisible := JadePresenter packageListVisible.
+	
+	[JadePresenter packageListVisible
+		ifTrue: 
+			[self assert: self projectsPresenter packageListPresenter view isWindowVisible.
+			transcript togglePackageList.
+			self deny: self projectsPresenter packageListPresenter view isWindowVisible]
+		ifFalse: 
+			[self deny: self projectsPresenter packageListPresenter view isWindowVisible.
+			transcript togglePackageGroups.
+			self assert: self projectsPresenter packageListPresenter view isWindowVisible]]
+			ensure: [JadePresenter packageListVisible: packageListWasVisible]!
+
 test_popupMenuHasBrowseClass
 	| browseClassItem |
 	self testsIssue: #issue429 withTitle: '(3.0.60) ''Browse Class'' on Transcript gets walkback'.
@@ -988,6 +1030,7 @@ checkAutoCommitMenuItemCheckmark:!public!tests! !
 extendedCharacters!constants!private!tests! !
 jadeitePrefsFilePath!public! !
 menuItemIsEnabledInAllPresenters:!private!support! !
+tearDown!public!support! !
 test_abortRemovesProjectsInAllBrowsers!public!test menus! !
 test_abortTransaction!public!tests! !
 test_autoCommitMenuItem!public!tests! !
@@ -1027,6 +1070,8 @@ test_openChangesBrowser!public!tests! !
 test_openPreferencesFile!public!tests! !
 test_openPreferencesFileCreatePrefsFile!public!tests! !
 test_openServerFile!public!test menus! !
+test_packageGroupsVisibility!public! !
+test_packageListVisibility!public! !
 test_popupMenuHasBrowseClass!public!tests! !
 test_popupMenuHasBrowseImplementors!public!tests! !
 test_popupMenuHasBrowseSenders!public!tests! !

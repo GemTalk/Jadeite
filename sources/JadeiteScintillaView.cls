@@ -121,3 +121,21 @@ queryCommand:!menu handlers support!public! !
 searchFor:in:from:length:details:!private!searching & replacing! !
 !
 
+!JadeiteScintillaView class methodsFor!
+
+openSourceStyler
+	(ScintillaTextStylesDialog createOn: (self aspectValue: #textStyles))
+		defaultStyle: nil;
+		showModal!
+
+textStyles
+	^JadeiteTextStyles default textStyles!
+
+textStyles: newTextStyles
+	^JadeiteTextStyles default textStyles: newTextStyles! !
+!JadeiteScintillaView class categoriesForMethods!
+openSourceStyler!public! !
+textStyles!public! !
+textStyles:!public! !
+!
+

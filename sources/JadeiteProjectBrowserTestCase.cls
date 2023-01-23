@@ -2180,46 +2180,6 @@ test_openProjectsBrowserFromMethodList
 	[self assert: (secondProjectsBrowser isKindOf: JadeiteBrowser)]
 		ensure: [self destroy: secondProjectsBrowser]!
 
-test_packageGroupsVisibility
-	| packageGroupsWereVisible |
-	self testsIssue: #issue887
-		withTitle: '(Oscar V3.2) consider having the Preferences>>Package list visible menu apply to all tabs in a browser'.
-	self closeBrowser: projectsBrowser.
-	self openProjectBrowser.
-	self selectRowanSample1Test.
-	packageGroupsWereVisible := JadePresenter packageGroupsVisible.
-	
-	[JadePresenter packageGroupsVisible
-		ifTrue: 
-			[self assert: self projectsPresenter packageGroupPresenter view isWindowVisible.
-			self projectsPresenter togglePackageGroupsColumn.
-			self deny: self projectsPresenter packageGroupPresenter view isWindowVisible]
-		ifFalse: 
-			[self deny: self projectsPresenter packageGroupPresenter view isWindowVisible.
-			self projectsPresenter togglePackageGroupsColumn.
-			self assert: self projectsPresenter packageGroupPresenter view isWindowVisible]]
-			ensure: [JadePresenter packageGroupsVisible: packageGroupsWereVisible]!
-
-test_packageListVisibility
-	| packageListWasVisible |
-	self testsIssue: #issue887
-		withTitle: '(Oscar V3.2) consider having the Preferences>>Package list visible menu apply to all tabs in a browser'.
-	self closeBrowser: projectsBrowser.
-	self openProjectBrowser.
-	self selectRowanSample1Test.
-	packageListWasVisible := JadePresenter packageListVisible.
-	
-	[JadePresenter packageListVisible
-		ifTrue: 
-			[self assert: self projectsPresenter packageListPresenter view isWindowVisible.
-			self projectsPresenter togglePackageDictionaryColumn.
-			self deny: self projectsPresenter packageListPresenter view isWindowVisible]
-		ifFalse: 
-			[self deny: self projectsPresenter packageListPresenter view isWindowVisible.
-			self projectsPresenter togglePackageDictionaryColumn.
-			self assert: self projectsPresenter packageListPresenter view isWindowVisible]]
-			ensure: [JadePresenter packageListVisible: packageListWasVisible]!
-
 test_packagesShownInMultipleProjects
 	self selectServicesNamed: (Array with: 'RowanClientServices') in: self projectListPresenter.
 	self assertIsNil: (self serviceNamed: 'RowanService' in: self classListPresenter).
@@ -2231,7 +2191,7 @@ test_packagesShownInMultipleProjects
 
 test_projectDisplaysSync
 	"the projects browser and project list in the transcript should
-	stay sync'ed automaticall"
+	stay sync'ed automatically"
 
 	"project removal in projects browser"
 
@@ -3581,8 +3541,6 @@ test_openNewProjectBrowser!public!test menus!test projects!tests! !
 test_openNewProjectTab!public!test menus!test projects!tests! !
 test_openProjectsBrowser!public!test projects!tests! !
 test_openProjectsBrowserFromMethodList!public!tests! !
-test_packageGroupsVisibility!public!test packages! !
-test_packageListVisibility!public!test packages! !
 test_packagesShownInMultipleProjects!public!tests! !
 test_projectDisplaysSync!public!test projects!tests! !
 test_projectInfoTab!public!test menus!test projects!tests! !

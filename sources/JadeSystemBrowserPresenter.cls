@@ -1733,21 +1733,6 @@ selectedMethodName
 	^methodListPresenter selections first first.
 !
 
-setColorForCompileErrors
-	| newColor |
-	newColor := ColorDialog showModalOn: JadeiteTextStyles default colorForNoEdits.
-	newColor ifNotNil: [JadeiteTextStyles default colorForCompileError: newColor]!
-
-setColorForNoEdits
-	| newColor |
-	newColor := ColorDialog showModalOn: JadeiteTextStyles default colorForNoEdits.
-	newColor ifNotNil: [JadeiteTextStyles default colorForNoEdits: newColor]!
-
-setColorForUnsavedEdits
-	| newColor |
-	newColor := ColorDialog showModalOn: JadeiteTextStyles default colorForUnsavedEdits.
-	newColor ifNotNil: [JadeiteTextStyles default colorForUnsavedEdits: newColor]!
-
 setEnvironment: anInteger
 
 	environment := anInteger.
@@ -2504,9 +2489,6 @@ selectedClassName:!public!updating! !
 selectedClassNameWithoutVersion!public! !
 selectedMethodChanged!event handlers!history!public! !
 selectedMethodName!menu handlers!public! !
-setColorForCompileErrors!menu handlers!public! !
-setColorForNoEdits!menu handlers!public! !
-setColorForUnsavedEdits!menu handlers!public! !
 setEnvironment:!menu handlers!public! !
 setEnvironment0!menu handlers!public! !
 setEnvironment1!menu handlers!public! !

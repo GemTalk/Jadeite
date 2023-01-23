@@ -332,18 +332,6 @@ buildPackageList
 			classHierarchyPresenter model: JadeiteTreeModel new].
 	packageListPresenter view isDropTarget: true!
 
-buildPreferencesMenu
-	| preferencesMenu showPackageItem showPackageGroupItem |
-	preferencesMenu := Menu fromStrings: self preferencesMenuStrings.
-	preferencesMenu addSeparator.
-	showPackageItem := preferencesMenu
-				addItem: (CommandMenuItem command: #togglePackageDictionaryColumn description: 'Package list visible').
-	showPackageItem isRadioButtonStyle: true.
-	showPackageGroupItem := preferencesMenu
-				addItem: (CommandMenuItem command: #togglePackageGroupsColumn description: 'Package groups visible').
-	showPackageGroupItem isRadioButtonStyle: true.
-	^preferencesMenu!
-
 buildProjectInfoTab: infoTab
 	| infoTabView |
 	infoTabView := infoTab createView: 'Editable list view'.
@@ -1434,7 +1422,11 @@ openJadeiteProjectsBrowser
 
 openSourceStyler
 	| textStyles |
-	textStyles := super openSourceStyler.
+	textStyles := methodSourcePresenter view editStyles textStyles.
+	JadeiteTextStyles default textStyles: textStyles.
+	classDefinitionPresenter view textStyles: textStyles.
+	originalSourcePresenter view textStyles: textStyles.
+	classCommentPresenter view textStyles: textStyles.
 	comparisonPresenter afterPresenter view textStyles: textStyles.
 	comparisonPresenter beforePresenter view textStyles: textStyles!
 
@@ -1457,22 +1449,6 @@ pkgsMenuStrings
 	'&Remove Package(s)...//removePackages'
 	'&Edit Package Groups...//editPackageGroups'
 	'Go to Associated Dictionary//gotoPackageDictionary')!
-
-preferencesMenuStrings
-
-	false ifTrue: [		"adding explicit senders ensures that packaging will not drop methods and allows us to find references by browsing senders"
-		self openSourceStyler; setColorForCompileErrors; setColorForNoEdits; setColorForUnsavedEdits.
-	].
-	^#(
-		'&Preferences'
-		'&Source Styler...//openSourceStyler'
-		'-'
-		'&Reset Colors//resetColors'
-		'Color for &Compile Errors...//setColorForCompileErrors'
-		'Color for &No Edits...//setColorForNoEdits'
-		'Color for &Unsaved Edits...//setColorForUnsavedEdits'
-	).
-!
 
 previousTabViewArrangement
 	^previousTabViewArrangement!
@@ -1667,16 +1643,6 @@ queryCommand: aCommandQuery
 	#checkoutTag == aCommandQuery command
 		ifTrue: 
 			[aCommandQuery isEnabled: self isNoneProjectSelected not.
-			^true].
-	#togglePackageDictionaryColumn == aCommandQuery command
-		ifTrue: 
-			[aCommandQuery isEnabled: true.
-			aCommandQuery isChecked: JadePresenter packageListVisible.
-			^true].
-	#togglePackageGroupsColumn == aCommandQuery command
-		ifTrue: 
-			[aCommandQuery isEnabled: true.
-			aCommandQuery isChecked: JadePresenter packageGroupsVisible.
 			^true].
 	#gotoPackageDictionary = aCommandQuery command
 		ifTrue: 
@@ -2028,15 +1994,6 @@ textTabChanged
 		ifTrue: [sunitPresenter methodListPresenter setFocus	"to ensure sunit bar is enabled"].
 	self updateMenuBar!
 
-togglePackageDictionaryColumn
-	packageDictionaryContainer view isWindowVisible
-		ifTrue: 
-			[JadePresenter packageListVisible: false.
-			JadePresenter hidePackageList]
-		ifFalse: 
-			[JadePresenter packageListVisible: true.
-			JadePresenter showPackageList]!
-
 togglePackageGroupsColumn
 	packageGroupPresenter view creationParentView isWindowVisible
 		ifTrue: 
@@ -2225,7 +2182,6 @@ updateMenuBar
 				addItem: methodFilterMenu;
 				addItem: (methodMenu := Menu fromStrings: self methodsMenuStrings);
 				addItem: textAreaMenu;
-				addItem: self buildPreferencesMenu;
 				yourself.
 	shellView menuBar: menuBar.
 	self updateMethodMenu: methodMenu!
@@ -2401,7 +2357,6 @@ browseSelectedMethods!menu handlers!must not strip!public!queries! !
 buildAddPackageView!private!tabs! !
 buildGlobalsTab!private!tabs! !
 buildPackageList!event handlers!public!updating! !
-buildPreferencesMenu!menus!private!updating! !
 buildProjectInfoTab:!private!tabs! !
 buildProjectListView!private!tabs! !
 buildProjectReadMeTab!private!tabs! !
@@ -2527,7 +2482,6 @@ openSourceStyler!menu handlers!must not strip!public! !
 packageDictionaryCards!accessing!private! !
 packageGroupPresenter!accessing!private! !
 pkgsMenuStrings!menus!public! !
-preferencesMenuStrings!menus!public! !
 previousTabViewArrangement!accessing!private! !
 previousTabViewArrangement:!accessing!private! !
 previousTopViewArrangement!accessing!private! !
@@ -2594,7 +2548,6 @@ statusBarText!accessing!public! !
 statusBarText:!accessing!public! !
 symbolExists:!public!testing! !
 textTabChanged!event handlers!public! !
-togglePackageDictionaryColumn!displaying!menu handlers!must not strip!public! !
 togglePackageGroupsColumn!displaying!menu handlers!must not strip!public! !
 unloadProjects!project menu handlers!public! !
 updateAddPackageLists!public!updating! !
