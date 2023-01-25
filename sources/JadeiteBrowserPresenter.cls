@@ -2058,7 +2058,9 @@ updateAfterFindClassInPackage: classService
 		ifTrue: [self selectClassNamed: classService name asString]
 		ifFalse: 
 			[self selectClassInClassListNamed: classService name.
-			self updateHierarchy]!
+			classHierarchyPresenter model asBag detect: [:svc | svc name = classService name]
+				ifNone: [self updateHierarchy].
+			self selectClassNamed: classService name]!
 
 updateAutoCommit
 	| autoCommitButtonView |

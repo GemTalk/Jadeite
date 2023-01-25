@@ -577,7 +577,6 @@ updatedClassInHierarchy: classHierarchyPresenter browser: projectBrowser
 	hierarchy should not"
 
 	| classNode superclassService selectedPackageNames |
-
 	classHierarchyPresenter view invalidate.
 	classNode := classHierarchyPresenter model getNodeFor: self ifAbsent: [^self].
 	superclassService := classHierarchyPresenter model parentOf: self.

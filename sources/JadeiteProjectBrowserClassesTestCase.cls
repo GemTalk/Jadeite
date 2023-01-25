@@ -76,7 +76,7 @@ test_abortRemovesSelectedChildHierarchyTab
 	
 	[self assert: self classHierarchyPresenter selection name = 'RowanServiceTestClass'.
 	self abortTransaction.
-	self assert: self classHierarchyPresenter selection name = 'RowanService'.
+	self assert: self classHierarchyPresenter selection name = 'RowanTestService'.
 	self assertIsNil: (self classHierarchyPresenter model asBag
 				detect: [:classService | classService name = 'RowanServiceTestClass']
 				ifNone: [])]
@@ -134,6 +134,117 @@ test_addAccessorsHierarchyTabVerifySource
 		equals: 'var1: object
 	var1 := object' replaceCrLfWithLf]
 			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
+
+test_addClassInHierarchyAlphabetized
+
+	| rowanSample1ClassService children |
+	self testsIssue: #issue891 withTitle: 'class hierarchy not quite right'.
+	self selectRowanSample1Class.
+	self selectHierarchyTab.
+	self assert: self projectsPresenter classHierarchyPresenter selection name = 'RowanSample1'.
+	self
+		saveClass: 'Z'
+		superclass: 'RowanSample1'
+		instVars: #()
+		package: 'RowanSample1-Core'.
+	self assert: self projectsPresenter classHierarchyPresenter selection name = 'Z'.
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'Z')
+		in: self projectsPresenter classHierarchyPresenter.
+	rowanSample1ClassService := self projectsPresenter classHierarchyPresenter model asBag
+				detect: [:service | service name = 'RowanSample1'].
+	children := (self projectsPresenter classHierarchyPresenter model
+				getChildrenOf: rowanSample1ClassService) collect:[:service | service name].
+	self assert: children asArray equals: #('Z').
+	self
+		saveClass: 'Y'
+		superclass: 'RowanSample1'
+		instVars: #()
+		package: 'RowanSample1-Core'.
+	self assert: self projectsPresenter classHierarchyPresenter selection name = 'Y'.
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'Y')
+		in: self projectsPresenter classHierarchyPresenter.
+	children := (self projectsPresenter classHierarchyPresenter model
+				getChildrenOf: rowanSample1ClassService) collect:[:service | service name].
+	self assert: children asArray equals: #('Y' 'Z').
+	self
+		saveClass: 'X'
+		superclass: 'RowanSample1'
+		instVars: #()
+		package: 'RowanSample1-Core'.
+	self assert: self projectsPresenter classHierarchyPresenter selection name = 'X'.
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'X')
+		in: self projectsPresenter classHierarchyPresenter.
+	children := (self projectsPresenter classHierarchyPresenter model
+				getChildrenOf: rowanSample1ClassService) collect:[:service | service name].
+	self assert: children asArray equals: #('X' 'Y' 'Z').!
+
+test_addClassInHierarchyAlphabetizedInSecondBrowser
+	| rowanSample1ClassService children |
+	self testsIssue: #issue891 withTitle: 'class hierarchy not quite right'.
+	self selectRowanSample1Class.
+	self selectHierarchyTab.
+	self assert: self projectsPresenter classHierarchyPresenter selection name = 'RowanSample1'.
+	self openSecondBrowser.
+	self selectRowanSample1Class.
+	self selectServicesNamed: (Array with: 'RowanSample1')
+		in: secondBrowser currentCard projectListPresenter.
+	self selectServicesNamed: #('RowanSample1-Core') in: secondBrowser currentCard packageListPresenter.
+	self selectServicesNamed: (Array with: 'RowanSample1')
+		in: secondPresenter classListPresenter.
+	self selectHierarchyTabIn: secondBrowser currentCard.
+	self
+		saveClass: 'Z'
+		superclass: 'RowanSample1'
+		instVars: #()
+		package: 'RowanSample1-Core'.
+	self assert: self projectsPresenter classHierarchyPresenter selection name = 'Z'.
+	self assert: secondPresenter classHierarchyPresenter selection name = 'RowanSample1'.
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'Z')
+		in: self projectsPresenter classHierarchyPresenter.
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'Z')
+		in: secondPresenter classHierarchyPresenter.
+	rowanSample1ClassService := self projectsPresenter classHierarchyPresenter model asBag
+				detect: [:service | service name = 'RowanSample1'].
+	children := (self projectsPresenter classHierarchyPresenter model
+				getChildrenOf: rowanSample1ClassService) collect: [:service | service name].
+	self assert: children asArray equals: #('Z').
+	children := (secondPresenter classHierarchyPresenter model
+				getChildrenOf: rowanSample1ClassService) collect: [:service | service name].
+	self assert: children asArray equals: #('Z').
+	self
+		saveClass: 'Y'
+		superclass: 'RowanSample1'
+		instVars: #()
+		package: 'RowanSample1-Core'.
+	self assert: self projectsPresenter classHierarchyPresenter selection name = 'Y'.
+	self assert: secondPresenter classHierarchyPresenter selection name = 'RowanSample1'.
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'Y')
+		in: self projectsPresenter classHierarchyPresenter.
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'Y')
+		in: secondPresenter classHierarchyPresenter.
+	children := (self projectsPresenter classHierarchyPresenter model
+				getChildrenOf: rowanSample1ClassService) collect: [:service | service name].
+	self assert: children asArray equals: #('Y' 'Z').
+	children := (secondPresenter classHierarchyPresenter model
+				getChildrenOf: rowanSample1ClassService) collect: [:service | service name].
+	self assert: children asArray equals: #('Y' 'Z').
+	self
+		saveClass: 'X'
+		superclass: 'RowanSample1'
+		instVars: #()
+		package: 'RowanSample1-Core'.
+	self assert: self projectsPresenter classHierarchyPresenter selection name = 'X'.
+	self assert: secondPresenter classHierarchyPresenter selection name = 'RowanSample1'.
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'X')
+		in: self projectsPresenter classHierarchyPresenter.
+	self assertLinearAncestry: #('Object' 'RowanSample1' 'X')
+		in: secondPresenter classHierarchyPresenter.
+	children := (self projectsPresenter classHierarchyPresenter model
+				getChildrenOf: rowanSample1ClassService) collect: [:service | service name].
+	self assert: children asArray equals: #('X' 'Y' 'Z').
+	children := (secondPresenter classHierarchyPresenter model
+				getChildrenOf: rowanSample1ClassService) collect: [:service | service name].
+	self assert: children asArray equals: #('X' 'Y' 'Z').!
 
 test_addRemoveHierarchyCategory
 	self testsIssue: #issue215 withTitle: 'add category in hierarchy view'.
@@ -2064,6 +2175,8 @@ test_abortRemovesProjectAndPackage!public!test class list! !
 test_abortRemovesSelectedChildHierarchyTab!public!test class hierarchy!test variable tab!tests! !
 test_addAccessorsHierarchyTab!public!test class hierarchy!test variable tab!tests! !
 test_addAccessorsHierarchyTabVerifySource!public!test class hierarchy!test variable tab!tests! !
+test_addClassInHierarchyAlphabetized!public!test class hierarchy!tests! !
+test_addClassInHierarchyAlphabetizedInSecondBrowser!public!test class hierarchy!tests! !
 test_addRemoveHierarchyCategory!public!test class hierarchy!tests! !
 test_addSubclass!public!test class hierarchy!tests! !
 test_allClassesAutoCommitOn!public!test class list!test find!tests! !

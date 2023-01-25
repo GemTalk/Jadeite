@@ -15,6 +15,9 @@ initialize
 	super initialize.
 	visited := true!
 
+newChildCollection
+	^SortedCollection sortBlock:[:x :y | x object name < y object name]!
+
 resetVisited
 
 	visited := false!
@@ -26,6 +29,7 @@ visited: anObject
 	visited := anObject! !
 !JadeiteTreeNode categoriesForMethods!
 initialize!initialization!public! !
+newChildCollection!accessing!public! !
 resetVisited!public! !
 visited!accessing!private! !
 visited:!accessing!private! !
