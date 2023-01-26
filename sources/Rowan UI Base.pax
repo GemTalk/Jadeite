@@ -3404,7 +3404,7 @@ defaultUnsavedChangesActionButton
 	^2!
 
 defaultUnsavedChangesText
-	^'You have unsaved changes. Really exit?'!
+	^'You have unsaved changes. Discard changes and continue?'!
 
 defaultUnsavedChangesWithSaveActionButton
 	"intention revealing cancel default button"
