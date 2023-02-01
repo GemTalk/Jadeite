@@ -293,11 +293,11 @@ gciSession: aGciSession
 getProcessList
 	"#getProcessList copied from RowanProjectsBrowserPresenter>>updatePresenters"
 
-	BrowserUpdate current logComment: 'Update debugger service'.
+	BrowserUpdate current logComment: 'Update debugger service --- #updateProcesses'.
 	debuggerService := RowanDebuggerService onProcess: gsProcess.
 	debuggerService command: #updateProcesses.
 	self issueCommand: debuggerService.
-	BrowserUpdate current logComment: 'Update debugger service complete'.
+	BrowserUpdate current logComment: 'Update debugger service --- #updateProcesses ---- complete'.
 	BrowserUpdate current
 		logComment: 'debuggerService processes: ' , debuggerService processes printString.
 	debuggerService processes ifNil: [^self].
@@ -338,7 +338,8 @@ initializeIdleProcess
 			[
 			[
 			[(Delay forMilliseconds: 10) wait.
-			cachedSession isCallInProgress] whileTrue: [].
+			cachedSession ifNil: [false] ifNotNil: [:sess | sess isCallInProgress]]
+					whileTrue: [].
 			cachedClass signalSemaphore.
 			(idleProcessSemaphore isKindOf: Semaphore)
 				ifFalse: 
@@ -502,7 +503,7 @@ reformatSource
 	documentPresenter view performUndoableAction: 
 			[documentPresenter view modifyText: [documentPresenter view sciSetText: methodService source]].
 	documentPresenter value: methodService source.
-	documentPresenter view isModified: true.
+	self isModified: true.
 	documentPresenter view
 		backcolor: JadeiteTextStyles default colorForUnsavedEdits;
 		clearContainerIndicators.
@@ -560,7 +561,7 @@ saveMethod
 					[^MessageBox notify: 'Cannot save code in an executed block context. Home method not on stack.'].
 			changedSource := documentPresenter value.
 			self selectHomeMethod.
-			documentPresenter value: changedSource].
+			[documentPresenter value: changedSource] ensure: [self isModified: false]].
 	string := self getDocumentData reject: [:each | each == Character cr].
 	classService := RowanClassService new
 				name: frame method className;
@@ -582,7 +583,7 @@ saveMethod
 			[:warning |
 			self setCompileWarningColor.
 			self statusBarText: warning].
-	documentPresenter isModified: false.
+	self isModified: false.
 	(gsProcess gsProcessForSession: gciSession)
 		trimStackToLevel: frameListPresenter selectionByIndex + frameListOffset.
 	self getProcessList!
@@ -615,7 +616,7 @@ selectedFrame
 	BrowserUpdate current logComment: 'frame stepPoint: ' , frame stepPoint printString.
 	frame stepPoint ifNil: [RowanDebuggerStepPointError signal].	"see comment in  RowanFrameService>>initializeProcess:level:organizer:"
 	self displayVariables.
-	documentPresenter value: frame gsMethod source.
+	[documentPresenter value: frame gsMethod source] ensure: [self isModified: false].
 	BrowserUpdate current logComment: 'udpdated source pane'.
 	documentPresenter view isModified: false.
 	codePane offsets: nil.
@@ -846,6 +847,7 @@ lastPosition: anObject
 
 openOn: gsProcess message: aString terminateOnClose: aBoolean
 	| answer debugger |
+	gsProcess gciSession ifNil:[^self]. 
 	debugger := (self showOnSession: gsProcess gciSession)
 				initializeProcess: gsProcess
 				message: aString

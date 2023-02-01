@@ -52,12 +52,12 @@ basicIssueCommand: services session: session
 	self logSentServices: services.
 	loggedServices := services asOrderedCollection
 				addFirst: newLoggingService;
-				yourself. 
-	stonString := JadeiteSTON toString: loggedServices. 
+				yourself.
+	stonString := JadeiteSTON toString: loggedServices.
 	[stonResultString := session serverPerform: #updateFromSton: with: stonString]
 		ensure: [services do: [:service | service clearCommand]].
-	stonResultString = 'nil' ifFalse: [
-		updateResult := self update: services afterStonReplication: stonResultString].
+	stonResultString = 'nil'
+		ifFalse: [updateResult := self update: services afterStonReplication: stonResultString].
 	session releaseAllOops.
 	^updateResult!
 
@@ -124,9 +124,11 @@ issueCommand: service session: session
 issueCommands: services session: session
 	self inUpdateWhile: 
 			[| commandResult |
-			commandResult := self basicIssueCommand: services session: session.
-			BrowserUpdate current logComment: 'Released inUpdate semaphore'.
-			^commandResult]!
+			session
+				ifNotNil: 
+					[commandResult := self basicIssueCommand: services session: session.
+					BrowserUpdate current logComment: 'Released inUpdate semaphore'.
+					^commandResult]]!
 
 logComment: string
 	logger logComment: string!

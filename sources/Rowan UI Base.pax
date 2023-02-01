@@ -274,7 +274,6 @@ package methodNames
 	add: #JadePresenter -> #sigAbortsProcess;
 	add: #JadePresenter -> #sigAbortsProcess:;
 	add: #JadePresenter -> #stopListeningForSigAborts;
-	add: #JadePresenter -> #update:afterStonReplication:;
 	add: #JadePresenter -> #updateProjects;
 	add: #JadePresenter -> #updateServices:;
 	add: #JadePresenter -> #waitForAnswer:;
@@ -369,12 +368,12 @@ package methodNames
 	add: #JadeTextDocument -> #jadeExecuteAndDisplay:view:;
 	add: #JadeTextDocument -> #jadeInspect;
 	add: #JadeTextDocument -> #onPromptToSaveChanges:;
+	add: #JadeTextDocument -> #onViewClosed;
 	add: #JadeTextDocument -> #openDictionaryBrowser;
 	add: #JadeTextDocument -> #openProjectsBrowser;
 	add: #JadeTextDocument -> #openUnsavedChangesDialog;
 	add: #JadeTextDocument -> #raiseConsole;
 	add: #JadeTextDocument -> #registerWindow:rootObject:;
-	add: #JadeTextDocument -> #update:afterStonReplication:;
 	add: #JadeTextDocument -> #updateServices:;
 	add: #JadeTextPresenter -> #defaultMethod;
 	add: #JadeTextPresenter -> #setDefaultMethod;
@@ -1976,6 +1975,7 @@ initializeProcess: aProcess message: aString terminateOnClose: aBoolean
 			ex pass].
 	self class debuggers at: gsProcess oopType asInteger put: self.
 	BrowserUpdate current logComment: 'About to update debugger service'.
+	Smalltalk at: #counter put: (Smalltalk at: #counter) + 1.
 	self update!
 
 onViewClosed
@@ -3058,9 +3058,6 @@ sigAbortsProcess: aProcess
 stopListeningForSigAborts
 	self class stopListeningForSigAborts!
 
-update: services afterStonReplication: stonResults
-	^BrowserUpdate current update: services afterStonReplication: stonResults!
-
 updateProjects
 	| browserService |
 	browserService := RowanBrowserService new.
@@ -3125,7 +3122,6 @@ sigAbortProcessInterval!public! !
 sigAbortsProcess!public! !
 sigAbortsProcess:!public! !
 stopListeningForSigAborts!public! !
-update:afterStonReplication:!browsing support!public!services! !
 updateProjects!public! !
 updateServices:!private!services! !
 waitForAnswer:!menu handlers!private! !
@@ -5303,7 +5299,7 @@ issueCommand: service
 	^self issueCommands: (Array with: service)!
 
 issueCommands: services
-	^BrowserUpdate current issueCommands: services session: self gciSession!
+	^BrowserUpdate current issueCommands: services session: GciSession current!
 
 jadeBrowseTests
 	^JadeiteSUnitBrowser showOnSession: gciSession!
@@ -5342,7 +5338,7 @@ jadeExecuteAndDisplay: showResult view: focusViewOrNil
 	^result!
 
 jadeInspect
-	| inspector |  
+	| inspector | 
 	inspector := JadeiteInspector new gciSession: gciSession.
 	^inspector evaluateSelectedTextIn: self thenInspectInContext: gciSession oopNil value!
 
@@ -5366,6 +5362,17 @@ onPromptToSaveChanges: aBooleanValue
 									true])]].
 	^aBooleanValue value!
 
+onViewClosed
+	gciSession notNil
+		ifTrue: 
+			[| temp |
+			BrowserUpdate current inUpdateWhile: 
+					["don't pull out the session if we're in the middle of a round trip"
+					temp := gciSession.
+					gciSession := nil.
+					temp removeEventsTriggeredFor: self]].
+	super onViewClosed!
+
 openDictionaryBrowser
 	gciSession hasServer ifTrue: [^JadeiteBrowser showOnSession: gciSession]!
 
@@ -5384,9 +5391,6 @@ registerWindow: handle rootObject: oop
 		rootObject: oop value
 		session: self gciSession!
 
-update: services afterStonReplication: stonResults
-	BrowserUpdate current update: services afterStonReplication: stonResults!
-
 updateServices: services
 	BrowserUpdate current updateServices: services asSet asArray session: gciSession! !
 !JadeTextDocument categoriesForMethods!
@@ -5402,12 +5406,12 @@ jadeExecuteAndDisplay:shouldDebug:!Jade!private! !
 jadeExecuteAndDisplay:view:!Jade!private! !
 jadeInspect!menu handlers!private! !
 onPromptToSaveChanges:!event handlers!private! !
+onViewClosed!event handlers!private! !
 openDictionaryBrowser!Jade!private! !
 openProjectsBrowser!Jade!private! !
 openUnsavedChangesDialog!event handlers!private! !
 raiseConsole!public! !
 registerWindow:rootObject:!private! !
-update:afterStonReplication:!public!services! !
 updateServices:!public!services! !
 !
 

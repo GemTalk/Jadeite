@@ -1302,12 +1302,6 @@ textTabs
 unloadPackage
 	MessageBox notify: 'This feature is not yet available'!
 
-update: services afterStonReplication: stonResults
-	| result |
-	result := super update: services afterStonReplication: stonResults.
-	self redrawAllViews.
-	^result!
-
 updateAndSelectA: aView
 	"is this override still needed?"
 	self updateMenuBar.
@@ -1587,7 +1581,6 @@ targetCategory!menu handlers support!private! !
 textAreaTabs!private!text tabs! !
 textTabs!private!text tabs! !
 unloadPackage!menu handlers!public! !
-update:afterStonReplication:!public!updating! !
 updateAndSelectA:!public!updating! !
 updateClasses!event handlers!public!updating! !
 updateClassInfo!event handlers!public!updating! !

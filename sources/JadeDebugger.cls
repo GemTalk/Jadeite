@@ -38,13 +38,12 @@ activeTextEdit
 	^theView!
 
 clearUI
-
 	frameListPresenter list: #().
 	frameListOffset := 0.
 	variableListPresenter list: #().
-	variableDataPresenter value: ''.
-	documentPresenter value: ''.
-!
+	[variableDataPresenter value: String new] ensure: [variableDataPresenter view isModified: false].
+	[documentPresenter value: String new] ensure: 
+			[self isModified: false	"don't interfere with refresh or shutdown by opening a 'unsaved changes' dialog"]!
 
 codeSourcePresenterClass
 
@@ -118,7 +117,7 @@ saveMethod
 		with: gsProcess.
 	(result isKindOf: Boolean) ifTrue: [
 		result ifTrue: [
-			documentPresenter isModified: false.
+			self isModified: false.
 			gsProcess trimStackToLevel: frameListPresenter selectionByIndex + frameListOffset.
 			^self update.
 		] ifFalse: [

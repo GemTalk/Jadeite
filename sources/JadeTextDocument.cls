@@ -239,18 +239,6 @@ logoutRequested: aValueHolder
 maxPrintStringSize
 	^JadePresenter maxPrintStringSize!
 
-onViewClosed
-	gciSession notNil ifTrue: [
-		| temp |
-		temp := gciSession.
-		gciSession := nil.
-		temp removeEventsTriggeredFor: self.
-	].
-	super onViewClosed.
-
-
-!
-
 onViewOpened
 	codePane ifNotNil: [codePane gciSession: gciSession].
 	super onViewOpened.
@@ -454,7 +442,6 @@ jadeExecute!menu handlers!private! !
 jadeExecuteAndDisplay:result:view:!Jade!private! !
 logoutRequested:!private! !
 maxPrintStringSize!private! !
-onViewClosed!event handlers!private! !
 onViewOpened!event handlers!private! !
 openOn:!overrides!public! !
 parentPresenter!public! !
