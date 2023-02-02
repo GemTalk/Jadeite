@@ -1975,7 +1975,6 @@ initializeProcess: aProcess message: aString terminateOnClose: aBoolean
 			ex pass].
 	self class debuggers at: gsProcess oopType asInteger put: self.
 	BrowserUpdate current logComment: 'About to update debugger service'.
-	Smalltalk at: #counter put: (Smalltalk at: #counter) + 1.
 	self update!
 
 onViewClosed
