@@ -60,7 +60,7 @@ package!
 "Class Definitions"!
 
 Object subclass: #MCDefinition
-	instanceVariableNames: ''
+	instanceVariableNames: 'packageName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

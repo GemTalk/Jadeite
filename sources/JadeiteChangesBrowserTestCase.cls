@@ -317,7 +317,6 @@ test_changesAlphabetized
 			ensure: [self destroy: projectsBrowser]!
 
 test_identicalSource
-	| methodListBrowser |
 	self testsIssue: #issue764
 		withTitle: 'Changes Browser confusing handling of newlines in method text (3.1.pr3)'.
 	self selectRowanSample1Test.
@@ -373,6 +372,71 @@ test_noExtraLF
 	self assert: RowanSample1 new foo = ''foo'''.
 	self assert: changesBrowser operationListPresenter selection typeString equals: 'Modification (reverted)'. 
 	self assert: changesBrowser diffsPresenter afterTitlePresenter value equals: 'Image (no change)'!
+
+test_packageNamesInClassChanges
+	| change |
+	self testsIssue: #issue302 withTitle: 'Need to add Package to Rowan Project Changes list'.
+	self selectRowanSample1Class.
+	self
+		saveClass: 'Fnoodle'
+		superclass: 'RowanSample1'
+		instVars: #()
+		package: 'RowanSample1-Core'.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	self assert: changesBrowser operationListPresenter list size equals: 1.
+	change := changesBrowser operationListPresenter list first.
+	self assert: change packageName equals: 'RowanSample1-Core'.
+	self selectRowanSample1Test.
+	self
+		saveClass: 'RowanSample1Test'
+		superclass: 'TestCase'
+		instVars: #('erp')
+		package: 'RowanSample1-Tests'.
+	changesBrowser refresh.
+	self assert: changesBrowser operationListPresenter list size equals: 2.
+	change := changesBrowser operationListPresenter list second.
+	self assert: change modification className equals: 'RowanSample1Test'.
+	self assert: change packageName equals: 'RowanSample1-Tests'.
+	self selectRowanSample1Class.
+	self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass.
+	changesBrowser refresh.
+	self assert: changesBrowser operationListPresenter list size equals: 5.	"add 3 changes. Class removal + 2 method removals"
+	change := changesBrowser operationListPresenter list fourth.
+	self assert: change definition className equals: 'RowanSample1'.
+	self assert: change packageName equals: 'RowanSample1-Core'!
+
+test_packageNamesInMethodChanges
+	| change |
+	self testsIssue: #issue302 withTitle: 'Need to add Package to Rowan Project Changes list'.
+	self selectRowanSample1Test.
+	self
+		saveMethod: 'test1  ^456'
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	self assert: changesBrowser operationListPresenter list size equals: 1.
+	change := changesBrowser operationListPresenter list first.
+	self assert: change packageName equals: 'RowanSample1-Tests'.
+	self assert: change isMethodModification.
+	self assert: change modification source equals: 'test1  ^456'.
+	self selectMethodNamed: #testError.
+	self projectsPresenter basicRemoveMethods.
+	changesBrowser refresh.
+	self assert: changesBrowser operationListPresenter list size equals: 2.
+	change := changesBrowser operationListPresenter list second.
+	self assert: change isMethodRemoval.
+	self assert: change definition selector equals: #testError.
+	self assert: change packageName equals: 'RowanSample1-Tests'.
+	self
+		saveMethod: 'testNewMethod  ^456'
+		in: 'RowanSample1Test'
+		category: 'deleteMe'.
+	changesBrowser refresh.
+	self assert: changesBrowser operationListPresenter list size equals: 3.
+	change := changesBrowser operationListPresenter list third.
+	self assert: change isMethodAddition.
+	self assert: change definition selector equals: #testNewMethod.
+	self assert: change packageName equals: 'RowanSample1-Tests'!
 
 test_revertClassMethod
 	| secondProjectBrowser |
@@ -511,6 +575,8 @@ test_browseSendersOfRevertedChange!public!tests! !
 test_changesAlphabetized!public!tests! !
 test_identicalSource!public!tests! !
 test_noExtraLF!public!tests! !
+test_packageNamesInClassChanges!public!tests! !
+test_packageNamesInMethodChanges!public!tests! !
 test_revertClassMethod!public!tests! !
 test_revertMethodAddition!public!tests! !
 test_revertMethodModification!public!tests! !

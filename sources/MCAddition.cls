@@ -36,6 +36,9 @@ modificationText
 	^definition displayText.
 !
 
+packageName
+	^definition packageName!
+
 selector
 
 	^definition selector.
@@ -47,6 +50,7 @@ isMethod!public!testing! !
 isMethodAddition!public!testing! !
 modificationMemo!public! !
 modificationText!public! !
+packageName!public! !
 selector!public! !
 !
 

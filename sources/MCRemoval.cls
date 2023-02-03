@@ -34,6 +34,11 @@ obsoletionText
 	^definition displayText.
 !
 
+packageName
+
+	^definition packageName.
+!
+
 selector
 
 	^definition selector.
@@ -44,6 +49,7 @@ detailsString!public! !
 isRemoval!public! !
 obsoletionMemo!public! !
 obsoletionText!public! !
+packageName!public! !
 selector!public! !
 !
 

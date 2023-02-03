@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 MCDefinition subclass: #MCOrganizationDefinition
 	instanceVariableNames: 'categories'
@@ -39,9 +39,11 @@ initialize: aStream
 
 	categories := aStream nextLine subStrings: Character tab.
 ! !
-!MCOrganizationDefinition categoriesFor: #className!public! !
-!MCOrganizationDefinition categoriesFor: #detailsString!public! !
-!MCOrganizationDefinition categoriesFor: #displayMemo!public! !
-!MCOrganizationDefinition categoriesFor: #displayText!public! !
-!MCOrganizationDefinition categoriesFor: #initialize:!public! !
+!MCOrganizationDefinition categoriesForMethods!
+className!public! !
+detailsString!public! !
+displayMemo!public! !
+displayText!public! !
+initialize:!public! !
+!
 

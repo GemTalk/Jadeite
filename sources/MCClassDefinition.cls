@@ -1,4 +1,4 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 MCDefinition subclass: #MCClassDefinition
 	instanceVariableNames: 'className definition'
@@ -27,8 +27,10 @@ displayText
 
 	^'displayText'.
 ! !
-!MCClassDefinition categoriesFor: #className!public! !
-!MCClassDefinition categoriesFor: #detailsString!public! !
-!MCClassDefinition categoriesFor: #displayMemo!public! !
-!MCClassDefinition categoriesFor: #displayText!public! !
+!MCClassDefinition categoriesForMethods!
+className!public! !
+detailsString!public! !
+displayMemo!public! !
+displayText!public! !
+!
 

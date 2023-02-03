@@ -1,4 +1,4 @@
-﻿"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smallalk"!
 
 MCDefinition subclass: #MCMethodDefinition
 	instanceVariableNames: 'classIsMeta source category selector className timeStamp'
@@ -41,13 +41,14 @@ displayText
 initialize: aStream
 	| size |
 	timeStamp := aStream upTo: Character tab.
+	packageName := aStream upTo: Character tab.
 	className := aStream upTo: Character tab.
 	classIsMeta := (aStream upTo: Character tab) = 'true'.
 	category := aStream upTo: Character tab.
 	selector := aStream upTo: Character tab.
 	size := (aStream upTo: Character tab) asNumber + 1.
 	source := (aStream next: size) copyReplacing: Character cr withObject: Character lf.
-	source := source copyFrom: 1 to: (source size - 1 max: 1).	"remove trailing lf"!
+	source := source copyFrom: 1 to: (source size - 1 max: 1)	"remove trailing lf"!
 
 selector
 	^selector!
@@ -60,16 +61,18 @@ source: anObject
 
 timeStamp
 	^timeStamp! !
-!MCMethodDefinition categoriesFor: #category!accessing!public! !
-!MCMethodDefinition categoriesFor: #category:!public! !
-!MCMethodDefinition categoriesFor: #classIsMeta!accessing!public! !
-!MCMethodDefinition categoriesFor: #className!accessing!public! !
-!MCMethodDefinition categoriesFor: #detailsString!public! !
-!MCMethodDefinition categoriesFor: #displayMemo!public! !
-!MCMethodDefinition categoriesFor: #displayText!public! !
-!MCMethodDefinition categoriesFor: #initialize:!private! !
-!MCMethodDefinition categoriesFor: #selector!accessing!public! !
-!MCMethodDefinition categoriesFor: #source!accessing!public! !
-!MCMethodDefinition categoriesFor: #source:!public! !
-!MCMethodDefinition categoriesFor: #timeStamp!accessing!public! !
+!MCMethodDefinition categoriesForMethods!
+category!accessing!public! !
+category:!public! !
+classIsMeta!accessing!public! !
+className!accessing!public! !
+detailsString!public! !
+displayMemo!public! !
+displayText!public! !
+initialize:!private! !
+selector!accessing!public! !
+source!accessing!public! !
+source:!public! !
+timeStamp!accessing!public! !
+!
 

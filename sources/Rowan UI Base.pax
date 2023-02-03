@@ -5665,10 +5665,11 @@ revert:!public! !
 
 initialize: aStream
 	| i j |
+	packageName := aStream upTo: Character tab.
 	definition := (aStream upTo: Character lf) copyReplaceAll: Character cr asString
 				with: Character cr asString , Character lf asString.
 	className := (definition subStrings includes: 'rwSubclass:')
-				ifTrue: [(definition subStrings fourth) copyWithoutAll: #($')]
+				ifTrue: [definition subStrings fourth copyWithoutAll: #($')]
 				ifFalse: 
 					[i := definition indexOf: $#.
 					j := definition indexOf: Character cr.

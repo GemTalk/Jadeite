@@ -175,6 +175,11 @@ obsoletionText
 	^obsoletion displayText.
 !
 
+packageName 
+
+	^obsoletion packageName.
+!
+
 selector
 
 	^modification selector.
@@ -194,6 +199,7 @@ modificationText!public! !
 obsoletionMemo!public! !
 obsoletionMemoMarkers!differences!public! !
 obsoletionText!public! !
+packageName!public! !
 selector!public! !
 !
 
