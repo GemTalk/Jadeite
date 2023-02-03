@@ -373,6 +373,30 @@ test_noExtraLF
 	self assert: changesBrowser operationListPresenter selection typeString equals: 'Modification (reverted)'. 
 	self assert: changesBrowser diffsPresenter afterTitlePresenter value equals: 'Image (no change)'!
 
+test_packageNameShowsMovedMethod
+	| addition removal |
+	self testsIssue: #issue302 withTitle: 'Need to add Package to Rowan Project Changes list'.
+	self selectRowanSample1Class.
+	self selectMethodNamed: #foo.
+	self assert: self methodListPresenter selection packageName equals: 'RowanSample1-Core'.
+	self projectsPresenter moveMethodsToPackageNamed: 'RowanSample1-Extensions'.
+	self assert: self methodListPresenter selection selector equals: #foo.
+	self assert: self methodListPresenter selection packageName equals: 'RowanSample1-Extensions'.
+	changesBrowser := self projectListPresenter selection changesUsing: session.
+	self assert: changesBrowser operationListPresenter list size equals: 2.
+	addition := changesBrowser operationListPresenter list first.
+	self assert: addition packageName equals: 'RowanSample1-Extensions'.
+	self assert: addition selector equals: #foo.
+	self assert: addition detailsString equals: '*rowansample1-extensions'.
+	self assert: addition className equals: 'RowanSample1'.
+	self assert: addition isMethodAddition.
+	removal := changesBrowser operationListPresenter list second.
+	self assert: removal packageName equals: 'RowanSample1-Core'.
+	self assert: removal selector equals: #foo.
+	self assert: removal detailsString equals: 'accessing'.
+	self assert: removal className equals: 'RowanSample1'.
+	self assert: removal isMethodRemoval!
+
 test_packageNamesInClassChanges
 	| change |
 	self testsIssue: #issue302 withTitle: 'Need to add Package to Rowan Project Changes list'.
@@ -575,6 +599,7 @@ test_browseSendersOfRevertedChange!public!tests! !
 test_changesAlphabetized!public!tests! !
 test_identicalSource!public!tests! !
 test_noExtraLF!public!tests! !
+test_packageNameShowsMovedMethod!public!tests! !
 test_packageNamesInClassChanges!public!tests! !
 test_packageNamesInMethodChanges!public!tests! !
 test_revertClassMethod!public!tests! !
