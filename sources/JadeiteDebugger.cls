@@ -513,6 +513,7 @@ reformatSource
 
 refreshBreakPointsIn: methodSourcePresenter
 	| breakPointSymbol indicators |
+	methodSourcePresenter view isOpen ifFalse:[^self]. 
 	breakPointSymbol := BrowserUpdate current breakpointsEnabled
 				ifTrue: [#breakPoint]
 				ifFalse: [#disabledBreakPoint].
@@ -527,7 +528,7 @@ refreshBreakPointsIn: methodSourcePresenter
 								tag: indicator tag)]
 				ifFalse: [indicators add: indicator]].
 	methodSourcePresenter view indicators: indicators.
-	methodSourcePresenter view update!
+	[methodSourcePresenter view update] on: GPFault do:[:ex | ex resume]. !
 
 registerPresentersForUpdates
 	"copied from RowanProjectsBrowserPresenter>>registerPresentersForUpdates"

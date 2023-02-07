@@ -29,6 +29,11 @@ closeTranscript: aTranscript
 	TestMessageBox plannedResult: #no.	"closing the transcript will logout the session. don't commit"
 	[aTranscript view close] ensure: [TestMessageBox disableJadeiteTestMessageBox]!
 
+closeTranscripts
+	self transcript ifNotNil: [self closeTranscript: self transcript].
+	JadeiteTranscript allInstances
+		do: [:transcript | self closeTranscript: transcript	"hopeful none, but just in case"]!
+
 disableInteractionsWhile: block
 	"interactions like confirm: and notify: are enabled by 
 	default on all service commands. Disable for the duration
@@ -123,9 +128,8 @@ loginWithRetry: loginShell
 					do: [:ex | (Delay forMilliseconds: 100) wait]]!
 
 logout
-	self transcript ifNotNil: [self closeTranscript: self transcript].
-	JadeiteTranscript allInstances
-		do: [:transcript | self closeTranscript: transcript	"hopeful none, but just in case"].
+	"hopeful none, but just in case"
+	self closeTranscripts.
 	JadeiteLoginShell allInstances do: 
 			[:shell |
 			shell view close.
@@ -276,6 +280,7 @@ unloadSampleProject9
 !JadeiteTestResource categoriesForMethods!
 cloneRowanSample1!private!setup teardown! !
 closeTranscript:!private!setup teardown!support! !
+closeTranscripts!private!setup teardown!support! !
 disableInteractionsWhile:!private!setup teardown! !
 ensureRowanSample1Loaded!private!setup teardown! !
 ensureRowanSample9Loaded!private!setup teardown! !

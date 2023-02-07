@@ -3686,6 +3686,7 @@ auditProjectFor: projectName
 
 basicRefreshBreakpointsIn: methodSourcePresenter selection: selection
 	| breakPointSymbol indicators includesBreakPoint individualBreakPointSymbol |
+	methodSourcePresenter view isOpen ifFalse:[^self]. 
 	methodSourcePresenter view clearContainerIndicators.
 	indicators := OrderedCollection new.
 	breakPointSymbol := BrowserUpdate current breakpointsEnabled
@@ -3710,7 +3711,7 @@ basicRefreshBreakpointsIn: methodSourcePresenter selection: selection
 						range: range
 						tag: string)].
 	methodSourcePresenter view indicators: indicators.
-	methodSourcePresenter view update!
+	[methodSourcePresenter view update] on: GPFault do:[:ex | ex resume]. !
 
 canCommit: projectListPresenter
 	| projectService |
