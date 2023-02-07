@@ -1520,7 +1520,7 @@ test_testCountBar
 		equals: 'Test Cases:' , self sunitPresenter methodListPresenter model size printString.
 	self assert: self sunitPresenter testClassesSize
 		equals: 'Test Classes:'
-				, ((session executeString: 'RowanServicesTest allSubclasses size') + 1 "JadeServerTest") printString!
+				, ((session executeString: 'RowanServicesTest allSubclasses size') + 1 "JadeServerTest" + 1 "RowanTestClassServiceTest" ) printString!
 
 test_testsRunInSelectedTestClass
 	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
