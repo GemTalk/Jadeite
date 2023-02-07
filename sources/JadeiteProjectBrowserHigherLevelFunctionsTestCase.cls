@@ -149,8 +149,9 @@ test_addSystemTabNoSelections
 test_browseInExistingBrowser
 	self testsIssue: #issue827
 		withTitle: 'Would be nice to be able to request that all browse menu items be routed to an existing project browser'.
-	JadeiteBrowser allInstances do: [:browser | self destroy: browser].
 	projectsBrowser := nil.
+	JadeiteTestResource current projectsBrowser: nil. 
+	JadeiteBrowser allInstances do: [:browser | self destroy: browser].
 	self setupProjectBrowser.
 	self assert: projectsBrowser cardsPresenter subPresenters size = 1.
 	self selectRowanSample1Test.

@@ -16,6 +16,10 @@ However, it might be better to move it to session state on the server and access
 additionalAccelerators
 	^#(#(#raiseConsole 'Ctrl+F7'))!
 
+addSystemBrowser
+
+	self subclassResponsibility!
+
 commitTransaction
 	"Even if it takes a windy path, try to make sure
 	all commits in Jadeite pass through here"
@@ -192,6 +196,7 @@ updateService: service
 	^self updateServices: (Array with: service) ! !
 !JadePresenter categoriesForMethods!
 additionalAccelerators!constants!public! !
+addSystemBrowser!public!subclassResponsibility! !
 commitTransaction!public!transaction management! !
 gciSession!public! !
 gciSession:!public! !
