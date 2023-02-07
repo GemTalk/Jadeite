@@ -265,6 +265,9 @@ transcriptForCurrentSession
 	^transcript!
 
 unloadSampleProject1
+	| rowanSample1 |
+	rowanSample1 := self rowanSample1Project.
+	rowanSample1 ifNotNil: [:projectService | projectService isDirty ifFalse: [^self]].
 	self transcript projectListPresenter primaryPresenter list
 		detect: [:projectService | projectService name = self sampleProject1Name]
 		ifNone: [^self].
@@ -272,6 +275,9 @@ unloadSampleProject1
 	self session commit!
 
 unloadSampleProject9
+	| rowanSample9 |
+	rowanSample9 := self rowanSample9Project.
+	rowanSample9 ifNotNil: [:projectService | projectService isDirty ifFalse: [^self]].
 	self transcript projectListPresenter primaryPresenter list
 		detect: [:projectService | projectService name = self sampleProject9Name]
 		ifNone: [^self].
