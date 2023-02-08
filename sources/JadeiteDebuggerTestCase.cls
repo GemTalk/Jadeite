@@ -1910,6 +1910,31 @@ test_selectBlockContext
 	self assert: ('issue166*' match: debugger documentPresenter value)]
 			ensure: [self destroy: projectsBrowser]!
 
+test_selectedFrame
+	self testsIssue: #issue868 withTitle: '(Oscar-3.1.1-release1) debugger selects incorrect frame'.
+	self openProjectBrowser.
+	
+	[| source |
+	self
+		saveClass: 'ThreeTest'
+		superclass: 'GsTestCase'
+		instVars: #()
+		package: 'RowanSample1-Core'.
+	self selectServiceNamed: 'RowanSample1' in: self projectListPresenter.
+	self selectServiceNamed: 'RowanSample1-Core' in: self packageListPresenter.
+	self selectServiceNamed: 'ThreeTest' in: self classListPresenter.
+	source := 'test868
+ [{ 1 . 2 . 3 } select: [:ea | 
+	(self deleteProject = ea) ]] 
+	on: Error 
+	do: [:ea | self assert: false].'.
+	self methodSourcePresenter value: source.
+	self projectsPresenter editSaveMethod: self classListPresenter selection.
+	self openDebuggerOn: 'ThreeTest new test868'.
+	self assert: debugger frameListPresenter selectionByIndex equals: 10.
+	self assert: debugger frameListPresenter selection equals: '[] in ThreeTest >> test868 @15 line 5']
+			ensure: [self destroy: projectsBrowser]!
+
 test_sendersFromDebugger
 	| browser |
 	self testsIssue: #issue216 withTitle: 'method list in method browser reorders on accept'.
@@ -2855,6 +2880,7 @@ test_saveMethod!public!tests! !
 test_saveMethodDuringTestRun!public!tests! !
 test_selectAfterDiveNoStepPoint!public!tests! !
 test_selectBlockContext!public!tests! !
+test_selectedFrame!public!tests! !
 test_sendersFromDebugger!public!tests! !
 test_stackDumpDetailedFrame!public!tests! !
 test_stackDumpHeader!public!tests! !
