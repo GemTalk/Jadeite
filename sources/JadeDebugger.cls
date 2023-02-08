@@ -164,16 +164,14 @@ showNextStatement
 !
 
 stackInitialSelection
-
 	| list |
 	list := gsProcess stack.
-	self stackInitialSelectionData do: [:each | 
-		1 to: list size do: [:i | 
-			0 < ((list at: i) indexOfSubCollection: each) ifTrue: [^i + 1].
-		].
-	].
-	^1.
-!
+	1 to: list size
+		do: 
+			[:i |
+			self stackInitialSelectionData
+				do: [:each | 0 < ((list at: i) indexOfSubCollection: each) ifTrue: [^i + 1]]].
+	^1!
 
 stackInitialSelectionData
 	"Line number to select if string included on previous line (need not be exact match)"
@@ -198,8 +196,8 @@ stackInitialSelectionData
 		'(TestCase)>>#deny: @2 line 3'
 		'(TestCase)>>#should:raise: @10 line 9'
 		'(TestCase)>>#shouldnt:raise: @4 line 2'
-		'GSTestCase >> assert: @1 line 1'
-		'GSTestCase >> assert: (envId 0) @1 line 1'
+		'(GsTestCase) >> assert: @2 line 3'
+		'(GsTestCase) >> assert: (envId 0) @2 line 3'
 		'Object >> _doesNotUnderstand:'
 		'Object >> _doesNotUnderstand:args:envId:reason: @7 line 12'
 		'Object >> _doesNotUnderstand:args:envId:reason: (envId 0) @7 line 12'
