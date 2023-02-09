@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadePresenter subclass: #JadeiteSUnitAbstractPresenter
-	instanceVariableNames: 'methodListPresenter textResultPresenter'
+	instanceVariableNames: 'methodListPresenter textResultPresenter shouldStopTestRun testProcess'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -39,6 +39,10 @@ debugTests: methodServices
 editSelectAll
 	methodListPresenter selections: methodListPresenter list. !
 
+initialize
+	super initialize.
+	shouldStopTestRun := false!
+
 methodListPresenter
 	^methodListPresenter!
 
@@ -74,9 +78,11 @@ runTestCommand: command methods: methodServices className: className
 			index := methodListPresenter list indexOf: methodService.
 			methodListPresenter view updateItem: methodService atIndex: index.
 			methodListPresenter view ensureVisible: index.
-			methodListPresenter view update].
+			methodListPresenter view update.
+			shouldStopTestRun ifTrue: [^shouldStopTestRun := false]].
 	self updateResult: jadeResult.
 	methodListPresenter view ensureVisible: index.	"ensure last test run is visible"
+	shouldStopTestRun := false.
 	^jadeResult!
 
 runTestMethodServices: methodServices className: className
@@ -114,6 +120,14 @@ setColorFor: aJadeTestResult
 	methodListPresenter view invalidate.
 	textResultPresenter view backcolor: aJadeTestResult backgroundColor!
 
+stopTestProcess
+	testProcess
+		ifNotNil: 
+			[shouldStopTestRun := true.
+			[shouldStopTestRun] whileTrue: [(Delay forMilliseconds: 1) wait].
+			testProcess ifNotNil: [:proc | proc terminate].
+			testProcess := nil]!
+
 textResultPresenter
 	^textResultPresenter!
 
@@ -129,6 +143,7 @@ debugTestAsFailureMethodServices:className:!private! !
 debugTestMethodServices:className:!private! !
 debugTests:!public! !
 editSelectAll!menu handlers support!public! !
+initialize!initialization!public! !
 methodListPresenter!accessing!private! !
 methodListPresenter:!accessing!private! !
 refresh!event handlers!public! !
@@ -140,6 +155,7 @@ runTests:!public! !
 runTests:in:!public! !
 selectedClass!accessing!public! !
 setColorFor:!public! !
+stopTestProcess!menu handlers!public! !
 textResultPresenter!accessing!private! !
 textResultPresenter:!accessing!private! !
 updateResult:!public! !

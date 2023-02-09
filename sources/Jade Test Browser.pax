@@ -51,7 +51,7 @@ Object subclass: #JadeTestResult
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadePresenter subclass: #JadeiteSUnitAbstractPresenter
-	instanceVariableNames: 'methodListPresenter textResultPresenter'
+	instanceVariableNames: 'methodListPresenter textResultPresenter shouldStopTestRun testProcess'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
