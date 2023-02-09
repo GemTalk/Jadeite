@@ -249,6 +249,7 @@ test_abstractTestAppearsOnlyInSubclasses
 				ifNone: [].
 	self denyIsNil: subclass2MethodService.
 	self sunitPresenter runAll.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
 	self assert: subclass1MethodService testResult equals: #passed.
 	self assert: subclass2MethodService testResult equals: #failure!
 
@@ -548,6 +549,7 @@ test_dontClearResults
 	self assert: self sunitPresenter methodListPresenter list size equals: 4.
 	self selectSUnitBrowserMethodNamed: #test1.
 	self sunitPresenter runSelected.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
 	self assert: self sunitPresenter methodListPresenter selections first selector equals: #test1.
 	self assert: self sunitPresenter methodListPresenter selections first testResult equals: 'passed'.
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
@@ -1028,6 +1030,7 @@ test_resetStatusBar
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'JadeServerTest' in: self sunitPresenter classListPresenter.
 	self sunitPresenter runAll.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
 	self
 		assert: ('* run, * passed, 0 failures, 0 errors' match: self sunitPresenter textResultPresenter value).
 	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color darkGreen.
@@ -1035,6 +1038,7 @@ test_resetStatusBar
 	self assert: self sunitPresenter textResultPresenter value equals: String new.
 	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color face3d.
 	self sunitPresenter runAll.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
 	self
 		assert: ('* run, * passed, 0 failures, 0 errors' match: self sunitPresenter textResultPresenter value).
 	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color darkGreen.
@@ -1093,6 +1097,7 @@ test_sameSelectorInheritedTests
 				ifNone: [].
 	self denyIsNil: subMethodService.
 	self sunitPresenter runAll.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
 	self assert: superMethodService testResult equals: #passed.
 	self assert: subMethodService testResult equals: #failure!
 
@@ -1129,6 +1134,7 @@ test_sameSelectorInheritedTestsFailureInSuper
 				ifNone: [].
 	self denyIsNil: subMethodService.
 	self sunitPresenter runAll.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
 	self assert: superMethodService testResult equals: #failure.
 	self assert: subMethodService testResult equals: #passed!
 
@@ -1201,6 +1207,7 @@ test_selectClassDoesNotLoseTestResults
 	self projectsPresenter selectSUnitTab.
 	secondBrowser := JadeiteBrowser showOnSession: session.
 	self projectsPresenter sunitPresenter runAll.
+	[self projectsPresenter sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult
 		equals: 'passed'.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list second testResult
@@ -1238,14 +1245,17 @@ test_selectInProjectBrowserDoesNotUpdateSunitBrowser
 		equals: sunitDisplaySelectors!
 
 test_selectionRemainsVisible
-	| position methodListPresenter |
+	| position methodListPresenter result |
 	self testsIssue: #issue467
 		withTitle: '(3.0.68) nice to have selected test remain visible aftr pressing the `run selected` button'.
 	self selectServiceNamed: 'Rowan-Services-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'RowanClassServiceTest' in: self sunitPresenter classListPresenter.
 	methodListPresenter := self sunitPresenter methodListPresenter.
 	self selectServiceNamed: 'test_zzz' in: methodListPresenter.
-	self assert: self sunitPresenter runSelected isKindOf: JadeTestResult.	"runSelected sends back the result of the last test"
+	self sunitPresenter runSelected.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
+	(Delay forMilliseconds: 10) wait. 
+	self assert: self sunitPresenter testResults isKindOf: JadeTestResult.	"runSelected sends back the result of the last test"
 	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color darkGreen.
 	self assert: self sunitPresenter textResultPresenter value
 		equals: '1 run, 1 passed, 0 failures, 0 errors'.
@@ -1305,14 +1315,17 @@ test_statusBarUpdatesAfterRunSelected
 	self selectMethodNamed: #test_jadeServerCanonicalLocation.
 	self assert: self sunitPresenter textResultPresenter value isEmpty.
 	self sunitPresenter runSelected.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
 	self assert: self sunitPresenter textResultPresenter value
 		equals: '1 run, 1 passed, 0 failures, 0 errors'.
 	self selectMethodsNamed: #(#test_jadeServerCanonicalLocation #test_jadeServerExists).
 	self sunitPresenter runSelected.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
 	self assert: self sunitPresenter textResultPresenter value
 		equals: '2 run, 2 passed, 0 failures, 0 errors'.
 	self methodListPresenter view selectAll.
 	self sunitPresenter runSelected.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
 	testCount := self methodListPresenter list size.
 	self assert: self sunitPresenter textResultPresenter value
 		equals: testCount printString , ' run, ' , testCount printString , ' passed, 0 failures, 0 errors'!
@@ -1392,16 +1405,18 @@ test_sunitBrowserUpdateRightClassInHierarchy
 	
 	[self projectsPresenter selectSUnitTab.
 	self projectsPresenter sunitPresenter runAll.
+	[self projectsPresenter sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult
 		equals: 'passed'.
 	self assert: self sunitPresenter methodListPresenter list first testResult equals: nil.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'RowanSample1TestSubclass' in: self sunitPresenter classListPresenter.
 	self projectsPresenter sunitPresenter runAll.
+	[self projectsPresenter sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult
 		equals: 'passed'.
 	self assert: self sunitPresenter methodListPresenter list first testResult equals: 'passed']
-			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass].!
+			ensure: [self projectsPresenter basicRemoveClass: self projectsPresenter selectedClass]!
 
 test_sunitBrowserUpdateRightClassInHierarchy2
 	"inherited test runs don't impact test results of super class test runs"
@@ -1421,12 +1436,14 @@ test_sunitBrowserUpdateRightClassInHierarchy2
 	[self projectsPresenter selectSUnitTab.
 	self projectsPresenter sunitPresenter reset. 
 	self sunitPresenter runAll.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult
 		equals: nil.
 	self assert: self sunitPresenter methodListPresenter list first testResult equals: 'passed'.
 	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'RowanSample1TestSubclass' in: self sunitPresenter classListPresenter.
 	self sunitPresenter runAll.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult
 		equals: 'passed'.
 	self assert: self sunitPresenter methodListPresenter list first testResult equals: 'passed']
@@ -1438,23 +1455,24 @@ test_sunitBrowserUpdates
 	self selectServiceNamed: 'RowanSample1-Tests' in: self sunitPresenter packageListPresenter.
 	self selectServiceNamed: 'RowanSample1Test' in: self sunitPresenter classListPresenter.
 	projectsBrowser := JadeiteTestResource current openProjectsBrowser.
-	self projectsPresenter sunitPresenter reset. 
+	self projectsPresenter sunitPresenter reset.
 	self selectRowanSample1Test.
 	self projectsPresenter selectSUnitTab.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list first selector
 		equals: #test1.
 	self assertIsNil: self projectsPresenter sunitPresenter methodListPresenter list first testResult.
-	self assert: self sunitPresenter methodListPresenter list first selector
-		equals: #test1.
+	self assert: self sunitPresenter methodListPresenter list first selector equals: #test1.
 	self assertIsNil: self sunitPresenter methodListPresenter list first testResult.
 	self projectsPresenter sunitPresenter runAll.
+	[self projectsPresenter sunitPresenter testProcess isNil]
+		whileFalse: [(Delay forMilliseconds: 10) wait].
 	"assert tests in sunit browser updated"
-	self assert: self  sunitPresenter methodListPresenter list first selector
-		equals: #test1.
+	self assert: self sunitPresenter methodListPresenter list first selector equals: #test1.
 	self assert: self sunitPresenter methodListPresenter list first testResult equals: 'passed'.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list second selector
 		equals: #test2.
-	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult equals: 'passed'!
+	self assert: self projectsPresenter sunitPresenter methodListPresenter list first testResult
+		equals: 'passed'!
 
 test_sunitResetTestResultOnClassChange
 	"reset test results when classes changed"
@@ -1464,6 +1482,7 @@ test_sunitResetTestResultOnClassChange
 	self sunitPresenter methodListPresenter list
 		do: [:methodService | self assert: methodService testResult isNil].
 	self sunitPresenter runAll.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
 	self sunitPresenter methodListPresenter list
 		do: [:methodService | self assert: methodService testResult = 'passed'].
 	self selectServiceNamed: 'RowanMethodServiceTest' in: self sunitPresenter classListPresenter.
@@ -1499,6 +1518,7 @@ test_sunitTabUpdates
 		equals: #test1.
 	self assertIsNil: self projectsPresenter sunitPresenter methodListPresenter list first testResult.
 	self sunitPresenter runAll.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
 	"assert tests in project browser sunit presenter updated"
 	self assert: self projectsPresenter sunitPresenter methodListPresenter list first selector
 		equals: #test1.
@@ -1523,6 +1543,7 @@ test_testCountBar
 				, ((session executeString: 'RowanServicesTest allSubclasses size') + 1 "JadeServerTest" + 1 "RowanTestClassServiceTest" ) printString!
 
 test_testsRunInSelectedTestClass
+	| result |
 	self testsIssue: #issue391 withTitle: '(3.0.53) SUnit browser running test method in wrong class'.
 	self openProjectBrowser.
 	self setupRunInSelectedTestClassTest.
@@ -1534,30 +1555,40 @@ test_testsRunInSelectedTestClass
 	self assert: self sunitPresenter textResultPresenter value
 		equals: '1 run, 1 passed, 0 failures, 0 errors'.
 	self assert: (session executeString: 'RowanSample1Test testClassVar') equals: #RowanSample1Test.
-	self assert: self sunitPresenter runSelected isKindOf: JadeTestResult.	"runSelected sends back the result of the last test"
+	self sunitPresenter runSelected.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
+	self assert: self sunitPresenter testResults isKindOf: JadeTestResult.	"runSelected sends back the result of the last test"
 	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color darkGreen.
 	self assert: self sunitPresenter textResultPresenter value
 		equals: '1 run, 1 passed, 0 failures, 0 errors'.
 	self assert: (session executeString: 'RowanSample1Test testClassVar') equals: #RowanSample1Test.
-	self assert: self sunitPresenter runAll isKindOf: JadeTestResult.	"runSelected sends back the result of the last test"
+	self sunitPresenter runAll.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
+	self assert:  self sunitPresenter testResults isKindOf: JadeTestResult.	"runSelected sends back the result of the last test"
 	self assert: (session executeString: 'RowanSample1Test testClassVar') equals: #RowanSample1Test.
 	"set the selected class to the subclass, but the test will be run in the super.
 	Ensure the test was run in the subclass"
 	self selectServiceNamed: 'RowanSample1SubClassTest' in: self sunitPresenter classListPresenter.
 	self selectSUnitBrowserMethodsNamed: (Array with: #test_method).
-	self assert: self sunitPresenter debug isKindOf: JadeiteSUnitPresenter.
+	self sunitPresenter runSelected.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
+	self assert: self sunitPresenter testResults isKindOf: JadeTestResult.
 	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color darkGreen.
 	self assert: self sunitPresenter textResultPresenter value
 		equals: '1 run, 1 passed, 0 failures, 0 errors'.
 	self assert: (session executeString: 'RowanSample1Test testClassVar')
 		equals: #RowanSample1SubClassTest.
-	self assert: self sunitPresenter runSelected isKindOf: JadeTestResult.	"runSelected sends back the result of the last test"
+	self sunitPresenter runSelected.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
+	self assert: self sunitPresenter testResults isKindOf: JadeTestResult.	"runSelected sends back the result of the last test"
 	self assert: self sunitPresenter textResultPresenter view backcolor equals: Color darkGreen.
 	self assert: self sunitPresenter textResultPresenter value
 		equals: '1 run, 1 passed, 0 failures, 0 errors'.
 	self assert: (session executeString: 'RowanSample1Test testClassVar')
 		equals: #RowanSample1SubClassTest.
-	self assert: self sunitPresenter runAll isKindOf: JadeTestResult.	"runSelected sends back the result of the last test"
+	self sunitPresenter runAll.
+	[self sunitPresenter testProcess isNil] whileFalse: [(Delay forMilliseconds: 10) wait].
+	self assert: self sunitPresenter testResults isKindOf: JadeTestResult.	"runSelected sends back the result of the last test"
 	self assert: (session executeString: 'RowanSample1Test testClassVar')
 		equals: #RowanSample1SubClassTest! !
 !JadeiteSUnitSupportTestCase categoriesForMethods!

@@ -61,7 +61,7 @@ JadeiteSUnitAbstractPresenter subclass: #JadeiteSUnitInClassPresenter
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 JadeiteSUnitAbstractPresenter subclass: #JadeiteSUnitPresenter
-	instanceVariableNames: 'packageListPresenter classListPresenter status testCounter methodColumns'
+	instanceVariableNames: 'packageListPresenter classListPresenter status testCounter methodColumns testResults'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

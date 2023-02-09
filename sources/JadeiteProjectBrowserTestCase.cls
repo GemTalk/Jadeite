@@ -1053,16 +1053,16 @@ test_changeListSortOrder
 	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch className])
 		equals: #('RowanSample1Test' 'RowanSample1' 'RowanSample1' 'RowanSample1' 'DirtyProject2' 'DirtyProject1')
 				asOrderedCollection.
-	changesBrowser operationListPresenter view columnClicked: 3.	"ascending selector"
+	changesBrowser operationListPresenter view columnClicked: 4.	"ascending selector"
 	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch selector])
 		equals: #('' '' 'foo' 'goo' 'hoo' 'test1') asOrderedCollection.
-	changesBrowser operationListPresenter view columnClicked: 3.	"descending selector"
+	changesBrowser operationListPresenter view columnClicked: 4.	"descending selector"
 	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch selector])
 		equals: #('test1' 'hoo' 'goo' 'foo' '' '') asOrderedCollection.
-	changesBrowser operationListPresenter view columnClicked: 4.	"ascending details"
+	changesBrowser operationListPresenter view columnClicked: 5.	"ascending details"
 	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch detailsString])
 		equals: #('Class Definition' 'Class Definition' 'other' 'other' 'other' 'tests') asOrderedCollection.
-	changesBrowser operationListPresenter view columnClicked: 4.	"descending details"
+	changesBrowser operationListPresenter view columnClicked: 5.	"descending details"
 	self assert: (changesBrowser operationListPresenter model collect: [:patch | patch detailsString])
 		equals: #('tests' 'other' 'other' 'other' 'Class Definition' 'Class Definition') asOrderedCollection]
 			ensure: [self destroy: changesBrowser]!

@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
 JadeiteSUnitAbstractPresenter subclass: #JadeiteSUnitPresenter
-	instanceVariableNames: 'packageListPresenter classListPresenter status testCounter methodColumns'
+	instanceVariableNames: 'packageListPresenter classListPresenter status testCounter methodColumns testResults'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -175,7 +175,6 @@ refreshFromServerAfterAbort: browserService
 	browserService testPackages: packageListPresenter!
 
 runAll
-	| testResults |
 	testProcess := 
 			[
 			[self reset.
@@ -186,14 +185,12 @@ runAll
 					ensure: 
 						[testProcess := nil.
 						shouldStopTestRun := false]]
-					fork.
-	^testResults!
+					fork.!
 
 runSelected
 	"if multiple classes are selected, we really don't know which test class
 	the user intended for the test to be run so pick the class the test is defined in"
 
-	| testResults |
 	testProcess := 
 			[
 			[testResults := classListPresenter selections size > 1
@@ -202,8 +199,7 @@ runSelected
 					ensure: 
 						[testProcess := nil.
 						shouldStopTestRun := false]]
-					fork.
-	^testResults!
+					fork!
 
 runTestMethodServices: methodServices className: className
 	| jadeResult |
@@ -274,6 +270,12 @@ testCasesSize
 
 testClassesSize
 	^'Test Classes:' , classListPresenter model size printString!
+
+testResults
+	^testResults!
+
+testResults: anObject
+	^testResults := anObject!
 
 update: newMethods orRemove: removals
 	| listModel |
@@ -379,6 +381,8 @@ status!accessing!private! !
 status:!accessing!private! !
 testCasesSize!public! !
 testClassesSize!public! !
+testResults!accessing!private! !
+testResults:!accessing!private! !
 update:orRemove:!event handlers!private! !
 updateClasses!event handlers!public! !
 updateMethods!event handlers!public! !

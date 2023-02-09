@@ -1178,6 +1178,8 @@ test_sunitResetTestResultOnClassChange
 	self projectsPresenter sunitPresenter methodListPresenter list
 		do: [:methodService | self assert: methodService testResult isNil].
 	self projectsPresenter runAll.
+	[self projectsPresenter sunitPresenter testProcess isNil]
+		whileFalse: [(Delay forMilliseconds: 10) wait].
 	self projectsPresenter sunitPresenter methodListPresenter list
 		do: [:methodService | self assert: methodService testResult equals: 'passed'].
 	self projectsPresenter selectClassNamed: 'RowanMethodServiceTest'.
@@ -1196,10 +1198,11 @@ test_sunitRunAllDoesNotLoseSelections
 	self selectSUnitTab.
 	self projectsPresenter sunitPresenter methodListPresenter selectionByIndex: #(1).	"test1 - select by index implicitly tests sorted order"
 	self projectsPresenter runAll.
+	[self projectsPresenter sunitPresenter testProcess isNil]
+		whileFalse: [(Delay forMilliseconds: 10) wait].
 	self assert: self projectsPresenter sunitPresenter methodListPresenter selection first testResult
 		equals: 'passed'.
-	self assert: self projectsPresenter sunitPresenter methodListPresenter selectionByIndex equals: #(1).
-	!
+	self assert: self projectsPresenter sunitPresenter methodListPresenter selectionByIndex equals: #(1)!
 
 test_sunitRunAndMeasureTime
 	| runSelectedItem selection |
@@ -1218,6 +1221,8 @@ test_sunitRunAndMeasureTime
 		equals: nil.
 	TestMessageBox plannedResult: #ok.
 	runSelectedItem commandDescription performAgainst: self projectsPresenter sunitPresenter.
+	[self projectsPresenter sunitPresenter testProcess isNil]
+		whileFalse: [(Delay forMilliseconds: 10) wait].
 	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first testResult
 		equals: 'passed']
 			ensure: [TestMessageBox disableJadeiteTestMessageBox]!
@@ -1235,12 +1240,16 @@ test_sunitRunSelected
 	self projectsPresenter sunitPresenter reset. 
 	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first testResult equals: nil. 
 	runSelectedItem commandDescription performAgainst: self projectsPresenter sunitPresenter.
+	[self projectsPresenter sunitPresenter testProcess isNil]
+		whileFalse: [(Delay forMilliseconds: 10) wait].
 	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first testResult equals: 'passed'.
 	
 	runSelectedItem := self projectsPresenter methodListPresenter view queryContextMenu
 				items detect: [:menuItem | menuItem command == #runMethodTests].
 	self selectMethodNamed: #test2. 
 	runSelectedItem commandDescription performAgainst: self projectsPresenter.
+	[self projectsPresenter sunitPresenter testProcess isNil]
+		whileFalse: [(Delay forMilliseconds: 10) wait].
 	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first testResult equals: 'passed'.
 	self assert: self projectsPresenter sunitPresenter methodListPresenter selections first selector equals: #test2. !
 

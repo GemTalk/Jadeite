@@ -128,6 +128,12 @@ stopTestProcess
 			testProcess ifNotNil: [:proc | proc terminate].
 			testProcess := nil]!
 
+testProcess
+	^testProcess!
+
+testProcess: anObject
+	^testProcess := anObject!
+
 textResultPresenter
 	^textResultPresenter!
 
@@ -156,6 +162,8 @@ runTests:in:!public! !
 selectedClass!accessing!public! !
 setColorFor:!public! !
 stopTestProcess!menu handlers!public! !
+testProcess!accessing!private! !
+testProcess:!accessing!private! !
 textResultPresenter!accessing!private! !
 textResultPresenter:!accessing!private! !
 updateResult:!public! !
