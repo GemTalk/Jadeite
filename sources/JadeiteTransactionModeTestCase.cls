@@ -120,7 +120,11 @@ test_changeTransactionModeWithFailedCommit
 	self switchTransactionModeTo: #manualBegin	"With auto commit on, get a failure and lose the changes but no bad things will happen"]
 			ensure: 
 				[TestMessageBox disableJadeiteTestMessageBox.
-				self logoutOtherSession.
+				[self logoutOtherSession] on: Error
+					do: 
+						[:ex |
+						"let it die"
+						].
 				self abortTransaction.
 				session executeString: 'UserGlobals removeKey: #autoCommitTest'.
 				transcript transactionMode == #autoBegin ifFalse: [self switchTransactionModeTo: #autoBegin].

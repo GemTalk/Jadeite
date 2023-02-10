@@ -34,8 +34,6 @@ test_workspaceAdHocDisplayUnicodeCharacters
 test_workspaceBrowseProjects
 	| jadeiteMenu browseProjectsItem |
 	self testsIssue: #issue265 withTitle: 'workspace could use a `browse projects` menu item ... '.
-	projectsBrowser
-		ifNil: [projectsBrowser := self openWindow: [transcript openJadeiteProjectsBrowser]].
 	workspace := JadeWorkspace showOnSession: session.
 	
 	[jadeiteMenu := self itemNamed: 'Jadeite' in: workspace view menuBar.
@@ -480,10 +478,9 @@ test_workspaceUnsavedChangesStayOnCancel
 	TestMessageBox plannedResult: #yes.
 	workspace codePane documentPresenter view isModified: true.
 	self deny: workspace promptToSaveChanges.
-	self assertIsNil:  TestFileSaveDialog lastMessageBox model value. "maybe this means operation cancelled?" ]
+	self assertIsNil: TestFileSaveDialog lastMessageBox model value	"maybe this means operation cancelled?"]
 			ensure: 
-				[self destroy: workspace.
-				TestFileSaveDialog disableJadeiteTestFileSaveDialog.
+				[TestFileSaveDialog disableJadeiteTestFileSaveDialog.
 				TestMessageBox disableJadeiteTestMessageBox]! !
 !JadeiteWorkspaceTestCase categoriesForMethods!
 tearDown!private!support! !

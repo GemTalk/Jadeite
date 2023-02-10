@@ -801,7 +801,7 @@ test_packageListVisibility
 			self deny: self projectsPresenter packageListPresenter view isWindowVisible]
 		ifFalse: 
 			[self deny: self projectsPresenter packageListPresenter view isWindowVisible.
-			transcript togglePackageGroups.
+			transcript togglePackageList.
 			self assert: self projectsPresenter packageListPresenter view isWindowVisible]]
 			ensure: [JadePresenter packageListVisible: packageListWasVisible]!
 
