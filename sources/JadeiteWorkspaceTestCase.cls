@@ -476,7 +476,7 @@ test_workspaceUnsavedChangesStayOnCancel
 	self assert: TestMessageBox lastMessageBox text
 		equals: JadePresenter defaultUnsavedChangesWithSaveText.
 	TestFileSaveDialog enableJadeiteTestFileSaveDialog.
-	TestFileSaveDialog plannedResult: #cancel.
+	TestFileSaveDialog plannedResult: nil.
 	TestMessageBox plannedResult: #yes.
 	workspace codePane documentPresenter view isModified: true.
 	self deny: workspace promptToSaveChanges.
