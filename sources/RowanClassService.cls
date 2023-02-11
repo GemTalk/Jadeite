@@ -299,6 +299,18 @@ isNewClass: anObject
 isTestCase
 	^isTestCase!
 
+logReceivedOn: aStream
+	super logReceivedOn: aStream.
+	aStream
+		space;
+		nextPutAll: name!
+
+logSentOn: aStream
+	super logSentOn: aStream.
+	aStream
+		space;
+		nextPutAll: name!
+
 meta
 	^meta!
 
@@ -703,6 +715,8 @@ isInSymbolList!accessing!private! !
 isNewClass!accessing!private! !
 isNewClass:!accessing!private! !
 isTestCase!public!testing! !
+logReceivedOn:!printing!public! !
+logSentOn:!printing!public! !
 meta!accessing!private! !
 meta:!accessing!private! !
 methodPackages!accessing!public! !

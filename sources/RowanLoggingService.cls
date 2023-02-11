@@ -108,7 +108,8 @@ id: anObject
 initialize
 	super initialize.
 	services := OrderedCollection new.
-	isLogging := false. !
+	isLogging := false.
+	location := #client!
 
 isLogging
 	^isLogging!
@@ -130,35 +131,64 @@ location: anObject
 	location := anObject!
 
 logComment: aString
-	| stonString ws |
+	| ws |
 	id := id + 1.
 	comment := aString.
-	date := Date today. 
-	time := Time now.
 	location := #client.
 	mode := nil.
-	stonString := STON toString: self.
 	ws := FileStream write: fileName mode: #append.
-	[ws nextPutAll: stonString] ensure: [ws close].
+	
+	[date := Date today.
+	time := Time now.
+	ws
+		cr;
+		nextPutAll: date shortString;
+		space;
+		nextPutAll: time printString;
+		space;
+		nextPutAll: aString]
+			ensure: [ws close].
 	comment := nil	"service may be reused. Clear comment"!
 
 logReceivedServices: theServices
+	| ws |
 	mode := #received.
-	self logServices: theServices!
+	ws := self logServiceStream.
+	
+	[theServices do: 
+			[:svc |
+			self logServiceDateTimeStampOn: ws.
+			ws nextPutAll: svc logReceivedString]]
+			ensure: [ws close]!
 
 logSentServices: theServices
-	mode := #sent.
-	self logServices: theServices!
+	| ws |
+	mode := #sent. 
+	ws := self logServiceStream.
+	
+	[theServices do: 
+			[:svc |
+			self logServiceDateTimeStampOn: ws.
+			ws nextPutAll: svc logSentString]]
+			ensure: [ws close]!
 
-logServices: theServices
-	| stonString ws |
-	id := id + 1.
+logServiceDateTimeStampOn: ws
 	date := Date today.
 	time := Time now.
-	location := #client.
-	stonString := STON toString: self.
+	ws
+		cr;
+		nextPutAll: date shortString;
+		space;
+		nextPutAll: time printString;
+		space;
+		nextPutAll: mode;
+		space!
+
+logServiceStream
+	| ws |
+	id := id + 1.
 	ws := FileStream write: fileName mode: #append.
-	[ws nextPutAll: stonString] ensure: [ws close]!
+	^ws!
 
 mode
 	^mode!
@@ -218,7 +248,8 @@ location:!accessing!private! !
 logComment:!logging!public! !
 logReceivedServices:!logging!public! !
 logSentServices:!logging!public! !
-logServices:!logging!public! !
+logServiceDateTimeStampOn:!logging!public! !
+logServiceStream!logging!public! !
 mode!accessing!public! !
 name!accessing!public! !
 name:!accessing!public! !

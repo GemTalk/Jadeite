@@ -84,6 +84,14 @@ isTranscriptInstalledIn: session
 	BrowserUpdate current issueCommands: (Array with: self) session: session.
 	^answer!
 
+logReceivedOn: aStream
+	super logReceivedOn: aStream.
+	aStream
+		space;
+		nextPutAll: 'answer: ';
+		nextPutAll: (answer printString leftString: 100).
+	answer printString size > 100 ifTrue: [aStream nextPutAll: '...']!
+
 lowercaseSelectorsMatching: string session: session
 	"sender should pass in lowercase string which will be 
 	compared to lowercase on the server. Avoids case misses"
@@ -169,6 +177,7 @@ getProcessList!public! !
 isAnsweringService!public!testing! !
 isDeafObject!public!testing! !
 isTranscriptInstalledIn:!commands!public! !
+logReceivedOn:!printing!public! !
 lowercaseSelectorsMatching:session:!commands!public!testing! !
 needsCommit:!commands!public! !
 printOn:!printing!public! !

@@ -130,6 +130,9 @@ projectsUpdate: presenter browser: browser
 	browser refreshProjectInfoTab!
 
 registerWindow: handle rootObject: oop session: session
+	BrowserUpdate current
+		logComment: 'Register window handle: ' , handle printString , ' {' , self identityHash printString
+				, '}'.
 	self
 		command: #saveRootObject:windowHandle:;
 		commandArgs: (Array with: oop with: handle).

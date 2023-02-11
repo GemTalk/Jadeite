@@ -138,6 +138,18 @@ isPackageService
 
 	^true!
 
+logReceivedOn: aStream
+	super logReceivedOn: aStream.
+	aStream
+		space;
+		nextPutAll: name!
+
+logSentOn: aStream
+	super logSentOn: aStream.
+	aStream
+		space;
+		nextPutAll: name!
+
 name
 	^name!
 
@@ -242,6 +254,8 @@ hierarchyServices:!public!updating! !
 isDirty!accessing!public! !
 isDirty:!accessing!public! !
 isPackageService!public!testing! !
+logReceivedOn:!printing!public! !
+logSentOn:!printing!public! !
 name!accessing!public! !
 name:!accessing!public! !
 packageUpdate:!public!updating! !

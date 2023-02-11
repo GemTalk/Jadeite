@@ -185,6 +185,18 @@ isSkew
 isSkew: anObject
 	isSkew := anObject!
 
+logReceivedOn: aStream
+	super logReceivedOn: aStream.
+	aStream
+		space;
+		nextPutAll: name!
+
+logSentOn: aStream
+	super logSentOn: aStream.
+	aStream
+		space;
+		nextPutAll: name!
+
 name
 	^name!
 
@@ -399,6 +411,8 @@ isLoaded!public!testing! !
 isProjectService!public!testing! !
 isSkew!accessing!private! !
 isSkew:!accessing!private! !
+logReceivedOn:!printing!public! !
+logSentOn:!printing!public! !
 name!accessing!public! !
 name:!accessing!public! !
 newTextView:using:!displaying!private! !

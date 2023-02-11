@@ -301,6 +301,22 @@ isReadOnly
 isTestMethod
 	^isTestMethod!
 
+logReceivedOn: aStream
+	super logReceivedOn: aStream.
+	aStream
+		space;
+		nextPutAll: className;
+		nextPutAll: '>>';
+		nextPutAll: selector!
+
+logSentOn: aStream
+	super logSentOn: aStream.
+	aStream
+		space;
+		nextPutAll: className;
+		nextPutAll: '>>';
+		nextPutAll: selector!
+
 meta
 	^meta!
 
@@ -642,6 +658,8 @@ isExtension!accessing!public! !
 isMethodService!public!testing! !
 isReadOnly!public!testing! !
 isTestMethod!public!testing! !
+logReceivedOn:!printing!public! !
+logSentOn:!printing!public! !
 meta!accessing!private! !
 meta:!accessing!private! !
 methodDefinitions!accessing!private! !

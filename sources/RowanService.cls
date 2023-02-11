@@ -274,6 +274,44 @@ isTestCase
 isUpdatableService
 	^true!
 
+logOn: aStream
+	aStream nextPutAll: self class name!
+
+logReceivedOn: aStream
+	aStream nextPutAll: self class name!
+
+logReceivedString
+	| ws |
+	ws := WriteStream on: String new.
+	self logReceivedOn: ws.
+	^ws contents!
+
+logSentOn: aStream
+	aStream
+		nextPutAll: self class name;
+		space;
+		nextPutAll: 'command: ';
+		nextPutAll: command.
+	commandArgs
+		ifNotNil: 
+			[commandArgs isEmpty
+				ifFalse: 
+					[aStream
+						tab;
+						nextPutAll: commandArgs printString]]!
+
+logSentString
+	| ws |
+	ws := WriteStream on: String new.
+	self logSentOn: ws.
+	^ws contents!
+
+logString
+	| ws |
+	ws := WriteStream on: String new.
+	self logOn: ws.
+	^ws contents!
+
 methodFilterUpdate: presenter
 	!
 
@@ -614,6 +652,12 @@ issueCommand:session:!commands!public! !
 issueCommands:session:!commands!public! !
 isTestCase!public!testing! !
 isUpdatableService!public!testing! !
+logOn:!printing!public! !
+logReceivedOn:!printing!public! !
+logReceivedString!printing!public! !
+logSentOn:!printing!public! !
+logSentString!printing!public! !
+logString!printing!public! !
 methodFilterUpdate:!public!updating! !
 methodHistoryUpdated:!must not strip!public!updating! !
 methodListUpdate:browser:!public!updating! !

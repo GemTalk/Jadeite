@@ -85,18 +85,18 @@ initializeUpdates
 	!
 
 inUpdate
-	"Private -  for testing"
-
-	^inUpdate!
+	^inUpdate ifNil: [inUpdate := RowanSemaphore forMutualExclusion]!
 
 inUpdateWhile: block
 	| result |
-	BrowserUpdate current logComment: 'About to execute inUpdate block - ' , block printString.
-	inUpdate := RowanSemaphore forMutualExclusion.
-	result := inUpdate critical: 
+	self inUpdate lockingProcess == Processor activeProcess
+		ifFalse: 
+			[BrowserUpdate current
+				logComment: 'Process: {' , Processor activeProcess identityHash printString , '} gets inUpdate semaphore.  ['
+						, block printString , ']'].
+	result := self inUpdate critical: 
 					[block ensure: 
-							[inUpdate := nil.
-							GciSession current
+							[GciSession current
 								ifNotNil: 
 									[:session |
 									session autoCommit == true
@@ -221,9 +221,9 @@ registeredTreePresenters
 
 removeEventsTriggeredFor: anObject
 	super removeEventsTriggeredFor: anObject.
-	self
+	"self
 		logComment: 'Remove events triggered for ' , anObject printString , ' {'
-				, anObject identityHash printString , '}'!
+				, anObject identityHash printString , '}'"!
 
 resetLoggingService
 	logger loggingService: nil. 
