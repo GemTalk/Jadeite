@@ -1,6 +1,6 @@
 ﻿"Filed out from Dolphin Smallalk"!
 
-JadeiteAbstractTestCase subclass: #JadeiteLoggerTestCase
+TestCase2 subclass: #JadeiteLoggerTestCase
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''

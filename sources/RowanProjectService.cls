@@ -189,13 +189,13 @@ logReceivedOn: aStream
 	super logReceivedOn: aStream.
 	aStream
 		space;
-		nextPutAll: name!
+		nextPutAll: (name ifNil: [name printString])!
 
 logSentOn: aStream
 	super logSentOn: aStream.
 	aStream
 		space;
-		nextPutAll: name!
+		nextPutAll: (name ifNil: [name printString])!
 
 name
 	^name!
