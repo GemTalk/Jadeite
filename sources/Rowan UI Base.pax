@@ -1974,14 +1974,11 @@ initializeProcess: aProcess message: aString terminateOnClose: aBoolean
 			ex debugger: self.
 			ex pass].
 	self class debuggers at: gsProcess oopType asInteger put: self.
-	BrowserUpdate current logComment: 'About to update debugger service'.
 	self update!
 
 onViewClosed
-	BrowserUpdate current logComment: 'Releasing debugger'.
 	gciSession ifNil: [^super onViewClosed].
 	RowanBrowserService new releaseWindow: self view handle value session: gciSession.
-	BrowserUpdate current logComment: 'Releasing debugger complete'.
 	(processListPresenter list notNil and: [processListPresenter list notEmpty])
 		ifTrue: 
 			[gsProcess := processListPresenter list first.
@@ -1997,30 +1994,21 @@ resumeProcess
 	self view close!
 
 selectedFrameWithErrorHandling
-	BrowserUpdate current logComment: 'About to select frame with error handling'.
 	[self selectedFrame] on: RowanDebuggerStepPointError
-		do: 
-			[:ex |
-			BrowserUpdate current logComment: 'Error selecting frame: ' , ex printString.
-			BrowserUpdate current logComment: 'isNested: ' , ex isNested printString.
-			ex isNested ifTrue: [ex pass] ifFalse: [ex resume]]!
+		do: [:ex | ex isNested ifTrue: [ex pass] ifFalse: [ex resume]]!
 
 selectedProcess
 	processListPresenter selectionOrNil ifNil: [^self].
 	self clearUI.
 	gsProcess := processListPresenter selectionOrNil.
-	BrowserUpdate current logComment: '#selectedProcess - about to send #stack:'. 
 	self stack: gsProcess stack!
 
 stack: aList
 	| index |
 	index := self stackInitialSelection.
 	frameListOffset := 0.
-	BrowserUpdate current logComment: 'About to give the frameListPresenter a list'.
 	frameListPresenter list: aList.
-	BrowserUpdate current logComment: 'Finished giving the frameListPresenter a list'.
 	aList notEmpty ifTrue: [frameListPresenter selectionByIndex: index].
-	BrowserUpdate current logComment: 'Selected index ', index printString.
 	SessionManager inputState prod!
 
 update
@@ -2030,16 +2018,11 @@ update
 			[MessageBox warning: 'We appear to have finished this process!!'.
 			self view close.
 			^self].
-	BrowserUpdate current logComment: 'About to update process list'.
-	BrowserUpdate current logComment: 'processList: ' , processList printString.
 	(2 <= processList size and: [processListPresenter selectionOrNil ~~ processList first])
 		ifTrue: 
 			[self updateProcessListPresenter.
 			processListPresenter selectionByIndex: 1	"This triggers a selection changed message that clears the current selection"]
-		ifFalse: 
-			[BrowserUpdate current logComment: '#update - about to send #stack:'.
-			self stack: stack.
-			BrowserUpdate current logComment: '#update - finished #stack:']!
+		ifFalse: [self stack: stack]!
 
 updateCaption
 	self caption: (gciSession titleBarFor: 'Debugger')! !

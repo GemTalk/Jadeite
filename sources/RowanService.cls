@@ -278,7 +278,12 @@ logOn: aStream
 	aStream nextPutAll: self class name!
 
 logReceivedOn: aStream
-	aStream nextPutAll: self class name!
+	aStream
+		nextPutAll: self class name;
+		space;
+		nextPut: ${;
+		print: self identityHash;
+		nextPut: $}!
 
 logReceivedString
 	| ws |

@@ -139,6 +139,16 @@ isUnordered: anObject
 isVariable
 	^isVariable!
 
+logReceivedOn: aStream
+	| myselfString |
+	myself ifNil: [^aStream nextPutAll: 'self is nil!!'].
+	myselfString := myself printString leftString: 50.
+	aStream
+		nextPutAll: myselfString;
+		space.
+	myself printString size > 50 ifTrue: [aStream nextPutAll: '... '].
+	aStream nextPutAll: '<oop: ' , oop printString , '>'!
+
 maxIndexedVars
 	^maxIndexedVars!
 
@@ -252,6 +262,7 @@ isStringObject!accessing!public! !
 isUnordered!accessing!private! !
 isUnordered:!accessing!private! !
 isVariable!accessing!private! !
+logReceivedOn:!printing!public! !
 maxIndexedVars!accessing!private! !
 maxIndexedVars:!accessing!private! !
 myself!accessing!private! !

@@ -10,6 +10,12 @@ RowanAutoCommitService comment: ''!
 !RowanAutoCommitService categoriesForClass!Unclassified! !
 !RowanAutoCommitService methodsFor!
 
+autoCommit
+	^autoCommit!
+
+autoCommit: anObject
+	autoCommit := anObject!
+
 autoCommitUpdate: browser
 	| shouldAbort |
 	autoCommit == #failed
@@ -30,6 +36,12 @@ displayName
 
 	^self printString!
 
+logReceivedOn: aStream
+	super logReceivedOn: aStream.
+	aStream
+		space;
+		nextPutAll: autoCommit printString!
+
 postUpdateBlock
 
 	^postUpdateBlock!
@@ -38,8 +50,11 @@ sortAspect
 	"don't think this is used"
 	^self printString ! !
 !RowanAutoCommitService categoriesForMethods!
+autoCommit!accessing!private! !
+autoCommit:!accessing!private! !
 autoCommitUpdate:!public!updating! !
 displayName!displaying!public! !
+logReceivedOn:!printing!public! !
 postUpdateBlock!accessing!public! !
 sortAspect!accessing!public! !
 !

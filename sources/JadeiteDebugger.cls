@@ -15,22 +15,18 @@ _processList
 	^processList!
 
 _terminateProcess: aGsProcess
-
 	| string |
-	BrowserUpdate current logComment: '#_terminateProcess:'.
 	string := '
 | gsProcess |
-gsProcess := Object _objectForOop: ' , aGsProcess oopType value printString , '.
+gsProcess := Object _objectForOop: '
+				, aGsProcess oopType value printString
+					, '.
 gsProcess ifNotNil: [gsProcess terminate. (Delay forMilliseconds: 10) wait].
 Processor allProcesses includes: gsProcess'.
-	5 timesRepeat: [
-		(gciSession executeString: string) ifFalse: [^self].
-	].
-	self error: 'terminate process failed'.
-!
+	5 timesRepeat: [(gciSession executeString: string) ifFalse: [^self]].
+	self error: 'terminate process failed'!
 
 aboutToChangeFrame: aSelectionChangingEvent
-	BrowserUpdate current logComment: 'aboutToChangeFrame:'.
 	aSelectionChangingEvent
 		value: (codePane documentPresenter view isModified ifTrue: [self isOkayToChangeFrame] ifFalse: [true])!
 
@@ -293,13 +289,9 @@ gciSession: aGciSession
 getProcessList
 	"#getProcessList copied from RowanProjectsBrowserPresenter>>updatePresenters"
 
-	BrowserUpdate current logComment: 'Update debugger service --- #updateProcesses'.
 	debuggerService := RowanDebuggerService onProcess: gsProcess.
 	debuggerService command: #updateProcesses.
 	self issueCommand: debuggerService.
-	BrowserUpdate current logComment: 'Update debugger service --- #updateProcesses ---- complete'.
-	BrowserUpdate current
-		logComment: 'debuggerService processes: ' , debuggerService processes printString.
 	debuggerService processes ifNil: [^self].
 	gsProcess := debuggerService processes
 				detect: [:processService | processService oop = gsProcess oop]
@@ -408,7 +400,6 @@ onIdleEntered
 onViewClosed
 	"Private - copied from RowanSystemBrowserPresenter>>onViewClosed"
 
-	BrowserUpdate current logComment: 'Closing Debugger {' , self identityHash printString , '}'.
 	debuggerClosed := true. 
 	processList := processListPresenter list.
 	BrowserUpdate current removeEventsTriggeredFor: self.
@@ -437,7 +428,6 @@ onViewOpened
 
 	super onViewOpened.
 	self registerPresentersForUpdates.
-	BrowserUpdate current logComment: 'Opening Debugger {' , self identityHash printString , '}'.
 	self class lastPosition ifNotNil: [self view position: self class lastPosition].
 	self class lastExtent ifNotNil: [self view extent: self class lastExtent]!
 
@@ -602,30 +592,18 @@ selectedFrame
 	solutions."
 
 	| index |
-	BrowserUpdate current logComment: '#selectedFrame'.
-	BrowserUpdate current
-		logComment: '(index := frameListPresenter selectionByIndex) = 0 ifTrue: [^self].'.
-	BrowserUpdate current
-		logComment: 'frameListPresenter selectionByIndex: ' , frameListPresenter selectionByIndex printString.
 	(index := frameListPresenter selectionByIndex) = 0 ifTrue: [^self].
-	BrowserUpdate current logComment: 'setting index: ' , index printString.
-	BrowserUpdate current logComment: 'index := index + frameListOffset.'.
 	index := index + frameListOffset.
-	BrowserUpdate current logComment: '(frame := gsProcess frameForLevel: index) isNil ifTrue: [^self].'.
-	BrowserUpdate current logComment: (gsProcess frameForLevel: index) printString.
 	(frame := gsProcess frameForLevel: index) isNil ifTrue: [^self].
-	BrowserUpdate current logComment: 'frame stepPoint: ' , frame stepPoint printString.
 	frame stepPoint ifNil: [RowanDebuggerStepPointError signal].	"see comment in  RowanFrameService>>initializeProcess:level:organizer:"
 	self displayVariables.
 	[documentPresenter value: frame gsMethod source] ensure: [self isModified: false].
-	BrowserUpdate current logComment: 'udpdated source pane'.
 	documentPresenter view isModified: false.
 	codePane offsets: nil.
 	codePane gsMethod: frame gsMethod.
 	self displayUncompilableSourceIn: codePane documentPresenter.
 	frame stepPoint ifNotNil: [codePane showStepPoint: frame stepPoint].
-	(self view viewNamed: 'toolbar') update.
-	BrowserUpdate current logComment: 'finished #selectedFrame'!
+	(self view viewNamed: 'toolbar') update!
 
 selectedProcess
 	processListPresenter selectionOrNil ifNil: [^self].
@@ -663,7 +641,6 @@ statusTextPresenter
 
 stepInto
 	self isOkayToChangeFrame ifFalse:[^self].
-	BrowserUpdate current logComment: '#stepInto'.
 	gciSession stepInto: (GsProcess session: gciSession oopType: gsProcess oopType)
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
 	[self getProcessList] on: RowanDebuggerStepPointError do: [:ex | self stepInto]!
@@ -672,7 +649,6 @@ stepOut
 	| stepOutFrameIndex |
 	self isOkayToChangeFrame ifFalse: [^self].
 	frame homeMethodSelector ifNil:[^self resumeProcess]. 
-	BrowserUpdate current logComment: '#stepOut'.
 	stepOutFrameIndex := frameListPresenter selectionByIndex.
 	stepOutFrameIndex = 1 ifTrue: [stepOutFrameIndex := 2].
 	gciSession stepOut: (GsProcess session: gciSession oopType: gsProcess oopType)
@@ -681,14 +657,12 @@ stepOut
 
 stepOver
 	self isOkayToChangeFrame ifFalse: [^self].
-	BrowserUpdate current logComment: '#stepOver'.
 	gciSession stepOver: (GsProcess session: gciSession oopType: gsProcess oopType)
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
 	[self getProcessList] on: RowanDebuggerStepPointError do: [:ex | self stepInto]!
 
 stepThrough
 	self isOkayToChangeFrame ifFalse: [^self].
-	BrowserUpdate current logComment: '#stepThrough'.
 	gciSession stepThrough: (GsProcess session: gciSession oopType: gsProcess oopType)
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
 	self stepOver.
