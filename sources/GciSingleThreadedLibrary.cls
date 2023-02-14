@@ -471,8 +471,9 @@ pollForSignalSession: anInteger
 !
 
 releaseAllOopsForSession: anInteger
-	self critical: [self gciSetSessionId: anInteger].
-	self gciReleaseAllOops!
+	self critical: 
+			[self gciSetSessionId: anInteger.
+			self gciReleaseAllOops]!
 
 sendInterpreted: aString to: anOopType with: anArray session: anInteger
 
