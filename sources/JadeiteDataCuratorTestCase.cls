@@ -19,6 +19,7 @@ setUp
 	self setupProjectBrowser!
 
 tearDown
+	super tearDown. 
 	GciSession current userID: nil.	"ensure we logout and back in"
 	self logoutThenLoginAs: 'SystemUser' forceClose: false.
 	self assert: jadeiteShell userIDPresenter value equals: 'SystemUser'.

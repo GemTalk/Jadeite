@@ -55,6 +55,7 @@ rawPreferenceSymbols
 	^preferenceSymbols!
 
 tearDown
+	super tearDown. 
 	workspace ifNotNil: [self closeWorkspace]!
 
 test_additionalAccelerators

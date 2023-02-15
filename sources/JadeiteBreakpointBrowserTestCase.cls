@@ -25,6 +25,7 @@ setUp
 	self enableBreakpoints!
 
 tearDown
+	super tearDown.
 	breakpointBrowser ifNotNil: [breakpointBrowser view close].
 	projectsBrowser ifNotNil: [self destroy: projectsBrowser]!
 
