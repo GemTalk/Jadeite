@@ -359,7 +359,9 @@ packagesUpdate: presenter browser: browser parentPresenter: parentPresenter
 	selectedComponentPackages := (browser packageGroupPresenter selectionIfNone: [])
 				ifNil: [self packageServices]
 				ifNotNil: [:componentService | componentService packageServices].
-	packageServices := self packageServices intersection: selectedComponentPackages.
+	packageServices := selectedComponentPackages
+				ifNil: [self packageServices]
+				ifNotNil: [self packageServices intersection: selectedComponentPackages].
 	self
 		updateList: presenter
 		whilePreservingSelections: packageServices
