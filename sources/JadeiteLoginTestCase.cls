@@ -95,6 +95,7 @@ test_gemTask
 	JadeiteLoginShell allInstances do: 
 			[:inst |
 			inst model gemTask: 'gemnetobject'.
+			inst model saveDefault.
 			inst view close].	"set known value in file to start test"
 	jadeiteLogin := nil.
 	jadeiteShell := JadeiteLoginShell show position: 80 @ 20.
@@ -102,6 +103,7 @@ test_gemTask
 	self assert: jadeiteLogin gemTask equals: 'gemnetobject'.
 	jadeiteLogin gemTask: 'gemnetdebug'.
 	jadeiteShell gemTaskPresenter: 'gemnetdebug'.	"update the gui"
+	jadeiteShell model saveDefault.
 	self loginWithRetry: jadeiteShell.	"have to login so new task is accepted"
 	"somehow test that we are using gemnetdebug"
 	TestMessageBox plannedResult: #no.
@@ -112,7 +114,9 @@ test_gemTask
 	self assert: jadeiteLogin gemTask equals: 'gemnetdebug'.
 	jadeiteLogin gemTask: 'gemnetobject'.
 	jadeiteShell gemTaskPresenter: 'gemnetobject'.	"update the gui"
+	jadeiteShell model saveDefault.
 	self loginWithRetry: jadeiteShell.
+
 	"somehow test that we are using gemnetobject"
 	TestMessageBox plannedResult: #no.
 	[GciSession current logout] ensure: [TestMessageBox disableJadeiteTestMessageBox].
@@ -120,6 +124,7 @@ test_gemTask
 	jadeiteShell := JadeiteLoginShell show.
 	jadeiteLogin := jadeiteShell model.
 	self assert: jadeiteLogin gemTask equals: 'gemnetobject'.
+	jadeiteLogin saveDefault.
 	self loginWithRetry: jadeiteShell.
 	[self assert: GciSession current isKindOf: GciSession] ensure: 
 			[JadeiteTestResource current
