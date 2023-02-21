@@ -1573,9 +1573,9 @@ postLoadClientPreferences
 
 	| path file stream nextLine prefs |
 	path := JadeitePreferences preferencesPath.
-	(File exists: path) ifFalse: [^self].
 	prefs := JadeitePreferences onSession: self.
 	JadeitePreferences current: prefs.
+	(File exists: path) ifFalse: [^self].
 	file := File open: path mode: #read.
 	
 	[stream := file readWriteStream.
