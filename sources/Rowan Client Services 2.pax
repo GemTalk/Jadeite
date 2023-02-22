@@ -35,7 +35,6 @@ package classNames
 	add: #RowanProjectDefinitionService;
 	add: #RowanProjectService;
 	add: #RowanQueryService;
-	add: #RowanSemaphore;
 	add: #RowanService;
 	add: #RowanSubcomponentDefinitionService;
 	add: #RowanTestService;
@@ -85,11 +84,6 @@ package!
 
 Object subclass: #RowanService
 	instanceVariableNames: 'command commandArgs updateType organizer updates wasUpdated shouldUpdate'
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-Semaphore subclass: #RowanSemaphore
-	instanceVariableNames: 'lockingProcess'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!

@@ -70,23 +70,6 @@ processOop
 	^gciErrSType context.
 !
 
-reportError
-	"The error can occur before code starts executing (see bug #44232)"
-
-	gciErrSType contextOop isGsNil
-		ifTrue: 
-			[self reportErrorMessage.
-			Processor activeProcess terminate].
-	[^self debugError] on: Error
-		do: 
-			[:ex |
-			(ex isKindOf: GsError) ifTrue: [ex isNested ifTrue: [ex pass] "don't pass if we will end up in recursion" ].
-			SessionManager current logError: ex.
-			MessageBox warning: 'Error while processing error: ' , ex description.
-			SessionManager current pause.
-			self reportErrorMessage.
-			Processor activeProcess terminate]!
-
 reportErrorMessage
 
 	| stream  |
@@ -109,7 +92,7 @@ signal
 
 terminateProcess
 	self gciSession terminate: self errorReport contextOop.
-	Processor activeProcess kill "we should never get here but just in case" ! !
+	Processor activeProcess terminate "we should never get here but just in case" ! !
 !GsError categoriesForMethods!
 debugger!accessing!public! !
 debugger:!accessing!public! !
@@ -122,7 +105,6 @@ gsProcess!accessing!private! !
 isResumableInGem!public! !
 isStackBreakpoint!public! !
 processOop!public! !
-reportError!public! !
 reportErrorMessage!public! !
 signal!public! !
 terminateProcess!accessing!public! !

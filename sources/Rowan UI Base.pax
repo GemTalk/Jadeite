@@ -161,6 +161,7 @@ package methodNames
 	add: #GciSession -> #withExplanation:do:;
 	add: #GciSession -> #withExplanation:doA:;
 	add: #GsError -> #debugError;
+	add: #GsError -> #reportError;
 	add: #GsFatalError -> #defaultAction;
 	add: #GsMethod -> #className;
 	add: #GsMethod -> #meta;
@@ -170,7 +171,6 @@ package methodNames
 	add: #JadeAutoSystemBrowserPresenter -> #methodMenuBreak:;
 	add: #JadeAutoTextPresenter3 -> #defaultMethod;
 	add: #JadeAutoTextPresenter3 -> #setDefaultMethod;
-	add: #JadeDebugger -> #getProcessList;
 	add: #JadeDebugger -> #gsProcess;
 	add: #JadeDebugger -> #gsProcess:;
 	add: #JadeDebugger -> #initializeProcess:message:terminateOnClose:;
@@ -1156,7 +1156,7 @@ stonOn:!public!writing! !
 initialize
 	self initializeUpdates.
 	debug := false.
-	inUpdate := RowanSemaphore forMutualExclusion.
+	inUpdate := Mutex new.
 	logger := JadeiteLogger new.
 	breakpointsEnabled := false! !
 !BrowserUpdate categoriesForMethods!
@@ -1841,9 +1841,29 @@ withExplanation:doA:!long running!private! !
 !GsError methodsFor!
 
 debugError
-	^JadeiteDebugger debuggerClass reportError: self! !
+	^JadeiteDebugger debuggerClass reportError: self!
+
+reportError
+	"The error can occur before code starts executing (see bug #44232)"
+
+	BrowserUpdate current logComment: 'about to report error ' , gciErrSType contextOop printString.
+	gciErrSType contextOop isGsNil
+		ifTrue: 
+			[self reportErrorMessage.
+			Processor activeProcess terminate].
+	[^self debugError] on: Error
+		do: 
+			[:ex |
+			(ex isKindOf: GsError)
+				ifTrue: [ex isNested ifTrue: [ex pass]	"don't pass if we will end up in recursion"].
+			SessionManager current logError: ex.
+			MessageBox warning: 'Error while processing error: ' , ex description.
+			SessionManager current pause.
+			self reportErrorMessage.
+			Processor activeProcess terminate]! !
 !GsError categoriesForMethods!
 debugError!public! !
+reportError!public! !
 !
 
 !GsFatalError methodsFor!
@@ -1946,15 +1966,6 @@ setDefaultMethod!public! !
 
 !JadeDebugger methodsFor!
 
-getProcessList
-	| string lines |
-	string := gciSession serverPerform: #processes.
-	lines := (string subStrings: Character lf) asOrderedCollection.
-	processList := lines removeFirst.
-	processList addFirst: gsProcess.
-	processList := processList collect: [:proc | RowanProcessService new oop: proc oop].
-	gsProcess type: 'active'!
-
 gsProcess
 	^gsProcess!
 
@@ -1986,7 +1997,7 @@ onViewClosed
 			(terminateOnClose and: [answer isNil])
 				ifTrue: 
 					[[gsProcess terminate] ensure: [super onViewClosed].
-					Processor activeProcess kill	"we should never get here but just in case"]].
+					Processor activeProcess terminate	"we should never get here but just in case"]].
 	^super onViewClosed!
 
 resumeProcess
@@ -2027,7 +2038,6 @@ update
 updateCaption
 	self caption: (gciSession titleBarFor: 'Debugger')! !
 !JadeDebugger categoriesForMethods!
-getProcessList!public! !
 gsProcess!accessing!private! !
 gsProcess:!accessing!private! !
 initializeProcess:message:terminateOnClose:!public! !

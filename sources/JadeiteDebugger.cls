@@ -166,6 +166,9 @@ createSchematicWiring
 			send: #onCharAdded:
 			to: self search!
 
+debuggerClosed
+	^debuggerClosed!
+
 debuggerClosed: anObject
 	debuggerClosed := anObject!
 
@@ -503,7 +506,10 @@ reformatSource
 
 refreshBreakPointsIn: methodSourcePresenter
 	| breakPointSymbol indicators |
-	methodSourcePresenter view isOpen ifFalse:[^self]. 
+	BrowserUpdate current
+		logComment: 'JadeiteDebugger>>refreshBreakPointsIn: `methodSourcePresenter view isOpen`'
+				, methodSourcePresenter view isOpen printString.
+	methodSourcePresenter view isOpen ifFalse: [^self].
 	breakPointSymbol := BrowserUpdate current breakpointsEnabled
 				ifTrue: [#breakPoint]
 				ifFalse: [#disabledBreakPoint].
@@ -518,7 +524,7 @@ refreshBreakPointsIn: methodSourcePresenter
 								tag: indicator tag)]
 				ifFalse: [indicators add: indicator]].
 	methodSourcePresenter view indicators: indicators.
-	[methodSourcePresenter view update] on: GPFault do:[:ex | ex resume]. !
+	[methodSourcePresenter view update] on: GPFault do: [:ex | ex resume]!
 
 registerPresentersForUpdates
 	"copied from RowanProjectsBrowserPresenter>>registerPresentersForUpdates"
@@ -541,6 +547,7 @@ restart
 
 resumeProcess
 	self isOkayToChangeFrame ifFalse: [^self].
+	BrowserUpdate current logComment: 'JadeiteDebugger>>resumeProcess'.
 	^super resumeProcess!
 
 saveMethod
@@ -641,6 +648,7 @@ statusTextPresenter
 
 stepInto
 	self isOkayToChangeFrame ifFalse:[^self].
+	BrowserUpdate current logComment: 'JadeiteDebugger>>stepInto'.
 	gciSession stepInto: (GsProcess session: gciSession oopType: gsProcess oopType)
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
 	[self getProcessList] on: RowanDebuggerStepPointError do: [:ex | self stepInto]!
@@ -648,7 +656,8 @@ stepInto
 stepOut
 	| stepOutFrameIndex |
 	self isOkayToChangeFrame ifFalse: [^self].
-	frame homeMethodSelector ifNil:[^self resumeProcess]. 
+	BrowserUpdate current logComment: 'JadeiteDebugger>>stepOut'.
+	frame homeMethodSelector ifNil: [^self resumeProcess].
 	stepOutFrameIndex := frameListPresenter selectionByIndex.
 	stepOutFrameIndex = 1 ifTrue: [stepOutFrameIndex := 2].
 	gciSession stepOut: (GsProcess session: gciSession oopType: gsProcess oopType)
@@ -657,12 +666,14 @@ stepOut
 
 stepOver
 	self isOkayToChangeFrame ifFalse: [^self].
+	BrowserUpdate current logComment: 'JadeiteDebugger>>stepOver'.
 	gciSession stepOver: (GsProcess session: gciSession oopType: gsProcess oopType)
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
 	[self getProcessList] on: RowanDebuggerStepPointError do: [:ex | self stepInto]!
 
 stepThrough
 	self isOkayToChangeFrame ifFalse: [^self].
+	BrowserUpdate current logComment: 'JadeiteDebugger>>stepThrough'.
 	gciSession stepThrough: (GsProcess session: gciSession oopType: gsProcess oopType)
 		inFrame: frameListPresenter selectionByIndex + frameListOffset.
 	self stepOver.
@@ -711,6 +722,7 @@ copyFrameString!menu handlers!private! !
 copyStack!menu handlers!private! !
 createComponents!public! !
 createSchematicWiring!public! !
+debuggerClosed!accessing!private! !
 debuggerClosed:!accessing!private! !
 debuggerService!accessing!private! !
 disableBreakpointsWhile:!private! !

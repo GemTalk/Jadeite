@@ -138,13 +138,8 @@ logComment: aString
 	mode := nil.
 	ws := FileStream write: fileName mode: #append.
 	
-	[date := Date today.
-	time := Time now.
+	[self logServiceDateTimeStampProcessOn: ws.
 	ws
-		cr;
-		nextPutAll: date shortString;
-		space;
-		nextPutAll: time printString;
 		space;
 		nextPutAll: aString]
 			ensure: [ws close].
@@ -157,22 +152,22 @@ logReceivedServices: theServices
 	
 	[theServices do: 
 			[:svc |
-			self logServiceDateTimeStampOn: ws.
+			self logServiceDateTimeStampProcessOn: ws.
 			ws nextPutAll: svc logReceivedString]]
 			ensure: [ws close]!
 
 logSentServices: theServices
 	| ws |
-	mode := #sent. 
+	mode := #sent.
 	ws := self logServiceStream.
 	
 	[theServices do: 
 			[:svc |
-			self logServiceDateTimeStampOn: ws.
+			self logServiceDateTimeStampProcessOn: ws.
 			ws nextPutAll: svc logSentString]]
 			ensure: [ws close]!
 
-logServiceDateTimeStampOn: ws
+logServiceDateTimeStampProcessOn: ws
 	date := Date today.
 	time := Time now.
 	ws
@@ -181,8 +176,13 @@ logServiceDateTimeStampOn: ws
 		space;
 		nextPutAll: time printString;
 		space;
-		nextPutAll: mode;
-		space!
+		nextPutAll: 'Process: {' , Processor activeProcess identityHash printString , '}';
+		space.
+	mode
+		ifNotNil: 
+			[ws
+				nextPutAll: mode;
+				space]!
 
 logServiceStream
 	| ws |
@@ -248,7 +248,7 @@ location:!accessing!private! !
 logComment:!logging!public! !
 logReceivedServices:!logging!public! !
 logSentServices:!logging!public! !
-logServiceDateTimeStampOn:!logging!public! !
+logServiceDateTimeStampProcessOn:!logging!public! !
 logServiceStream!logging!public! !
 mode!accessing!public! !
 name!accessing!public! !

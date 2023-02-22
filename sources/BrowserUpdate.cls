@@ -85,23 +85,15 @@ initializeUpdates
 	!
 
 inUpdate
-	^inUpdate ifNil: [inUpdate := RowanSemaphore forMutualExclusion]!
+	^inUpdate!
 
 inUpdateWhile: block
-	| result |
-	self inUpdate lockingProcess == Processor activeProcess
-		ifFalse: 
-			[BrowserUpdate current
-				logComment: 'Process: {' , Processor activeProcess identityHash printString , '} gets inUpdate semaphore.  ['
-						, block printString , ']'].
-	result := self inUpdate critical: 
-					[block ensure: 
-							[GciSession current
-								ifNotNil: 
-									[:session |
-									session autoCommit == true
-										ifTrue: [JadePresenter trigger: #committedTransaction	"autoCommit could be a symbol #failed"]]]].
-	^result!
+	^block ensure: 
+			[GciSession current
+				ifNotNil: 
+					[:session |
+					session autoCommit == true
+						ifTrue: [JadePresenter trigger: #committedTransaction	"autoCommit could be a symbol #failed"]]]!
 
 isApplyingUpdates
 	"we've come back from the server and
@@ -127,7 +119,6 @@ issueCommands: services session: session
 			session
 				ifNotNil: 
 					[commandResult := self basicIssueCommand: services session: session.
-					BrowserUpdate current logComment: 'Released inUpdate semaphore'.
 					^commandResult]]!
 
 logComment: string
@@ -280,7 +271,6 @@ updateServices: services session: session
 	services isEmpty ifTrue: [^self].
 	self inUpdateWhile: 
 			[commandResult := self basicUpdateServices: services session: session.
-			BrowserUpdate current logComment: 'Released inUpdate semaphore'.
 			^commandResult]!
 
 updatesPerform: selector presenter: presenter

@@ -372,15 +372,20 @@ reportError: gsError
 	| debugger answer |
 	(debugger := self debuggerFor: gsError processOop) notNil
 		ifTrue: 
-			[debugger
+			[debugger debuggerClosed
+				ifFalse: 
+					[debugger hasValidSession
+						ifTrue: 
+							["already open"
+							Processor activeProcess terminate]].
+			debugger
 				getProcessList;
-				update.
-			debugger hasValidSession
-				ifTrue: 
-					["already open"
-					Processor activeProcess kill]].
+				update].
 	(#(2709 6005) includes: gsError errorReport number)
-		ifTrue: [^self openDebuggerOnException: gsError].
+		ifTrue: 
+			[BrowserUpdate current
+				logComment: 'Opening debugger on error: ' , gsError errorReport number printString.
+			^self openDebuggerOnException: gsError].
 	self aboutToShowErrorShellOn: gsError.	"allow JadeiteDebuggerTestCase to override and skip error dialog and go straight to debugger"
 	answer := (JadeErrorShell showModalOn: gsError)
 				ifNil: [#terminate	"Window was closed without pressing any button!!"].
