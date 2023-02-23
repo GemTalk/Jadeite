@@ -45,7 +45,22 @@ applyUpdateWhile: block
 			[applyingUpdates := false.
 			self postUpdate]!
 
-basicIssueCommand: services session: session
+basicInUpdateWhile: block
+	"here is where we actually grab the mutex" 
+	| result |
+	result := self inUpdate critical: 
+					[BrowserUpdate current logComment: 'gets inUpdate mutex.  [' , block printString , ']'.
+					block ensure: 
+							[GciSession current
+								ifNotNil: 
+									[:session |
+									session autoCommit == true
+										ifTrue: [JadePresenter trigger: #committedTransaction	"autoCommit could be a symbol #failed"]].
+							BrowserUpdate current
+								logComment: 'about to release inUpdate mutex.  [' , block printString , ']']].
+	^result!
+
+basicIssueCommand: services session: session ignoreReturnedServices: ignoreUpdates
 	| stonString stonResultString updateResult loggedServices newLoggingService |
 	services do: [:service | service prepareForReplication].
 	newLoggingService := logger newServiceLoggingService addServices: services.
@@ -56,14 +71,21 @@ basicIssueCommand: services session: session
 	stonString := JadeiteSTON toString: loggedServices.
 	[stonResultString := session serverPerform: #updateFromSton: with: stonString]
 		ensure: [services do: [:service | service clearCommand]].
-	stonResultString = 'nil'
-		ifFalse: [updateResult := self update: services afterStonReplication: stonResultString].
+	ignoreUpdates
+		ifFalse: 
+			[stonResultString = 'nil'
+				ifFalse: 
+					[self
+						basicInUpdateWhile: [updateResult := self update: services afterStonReplication: stonResultString]]].
 	session releaseAllOops.
 	^updateResult!
 
 basicUpdateServices: services session: session
 	services do: [:service | service command: #update].
-	^self basicIssueCommand: services session: session!
+	^self
+		basicIssueCommand: services
+		session: session
+		ignoreReturnedServices: false!
 
 breakpointsEnabled
 	^breakpointsEnabled!
@@ -88,12 +110,17 @@ inUpdate
 	^inUpdate!
 
 inUpdateWhile: block
-	^block ensure: 
-			[GciSession current
-				ifNotNil: 
-					[:session |
-					session autoCommit == true
-						ifTrue: [JadePresenter trigger: #committedTransaction	"autoCommit could be a symbol #failed"]]]!
+	"don't really get inUpdate semaphore here but we are conceptually in an update. 
+	See #basicInUpdateWhile: for the actual grabbing of the mutex"
+
+	| result |
+	result := block ensure: 
+					[GciSession current
+						ifNotNil: 
+							[:session |
+							session autoCommit == true
+								ifTrue: [JadePresenter trigger: #committedTransaction	"autoCommit could be a symbol #failed"]]].
+	^result!
 
 isApplyingUpdates
 	"we've come back from the server and
@@ -114,12 +141,20 @@ issueCommand: service session: session
 	^self issueCommands: (Array with: service) session: session!
 
 issueCommands: services session: session
-	self inUpdateWhile: 
-			[| commandResult |
-			session
-				ifNotNil: 
-					[commandResult := self basicIssueCommand: services session: session.
-					^commandResult]]!
+	^self
+		issueCommands: services
+		session: session
+		ignoringUpdates: false!
+
+issueCommands: services session: session ignoringUpdates: ignore
+	| commandResult |
+	session
+		ifNotNil: 
+			[commandResult := self
+						basicIssueCommand: services
+						session: session
+						ignoreReturnedServices: ignore.
+			^commandResult]!
 
 logComment: string
 	logger logComment: string!
@@ -310,20 +345,22 @@ activePackageServices!accessing!public! !
 activeServices!accessing!public! !
 applyUpdatesFromReturnedServices:!accessing!public! !
 applyUpdateWhile:!public!updating! !
-basicIssueCommand:session:!commands!private! !
+basicInUpdateWhile:!commands!public!semaphore access! !
+basicIssueCommand:session:ignoreReturnedServices:!commands!private! !
 basicUpdateServices:session:!private!updating! !
 breakpointsEnabled!accessing!private! !
 breakpointsEnabled:!accessing!private! !
 debug!accessing!private! !
 debug:!accessing!private! !
 initializeUpdates!initialization!public! !
-inUpdate!private! !
-inUpdateWhile:!commands!public! !
+inUpdate!private!semaphore access! !
+inUpdateWhile:!commands!public!semaphore access! !
 isApplyingUpdates!public!testing! !
 isLogging!logging!public!testing! !
 isLogging:!logging!public!testing! !
 issueCommand:session:!commands!public! !
 issueCommands:session:!commands!public! !
+issueCommands:session:ignoringUpdates:!commands!public! !
 logComment:!logging!public! !
 logFileName!accessing!public! !
 logFileName:!accessing!public! !

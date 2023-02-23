@@ -305,17 +305,17 @@ logReceivedOn: aStream
 	super logReceivedOn: aStream.
 	aStream
 		space;
-		nextPutAll: className;
+		nextPutAll: className printString;
 		nextPutAll: '>>';
-		nextPutAll: selector!
+		nextPutAll: selector printString!
 
 logSentOn: aStream
 	super logSentOn: aStream.
 	aStream
 		space;
-		nextPutAll: className;
+		nextPutAll: className printString;
 		nextPutAll: '>>';
-		nextPutAll: selector!
+		nextPutAll: selector printString!
 
 meta
 	^meta!

@@ -70,7 +70,9 @@ flipTranscriptIn: session
 
 getProcessList
 	"do nothing. See JadePresenter class>>waitForAnswer: 
-	Maybe shouldn't overload that method. Hmmm" !
+	Maybe shouldn't overload that method. Hmmm"
+
+	BrowserUpdate current logComment: 'RowanAnsweringService>>getProcessList (no-op)'!
 
 isAnsweringService
 
@@ -135,9 +137,18 @@ setAutoCommit: boolean for: session
 	^answer!
 
 setBreakpointsEnabled: boolean session: session
+	self
+		setBreakpointsEnabled: boolean
+		session: session
+		ignoringUpdates: false!
+
+setBreakpointsEnabled: boolean session: session ignoringUpdates: ignore
 	command := #setBreakPointsAreEnabled:.
 	commandArgs := Array with: boolean.
-	BrowserUpdate current issueCommands: (Array with: self) session: session!
+	BrowserUpdate current
+		issueCommands: (Array with: self)
+		session: session
+		ignoringUpdates: ignore!
 
 symbolDictionaryNames: session
 	self
@@ -185,6 +196,7 @@ projectRepositoryRoots:!commands!public! !
 projectRepositoryRoots:session:!commands!public! !
 setAutoCommit:for:!commands!public! !
 setBreakpointsEnabled:session:!commands!public! !
+setBreakpointsEnabled:session:ignoringUpdates:!commands!public! !
 symbolDictionaryNames:!commands!public! !
 symbolExists:session:!commands!public!testing! !
 symbolsMatching:session:!commands!public!testing! !

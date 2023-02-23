@@ -180,9 +180,15 @@ disableBreakpointsWhile: block
 	| wereBreakpointsEnabled answeringService result |
 	answeringService := RowanAnsweringService new.
 	wereBreakpointsEnabled := answeringService breakPointsAreEnabled: self gciSession.
-	answeringService setBreakpointsEnabled: false session: self gciSession.
-	[result := block value]
-		ensure: [answeringService setBreakpointsEnabled: wereBreakpointsEnabled session: self gciSession].
+	answeringService
+		setBreakpointsEnabled: false
+		session: self gciSession
+		ignoringUpdates: true.
+	[result := block value] ensure: 
+			[answeringService
+				setBreakpointsEnabled: wereBreakpointsEnabled
+				session: self gciSession
+				ignoringUpdates: true].
 	^result!
 
 displayUncompilableSourceIn: sourcePresenter
@@ -296,9 +302,16 @@ getProcessList
 	debuggerService command: #updateProcesses.
 	self issueCommand: debuggerService.
 	debuggerService processes ifNil: [^self].
+	BrowserUpdate current logComment: 'assigning gsProcess in JadeiteDebugger>>getProcessList'.
 	gsProcess := debuggerService processes
 				detect: [:processService | processService oop = gsProcess oop]
-				ifNone: [gsProcess	"it should be found though"].
+				ifNone: 
+					[BrowserUpdate current
+						logComment: '`gsProcess oop` not found in `debuggerService processes`. {' , gsProcess oop printString
+								, '}'.
+					BrowserUpdate current
+						logComment: 'debuggerService processes: ' , debuggerService processes printString , '}'.
+					gsProcess	"it should be found though"].
 	processListPresenter list notEmpty
 		ifTrue: [processListPresenter selection: debuggerService processes first ifAbsent: []]!
 
@@ -615,6 +628,7 @@ selectedFrame
 selectedProcess
 	processListPresenter selectionOrNil ifNil: [^self].
 	self clearUI.
+	BrowserUpdate current logComment: 'assigning gsProcess in JadeiteDebugger>>selectedProcess'.
 	gsProcess := processListPresenter selectionOrNil.
 	gsProcess stack isEmpty
 		ifTrue: [BrowserUpdate current updateService: gsProcess session: self gciSession].
