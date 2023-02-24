@@ -537,7 +537,11 @@ refreshBreakPointsIn: methodSourcePresenter
 								tag: indicator tag)]
 				ifFalse: [indicators add: indicator]].
 	methodSourcePresenter view indicators: indicators.
-	[methodSourcePresenter view update] on: GPFault do: [:ex | ex resume]!
+	[methodSourcePresenter view update] on: GPFault
+		do: 
+			[:ex |
+			"ignore - Dolphin can get these. Probably means the view is really gone and other updates on this round trip will be void"
+			]!
 
 registerPresentersForUpdates
 	"copied from RowanProjectsBrowserPresenter>>registerPresentersForUpdates"

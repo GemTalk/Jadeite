@@ -219,6 +219,7 @@ selecting: stringOrIndex string: searchString
 	stringOrIndex isNumber
 		ifTrue: 
 			[| range stream selectionStop |
+			stringOrIndex > methodSourcePresenter documentPresenter value size ifTrue: [^self].
 			stream := ReadStream on: methodSourcePresenter documentPresenter value.
 			stream position: stringOrIndex.
 			stream nextWordWithoutPunctuation.
