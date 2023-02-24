@@ -16,6 +16,7 @@ _processList
 
 _terminateProcess: aGsProcess
 	| string |
+	RowanBrowserService new releaseWindow: self view handle value session: gciSession.
 	string := '
 | gsProcess |
 gsProcess := Object _objectForOop: '

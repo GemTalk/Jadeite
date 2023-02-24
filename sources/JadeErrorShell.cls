@@ -34,11 +34,6 @@ doResume
 	self return: #'resume'.
 !
 
-doTerminate
-
-	self return: #terminate.
-!
-
 gsError
 	^gsError!
 
@@ -70,7 +65,6 @@ createComponents!public! !
 createSchematicWiring!public! !
 doDebug!public! !
 doResume!public! !
-doTerminate!public! !
 gsError!accessing!private! !
 gsError:!accessing!private! !
 queryCommand:!public! !

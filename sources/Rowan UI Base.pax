@@ -182,7 +182,7 @@ package methodNames
 	add: #JadeDebugger -> #update;
 	add: #JadeDebugger -> #updateCaption;
 	add: #JadeErrorShell -> #doCopy;
-	add: #JadeErrorShell -> #onViewClosed;
+	add: #JadeErrorShell -> #doTerminate;
 	add: #JadeErrorShell -> #onViewOpened;
 	add: #JadeErrorShell -> #registerWindow:rootObject:session:;
 	add: #JadeFileIn -> #defineMethod:inClassNamed:inPackageNamed:inCategory:;
@@ -1994,7 +1994,6 @@ initializeProcess: aProcess message: aString terminateOnClose: aBoolean
 
 onViewClosed
 	gciSession ifNil: [^super onViewClosed].
-	RowanBrowserService new releaseWindow: self view handle value session: gciSession.
 	(processListPresenter list notNil and: [processListPresenter list notEmpty])
 		ifTrue: 
 			[BrowserUpdate current logComment: 'assigning gsProcess in JadeDebugger>>onViewClosed'.
@@ -2090,12 +2089,10 @@ doCopy
 			stream contents copyToClipboard].
 	^stream contents "for testing" !
 
-onViewClosed
-	BrowserUpdate current
-		logComment: 'Releasing notifier window (JadeErrorShell) {' , self identityHash printString , '}'.
+doTerminate
 	gsError
 		ifNotNil: [:err | RowanBrowserService new releaseWindow: self view handle value session: gsError gciSession].
-	super onViewClosed!
+	self return: #terminate!
 
 onViewOpened
 	| gsProcess message detail stack stream |
@@ -2131,7 +2128,7 @@ registerWindow: handle rootObject: oop session: session
 		session: session! !
 !JadeErrorShell categoriesForMethods!
 doCopy!public! !
-onViewClosed!event handlers!public! !
+doTerminate!public! !
 onViewOpened!event handlers!public! !
 registerWindow:rootObject:session:!private! !
 !
