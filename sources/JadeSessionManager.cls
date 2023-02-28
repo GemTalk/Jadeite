@@ -18,10 +18,10 @@ defaultResLibPath
 logError: exception
 	| fileStream timestampString |
 	timestampString := self class stackDumpTimeStampString.	"print the same string at the beginning and end for easier searching"
-	fileStream := FileStream write: self errorLogName mode: #append.
+	fileStream := FileStream write: self imageFileName , '.errors' mode: #append.
 	[self class prependStackStartMessage: timestampString on: fileStream] ensure: [fileStream close].
 	super logError: exception.
-	fileStream := FileStream write: self errorLogName mode: #append.
+	fileStream := FileStream write: self imageFileName , '.errors' mode: #append.
 	[self class appendStackEndMessage: timestampString on: fileStream] ensure: [fileStream close]!
 
 main

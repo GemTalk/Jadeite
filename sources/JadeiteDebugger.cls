@@ -184,12 +184,12 @@ disableBreakpointsWhile: block
 	answeringService
 		setBreakpointsEnabled: false
 		session: self gciSession
-		ignoringUpdates: true.
+		ignoringUpdates: false.
 	[result := block value] ensure: 
 			[answeringService
 				setBreakpointsEnabled: wereBreakpointsEnabled
 				session: self gciSession
-				ignoringUpdates: true].
+				ignoringUpdates: false].
 	^result!
 
 displayUncompilableSourceIn: sourcePresenter

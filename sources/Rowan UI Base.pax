@@ -1206,8 +1206,8 @@ methodMenuBreak: menu
 				ifFalse: [currentSelection].
 	menu items copy do: 
 			[:item |
-			item isDivider
-				ifFalse: 
+			(item isDivider not and: [item hasSubmenu not])
+				ifTrue: 
 					[item command asSymbol == #browseImplementorsOf: ifTrue: [menu removeItem: item].
 					item command asSymbol == #browseSendersOf: ifTrue: [menu removeItem: item]]].
 	currentSelection isEmpty ifTrue: [^self].

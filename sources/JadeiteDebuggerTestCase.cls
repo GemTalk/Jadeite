@@ -57,6 +57,11 @@ lastFrameStartingWith: className
 				select: [:stackFrame | className , '*' match: stackFrame].
 	^selections last!
 
+processHeldOnServer: processOop
+	^session
+		executeString: '((SessionTemps current at: #jadeiteProcesses) detect:[:process | process asOop = '
+				, processOop printString , '] ifNone: []) notNil'!
+
 selectFirstFrameStartingWith: className
 	| frame |
 	frame := self firstFrameStartingWith: className.
@@ -1486,6 +1491,134 @@ test_openDebuggerWthBreakpointInDebuggerService
 				self abortTransaction.  "Need to get rid of the new method." 
 				answeringService setBreakpointsEnabled: wereBreakpointsEnabled session: session]!
 
+test_processAdHocDebugHeldStepOver
+	"When debugging, make sure the GsProcess is held to avoid garbage collection by the server"
+
+	| workspace processOop count |
+	self testsIssue: #issue884
+		withTitle: 'Breakpoint within a block is only honored for a few iterations'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	workspace setDocumentData: '| sum | sum := 1 + 2. sum'.
+	self debuggerDo: 
+			[process := 
+					[workspace codePane documentPresenter setFocus.
+					workspace codePane jadeDebug]
+							forkAt: Processor activePriority + 1].
+	self getDebugger.
+	processOop := debugger gsProcess oop.
+	self assert: (self processHeldOnServer: processOop).
+	debugger stepOver.
+	self assert: (self processHeldOnServer: processOop).
+	debugger stepOver.
+	self assert: (self processHeldOnServer: processOop).
+	debugger _terminateProcess.
+	count := 0.
+	[debugger isDeafObject] whileFalse: 
+			[count := count + 1.
+			(Delay forMilliseconds: 1) wait].
+	self assert: debugger isDeafObject.
+	self deny: (self processHeldOnServer: processOop)]
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
+test_processAdHocDebugReleasedOnResume
+	"When debugging, make sure the GsProcess is held to avoid garbage collection by the server"
+
+	| workspace processOop count |
+	self testsIssue: #issue884
+		withTitle: 'Breakpoint within a block is only honored for a few iterations'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	workspace setDocumentData: '| sum | sum := 1 + 2. sum'.
+	self debuggerDo: 
+			[process := 
+					[workspace codePane documentPresenter setFocus.
+					workspace codePane jadeDebug]
+							forkAt: Processor activePriority + 1].
+	self getDebugger.
+	processOop := debugger gsProcess oop.
+	self assert: (self processHeldOnServer: processOop).
+	debugger resumeProcess.
+	count := 0.
+	[debugger isDeafObject] whileFalse: 
+			[count := count + 1.
+			(Delay forMilliseconds: 1) wait].
+	self assert: debugger isDeafObject.
+	RowanAnsweringService new exec: '''do something to update server cache''' in: session.
+	self deny: (self processHeldOnServer: processOop)]
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
+test_processHaltedHeldStepOver
+	"When debugging, make sure the GsProcess is held to avoid garbage collection by the server"
+
+	| workspace processOop count |
+	self testsIssue: #issue884
+		withTitle: 'Breakpoint within a block is only honored for a few iterations'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	workspace setDocumentData: '| sum | self halt.  sum := 1 + 2. sum'.
+	self debuggerDo: 
+			[process := 
+					[workspace codePane documentPresenter setFocus.
+					workspace codePane jadeExecute]
+							forkAt: Processor activePriority + 1].
+	self getDebugger.
+	processOop := debugger gsProcess oop.
+	self assert: (self processHeldOnServer: processOop).
+	debugger stepOver.
+	self assert: (self processHeldOnServer: processOop).
+	debugger stepOver.
+	self assert: (self processHeldOnServer: processOop).
+	debugger _terminateProcess.
+	count := 0.
+	[debugger isDeafObject] whileFalse: 
+			[count := count + 1.
+			(Delay forMilliseconds: 1) wait].
+	self assert: debugger isDeafObject.
+	self deny: (self processHeldOnServer: processOop)]
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
+test_processHaltedReleasedOnResume
+	"When debugging, make sure the GsProcess is held to avoid garbage collection by the server"
+
+	| workspace processOop count |
+	self testsIssue: #issue884
+		withTitle: 'Breakpoint within a block is only honored for a few iterations'.
+	workspace := JadeWorkspace showOnSession: session.
+	
+	[self assert: (workspace isKindOf: JadeWorkspace).
+	workspace setDocumentData: '| sum | self halt.  sum := 1 + 2. sum'.
+	self debuggerDo: 
+			[process := 
+					[workspace codePane documentPresenter setFocus.
+					workspace codePane jadeExecute]
+							forkAt: Processor activePriority + 1].
+	self getDebugger.
+	processOop := debugger gsProcess oop.
+	self assert: (self processHeldOnServer: processOop).
+	debugger stepOver.
+	debugger stepOver. 
+	debugger resumeProcess.
+	count := 0.
+	[debugger isDeafObject] whileFalse: 
+			[count := count + 1.
+			(Delay forMilliseconds: 1) wait].
+	self assert: debugger isDeafObject.
+	RowanAnsweringService new exec: '''do something to update server cache''' in: session.
+	self deny: (self processHeldOnServer: processOop)]
+			ensure: 
+				[workspace isModified: false.
+				workspace view close]!
+
 test_processIsServices
 	"not a great test but does look at the underlying problem with issue #762"
 
@@ -1769,6 +1902,48 @@ test_resumeRepeated
 					[self debuggerDo: [process := [debugger resumeProcess] forkAt: Processor activePriority + 1].
 					(Delay forMilliseconds: 250) wait.
 					self getDebugger]].
+	inspector := JadeiteInspector showOn: executionResult session: session.
+	
+	[self assert: (inspector isKindOf: JadeiteInspector).
+	inspector instVarListPresenter selectionByIndex: 3.
+	self assert: inspector documentPresenter value equals: '#''asString''']
+			ensure: 
+				[self destroy: inspector.
+				debugger := nil.
+				self clearBreakAt: 10	"#size"]!
+
+test_resumeRepeatedHoldsProcess
+	| inspector processOop |
+	self testsIssue: #issue884
+		withTitle: 'Breakpoint within a block is only honored for a few iterations'.
+	self
+		saveMethod: 'blockIteration
+"ThreeTest new blockIteration"
+
+  | clsOrg report res |
+  clsOrg := ClassOrganizer newExcludingGlobals.
+  report := { #''flattened'' . #''pairsCollect:'' . #''containsDigit'' . #''blarf'' . #sunshine . #tuesday . #asString . #asInteger . #now} 
+      select: [:sel |
+          res := clsOrg implementorsOf: sel.
+          res size > 0
+          ].
+  ^report'
+		in: 'RowanSample1'.
+	self openProjectBrowser.
+	self selectRowanSample1Class.
+	self selectMethodNamed: #blockIteration.
+	self setBreakAt: 10.	"#size"
+	self openDebuggerOn: '| report | report := RowanSample1 new blockIteration'.
+	(Delay forMilliseconds: 250) wait.
+	processOop := debugger gsProcess oop.
+	self assert: (self processHeldOnServer: processOop).
+	9 timesRepeat: 
+			[debugger
+				ifNotNil: 
+					[self debuggerDo: [process := [debugger resumeProcess] forkAt: Processor activePriority + 1].
+					(Delay forMilliseconds: 250) wait.
+					self getDebugger.
+					self assert: (self processHeldOnServer: processOop)]].
 	inspector := JadeiteInspector showOn: executionResult session: session.
 	
 	[self assert: (inspector isKindOf: JadeiteInspector).
@@ -2799,6 +2974,7 @@ firstFrameStartingWith:!public!support! !
 forkStepThrough!public!support! !
 indexOfVariableNamed:!public!support! !
 lastFrameStartingWith:!public!support! !
+processHeldOnServer:!private!support!test ad hoc execution! !
 selectFirstFrameStartingWith:!public!support! !
 selectLastFrameStartingWith:!public!support! !
 setUp!private!setup teardown! !
@@ -2862,6 +3038,10 @@ test_jadeItemsOnMenu!public!test menus! !
 test_loginButtonEnablementAfterDebug!public!tests! !
 test_notifierDoesNotErrorCheckingResumeStatus!public!test notifier! !
 test_openDebuggerWthBreakpointInDebuggerService!public!tests! !
+test_processAdHocDebugHeldStepOver!public!test ad hoc execution! !
+test_processAdHocDebugReleasedOnResume!public!test ad hoc execution! !
+test_processHaltedHeldStepOver!public!test ad hoc execution! !
+test_processHaltedReleasedOnResume!public!test ad hoc execution! !
 test_processIsServices!public!tests! !
 test_processSwitching!public!tests! !
 test_processTermination!public!tests! !
@@ -2875,6 +3055,7 @@ test_reopenInLastExtent!public!tests! !
 test_reopenInLastPosition!public!tests! !
 test_restartInBlock!public!tests! !
 test_resumeRepeated!public!test step! !
+test_resumeRepeatedHoldsProcess!public!test step! !
 test_runningTestDoesNotLoseStepPoint!public!tests! !
 test_saveMethod!public!tests! !
 test_saveMethodDuringTestRun!public!tests! !
