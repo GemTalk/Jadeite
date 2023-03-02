@@ -520,15 +520,19 @@ reformatSource
 
 refreshBreakPointsIn: methodSourcePresenter
 	| breakPointSymbol indicators |
+	BrowserUpdate current logComment: 'about to JadeiteDebugger>>refreshBreakPointsIn:'.
 	BrowserUpdate current
 		logComment: 'JadeiteDebugger>>refreshBreakPointsIn: `methodSourcePresenter view isOpen`'
 				, methodSourcePresenter view isOpen printString.
-	methodSourcePresenter view isOpen ifFalse: [^self].
+	methodSourcePresenter view isOpen
+		ifFalse: 
+			[BrowserUpdate current logComment: 'methodSourcePresenter view not open. exiting early'.
+			^self].
 	breakPointSymbol := BrowserUpdate current breakpointsEnabled
 				ifTrue: [#breakPoint]
 				ifFalse: [#disabledBreakPoint].
 	indicators := OrderedCollection new.
-	methodSourcePresenter view indicators do: 
+	methodSourcePresenter view indicators do:  
 			[:indicator |
 			(indicator styleName = #breakPoint or: [indicator styleName = #disabledBreakPoint])
 				ifTrue: 
@@ -541,8 +545,10 @@ refreshBreakPointsIn: methodSourcePresenter
 	[methodSourcePresenter view update] on: GPFault
 		do: 
 			[:ex |
-			"ignore - Dolphin can get these. Probably means the view is really gone and other updates on this round trip will be void"
-			]!
+			BrowserUpdate current
+				logComment: 'Got a GPFault while refreshing breakpoints. Terminating active process which should release mutex in the unwind block.'.
+			Processor activeProcess terminate].
+	BrowserUpdate current logComment: 'finished JadeiteDebugger>>refreshBreakPointsIn:'!
 
 registerPresentersForUpdates
 	"copied from RowanProjectsBrowserPresenter>>registerPresentersForUpdates"
