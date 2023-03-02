@@ -711,6 +711,7 @@ setBreakAt: anInteger
 	self projectsPresenter setBreakPointAt: anInteger in: self projectsPresenter!
 
 setUp
+	BrowserUpdate current startLogging. 
 	super setUp.
 	JadeiteBrowser
 		compile: 'validateUserInterface
@@ -787,12 +788,12 @@ tearDown
 			].
 	SessionManager inputState pumpMessages.
 	"debugging code - halt if we find a nil in the user's symbol list"
-	session isValidSession
+	"session isValidSession
 		ifTrue: 
 			[answeringService := RowanAnsweringService new
 						command: #symbolListHasNil;
 						commandArgs: Array new.
-			self issueCommand: answeringService].!
+			self issueCommand: answeringService]."!
 
 test_globalAdditionalAccelerators
 	| command |

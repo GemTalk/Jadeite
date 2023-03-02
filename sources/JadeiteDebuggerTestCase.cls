@@ -1937,13 +1937,16 @@ test_resumeRepeatedHoldsProcess
 	(Delay forMilliseconds: 250) wait.
 	processOop := debugger gsProcess oop.
 	self assert: (self processHeldOnServer: processOop).
-	9 timesRepeat: 
+	8 timesRepeat: 
 			[debugger
 				ifNotNil: 
 					[self debuggerDo: [process := [debugger resumeProcess] forkAt: Processor activePriority + 1].
 					(Delay forMilliseconds: 250) wait.
 					self getDebugger.
 					self assert: (self processHeldOnServer: processOop)]].
+	self debuggerDo: [process := [debugger resumeProcess] forkAt: Processor activePriority + 1]. "final resume, no more debuggers" 
+	(Delay forMilliseconds: 250) wait.
+	self deny: (self processHeldOnServer: processOop).
 	inspector := JadeiteInspector showOn: executionResult session: session.
 	
 	[self assert: (inspector isKindOf: JadeiteInspector).

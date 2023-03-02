@@ -49,7 +49,7 @@ basicInUpdateWhile: block
 	"here is where we actually grab the mutex" 
 	| result |
 	result := self inUpdate critical: 
-					[BrowserUpdate current logComment: 'gets inUpdate mutex.  [' , block printString , ']'.
+					[BrowserUpdate current logComment: 'got inUpdate mutex.  [' , block printString , ']'.
 					block ensure: 
 							[GciSession current
 								ifNotNil: 
@@ -71,13 +71,12 @@ basicIssueCommand: services session: session ignoreReturnedServices: ignoreUpdat
 	stonString := JadeiteSTON toString: loggedServices.
 	[stonResultString := session serverPerform: #updateFromSton: with: stonString]
 		ensure: [services do: [:service | service clearCommand]].
-	ignoreUpdates
-		ifFalse: 
-			[stonResultString = 'nil'
+	self basicInUpdateWhile: 
+			[ignoreUpdates
 				ifFalse: 
-					[self
-						basicInUpdateWhile: [updateResult := self update: services afterStonReplication: stonResultString]]].
-	session releaseAllOops.
+					[stonResultString = 'nil'
+						ifFalse: [updateResult := self update: services afterStonReplication: stonResultString]].
+			session releaseAllOops].
 	^updateResult!
 
 basicUpdateServices: services session: session
@@ -292,6 +291,7 @@ update: services afterStonReplication: stonResults
 	self logReceivedServices: returnedServices.
 	returnedServices do: [:newService | services do: [:service | service replicateFrom: newService]].
 	self applyUpdatesFromReturnedServices: returnedServices.
+	self logComment: 'Received services'' updates applied'. 
 	returnedServices do: [:service | service postUpdate].
 	^returnedServices!
 
