@@ -95,12 +95,14 @@ test_breakpointDisabledHighlighting
 	self selectRowanSample1Test.
 	self selectMethodNamed: #test1.
 	self setBreakAt: 2.
+	self projectsPresenter refreshBreakPointsIn: self methodSourcePresenter.  "just force the breakpoint refresh to happen. Done with deferred processing now" 
 	indicator := self projectsPresenter methodSourcePresenter view indicators at: 2.
 	self assert: indicator range = (35 to: 37).
 	self assert: indicator styleName = #breakPoint.
 	self assert: indicator tag = 'Break at step point #2'.
 	
 	[self disableBreakpoints.
+	(Delay forMilliseconds: 1000) wait.
 	indicator := self projectsPresenter methodSourcePresenter view indicators at: 2.
 	self assert: indicator range = (35 to: 37).
 	self assert: indicator styleName = #disabledBreakPoint.

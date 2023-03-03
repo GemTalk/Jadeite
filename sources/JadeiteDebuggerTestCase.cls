@@ -1079,18 +1079,22 @@ test_disablebreakpointHighlighting
 	self setBreakAt: 2.
 	
 	[self openDebuggerOn: 'RowanSample1Test new test1'.
+	(Delay forMilliseconds: 1000) wait. "we defer bp refreshes until the debugger gui has settled down. Let the test wait a good long while" 
 	self
 		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
 		assert: indicator range = (35 to: 37);
 		assert: indicator styleName = #breakPoint;
 		assert: indicator tag = 'Break at step point #2'.
 	self disableBreakpoints.
+	(Delay forMilliseconds: 1000) wait.
+	"debugger refreshBreakPointsIn: debugger methodSourcePresenter  documentPresenter."	"we defer the bp refresh. Tests need it done immediately."
 	self
 		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
 		assert: indicator range = (35 to: 37);
 		assert: indicator styleName = #disabledBreakPoint;
 		assert: indicator tag = 'Break at step point #2'.
 	self enableBreakpoints.
+	(Delay forMilliseconds: 1000) wait.
 	self
 		assert: (indicator := debugger methodSourcePresenter documentPresenter view indicators at: 2) notNil;
 		assert: indicator range = (35 to: 37);
@@ -1946,6 +1950,7 @@ test_resumeRepeatedHoldsProcess
 					self assert: (self processHeldOnServer: processOop)]].
 	self debuggerDo: [process := [debugger resumeProcess] forkAt: Processor activePriority + 1]. "final resume, no more debuggers" 
 	(Delay forMilliseconds: 250) wait.
+	RowanAnsweringService new exec: '3+4' in: session. 
 	self deny: (self processHeldOnServer: processOop).
 	inspector := JadeiteInspector showOn: executionResult session: session.
 	
