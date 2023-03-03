@@ -711,7 +711,6 @@ setBreakAt: anInteger
 	self projectsPresenter setBreakPointAt: anInteger in: self projectsPresenter!
 
 setUp
-	BrowserUpdate current startLogging. 
 	super setUp.
 	JadeiteBrowser
 		compile: 'validateUserInterface
