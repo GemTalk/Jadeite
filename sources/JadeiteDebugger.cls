@@ -520,7 +520,7 @@ reformatSource
 
 refreshBreakPointsIn: methodSourcePresenter
 	| breakPointSymbol indicators |
-	BrowserUpdate current logComment: 'about to JadeiteDebugger>>refreshBreakPointsIn:'.
+	[BrowserUpdate current logComment: 'about to JadeiteDebugger>>refreshBreakPointsIn:'.
 	BrowserUpdate current
 		logComment: 'JadeiteDebugger>>refreshBreakPointsIn: `methodSourcePresenter view isOpen`'
 				, methodSourcePresenter view isOpen printString.
@@ -548,7 +548,7 @@ refreshBreakPointsIn: methodSourcePresenter
 			BrowserUpdate current
 				logComment: 'Got a GPFault while refreshing breakpoints. Terminating active process which should release mutex in the unwind block.'.
 			Processor activeProcess terminate].
-	BrowserUpdate current logComment: 'finished JadeiteDebugger>>refreshBreakPointsIn:'!
+	BrowserUpdate current logComment: 'finished JadeiteDebugger>>refreshBreakPointsIn:'] postToInputQueue!
 
 registerPresentersForUpdates
 	"copied from RowanProjectsBrowserPresenter>>registerPresentersForUpdates"

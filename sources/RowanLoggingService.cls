@@ -177,6 +177,8 @@ logServiceDateTimeStampProcessOn: ws
 		nextPutAll: time printString;
 		space;
 		nextPutAll: 'Process: {' , Processor activeProcess identityHash printString , '}';
+		space;
+		nextPutAll: 'priority: ', Processor activePriority printString;
 		space.
 	mode
 		ifNotNil: 
