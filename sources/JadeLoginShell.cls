@@ -300,12 +300,10 @@ queryCommand: query
 	^super queryCommand: query!
 
 saveDocument
-
 	| result |
 	result := super saveDocument.
 	result ifTrue: [self isModified: false].
-	^result.
-!
+	^result!
 
 sendRequiredMessages
 	"The ImageStripper seems to think these messages aren't needed, but we die during runtime packaging with a MessageNotUnderstood."
