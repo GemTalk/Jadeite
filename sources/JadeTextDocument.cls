@@ -54,15 +54,6 @@ continueTransaction
 	SessionManager current pause.
 !
 
-createComponents
-
-	super createComponents.
-	view viewNamed: 'codePane' ifNone: [^self].
-	codePane := self add: self codeSourcePresenterClass new name: 'codePane'.
-	documentPresenter := codePane documentPresenter.
-	self updateCodeFont.
-!
-
 currentSelectionOrLine
 	self activeTextEdit hasSelection ifFalse: [self activeTextEdit selectCurrentLine].
 	^self activeTextEdit selection replaceCrLfWithLf!
@@ -239,21 +230,6 @@ logoutRequested: aValueHolder
 maxPrintStringSize
 	^JadePresenter maxPrintStringSize!
 
-onViewOpened
-	codePane ifNotNil: [codePane gciSession: gciSession].
-	super onViewOpened.
-	self updateStatusBar.
-	(documentPresenter view isKindOf: ScintillaView) ifFalse: [^self].
-	documentPresenter view
-		restyleAll;
-		backcolor: (RGB
-					red: 250
-					green: 242
-					blue: 208);
-		yourself.
-	self updateCodeFont.
-	self positionToDefaultLocation!
-
 openOn: openFilename
 	super openOn: openFilename.
 	lastSave := self model value!
@@ -272,30 +248,6 @@ positionToDefaultLocation
 	self view position: JadePresenter defaultWindowPosition!
 
 print!
-
-queryCommand: query
-	| textEdit focusView isTextEdit |
-	textEdit := self activeTextEdit.
-	focusView := View focus.
-	isTextEdit := focusView isKindOf: TextEdit.
-	(#(#addQuotesToSelection #removeQuotesFromSelection #editCut #editCopy #editDelete #editReplace #editFind #editFindNext #editSelectAll #jadeDebug #jadeDisplay #jadeExecute #jadeInspect)
-		includes: query commandSymbol)
-			ifTrue: 
-				[query isEnabled: (textEdit notNil and: [textEdit isKindOf: TextEdit]).
-				^true].
-	query commandSymbol = #editPaste
-		ifTrue: 
-			[query isEnabled: (textEdit notNil and: [(textEdit isKindOf: TextEdit) and: [textEdit canPaste]]).
-			^true].
-	(#(#editUndo #editRevert) includes: query commandSymbol)
-		ifTrue: 
-			[query isEnabled: (isTextEdit and: [focusView canUndo]). 
-			^true].
-	(#( #editRedo ) includes: query commandSymbol)
-		ifTrue: 
-			[query isEnabled: (isTextEdit and: [focusView canRedo]).
-			^true].
-	^super queryCommand: query!
 
 removeQuotesFromSelection
 
@@ -394,15 +346,6 @@ updateStatusBarItem: aString with: anObject
 	item model: (ValueHolder with: anObject).
 !
 
-validateUserInterface
-
-	[
-		super validateUserInterface.
-	] on: Error do: [:ex | 
-		view == DeafObject current ifTrue: [ex return: nil].
-		ex pass.
-	].!
-
 waitForAnswer: answeringService
 	^JadePresenter waitForAnswer: answeringService! !
 !JadeTextDocument categoriesForMethods!
@@ -417,7 +360,6 @@ codeSourcePresenterClass!private! !
 commitTransaction!Jade!private! !
 contextObject!Jade!private! !
 continueTransaction!Jade!private! !
-createComponents!private! !
 currentSelectionOrLine!Jade!private! !
 editCopy!menu handlers!private! !
 editCut!menu handlers!private! !
@@ -442,12 +384,10 @@ jadeExecute!menu handlers!private! !
 jadeExecuteAndDisplay:result:view:!Jade!private! !
 logoutRequested:!private! !
 maxPrintStringSize!private! !
-onViewOpened!event handlers!private! !
 openOn:!overrides!public! !
 parentPresenter!public! !
 positionToDefaultLocation!event handlers support!private! !
 print!private! !
-queryCommand:!menu handlers!private! !
 removeQuotesFromSelection!menu handlers!private! !
 saveDocument!private! !
 selectLfIfEndingOnCr!menu handlers!private! !
@@ -460,7 +400,6 @@ updateCaption:!displaying!public! !
 updateCodeFont!private! !
 updateStatusBar!private! !
 updateStatusBarItem:with:!private! !
-validateUserInterface!overrides!private! !
 waitForAnswer:!Jade!private! !
 !
 
@@ -500,15 +439,6 @@ openOnSession: aGciSession
 		openOn: openFilename;
 		yourself!
 
-showOnSession: aGciSession
-	^self new 
-		gciSession: aGciSession;
-		createView: self defaultView;
-		showShell;
-		yourself.
-
-!
-
 shutdownOnExit
 
 	^false.
@@ -519,7 +449,6 @@ fileTypes!public! !
 icon!public! !
 open:onSession:!public! !
 openOnSession:!public! !
-showOnSession:!public! !
 shutdownOnExit!public! !
 !
 

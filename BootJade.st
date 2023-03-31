@@ -26,8 +26,10 @@ list := #(
 	'Jade in Dolphin'
 	'Jade Tests'
 	'Rowan UI Base PreInstall'
-	'Rowan Client Services 2' 
+	'Rowan Client Services 2'
 	'Rowan UI Base'
+	'Rowan UI Base Common'
+	'Rowan UI Base Dolphin'
 	'Rowan UI Tests'
 ).
 
@@ -41,7 +43,7 @@ ProgressDialog showModalWhile: [:progress |
 			value: percent;
 			text: 'Loading package: ' , name;
 			yourself.
-		PackageManager current install: 'sources\' , name , '.pax'.
+		[PackageManager current install: 'sources\' , name , '.pax'] on: Error do:[:ex | PackageManager current install: 'sources\' , name , '.pac'].
 	
 	].
 ].

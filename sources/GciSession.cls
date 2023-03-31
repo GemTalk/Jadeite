@@ -346,9 +346,6 @@ isValidSession
 	^gciSessionId notNil
 !
 
-library: anObject
-	library := anObject!
-
 libraryVersion
 
 	^library 
@@ -743,7 +740,6 @@ isOopType:!public! !
 isPackagePolicyEnabled!public!testing! !
 isRemoteGem!public!testing! !
 isValidSession!public!testing! !
-library:!accessing!private! !
 libraryVersion!public! !
 loadLibrary:debugPath:!public! !
 logout!Jade!public! !

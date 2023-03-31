@@ -357,34 +357,7 @@ transactionMode
 	^TransactionMode value!
 
 transactionModeValueHolder
-	^TransactionMode ifNil:[self initializeTransactionMode]!
-
-waitForAnswer: thingThatCanAnswer
-	| theAnswer deferredValue thisProcess |
-	deferredValue := [thingThatCanAnswer answer] deferredValue.
-	thisProcess := Processor activeProcess.
-	
-	[
-	[[deferredValue hasValue not and: [thingThatCanAnswer isDeafObject not]]
-		whileTrue: [(Delay forMilliseconds: 1) wait]]
-			ensure: 
-				[SessionManager current inputState main: Processor activeProcess.
-				thingThatCanAnswer isDeafObject
-					ifTrue: [thisProcess terminate]
-					ifFalse: [[thisProcess resume: nil] on: Error do: [:ex | ]]]]
-			fork.
-	Processor suspendActive.
-	theAnswer := [deferredValue value] on: Error
-				do: 
-					[:ex |
-					ex messageText = 'DeferredValue terminated prematurely'
-						ifTrue: [nil]
-						ifFalse: 
-							[thingThatCanAnswer
-								getProcessList;
-								update.	"should be a debugger so update"
-							self waitForAnswer: thingThatCanAnswer]].
-	^theAnswer! !
+	^TransactionMode ifNil:[self initializeTransactionMode]! !
 !JadePresenter class categoriesForMethods!
 areAbortCommitEnabled!public! !
 defaultAdditionalAccelerators!constants!public! !
@@ -415,6 +388,5 @@ sigAbortsProcessEnabled:!public! !
 stopListeningForSigAborts!public! !
 transactionMode!preferences!public! !
 transactionModeValueHolder!public! !
-waitForAnswer:!debugger support!public! !
 !
 

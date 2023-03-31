@@ -40,7 +40,6 @@ package classNames
 	add: #JadeiteLoadProjectDialog;
 	add: #JadeiteLoadSpecEditor;
 	add: #JadeiteLoadSpecPresenter;
-	add: #JadeiteLogger;
 	add: #JadeiteLoggerPresenter;
 	add: #JadeiteLoggerShell;
 	add: #JadeiteLoginShell;
@@ -156,7 +155,6 @@ package methodNames
 	add: #GciSession -> #serverPerform:withArguments:;
 	add: #GciSession -> #shouldHandleTransactionBacklogError:;
 	add: #GciSession -> #terminate:;
-	add: #GciSession -> #titleBarFor:;
 	add: #GciSession -> #validateRowanClientServicesVersion;
 	add: #GciSession -> #withExplanation:do:;
 	add: #GciSession -> #withExplanation:doA:;
@@ -358,9 +356,7 @@ package methodNames
 	add: #JadeSystemBrowserPresenter -> #verifyValidCategory:;
 	add: #JadeTextDocument -> #aboutJadeite;
 	add: #JadeTextDocument -> #basicFileInFromFile:;
-	add: #JadeTextDocument -> #executeSelectionOrLine:shouldDebug:;
 	add: #JadeTextDocument -> #fileIn;
-	add: #JadeTextDocument -> #fileInChunk;
 	add: #JadeTextDocument -> #issueCommand:;
 	add: #JadeTextDocument -> #issueCommands:;
 	add: #JadeTextDocument -> #jadeBrowseTests;
@@ -490,7 +486,6 @@ package methodNames
 	add: 'JadeInspector class' -> #setNavigationInspector;
 	add: 'JadeInspector class' -> #showOn:session:;
 	add: 'JadeNavigationInspector class' -> #resource_Default_view;
-	add: 'JadePresenter class' -> #abortTransactionInSession:;
 	add: 'JadePresenter class' -> #allClassesIn:;
 	add: 'JadePresenter class' -> #allPackagesIn:;
 	add: 'JadePresenter class' -> #basicBrowseClassReferences:session:;
@@ -629,6 +624,7 @@ package setPrerequisites: #(
 	'Monticello'
 	'Object Log Browser'
 	'Rowan Client Services 2'
+	'Rowan UI Base Common'
 	'Rowan UI Base PreInstall'
 	'..\Core\Object Arts\Dolphin\System\Compiler\Smalltalk Parser'
 	'..\Core\Object Arts\Dolphin\Sockets\Sockets Connection'
@@ -672,11 +668,6 @@ Error subclass: #RowanDebuggerStepPointError
 	classInstanceVariableNames: ''!
 DividerMenuItem subclass: #JadeiteDividerMenuItem
 	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	classInstanceVariableNames: ''!
-Model subclass: #JadeiteLogger
-	instanceVariableNames: 'loggingService isLogging nextGroupId logFileName shouldGetNewLoggerGroup'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -1716,28 +1707,6 @@ terminate: anOopType
 				]]
 			ensure: [TerminateProcess signal]!
 
-titleBarFor: windowName
-	| stream |
-	self computeStoneHost.
-	stream := WriteStream on: String new.
-	stream
-		nextPutAll: windowName;
-		nextPutAll: ' for ';
-		nextPutAll: userID asString;
-		nextPutAll: ' on ';
-		nextPutAll: stoneName asString;
-		nextPutAll: ' [';
-		print: gciSessionId;
-		nextPutAll: ']'.
-	self isRemoteGem
-		ifTrue: 
-			[self computeGemHost.
-			stream
-				nextPutAll: ' with remote gem on ';
-				nextPutAll: gemHost asString]
-		ifFalse: [stream nextPutAll: ' with linked gem'].
-	^stream contents!
-
 validateRowanClientServicesVersion
 	| stream |
 	self rowanClientServicesIsSupported ifTrue: [^self].
@@ -1833,7 +1802,6 @@ send:to:withAll:!Jade convenience!long running!public! !
 serverPerform:withArguments:!Jade convenience!public! !
 shouldHandleTransactionBacklogError:!public! !
 terminate:!public! !
-titleBarFor:!public!title bar! !
 validateRowanClientServicesVersion!private! !
 withExplanation:do:!long running!private! !
 withExplanation:doA:!long running!private! !
@@ -3127,20 +3095,6 @@ waitForAnswer:!menu handlers!private! !
 
 !JadePresenter class methodsFor!
 
-abortTransactionInSession: session
-	"Even if it takes a windy path, try to make sure
-	all aborts in Jadeite pass through here"
-
-	| browserService services |
-	services := BrowserUpdate current selectedServices asSet asArray.
-	browserService := RowanBrowserService new
-				command: #abortTransactionAndUpdateServices:;
-				commandArgs: (Array with: services).
-	self issueCommands: (Array with: browserService) session: session.
-	self setInTransaction: RowanAnsweringService new session: session.
-	JadePresenter trigger: #abortedTransaction.
-	Sound informationBeep!
-
 allClassesIn: session
 	| browserService |
 	browserService := RowanBrowserService new.
@@ -3602,7 +3556,6 @@ unsavedChangesDialogWithSaveIn: presenter text: text
 		with: text
 		for: presenter! !
 !JadePresenter class categoriesForMethods!
-abortTransactionInSession:!public! !
 allClassesIn:!browsing support!private! !
 allPackagesIn:!browsing support!private! !
 basicBrowseClassReferences:session:!browsing!browsing support!public! !
@@ -5267,21 +5220,6 @@ basicFileInFromFile: filePath
 				session: gciSession.
 	service fileIn.!
 
-executeSelectionOrLine: contextObject shouldDebug: aBoolean
-	| answeringService answer oop |
-	oop := (contextObject isKindOf: ExternalInteger)
-				ifTrue: [contextObject value]
-				ifFalse: [contextObject].	"services wants a local special as a context"
-	oop ifNil: [oop := 20].
-	answeringService := RowanAnsweringService new.
-	answeringService
-		command: #exec:context:;
-		commandArgs: (Array with: self currentSelectionOrLine with: oop).
-	self issueCommand: answeringService.
-	answer := self waitForAnswer: answeringService.
-	answer key ifTrue: [answer value: (OopType64 fromInteger: answer value)].
-	^answer!
-
 fileIn
 	| filePath |
 	filePath := JadeiteServerFileSelectorDialog showOnSession: gciSession
@@ -5289,11 +5227,6 @@ fileIn
 	filePath ifNil: [^self].
 	self basicFileInFromFile: filePath.
 	MessageBox notify: 'Successful fileIn: ' , filePath!
-
-fileInChunk
-	| service |
-	service := RowanFileService new session: gciSession.
-	service fileInChunk: codePane selection!
 
 issueCommand: service
 	^self issueCommands: (Array with: service)!
@@ -5396,9 +5329,7 @@ updateServices: services
 !JadeTextDocument categoriesForMethods!
 aboutJadeite!private! !
 basicFileInFromFile:!private! !
-executeSelectionOrLine:shouldDebug:!Jade!private! !
 fileIn!private! !
-fileInChunk!private! !
 issueCommand:!public!services! !
 issueCommands:!public!services! !
 jadeBrowseTests!Jade!public! !
