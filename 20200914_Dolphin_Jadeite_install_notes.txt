@@ -1,0 +1,30 @@
+**** IMPORTANT NOTE 6/26/23 *****
+Make sure you are on the right branch or tag before doing the following steps. For example, if you want to load Dolphin v7.1.21, make sure to `git checkout <the tag>` before doing any of the instructions in the Dolphin guide.  Failure to do so will result in frustration, confusion, and general sadness. 
+
+* Note Most of these instructions come from https://github.com/dolphinsmalltalk/Dolphin/
+
+Follow these instructions to setup a new Dolphin release from github: 
+
+
+
+
+* Make a new directory in /c/users/ewinger/source/repos/<Dolphin*>
+$ git clone git@github.com:dolphinsmalltalk/Dolphin.git
+$ cd Dolphin
+$ git checkout v7.1.14
+* From a windows explorer, double-click FetchVM.CMD
+$ git lfs pull
+* Verify VisualStudio is updated to right version (2019 currently)
+* Double-click BootDPRO.cmd
+* To run regression tests double-click TestDPro.cmd
+	6/26/23 - Note that this required a MySQL login so perhaps is no longer fit to be 			run by a user.
+
+After installing Dolphin, follow these instructions to setup Jadeite in the new Dolphin installation:
+$ git clone git@github.com:GemTalk/Jadeite.git
+$ git checkout OscarV2.0  (or whatever is the latest development branch) 
+$ git fetch --all #just in case but should already be at the head of OscarV2.0 branch
+$ git pull origin oscarV2.0 #just in case
+
+* Setup desktop shortcut
+Target: C:\Users\ewinger\source\repos\Dolphin7114\Dolphin\Dolphin7.exe "C:\Users\ewinger\source\repos\Dolphin7114\Dolphin\DPRO.img7" -q -i JadeDev -f BootJade.st
+Start in: C:\Users\ewinger\source\repos\Dolphin7114\Dolphin\Jadeite
