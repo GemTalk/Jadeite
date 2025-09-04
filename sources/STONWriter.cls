@@ -160,11 +160,24 @@ with: object do: block
 			objects at: object put: index.
 			block value]!
 
+writeAssociation: association
+	jsonMode ifTrue: [self error: 'wrong object class for JSON mode'].
+	self encodeKey: association key value: association value!
+
 writeBoolean: boolean
 	writeStream print: boolean!
 
 writeFloat: float
 	writeStream nextPutAll: float asString!
+
+writeFraction: fraction
+	jsonMode
+		ifTrue: [self writeFloat: fraction asFloat]
+		ifFalse: 
+			[writeStream
+				print: fraction numerator;
+				nextPut: $/;
+				print: fraction denominator]!
 
 writeInteger: integer
 	writeStream print: integer!
@@ -252,6 +265,17 @@ writeReference: index
 		nextPut: $@;
 		print: index!
 
+writeScaledDecimal: scaledDecimal
+	jsonMode
+		ifTrue: [self writeFloat: scaledDecimal asFloat]
+		ifFalse: 
+			[writeStream
+				print: scaledDecimal numerator;
+				nextPut: $/;
+				print: scaledDecimal denominator;
+				nextPut: $s;
+				print: scaledDecimal scale]!
+
 writeString: string
 	self encodeString: string!
 
@@ -286,8 +310,10 @@ writeSymbol: symbol
 !STONWriter categoriesFor: #reset!public! !
 !STONWriter categoriesFor: #shortListElementSeparator!public! !
 !STONWriter categoriesFor: #with:do:!public! !
+!STONWriter categoriesFor: #writeAssociation:!public!writing! !
 !STONWriter categoriesFor: #writeBoolean:!public! !
 !STONWriter categoriesFor: #writeFloat:!public! !
+!STONWriter categoriesFor: #writeFraction:!public!writing! !
 !STONWriter categoriesFor: #writeInteger:!public! !
 !STONWriter categoriesFor: #writeList:!public! !
 !STONWriter categoriesFor: #writeMap:!public! !
@@ -299,6 +325,7 @@ writeSymbol: symbol
 !STONWriter categoriesFor: #writeObject:streamMap:!public! !
 !STONWriter categoriesFor: #writeObject:streamShortList:!public! !
 !STONWriter categoriesFor: #writeReference:!public! !
+!STONWriter categoriesFor: #writeScaledDecimal:!public!writing! !
 !STONWriter categoriesFor: #writeString:!public! !
 !STONWriter categoriesFor: #writeSymbol:!public! !
 

@@ -21,6 +21,7 @@ package classNames
 	yourself.
 
 package methodNames
+	add: #Association -> #stonOn:;
 	add: #Boolean -> #stonContainSubObjects;
 	add: #Boolean -> #stonOn:;
 	add: #ByteArray -> #readHexFrom:;
@@ -36,8 +37,11 @@ package methodNames
 	add: #Date -> #stonOn:;
 	add: #Dictionary -> #stonOn:;
 	add: #Dictionary -> #stonProcessSubObjects:;
+	add: #Fraction -> #stonOn:;
 	add: #Integer -> #stonOn:;
 	add: #Interval -> #stonOn:;
+	add: #Metaclass -> #stonName;
+	add: #Metaclass -> #stonOn:;
 	add: #Number -> #stonContainSubObjects;
 	add: #Number -> #stonOn:;
 	add: #Object -> #fromSton:;
@@ -57,6 +61,7 @@ package methodNames
 	add: #UndefinedObject -> #stonOn:;
 	add: 'ByteArray class' -> #fromSton:;
 	add: 'Character class' -> #fromSton:;
+	add: 'Class class' -> #fromSton:;
 	add: 'Collection class' -> #fromSton:;
 	add: 'Date class' -> #fromSton:;
 	add: 'Date class' -> #fromStream:usingFormat:;
@@ -64,6 +69,8 @@ package methodNames
 	add: 'Dictionary class' -> #fromSton:;
 	add: 'Interval class' -> #fromSton:;
 	add: 'Interval class' -> #writeStream;
+	add: 'Metaclass class' -> #fromSton:;
+	add: 'Metaclass class' -> #stonName;
 	add: 'Object class' -> #fromSton:;
 	add: 'SequenceableCollection class' -> #fromSton:;
 	add: 'Time class' -> #fromSton:;
@@ -143,6 +150,12 @@ STONListWriter subclass: #STONShortListWriter
 
 "Loose Methods"!
 
+!Association methodsFor!
+
+stonOn: stonWriter
+	stonWriter writeAssociation: self! !
+!Association categoriesFor: #stonOn:!public! !
+
 !Boolean methodsFor!
 
 stonContainSubObjects
@@ -217,6 +230,14 @@ stonName
 	
 	^ self name! !
 !Class categoriesFor: #stonName!public!rowan! !
+
+!Class class methodsFor!
+
+fromSton: stonReader
+	| theClassName |
+	theClassName := stonReader parseListSingleton.
+	^Smalltalk at: theClassName	"error if not found"! !
+!Class class categoriesFor: #fromSton:!public! !
 
 !Collection methodsFor!
 
@@ -465,6 +486,12 @@ fromSton: stonReader
 	^dictionary! !
 !Dictionary class categoriesFor: #fromSton:!must not strip!public! !
 
+!Fraction methodsFor!
+
+stonOn: stonWriter
+	stonWriter writeFraction: self! !
+!Fraction categoriesFor: #stonOn:!public!ston! !
+
 !Integer methodsFor!
 
 stonOn: stonWriter
@@ -492,6 +519,28 @@ writeStream
 	^(self from: 0 to: 0) writeStream! !
 !Interval class categoriesFor: #fromSton:!instance creation!private! !
 !Interval class categoriesFor: #writeStream!instance creation!private! !
+
+!Metaclass methodsFor!
+
+stonName
+	^#Class!
+
+stonOn: stonWriter
+	stonWriter writeObject: self listSingleton: self instanceClass name asSymbol! !
+!Metaclass categoriesFor: #stonName!public!ston! !
+!Metaclass categoriesFor: #stonOn:!public!ston! !
+
+!Metaclass class methodsFor!
+
+fromSton: stonReader
+	| theClassName |
+	theClassName := stonReader parseListSingleton.
+	^(Smalltalk at: theClassName) class!
+
+stonName
+	^#Metaclass! !
+!Metaclass class categoriesFor: #fromSton:!public! !
+!Metaclass class categoriesFor: #stonName!public! !
 
 !Number methodsFor!
 
