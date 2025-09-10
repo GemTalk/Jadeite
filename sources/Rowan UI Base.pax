@@ -4484,7 +4484,7 @@ initialize: aStream
 	| i j |
 	definition := (aStream upTo: Character lf) copyReplaceAll: Character cr asString
 				with: Character cr asString , Character lf asString.
-	className := (definition subStrings includes: 'rwSubclass:')
+	className := ((definition subStrings includesAnyOf: #('rwSubclass:' 'rwIndexableSubclass:')))
 				ifTrue: [(definition subStrings fourth) copyWithoutAll: #($')]
 				ifFalse: 
 					[i := definition indexOf: $#.
