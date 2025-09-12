@@ -14,6 +14,10 @@ addSystemBrowser
 
 	^parentPresenter addSystemBrowser!
 
+addWorkspace
+
+	^self topShell addWorkspace !
+
 browseClassReferences
 
 	^parentPresenter browseClassReferences!
@@ -158,6 +162,7 @@ runSelected
 selectedClass
 	^self parentPresenter selectedClass! !
 !JadeiteSUnitInClassPresenter categoriesFor: #addSystemBrowser!menu handlers support!public! !
+!JadeiteSUnitInClassPresenter categoriesFor: #addWorkspace!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #browseClassReferences!menu handlers support!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #browseIt!public! !
 !JadeiteSUnitInClassPresenter categoriesFor: #closeCard!menu handlers support!public! !

@@ -70,9 +70,19 @@ placeholdersForNewSharedLibraries
 	^placeholders!
 
 postLogin: aGciSession
-	| result |
+	| result svc |
 	aGciSession verifyRowanLoaded ifFalse: [^aGciSession logout].	"Already notified the user"
 	result := super postLogin: aGciSession.
+	svc := RowanAnsweringService new.
+	svc
+		exec: '  ''3.7.5'' asRwGemStoneVersionNumber <= (System gemVersionAt: #gsVersion) asRwGemStoneVersionNumber'
+		session: GciSession current.
+	(svc answer = 'true')
+		ifFalse: 
+			[| answer |
+			answer := MessageBox
+						confirm: 'Jadeite for Dolphin is only supported for GemStone server versions 3.7.5 and older. If you proceed, you will encounter errors.'.
+			answer ifFalse: [^aGciSession logout]].
 	JadeiteTranscript showOnSession: aGciSession.
 	^result!
 
